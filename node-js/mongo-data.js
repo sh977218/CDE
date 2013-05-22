@@ -3,7 +3,7 @@ var mongoose = require('mongoose')
     , vsac_io = require('./vsac-io')
     , xml2js = require('xml2js')
 
-var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/test';
+var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOLAB_URL || 'mongodb://localhost/test';
 
 mongoose.connect(mongoUri);
 var db = mongoose.connection;
