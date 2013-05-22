@@ -1,0 +1,18 @@
+<div ng-controller="LinkVsacCtrl">
+    <button class="icon-link" ng-click="showLinkModal=true"></button><br />
+    <div modal="showLinkModal" close="showLinkModal" opts="modalOpts">
+        <div class="modal-header">
+            <h4>Save</h4>
+        </div>
+        <div class="modal-body">
+            <label for="vsId">VSAC Value Set OID</label>
+            <input type="text" ng-model="vsId" name="vsId" required></input><br />
+            <label for="changeNote">Change Note</label>
+            <textArea name="changeNote" ng-model="cde.changeNote" placeholder="Optional Change Note"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button class="btn cancel" ng-click="showLinkModal = false">Cancel</button>
+            <button class="btn btn-warning cancel" ng-click="linktovsac(cde, vsId); showLinkModal = false">Save</button>
+        </div>
+    </div>                    
+</div>

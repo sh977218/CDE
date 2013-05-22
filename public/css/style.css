@@ -1,0 +1,16 @@
+label, .form-output .label {
+    margin: 0 5px 0 0;
+  float: left;
+  display: inline;
+  width: 140px;
+  text-align: right;
+  font: 12px/normal Arial, Verdana, Helvetica, sans-serif; }
+
+.readonly-text {
+  overflow: hidden;
+  word-wrap: break-word; }
+
+.inactive {
+    border: none;
+    background-color: #fff;
+}

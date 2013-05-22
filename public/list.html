@@ -1,0 +1,111 @@
+<pagination data-boundary-links="true" num-pages="numPages" current-page="currentPage" max-size="10"></pagination>
+
+<input type="text" ng-model="search.longName" class="search-query" placeholder="Long Name" typeahead="cde.longName for cde in autocomplete($viewValue)" required>
+<select ng-model="search.origin" name="origin" required>
+    <option value="">All</option>
+    <option ng-repeat="origin in originOptions" ng-value="origin">{{origin}}</option>
+</select>
+<select ng-model="search.owningContext" name="owningContext" required>
+    <option value="">All</option>
+    <option ng-repeat="context in contexts" ng-value="context">{{context}}</option>    
+</select>
+<input type="submit" value="Search" ng-click="reload()"></input>
+
+<accordion>
+    <accordion-group ng-repeat="cde in cdes" heading="{{cde.owningContext}} -- {{cde.longName}}">
+         <div class="row">
+            <div class="span6">
+                <h4>General Details</h4>
+                <label class="label">Name: </label> <inline-edit model="cde.longName" on-ok="stageCde(cde)"> </inline-edit>
+                <label class="label">Origin: </label><div class="readonly-text">{{cde.origin}}</div>
+                <label class="label">Origin ID: </label><div class="readonly-text">{{cde.originId}}</div>
+                <label class="label">Owner: </label><div class="readonly-text">{{cde.owningContext}}</div>
+                <label class="label">Definition: </label><inline-area-edit model="cde.preferredDefinition" on-ok="stageCde(cde)"> </inline-area-edit>
+                <label class="label">Added to NLM: </label>
+                <div class="readonly-text">
+                    <div ng-controller="AuditCtrl" >{{cde.created | date: 'MM/dd/yyyy @ h:mma'}}
+                        <button ng-show="cde.history.length > 0" class="icon-eye-open" ng-click="openHistory()"></button>
+                        <div modal="showHistory" close="closeHistory()" opts="historyOpts">
+                            <div class="modal-header">
+                                <h4>Previous Versions</h4>
+                            </div>
+                            <div class="modal-body">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <td>Updated</td>
+                                            <td>Change Note</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="priorCde in priorCdes">
+                                            <td>{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+                                            <td>{{priorCde.changeNote}}</td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-warning cancel" ng-click="closeHistory()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <label class="label">Updated in NLM: </label><div class="readonly-text">{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</div>                
+            </div>
+             <div class="span3">
+                 <h4>Concepts</h4>
+                 <table>
+                     <thead>
+                         <tr>
+                             <th>Name</th>
+                             <th>Origin</th>
+                             <th>Origin ID</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <tr ng-repeat="concept in cde.objectClass.concepts">
+                             <td>{{concept.name}}</td>
+                             <td>{{concept.origin}}</td>
+                             <td>{{concept.originId}}</td>
+                         </tr>
+                         <tr ng-repeat="concept in cde.property.concepts">
+                             <td>{{concept.name}}</td>
+                             <td>{{concept.origin}}</td>
+                             <td>{{concept.originId}}</td>
+                         </tr>
+                     </tbody>
+                 </table>
+             </div>
+            <div class="span3">
+                <h4>Permissible Values</h4>
+                <label class="label">Value Set Name: </label>{{cde.valueDomain.longName}} <button class="icon-link" ng-click="linktovsac(cde, '2.16.840.1.113883.3.464.1003.106.11.1001')"></button><br />
+                <ul>
+                    <li ng-repeat="pv in cde.valueDomain.permissibleValues">{{pv.validValue}}</li>
+                </ul>
+            </div>
+          </div>
+        <div class="row">
+            <div ng-controller="SaveCtrl">
+            <div class="span12" ng-show="cde.unsaved">
+                <button class="btn cancel" ng-click="revert(cde)">Discard Changes</button>
+                <button class="btn btn-primary" ng-click="openSave()">Save</button>
+            </div>
+            <div modal="showSave" close="closeSave()" opts="saveOpts">
+                <div class="modal-header">
+                    <h4>Save</h4>
+                </div>
+                <div class="modal-body">
+                    <label for="changeNote">Change Note</label>
+                    <textArea name="changeNote" ng-model="cde.changeNote" placeholder="Optional Change Note"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn cancel" ng-click="cancelSave()">Cancel</button>
+                    <button class="btn btn-warning cancel" ng-click="save(cde); showSave = false">Save</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    </accordion-group>
+</accordion>

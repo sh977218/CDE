@@ -1,0 +1,37 @@
+<!doctype html>
+<html ng-app="cde">
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular-resource.min.js"></script>
+        <script src="js/cde.js"></script>
+        <script src="js/resources.js"></script>
+        <script src="js/controllers.js"></script>
+        <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.3.0.js"></script>
+        <link href="assets/css/chromatable.css" rel="stylesheet" type="text/css" />
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+        <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+    </head>
+    <body>
+        <div class="nav-collapse" ng-controller="AuthCtrl">
+            <ul class="nav pull-right">
+                <li class="dropdown">
+                    <% if (!user) { %>
+                        <p>
+                        <a href="/">Home</a> |
+                        <a href="/login">Log In</a>
+                        </p>
+                    <% } else { %>
+                        <p>
+                        <a href="/">Home</a> |
+                        <a href="/logout">Log Out</a>
+                        </p>
+                    <% } %>
+                </li>
+            </ul>
+        </div>
+        
+        <div ng-view>
+        </div>            
+    </body>
+</html> 

@@ -1,0 +1,25 @@
+                        <div modal="showHistory" close="closeHistory()" opts="historyOpts">
+                            <div class="modal-header">
+                                <h4>Previous Versions</h4>
+                            </div>
+                            <div class="modal-body">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <td>Updated</td>
+                                            <td>Change Note</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="priorCde in priorCdes">
+                                            <td>{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+                                            <td>{{priorCde.changeNote}}</td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-warning cancel" ng-click="closeHistory()">Cancel</button>
+                            </div>
+                        </div>
