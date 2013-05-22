@@ -3,7 +3,9 @@ var mongoose = require('mongoose')
     , vsac_io = require('./vsac-io')
     , xml2js = require('xml2js')
 
-mongoose.connect('mongodb://localhost/test');
+var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/test';
+
+mongoose.connect(mongoUri);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
