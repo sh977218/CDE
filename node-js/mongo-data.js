@@ -1,5 +1,4 @@
 var mongoose = require('mongoose')
-    , textSearch = require('mongoose-text-search')
     , util = require('util')
     , vsac_io = require('./vsac-io')
     , xml2js = require('xml2js')
@@ -48,40 +47,38 @@ dataElementSchema.set('collection', 'dataelements');
 var dataElementArchiveSchema = mongoose.Schema(deJsonSchema);
 dataElementArchiveSchema.set('collection', 'dataelements_archive');
 
-dataElementSchema.plugin(textSearch);
-
 dataElementSchema.index({ longName: 'text', preferredDefinition: 'text' });
 
 var DataElement = mongoose.model('DataElement', dataElementSchema);
 var DataElementArchive = mongoose.model('DataElementArchive', dataElementArchiveSchema);
 
-exports.fulltext = function(from, limit, searchTerm, callback) {
-    if (searchTerm) {
-        console.log("FULL TEXT");
-        DataElement.textSearch(searchTerm, function(err, output) {
-           var resultCdes = [];
-           for (var i in output.results) {
-               resultCdes.push(output.results[i].obj);
-           }
-           callback("",{
-                 cdes: resultCdes,
-                 page: Math.ceil(from / limit),
-                 pages: Math.ceil(output.stats.nfound / limit)
-             });
-        });
-    } else {
-        console.log("FIND ALL TEXT");
-        DataElement.find().skip(from).limit(limit).sort('longName').exec(function (err, cdes) {
-        DataElement.count().exec(function (err, count) {
-        callback("",{
-               cdes: cdes,
-               page: Math.ceil(from / limit),
-               pages: Math.ceil(count / limit)
-           });
-        });
-    });
-    }
-};
+//exports.fulltext = function(from, limit, searchTerm, callback) {
+//    if (searchTerm) {
+//        console.log("FULL TEXT");
+//        DataElement.textSearch(searchTerm, function(err, output) {
+//           var resultCdes = [];
+//           for (var i in output.results) {
+//               resultCdes.push(output.results[i].obj);
+//           }
+//           callback("",{
+//                 cdes: resultCdes,
+//                 page: Math.ceil(from / limit),
+//                 pages: Math.ceil(output.stats.nfound / limit)
+//             });
+//        });
+//    } else {
+//        console.log("FIND ALL TEXT");
+//        DataElement.find().skip(from).limit(limit).sort('longName').exec(function (err, cdes) {
+//        DataElement.count().exec(function (err, count) {
+//        callback("",{
+//               cdes: cdes,
+//               page: Math.ceil(from / limit),
+//               pages: Math.ceil(count / limit)
+//           });
+//        });
+//    });
+//    }
+//};
 
 exports.cdelist = function(from, limit, searchOptions, callback) {
     DataElement.find(searchOptions).skip(from).limit(limit).sort('longName').exec(function (err, cdes) {

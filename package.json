@@ -1,9 +1,12 @@
 {
-  "name": "application-name",
+  "name": "ludetc-cdes",
   "version": "0.0.1",
-  "private": true,
   "scripts": {
     "start": "node app.js"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
   },
   "dependencies": {
     "express": "3.2.1",
@@ -15,6 +18,7 @@
     "office": "*",
     "passport": ">= 0.0.0",
     "passport-local": ">= 0.0.0",
-    "connect-flash": "~0.1.0"
+    "connect-flash": "~0.1.0",
+    "mongodb": "*"
   }
 }
