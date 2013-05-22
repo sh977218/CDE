@@ -5,8 +5,10 @@ var fs = require('fs'),
 
 var parser = new xml2js.Parser();
 
-mongoose.connect('mongodb://localhost/test');
+var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/test';
+console.log("connecting to " + mongoUri);
 
+mongoose.connect(mongoUri);
 console.log("Loading file: " + process.argv[2]);
 
 var db = mongoose.connection;
