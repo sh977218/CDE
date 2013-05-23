@@ -146,6 +146,7 @@ app.get('/dataelement/:id', function(req, res) {
 });
 
 app.post('/dataelement', function (req, res) {
+    console.log("DE Post");
     return cdesvc.save(req, res);
 }); 
 

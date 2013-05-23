@@ -79,7 +79,9 @@ exports.linktovsac = function(req, res) {
 };
 
 exports.save = function (req, res) {
+    console.log("CDE Save");
     return mongo_data.save(req, function(err, cde) {
+        console.log("res Send");
         res.send(cde);            
     });
 };  

@@ -83,7 +83,7 @@ var DataElementArchive = mongoose.model('DataElementArchive', dataElementArchive
 //};
 
 exports.cdelist = function(from, limit, searchOptions, callback) {
-    DataElement.find(searchOptions).skip(from).limit(limit).sort('longName').exec(function (err, cdes) {
+    DataElement.find(searchOptions).skip(from).limit(limit).sort('longName').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
         DataElement.count(searchOptions).exec(function (err, count) {
         callback("",{
                cdes: cdes,
@@ -158,8 +158,11 @@ exports.linktovsac = function(req, callback) {
 };
 
 exports.save = function(req, callback) {
+   console.log("mongo save");
    return DataElement.findById(req.body._id, function (err, dataElement) {
+       console.log("mongo findById");
         return cdeArchive(dataElement, function (arcCde) {
+            console.log("mongo archive");
             dataElement.history.push(arcCde._id);
             dataElement.longName = req.body.longName;
             dataElement.preferredDefinition = req.body.preferredDefinition;
@@ -170,7 +173,8 @@ exports.save = function(req, callback) {
                 if (err) {
                     console.log(err);
                 }
-                return dataElement;
+                console.log("mongo return");
+                callback("", dataElement);
             });
         });
 
