@@ -1,10 +1,11 @@
 var https = require('https')
     , querystring = require('querystring')
+    , envconfig = require('../envconfig')
     , config = require('../config')
-    
+        
 var authData = querystring.stringify( {
-     username: config.vsac.username
-    ,password: config.vsac.password
+     username: process.env.VSAC_USERNAME || envconfig.vsac.username
+    ,password: process.env.VSAC_PASSWORD || envconfig.vsac.password
 });
 
 var ticketData = querystring.stringify({

@@ -9,10 +9,6 @@ config.vsac.port = '443';
 config.vsac.ticket.path = '/vsac/ws/Ticket';
 config.vsac.valueSet.path = '/vsac/ws/RetrieveValueSet';
 
-config.vsac.username = 'ludetc';
-config.vsac.password = 'Aa!!!000';
-
-
 module.exports = config;
 
 
