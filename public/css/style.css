@@ -1,16 +1,28 @@
 label, .form-output .label {
-    margin: 0 5px 0 0;
+  margin: 0 5px 0 0;
   float: left;
   display: inline;
-  width: 140px;
+  width: 120px;
   text-align: right;
   font: 12px/normal Arial, Verdana, Helvetica, sans-serif; }
 
 .readonly-text {
   overflow: hidden;
-  word-wrap: break-word; }
+  word-wrap: break-word;
+}
 
 .inactive {
     border: none;
     background-color: #fff;
+}
+
+.inline-edit {
+    margin-right: 40px;    
+}
+
+.edit-button {
+    position:absolute;
+    right:0px;
+    width:300px;
+    background-color:#b0e0e6;
 }

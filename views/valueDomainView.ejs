@@ -1,5 +1,5 @@
 <div ng-controller="LinkVsacCtrl">
-    <button class="icon-link" ng-click="showLinkModal=true"></button><br />
+    <label class="label">Value Set Name: </label><i class="icon-link" ng-show="isAllowed(cde)" ng-click="showLinkModal=true" tooltip="Link to VSAC "></i> {{cde.valueDomain.longName}}
     <div modal="showLinkModal" close="showLinkModal" opts="modalOpts">
         <div class="modal-header">
             <h4>Save</h4>
@@ -16,3 +16,22 @@
         </div>
     </div>                    
 </div>
+<table>
+     <thead>
+         <tr>
+             <th>Name</th>
+             <th>Code</th>
+             <th>Code Name</th>
+         </tr>
+     </thead>
+     <tbody>
+         <tr ng-repeat="pv in cde.valueDomain.permissibleValues">
+             <td>{{pv.validValue}}</td>
+             <td>{{pv.valueCode}}</td>
+             <td>{{pv.codeSystemName}}</td>
+         </tr>
+         <tr ng-show="cde.valueDomain.permissibleValues.length == 10">
+             <td colspan="3">See full list of Permissible Values</td>
+         </tr>
+     </tbody>
+ </table>

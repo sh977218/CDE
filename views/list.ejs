@@ -13,8 +13,8 @@
 
 <accordion>
     <accordion-group ng-repeat="cde in cdes" heading="{{cde.owningContext}} -- {{cde.longName}}">
-         <div class="row">
-            <div class="span6">
+         <div class="row-fluid">
+            <div class="span5">
                 <h4>General Details</h4>
                 <label class="label">Name: </label> <inline-edit model="cde.longName" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit>
                 <label class="label">Origin: </label><div class="readonly-text">{{cde.origin}}</div>
@@ -22,11 +22,9 @@
                 <label class="label">Owner: </label><div class="readonly-text">{{cde.owningContext}}</div>
                 <label class="label">Definition: </label><inline-area-edit model="cde.preferredDefinition" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-area-edit>
                 <label class="label">Added to NLM: </label>
-                <div class="readonly-text">
-                    <div ng-controller="AuditCtrl" >{{cde.created | date: 'MM/dd/yyyy @ h:mma'}}
-                        <button ng-show="cde.history.length > 0" class="icon-eye-open" ng-click="openHistory()"></button>
-                        <%- include historyModal.ejs %>
-                    </div>
+                <div ng-controller="AuditCtrl" >
+                    <i ng-show="cde.history.length > 0" class="icon-eye-open" ng-click="openHistory()" tooltip="View History"></i> {{cde.created | date: 'MM/dd/yyyy @ h:mma'}}
+                    <%- include historyModal.ejs %>
                 </div>
                 <label class="label">Updated in NLM: </label><div class="readonly-text">{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</div>                
             </div>
@@ -54,28 +52,10 @@
                      </tbody>
                  </table>
              </div>
-            <div class="span3">
+            <div class="span4">
                 <h4>Permissible Values</h4>
-                <label class="label">Value Set Name: </label>{{cde.valueDomain.longName}}
-                <div ng-show="isAllowed(cde)">
-                    <%- include linkToVsacModal.ejs %>
-                </div>
-                <table>
-                     <thead>
-                         <tr>
-                             <th>Name</th>
-                             <th>Code</th>
-                             <th>Code Name</th>
-                         </tr>
-                     </thead>
-                     <tbody>
-                         <tr ng-repeat="pv in cde.valueDomain.permissibleValues">
-                             <td>{{pv.validValue}}</td>
-                             <td>{{pv.valueCode}}</td>
-                             <td>{{pv.codeSystemName}}</td>
-                         </tr>
-                     </tbody>
-                 </table>
+                <%- include valueDomainView.ejs %>
+
             </div>
           </div>
         <div class="row">

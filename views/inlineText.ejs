@@ -1,6 +1,7 @@
 <div >
     <div ng-hide="editMode">
-        {{model}}<button ng-show="isAllowed()" class="icon-pencil" ng-click="value=model; editMode=true"/>
+        <i ng-show="isAllowed()" class="icon-pencil" ng-click="value=model; editMode=true" tooltip="Edit"></i> {{model}}
+        <!--{{model}}<button ng-show="isAllowed()" class="icon-pencil pull-right" ng-click="value=model; editMode=true"/>-->
     </div>
     <div ng-show="editMode">
         <input type="text" ng-model="value" />
