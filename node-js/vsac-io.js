@@ -1,8 +1,17 @@
 var https = require('https')
     , querystring = require('querystring')
-    , envconfig = require('../envconfig')
     , config = require('../config')
-        
+    , fs = require('fs')
+    
+var envconfig = {};
+
+if (fs.existsSync('./envconfig.js')) {
+    console.log("Env Config file found");
+    envconfig = require('../envconfig');
+} else {
+    console.log("No envconfig file exists. Expecting ENV Variables. ");
+}
+
 var authData = querystring.stringify( {
      username: process.env.VSAC_USERNAME || envconfig.vsac.username
     ,password: process.env.VSAC_PASSWORD || envconfig.vsac.password
