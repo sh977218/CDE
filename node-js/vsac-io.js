@@ -6,10 +6,12 @@ var https = require('https')
 var envconfig = {};
 
 if (fs.existsSync('./envconfig.js')) {
-    console.log("Env Config file found");
     envconfig = require('../envconfig');
 } else {
-    console.log("No envconfig file exists. Expecting ENV Variables. ");
+    if (!process.env.VSAC_USERNAME || !process.env.VSAC_PASSWORD) {
+        console.log("No envconfig file exists. Expecting ENV Variables: VSAC_USERNAME and VSAC_PASSWORD ");
+        exit(1);
+    }
 }
 
 var authData = querystring.stringify( {
