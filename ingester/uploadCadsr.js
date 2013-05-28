@@ -1,7 +1,9 @@
-var fs = require('fs'),
-    util = require('util'),
-    xml2js = require('xml2js'), 
-    mongoose = require('mongoose');
+var fs = require('fs')
+    , util = require('util')
+    , xml2js = require('xml2js') 
+    , mongoose = require('mongoose')
+    , uuid = require('node-uuid')
+;
 
 var parser = new xml2js.Parser();
 
@@ -17,38 +19,9 @@ db.once('open', function callback () {
 	console.log('mongodb connection open');
     });
 
-var permissibleValueSchema = mongoose.Schema({
-    validValue: String    
-}, {_id: false});
+var schemas = require('../node-js/schemas');
 
-var conceptSchema = mongoose.Schema({
-    name: String,
-    origin: String,
-    originId: String
-}, {_id: false});
-
-var dataElementSchema = mongoose.Schema({
-    	preferredName: String,
-        longName: String,
-        preferredDefinition: String,
-        origin: String,
-        originId: String,
-        owningContext: String,
-        created: { type: Date, default: Date.now },
-        updated: { type: Date, default: Date.now },
-        objectClass: {concepts: [conceptSchema]},
-        property:{concepts: [conceptSchema]},
-        valueDomain: {
-            preferredName: String,
-            longName: String,
-            preferredDefinition: String,
-            permissibleValues: [permissibleValueSchema]
-        }
-    });
- 
-dataElementSchema.set('collection', 'dataelements');
-
-var DataElement = mongoose.model('DataElement', dataElementSchema);
+var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 
 fs.readFile(process.argv[2], function(err, data) {
     parser.parseString(data, function (err, result) {
@@ -58,9 +31,11 @@ fs.readFile(process.argv[2], function(err, data) {
         var cadsrDE = result.DataElementsList.DataElement[i];
         
         var newDE = new DataElement({
-            preferredName: cadsrDE.PREFERREDNAME
+            uuid: uuid.v4()
+            , preferredName: cadsrDE.PREFERREDNAME
             , longName: cadsrDE.LONGNAME
             , preferredDefinition: cadsrDE.PREFERREDDEFINITION
+            , created: Date.now()
             , origin: 'CADSR'
             , originId: cadsrDE.PUBLICID + "v" + cadsrDE.VERSION
             , owningContext: cadsrDE.CONTEXTNAME
@@ -97,7 +72,7 @@ fs.readFile(process.argv[2], function(err, data) {
     }
     console.log('Done');
     
-    // wait 5 secs for mongoose to do it's thing before closing
+    // wait 5 secs for mongoose to do it's thing before closing.  
     setTimeout((function() {
      process.exit();
     }), 5000);

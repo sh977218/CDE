@@ -2,6 +2,11 @@ var mongoose = require('mongoose');
 
 var ObjectId = require('mongodb').ObjectId;
 
+var conceptSchema = mongoose.Schema({
+    name: String,
+    origin: String,
+    originId: String
+}, {_id: false});
 
 var permissibleValueSchema = mongoose.Schema({
     validValue: String
@@ -19,6 +24,8 @@ var deJsonSchema = {
     , owningContext: String
     , created: Date
     , updated: Date
+    , objectClass: {concepts: [conceptSchema]}
+    , property:{concepts: [conceptSchema]}
     , valueDomain: {
         preferredName: String
         , longName: String

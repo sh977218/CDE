@@ -1,5 +1,7 @@
 var util = require('util')
-    , mongoose = require('mongoose');
+    , mongoose = require('mongoose')
+    , uuid = require('node-uuid')
+;
 
 mongoose.connect('mongodb://localhost/test');
 
@@ -9,39 +11,9 @@ db.once('open', function callback () {
 	console.log('mongodb connection open');
     });
 
-var permissibleValueSchema = mongoose.Schema({
-    validValue: String    
-}, {_id: false});
+var schemas = require('../node-js/schemas');
 
-var conceptSchema = mongoose.Schema({
-    name: String,
-    origin: String,
-    originId: String
-}, {_id: false});
-
-var dataElementSchema = mongoose.Schema({
-        uuid: String
-    	, preferredName: String
-        , longName: String
-        , preferredDefinition: String
-        , origin: String
-        , originId: String
-        , owningContext: String
-        , created: { type: Date, default: Date.now }
-        , updated: { type: Date, default: Date.now }
-        , objectClass: {concepts: [conceptSchema]}
-        , property:{concepts: [conceptSchema]}
-        , valueDomain: {
-            preferredName: String
-            , longName: String
-            , preferredDefinition: String
-            , permissibleValues: [permissibleValueSchema]
-        }
-    });
- 
-dataElementSchema.set('collection', 'dataelements');
-
-var DataElement = mongoose.model('DataElement', dataElementSchema);
+var DataElement = mongoose.model('DataElement', schemasdataElementSchema);
 
 var xml2js = require('xml2js')
     , fs = require('fs')
@@ -59,9 +31,11 @@ if (process.argv[2] == 'fitbir') {
           var srcDE = result.abstractDataElementsExport.elementList[0].element[i];
 
           var newDE = new DataElement({
-              preferredName: srcDE.name
+              uuid: uuid.v4()
+              , preferredName: srcDE.name
               , longName: srcDE.title
               , preferredDefinition: srcDE.description
+              , created: Date.now()
               , owningContext: 'FITBIR'
               , origin: 'FITBIR'
               , originId: srcDE.id

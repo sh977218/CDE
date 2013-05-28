@@ -20,5 +20,6 @@
     "passport-local": ">= 0.0.0",
     "connect-flash": "~0.1.0",
     "mongodb": "*"
+    , "node-uuid": "*"
   }
 }

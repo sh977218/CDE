@@ -5,6 +5,9 @@ node_modules
 ## Secret Config Files
 envconfig.js
 
+## Local Files
+seed
+
 # OS generated files #
 ######################
 .DS_Store
@@ -15,3 +18,4 @@ envconfig.js
 Icon?
 ehthumbs.db
 Thumbs.db
+*~
