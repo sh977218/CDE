@@ -21,6 +21,7 @@ var users = [
   , { id: 3, username: 'cabig', password: 'cabig', email: 'joe@example.com', contextAdmin: ['caBIG']}
   , { id: 4, username: 'fitbir', password: 'fitbir', email: 'joe@example.com', contextAdmin: ['FITBIR']}
   , { id: 5, username: 'ludet', password: 'ludet', email: 'joe@example.com', contextAdmin: ['caBIG', 'CTEP', 'FITBIR']}
+  , { id: 6, username: 'form', password: 'form', email: 'joe@example.com', formAdmin: ['MyContext']}
 ];
 
 function findById(id, fn) {
@@ -159,14 +160,9 @@ app.get('/autocomplete/:inValue', function(req, res) {
 });
 
 //// Get VSAC TGT.
-var vsac = require('./node-js/vsac-io');
-vsac.getTGT(function(tgt) {
-//    console.log("TGT: " + tgt);
-//    vsac.getValueSet('2.16.840.1.113883.3.464.1003.106.11.1001', function(result) {
-//        console.log("Got a Value Set: ");
-//        console.log(result);
-//    });
-});
+//var vsac = require('./node-js/vsac-io');
+//vsac.getTGT(function(tgt) {
+//});
 
 
 

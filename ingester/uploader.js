@@ -20,21 +20,22 @@ var conceptSchema = mongoose.Schema({
 }, {_id: false});
 
 var dataElementSchema = mongoose.Schema({
-    	preferredName: String,
-        longName: String,
-        preferredDefinition: String,
-        origin: String,
-        originId: String,
-        owningContext: String,
-        created: { type: Date, default: Date.now },
-        updated: { type: Date, default: Date.now },
-        objectClass: {concepts: [conceptSchema]},
-        property:{concepts: [conceptSchema]},
-        valueDomain: {
-            preferredName: String,
-            longName: String,
-            preferredDefinition: String,
-            permissibleValues: [permissibleValueSchema]
+        uuid: String
+    	, preferredName: String
+        , longName: String
+        , preferredDefinition: String
+        , origin: String
+        , originId: String
+        , owningContext: String
+        , created: { type: Date, default: Date.now }
+        , updated: { type: Date, default: Date.now }
+        , objectClass: {concepts: [conceptSchema]}
+        , property:{concepts: [conceptSchema]}
+        , valueDomain: {
+            preferredName: String
+            , longName: String
+            , preferredDefinition: String
+            , permissibleValues: [permissibleValueSchema]
         }
     });
  

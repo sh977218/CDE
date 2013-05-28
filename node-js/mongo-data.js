@@ -14,45 +14,12 @@ db.once('open', function callback () {
 
 var xmlParser = new xml2js.Parser();
 
-var ObjectId = require('mongodb').ObjectId;
+var schemas = require('./schemas');
 
-var permissibleValueSchema = mongoose.Schema({
-    validValue: String
-    , valueCode: String
-    , codeSystemName: String
-}, {_id: false});
+schemas.dataElementSchema.index({ longName: 'text', preferredDefinition: 'text' });
 
-
-var deJsonSchema = {
-    	preferredName: String
-        , longName: String
-        , preferredDefinition: String
-        , origin: String
-        , originId: String
-        , owningContext: String
-        , created: Date
-        , updated: Date
-        , valueDomain: {
-            preferredName: String
-            , longName: String
-            , preferredDefinition: String
-            , vsacOid: String
-            , permissibleValues: [permissibleValueSchema]
-        }
-        , history: [ObjectId]
-        , changeNote: String
-    };
-
-var dataElementSchema = mongoose.Schema(deJsonSchema); 
-dataElementSchema.set('collection', 'dataelements');
-
-var dataElementArchiveSchema = mongoose.Schema(deJsonSchema);
-dataElementArchiveSchema.set('collection', 'dataelements_archive');
-
-dataElementSchema.index({ longName: 'text', preferredDefinition: 'text' });
-
-var DataElement = mongoose.model('DataElement', dataElementSchema);
-var DataElementArchive = mongoose.model('DataElementArchive', dataElementArchiveSchema);
+var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
+var DataElementArchive = mongoose.model('DataElementArchive', schemas.dataElementArchiveSchema);
 
 //exports.fulltext = function(from, limit, searchTerm, callback) {
 //    if (searchTerm) {
