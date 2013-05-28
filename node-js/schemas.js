@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
-
 var ObjectId = require('mongodb').ObjectId;
+
+var schemas = {};
 
 var conceptSchema = mongoose.Schema({
     name: String,
@@ -37,6 +38,11 @@ var deJsonSchema = {
     , changeNote: String
 };
 
+var questionSchema = mongoose.Schema ({
+    value: String
+    , instructions: String
+    , cde_uuid: String
+});
 
 var formSchema = {
     name: String
@@ -45,9 +51,17 @@ var formSchema = {
     , owningContext: String
     , updated: Date
     , created: Date
+    , questions: [questionSchema]
 };
 
-var schemas = {};
+schemas.userSchema = mongoose.Schema ({
+    username: String
+    , password: String
+    , contextAdmin: [String]
+    , formAdmin: [String]
+    , formCart: [String]
+});
+
 
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 
 schemas.dataElementSchema.set('collection', 'dataelements');
@@ -57,5 +71,7 @@ schemas.dataElementArchiveSchema.set('collection', 'dataelements_archive');
 
 schemas.formSchema = mongoose.Schema(formSchema);
 schemas.formSchema.set('collection', 'forms');
+
+schemas.userSchema.set('collection', 'users');
 
 module.exports = schemas;

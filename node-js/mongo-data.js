@@ -20,34 +20,19 @@ schemas.dataElementSchema.index({ longName: 'text', preferredDefinition: 'text' 
 
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var DataElementArchive = mongoose.model('DataElementArchive', schemas.dataElementArchiveSchema);
+var User = mongoose.model('User', schemas.userSchema);
 
-//exports.fulltext = function(from, limit, searchTerm, callback) {
-//    if (searchTerm) {
-//        console.log("FULL TEXT");
-//        DataElement.textSearch(searchTerm, function(err, output) {
-//           var resultCdes = [];
-//           for (var i in output.results) {
-//               resultCdes.push(output.results[i].obj);
-//           }
-//           callback("",{
-//                 cdes: resultCdes,
-//                 page: Math.ceil(from / limit),
-//                 pages: Math.ceil(output.stats.nfound / limit)
-//             });
-//        });
-//    } else {
-//        console.log("FIND ALL TEXT");
-//        DataElement.find().skip(from).limit(limit).sort('longName').exec(function (err, cdes) {
-//        DataElement.count().exec(function (err, count) {
-//        callback("",{
-//               cdes: cdes,
-//               page: Math.ceil(from / limit),
-//               pages: Math.ceil(count / limit)
-//           });
-//        });
-//    });
-//    }
-//};
+exports.userByName = function(name, callback) {
+    User.findOne({'username': name}).lean().exec(function (err, u) {
+       callback("", u); 
+    });
+};
+
+exports.userById = function(id, callback) {
+    User.findOne({'_id': id}).lean().exec(function (err, u) {
+       callback("", u); 
+    });
+};
 
 exports.cdelist = function(from, limit, searchOptions, callback) {
     DataElement.find(searchOptions).skip(from).limit(limit).sort('longName').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
@@ -152,6 +137,7 @@ exports.save = function(req, callback) {
 cdeArchive = function(cde, callback) {
     var deArchive = new DataElementArchive();
     deArchive.longName = cde.longName;
+    deArchive.uuid = cde.uuid;
     deArchive.preferredName = cde.preferredName;
     deArchive.origin = cde.origin;
     deArchive.originId = cde.originId;

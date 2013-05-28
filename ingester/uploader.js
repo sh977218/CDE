@@ -1,6 +1,8 @@
 var util = require('util')
     , mongoose = require('mongoose')
     , uuid = require('node-uuid')
+    , xml2js = require('xml2js')
+    , fs = require('fs')
 ;
 
 mongoose.connect('mongodb://localhost/test');
@@ -13,11 +15,8 @@ db.once('open', function callback () {
 
 var schemas = require('../node-js/schemas');
 
-var DataElement = mongoose.model('DataElement', schemasdataElementSchema);
+var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 
-var xml2js = require('xml2js')
-    , fs = require('fs')
-    
 if (process.argv[2] == 'fitbir') {
     console.log("Loading file: " + process.argv[3]);
     console.log("Uploader: fitbir");
@@ -58,12 +57,11 @@ if (process.argv[2] == 'fitbir') {
       }
       console.log('Done');
       });
-   })
+   });
 
 } else {
     console.log("no suitable processer for " +  process.argv[2]);
 }
-
     
 // wait 5 secs for mongoose to do it's thing before closing
 setTimeout((function() {

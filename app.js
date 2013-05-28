@@ -1,8 +1,3 @@
-
-/**
- * Module dependencies.
- */
-
 var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
@@ -11,47 +6,65 @@ var express = require('express')
   , cdesvc = require('./node-js/cdesvc')
   , flash = require('connect-flash')
   , passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy;
+  , LocalStrategy = require('passport-local').Strategy
+  , mongo_data = require('./node-js/mongo-data')
+  , util = require('util')
+  ;
 
 
 ///// AUTH
-var users = [
-    { id: 1, username: 'bob', password: 'secret', email: 'bob@example.com'}
-  , { id: 2, username: 'joe', password: 'birthday', email: 'joe@example.com'}
-  , { id: 3, username: 'cabig', password: 'cabig', email: 'joe@example.com', contextAdmin: ['caBIG']}
-  , { id: 4, username: 'fitbir', password: 'fitbir', email: 'joe@example.com', contextAdmin: ['FITBIR']}
-  , { id: 5, username: 'ludet', password: 'ludet', email: 'joe@example.com', contextAdmin: ['caBIG', 'CTEP', 'FITBIR']}
-  , { id: 6, username: 'form', password: 'form', email: 'joe@example.com', formAdmin: ['MyContext']}
-];
+//var users = [
+//    { id: 1, username: 'bob', password: 'secret', email: 'bob@example.com'}
+//  , { id: 2, username: 'joe', password: 'birthday', email: 'joe@example.com'}
+//  , { id: 3, username: 'cabig', password: 'cabig', email: 'joe@example.com', contextAdmin: ['caBIG']}
+//  , { id: 4, username: 'fitbir', password: 'fitbir', email: 'joe@example.com', contextAdmin: ['FITBIR']}
+//  , { id: 5, username: 'ludet', password: 'ludet', email: 'joe@example.com', contextAdmin: ['caBIG', 'CTEP', 'FITBIR']}
+//  , { id: 6, username: 'form', password: 'form', email: 'joe@example.com', formAdmin: ['MyContext']}
+//];
+
+//function findById(id, fn) {
+//  var idx = id - 1;
+//  if (users[idx]) {
+//    fn(null, users[idx]);
+//  } else {
+//    fn(new Error('User ' + id + ' does not exist'));
+//  }
+//}
+
+//function findByUsername(username, fn) {
+//  for (var i = 0, len = users.length; i < len; i++) {
+//    var user = users[i];
+//    if (user.username === username) {
+//      return fn(null, user);
+//    }
+//  }
+//  return fn(null, null);
+//}
 
 function findById(id, fn) {
-  var idx = id - 1;
-  if (users[idx]) {
-    fn(null, users[idx]);
-  } else {
-    fn(new Error('User ' + id + ' does not exist'));
-  }
+    return mongo_data.userById(id, function(err, user) {
+        return fn(null, user);
+    });
 }
 
 function findByUsername(username, fn) {
-  for (var i = 0, len = users.length; i < len; i++) {
-    var user = users[i];
-    if (user.username === username) {
-      return fn(null, user);
-    }
-  }
-  return fn(null, null);
-}
+    return mongo_data.userByName(username, function(err, user) {
+        return fn(null, user);
+    });
+};
 
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+    console.log(util.inspect(user));
+    done(null, user._id);
 });
 
 passport.deserializeUser(function(id, done) {
   findById(id, function (err, user) {
+    console.log("user: " + user.username + " " + user.contextAdmin);  
     done(err, user);
   });
 });
+
 passport.use(new LocalStrategy(
   function(username, password, done) {
     // asynchronous verification, for effect...
