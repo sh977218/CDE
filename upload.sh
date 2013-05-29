@@ -1,6 +1,6 @@
 #!/bin/sh
 
 
-find seed/ExternalCDEs/caDSR/*.xml -exec node ingester/uploadCadsr {} \;
+find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec node ingester/uploadCadsr {} \;
 
-node ingester/uploader fitbir seed/ExternalCDEs/FITBIR-Full.xml
+node ingester/uploader fitbir ../nlm-seed/ExternalCDEs/FITBIR-Full.xml
