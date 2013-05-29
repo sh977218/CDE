@@ -33,6 +33,32 @@ exports.userById = function(id, callback) {
     });
 };
 
+exports.addToCart = function (user, formId, callback) {
+    User.findOne({'_id': user._id}).exec(function (err, u) {
+       u.formCart.push(formId);
+       u.save(function (err) {
+          callback(""); 
+       });
+    });
+};
+
+exports.removeFromCart = function (user, formId, callback) {
+    User.findOne({'_id': user._id}).exec(function (err, u) {
+        if (u.formCart.indexOf(formId) > -1) {
+            u.formCart.splice(u.formCart.indexOf(formId), 1);
+            u.save(function (err) {
+                if (err) {
+                    console.log("Could not remove from cart");
+                }
+               callback(""); 
+            });
+        } else {
+            console.log("This form is not in the cart. " + formId);
+        }
+    });
+};
+
+
 exports.cdelist = function(from, limit, searchOptions, callback) {
     DataElement.find(searchOptions).skip(from).limit(limit).sort('longName').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
         DataElement.count(searchOptions).exec(function (err, count) {

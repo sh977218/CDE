@@ -46,4 +46,24 @@ angular.module('resources', ['ngResource']).
         var FormList = $resource('/formlist');
         return FormList;
     })
+    .factory("AddToCart", function($resource) {
+        var AddToCart = $resource(
+                "/addtocart/:formId", 
+                {formId: '@formId'}, 
+                {add: {method: 'POST'}}
+            );
+        return AddToCart;
+    })
+    .factory("RemoveFromCart", function($resource) {
+        var RemoveFromCart = $resource(
+                "/removefromcart/:formId", 
+                {formId: '@formId'}, 
+                {add: {method: 'POST'}}
+            );
+        return RemoveFromCart;
+    })
+    .factory('Myself', function($resource) {
+        var Myself = $resource('/user/me');
+        return Myself;
+    })
     ;

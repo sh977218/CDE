@@ -1,14 +1,18 @@
-<a class="btn btn-success" href="#/createform"><i class="icon-plus-sign icon-large">Add</i></a>
+<a class="btn btn-success" href="#/createform"><i class="icon-plus-sign icon-large"> Create Form</i></a>
 <accordion>
     <accordion-group ng-repeat="form in forms" heading="{{form.owningContext}} -- {{form.name}}">
         <div class="row-fluid">
-            <div class="span12">
+            <div class="span10">
                 <h4>General Details</h4>
                 <label class="label">Name: </label><div class="readonly-text">{{form.name}}</div>
                 <label class="label">Owner: </label><div class="readonly-text">{{form.owningContext}}</div>
-                <label class="label">Instructions: </label><div class="readonly-text">{{form.created | date: 'MM/dd/yyyy @ h:mma'}}</div>                
-                <label class="label">Created: </label><div class="readonly-text">{{form.instructions}}</div>                
-            </div>            
+                <label class="label">Instructions: </label><div class="readonly-text">{{form.instructions}}</div>                
+                <label class="label">Created: </label><div class="readonly-text">{{form.created | date: 'MM/dd/yyyy @ h:mma'}}</div>                
+            </div>   
+            <div class="span2">
+                <a class="btn btn-inverse" ng-show="user.formCart.indexOf(form._id) > -1" ng-click="removeFromCart(form)"><i class="icon-shopping-cart"> Remove from Cart</i></a>
+                <a class="btn" ng-show="user.formCart.indexOf(form._id) < 0" ng-click="addToCart(form)"><i class="icon-shopping-cart"> Add to Cart</i></a>
+            </div>
         </div>
     </accordion-group>
 </accordion>

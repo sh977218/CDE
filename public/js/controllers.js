@@ -164,11 +164,34 @@ function CreateCtrl($scope, $location, DataElement) {
     };
 }
 
-function ListFormsCtrl($scope, FormList) {
+function ListFormsCtrl($scope, $location, FormList, AddToCart, RemoveFromCart, Myself) {
+    $scope.cartForms = [];
+    $scope.initCart = function(forms) {
+        for (var i in forms) {
+            $scope.cartForms.push(forms[i]);
+        }
+    };
+    
+    var u = Myself.get(function(u) {
+        $scope.user = u; 
+    });
+    
     $scope.forms = [];
     var result = FormList.get({}, function() {
         $scope.forms = result.forms;
     });
+    
+    $scope.addToCart = function(form) {
+       AddToCart.add({formId: form._id}, function(form) {
+           $location.path('/#/listforms');
+       });
+    };
+
+    $scope.removeFromCart = function(form) {
+       RemoveFromCart.add({formId: form._id}, function(form) {
+           $location.path('/#/listforms');
+       });
+    };
 }
 
 function FormViewCtrl($scope) {
@@ -179,19 +202,12 @@ function CreateFormCtrl($scope, $location, Form) {
     $scope.userGroups = [];
     $scope.initGroups = function(groups) {
         for (var i in groups) {
-            console.log("adding: " + groups[i]);
             $scope.userGroups.push(groups[i]);
         }
     };
     
-    $scope.cancel = function() {
-        $location.path('#/listforms');
-//        $location.path('#/formview');
-    };
-    
     $scope.save = function() {
         Form.save($scope.form, function(form) {
-            console.log("Save done: " + form);
             $location.path('#/listforms');        
 //          $location.path('#/formview');
         });

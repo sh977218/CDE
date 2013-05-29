@@ -76,8 +76,10 @@ if ('development' == app.get('env')) {
 };
 
 function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect('/login')
+  if (req.isAuthenticated()) { 
+      return next(); 
+  }
+  res.redirect('/login');
 };
 
 app.get('/', function(req, res){
@@ -92,6 +94,21 @@ app.get('/myforms', function(req, res) {
     res.render('myforms', { user: req.user });
 });
 
+app.post('/addtocart/:formId', function(req, res) {
+    var user = req.user;
+    mongo_data.addToCart(user, req.body.formId, function(err) {
+        res.send();    
+    });
+});
+
+app.post('/removefromcart/:formId', function(req, res) {
+    var user = req.user;
+    mongo_data.removeFromCart(user, req.body.formId, function(err) {
+        res.send();    
+    });
+});
+
+
 app.get('/listforms', function(req, res) {
     res.render('listforms', { user: req.user });
 });
@@ -99,8 +116,8 @@ app.get('/listforms', function(req, res) {
 app.get('/formlist', function(req, res) {
     mongo_data.formlist(req, function(err, forms) {
         res.send(forms);
-    })
-})
+    });
+});
 
 app.post('/form', function(req, res) {
     return mongo_data.saveForm(req, function(err, form) {
@@ -158,6 +175,17 @@ app.get('/dataelement/:id', function(req, res) {
 app.post('/dataelement', function (req, res) {
     return cdesvc.save(req, res);
 }); 
+
+app.get('/user/me', function(req, res) {
+    if (!req.user) {
+        res.send("You must be logged in to do that");
+    } else {
+        mongo_data.userById(req.user._id, function(err, user) {
+            res.send(user);
+        });
+    }
+});
+
 
 app.post('/linktovsac', function (req, res) {
     return cdesvc.linktovsac(req, res);
