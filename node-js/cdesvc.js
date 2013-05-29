@@ -1,6 +1,7 @@
 var express = require('express')
   , http = require('http')
   , mongo_data = require('./mongo-data')
+;
 
 exports.listcde = function(req, res) {
     var from = req.query["from"],
@@ -33,7 +34,7 @@ exports.listcde = function(req, res) {
            res.send(cdelist);
        }
     });
-}
+};
 
 exports.listcontexts = function(req, res) {
     mongo_data.listcontexts(function(err, contexts) {
@@ -42,8 +43,8 @@ exports.listcontexts = function(req, res) {
        } else {
            res.send(contexts);
        }   
-    }) 
-}
+    });
+};
 
 exports.priorCdes = function(req, res) {
     var cdeId = req.params.id;
@@ -79,9 +80,7 @@ exports.linktovsac = function(req, res) {
 };
 
 exports.save = function (req, res) {
-    console.log("CDE Save");
     return mongo_data.save(req, function(err, cde) {
-        console.log("res Send");
         res.send(cde);            
     });
 };  

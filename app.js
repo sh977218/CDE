@@ -11,36 +11,6 @@ var express = require('express')
   , util = require('util')
   ;
 
-
-///// AUTH
-//var users = [
-//    { id: 1, username: 'bob', password: 'secret', email: 'bob@example.com'}
-//  , { id: 2, username: 'joe', password: 'birthday', email: 'joe@example.com'}
-//  , { id: 3, username: 'cabig', password: 'cabig', email: 'joe@example.com', contextAdmin: ['caBIG']}
-//  , { id: 4, username: 'fitbir', password: 'fitbir', email: 'joe@example.com', contextAdmin: ['FITBIR']}
-//  , { id: 5, username: 'ludet', password: 'ludet', email: 'joe@example.com', contextAdmin: ['caBIG', 'CTEP', 'FITBIR']}
-//  , { id: 6, username: 'form', password: 'form', email: 'joe@example.com', formAdmin: ['MyContext']}
-//];
-
-//function findById(id, fn) {
-//  var idx = id - 1;
-//  if (users[idx]) {
-//    fn(null, users[idx]);
-//  } else {
-//    fn(new Error('User ' + id + ' does not exist'));
-//  }
-//}
-
-//function findByUsername(username, fn) {
-//  for (var i = 0, len = users.length; i < len; i++) {
-//    var user = users[i];
-//    if (user.username === username) {
-//      return fn(null, user);
-//    }
-//  }
-//  return fn(null, null);
-//}
-
 function findById(id, fn) {
     return mongo_data.userById(id, function(err, user) {
         return fn(null, user);
@@ -54,7 +24,6 @@ function findByUsername(username, fn) {
 };
 
 passport.serializeUser(function(user, done) {
-    console.log(util.inspect(user));
     done(null, user._id);
 });
 
@@ -119,6 +88,33 @@ app.get('/list', function(req, res){
   res.render('list', { user: req.user });
 });
 
+app.get('/myforms', function(req, res) {
+    res.render('myforms', { user: req.user });
+});
+
+app.get('/listforms', function(req, res) {
+    res.render('listforms', { user: req.user });
+});
+
+app.get('/formlist', function(req, res) {
+    mongo_data.formlist(req, function(err, forms) {
+        res.send(forms);
+    })
+})
+
+app.post('/form', function(req, res) {
+    return mongo_data.saveForm(req, function(err, form) {
+       res.send(form); 
+    });
+});
+
+app.get('/createform', function(req, res) {
+    res.render('createform', { user: req.user });
+});
+
+app.get('/formview', function(req, res) {
+    res.render('formview', { user: req.user });
+});
 
 app.get('/inlineTextArea', function(req, res){
   res.render('inlineTextArea', { user: req.user });
@@ -160,7 +156,6 @@ app.get('/dataelement/:id', function(req, res) {
 });
 
 app.post('/dataelement', function (req, res) {
-    console.log("DE Post");
     return cdesvc.save(req, res);
 }); 
 
@@ -171,6 +166,7 @@ app.post('/linktovsac', function (req, res) {
 app.get('/autocomplete/:inValue', function(req, res) {
     return cdesvc.autocomplete(req, res);
 });
+
 
 //// Get VSAC TGT.
 //var vsac = require('./node-js/vsac-io');

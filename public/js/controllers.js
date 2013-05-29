@@ -164,3 +164,36 @@ function CreateCtrl($scope, $location, DataElement) {
     };
 }
 
+function ListFormsCtrl($scope, FormList) {
+    $scope.forms = [];
+    var result = FormList.get({}, function() {
+        $scope.forms = result.forms;
+    });
+}
+
+function FormViewCtrl($scope) {
+    
+}
+
+function CreateFormCtrl($scope, $location, Form) {
+    $scope.userGroups = [];
+    $scope.initGroups = function(groups) {
+        for (var i in groups) {
+            console.log("adding: " + groups[i]);
+            $scope.userGroups.push(groups[i]);
+        }
+    };
+    
+    $scope.cancel = function() {
+        $location.path('#/listforms');
+//        $location.path('#/formview');
+    };
+    
+    $scope.save = function() {
+        Form.save($scope.form, function(form) {
+            console.log("Save done: " + form);
+            $location.path('#/listforms');        
+//          $location.path('#/formview');
+        });
+    };
+ }

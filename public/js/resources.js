@@ -38,4 +38,12 @@ angular.module('resources', ['ngResource']).
             );
         return LinkToVsac;
     })
-    ; 
+    .factory('Form', function($resource) {
+        var Form = $resource('/form');
+        return Form;
+    })
+    .factory('FormList', function($resource) {
+        var FormList = $resource('/formlist');
+        return FormList;
+    })
+    ;

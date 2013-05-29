@@ -15,3 +15,13 @@ exports.inlineText = function(req, res){
 exports.list = function(req, res){
     res.render('list');
 };
+exports.myforms = function(req, res){
+    res.render('myforms');
+};
+exports.listforms = function(req, res){
+    res.render('listforms');
+};
+exports.createform = function(req, res){
+    res.render('createform');
+};
+

@@ -16,11 +16,10 @@ var xmlParser = new xml2js.Parser();
 
 var schemas = require('./schemas');
 
-schemas.dataElementSchema.index({ longName: 'text', preferredDefinition: 'text' });
-
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var DataElementArchive = mongoose.model('DataElementArchive', schemas.dataElementArchiveSchema);
 var User = mongoose.model('User', schemas.userSchema);
+var Form = mongoose.model('Form', schemas.formSchema);
 
 exports.userByName = function(name, callback) {
     User.findOne({'username': name}).lean().exec(function (err, u) {
@@ -45,6 +44,12 @@ exports.cdelist = function(from, limit, searchOptions, callback) {
         });
     });
 };  
+
+exports.formlist = function(req, callback) {
+    Form.find().exec(function(err, forms) {
+       callback("", {forms: forms}); 
+    });
+};
 
 exports.listcontexts = function(callback) {
     DataElement.find().distinct('owningContext', function(error, contexts) {
@@ -109,23 +114,29 @@ exports.linktovsac = function(req, callback) {
     });
 };
 
+exports.saveForm = function(req, callback) {
+    var form = new Form();
+    form.name = req.body.name;
+    form.instructions = req.body.instructions;
+    form.owningContext = req.body.owningContext;
+    form.created = Date.now();
+    return form.save(function(err) {
+        callback("", form);
+    });
+};
+
 exports.save = function(req, callback) {
-   console.log("mongo save");
    return DataElement.findById(req.body._id, function (err, dataElement) {
-       console.log("mongo findById");
         return cdeArchive(dataElement, function (arcCde) {
-            console.log("mongo archive");
             dataElement.history.push(arcCde._id);
             dataElement.longName = req.body.longName;
             dataElement.preferredDefinition = req.body.preferredDefinition;
             dataElement.changeNote = req.body.changeNote;
-            console.log("Save ChangeNote: " + dataElement.changeNote);
             dataElement.updated = new Date().toJSON();
             return dataElement.save(function (err) {
                 if (err) {
                     console.log(err);
                 }
-                console.log("mongo return");
                 callback("", dataElement);
             });
         });
