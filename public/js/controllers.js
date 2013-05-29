@@ -15,21 +15,18 @@ function AuthCtrl($scope, Auth) {
     };
 }
 
-function ListCtrl($scope, $http, CdeList, PriorCdes, DataElement) {
+function ListCtrl($scope, $http, CdeList, PriorCdes, DataElement, Myself) {
     $scope.currentPage = 1;
     $scope.pageSize = 10;
     
     $scope.originOptions = ['CADSR', 'FITBIR'];
-   
-    $scope.userGroups = [];
-    $scope.initGroups = function(groups) {
-        for (var i in groups) {
-            $scope.userGroups.push(groups[i]);
-        }
-    };
+
+    var u = Myself.get(function(u) {
+        $scope.user = u; 
+    });
     
     $scope.isAllowed = function (cde) {
-        return $scope.userGroups.indexOf(cde.owningContext) > -1;
+        return $scope.user.contextAdmin.indexOf(cde.owningContext) > -1;
     };
     
     $scope.stageCde = function(cde) {
@@ -165,16 +162,13 @@ function CreateCtrl($scope, $location, DataElement) {
 }
 
 function ListFormsCtrl($scope, $location, FormList, AddToCart, RemoveFromCart, Myself) {
-    $scope.cartForms = [];
-    $scope.initCart = function(forms) {
-        for (var i in forms) {
-            $scope.cartForms.push(forms[i]);
-        }
+    $scope.loadUser = function() {
+        var u = Myself.get(function(u) {
+            $scope.user = u; 
+        });
     };
     
-    var u = Myself.get(function(u) {
-        $scope.user = u; 
-    });
+    $scope.loadUser();
     
     $scope.forms = [];
     var result = FormList.get({}, function() {
@@ -183,13 +177,14 @@ function ListFormsCtrl($scope, $location, FormList, AddToCart, RemoveFromCart, M
     
     $scope.addToCart = function(form) {
        AddToCart.add({formId: form._id}, function(form) {
-           $location.path('/#/listforms');
+           $scope.loadUser();
        });
     };
 
     $scope.removeFromCart = function(form) {
        RemoveFromCart.add({formId: form._id}, function(form) {
-           $location.path('/#/listforms');
+           $scope.loadUser();
+           //           $location.path('/#/listforms');
        });
     };
 }

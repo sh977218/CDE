@@ -1,7 +1,3 @@
-<% if (user && user.contextAdmin) { %>
-<div ng-init="initGroups([<% for (var i in user.contextAdmin) { %>'<%= user.contextAdmin[i] %>'<% if (i < user.contextAdmin.length - 1) { %>,<% } %><% } %>])"/>
-<% } %>
-
 <pagination data-boundary-links="true" num-pages="numPages" current-page="currentPage" max-size="10"></pagination>
 
 <input type="text" ng-model="search.longName" class="search-query" placeholder="Long Name" typeahead="cde.longName for cde in autocomplete($viewValue)" required>
