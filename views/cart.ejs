@@ -1,4 +1,6 @@
-<a class="btn btn-success" href="#/createform"><i class="icon-plus-sign icon-large"> Create Form</i></a>
+<h4> Forms in your Cart </h4>
+<div ng-show="!user.formCart || user.formCart.length == 0">There are no forms in your Cart</div>
+
 <accordion>
     <accordion-group ng-repeat="form in forms" heading="{{form.owningContext}} -- {{form.name}}">
         <div class="row-fluid">
@@ -11,7 +13,6 @@
             </div>   
             <div class="span2">
                 <a class="btn btn-inverse" ng-show="isInCart(form._id)" ng-click="removeFromCart(form)"><i class="icon-shopping-cart"> Remove from Cart</i></a>
-                <a class="btn" ng-show="!isInCart(form._id)" ng-click="addToCart(form)"><i class="icon-shopping-cart"> Add to Cart</i></a>
             </div>
         </div>
     </accordion-group>

@@ -71,11 +71,18 @@ exports.cdelist = function(from, limit, searchOptions, callback) {
     });
 };  
 
-exports.formlist = function(req, callback) {
+exports.formlist = function(callback) {
     Form.find().exec(function(err, forms) {
        callback("", {forms: forms}); 
     });
 };
+
+exports.formsByIdList = function(idList, callback) {
+    Form.find().where('_id').in(idList).exec(function(err, forms) {
+       callback("", forms); 
+    });
+};
+
 
 exports.listcontexts = function(callback) {
     DataElement.find().distinct('owningContext', function(error, contexts) {

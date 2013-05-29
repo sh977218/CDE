@@ -46,6 +46,10 @@ angular.module('resources', ['ngResource']).
         var FormList = $resource('/formlist');
         return FormList;
     })
+    .factory('MyCart', function($resource) {
+        var MyCart = $resource('/cartcontent');
+        return MyCart;
+    })
     .factory("AddToCart", function($resource) {
         var AddToCart = $resource(
                 "/addtocart/:formId", 

@@ -83,15 +83,15 @@ function ensureAuthenticated(req, res, next) {
 };
 
 app.get('/', function(req, res){
-  res.render('index', { user: req.user });
+  res.render('index');
 });
 
 app.get('/list', function(req, res){
-  res.render('list', { user: req.user });
+  res.render('list');
 });
 
-app.get('/myforms', function(req, res) {
-    res.render('myforms', { user: req.user });
+app.get('/cart', function(req, res) {
+    res.render('cart');
 });
 
 app.post('/addtocart/:formId', function(req, res) {
@@ -114,10 +114,17 @@ app.get('/listforms', function(req, res) {
 });
 
 app.get('/formlist', function(req, res) {
-    mongo_data.formlist(req, function(err, forms) {
+    mongo_data.formlist(function(err, forms) {
         res.send(forms);
     });
 });
+
+app.get('/cartcontent', function(req, res) {
+    mongo_data.formsByIdList(req.user.formCart, function(err, forms) {
+        res.send({'forms': forms});
+    });
+});
+
 
 app.post('/form', function(req, res) {
     return mongo_data.saveForm(req, function(err, form) {

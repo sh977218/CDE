@@ -1,4 +1,7 @@
-function AuthCtrl($scope, Auth) {
+function AuthCtrl($scope, Auth, Myself) {
+    var u = Myself.get(function(u) {
+        $scope.user = u; 
+    });
     $scope.login = function() {
         Auth.login({
                 username: $scope.username,
@@ -26,7 +29,11 @@ function ListCtrl($scope, $http, CdeList, PriorCdes, DataElement, Myself) {
     });
     
     $scope.isAllowed = function (cde) {
-        return $scope.user.contextAdmin.indexOf(cde.owningContext) > -1;
+        if ($scope.user.contextAdmin) {
+            return $scope.user.contextAdmin.indexOf(cde.owningContext) > -1;
+        } else {
+            return false;
+        }
     };
     
     $scope.stageCde = function(cde) {
@@ -184,13 +191,51 @@ function ListFormsCtrl($scope, $location, FormList, AddToCart, RemoveFromCart, M
     $scope.removeFromCart = function(form) {
        RemoveFromCart.add({formId: form._id}, function(form) {
            $scope.loadUser();
-           //           $location.path('/#/listforms');
        });
+    };
+    
+    $scope.isInCart = function(formId) {
+        if ($scope.user.formCart) {
+            return $scope.user.formCart.indexOf(formId) > -1;
+        } else {
+            return false;
+        }
     };
 }
 
 function FormViewCtrl($scope) {
     
+}
+
+function CartCtrl($scope, Myself, MyCart, RemoveFromCart) {
+    $scope.loadUser = function() {
+        var u = Myself.get(function(u) {
+            $scope.user = u; 
+            $scope.loadForms();
+        });
+    };
+
+    $scope.loadForms = function() {
+      var result = MyCart.get(function(result) {
+        $scope.forms = result.forms;
+      });  
+    };
+
+    $scope.isInCart = function(formId) {
+        if ($scope.user.formCart) {
+            return $scope.user.formCart.indexOf(formId) > -1;
+        } else {
+            return false;
+        }
+    };
+
+    $scope.removeFromCart = function(form) {
+       RemoveFromCart.add({formId: form._id}, function(form) {
+           $scope.loadUser();
+       });
+    };
+
+    $scope.loadUser();
 }
 
 function CreateFormCtrl($scope, $location, Form) {

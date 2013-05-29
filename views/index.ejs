@@ -16,20 +16,13 @@
         <div class="nav-collapse" ng-controller="AuthCtrl">
             <ul class="nav pull-right">
                 <li class="dropdown">
-                    <% if (!user) { %>
-                        <p>
-                        <a href="/">Home</a> |
-                        <a href="/login">Log In</a>
-                        </p>
-                    <% } else { %>
-                        <p>
-                        <a href="/">Home</a> |
-                        <% if (user.formAdmin) { %>
-                        <a href="#/listforms">Forms</a> |
-                        <% } %>
-                        <a href="/logout">Log Out</a>
-                        </p>
-                    <% } %>
+                    <p>
+                    <a href="/">Home</a> |
+                    <span ng-show='user._id'><a href="#/listforms">Forms</a> |</span>
+                    <span ng-show='user._id'><a href="#/cart">Cart ({{user.formCart.length}})</a> |</span>
+                    <a ng-show='!user._id' href="/login">Log In</a>
+                    <a ng-show='user._id' href="/logout">Log Out</a>
+                    </p>
                 </li>
             </ul>
         </div>

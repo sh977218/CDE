@@ -7,6 +7,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap']).
         when('/listforms', {controller: ListFormsCtrl, templateUrl: '/listforms'}).
         when('/createform', {controller: CreateFormCtrl, templateUrl: '/createform'}).
         when('/formview', {controller: FormViewCtrl, templateUrl: '/formview'}).
+        when('/cart', {controller: CartCtrl, templateUrl: '/cart'}).
         otherwise({redirectTo:'/'});
     }).
     directive('inlineEdit', function() {
