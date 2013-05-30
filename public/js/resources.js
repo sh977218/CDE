@@ -58,6 +58,14 @@ angular.module('resources', ['ngResource']).
             );
         return AddToCart;
     })
+    .factory("AddCdeToForm", function($resource) {
+        var AddCdeToForm = $resource(
+                "/addcdetoform/:cdeId/:formId", 
+                {formId: '@formId', cdeId: '@cdeId'}, 
+                {add: {method: 'POST'}}
+            );
+        return AddCdeToForm;
+    })
     .factory("RemoveFromCart", function($resource) {
         var RemoveFromCart = $resource(
                 "/removefromcart/:formId", 

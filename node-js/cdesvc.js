@@ -67,7 +67,7 @@ exports.show = function(req, res) {
     if (!cdeId) {
         res.send("No Data Element Id");
     } else {
-        mongo_data.show(cdeId, function(err, cde) {
+        mongo_data.cdeById(cdeId, function(err, cde) {
            res.send(cde); 
         });
     }
@@ -80,7 +80,7 @@ exports.linktovsac = function(req, res) {
 };
 
 exports.save = function (req, res) {
-    return mongo_data.save(req, function(err, cde) {
+    return mongo_data.saveCde(req, function(err, cde) {
         res.send(cde);            
     });
 };  

@@ -5,7 +5,9 @@ var util = require('util')
     , fs = require('fs')
 ;
 
-mongoose.connect('mongodb://localhost/test');
+var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/test';
+console.log("connecting to " + mongoUri);
+mongoose.connect(mongoUri);
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

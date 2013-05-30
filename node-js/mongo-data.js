@@ -77,6 +77,12 @@ exports.formlist = function(callback) {
     });
 };
 
+exports.formById = function(formId, callback) {
+    Form.findOne({'_id': formId}).exec(function(err, form) {
+        callback("", form);
+    });
+};
+
 exports.formsByIdList = function(idList, callback) {
     Form.find().where('_id').in(idList).exec(function(err, forms) {
        callback("", forms); 
@@ -98,7 +104,7 @@ exports.priorCdes = function(cdeId, callback) {
     });
 };
 
-exports.show = function(cdeId, callback) {
+exports.cdeById = function(cdeId, callback) {
     DataElement.findOne({'_id': cdeId}, function(err, cde) {
         callback("", cde);
     });
@@ -158,7 +164,13 @@ exports.saveForm = function(req, callback) {
     });
 };
 
-exports.save = function(req, callback) {
+exports.save = function(mongooseObject, callback) {
+    mongooseObject.save(function(err) {
+       callback("", mongooseObject); 
+    });
+};
+
+exports.saveCde = function(req, callback) {
    return DataElement.findById(req.body._id, function (err, dataElement) {
         return cdeArchive(dataElement, function (arcCde) {
             dataElement.history.push(arcCde._id);

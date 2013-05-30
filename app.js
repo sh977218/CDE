@@ -108,7 +108,6 @@ app.post('/removefromcart/:formId', function(req, res) {
     });
 });
 
-
 app.get('/listforms', function(req, res) {
     res.render('listforms', { user: req.user });
 });
@@ -120,11 +119,11 @@ app.get('/formlist', function(req, res) {
 });
 
 app.get('/cartcontent', function(req, res) {
+    // @TODO Check for undefined req.user here.
     mongo_data.formsByIdList(req.user.formCart, function(err, forms) {
         res.send({'forms': forms});
     });
 });
-
 
 app.post('/form', function(req, res) {
     return mongo_data.saveForm(req, function(err, form) {
@@ -181,7 +180,35 @@ app.get('/dataelement/:id', function(req, res) {
 
 app.post('/dataelement', function (req, res) {
     return cdesvc.save(req, res);
-}); 
+});
+
+app.post('/addcdetoform/:cdeId/:formId', function (req, res) {
+  mongo_data.formById(req.body.formId, function(err, form) {
+      if (!form) {
+          res.send("The requested form does not exist.");
+      } else {
+          if (!req.user || !req.user.contextAdmin || req.user.contextAdmin.indexOf(form.owningContext) < 0) {
+            res.send("You are not authorized to do this.");           
+          } else {
+            mongo_data.cdeById(req.body.cdeId, function(err, cde) {
+                if (!cde) {
+                    res.send("The requested CDE does not exist.");
+                } else {
+                    var question = {
+                        value: ''
+                        , instructions: ''
+                        , cde_uuid: cde.uuid
+                    };
+                    form.questions.push(question);
+                    mongo_data.save(form, function(err, form) {
+                        res.send(form);
+                    });
+                };
+            });
+          }
+      }
+  });
+});
 
 app.get('/user/me', function(req, res) {
     if (!req.user) {

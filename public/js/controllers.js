@@ -126,6 +126,33 @@ function LinkVsacCtrl($scope, LinkToVsac) {
     }; 
 }
 
+function AddToFormCtrl($scope, Myself, MyCart, AddCdeToForm) {
+    $scope.radioModel = {
+        id: 0
+    };
+    $scope.openModal = function() {
+        var u = Myself.get(function(u) {
+            $scope.user = u; 
+            var result = MyCart.get(function(result) {
+                $scope.forms = result.forms;
+                $scope.showModal = true;
+            });          
+        }); 
+    };   
+    $scope.closeModal = function() {
+        $scope.showModal = false;
+    };
+    $scope.modalOpts = {
+        backdropFade: true,
+        dialogFade: true
+    }; 
+    $scope.addToForm = function(cdeId) {
+        console.log("Adding: " + cdeId + " to " + $scope.radioModel.id);
+        AddCdeToForm.add({cdeId: cdeId, formId: $scope.radioModel.id});
+        $scope.closeModal();
+    };
+}
+
 function AuditCtrl($scope, PriorCdes) {
     $scope.openHistory = function() {
         PriorCdes.getCdes({cdeId: $scope.cde._id}, function(dataElements) {
