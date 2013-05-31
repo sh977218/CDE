@@ -89,6 +89,11 @@ exports.formsByIdList = function(idList, callback) {
     });
 };
 
+exports.cdesByUuidList = function(idList, callback) {
+    DataElement.find().where('uuid').in(idList).exec(function(err, forms) {
+       callback("", forms); 
+    });
+};
 
 exports.listcontexts = function(callback) {
     DataElement.find().distinct('owningContext', function(error, contexts) {

@@ -12,7 +12,17 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap']).
     }).
     directive('inlineEdit', function() {
     return {
-        templateUrl: '/inlineText',
+        template: '<div >' + 
+                        '<div ng-hide="editMode">' + 
+                            '<i ng-show="isAllowed()" class="icon-pencil" ng-click="value=model; editMode=true"></i> {{model}}' + 
+                        '</div>' + 
+                        '<div ng-show="editMode">' + 
+                            '<input type="text" ng-model="value" />' + 
+                            '<button class="icon-ok" ng-click="model = value; editMode = false; onOk()"/>' + 
+                            '<button class="icon-remove" ng-click="editMode = false"/>' +
+                        '</div>' +       
+                    '</div>'
+                ,
         restrict: 'E',
         scope: {
             model: '='
@@ -23,7 +33,16 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap']).
     }).
     directive('inlineAreaEdit', function() {
     return {
-        templateUrl: '/inlineTextArea',
+        template: '<div>' + 
+                        '<div ng-hide="editMode">' + 
+                         '   <i ng-show="isAllowed()" class="icon-pencil" ng-click="value=model; editMode=true"></i> {{model}}' +
+                        '</div>' + 
+                        '<div ng-show="editMode">' + 
+                         '   <textarea ng-model="value" ></textarea>' + 
+                          '  <button class="icon-ok" ng-click="model = value;editMode = false; onOk()"/>' + 
+                           ' <button class="icon-remove" ng-click="editMode = false"/>' + 
+                        '</div>       ' + 
+                    '</div>',
         restrict: 'E',
         scope: {
             model: '='

@@ -139,14 +139,6 @@ app.get('/formview', function(req, res) {
     res.render('formview', { user: req.user });
 });
 
-app.get('/inlineTextArea', function(req, res){
-  res.render('inlineTextArea', { user: req.user });
-});
-
-app.get('/inlineText', function(req, res){
-  res.render('inlineText', { user: req.user });
-});
-
 app.get('/login', function(req, res){
   res.render('login', { user: req.user, message: req.flash('error') });
 });
@@ -180,6 +172,21 @@ app.get('/dataelement/:id', function(req, res) {
 
 app.post('/dataelement', function (req, res) {
     return cdesvc.save(req, res);
+});
+
+app.get('/cdesinform/:formId', function (req, res) {
+    mongo_data.formById(req.body.formId, function(err, form) {
+      if (!form) {
+          res.send("The requested form does not exist.");
+      } else {
+          var idList = [];
+          for (var i in form.questions) {
+              idList.push(form.questions[i].cde_uuid);
+          }
+          mongo_data.cdesByIdList(idList, function(err, cdes) {
+             res.send(cdes); 
+          });
+      }
 });
 
 app.post('/addcdetoform/:cdeId/:formId', function (req, res) {

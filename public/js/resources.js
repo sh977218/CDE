@@ -12,6 +12,11 @@ angular.module('resources', ['ngResource']).
             {'getCdes': {method: 'GET', isArray: true}});
         return PriorCdes;
     })
+    .factory('CdesInForm', function($resource) {
+        var CdesInForm = $resource('/cdesinform/:formId', {formId: '@formId'}, 
+            {'getCdes': {method: 'GET', isArray: true}});
+        return CdesInForm;
+    })
     .factory('AutocompleteSvc', function($resource) {
         var AutocompleteSvc = $resource("/autocomplete/:inValue", {inValue: '@inValue'},
             {'autocomplete': {method: 'GET', isArray: true}});
