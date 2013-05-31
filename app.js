@@ -131,6 +131,12 @@ app.post('/form', function(req, res) {
     });
 });
 
+app.get('/form/:formId', function(req, res) {
+    mongo_data.formById(req.params.formId, function(err, form) {
+       res.send(form); 
+    });
+});
+
 app.get('/createform', function(req, res) {
     res.render('createform', { user: req.user });
 });
@@ -175,15 +181,15 @@ app.post('/dataelement', function (req, res) {
 });
 
 app.get('/cdesinform/:formId', function (req, res) {
-    mongo_data.formById(req.body.formId, function(err, form) {
+    mongo_data.formById(req.params.formId, function(err, form) {
       if (!form) {
           res.send("The requested form does not exist.");
       } else {
           var idList = [];
-          for (var i in form.questions) {
+          for (var i=0; i < form.questions.length; i++) {
               idList.push(form.questions[i].cde_uuid);
           }
-          mongo_data.cdesByIdList(idList, function(err, cdes) {
+          mongo_data.cdesByUuidList(idList, function(err, cdes) {
              res.send(cdes); 
           });
       }

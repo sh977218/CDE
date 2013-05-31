@@ -18,7 +18,7 @@ function AuthCtrl($scope, Auth, Myself) {
     };
 }
 
-function ListCtrl($scope, $http, CdeList, PriorCdes, DataElement, Myself) {
+function ListCtrl($scope, $http, CdeList, DataElement, Myself) {
     $scope.currentPage = 1;
     $scope.pageSize = 10;
     
@@ -147,7 +147,6 @@ function AddToFormCtrl($scope, Myself, MyCart, AddCdeToForm) {
         dialogFade: true
     }; 
     $scope.addToForm = function(cdeId) {
-        console.log("Adding: " + cdeId + " to " + $scope.radioModel.id);
         AddCdeToForm.add({cdeId: cdeId, formId: $scope.radioModel.id});
         $scope.closeModal();
     };
@@ -195,7 +194,7 @@ function CreateCtrl($scope, $location, DataElement) {
     };
 }
 
-function ListFormsCtrl($scope, $location, FormList, AddToCart, RemoveFromCart, Myself) {
+function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, Myself) {
     $scope.loadUser = function() {
         var u = Myself.get(function(u) {
             $scope.user = u; 
@@ -230,9 +229,17 @@ function ListFormsCtrl($scope, $location, FormList, AddToCart, RemoveFromCart, M
     };
 }
 
-function FormViewCtrl($scope) {
+function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
+
+    Form.get({formId: $routeParams.formId}, function(form) {
+        $scope.form = form;
+    });
     
-}
+    CdesInForm.getCdes({formId: $routeParams.formId}, function(cdes) {
+        $scope.cdes = cdes;
+    });
+    
+};
 
 function CartCtrl($scope, Myself, MyCart, RemoveFromCart) {
     $scope.loadUser = function() {
@@ -243,7 +250,7 @@ function CartCtrl($scope, Myself, MyCart, RemoveFromCart) {
     };
 
     $scope.loadForms = function() {
-      var result = MyCart.get(function(result) {
+      MyCart.get(function(result) {
         $scope.forms = result.forms;
       });  
     };

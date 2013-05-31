@@ -1,0 +1,26 @@
+<h4>Form Details</h4>
+<div class="row-fluid">
+    <h4>General Details</h4>
+    <label class="label">Name: </label><div class="readonly-text">{{form.name}}</div>
+    <label class="label">Owner: </label><div class="readonly-text">{{form.owningContext}}</div>
+    <label class="label">Instructions: </label><div class="readonly-text">{{form.instructions}}</div>                
+    <label class="label">Created: </label><div class="readonly-text">{{form.created | date: 'MM/dd/yyyy @ h:mma'}}</div>                
+</div>
+
+<accordion>
+    <accordion-group ng-repeat="cde in cdes" heading="{{cde.owningContext}} -- {{cde.longName}}">
+         <div class="row-fluid">
+            <div class="span5">
+                <h4>General Details</h4>
+                <label class="label">Name: </label><div class="readonly-text">{{cde.longName}}</div>
+                <label class="label">Origin: </label><div class="readonly-text">{{cde.origin}}</div>
+                <label class="label">Origin ID: </label><div class="readonly-text">{{cde.originId}}</div>
+                <label class="label">Owner: </label><div class="readonly-text">{{cde.owningContext}}</div>
+                <label class="label">Definition: </label><div class="readonly-text">{{cde.preferredDefinition}}</div>
+                <label class="label">Added to NLM: </label><div class="readonly-text">{{cde.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
+            </div>
+         </div>
+    </accordion-group>
+</accordion>
+
+

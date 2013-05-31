@@ -44,7 +44,7 @@ angular.module('resources', ['ngResource']).
         return LinkToVsac;
     })
     .factory('Form', function($resource) {
-        var Form = $resource('/form');
+        var Form = $resource('/form/:formId', {formId: '@formId'});
         return Form;
     })
     .factory('FormList', function($resource) {
