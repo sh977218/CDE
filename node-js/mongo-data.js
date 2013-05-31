@@ -159,14 +159,25 @@ exports.linktovsac = function(req, callback) {
 };
 
 exports.saveForm = function(req, callback) {
-    var form = new Form();
-    form.name = req.body.name;
-    form.instructions = req.body.instructions;
-    form.owningContext = req.body.owningContext;
-    form.created = Date.now();
-    return form.save(function(err) {
-        callback("", form);
-    });
+    if (!req.body._id ) {
+        var form = new Form();
+        form.name = req.body.name;
+        form.instructions = req.body.instructions;
+        form.owningContext = req.body.owningContext;
+        form.created = Date.now();
+        return form.save(function(err) {
+            callback("", form);
+        });
+    } else {
+        var form = new Form(req.body);
+        delete req.body._id;
+        Form.update(req.body, function(err) {
+            if (err) {
+                console.log("Error Saving Form " + err);
+            }
+            callback("", form);
+        });
+    }
 };
 
 exports.save = function(mongooseObject, callback) {

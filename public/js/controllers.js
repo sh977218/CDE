@@ -24,7 +24,7 @@ function ListCtrl($scope, $http, CdeList, DataElement, Myself) {
     
     $scope.originOptions = ['CADSR', 'FITBIR'];
 
-    var u = Myself.get(function(u) {
+    Myself.get(function(u) {
         $scope.user = u; 
     });
     
@@ -196,7 +196,7 @@ function CreateCtrl($scope, $location, DataElement) {
 
 function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, Myself) {
     $scope.loadUser = function() {
-        var u = Myself.get(function(u) {
+        Myself.get(function(u) {
             $scope.user = u; 
         });
     };
@@ -229,16 +229,64 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, Myself) {
     };
 }
 
-function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
-
-    Form.get({formId: $routeParams.formId}, function(form) {
-        $scope.form = form;
+function FormViewCtrl($scope, $routeParams, Form, CdesInForm, Myself) {
+    Myself.get(function(u) {
+        $scope.user = u; 
     });
+      
+    $scope.reload = function(formId) {
+        Form.get({formId: formId}, function(form) {
+            $scope.form = form;
+            CdesInForm.getCdes({formId: formId}, function(cdes) {
+                $scope.cdes = cdes;
+                for (var i = 0; i < form.questions.length; i++) {
+                    var q = form.questions[i];
+                    for (var j = 0; j < cdes.length; j++) {
+                        if (cdes[j].uuid === q.cde_uuid) {
+                            q.cde = cdes[j];
+                        }
+                    }
+                }
+                $scope.original = $scope.form;
+            });
+            if ($scope.user.contextAdmin) {
+                $scope.canEdit = $scope.user.contextAdmin.indexOf(form.owningContext) > -1;
+            } else {
+                $scope.canEdit = false;
+            }
+        });
+    };
     
-    CdesInForm.getCdes({formId: $routeParams.formId}, function(cdes) {
-        $scope.cdes = cdes;
-    });
+    $scope.reload($routeParams.formId);
     
+    $scope.isAllowed = function (form) {
+        return $scope.canEdit;
+    };
+    
+    $scope.stageQuestion = function(question) {
+        $scope.form.unsaved = true;
+    };
+    
+    $scope.revert = function() {
+        $scope.reload(form._id);
+    };
+    
+    $scope.save = function() {
+        $scope.form.$save();
+//        var f = Form.get({formId: form._id}, function(form) {
+//            
+//        });
+//        var de = DataElement.get({cdeId: cde._id}, function(dataElement) {
+//            de.longName = cde.longName;
+//            de.preferredDefinition = cde.preferredDefinition;
+//            de.changeNote = cde.changeNote;
+//            de.$save();
+//            cde.unsaved = false;
+//            var ind = $scope.cdes.indexOf(cde);
+//            $scope.cdes[ind] = dataElement;
+//            console.log(dataElement.updated);
+//        });
+    }; 
 };
 
 function CartCtrl($scope, Myself, MyCart, RemoveFromCart) {
@@ -283,7 +331,6 @@ function CreateFormCtrl($scope, $location, Form) {
     $scope.save = function() {
         Form.save($scope.form, function(form) {
             $location.path('#/listforms');        
-//          $location.path('#/formview');
         });
     };
  }

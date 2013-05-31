@@ -42,7 +42,7 @@ var questionSchema = mongoose.Schema ({
     value: String
     , instructions: String
     , cde_uuid: String
-});
+}, {_id: false});
 
 var formSchema = {
     name: String

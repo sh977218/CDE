@@ -1,19 +1,4 @@
 <h4> Forms in your Cart </h4>
 <div ng-show="!user.formCart || user.formCart.length == 0">There are no forms in your Cart</div>
 
-<accordion>
-    <accordion-group ng-repeat="form in forms" heading="{{form.owningContext}} -- {{form.name}}">
-        <div class="row-fluid">
-            <div class="span10">
-                <h4>General Details</h4>
-                <label class="label">Name: </label><div class="readonly-text">{{form.name}}</div>
-                <label class="label">Owner: </label><div class="readonly-text">{{form.owningContext}}</div>
-                <label class="label">Instructions: </label><div class="readonly-text">{{form.instructions}}</div>                
-                <label class="label">Created: </label><div class="readonly-text">{{form.created | date: 'MM/dd/yyyy @ h:mma'}}</div>                
-            </div>   
-            <div class="span2">
-                <a class="btn btn-inverse" ng-show="isInCart(form._id)" ng-click="removeFromCart(form)"><i class="icon-shopping-cart"> Remove from Cart</i></a>
-            </div>
-        </div>
-    </accordion-group>
-</accordion>
+<%- include formAccordion.ejs %>
