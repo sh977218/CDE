@@ -187,6 +187,7 @@ app.get('/cdesinform/:formId', function (req, res) {
              res.send(cdes); 
           });
       }
+    });
 });
 
 app.post('/addcdetoform/:cdeId/:formId', function (req, res) {
