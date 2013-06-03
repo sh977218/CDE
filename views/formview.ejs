@@ -1,3 +1,4 @@
+
 <h4>Form Details</h4>
 <div class="row-fluid">
     <h4>General Details</h4>
@@ -10,11 +11,12 @@
 
 <h4>Questions</h4>
 <accordion>
-    <accordion-group ng-repeat="question in form.questions" heading="{{question.cde.owningContext}} -- {{question.cde.longName}}">
+    <accordion-group ng-repeat="question in form.questions" >
+        <accordion-heading><i ng-show='!$first' class="icon-arrow-up" ng-click="sortUp($index)"></i> <i ng-show='!$last' class="icon-arrow-down" ng-click='sortDown($index)'></i> {{question.cde.owningContext}} -- {{question.cde.longName}}</accordion-heading>
          <div class="row-fluid">
             <div class="span5">
                 <h5>Question Details</h5>
-                <label class="label">Question: </label><inline-edit model="question.value" is-allowed="isAllowed(question)" on-ok="stageQuestion(question)"> </inline-edit>
+                <label class="label">Question: </label><inline-edit model="question.value" is-allowed="isAllowed()" on-ok="stageQuestion()"> </inline-edit>
                 <label class="label">Instructions: </label><inline-area-edit model="question.instructions" is-allowed="isAllowed(question)" on-ok="stageQuestion(question)"> </inline-area-edit>                
             </div>
              <div class="span7">

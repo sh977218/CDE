@@ -249,7 +249,7 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm, Myself) {
                 }
                 $scope.original = $scope.form;
             });
-            if ($scope.user.contextAdmin) {
+            if ($scope.user && $scope.user.contextAdmin) {
                 $scope.canEdit = $scope.user.contextAdmin.indexOf(form.owningContext) > -1;
             } else {
                 $scope.canEdit = false;
@@ -259,11 +259,11 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm, Myself) {
     
     $scope.reload($routeParams.formId);
     
-    $scope.isAllowed = function (form) {
+    $scope.isAllowed = function () {
         return $scope.canEdit;
     };
     
-    $scope.stageQuestion = function(question) {
+    $scope.stageQuestion = function() {
         $scope.form.unsaved = true;
     };
     
@@ -275,6 +275,18 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm, Myself) {
         $scope.form.$save();
         $scope.reload($scope.form._id);
     }; 
+    
+    $scope.sortUp = function(index) {
+        var qArray = $scope.form.questions;
+        qArray.splice(index - 1, 0, qArray.splice(index, 1)[0]);    
+        $scope.stageQuestion();
+    };
+    
+    $scope.sortDown = function(index) {
+        var qArray = $scope.form.questions;
+        qArray.splice(index + 1, 0, qArray.splice(index, 1)[0]);    
+        $scope.stageQuestion();
+    };
 };
 
 function CartCtrl($scope, Myself, MyCart, RemoveFromCart) {
@@ -310,6 +322,7 @@ function CartCtrl($scope, Myself, MyCart, RemoveFromCart) {
 
 function CreateFormCtrl($scope, $location, Form) {
     $scope.userGroups = [];
+    
     $scope.initGroups = function(groups) {
         for (var i in groups) {
             $scope.userGroups.push(groups[i]);
