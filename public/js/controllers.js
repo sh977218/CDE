@@ -273,19 +273,7 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm, Myself) {
     
     $scope.save = function() {
         $scope.form.$save();
-//        var f = Form.get({formId: form._id}, function(form) {
-//            
-//        });
-//        var de = DataElement.get({cdeId: cde._id}, function(dataElement) {
-//            de.longName = cde.longName;
-//            de.preferredDefinition = cde.preferredDefinition;
-//            de.changeNote = cde.changeNote;
-//            de.$save();
-//            cde.unsaved = false;
-//            var ind = $scope.cdes.indexOf(cde);
-//            $scope.cdes[ind] = dataElement;
-//            console.log(dataElement.updated);
-//        });
+        $scope.reload($scope.form._id);
     }; 
 };
 

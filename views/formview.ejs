@@ -13,8 +13,12 @@
     <accordion-group ng-repeat="question in form.questions" heading="{{question.cde.owningContext}} -- {{question.cde.longName}}">
          <div class="row-fluid">
             <div class="span5">
-                <h4>General Details</h4>
+                <h5>Question Details</h5>
                 <label class="label">Question: </label><inline-edit model="question.value" is-allowed="isAllowed(question)" on-ok="stageQuestion(question)"> </inline-edit>
+                <label class="label">Instructions: </label><inline-area-edit model="question.instructions" is-allowed="isAllowed(question)" on-ok="stageQuestion(question)"> </inline-area-edit>                
+            </div>
+             <div class="span7">
+                <h5>CDE General Details</h5>
                 <label class="label">Name: </label><div class="readonly-text">{{question.cde.longName}}</div>
                 <label class="label">Origin: </label><div class="readonly-text">{{question.cde.origin}}</div>
                 <label class="label">Origin ID: </label><div class="readonly-text">{{question.cde.originId}}</div>

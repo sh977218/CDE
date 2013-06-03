@@ -14,17 +14,23 @@
     </head>
     <body>
         <div class="nav-collapse" ng-controller="AuthCtrl">
-            <ul class="nav pull-right">
-                <li class="dropdown">
-                    <p>
-                    <a href="/">Home</a> |
-                    <span ng-show='user._id'><a href="#/listforms">Forms</a> |</span>
-                    <span ng-show='user._id'><a href="#/cart">Cart ({{user.formCart.length}})</a> |</span>
-                    <a ng-show='!user._id' href="/login">Log In</a>
-                    <a ng-show='user._id' href="/logout">Log Out</a>
-                    </p>
-                </li>
-            </ul>
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <a class="brand" href="/">CDEs and Forms</a>
+                    <ul class="nav">
+                    <li class="active"><a href="/">Home</a></li>
+                    <li ng-show='user._id' class="dropdown" >
+                        <a href="#/listforms">Forms</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-toggle" data-toggle="form-dropdown"><span class="caret"></span></a>
+                    </li>
+                    <li ng-show='user._id'><a href="#/cart">Cart ({{user.formCart.length}})</a></li>
+                    <li ng-show='!user._id'><a href="/login">Log In</a></li>
+                    <li ng-show='user._id'><a href="/logout">Log Out</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
         
         <div ng-view>
