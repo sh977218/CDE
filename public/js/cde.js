@@ -3,6 +3,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap']).
         $routeProvider.
         when('/edit/:cdeId', {controller:EditCtrl, templateUrl:'detail.html'}).
         when('/', {controller:ListCtrl, templateUrl:'/list'}).
+        when('/login', {controller:AuthCtrl, templateUrl:'/login'}).
         when('/new', {controller:CreateCtrl, templateUrl:'detail.html'}).
         when('/listforms', {controller: ListFormsCtrl, templateUrl: '/listforms'}).
         when('/createform', {controller: CreateFormCtrl, templateUrl: '/createform'}).

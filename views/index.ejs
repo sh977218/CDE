@@ -23,7 +23,7 @@
         </style>
     </head>
     <body>
-        <div class="nav-collapse" ng-controller="AuthCtrl">
+        <div class="nav-collapse" ng-controller="MainCtrl">
             <div class="navbar">
                 <div class="navbar-inner">
                     <a class="brand" href="/">CDEs and Forms</a>
@@ -46,7 +46,7 @@
                             </ul>
                         </li>                        
                         <li ng-show='user._id'><a href="#/cart">Cart ({{user.formCart.length}})</a></li>
-                        <li ng-show='!user._id'><a href="/login">Log In</a></li>
+                        <li ng-show='!user._id'><a href="#/login">Log In</a></li>
                         <li ng-show='user._id'><a href="/logout">Log Out</a></li>
                     </ul>
                 </div>

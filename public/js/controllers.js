@@ -1,3 +1,9 @@
+function MainCtrl($scope, Myself) {
+    var u = Myself.get(function(u) {
+        $scope.user = u; 
+    });    
+}
+
 function AuthCtrl($scope, Auth, Myself) {
     var u = Myself.get(function(u) {
         $scope.user = u; 
