@@ -11,6 +11,14 @@
         <link href="assets/css/bootstrap-combined.min.css" rel="stylesheet">
         <link rel="stylesheet" href="assets/css/font-awesome.min.css">
         <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+        <style>
+            a.caret-before {
+              padding-right:1px !important;
+            }
+            a.caret-after {
+                padding-left:1px !important;
+            }
+        </style>
     </head>
     <body>
         <div class="nav-collapse" ng-controller="AuthCtrl">
@@ -18,16 +26,26 @@
                 <div class="navbar-inner">
                     <a class="brand" href="/">CDEs and Forms</a>
                     <ul class="nav">
-                    <li class="active"><a href="/">Home</a></li>
-                    <li ng-show='user._id' class="dropdown" >
-                        <a href="#/listforms">Forms</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-toggle" data-toggle="form-dropdown"><span class="caret"></span></a>
-                    </li>
-                    <li ng-show='user._id'><a href="#/cart">Cart ({{user.formCart.length}})</a></li>
-                    <li ng-show='!user._id'><a href="/login">Log In</a></li>
-                    <li ng-show='user._id'><a href="/logout">Log Out</a></li>
+                        <li class="active"><a href="/">Home</a></li>
+                        <li ng-show='user._id'>
+                            <a href="#/listforms" class="caret-before">Forms</a>
+                        </li>
+                        <li class="dropdown">    
+                            <a class="dropdown-toggle caret-after" data-toggle="dropdown">
+                            <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a tabindex="-1" href="#/listforms">Browse Forms</a>
+                                </li>
+                                <li>
+                                    <a tabindex="-1" href="#/createform">Create Form</a>
+                                </li>
+                            </ul>
+                        </li>                        
+                        <li ng-show='user._id'><a href="#/cart">Cart ({{user.formCart.length}})</a></li>
+                        <li ng-show='!user._id'><a href="/login">Log In</a></li>
+                        <li ng-show='user._id'><a href="/logout">Log Out</a></li>
                     </ul>
                 </div>
             </div>

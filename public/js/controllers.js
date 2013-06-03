@@ -268,7 +268,7 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm, Myself) {
     };
     
     $scope.revert = function() {
-        $scope.reload(form._id);
+        $scope.reload($scope.form._id);
     };
     
     $scope.save = function() {
