@@ -166,12 +166,17 @@ exports.saveForm = function(req, callback) {
         form.owningContext = req.body.owningContext;
         form.created = Date.now();
         return form.save(function(err) {
+            if (err) {
+                callback(err, form);
+            }
+            console.log("No form Id, created new form");
             callback("", form);
         });
     } else {
         var form = new Form(req.body);
+        var formId = req.body._id;
         delete req.body._id;
-        Form.update(req.body, function(err) {
+        Form.update({'_id': formId}, req.body, function(err) {
             if (err) {
                 console.log("Error Saving Form " + err);
             }
