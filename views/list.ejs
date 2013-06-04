@@ -12,21 +12,23 @@
          <div class="row-fluid">
             <div class="span5">
                 <h4>General Details</h4>
-                <label class="label">Name: </label> <inline-edit model="cde.longName" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit>
-                <label class="label">Origin: </label><div class="readonly-text">{{cde.origin}}</div>
-                <label class="label">Origin ID: </label><div class="readonly-text">{{cde.originId}}</div>
-                <label class="label">Owner: </label><div class="readonly-text">{{cde.owningContext}}</div>
-                <label class="label">Definition: </label><inline-area-edit model="cde.preferredDefinition" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-area-edit>
-                <label class="label">Added to NLM: </label>
-                <div ng-controller="AuditCtrl" >
+                <dl class="dl-horizontal">
+                <dt>Name: </dt> <dd><inline-edit model="cde.longName" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></dd>
+                <dt>Origin: </dt><dd>{{cde.origin}}</dd>
+                <dt>Origin ID: </dt><dd>{{cde.originId}}</dd>
+                <dt>Owner: </dt><dd>{{cde.owningContext}}</dd>
+                <dt>Definition: </dt><dd><inline-area-edit model="cde.preferredDefinition" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-area-edit></dd>
+                <dt>Added to NLM: </dt>
+                <dd ng-controller="AuditCtrl" >
                     <i ng-show="cde.history.length > 0" class="icon-eye-open" ng-click="openHistory()" tooltip="View History"></i> {{cde.created | date: 'MM/dd/yyyy @ h:mma'}}
                     <%- include historyModal.ejs %>
-                </div>
-                <label class="label">Updated in NLM: </label><div class="readonly-text">{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</div>                
+                </dd>
+                <dt>Updated in NLM: </dt><dl>{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</dl>
+                </dl>
             </div>
              <div class="span3">
                  <h4>Concepts</h4>
-                 <table>
+                 <table class="table-bordered table-condensed table-striped">
                      <thead>
                          <tr>
                              <th>Name</th>

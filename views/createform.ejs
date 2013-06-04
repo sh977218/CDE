@@ -1,18 +1,31 @@
-<h4>Create Form</h4>
-<% if (user && user.formAdmin) { %>
-<div ng-init="initGroups([<% for (var i in user.contextAdmin) { %>'<%= user.contextAdmin[i] %>'<% if (i < user.contextAdmin.length - 1) { %>,<% } %><% } %>])"/>
-<% } %>
+ <form>
+    <fieldset>
+    <legend>Legend</legend>
+    <label>Label name</label>
+    <input type="text" placeholder="Type something…">
+    <span class="help-block">Example block-level help text here.</span>
+    <label class="checkbox">
+    <input type="checkbox"> Check me out
+    </label>
+    <button type="submit" class="btn">Submit</button>
+    </fieldset>
+    </form>
+<form>
+    <fieldset>
+        <legend>Create Form</legend>
+        <label>Name</label>
+        <input type="text" required ng-model="form.name" name="form.name">
+    <label for="form.instructions">Instructions</label><textarea required ng-model="form.instructions" name="form.instructions"></textarea><br />
 
-<label for="form.name"/>Name</label><input type="text" required ng-model="form.name" name="form.name"></input><br />
-<label for="form.instructions">Instructions</label><textarea required ng-model="form.instructions" name="form.instructions"></textarea><br />
+    <label for="form.owningContext">Context</label>
+    <select ng-model="form.owningContext" name="form.owningContext" required>
+        <option value="">Select One</option>
+        <option ng-repeat="c in user.contextAdmin" ng-value="c">{{c}}</option>
+    </select>
+     <br />
 
-<label for="form.owningContext">Context</label>
-<select ng-model="form.owningContext" name="form.owningContext" required>
-    <option value="">Select One</option>
-    <option ng-repeat="g in userGroups" ng-value="g">{{g}}</option>
-</select>
- <br />
-
-<a href="#/listforms" class="btn">Cancel</a>
-<button ng-click="save()" class="btn-warning">Save</button>
+    <a href="#/listforms" class="btn">Cancel</a>
+    <button ng-click="save()" class="btn-warning">Save</button>
+    </fieldset>
+</form>
 

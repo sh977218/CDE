@@ -1,5 +1,7 @@
 <div ng-controller="LinkVsacCtrl">
-    <label class="label">Value Set Name: </label><i class="icon-link" ng-show="isAllowed(cde)" ng-click="showLinkModal=true" tooltip="Link to VSAC "></i> {{cde.valueDomain.longName}}
+    <dl class="dl-horizontal">
+        <dt>Value Set Name: </dt><dd><i class="icon-link" ng-show="isAllowed(cde)" ng-click="showLinkModal=true" tooltip="Link to VSAC "></i> {{cde.valueDomain.longName}}</dd>
+    </dl>
     <div modal="showLinkModal" close="showLinkModal" opts="modalOpts">
         <div class="modal-header">
             <h4>Save</h4>
@@ -16,7 +18,7 @@
         </div>
     </div>                    
 </div>
-<table>
+<table class="table-bordered table-condensed table-striped">
      <thead>
          <tr>
              <th>Name</th>

@@ -2,10 +2,12 @@
 <h4>Form Details</h4>
 <div class="row-fluid">
     <h4>General Details</h4>
-    <label class="label">Name: </label><div class="readonly-text">{{form.name}}</div>
-    <label class="label">Owner: </label><div class="readonly-text">{{form.owningContext}}</div>
-    <label class="label">Instructions: </label><div class="readonly-text">{{form.instructions}}</div>                
-    <label class="label">Created: </label><div class="readonly-text">{{form.created | date: 'MM/dd/yyyy @ h:mma'}}</div>                
+    <dl class="dl-horizontal">
+        <dt>Name: </dt><dd>{{form.name}}</dd>
+        <dt>Owner: </dt><dd>{{form.owningContext}}</dd>
+        <dt>Instructions: </dt><dd>{{form.instructions}}</dd>                
+        <dt>Created: </dt><dd>{{form.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>                
+    </dl>
 </div>
 
 
@@ -16,17 +18,21 @@
          <div class="row-fluid">
             <div class="span5">
                 <h5>Question Details</h5>
-                <label class="label">Question: </label><inline-edit model="question.value" is-allowed="isAllowed()" on-ok="stageQuestion()"> </inline-edit>
-                <label class="label">Instructions: </label><inline-area-edit model="question.instructions" is-allowed="isAllowed(question)" on-ok="stageQuestion(question)"> </inline-area-edit>                
+                <dl class="dl-horizontal">
+                    <dt>Question: </dt><dd><inline-edit model="question.value" is-allowed="isAllowed()" on-ok="stageQuestion()"> </inline-edit></dd>
+                    <dt>Instructions: </dt><dd><inline-area-edit model="question.instructions" is-allowed="isAllowed(question)" on-ok="stageQuestion(question)"> </inline-area-edit></dd>              
+                </dl>
             </div>
              <div class="span7">
                 <h5>CDE General Details</h5>
-                <label class="label">Name: </label><div class="readonly-text">{{question.cde.longName}}</div>
-                <label class="label">Origin: </label><div class="readonly-text">{{question.cde.origin}}</div>
-                <label class="label">Origin ID: </label><div class="readonly-text">{{question.cde.originId}}</div>
-                <label class="label">Owner: </label><div class="readonly-text">{{question.cde.owningContext}}</div>
-                <label class="label">Definition: </label><div class="readonly-text">{{question.cde.preferredDefinition}}</div>
-                <label class="label">Added to NLM: </label><div class="readonly-text">{{question.cde.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
+                <dl class="dl-horizontal">
+                <dt>Name: </dt><dd>{{question.cde.longName}}</dd>
+                <dt>Origin: </dt><dd>{{question.cde.origin}}</dd>
+                <dt>Origin ID: </dt><dd>{{question.cde.originId}}</dd>
+                <dt>Owner: </dt><dd>{{question.cde.owningContext}}</dd>
+                <dt>Definition: </dt><dd>{{question.cde.preferredDefinition}}</dd>
+                <dt>Added to NLM: </dt><dd>{{question.cde.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+                </dl>
             </div>
          </div>
     </accordion-group>

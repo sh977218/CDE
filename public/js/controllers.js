@@ -326,14 +326,10 @@ function CartCtrl($scope, Myself, MyCart, RemoveFromCart) {
     $scope.loadUser();
 }
 
-function CreateFormCtrl($scope, $location, Form) {
-    $scope.userGroups = [];
-    
-    $scope.initGroups = function(groups) {
-        for (var i in groups) {
-            $scope.userGroups.push(groups[i]);
-        }
-    };
+function CreateFormCtrl($scope, $location, Form, Myself) {
+   Myself.get(function(u) {
+        $scope.user = u; 
+    });
     
     $scope.save = function() {
         Form.save($scope.form, function(form) {
