@@ -1,5 +1,3 @@
-
-<h4>Form Details</h4>
 <div class="row-fluid">
     <h4>General Details</h4>
     <dl class="dl-horizontal">
@@ -12,6 +10,7 @@
 
 
 <h4>Questions</h4>
+<p ng-show="form.questions.length == 0">There are no questions in this form. You can add questions to a form by browsing CDEs and adding them to a form in your cart.</p>
 <accordion>
     <accordion-group ng-repeat="question in form.questions" >
         <accordion-heading><i ng-show='!$first' class="icon-arrow-up" ng-click="sortUp($index)"></i> <i ng-show='!$last' class="icon-arrow-down" ng-click='sortDown($index)'></i> {{question.cde.owningContext}} -- {{question.cde.longName}}</accordion-heading>

@@ -1,11 +1,13 @@
 <pagination data-boundary-links="true" num-pages="numPages" current-page="currentPage" max-size="10"></pagination>
 
+<form class="form-search">
 <input type="text" ng-model="search.longName" class="search-query" placeholder="Long Name" typeahead="cde.longName for cde in autocomplete($viewValue)" required>
 <select ng-model="search.owningContext" name="owningContext" required>
     <option value="">All</option>
     <option ng-repeat="context in contexts" ng-value="context">{{context}}</option>    
 </select>
-<input type="submit" value="Search" ng-click="reload()"></input>
+<input type="submit" value="Search" ng-click="reload()" class="btn"></input>
+</form>
 
 <accordion>
     <accordion-group ng-repeat="cde in cdes" heading="{{cde.owningContext}} -- {{cde.longName}}">
