@@ -1,8 +1,8 @@
 <pagination data-boundary-links="true" num-pages="numPages" current-page="currentPage" max-size="10"></pagination>
 
 <form class="form-search">
-<input type="text" ng-model="search.longName" class="search-query" placeholder="Search Name" typeahead="cde.longName for cde in autocomplete($viewValue)" required>
-<select ng-model="search.owningContext" name="owningContext" required>
+<input type="text" ng-model="search.longName" class="search-query" placeholder="Search Name" typeahead="cde.longName for cde in autocomplete($viewValue)" >
+<select ng-model="search.owningContext" name="owningContext" >
     <option value="">All Contexts</option>
     <option ng-repeat="context in contexts" ng-value="context">{{context}}</option>    
 </select>

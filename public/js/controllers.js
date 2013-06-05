@@ -1,13 +1,15 @@
 function MainCtrl($scope, Myself) {
-    var u = Myself.get(function(u) {
-        $scope.user = u; 
-    });    
+    $scope.loadUser = function(callback) {
+        Myself.get(function(u) {
+            $scope.user = u; 
+            callback();
+        });
+    };
+    
+    $scope.loadUser(function(){});          
 }
 
-function AuthCtrl($scope, Auth, Myself) {
-    var u = Myself.get(function(u) {
-        $scope.user = u; 
-    });
+function AuthCtrl($scope, Auth) {
     $scope.login = function() {
         Auth.login({
                 username: $scope.username,
@@ -24,15 +26,11 @@ function AuthCtrl($scope, Auth, Myself) {
     };
 }
 
-function ListCtrl($scope, $http, CdeList, DataElement, Myself) {
+function ListCtrl($scope, $http, CdeList, DataElement) {
     $scope.currentPage = 1;
     $scope.pageSize = 10;
     
     $scope.originOptions = ['CADSR', 'FITBIR'];
-
-    Myself.get(function(u) {
-        $scope.user = u; 
-    });
     
     $scope.isAllowed = function (cde) {
         if ($scope.user.contextAdmin) {
@@ -132,18 +130,15 @@ function LinkVsacCtrl($scope, LinkToVsac) {
     }; 
 }
 
-function AddToFormCtrl($scope, Myself, MyCart, AddCdeToForm) {
+function AddToFormCtrl($scope, MyCart, AddCdeToForm) {
     $scope.radioModel = {
         id: 0
     };
     $scope.openModal = function() {
-        var u = Myself.get(function(u) {
-            $scope.user = u; 
-            var result = MyCart.get(function(result) {
-                $scope.forms = result.forms;
-                $scope.showModal = true;
-            });          
-        }); 
+        var result = MyCart.get(function(result) {
+            $scope.forms = result.forms;
+            $scope.showModal = true;
+        });          
     };   
     $scope.closeModal = function() {
         $scope.showModal = false;
@@ -200,15 +195,7 @@ function CreateCtrl($scope, $location, DataElement) {
     };
 }
 
-function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, Myself) {
-    $scope.loadUser = function() {
-        Myself.get(function(u) {
-            $scope.user = u; 
-        });
-    };
-    
-    $scope.loadUser();
-    
+function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart) {
     $scope.forms = [];
     var result = FormList.get({}, function() {
         $scope.forms = result.forms;
@@ -216,13 +203,13 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, Myself) {
     
     $scope.addToCart = function(form) {
        AddToCart.add({formId: form._id}, function(form) {
-           $scope.loadUser();
+           $scope.loadUser(function(){});
        });
     };
 
     $scope.removeFromCart = function(form) {
        RemoveFromCart.add({formId: form._id}, function(form) {
-           $scope.loadUser();
+           $scope.loadUser(function(){});
        });
     };
     
@@ -235,11 +222,7 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, Myself) {
     };
 }
 
-function FormViewCtrl($scope, $routeParams, Form, CdesInForm, Myself) {
-    Myself.get(function(u) {
-        $scope.user = u; 
-    });
-      
+function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
     $scope.reload = function(formId) {
         Form.get({formId: formId}, function(form) {
             $scope.form = form;
@@ -295,19 +278,14 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm, Myself) {
     };
 };
 
-function CartCtrl($scope, Myself, MyCart, RemoveFromCart) {
-    $scope.loadUser = function() {
-        var u = Myself.get(function(u) {
-            $scope.user = u; 
-            $scope.loadForms();
-        });
-    };
-
+function CartCtrl($scope, MyCart, RemoveFromCart) {
     $scope.loadForms = function() {
       MyCart.get(function(result) {
         $scope.forms = result.forms;
       });  
     };
+    
+    $scope.loadForms();
 
     $scope.isInCart = function(formId) {
         if ($scope.user.formCart) {
@@ -319,18 +297,15 @@ function CartCtrl($scope, Myself, MyCart, RemoveFromCart) {
 
     $scope.removeFromCart = function(form) {
        RemoveFromCart.add({formId: form._id}, function(form) {
-           $scope.loadUser();
+           $scope.loadUser(function() {
+               $scope.loadForms();
+           });
        });
     };
-
-    $scope.loadUser();
+    
 }
 
-function CreateFormCtrl($scope, $location, Form, Myself) {
-   Myself.get(function(u) {
-        $scope.user = u; 
-    });
-    
+function CreateFormCtrl($scope, $location, Form) {
     $scope.save = function() {
         Form.save($scope.form, function(form) {
             $location.path('#/listforms');        
