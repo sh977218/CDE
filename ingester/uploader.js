@@ -19,7 +19,7 @@ var schemas = require('../node-js/schemas');
 
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 
-if (process.argv[2] == 'fitbir') {
+if (process.argv[2] === 'fitbir') {
     console.log("Loading file: " + process.argv[3]);
     console.log("Uploader: fitbir");
     
@@ -30,6 +30,10 @@ if (process.argv[2] == 'fitbir') {
       for (var i in result.abstractDataElementsExport.elementList[0].element) {
           console.log("---- " + i);
           var srcDE = result.abstractDataElementsExport.elementList[0].element[i];
+          
+          if (srcDE.status == 'PUBLISHED') {
+              srcDE.status = 'RELEASED';
+          }
 
           var newDE = new DataElement({
               uuid: uuid.v4()
@@ -40,6 +44,7 @@ if (process.argv[2] == 'fitbir') {
               , owningContext: 'FITBIR'
               , origin: 'FITBIR'
               , originId: srcDE.id
+              , workflowStatus: srcDE.status
               , valueDomain: {
                              }
 

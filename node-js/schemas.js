@@ -15,6 +15,13 @@ var permissibleValueSchema = mongoose.Schema({
     , codeSystemName: String
 }, {_id: false});
 
+var alternateNameSchema = mongoose.Schema({
+    value: String
+    , type: String
+    , language: String
+    , owningContext: String
+}, {_id: false});
+
 var deJsonSchema = {
     uuid: String
     , preferredName: String
@@ -36,6 +43,8 @@ var deJsonSchema = {
     }
     , history: [ObjectId]
     , changeNote: String
+    , alternateNames: [alternateNameSchema]
+    , workflowStatus: String
 };
 
 var questionSchema = mongoose.Schema ({

@@ -39,6 +39,7 @@ fs.readFile(process.argv[2], function(err, data) {
             , origin: 'CADSR'
             , originId: cadsrDE.PUBLICID + "v" + cadsrDE.VERSION
             , owningContext: cadsrDE.CONTEXTNAME
+            , workflowStatus: cadsrDE.WORKFLOWSTATUS
             , valueDomain: {  preferredName: cadsrDE.VALUEDOMAIN[0].PreferredName,
                             longName: cadsrDE.VALUEDOMAIN[0].LongName,
                             preferredDefinition: cadsrDE.VALUEDOMAIN[0].PreferredDefinition
@@ -60,6 +61,12 @@ fs.readFile(process.argv[2], function(err, data) {
             concept = cadsrDE.DATAELEMENTCONCEPT[0].Property[0].ConceptDetails[0].ConceptDetails_ITEM[pci];
             newDE.property.concepts.push({name: concept.LONG_NAME, origin: concept.ORIGIN, originId: concept.PREFERRED_NAME});
         }
+
+            
+            
+//        for (var ani in cadsrDE.ALTERNATENAMELIST.ALTERNATENAMELIST_ITEM) {
+//            
+//        }
 
 //        console.log(util.inspect(newDE));
         
