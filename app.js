@@ -141,6 +141,10 @@ app.get('/createform', function(req, res) {
     res.render('createform', { user: req.user });
 });
 
+app.get('/nlmreleased', function(req, res) {
+    res.render('nlmreleased');
+});
+
 app.get('/formview', function(req, res) {
     res.render('formview', { user: req.user });
 });
@@ -164,6 +168,12 @@ app.get('/listcde', function(req, res) {
     cdesvc.listcde(req, res);
 });
 
+app.get('/cdesforapproval', function(req, res) {
+    mongo_data.cdesforapproval(function(err, cdes) {
+        res.send(cdes);
+    });
+});
+
 app.get('/listcontexts', function(req, res) {
     cdesvc.listcontexts(req, res);
 });
@@ -176,6 +186,11 @@ app.get('/dataelement/:id', function(req, res) {
     cdesvc.show(req, res);
 });
 
+// @TODO
+// SECURITY LAMENESS HERE
+// Check the following:
+// 1. You are context owner
+// 2. If you are not nlm admin, remove workflow status from json obj so you can't update it.
 app.post('/dataelement', function (req, res) {
     return cdesvc.save(req, res);
 });

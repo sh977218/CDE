@@ -6,7 +6,12 @@ function MainCtrl($scope, Myself) {
         });
     };
     
-    $scope.loadUser(function(){});          
+    $scope.loadUser(function(){});  
+    
+    $scope.modalOpts = {
+        backdropFade: true,
+        dialogFade: true
+    };  
 }
 
 function AuthCtrl($scope, Auth) {
@@ -110,10 +115,6 @@ function SaveCtrl($scope) {
     $scope.cancelSave = function() {
         $scope.showSave = false;
     };
-    $scope.saveOpts = {
-        backdropFade: true,
-        dialogFade: true
-    };  
 };
 
 function LinkVsacCtrl($scope, LinkToVsac) {    
@@ -123,11 +124,6 @@ function LinkVsacCtrl($scope, LinkToVsac) {
            $scope.cdes[ind] = dataElement;
        });
     };
-    
-    $scope.modalOpts = {
-        backdropFade: true,
-        dialogFade: true
-    }; 
 }
 
 function AddToFormCtrl($scope, MyCart, AddCdeToForm) {
@@ -143,10 +139,6 @@ function AddToFormCtrl($scope, MyCart, AddCdeToForm) {
     $scope.closeModal = function() {
         $scope.showModal = false;
     };
-    $scope.modalOpts = {
-        backdropFade: true,
-        dialogFade: true
-    }; 
     $scope.addToForm = function(cdeId) {
         AddCdeToForm.add({cdeId: cdeId, formId: $scope.radioModel.id});
         $scope.closeModal();
@@ -163,10 +155,7 @@ function AuditCtrl($scope, PriorCdes) {
     $scope.closeHistory = function() {
         $scope.showHistory = false;
     };
-    $scope.historyOpts = {
-        backdropFade: true,
-        dialogFade: true
-    };    
+  
 }
 
 function EditCtrl($scope, $location, $routeParams, DataElement) {
@@ -312,3 +301,33 @@ function CreateFormCtrl($scope, $location, Form) {
         });
     };
  }
+ 
+function NlmReleaseCtrl($scope, CdesForApproval, DataElement) {
+        
+    $scope.reject = function(cde) {
+        DataElement.get({cdeId: cde._id}, function(dataElement) {
+            dataElement.workflowStatus = 'Internally Reviewed';
+            dataElement.$save(function () {
+                $scope.reload();            
+            });
+        });
+    };
+    
+    $scope.approve = function(cde) {
+       DataElement.get({cdeId: cde._id}, function(dataElement) {
+            dataElement.workflowStatus = 'Released';
+            dataElement.$save(function () {
+                $scope.reload();            
+            });
+        });
+    };
+    
+    $scope.reload = function() {
+        var result = CdesForApproval.get({}, function () { 
+           $scope.cdes = result.cdes;
+        }); 
+    };
+    
+    $scope.reload();
+    
+}

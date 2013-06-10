@@ -67,8 +67,8 @@ schemas.userSchema = mongoose.Schema ({
     username: String
     , password: String
     , contextAdmin: [String]
-    , formAdmin: [String]
     , formCart: [String]
+    , nlmAdmin: Boolean
 });
 
 

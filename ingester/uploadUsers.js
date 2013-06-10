@@ -21,7 +21,7 @@ var users = [
   , {username: 'cabig', password: 'cabig', contextAdmin: ['caBIG']}
   , {username: 'fitbir', password: 'fitbir', contextAdmin: ['FITBIR']}
   , {username: 'ludet', password: 'ludet', contextAdmin: ['caBIG', 'CTEP', 'FITBIR']}
-  , {username: 'form', password: 'form', formAdmin: ['MyContext']}
+  , {username: 'nlm', password: 'nlm', nlmAdmin: true}
 ];
 
 for (var i in users) {

@@ -18,4 +18,7 @@ exports.listforms = function(req, res){
 exports.createform = function(req, res){
     res.render('createform');
 };
+exports.nlmreleased = function(req, res){
+    res.render('nlmreleased');
+};
 

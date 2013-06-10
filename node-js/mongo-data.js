@@ -77,6 +77,12 @@ exports.formlist = function(callback) {
     });
 };
 
+exports.cdesforapproval = function(callback) {
+    DataElement.find({'workflowStatus': 'Submitted'}).exec(function(err, cdes) {
+       callback("", {cdes: cdes}); 
+    });
+};
+
 exports.formById = function(formId, callback) {
     Form.findOne({'_id': formId}).exec(function(err, form) {
         callback("", form);
@@ -191,6 +197,7 @@ exports.save = function(mongooseObject, callback) {
     });
 };
 
+// @TODO we should be able to replace this by a straightforward save like for forms.
 exports.saveCde = function(req, callback) {
    return DataElement.findById(req.body._id, function (err, dataElement) {
         return cdeArchive(dataElement, function (arcCde) {
@@ -199,6 +206,7 @@ exports.saveCde = function(req, callback) {
             dataElement.preferredDefinition = req.body.preferredDefinition;
             dataElement.changeNote = req.body.changeNote;
             dataElement.updated = new Date().toJSON();
+            dataElement.workflowStatus = req.body.workflowStatus;
             return dataElement.save(function (err) {
                 if (err) {
                     console.log(err);
@@ -211,6 +219,7 @@ exports.saveCde = function(req, callback) {
 };
 
 // @TODO Following is prone to error, see if there's a deep copy mechanism. 
+// Somethign simple like new DataElement might work
 cdeArchive = function(cde, callback) {
     var deArchive = new DataElementArchive();
     deArchive.longName = cde.longName;
@@ -225,6 +234,7 @@ cdeArchive = function(cde, callback) {
     deArchive.updated = cde.updated;
     deArchive.history = cde.history;
     deArchive.owningContext = cde.owningContext;
+    deArchive.workflowStatus = cde.workflowStatus;
     deArchive.save(function(err) {
         if(err) {
             console.log(err);

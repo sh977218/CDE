@@ -6,6 +6,14 @@
     <option value="">All Contexts</option>
     <option ng-repeat="context in contexts" ng-value="context">{{context}}</option>    
 </select>
+<select ng-model="search.workflowStatus" name="workflowStatus" >
+    <option value="">All Statuses</option>
+    <option value="Draft">Draft</option>
+    <option value="Internal Review">Internal Review</option>
+    <option value="Internally Reviewed">Internally Reviewed</option>
+    <option value="Submitted">Submitted</option>    
+    <option value="Released">Released</option>
+</select>
 <input type="submit" value="Search" ng-click="reload()" class="btn"></input>
 </form>
 
@@ -25,35 +33,34 @@
                     <i ng-show="cde.history.length > 0" class="icon-eye-open" ng-click="openHistory()" tooltip="View History"></i> {{cde.created | date: 'MM/dd/yyyy @ h:mma'}}
                     <%- include historyModal.ejs %>
                 </dd>
-                <dt>Updated in NLM: </dt><dl>{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</dl>
+                <dt>Updated in NLM: </dt><dd>{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
                 </dl>
             </div>
              <div class="span3">
-                 <h4>Concepts</h4>
-                 <table class="table-bordered table-condensed table-striped">
-                     <thead>
-                         <tr>
-                             <th>Name</th>
-                             <th>Origin</th>
-                             <th>Origin ID</th>
-                         </tr>
-                     </thead>
-                     <tbody>
-                         <tr ng-repeat="concept in cde.objectClass.concepts">
-                             <td>{{concept.name}}</td>
-                             <td>{{concept.origin}}</td>
-                             <td>{{concept.originId}}</td>
-                         </tr>
-                         <tr ng-repeat="concept in cde.property.concepts">
-                             <td>{{concept.name}}</td>
-                             <td>{{concept.origin}}</td>
-                             <td>{{concept.originId}}</td>
-                         </tr>
-                     </tbody>
-                 </table>
+                 <%- include concepts.ejs %>
              </div>
             <div class="span4">
                 <h4>Permissible Values</h4>
+                <div ng-controller="LinkVsacCtrl">
+                    <dl class="dl-horizontal">
+                        <dt>Value Set Name: </dt><dd><i class="icon-link" ng-show="isAllowed(cde)" ng-click="showLinkModal=true" tooltip="Link to VSAC "></i> {{cde.valueDomain.longName}}</dd>
+                    </dl>
+                    <div modal="showLinkModal" close="showLinkModal" opts="modalOpts">
+                        <div class="modal-header">
+                            <h4>Save</h4>
+                        </div>
+                        <div class="modal-body">
+                            <label for="vsId">VSAC Value Set OID</label>
+                            <input type="text" ng-model="vsId" name="vsId" required></input><br />
+                            <label for="changeNote">Change Note</label>
+                            <textArea name="changeNote" ng-model="cde.changeNote" placeholder="Optional Change Note"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn cancel" ng-click="showLinkModal = false">Cancel</button>
+                            <button class="btn btn-warning cancel" ng-click="linktovsac(cde, vsId); showLinkModal = false">Save</button>
+                        </div>
+                    </div>                    
+                </div>
                 <%- include valueDomainView.ejs %>
             </div>
           </div>

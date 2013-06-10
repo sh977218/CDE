@@ -32,7 +32,7 @@ if (process.argv[2] === 'fitbir') {
           var srcDE = result.abstractDataElementsExport.elementList[0].element[i];
           
           if (srcDE.status == 'PUBLISHED') {
-              srcDE.status = 'RELEASED';
+              srcDE.status = 'Internally Reviewed';
           }
 
           var newDE = new DataElement({

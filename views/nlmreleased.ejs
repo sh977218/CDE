@@ -1,0 +1,33 @@
+<accordion>
+    <accordion-group ng-repeat="cde in cdes" heading="{{cde.owningContext}} -- {{cde.longName}}">
+         <div class="row-fluid">
+            <div class="span5">
+                <h4>General Details</h4>
+                <dl class="dl-horizontal">
+                    <dt>Name: </dt> <dd>{{cde.longName}}</dd>
+                    <dt>Origin: </dt><dd>{{cde.origin}}</dd>
+                    <dt>Origin ID: </dt><dd>{{cde.originId}}</dd>
+                    <dt>Owner: </dt><dd>{{cde.owningContext}}</dd>
+                    <dt>Definition: </dt><dd>{{cde.preferredDefinition}}</dd>
+                    <dt>Added to NLM: </dt>
+                    <dd ng-controller="AuditCtrl" >
+                        <i ng-show="cde.history.length > 0" class="icon-eye-open" ng-click="openHistory()" tooltip="View History"></i> {{cde.created | date: 'MM/dd/yyyy @ h:mma'}}
+                        <%- include historyModal.ejs %>
+                    </dd>
+                    <dt>Updated in NLM: </dt><dd>{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+                </dl>
+            </div>
+             <div class="span3">
+                 <%- include concepts.ejs %>
+             </div>
+            <div class="span4">
+                <h4>Permissible Values</h4>
+                <%- include valueDomainView.ejs %>
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn cancel" ng-click="reject(cde)">Reject</button>
+            <button class="btn btn-primary" ng-click="approve(cde)">Approve</button>
+        </div>
+    </accordion-group>
+</accordion>

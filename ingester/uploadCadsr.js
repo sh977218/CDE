@@ -1,6 +1,6 @@
 var fs = require('fs')
     , util = require('util')
-    , xml2js = require('xml2js') 
+    , xml2js = require('xml2js')
     , mongoose = require('mongoose')
     , uuid = require('node-uuid')
 ;
@@ -29,6 +29,16 @@ fs.readFile(process.argv[2], function(err, data) {
     for (var i in result.DataElementsList.DataElement) {
         console.log("---- " + i);
         var cadsrDE = result.DataElementsList.DataElement[i];
+        
+        if (cadsrDE.WORKFLOWSTATUS == 'DRAFT NEW') {
+            cadsrDE.WORKFLOWSTATUS = 'Draft';
+        } else if (cadsrDE.WORKFLOWSTATUS == 'DRAFT MOD') {
+            cadsrDE.WORKFLOWSTATUS = 'Internal Review';            
+        } else if (cadsrDE.WORKFLOWSTATUS == 'RELEASED') {
+            cadsrDE.WORKFLOWSTATUS = 'Internally Reviewed';                        
+        } if (cadsrDE.WORKFLOWSTATUS == 'APPRVD FOR TRIAL USE') {
+            cadsrDE.WORKFLOWSTATUS = 'Submitted';            
+        }
         
         var newDE = new DataElement({
             uuid: uuid.v4()
