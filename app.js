@@ -141,8 +141,8 @@ app.get('/createform', function(req, res) {
     res.render('createform', { user: req.user });
 });
 
-app.get('/nlmreleased', function(req, res) {
-    res.render('nlmreleased');
+app.get('/cdereview', function(req, res) {
+    res.render('cdereview');
 });
 
 app.get('/formview', function(req, res) {
@@ -169,7 +169,7 @@ app.get('/listcde', function(req, res) {
 });
 
 app.get('/cdesforapproval', function(req, res) {
-    mongo_data.cdesforapproval(function(err, cdes) {
+    mongo_data.cdesforapproval(req.user.contextAdmin, function(err, cdes) {
         res.send(cdes);
     });
 });

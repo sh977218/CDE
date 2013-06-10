@@ -77,8 +77,8 @@ exports.formlist = function(callback) {
     });
 };
 
-exports.cdesforapproval = function(callback) {
-    DataElement.find({'workflowStatus': 'Submitted'}).exec(function(err, cdes) {
+exports.cdesforapproval = function(contexts, callback) {
+    DataElement.find({'workflowStatus': 'Internal Review'}).where('owningContext').in(contexts).exec(function(err, cdes) {
        callback("", {cdes: cdes}); 
     });
 };

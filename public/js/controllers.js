@@ -1,4 +1,4 @@
-function MainCtrl($scope, Myself) {
+function MainCtrl($scope, Myself, DataElement) {
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u; 
@@ -12,6 +12,11 @@ function MainCtrl($scope, Myself) {
         backdropFade: true,
         dialogFade: true
     };  
+    
+    $scope.isContextAdmin = function() {
+        return $scope.user && $scope.user.contextAdmin && $scope.user.contextAdmin.length > 0;  
+    };
+
 }
 
 function AuthCtrl($scope, Auth) {
@@ -302,32 +307,65 @@ function CreateFormCtrl($scope, $location, Form) {
     };
  }
  
-function NlmReleaseCtrl($scope, CdesForApproval, DataElement) {
-        
-    $scope.reject = function(cde) {
+ function WorkflowCtrl($scope, DataElement) {
+    $scope.changeStatus = function(cde, status) {
         DataElement.get({cdeId: cde._id}, function(dataElement) {
-            dataElement.workflowStatus = 'Internally Reviewed';
+            dataElement.workflowStatus = status;
             dataElement.$save(function () {
                 $scope.reload();            
             });
-        });
+        }); 
+    };     
+ }
+ 
+function NlmReleaseCtrl($scope, CdeList, DataElement) {
+    $scope.changeStatus = function(cde, status) {
+        DataElement.get({cdeId: cde._id}, function(dataElement) {
+            dataElement.workflowStatus = status;
+            dataElement.$save(function () {
+                $scope.reload();            
+            });
+        }); 
+    };
+    $scope.reject = function(cde) {
+        $scope.changeStatus(cde, 'Draft');
     };
     
     $scope.approve = function(cde) {
-       DataElement.get({cdeId: cde._id}, function(dataElement) {
-            dataElement.workflowStatus = 'Released';
-            dataElement.$save(function () {
-                $scope.reload();            
-            });
-        });
+        $scope.changeStatus(cde, 'Released');
     };
     
     $scope.reload = function() {
-        var result = CdesForApproval.get({}, function () { 
+       var result = CdeList.get({search: JSON.stringify({workflowStatus: 'Submitted'})}, function() {
            $scope.cdes = result.cdes;
         }); 
     };
     
     $scope.reload();
+}
+
+function InternalReviewCtrl($scope, CdesForApproval, DataElement) {
+    $scope.changeStatus = function(cde, status) {
+        DataElement.get({cdeId: cde._id}, function(dataElement) {
+            dataElement.workflowStatus = status;
+            dataElement.$save(function () {
+                $scope.reload();            
+            });
+        }); 
+    };
+    $scope.reject = function(cde) {
+        $scope.changeStatus(cde, 'Draft');
+    };
     
+    $scope.approve = function(cde) {
+        $scope.changeStatus(cde, 'Internally Reviewed');
+    };
+    
+    $scope.reload = function() {
+       var result = CdesForApproval.get({}, function() {
+           $scope.cdes = result.cdes;
+       }); 
+    };
+    
+    $scope.reload();
 }

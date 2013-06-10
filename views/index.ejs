@@ -47,6 +47,7 @@
                             </ul>
                         </li>                        
                         <li ng-show='user._id'><a href="#/cart">Cart ({{user.formCart.length}})</a></li>
+                        <li ng-show='isContextAdmin()'><a href="#/internalreview">Review</a></li>
                         <li ng-show='user.nlmAdmin'><a href='#/nlmreleased'>Admin</a></li>
                         <li ng-show='!user._id'><a href="#/login">Log In</a></li>
                         <li ng-show='user._id'><a href="/logout">Log Out</a></li>

@@ -9,7 +9,8 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap']).
         when('/createform', {controller: CreateFormCtrl, templateUrl: '/createform'}).
         when('/formview', {controller: FormViewCtrl, templateUrl: '/formview'}).
         when('/cart', {controller: CartCtrl, templateUrl: '/cart'}).
-        when('/nlmreleased', {controller: NlmReleaseCtrl, templateUrl: '/nlmreleased'}).
+        when('/nlmreleased', {controller: NlmReleaseCtrl, templateUrl: '/cdereview'}).
+        when('/internalreview', {controller: InternalReviewCtrl, templateUrl: '/cdereview'}).
         otherwise({redirectTo:'/'});
     }).
     directive('inlineEdit', function() {
