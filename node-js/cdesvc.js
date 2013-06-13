@@ -20,9 +20,9 @@ exports.listcde = function(req, res) {
         var searchObj;
         if (search) {
             searchObj = JSON.parse(search);
-            if (searchObj.longName) {
-                var regex = new RegExp(searchObj.longName, 'i');
-                searchObj.longName = regex;
+            if (searchObj.name) {
+                var regex = new RegExp(searchObj.name, 'i');
+                searchObj.name = regex;
             }
         }
     }

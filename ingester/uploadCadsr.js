@@ -42,17 +42,19 @@ fs.readFile(process.argv[2], function(err, data) {
         
         var newDE = new DataElement({
             uuid: uuid.v4()
-            , preferredName: cadsrDE.PREFERREDNAME
-            , longName: cadsrDE.LONGNAME
-            , preferredDefinition: cadsrDE.PREFERREDDEFINITION
+// PreferredName as alternate name ?
+//            , preferredName: cadsrDE.PREFERREDNAME
+            , name: cadsrDE.LONGNAME
+            , definition: cadsrDE.PREFERREDDEFINITION
             , created: Date.now()
             , origin: 'CADSR'
             , originId: cadsrDE.PUBLICID + "v" + cadsrDE.VERSION
             , owningContext: cadsrDE.CONTEXTNAME
             , workflowStatus: cadsrDE.WORKFLOWSTATUS
-            , valueDomain: {  preferredName: cadsrDE.VALUEDOMAIN[0].PreferredName,
-                            longName: cadsrDE.VALUEDOMAIN[0].LongName,
-                            preferredDefinition: cadsrDE.VALUEDOMAIN[0].PreferredDefinition
+            , valueDomain: {  
+//                preferredName: cadsrDE.VALUEDOMAIN[0].PreferredName,
+                            name: cadsrDE.VALUEDOMAIN[0].LongName,
+                            definition: cadsrDE.VALUEDOMAIN[0].PreferredDefinition
                          }
                          
         });

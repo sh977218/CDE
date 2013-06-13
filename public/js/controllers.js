@@ -20,7 +20,7 @@ function MainCtrl($scope, Myself) {
     $scope.workflowStatuses = ['Draft', 'Internal Review', 'Internally Reviewed', 'Submitted', 'Released'];
     
     // @TODO
-    // Is there a better way to do this?
+    // Is there a more elegant way to do this?
     $scope.setActiveMenu = function(key) {
         $scope.menuHome = '';
         $scope.menuForm = '';
@@ -28,17 +28,17 @@ function MainCtrl($scope, Myself) {
         $scope.menuCart = '';
         $scope.menuIntRev = '';
         $scope.menuNlmRev = '';
-        if (key == 'LISTCDE') {
+        if (key === 'LISTCDE') {
             $scope.menuHome = 'active';
-        } else if (key == 'LOGIN') {
+        } else if (key === 'LOGIN') {
             $scope.menuLogin = 'active';
-        } else if (key == 'LISTFORMS') {
+        } else if (key === 'LISTFORMS') {
             $scope.menuForm = 'active'
-        } else if (key == 'CART') {
+        } else if (key === 'CART') {
             $scope.menuCart = 'active';
-        } else if (key == 'INTREV') {
+        } else if (key === 'INTREV') {
             $scope.menuIntRev = 'active';
-        } else if (key == 'NLMREV') {
+        } else if (key === 'NLMREV') {
             $scope.menuNlmRev = 'active';
         }
     };
@@ -129,9 +129,12 @@ function ListCtrl($scope, $http, CdeList, DataElement) {
     };
     
     $scope.save = function(cde) {
+        // @TODO 
+        // This is prob a lame way to do it. 
+        // Check save form.
         var de = DataElement.get({cdeId: cde._id}, function(dataElement) {
-            de.longName = cde.longName;
-            de.preferredDefinition = cde.preferredDefinition;
+            de.name = cde.name;
+            de.definition = cde.definition;
             de.changeNote = cde.changeNote;
             de.$save();
             cde.unsaved = false;

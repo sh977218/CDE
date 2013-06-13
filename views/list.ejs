@@ -1,7 +1,7 @@
 <pagination data-boundary-links="true" num-pages="numPages" current-page="currentPage" max-size="10"></pagination>
 
 <form class="form-search">
-<input type="text" ng-model="search.longName" class="search-query" placeholder="Search Name" typeahead="cde.longName for cde in autocomplete($viewValue)" >
+<input type="text" ng-model="search.name" class="search-query" placeholder="Search Name" typeahead="cde.name for cde in autocomplete($viewValue)" >
 <select ng-model="search.owningContext" name="owningContext" >
     <option value="">All Contexts</option>
     <option ng-repeat="context in contexts" ng-value="context">{{context}}</option>    
@@ -13,16 +13,16 @@
 </form>
 
 <accordion>
-    <accordion-group ng-repeat="cde in cdes" heading="{{cde.owningContext}} -- {{cde.longName}}">
+    <accordion-group ng-repeat="cde in cdes" heading="{{cde.owningContext}} -- {{cde.name}}">
          <div class="row-fluid">
             <div class="span5">
                 <h4>General Details</h4>
                 <dl class="dl-horizontal">
-                <dt>Name: </dt> <dd><inline-edit model="cde.longName" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></dd>
+                <dt>Name: </dt> <dd><inline-edit model="cde.name" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></dd>
                 <dt>Origin: </dt><dd>{{cde.origin}}</dd>
                 <dt>Origin ID: </dt><dd>{{cde.originId}}</dd>
                 <dt>Owner: </dt><dd>{{cde.owningContext}}</dd>
-                <dt>Definition: </dt><dd><inline-area-edit model="cde.preferredDefinition" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-area-edit></dd>
+                <dt>Definition: </dt><dd><inline-area-edit model="cde.definition" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-area-edit></dd>
                 <dt>Status: </dt><dd>{{cde.workflowStatus}}</dd>
                 <dt>Added to NLM: </dt>
                 <dd ng-controller="AuditCtrl" >
@@ -39,7 +39,7 @@
                 <h4>Permissible Values</h4>
                 <div ng-controller="LinkVsacCtrl">
                     <dl class="dl-horizontal">
-                        <dt>Value Set Name: </dt><dd><i class="icon-link" ng-show="isAllowed(cde)" ng-click="showLinkModal=true" tooltip="Link to VSAC "></i> {{cde.valueDomain.longName}}</dd>
+                        <dt>Value Set Name: </dt><dd><i class="icon-link" ng-show="isAllowed(cde)" ng-click="showLinkModal=true" tooltip="Link to VSAC "></i> {{cde.valueDomain.name}}</dd>
                     </dl>
                     <div modal="showLinkModal" close="showLinkModal" opts="modalOpts">
                         <div class="modal-header">

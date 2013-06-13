@@ -25,8 +25,8 @@ var alternateNameSchema = mongoose.Schema({
 var deJsonSchema = {
     uuid: String
     , preferredName: String
-    , longName: String
-    , preferredDefinition: String
+    , name: String
+    , definition: String
     , origin: String
     , originId: String
     , owningContext: String
@@ -36,8 +36,8 @@ var deJsonSchema = {
     , property:{concepts: [conceptSchema]}
     , valueDomain: {
         preferredName: String
-        , longName: String
-        , preferredDefinition: String
+        , name: String
+        , definition: String
         , vsacOid: String
         , permissibleValues: [permissibleValueSchema]
     }

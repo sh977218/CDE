@@ -37,9 +37,9 @@ if (process.argv[2] === 'fitbir') {
 
           var newDE = new DataElement({
               uuid: uuid.v4()
-              , preferredName: srcDE.name
-              , longName: srcDE.title
-              , preferredDefinition: srcDE.description
+//              , preferredName: srcDE.name
+              , name: srcDE.title
+              , definition: srcDE.description
               , created: Date.now()
               , owningContext: 'FITBIR'
               , origin: 'FITBIR'
