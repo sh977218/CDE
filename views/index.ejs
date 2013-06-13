@@ -29,8 +29,8 @@
                 <div class="navbar-inner">
                     <a class="brand" href="/">CDEs and Forms</a>
                     <ul class="nav">
-                        <li class="active"><a href="/">Home</a></li>
-                        <li ng-show='user._id'>
+                        <li class="{{menuHome}}"><a href="/">Home</a></li>
+                        <li class="{{menuForm}}" ng-show='user._id'>
                             <a href="#/listforms" class="caret-before">Forms</a>
                         </li>
                         <li class="dropdown">    
@@ -46,10 +46,10 @@
                                 </li>
                             </ul>
                         </li>                        
-                        <li ng-show='user._id'><a href="#/cart">Cart ({{user.formCart.length}})</a></li>
-                        <li ng-show='isContextAdmin()'><a href="#/internalreview">Review</a></li>
-                        <li ng-show='user.nlmAdmin'><a href='#/nlmreleased'>Admin</a></li>
-                        <li ng-show='!user._id'><a href="#/login">Log In</a></li>
+                        <li class="{{menuCart}}" ng-show='user._id'><a href="#/cart">Cart ({{user.formCart.length}})</a></li>
+                        <li class="{{menuIntRev}}" ng-show='isContextAdmin()'><a href="#/internalreview">Review</a></li>
+                        <li class="{{menuNlmRev}}" ng-show='user.nlmAdmin'><a href='#/nlmreleased'>Admin</a></li>
+                        <li class="{{menuLogin}}" ng-show='!user._id'><a href="#/login">Log In</a></li>
                         <li ng-show='user._id'><a href="/logout">Log Out</a></li>
                     </ul>
                 </div>

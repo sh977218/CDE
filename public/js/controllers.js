@@ -1,4 +1,4 @@
-function MainCtrl($scope, Myself, DataElement) {
+function MainCtrl($scope, Myself) {
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u; 
@@ -18,10 +18,36 @@ function MainCtrl($scope, Myself, DataElement) {
     };
     
     $scope.workflowStatuses = ['Draft', 'Internal Review', 'Internally Reviewed', 'Submitted', 'Released'];
-
+    
+    // @TODO
+    // Is there a better way to do this?
+    $scope.setActiveMenu = function(key) {
+        $scope.menuHome = '';
+        $scope.menuForm = '';
+        $scope.menuLogin = '';
+        $scope.menuCart = '';
+        $scope.menuIntRev = '';
+        $scope.menuNlmRev = '';
+        if (key == 'LISTCDE') {
+            $scope.menuHome = 'active';
+        } else if (key == 'LOGIN') {
+            $scope.menuLogin = 'active';
+        } else if (key == 'LISTFORMS') {
+            $scope.menuForm = 'active'
+        } else if (key == 'CART') {
+            $scope.menuCart = 'active';
+        } else if (key == 'INTREV') {
+            $scope.menuIntRev = 'active';
+        } else if (key == 'NLMREV') {
+            $scope.menuNlmRev = 'active';
+        }
+    };
 }
 
 function AuthCtrl($scope, Auth) {
+    
+    $scope.setActiveMenu('LOGIN');
+    
     $scope.login = function() {
         Auth.login({
                 username: $scope.username,
@@ -39,9 +65,10 @@ function AuthCtrl($scope, Auth) {
 }
 
 function ListCtrl($scope, $http, CdeList, DataElement) {
+    $scope.setActiveMenu('LISTCDE');
+    
     $scope.currentPage = 1;
     $scope.pageSize = 10;
-    
     $scope.originOptions = ['CADSR', 'FITBIR'];
     
     $scope.isAllowed = function (cde) {
@@ -192,6 +219,7 @@ function CreateCtrl($scope, $location, DataElement) {
 }
 
 function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart) {
+    $scope.setActiveMenu('LISTFORMS');
     $scope.forms = [];
     var result = FormList.get({}, function() {
         $scope.forms = result.forms;
@@ -275,6 +303,8 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
 };
 
 function CartCtrl($scope, MyCart, RemoveFromCart) {
+    $scope.setActiveMenu('CART');
+    
     $scope.loadForms = function() {
       MyCart.get(function(result) {
         $scope.forms = result.forms;
@@ -321,6 +351,8 @@ function CreateFormCtrl($scope, $location, Form) {
  }
  
 function NlmReleaseCtrl($scope, CdeList, DataElement) {
+    $scope.setActiveMenu('NLMREV');
+    
     $scope.changeStatus = function(cde, status) {
         DataElement.get({cdeId: cde._id}, function(dataElement) {
             dataElement.workflowStatus = status;
@@ -347,6 +379,8 @@ function NlmReleaseCtrl($scope, CdeList, DataElement) {
 }
 
 function InternalReviewCtrl($scope, CdesForApproval, DataElement) {
+   $scope.setActiveMenu('INTREV');
+   
     $scope.changeStatus = function(cde, status) {
         DataElement.get({cdeId: cde._id}, function(dataElement) {
             dataElement.workflowStatus = status;
