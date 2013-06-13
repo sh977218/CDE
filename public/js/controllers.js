@@ -16,6 +16,8 @@ function MainCtrl($scope, Myself, DataElement) {
     $scope.isContextAdmin = function() {
         return $scope.user && $scope.user.contextAdmin && $scope.user.contextAdmin.length > 0;  
     };
+    
+    $scope.workflowStatuses = ['Draft', 'Internal Review', 'Internally Reviewed', 'Submitted', 'Released'];
 
 }
 

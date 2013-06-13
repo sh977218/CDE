@@ -6,13 +6,8 @@
     <option value="">All Contexts</option>
     <option ng-repeat="context in contexts" ng-value="context">{{context}}</option>    
 </select>
-<select ng-model="search.workflowStatus" name="workflowStatus" >
+<select ng-model="search.workflowStatus" name="workflowStatus" ng-options="status as status for status in workflowStatuses">
     <option value="">All Statuses</option>
-    <option value="Draft">Draft</option>
-    <option value="Internal Review">Internal Review</option>
-    <option value="Internally Reviewed">Internally Reviewed</option>
-    <option value="Submitted">Submitted</option>    
-    <option value="Released">Released</option>
 </select>
 <input type="submit" value="Search" ng-click="reload()" class="btn"></input>
 </form>
