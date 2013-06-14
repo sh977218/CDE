@@ -2,6 +2,7 @@ var mongoose = require('mongoose')
     , util = require('util')
     , vsac_io = require('./vsac-io')
     , xml2js = require('xml2js')
+;
 
 var mongoUri = process.env.MONGOHQ_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/test';
 
@@ -60,8 +61,6 @@ exports.removeFromCart = function (user, formId, callback) {
 
 
 exports.cdelist = function(from, limit, searchOptions, callback) {
-    // @TODO 
-    // Is there a better way to do this:
     DataElement.find(searchOptions).skip(from).limit(limit).sort('name').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
         DataElement.count(searchOptions).exec(function (err, count) {
         callback("",{
