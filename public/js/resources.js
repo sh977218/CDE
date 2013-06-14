@@ -18,8 +18,7 @@ angular.module('resources', ['ngResource']).
         return CdesInForm;
     })
     .factory('AutocompleteSvc', function($resource) {
-        var AutocompleteSvc = $resource("/autocomplete/:inValue", {inValue: '@inValue'},
-            {'autocomplete': {method: 'GET', isArray: true}});
+        var AutocompleteSvc = $resource("/autocomplete");
         return AutocompleteSvc;
     })
     .factory('Auth', function($http){

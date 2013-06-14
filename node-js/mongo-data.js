@@ -132,8 +132,11 @@ exports.cdeById = function(cdeId, callback) {
     });
 };
 
-exports.autocomplete = function (inValue, callback) {
-    DataElement.find({'name': new RegExp(inValue, 'i')}, {name: 1}).limit(20).exec(function (err, result) {
+
+exports.name_autocomplete = function (searchOptions, callback) {
+    var name = searchOptions.name;
+    delete searchOptions.name;
+    DataElement.find(searchOptions, {name: 1, _id: 0}).where('name').equals(new RegExp(name, 'i')).limit(20).exec(function (err, result) {
         callback("", result);
     });
 };

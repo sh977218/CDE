@@ -64,7 +64,7 @@ function AuthCtrl($scope, Auth) {
     };
 }
 
-function ListCtrl($scope, $http, CdeList, DataElement) {
+function ListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
     $scope.setActiveMenu('LISTCDE');
     
     $scope.currentPage = 1;
@@ -116,10 +116,25 @@ function ListCtrl($scope, $http, CdeList, DataElement) {
     } ;  
     
     $scope.autocomplete = function(viewValue) {
-     return $http.get("/autocomplete/"+viewValue).then(function(response){ 
-        return response.data;
-     });
+        // @TODO
+        // Typeahead gets called before ng-model binding 
+        // So I am setting is manually. Is there a better way to do the next 3 lines?
+        if (!$scope.search) {
+            $scope.search = {};
+        }
+        $scope.search.name = viewValue;
+        
+        return $http.get("/autocomplete?search="+JSON.stringify($scope.search)).then(function(response){ 
+            return response.data.names;
+        }); 
     };
+
+//    $scope.autocomplete = function(viewValue) {
+//        return $http.get("/autocomplete/" + viewValue).then(function(response){ 
+//           return response.data.names;
+//        });
+//    };
+
     
     $scope.revert = function(cde) {
         var de = DataElement.get({cdeId: cde._id}, function(dataElement) {

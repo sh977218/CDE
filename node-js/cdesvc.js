@@ -85,18 +85,17 @@ exports.save = function (req, res) {
     });
 };  
 
-exports.autocomplete = function(req, res) {
-    var inValue = req.params.inValue;
-    
-    if (inValue == "undefined") {
+exports.name_autocomplete = function(req, res) {
+    var search = req.query["search"]    
+    if (search == "undefined" || search.name == "undefined") {
         res.send("");
     } else {
-        mongo_data.autocomplete(inValue, function (err, result) {
+        mongo_data.name_autocomplete(JSON.parse(search), function(err, nameList) {
             if (err) {
-                res.send("");
+                res.send("ERROR");
             } else {
-                res.send(result);
+                res.send({names: nameList});
             }
-        });
+         });
     }
 };

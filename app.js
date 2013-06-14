@@ -254,8 +254,8 @@ app.post('/linktovsac', function (req, res) {
     return cdesvc.linktovsac(req, res);
 });
 
-app.get('/autocomplete/:inValue', function(req, res) {
-    return cdesvc.autocomplete(req, res);
+app.get('/autocomplete', function(req, res) {
+    return cdesvc.name_autocomplete(req, res);
 });
 
 
