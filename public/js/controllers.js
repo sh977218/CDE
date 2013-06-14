@@ -78,7 +78,7 @@ function ListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
         }
     };
     $scope.removeWorkflowStatus = function() {
-        if ($scope.search.workflowStatus == "") {
+        if (!$scope.search.workflowStatus) {
             delete $scope.search.workflowStatus;
         }
     };
