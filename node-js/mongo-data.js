@@ -62,15 +62,6 @@ exports.removeFromCart = function (user, formId, callback) {
 exports.cdelist = function(from, limit, searchOptions, callback) {
     // @TODO 
     // Is there a better way to do this:
-    if (searchOptions) {
-        if (!searchOptions.owningContext) {
-           delete searchOptions.owningContext;
-        } 
-        if (!searchOptions.workflowStatus) {
-            delete searchOptions.workflowStatus;
-        }
-    }
-    
     DataElement.find(searchOptions).skip(from).limit(limit).sort('name').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
         DataElement.count(searchOptions).exec(function (err, count) {
         callback("",{

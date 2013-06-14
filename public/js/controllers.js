@@ -42,6 +42,7 @@ function MainCtrl($scope, Myself) {
             $scope.menuNlmRev = 'active';
         }
     };
+    
 }
 
 function AuthCtrl($scope, Auth) {
@@ -70,6 +71,18 @@ function ListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
     $scope.currentPage = 1;
     $scope.pageSize = 10;
     $scope.originOptions = ['CADSR', 'FITBIR'];
+
+    $scope.removeOwningContext = function() {
+        if ($scope.search.owningContext == "") {
+            delete $scope.search.owningContext;
+        }
+    };
+    $scope.removeWorkflowStatus = function() {
+        if ($scope.search.workflowStatus == "") {
+            delete $scope.search.workflowStatus;
+        }
+    };
+    
     
     $scope.isAllowed = function (cde) {
         if ($scope.user.contextAdmin) {

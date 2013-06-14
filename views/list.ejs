@@ -2,8 +2,8 @@
 
 <form class="form-search">
 <input type="text" ng-model="search.name" class="search-query" placeholder="Search Name" typeahead="cde.name for cde in autocomplete($viewValue)" >
-<select ng-model="search.owningContext" name="owningContext" >
-    <option value="">All Contexts</option>
+<select ng-model="search.owningContext" name="owningContext" ng-change="removeOwningContext()">
+    <option value="" >All Contexts</option>
     <option ng-repeat="context in contexts" ng-value="context">{{context}}</option>    
 </select>
 <select ng-model="search.workflowStatus" name="workflowStatus" ng-options="status as status for status in workflowStatuses">
