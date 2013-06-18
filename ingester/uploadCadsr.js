@@ -51,6 +51,7 @@ fs.readFile(process.argv[2], function(err, data) {
             , originId: cadsrDE.PUBLICID + "v" + cadsrDE.VERSION
             , owningContext: cadsrDE.CONTEXTNAME
             , workflowStatus: cadsrDE.WORKFLOWSTATUS
+            , version: cadsrDE.VERSION
             , valueDomain: {  
 //                preferredName: cadsrDE.VALUEDOMAIN[0].PreferredName,
                             name: cadsrDE.VALUEDOMAIN[0].LongName,
@@ -85,6 +86,7 @@ fs.readFile(process.argv[2], function(err, data) {
         newDE.save(function (err, newDE) {
             if (err) {
               console.log('unable to save DE: ' + util.inspect(newDE));
+              console.log(err);
             }
         });
         

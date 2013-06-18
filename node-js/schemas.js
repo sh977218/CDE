@@ -32,6 +32,7 @@ var deJsonSchema = {
     , owningContext: String
     , created: Date
     , updated: Date
+    , version: String
     , objectClass: {concepts: [conceptSchema]}
     , property:{concepts: [conceptSchema]}
     , valueDomain: {
