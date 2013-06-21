@@ -36,6 +36,39 @@ exports.listcde = function(req, res) {
     });
 };
 
+exports.listform = function(req, res) {
+    var from = req.query["from"],
+        pagesize = req.query["pagesize"],
+        search = req.query["search"];
+   
+    if (!from) {
+        from = 0;
+    }
+    if (!pagesize) {
+        pagesize = 20;
+    }
+    if (search == 'undefined') {
+        search = "";
+    } else {
+        var searchObj;
+        if (search) {
+            searchObj = JSON.parse(search);
+            if (searchObj.name) {
+                var regex = new RegExp(searchObj.name, 'i');
+                searchObj.name = regex;
+            }
+        }
+    }
+
+    mongo_data.formlist(from, pagesize, searchObj, function(err, formlist) {
+       if (err) {
+           res.send("ERROR");
+       } else {
+           res.send(formlist);
+       }
+    });
+}
+
 exports.listcontexts = function(req, res) {
     mongo_data.listcontexts(function(err, contexts) {
        if (err) {
@@ -91,6 +124,21 @@ exports.name_autocomplete = function(req, res) {
         res.send("");
     } else {
         mongo_data.name_autocomplete(JSON.parse(search), function(err, nameList) {
+            if (err) {
+                res.send("ERROR");
+            } else {
+                res.send({names: nameList});
+            }
+         });
+    }
+};
+
+exports.name_autocomplete_form = function(req, res) {
+    var search = req.query["search"]    
+    if (search == "undefined" || search.name == "undefined") {
+        res.send("");
+    } else {
+        mongo_data.name_autocomplete_form(JSON.parse(search), function(err, nameList) {
             if (err) {
                 res.send("ERROR");
             } else {

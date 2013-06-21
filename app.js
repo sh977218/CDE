@@ -113,9 +113,7 @@ app.get('/listforms', function(req, res) {
 });
 
 app.get('/formlist', function(req, res) {
-    mongo_data.formlist(function(err, forms) {
-        res.send(forms);
-    });
+    cdesvc.listform(req, res);
 });
 
 app.get('/cartcontent', function(req, res) {
@@ -201,8 +199,14 @@ app.get('/cdesinform/:formId', function (req, res) {
           res.send("The requested form does not exist.");
       } else {
           var idList = [];
-          for (var i=0; i < form.questions.length; i++) {
-              idList.push(form.questions[i].cde_uuid);
+          if (form.modules) {
+            for (var j=0; j < form.modules.length; j++) {
+              for (var i=0; i < form.modules[j].questions.length; i++) {
+                  if (form.modules[j].questions[i].dataElement.de_uuid) {
+                      idList.push(form.modules[j].questions[i].dataElement.de_uuid);
+                  }
+              }
+            }
           }
           mongo_data.cdesByUuidList(idList, function(err, cdes) {
              res.send(cdes); 
@@ -256,6 +260,10 @@ app.post('/linktovsac', function (req, res) {
 
 app.get('/autocomplete', function(req, res) {
     return cdesvc.name_autocomplete(req, res);
+});
+
+app.get('/autocomplete/form', function(req, res) {
+    return cdesvc.name_autocomplete_form(req, res);
 });
 
 

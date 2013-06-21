@@ -51,8 +51,16 @@ var deJsonSchema = {
 var questionSchema = mongoose.Schema ({
     value: String
     , instructions: String
-    , cde_uuid: String
+    , dataElement: {
+        description: String
+        , de_uuid: String
+    }
 }, {_id: false});
+
+var moduleSchema = mongoose.Schema ({
+    name: String
+    , questions: [questionSchema]
+}, {_id: false})
 
 var formSchema = {
     name: String
@@ -61,7 +69,7 @@ var formSchema = {
     , owningContext: String
     , updated: Date
     , created: Date
-    , questions: [questionSchema]
+    , modules: [moduleSchema]
 };
 
 schemas.userSchema = mongoose.Schema ({

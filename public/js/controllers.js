@@ -1,4 +1,4 @@
-function MainCtrl($scope, Myself) {
+function MainCtrl($scope, Myself, $http) {
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u; 
@@ -33,7 +33,7 @@ function MainCtrl($scope, Myself) {
         } else if (key === 'LOGIN') {
             $scope.menuLogin = 'active';
         } else if (key === 'LISTFORMS') {
-            $scope.menuForm = 'active'
+            $scope.menuForm = 'active';
         } else if (key === 'CART') {
             $scope.menuCart = 'active';
         } else if (key === 'INTREV') {
@@ -43,6 +43,13 @@ function MainCtrl($scope, Myself) {
         }
     };
     
+    $scope.listcontexts = function() {
+     return $http.get("/listcontexts").then(function(response){ 
+        return response.data;
+     });
+    };
+    
+
 }
 
 function AuthCtrl($scope, Auth) {
@@ -83,7 +90,6 @@ function ListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
         }
     };
     
-    
     $scope.isAllowed = function (cde) {
         if ($scope.user.contextAdmin) {
             return $scope.user.contextAdmin.indexOf(cde.owningContext) > -1;
@@ -96,12 +102,6 @@ function ListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
         cde.unsaved = true;
     };
    
-    $scope.listcontexts = function() {
-     return $http.get("/listcontexts").then(function(response){ 
-        return response.data;
-     });
-    };
-    
     $scope.contexts = $scope.listcontexts();
 
     $scope.$watch('currentPage', function() {
@@ -141,13 +141,6 @@ function ListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
             return response.data.names;
         }); 
     };
-
-//    $scope.autocomplete = function(viewValue) {
-//        return $http.get("/autocomplete/" + viewValue).then(function(response){ 
-//           return response.data.names;
-//        });
-//    };
-
     
     $scope.revert = function(cde) {
         var de = DataElement.get({cdeId: cde._id}, function(dataElement) {
@@ -249,12 +242,12 @@ function CreateCtrl($scope, $location, DataElement) {
     };
 }
 
-function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart) {
+function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
+    $scope.currentPage = 1;
+    $scope.pageSize = 10;
+
     $scope.setActiveMenu('LISTFORMS');
     $scope.forms = [];
-    var result = FormList.get({}, function() {
-        $scope.forms = result.forms;
-    });
     
     $scope.addToCart = function(form) {
        AddToCart.add({formId: form._id}, function(form) {
@@ -275,6 +268,45 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart) {
             return false;
         }
     };
+    
+    $scope.autocomplete = function(viewValue) {
+        // @TODO
+        // Typeahead gets called before ng-model binding 
+        // So I am setting is manually. Is there a better way to do the next 3 lines?
+        if (!$scope.search) {
+            $scope.search = {};
+        }
+        $scope.search.name = viewValue;
+        
+        return $http.get("/autocomplete/form/?search="+JSON.stringify($scope.search)).then(function(response) { 
+            return response.data.names;
+        }); 
+    };
+    
+    $scope.$watch('currentPage', function() {
+        $scope.reload();
+    });
+
+    $scope.setPage = function (pageNo) {
+      $scope.currentPage = pageNo;
+    };       
+
+    $scope.previous = function () {
+        $scope.currentPage--;
+    };
+
+    $scope.next = function () {
+        $scope.currentPage++;
+    };
+    
+    $scope.reload = function() {
+        var newfrom = ($scope.currentPage - 1) * $scope.pageSize;
+        var result = FormList.get({from: newfrom, search: JSON.stringify($scope.search)}, function () {
+           $scope.numPages = result.pages; 
+           $scope.forms = result.forms;
+        });
+    } ;  
+    
 }
 
 function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
@@ -283,11 +315,13 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
             $scope.form = form;
             CdesInForm.getCdes({formId: formId}, function(cdes) {
                 $scope.cdes = cdes;
-                for (var i = 0; i < form.questions.length; i++) {
-                    var q = form.questions[i];
-                    for (var j = 0; j < cdes.length; j++) {
-                        if (cdes[j].uuid === q.cde_uuid) {
-                            q.cde = cdes[j];
+                for (var k=0; k < form.modules.length; k++) {
+                    for (var i = 0; i < form.modules[k].questions.length; i++) {
+                        var q = form.modules[k].questions[i];
+                        for (var j = 0; j < cdes.length; j++) {
+                            if (cdes[j].uuid === q.dataElement.de_uuid) {
+                                q.cde = cdes[j];
+                            }
                         }
                     }
                 }

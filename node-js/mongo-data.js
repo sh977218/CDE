@@ -72,11 +72,17 @@ exports.cdelist = function(from, limit, searchOptions, callback) {
     });
 };  
 
-exports.formlist = function(callback) {
-    Form.find().exec(function(err, forms) {
-       callback("", {forms: forms}); 
+exports.formlist = function(from, limit, searchOptions, callback) {
+    Form.find(searchOptions).skip(from).limit(limit).sort('name').exec(function (err, forms) {
+        Form.count(searchOptions).exec(function (err, count) {
+        callback("",{
+               forms: forms,
+               page: Math.ceil(from / limit),
+               pages: Math.ceil(count / limit)
+           });
+        });
     });
-};
+};  
 
 exports.cdesforapproval = function(contexts, callback) {
     DataElement.find({'workflowStatus': 'Internal Review'}).where('owningContext').in(contexts).exec(function(err, cdes) {
@@ -97,8 +103,8 @@ exports.formsByIdList = function(idList, callback) {
 };
 
 exports.cdesByUuidList = function(idList, callback) {
-    DataElement.find().where('uuid').in(idList).exec(function(err, forms) {
-       callback("", forms); 
+    DataElement.find().where('uuid').in(idList).exec(function(err, cdes) {
+       callback("", cdes); 
     });
 };
 
@@ -127,6 +133,14 @@ exports.name_autocomplete = function (searchOptions, callback) {
     var name = searchOptions.name;
     delete searchOptions.name;
     DataElement.find(searchOptions, {name: 1, _id: 0}).where('name').equals(new RegExp(name, 'i')).limit(20).exec(function (err, result) {
+        callback("", result);
+    });
+};
+
+exports.name_autocomplete_form = function (searchOptions, callback) {
+    var name = searchOptions.name;
+    delete searchOptions.name;
+    Form.find(searchOptions, {name: 1, _id: 0}).where('name').equals(new RegExp(name, 'i')).limit(20).exec(function (err, result) {
         callback("", result);
     });
 };

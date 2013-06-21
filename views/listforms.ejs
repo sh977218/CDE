@@ -1,1 +1,15 @@
+<pagination data-boundary-links="true" num-pages="numPages" current-page="currentPage" max-size="10"></pagination>
+
+<form class="form-search">
+<input type="text" ng-model="search.name" class="search-query" placeholder="Search Name" typeahead="form.name for form in autocomplete($viewValue)" >
+<select ng-model="search.owningContext" name="owningContext" ng-change="removeOwningContext()">
+    <option value="" >All Contexts</option>
+    <option ng-repeat="context in contexts" ng-value="context">{{context}}</option>    
+</select>
+<select ng-model="search.workflowStatus" name="workflowStatus" ng-options="status as status for status in workflowStatuses" ng-change="removeWorkflowStatus()">
+    <option value="">All Statuses</option>
+</select>
+<input type="submit" value="Search" ng-click="reload()" class="btn"></input>
+</form>
+
 <%- include formAccordion.ejs %>

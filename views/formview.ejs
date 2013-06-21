@@ -8,34 +8,38 @@
     </dl>
 </div>
 
+<h2>Sections</h2>
 
-<h4>Questions</h4>
-<p ng-show="form.questions.length == 0">There are no questions in this form. You can add questions to a form by browsing CDEs and adding them to a form in your cart.</p>
-<accordion>
-    <accordion-group ng-repeat="question in form.questions" >
-        <accordion-heading><i ng-show='!$first' class="icon-arrow-up" ng-click="sortUp($index)"></i> <i ng-show='!$last' class="icon-arrow-down" ng-click='sortDown($index)'></i> {{question.cde.owningContext}} -- {{question.cde.longName}}</accordion-heading>
-         <div class="row-fluid">
-            <div class="span5">
-                <h5>Question Details</h5>
-                <dl class="dl-horizontal">
-                    <dt>Question: </dt><dd><inline-edit model="question.value" is-allowed="isAllowed()" on-ok="stageQuestion()"> </inline-edit></dd>
-                    <dt>Instructions: </dt><dd><inline-area-edit model="question.instructions" is-allowed="isAllowed(question)" on-ok="stageQuestion(question)"> </inline-area-edit></dd>              
-                </dl>
-            </div>
-             <div class="span7">
-                <h5>CDE General Details</h5>
-                <dl class="dl-horizontal">
-                <dt>Name: </dt><dd>{{question.cde.name}}</dd>
-                <dt>Origin: </dt><dd>{{question.cde.origin}}</dd>
-                <dt>Origin ID: </dt><dd>{{question.cde.originId}}</dd>
-                <dt>Owner: </dt><dd>{{question.cde.owningContext}}</dd>
-                <dt>Definition: </dt><dd>{{question.cde.definition}}</dd>
-                <dt>Added to NLM: </dt><dd>{{question.cde.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-                </dl>
-            </div>
-         </div>
-    </accordion-group>
-</accordion>
+<div ng-repeat="module in form.modules">
+    <h3>{{module.name}}</h3>
+    <h4>Questions</h4>
+    <p ng-show="module.questions.length == 0">There are no questions in this section. You can add questions to a form by browsing CDEs and adding them to a form in your cart.</p>
+    <accordion>
+        <accordion-group ng-repeat="question in module.questions" >
+            <accordion-heading><i ng-show='!$first && isAllowed()' class="icon-arrow-up" ng-click="sortUp($index)"></i> <i ng-show='!$last && isAllowed()' class="icon-arrow-down" ng-click='sortDown($index)'></i> {{question.name}}</accordion-heading>
+             <div class="row-fluid">
+                <div class="span5">
+                    <h5>Question Details</h5>
+                    <dl class="dl-horizontal">
+                        <dt>Question: </dt><dd><inline-edit model="question.name" is-allowed="isAllowed()" on-ok="stageQuestion()"> </inline-edit></dd>
+                    </dl>
+                </div>
+                 <div class="span7">
+                    <h5>Data Element Details</h5>
+                    <dl class="dl-horizontal">
+                    <dt>Name: </dt><dd>{{question.cde.name}}</dd>
+                    <dt>Origin: </dt><dd>{{question.cde.origin}}</dd>
+                    <dt>Origin ID: </dt><dd>{{question.cde.originId}}</dd>
+                    <dt>Owner: </dt><dd>{{question.cde.owningContext}}</dd>
+                    <dt>Definition: </dt><dd>{{question.cde.definition}}</dd>
+                    <dt>Added to NLM: </dt><dd>{{question.cde.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+                    </dl>
+                </div>
+             </div>
+        </accordion-group>
+    </accordion>
+</div>
+
 
 <div class="row-fluid">
     <div class="span12" ng-show="form.unsaved">
