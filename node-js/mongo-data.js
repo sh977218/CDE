@@ -61,7 +61,7 @@ exports.removeFromCart = function (user, formId, callback) {
 
 
 exports.cdelist = function(from, limit, searchOptions, callback) {
-    DataElement.find(searchOptions).skip(from).limit(limit).sort('name').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
+    DataElement.find(searchOptions).skip(from).limit(limit).sort('-formUsageCounter').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
         DataElement.count(searchOptions).exec(function (err, count) {
         callback("",{
                cdes: cdes,

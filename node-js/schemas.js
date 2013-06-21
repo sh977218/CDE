@@ -46,6 +46,7 @@ var deJsonSchema = {
     , changeNote: String
     , alternateNames: [alternateNameSchema]
     , workflowStatus: String
+    , formUsageCounter: Number
 };
 
 var questionSchema = mongoose.Schema ({
@@ -65,7 +66,7 @@ var moduleSchema = mongoose.Schema ({
 var formSchema = {
     name: String
     , instructions: String
-    , status: String
+    , workflowStatus: String
     , owningContext: String
     , updated: Date
     , created: Date
