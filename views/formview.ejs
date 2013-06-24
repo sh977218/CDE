@@ -1,17 +1,25 @@
-<div class="row-fluid">
-    <h4>General Details</h4>
+<div class="container">
+<div class='row-fluid'>
+    
+    <div class="span3">
+        <ul class="nav nav-list pull-left">
+          <li><a ng-click="scrollTo('general')"><i class="icon-chevron-right"></i> General</a></li>
+          <li ng-repeat="module in form.modules"><a ng-click="scrollTo(module.name)"><i class="icon-chevron-right"></i> {{module.name}}</a></li>
+        </ul>
+    </div>
+    
+    <div class='span9'>
+    <h4 id='general'>General Details</h4>
     <dl class="dl-horizontal">
         <dt>Name: </dt><dd>{{form.name}}</dd>
         <dt>Owner: </dt><dd>{{form.owningContext}}</dd>
-        <dt>Instructions: </dt><dd>{{form.instructions}}</dd>                
+        <dt>Instructions: </dt><dd>{{form.instructions || 'None'}}</dd>                
         <dt>Created: </dt><dd>{{form.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>                
     </dl>
-</div>
 
-<h2>Sections</h2>
-
+<h4>Sections</h4>
 <div ng-repeat="module in form.modules">
-    <h3>{{module.name}}</h3>
+    <h3 id="{{module.name}}">{{module.name}}</h3>
     <h4>Questions</h4>
     <p ng-show="module.questions.length == 0">There are no questions in this section. You can add questions to a form by browsing CDEs and adding them to a form in your cart.</p>
     <accordion>
@@ -40,10 +48,13 @@
     </accordion>
 </div>
 
-
 <div class="row-fluid">
     <div class="span12" ng-show="form.unsaved">
         <button class="btn cancel" ng-click="revert()">Discard Changes</button>
         <button class="btn btn-primary" ng-click="save()">Save</button>
     </div>
+</div>
+
+</div>
+</div>
 </div>

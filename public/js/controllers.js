@@ -1,4 +1,4 @@
-function MainCtrl($scope, Myself, $http) {
+function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u; 
@@ -50,6 +50,14 @@ function MainCtrl($scope, Myself, $http) {
     };
     
     $scope.contexts = $scope.listcontexts();
+
+    $scope.scrollTo = function(id) {
+        var old = $location.hash();
+        $location.hash(id);
+        $anchorScroll();
+        //reset to old to keep any additional routing logic from kicking in
+        $location.hash(old);
+    };
 
 }
 
