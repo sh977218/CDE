@@ -49,6 +49,7 @@ function MainCtrl($scope, Myself, $http) {
      });
     };
     
+    $scope.contexts = $scope.listcontexts();
 
 }
 
@@ -102,8 +103,6 @@ function ListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
         cde.unsaved = true;
     };
    
-    $scope.contexts = $scope.listcontexts();
-
     $scope.$watch('currentPage', function() {
         $scope.reload();
     });
