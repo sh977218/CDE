@@ -34,6 +34,13 @@ exports.userById = function(id, callback) {
     });
 };
 
+exports.addUser = function(user, callback) {
+    var newUser = new User(user);
+    newUser.save(function() {
+        callback();
+    });
+}
+
 exports.addToCart = function (user, formId, callback) {
     User.findOne({'_id': user._id}).exec(function (err, u) {
        u.formCart.push(formId);

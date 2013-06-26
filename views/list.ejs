@@ -63,10 +63,12 @@
             </div>
           </div>
         <div class="row-fluid" >
+            <!--
             <span ng-controller="AddToFormCtrl" class="dropdown">
                 <a ng-show="user._id" class="btn-small btn-primary" ng-click="openModal()"><i class="icon-list-alt"> Add to Form</i></a>
                 <%- include addToFormModal.ejs %> 
             </span>
+            -->
             <span ng-controller="WorkflowCtrl" ng-show='isAllowed(cde)'>
                 <span ng-show="cde.workflowStatus == 'Draft'">
                     <a class="btn-small btn-primary" ng-click="changeStatus(cde, 'Internal Review')"><i class="icon-check-empty"> Submit for Internal Review</i></a>

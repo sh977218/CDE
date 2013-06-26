@@ -61,7 +61,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
 
 }
 
-function AuthCtrl($scope, Auth) {
+function AuthCtrl($scope, $rootScope, Auth, $location) {
     
     $scope.setActiveMenu('LOGIN');
     
@@ -79,6 +79,20 @@ function AuthCtrl($scope, Auth) {
                 $rootScope.error = "Failed to login";
             });
     };
+    
+    $scope.register = function() {
+        Auth.register({
+            username: $scope.user.username
+            , password: $scope.user.password
+        },
+        function(res) {
+            $rootScope.message = res;
+            $location.path("/login");
+        },
+        function(err) {
+            $rootScope.error = "failed";
+        }
+    )};
 }
 
 function ListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {

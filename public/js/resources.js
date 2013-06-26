@@ -1,25 +1,20 @@
 angular.module('resources', ['ngResource']).
     factory('CdeList', function($resource) {
-        var CdeList = $resource('/listcde');
-        return CdeList;
+        return $resource('/listcde');
     })
     .factory('DataElement', function($resource) {
-        var DataElement = $resource('/dataelement/:cdeId', {cdeId: '@cdeId'}, {update: {method: 'PUT'}});
-        return DataElement;
+        return $resource('/dataelement/:cdeId', {cdeId: '@cdeId'}, {update: {method: 'PUT'}});
     })
     .factory('PriorCdes', function($resource) {
-        var PriorCdes = $resource('/priorcdes/:cdeId', {cdeId: '@cdeId'}, 
+        return $resource('/priorcdes/:cdeId', {cdeId: '@cdeId'}, 
             {'getCdes': {method: 'GET', isArray: true}});
-        return PriorCdes;
     })
     .factory('CdesInForm', function($resource) {
-        var CdesInForm = $resource('/cdesinform/:formId', {formId: '@formId'}, 
+        return $resource('/cdesinform/:formId', {formId: '@formId'}, 
             {'getCdes': {method: 'GET', isArray: true}});
-        return CdesInForm;
     })
     .factory('AutocompleteSvc', function($resource) {
-        var AutocompleteSvc = $resource("/autocomplete");
-        return AutocompleteSvc;
+        return $resource("/autocomplete");
     })
     .factory('Auth', function($http){
         return {
@@ -35,55 +30,46 @@ angular.module('resources', ['ngResource']).
         };
     })
     .factory("LinkToVsac", function($resource) {
-        var LinkToVsac = $resource(
+        return $resource(
                 "/linktovsac", 
                 {cde_id: '@cde_id', vs_id: '@vs_id'}, 
                 {link: {method: 'POST'}}
             );
-        return LinkToVsac;
     })
     .factory('Form', function($resource) {
-        var Form = $resource('/form/:formId', {formId: '@formId'});
-        return Form;
+        return $resource('/form/:formId', {formId: '@formId'});
     })
     .factory('FormList', function($resource) {
-        var FormList = $resource('/formlist');
-        return FormList;
+        return $resource('/formlist');
     })
     .factory('CdesForApproval', function($resource) {
-        var R = $resource('/cdesforapproval');
-        return R;
+        return $resource('/cdesforapproval');
     })
     .factory('MyCart', function($resource) {
-        var MyCart = $resource('/cartcontent');
-        return MyCart;
+        return $resource('/cartcontent');
     })
     .factory("AddToCart", function($resource) {
-        var AddToCart = $resource(
+        return $resource(
                 "/addtocart/:formId", 
                 {formId: '@formId'}, 
                 {add: {method: 'POST'}}
             );
-        return AddToCart;
     })
     .factory("AddCdeToForm", function($resource) {
-        var AddCdeToForm = $resource(
+        return $resource(
                 "/addcdetoform/:cdeId/:formId", 
                 {formId: '@formId', cdeId: '@cdeId'}, 
                 {add: {method: 'POST'}}
             );
-        return AddCdeToForm;
     })
     .factory("RemoveFromCart", function($resource) {
-        var RemoveFromCart = $resource(
+        return $resource(
                 "/removefromcart/:formId", 
                 {formId: '@formId'}, 
                 {add: {method: 'POST'}}
             );
-        return RemoveFromCart;
     })
     .factory('Myself', function($resource) {
-        var Myself = $resource('/user/me');
-        return Myself;
+        return $resource('/user/me');
     })
     ;

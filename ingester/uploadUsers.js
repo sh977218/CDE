@@ -18,9 +18,9 @@ var User = mongoose.model('User', schemas.userSchema);
 
 var users = [
     {username: 'bob', password: 'secret'}
-  , {username: 'cabig', password: 'cabig', contextAdmin: ['caBIG']}
-  , {username: 'fitbir', password: 'fitbir', contextAdmin: ['FITBIR']}
-  , {username: 'ludet', password: 'ludet', contextAdmin: ['caBIG', 'CTEP', 'FITBIR']}
+  , {username: 'cabig', password: 'cabig', contextAdmin: []}
+  , {username: 'fitbir', password: 'fitbir', contextAdmin: []}
+  , {username: 'ludet', password: 'ludet', contextAdmin: []}
   , {username: 'nlm', password: 'nlm', nlmAdmin: true}
 ];
 

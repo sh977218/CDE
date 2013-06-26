@@ -2,9 +2,11 @@
 exports.index = function(req, res){
   res.render('index', { title: 'Express' });
 };
-
 exports.loginForm = function(req, res){
     res.render('login');
+};
+exports.signup = function(req, res){
+    res.render('signup');
 };
 exports.list = function(req, res){
     res.render('list');

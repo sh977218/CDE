@@ -4,6 +4,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap']).
         when('/edit/:cdeId', {controller:EditCtrl, templateUrl:'detail.html'}).
         when('/', {controller:ListCtrl, templateUrl:'/list'}).
         when('/login', {controller:AuthCtrl, templateUrl:'/login'}).
+        when('/signup', {controller:AuthCtrl, templateUrl:'/signup'}).
         when('/new', {controller:CreateCtrl, templateUrl:'detail.html'}).
         when('/listforms', {controller: ListFormsCtrl, templateUrl: '/listforms'}).
         when('/createform', {controller: CreateFormCtrl, templateUrl: '/createform'}).
@@ -67,31 +68,5 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap']).
         };
     });
     
-    // This makes any element droppable
-// Usage: <div droppable></div>
-cdeApp.directive('droppable', function($compile) {
-    return {
-        restrict: 'A',
-        link: function(scope,element,attrs){
-            //This makes an element Droppable
-            element.droppable({
-            drop:function(event,ui) {
-//                var dragIndex = angular.element(ui.draggable).data('index'),
-//                reject = angular.element(ui.draggable).data('reject'),
-//                dragEl = angular.element(ui.draggable).parent(),
-//                dropEl = angular.element(this);
-//                if (dragEl.hasClass('list1') && !dropEl.hasClass('list1') && reject !== true) {
-//                    scope.list2.push(scope.list1[dragIndex]);
-//                    scope.list1.splice(dragIndex, 1);
-//                } else if (dragEl.hasClass('list2') && !dropEl.hasClass('list2') && reject !== true) {
-//                    scope.list1.push(scope.list2[dragIndex]);
-//                    scope.list2.splice(dragIndex, 1);
-//                }
-//                scope.$apply();
-                }
-            });
-        }
-    };
-}); 
-    
+
     

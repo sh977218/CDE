@@ -4,6 +4,7 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , cdesvc = require('./node-js/cdesvc')
+  , usersvc = require('./node-js/usersvc')
   , flash = require('connect-flash')
   , passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy
@@ -88,6 +89,14 @@ app.get('/', function(req, res){
 
 app.get('/list', function(req, res){
   res.render('list');
+});
+
+app.get('/signup', function(req, res){
+  res.render('signup');
+});
+
+app.post('/register', function(req, res) {
+  usersvc.register(req, res);
 });
 
 app.get('/cart', function(req, res) {
