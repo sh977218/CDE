@@ -23,4 +23,7 @@ exports.createform = function(req, res){
 exports.cdereview = function(req, res){
     res.render('cdereview');
 };
+exports.accountmanagement = function(req, res){
+    res.render('accountmanagement');
+};
 

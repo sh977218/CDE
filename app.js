@@ -99,6 +99,14 @@ app.post('/register', function(req, res) {
   usersvc.register(req, res);
 });
 
+app.post('/addNlmAdmin', function(req, res) {
+    usersvc.addNlmAdmin(req, res);
+});
+
+app.post('/removeNlmAdmin', function(req, res) {
+    usersvc.removeNlmAdmin(req, res);
+});
+
 app.get('/cart', function(req, res) {
     res.render('cart');
 });
@@ -152,6 +160,10 @@ app.get('/cdereview', function(req, res) {
     res.render('cdereview');
 });
 
+app.get('/accountmanagement', function(req, res) {
+    res.render('accountmanagement');
+});
+
 app.get('/formview', function(req, res) {
     res.render('formview', { user: req.user });
 });
@@ -178,6 +190,12 @@ app.get('/listcde', function(req, res) {
 app.get('/cdesforapproval', function(req, res) {
     mongo_data.cdesforapproval(req.user.contextAdmin, function(err, cdes) {
         res.send(cdes);
+    });
+});
+
+app.get('/nlmadmins', function(req, res) {
+    mongo_data.nlmadmins(function(err, users) {
+        res.send(users);
     });
 });
 

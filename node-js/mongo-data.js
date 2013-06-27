@@ -23,13 +23,13 @@ var User = mongoose.model('User', schemas.userSchema);
 var Form = mongoose.model('Form', schemas.formSchema);
 
 exports.userByName = function(name, callback) {
-    User.findOne({'username': name}).lean().exec(function (err, u) {
+    User.findOne({'username': name}).exec(function (err, u) {
        callback("", u); 
     });
 };
 
 exports.userById = function(id, callback) {
-    User.findOne({'_id': id}).lean().exec(function (err, u) {
+    User.findOne({'_id': id}).exec(function (err, u) {
        callback("", u); 
     });
 };
@@ -39,7 +39,13 @@ exports.addUser = function(user, callback) {
     newUser.save(function() {
         callback();
     });
-}
+};
+
+exports.nlmadmins = function(callback) {
+    User.find({'nlmAdmin': true}).select('username').exec(function (err, users) {
+        callback("", users);
+    });
+};
 
 exports.addToCart = function (user, formId, callback) {
     User.findOne({'_id': user._id}).exec(function (err, u) {

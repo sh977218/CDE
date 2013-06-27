@@ -16,3 +16,34 @@ exports.register = function(req, res) {
         }
     });
 };
+
+exports.addNlmAdmin = function(req, res) {
+    mongo_data.userByName(req.body.username, function(err, found) {
+        if (!found) {
+            res.send("Unknown Username");
+        } else {
+            console.log(util.inspect(found));
+            found.nlmAdmin = true;
+            
+            found.save(function () {
+                res.send("User Added");
+            });
+        }
+    });  
+};
+
+exports.removeNlmAdmin = function(req, res) {
+    mongo_data.userById(req.body.id, function(err, found) {
+        if (!found) {
+            res.send("Unknown Username");
+        } else {
+            console.log(util.inspect(found));
+            found.nlmAdmin = false;
+            
+            found.save(function () {
+                res.send("User Added");
+            });
+        }
+    });  
+};
+

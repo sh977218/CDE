@@ -61,6 +61,40 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
 
 }
 
+function AccountManagementCtrl($scope, $http, AccountManagement) {
+    $scope.getNlmAdmins = function() {
+        return $http.get("/nlmAdmins").then(function(response) {
+            return response.data;
+        });
+    };
+    $scope.nlmAdmins = $scope.getNlmAdmins();
+
+    $scope.addNlmAdmin = function() {
+        AccountManagement.addNlmAdmin({
+            username: $scope.adminUsername
+            },
+            function(res) {
+                  $scope.message = res;
+                  $scope.nlmAdmins = $scope.getNlmAdmins();
+            }
+        );
+        $scope.adminUsername = "";
+    };
+    
+    $scope.removeNlmAdmin = function(byId) {
+       AccountManagement.removeNlmAdmin({
+            id: byId
+            },
+            function(res) {
+                  $scope.message = res;
+                  $scope.nlmAdmins = $scope.getNlmAdmins();
+            }
+        );
+    };
+}
+
+
+
 function AuthCtrl($scope, $rootScope, Auth, $location) {
     
     $scope.setActiveMenu('LOGIN');

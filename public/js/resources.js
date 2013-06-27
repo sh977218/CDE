@@ -29,6 +29,16 @@ angular.module('resources', ['ngResource']).
             }
         };
     })
+    .factory("AccountManagement", function($http) {
+        return {
+          addNlmAdmin: function(user, success, error) {
+            $http.post('/addNlmAdmin', user).success(success).error(error);
+          },  
+          removeNlmAdmin: function(user, success, error) {
+            $http.post('/removeNlmAdmin', user).success(success).error(error);
+          }  
+        };
+    })
     .factory("LinkToVsac", function($resource) {
         return $resource(
                 "/linktovsac", 
