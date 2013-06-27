@@ -5,6 +5,7 @@ var express = require('express')
   , path = require('path')
   , cdesvc = require('./node-js/cdesvc')
   , usersvc = require('./node-js/usersvc')
+  , contextsvc = require('./node-js/contextsvc')
   , flash = require('connect-flash')
   , passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy
@@ -107,6 +108,18 @@ app.post('/removeNlmAdmin', function(req, res) {
     usersvc.removeNlmAdmin(req, res);
 });
 
+app.get('/contextAdmins', function(req, res) {
+    usersvc.contextAdmins(req, res);
+});
+
+app.post('/addContextAdmin', function(req, res) {
+    usersvc.addContextAdmin(req, res);
+});
+
+app.post('/removeContextAdmin', function(req, res) {
+    usersvc.removeContextAdmin(req, res);
+});
+
 app.get('/cart', function(req, res) {
     res.render('cart');
 });
@@ -201,6 +214,18 @@ app.get('/nlmadmins', function(req, res) {
 
 app.get('/listcontexts', function(req, res) {
     cdesvc.listcontexts(req, res);
+});
+
+app.get('/managedContexts', function(req, res) {
+    contextsvc.managedContexts(req, res);
+});
+
+app.post('/addContext', function(req, res) {
+    contextsvc.addContext(req, res);
+});
+
+app.post('/removeContext', function(req, res) {
+    contextsvc.removeContext(req, res);
 });
 
 app.get('/priorcdes/:id', function(req, res) {

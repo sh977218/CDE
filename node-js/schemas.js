@@ -61,7 +61,7 @@ var questionSchema = mongoose.Schema ({
 var moduleSchema = mongoose.Schema ({
     name: String
     , questions: [questionSchema]
-}, {_id: false})
+}, {_id: false});
 
 var formSchema = {
     name: String
@@ -81,16 +81,21 @@ schemas.userSchema = mongoose.Schema ({
     , nlmAdmin: Boolean
 });
 
+schemas.contextSchema = mongoose.Schema ({
+    name: String
+})
+
 
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 
-schemas.dataElementSchema.set('collection', 'dataelements');
 
 schemas.dataElementArchiveSchema = mongoose.Schema(deJsonSchema);
-schemas.dataElementArchiveSchema.set('collection', 'dataelements_archive');
 
 schemas.formSchema = mongoose.Schema(formSchema);
-schemas.formSchema.set('collection', 'forms');
 
+schemas.dataElementSchema.set('collection', 'dataelements');
+schemas.dataElementArchiveSchema.set('collection', 'dataelements_archive');
+schemas.formSchema.set('collection', 'forms');
 schemas.userSchema.set('collection', 'users');
+schemas.contextSchema.set('collection', 'contexts');
 
 module.exports = schemas;

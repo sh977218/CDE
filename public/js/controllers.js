@@ -28,6 +28,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         $scope.menuCart = '';
         $scope.menuIntRev = '';
         $scope.menuNlmRev = '';
+        $scope.menuAccount = '';
         if (key === 'LISTCDE') {
             $scope.menuHome = 'active';
         } else if (key === 'LOGIN') {
@@ -40,7 +41,10 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
             $scope.menuIntRev = 'active';
         } else if (key === 'NLMREV') {
             $scope.menuNlmRev = 'active';
+        } else if (key === 'ACCOUNT') {
+            $scope.menuAccount = 'active';
         }
+
     };
     
     $scope.listcontexts = function() {
@@ -62,6 +66,8 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
 }
 
 function AccountManagementCtrl($scope, $http, AccountManagement) {
+    $scope.setActiveMenu('ACCOUNT');
+        
     $scope.getNlmAdmins = function() {
         return $http.get("/nlmAdmins").then(function(response) {
             return response.data;
@@ -69,6 +75,20 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     };
     $scope.nlmAdmins = $scope.getNlmAdmins();
 
+    $scope.getContexts = function() {
+        return $http.get("/managedContexts").then(function(response) {
+            return response.data.contexts;
+        });
+    };
+    $scope.contexts = $scope.getContexts(); 
+
+    $scope.getContextAdmins = function() {
+        return $http.get("/contextAdmins").then(function(response) {
+            return response.data.contexts;
+        });
+    };
+    $scope.contextAdmins = $scope.getContextAdmins(); 
+    
     $scope.addNlmAdmin = function() {
         AccountManagement.addNlmAdmin({
             username: $scope.adminUsername
@@ -91,14 +111,64 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
             }
         );
     };
+    
+    $scope.addContextAdmin = function() {
+        AccountManagement.addContextAdmin({
+            username: $scope.contextAdminUsername
+            , context: $scope.adminContextName
+            },
+            function(res) {
+                  $scope.message = res;
+                  $scope.contextAdmins = $scope.getContextAdmins();
+            }
+        );
+        $scope.contextAdminUsername = "";
+    };
+
+    $scope.removeContextAdmin = function(contextName, userId) {
+        AccountManagement.removeContextAdmin({
+            contextName: contextName
+            , userId: userId
+            },
+            function (res) {
+                $scope.message = res;
+                $scope.contextAdmins = $scope.getContextAdmins();
+            }
+        
+        );
+    };
+    
+    $scope.addContext = function() {
+        AccountManagement.addContext({
+            name: $scope.contextName
+            },
+            function(res) {
+                  $scope.message = res;
+                  $scope.contexts = $scope.getContexts();
+            }
+        );
+        $scope.contextName = "";
+    };
+
+    $scope.removeContext = function(byId) {
+       AccountManagement.removeContext({
+            id: byId
+            },
+            function(res) {
+                  $scope.message = res;
+                  $scope.contexts = $scope.getContexts();
+            }
+        );
+    };    
+    
+
+    
 }
 
 
 
 function AuthCtrl($scope, $rootScope, Auth, $location) {
-    
     $scope.setActiveMenu('LOGIN');
-    
     $scope.login = function() {
         Auth.login({
                 username: $scope.username,

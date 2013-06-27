@@ -33,9 +33,21 @@ angular.module('resources', ['ngResource']).
         return {
           addNlmAdmin: function(user, success, error) {
             $http.post('/addNlmAdmin', user).success(success).error(error);
-          },  
-          removeNlmAdmin: function(user, success, error) {
+          }  
+          , removeNlmAdmin: function(user, success, error) {
             $http.post('/removeNlmAdmin', user).success(success).error(error);
+          }  
+          , addContextAdmin: function(user, success, error) {
+            $http.post('/addContextAdmin', user).success(success).error(error);
+          }  
+          , removeContextAdmin: function(data, success, error) {
+            $http.post('/removeContextAdmin', data).success(success).error(error);
+          }  
+          , addContext: function(name, success, error) {
+            $http.post('/addContext', name).success(success).error(error);
+          }  
+          , removeContext: function(id, success, error) {
+            $http.post('/removeContext', id).success(success).error(error);
           }  
         };
     })

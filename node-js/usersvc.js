@@ -22,9 +22,7 @@ exports.addNlmAdmin = function(req, res) {
         if (!found) {
             res.send("Unknown Username");
         } else {
-            console.log(util.inspect(found));
             found.nlmAdmin = true;
-            
             found.save(function () {
                 res.send("User Added");
             });
@@ -37,12 +35,72 @@ exports.removeNlmAdmin = function(req, res) {
         if (!found) {
             res.send("Unknown Username");
         } else {
-            console.log(util.inspect(found));
-            found.nlmAdmin = false;
-            
+            found.nlmAdmin = false;            
             found.save(function () {
-                res.send("User Added");
+                res.send("NLM Administrator Added");
             });
+        }
+    });  
+};
+
+exports.contextAdmins = function(req, res) {
+    mongo_data.managedContexts(function(managedContexts) {
+        var result = {"contexts": []};
+        mongo_data.contextAdmins(function(err, users) {
+            for (var i in managedContexts) {
+                var usersList = [];
+                for (var j in users) {
+                    if (users[j].contextAdmin.indexOf(managedContexts[i].name) > -1) {
+                        usersList.push({
+                            "username": users[j].username
+                            , "_id": users[j]._id
+                        });
+                    }
+                }
+                if (usersList.length > 0) {
+                    result.contexts.push({
+                        "name": managedContexts[i].name
+                        , "users": usersList
+                    });
+                }
+            }
+
+           res.send(result); 
+        });
+    });
+};
+
+exports.addContextAdmin = function(req, res) {
+    mongo_data.userByName(req.body.username, function(err, found) {
+        if (!found) {
+            res.send("Unknown Username");
+        } else {
+            if (found.contextAdmin.indexOf(req.body.context) > -1) {
+                res.send("User is already an Administrator for this Context");
+            } else {
+                found.contextAdmin.push(req.body.context);
+                found.save(function () {
+                    res.send("Context Administrator Added");
+                });
+            }
+        }
+    });  
+};
+
+exports.removeContextAdmin = function(req, res) {
+    mongo_data.userById(req.body.userId, function(err, found) {
+        if (!found) {
+            res.send("Unknown User");
+        } else {
+            var contextInd = found.contextAdmin.indexOf(req.body.contextName);
+            if (contextInd < 0) {
+                res.send("User is not an Administrator for this Context");
+            } else {
+                found.contextAdmin.splice(contextInd, 1);
+                found.save(function () {
+                    res.send("Context Administrator Removed");
+                });
+            }
         }
     });  
 };

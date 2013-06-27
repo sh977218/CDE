@@ -21,6 +21,7 @@ var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var DataElementArchive = mongoose.model('DataElementArchive', schemas.dataElementArchiveSchema);
 var User = mongoose.model('User', schemas.userSchema);
 var Form = mongoose.model('Form', schemas.formSchema);
+var Context = mongoose.model('Context', schemas.contextSchema);
 
 exports.userByName = function(name, callback) {
     User.findOne({'username': name}).exec(function (err, u) {
@@ -43,6 +44,12 @@ exports.addUser = function(user, callback) {
 
 exports.nlmadmins = function(callback) {
     User.find({'nlmAdmin': true}).select('username').exec(function (err, users) {
+        callback("", users);
+    });
+};
+
+exports.contextAdmins = function(callback) {
+    User.find({contextAdmin: {$not: {$size: 0}}}).exec(function (err, users) {
         callback("", users);
     });
 };
@@ -71,7 +78,6 @@ exports.removeFromCart = function (user, formId, callback) {
         }
     });
 };
-
 
 exports.cdelist = function(from, limit, searchOptions, callback) {
     DataElement.find(searchOptions).skip(from).limit(limit).sort('-formUsageCounter').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
@@ -125,6 +131,31 @@ exports.listcontexts = function(callback) {
     DataElement.find().distinct('owningContext', function(error, contexts) {
         callback("", contexts);
     });
+};
+
+exports.managedContexts = function(callback) {
+    Context.find().exec(function(err, contexts) {
+        callback(contexts);
+    });
+};
+
+exports.addContext = function(name, res) {
+  Context.findOne({"name": name}).exec(function(err, found) {
+      if (found) {
+          res.send("Context Already Exists");
+      } else {
+          var newContext = new Context({"name": name});
+          newContext.save(function() {
+              res.send("Context Added");
+          });
+      }
+  });  
+};
+
+exports.removeContext = function (id, callback) {
+  Context.findOne({"_id": id}).remove().exec(function (err) {
+      callback();
+  });
 };
 
 exports.priorCdes = function(cdeId, callback) {
