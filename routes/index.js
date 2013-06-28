@@ -1,4 +1,3 @@
-
 exports.index = function(req, res){
   res.render('index', { title: 'Express' });
 };
@@ -23,7 +22,10 @@ exports.createform = function(req, res){
 exports.cdereview = function(req, res){
     res.render('cdereview');
 };
-exports.accountmanagement = function(req, res){
-    res.render('accountmanagement');
+exports.nlmaccountmanagement = function(req, res){
+    res.render('nlmaccountmanagement');
+};
+exports.deview = function(req, res){
+    res.render('deview');
 };
 

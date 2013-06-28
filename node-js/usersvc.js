@@ -37,7 +37,7 @@ exports.removeNlmAdmin = function(req, res) {
         } else {
             found.nlmAdmin = false;            
             found.save(function () {
-                res.send("NLM Administrator Added");
+                res.send("NLM Administrator Removed");
             });
         }
     });  

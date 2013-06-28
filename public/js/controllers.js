@@ -434,6 +434,16 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
     
 }
 
+function DEViewCtrl($scope, $routeParams, DataElement) {
+    $scope.reload = function(deId) {
+        DataElement.get({deId: deId}, function (de) {
+           $scope.cde = de; 
+        });
+    };
+    
+    $scope.reload($routeParams.cdeId);
+}
+
 function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
     $scope.reload = function(formId) {
         Form.get({formId: formId}, function(form) {

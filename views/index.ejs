@@ -1,27 +1,19 @@
 <!doctype html>
 <html ng-app="cde">
     <head>
+        
         <script src="assets/js/angular.min.js"></script>
         <script src="assets/js/angular-resource.min.js"></script>
         <script src="js/cde.js"></script>
         <script src="js/resources.js"></script>
         <script src="js/controllers.js"></script>
-        <script src="assets/js/ui-bootstrap-tpls-0.3.0.min.js"></script>
+        <script src="assets/js/ui-bootstrap-tpls-0.4.0.min.js"></script>
         <link href="assets/css/bootstrap-combined.min.css" rel="stylesheet">
         <link rel="stylesheet" href="assets/css/font-awesome.min.css">
         <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
-<!--        <style>
-            a.caret-before {
-              padding-right:1px !important;
-            }
-            a.caret-after {
-                padding-left:1px !important;
-            }
-        </style>-->
     </head>
     <body>
         <div ng-controller="MainCtrl">
-        <!--<div class="nav-collapse">-->
             <div class="navbar">
                 <div class="navbar-inner">
                     <a class="brand" href="/">CDEs and Forms</a>
@@ -51,17 +43,15 @@
                         <li class="{{menuAccount}}" ng-show="user._id">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Account <span class="caret"></span></a>
                             <ul class="dropdown-menu">                  
-                                <li ng-show='user._id'><a href="#/accountmanagement">Account Management</a></li>
+                                <li ng-show='user._id && user.nlmAdmin'><a href="#/nlmaccountmanagement">Account Management</a></li>
                                 <li ng-show='user._id'><a href="/logout">Log Out</a></li>                                         
                             </ul>
                         </li>
                     </ul>
                 </div>
             </div>
-<!--        </div>-->
         <div ng-view>
         </div>            
         </div>
-        
     </body>
 </html> 

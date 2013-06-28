@@ -173,12 +173,16 @@ app.get('/cdereview', function(req, res) {
     res.render('cdereview');
 });
 
-app.get('/accountmanagement', function(req, res) {
-    res.render('accountmanagement');
+app.get('/nlmaccountmanagement', function(req, res) {
+    res.render('nlmaccountmanagement');
 });
 
 app.get('/formview', function(req, res) {
     res.render('formview', { user: req.user });
+});
+
+app.get('/deview', function(req, res) {
+    res.render("deview");
 });
 
 app.get('/login', function(req, res){

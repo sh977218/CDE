@@ -3,7 +3,7 @@ angular.module('resources', ['ngResource']).
         return $resource('/listcde');
     })
     .factory('DataElement', function($resource) {
-        return $resource('/dataelement/:cdeId', {cdeId: '@cdeId'}, {update: {method: 'PUT'}});
+        return $resource('/dataelement/:deId', {deId: '@deId'}, {update: {method: 'PUT'}});
     })
     .factory('PriorCdes', function($resource) {
         return $resource('/priorcdes/:cdeId', {cdeId: '@cdeId'}, 

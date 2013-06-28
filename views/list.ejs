@@ -16,27 +16,11 @@
     <accordion-group ng-repeat="cde in cdes" heading="{{cde.owningContext}} -- {{cde.name}}">
          <div class="row-fluid">
             <div class="span5">
-                <h4>General Details</h4>
-                <dl class="dl-horizontal">
-                <dt>Name: </dt> <dd><inline-edit model="cde.name" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></dd>
-                <dt>Version: </dt><dd>{{cde.version}}</dd>
-                <dt>Origin: </dt><dd>{{cde.origin}}</dd>
-                <dt>Origin ID: </dt><dd>{{cde.originId}}</dd>
-                <dt>Owner: </dt><dd>{{cde.owningContext}}</dd>
-                <dt>Definition: </dt><dd><inline-area-edit model="cde.definition" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-area-edit></dd>
-                <dt>Status: </dt><dd>{{cde.workflowStatus}}</dd>
-                <dt>Form Usage: </dt><dd>{{cde.formUsageCounter}}</dd>
-                <dt>Added to NLM: </dt>
-                <dd ng-controller="AuditCtrl" >
-                    <i ng-show="cde.history.length > 0" class="icon-eye-open" ng-click="openHistory()" tooltip="View History"></i> {{cde.created | date: 'MM/dd/yyyy @ h:mma'}}
-                    <%- include historyModal.ejs %>
-                </dd>
-                <dt>Updated in NLM: </dt><dd>{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-                </dl>
+                <%- include cdegeneraldetails.ejs %>
             </div>
-             <div class="span3">
-                 <%- include concepts.ejs %>
-             </div>
+            <div class="span3">
+                <%- include concepts.ejs %>
+            </div>
             <div class="span4">
                 <h4>Permissible Values</h4>
                 <div ng-controller="LinkVsacCtrl">
@@ -69,6 +53,7 @@
                 <%- include addToFormModal.ejs %> 
             </span>
             -->
+                <a class='btn' ng-href="#/deview/?cdeId={{cde._id}}"><i class="icon-eye-open"> View Full Detail</i></a>
             <span ng-controller="WorkflowCtrl" ng-show='isAllowed(cde)'>
                 <span ng-show="cde.workflowStatus == 'Draft'">
                     <a class="btn-small btn-primary" ng-click="changeStatus(cde, 'Internal Review')"><i class="icon-check-empty"> Submit for Internal Review</i></a>

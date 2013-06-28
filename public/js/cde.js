@@ -9,10 +9,11 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap']).
         when('/listforms', {controller: ListFormsCtrl, templateUrl: '/listforms'}).
         when('/createform', {controller: CreateFormCtrl, templateUrl: '/createform'}).
         when('/formview', {controller: FormViewCtrl, templateUrl: '/formview'}).
+        when('/deview', {controller: DEViewCtrl, templateUrl: '/deview'}).
         when('/cart', {controller: CartCtrl, templateUrl: '/cart'}).
         when('/nlmreleased', {controller: NlmReleaseCtrl, templateUrl: '/cdereview'}).
         when('/internalreview', {controller: InternalReviewCtrl, templateUrl: '/cdereview'}).
-        when('/accountmanagement', {controller: AccountManagementCtrl, templateUrl: '/accountmanagement'}).
+        when('/nlmaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/nlmaccountmanagement'}).
         otherwise({redirectTo:'/'});
     }).
     directive('inlineEdit', function() {
@@ -55,19 +56,6 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap']).
             , onOk: '&'
         }
     };
-    })
-    .directive('draggable', function() {
-        return {
-            // A = attribute, E = Element, C = Class and M = HTML Comment
-            restrict:'A',
-            //The link function is responsible for registering DOM listeners as well as updating the DOM.
-            link: function(scope, element, attrs) {
-                element.draggable({
-                    revert:true
-                });
-            }
-        };
     });
-    
 
     
