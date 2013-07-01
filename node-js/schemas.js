@@ -86,14 +86,14 @@ schemas.userSchema = mongoose.Schema ({
     username: String
     , password: String
     , contextAdmin: [String]
+    , contextCurator: [String]
     , formCart: [String]
-    , nlmAdmin: Boolean
+    , siteAdmin: Boolean
 });
 
 schemas.contextSchema = mongoose.Schema ({
     name: String
-})
-
+});
 
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 
 

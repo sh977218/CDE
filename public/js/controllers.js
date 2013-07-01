@@ -72,12 +72,12 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     $scope.contextAdmin = {};
     $scope.admin = {};
         
-    $scope.getNlmAdmins = function() {
-        return $http.get("/nlmAdmins").then(function(response) {
+    $scope.getSiteAdmins = function() {
+        return $http.get("/siteAdmins").then(function(response) {
             return response.data;
         });
     };
-    $scope.nlmAdmins = $scope.getNlmAdmins();
+    $scope.siteAdmins = $scope.getSiteAdmins();
 
     $scope.getContexts = function() {
         return $http.get("/managedContexts").then(function(response) {
@@ -93,26 +93,25 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     };
     $scope.contextAdmins = $scope.getContextAdmins(); 
     
-    $scope.addNlmAdmin = function() {
-        console.log($scope.admin.username);
-        AccountManagement.addNlmAdmin({
+    $scope.addSiteAdmin = function() {
+        AccountManagement.addSiteAdmin({
             username: $scope.admin.username
             },
             function(res) {
                   $scope.message = res;
-                  $scope.nlmAdmins = $scope.getNlmAdmins();
+                  $scope.siteAdmins = $scope.getSiteAdmins();
             }
         );
         $scope.admin.username = "";
     };
     
-    $scope.removeNlmAdmin = function(byId) {
-       AccountManagement.removeNlmAdmin({
+    $scope.removeSiteAdmin = function(byId) {
+       AccountManagement.removeSiteAdmin({
             id: byId
             },
             function(res) {
                   $scope.message = res;
-                  $scope.nlmAdmins = $scope.getNlmAdmins();
+                  $scope.siteAdmins = $scope.getSiteAdmins();
             }
         );
     };

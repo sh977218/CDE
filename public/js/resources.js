@@ -41,11 +41,11 @@ angular.module('resources', ['ngResource']).
     })
     .factory("AccountManagement", function($http) {
         return {
-          addNlmAdmin: function(user, success, error) {
-            $http.post('/addNlmAdmin', user).success(success).error(error);
+          addSiteAdmin: function(user, success, error) {
+            $http.post('/addSiteAdmin', user).success(success).error(error);
           }  
-          , removeNlmAdmin: function(user, success, error) {
-            $http.post('/removeNlmAdmin', user).success(success).error(error);
+          , removeSiteAdmin: function(user, success, error) {
+            $http.post('/removeSiteAdmin', user).success(success).error(error);
           }  
           , addContextAdmin: function(user, success, error) {
             $http.post('/addContextAdmin', user).success(success).error(error);

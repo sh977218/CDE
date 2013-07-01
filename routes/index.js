@@ -22,8 +22,8 @@ exports.createform = function(req, res){
 exports.cdereview = function(req, res){
     res.render('cdereview');
 };
-exports.nlmaccountmanagement = function(req, res){
-    res.render('nlmaccountmanagement');
+exports.siteaccountmanagement = function(req, res){
+    res.render('siteaccountmanagement');
 };
 exports.deview = function(req, res){
     res.render('deview');

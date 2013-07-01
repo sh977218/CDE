@@ -17,12 +17,12 @@ exports.register = function(req, res) {
     });
 };
 
-exports.addNlmAdmin = function(req, res) {
+exports.addSiteAdmin = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {
         if (!found) {
             res.send("Unknown Username");
         } else {
-            found.nlmAdmin = true;
+            found.siteAdmin = true;
             found.save(function () {
                 res.send("User Added");
             });
@@ -30,14 +30,14 @@ exports.addNlmAdmin = function(req, res) {
     });  
 };
 
-exports.removeNlmAdmin = function(req, res) {
+exports.removeSiteAdmin = function(req, res) {
     mongo_data.userById(req.body.id, function(err, found) {
         if (!found) {
             res.send("Unknown Username");
         } else {
-            found.nlmAdmin = false;            
+            found.siteAdmin = false;            
             found.save(function () {
-                res.send("NLM Administrator Removed");
+                res.send("Site Administrator Removed");
             });
         }
     });  

@@ -100,12 +100,12 @@ app.post('/register', function(req, res) {
   usersvc.register(req, res);
 });
 
-app.post('/addNlmAdmin', function(req, res) {
-    usersvc.addNlmAdmin(req, res);
+app.post('/addSiteAdmin', function(req, res) {
+    usersvc.addSiteAdmin(req, res);
 });
 
-app.post('/removeNlmAdmin', function(req, res) {
-    usersvc.removeNlmAdmin(req, res);
+app.post('/removeSiteAdmin', function(req, res) {
+    usersvc.removeSiteAdmin(req, res);
 });
 
 app.get('/contextAdmins', function(req, res) {
@@ -173,8 +173,12 @@ app.get('/cdereview', function(req, res) {
     res.render('cdereview');
 });
 
-app.get('/nlmaccountmanagement', function(req, res) {
-    res.render('nlmaccountmanagement');
+app.get('/siteaccountmanagement', function(req, res) {
+    res.render('siteaccountmanagement');
+});
+
+app.get('/contextaccountmanagement', function(req, res) {
+    res.render('contextaccountmanagement');
 });
 
 app.get('/formview', function(req, res) {
@@ -210,8 +214,8 @@ app.get('/cdesforapproval', function(req, res) {
     });
 });
 
-app.get('/nlmadmins', function(req, res) {
-    mongo_data.nlmadmins(function(err, users) {
+app.get('/siteadmins', function(req, res) {
+    mongo_data.siteadmins(function(err, users) {
         res.send(users);
     });
 });

@@ -13,7 +13,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap']).
         when('/cart', {controller: CartCtrl, templateUrl: '/cart'}).
         when('/nlmreleased', {controller: NlmReleaseCtrl, templateUrl: '/cdereview'}).
         when('/internalreview', {controller: InternalReviewCtrl, templateUrl: '/cdereview'}).
-        when('/nlmaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/nlmaccountmanagement'}).
+        when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
         otherwise({redirectTo:'/'});
     }).
     directive('inlineEdit', function() {

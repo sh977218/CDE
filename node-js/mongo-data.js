@@ -42,8 +42,8 @@ exports.addUser = function(user, callback) {
     });
 };
 
-exports.nlmadmins = function(callback) {
-    User.find({'nlmAdmin': true}).select('username').exec(function (err, users) {
+exports.siteadmins = function(callback) {
+    User.find({'siteAdmin': true}).select('username').exec(function (err, users) {
         callback("", users);
     });
 };

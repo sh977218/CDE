@@ -42,8 +42,9 @@
                         <li class="{{menuLogin}}" ng-show='!user._id'><a href="#/login">Log In</a></li>
                         <li class="{{menuAccount}}" ng-show="user._id">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Account <span class="caret"></span></a>
-                            <ul class="dropdown-menu">                  
-                                <li ng-show='user._id && user.nlmAdmin'><a href="#/nlmaccountmanagement">Account Management</a></li>
+                            <ul class="dropdown-menu"> 
+                                <li ng-show="isContextAdmin() && !user.siteAdmin"><a href="#/contextaccountmanagement">Account Management</a></li>
+                                <li ng-show='user._id && user.siteAdmin'><a href="#/siteaccountmanagement">Account Management</a></li>
                                 <li ng-show='user._id'><a href="/logout">Log Out</a></li>                                         
                             </ul>
                         </li>
