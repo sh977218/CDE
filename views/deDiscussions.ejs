@@ -9,5 +9,12 @@
         <b class="offset1 span9">{{comment.username}}</b>
         <div class="span2">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
     </div>
-    {{comment.text}}
+    <div class="row-fluid">
+        <div class="span11">
+            {{comment.text}}    
+        </div>
+        <div class="span1">
+            <i class="icon-trash" ng-show="user._id == comment.user" ng-click="removeComment(comment._id)"></i>
+        </div>
+    </div>
 </div>

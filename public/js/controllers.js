@@ -448,8 +448,8 @@ function DEViewCtrl($scope, $routeParams, DataElement, Comment) {
 
     $scope.addComment = function() {        
         Comment.addComment({
-            comment: $scope.comment.content,
-            deId: $scope.cde._id
+            comment: $scope.comment.content
+            , deId: $scope.cde._id
             },
             function(res) {
                   $scope.message = res;
@@ -457,6 +457,17 @@ function DEViewCtrl($scope, $routeParams, DataElement, Comment) {
             }
         );
         $scope.comment.content = "";
+    };
+    
+    $scope.removeComment = function(commentId) {
+        Comment.removeComment({
+            commentId: commentId
+            , deId: $scope.cde._id 
+        }, 
+        function (res) {
+            $scope.message = res;
+            $scope.reload($scope.cde._id);
+        });
     };
 }
 

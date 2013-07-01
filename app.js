@@ -245,6 +245,32 @@ app.post('/addComment', function(req, res) {
     }
 });
 
+app.post('/removeComment', function(req, res) {
+    if (req.isAuthenticated()) {
+        mongo_data.cdeById(req.body.deId, function (err, de) {
+            if (err) {
+                res.send("Data Element does not exist.");
+            }
+            for (var c in de.comments) {
+                if (de.comments[c]._id == req.body.commentId) {
+                    if (de.comments[c].user != req.user._id) {
+                        res.send("You can only remove comments you own.");
+                    }
+                    de.comments.splice(c, 1);
+                    de.save(function (err) {
+                       if (err) {
+                           res.send("error: " + err);
+                       };
+                       res.send("Comment removed");
+                    });
+                }
+            }
+        });
+    } else {
+        res.send("You are not authorized.");                   
+    }
+});
+
 app.get('/priorcdes/:id', function(req, res) {
     cdesvc.priorCdes(req, res);
 });

@@ -33,7 +33,10 @@ angular.module('resources', ['ngResource']).
         return {
           addComment: function(comment, success, error) {
             $http.post('/addComment', comment).success(success).error(error);
-          }  
+          }
+          , removeComment: function(dat, success, error) {
+              $http.post('/removeComment', dat).success(success).error(error);
+          } 
         };
     })
     .factory("AccountManagement", function($http) {
