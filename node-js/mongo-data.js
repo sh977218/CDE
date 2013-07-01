@@ -60,6 +60,8 @@ exports.addComment = function(deId, comment, userId, callback) {
         exports.userById(userId, function(err, user) {
             de.comments.push({
                 user: user._id
+                , username: user.username
+                , created: new Date().toJSON()
                 , text: comment
             });
             de.save(function (err) {

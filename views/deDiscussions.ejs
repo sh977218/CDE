@@ -1,9 +1,13 @@
 <div>{{message}}</div>
 
-<textarea ng-model="comment.content"></textarea>
-<input type="button" value="Post" ng-click="addComment()"/>
+<textarea ng-model="comment.content" placeholder="Please log in to comment"></textarea>
+<input type="button" value="Post" ng-click="addComment()" ng-disabled="!user._id"/>
 
 <div ng-repeat="comment in cde.comments">
     <hr>
+    <div class="row-fluid" style="background-color: lightgrey" >
+        <b class="offset1 span9">{{comment.username}}</b>
+        <div class="span2">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
+    </div>
     {{comment.text}}
 </div>
