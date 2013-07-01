@@ -237,6 +237,7 @@ app.post('/addComment', function(req, res) {
         mongo_data.addComment(req.body.deId, req.body.comment, req.user._id, function (err) {
             if (err) {
                 res.send(err);
+                return;
             }
             res.send("Comment Added");
         });
@@ -253,16 +254,20 @@ app.post('/removeComment', function(req, res) {
             }
             for (var c in de.comments) {
                 if (de.comments[c]._id == req.body.commentId) {
+                    console.log(de.comments[c].user);
+                    console.log(req.user._id);
                     if (de.comments[c].user != req.user._id) {
                         res.send("You can only remove comments you own.");
+                    } else {
+                        de.comments.splice(c, 1);
+                        de.save(function (err) {
+                           if (err) {
+                               res.send("error: " + err);
+                           } else {
+                               res.send("Comment removed");
+                           }
+                        });
                     }
-                    de.comments.splice(c, 1);
-                    de.save(function (err) {
-                       if (err) {
-                           res.send("error: " + err);
-                       };
-                       res.send("Comment removed");
-                    });
                 }
             }
         });
@@ -361,13 +366,10 @@ app.get('/autocomplete/form', function(req, res) {
     return cdesvc.name_autocomplete_form(req, res);
 });
 
-
 //// Get VSAC TGT.
 //var vsac = require('./node-js/vsac-io');
 //vsac.getTGT(function(tgt) {
 //});
-
-
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

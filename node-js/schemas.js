@@ -24,7 +24,7 @@ var alternateNameSchema = mongoose.Schema({
 
 var commentSchema = mongoose.Schema({
     text: String
-    , user: [ObjectId]
+    , user: String
     , username: String
     , created: Date
 });
