@@ -2,11 +2,11 @@
 
 <form class="form-search">
 <input type="text" ng-model="search.name" class="search-query" placeholder="Search Name" typeahead="cde.name for cde in autocomplete($viewValue)" >
-<select ng-model="search.owningContext" name="owningContext" ng-change="removeOwningContext()">
+<select ng-model="search.owningContext" name="owningContext" ng-change="removeOwningContext(); reload()">
     <option value="" >All Contexts</option>
     <option ng-repeat="context in contexts" ng-value="context">{{context}}</option>    
 </select>
-<select ng-model="search.workflowStatus" name="workflowStatus" ng-options="status as status for status in workflowStatuses" ng-change="removeWorkflowStatus()">
+<select ng-model="search.workflowStatus" name="workflowStatus" ng-options="status as status for status in workflowStatuses" ng-change="removeWorkflowStatus(); reload()">
     <option value="">All Statuses</option>
 </select>
 <input type="submit" value="Search" ng-click="reload()" class="btn"></input>
@@ -53,8 +53,8 @@
                 <%- include addToFormModal.ejs %> 
             </span>
             -->
-                <a class='btn' ng-href="#/deview/?cdeId={{cde._id}}"><i class="icon-eye-open"> View Full Detail</i></a>
-            <span ng-controller="WorkflowCtrl" ng-show='isAllowed(cde)'>
+            <a class='btn' ng-href="#/deview/?cdeId={{cde._id}}"><i class="icon-eye-open"> View Full Detail</i></a>
+<!--            <span ng-controller="WorkflowCtrl" ng-show='isAllowed(cde)'>
                 <span ng-show="cde.workflowStatus == 'Draft'">
                     <a class="btn-small btn-primary" ng-click="changeStatus(cde, 'Internal Review')"><i class="icon-check-empty"> Submit for Internal Review</i></a>
                 </span>
@@ -64,7 +64,7 @@
                 <span ng-show="cde.workflowStatus == 'Internally Reviewed'">
                     <a class="btn-small btn-primary" ng-click="changeStatus(cde, 'Submitted')"><i class="icon-upload-alt"> Submit for Final Review</i></a>
                 </span>
-            </span>
+            </span>-->
         </div>
         <div class="row">
             <div ng-controller="SaveCtrl">

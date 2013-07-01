@@ -22,6 +22,12 @@ var alternateNameSchema = mongoose.Schema({
     , owningContext: String
 }, {_id: false});
 
+var commentSchema = mongoose.Schema({
+    text: String
+    , user: [ObjectId]
+});
+
+
 var deJsonSchema = {
     uuid: String
     , preferredName: String
@@ -47,6 +53,7 @@ var deJsonSchema = {
     , alternateNames: [alternateNameSchema]
     , workflowStatus: String
     , formUsageCounter: Number
+    , comments: [commentSchema]
 };
 
 var questionSchema = mongoose.Schema ({

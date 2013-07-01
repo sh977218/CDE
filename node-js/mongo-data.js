@@ -54,6 +54,21 @@ exports.contextAdmins = function(callback) {
     });
 };
 
+exports.addComment = function(deId, comment, userId, callback) {
+    exports.cdeById(deId, function(err, de) {
+        console.log("Found DE: " + de.name);
+        exports.userById(userId, function(err, user) {
+            de.comments.push({
+                user: user._id
+                , text: comment
+            });
+            de.save(function (err) {
+                callback("");
+            });
+        });
+    });
+};
+
 exports.addToCart = function (user, formId, callback) {
     User.findOne({'_id': user._id}).exec(function (err, u) {
        u.formCart.push(formId);

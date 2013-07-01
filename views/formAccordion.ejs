@@ -1,7 +1,7 @@
 <accordion>
     <accordion-group ng-repeat="form in forms" heading="{{form.owningContext}} -- {{form.name}}">
         <div class="row-fluid">
-            <div class="span10">
+            <div class="span12">
                 <h4>General Details</h4>
                 <dl class="dl-horizontal">
                     <dt>Name: </dt><dd>{{form.name}}</dd>
@@ -10,14 +10,15 @@
                     <dt>Created: </dt><dd>{{form.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>   
                 </dl>
             </div>   
+        </div>
+        <div class="row-fluid">
+          <a class='btn' ng-href="#/formview/?formId={{form._id}}"><i class="icon-eye-open"> View Full Detail</i></a>        
+        </div>
             <div class="span2">
 <!--                <div class="row">
                     <a class="btn" ng-show="isInCart(form._id)" ng-click="removeFromCart(form)"><i class="icon-shopping-cart"> Remove from Cart</i></a>
                     <a class="btn" ng-show="!isInCart(form._id)" ng-click="addToCart(form)"><i class="icon-shopping-cart"> Add to Cart</i></a>
                 </div>-->
-                <div class="row">
-                    <a class='btn' ng-href="#/formview/?formId={{form._id}}"><i class="icon-eye-open"> View Full Detail</i></a>
-                </div>
             </div>
         </div>
     </accordion-group>

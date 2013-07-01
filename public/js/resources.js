@@ -29,6 +29,13 @@ angular.module('resources', ['ngResource']).
             }
         };
     })
+    .factory("Comment", function($http) {
+        return {
+          addComment: function(comment, success, error) {
+            $http.post('/addComment', comment).success(success).error(error);
+          }  
+        };
+    })
     .factory("AccountManagement", function($http) {
         return {
           addNlmAdmin: function(user, success, error) {

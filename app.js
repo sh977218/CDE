@@ -232,6 +232,19 @@ app.post('/removeContext', function(req, res) {
     contextsvc.removeContext(req, res);
 });
 
+app.post('/addComment', function(req, res) {
+    if (req.isAuthenticated()) {
+        mongo_data.addComment(req.body.deId, req.body.comment, req.user._id, function (err) {
+            if (err) {
+                res.send(err);
+            }
+            res.send("Comment Added");
+        });
+    } else {
+        res.send("You are not authorized.");                   
+    }
+});
+
 app.get('/priorcdes/:id', function(req, res) {
     cdesvc.priorCdes(req, res);
 });

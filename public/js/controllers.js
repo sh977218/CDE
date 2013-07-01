@@ -67,6 +67,10 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
 
 function AccountManagementCtrl($scope, $http, AccountManagement) {
     $scope.setActiveMenu('ACCOUNT');
+    $scope.admin = {};
+    $scope.newContext = {};
+    $scope.contextAdmin = {};
+    $scope.admin = {};
         
     $scope.getNlmAdmins = function() {
         return $http.get("/nlmAdmins").then(function(response) {
@@ -90,15 +94,16 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     $scope.contextAdmins = $scope.getContextAdmins(); 
     
     $scope.addNlmAdmin = function() {
+        console.log($scope.admin.username);
         AccountManagement.addNlmAdmin({
-            username: $scope.adminUsername
+            username: $scope.admin.username
             },
             function(res) {
                   $scope.message = res;
                   $scope.nlmAdmins = $scope.getNlmAdmins();
             }
         );
-        $scope.adminUsername = "";
+        $scope.admin.username = "";
     };
     
     $scope.removeNlmAdmin = function(byId) {
@@ -114,15 +119,15 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     
     $scope.addContextAdmin = function() {
         AccountManagement.addContextAdmin({
-            username: $scope.contextAdminUsername
-            , context: $scope.adminContextName
+            username: $scope.contextAdmin.username
+            , context: $scope.admin.ContextName
             },
             function(res) {
                   $scope.message = res;
                   $scope.contextAdmins = $scope.getContextAdmins();
             }
         );
-        $scope.contextAdminUsername = "";
+        $scope.contextAdmin.username = "";
     };
 
     $scope.removeContextAdmin = function(contextName, userId) {
@@ -140,14 +145,14 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     
     $scope.addContext = function() {
         AccountManagement.addContext({
-            name: $scope.contextName
+            name: $scope.newContext.name
             },
             function(res) {
                   $scope.message = res;
                   $scope.contexts = $scope.getContexts();
             }
         );
-        $scope.contextName = "";
+        $scope.newContext.name = "";
     };
 
     $scope.removeContext = function(byId) {
@@ -159,13 +164,8 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
                   $scope.contexts = $scope.getContexts();
             }
         );
-    };    
-    
-
-    
+    };     
 }
-
-
 
 function AuthCtrl($scope, $rootScope, Auth, $location) {
     $scope.setActiveMenu('LOGIN');
@@ -206,6 +206,7 @@ function ListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
     $scope.pageSize = 10;
     $scope.originOptions = ['CADSR', 'FITBIR'];
 
+    // this one ensures that we don't send this as query when none is selected. 
     $scope.removeOwningContext = function() {
         if ($scope.search.owningContext == "") {
             delete $scope.search.owningContext;
@@ -434,7 +435,7 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
     
 }
 
-function DEViewCtrl($scope, $routeParams, DataElement) {
+function DEViewCtrl($scope, $routeParams, DataElement, Comment) {
     $scope.reload = function(deId) {
         DataElement.get({deId: deId}, function (de) {
            $scope.cde = de; 
@@ -442,6 +443,21 @@ function DEViewCtrl($scope, $routeParams, DataElement) {
     };
     
     $scope.reload($routeParams.cdeId);
+
+    $scope.comment = {};
+
+    $scope.addComment = function() {        
+        Comment.addComment({
+            comment: $scope.comment.content,
+            deId: $scope.cde._id
+            },
+            function(res) {
+                  $scope.message = res;
+                  $scope.reload($scope.cde._id);
+            }
+        );
+        $scope.comment.content = "";
+    };
 }
 
 function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {

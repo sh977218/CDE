@@ -1,0 +1,9 @@
+<div>{{message}}</div>
+
+<textarea ng-model="comment.content"></textarea>
+<input type="button" value="Post" ng-click="addComment()"/>
+
+<div ng-repeat="comment in cde.comments">
+    <hr>
+    {{comment.text}}
+</div>
