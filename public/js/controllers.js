@@ -62,6 +62,15 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         //reset to old to keep any additional routing logic from kicking in
         $location.hash(old);
     };
+}
+
+function ContextAccountManagementCtrl($scope, $http) {
+
+    $scope.getContextAdmins = function() {
+        return $http.get("/myContextsAdmins").then(function(response) {
+            return response.data.contexts;
+        });
+    };
 
 }
 

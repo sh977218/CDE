@@ -43,6 +43,41 @@ exports.removeSiteAdmin = function(req, res) {
     });  
 };
 
+exports.myContextsAdmins = function(req, res) {
+    if (!req.isAuthenticated()) {
+        console.log("not authenticated");
+        res.send({contexts: []});
+    } else {
+        console.log("userid : " + req.user._id);
+        mongo_data.userById(req.user._id, function(err, foundUser) {
+            console.log("User: " + util.inspect(foundUser));
+            var result = {"contexts": []};
+            mongo_data.contextAdmins(function(err, users) {
+                var myContexts = foundUser.contextAdmin;
+                for (var i in myContexts) {
+                    console.log("context: " + myContexts[i]);
+                    var usersList = [];
+                    for (var j in users) {
+                        if (users[j].contextAdmin.indexOf(myContexts[i].name) > -1) {
+                            usersList.push({
+                                "username": users[j].username
+                                , "_id": users[j]._id
+                            });
+                        }
+                    }
+                    if (usersList.length > 0) {
+                        result.contexts.push({
+                            "name": myContexts[i].name
+                            , "users": usersList
+                        });
+                    }
+                }
+               res.send(result); 
+            });
+        });
+    }
+};
+
 exports.contextAdmins = function(req, res) {
     mongo_data.managedContexts(function(managedContexts) {
         var result = {"contexts": []};

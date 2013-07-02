@@ -25,6 +25,9 @@ exports.cdereview = function(req, res){
 exports.siteaccountmanagement = function(req, res){
     res.render('siteaccountmanagement');
 };
+exports.contextaccountmanagement = function(req, res){
+    res.render('contextaccountmanagement');
+};
 exports.deview = function(req, res){
     res.render('deview');
 };

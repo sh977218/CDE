@@ -108,6 +108,11 @@ app.post('/removeSiteAdmin', function(req, res) {
     usersvc.removeSiteAdmin(req, res);
 });
 
+app.get('/myContextsAdmins', function(req, res) {
+    usersvc.myContextsAdmins(req, res);
+});
+
+
 app.get('/contextAdmins', function(req, res) {
     usersvc.contextAdmins(req, res);
 });
