@@ -14,6 +14,29 @@
         <%- include deDiscussions.ejs %>
     </tab>
 </tabset>
+
+<div class="row">
+     <div ng-controller="SaveCdeCtrl">
+     <div class="span12" ng-show="cde.unsaved">
+         <button class="btn cancel" ng-click="revert(cde)">Discard Changes</button>
+         <button class="btn btn-primary" ng-click="openSave()">Save</button>
+     </div>
+     <div modal="showSave" close="closeSave()" opts="saveOpts">
+         <div class="modal-header">
+             <h4>Save</h4>
+         </div>
+         <div class="modal-body">
+             <label for="changeNote">Change Note</label>
+             <textArea name="changeNote" ng-model="cde.changeNote" placeholder="Optional Change Note"></textarea>
+         </div>
+         <div class="modal-footer">
+             <button class="btn cancel" ng-click="cancelSave()">Cancel</button>
+             <button class="btn btn-warning" ng-click="save(cde); showSave = false">Save</button>
+         </div>
+     </div>
+     </div>
+ </div>
+
 </div>
    
 

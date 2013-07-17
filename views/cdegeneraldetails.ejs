@@ -1,3 +1,4 @@
+<div ng-controller="SaveCdeCtrl">
 <h4>General Details</h4>
 <dl class="dl-horizontal">
 <dt>Name: </dt> <dd><inline-edit model="cde.name" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></dd>
@@ -15,3 +16,4 @@
 </dd>
 <dt>Updated in NLM: </dt><dd>{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
 </dl>
+</div>

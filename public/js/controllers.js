@@ -207,7 +207,7 @@ function AuthCtrl($scope, $rootScope, Auth, $location) {
     )};
 }
 
-function ListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
+function DEListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
     $scope.setActiveMenu('LISTCDE');
     
     $scope.currentPage = 1;
@@ -224,18 +224,6 @@ function ListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
         if (!$scope.search.workflowStatus) {
             delete $scope.search.workflowStatus;
         }
-    };
-    
-    $scope.isAllowed = function (cde) {
-        if ($scope.user.contextAdmin) {
-            return $scope.user.contextAdmin.indexOf(cde.owningContext) > -1;
-        } else {
-            return false;
-        }
-    };
-    
-    $scope.stageCde = function(cde) {
-        cde.unsaved = true;
     };
    
     $scope.$watch('currentPage', function() {
@@ -276,34 +264,39 @@ function ListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
         }); 
     };
     
-    $scope.revert = function(cde) {
-        var de = DataElement.get({cdeId: cde._id}, function(dataElement) {
-           var ind = $scope.cdes.indexOf(cde);
-           $scope.cdes[ind] = dataElement;
-        });
+    $scope.isAllowed = function (cde) {
+        return false;
     };
-    
-    $scope.save = function(cde) {
-        // @TODO 
-        // This is prob a lame way to do it. 
-        // Check save form.
-        var de = DataElement.get({cdeId: cde._id}, function(dataElement) {
-            de.name = cde.name;
-            de.definition = cde.definition;
-            de.changeNote = cde.changeNote;
-            de.$save();
-            cde.unsaved = false;
-            var ind = $scope.cdes.indexOf(cde);
-            $scope.cdes[ind] = dataElement;
-            console.log(dataElement.updated);
-        });
-    };  
+
 }
 
-function SaveCtrl($scope) {    
+function SaveCdeCtrl($scope, DataElement) {
+
+    $scope.stageCde = function(cde) {
+        cde.unsaved = true;
+    };
+    
+    
+//    $scope.save = function(cde) {
+//        // @TODO 
+//        // This is prob a lame way to do it. 
+//        // Check save form.
+//        var de = DataElement.get({cdeId: cde._id}, function(dataElement) {
+//            de.name = cde.name;
+//            de.definition = cde.definition;
+//            de.changeNote = cde.changeNote;
+//            de.$save();
+//            cde.unsaved = false;
+//            var ind = $scope.cdes.indexOf(cde);
+//            $scope.cdes[ind] = dataElement;
+//            console.log(dataElement.updated);
+//        });
+//    };  
+    
     $scope.openSave = function() {
         $scope.showSave = true;
     };   
+    
     $scope.cancelSave = function() {
         $scope.showSave = false;
     };
@@ -444,9 +437,11 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
 }
 
 function DEViewCtrl($scope, $routeParams, DataElement, Comment) {
+    $scope.initialized = false;
     $scope.reload = function(deId) {
         DataElement.get({deId: deId}, function (de) {
            $scope.cde = de; 
+           $scope.initialized = true;
         });
     };
     
@@ -477,6 +472,23 @@ function DEViewCtrl($scope, $routeParams, DataElement, Comment) {
             $scope.reload($scope.cde._id);
         });
     };
+    
+    $scope.isAllowed = function (cde) {
+        if ($scope.initialized && $scope.user.contextAdmin) {
+            return $scope.user.contextAdmin.indexOf(cde.owningContext) > -1;
+        } else {
+            return false;
+        }
+    };
+   
+    $scope.save = function() {
+        $scope.cde.$save();
+    }; 
+    
+    $scope.revert = function(cde) {
+        $scope.reload(cde._id);
+    };
+    
 }
 
 function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {

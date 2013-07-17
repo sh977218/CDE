@@ -297,22 +297,8 @@ exports.saveCde = function(req, callback) {
     });
 };
 
-// @TODO Following is prone to error, see if there's a deep copy mechanism. 
-// Somethign simple like new DataElement might work
 cdeArchive = function(cde, callback) {
-    var deArchive = new DataElementArchive();
-    deArchive.name = cde.name;
-    deArchive.uuid = cde.uuid;
-    deArchive.origin = cde.origin;
-    deArchive.originId = cde.originId;
-    deArchive.definition = cde.definition;
-    deArchive.valueDomain = cde.valueDomain;
-    deArchive.changeNote = cde.changeNote;
-    deArchive.created = cde.created;
-    deArchive.updated = cde.updated;
-    deArchive.history = cde.history;
-    deArchive.owningContext = cde.owningContext;
-    deArchive.workflowStatus = cde.workflowStatus;
+    var deArchive = new DataElementArchive(cde);
     deArchive.save(function(err) {
         if(err) {
             console.log(err);
