@@ -316,7 +316,7 @@ function AddToFormCtrl($scope, MyCart, AddCdeToForm) {
         id: 0
     };
     $scope.openModal = function() {
-        var result = MyCart.get(function(result) {
+        MyCart.get(function(result) {
             $scope.forms = result.forms;
             $scope.showModal = true;
         });          

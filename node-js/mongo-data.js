@@ -18,7 +18,6 @@ var xmlParser = new xml2js.Parser();
 var schemas = require('./schemas');
 
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
-var DataElementArchive = mongoose.model('DataElementArchive', schemas.dataElementArchiveSchema);
 var User = mongoose.model('User', schemas.userSchema);
 var Form = mongoose.model('Form', schemas.formSchema);
 var Context = mongoose.model('Context', schemas.contextSchema);
@@ -177,7 +176,7 @@ exports.removeContext = function (id, callback) {
 
 exports.priorCdes = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
-        return DataElementArchive.find().where("_id").in(dataElement.history).exec(function(err, cdes) {
+        return DataElement.find().where("_id").in(dataElement.history).exec(function(err, cdes) {
             callback("", cdes);
         });
     });
@@ -206,6 +205,8 @@ exports.name_autocomplete_form = function (searchOptions, callback) {
     });
 };
 
+// @TODO
+// Fix this, cdeArchive removed.
 exports.linktovsac = function(req, callback) {
     return DataElement.findById(req.body.cde_id, function (err, dataElement) {
         cdeArchive(dataElement, function (arcCde) {
@@ -303,13 +304,3 @@ exports.saveCde = function(req, callback) {
        });
    });
 };
-
-//cdeArchive = function(cde, callback) {
-//    var deArchive = new DataElementArchive(cde);
-//    deArchive.save(function(err) {
-//        if(err) {
-//            console.log(err);
-//        }
-//    });
-//    callback(deArchive); 
-//};

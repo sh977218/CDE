@@ -98,12 +98,9 @@ schemas.contextSchema = mongoose.Schema ({
 
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 
 
-schemas.dataElementArchiveSchema = mongoose.Schema(deJsonSchema);
-
 schemas.formSchema = mongoose.Schema(formSchema);
 
 schemas.dataElementSchema.set('collection', 'dataelements');
-schemas.dataElementArchiveSchema.set('collection', 'dataelements_archive');
 schemas.formSchema.set('collection', 'forms');
 schemas.userSchema.set('collection', 'users');
 schemas.contextSchema.set('collection', 'contexts');
