@@ -31,8 +31,7 @@ var commentSchema = mongoose.Schema({
 
 
 var deJsonSchema = {
-    uuid: String
-    , preferredName: String
+    preferredName: String
     , name: String
     , definition: String
     , origin: String
@@ -57,6 +56,7 @@ var deJsonSchema = {
     , workflowStatus: String
     , formUsageCounter: Number
     , comments: [commentSchema]
+    , archived: Boolean
 };
 
 var questionSchema = mongoose.Schema ({

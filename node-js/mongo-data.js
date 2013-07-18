@@ -97,7 +97,7 @@ exports.removeFromCart = function (user, formId, callback) {
 };
 
 exports.cdelist = function(from, limit, searchOptions, callback) {
-    DataElement.find(searchOptions).skip(from).limit(limit).sort('-formUsageCounter').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
+    DataElement.find(searchOptions).where("archived").equals(null).skip(from).limit(limit).sort('-formUsageCounter').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
         DataElement.count(searchOptions).exec(function (err, count) {
         callback("",{
                cdes: cdes,
@@ -276,33 +276,40 @@ exports.save = function(mongooseObject, callback) {
     });
 };
 
-// @TODO we should be able to replace this by a straightforward save like for forms.
 exports.saveCde = function(req, callback) {
    return DataElement.findById(req.body._id, function (err, dataElement) {
-        return cdeArchive(dataElement, function (arcCde) {
-            dataElement.history.push(arcCde._id);
-            dataElement.name = req.body.name;
-            dataElement.definition = req.body.definition;
-            dataElement.changeNote = req.body.changeNote;
-            dataElement.updated = new Date().toJSON();
-            dataElement.workflowStatus = req.body.workflowStatus;
-            return dataElement.save(function (err) {
-                if (err) {
-                    console.log(err);
-                }
-                callback("", dataElement);
-            });
-        });
-
-    });
+        var jsonDe = JSON.parse(JSON.stringify(dataElement));
+        delete jsonDe._id;
+        var newDe = new DataElement(jsonDe);
+        newDe.history.push(dataElement._id);
+        newDe.name = req.body.name;
+        newDe.definition = req.body.definition;
+        newDe.changeNote = req.body.changeNote;
+        newDe.updated = new Date().toJSON();
+        newDe.workflowStatus = req.body.workflowStatus;
+            
+        dataElement.archived = true;
+        dataElement.save(function (err) {
+             if (err) {
+                 console.log(err);
+             } else {
+                 newDe.save(function (err) {
+                     if (err) {
+                        console.log(err);
+                     }
+                     callback("", newDe);
+                 });
+             }
+       });
+   });
 };
 
-cdeArchive = function(cde, callback) {
-    var deArchive = new DataElementArchive(cde);
-    deArchive.save(function(err) {
-        if(err) {
-            console.log(err);
-        }
-    });
-    callback(deArchive); 
-};
+//cdeArchive = function(cde, callback) {
+//    var deArchive = new DataElementArchive(cde);
+//    deArchive.save(function(err) {
+//        if(err) {
+//            console.log(err);
+//        }
+//    });
+//    callback(deArchive); 
+//};
