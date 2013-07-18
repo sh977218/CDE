@@ -5,7 +5,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap']).
         when('/', {controller:DEListCtrl, templateUrl:'/list'}).
         when('/login', {controller:AuthCtrl, templateUrl:'/login'}).
         when('/signup', {controller:AuthCtrl, templateUrl:'/signup'}).
-        when('/new', {controller:CreateCtrl, templateUrl:'detail.html'}).
+        when('/createCde', {controller:CreateCdeCtrl, templateUrl:'/createcde'}).
         when('/listforms', {controller: ListFormsCtrl, templateUrl: '/listforms'}).
         when('/createform', {controller: CreateFormCtrl, templateUrl: '/createform'}).
         when('/formview', {controller: FormViewCtrl, templateUrl: '/formview'}).

@@ -39,6 +39,10 @@ var deJsonSchema = {
     , owningContext: String
     , created: Date
     , updated: Date
+    , createdBy: {
+        userId: mongoose.Schema.Types.ObjectId
+        , username: String
+    }
     , publicID: String
     , version: String
     , objectClass: {concepts: [conceptSchema]}

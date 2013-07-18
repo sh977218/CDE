@@ -16,6 +16,9 @@ exports.cart = function(req, res){
 exports.listforms = function(req, res){
     res.render('listforms');
 };
+exports.createcde = function(req, res){
+    res.render('createcde');
+};
 exports.createform = function(req, res){
     res.render('createform');
 };

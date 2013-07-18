@@ -170,6 +170,10 @@ app.get('/form/:formId', function(req, res) {
     });
 });
 
+app.get('/createcde', function(req, res) {
+   res.render('createcde'); 
+});
+
 app.get('/createform', function(req, res) {
     res.render('createform', { user: req.user });
 });
@@ -299,7 +303,11 @@ app.get('/dataelement/:id', function(req, res) {
 // 1. You are context owner
 // 2. If you are not nlm admin, remove workflow status from json obj so you can't update it.
 app.post('/dataelement', function (req, res) {
-    return cdesvc.save(req, res);
+    if (req.isAuthenticated()) {
+        return cdesvc.save(req, res);
+    } else {
+        res.send("You are not authorized to do this.");
+    }
 });
 
 app.get('/cdesinform/:formId', function (req, res) {

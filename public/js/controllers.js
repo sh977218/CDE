@@ -43,6 +43,8 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
             $scope.menuNlmRev = 'active';
         } else if (key === 'ACCOUNT') {
             $scope.menuAccount = 'active';
+        } else if (key === 'CREATECDE') {
+            $scope.menuCreate = 'active';
         }
 
     };
@@ -361,10 +363,12 @@ function EditCtrl($scope, $location, $routeParams, DataElement) {
    };  
 }
 
-function CreateCtrl($scope, $location, DataElement) {
+function CreateCdeCtrl($scope, $location, DataElement) {
+    $scope.setActiveMenu('CREATECDE');
+
     $scope.save = function() {
-        DataElement.save($scope.dataElement, function(dataElement) {
-            $location.path('/edit/' + dataElement._id);
+        DataElement.save($scope.cde, function(cde) {
+            $location.path('#/');        
         });
     };
 }

@@ -278,29 +278,40 @@ exports.save = function(mongooseObject, callback) {
 };
 
 exports.saveCde = function(req, callback) {
-   return DataElement.findById(req.body._id, function (err, dataElement) {
-        var jsonDe = JSON.parse(JSON.stringify(dataElement));
-        delete jsonDe._id;
-        var newDe = new DataElement(jsonDe);
-        newDe.history.push(dataElement._id);
-        newDe.name = req.body.name;
-        newDe.definition = req.body.definition;
-        newDe.changeNote = req.body.changeNote;
-        newDe.updated = new Date().toJSON();
-        newDe.workflowStatus = req.body.workflowStatus;
-            
-        dataElement.archived = true;
-        dataElement.save(function (err) {
-             if (err) {
-                 console.log(err);
-             } else {
-                 newDe.save(function (err) {
-                     if (err) {
-                        console.log(err);
-                     }
-                     callback("", newDe);
-                 });
-             }
+    if (req.body._id) {
+        return DataElement.findById(req.body._id, function (err, dataElement) {
+            var jsonDe = JSON.parse(JSON.stringify(dataElement));
+            delete jsonDe._id;
+            var newDe = new DataElement(jsonDe);
+            newDe.history.push(dataElement._id);
+            newDe.name = req.body.name;
+            newDe.definition = req.body.definition;
+            newDe.changeNote = req.body.changeNote;
+            newDe.updated = new Date().toJSON();
+            newDe.workflowStatus = req.body.workflowStatus;
+
+            dataElement.archived = true;
+            dataElement.save(function (err) {
+                 if (err) {
+                     console.log(err);
+                 } else {
+                     newDe.save(function (err) {
+                         if (err) {
+                            console.log(err);
+                         }
+                         callback("", newDe);
+                     });
+                 }
+           });
        });
-   });
+    } else {
+        var newDe = new DataElement(req.body);
+        newDe.workflowStatus = "Draft";
+        newDe.created = Date.now();
+        newDe.createdBy.userId = req.user._id;
+        newDe.createdBy.username = req.user.username;
+        newDe.save(function (err) {
+            callback(err, newDe);
+        });
+    }
 };
