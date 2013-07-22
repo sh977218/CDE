@@ -383,6 +383,10 @@ app.get('/autocomplete/form', function(req, res) {
     return cdesvc.name_autocomplete_form(req, res);
 });
 
+app.get('/cdediff/:deId', function(req, res) {
+   return cdesvc.diff(req, res); 
+});
+
 //// Get VSAC TGT.
 //var vsac = require('./node-js/vsac-io');
 //vsac.getTGT(function(tgt) {

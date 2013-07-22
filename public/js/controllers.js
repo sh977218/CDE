@@ -341,8 +341,7 @@ function AuditCtrl($scope, PriorCdes) {
     };   
     $scope.closeHistory = function() {
         $scope.showHistory = false;
-    };
-  
+    };  
 }
 
 function EditCtrl($scope, $location, $routeParams, DataElement) {
@@ -440,13 +439,18 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
     
 }
 
-function DEViewCtrl($scope, $routeParams, DataElement, Comment) {
+function DEViewCtrl($scope, $routeParams, DataElement, Comment, PriorCdes, CdeDiff) {
     $scope.initialized = false;
     $scope.reload = function(deId) {
         DataElement.get({deId: deId}, function (de) {
            $scope.cde = de; 
            $scope.initialized = true;
         });
+        
+        PriorCdes.getCdes({cdeId: deId}, function(dataElements) {
+            $scope.priorCdes = dataElements;
+        }); 
+        
     };
     
     $scope.reload($routeParams.cdeId);
@@ -491,6 +495,24 @@ function DEViewCtrl($scope, $routeParams, DataElement, Comment) {
     
     $scope.revert = function(cde) {
         $scope.reload(cde._id);
+    };
+    
+    $scope.viewDiff = function (cde) {
+        var dmp = new diff_match_patch();
+        
+        CdeDiff.get({deId: cde._id}, function(diffResult) {
+            $scope.diff = {};
+            if (diffResult.before.name) {
+                var d = dmp.diff_main(diffResult.before.name, diffResult.after.name);
+                dmp.diff_cleanupSemantic(d);
+                $scope.diff.name = dmp.diff_prettyHtml(d);
+            }
+            if (diffResult.before.definition) {
+                var d = dmp.diff_main(diffResult.before.definition, diffResult.after.definition);
+                dmp.diff_cleanupSemantic(d);
+                $scope.diff.definition = dmp.diff_prettyHtml(d);
+            }
+        });
     };
     
 }

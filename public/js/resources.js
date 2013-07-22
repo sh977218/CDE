@@ -13,6 +13,9 @@ angular.module('resources', ['ngResource']).
         return $resource('/cdesinform/:formId', {formId: '@formId'}, 
             {'getCdes': {method: 'GET', isArray: true}});
     })
+    .factory('CdeDiff', function($resource) {
+        return $resource('/cdediff/:deId', {deId: '@deId'});
+    })
     .factory('AutocompleteSvc', function($resource) {
         return $resource("/autocomplete");
     })

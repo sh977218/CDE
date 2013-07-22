@@ -1,4 +1,4 @@
-var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap']).
+var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize']).
     config(function($routeProvider) {
         $routeProvider.
         when('/edit/:cdeId', {controller:EditCtrl, templateUrl:'detail.html'}).

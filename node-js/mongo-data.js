@@ -288,8 +288,10 @@ exports.saveCde = function(req, callback) {
             newDe.definition = req.body.definition;
             newDe.changeNote = req.body.changeNote;
             newDe.updated = new Date().toJSON();
+            newDe.updatedBy.userId = req.user._id;
+            newDe.updatedBy.username = req.user.username;
             newDe.workflowStatus = req.body.workflowStatus;
-
+            
             dataElement.archived = true;
             dataElement.save(function (err) {
                  if (err) {
@@ -304,7 +306,7 @@ exports.saveCde = function(req, callback) {
                  }
            });
        });
-    } else {
+    } else { // CDE does not already exists
         var newDe = new DataElement(req.body);
         newDe.workflowStatus = "Draft";
         newDe.created = Date.now();

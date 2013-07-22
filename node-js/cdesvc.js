@@ -147,3 +147,41 @@ exports.name_autocomplete_form = function(req, res) {
          });
     }
 };
+
+exports.diff = function(req, res) {
+    if (req.params.deId == "undefined") {
+        res.send("Please specify an identifier as input.");
+    } else {
+        mongo_data.cdeById(req.params.deId, function (err, dataElement) {
+           if (err) {
+               res.send("Error: " + err);
+           } else {
+               if (!dataElement) {
+                   res.send("Cannot retrieve element with this ID.");
+               } else {
+                   if (dataElement.history.length > 0) {
+                       mongo_data.cdeById(dataElement.history[dataElement.history.length - 1], function (err, priorDe) {
+                           var diff = {};
+                           diff.before = {};
+                           diff.after = {};
+                           
+                           if (dataElement.name !== priorDe.name) {
+                               diff.before.name = priorDe.name;
+                               diff.after.name = dataElement.name;
+                           }
+                           if (dataElement.definition !== priorDe.definition) {
+                               diff.before.definition = priorDe.definition;
+                               diff.after.definition = dataElement.definition;
+                           }
+                           
+                           res.send(diff);
+                           
+                       });
+                   } else {
+                       res.send("This element has no history");
+                   }
+               }
+           }
+        });
+    }
+};
