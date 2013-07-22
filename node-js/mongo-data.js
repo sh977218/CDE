@@ -145,7 +145,7 @@ exports.cdesByUuidList = function(idList, callback) {
 
 exports.listcontexts = function(callback) {
     DataElement.find().distinct('owningContext', function(error, contexts) {
-        callback("", contexts);
+        callback("", contexts.sort());
     });
 };
 
