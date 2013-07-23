@@ -1,7 +1,8 @@
 function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
-            $scope.user = u; 
+            $scope.user = u;
+            $scope.setMyContexts();
             callback();
         });
     };
@@ -13,11 +14,27 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         dialogFade: true
     };  
     
+    $scope.isContextCurator = function() {        
+        return $scope.isContextAdmin() || ($scope.user && ($scope.user.contextCurator && $scope.user.contextCurator.length > 0));  
+    };
+    
     $scope.isContextAdmin = function() {
         return $scope.user && $scope.user.contextAdmin && $scope.user.contextAdmin.length > 0;  
     };
     
     $scope.workflowStatuses = ['Draft', 'Internal Review', 'Internally Reviewed', 'Submitted', 'Released'];
+
+    $scope.setMyContexts = function() {
+        if ($scope.user) {
+            // clone contextAdmin array
+            $scope.myContexts = $scope.user.contextAdmin.slice(0);
+            for (var i = 0; i < $scope.user.contextCurator.length; i++) {
+                if ($scope.myContexts.indexOf($scope.user.contextCurator[i]) < 0) {
+                    $scope.myContexts.push($scope.user.contextCurator[i]);
+                }
+            }
+        }
+    };
     
     // @TODO
     // Is there a more elegant way to do this?
@@ -517,8 +534,8 @@ function DEViewCtrl($scope, $routeParams, DataElement, Comment, PriorCdes, CdeDi
     };
     
     $scope.isAllowed = function (cde) {
-        if ($scope.initialized && $scope.user.contextAdmin) {
-            return $scope.user.contextAdmin.indexOf(cde.owningContext) > -1;
+        if ($scope.initialized && $scope.myContexts) {
+            return $scope.myContexts.indexOf(cde.owningContext) > -1;
         } else {
             return false;
         }

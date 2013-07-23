@@ -20,7 +20,7 @@
                     <ul class="nav">
                         <li class="{{menuHome}}"><a href="/">CDEs</a></li>
                         <li class="{{menuForm}}"><a href="#/listforms">Forms</a></li>
-                        <li ng-show='user._id' class="{{menuCreate}}"><a href="#/createCde">Create</a></li>
+                        <li ng-show='isContextCurator()' class="{{menuCreate}}"><a href="#/createCde">Create</a></li>
 <!--                        
                         <li ng-show='user._id' class="dropdown">    
                             <a class="dropdown-toggle caret-after" data-toggle="dropdown">

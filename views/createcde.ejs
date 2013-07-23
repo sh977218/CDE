@@ -16,7 +16,7 @@
         <label for="cde.owningContext">Context</label>
         <select ng-model="cde.owningContext" name="cde.owningContext" required>
             <option value="">Select One</option>
-            <option ng-repeat="c in user.contextAdmin" ng-value="c">{{c}}</option>
+            <option ng-repeat="c in myContexts" ng-value="c">{{c}}</option>
         </select>
         <br />
 
