@@ -491,7 +491,7 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
     
 }
 
-function DEViewCtrl($scope, $routeParams, DataElement, Comment, PriorCdes, CdeDiff) {
+function DEViewCtrl($scope, $routeParams, $location, $window, DataElement, Comment, PriorCdes, CdeDiff) {
     $scope.initialized = false;
     $scope.reload = function(deId) {
         DataElement.get({deId: deId}, function (de) {
@@ -542,7 +542,9 @@ function DEViewCtrl($scope, $routeParams, DataElement, Comment, PriorCdes, CdeDi
     };
    
     $scope.save = function() {
-        $scope.cde.$save();
+        $scope.cde.$save(function (cde) {
+            $window.location.href = "/#/deview?cdeId=" + cde._id;
+        });
     }; 
     
     $scope.revert = function(cde) {
