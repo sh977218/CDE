@@ -46,6 +46,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         $scope.menuIntRev = '';
         $scope.menuNlmRev = '';
         $scope.menuAccount = '';
+        $scope.menuCreate = '';
         if (key === 'LISTCDE') {
             $scope.menuHome = 'active';
         } else if (key === 'LOGIN') {
@@ -258,7 +259,8 @@ function AuthCtrl($scope, $rootScope, Auth, $location) {
         function(err) {
             $rootScope.error = "failed";
         }
-    )};
+    );
+    };
 }
 
 function DEListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
