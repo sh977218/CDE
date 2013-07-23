@@ -125,6 +125,18 @@ app.post('/removeContextAdmin', function(req, res) {
     usersvc.removeContextAdmin(req, res);
 });
 
+app.get('/contextCurators', function(req, res) {
+    usersvc.contextCurators(req, res);
+});
+
+app.post('/addContextCurator', function(req, res) {
+    usersvc.addContextCurator(req, res);
+});
+
+app.post('/removeContextCurator', function(req, res) {
+    usersvc.removeContextCurator(req, res);
+});
+
 app.get('/cart', function(req, res) {
     res.render('cart');
 });

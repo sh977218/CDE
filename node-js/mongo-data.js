@@ -53,6 +53,12 @@ exports.contextAdmins = function(callback) {
     });
 };
 
+exports.contextCurators = function(contexts, callback) {
+    User.find().where("contextCurator").in(contexts).exec(function (err, users) {
+        callback("", users);
+    });
+};
+
 exports.addComment = function(deId, comment, userId, callback) {
     exports.cdeById(deId, function(err, de) {
         console.log("Found DE: " + de.name);

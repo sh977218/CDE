@@ -53,8 +53,14 @@ angular.module('resources', ['ngResource']).
           , addContextAdmin: function(user, success, error) {
             $http.post('/addContextAdmin', user).success(success).error(error);
           }  
+          , addContextCurator: function(user, success, error) {
+            $http.post('/addContextCurator', user).success(success).error(error);
+          }  
           , removeContextAdmin: function(data, success, error) {
             $http.post('/removeContextAdmin', data).success(success).error(error);
+          }  
+          , removeContextCurator: function(data, success, error) {
+            $http.post('/removeContextCurator', data).success(success).error(error);
           }  
           , addContext: function(name, success, error) {
             $http.post('/addContext', name).success(success).error(error);

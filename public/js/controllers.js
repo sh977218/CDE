@@ -81,7 +81,9 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     $scope.admin = {};
     $scope.newContext = {};
     $scope.contextAdmin = {};
+    $scope.contextCurator = {};
     $scope.admin = {};
+    $scope.curator = {};
         
     $scope.getSiteAdmins = function() {
         return $http.get("/siteAdmins").then(function(response) {
@@ -103,6 +105,13 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
         });
     };
     $scope.contextAdmins = $scope.getContextAdmins(); 
+
+    $scope.getContextCurators = function() {
+        return $http.get("/contextcurators").then(function(response) {
+            return response.data.contexts;
+        });
+    };
+    $scope.contextCurators = $scope.getContextCurators(); 
     
     $scope.addSiteAdmin = function() {
         AccountManagement.addSiteAdmin({
@@ -130,7 +139,7 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     $scope.addContextAdmin = function() {
         AccountManagement.addContextAdmin({
             username: $scope.contextAdmin.username
-            , context: $scope.admin.ContextName
+            , context: $scope.admin.contextName
             },
             function(res) {
                   $scope.message = res;
@@ -152,7 +161,33 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
         
         );
     };
-    
+
+    $scope.addContextCurator = function() {
+        AccountManagement.addContextCurator({
+            username: $scope.contextCurator.username
+            , context: $scope.curator.contextName
+            },
+            function(res) {
+                  $scope.message = res;
+                  $scope.contextCurators = $scope.getContextCurators(); 
+            }
+        );
+        $scope.contextCurator.username = "";
+    };
+        
+    $scope.removeContextCurator = function(contextName, userId) {
+        AccountManagement.removeContextCurator({
+            contextName: contextName
+            , userId: userId
+            },
+            function (res) {
+                $scope.message = res;
+                $scope.contextCurators = $scope.getContextCurators(); 
+            }
+        
+        );
+    };
+
     $scope.addContext = function() {
         AccountManagement.addContext({
             name: $scope.newContext.name
