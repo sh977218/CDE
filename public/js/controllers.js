@@ -25,7 +25,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     $scope.workflowStatuses = ['Draft', 'Internal Review', 'Internally Reviewed', 'Submitted', 'Released'];
 
     $scope.setMyContexts = function() {
-        if ($scope.user) {
+        if ($scope.user && $scope.user.contextAdmin) {
             // clone contextAdmin array
             $scope.myContexts = $scope.user.contextAdmin.slice(0);
             for (var i = 0; i < $scope.user.contextCurator.length; i++) {
