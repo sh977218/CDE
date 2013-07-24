@@ -51,10 +51,10 @@ exports.myContextsAdmins = function(req, res) {
             var result = {"contexts": []};
             mongo_data.contextAdmins(function(err, users) {
                 var myContexts = foundUser.contextAdmin;
-                for (var i in myContexts) {
+                for (var i = 0; i < myContexts.length; i++) {
                     var usersList = [];
                     for (var j in users) {
-                        if (users[j].contextAdmin.indexOf(myContexts[i].name) > -1) {
+                        if (users[j].contextAdmin.indexOf(myContexts[i]) > -1) {
                             usersList.push({
                                 "username": users[j].username
                                 , "_id": users[j]._id
@@ -63,7 +63,7 @@ exports.myContextsAdmins = function(req, res) {
                     }
                     if (usersList.length > 0) {
                         result.contexts.push({
-                            "name": myContexts[i].name
+                            "name": myContexts[i]
                             , "users": usersList
                         });
                     }

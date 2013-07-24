@@ -86,11 +86,6 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
 
 function ContextAccountManagementCtrl($scope, $http) {
 
-    $scope.getContextAdmins = function() {
-        return $http.get("/myContextsAdmins").then(function(response) {
-            return response.data.contexts;
-        });
-    };
 
 }
 
@@ -123,6 +118,14 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
         });
     };
     $scope.contextAdmins = $scope.getContextAdmins(); 
+
+    
+    $scope.getMyContextAdmins = function() {
+        return $http.get("/myContextsAdmins").then(function(response) {
+            return response.data.contexts;
+        });
+    };
+    $scope.myContextAdmins = $scope.getMyContextAdmins();
 
     $scope.getContextCurators = function() {
         return $http.get("/contextcurators").then(function(response) {
