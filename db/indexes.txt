@@ -1,1 +1,1 @@
-db.dataelements.ensureIndex({"name": 1, "owningContext": 1, "workflowStatus": 1})
+db.dataelements.ensureIndex({"name": 1, "owningRegAuth": 1, "workflowStatus": 1})

@@ -43,18 +43,18 @@ exports.removeSiteAdmin = function(req, res) {
     });  
 };
 
-exports.myContextsAdmins = function(req, res) {
+exports.myRegAuthsAdmins = function(req, res) {
     if (!req.isAuthenticated()) {
-        res.send({contexts: []});
+        res.send({regAuths: []});
     } else {
         mongo_data.userById(req.user._id, function(err, foundUser) {
-            var result = {"contexts": []};
-            mongo_data.contextAdmins(function(err, users) {
-                var myContexts = foundUser.contextAdmin;
-                for (var i = 0; i < myContexts.length; i++) {
+            var result = {"regAuths": []};
+            mongo_data.regAuthAdmins(function(err, users) {
+                var myRegAuths = foundUser.regAuthAdmin;
+                for (var i = 0; i < myRegAuths.length; i++) {
                     var usersList = [];
                     for (var j in users) {
-                        if (users[j].contextAdmin.indexOf(myContexts[i]) > -1) {
+                        if (users[j].regAuthAdmin.indexOf(myRegAuths[i]) > -1) {
                             usersList.push({
                                 "username": users[j].username
                                 , "_id": users[j]._id
@@ -62,8 +62,8 @@ exports.myContextsAdmins = function(req, res) {
                         }
                     }
                     if (usersList.length > 0) {
-                        result.contexts.push({
-                            "name": myContexts[i]
+                        result.regAuths.push({
+                            "name": myRegAuths[i]
                             , "users": usersList
                         });
                     }
@@ -74,19 +74,19 @@ exports.myContextsAdmins = function(req, res) {
     }
 };
 
-exports.contextCurators = function(req, res) {
+exports.regAuthCurators = function(req, res) {
     if (!req.isAuthenticated()) {
         res.send("You must log in to do this.");
     } else {
         mongo_data.userById(req.user._id, function(err, foundUser) {
-            var result = {"contexts": []};
-            if (foundUser.contextAdmin.length > 0) {
-                mongo_data.contextCurators(foundUser.contextAdmin, function(err, users) {
-                    var myContexts = foundUser.contextAdmin;
-                    for (var i = 0; i < myContexts.length; i++) {
+            var result = {"regAuths": []};
+            if (foundUser.regAuthAdmin.length > 0) {
+                mongo_data.regAuthCurators(foundUser.regAuthAdmin, function(err, users) {
+                    var myRegAuths = foundUser.regAuthAdmin;
+                    for (var i = 0; i < myRegAuths.length; i++) {
                         var usersList = [];
                         for (var j in users) {
-                            if (users[j].contextCurator.indexOf(myContexts[i]) > -1) {
+                            if (users[j].regAuthCurator.indexOf(myRegAuths[i]) > -1) {
                                 usersList.push({
                                     "username": users[j].username
                                     , "_id": users[j]._id
@@ -94,8 +94,8 @@ exports.contextCurators = function(req, res) {
                             }
                         }
                         if (usersList.length > 0) {
-                            result.contexts.push({
-                                "name": myContexts[i]
+                            result.regAuths.push({
+                                "name": myRegAuths[i]
                                 , "users": usersList
                             });
                         }
@@ -103,21 +103,21 @@ exports.contextCurators = function(req, res) {
                    res.send(result); 
                 });
             } else {
-                res.send("User is not a Context Admin");
+                res.send("User is not a Registration Authority Admin");
             }
         });
     }
 };
 
 
-exports.contextAdmins = function(req, res) {
-    mongo_data.managedContexts(function(managedContexts) {
-        var result = {"contexts": []};
-        mongo_data.contextAdmins(function(err, users) {
-            for (var i in managedContexts) {
+exports.regAuthAdmins = function(req, res) {
+    mongo_data.managedRegAuths(function(managedRegAuths) {
+        var result = {"regAuths": []};
+        mongo_data.regAuthAdmins(function(err, users) {
+            for (var i in managedRegAuths) {
                 var usersList = [];
                 for (var j in users) {
-                    if (users[j].contextAdmin.indexOf(managedContexts[i].name) > -1) {
+                    if (users[j].regAuthAdmin.indexOf(managedRegAuths[i].name) > -1) {
                         usersList.push({
                             "username": users[j].username
                             , "_id": users[j]._id
@@ -125,8 +125,8 @@ exports.contextAdmins = function(req, res) {
                     }
                 }
                 if (usersList.length > 0) {
-                    result.contexts.push({
-                        "name": managedContexts[i].name
+                    result.regAuths.push({
+                        "name": managedRegAuths[i].name
                         , "users": usersList
                     });
                 }
@@ -137,70 +137,70 @@ exports.contextAdmins = function(req, res) {
     });
 };
 
-exports.addContextAdmin = function(req, res) {
+exports.addRegAuthAdmin = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {
         if (!found) {
             res.send("Unknown Username");
         } else {
-            if (found.contextAdmin.indexOf(req.body.context) > -1) {
-                res.send("User is already an Administrator for this Context");
+            if (found.regAuthAdmin.indexOf(req.body.regAuth) > -1) {
+                res.send("User is already an Administrator for this Registration Authority");
             } else {
-                found.contextAdmin.push(req.body.context);
+                found.regAuthAdmin.push(req.body.regAuth);
                 found.save(function () {
-                    res.send("Context Administrator Added");
+                    res.send("Registration Authority Administrator Added");
                 });
             }
         }
     });  
 };
 
-exports.removeContextAdmin = function(req, res) {
+exports.removeRegAuthAdmin = function(req, res) {
     mongo_data.userById(req.body.userId, function(err, found) {
         if (!found) {
             res.send("Unknown User");
         } else {
-            var contextInd = found.contextAdmin.indexOf(req.body.contextName);
-            if (contextInd < 0) {
-                res.send("User is not an Administrator for this Context");
+            var regAuthInd = found.regAuthAdmin.indexOf(req.body.regAuthName);
+            if (regAuthInd < 0) {
+                res.send("User is not an Administrator for this Registration Authority");
             } else {
-                found.contextAdmin.splice(contextInd, 1);
+                found.regAuthAdmin.splice(regAuthInd, 1);
                 found.save(function () {
-                    res.send("Context Administrator Removed");
+                    res.send("Registration Authority Administrator Removed");
                 });
             }
         }
     });  
 };
 
-exports.addContextCurator = function(req, res) {
+exports.addRegAuthCurator = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {
         if (!found) {
             res.send("Unknown Username");
         } else {
-            if (found.contextCurator.indexOf(req.body.context) > -1) {
-                res.send("User is already a Curator for this Context");
+            if (found.regAuthCurator.indexOf(req.body.regAuth) > -1) {
+                res.send("User is already a Curator for this Registration Authority");
             } else {
-                found.contextCurator.push(req.body.context);
+                found.regAuthCurator.push(req.body.regAuth);
                 found.save(function () {
-                    res.send("Context Curator Added");
+                    res.send("Registration Authority Curator Added");
                 });
             }
         }
     });  
 };
 
-exports.removeContextCurator = function(req, res) {
+exports.removeRegAuthCurator = function(req, res) {
     mongo_data.userById(req.body.userId, function(err, found) {
         if (!found) {
             res.send("Unknown User");
         } else {
-            var contextInd = found.contextCurator.indexOf(req.body.contextName);
-            if (contextInd < 0) {
-                res.send("User is not a Curator for this Context");
+            var regAuthInd = found.regAuthCurator.indexOf(req.body.regAuthName);
+            if (regAuthInd < 0) {
+                res.send("User is not a Curator for this Registration Authority");
             } else {
-                found.contextCurator.splice(contextInd, 1);
+                found.regAuthCurator.splice(regAuthInd, 1);
                 found.save(function () {
-                    res.send("Context Curator Removed");
+                    res.send("Registration Authority Curator Removed");
                 });
             }
         }

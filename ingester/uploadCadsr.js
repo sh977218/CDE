@@ -49,7 +49,7 @@ fs.readFile(process.argv[2], function(err, data) {
             , created: Date.now()
             , origin: 'CADSR'
             , originId: cadsrDE.PUBLICID + "v" + cadsrDE.VERSION
-            , owningContext: cadsrDE.CONTEXTNAME
+            , owningRegAuth: cadsrDE.CONTEXTNAME
             , workflowStatus: cadsrDE.WORKFLOWSTATUS
             , version: cadsrDE.VERSION
             , valueDomain: {  

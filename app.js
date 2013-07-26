@@ -5,7 +5,7 @@ var express = require('express')
   , path = require('path')
   , cdesvc = require('./node-js/cdesvc')
   , usersvc = require('./node-js/usersvc')
-  , contextsvc = require('./node-js/contextsvc')
+  , regAuthsvc = require('./node-js/regAuthsvc')
   , flash = require('connect-flash')
   , passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy
@@ -31,7 +31,7 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
   findById(id, function (err, user) {
-    console.log("user: " + user.username + " " + user.contextAdmin);  
+    console.log("user: " + user.username + " " + user.regAuthAdmin);  
     done(err, user);
   });
 });
@@ -108,33 +108,33 @@ app.post('/removeSiteAdmin', function(req, res) {
     usersvc.removeSiteAdmin(req, res);
 });
 
-app.get('/myContextsAdmins', function(req, res) {
-    usersvc.myContextsAdmins(req, res);
+app.get('/myRegAuthsAdmins', function(req, res) {
+    usersvc.myRegAuthsAdmins(req, res);
 });
 
 
-app.get('/contextAdmins', function(req, res) {
-    usersvc.contextAdmins(req, res);
+app.get('/regAuthAdmins', function(req, res) {
+    usersvc.regAuthAdmins(req, res);
 });
 
-app.post('/addContextAdmin', function(req, res) {
-    usersvc.addContextAdmin(req, res);
+app.post('/addRegAuthAdmin', function(req, res) {
+    usersvc.addRegAuthAdmin(req, res);
 });
 
-app.post('/removeContextAdmin', function(req, res) {
-    usersvc.removeContextAdmin(req, res);
+app.post('/removeRegAuthAdmin', function(req, res) {
+    usersvc.removeRegAuthAdmin(req, res);
 });
 
-app.get('/contextCurators', function(req, res) {
-    usersvc.contextCurators(req, res);
+app.get('/regAuthCurators', function(req, res) {
+    usersvc.regAuthCurators(req, res);
 });
 
-app.post('/addContextCurator', function(req, res) {
-    usersvc.addContextCurator(req, res);
+app.post('/addRegAuthCurator', function(req, res) {
+    usersvc.addRegAuthCurator(req, res);
 });
 
-app.post('/removeContextCurator', function(req, res) {
-    usersvc.removeContextCurator(req, res);
+app.post('/removeRegAuthCurator', function(req, res) {
+    usersvc.removeRegAuthCurator(req, res);
 });
 
 app.get('/cart', function(req, res) {
@@ -198,8 +198,8 @@ app.get('/siteaccountmanagement', function(req, res) {
     res.render('siteaccountmanagement');
 });
 
-app.get('/contextaccountmanagement', function(req, res) {
-    res.render('contextaccountmanagement');
+app.get('/regauthaccountmanagement', function(req, res) {
+    res.render('regAuthaccountmanagement');
 });
 
 app.get('/formview', function(req, res) {
@@ -230,7 +230,7 @@ app.get('/listcde', function(req, res) {
 });
 
 app.get('/cdesforapproval', function(req, res) {
-    mongo_data.cdesforapproval(req.user.contextAdmin, function(err, cdes) {
+    mongo_data.cdesforapproval(req.user.regAuthAdmin, function(err, cdes) {
         res.send(cdes);
     });
 });
@@ -241,20 +241,20 @@ app.get('/siteadmins', function(req, res) {
     });
 });
 
-app.get('/listcontexts', function(req, res) {
-    cdesvc.listcontexts(req, res);
+app.get('/listregauths', function(req, res) {
+    cdesvc.listRegAuths(req, res);
 });
 
-app.get('/managedContexts', function(req, res) {
-    contextsvc.managedContexts(req, res);
+app.get('/managedRegAuths', function(req, res) {
+    regAuthsvc.managedRegAuths(req, res);
 });
 
-app.post('/addContext', function(req, res) {
-    contextsvc.addContext(req, res);
+app.post('/addRegAuth', function(req, res) {
+    regAuthsvc.addRegAuth(req, res);
 });
 
-app.post('/removeContext', function(req, res) {
-    contextsvc.removeContext(req, res);
+app.post('/removeRegAuth', function(req, res) {
+    regAuthsvc.removeRegAuth(req, res);
 });
 
 app.post('/addComment', function(req, res) {
@@ -312,7 +312,7 @@ app.get('/dataelement/:id', function(req, res) {
 // @TODO
 // SECURITY LAMENESS HERE
 // Check the following:
-// 1. You are context owner
+// 1. You are regAuth owner
 // 2. If you are not nlm admin, remove workflow status from json obj so you can't update it.
 app.post('/dataelement', function (req, res) {
     if (req.isAuthenticated()) {
@@ -349,7 +349,7 @@ app.post('/addcdetoform/:cdeId/:formId', function (req, res) {
       if (!form) {
           res.send("The requested form does not exist.");
       } else {
-          if (!req.user || !req.user.contextAdmin || req.user.contextAdmin.indexOf(form.owningContext) < 0) {
+          if (!req.user || !req.user.regAuthAdmin || req.user.regAuthAdmin.indexOf(form.owningRegAuth) < 0) {
             res.send("You are not authorized to do this.");           
           } else {
             mongo_data.cdeById(req.body.cdeId, function(err, cde) {

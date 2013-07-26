@@ -1,0 +1,45 @@
+<div class="container">
+<div>{{message}}</div>
+<tabset>
+    <tab heading="Registration Authorities Admins">
+        <div class="row-fluid" ng-repeat="con in myRegAuthAdmins">
+            <div class="span4">{{con.name}}</div>
+            <div class="span8">
+                <div class="row-fluid" ng-repeat="us in con.users">
+                    <div class="span11">{{us.username}}</div>
+                    <div class="span1"><i class="icon-trash" ng-click="removeRegAuthAdmin(con.name, us._id)"></i></div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row-fluid input-prepend input-append">
+            <select class="span5" type="text" ng-model="admin.regAuthName">
+                <option value="">--</option>
+                <option ng-repeat="c in user.regAuthAdmin" ng-value="c">{{c}}</option>
+            </select>
+            <input class="span5" type="text" ng-model="regAuthAdmin.username"></input>
+            <span class="add-on" ng-click="addRegAuthAdmin()">+</span>
+        </div>
+    </tab>
+    <tab heading="Registration Authorities Curators">
+        <div class="row-fluid" ng-repeat="con in regAuthCurators">
+            <div class="span4">{{con.name}}</div>
+            <div class="span8">
+                <div class="row-fluid" ng-repeat="us in con.users">
+                    <div class="span11">{{us.username}}</div>
+                    <div class="span1"><i class="icon-trash" ng-click="removeRegAuthCurator(con.name, us._id)"></i></div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row-fluid input-prepend input-append">
+            <select class="span5" type="text" ng-model="curator.regAuthName">
+                <option value="">--</option>
+                <option ng-repeat="c in user.regAuthAdmin" ng-value="c">{{c}}</option>
+            </select>
+            <input class="span5" type="text" ng-model="regAuthCurator.username"></input>
+            <span class="add-on" ng-click="addRegAuthCurator()">+</span>
+        </div>
+    </tab>
+</tabset>
+</div>

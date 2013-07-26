@@ -50,23 +50,23 @@ angular.module('resources', ['ngResource']).
           , removeSiteAdmin: function(user, success, error) {
             $http.post('/removeSiteAdmin', user).success(success).error(error);
           }  
-          , addContextAdmin: function(user, success, error) {
-            $http.post('/addContextAdmin', user).success(success).error(error);
+          , addRegAuthAdmin: function(user, success, error) {
+            $http.post('/addRegAuthAdmin', user).success(success).error(error);
           }  
-          , addContextCurator: function(user, success, error) {
-            $http.post('/addContextCurator', user).success(success).error(error);
+          , addRegAuthCurator: function(user, success, error) {
+            $http.post('/addRegAuthCurator', user).success(success).error(error);
           }  
-          , removeContextAdmin: function(data, success, error) {
-            $http.post('/removeContextAdmin', data).success(success).error(error);
+          , removeRegAuthAdmin: function(data, success, error) {
+            $http.post('/removeRegAuthAdmin', data).success(success).error(error);
           }  
-          , removeContextCurator: function(data, success, error) {
-            $http.post('/removeContextCurator', data).success(success).error(error);
+          , removeRegAuthCurator: function(data, success, error) {
+            $http.post('/removeRegAuthCurator', data).success(success).error(error);
           }  
-          , addContext: function(name, success, error) {
-            $http.post('/addContext', name).success(success).error(error);
+          , addRegAuth: function(name, success, error) {
+            $http.post('/addRegAuth', name).success(success).error(error);
           }  
-          , removeContext: function(id, success, error) {
-            $http.post('/removeContext', id).success(success).error(error);
+          , removeRegAuth: function(id, success, error) {
+            $http.post('/removeRegAuth', id).success(success).error(error);
           }  
         };
     })

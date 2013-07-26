@@ -2,7 +2,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u;
-            $scope.setMyContexts();
+            $scope.setMyRegAuths();
             callback();
         });
     };
@@ -14,23 +14,23 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         dialogFade: true
     };  
     
-    $scope.isContextCurator = function() {        
-        return $scope.isContextAdmin() || ($scope.user && ($scope.user.contextCurator && $scope.user.contextCurator.length > 0));  
+    $scope.isRegAuthCurator = function() {        
+        return $scope.isRegAuthAdmin() || ($scope.user && ($scope.user.regAuthCurator && $scope.user.regAuthCurator.length > 0));  
     };
     
-    $scope.isContextAdmin = function() {
-        return $scope.user && $scope.user.contextAdmin && $scope.user.contextAdmin.length > 0;  
+    $scope.isRegAuthAdmin = function() {
+        return $scope.user && $scope.user.regAuthAdmin && $scope.user.regAuthAdmin.length > 0;  
     };
     
     $scope.workflowStatuses = ['Draft', 'Internal Review', 'Internally Reviewed', 'Submitted', 'Released'];
 
-    $scope.setMyContexts = function() {
-        if ($scope.user && $scope.user.contextAdmin) {
-            // clone contextAdmin array
-            $scope.myContexts = $scope.user.contextAdmin.slice(0);
-            for (var i = 0; i < $scope.user.contextCurator.length; i++) {
-                if ($scope.myContexts.indexOf($scope.user.contextCurator[i]) < 0) {
-                    $scope.myContexts.push($scope.user.contextCurator[i]);
+    $scope.setMyRegAuths = function() {
+        if ($scope.user && $scope.user.regAuthAdmin) {
+            // clone regAuthAdmin array
+            $scope.myRegAuths = $scope.user.regAuthAdmin.slice(0);
+            for (var i = 0; i < $scope.user.regAuthCurator.length; i++) {
+                if ($scope.myRegAuths.indexOf($scope.user.regAuthCurator[i]) < 0) {
+                    $scope.myRegAuths.push($scope.user.regAuthCurator[i]);
                 }
             }
         }
@@ -67,13 +67,13 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
 
     };
     
-    $scope.listcontexts = function() {
-     return $http.get("/listcontexts").then(function(response){ 
+    $scope.listRegAuths = function() {
+     return $http.get("/listregauths").then(function(response){ 
         return response.data;
      });
     };
     
-    $scope.contexts = $scope.listcontexts();
+    $scope.regAuths = $scope.listRegAuths();
 
     $scope.scrollTo = function(id) {
         var old = $location.hash();
@@ -84,7 +84,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     };
 }
 
-function ContextAccountManagementCtrl($scope, $http) {
+function RegAuthAccountManagementCtrl($scope, $http) {
 
 
 }
@@ -92,9 +92,9 @@ function ContextAccountManagementCtrl($scope, $http) {
 function AccountManagementCtrl($scope, $http, AccountManagement) {
     $scope.setActiveMenu('ACCOUNT');
     $scope.admin = {};
-    $scope.newContext = {};
-    $scope.contextAdmin = {};
-    $scope.contextCurator = {};
+    $scope.newRegAuth = {};
+    $scope.regAuthAdmin = {};
+    $scope.regAuthCurator = {};
     $scope.admin = {};
     $scope.curator = {};
         
@@ -105,34 +105,34 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     };
     $scope.siteAdmins = $scope.getSiteAdmins();
 
-    $scope.getContexts = function() {
-        return $http.get("/managedContexts").then(function(response) {
-            return response.data.contexts;
+    $scope.getRegAuths = function() {
+        return $http.get("/managedRegAuths").then(function(response) {
+            return response.data.regAuths;
         });
     };
-    $scope.contexts = $scope.getContexts(); 
+    $scope.regAuths = $scope.getRegAuths(); 
 
-    $scope.getContextAdmins = function() {
-        return $http.get("/contextAdmins").then(function(response) {
-            return response.data.contexts;
+    $scope.getRegAuthAdmins = function() {
+        return $http.get("/regAuthAdmins").then(function(response) {
+            return response.data.regAuths;
         });
     };
-    $scope.contextAdmins = $scope.getContextAdmins(); 
+    $scope.regAuthAdmins = $scope.getRegAuthAdmins(); 
 
     
-    $scope.getMyContextAdmins = function() {
-        return $http.get("/myContextsAdmins").then(function(response) {
-            return response.data.contexts;
+    $scope.getMyRegAuthAdmins = function() {
+        return $http.get("/myRegAuthsAdmins").then(function(response) {
+            return response.data.regAuths;
         });
     };
-    $scope.myContextAdmins = $scope.getMyContextAdmins();
+    $scope.myRegAuthAdmins = $scope.getMyRegAuthAdmins();
 
-    $scope.getContextCurators = function() {
-        return $http.get("/contextcurators").then(function(response) {
-            return response.data.contexts;
+    $scope.getRegAuthCurators = function() {
+        return $http.get("/regauthcurators").then(function(response) {
+            return response.data.regAuths;
         });
     };
-    $scope.contextCurators = $scope.getContextCurators(); 
+    $scope.regAuthCurators = $scope.getRegAuthCurators(); 
     
     $scope.addSiteAdmin = function() {
         AccountManagement.addSiteAdmin({
@@ -157,77 +157,77 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
         );
     };
     
-    $scope.addContextAdmin = function() {
-        AccountManagement.addContextAdmin({
-            username: $scope.contextAdmin.username
-            , context: $scope.admin.contextName
+    $scope.addRegAuthAdmin = function() {
+        AccountManagement.addRegAuthAdmin({
+            username: $scope.regAuthAdmin.username
+            , regAuth: $scope.admin.regAuthName
             },
             function(res) {
                   $scope.message = res;
-                  $scope.contextAdmins = $scope.getContextAdmins();
+                  $scope.regAuthAdmins = $scope.getRegAuthAdmins();
             }
         );
-        $scope.contextAdmin.username = "";
+        $scope.regAuthAdmin.username = "";
     };
 
-    $scope.removeContextAdmin = function(contextName, userId) {
-        AccountManagement.removeContextAdmin({
-            contextName: contextName
+    $scope.removeRegAuthAdmin = function(regAuthName, userId) {
+        AccountManagement.removeRegAuthAdmin({
+            regAuthName: regAuthName
             , userId: userId
             },
             function (res) {
                 $scope.message = res;
-                $scope.contextAdmins = $scope.getContextAdmins();
+                $scope.regAuthAdmins = $scope.getRegAuthAdmins();
             }
         
         );
     };
 
-    $scope.addContextCurator = function() {
-        AccountManagement.addContextCurator({
-            username: $scope.contextCurator.username
-            , context: $scope.curator.contextName
+    $scope.addRegAuthCurator = function() {
+        AccountManagement.addRegAuthCurator({
+            username: $scope.regAuthCurator.username
+            , regAuth: $scope.curator.regAuthName
             },
             function(res) {
                   $scope.message = res;
-                  $scope.contextCurators = $scope.getContextCurators(); 
+                  $scope.regAuthCurators = $scope.getRegAuthCurators(); 
             }
         );
-        $scope.contextCurator.username = "";
+        $scope.regAuthCurator.username = "";
     };
         
-    $scope.removeContextCurator = function(contextName, userId) {
-        AccountManagement.removeContextCurator({
-            contextName: contextName
+    $scope.removeRegAuthCurator = function(regAuthName, userId) {
+        AccountManagement.removeRegAuthCurator({
+            regAuthName: regAuthName
             , userId: userId
             },
             function (res) {
                 $scope.message = res;
-                $scope.contextCurators = $scope.getContextCurators(); 
+                $scope.regAuthCurators = $scope.getRegAuthCurators(); 
             }
         
         );
     };
 
-    $scope.addContext = function() {
-        AccountManagement.addContext({
-            name: $scope.newContext.name
+    $scope.addRegAuth = function() {
+        AccountManagement.addRegAuth({
+            name: $scope.newRegAuth.name
             },
             function(res) {
                   $scope.message = res;
-                  $scope.contexts = $scope.getContexts();
+                  $scope.regAuths = $scope.getRegAuths();
             }
         );
-        $scope.newContext.name = "";
+        $scope.newRegAuth.name = "";
     };
 
-    $scope.removeContext = function(byId) {
-       AccountManagement.removeContext({
+    $scope.removeRegAuth = function(byId) {
+       AccountManagement.removeRegAuth({
             id: byId
             },
             function(res) {
                   $scope.message = res;
-                  $scope.contexts = $scope.getContexts();
+                  $scope.regAuths = $scope.getRegAuths();
             }
         );
     };     
@@ -274,9 +274,9 @@ function DEListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
     $scope.originOptions = ['CADSR', 'FITBIR'];
 
     // this one ensures that we don't send this as query when none is selected. 
-    $scope.removeOwningContext = function() {
-        if ($scope.search.owningContext == "") {
-            delete $scope.search.owningContext;
+    $scope.removeOwningRegAuth = function() {
+        if ($scope.search.owningRegAuth == "") {
+            delete $scope.search.owningRegAuth;
         }
     };
     $scope.removeWorkflowStatus = function() {
@@ -539,8 +539,8 @@ function DEViewCtrl($scope, $routeParams, $location, $window, DataElement, Comme
     };
     
     $scope.isAllowed = function (cde) {
-        if ($scope.initialized && $scope.myContexts) {
-            return $scope.myContexts.indexOf(cde.owningContext) > -1;
+        if ($scope.initialized && $scope.myRegAuths) {
+            return $scope.myRegAuths.indexOf(cde.owningRegAuth) > -1;
         } else {
             return false;
         }
@@ -594,8 +594,8 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
                 }
                 $scope.original = $scope.form;
             });
-            if ($scope.user && $scope.user.contextAdmin) {
-                $scope.canEdit = $scope.user.contextAdmin.indexOf(form.owningContext) > -1;
+            if ($scope.user && $scope.user.regAuthAdmin) {
+                $scope.canEdit = $scope.user.regAuthAdmin.indexOf(form.owningRegAuth) > -1;
             } else {
                 $scope.canEdit = false;
             }

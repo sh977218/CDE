@@ -14,7 +14,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize']).
         when('/nlmreleased', {controller: NlmReleaseCtrl, templateUrl: '/cdereview'}).
         when('/internalreview', {controller: InternalReviewCtrl, templateUrl: '/cdereview'}).
         when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
-        when('/contextaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/contextaccountmanagement'}).
+        when('/regauthaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/regauthaccountmanagement'}).
         otherwise({redirectTo:'/'});
     }).
     directive('inlineEdit', function() {

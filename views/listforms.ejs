@@ -2,9 +2,9 @@
 
 <form class="form-search">
 <input type="text" ng-model="search.name" class="search-query" placeholder="Search Name" typeahead="form.name for form in autocomplete($viewValue)" >
-<select ng-model="search.owningContext" name="owningContext" ng-change="removeOwningContext()">
-    <option value="" >All Contexts</option>
-    <option ng-repeat="context in contexts" ng-value="context">{{context}}</option>    
+<select ng-model="search.owningRegAuth" name="owningRegAuth" ng-change="removeOwningRegAuth()">
+    <option value="" >All Registration Authorities</option>
+    <option ng-repeat="ra in regAuths" ng-value="ra">{{ra}}</option>    
 </select>
 <select ng-model="search.workflowStatus" name="workflowStatus" ng-options="status as status for status in workflowStatuses" ng-change="removeWorkflowStatus()">
     <option value="">All Statuses</option>

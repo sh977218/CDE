@@ -18,9 +18,10 @@ var User = mongoose.model('User', schemas.userSchema);
 
 var users = [
     {username: 'bob', password: 'secret'}
-  , {username: 'cabig', password: 'cabig', contextAdmin: []}
-  , {username: 'fitbir', password: 'fitbir', contextAdmin: []}
-  , {username: 'ludet', password: 'ludet', contextAdmin: []}
+  , {username: 'cabig', password: 'cabig', regAuthAdmin: []}
+  , {username: 'fitbir', password: 'fitbir', regAuthAdmin: []}
+  , {username: 'ludet', password: 'ludet', regAuthAdmin: []}
+  , {username: 'ctep', password: 'ctep', regAuthAdmin: []}
   , {username: 'nlm', password: 'nlm', siteAdmin: true}
 ];
 

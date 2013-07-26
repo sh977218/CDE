@@ -11,33 +11,33 @@
             <span class="add-on" ng-click="addSiteAdmin()">+</span>
         </div>
     </tab>
-    <tab heading="Managed Contexts">
-        <div class="row-fluid" ng-repeat="c in contexts">
+    <tab heading="Registration Authorities">
+        <div class="row-fluid" ng-repeat="c in regAuths">
             <div class="span11">{{c.name}}</div>
-            <div class="span1"><i class="icon-trash" ng-click="removeContext(c._id)"></i></div>
+            <div class="span1"><i class="icon-trash" ng-click="removeRegAuth(c._id)"></i></div>
         </div>
         <div class="row-fluid input-prepend input-append">
-            <input class="span10" type="text" ng-model="newContext.name"></input>
-            <span class="add-on" ng-click="addContext()">+</span>
+            <input class="span10" type="text" ng-model="newRegAuth.name"></input>
+            <span class="add-on" ng-click="addRegAuth()">+</span>
         </div>
     </tab>
-    <tab heading="Context Admins">
-        <div class="row-fluid" ng-repeat="con in contextAdmins">
-            <div class="span4">{{con.name}}</div>
+    <tab heading="Registration Authorities Admins">
+        <div class="row-fluid" ng-repeat="adm in regAuthAdmins">
+            <div class="span4">{{adm.name}}</div>
             <div class="span8">
-                <div class="row-fluid" ng-repeat="us in con.users">
+                <div class="row-fluid" ng-repeat="us in adm.users">
                     <div class="span11">{{us.username}}</div>
-                    <div class="span1"><i class="icon-trash" ng-click="removeContextAdmin(con.name, us._id)"></i></div>
+                    <div class="span1"><i class="icon-trash" ng-click="removeRegAuthAdmin(adm.name, us._id)"></i></div>
                 </div>
             </div>
         </div>
         <div class="row-fluid input-prepend input-append">
-            <select class="span5" type="text" ng-model="admin.ContextName">
+            <select class="span5" type="text" ng-model="admin.regAuthName">
                 <option value="">--</option>
-                <option ng-repeat="c in contexts" ng-value="c.name">{{c.name}}</option>
+                <option ng-repeat="a in regAuths" ng-value="a.name">{{a.name}}</option>
             </select>
-            <input class="span5" type="text" ng-model="contextAdmin.username"></input>
-            <span class="add-on" ng-click="addContextAdmin()">+</span>
+            <input class="span5" type="text" ng-model="regAuthAdmin.username"></input>
+            <span class="add-on" ng-click="addRegAuthAdmin()">+</span>
         </div>
     </tab>
 </tabset>

@@ -96,7 +96,7 @@ doModules = {url ->
 doContext = {url, formObj ->
     def httpQuery = new XmlSlurper().parseText(getContent(url.toString())).declareNamespace(xlink: 'http://www.w3.org/1999/xlink')   
 
-    formObj.append("owningContext", getField(httpQuery.queryResponse.'class', 'name').toString());
+    formObj.append("owningRegAuth", getField(httpQuery.queryResponse.'class', 'name').toString());
 }
 
 doForm = {form ->

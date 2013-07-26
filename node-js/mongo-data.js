@@ -20,7 +20,7 @@ var schemas = require('./schemas');
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var User = mongoose.model('User', schemas.userSchema);
 var Form = mongoose.model('Form', schemas.formSchema);
-var Context = mongoose.model('Context', schemas.contextSchema);
+var RegAuth = mongoose.model('RegAuth', schemas.regAuthSchema);
 
 exports.userByName = function(name, callback) {
     User.findOne({'username': name}).exec(function (err, u) {
@@ -47,14 +47,14 @@ exports.siteadmins = function(callback) {
     });
 };
 
-exports.contextAdmins = function(callback) {
-    User.find({contextAdmin: {$not: {$size: 0}}}).exec(function (err, users) {
+exports.regAuthAdmins = function(callback) {
+    User.find({regAuthAdmin: {$not: {$size: 0}}}).exec(function (err, users) {
         callback("", users);
     });
 };
 
-exports.contextCurators = function(contexts, callback) {
-    User.find().where("contextCurator").in(contexts).exec(function (err, users) {
+exports.regAuthCurators = function(regAuths, callback) {
+    User.find().where("regAuthCurator").in(regAuths).exec(function (err, users) {
         callback("", users);
     });
 };
@@ -125,8 +125,8 @@ exports.formlist = function(from, limit, searchOptions, callback) {
     });
 };  
 
-exports.cdesforapproval = function(contexts, callback) {
-    DataElement.find({'workflowStatus': 'Internal Review'}).where('owningContext').in(contexts).exec(function(err, cdes) {
+exports.cdesforapproval = function(regAuths, callback) {
+    DataElement.find({'workflowStatus': 'Internal Review'}).where('owningRegAuth').in(regAuths).exec(function(err, cdes) {
        callback("", {cdes: cdes}); 
     });
 };
@@ -149,33 +149,33 @@ exports.cdesByUuidList = function(idList, callback) {
     });
 };
 
-exports.listcontexts = function(callback) {
-    DataElement.find().distinct('owningContext', function(error, contexts) {
-        callback("", contexts.sort());
+exports.listRegAuths = function(callback) {
+    DataElement.find().distinct('owningRegAuth', function(error, regAuths) {
+        callback("", regAuths.sort());
     });
 };
 
-exports.managedContexts = function(callback) {
-    Context.find().exec(function(err, contexts) {
-        callback(contexts);
+exports.managedRegAuths = function(callback) {
+    RegAuth.find().exec(function(err, regAuths) {
+        callback(regAuths);
     });
 };
 
-exports.addContext = function(name, res) {
-  Context.findOne({"name": name}).exec(function(err, found) {
+exports.addRegAuth = function(name, res) {
+  RegAuth.findOne({"name": name}).exec(function(err, found) {
       if (found) {
-          res.send("Context Already Exists");
+          res.send("RegAuth Already Exists");
       } else {
-          var newContext = new Context({"name": name});
-          newContext.save(function() {
-              res.send("Context Added");
+          var newRegAuth = new RegAuth({"name": name});
+          newRegAuth.save(function() {
+              res.send("RegAuth Added");
           });
       }
   });  
 };
 
-exports.removeContext = function (id, callback) {
-  Context.findOne({"_id": id}).remove().exec(function (err) {
+exports.removeRegAuth = function (id, callback) {
+  RegAuth.findOne({"_id": id}).remove().exec(function (err) {
       callback();
   });
 };
@@ -255,7 +255,7 @@ exports.saveForm = function(req, callback) {
         var form = new Form();
         form.name = req.body.name;
         form.instructions = req.body.instructions;
-        form.owningContext = req.body.owningContext;
+        form.owningRegAuth = req.body.owningRegAuth;
         form.created = Date.now();
         return form.save(function(err) {
             if (err) {

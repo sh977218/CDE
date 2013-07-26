@@ -19,7 +19,7 @@ var alternateNameSchema = mongoose.Schema({
     value: String
     , type: String
     , language: String
-    , owningContext: String
+    , owningRegAuth: String
 }, {_id: false});
 
 var commentSchema = mongoose.Schema({
@@ -36,7 +36,7 @@ var deJsonSchema = {
     , definition: String
     , origin: String
     , originId: String
-    , owningContext: String
+    , owningRegAuth: String
     , created: Date
     , updated: Date
     , createdBy: {
@@ -85,7 +85,7 @@ var formSchema = {
     name: String
     , instructions: String
     , workflowStatus: String
-    , owningContext: String
+    , owningRegAuth: String
     , updated: Date
     , created: Date
     , modules: [moduleSchema]
@@ -94,13 +94,13 @@ var formSchema = {
 schemas.userSchema = mongoose.Schema ({
     username: String
     , password: String
-    , contextAdmin: [String]
-    , contextCurator: [String]
+    , regAuthAdmin: [String]
+    , regAuthCurator: [String]
     , formCart: [String]
     , siteAdmin: Boolean
 });
 
-schemas.contextSchema = mongoose.Schema ({
+schemas.regAuthSchema = mongoose.Schema ({
     name: String
 });
 
@@ -111,6 +111,6 @@ schemas.formSchema = mongoose.Schema(formSchema);
 schemas.dataElementSchema.set('collection', 'dataelements');
 schemas.formSchema.set('collection', 'forms');
 schemas.userSchema.set('collection', 'users');
-schemas.contextSchema.set('collection', 'contexts');
+schemas.regAuthSchema.set('collection', 'regAuths');
 
 module.exports = schemas;

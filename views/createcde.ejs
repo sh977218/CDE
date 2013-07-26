@@ -13,10 +13,10 @@
         <label>Version</label>
         <input type="text" ng-model="cde.version" name="cde.version">
 
-        <label for="cde.owningContext">Context</label>
-        <select ng-model="cde.owningContext" name="cde.owningContext" required>
+        <label for="cde.owningRegAuth">Registration Authority</label>
+        <select ng-model="cde.owningRegAuth" name="cde.owningRegAuth" required>
             <option value="">Select One</option>
-            <option ng-repeat="c in myContexts" ng-value="c">{{c}}</option>
+            <option ng-repeat="c in myRegAuths" ng-value="c">{{c}}</option>
         </select>
         <br />
 

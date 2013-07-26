@@ -69,12 +69,12 @@ exports.listform = function(req, res) {
     });
 }
 
-exports.listcontexts = function(req, res) {
-    mongo_data.listcontexts(function(err, contexts) {
+exports.listRegAuths = function(req, res) {
+    mongo_data.listRegAuths(function(err, regAuths) {
        if (err) {
            res.send("ERROR");
        } else {
-           res.send(contexts);
+           res.send(regAuths);
        }   
     });
 };

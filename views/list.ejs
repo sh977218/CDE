@@ -2,9 +2,9 @@
 
 <form class="form-search">
 <input type="text" ng-model="search.name" class="search-query" placeholder="Search Name" typeahead="cde.name for cde in autocomplete($viewValue)" >
-<select ng-model="search.owningContext" name="owningContext" ng-change="removeOwningContext(); reload()">
-    <option value="" >All Contexts</option>
-    <option ng-repeat="context in contexts" ng-value="context">{{context}}</option>    
+<select ng-model="search.owningRegAuth" name="owningRegAuth" ng-change="removeOwningRegAuth(); reload()">
+    <option value="" >All Registration Authorities</option>
+    <option ng-repeat="ra in regAuths" ng-value="ra">{{ra}}</option>    
 </select>
 <select ng-model="search.workflowStatus" name="workflowStatus" ng-options="status as status for status in workflowStatuses" ng-change="removeWorkflowStatus(); reload()">
     <option value="">All Statuses</option>
@@ -13,7 +13,7 @@
 </form>
 
 <accordion>
-    <accordion-group ng-repeat="cde in cdes" heading="{{cde.owningContext}} -- {{cde.name}}">
+    <accordion-group ng-repeat="cde in cdes" heading="{{cde.owningRegAuth}} -- {{cde.name}}">
          <div class="row-fluid">
             <div class="span5">
                 <%- include cdegeneraldetails.ejs %>
