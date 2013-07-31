@@ -41,7 +41,9 @@ if (process.argv[2] === 'fitbir') {
               , name: srcDE.title
               , definition: srcDE.description
               , created: Date.now()
-              , owningRegAuth: 'FITBIR'
+              , registeringAuthority: {
+                  name: 'FITBIR'
+              }
               , origin: 'FITBIR'
               , originId: srcDE.id
               , workflowStatus: srcDE.status

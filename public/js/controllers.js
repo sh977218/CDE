@@ -275,8 +275,8 @@ function DEListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
 
     // this one ensures that we don't send this as query when none is selected. 
     $scope.removeOwningRegAuth = function() {
-        if ($scope.search.owningRegAuth == "") {
-            delete $scope.search.owningRegAuth;
+        if ($scope.search.registeringAuthority.name == "") {
+            delete $scope.search.registeringAuthority;
         }
     };
     $scope.removeWorkflowStatus = function() {
@@ -540,7 +540,7 @@ function DEViewCtrl($scope, $routeParams, $location, $window, DataElement, Comme
     
     $scope.isAllowed = function (cde) {
         if ($scope.initialized && $scope.myRegAuths) {
-            return $scope.myRegAuths.indexOf(cde.owningRegAuth) > -1;
+            return $scope.myRegAuths.indexOf(cde.registeringAuthority.name) > -1;
         } else {
             return false;
         }
@@ -595,7 +595,7 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
                 $scope.original = $scope.form;
             });
             if ($scope.user && $scope.user.regAuthAdmin) {
-                $scope.canEdit = $scope.user.regAuthAdmin.indexOf(form.owningRegAuth) > -1;
+                $scope.canEdit = $scope.user.regAuthAdmin.indexOf(form.registeringAuthority.name) > -1;
             } else {
                 $scope.canEdit = false;
             }

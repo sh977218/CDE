@@ -2,7 +2,7 @@
 
 <form class="form-search">
 <input type="text" ng-model="search.name" class="search-query" placeholder="Search Name" typeahead="cde.name for cde in autocomplete($viewValue)" >
-<select ng-model="search.owningRegAuth" name="owningRegAuth" ng-change="removeOwningRegAuth(); reload()">
+<select ng-model="search.registeringAuthority.name" name="registeringAuthority.name" ng-change="removeOwningRegAuth(); reload()">
     <option value="" >All Registration Authorities</option>
     <option ng-repeat="ra in regAuths" ng-value="ra">{{ra}}</option>    
 </select>
@@ -13,7 +13,7 @@
 </form>
 
 <accordion>
-    <accordion-group ng-repeat="cde in cdes" heading="{{cde.owningRegAuth}} -- {{cde.name}}">
+    <accordion-group ng-repeat="cde in cdes" heading="{{cde.registeringAuthority.name}} -- {{cde.name}}">
          <div class="row-fluid">
             <div class="span5">
                 <%- include cdegeneraldetails.ejs %>

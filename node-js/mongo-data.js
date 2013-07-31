@@ -126,7 +126,7 @@ exports.formlist = function(from, limit, searchOptions, callback) {
 };  
 
 exports.cdesforapproval = function(regAuths, callback) {
-    DataElement.find({'workflowStatus': 'Internal Review'}).where('owningRegAuth').in(regAuths).exec(function(err, cdes) {
+    DataElement.find({'workflowStatus': 'Internal Review'}).where('registeringAuthority.name').in(regAuths).exec(function(err, cdes) {
        callback("", {cdes: cdes}); 
     });
 };
@@ -150,7 +150,7 @@ exports.cdesByUuidList = function(idList, callback) {
 };
 
 exports.listRegAuths = function(callback) {
-    DataElement.find().distinct('owningRegAuth', function(error, regAuths) {
+    DataElement.find().distinct('registeringAuthority.name', function(error, regAuths) {
         callback("", regAuths.sort());
     });
 };
@@ -254,7 +254,9 @@ exports.saveForm = function(req, callback) {
         var form = new Form();
         form.name = req.body.name;
         form.instructions = req.body.instructions;
-        form.owningRegAuth = req.body.owningRegAuth;
+        form.registeringAuthority = {
+                    name: req.body.registeringAuthority
+        };
         form.created = Date.now();
         return form.save(function(err) {
             if (err) {

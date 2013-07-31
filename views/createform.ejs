@@ -8,8 +8,8 @@
         
     <label for="form.instructions">Instructions</label><textarea required ng-model="form.instructions" name="form.instructions"></textarea><br />
 
-    <label for="form.owningRegAuth">Registration Authority</label>
-    <select ng-model="form.owningRegAuth" name="form.owningRegAuth" required>
+    <label for="form.registeringAuthority.name">Registration Authority</label>
+    <select ng-model="form.registeringAuthority.name" name="form.registeringAuthority.name" required>
         <option value="">Select One</option>
         <option ng-repeat="c in user.regAuthAdmin" ng-value="c">{{c}}</option>
     </select>

@@ -15,13 +15,6 @@ var permissibleValueSchema = mongoose.Schema({
     , codeSystemName: String
 }, {_id: false});
 
-var alternateNameSchema = mongoose.Schema({
-    value: String
-    , type: String
-    , language: String
-    , owningRegAuth: String
-}, {_id: false});
-
 var commentSchema = mongoose.Schema({
     text: String
     , user: String
@@ -35,7 +28,9 @@ var deJsonSchema = {
     , definition: String
     , origin: String
     , originId: String
-    , owningRegAuth: String
+    , registeringAuthority: {
+        name: String
+    }
     , created: Date
     , updated: Date
     , createdBy: {
@@ -58,7 +53,6 @@ var deJsonSchema = {
     }
     , history: [ObjectId]
     , changeNote: String
-    , alternateNames: [alternateNameSchema]
     , workflowStatus: String
     , formUsageCounter: Number
     , comments: [commentSchema]
@@ -83,7 +77,9 @@ var formSchema = {
     name: String
     , instructions: String
     , workflowStatus: String
-    , owningRegAuth: String
+    , registeringAuthority: {
+        name: String
+    }
     , updated: Date
     , created: Date
     , modules: [moduleSchema]

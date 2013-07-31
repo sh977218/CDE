@@ -349,7 +349,7 @@ app.post('/addcdetoform/:cdeId/:formId', function (req, res) {
       if (!form) {
           res.send("The requested form does not exist.");
       } else {
-          if (!req.user || !req.user.regAuthAdmin || req.user.regAuthAdmin.indexOf(form.owningRegAuth) < 0) {
+          if (!req.user || !req.user.regAuthAdmin || req.user.regAuthAdmin.indexOf(form.registeringAuthority.name) < 0) {
             res.send("You are not authorized to do this.");           
           } else {
             mongo_data.cdeById(req.body.cdeId, function(err, cde) {
