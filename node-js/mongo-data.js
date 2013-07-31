@@ -221,7 +221,6 @@ exports.linktovsac = function(req, callback) {
             vsac_io.getValueSet(req.body.vs_id, function (valueSet_xml) {
                 xmlParser.parseString(valueSet_xml, function (err, result) {
                     dataElement.valueDomain.name = result['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
-                    dataElement.valueDomain.preferredName = '';
                     dataElement.valueDomain.definition = '';
                     dataElement.valueDomain.permissibleValues = [];
                     dataElement.changeNote = req.body.changeNote;

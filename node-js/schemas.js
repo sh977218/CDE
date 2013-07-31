@@ -31,8 +31,7 @@ var commentSchema = mongoose.Schema({
 
 
 var deJsonSchema = {
-    preferredName: String
-    , name: String
+    name: String
     , definition: String
     , origin: String
     , originId: String
@@ -52,8 +51,7 @@ var deJsonSchema = {
     , objectClass: {concepts: [conceptSchema]}
     , property:{concepts: [conceptSchema]}
     , valueDomain: {
-        preferredName: String
-        , name: String
+        name: String
         , definition: String
         , vsacOid: String
         , permissibleValues: [permissibleValueSchema]
@@ -102,6 +100,10 @@ schemas.userSchema = mongoose.Schema ({
 
 schemas.regAuthSchema = mongoose.Schema ({
     name: String
+});
+
+schemas.contextSchema = mongoose.Schema ({
+   name: String 
 });
 
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 
