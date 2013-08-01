@@ -126,7 +126,7 @@ exports.formlist = function(from, limit, searchOptions, callback) {
 };  
 
 exports.cdesforapproval = function(regAuths, callback) {
-    DataElement.find({'workflowStatus': 'Internal Review'}).where('registeringAuthority.name').in(regAuths).exec(function(err, cdes) {
+    DataElement.find({'registrationStatus': 'Internal Review'}).where('registeringAuthority.name').in(regAuths).exec(function(err, cdes) {
        callback("", {cdes: cdes}); 
     });
 };
@@ -297,7 +297,7 @@ exports.saveCde = function(req, callback) {
             newDe.updated = new Date().toJSON();
             newDe.updatedBy.userId = req.user._id;
             newDe.updatedBy.username = req.user.username;
-            newDe.workflowStatus = req.body.workflowStatus;
+            newDe.registrationStatus = req.body.registrationStatus;
             
             dataElement.archived = true;
             dataElement.save(function (err) {
@@ -315,7 +315,7 @@ exports.saveCde = function(req, callback) {
        });
     } else { // CDE does not already exists
         var newDe = new DataElement(req.body);
-        newDe.workflowStatus = "Draft";
+        newDe.registrationStatus = "Incomplete";
         newDe.created = Date.now();
         newDe.createdBy.userId = req.user._id;
         newDe.createdBy.username = req.user.username;

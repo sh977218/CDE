@@ -22,7 +22,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         return $scope.user && $scope.user.regAuthAdmin && $scope.user.regAuthAdmin.length > 0;  
     };
     
-    $scope.workflowStatuses = ['Draft', 'Internal Review', 'Internally Reviewed', 'Submitted', 'Released'];
+    $scope.registrationStatuses = ['Incomplete', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard'];
 
     $scope.setMyRegAuths = function() {
         if ($scope.user && $scope.user.regAuthAdmin) {
@@ -279,9 +279,9 @@ function DEListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
             delete $scope.search.registeringAuthority;
         }
     };
-    $scope.removeWorkflowStatus = function() {
-        if (!$scope.search.workflowStatus) {
-            delete $scope.search.workflowStatus;
+    $scope.removeRegistrationStatus = function() {
+        if (!$scope.search.registrationStatus) {
+            delete $scope.search.registrationStatus;
         }
     };
    
@@ -671,10 +671,10 @@ function CreateFormCtrl($scope, $location, Form) {
     };
  }
  
- function WorkflowCtrl($scope, DataElement) {
+ function RegistrationCtrl($scope, DataElement) {
     $scope.changeStatus = function(cde, status) {
         DataElement.get({cdeId: cde._id}, function(dataElement) {
-            dataElement.workflowStatus = status;
+            dataElement.registrationStatus = status;
             dataElement.$save(function () {
                 $scope.reload();            
             });
@@ -687,7 +687,7 @@ function NlmReleaseCtrl($scope, CdeList, DataElement) {
     
     $scope.changeStatus = function(cde, status) {
         DataElement.get({cdeId: cde._id}, function(dataElement) {
-            dataElement.workflowStatus = status;
+            dataElement.registrationStatus = status;
             dataElement.$save(function () {
                 $scope.reload();            
             });
@@ -702,7 +702,7 @@ function NlmReleaseCtrl($scope, CdeList, DataElement) {
     };
     
     $scope.reload = function() {
-       var result = CdeList.get({search: JSON.stringify({workflowStatus: 'Submitted'})}, function() {
+       var result = CdeList.get({search: JSON.stringify({registrationStatus: 'Submitted'})}, function() {
            $scope.cdes = result.cdes;
         }); 
     };
@@ -715,7 +715,7 @@ function InternalReviewCtrl($scope, CdesForApproval, DataElement) {
    
     $scope.changeStatus = function(cde, status) {
         DataElement.get({cdeId: cde._id}, function(dataElement) {
-            dataElement.workflowStatus = status;
+            dataElement.registrationStatus = status;
             dataElement.$save(function () {
                 $scope.reload();            
             });

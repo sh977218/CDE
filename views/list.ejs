@@ -6,7 +6,7 @@
     <option value="" >All Registration Authorities</option>
     <option ng-repeat="ra in regAuths" ng-value="ra">{{ra}}</option>    
 </select>
-<select ng-model="search.workflowStatus" name="workflowStatus" ng-options="status as status for status in workflowStatuses" ng-change="removeWorkflowStatus(); reload()">
+<select ng-model="search.registrationStatus" name="registrationStatus" ng-options="status as status for status in registrationStatuses" ng-change="removeRegistrationStatus(); reload()">
     <option value="">All Statuses</option>
 </select>
 <input type="submit" value="Search" ng-click="reload()" class="btn"></input>
@@ -54,14 +54,14 @@
             </span>
             -->
             <a class='btn' ng-href="#/deview/?cdeId={{cde._id}}"><i class="icon-eye-open"> View Full Detail</i></a>
-<!--            <span ng-controller="WorkflowCtrl" ng-show='isAllowed(cde)'>
-                <span ng-show="cde.workflowStatus == 'Draft'">
+<!--            <span ng-controller="RegistrationCtrl" ng-show='isAllowed(cde)'>
+                <span ng-show="cde.registrationStatus == 'Draft'">
                     <a class="btn-small btn-primary" ng-click="changeStatus(cde, 'Internal Review')"><i class="icon-check-empty"> Submit for Internal Review</i></a>
                 </span>
-                <span ng-show="cde.workflowStatus == 'Internal Review'">
+                <span ng-show="cde.registrationStatus == 'Internal Review'">
                     <a class="btn-small btn-primary" ng-click="changeStatus(cde, 'Internally Reviewed')"><i class="icon-check"> Mark as Reviewed</i></a>
                 </span>
-                <span ng-show="cde.workflowStatus == 'Internally Reviewed'">
+                <span ng-show="cde.registrationStatus == 'Internally Reviewed'">
                     <a class="btn-small btn-primary" ng-click="changeStatus(cde, 'Submitted')"><i class="icon-upload-alt"> Submit for Final Review</i></a>
                 </span>
             </span>-->

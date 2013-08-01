@@ -9,7 +9,7 @@
                     <dt>Origin ID: </dt><dd>{{cde.originId}}</dd>
                     <dt>Owner: </dt><dd>{{cde.registeringAuthority.name}}</dd>
                     <dt>Definition: </dt><dd>{{cde.definition}}</dd>
-                    <dt>Status: </dt><dd>{{cde.workflowStatus}}</dd>
+                    <dt>Status: </dt><dd>{{cde.registrationStatus}}</dd>
                     <dt>Added to NLM: </dt>
                     <dd ng-controller="AuditCtrl" >
                         <i ng-show="cde.history.length > 0" class="icon-eye-open" ng-click="openHistory()" tooltip="View History"></i> {{cde.created | date: 'MM/dd/yyyy @ h:mma'}}

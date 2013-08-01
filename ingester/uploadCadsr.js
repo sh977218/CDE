@@ -31,13 +31,13 @@ fs.readFile(process.argv[2], function(err, data) {
         var cadsrDE = result.DataElementsList.DataElement[i];
         
         if (cadsrDE.WORKFLOWSTATUS == 'DRAFT NEW') {
-            cadsrDE.WORKFLOWSTATUS = 'Draft';
+            cadsrDE.WORKFLOWSTATUS = 'Candidate';
         } else if (cadsrDE.WORKFLOWSTATUS == 'DRAFT MOD') {
-            cadsrDE.WORKFLOWSTATUS = 'Internal Review';            
+            cadsrDE.WORKFLOWSTATUS = 'Recorded';            
         } else if (cadsrDE.WORKFLOWSTATUS == 'RELEASED') {
-            cadsrDE.WORKFLOWSTATUS = 'Internally Reviewed';                        
+            cadsrDE.WORKFLOWSTATUS = 'Qualified';                        
         } if (cadsrDE.WORKFLOWSTATUS == 'APPRVD FOR TRIAL USE') {
-            cadsrDE.WORKFLOWSTATUS = 'Submitted';            
+            cadsrDE.WORKFLOWSTATUS = 'Standard';            
         }
         
         var newDE = new DataElement({
@@ -52,7 +52,7 @@ fs.readFile(process.argv[2], function(err, data) {
             , registeringAuthority: {
                 name: cadsrDE.CONTEXTNAME
             }
-            , workflowStatus: cadsrDE.WORKFLOWSTATUS
+            , registrationStatus: cadsrDE.WORKFLOWSTATUS
             , version: cadsrDE.VERSION
             , valueDomain: {  
 //                preferredName: cadsrDE.VALUEDOMAIN[0].PreferredName,

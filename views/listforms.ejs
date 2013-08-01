@@ -6,7 +6,7 @@
     <option value="" >All Registration Authorities</option>
     <option ng-repeat="ra in regAuths" ng-value="ra">{{ra}}</option>    
 </select>
-<select ng-model="search.workflowStatus" name="workflowStatus" ng-options="status as status for status in workflowStatuses" ng-change="removeWorkflowStatus()">
+<select ng-model="search.registrationStatus" name="registrationStatus" ng-options="status as status for status in registrationStatuses" ng-change="removeRegistrationStatus()">
     <option value="">All Statuses</option>
 </select>
 <input type="submit" value="Search" ng-click="reload()" class="btn"></input>

@@ -53,7 +53,7 @@ var deJsonSchema = {
     }
     , history: [ObjectId]
     , changeNote: String
-    , workflowStatus: String
+    , registrationStatus: String
     , formUsageCounter: Number
     , comments: [commentSchema]
     , archived: Boolean
@@ -76,7 +76,7 @@ var moduleSchema = mongoose.Schema ({
 var formSchema = {
     name: String
     , instructions: String
-    , workflowStatus: String
+    , registrationStatus: String
     , registeringAuthority: {
         name: String
     }
