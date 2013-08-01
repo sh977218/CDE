@@ -19,6 +19,7 @@ getContent = {urlStr ->
     def searchObj = new BasicDBObject("url", urlStr);
     DBObject resultDoc = cacheColl.findOne(searchObj)
     if (resultDoc == null) {
+        println "Not in cache"
         def url = new URL(urlStr)
         def connection = url.openConnection()
         connection.setRequestMethod("GET")
@@ -96,7 +97,10 @@ doModules = {url ->
 doContext = {url, formObj ->
     def httpQuery = new XmlSlurper().parseText(getContent(url.toString())).declareNamespace(xlink: 'http://www.w3.org/1999/xlink')   
 
-    formObj.append("registeringAuthority").append("name", getField(httpQuery.queryResponse.'class', 'name').toString());
+    BasicDBObject regAuthObj = new BasicDBObject("name", getField(httpQuery.queryResponse.'class', 'name').toString());
+
+    
+    formObj.append("registeringAuthority", regAuthObj );
 }
 
 doForm = {form ->
