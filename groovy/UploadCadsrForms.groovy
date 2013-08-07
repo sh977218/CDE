@@ -4,7 +4,7 @@ import com.mongodb.*;
 import java.text.SimpleDateFormat
 
 MongoClient mongoClient = new MongoClient( "localhost" );
-DB db = mongoClient.getDB( "test" );
+DB db = mongoClient.getDB( "nlmcde" );
 
 DBCollection cacheColl = db.getCollection("cadsrCache");
 DBCollection formColl = db.getCollection("forms");

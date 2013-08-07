@@ -3,7 +3,7 @@ var util = require('util')
     , uuid = require('node-uuid')
 ;
 
-var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/test';
+var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/nlmcde';
 console.log("connecting to " + mongoUri);
 mongoose.connect(mongoUri);
 

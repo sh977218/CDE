@@ -4,7 +4,7 @@ var mongoose = require('mongoose')
     , xml2js = require('xml2js')
 ;
 
-var mongoUri = process.env.MONGOHQ_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/test';
+var mongoUri = process.env.MONGOHQ_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/nlmcde';
 
 mongoose.connect(mongoUri);
 var db = mongoose.connection;

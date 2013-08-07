@@ -5,7 +5,7 @@ var util = require('util')
     , fs = require('fs')
 ;
 
-var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/test';
+var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/nlmcde';
 console.log("connecting to " + mongoUri);
 mongoose.connect(mongoUri);
 
