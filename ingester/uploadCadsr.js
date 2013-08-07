@@ -62,6 +62,19 @@ fs.readFile(process.argv[2], function(err, data) {
                          
         });
         
+        newDE.naming = [];
+        var defaultNaming = {contextName: 'Health'};
+        defaultNaming.languages = [];
+        var defaultLang = {
+                languageCode: 'US'
+                , preferredNaming: {
+                    designation: cadsrDE.LONGNAME
+                    , definition: cadsrDE.PREFERREDDEFINITION
+                }
+            };
+        defaultNaming.languages.push(defaultLang);
+        newDE.naming.push(defaultNaming);
+        
         for (var pvi in cadsrDE.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM) {
             cadsrPV = cadsrDE.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM[pvi];
             newDE.valueDomain.permissibleValues.push({validValue: cadsrPV.VALIDVALUE[0]});

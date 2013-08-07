@@ -22,9 +22,28 @@ var commentSchema = mongoose.Schema({
     , created: Date
 });
 
+var namingSchema = mongoose.Schema({
+    designation: String
+    , definition: String
+}, {_id: false});
+
+var languageSchema = mongoose.Schema({
+    languageCode: String
+    , preferredNaming: {
+        designation: String
+        , definition: String
+    }
+    , otherNaming: [namingSchema] 
+}, {_id: false});
+
+var contextSchema = mongoose.Schema({
+    contextName: String
+    ,languages: [languageSchema]
+}, {_id: false}); 
 
 var deJsonSchema = {
-    name: String
+    naming:[namingSchema]         
+    , name: String
     , definition: String
     , origin: String
     , originId: String
@@ -98,7 +117,7 @@ schemas.regAuthSchema = mongoose.Schema ({
     name: String
 });
 
-schemas.contextSchema = mongoose.Schema ({
+schemas.managedContextSchema = mongoose.Schema ({
    name: String 
 });
 
