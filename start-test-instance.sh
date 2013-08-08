@@ -8,5 +8,7 @@ export MONGO_URI=mongodb://localhost/test
 /Users/ludetc/dev/mongodb-osx-x86_64-2.4.3/bin/mongo test --eval "db.regAuths.drop()"
 /Users/ludetc/dev/mongodb-osx-x86_64-2.4.3/bin/mongo test --eval "db.users.insert({username: 'nlm', password: 'nlm', siteAdmin: true})"
 
+node ingester/uploadCadsr test/cadsrTestSeed.xml
+
 node app
 
