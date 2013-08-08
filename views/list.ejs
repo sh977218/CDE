@@ -1,7 +1,7 @@
 <pagination data-boundary-links="true" num-pages="numPages" current-page="currentPage" max-size="10"></pagination>
 
 <form class="form-search">
-<input type="text" ng-model="search.name" class="search-query" placeholder="Search Name" typeahead="cde.name for cde in autocomplete($viewValue)" >
+<input name="search.name" type="text" ng-model="search.name" class="search-query" placeholder="Search Name" typeahead="cde.name for cde in autocomplete($viewValue)" >
 <select ng-model="search.registeringAuthority.name" name="registeringAuthority.name" ng-change="removeOwningRegAuth(); reload()">
     <option value="" >All Registration Authorities</option>
     <option ng-repeat="ra in regAuths" ng-value="ra">{{ra}}</option>    
@@ -9,7 +9,7 @@
 <select ng-model="search.registrationStatus" name="registrationStatus" ng-options="status as status for status in registrationStatuses" ng-change="removeRegistrationStatus(); reload()">
     <option value="">All Statuses</option>
 </select>
-<input type="submit" value="Search" ng-click="reload()" class="btn"></input>
+<input id="search.submit" type="submit" value="Search" ng-click="reload()" class="btn"></input>
 </form>
 
 <accordion>

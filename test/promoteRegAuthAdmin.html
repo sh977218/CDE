@@ -4,14 +4,14 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost:3001/" />
-<title>Add Registration Authority</title>
+<title>promoteRegAuthAdmin</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Login as nlm</td></tr>
+<tr><td rowspan="1" colspan="3">promoteRegAuthAdmin</td></tr>
 </thead><tbody>
-    <tr>
+<tr>
 	<td>open</td>
 	<td>/</td>
 	<td></td>
@@ -53,17 +53,27 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Registration Authorities</td>
+	<td>link=Registration Authorities Admins</td>
 	<td></td>
 </tr>
 <tr>
+	<td>select</td>
+	<td>name=admin.regAuthName</td>
+	<td>label=regAuthTest1</td>
+</tr>
+<tr>
 	<td>sendKeys</td>
-	<td>name=newRegAuth.name</td>
-	<td>regAuthTest1</td>
+	<td>name=regAuthAdmin.username</td>
+	<td>testuser</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>addRegAuth</td>
+	<td>addRegAuthAdmin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Account</td>
 	<td></td>
 </tr>
 <tr>
@@ -71,6 +81,7 @@
 	<td>link=Log Out</td>
 	<td></td>
 </tr>
+
 </tbody></table>
 </body>
 </html>
