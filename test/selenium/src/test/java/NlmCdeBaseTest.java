@@ -1,8 +1,13 @@
 import org.testng.annotations.*;
+import org.testng.Assert;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Select;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class NlmCdeBaseTest {
     
@@ -62,7 +67,30 @@ public class NlmCdeBaseTest {
         driver.findElement(By.name("regAuthAdmin.username")).sendKeys(test_username);
         driver.findElement(By.id("addRegAuthAdmin")).click();
         logout();
+        loginAs(test_username, test_password);
+        driver.findElement(By.linkText("Create")).click();
+        // following will assert that test user was indeed promoted
+        new Select(driver.findElement(By.name("cde.registeringAuthority.name"))).selectByVisibleText(test_reg_auth);                
+        logout();
     }
+    
+    @Test(priority=2) 
+    public void testCreateCde() {
+        loginAs(test_username, test_password);
+        driver.findElement(By.linkText("Create")).click();
+        driver.findElement(By.name("cde.name")).sendKeys("name of testuser CDE 1");
+        driver.findElement(By.name("cde.definition")).sendKeys("Definition for testUser CDE 1");
+        driver.findElement(By.name("cde.version")).sendKeys("1.0alpha1");
+        new Select(driver.findElement(By.name("cde.registeringAuthority.name"))).selectByVisibleText(test_reg_auth);
+        driver.findElement(By.id("cde.submit")).click();
+        driver.get(baseUrl + "/");
+        driver.findElement(By.name("search.name")).sendKeys("testUser CDE 1");
+        driver.findElement(By.id("search.submit")).click();
+        driver.findElement(By.linkText(test_reg_auth + " -- name of testuser CDE 1")).click();
+        driver.findElement(By.linkText("View Full Detail")).click();
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Definition for testUser CDE 1") > 0);
+    }
+
     
     @AfterTest
     public void endSession() {
