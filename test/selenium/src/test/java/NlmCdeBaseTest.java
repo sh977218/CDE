@@ -91,6 +91,27 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Definition for testUser CDE 1") > 0);
     }
 
+    @Test
+    public void testCdeFullDetail() {
+        driver.get(baseUrl + "/");
+        driver.findElement(By.name("search.name")).sendKeys("genotype");
+        driver.findElement(By.id("search.submit")).click();
+        driver.findElement(By.linkText("caBIG -- Genotype Therapy Basis Mutation Analysis Indicator")).click();
+        driver.findElement(By.linkText("View Full Detail")).click();
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Genotype Therapy Basis Mutation Analysis Indicator") > 0);
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("3157849v1") > 0);
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Text descriptor to indicate whether "
+                + "genotype directed therapy was based on mutation testing") > 0);
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Qualified") > 0);
+        driver.findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Unknown") > 0);
+        driver.findElement(By.linkText("DE Concepts")).click();
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Mutation Analysis") > 0);
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("C18302") > 0);
+        driver.findElement(By.linkText("History")).click();
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("This Data Element has no history") > 0);
+    }
+    
     
     @AfterTest
     public void endSession() {
