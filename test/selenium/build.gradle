@@ -1,0 +1,24 @@
+apply plugin: 'java'
+
+sourceCompatibility = '1.7'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = ''
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    def seleniumVersion = "2.34.0"
+
+    testCompile group: 'org.testng', name: 'testng', version: '6.8'
+    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
+    testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
+}
+
+test {
+    useTestNG() 
+}

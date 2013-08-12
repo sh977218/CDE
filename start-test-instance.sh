@@ -7,5 +7,8 @@ export MONGO_URI=mongodb://localhost/test
 
 node ingester/uploadCadsr test/cadsrTestSeed.xml & 
 
-node app
+gradle -b test/selenium/build.gradle cleanTest test & 
+
+node app 
+
 
