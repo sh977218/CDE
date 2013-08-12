@@ -2,12 +2,8 @@ import org.testng.annotations.*;
 import org.testng.Assert;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.*;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class NlmCdeBaseTest {
     
@@ -20,11 +16,15 @@ public class NlmCdeBaseTest {
     private static String test_password = "Test123";
     private static String test_reg_auth = "RegAuthTest1";
     
+    public static WebDriverWait wait;
+
+    
     @BeforeTest
     public void setBaseUrl() {
         driver = new FirefoxDriver();
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+        wait = new WebDriverWait(driver, 3);
     }
     
     @Test
@@ -36,8 +36,8 @@ public class NlmCdeBaseTest {
     @Test(priority=0)
     public void testSelfRegister() {
         driver.get(baseUrl + "/");
-        driver.findElement(By.linkText("Log In")).click();
-        driver.findElement(By.linkText("Sign up")).click();
+        getElementByLinkText("Log In").click();
+        getElementByLinkText("Sign up").click();
         driver.findElement(By.name("username")).sendKeys(test_username);
         driver.findElement(By.name("uPassword")).sendKeys(test_password);
         driver.findElement(By.name("ucPassword")).sendKeys(test_password);
@@ -49,9 +49,9 @@ public class NlmCdeBaseTest {
     @Test(priority=0)
     public void testAddRegistrationAuthority() {
         loginAs(nlm_username, nlm_password);
-        driver.findElement(By.linkText("Account")).click();
-        driver.findElement(By.linkText("Site Management")).click();
-        driver.findElement(By.linkText("Registration Authorities")).click();
+        getElementByLinkText("Account").click();
+        getElementByLinkText("Site Management").click();
+        getElementByLinkText("Registration Authorities").click();
         driver.findElement(By.name("newRegAuth.name")).sendKeys(test_reg_auth);
         driver.findElement(By.id("addRegAuth")).click();
         logout();
@@ -60,15 +60,15 @@ public class NlmCdeBaseTest {
     @Test(priority=1)
     public void testPromoteRegAuthAdmin() {
         loginAs(nlm_username, nlm_password);
-        driver.findElement(By.linkText("Account")).click();
-        driver.findElement(By.linkText("Site Management")).click();
-        driver.findElement(By.linkText("Registration Authorities Admins")).click();
+        getElementByLinkText("Account").click();
+        getElementByLinkText("Site Management").click();
+        getElementByLinkText("Registration Authorities Admins").click();
         new Select(driver.findElement(By.name("admin.regAuthName"))).selectByVisibleText(test_reg_auth);
         driver.findElement(By.name("regAuthAdmin.username")).sendKeys(test_username);
         driver.findElement(By.id("addRegAuthAdmin")).click();
         logout();
         loginAs(test_username, test_password);
-        driver.findElement(By.linkText("Create")).click();
+        getElementByLinkText("Create").click();
         // following will assert that test user was indeed promoted
         new Select(driver.findElement(By.name("cde.registeringAuthority.name"))).selectByVisibleText(test_reg_auth);                
         logout();
@@ -77,7 +77,7 @@ public class NlmCdeBaseTest {
     @Test(priority=2) 
     public void testCreateCde() {
         loginAs(test_username, test_password);
-        driver.findElement(By.linkText("Create")).click();
+        getElementByLinkText("Create").click();
         driver.findElement(By.name("cde.name")).sendKeys("name of testuser CDE 1");
         driver.findElement(By.name("cde.definition")).sendKeys("Definition for testUser CDE 1");
         driver.findElement(By.name("cde.version")).sendKeys("1.0alpha1");
@@ -86,46 +86,80 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/");
         driver.findElement(By.name("search.name")).sendKeys("testUser CDE 1");
         driver.findElement(By.id("search.submit")).click();
-        driver.findElement(By.linkText(test_reg_auth + " -- name of testuser CDE 1")).click();
-        driver.findElement(By.linkText("View Full Detail")).click();
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Definition for testUser CDE 1") > 0);
+        getElementByLinkText(test_reg_auth + " -- name of testuser CDE 1").click();
+        getElementByLinkText("View Full Detail").click();
+        Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
     }
 
+    @Test(priority=3)
+    public void testEditCde() {
+        driver.get(baseUrl + "/");
+        driver.findElement(By.name("search.name")).sendKeys("testUser CDE 1");
+        driver.findElement(By.id("search.submit")).click();
+        getElementByLinkText(test_reg_auth + " -- name of testuser CDE 1").click();
+        getElementByLinkText("View Full Detail").click();
+        driver.findElement(By.cssSelector("i.icon-pencil")).click();
+        driver.findElement(By.xpath("//inline-edit/div/div[2]/input")).sendKeys("name of testuser CDE 1 [name change number 1]");
+        driver.findElement(By.cssSelector("button.icon-ok")).click();
+        driver.findElement(By.cssSelector("inline-area-edit.ng-isolate-scope.ng-scope > div > div.ng-binding > i.icon-pencil")).click();
+        driver.findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("Definition for testUser CDE 1 [def change number 1]");
+        driver.findElement(By.xpath("//inline-area-edit/div/div[2]/button")).click();
+        driver.findElement(By.cssSelector("button.btn.btn-primary")).click();
+        driver.findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
+        driver.findElement(By.cssSelector("button.btn.btn-warning")).click();
+        getElementByLinkText("CDEs").click();
+        driver.findElement(By.name("search.name")).sendKeys("testUser CDE 1");
+        driver.findElement(By.id("search.submit")).click();
+        driver.findElement(By.linkText(test_reg_auth + " -- name of testuser CDE 1name of testuser CDE 1 [name change number 1]")).click();
+        driver.findElement(By.linkText("View Full Detail")).click();
+        Assert.assertTrue(textPresent("[name change number 1]"));
+        Assert.assertTrue(textPresent("[def change number 1]"));
+    }
+    
     @Test
     public void testCdeFullDetail() {
         driver.get(baseUrl + "/");
         driver.findElement(By.name("search.name")).sendKeys("genotype");
         driver.findElement(By.id("search.submit")).click();
-        driver.findElement(By.linkText("caBIG -- Genotype Therapy Basis Mutation Analysis Indicator")).click();
-        driver.findElement(By.linkText("View Full Detail")).click();
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Genotype Therapy Basis Mutation Analysis Indicator") > 0);
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("3157849v1") > 0);
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Text descriptor to indicate whether "
-                + "genotype directed therapy was based on mutation testing") > 0);
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Qualified") > 0);
-        driver.findElement(By.linkText("Permissible Values")).click();
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Unknown") > 0);
-        driver.findElement(By.linkText("DE Concepts")).click();
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Mutation Analysis") > 0);
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("C18302") > 0);
-        driver.findElement(By.linkText("History")).click();
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("This Data Element has no history") > 0);
-    }
-    
+        getElementByLinkText("caBIG -- Genotype Therapy Basis Mutation Analysis Indicator").click();
+        getElementByLinkText("View Full Detail").click();
+        Assert.assertTrue(textPresent("Genotype Therapy Basis Mutation Analysis Indicator"));
+        Assert.assertTrue(textPresent("3157849v1"));
+        Assert.assertTrue(textPresent("Text descriptor to indicate whether "
+                + "genotype directed therapy was based on mutation testing"));
+        Assert.assertTrue(textPresent("Qualified"));
+        getElementByLinkText("Permissible Values").click();
+        Assert.assertTrue(textPresent("Unknown"));
+        getElementByLinkText("DE Concepts").click();
+        Assert.assertTrue(textPresent("Mutation Analysis"));
+        Assert.assertTrue(textPresent("C18302"));
+        getElementByLinkText("History").click();
+        Assert.assertTrue(textPresent("This Data Element has no history"));
+    } 
     
     @AfterTest
     public void endSession() {
         driver.quit();
     }
     
+    public boolean textPresent(String text) {
+        wait.until(ExpectedConditions.textToBePresentInElement(By.cssSelector("BODY"), text));
+        return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) > 0;
+    }
+    
+    public WebElement getElementByLinkText(String linkText) {
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText(linkText)));
+        return driver.findElement(By.linkText(linkText));
+    }   
+    
     private void logout() {
-        driver.findElement(By.linkText("Account")).click();
-        driver.findElement(By.linkText("Log Out")).click();
+        getElementByLinkText("Account").click();
+        getElementByLinkText("Log Out").click();
     }
     
     private void loginAs(String username, String password) {
         driver.get(baseUrl + "/");
-        driver.findElement(By.linkText("Log In")).click();
+        getElementByLinkText("Log In").click();
         driver.findElement(By.name("username")).clear();
         driver.findElement(By.name("username")).sendKeys(username);
         driver.findElement(By.name("password")).clear();
