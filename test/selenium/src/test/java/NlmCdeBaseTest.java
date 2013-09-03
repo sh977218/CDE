@@ -79,7 +79,7 @@ public class NlmCdeBaseTest {
         logout();
     }
     
-    @Test(priority=1)
+    @Test(dependsOnMethods = {"testSelfRegister", "testAddRegistrationAuthority"})
     public void testPromoteRegAuthAdmin() {
         loginAs(nlm_username, nlm_password);
         getElementByLinkText("Account").click();
@@ -96,7 +96,7 @@ public class NlmCdeBaseTest {
         logout();
     }
     
-    @Test(priority=2) 
+    @Test(dependsOnMethods = {"testPromoteRegAuthAdmin"}) 
     public void testCreateCde() {
         loginAs(test_username, test_password);
         getElementByLinkText("Create").click();
