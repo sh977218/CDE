@@ -4,11 +4,11 @@
             <div class="span5">
                 <h4>General Details</h4>
                 <dl class="dl-horizontal">
-                    <dt>Name: </dt> <dd>{{cde.name}}</dd>
+                    <dt>Name: </dt> <dd>{{cde.naming[0].name}}</dd>
                     <dt>Origin: </dt><dd>{{cde.origin}}</dd>
                     <dt>Origin ID: </dt><dd>{{cde.originId}}</dd>
                     <dt>Owner: </dt><dd>{{cde.registeringAuthority.name}}</dd>
-                    <dt>Definition: </dt><dd>{{cde.definition}}</dd>
+                    <dt>Definition: </dt><dd>{{cde.naming[0].definition}}</dd>
                     <dt>Status: </dt><dd>{{cde.registrationStatus}}</dd>
                     <dt>Added to NLM: </dt>
                     <dd ng-controller="AuditCtrl" >

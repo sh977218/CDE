@@ -25,26 +25,15 @@ var commentSchema = mongoose.Schema({
 var namingSchema = mongoose.Schema({
     designation: String
     , definition: String
-}, {_id: false});
-
-var languageSchema = mongoose.Schema({
-    languageCode: String
-    , preferredNaming: {
-        designation: String
-        , definition: String
+    , languageCode: String
+    , context: {
+        contextName: String
+        , acceptability: String
     }
-    , otherNaming: [namingSchema] 
 }, {_id: false});
-
-var contextSchema = mongoose.Schema({
-    contextName: String
-    ,languages: [languageSchema]
-}, {_id: false}); 
 
 var deJsonSchema = {
     naming:[namingSchema]         
-    , name: String
-    , definition: String
     , origin: String
     , originId: String
     , registeringAuthority: {

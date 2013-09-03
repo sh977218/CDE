@@ -44,8 +44,8 @@ fs.readFile(process.argv[2], function(err, data) {
             uuid: uuid.v4()
 // PreferredName as alternate name ?
 //            , preferredName: cadsrDE.PREFERREDNAME
-            , name: cadsrDE.LONGNAME
-            , definition: cadsrDE.PREFERREDDEFINITION
+//            , name: cadsrDE.LONGNAME
+//            , definition: cadsrDE.PREFERREDDEFINITION
             , created: Date.now()
             , origin: 'CADSR'
             , originId: cadsrDE.PUBLICID + "v" + cadsrDE.VERSION
@@ -63,16 +63,15 @@ fs.readFile(process.argv[2], function(err, data) {
         });
         
         newDE.naming = [];
-        var defaultNaming = {contextName: 'Health'};
-        defaultNaming.languages = [];
-        var defaultLang = {
-                languageCode: 'US'
-                , preferredNaming: {
-                    designation: cadsrDE.LONGNAME
-                    , definition: cadsrDE.PREFERREDDEFINITION
-                }
-            };
-        defaultNaming.languages.push(defaultLang);
+        var defaultNaming = {
+           designation: cadsrDE.LONGNAME
+           , definition: cadsrDE.PREFERREDDEFINITION
+           , languageCode: "EN-US" 
+           , context: {
+                contextName: 'Health'
+                ,acceptability: "preferred"
+           }
+        };
         newDE.naming.push(defaultNaming);
         
         for (var pvi in cadsrDE.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM) {

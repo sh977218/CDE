@@ -165,13 +165,13 @@ exports.diff = function(req, res) {
                            diff.before = {};
                            diff.after = {};
                            
-                           if (dataElement.name !== priorDe.name) {
-                               diff.before.name = priorDe.name;
-                               diff.after.name = dataElement.name;
+                           if (dataElement.naming[0].designation !== priorDe.naming[0].designation) {
+                               diff.before.name = priorDe.naming[0].designation;
+                               diff.after.name = dataElement.naming[0].designation;
                            }
-                           if (dataElement.definition !== priorDe.definition) {
-                               diff.before.definition = priorDe.definition;
-                               diff.after.definition = dataElement.definition;
+                           if (dataElement.naming[0].definition !== priorDe.naming[0].definition) {
+                               diff.before.definition = priorDe.naming[0].definition;
+                               diff.after.definition = dataElement.naming[0].definition;
                            }
                            
                            res.send(diff);

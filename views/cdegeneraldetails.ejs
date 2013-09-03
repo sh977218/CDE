@@ -1,12 +1,12 @@
 <div ng-controller="SaveCdeCtrl">
 <h4>General Details</h4>
 <dl class="dl-horizontal">
-<dt>Name: </dt> <dd><inline-edit model="cde.name" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></dd>
+<dt>Name: </dt> <dd><inline-edit model="cde.naming[0].designation" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></dd>
 <dt>Version: </dt><dd>{{cde.version}}</dd>
 <dt ng-show="cde.origin">Origin: </dt><dd>{{cde.origin}}</dd>
 <dt ng-show="cde.originId">Origin ID: </dt><dd>{{cde.originId}}</dd>
 <dt>Owner: </dt><dd>{{cde.registeringAuthority.name}}</dd>
-<dt>Definition: </dt><dd><inline-area-edit model="cde.definition" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-area-edit></dd>
+<dt>Definition: </dt><dd><inline-area-edit model="cde.naming[0].definition" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-area-edit></dd>
 <dt>Status: </dt><dd>{{cde.registrationStatus}}</dd>
 <dt ng-show="cde.formUsageCounter">Form Usage: </dt><dd>{{cde.formUsageCounter}}</dd>
 <dt>Added to NLM: </dt>

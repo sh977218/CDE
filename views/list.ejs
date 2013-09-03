@@ -13,7 +13,7 @@
 </form>
 
 <accordion>
-    <accordion-group ng-repeat="cde in cdes" heading="{{cde.registeringAuthority.name}} -- {{cde.name}}">
+    <accordion-group ng-repeat="cde in cdes" heading="{{cde.registeringAuthority.name}} -- {{cde.naming[0].designation}}">
          <div class="row-fluid">
             <div class="span5">
                 <%- include cdegeneraldetails.ejs %>

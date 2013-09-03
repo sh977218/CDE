@@ -33,6 +33,28 @@ public class NlmCdeBaseTest {
         logout();
     }
     
+    @Test
+    public void testCdeFullDetail() {
+        driver.get(baseUrl + "/");
+        driver.findElement(By.name("search.name")).sendKeys("genotype");
+        driver.findElement(By.id("search.submit")).click();
+        getElementByLinkText("caBIG -- Genotype Therapy Basis Mutation Analysis Indicator").click();
+        getElementByLinkText("View Full Detail").click();
+        Assert.assertTrue(textPresent("Genotype Therapy Basis Mutation Analysis Indicator"));
+        Assert.assertTrue(textPresent("3157849v1"));
+        Assert.assertTrue(textPresent("Text descriptor to indicate whether "
+                + "genotype directed therapy was based on mutation testing"));
+        Assert.assertTrue(textPresent("Qualified"));
+        getElementByLinkText("Permissible Values").click();
+        Assert.assertTrue(textPresent("Unknown"));
+        getElementByLinkText("DE Concepts").click();
+        Assert.assertTrue(textPresent("Mutation Analysis"));
+        Assert.assertTrue(textPresent("C18302"));
+        getElementByLinkText("History").click();
+        Assert.assertTrue(textPresent("This Data Element has no history"));
+    } 
+
+    
     @Test(priority=0)
     public void testSelfRegister() {
         driver.get(baseUrl + "/");
@@ -78,7 +100,7 @@ public class NlmCdeBaseTest {
     public void testCreateCde() {
         loginAs(test_username, test_password);
         getElementByLinkText("Create").click();
-        driver.findElement(By.name("cde.name")).sendKeys("name of testuser CDE 1");
+        driver.findElement(By.name("cde.designation")).sendKeys("name of testuser CDE 1");
         driver.findElement(By.name("cde.definition")).sendKeys("Definition for testUser CDE 1");
         driver.findElement(By.name("cde.version")).sendKeys("1.0alpha1");
         new Select(driver.findElement(By.name("cde.registeringAuthority.name"))).selectByVisibleText(test_reg_auth);
@@ -89,20 +111,21 @@ public class NlmCdeBaseTest {
         getElementByLinkText(test_reg_auth + " -- name of testuser CDE 1").click();
         getElementByLinkText("View Full Detail").click();
         Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
+        logout();
     }
 
-    @Test(priority=3)
+    @Test(dependsOnMethods = {"testCreateCde"})
     public void testEditCde() {
-        driver.get(baseUrl + "/");
+        loginAs(test_username, test_password);
         driver.findElement(By.name("search.name")).sendKeys("testUser CDE 1");
         driver.findElement(By.id("search.submit")).click();
         getElementByLinkText(test_reg_auth + " -- name of testuser CDE 1").click();
         getElementByLinkText("View Full Detail").click();
         driver.findElement(By.cssSelector("i.icon-pencil")).click();
-        driver.findElement(By.xpath("//inline-edit/div/div[2]/input")).sendKeys("name of testuser CDE 1 [name change number 1]");
+        driver.findElement(By.xpath("//inline-edit/div/div[2]/input")).sendKeys("[name change number 1]");
         driver.findElement(By.cssSelector("button.icon-ok")).click();
         driver.findElement(By.cssSelector("inline-area-edit.ng-isolate-scope.ng-scope > div > div.ng-binding > i.icon-pencil")).click();
-        driver.findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("Definition for testUser CDE 1 [def change number 1]");
+        driver.findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("[def change number 1]");
         driver.findElement(By.xpath("//inline-area-edit/div/div[2]/button")).click();
         driver.findElement(By.cssSelector("button.btn.btn-primary")).click();
         driver.findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
@@ -110,33 +133,29 @@ public class NlmCdeBaseTest {
         getElementByLinkText("CDEs").click();
         driver.findElement(By.name("search.name")).sendKeys("testUser CDE 1");
         driver.findElement(By.id("search.submit")).click();
-        driver.findElement(By.linkText(test_reg_auth + " -- name of testuser CDE 1name of testuser CDE 1 [name change number 1]")).click();
+        driver.findElement(By.linkText(test_reg_auth + " -- name of testuser CDE 1[name change number 1]")).click();
         driver.findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("[name change number 1]"));
         Assert.assertTrue(textPresent("[def change number 1]"));
+        logout();
+    }
+        
+    @Test(dependsOnMethods = {"testEditCde"})
+    public void testEditHistory() {
+        driver.get(baseUrl + "/");
+        driver.findElement(By.name("search.name")).sendKeys("testUser CDE 1");
+        driver.findElement(By.id("search.submit")).click();
+        driver.findElement(By.linkText(test_reg_auth + " -- name of testuser CDE 1[name change number 1]")).click();
+        driver.findElement(By.linkText("View Full Detail")).click();
+        getElementByLinkText("History").click();
+        Assert.assertTrue(textPresent("testuser"));
+        Assert.assertTrue(textPresent("Change note for change number 1"));
+        driver.findElement(By.xpath("//tr[2]//td[4]/i")).click();
+        Assert.assertTrue(textPresent("name of testuser CDE 1[name change number 1]"));
+        Assert.assertTrue(textPresent("Definition for testUser CDE 1[def change number 1]"));
     }
     
-    @Test
-    public void testCdeFullDetail() {
-        driver.get(baseUrl + "/");
-        driver.findElement(By.name("search.name")).sendKeys("genotype");
-        driver.findElement(By.id("search.submit")).click();
-        getElementByLinkText("caBIG -- Genotype Therapy Basis Mutation Analysis Indicator").click();
-        getElementByLinkText("View Full Detail").click();
-        Assert.assertTrue(textPresent("Genotype Therapy Basis Mutation Analysis Indicator"));
-        Assert.assertTrue(textPresent("3157849v1"));
-        Assert.assertTrue(textPresent("Text descriptor to indicate whether "
-                + "genotype directed therapy was based on mutation testing"));
-        Assert.assertTrue(textPresent("Qualified"));
-        getElementByLinkText("Permissible Values").click();
-        Assert.assertTrue(textPresent("Unknown"));
-        getElementByLinkText("DE Concepts").click();
-        Assert.assertTrue(textPresent("Mutation Analysis"));
-        Assert.assertTrue(textPresent("C18302"));
-        getElementByLinkText("History").click();
-        Assert.assertTrue(textPresent("This Data Element has no history"));
-    } 
-    
+        
     @AfterTest
     public void endSession() {
         driver.quit();

@@ -423,6 +423,19 @@ function CreateCdeCtrl($scope, $location, DataElement) {
     $scope.setActiveMenu('CREATECDE');
 
     $scope.save = function() {
+        // !TODO probably not the best way to do this
+        $scope.cde.naming = [];
+        $scope.cde.naming.push({
+           designation: $scope.cde.designation
+           , definition: $scope.cde.definition
+           , context: {
+               contextName: "Health"
+               , acceptability: "preferred"
+           }
+        });
+        delete $scope.cde.designation;
+        delete $scope.cde.definition;
+        
         DataElement.save($scope.cde, function(cde) {
             $location.path('#/');        
         });

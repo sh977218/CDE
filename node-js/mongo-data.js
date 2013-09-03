@@ -102,7 +102,14 @@ exports.removeFromCart = function (user, formId, callback) {
 };
 
 exports.cdelist = function(from, limit, searchOptions, callback) {
-    DataElement.find(searchOptions).where("archived").equals(null).skip(from).limit(limit).sort('-formUsageCounter').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
+    var query = DataElement;
+    if (searchOptions != null && searchOptions.name != null) {
+        query = query.where("naming").elemMatch(function(elem) {
+            elem.where("designation", searchOptions.name);
+        });
+        delete searchOptions.name;
+    };
+    query.find(searchOptions).where("archived").equals(null).skip(from).limit(limit).sort('-formUsageCounter').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
         DataElement.count(searchOptions).exec(function (err, count) {
         callback("",{
                cdes: cdes,
@@ -287,19 +294,24 @@ exports.save = function(mongooseObject, callback) {
 exports.saveCde = function(req, callback) {
     if (req.body._id) {
         return DataElement.findById(req.body._id, function (err, dataElement) {
+            
+            console.log("save");
+            
             var jsonDe = JSON.parse(JSON.stringify(dataElement));
             delete jsonDe._id;
             var newDe = new DataElement(jsonDe);
             newDe.history.push(dataElement._id);
-            newDe.name = req.body.name;
-            newDe.definition = req.body.definition;
+            newDe.naming = [];
+            newDe.naming.push(req.body.naming[0]);
             newDe.changeNote = req.body.changeNote;
             newDe.updated = new Date().toJSON();
             newDe.updatedBy.userId = req.user._id;
             newDe.updatedBy.username = req.user.username;
             newDe.registrationStatus = req.body.registrationStatus;
-            
             dataElement.archived = true;
+            
+            console.log(util.inspect(newDe));
+            
             dataElement.save(function (err) {
                  if (err) {
                      console.log(err);
