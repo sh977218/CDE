@@ -264,7 +264,7 @@ app.post('/addComment', function(req, res) {
                 res.send(err);
                 return;
             }
-            res.send("Comment Added");
+            res.send("Comment added");
         });
     } else {
         res.send("You are not authorized.");                   

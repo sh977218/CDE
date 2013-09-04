@@ -67,6 +67,28 @@ public class NlmCdeBaseTest {
         loginAs(test_username, test_password);
         logout();
     }
+    
+    @Test (dependsOnMethods = {"testSelfRegister"})
+    public void testComments() {
+        loginAs(test_username, test_password);
+        driver.findElement(By.name("search.name")).sendKeys("hospital");
+        driver.findElement(By.id("search.submit")).click();
+        getElementByLinkText("PS&CC -- Hospital Confidential Institution Referred From Facility Number Code").click();
+        getElementByLinkText("View Full Detail").click();
+        getElementByLinkText("Discussions").click();
+        driver.findElement(By.name("comment")).sendKeys("My First Comment!");
+        driver.findElement(By.name("postComment")).click();
+        Assert.assertTrue(textPresent("Comment added"));
+        Assert.assertTrue(textPresent("testuser"));
+        Assert.assertTrue(textPresent("My First Comment!"));
+        driver.findElement(By.name("comment")).sendKeys("another comment");
+        driver.findElement(By.name("postComment")).click();
+        Assert.assertTrue(textPresent("Comment added"));
+        driver.findElement(By.xpath("//div[3]/div[2]/div[2]/i")).click();
+        Assert.assertTrue(textPresent("Comment removed"));
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("another comment") < 0);
+        logout();        
+    }
 
     @Test(priority=0)
     public void testAddRegistrationAuthority() {
