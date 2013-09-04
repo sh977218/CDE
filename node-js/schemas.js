@@ -36,7 +36,7 @@ var deJsonSchema = {
     naming:[namingSchema]         
     , origin: String
     , originId: String
-    , registeringAuthority: {
+    , stewardOrg: {
         name: String
     }
     , created: Date
@@ -85,7 +85,7 @@ var formSchema = {
     name: String
     , instructions: String
     , registrationStatus: String
-    , registeringAuthority: {
+    , stewardOrg: {
         name: String
     }
     , updated: Date
@@ -96,13 +96,13 @@ var formSchema = {
 schemas.userSchema = mongoose.Schema ({
     username: String
     , password: String
-    , regAuthAdmin: [String]
-    , regAuthCurator: [String]
+    , orgAdmin: [String]
+    , orgCurator: [String]
     , formCart: [String]
     , siteAdmin: Boolean
 });
 
-schemas.regAuthSchema = mongoose.Schema ({
+schemas.orgSchema = mongoose.Schema ({
     name: String
 });
 
@@ -117,6 +117,6 @@ schemas.formSchema = mongoose.Schema(formSchema);
 schemas.dataElementSchema.set('collection', 'dataelements');
 schemas.formSchema.set('collection', 'forms');
 schemas.userSchema.set('collection', 'users');
-schemas.regAuthSchema.set('collection', 'regAuths');
+schemas.orgSchema.set('collection', 'orgs');
 
 module.exports = schemas;

@@ -5,7 +5,7 @@
 <dt>Version: </dt><dd>{{cde.version}}</dd>
 <dt ng-show="cde.origin">Origin: </dt><dd>{{cde.origin}}</dd>
 <dt ng-show="cde.originId">Origin ID: </dt><dd>{{cde.originId}}</dd>
-<dt>Owner: </dt><dd>{{cde.registeringAuthority.name}}</dd>
+<dt>Steward: </dt><dd>{{cde.stewardOrg.name}}</dd>
 <dt>Definition: </dt><dd><inline-area-edit model="cde.naming[0].definition" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-area-edit></dd>
 <dt>Status: </dt><dd>{{cde.registrationStatus}}</dd>
 <dt ng-show="cde.formUsageCounter">Form Usage: </dt><dd>{{cde.formUsageCounter}}</dd>

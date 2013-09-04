@@ -8,10 +8,10 @@
         
     <label for="form.instructions">Instructions</label><textarea required ng-model="form.instructions" name="form.instructions"></textarea><br />
 
-    <label for="form.registeringAuthority.name">Registration Authority</label>
-    <select ng-model="form.registeringAuthority.name" name="form.registeringAuthority.name" required>
+    <label for="form.stewardOrg.name">Steward Organization</label>
+    <select ng-model="form.stewardOrg.name" name="form.stewardOrg.name" required>
         <option value="">Select One</option>
-        <option ng-repeat="c in user.regAuthAdmin" ng-value="c">{{c}}</option>
+        <option ng-repeat="c in user.orgAdmin" ng-value="c">{{c}}</option>
     </select>
      <br />
 

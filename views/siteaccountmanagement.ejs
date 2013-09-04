@@ -11,33 +11,33 @@
             <span class="add-on" ng-click="addSiteAdmin()">+</span>
         </div>
     </tab>
-    <tab heading="Registration Authorities">
-        <div class="row-fluid" ng-repeat="c in regAuths">
+    <tab heading="Organizations">
+        <div class="row-fluid" ng-repeat="c in orgs">
             <div class="span11">{{c.name}}</div>
-            <div class="span1"><i class="icon-trash" ng-click="removeRegAuth(c._id)"></i></div>
+            <div class="span1"><i class="icon-trash" ng-click="removeOrg(c._id)"></i></div>
         </div>
         <div class="row-fluid input-prepend input-append">
-            <input class="span10" type="text" name="newRegAuth.name" ng-model="newRegAuth.name"></input>
-            <span class="add-on" ng-click="addRegAuth()" id="addRegAuth">+</span>
+            <input class="span10" type="text" name="newOrg.name" ng-model="newOrg.name"></input>
+            <span class="add-on" ng-click="addOrg()" id="addOrg">+</span>
         </div>
     </tab>
-    <tab heading="Registration Authorities Admins">
-        <div class="row-fluid" ng-repeat="adm in regAuthAdmins">
+    <tab heading="Organizations Admins">
+        <div class="row-fluid" ng-repeat="adm in orgAdmins">
             <div class="span4">{{adm.name}}</div>
             <div class="span8">
                 <div class="row-fluid" ng-repeat="us in adm.users">
                     <div class="span11">{{us.username}}</div>
-                    <div class="span1"><i class="icon-trash" ng-click="removeRegAuthAdmin(adm.name, us._id)"></i></div>
+                    <div class="span1"><i class="icon-trash" ng-click="removeorgAdmin(adm.name, us._id)"></i></div>
                 </div>
             </div>
         </div>
         <div class="row-fluid input-prepend input-append">
-            <select class="span5" type="text" ng-model="admin.regAuthName" name="admin.regAuthName">
+            <select class="span5" type="text" ng-model="admin.orgName" name="admin.orgName">
                 <option value="">--</option>
-                <option ng-repeat="a in regAuths" ng-value="a.name">{{a.name}}</option>
+                <option ng-repeat="a in orgs" ng-value="a.name">{{a.name}}</option>
             </select>
-            <input class="span5" type="text" ng-model="regAuthAdmin.username" name="regAuthAdmin.username"></input>
-            <span class="add-on" ng-click="addRegAuthAdmin()" id="addRegAuthAdmin">+</span>
+            <input class="span5" type="text" ng-model="orgAdmin.username" name="orgAdmin.username"></input>
+            <span class="add-on" ng-click="addOrgAdmin()" id="addOrgAdmin">+</span>
         </div>
     </tab>
 </tabset>

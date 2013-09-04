@@ -1,5 +1,5 @@
 <accordion>
-    <accordion-group ng-repeat="cde in cdes" heading="{{cde.registeringAuthority.name}} -- {{cde.name}}">
+    <accordion-group ng-repeat="cde in cdes" heading="{{cde.stewardOrg.name}} -- {{cde.name}}">
          <div class="row-fluid">
             <div class="span5">
                 <h4>General Details</h4>
@@ -7,7 +7,7 @@
                     <dt>Name: </dt> <dd>{{cde.naming[0].name}}</dd>
                     <dt>Origin: </dt><dd>{{cde.origin}}</dd>
                     <dt>Origin ID: </dt><dd>{{cde.originId}}</dd>
-                    <dt>Owner: </dt><dd>{{cde.registeringAuthority.name}}</dd>
+                    <dt>Owner: </dt><dd>{{cde.stewardOrg.name}}</dd>
                     <dt>Definition: </dt><dd>{{cde.naming[0].definition}}</dd>
                     <dt>Status: </dt><dd>{{cde.registrationStatus}}</dd>
                     <dt>Added to NLM: </dt>

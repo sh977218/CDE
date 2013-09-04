@@ -5,7 +5,7 @@ var express = require('express')
   , path = require('path')
   , cdesvc = require('./node-js/cdesvc')
   , usersvc = require('./node-js/usersvc')
-  , regAuthsvc = require('./node-js/regAuthsvc')
+  , orgsvc = require('./node-js/orgsvc')
   , flash = require('connect-flash')
   , passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy
@@ -31,7 +31,7 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
   findById(id, function (err, user) {
-    console.log("user: " + user.username + " " + user.regAuthAdmin);  
+    console.log("user: " + user.username + " " + user.orgAdmin);  
     done(err, user);
   });
 });
@@ -108,33 +108,33 @@ app.post('/removeSiteAdmin', function(req, res) {
     usersvc.removeSiteAdmin(req, res);
 });
 
-app.get('/myRegAuthsAdmins', function(req, res) {
-    usersvc.myRegAuthsAdmins(req, res);
+app.get('/myOrgsAdmins', function(req, res) {
+    usersvc.myOrgsAdmins(req, res);
 });
 
 
-app.get('/regAuthAdmins', function(req, res) {
-    usersvc.regAuthAdmins(req, res);
+app.get('/orgAdmins', function(req, res) {
+    usersvc.orgAdmins(req, res);
 });
 
-app.post('/addRegAuthAdmin', function(req, res) {
-    usersvc.addRegAuthAdmin(req, res);
+app.post('/addOrgAdmin', function(req, res) {
+    usersvc.addOrgAdmin(req, res);
 });
 
-app.post('/removeRegAuthAdmin', function(req, res) {
-    usersvc.removeRegAuthAdmin(req, res);
+app.post('/removeOrgAdmin', function(req, res) {
+    usersvc.removeOrgAdmin(req, res);
 });
 
-app.get('/regAuthCurators', function(req, res) {
-    usersvc.regAuthCurators(req, res);
+app.get('/orgCurators', function(req, res) {
+    usersvc.orgCurators(req, res);
 });
 
-app.post('/addRegAuthCurator', function(req, res) {
-    usersvc.addRegAuthCurator(req, res);
+app.post('/addOrgCurator', function(req, res) {
+    usersvc.addOrgCurator(req, res);
 });
 
-app.post('/removeRegAuthCurator', function(req, res) {
-    usersvc.removeRegAuthCurator(req, res);
+app.post('/removeOrgCurator', function(req, res) {
+    usersvc.removeOrgCurator(req, res);
 });
 
 app.get('/cart', function(req, res) {
@@ -198,8 +198,8 @@ app.get('/siteaccountmanagement', function(req, res) {
     res.render('siteaccountmanagement');
 });
 
-app.get('/regauthaccountmanagement', function(req, res) {
-    res.render('regAuthaccountmanagement');
+app.get('/orgaccountmanagement', function(req, res) {
+    res.render('orgaccountmanagement');
 });
 
 app.get('/formview', function(req, res) {
@@ -230,7 +230,7 @@ app.get('/listcde', function(req, res) {
 });
 
 app.get('/cdesforapproval', function(req, res) {
-    mongo_data.cdesforapproval(req.user.regAuthAdmin, function(err, cdes) {
+    mongo_data.cdesforapproval(req.user.orgAdmin, function(err, cdes) {
         res.send(cdes);
     });
 });
@@ -241,20 +241,20 @@ app.get('/siteadmins', function(req, res) {
     });
 });
 
-app.get('/listregauths', function(req, res) {
-    cdesvc.listRegAuths(req, res);
+app.get('/listorgs', function(req, res) {
+    cdesvc.listOrgs(req, res);
 });
 
-app.get('/managedRegAuths', function(req, res) {
-    regAuthsvc.managedRegAuths(req, res);
+app.get('/managedOrgs', function(req, res) {
+    orgsvc.managedOrgs(req, res);
 });
 
-app.post('/addRegAuth', function(req, res) {
-    regAuthsvc.addRegAuth(req, res);
+app.post('/addOrg', function(req, res) {
+    orgsvc.addOrg(req, res);
 });
 
-app.post('/removeRegAuth', function(req, res) {
-    regAuthsvc.removeRegAuth(req, res);
+app.post('/removeOrg', function(req, res) {
+    orgsvc.removeOrg(req, res);
 });
 
 app.post('/addComment', function(req, res) {
@@ -312,7 +312,7 @@ app.get('/dataelement/:id', function(req, res) {
 // @TODO
 // SECURITY LAMENESS HERE
 // Check the following:
-// 1. You are regAuth owner
+// 1. You are org owner
 // 2. If you are not nlm admin, remove workflow status from json obj so you can't update it.
 app.post('/dataelement', function (req, res) {
     if (req.isAuthenticated()) {
@@ -349,7 +349,7 @@ app.post('/addcdetoform/:cdeId/:formId', function (req, res) {
       if (!form) {
           res.send("The requested form does not exist.");
       } else {
-          if (!req.user || !req.user.regAuthAdmin || req.user.regAuthAdmin.indexOf(form.registeringAuthority.name) < 0) {
+          if (!req.user || !req.user.orgAdmin || req.user.orgAdmin.indexOf(form.stewardOrg.name) < 0) {
             res.send("You are not authorized to do this.");           
           } else {
             mongo_data.cdeById(req.body.cdeId, function(err, cde) {

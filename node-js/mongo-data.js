@@ -20,7 +20,7 @@ var schemas = require('./schemas');
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var User = mongoose.model('User', schemas.userSchema);
 var Form = mongoose.model('Form', schemas.formSchema);
-var RegAuth = mongoose.model('RegAuth', schemas.regAuthSchema);
+var Org = mongoose.model('Org', schemas.orgSchema);
 
 exports.userByName = function(name, callback) {
     User.findOne({'username': name}).exec(function (err, u) {
@@ -47,14 +47,14 @@ exports.siteadmins = function(callback) {
     });
 };
 
-exports.regAuthAdmins = function(callback) {
-    User.find({regAuthAdmin: {$not: {$size: 0}}}).exec(function (err, users) {
+exports.orgAdmins = function(callback) {
+    User.find({orgAdmin: {$not: {$size: 0}}}).exec(function (err, users) {
         callback("", users);
     });
 };
 
-exports.regAuthCurators = function(regAuths, callback) {
-    User.find().where("regAuthCurator").in(regAuths).exec(function (err, users) {
+exports.orgCurators = function(orgs, callback) {
+    User.find().where("orgCurator").in(orgs).exec(function (err, users) {
         callback("", users);
     });
 };
@@ -131,8 +131,8 @@ exports.formlist = function(from, limit, searchOptions, callback) {
     });
 };  
 
-exports.cdesforapproval = function(regAuths, callback) {
-    DataElement.find({'registrationStatus': 'Internal Review'}).where('registeringAuthority.name').in(regAuths).exec(function(err, cdes) {
+exports.cdesforapproval = function(orgs, callback) {
+    DataElement.find({'registrationStatus': 'Internal Review'}).where('stewardOrg.name').in(orgs).exec(function(err, cdes) {
        callback("", {cdes: cdes}); 
     });
 };
@@ -155,33 +155,33 @@ exports.cdesByUuidList = function(idList, callback) {
     });
 };
 
-exports.listRegAuths = function(callback) {
-    DataElement.find().distinct('registeringAuthority.name', function(error, regAuths) {
-        callback("", regAuths.sort());
+exports.listOrgs = function(callback) {
+    DataElement.find().distinct('stewardOrg.name', function(error, orgs) {
+        callback("", orgs.sort());
     });
 };
 
-exports.managedRegAuths = function(callback) {
-    RegAuth.find().exec(function(err, regAuths) {
-        callback(regAuths);
+exports.managedOrgs = function(callback) {
+    Org.find().exec(function(err, orgs) {
+        callback(orgs);
     });
 };
 
-exports.addRegAuth = function(name, res) {
-  RegAuth.findOne({"name": name}).exec(function(err, found) {
+exports.addOrg = function(name, res) {
+  Org.findOne({"name": name}).exec(function(err, found) {
       if (found) {
-          res.send("RegAuth Already Exists");
+          res.send("Org Already Exists");
       } else {
-          var newRegAuth = new RegAuth({"name": name});
-          newRegAuth.save(function() {
-              res.send("RegAuth Added");
+          var newOrg = new Org({"name": name});
+          newOrg.save(function() {
+              res.send("Org Added");
           });
       }
   });  
 };
 
-exports.removeRegAuth = function (id, callback) {
-  RegAuth.findOne({"_id": id}).remove().exec(function (err) {
+exports.removeOrg = function (id, callback) {
+  Org.findOne({"_id": id}).remove().exec(function (err) {
       callback();
   });
 };
@@ -259,8 +259,8 @@ exports.saveForm = function(req, callback) {
         var form = new Form();
         form.name = req.body.name;
         form.instructions = req.body.instructions;
-        form.registeringAuthority = {
-                    name: req.body.registeringAuthority
+        form.stewardOrg = {
+                    name: req.body.stewardOrg
         };
         form.created = Date.now();
         return form.save(function(err) {

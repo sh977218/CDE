@@ -28,8 +28,8 @@ exports.cdereview = function(req, res){
 exports.siteaccountmanagement = function(req, res){
     res.render('siteaccountmanagement');
 };
-exports.regauthaccountmanagement = function(req, res){
-    res.render('regauthaccountmanagement');
+exports.orgaccountmanagement = function(req, res){
+    res.render('orgaccountmanagement');
 };
 exports.deview = function(req, res){
     res.render('deview');

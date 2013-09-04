@@ -14,7 +14,7 @@ public class NlmCdeBaseTest {
     private static String nlm_password = "nlm";
     private static String test_username = "testuser";
     private static String test_password = "Test123";
-    private static String test_reg_auth = "RegAuthTest1";
+    private static String test_reg_auth = "OrgTest1";
     
     public static WebDriverWait wait;
 
@@ -91,41 +91,41 @@ public class NlmCdeBaseTest {
     }
 
     @Test(priority=0)
-    public void testAddRegistrationAuthority() {
+    public void testAddOrg() {
         loginAs(nlm_username, nlm_password);
         getElementByLinkText("Account").click();
         getElementByLinkText("Site Management").click();
-        getElementByLinkText("Registration Authorities").click();
-        driver.findElement(By.name("newRegAuth.name")).sendKeys(test_reg_auth);
-        driver.findElement(By.id("addRegAuth")).click();
+        getElementByLinkText("Organizations").click();
+        driver.findElement(By.name("newOrg.name")).sendKeys(test_reg_auth);
+        driver.findElement(By.id("addOrg")).click();
         logout();
     }
     
-    @Test(dependsOnMethods = {"testSelfRegister", "testAddRegistrationAuthority"})
-    public void testPromoteRegAuthAdmin() {
+    @Test(dependsOnMethods = {"testSelfRegister", "testAddOrg"})
+    public void testPromoteOrgAdmin() {
         loginAs(nlm_username, nlm_password);
         getElementByLinkText("Account").click();
         getElementByLinkText("Site Management").click();
-        getElementByLinkText("Registration Authorities Admins").click();
-        new Select(driver.findElement(By.name("admin.regAuthName"))).selectByVisibleText(test_reg_auth);
-        driver.findElement(By.name("regAuthAdmin.username")).sendKeys(test_username);
-        driver.findElement(By.id("addRegAuthAdmin")).click();
+        getElementByLinkText("Organizations Admins").click();
+        new Select(driver.findElement(By.name("admin.orgName"))).selectByVisibleText(test_reg_auth);
+        driver.findElement(By.name("orgAdmin.username")).sendKeys(test_username);
+        driver.findElement(By.id("addOrgAdmin")).click();
         logout();
         loginAs(test_username, test_password);
         getElementByLinkText("Create").click();
         // following will assert that test user was indeed promoted
-        new Select(driver.findElement(By.name("cde.registeringAuthority.name"))).selectByVisibleText(test_reg_auth);                
+        new Select(driver.findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText(test_reg_auth);                
         logout();
     }
     
-    @Test(dependsOnMethods = {"testPromoteRegAuthAdmin"}) 
+    @Test(dependsOnMethods = {"testPromoteOrgAdmin"}) 
     public void testCreateCde() {
         loginAs(test_username, test_password);
         getElementByLinkText("Create").click();
         driver.findElement(By.name("cde.designation")).sendKeys("name of testuser CDE 1");
         driver.findElement(By.name("cde.definition")).sendKeys("Definition for testUser CDE 1");
         driver.findElement(By.name("cde.version")).sendKeys("1.0alpha1");
-        new Select(driver.findElement(By.name("cde.registeringAuthority.name"))).selectByVisibleText(test_reg_auth);
+        new Select(driver.findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText(test_reg_auth);
         driver.findElement(By.id("cde.submit")).click();
         driver.get(baseUrl + "/");
         driver.findElement(By.name("search.name")).sendKeys("testUser CDE 1");

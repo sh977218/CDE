@@ -50,23 +50,23 @@ angular.module('resources', ['ngResource']).
           , removeSiteAdmin: function(user, success, error) {
             $http.post('/removeSiteAdmin', user).success(success).error(error);
           }  
-          , addRegAuthAdmin: function(user, success, error) {
-            $http.post('/addRegAuthAdmin', user).success(success).error(error);
+          , addOrgAdmin: function(user, success, error) {
+            $http.post('/addOrgAdmin', user).success(success).error(error);
           }  
-          , addRegAuthCurator: function(user, success, error) {
-            $http.post('/addRegAuthCurator', user).success(success).error(error);
+          , addOrgCurator: function(user, success, error) {
+            $http.post('/addOrgCurator', user).success(success).error(error);
           }  
-          , removeRegAuthAdmin: function(data, success, error) {
-            $http.post('/removeRegAuthAdmin', data).success(success).error(error);
+          , removeOrgAdmin: function(data, success, error) {
+            $http.post('/removeOrgAdmin', data).success(success).error(error);
           }  
-          , removeRegAuthCurator: function(data, success, error) {
-            $http.post('/removeRegAuthCurator', data).success(success).error(error);
+          , removeOrgCurator: function(data, success, error) {
+            $http.post('/removeOrgCurator', data).success(success).error(error);
           }  
-          , addRegAuth: function(name, success, error) {
-            $http.post('/addRegAuth', name).success(success).error(error);
+          , addOrg: function(name, success, error) {
+            $http.post('/addOrg', name).success(success).error(error);
           }  
-          , removeRegAuth: function(id, success, error) {
-            $http.post('/removeRegAuth', id).success(success).error(error);
+          , removeOrg: function(id, success, error) {
+            $http.post('/removeOrg', id).success(success).error(error);
           }  
         };
     })

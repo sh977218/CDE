@@ -12,7 +12,7 @@
     <h4 id='general'>General Details</h4>
     <dl class="dl-horizontal">
         <dt>Name: </dt><dd>{{form.name}}</dd>
-        <dt>Owner: </dt><dd>{{form.registeringAuthority.name}}</dd>
+        <dt>Owner: </dt><dd>{{form.stewardOrg.name}}</dd>
         <dt>Instructions: </dt><dd>{{form.instructions || 'None'}}</dd>                
         <dt>Created: </dt><dd>{{form.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>                
     </dl>
@@ -38,7 +38,7 @@
                     <dt>Name: </dt><dd>{{question.cde.name}}</dd>
                     <dt>Origin: </dt><dd>{{question.cde.origin}}</dd>
                     <dt>Origin ID: </dt><dd>{{question.cde.originId}}</dd>
-                    <dt>Owner: </dt><dd>{{question.cde.registeringAuthority.name}}</dd>
+                    <dt>Owner: </dt><dd>{{question.cde.stewardOrg.name}}</dd>
                     <dt>Definition: </dt><dd>{{question.cde.definition}}</dd>
                     <dt>Added to NLM: </dt><dd>{{question.cde.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
                     </dl>

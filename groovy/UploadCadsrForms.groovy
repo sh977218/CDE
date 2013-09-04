@@ -97,10 +97,10 @@ doModules = {url ->
 doContext = {url, formObj ->
     def httpQuery = new XmlSlurper().parseText(getContent(url.toString())).declareNamespace(xlink: 'http://www.w3.org/1999/xlink')   
 
-    BasicDBObject regAuthObj = new BasicDBObject("name", getField(httpQuery.queryResponse.'class', 'name').toString());
+    BasicDBObject orgObj = new BasicDBObject("name", getField(httpQuery.queryResponse.'class', 'name').toString());
 
     
-    formObj.append("registeringAuthority", regAuthObj );
+    formObj.append("stewardOrg", orgObj );
 }
 
 doForm = {form ->

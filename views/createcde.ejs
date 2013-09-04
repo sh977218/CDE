@@ -13,10 +13,10 @@
         <label>Version</label>
         <input type="text" ng-model="cde.version" name="cde.version">
 
-        <label for="cde.registeringAuthority.name">Registration Authority</label>
-        <select ng-model="cde.registeringAuthority.name" name="cde.registeringAuthority.name" required>
+        <label for="cde.stewardOrg.name">Steward Organization</label>
+        <select ng-model="cde.stewardOrg.name" name="cde.stewardOrg.name" required>
             <option value="">Select One</option>
-            <option ng-repeat="c in myRegAuths" ng-value="c">{{c}}</option>
+            <option ng-repeat="o in myOrgs" ng-value="o">{{o}}</option>
         </select>
         <br />
 

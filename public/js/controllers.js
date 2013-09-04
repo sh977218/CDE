@@ -2,7 +2,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u;
-            $scope.setMyRegAuths();
+            $scope.setMyOrgs();
             callback();
         });
     };
@@ -14,23 +14,23 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         dialogFade: true
     };  
     
-    $scope.isRegAuthCurator = function() {        
-        return $scope.isRegAuthAdmin() || ($scope.user && ($scope.user.regAuthCurator && $scope.user.regAuthCurator.length > 0));  
+    $scope.isOrgCurator = function() {        
+        return $scope.isOrgAdmin() || ($scope.user && ($scope.user.orgCurator && $scope.user.orgCurator.length > 0));  
     };
     
-    $scope.isRegAuthAdmin = function() {
-        return $scope.user && $scope.user.regAuthAdmin && $scope.user.regAuthAdmin.length > 0;  
+    $scope.isOrgAdmin = function() {
+        return $scope.user && $scope.user.orgAdmin && $scope.user.orgAdmin.length > 0;  
     };
     
     $scope.registrationStatuses = ['Incomplete', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard'];
 
-    $scope.setMyRegAuths = function() {
-        if ($scope.user && $scope.user.regAuthAdmin) {
-            // clone regAuthAdmin array
-            $scope.myRegAuths = $scope.user.regAuthAdmin.slice(0);
-            for (var i = 0; i < $scope.user.regAuthCurator.length; i++) {
-                if ($scope.myRegAuths.indexOf($scope.user.regAuthCurator[i]) < 0) {
-                    $scope.myRegAuths.push($scope.user.regAuthCurator[i]);
+    $scope.setMyOrgs = function() {
+        if ($scope.user && $scope.user.orgAdmin) {
+            // clone orgAdmin array
+            $scope.myOrgs = $scope.user.orgAdmin.slice(0);
+            for (var i = 0; i < $scope.user.orgCurator.length; i++) {
+                if ($scope.myOrgs.indexOf($scope.user.orgCurator[i]) < 0) {
+                    $scope.myOrgs.push($scope.user.orgCurator[i]);
                 }
             }
         }
@@ -67,13 +67,13 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
 
     };
     
-    $scope.listRegAuths = function() {
-     return $http.get("/listregauths").then(function(response){ 
+    $scope.listOrgs = function() {
+     return $http.get("/listorgss").then(function(response){ 
         return response.data;
      });
     };
     
-    $scope.regAuths = $scope.listRegAuths();
+    $scope.orgs = $scope.listOrgs();
 
     $scope.scrollTo = function(id) {
         var old = $location.hash();
@@ -84,7 +84,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     };
 }
 
-function RegAuthAccountManagementCtrl($scope, $http) {
+function OrgAccountManagementCtrl($scope, $http) {
 
 
 }
@@ -92,9 +92,9 @@ function RegAuthAccountManagementCtrl($scope, $http) {
 function AccountManagementCtrl($scope, $http, AccountManagement) {
     $scope.setActiveMenu('ACCOUNT');
     $scope.admin = {};
-    $scope.newRegAuth = {};
-    $scope.regAuthAdmin = {};
-    $scope.regAuthCurator = {};
+    $scope.newOrg = {};
+    $scope.orgAdmin = {};
+    $scope.orgCurator = {};
     $scope.admin = {};
     $scope.curator = {};
         
@@ -105,34 +105,34 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     };
     $scope.siteAdmins = $scope.getSiteAdmins();
 
-    $scope.getRegAuths = function() {
-        return $http.get("/managedRegAuths").then(function(response) {
-            return response.data.regAuths;
+    $scope.getOrgs = function() {
+        return $http.get("/managedOrgs").then(function(response) {
+            return response.data.orgs;
         });
     };
-    $scope.regAuths = $scope.getRegAuths(); 
+    $scope.orgs = $scope.getOrgs(); 
 
-    $scope.getRegAuthAdmins = function() {
-        return $http.get("/regAuthAdmins").then(function(response) {
-            return response.data.regAuths;
+    $scope.getOrgAdmins = function() {
+        return $http.get("/orgAdmins").then(function(response) {
+            return response.data.orgs;
         });
     };
-    $scope.regAuthAdmins = $scope.getRegAuthAdmins(); 
+    $scope.orgAdmins = $scope.getOrgAdmins(); 
 
     
-    $scope.getMyRegAuthAdmins = function() {
-        return $http.get("/myRegAuthsAdmins").then(function(response) {
-            return response.data.regAuths;
+    $scope.getMyOrgAdmins = function() {
+        return $http.get("/myOrgsAdmins").then(function(response) {
+            return response.data.orgs;
         });
     };
-    $scope.myRegAuthAdmins = $scope.getMyRegAuthAdmins();
+    $scope.myOrgAdmins = $scope.getMyOrgAdmins();
 
-    $scope.getRegAuthCurators = function() {
-        return $http.get("/regauthcurators").then(function(response) {
-            return response.data.regAuths;
+    $scope.getOrgCurators = function() {
+        return $http.get("/orgcurators").then(function(response) {
+            return response.data.orgs;
         });
     };
-    $scope.regAuthCurators = $scope.getRegAuthCurators(); 
+    $scope.orgCurators = $scope.getOrgCurators(); 
     
     $scope.addSiteAdmin = function() {
         AccountManagement.addSiteAdmin({
@@ -157,77 +157,77 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
         );
     };
     
-    $scope.addRegAuthAdmin = function() {
-        AccountManagement.addRegAuthAdmin({
-            username: $scope.regAuthAdmin.username
-            , regAuth: $scope.admin.regAuthName
+    $scope.addOrgAdmin = function() {
+        AccountManagement.addOrgAdmin({
+            username: $scope.orgAdmin.username
+            , org: $scope.admin.orgName
             },
             function(res) {
                   $scope.message = res;
-                  $scope.regAuthAdmins = $scope.getRegAuthAdmins();
+                  $scope.orgAdmins = $scope.getOrgAdmins();
             }
         );
-        $scope.regAuthAdmin.username = "";
+        $scope.orgAdmin.username = "";
     };
 
-    $scope.removeRegAuthAdmin = function(regAuthName, userId) {
-        AccountManagement.removeRegAuthAdmin({
-            regAuthName: regAuthName
+    $scope.removeOrgAdmin = function(orgName, userId) {
+        AccountManagement.removeOrgAdmin({
+            orgName: orgName
             , userId: userId
             },
             function (res) {
                 $scope.message = res;
-                $scope.regAuthAdmins = $scope.getRegAuthAdmins();
+                $scope.orgAdmins = $scope.getOrgAdmins();
             }
         
         );
     };
 
-    $scope.addRegAuthCurator = function() {
-        AccountManagement.addRegAuthCurator({
-            username: $scope.regAuthCurator.username
-            , regAuth: $scope.curator.regAuthName
+    $scope.addOrgCurator = function() {
+        AccountManagement.addOrgCurator({
+            username: $scope.orgCurator.username
+            , org: $scope.curator.orgName
             },
             function(res) {
                   $scope.message = res;
-                  $scope.regAuthCurators = $scope.getRegAuthCurators(); 
+                  $scope.orgCurators = $scope.getOrgCurators(); 
             }
         );
-        $scope.regAuthCurator.username = "";
+        $scope.orgCurator.username = "";
     };
         
-    $scope.removeRegAuthCurator = function(regAuthName, userId) {
-        AccountManagement.removeRegAuthCurator({
-            regAuthName: regAuthName
+    $scope.removeOrgCurator = function(orgName, userId) {
+        AccountManagement.removeOrgCurator({
+            orgName: orgName
             , userId: userId
             },
             function (res) {
                 $scope.message = res;
-                $scope.regAuthCurators = $scope.getRegAuthCurators(); 
+                $scope.orgCurators = $scope.getOrgCurators(); 
             }
         
         );
     };
 
-    $scope.addRegAuth = function() {
-        AccountManagement.addRegAuth({
-            name: $scope.newRegAuth.name
+    $scope.addOrg = function() {
+        AccountManagement.addOrg({
+            name: $scope.newOrg.name
             },
             function(res) {
                   $scope.message = res;
-                  $scope.regAuths = $scope.getRegAuths();
+                  $scope.orgs = $scope.getOrgs();
             }
         );
-        $scope.newRegAuth.name = "";
+        $scope.newOrg.name = "";
     };
 
-    $scope.removeRegAuth = function(byId) {
-       AccountManagement.removeRegAuth({
+    $scope.removeOrg = function(byId) {
+       AccountManagement.removeOrg({
             id: byId
             },
             function(res) {
                   $scope.message = res;
-                  $scope.regAuths = $scope.getRegAuths();
+                  $scope.orgs = $scope.getOrgs();
             }
         );
     };     
@@ -274,9 +274,9 @@ function DEListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
     $scope.originOptions = ['CADSR', 'FITBIR'];
 
     // this one ensures that we don't send this as query when none is selected. 
-    $scope.removeOwningRegAuth = function() {
-        if ($scope.search.registeringAuthority.name == "") {
-            delete $scope.search.registeringAuthority;
+    $scope.removeOwningOrg = function() {
+        if ($scope.search.stewardOrg.name == "") {
+            delete $scope.search.stewardOrg;
         }
     };
     $scope.removeRegistrationStatus = function() {
@@ -552,8 +552,8 @@ function DEViewCtrl($scope, $routeParams, $location, $window, DataElement, Comme
     };
     
     $scope.isAllowed = function (cde) {
-        if ($scope.initialized && $scope.myRegAuths) {
-            return $scope.myRegAuths.indexOf(cde.registeringAuthority.name) > -1;
+        if ($scope.initialized && $scope.myOrgs) {
+            return $scope.myOrgs.indexOf(cde.stewardOrg.name) > -1;
         } else {
             return false;
         }
@@ -607,8 +607,8 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
                 }
                 $scope.original = $scope.form;
             });
-            if ($scope.user && $scope.user.regAuthAdmin) {
-                $scope.canEdit = $scope.user.regAuthAdmin.indexOf(form.registeringAuthority.name) > -1;
+            if ($scope.user && $scope.user.orgAdmin) {
+                $scope.canEdit = $scope.user.orgAdmin.indexOf(form.stewardOrg.name) > -1;
             } else {
                 $scope.canEdit = false;
             }

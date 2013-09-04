@@ -43,18 +43,18 @@ exports.removeSiteAdmin = function(req, res) {
     });  
 };
 
-exports.myRegAuthsAdmins = function(req, res) {
+exports.myOrgsAdmins = function(req, res) {
     if (!req.isAuthenticated()) {
-        res.send({regAuths: []});
+        res.send({orgs: []});
     } else {
         mongo_data.userById(req.user._id, function(err, foundUser) {
-            var result = {"regAuths": []};
-            mongo_data.regAuthAdmins(function(err, users) {
-                var myRegAuths = foundUser.regAuthAdmin;
-                for (var i = 0; i < myRegAuths.length; i++) {
+            var result = {"orgs": []};
+            mongo_data.orgAdmins(function(err, users) {
+                var myOrgs = foundUser.orgAdmin;
+                for (var i = 0; i < myOrgs.length; i++) {
                     var usersList = [];
                     for (var j in users) {
-                        if (users[j].regAuthAdmin.indexOf(myRegAuths[i]) > -1) {
+                        if (users[j].orgAdmin.indexOf(myOrgs[i]) > -1) {
                             usersList.push({
                                 "username": users[j].username
                                 , "_id": users[j]._id
@@ -62,8 +62,8 @@ exports.myRegAuthsAdmins = function(req, res) {
                         }
                     }
                     if (usersList.length > 0) {
-                        result.regAuths.push({
-                            "name": myRegAuths[i]
+                        result.orgs.push({
+                            "name": myOrgs[i]
                             , "users": usersList
                         });
                     }
@@ -74,19 +74,19 @@ exports.myRegAuthsAdmins = function(req, res) {
     }
 };
 
-exports.regAuthCurators = function(req, res) {
+exports.orgCurators = function(req, res) {
     if (!req.isAuthenticated()) {
         res.send("You must log in to do this.");
     } else {
         mongo_data.userById(req.user._id, function(err, foundUser) {
-            var result = {"regAuths": []};
-            if (foundUser.regAuthAdmin.length > 0) {
-                mongo_data.regAuthCurators(foundUser.regAuthAdmin, function(err, users) {
-                    var myRegAuths = foundUser.regAuthAdmin;
-                    for (var i = 0; i < myRegAuths.length; i++) {
+            var result = {"orgs": []};
+            if (foundUser.orgAdmin.length > 0) {
+                mongo_data.orgCurators(foundUser.orgAdmin, function(err, users) {
+                    var myOrgs = foundUser.orgAdmin;
+                    for (var i = 0; i < myOrgs.length; i++) {
                         var usersList = [];
                         for (var j in users) {
-                            if (users[j].regAuthCurator.indexOf(myRegAuths[i]) > -1) {
+                            if (users[j].orgCurator.indexOf(myOrgs[i]) > -1) {
                                 usersList.push({
                                     "username": users[j].username
                                     , "_id": users[j]._id
@@ -94,8 +94,8 @@ exports.regAuthCurators = function(req, res) {
                             }
                         }
                         if (usersList.length > 0) {
-                            result.regAuths.push({
-                                "name": myRegAuths[i]
+                            result.orgs.push({
+                                "name": myOrgs[i]
                                 , "users": usersList
                             });
                         }
@@ -103,21 +103,21 @@ exports.regAuthCurators = function(req, res) {
                    res.send(result); 
                 });
             } else {
-                res.send("User is not a Registration Authority Admin");
+                res.send("User is not an Org Admin");
             }
         });
     }
 };
 
 
-exports.regAuthAdmins = function(req, res) {
-    mongo_data.managedRegAuths(function(managedRegAuths) {
-        var result = {"regAuths": []};
-        mongo_data.regAuthAdmins(function(err, users) {
-            for (var i in managedRegAuths) {
+exports.orgAdmins = function(req, res) {
+    mongo_data.managedOrgs(function(managedOrgs) {
+        var result = {"orgs": []};
+        mongo_data.orgAdmins(function(err, users) {
+            for (var i in managedOrgs) {
                 var usersList = [];
                 for (var j in users) {
-                    if (users[j].regAuthAdmin.indexOf(managedRegAuths[i].name) > -1) {
+                    if (users[j].orgAdmin.indexOf(managedOrgs[i].name) > -1) {
                         usersList.push({
                             "username": users[j].username
                             , "_id": users[j]._id
@@ -125,8 +125,8 @@ exports.regAuthAdmins = function(req, res) {
                     }
                 }
                 if (usersList.length > 0) {
-                    result.regAuths.push({
-                        "name": managedRegAuths[i].name
+                    result.orgs.push({
+                        "name": managedOrgs[i].name
                         , "users": usersList
                     });
                 }
@@ -137,70 +137,70 @@ exports.regAuthAdmins = function(req, res) {
     });
 };
 
-exports.addRegAuthAdmin = function(req, res) {
+exports.addOrgAdmin = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {
         if (!found) {
             res.send("Unknown Username");
         } else {
-            if (found.regAuthAdmin.indexOf(req.body.regAuth) > -1) {
-                res.send("User is already an Administrator for this Registration Authority");
+            if (found.orgAdmin.indexOf(req.body.org) > -1) {
+                res.send("User is already an Administrator for this Organization");
             } else {
-                found.regAuthAdmin.push(req.body.regAuth);
+                found.orgAdmin.push(req.body.org);
                 found.save(function () {
-                    res.send("Registration Authority Administrator Added");
+                    res.send("Organization Administrator Added");
                 });
             }
         }
     });  
 };
 
-exports.removeRegAuthAdmin = function(req, res) {
+exports.removeOrgAdmin = function(req, res) {
     mongo_data.userById(req.body.userId, function(err, found) {
         if (!found) {
             res.send("Unknown User");
         } else {
-            var regAuthInd = found.regAuthAdmin.indexOf(req.body.regAuthName);
-            if (regAuthInd < 0) {
-                res.send("User is not an Administrator for this Registration Authority");
+            var orgInd = found.orgAdmin.indexOf(req.body.orgName);
+            if (orgInd < 0) {
+                res.send("User is not an Administrator for this Organization");
             } else {
-                found.regAuthAdmin.splice(regAuthInd, 1);
+                found.orgAdmin.splice(orgInd, 1);
                 found.save(function () {
-                    res.send("Registration Authority Administrator Removed");
+                    res.send("Organization Administrator Removed");
                 });
             }
         }
     });  
 };
 
-exports.addRegAuthCurator = function(req, res) {
+exports.addOrgCurator = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {
         if (!found) {
             res.send("Unknown Username");
         } else {
-            if (found.regAuthCurator.indexOf(req.body.regAuth) > -1) {
-                res.send("User is already a Curator for this Registration Authority");
+            if (found.orgCurator.indexOf(req.body.org) > -1) {
+                res.send("User is already a Curator for this Organization");
             } else {
-                found.regAuthCurator.push(req.body.regAuth);
+                found.orgCurator.push(req.body.org);
                 found.save(function () {
-                    res.send("Registration Authority Curator Added");
+                    res.send("Organization Curator Added");
                 });
             }
         }
     });  
 };
 
-exports.removeRegAuthCurator = function(req, res) {
+exports.removeOrgCurator = function(req, res) {
     mongo_data.userById(req.body.userId, function(err, found) {
         if (!found) {
             res.send("Unknown User");
         } else {
-            var regAuthInd = found.regAuthCurator.indexOf(req.body.regAuthName);
-            if (regAuthInd < 0) {
-                res.send("User is not a Curator for this Registration Authority");
+            var orgInd = found.orgCurator.indexOf(req.body.orgName);
+            if (orgInd < 0) {
+                res.send("User is not a Curator for this Organization");
             } else {
-                found.regAuthCurator.splice(regAuthInd, 1);
+                found.orgCurator.splice(orgInd, 1);
                 found.save(function () {
-                    res.send("Registration Authority Curator Removed");
+                    res.send("Organization Curator Removed");
                 });
             }
         }

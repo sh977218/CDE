@@ -20,7 +20,7 @@
                     <ul class="nav">
                         <li class="{{menuHome}}"><a href="/">CDEs</a></li>
                         <li class="{{menuForm}}"><a href="#/listforms">Forms</a></li>
-                        <li ng-show='isRegAuthCurator()' class="{{menuCreate}}"><a href="#/createCde">Create</a></li>
+                        <li ng-show='isOrgCurator()' class="{{menuCreate}}"><a href="#/createCde">Create</a></li>
 <!--                        
                         <li ng-show='user._id' class="dropdown">    
                             <a class="dropdown-toggle caret-after" data-toggle="dropdown">
@@ -36,7 +36,7 @@
                             </ul>
                         </li>                        
                         <li class="{{menuCart}}" ng-show='user._id'><a href="#/cart">Cart ({{user.formCart.length}})</a></li>
-                        <li class="{{menuIntRev}}" ng-show='isRegAuthAdmin()'><a href="#/internalreview">Review</a></li>
+                        <li class="{{menuIntRev}}" ng-show='isOrgAdmin()'><a href="#/internalreview">Review</a></li>
                         <li class="{{menuNlmRev}}" ng-show='user.nlmAdmin'><a href='#/nlmreleased'>Admin</a></li> -->
                     </ul>
                     <ul class="nav pull-right">
@@ -44,7 +44,7 @@
                         <li class="{{menuAccount}}" ng-show="user._id">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Account <span class="caret"></span></a>
                             <ul class="dropdown-menu"> 
-                                <li ng-show="isRegAuthAdmin() && !user.siteAdmin"><a href="#/regauthaccountmanagement">Account Management</a></li>
+                                <li ng-show="isOrgAdmin() && !user.siteAdmin"><a href="#/orgaccountmanagement">Account Management</a></li>
                                 <li ng-show='user._id && user.siteAdmin'><a href="#/siteaccountmanagement">Site Management</a></li>
                                 <li ng-show='user._id'><a href="/logout">Log Out</a></li>                                         
                             </ul>
