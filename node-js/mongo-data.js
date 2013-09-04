@@ -61,7 +61,6 @@ exports.regAuthCurators = function(regAuths, callback) {
 
 exports.addComment = function(deId, comment, userId, callback) {
     exports.cdeById(deId, function(err, de) {
-        console.log("Found DE: " + de.name);
         exports.userById(userId, function(err, user) {
             de.comments.push({
                 user: user._id
@@ -231,7 +230,6 @@ exports.linktovsac = function(req, callback) {
                     dataElement.valueDomain.definition = '';
                     dataElement.valueDomain.permissibleValues = [];
                     dataElement.changeNote = req.body.changeNote;
-                    console.log("Change note: " + dataElement.changeNote);
                     dataElement.updated = new Date().toJSON();
 
 
@@ -269,7 +267,6 @@ exports.saveForm = function(req, callback) {
             if (err) {
                 callback(err, form);
             }
-            console.log("No form Id, created new form");
             callback("", form);
         });
     } else {
@@ -294,9 +291,6 @@ exports.save = function(mongooseObject, callback) {
 exports.saveCde = function(req, callback) {
     if (req.body._id) {
         return DataElement.findById(req.body._id, function (err, dataElement) {
-            
-            console.log("save");
-            
             var jsonDe = JSON.parse(JSON.stringify(dataElement));
             delete jsonDe._id;
             var newDe = new DataElement(jsonDe);
@@ -309,9 +303,6 @@ exports.saveCde = function(req, callback) {
             newDe.updatedBy.username = req.user.username;
             newDe.registrationStatus = req.body.registrationStatus;
             dataElement.archived = true;
-            
-            console.log(util.inspect(newDe));
-            
             dataElement.save(function (err) {
                  if (err) {
                      console.log(err);
