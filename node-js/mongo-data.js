@@ -195,9 +195,13 @@ exports.removeOrg = function (id, callback) {
 
 exports.priorCdes = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
-        return DataElement.find().where("_id").in(dataElement.history).exec(function(err, cdes) {
-            callback("", cdes);
-        });
+        if (dataElement != null) {
+            return DataElement.find().where("_id").in(dataElement.history).exec(function(err, cdes) {
+                callback("", cdes);
+            });
+        } else {
+            
+        }
     });
 };
 

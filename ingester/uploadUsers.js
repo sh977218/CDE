@@ -22,7 +22,6 @@ var users = [
   , {username: 'fitbir', password: 'fitbir', orgAdmin: []}
   , {username: 'ludet', password: 'ludet', orgAdmin: []}
   , {username: 'ctep', password: 'ctep', orgAdmin: []}
-  , {username: 'nlm', password: 'nlm', siteAdmin: true}
 ];
 
 for (var i in users) {
