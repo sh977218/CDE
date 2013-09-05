@@ -1,1 +1,1 @@
-db.dataelements.ensureIndex({"name": 1, "registeringOrg.name": 1, "registrationStatus": 1, "originId": 1})
+db.dataelements.ensureIndex({"name": 1, "registeringOrg.name": 1, "registrationStatus": 1, "originId": 1, "uuid": 1})

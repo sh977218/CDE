@@ -59,4 +59,21 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize']).
     };
     });
 
-    
+cdeApp.directive('ensureUnique', ['$http', function($http) {
+  return {
+    require: 'ngModel',
+    link: function(scope, ele, attrs, c) {
+      scope.$watch(attrs.ngModel, function() {
+        $http({
+          method: 'GET',
+          url: '/'/ + attrs.ensureUnique,
+          data: {'field': attrs.ensureUnique}
+        }).success(function(data, status, headers, cfg) {
+          c.$setValidity('unique', data.isUnique);
+        }).error(function(data, status, headers, cfg) {
+          c.$setValidity('unique', false);
+        });
+      });
+    }
+  }
+}])

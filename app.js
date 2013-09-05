@@ -309,6 +309,12 @@ app.get('/dataelement/:id', function(req, res) {
     cdesvc.show(req, res);
 });
 
+app.get('/dataelement/:uuid/:version', function(req, res) {
+    mongo_data.deByUuidAndVersion(req.params.uuid, req.params.version, function(err, de) {
+        res.send(de);
+    });
+});
+
 // @TODO
 // SECURITY LAMENESS HERE
 // Check the following:

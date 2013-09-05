@@ -132,6 +132,12 @@ exports.formlist = function(from, limit, searchOptions, callback) {
     });
 };  
 
+exports.deByUuidAndVersion = function(uuid, version, callback) {
+    DataElement.findOne({'uuid': uuid, "version": version}).exec(function (err, de) {
+       callback("", de); 
+    });
+};
+
 exports.cdesforapproval = function(orgs, callback) {
     DataElement.find({'registrationStatus': 'Internal Review'}).where('stewardOrg.name').in(orgs).exec(function(err, cdes) {
        callback("", {cdes: cdes}); 
