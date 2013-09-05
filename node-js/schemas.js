@@ -49,7 +49,7 @@ var deJsonSchema = {
         userId: mongoose.Schema.Types.ObjectId
         , username: String
     }
-    , publicID: String
+    , uuid: String
     , version: String
     , objectClass: {concepts: [conceptSchema]}
     , property:{concepts: [conceptSchema]}

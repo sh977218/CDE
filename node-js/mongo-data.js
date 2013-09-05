@@ -2,6 +2,7 @@ var mongoose = require('mongoose')
     , util = require('util')
     , vsac_io = require('./vsac-io')
     , xml2js = require('xml2js')
+    , uuid = require('node-uuid')
 ;
 
 var mongoUri = process.env.MONGO_URI || process.env.MONGOHQ_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/nlmcde';
@@ -289,7 +290,7 @@ exports.save = function(mongooseObject, callback) {
 };
 
 exports.saveCde = function(req, callback) {
-    if (req.body._id) {
+    if (req.body._id) { // CDE already exists
         return DataElement.findById(req.body._id, function (err, dataElement) {
             var jsonDe = JSON.parse(JSON.stringify(dataElement));
             delete jsonDe._id;
@@ -322,6 +323,7 @@ exports.saveCde = function(req, callback) {
         newDe.created = Date.now();
         newDe.createdBy.userId = req.user._id;
         newDe.createdBy.username = req.user.username;
+        newDe.uuid = uuid.v4();
         newDe.save(function (err) {
             callback(err, newDe);
         });

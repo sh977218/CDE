@@ -42,10 +42,6 @@ fs.readFile(process.argv[2], function(err, data) {
         
         var newDE = new DataElement({
             uuid: uuid.v4()
-// PreferredName as alternate name ?
-//            , preferredName: cadsrDE.PREFERREDNAME
-//            , name: cadsrDE.LONGNAME
-//            , definition: cadsrDE.PREFERREDDEFINITION
             , created: Date.now()
             , origin: 'CADSR'
             , originId: cadsrDE.PUBLICID + "v" + cadsrDE.VERSION
@@ -55,11 +51,9 @@ fs.readFile(process.argv[2], function(err, data) {
             , registrationStatus: cadsrDE.WORKFLOWSTATUS
             , version: cadsrDE.VERSION
             , valueDomain: {  
-//                preferredName: cadsrDE.VALUEDOMAIN[0].PreferredName,
-                            name: cadsrDE.VALUEDOMAIN[0].LongName,
-                            definition: cadsrDE.VALUEDOMAIN[0].PreferredDefinition
-                         }
-                         
+                name: cadsrDE.VALUEDOMAIN[0].LongName,
+                definition: cadsrDE.VALUEDOMAIN[0].PreferredDefinition
+             }                         
         });
         
         newDE.naming = [];

@@ -159,6 +159,8 @@ public class NlmCdeBaseTest {
         driver.findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("[name change number 1]"));
         Assert.assertTrue(textPresent("[def change number 1]"));
+        // test that label and it's value are well aligned. 
+        Assert.assertEquals(driver.findElement(By.id("dt_createdBy")).getLocation().y, driver.findElement(By.id("dd_createdBy")).getLocation().y);
         logout();
     }
         
