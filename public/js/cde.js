@@ -59,21 +59,22 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize']).
     };
     });
 
-cdeApp.directive('ensureUnique', ['$http', function($http) {
+cdeApp.directive('ngCdeAvailable', ['$http', function($http) {
   return {
     require: 'ngModel',
-    link: function(scope, ele, attrs, c) {
+    link: function(scope, ele, attrs, ctrl) {
       scope.$watch(attrs.ngModel, function() {
         $http({
           method: 'GET',
-          url: '/'/ + attrs.ensureUnique,
-          data: {'field': attrs.ensureUnique}
+          url: '/dataelement/' + scope.cde.uuid + "/" + scope.cde.version
         }).success(function(data, status, headers, cfg) {
-          c.$setValidity('unique', data.isUnique);
+            console.log(data);
+            console.log(data == "")
+          ctrl.$setValidity('unique', data == "");
         }).error(function(data, status, headers, cfg) {
-          c.$setValidity('unique', false);
+          ctrl.$setValidity('unique', false);
         });
       });
     }
-  }
-}])
+  };
+}]);

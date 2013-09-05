@@ -304,6 +304,7 @@ exports.saveCde = function(req, callback) {
             newDe.history.push(dataElement._id);
             newDe.naming = [];
             newDe.naming.push(req.body.naming[0]);
+            newDe.version = req.body.version;
             newDe.changeNote = req.body.changeNote;
             newDe.updated = new Date().toJSON();
             newDe.updatedBy.userId = req.user._id;

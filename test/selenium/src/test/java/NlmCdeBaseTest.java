@@ -151,6 +151,9 @@ public class NlmCdeBaseTest {
         driver.findElement(By.xpath("//inline-area-edit/div/div[2]/button")).click();
         driver.findElement(By.cssSelector("button.btn.btn-primary")).click();
         driver.findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
+        Assert.assertTrue(textPresent("This version number has already been used"));
+        driver.findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+        driver.findElement(By.name("version")).sendKeys("2");
         driver.findElement(By.cssSelector("button.btn.btn-warning")).click();
         getElementByLinkText("CDEs").click();
         driver.findElement(By.name("search.name")).sendKeys("testUser CDE 1");
@@ -159,6 +162,7 @@ public class NlmCdeBaseTest {
         driver.findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("[name change number 1]"));
         Assert.assertTrue(textPresent("[def change number 1]"));
+        Assert.assertTrue(textPresent("1.0alpha2"));
         // test that label and it's value are well aligned. 
         Assert.assertEquals(driver.findElement(By.id("dt_createdBy")).getLocation().y, driver.findElement(By.id("dd_createdBy")).getLocation().y);
         logout();

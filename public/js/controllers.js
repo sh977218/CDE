@@ -68,7 +68,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     };
     
     $scope.listOrgs = function() {
-     return $http.get("/listorgss").then(function(response){ 
+     return $http.get("/listorgs").then(function(response){ 
         return response.data;
      });
     };
