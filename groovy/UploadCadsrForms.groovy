@@ -115,7 +115,7 @@ doForm = {form ->
     if (actualStatus.equals('RELEASED')) {
         targetStatus = 'Internally Reviewed'
     }
-    formObj.append("registrationStatus", targetStatus);
+    formObj.append("registrationState.registrationStatus", targetStatus);
     
     // Store form in MONGO
     formColl.insert(formObj);

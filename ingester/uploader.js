@@ -46,7 +46,9 @@ if (process.argv[2] === 'fitbir') {
               }
               , origin: 'FITBIR'
               , originId: srcDE.id
-              , registrationStatus: srcDE.status
+              , registationState: {
+                  registrationStatus: srcDE.status
+              }
               , valueDomain: {
                              }
 

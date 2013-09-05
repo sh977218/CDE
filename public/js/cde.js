@@ -11,8 +11,6 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize']).
         when('/formview', {controller: FormViewCtrl, templateUrl: '/formview'}).
         when('/deview', {controller: DEViewCtrl, templateUrl: '/deview'}).
         when('/cart', {controller: CartCtrl, templateUrl: '/cart'}).
-        when('/nlmreleased', {controller: NlmReleaseCtrl, templateUrl: '/cdereview'}).
-        when('/internalreview', {controller: InternalReviewCtrl, templateUrl: '/cdereview'}).
         when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
         when('/orgaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/orgaccountmanagement'}).
         otherwise({redirectTo:'/'});

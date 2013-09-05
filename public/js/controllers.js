@@ -280,8 +280,8 @@ function DEListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
         }
     };
     $scope.removeRegistrationStatus = function() {
-        if (!$scope.search.registrationStatus) {
-            delete $scope.search.registrationStatus;
+        if (!$scope.search.registrationState.registrationStatus) {
+            delete $scope.search.registrationState.registrationStatus;
         }
     };
    
@@ -687,66 +687,10 @@ function CreateFormCtrl($scope, $location, Form) {
  function RegistrationCtrl($scope, DataElement) {
     $scope.changeStatus = function(cde, status) {
         DataElement.get({cdeId: cde._id}, function(dataElement) {
-            dataElement.registrationStatus = status;
+            dataElement.registrationState.registrationStatus = status;
             dataElement.$save(function () {
                 $scope.reload();            
             });
         }); 
     };     
  }
- 
-function NlmReleaseCtrl($scope, CdeList, DataElement) {
-    $scope.setActiveMenu('NLMREV');
-    
-    $scope.changeStatus = function(cde, status) {
-        DataElement.get({cdeId: cde._id}, function(dataElement) {
-            dataElement.registrationStatus = status;
-            dataElement.$save(function () {
-                $scope.reload();            
-            });
-        }); 
-    };
-    $scope.reject = function(cde) {
-        $scope.changeStatus(cde, 'Draft');
-    };
-    
-    $scope.approve = function(cde) {
-        $scope.changeStatus(cde, 'Released');
-    };
-    
-    $scope.reload = function() {
-       var result = CdeList.get({search: JSON.stringify({registrationStatus: 'Submitted'})}, function() {
-           $scope.cdes = result.cdes;
-        }); 
-    };
-    
-    $scope.reload();
-}
-
-function InternalReviewCtrl($scope, CdesForApproval, DataElement) {
-   $scope.setActiveMenu('INTREV');
-   
-    $scope.changeStatus = function(cde, status) {
-        DataElement.get({cdeId: cde._id}, function(dataElement) {
-            dataElement.registrationStatus = status;
-            dataElement.$save(function () {
-                $scope.reload();            
-            });
-        }); 
-    };
-    $scope.reject = function(cde) {
-        $scope.changeStatus(cde, 'Draft');
-    };
-    
-    $scope.approve = function(cde) {
-        $scope.changeStatus(cde, 'Internally Reviewed');
-    };
-    
-    $scope.reload = function() {
-       var result = CdesForApproval.get({}, function() {
-           $scope.cdes = result.cdes;
-       }); 
-    };
-    
-    $scope.reload();
-}

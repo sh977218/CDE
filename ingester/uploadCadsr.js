@@ -48,7 +48,9 @@ fs.readFile(process.argv[2], function(err, data) {
             , stewardOrg: {
                 name: cadsrDE.CONTEXTNAME
             }
-            , registrationStatus: cadsrDE.WORKFLOWSTATUS
+            , registrationState: {
+                registrationStatus: cadsrDE.WORKFLOWSTATUS
+            }
             , version: cadsrDE.VERSION
             , valueDomain: {  
                 name: cadsrDE.VALUEDOMAIN[0].LongName,

@@ -6,7 +6,7 @@
     <option value="" >All Organizations</option>
     <option ng-repeat="o in orgs" ng-value="o">{{o}}</option>    
 </select>
-<select ng-model="search.registrationStatus" name="registrationStatus" ng-options="status as status for status in registrationStatuses" ng-change="removeRegistrationStatus(); reload()">
+<select ng-model="search.registationState.registrationStatus" name="registrationStatus" ng-options="status as status for status in registrationStatuses" ng-change="removeRegistrationStatus(); reload()">
     <option value="">All Statuses</option>
 </select>
 <input id="search.submit" type="submit" value="Search" ng-click="reload()" class="btn"></input>
@@ -57,12 +57,6 @@
 <!--            <span ng-controller="RegistrationCtrl" ng-show='isAllowed(cde)'>
                 <span ng-show="cde.registrationStatus == 'Draft'">
                     <a class="btn-small btn-primary" ng-click="changeStatus(cde, 'Internal Review')"><i class="icon-check-empty"> Submit for Internal Review</i></a>
-                </span>
-                <span ng-show="cde.registrationStatus == 'Internal Review'">
-                    <a class="btn-small btn-primary" ng-click="changeStatus(cde, 'Internally Reviewed')"><i class="icon-check"> Mark as Reviewed</i></a>
-                </span>
-                <span ng-show="cde.registrationStatus == 'Internally Reviewed'">
-                    <a class="btn-small btn-primary" ng-click="changeStatus(cde, 'Submitted')"><i class="icon-upload-alt"> Submit for Final Review</i></a>
                 </span>
             </span>-->
         </div>

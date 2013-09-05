@@ -61,7 +61,14 @@ var deJsonSchema = {
     }
     , history: [ObjectId]
     , changeNote: String
-    , registrationStatus: String
+    , registrationState: {
+            registrationStatus: String
+            , effectiveDate: Date
+            , untilDate: Date
+            , administrativeNote: String
+            , unresolvedIssue: String
+            , administrativeStatus: String
+        }
     , formUsageCounter: Number
     , comments: [commentSchema]
     , archived: Boolean
@@ -91,6 +98,14 @@ var formSchema = {
     , updated: Date
     , created: Date
     , modules: [moduleSchema]
+    , registrationState: {
+        registrationStatus: String
+        , effectiveDate: Date
+        , untilDate: Date
+        , administrativeNote: String
+        , unresolvedIssue: String
+        , administrativeStatus: String
+    }
 };
 
 schemas.userSchema = mongoose.Schema ({

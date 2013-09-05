@@ -138,12 +138,6 @@ exports.deByUuidAndVersion = function(uuid, version, callback) {
     });
 };
 
-exports.cdesforapproval = function(orgs, callback) {
-    DataElement.find({'registrationStatus': 'Internal Review'}).where('stewardOrg.name').in(orgs).exec(function(err, cdes) {
-       callback("", {cdes: cdes}); 
-    });
-};
-
 exports.formById = function(formId, callback) {
     Form.findOne({'_id': formId}).exec(function(err, form) {
         callback("", form);
@@ -313,7 +307,7 @@ exports.saveCde = function(req, callback) {
             newDe.updated = new Date().toJSON();
             newDe.updatedBy.userId = req.user._id;
             newDe.updatedBy.username = req.user.username;
-            newDe.registrationStatus = req.body.registrationStatus;
+            newDe.registrationState.registrationStatus = req.body.registrationState.registrationStatus;
             dataElement.archived = true;
             dataElement.save(function (err) {
                  if (err) {
@@ -330,7 +324,9 @@ exports.saveCde = function(req, callback) {
        });
     } else { // CDE does not already exists
         var newDe = new DataElement(req.body);
-        newDe.registrationStatus = "Incomplete";
+        newDe.registrationState = {
+            registrationStatus: "Incomplete"
+        };
         newDe.created = Date.now();
         newDe.createdBy.userId = req.user._id;
         newDe.createdBy.username = req.user.username;
