@@ -12,6 +12,8 @@ public class NlmCdeBaseTest {
     
     private static String nlm_username = "nlm";
     private static String nlm_password = "nlm";
+    private static String cabigAdmin_username = "cabigAdmin";
+    private static String cabigAdmin_password = "pass";
     private static String test_username = "testuser";
     private static String test_password = "Test123";
     private static String test_reg_auth = "OrgTest1";
@@ -28,18 +30,15 @@ public class NlmCdeBaseTest {
     }
     
     @Test
-    public void testLoginAsNlm() {
+    public void loginAsNlm() {
         loginAs("nlm", "nlm");
         logout();
     }
     
     @Test
-    public void testCdeFullDetail() {
+    public void cdeFullDetail() {
         driver.get(baseUrl + "/");
-        driver.findElement(By.name("search.name")).sendKeys("genotype");
-        driver.findElement(By.id("search.submit")).click();
-        getElementByLinkText("caBIG -- Genotype Therapy Basis Mutation Analysis Indicator").click();
-        getElementByLinkText("View Full Detail").click();
+        goToCdeByName("enotype Therapy Basis Mutation");
         Assert.assertTrue(textPresent("Genotype Therapy Basis Mutation Analysis Indicator"));
         Assert.assertTrue(textPresent("3157849v1"));
         Assert.assertTrue(textPresent("Text descriptor to indicate whether "
@@ -55,8 +54,8 @@ public class NlmCdeBaseTest {
     } 
 
     
-    @Test(priority=0)
-    public void testSelfRegister() {
+    @Test
+    public void selfRegister() {
         driver.get(baseUrl + "/");
         getElementByLinkText("Log In").click();
         getElementByLinkText("Sign up").click();
@@ -68,13 +67,10 @@ public class NlmCdeBaseTest {
         logout();
     }
     
-    @Test (dependsOnMethods = {"testSelfRegister"})
-    public void testComments() {
+    @Test (dependsOnMethods = {"selfRegister"})
+    public void comments() {
         loginAs(test_username, test_password);
-        driver.findElement(By.name("search.name")).sendKeys("hospital");
-        driver.findElement(By.id("search.submit")).click();
-        getElementByLinkText("PS&CC -- Hospital Confidential Institution Referred From Facility Number Code").click();
-        getElementByLinkText("View Full Detail").click();
+        goToCdeByName("Hospital Confidential Institution Referred From");
         getElementByLinkText("Discussions").click();
         driver.findElement(By.name("comment")).sendKeys("My First Comment!");
         driver.findElement(By.name("postComment")).click();
@@ -91,7 +87,7 @@ public class NlmCdeBaseTest {
     }
 
     @Test(priority=0)
-    public void testAddOrg() {
+    public void addOrg() {
         loginAs(nlm_username, nlm_password);
         getElementByLinkText("Account").click();
         getElementByLinkText("Site Management").click();
@@ -101,8 +97,8 @@ public class NlmCdeBaseTest {
         logout();
     }
     
-    @Test(dependsOnMethods = {"testSelfRegister", "testAddOrg"})
-    public void testPromoteOrgAdmin() {
+    @Test(dependsOnMethods = {"selfRegister", "addOrg"})
+    public void promoteOrgAdmin() {
         loginAs(nlm_username, nlm_password);
         getElementByLinkText("Account").click();
         getElementByLinkText("Site Management").click();
@@ -118,8 +114,8 @@ public class NlmCdeBaseTest {
         logout();
     }
     
-    @Test(dependsOnMethods = {"testPromoteOrgAdmin"}) 
-    public void testCreateCde() {
+    @Test(dependsOnMethods = {"promoteOrgAdmin"}) 
+    public void createCde() {
         loginAs(test_username, test_password);
         getElementByLinkText("Create").click();
         driver.findElement(By.name("cde.designation")).sendKeys("name of testuser CDE 1");
@@ -136,13 +132,10 @@ public class NlmCdeBaseTest {
         logout();
     }
 
-    @Test(dependsOnMethods = {"testCreateCde"})
-    public void testEditCde() {
+    @Test(dependsOnMethods = {"createCde"})
+    public void editCde() {
         loginAs(test_username, test_password);
-        driver.findElement(By.name("search.name")).sendKeys("testUser CDE 1");
-        driver.findElement(By.id("search.submit")).click();
-        getElementByLinkText(test_reg_auth + " -- name of testuser CDE 1").click();
-        getElementByLinkText("View Full Detail").click();
+        goToCdeByName("name of testuser CDE 1");
         driver.findElement(By.cssSelector("i.icon-pencil")).click();
         driver.findElement(By.xpath("//inline-edit/div/div[2]/input")).sendKeys("[name change number 1]");
         driver.findElement(By.cssSelector("button.icon-ok")).click();
@@ -163,18 +156,14 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(textPresent("[name change number 1]"));
         Assert.assertTrue(textPresent("[def change number 1]"));
         Assert.assertTrue(textPresent("1.0alpha2"));
-        // test that label and it's value are well aligned. 
+        // test that label and its value are aligned. 
         Assert.assertEquals(driver.findElement(By.id("dt_createdBy")).getLocation().y, driver.findElement(By.id("dd_createdBy")).getLocation().y);
         logout();
     }
         
-    @Test(dependsOnMethods = {"testEditCde"})
-    public void testEditHistory() {
-        driver.get(baseUrl + "/");
-        driver.findElement(By.name("search.name")).sendKeys("testUser CDE 1");
-        driver.findElement(By.id("search.submit")).click();
-        driver.findElement(By.linkText(test_reg_auth + " -- name of testuser CDE 1[name change number 1]")).click();
-        driver.findElement(By.linkText("View Full Detail")).click();
+    @Test(dependsOnMethods = {"editCde"})
+    public void editHistory() {
+        goToCdeByName("name of testuser CDE 1");
         getElementByLinkText("History").click();
         Assert.assertTrue(textPresent("testuser"));
         Assert.assertTrue(textPresent("Change note for change number 1"));
@@ -183,6 +172,25 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Definition for testUser CDE 1[def change number 1]"));
     }
     
+    @Test
+    public void orgAdminAddsCurator() {
+        loginAs(cabigAdmin_username, cabigAdmin_password);
+        goToCdeByName("Cervical Tumor Clinical T Stage");
+        Assert.assertTrue(textPresent("as defined by the AJCC Cancer Staging Manual, 6th Ed."));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("i.icon-pencil")));
+        goToCdeByName("Communication Contact Email Address java.lang.String");
+        Assert.assertTrue(textPresent("A modern Internet e-mail address (using SMTP)"));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("i.icon-pencil")));
+        logout();
+    }
+    
+    private void goToCdeByName(String name) {
+        driver.get(baseUrl + "/");
+        driver.findElement(By.name("search.name")).sendKeys(name);
+        driver.findElement(By.id("search.submit")).click();
+        driver.findElement(By.partialLinkText(name)).click();
+        driver.findElement(By.linkText("View Full Detail")).click();
+    }
         
     @AfterTest
     public void endSession() {
