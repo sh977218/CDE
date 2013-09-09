@@ -165,6 +165,7 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
             function(res) {
                   $scope.message = res;
                   $scope.orgAdmins = $scope.getOrgAdmins();
+                  $scope.myOrgAdmins = $scope.getMyOrgAdmins();
             }
         );
         $scope.orgAdmin.username = "";
@@ -178,6 +179,7 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
             function (res) {
                 $scope.message = res;
                 $scope.orgAdmins = $scope.getOrgAdmins();
+                $scope.myOrgAdmins = $scope.getMyOrgAdmins();
             }
         
         );

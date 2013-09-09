@@ -2,43 +2,43 @@
 <div>{{message}}</div>
 <tabset>
     <tab heading="Organizations Admins">
-        <div class="row-fluid" ng-repeat="con in myOrgAdmins">
-            <div class="span4">{{con.name}}</div>
+        <div class="row-fluid" ng-repeat="org in myOrgAdmins">
+            <div class="span4">{{org.name}}</div>
             <div class="span8">
-                <div class="row-fluid" ng-repeat="us in con.users">
+                <div class="row-fluid" ng-repeat="us in org.users">
                     <div class="span11">{{us.username}}</div>
-                    <div class="span1"><i class="icon-trash" ng-click="removeOrgAdmin(con.name, us._id)"></i></div>
+                    <div class="span1"><i class="icon-trash" ng-click="removeOrgAdmin(org.name, us._id)"></i></div>
                 </div>
             </div>
         </div>
         <hr/>
         <div class="row-fluid input-prepend input-append">
-            <select class="span5" type="text" ng-model="admin.orgName">
+            <select class="span5" type="text" name="admin.orgName" ng-model="admin.orgName">
                 <option value="">--</option>
                 <option ng-repeat="c in user.orgAdmin" ng-value="c">{{c}}</option>
             </select>
-            <input class="span5" type="text" ng-model="orgAdmin.username"></input>
-            <span class="add-on" ng-click="addOrgAdmin()">+</span>
+            <input class="span5" type="text" name="orgAdmin.username" ng-model="orgAdmin.username"></input>
+            <span class="add-on" id="addOrgAdmin" ng-click="addOrgAdmin()">+</span>
         </div>
     </tab>
-    <tab heading="Registration Authorities Curators">
-        <div class="row-fluid" ng-repeat="con in orgCurators">
-            <div class="span4">{{con.name}}</div>
+    <tab heading="Organizations Curators">
+        <div class="row-fluid" ng-repeat="org in orgCurators">
+            <div class="span4">{{org.name}}</div>
             <div class="span8">
-                <div class="row-fluid" ng-repeat="us in con.users">
+                <div class="row-fluid" ng-repeat="us in org.users">
                     <div class="span11">{{us.username}}</div>
-                    <div class="span1"><i class="icon-trash" ng-click="removeOrgCurator(con.name, us._id)"></i></div>
+                    <div class="span1"><i class="icon-trash" ng-click="removeOrgCurator(org.name, us._id)"></i></div>
                 </div>
             </div>
         </div>
         <hr/>
         <div class="row-fluid input-prepend input-append">
-            <select class="span5" type="text" ng-model="curator.orgName">
+            <select class="span5" type="text" name="curator.orgName" ng-model="curator.orgName">
                 <option value="">--</option>
                 <option ng-repeat="c in user.orgAdmin" ng-value="c">{{c}}</option>
             </select>
-            <input class="span5" type="text" ng-model="orgCurator.username"></input>
-            <span class="add-on" ng-click="addOrgCurator()">+</span>
+            <input class="span5" type="text" name="orgCurator.username" ng-model="orgCurator.username"></input>
+            <span class="add-on" id="addOrgCurator" ng-click="addOrgCurator()">+</span>
         </div>
     </tab>
 </tabset>
