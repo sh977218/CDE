@@ -243,7 +243,6 @@ function AuthCtrl($scope, $rootScope, Auth, $location) {
                 password: $scope.password
             },
             function(res) {
-                console.log(res);
                 $rootScope.user = res;
                 $location.path('/');
             },
@@ -328,31 +327,14 @@ function DEListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
     $scope.isAllowed = function (cde) {
         return false;
     };
-
 }
 
 function SaveCdeCtrl($scope, DataElement) {
+    $scope.showRegistrationStatusUpdate = false;    
 
     $scope.stageCde = function(cde) {
         cde.unsaved = true;
     };
-    
-    
-//    $scope.save = function(cde) {
-//        // @TODO 
-//        // This is prob a lame way to do it. 
-//        // Check save form.
-//        var de = DataElement.get({cdeId: cde._id}, function(dataElement) {
-//            de.name = cde.name;
-//            de.definition = cde.definition;
-//            de.changeNote = cde.changeNote;
-//            de.$save();
-//            cde.unsaved = false;
-//            var ind = $scope.cdes.indexOf(cde);
-//            $scope.cdes[ind] = dataElement;
-//            console.log(dataElement.updated);
-//        });
-//    };  
     
     $scope.openSave = function() {
         $scope.showSave = true;
@@ -360,6 +342,10 @@ function SaveCdeCtrl($scope, DataElement) {
     
     $scope.cancelSave = function() {
         $scope.showSave = false;
+    };
+    
+    $scope.openEffDate = function() {
+        $scope.effDateOpened = true;
     };
 };
 
@@ -696,3 +682,4 @@ function CreateFormCtrl($scope, $location, Form) {
         }); 
     };     
  }
+ 

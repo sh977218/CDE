@@ -244,11 +244,11 @@ public class NlmCdeBaseTest {
     private void loginAs(String username, String password) {
         driver.get(baseUrl + "/");
         findElement(By.linkText("Log In")).click();
-        driver.findElement(By.name("username")).clear();
-        driver.findElement(By.name("username")).sendKeys(username);
-        driver.findElement(By.name("password")).clear();
-        driver.findElement(By.name("password")).sendKeys(password);
-        driver.findElement(By.cssSelector("input.btn")).click();
+        findElement(By.name("username")).clear();
+        findElement(By.name("username")).sendKeys(username);
+        findElement(By.name("password")).clear();
+        findElement(By.name("password")).sendKeys(password);
+        findElement(By.cssSelector("input.btn")).click();
     }
     
 }

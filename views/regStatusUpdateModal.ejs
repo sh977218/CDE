@@ -1,0 +1,30 @@
+<div> 
+     <div modal="showRegistrationStatusUpdate" close="showRegistrationStatusUpdate = false" opts="modalOpts">
+         
+         <div class="modal-header">
+             <h4>Update Registration Status</h4>
+         </div>
+         <form name="form">
+         <div class="modal-body">
+             <label for="effectiveDate">Effective Date</label>
+             <div class="form-horizontal">
+                <input type="text" ui-date ng-model="cde.registrationState.effectiveDate"/>
+<!--                <button class="btn" ng-click="openEffDate()"><i class="icon-calendar"></i></button>-->
+            </div>
+             
+             <label for="changeNote">Change Note</label>
+             <textArea name="changeNote" ng-model="cde.changeNote" placeholder="Optional Change Note"></textarea>
+
+             <div class="control-group" ng-class="{error: form.version.$invalid}">
+                <label for="version">Choose a new version</label>
+                <input name="version" type="text" ng-model="cde.version" ng-cde-available></input>
+                <span ng-show="form.version.$error.unique" class="help-inline">This version number has already been used</span>
+             </div>
+         </div>
+         <div class="modal-footer">
+             <button class="btn cancel" ng-click="showRegistrationStatusUpdate = false">Cancel</button>
+             <button class="btn btn-warning" ng-click="save(cde); showSave = false" ng-disabled="isClean() || form.$invalid">Save</button>
+         </div>
+         </form>
+     </div>
+</div>

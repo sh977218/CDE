@@ -1,4 +1,4 @@
-var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize']).
+var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', 'ngRoute']).
     config(function($routeProvider) {
         $routeProvider.
         when('/edit/:cdeId', {controller:EditCtrl, templateUrl:'detail.html'}).
@@ -66,8 +66,6 @@ cdeApp.directive('ngCdeAvailable', ['$http', function($http) {
           method: 'GET',
           url: '/dataelement/' + scope.cde.uuid + "/" + scope.cde.version
         }).success(function(data, status, headers, cfg) {
-            console.log(data);
-            console.log(data == "")
           ctrl.$setValidity('unique', data == "");
         }).error(function(data, status, headers, cfg) {
           ctrl.$setValidity('unique', false);
