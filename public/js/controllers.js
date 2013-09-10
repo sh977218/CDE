@@ -329,24 +329,56 @@ function DEListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
     };
 }
 
-function SaveCdeCtrl($scope, DataElement) {
+function SaveCdeCtrl($scope, $modal) {
     $scope.showRegistrationStatusUpdate = false;    
 
     $scope.stageCde = function(cde) {
         cde.unsaved = true;
     };
     
-    $scope.openSave = function() {
-        $scope.showSave = true;
-    };   
-    
-    $scope.cancelSave = function() {
-        $scope.showSave = false;
+    $scope.openSave = function () {
+        var modalInstance = $modal.open({
+          templateUrl: 'saveCdeModalContent.html',
+          controller: SaveCdeModalCtrl,
+          resolve: {
+              cde: function() {
+                  return $scope.cde;
+              }
+          }
+        });
+
+        modalInstance.result.then(function () {
+          
+        }, function () {
+        });
     };
     
     $scope.openEffDate = function() {
         $scope.effDateOpened = true;
     };
+    $scope.isEffDateOpened = function() {
+        console.log("is opened: "  + $scope.effDateOpened);
+        return $scope.effDateOpened;
+    };
+    $scope.dateOptions = {
+        'year-format': "'yy'",
+        'starting-day': 1
+    };
+};
+
+var SaveCdeModalCtrl = function ($scope, $window, $modalInstance, cde) {
+  $scope.cde = cde;
+
+  $scope.ok = function () {
+    $scope.cde.$save(function (cde) {
+        $window.location.href = "/#/deview?cdeId=" + cde._id;
+    });
+    $modalInstance.close();
+  };
+
+  $scope.cancelSave = function () {
+    $modalInstance.dismiss('cancel');
+  };
 };
 
 function LinkVsacCtrl($scope, LinkToVsac) {    
@@ -377,16 +409,34 @@ function AddToFormCtrl($scope, MyCart, AddCdeToForm) {
     };
 }
 
-function AuditCtrl($scope, PriorCdes) {
-    $scope.openHistory = function() {
-        PriorCdes.getCdes({cdeId: $scope.cde._id}, function(dataElements) {
-            $scope.priorCdes = dataElements;
-            $scope.showHistory = true;
-        });        
-    };   
-    $scope.closeHistory = function() {
-        $scope.showHistory = false;
-    };  
+var HistoryModalCtrl = function ($scope, $modalInstance, PriorCdes, cdeId) {
+    PriorCdes.getCdes({cdeId: cdeId}, function(dataElements) {
+       $scope.priorCdes = dataElements;
+   });    
+    
+  $scope.ok = function () {
+    $modalInstance.close();
+  };
+
+};
+
+function AuditCtrl($scope) {
+    $scope.openHistory = function () {
+        var modalInstance = $modal.open({
+          templateUrl: 'saveCdeModalContent.html',
+          controller: SaveCdeModalCtrl,
+          resolve: {
+              cdeId: function() {
+                  return $scope.cde_id;
+              }
+          }
+        });
+
+        modalInstance.result.then(function () { 
+        }, function () {
+        });
+    };
+    
 }
 
 function EditCtrl($scope, $location, $routeParams, DataElement) {

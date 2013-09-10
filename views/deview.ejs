@@ -24,27 +24,9 @@
          <button class="btn cancel" ng-click="revert(cde)">Discard Changes</button>
          <button class="btn btn-primary" ng-click="openSave()">Save</button>
      </div>
-     <div modal="showSave" close="closeSave()" opts="saveOpts">
-         <div class="modal-header">
-             <h4>Save</h4>
-         </div>
-         <form name="form">
-         <div class="modal-body">
-             <label for="changeNote">Change Note</label>
-             <textArea name="changeNote" ng-model="cde.changeNote" placeholder="Optional Change Note"></textarea>
-
-             <div class="control-group" ng-class="{error: form.version.$invalid}">
-                <label for="version">Choose a new version</label>
-                <input name="version" type="text" ng-model="cde.version" ng-cde-available></input>
-                <span ng-show="form.version.$error.unique" class="help-inline">This version number has already been used</span>
-             </div>
-         </div>
-         <div class="modal-footer">
-             <button class="btn cancel" ng-click="cancelSave()">Cancel</button>
-             <button class="btn btn-warning" ng-click="save(cde); showSave = false" ng-disabled="isClean() || form.$invalid">Save</button>
-         </div>
-         </form>
-     </div>
+     <script type="text/ng-template" id="saveCdeModalContent.html">
+         <%- include saveCdeModal.ejs %>
+     </script>
      </div>
  </div>
 

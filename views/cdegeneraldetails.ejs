@@ -11,10 +11,7 @@
 <dt>Status: </dt><dd><i ng-show="isAllowed(cde)" class="icon-pencil" ng-click="showRegistrationStatusUpdate = true"></i> {{cde.registrationState.registrationStatus}}</dd>
 <dt ng-show="cde.formUsageCounter">Form Usage: </dt><dd>{{cde.formUsageCounter}}</dd>
 <dt>Added to NLM: </dt>
-<dd ng-controller="AuditCtrl" >
-    {{cde.created | date: 'MM/dd/yyyy @ h:mma'}}
-    <%- include historyModal.ejs %>
-</dd>
+<dd ng-controller="AuditCtrl" >{{cde.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
 <dt ng-show="cde.updated">Updated in NLM: </dt><dd>{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
 <dt id="dt_createdBy" ng-show="cde.createdBy">Created By: </dt><dd id="dd_createdBy">{{cde.createdBy.username}}</dd>
 </dl>

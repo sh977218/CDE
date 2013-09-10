@@ -1,6 +1,6 @@
-<div> 
+<!--<div> 
      <div modal="showRegistrationStatusUpdate" close="showRegistrationStatusUpdate = false" opts="modalOpts">
-         
+
          <div class="modal-header">
              <h4>Update Registration Status</h4>
          </div>
@@ -8,8 +8,8 @@
          <div class="modal-body">
              <label for="effectiveDate">Effective Date</label>
              <div class="form-horizontal">
-                <input type="text" ui-date ng-model="cde.registrationState.effectiveDate"/>
-<!--                <button class="btn" ng-click="openEffDate()"><i class="icon-calendar"></i></button>-->
+                <input type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="cde.registrationState.effectiveDate" 
+                       datepicker-options="dateOptions" />
             </div>
              
              <label for="changeNote">Change Note</label>
@@ -27,4 +27,4 @@
          </div>
          </form>
      </div>
-</div>
+</div>-->

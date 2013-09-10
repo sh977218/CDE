@@ -1,11 +1,9 @@
-<div modal="showHistory" close="closeHistory()" opts="modalOpts">
-    <div class="modal-header">
-        <h4>Previous Versions</h4>
-    </div>
-    
-    <%- include cdeHistory.ejs %>
+<div class="modal-header">
+    <h4>Previous Versions</h4>
+</div>
 
-    <div class="modal-footer">
-        <button class="btn btn-warning cancel" ng-click="closeHistory()">Cancel</button>
-    </div>
+<%- include cdeHistory.ejs %>
+
+<div class="modal-footer">
+    <button class="btn btn-warning cancel" ng-click="ok()">Cancel</button>
 </div>
