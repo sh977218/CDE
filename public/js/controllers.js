@@ -7,12 +7,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         });
     };
     
-    $scope.loadUser(function(){});  
-    
-    $scope.modalOpts = {
-        backdropFade: true,
-        dialogFade: true
-    };  
+    $scope.loadUser(function(){});    
     
     $scope.isOrgCurator = function() {        
         return $scope.isOrgAdmin() || ($scope.user && ($scope.user.orgCurator && $scope.user.orgCurator.length > 0));  
@@ -22,7 +17,8 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         return $scope.user && $scope.user.orgAdmin && $scope.user.orgAdmin.length > 0;  
     };
     
-    $scope.registrationStatuses = ['Incomplete', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard'];
+    $scope.registrationStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard'];
+
 
     $scope.setMyOrgs = function() {
         if ($scope.user && $scope.user.orgAdmin) {
@@ -82,11 +78,6 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         //reset to old to keep any additional routing logic from kicking in
         $location.hash(old);
     };
-}
-
-function OrgAccountManagementCtrl($scope, $http) {
-
-
 }
 
 function AccountManagementCtrl($scope, $http, AccountManagement) {
@@ -330,15 +321,13 @@ function DEListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
 }
 
 function SaveCdeCtrl($scope, $modal) {
-    $scope.showRegistrationStatusUpdate = false;    
-
     $scope.stageCde = function(cde) {
         cde.unsaved = true;
     };
     
-    $scope.openSave = function () {
+    $scope.openRegStatusUpdate = function () {
         var modalInstance = $modal.open({
-          templateUrl: 'saveCdeModalContent.html',
+          templateUrl: 'regStatusUpdate.html',
           controller: SaveCdeModalCtrl,
           resolve: {
               cde: function() {
@@ -348,26 +337,27 @@ function SaveCdeCtrl($scope, $modal) {
         });
 
         modalInstance.result.then(function () {
-          
         }, function () {
-        });
+        });        
     };
     
-    $scope.openEffDate = function() {
-        $scope.effDateOpened = true;
-    };
-    $scope.isEffDateOpened = function() {
-        console.log("is opened: "  + $scope.effDateOpened);
-        return $scope.effDateOpened;
-    };
-    $scope.dateOptions = {
-        'year-format': "'yy'",
-        'starting-day': 1
+    $scope.openSave = function () {
+        $modal.open({
+          templateUrl: 'saveCdeModalContent.html',
+          controller: SaveCdeModalCtrl,
+          resolve: {
+              cde: function() {
+                  return $scope.cde;
+              }
+          }
+        });
     };
 };
 
 var SaveCdeModalCtrl = function ($scope, $window, $modalInstance, cde) {
   $scope.cde = cde;
+
+  $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified'];
 
   $scope.ok = function () {
     $scope.cde.$save(function (cde) {

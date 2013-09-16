@@ -1,30 +1,32 @@
-<!--<div> 
-     <div modal="showRegistrationStatusUpdate" close="showRegistrationStatusUpdate = false" opts="modalOpts">
+<div class="modal-header">
+    <h4>Update Registration Status</h4>
+</div>
+<form name="form">
+<div class="modal-body">
+    <label for="registrationStatus">Registration Status</label>
+    <select ng-model="cde.registrationState.registrationStatus" name="registrationStatus" 
+            ng-options="status as status for status in stewardRegStatuses">
+    </select>
 
-         <div class="modal-header">
-             <h4>Update Registration Status</h4>
-         </div>
-         <form name="form">
-         <div class="modal-body">
-             <label for="effectiveDate">Effective Date</label>
-             <div class="form-horizontal">
-                <input type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="cde.registrationState.effectiveDate" 
-                       datepicker-options="dateOptions" />
-            </div>
-             
-             <label for="changeNote">Change Note</label>
-             <textArea name="changeNote" ng-model="cde.changeNote" placeholder="Optional Change Note"></textarea>
+    
+    <label for="effectiveDate">Effective Date</label>
+    <input name="effectiveDate" type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="cde.registrationState.effectiveDate" 
+              datepicker-options="dateOptions" />
+    
+    <label for="untilDate">Until Date</label>
+    <input name="untilDate" type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="cde.registrationState.untilDate" 
+              datepicker-options="dateOptions" />
+    
+    <label for="administrativeNote">Administrative Note</label>
+    <textArea name="administrativeNote" ng-model="cde.registrationState.administrativeNote" placeholder="Optional Administrative Note"></textarea>
 
-             <div class="control-group" ng-class="{error: form.version.$invalid}">
-                <label for="version">Choose a new version</label>
-                <input name="version" type="text" ng-model="cde.version" ng-cde-available></input>
-                <span ng-show="form.version.$error.unique" class="help-inline">This version number has already been used</span>
-             </div>
-         </div>
-         <div class="modal-footer">
-             <button class="btn cancel" ng-click="showRegistrationStatusUpdate = false">Cancel</button>
-             <button class="btn btn-warning" ng-click="save(cde); showSave = false" ng-disabled="isClean() || form.$invalid">Save</button>
-         </div>
-         </form>
-     </div>
-</div>-->
+    <label for="unresolvedIssue">Unresolved Issue</label>
+    <textArea name="unresolvedIssue" ng-model="cde.registrationState.unresolvedIssue" placeholder="Optional Unresolved Issue Note"></textarea>
+
+
+</div>
+<div class="modal-footer">
+    <button class="btn cancel" ng-click="cancelSave()">Cancel</button>
+    <button class="btn btn-warning" ng-click="ok()" ng-disabled="isClean() || form.$invalid">Save</button>
+</div>
+</form>

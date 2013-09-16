@@ -85,7 +85,7 @@ fs.readFile(process.argv[2], function(err, data) {
             newDE.property.concepts.push({name: concept.LONG_NAME, origin: concept.ORIGIN, originId: concept.PREFERRED_NAME});
         }
 
-            
+           
             
 //        for (var ani in cadsrDE.ALTERNATENAMELIST.ALTERNATENAMELIST_ITEM) {
 //            

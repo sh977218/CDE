@@ -308,6 +308,10 @@ exports.saveCde = function(req, callback) {
             newDe.updatedBy.userId = req.user._id;
             newDe.updatedBy.username = req.user.username;
             newDe.registrationState.registrationStatus = req.body.registrationState.registrationStatus;
+            newDe.registrationState.effectiveDate = req.body.registrationState.effectiveDate;
+            newDe.registrationState.untilDate = req.body.registrationState.untilDate;
+            newDe.registrationState.administrativeNote = req.body.registrationState.administrativeNote;
+            newDe.registrationState.unresolvedIssue = req.body.registrationState.unresolvedIssue;
             dataElement.archived = true;
             dataElement.save(function (err) {
                  if (err) {
