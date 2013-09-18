@@ -1,0 +1,11 @@
+<h4>Classification</h4>
+<dl id="repeatCs">
+<div ng-repeat="conceptSystemPerConcept in classificationToFilter() | filter:filterConceptSystemClassification">
+    <dt>{{conceptSystemPerConcept.conceptSystem}}</dt>
+    <dd>
+        <div ng-repeat="class in cde.classification | filter:isInConceptSystem(conceptSystemPerConcept.conceptSystem)">
+         {{class.concept}}
+        </div>
+    </dd>
+</div>
+</dl>

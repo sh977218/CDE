@@ -85,7 +85,10 @@ fs.readFile(process.argv[2], function(err, data) {
             newDE.property.concepts.push({name: concept.LONG_NAME, origin: concept.ORIGIN, originId: concept.PREFERRED_NAME});
         }
 
-           
+        for (var csi_i in cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
+            var csi = cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM[csi_i];
+            newDE.classification.push({conceptSystem: csi.ClassificationScheme[0].PreferredName, concept: csi.ClassificationSchemeItemName});
+        }
             
 //        for (var ani in cadsrDE.ALTERNATENAMELIST.ALTERNATENAMELIST_ITEM) {
 //            

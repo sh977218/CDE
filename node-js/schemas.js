@@ -32,6 +32,11 @@ var namingSchema = mongoose.Schema({
     }
 }, {_id: false});
 
+var classificationSchema = mongoose.Schema({
+    conceptSystem: String
+    , concept: String
+}, {_id: false});
+
 var deJsonSchema = {
     naming:[namingSchema]         
     , origin: String
@@ -69,6 +74,7 @@ var deJsonSchema = {
             , unresolvedIssue: String
             , administrativeStatus: String
         }
+    , classification:  [classificationSchema]
     , formUsageCounter: Number
     , comments: [commentSchema]
     , archived: Boolean

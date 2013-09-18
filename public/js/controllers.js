@@ -537,7 +537,7 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
     
 }
 
-function DEViewCtrl($scope, $routeParams, $location, $window, DataElement, Comment, PriorCdes, CdeDiff) {
+function DEViewCtrl($scope, $routeParams, $q, $window, DataElement, Comment, PriorCdes, CdeDiff) {
     $scope.initialized = false;
     $scope.reload = function(deId) {
         DataElement.get({deId: deId}, function (de) {
@@ -552,6 +552,28 @@ function DEViewCtrl($scope, $routeParams, $location, $window, DataElement, Comme
     };
     
     $scope.reload($routeParams.cdeId);
+
+    var indexedConceptSystemClassifications = [];
+    $scope.classificationToFilter = function() {
+         indexedConceptSystemClassifications = [];
+         if ($scope.cde != null) {
+             return $scope.cde.classification;
+         } 
+    };
+    
+    $scope.filterConceptSystemClassification = function(item) {
+      var systemIsNew = indexedConceptSystemClassifications.indexOf(item.conceptSystem) == -1;
+      if (systemIsNew) {
+          indexedConceptSystemClassifications.push(item.conceptSystem);
+      }
+      return systemIsNew;
+    };
+    
+    $scope.isInConceptSystem = function(system) {
+        return function(classi) {
+            return classi.conceptSystem === system;
+        };
+    };
 
     $scope.comment = {};
 
