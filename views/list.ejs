@@ -15,10 +15,6 @@
 </select>
 <input id="search.submit" type="submit" value="Search" ng-click="reload()" class="btn"></input>
 </form>
-<!--
-<script type="text/ng-template" id="classificationTree.html">
-    <%- include classificationTree.ejs %>
-</script>-->
 
 <accordion>
     <accordion-group ng-repeat="cde in cdes" heading="{{cde.stewardOrg.name}} -- {{cde.naming[0].designation}}">

@@ -258,25 +258,6 @@ function AuthCtrl($scope, $rootScope, Auth, $location) {
     };
 }
 
-//var ClassificationTreeModalCtrl = function($scope, $modalInstance, $http) {
-//
-//    $scope.classificationTreeData = [{label: "loading", children: ['loading']}];
-//    $scope.loadTree = function() {
-//        return $http.get("/classificationtree").then(function(response) {
-//            $scope.classificationTreeData = response.data;
-//        });
-//    };
-//    $scope.loadTree();
-//
-//    $scope.ok = function() {
-//        $modalInstance.close();
-//    };
-//
-//    $scope.cancelSave = function() {
-//        $modalInstance.dismiss('cancel');
-//    };
-//};
-
 function DEListCtrl($scope, $http, CdeList, $modal) {
     $scope.setActiveMenu('LISTCDE');
     
@@ -284,19 +265,6 @@ function DEListCtrl($scope, $http, CdeList, $modal) {
     $scope.pageSize = 10;
     $scope.originOptions = ['CADSR', 'FITBIR'];
 
-//    $scope.openClassificationTree = function () {
-//        var modalInstance = $modal.open({
-//          templateUrl: 'classificationTree.html',
-//          controller: ClassificationTreeModalCtrl,
-//          resolve: {
-//          }
-//        });
-//
-//        modalInstance.result.then(function () {
-//        }, function () {
-//        });        
-//    };
-    
     $scope.classificationTree = [{label: "loading", children: ['loading']}];
     $scope.loadTree = function() {
         return $http.get("/classificationtree").then(function(response) {
