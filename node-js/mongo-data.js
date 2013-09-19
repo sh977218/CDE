@@ -85,6 +85,18 @@ exports.addToCart = function (user, formId, callback) {
     });
 };
 
+exports.classificationTree = function(callback) {
+  DataElement.aggregate(
+          {$project: {classification: 1}}
+          , {$unwind: "$classification"} 
+          , {$group: {_id: {"system": "$classification.conceptSystem"}, concepts: {$addToSet: "$classification.concept"}}}
+          , {$sort: {"_id.system": 1}}
+//          , {$project: {label: "$_id.system", children: "$concepts"}}
+      , function (err, res) {
+          callback(res);
+      });
+};
+
 exports.removeFromCart = function (user, formId, callback) {
     User.findOne({'_id': user._id}).exec(function (err, u) {
         if (u.formCart.indexOf(formId) > -1) {
@@ -103,12 +115,20 @@ exports.removeFromCart = function (user, formId, callback) {
 
 exports.cdelist = function(from, limit, searchOptions, callback) {
     var query = DataElement;
-    if (searchOptions != null && searchOptions.name != null) {
-        query = query.where("naming").elemMatch(function(elem) {
-            elem.where("designation", searchOptions.name);
-        });
-        delete searchOptions.name;
-    };
+    if (searchOptions != null) {
+        if (searchOptions.name != null) {
+            query = query.where("naming").elemMatch(function(elem) {
+                elem.where("designation", searchOptions.name);
+            });
+            delete searchOptions.name;
+        }
+        if (searchOptions.classificationSystem != null) {
+            query = query.where("classification").elemMatch(function (elem) {
+               elem.where("conceptSystem", searchOptions.classificationSystem) 
+            });
+            delete searchOptions.classificationSystem;
+        }
+    }        
     query.find(searchOptions).where("archived").equals(null).skip(from).limit(limit).sort('-formUsageCounter').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
         DataElement.count(searchOptions).exec(function (err, count) {
         callback("",{

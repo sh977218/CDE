@@ -258,13 +258,53 @@ function AuthCtrl($scope, $rootScope, Auth, $location) {
     };
 }
 
-function DEListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
+//var ClassificationTreeModalCtrl = function($scope, $modalInstance, $http) {
+//
+//    $scope.classificationTreeData = [{label: "loading", children: ['loading']}];
+//    $scope.loadTree = function() {
+//        return $http.get("/classificationtree").then(function(response) {
+//            $scope.classificationTreeData = response.data;
+//        });
+//    };
+//    $scope.loadTree();
+//
+//    $scope.ok = function() {
+//        $modalInstance.close();
+//    };
+//
+//    $scope.cancelSave = function() {
+//        $modalInstance.dismiss('cancel');
+//    };
+//};
+
+function DEListCtrl($scope, $http, CdeList, $modal) {
     $scope.setActiveMenu('LISTCDE');
     
     $scope.currentPage = 1;
     $scope.pageSize = 10;
     $scope.originOptions = ['CADSR', 'FITBIR'];
 
+//    $scope.openClassificationTree = function () {
+//        var modalInstance = $modal.open({
+//          templateUrl: 'classificationTree.html',
+//          controller: ClassificationTreeModalCtrl,
+//          resolve: {
+//          }
+//        });
+//
+//        modalInstance.result.then(function () {
+//        }, function () {
+//        });        
+//    };
+    
+    $scope.classificationTree = [{label: "loading", children: ['loading']}];
+    $scope.loadTree = function() {
+        return $http.get("/classificationtree").then(function(response) {
+            $scope.classificationTree = response.data;
+        });
+    };
+    $scope.loadTree();
+    
     // this one ensures that we don't send this as query when none is selected. 
     $scope.removeOwningOrg = function() {
         if ($scope.search.stewardOrg.name == "") {
@@ -274,6 +314,11 @@ function DEListCtrl($scope, $http, CdeList, DataElement, AutocompleteSvc) {
     $scope.removeRegistrationStatus = function() {
         if (!$scope.search.registrationState.registrationStatus) {
             delete $scope.search.registrationState.registrationStatus;
+        }
+    };
+    $scope.removeClassificationSystem = function() {
+        if ($scope.search.classificationSystem == "") {
+            delete $scope.search.classificationSystem;
         }
     };
    

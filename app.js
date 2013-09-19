@@ -405,6 +405,12 @@ app.get('/cdediff/:deId', function(req, res) {
    return cdesvc.diff(req, res); 
 });
 
+app.get('/classificationtree', function(req, res) {
+    mongo_data.classificationTree(function(tree) {
+       res.send(tree); 
+    });
+});
+
 //// Get VSAC TGT.
 //var vsac = require('./node-js/vsac-io');
 //vsac.getTGT(function(tgt) {

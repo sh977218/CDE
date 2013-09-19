@@ -1,0 +1,56 @@
+import java.util.List;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author ludetc
+ */
+public class CdeSearchTest extends NlmCdeBaseTest {
+    
+    @Test
+    public void cdeFullDetail() {
+        driver.get(baseUrl + "/");
+        goToCdeByName("enotype Therapy Basis Mutation");
+        Assert.assertTrue(textPresent("Genotype Therapy Basis Mutation Analysis Indicator"));
+        Assert.assertTrue(textPresent("3157849v1"));
+        Assert.assertTrue(textPresent("Text descriptor to indicate whether "
+                + "genotype directed therapy was based on mutation testing"));
+        Assert.assertTrue(textPresent("Qualified"));
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(textPresent("Unknown"));
+        findElement(By.linkText("DE Concepts")).click();
+        Assert.assertTrue(textPresent("Mutation Analysis"));
+        Assert.assertTrue(textPresent("C18302"));
+        findElement(By.linkText("History")).click();
+        Assert.assertTrue(textPresent("This Data Element has no history"));
+        findElement(By.linkText("Classification")).click();
+        WebElement csDl = findElement(By.id("repeatCs"));
+        List<WebElement> csElements = csDl.findElements(By.xpath("//div/dd/div"));
+        Assert.assertEquals(csElements.size(), 4);
+        Assert.assertEquals(csElements.get(0).getText(), "GO Trial");
+        Assert.assertEquals(csElements.get(1).getText(), "GO New CDEs");
+        Assert.assertEquals(csElements.get(2).getText(), "C3D");
+        Assert.assertEquals(csElements.get(3).getText(), "caBIG");
+    } 
+
+    @Test
+    public void searchByClassification() {
+        driver.get(baseUrl + "/");
+        new Select(driver.findElement(By.name("conceptSystem"))).selectByVisibleText("PhenX");
+        List<WebElement> webElts = findElement(By.xpath("//accordion/div")).findElements(By.cssSelector("div.accordion-group"));
+        Assert.assertEquals(webElts.size(), 2);
+        Assert.assertEquals(webElts.get(0).getText(), "caBIG -- Immunology Gonorrhea Assay Laboratory Finding Result");
+        Assert.assertEquals(webElts.get(1).getText(), "caBIG -- Alcohol Retail Environment Assessment Description Text");
+    }
+
+    
+}
