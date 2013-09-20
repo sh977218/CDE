@@ -128,9 +128,17 @@ exports.cdelist = function(from, limit, searchOptions, callback) {
             });
             delete searchOptions.classificationSystem;
         }
+        if (searchOptions.registrationState != null) {
+            query = query.where("registrationState.registrationStatus")
+                    .equals(searchOptions.registrationState.registrationStatus);
+            delete searchOptions.registrationState;
+        }
     }        
-    query.find(searchOptions).where("archived").equals(null).skip(from).limit(limit).sort('-formUsageCounter').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
-        DataElement.count(searchOptions).exec(function (err, count) {
+        
+    query.find(searchOptions).where("archived").equals(null).skip(from).limit(limit)
+            .sort({"registrationState.registrationStatusSortOrder": 1, '-formUsageCounter': 1})
+            .slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
+        query.find(searchOptions).where("archived").equals(null).count(searchOptions).exec(function (err, count) {
         callback("",{
                cdes: cdes
                , page: Math.ceil(from / limit)

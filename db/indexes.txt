@@ -1,1 +1,9 @@
-db.dataelements.ensureIndex({"name": 1, "stewardOrg.name": 1, "registationState.registrationStatus": 1, "originId": 1, "uuid": 1})
+db.dataelements.ensureIndex({
+    "name": 1, 
+    "stewardOrg.name": 1, 
+    "registationState.registrationStatus": 1, 
+    "registationState.registrationStatusSortOrder": 1, 
+    "originId": 1,
+    "uuid": 1,
+    "classification.conceptSystem": 1
+})

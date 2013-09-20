@@ -57,13 +57,15 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         driver.get(baseUrl + "/");
         WebElement pagElt = findElement(By.cssSelector("div.pagination"));
         List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
+        findElement(By.linkText("10"));
         Assert.assertEquals(linkList.size(), 12);                
     }
     
     @Test
-    public void filterByStatus() {
+    public void filterByStatus() throws InterruptedException {
         driver.get(baseUrl + "/");
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Candidate");
+        findElement(By.linkText("caBIG -- Intervention Trial Study Protocol Document Classification Code StudyClassificationCategory"));
         WebElement pagElt = findElement(By.cssSelector("div.pagination"));
         List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
         Assert.assertEquals(linkList.size(), 7);        
