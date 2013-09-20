@@ -280,8 +280,8 @@ function DEListCtrl($scope, $http, CdeList, $modal) {
         }
     };
     $scope.removeRegistrationStatus = function() {
-        if (!$scope.search.registrationState.registrationStatus) {
-            delete $scope.search.registrationState.registrationStatus;
+        if (!$scope.search.registrationState || !$scope.search.registrationState.registrationStatus) {
+            delete $scope.search.registrationState;
         }
     };
     $scope.removeClassificationSystem = function() {
@@ -311,6 +311,7 @@ function DEListCtrl($scope, $http, CdeList, $modal) {
         var result = CdeList.get({from: newfrom, search: JSON.stringify($scope.search)}, function () {
            $scope.numPages = result.pages; 
            $scope.cdes = result.cdes;
+           $scope.totalItems = result.totalNumber;
         });
     } ;  
     

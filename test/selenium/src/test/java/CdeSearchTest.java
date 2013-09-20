@@ -52,5 +52,30 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(webElts.get(1).getText(), "caBIG -- Alcohol Retail Environment Assessment Description Text");
     }
 
+    @Test
+    public void basicPagination() {
+        driver.get(baseUrl + "/");
+        WebElement pagElt = findElement(By.cssSelector("div.pagination"));
+        List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
+        Assert.assertEquals(linkList.size(), 12);                
+    }
+    
+    @Test
+    public void filterByStatus() {
+        driver.get(baseUrl + "/");
+        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Candidate");
+        WebElement pagElt = findElement(By.cssSelector("div.pagination"));
+        List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
+        Assert.assertEquals(linkList.size(), 7);        
+    }
+    
+    @Test
+    public void filterByOrg() {
+        driver.get(baseUrl + "/");
+        new Select(driver.findElement(By.name("stewardOrg.name"))).selectByVisibleText("EDRN");
+        List<WebElement> webElts = findElement(By.xpath("//accordion/div")).findElements(By.cssSelector("div.accordion-group"));
+        Assert.assertEquals(webElts.size(), 1);
+        Assert.assertEquals(webElts.get(0).getText(), "EDRN -- Specimen Process Time Value");
+    }
     
 }

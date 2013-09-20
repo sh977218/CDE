@@ -132,9 +132,10 @@ exports.cdelist = function(from, limit, searchOptions, callback) {
     query.find(searchOptions).where("archived").equals(null).skip(from).limit(limit).sort('-formUsageCounter').slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
         DataElement.count(searchOptions).exec(function (err, count) {
         callback("",{
-               cdes: cdes,
-               page: Math.ceil(from / limit),
-               pages: Math.ceil(count / limit)
+               cdes: cdes
+               , page: Math.ceil(from / limit)
+               , pages: Math.ceil(count / limit)
+               , totalNumber: count
            });
         });
     });
