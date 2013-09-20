@@ -14,8 +14,13 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     };
     
     $scope.isOrgAdmin = function() {
-        return $scope.user && $scope.user.orgAdmin && $scope.user.orgAdmin.length > 0;  
+        return $scope.user && (($scope.user.siteAdmin === true) || ($scope.user.orgAdmin && $scope.user.orgAdmin.length > 0));  
     };
+    
+    $scope.isSiteAdmin = function() {
+        console.log("is site admin: " + $scope.user.siteAdmin);
+        return $scope.user.siteAdmin;
+    }
     
     $scope.registrationStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard'];
 
@@ -616,6 +621,9 @@ function DEViewCtrl($scope, $routeParams, $q, $window, DataElement, Comment, Pri
     };
     
     $scope.isAllowed = function (cde) {
+        if ($scope.user.siteAdmin) {
+            return true;
+        }        
         if ($scope.initialized && $scope.myOrgs) {
             return $scope.myOrgs.indexOf(cde.stewardOrg.name) > -1;
         } else {

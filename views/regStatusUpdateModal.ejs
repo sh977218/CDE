@@ -4,8 +4,10 @@
 <form name="form">
 <div class="modal-body">
     <label for="registrationStatus">Registration Status</label>
-    <select ng-model="cde.registrationState.registrationStatus" name="registrationStatus" 
-            ng-options="status as status for status in stewardRegStatuses">
+    <select ng-model="cde.registrationState.registrationStatus" name="registrationStatus" >
+        <option ng-repeat="s in stewardRegStatuses" ng-value="s">{{s}}</option>
+        <option ng-show="isSiteAdmin()" value="Standard">Standard</option>
+        <option ng-show="isSiteAdmin()" value="Preferred Standard">Preferred Standard</option>
     </select>
 
     
