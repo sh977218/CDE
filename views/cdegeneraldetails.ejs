@@ -8,7 +8,7 @@
     <dt ng-show="cde.originId">Origin ID: </dt><dd>{{cde.originId}}</dd>
     <dt>Steward: </dt><dd>{{cde.stewardOrg.name}}</dd>
     <dt>Definition: </dt><dd><inline-area-edit model="cde.naming[0].definition" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-area-edit></dd>
-    <dt>Status: </dt><dd><i ng-show="isAllowed(cde)" class="icon-pencil" ng-click="openRegStatusUpdate()"></i> {{cde.registrationState.registrationStatus}}</dd>
+    <dt>Status: </dt><dd><i id="editStatus" ng-show="isAllowed(cde)" class="icon-pencil" ng-click="openRegStatusUpdate()"></i> {{cde.registrationState.registrationStatus}}</dd>
     <dt ng-show="cde.formUsageCounter">Form Usage: </dt><dd>{{cde.formUsageCounter}}</dd>
     <dt>Added to NLM: </dt>
     <dd ng-controller="AuditCtrl" >{{cde.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
