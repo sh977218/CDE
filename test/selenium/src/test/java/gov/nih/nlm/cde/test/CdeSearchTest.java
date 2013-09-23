@@ -1,14 +1,11 @@
+package gov.nih.nlm.cde.test;
+
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  *
@@ -56,8 +53,8 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     public void basicPagination() {
         driver.get(baseUrl + "/");
         WebElement pagElt = findElement(By.cssSelector("div.pagination"));
-        List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
         findElement(By.linkText("10"));
+        List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
         Assert.assertEquals(linkList.size(), 12);                
     }
     

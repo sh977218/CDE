@@ -1,19 +1,15 @@
+package gov.nih.nlm.cde.test;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  *
  * @author ludetc
  */
 public class RegStatusTest extends NlmCdeBaseTest {
-    
     
     @Test
     public void changeRegistrationStatus() {

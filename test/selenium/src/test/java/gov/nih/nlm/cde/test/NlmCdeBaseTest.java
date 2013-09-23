@@ -1,3 +1,5 @@
+package gov.nih.nlm.cde.test;
+
 import org.testng.annotations.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.*;
