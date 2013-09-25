@@ -17,7 +17,11 @@
         <br>
         VSAC_PASSWORD=
 
+        
         <h1>Test</h1>
+        Start the vsac mock with $> ./node-js/mock/vsacMock
+        You may need to generate your own ssl server key. 
+
         To run the test suite $> ./start-test-instance.sh
 
         <h1>Seed</h1>

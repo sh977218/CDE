@@ -339,7 +339,27 @@ function DEListCtrl($scope, $http, CdeList, $modal) {
     };
 }
 
-function SaveCdeCtrl($scope, $modal) {
+function SaveCdeCtrl($scope, $modal, $http) {
+    
+    $scope.checkVsacId = function(cde) {
+        $http({method: "GET", url: "/vsacBridge/" + cde.dataElementConcept.conceptualDomain.vsac.id}).
+         error(function(data, status) {
+            $scope.vsacError = "Error quering VSAC.";
+            cde.dataElementConcept.conceptualDomain.vsac.id = "";
+         }).
+         success(function(data, status) {
+            if (data === "") {
+                $scope.vsacError = "Invalid VSAC OID";
+                cde.dataElementConcept.conceptualDomain.vsac.id = "";
+            } else {
+                cde.dataElementConcept.conceptualDomain.vsac.name = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
+                cde.dataElementConcept.conceptualDomain.vsac.version = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].version;
+                cde.unsaved = true;
+            }
+         })
+         ;
+    };
+    
     $scope.stageCde = function(cde) {
         cde.unsaved = true;
     };

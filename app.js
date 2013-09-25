@@ -11,6 +11,7 @@ var express = require('express')
   , LocalStrategy = require('passport-local').Strategy
   , mongo_data = require('./node-js/mongo-data')
   , util = require('util')
+  , xml2js = require('xml2js')
   ;
 
 function findById(id, fn) {
@@ -411,10 +412,23 @@ app.get('/classificationtree', function(req, res) {
     });
 });
 
-//// Get VSAC TGT.
-//var vsac = require('./node-js/vsac-io');
-//vsac.getTGT(function(tgt) {
-//});
+// Get VSAC TGT.
+var vsac = require('./node-js/vsac-io');
+vsac.getTGT(function(tgt) {
+});
+
+var parser = new xml2js.Parser();
+app.get('/vsacBridge/:vsacId', function(req, res) {
+   vsac.getValueSet(req.params.vsacId, function(result) {
+       if (result === 404) {
+           res.end();
+       } else {
+           parser.parseString(result, function (err, jsonResult) {
+            res.send(jsonResult);
+           });
+       }
+   }) ;
+});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

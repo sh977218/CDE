@@ -2,7 +2,9 @@ var https = require('https')
     , querystring = require('querystring')
     , config = require('../config')
     , fs = require('fs')
-    
+    , util = require('util')
+;
+
 var envconfig = {};
 
 if (fs.existsSync('./envconfig.js')) {
@@ -15,18 +17,22 @@ if (fs.existsSync('./envconfig.js')) {
 }
 
 var authData = querystring.stringify( {
-     username: process.env.VSAC_USERNAME || envconfig.vsac.username
-    ,password: process.env.VSAC_PASSWORD || envconfig.vsac.password
+    username: process.env.VSAC_USERNAME || envconfig.vsac.username
+    , password: process.env.VSAC_PASSWORD || envconfig.vsac.password
 });
 
 var ticketData = querystring.stringify({
     service: 'http://umlsks.nlm.nih.gov'
 });
 
-        
+
+var vsacHost = process.env.VSAC_HOST || envconfig.vsac.host || config.vsac.host;
+var vsacPort = process.env.VSAC_PORT || envconfig.vsac.port || config.vsac.port
+
 var tgtOptions = {
-    host: config.vsac.host,
-    port: config.vsac.port,
+    host: vsacHost,
+    hostname: vsacHost,
+    port: vsacPort,
     path: config.vsac.ticket.path,
     method: 'POST',
     headers: {
@@ -36,8 +42,9 @@ var tgtOptions = {
 };
 
 var ticketOptions = {
-    host: config.vsac.host,
-    port: config.vsac.port,
+    host: vsacHost,
+    hostname: vsacHost,
+    port: vsacPort,
     path: config.vsac.ticket.path,
     method: 'POST',
     headers: {
@@ -47,8 +54,8 @@ var ticketOptions = {
 };
 
 var valueSetOptions = {
-    host: config.vsac.host,
-    port: config.vsac.port,
+    host: vsacHost,
+    port: vsacPort,
     path: config.vsac.valueSet.path,
     method: 'GET'
 };
@@ -64,7 +71,6 @@ exports.getTGT = function (cb) {
         });
         res.on('end', function() {
             vsacTGT = output;
-            console.log("got TGT: " + vsacTGT);
             ticketOptions.path = config.vsac.ticket.path + '/' + vsacTGT;
             cb(vsacTGT);
         });
@@ -109,6 +115,9 @@ exports.getValueSet = function(vs_id, cb) {
                 output += chunk;
             });
             res.on('end', function() {
+                if (res.statusCode == 404) {
+                    cb(404);
+                }
                 if (output.length > 0) {
                     cb(output);
                 }

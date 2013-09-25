@@ -56,6 +56,15 @@ var deJsonSchema = {
     }
     , uuid: String
     , version: String
+    , dataElementConcept: {
+        conceptualDomain: {
+            vsac: {
+                id: String
+                , name: String
+                , version: String
+            }
+        }
+    }
     , objectClass: {concepts: [conceptSchema]}
     , property:{concepts: [conceptSchema]}
     , valueDomain: {
@@ -66,6 +75,7 @@ var deJsonSchema = {
     }
     , history: [ObjectId]
     , changeNote: String
+    , cadsrRegStatus: String
     , registrationState: {
             registrationStatus: String
             , registrationStatusSortOrder: Number
@@ -146,6 +156,7 @@ var regStatusSortMap = {
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 
 schemas.dataElementSchema.pre('save', function(next) {
    this.registrationState.registrationStatusSortOrder = regStatusSortMap[this.registrationState.registrationStatus]; 
+   
    next();
 });
 

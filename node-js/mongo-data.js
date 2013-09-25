@@ -253,40 +253,41 @@ exports.name_autocomplete_form = function (searchOptions, callback) {
 
 // @TODO
 // Fix this, cdeArchive removed.
-exports.linktovsac = function(req, callback) {
-    return DataElement.findById(req.body.cde_id, function (err, dataElement) {
-        cdeArchive(dataElement, function (arcCde) {
-            dataElement.history.push(arcCde._id);
-            dataElement.valueDomain.vsacOid = req.body.vs_id;
-            vsac_io.getValueSet(req.body.vs_id, function (valueSet_xml) {
-                xmlParser.parseString(valueSet_xml, function (err, result) {
-                    dataElement.valueDomain.name = result['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
-                    dataElement.valueDomain.definition = '';
-                    dataElement.valueDomain.permissibleValues = [];
-                    dataElement.changeNote = req.body.changeNote;
-                    dataElement.updated = new Date().toJSON();
-
-
-                    for (var i in result['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept']) {
-                        var pv = result['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i];
-                        dataElement.valueDomain.permissibleValues.push({
-                                validValue: pv['$'].displayName
-                                , valueCode: pv['$'].code
-                                , codeSystemName: pv['$'].codeSystemName                       
-                        });
-                    }
-                    return dataElement.save(function (err) {
-                         if (err) {
-                             console.log(err);
-                         }
-                         return dataElement;
-                    });
-                });
-                callback("", dataElement);
-            });       
-        });
-    });
-};
+// or we don't need this anymore
+//exports.linktovsac = function(req, callback) {
+//    return DataElement.findById(req.body.cde_id, function (err, dataElement) {
+//        cdeArchive(dataElement, function (arcCde) {
+//            dataElement.history.push(arcCde._id);
+//            dataElement.valueDomain.vsacOid = req.body.vs_id;
+//            vsac_io.getValueSet(req.body.vs_id, function (valueSet_xml) {
+//                xmlParser.parseString(valueSet_xml, function (err, result) {
+//                    dataElement.valueDomain.name = result['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
+//                    dataElement.valueDomain.definition = '';
+//                    dataElement.valueDomain.permissibleValues = [];
+//                    dataElement.changeNote = req.body.changeNote;
+//                    dataElement.updated = new Date().toJSON();
+//
+//
+//                    for (var i in result['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept']) {
+//                        var pv = result['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i];
+//                        dataElement.valueDomain.permissibleValues.push({
+//                                validValue: pv['$'].displayName
+//                                , valueCode: pv['$'].code
+//                                , codeSystemName: pv['$'].codeSystemName                       
+//                        });
+//                    }
+//                    return dataElement.save(function (err) {
+//                         if (err) {
+//                             console.log(err);
+//                         }
+//                         return dataElement;
+//                    });
+//                });
+//                callback("", dataElement);
+//            });       
+//        });
+//    });
+//};
 
 exports.saveForm = function(req, callback) {
     if (!req.body._id ) {
@@ -341,6 +342,7 @@ exports.saveCde = function(req, callback) {
             newDe.registrationState.untilDate = req.body.registrationState.untilDate;
             newDe.registrationState.administrativeNote = req.body.registrationState.administrativeNote;
             newDe.registrationState.unresolvedIssue = req.body.registrationState.unresolvedIssue;
+            newDe.dataElementConcept = req.body.dataElementConcept;
             dataElement.archived = true;
             dataElement.save(function (err) {
                  if (err) {

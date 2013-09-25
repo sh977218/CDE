@@ -77,7 +77,7 @@ cdeApp.directive('ngCdeAvailable', ['$http', function($http) {
 
 cdeApp.filter('placeholdEmpty', function() {
     return function(input) {
-        if (!(input == undefined || input == null)) {
+        if (!(input == undefined || input == null || input == "")) {
             return input;
         } else {
             return "N/A";

@@ -45,6 +45,7 @@ fs.readFile(process.argv[2], function(err, data) {
             , created: Date.now()
             , origin: 'CADSR'
             , originId: cadsrDE.PUBLICID + "v" + cadsrDE.VERSION
+            , cadsrRegStatus: cadsrDE.REGISTRATIONSTATUS
             , stewardOrg: {
                 name: cadsrDE.CONTEXTNAME
             }
