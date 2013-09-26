@@ -10,8 +10,9 @@ var conceptSchema = mongoose.Schema({
 }, {_id: false});
 
 var permissibleValueSchema = mongoose.Schema({
-    validValue: String
-    , valueCode: String
+    permissibleValue: String
+    , valueMeaningName: String
+    , valueMeaningCode: String
     , codeSystemName: String
 }, {_id: false});
 

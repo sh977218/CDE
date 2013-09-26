@@ -15,9 +15,12 @@ public class NlmCdeBaseTest {
     protected static String nlm_password = "nlm";
     protected static String cabigAdmin_username = "cabigAdmin";
     protected static String cabigAdmin_password = "pass";
+    protected static String ctepCurator_username = "ctepCurator";
+    protected static String ctepCurator_password = "pass";
     protected static String test_username = "testuser";
     protected static String test_password = "Test123";
     protected static String test_reg_auth = "OrgTest1";
+    
     
     public static WebDriverWait wait;
 

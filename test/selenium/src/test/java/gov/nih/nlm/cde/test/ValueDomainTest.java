@@ -9,9 +9,9 @@ import org.testng.annotations.Test;
  *
  * @author ludetc
  */
-public class VsacTest extends NlmCdeBaseTest {
+public class ValueDomainTest extends NlmCdeBaseTest {
     
-    @Test
+//    @Test
     public void assignVsacId() {
         loginAs(nlm_username, nlm_password);
         goToCdeByName("Patient Ethnic Group Category");
@@ -36,7 +36,25 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("20121025"));
         logout();
-        
+    }
+    
+    @Test
+    public void changePermissibleValue() {
+        loginAs(ctepCurator_username, ctepCurator_password);
+        goToCdeByName("Patient Ethnic Group Category");
+        findElement(By.linkText("Permissible Values")).click();        
+        findElement(By.xpath("//td[@id='pv-0']/inline-edit/div/div[1]/i")).click();
+        findElement(By.xpath("//td[@id='pv-0']/inline-edit/div/div[2]/input")).sendKeys(" added to pv");
+        findElement(By.xpath("//td[@id='pv-0']/inline-edit/div/div[2]/button[1]")).click();
+        findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.name("changeNote")).sendKeys("Changed PV");
+        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("version")).sendKeys("4");
+        findElement(By.cssSelector("button.btn.btn-warning")).click();
+        goToCdeByName("Patient Ethnic Group Category");
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(textPresent("added to pv"));
+        logout();
     }
     
 }

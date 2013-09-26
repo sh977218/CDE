@@ -17,20 +17,23 @@
     </div>
 </div>
 
+<div ng-controller="SaveCdeCtrl">
 <h3>Permissible Values</h3>
 <div ng-show="cde.valueDomain.permissibleValues.length == 0">No Permissible Values</div>
 <table ng-show="cde.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped">
      <thead>
          <tr>
              <th>Name</th>
-             <th>Code</th>
              <th>Code Name</th>
+             <th>Code</th>
+             <th>Code System</th>
          </tr>
      </thead>
      <tbody>
-         <tr ng-repeat="pv in cde.valueDomain.permissibleValues">
-             <td>{{pv.validValue}}</td>
-             <td>{{pv.valueCode}}</td>
+         <tr id="pv-{{$index}}" ng-repeat="pv in cde.valueDomain.permissibleValues">
+             <td id="pv-{{$index}}"><inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></td>
+             <td>{{pv.valueMeaningName}}</td>
+             <td>{{pv.valueMeaningCode}}</td>
              <td>{{pv.codeSystemName}}</td>
          </tr>
          <tr ng-show="cde.valueDomain.permissibleValues.length == 10">
@@ -39,3 +42,4 @@
      </tbody>
  </table>
 <hr>
+</div>

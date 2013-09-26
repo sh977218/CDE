@@ -343,6 +343,7 @@ exports.saveCde = function(req, callback) {
             newDe.registrationState.administrativeNote = req.body.registrationState.administrativeNote;
             newDe.registrationState.unresolvedIssue = req.body.registrationState.unresolvedIssue;
             newDe.dataElementConcept = req.body.dataElementConcept;
+            newDe.valueDomain = req.body.valueDomain;
             dataElement.archived = true;
             dataElement.save(function (err) {
                  if (err) {

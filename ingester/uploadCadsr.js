@@ -73,7 +73,11 @@ fs.readFile(process.argv[2], function(err, data) {
         
         for (var pvi in cadsrDE.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM) {
             cadsrPV = cadsrDE.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM[pvi];
-            newDE.valueDomain.permissibleValues.push({validValue: cadsrPV.VALIDVALUE[0]});
+            newDE.valueDomain.permissibleValues.push({
+                permissibleValue: cadsrPV.VALIDVALUE[0]
+                , valueMeaningName: cadsrPV.VALUEMEANING[0]
+                , valueMeaningCode: cadsrPV.MEANINGCONCEPTS[0]
+            });
         }
         
         for (var occi in cadsrDE.DATAELEMENTCONCEPT[0].ObjectClass[0].ConceptDetails[0].ConceptDetails_ITEM) {
