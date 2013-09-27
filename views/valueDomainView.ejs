@@ -1,4 +1,42 @@
-<h3>Value Set</h3>
+<div ng-controller="SaveCdeCtrl">
+<h3>Permissible Values</h3>
+<div ng-show="cde.valueDomain.permissibleValues.length == 0">No Permissible Values</div>
+<table ng-show="cde.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped">
+     <thead>
+         <tr>
+             <th>Name</th>
+             <th>Code Name</th>
+             <th>Code</th>
+             <th>Code System</th>
+         </tr>
+     </thead>
+     <tbody>
+         <tr id="pv-{{$index}}" ng-repeat="pv in cde.valueDomain.permissibleValues">
+             <td id="pv-{{$index}}"><inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></td>
+             <td id="pvName-{{$index}}">
+                 <div>
+                     <div ng-hide="editMode"> 
+                         <i ng-show="isAllowed()" class="icon-link" ng-click="editMode=true"></i> {{pv.valueMeaningName}} 
+                     </div>
+                     <div ng-show="editMode">
+                         <input type="text" ng-model="pv.valueMeaningName" typeahead="code.displayName for code in vsacValueSet | filter:$viewValue | limitTo:8"/>
+                         <button class="icon-ok" ng-click="editMode = false; attachPv(pv)"/>
+                         <button class="icon-remove" ng-click="editMode = false"/>
+                     </div>      
+                 </div>
+             </td>
+             <td>{{pv.valueMeaningCode}}</td>
+             <td>{{pv.codeSystemName}}</td>
+         </tr>
+         <tr ng-show="cde.valueDomain.permissibleValues.length == 10">
+             <td colspan="3">See full list in Detailed View</td>
+         </tr>
+     </tbody>
+ </table>
+<hr>
+</div>
+
+<h3>VSAC Value Set</h3>
 <dl class="dl-horizontal" ng-show="cde.dataElementConcept.conceptualDomain.vsac">
     <dt>Value Set Name: </dt><dd>{{cde.dataElementConcept.conceptualDomain.vsac.name | placeholdEmpty}}</dd>
     <dt>Value Set ID: </dt><dd>{{cde.dataElementConcept.conceptualDomain.vsac.id | placeholdEmpty}}</dd>
@@ -16,35 +54,7 @@
         <button class="icon-remove" ng-click="editMode = false"/>
     </div>
 </div>
-
-<div ng-controller="SaveCdeCtrl">
-<h3>Permissible Values</h3>
-<div ng-show="cde.valueDomain.permissibleValues.length == 0">No Permissible Values</div>
-<table ng-show="cde.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped">
-     <thead>
-         <tr>
-             <th>Name</th>
-             <th>Code Name</th>
-             <th>Code</th>
-             <th>Code System</th>
-         </tr>
-     </thead>
-     <tbody>
-         <tr id="pv-{{$index}}" ng-repeat="pv in cde.valueDomain.permissibleValues">
-             <td id="pv-{{$index}}"><inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></td>
-             <td>{{pv.valueMeaningName}}</td>
-             <td>{{pv.valueMeaningCode}}</td>
-             <td>{{pv.codeSystemName}}</td>
-         </tr>
-         <tr ng-show="cde.valueDomain.permissibleValues.length == 10">
-             <td colspan="3">See full list in Detailed View</td>
-         </tr>
-     </tbody>
- </table>
 <hr>
-</div>
-
-<h3>VSAC Value Set</h3>
 <table ng-show="cde.dataElementConcept.conceptualDomain.vsac.id" class="table-bordered table-condensed table-striped">
      <thead>
          <tr>
@@ -61,4 +71,6 @@
          </tr>
      </tbody>
 </table>
+<hr>
+
     

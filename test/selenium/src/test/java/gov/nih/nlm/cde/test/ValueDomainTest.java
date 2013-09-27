@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -65,6 +66,28 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("added to pv"));
+        logout();
+    }
+    
+    @Test
+                (dependsOnMethods = {"assignVsacId"})
+    public void linkPvToVsac() {
+        loginAs(ctepCurator_username, ctepCurator_password);
+        goToCdeByName("Patient Ethnic Group Category");
+        findElement(By.linkText("Permissible Values")).click();        
+        findElement(By.xpath("//td[@id='pvName-1']//i")).click();
+        findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys("o");
+        findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/button[1]")).click();
+        findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("version")).sendKeys("6");
+        findElement(By.cssSelector("button.btn.btn-warning")).click();
+        driver.get(baseUrl + "/");
+        findElement(By.name("search.name")).sendKeys("Patient Ethnic Group Category");
+        findElement(By.id("search.submit")).click();
+        findElement(By.partialLinkText("Patient Ethnic Group Category")).click();
+        Assert.assertTrue(textPresent("2135-2"));
         logout();
     }
     

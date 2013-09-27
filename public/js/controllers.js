@@ -339,8 +339,7 @@ function DEListCtrl($scope, $http, CdeList, $modal) {
     };
 }
 
-function SaveCdeCtrl($scope, $modal, $http) {
-    
+function SaveCdeCtrl($scope, $modal, $http) { 
     $scope.checkVsacId = function(cde) {
         $http({method: "GET", url: "/vsacBridge/" + cde.dataElementConcept.conceptualDomain.vsac.id}).
          error(function(data, status) {
@@ -358,6 +357,21 @@ function SaveCdeCtrl($scope, $modal, $http) {
             }
          })
          ;
+    };
+    
+    $scope.attachPv = function(pv) {
+        var code = "null";
+        for (var i = 0; i < $scope.vsacValueSet.length && code === "null"; i++) {
+            if (pv.valueMeaningName === $scope.vsacValueSet[i].displayName) {
+                code = $scope.vsacValueSet[i];
+            }
+        }
+        if (code !== "null") {
+            pv.valueMeaningName = code.displayName;
+            pv.valueMeaningCode = code.code;
+            pv.codeSystemName = code.codeSystemName;
+            $scope.stageCde($scope.cde);
+        }
     };
     
     $scope.stageCde = function(cde) {
