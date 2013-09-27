@@ -12,7 +12,7 @@
     </div> 
     <div ng-show="editMode">
         <input name="vsacId" type="text" ng-model="cde.dataElementConcept.conceptualDomain.vsac.id" placeholder="VSAC O.I.D"/>
-        <button id="vsacIdCheck" class="icon-ok" ng-click="checkVsacId(cde); editMode = false"/>
+        <button id="vsacIdCheck" class="icon-ok" ng-click="checkVsacId(cde); loadValueSet(); editMode = false"/>
         <button class="icon-remove" ng-click="editMode = false"/>
     </div>
 </div>
@@ -43,3 +43,22 @@
  </table>
 <hr>
 </div>
+
+<h3>VSAC Value Set</h3>
+<table ng-show="cde.dataElementConcept.conceptualDomain.vsac.id" class="table-bordered table-condensed table-striped">
+     <thead>
+         <tr>
+             <th>Code Name</th>
+             <th>Code</th>
+             <th>Code System</th>
+         </tr>
+     </thead> 
+     <tbody id="vsacTableBody">
+         <tr ng-repeat="con in vsacValueSet">
+             <td>{{con.displayName}}</td>
+             <td>{{con.code}}</td>
+             <td>{{con.codeSystemName}}</td>
+         </tr>
+     </tbody>
+</table>
+    

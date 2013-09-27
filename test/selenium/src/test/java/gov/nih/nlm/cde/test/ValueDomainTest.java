@@ -1,7 +1,9 @@
 package gov.nih.nlm.cde.test;
 
+import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -11,7 +13,7 @@ import org.testng.annotations.Test;
  */
 public class ValueDomainTest extends NlmCdeBaseTest {
     
-//    @Test
+    @Test
     public void assignVsacId() {
         loginAs(nlm_username, nlm_password);
         goToCdeByName("Patient Ethnic Group Category");
@@ -32,10 +34,19 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("3");
         findElement(By.cssSelector("button.btn.btn-warning")).click();
+        logout();
+    }
+
+    @Test
+            (dependsOnMethods = {"assignVsacId"})
+    public void vsacTable() {
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("20121025"));
-        logout();
+        Assert.assertTrue(textPresent("2135-2"));
+        Assert.assertTrue(textPresent("CDCREC"));
+        List<WebElement> vsacLines = driver.findElements(By.xpath("//tbody[@id='vsacTableBody']/tr"));
+        Assert.assertEquals(vsacLines.size(), 2);
     }
     
     @Test

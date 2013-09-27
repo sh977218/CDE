@@ -3,16 +3,10 @@
     <ns0:ValueSet ID="2.16.840.1.114222.4.11.836" displayName="Race" version="20121025">
         <ns0:ConceptList>
             <ns0:Concept code="1002-5" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDCREC" codeSystemVersion="1.0" displayName="American Indian or Alaska Native"/>
-            <ns0:Concept code="1002-5" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDCREC" codeSystemVersion="1.0" displayName="American Indian or Alaska Native"/>
-            <ns0:Concept code="2028-9" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDCREC" codeSystemVersion="1.0" displayName="Asian"/>
             <ns0:Concept code="2028-9" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDCREC" codeSystemVersion="1.0" displayName="Asian"/>
             <ns0:Concept code="2054-5" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDCREC" codeSystemVersion="1.0" displayName="Black or African American"/>
-            <ns0:Concept code="2054-5" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDCREC" codeSystemVersion="1.0" displayName="Black or African American"/>
-            <ns0:Concept code="2076-8" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDCREC" codeSystemVersion="1.0" displayName="Native Hawaiian or Other Pacific Islander"/>
             <ns0:Concept code="2076-8" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDCREC" codeSystemVersion="1.0" displayName="Native Hawaiian or Other Pacific Islander"/>
             <ns0:Concept code="2106-3" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDCREC" codeSystemVersion="1.0" displayName="White"/>
-            <ns0:Concept code="2106-3" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDCREC" codeSystemVersion="1.0" displayName="White"/>
-            <ns0:Concept code="2131-1" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDCREC" codeSystemVersion="1.0" displayName="Other Race"/>
             <ns0:Concept code="2131-1" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDCREC" codeSystemVersion="1.0" displayName="Other Race"/>
         </ns0:ConceptList>
     </ns0:ValueSet>

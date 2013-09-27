@@ -576,11 +576,12 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
     
 }
 
-function DEViewCtrl($scope, $routeParams, $q, $window, DataElement, Comment, PriorCdes, CdeDiff) {
+function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, PriorCdes, CdeDiff) {
     $scope.initialized = false;
     $scope.reload = function(deId) {
         DataElement.get({deId: deId}, function (de) {
            $scope.cde = de; 
+           $scope.loadValueSet();
            $scope.initialized = true;
         });
         
@@ -677,6 +678,28 @@ function DEViewCtrl($scope, $routeParams, $q, $window, DataElement, Comment, Pri
                 $scope.diff.definition = dmp.diff_prettyHtml(d);
             }
         });
+    };
+    
+    $scope.vsacValueSet = [];
+    $scope.loadValueSet = function() {
+        var dec = $scope.cde.dataElementConcept;
+        if (dec != null && dec.conceptualDomain != null && dec.conceptualDomain.vsac !=  null) {
+            $scope.vsacValueSet = [];
+            $http({method: "GET", url: "/vsacBridge/" + dec.conceptualDomain.vsac.id}).
+             error(function(data, status) {
+                $scope.vsacError = "Error quering VSAC.";
+                cde.dataElementConcept.conceptualDomain.vsac.id = "";
+             }).
+             success(function(data, status) {
+                if (data === "") {
+                } else {
+                    for (var i = 0; i < data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
+                        $scope.vsacValueSet.push(data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$']);
+                    }
+                }
+             })
+             ;
+        }
     };
     
 }
