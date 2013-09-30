@@ -110,5 +110,28 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         logout();
     }
 
+    @Test
+    public void addRemovePv() {
+        loginAs(ctepCurator_username, ctepCurator_password);
+        goToCdeByName("Surgical Procedure Hand Laparoscopic Port Anatomic Site");
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(textPresent("Right Middle Abdomen"));
+        findElement(By.id("pvRemove-8")).click();
+        findElement(By.id("addPv")).click();
+        findElement(By.xpath("//td[@id='pv-10']/inline-edit/div/div[1]/i")).click();
+        findElement(By.xpath("//td[@id='pv-10']/inline-edit/div/div[2]/input")).clear();
+        findElement(By.xpath("//td[@id='pv-10']/inline-edit/div/div[2]/input")).sendKeys("New PV");
+        findElement(By.xpath("//td[@id='pv-10']/inline-edit/div/div[2]/button[1]")).click();
+        findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.name("changeNote")).sendKeys("Changed PV");
+        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("version")).sendKeys(".addRemovePv");
+        findElement(By.cssSelector("button.btn.btn-warning")).click();
+        goToCdeByName("Surgical Procedure Hand Laparoscopic Port Anatomic Site");
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(textPresent("New PV"));
+        Assert.assertEquals(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Right Middle Abdomen"), -1);
+        logout();
+    }
     
 }

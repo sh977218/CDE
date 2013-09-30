@@ -23,7 +23,6 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     
     $scope.registrationStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard'];
 
-
     $scope.setMyOrgs = function() {
         if ($scope.user && $scope.user.orgAdmin) {
             // clone orgAdmin array
@@ -371,6 +370,14 @@ function SaveCdeCtrl($scope, $modal, $http) {
             pv.codeSystemName = code.codeSystemName;
             $scope.stageCde($scope.cde);
         }
+    };
+    
+    $scope.removePv = function(index) {
+        $scope.cde.valueDomain.permissibleValues.splice(index, 1);
+        $scope.stageCde($scope.cde);
+    };
+    $scope.addPv = function() {
+        $scope.cde.valueDomain.permissibleValues.push({permissibleValue: "Unspecified"});
     };
     
     $scope.stageCde = function(cde) {
