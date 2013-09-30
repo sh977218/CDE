@@ -16,7 +16,7 @@
              <td id="pvName-{{$index}}">
                  <div>
                      <div ng-hide="editMode"> 
-                         <i ng-show="isAllowed()" class="icon-link" ng-click="editMode=true"></i> {{pv.valueMeaningName}} 
+                         <i ng-show="canLinkPv" class="icon-link" ng-click="editMode=true"></i> {{pv.valueMeaningName}} 
                      </div>
                      <div ng-show="editMode">
                          <input type="text" ng-model="pv.valueMeaningName" typeahead="code.displayName for code in vsacValueSet | filter:$viewValue | limitTo:8"/>

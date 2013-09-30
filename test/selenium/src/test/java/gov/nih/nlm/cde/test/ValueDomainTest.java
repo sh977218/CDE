@@ -1,10 +1,13 @@
 package gov.nih.nlm.cde.test;
 
+import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ctepCurator_username;
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
+import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -70,11 +73,12 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     }
     
     @Test
-                (dependsOnMethods = {"assignVsacId"})
+        (dependsOnMethods = {"assignVsacId"})
     public void linkPvToVsac() {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Ethnic Group Category");
-        findElement(By.linkText("Permissible Values")).click();        
+        findElement(By.linkText("Permissible Values")).click();   
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
         findElement(By.xpath("//td[@id='pvName-1']//i")).click();
         findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys(Keys.BACK_SPACE);
         findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys("o");
@@ -90,5 +94,21 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("2135-2"));
         logout();
     }
+    
+    @Test
+            (dependsOnMethods = {"assignVsacId"})
+    public void visibilityOfPvLink() {
+        loginAs(ctepCurator_username, ctepCurator_password);
+        goToCdeByName("Patient Ethnic Group Category");
+        findElement(By.linkText("Permissible Values")).click();
+        // following asserts
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
+        goToCdeByName("Involved Organ Laterality Type");
+        findElement(By.linkText("Permissible Values")).click();
+        // following asserts
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
+        logout();
+    }
+
     
 }

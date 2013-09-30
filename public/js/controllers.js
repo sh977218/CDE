@@ -18,9 +18,8 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     };
     
     $scope.isSiteAdmin = function() {
-        console.log("is site admin: " + $scope.user.siteAdmin);
         return $scope.user.siteAdmin;
-    }
+    };
     
     $scope.registrationStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard'];
 
@@ -592,11 +591,13 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
 
 function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, PriorCdes, CdeDiff) {
     $scope.initialized = false;
+    $scope.canLinkPv = false;
     $scope.reload = function(deId) {
         DataElement.get({deId: deId}, function (de) {
            $scope.cde = de; 
            $scope.loadValueSet();
            $scope.initialized = true;
+           $scope.canLinkPvFunc();
         });
         
         PriorCdes.getCdes({cdeId: deId}, function(dataElements) {
@@ -714,7 +715,19 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
              })
              ;
         }
+        $scope.canLinkPvFunc();
     };
+    
+    // could prob. merge this into load value set.
+    $scope.canLinkPvFunc = function() {
+        var dec = $scope.cde.dataElementConcept;
+        $scope.canLinkPv = ($scope.isAllowed($scope.cde) &&
+                dec != null &&
+                dec.conceptualDomain != null &&
+                dec.conceptualDomain.vsac != null &&
+                dec.conceptualDomain.vsac.id != null);
+    };
+    
     
 }
 

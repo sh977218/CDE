@@ -12,7 +12,8 @@ import org.testng.annotations.Test;
  * @author ludetc
  */
 public class OrgAdminTest extends NlmCdeBaseTest {
-        @Test
+    
+    @Test
     public void orgAdminCanEditHisCdes() {
         loginAs(cabigAdmin_username, cabigAdmin_password);
         goToCdeByName("Cervical Tumor Clinical T Stage");
