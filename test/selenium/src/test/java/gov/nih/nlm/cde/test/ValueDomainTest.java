@@ -134,4 +134,24 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         logout();
     }
     
+    @Test
+    public void reOrderPv() {
+        loginAs(ctepCurator_username, ctepCurator_password);
+        goToCdeByName("Involved Organ Laterality Type");
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertEquals(findElement(By.id("pvCode-2")).getText(), "C25229");
+        Assert.assertEquals(findElement(By.id("pvCode-6")).getText(), "C25594,C48046,C13717");
+        findElement(By.id("pvUp-2")).click();
+        findElement(By.id("pvDown-6")).click();
+                findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.name("changeNote")).sendKeys("Reordered PV");
+        findElement(By.name("version")).sendKeys(".addRemovePv");
+        findElement(By.cssSelector("button.btn.btn-warning")).click();
+        goToCdeByName("Involved Organ Laterality Type");
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertEquals(findElement(By.id("pvCode-1")).getText(), "C25229");
+        Assert.assertEquals(findElement(By.id("pvCode-7")).getText(), "C25594,C48046,C13717");
+        logout();
+    }
+    
 }

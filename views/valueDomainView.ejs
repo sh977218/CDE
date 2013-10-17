@@ -25,9 +25,13 @@
                      </div>      
                  </div>
              </td>
-             <td>{{pv.valueMeaningCode}}</td>
+             <td id="pvCode-{{$index}}">{{pv.valueMeaningCode}}</td>
              <td>{{pv.codeSystemName}}</td>
-             <td ng-show="isAllowed(cde)" ng-click="removePv($index)"><i id="pvRemove-{{$index}}" class="icon-remove-sign"></i></td>
+             <td ng-show="isAllowed(cde)">
+                 <i id="pvRemove-{{$index}}" class="icon-remove-sign" ng-click="removePv($index)"></i>
+                 <i id="pvUp-{{$index}}" class="icon-arrow-up" ng-click="movePvUp($index)" ng-hide="$first"></i>
+                 <i id="pvDown-{{$index}}" class="icon-arrow-down" ng-click="movePvDown($index)" ng-hide="$last"></i>
+             </td>
          </tr>
          <tr ng-show="cde.valueDomain.permissibleValues.length == 10">
              <td colspan="3">See full list in Detailed View</td>

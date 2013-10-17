@@ -380,6 +380,18 @@ function SaveCdeCtrl($scope, $modal, $http) {
         $scope.cde.valueDomain.permissibleValues.push({permissibleValue: "Unspecified"});
     };
     
+    $scope.movePvUp = function(index) {
+        var pvArray = $scope.cde.valueDomain.permissibleValues;
+        pvArray.splice(index - 1, 0, pvArray.splice(index, 1)[0]);    
+        $scope.stageCde($scope.cde);
+    };
+    
+    $scope.movePvDown = function(index) {
+        var pvArray = $scope.cde.valueDomain.permissibleValues;
+        pvArray.splice(index + 1, 0, pvArray.splice(index, 1)[0]);    
+        $scope.stageCde($scope.cde);
+    };
+    
     $scope.stageCde = function(cde) {
         cde.unsaved = true;
     };
