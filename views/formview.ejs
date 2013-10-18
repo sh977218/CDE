@@ -11,10 +11,11 @@
     <div class='span9'>
     <h4 id='general'>General Details</h4>
     <dl class="dl-horizontal">
-        <dt>Name: </dt><dd>{{form.name}}</dd>
-        <dt>Owner: </dt><dd>{{form.stewardOrg.name}}</dd>
-        <dt>Instructions: </dt><dd>{{form.instructions || 'None'}}</dd>                
-        <dt>Created: </dt><dd>{{form.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>                
+        <dt>Name: </dt><dd id="dd_name">{{form.name}}</dd>
+        <dt>Owner: </dt><dd id="dd_owner">{{form.stewardOrg.name}}</dd>
+        <dt>Instructions: </dt><dd id="dd_instructions">{{form.instructions || 'None'}}</dd>                
+        <dt>Created: </dt><dd>{{form.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>    
+        <dt id="dt_createdBy" ng-show="form.createdBy.username">Created By: </dt><dd id="dd_createdBy">{{form.createdBy.username}}</dd>
     </dl>
 
 <h4>Sections</h4>

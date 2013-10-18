@@ -68,6 +68,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         logout();
         loginAs(test_username, test_password);
         findElement(By.linkText("Create")).click();
+        findElement(By.linkText("CDE")).click();
         // following will assert that test user was indeed promoted
         new Select(driver.findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText(test_reg_auth);                
         logout();
@@ -77,6 +78,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
     public void createCde() {
         loginAs(test_username, test_password);
         findElement(By.linkText("Create")).click();
+        findElement(By.linkText("CDE")).click();
         findElement(By.name("cde.designation")).sendKeys("name of testuser CDE 1");
         findElement(By.name("cde.definition")).sendKeys("Definition for testUser CDE 1");
         findElement(By.name("cde.version")).sendKeys("1.0alpha1");

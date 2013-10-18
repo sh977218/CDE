@@ -1,22 +1,22 @@
 <form class="span10 offset1" name="createForm">
     <fieldset>
         <legend>Create Form</legend>
-        
+
         <label>Name</label>
         <input type="text" required ng-model="form.name" name="form.name">
         <span ng-show="createForm.form.name.$error.required" class="help-inline">Required</span>
-        
-    <label for="form.instructions">Instructions</label><textarea required ng-model="form.instructions" name="form.instructions"></textarea><br />
 
-    <label for="form.stewardOrg.name">Steward Organization</label>
-    <select ng-model="form.stewardOrg.name" name="form.stewardOrg.name" required>
-        <option value="">Select One</option>
-        <option ng-repeat="c in user.orgAdmin" ng-value="c">{{c}}</option>
-    </select>
-     <br />
+        <label for="form.instructions">Instructions</label><textarea required ng-model="form.instructions" name="form.instructions"></textarea><br />
 
-    <a href="#/listforms" class="btn">Cancel</a>
-    <input type="submit" ng-click="save()" class="btn btn-success" value="Save" ng-disabled="isClean() || createForm.$invalid"></input>
+        <label for="form.stewardOrg.name">Steward Organization</label>
+        <select ng-model="form.stewardOrg.name" name="form.stewardOrg.name" required>
+            <option value="">Select One</option>
+            <option ng-repeat="o in myOrgs" ng-value="o">{{o}}</option>
+        </select>
+        <br />
+
+        <a href="#/listforms" class="btn">Cancel</a>
+        <input id="form.submit" type="submit" ng-click="save()" class="btn btn-success" value="Save" ng-disabled="isClean() || createForm.$invalid"></input>
     </fieldset>
 </form>
 

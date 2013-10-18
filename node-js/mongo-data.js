@@ -291,13 +291,10 @@ exports.name_autocomplete_form = function (searchOptions, callback) {
 
 exports.saveForm = function(req, callback) {
     if (!req.body._id ) {
-        var form = new Form();
-        form.name = req.body.name;
-        form.instructions = req.body.instructions;
-        form.stewardOrg = {
-                    name: req.body.stewardOrg
-        };
+        var form = new Form(req.body);
         form.created = Date.now();
+        form.createdBy.userId = req.user._id;
+        form.createdBy.username = req.user.username;
         return form.save(function(err) {
             if (err) {
                 callback(err, form);

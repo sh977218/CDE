@@ -116,6 +116,14 @@ var formSchema = {
     , updated: Date
     , created: Date
     , modules: [moduleSchema]
+    , createdBy: {
+        userId: mongoose.Schema.Types.ObjectId
+        , username: String
+    }
+    , updatedBy: {
+        userId: mongoose.Schema.Types.ObjectId
+        , username: String
+    }
     , registrationState: {
         registrationStatus: String
         , effectiveDate: Date

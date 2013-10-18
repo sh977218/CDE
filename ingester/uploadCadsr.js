@@ -56,7 +56,8 @@ fs.readFile(process.argv[2], function(err, data) {
             , valueDomain: {  
                 name: cadsrDE.VALUEDOMAIN[0].LongName,
                 definition: cadsrDE.VALUEDOMAIN[0].PreferredDefinition
-             }                         
+             }    
+//            , formUsageCounter: 0
         });
         
         newDE.naming = [];

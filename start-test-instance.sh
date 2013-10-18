@@ -8,6 +8,8 @@ export MONGO_URI=mongodb://localhost/test
 
 node ingester/uploadCadsr test/cadsrTestSeed.xml & 
 
+#groovy groovy/UploadCadsrForms.groovy --testMode &
+
 gradle -b test/selenium/build.gradle cleanTest test & 
 
 node app 

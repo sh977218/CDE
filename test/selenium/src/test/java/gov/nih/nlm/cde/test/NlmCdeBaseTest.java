@@ -38,9 +38,6 @@ public class NlmCdeBaseTest {
         logout();
     }
         
-    
-
-
     protected void goToCdeByName(String name) {
         driver.get(baseUrl + "/");
         findElement(By.name("search.name")).sendKeys(name);
@@ -49,6 +46,14 @@ public class NlmCdeBaseTest {
         findElement(By.linkText("View Full Detail")).click();
     }
         
+    protected void goToFormByName(String name) {
+        driver.get(baseUrl + "/");
+        findElement(By.id("formsLink")).click();
+        findElement(By.name("search.name")).sendKeys(name);
+        findElement(By.id("search.submit")).click();
+        findElement(By.partialLinkText(name)).click();
+        findElement(By.linkText("View Full Detail")).click();
+    }
     
     protected WebElement findElement(By by) {
         wait.until(ExpectedConditions.presenceOfElementLocated(by));

@@ -4,7 +4,8 @@ import com.mongodb.*;
 import java.text.SimpleDateFormat
 
 MongoClient mongoClient = new MongoClient( "localhost" );
-DB db = mongoClient.getDB( "nlmcde" );
+String dbName = args.contains("--testMode")?"test":"nlmcde"; 
+DB db = mongoClient.getDB(dbName);
 
 DBCollection cacheColl = db.getCollection("cadsrCache");
 DBCollection formColl = db.getCollection("forms");
@@ -115,7 +116,9 @@ doForm = {form ->
     if (actualStatus.equals('RELEASED')) {
         targetStatus = 'Internally Reviewed'
     }
-    formObj.append("registrationState.registrationStatus", targetStatus);
+    BasicDBObject regState = new BasicDBObject();
+    regState.append("registrationStatus", targetStatus)
+    formObj.append("registrationState", regState);
     
     // Store form in MONGO
     formColl.insert(formObj);
@@ -144,7 +147,11 @@ doFormPage = {formUrl ->
 }
 
 def nextPage = startUrl;
+println "testMode: " + args.contains("--testMode");
 while (nextPage != null) {
     println "Next Page " + nextPage;
     nextPage = doFormPage(nextPage);
+    if (args.contains("--testMode")) {
+        nextPage = null;
+    }
 }
