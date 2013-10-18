@@ -33,4 +33,23 @@ public class FormTest extends NlmCdeBaseTest {
         logout();
     }
     
+    @Test
+        (dependsOnMethods = {"createForm"})
+    public void addRemoveCart() {
+        loginAs(ctepCurator_username, ctepCurator_password);
+        driver.get(baseUrl + "/");
+        findElement(By.id("formsLink")).click();
+        findElement(By.name("search.name")).sendKeys("CtepTestForm1");
+        findElement(By.id("search.submit")).click();
+        findElement(By.partialLinkText("CtepTestForm1")).click();
+        Assert.assertTrue(textPresent("Cart (0)"));
+        findElement(By.linkText("Add to Cart")).click();
+        Assert.assertTrue(textPresent("Cart (1)"));
+        findElement(By.id("cartLink")).click();
+        findElement(By.partialLinkText("CtepTestForm1")).click();
+        findElement(By.linkText("Remove from Cart")).click();
+        Assert.assertTrue(textPresent("Cart (0)"));
+        logout();
+    }
+    
 }
