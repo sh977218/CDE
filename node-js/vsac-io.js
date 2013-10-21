@@ -27,7 +27,7 @@ var ticketData = querystring.stringify({
 
 
 var vsacHost = process.env.VSAC_HOST || envconfig.vsac.host || config.vsac.host;
-var vsacPort = process.env.VSAC_PORT || envconfig.vsac.port || config.vsac.port
+var vsacPort = process.env.VSAC_PORT || envconfig.vsac.port || config.vsac.port;
 
 var tgtOptions = {
     host: vsacHost,
