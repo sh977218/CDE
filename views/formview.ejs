@@ -1,6 +1,5 @@
 <div class="container">
-<div class='row-fluid'>
-    
+<div class='row-fluid'>   
     <div class="span3">
         <ul class="nav nav-list pull-left">
           <li><a ng-click="scrollTo('general')"><i class="icon-chevron-right"></i> General</a></li>
@@ -17,10 +16,12 @@
         <dt>Created: </dt><dd>{{form.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>    
         <dt id="dt_createdBy" ng-show="form.createdBy.username">Created By: </dt><dd id="dd_createdBy">{{form.createdBy.username}}</dd>
     </dl>
-
 <h4>Sections</h4>
 <div ng-repeat="module in form.modules">
-    <h3 id="{{module.name}}">{{module.name}}</h3>
+    <a id="addSection-{{$index}}" class="btn btn-small" ng-click="insertSection($index)">Insert Section</a>
+    <h3 id="{{module.name}}">
+        <inline-edit model="module.name" is-allowed="isAllowed()" on-ok="stageForm()"> </inline-edit>
+    </h3>
     <h4>Questions</h4>
     <p ng-show="module.questions.length == 0">There are no questions in this section. You can add questions to a form by browsing CDEs and adding them to a form in your cart.</p>
     <accordion>
@@ -30,7 +31,7 @@
                 <div class="span5">
                     <h5>Question Details</h5>
                     <dl class="dl-horizontal">
-                        <dt>Question: </dt><dd><inline-edit model="question.name" is-allowed="isAllowed()" on-ok="stageQuestion()"> </inline-edit></dd>
+                        <dt>Question: </dt><dd><inline-edit model="question.name" is-allowed="isAllowed()" on-ok="stageForm()"> </inline-edit></dd>
                     </dl>
                 </div>
                  <div class="span7">
@@ -48,6 +49,7 @@
         </accordion-group>
     </accordion>
 </div>
+<a id="addSection-{{form.modules.length}}" class="btn btn-small" ng-click="insertSection(form.modules.length)">Insert Section</a>
 
 <div class="row-fluid">
     <div class="span12" ng-show="form.unsaved">

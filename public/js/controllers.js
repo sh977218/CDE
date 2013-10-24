@@ -767,12 +767,14 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
                     }
                 }
                 $scope.original = $scope.form;
+                if ($scope.user.siteAdmin) {
+                    $scope.canEdit = true;
+                } else if ($scope.myOrgs) {
+                    $scope.canEdit = $scope.myOrgs.indexOf($scope.form.stewardOrg.name) > -1;
+                } else {
+                    $scope.canEdit = false;
+                }
             });
-            if ($scope.user && $scope.user.orgAdmin) {
-                $scope.canEdit = $scope.user.orgAdmin.indexOf(form.stewardOrg.name) > -1;
-            } else {
-                $scope.canEdit = false;
-            }
         });
     };
     
@@ -782,7 +784,7 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
         return $scope.canEdit;
     };
     
-    $scope.stageQuestion = function() {
+    $scope.stageForm = function() {
         $scope.form.unsaved = true;
     };
     
@@ -805,6 +807,10 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
         var qArray = $scope.form.questions;
         qArray.splice(index + 1, 0, qArray.splice(index, 1)[0]);    
         $scope.stageQuestion();
+    };
+    
+    $scope.insertSection = function(index) {
+        $scope.form.modules.splice(index, 0, {name: "Untitled Section"})
     };
 };
 
