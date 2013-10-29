@@ -41,9 +41,9 @@
                 <accordion>
                     <accordion-group ng-repeat="question in module.questions" >
                         <accordion-heading>
-<!--                            <i ng-show='isAllowed()' class="icon-remove" ng-click="remove(module.questions, $index)"></i> 
-                            <i ng-show='!$first && isAllowed()' class="icon-arrow-up" ng-click="sortUp(module.questions, $index)"></i> 
-                            <i ng-show='!$last && isAllowed()' class="icon-arrow-down" ng-click='sortDown(module.questions, $index)'></i> -->
+                            <i id="removeQuestion-{{$parent.$parent.$index}}-{{$index}}" ng-show='isAllowed()' class="icon-remove" ng-click="remove(module.questions, $index)"></i> 
+                            <i id="upQuestion-{{$parent.$parent.$index}}-{{$index}}" ng-show='!$first && isAllowed()' class="icon-arrow-up" ng-click="sortUp(module.questions, $index)"></i> 
+                            <i id="downQuestion-{{$parent.$parent.$index}}-{{$index}}" ng-show='!$last && isAllowed()' class="icon-arrow-down" ng-click='sortDown(module.questions, $index)'></i> 
                             {{question.value}}
                         </accordion-heading>
                         <%- include questionView.ejs %>
@@ -54,7 +54,7 @@
                         <i class="icon-plus"></i> Insert Question</a>
                     <div ng-show="addQuestionMode">
                         <input type="text" typeahead="cde as cde.naming[0].designation for cde in autocomplete($viewValue)" 
-                               typeahead-wait-ms="500" ng-model="newQuestion">
+                               typeahead-wait-ms="300" ng-model="newQuestion">
                         <button class="icon-ok" ng-click="addQuestionToSection(newQuestion, $index); newQuestion = ''; addQuestionMode = false"/>
                         <button class="icon-remove" ng-click="newQuestion = ''; addQuestionMode = false"/>
                     </div>
