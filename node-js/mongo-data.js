@@ -179,8 +179,8 @@ exports.formsByIdList = function(idList, callback) {
     });
 };
 
-exports.cdesByUuidList = function(idList, callback) {
-    DataElement.find().where('uuid').in(idList).exec(function(err, cdes) {
+exports.cdesByIdList = function(idList, callback) {
+    DataElement.find().where('_id').in(idList).exec(function(err, cdes) {
        callback("", cdes); 
     });
 };
@@ -235,10 +235,10 @@ exports.cdeById = function(cdeId, callback) {
 };
 
 
-exports.name_autocomplete = function (searchOptions, callback) {
-    var name = searchOptions.name;
-    delete searchOptions.name;
-    DataElement.find(searchOptions, {name: 1, _id: 0}).where('name').equals(new RegExp(name, 'i')).limit(20).exec(function (err, result) {
+exports.name_autocomplete = function(name, callback) {
+    DataElement.find({}, {"naming.designation": 1}).where("naming").elemMatch(function(elem) {
+        elem.where("designation").equals(new RegExp(name, 'i'));
+    }).limit(20).exec(function(err, result) {
         callback("", result);
     });
 };
@@ -250,44 +250,6 @@ exports.name_autocomplete_form = function (searchOptions, callback) {
         callback("", result);
     });
 };
-
-// @TODO
-// Fix this, cdeArchive removed.
-// or we don't need this anymore
-//exports.linktovsac = function(req, callback) {
-//    return DataElement.findById(req.body.cde_id, function (err, dataElement) {
-//        cdeArchive(dataElement, function (arcCde) {
-//            dataElement.history.push(arcCde._id);
-//            dataElement.valueDomain.vsacOid = req.body.vs_id;
-//            vsac_io.getValueSet(req.body.vs_id, function (valueSet_xml) {
-//                xmlParser.parseString(valueSet_xml, function (err, result) {
-//                    dataElement.valueDomain.name = result['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
-//                    dataElement.valueDomain.definition = '';
-//                    dataElement.valueDomain.permissibleValues = [];
-//                    dataElement.changeNote = req.body.changeNote;
-//                    dataElement.updated = new Date().toJSON();
-//
-//
-//                    for (var i in result['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept']) {
-//                        var pv = result['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i];
-//                        dataElement.valueDomain.permissibleValues.push({
-//                                validValue: pv['$'].displayName
-//                                , valueCode: pv['$'].code
-//                                , codeSystemName: pv['$'].codeSystemName                       
-//                        });
-//                    }
-//                    return dataElement.save(function (err) {
-//                         if (err) {
-//                             console.log(err);
-//                         }
-//                         return dataElement;
-//                    });
-//                });
-//                callback("", dataElement);
-//            });       
-//        });
-//    });
-//};
 
 exports.saveForm = function(req, callback) {
     if (!req.body._id ) {

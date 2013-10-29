@@ -335,7 +335,34 @@ function DEListCtrl($scope, $http, CdeList, $modal) {
     $scope.isAllowed = function (cde) {
         return false;
     };
+    
+    $scope.openAddToForm = function (cde) {
+        $modal.open({
+          templateUrl: 'addToFormModalContent.html',
+          controller: AddToFormModalCtrl,
+          resolve: {
+              cde: function() {
+                  return cde;
+              }
+          }
+        });
+    };
 }
+
+var AddToFormModalCtrl = function($scope, MyCart, $modalInstance, cde, AddCdeToForm) {
+    $scope.cde = cde;
+    
+    MyCart.get(function(result) {
+        $scope.forms = result.forms;
+    });
+    $scope.addToForm = function(id) {
+        AddCdeToForm.add({cdeId: cde._id, formId: id});
+        $modalInstance.close();
+    };
+    $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+    };
+};
 
 function SaveCdeCtrl($scope, $modal, $http) { 
     $scope.checkVsacId = function(cde) {
@@ -451,25 +478,6 @@ function LinkVsacCtrl($scope, LinkToVsac) {
     };
 }
 
-function AddToFormCtrl($scope, MyCart, AddCdeToForm) {
-    $scope.radioModel = {
-        id: 0
-    };
-    $scope.openModal = function() {
-        MyCart.get(function(result) {
-            $scope.forms = result.forms;
-            $scope.showModal = true;
-        });          
-    };   
-    $scope.closeModal = function() {
-        $scope.showModal = false;
-    };
-    $scope.addToForm = function(cdeId) {
-        AddCdeToForm.add({cdeId: cdeId, formId: $scope.radioModel.id});
-        $scope.closeModal();
-    };
-}
-
 var HistoryModalCtrl = function ($scope, $modalInstance, PriorCdes, cdeId) {
     PriorCdes.getCdes({cdeId: cdeId}, function(dataElements) {
        $scope.priorCdes = dataElements;
@@ -478,7 +486,6 @@ var HistoryModalCtrl = function ($scope, $modalInstance, PriorCdes, cdeId) {
   $scope.ok = function () {
     $modalInstance.close();
   };
-
 };
 
 function AuditCtrl($scope) {
@@ -496,8 +503,7 @@ function AuditCtrl($scope) {
         modalInstance.result.then(function () { 
         }, function () {
         });
-    };
-    
+    };    
 }
 
 function EditCtrl($scope, $location, $routeParams, DataElement) {
@@ -604,8 +610,7 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
            $scope.numPages = result.pages; 
            $scope.forms = result.forms;
         });
-    } ;  
-    
+    } ;    
 }
 
 function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, PriorCdes, CdeDiff) {
@@ -745,12 +750,10 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
                 dec.conceptualDomain != null &&
                 dec.conceptualDomain.vsac != null &&
                 dec.conceptualDomain.vsac.id != null);
-    };
-    
-    
+    };    
 }
 
-function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
+function FormViewCtrl($scope, $routeParams, $http, Form, DataElement, CdesInForm) {
     $scope.reload = function(formId) {
         Form.get({formId: formId}, function(form) {
             $scope.form = form;
@@ -760,9 +763,17 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
                     for (var i = 0; i < form.modules[k].questions.length; i++) {
                         var q = form.modules[k].questions[i];
                         for (var j = 0; j < cdes.length; j++) {
-                            if (cdes[j].uuid === q.dataElement.de_uuid) {
+                            if (cdes[j]._id === q.dataElement.de_id) {
                                 q.cde = cdes[j];
                             }
+                        }
+                    }
+                }
+                for (var i = 0; i < form.questions.length; i++) {
+                        var q = form.questions[i];
+                        for (var j = 0; j < cdes.length; j++) {
+                        if (cdes[j]._id === q.dataElement.de_id) {
+                            q.cde = cdes[j];
                         }
                     }
                 }
@@ -797,20 +808,40 @@ function FormViewCtrl($scope, $routeParams, Form, CdesInForm) {
         $scope.reload($scope.form._id);
     }; 
     
-    $scope.sortUp = function(index) {
-        var qArray = $scope.form.questions;
-        qArray.splice(index - 1, 0, qArray.splice(index, 1)[0]);    
-        $scope.stageQuestion();
+    $scope.remove = function(array, index) {
+        array.splice(index, 1);
+        $scope.stageForm();
     };
     
-    $scope.sortDown = function(index) {
-        var qArray = $scope.form.questions;
+    $scope.sortUp = function(qArray, index) {
+        qArray.splice(index - 1, 0, qArray.splice(index, 1)[0]);    
+        $scope.stageForm();
+    };
+    
+    $scope.sortDown = function(qArray, index) {
         qArray.splice(index + 1, 0, qArray.splice(index, 1)[0]);    
-        $scope.stageQuestion();
+        $scope.stageForm();
     };
     
     $scope.insertSection = function(index) {
-        $scope.form.modules.splice(index, 0, {name: "Untitled Section"})
+        $scope.form.modules.splice(index, 0, {name: "Untitled Section", questions: []});
+    };
+        
+    $scope.autocomplete = function(viewValue) {
+        return $http.get("/autocomplete/" + viewValue).then(function(response) { 
+            return response.data;
+        }); 
+    }; 
+    $scope.addQuestionToSection = function(newQuestion, index) {
+        DataElement.get({deId: newQuestion._id}, function (de) {
+            $scope.form.modules[index].questions.push({
+                value: newQuestion.naming[0].designation
+                , instructions: ''
+                , dataElement: {de_id: newQuestion._id}
+                , cde: de
+            });
+        });
+        $scope.stageForm();
     };
 };
 
@@ -839,8 +870,7 @@ function CartCtrl($scope, MyCart, RemoveFromCart) {
                $scope.loadForms();
            });
        });
-    };
-    
+    }; 
 }
 
 function CreateFormCtrl($scope, $location, Form) {

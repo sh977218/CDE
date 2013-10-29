@@ -1,63 +1,76 @@
 <div class="container">
-<div class='row-fluid'>   
-    <div class="span3">
-        <ul class="nav nav-list pull-left">
-          <li><a ng-click="scrollTo('general')"><i class="icon-chevron-right"></i> General</a></li>
-          <li ng-repeat="module in form.modules"><a ng-click="scrollTo(module.name)"><i class="icon-chevron-right"></i> {{module.name}}</a></li>
-        </ul>
-    </div>
-    
-    <div class='span9'>
-    <h4 id='general'>General Details</h4>
-    <dl class="dl-horizontal">
-        <dt>Name: </dt><dd id="dd_name">{{form.name}}</dd>
-        <dt>Owner: </dt><dd id="dd_owner">{{form.stewardOrg.name}}</dd>
-        <dt>Instructions: </dt><dd id="dd_instructions">{{form.instructions || 'None'}}</dd>                
-        <dt>Created: </dt><dd>{{form.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>    
-        <dt id="dt_createdBy" ng-show="form.createdBy.username">Created By: </dt><dd id="dd_createdBy">{{form.createdBy.username}}</dd>
-    </dl>
-<h4>Sections</h4>
-<div ng-repeat="module in form.modules">
-    <a id="addSection-{{$index}}" class="btn btn-small" ng-click="insertSection($index)">Insert Section</a>
-    <h3 id="{{module.name}}">
-        <inline-edit model="module.name" is-allowed="isAllowed()" on-ok="stageForm()"> </inline-edit>
-    </h3>
-    <h4>Questions</h4>
-    <p ng-show="module.questions.length == 0">There are no questions in this section. You can add questions to a form by browsing CDEs and adding them to a form in your cart.</p>
-    <accordion>
-        <accordion-group ng-repeat="question in module.questions" >
-            <accordion-heading><i ng-show='!$first && isAllowed()' class="icon-arrow-up" ng-click="sortUp($index)"></i> <i ng-show='!$last && isAllowed()' class="icon-arrow-down" ng-click='sortDown($index)'></i> {{question.name}}</accordion-heading>
-             <div class="row-fluid">
-                <div class="span5">
-                    <h5>Question Details</h5>
-                    <dl class="dl-horizontal">
-                        <dt>Question: </dt><dd><inline-edit model="question.name" is-allowed="isAllowed()" on-ok="stageForm()"> </inline-edit></dd>
-                    </dl>
-                </div>
-                 <div class="span7">
-                    <h5>Data Element Details</h5>
-                    <dl class="dl-horizontal">
-                    <dt>Name: </dt><dd>{{question.cde.name}}</dd>
-                    <dt>Origin: </dt><dd>{{question.cde.origin}}</dd>
-                    <dt>Origin ID: </dt><dd>{{question.cde.originId}}</dd>
-                    <dt>Owner: </dt><dd>{{question.cde.stewardOrg.name}}</dd>
-                    <dt>Definition: </dt><dd>{{question.cde.definition}}</dd>
-                    <dt>Added to NLM: </dt><dd>{{question.cde.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-                    </dl>
-                </div>
-             </div>
-        </accordion-group>
-    </accordion>
-</div>
-<a id="addSection-{{form.modules.length}}" class="btn btn-small" ng-click="insertSection(form.modules.length)">Insert Section</a>
+    <div class='row-fluid'>   
+        <div class="span3">
+            <ul class="nav nav-list pull-left">
+                <li><a ng-click="scrollTo('general')"><i class="icon-chevron-right"></i> General</a></li>
+                <li ng-repeat="module in form.modules"><a ng-click="scrollTo(module.name)"><i class="icon-chevron-right"></i> {{module.name}}</a></li>
+            </ul>
+        </div>
 
-<div class="row-fluid">
-    <div class="span12" ng-show="form.unsaved">
-        <button class="btn cancel" ng-click="revert()">Discard Changes</button>
-        <button class="btn btn-primary" ng-click="save()">Save</button>
-    </div>
-</div>
+        <div class='span9'>
+            <h4 id='general'>General Details</h4>
+            <dl class="dl-horizontal">
+                <dt>Name: </dt><dd id="dd_name">{{form.name}}</dd>
+                <dt>Owner: </dt><dd id="dd_owner">{{form.stewardOrg.name}}</dd>
+                <dt>Instructions: </dt><dd id="dd_instructions">{{form.instructions|| 'None'}}</dd>                
+                <dt>Created: </dt><dd>{{form.created| date: 'MM/dd/yyyy @ h:mma'}}</dd>    
+                <dt id="dt_createdBy" ng-show="form.createdBy.username">Created By: </dt><dd id="dd_createdBy">{{form.createdBy.username}}</dd>
+            </dl>
 
-</div>
-</div>
+<!--            <accordion>
+                <accordion-group ng-repeat="question in form.questions" >
+                    <accordion-heading>
+                        <i ng-show='isAllowed()' class="icon-remove" ng-click="remove(form.questions, $index)"></i> 
+                        <i ng-show='!$first && isAllowed()' class="icon-arrow-up" ng-click="sortUp(form.questions, $index)"></i> 
+                        <i ng-show='!$last && isAllowed()' class="icon-arrow-down" ng-click='sortDown(form.questions, $index)'></i> 
+                        {{question.value}}
+                    </accordion-heading>
+                    <%- include questionView.ejs %>
+                </accordion-group>
+            </accordion>-->
+
+
+            <h4>Sections</h4>
+            <div ng-repeat="module in form.modules">
+<!--                <a id="addSection-{{$index}}" class="btn btn-small" ng-click="insertSection($index)"><i class="icon-plus"></i> Insert Section</a>-->
+                <h3 id="{{module.name}}">
+                    <inline-edit model="module.name" is-allowed="isAllowed()" on-ok="stageForm()"> </inline-edit>
+                </h3>
+                <h4>Questions</h4>
+                <p ng-show="module.questions.length === 0">There are no questions in this section.</p>
+                <accordion>
+                    <accordion-group ng-repeat="question in module.questions" >
+                        <accordion-heading>
+<!--                            <i ng-show='isAllowed()' class="icon-remove" ng-click="remove(module.questions, $index)"></i> 
+                            <i ng-show='!$first && isAllowed()' class="icon-arrow-up" ng-click="sortUp(module.questions, $index)"></i> 
+                            <i ng-show='!$last && isAllowed()' class="icon-arrow-down" ng-click='sortDown(module.questions, $index)'></i> -->
+                            {{question.value}}
+                        </accordion-heading>
+                        <%- include questionView.ejs %>
+                    </accordion-group>
+                </accordion>
+                <div ng-show="isAllowed()" id="newQuestionDiv-{{$index}}">
+                    <a ng-hide="addQuestionMode" class="btn btn-small" ng-click="addQuestionMode = true">
+                        <i class="icon-plus"></i> Insert Question</a>
+                    <div ng-show="addQuestionMode">
+                        <input type="text" typeahead="cde as cde.naming[0].designation for cde in autocomplete($viewValue)" 
+                               typeahead-wait-ms="500" ng-model="newQuestion">
+                        <button class="icon-ok" ng-click="addQuestionToSection(newQuestion, $index); newQuestion = ''; addQuestionMode = false"/>
+                        <button class="icon-remove" ng-click="newQuestion = ''; addQuestionMode = false"/>
+                    </div>
+                </div>
+                <hr/>
+            </div>
+            <a id="addSection" class="btn btn-small" ng-click="insertSection(form.modules.length)" ng-show="isAllowed()">
+                <i class="icon-plus"></i> Insert Section</a>
+
+            <div class="row-fluid">
+                <div class="span12" ng-show="form.unsaved">
+                    <button class="btn cancel" ng-click="revert()">Discard Changes</button>
+                    <button class="btn btn-primary" ng-click="save()">Save</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>

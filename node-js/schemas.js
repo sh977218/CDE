@@ -96,13 +96,13 @@ var questionSchema = mongoose.Schema ({
     value: String
     , instructions: String
     , dataElement: {
-        description: String
-        , de_uuid: String
+        de_id: String
     }
 }, {_id: false});
 
 var moduleSchema = mongoose.Schema ({
     name: String
+    , instructions: String
     , questions: [questionSchema]
 }, {_id: false});
 
@@ -115,6 +115,7 @@ var formSchema = {
     }
     , updated: Date
     , created: Date
+    , questions: [questionSchema]
     , modules: [moduleSchema]
     , createdBy: {
         userId: mongoose.Schema.Types.ObjectId

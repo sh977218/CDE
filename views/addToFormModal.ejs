@@ -1,17 +1,14 @@
-<div modal="showModal" close="closeModal()" opts="modalOpts">
-    <div class="modal-header">
-        <h4>Forms in Your Cart</h4>
-        <div>You can add a CDE to any form currently in your cart.</div> 
-    </div>
-    <div class="modal-body">
-        <div class="btn-group-vertical" data-toggle="buttons-radio">
-            <div ng-repeat="form in forms">
-                <button type="button" class="btn" ng-model="radioModel.id" btn-radio="form._id">{{form.name}}</button>
-            </div>
+<div class="modal-header">
+    <h4>Forms in Your Cart</h4>
+    <div>You can add a CDE to any form currently in your cart.</div> 
+</div>
+<div class="modal-body">
+    <div class="btn-group-vertical" data-toggle="buttons-radio">
+        <div ng-repeat="form in forms">
+            <button type="button" class="btn" ng-model="radioModel.id" btn-radio="form._id" ng-click="addToForm(form._id)">{{form.name}}</button>
         </div>
     </div>
-    <div class="modal-footer">
-        <button class="btn btn-warning cancel" ng-click="closeModal()">Cancel</button>
-        <button class="btn btn-primary cancel" ng-click="addToForm(cde._id)" ng-disabled="radioModel.id == 0">Add To Form</button>
-    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning cancel" ng-click="cancel()">Cancel</button>
 </div>

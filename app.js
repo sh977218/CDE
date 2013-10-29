@@ -329,25 +329,30 @@ app.post('/dataelement', function (req, res) {
     }
 });
 
-app.get('/cdesinform/:formId', function (req, res) {
+app.get('/cdesinform/:formId', function(req, res) {
     mongo_data.formById(req.params.formId, function(err, form) {
-      if (!form) {
-          res.send("The requested form does not exist.");
-      } else {
-          var idList = [];
-          if (form.modules) {
-            for (var j=0; j < form.modules.length; j++) {
-              for (var i=0; i < form.modules[j].questions.length; i++) {
-                  if (form.modules[j].questions[i].dataElement.de_uuid) {
-                      idList.push(form.modules[j].questions[i].dataElement.de_uuid);
-                  }
-              }
+        if (!form) {
+            res.send("The requested form does not exist.");
+        } else {
+            var idList = [];
+            if (form.modules) {
+                for (var j = 0; j < form.modules.length; j++) {
+                    for (var i = 0; i < form.modules[j].questions.length; i++) {
+                        if (form.modules[j].questions[i].dataElement.de_id) {
+                            idList.push(form.modules[j].questions[i].dataElement.de_id);
+                        }
+                    }
+                }
             }
-          }
-          mongo_data.cdesByUuidList(idList, function(err, cdes) {
-             res.send(cdes); 
-          });
-      }
+            for (var i = 0; i < form.questions.length; i++) {
+                if (form.questions[i].dataElement.de_id) {
+                    idList.push(form.questions[i].dataElement.de_id);
+                }
+            }
+            mongo_data.cdesByIdList(idList, function(err, cdes) {
+                res.send(cdes);
+            });
+        }
     });
 });
 
@@ -356,7 +361,10 @@ app.post('/addcdetoform/:cdeId/:formId', function (req, res) {
       if (!form) {
           res.send("The requested form does not exist.");
       } else {
-          if (!req.user || !req.user.orgAdmin || req.user.orgAdmin.indexOf(form.stewardOrg.name) < 0) {
+          if (!req.user 
+                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(form.stewardOrg.name) < 0)
+                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(form.stewardOrg.name) < 0)
+                  ) {
             res.send("You are not authorized to do this.");           
           } else {
             mongo_data.cdeById(req.body.cdeId, function(err, cde) {
@@ -364,9 +372,9 @@ app.post('/addcdetoform/:cdeId/:formId', function (req, res) {
                     res.send("The requested CDE does not exist.");
                 } else {
                     var question = {
-                        value: ''
+                        value: cde.naming[0].designation
                         , instructions: ''
-                        , cde_uuid: cde.uuid
+                        , dataElement: {de_id: cde._id}
                     };
                     form.questions.push(question);
                     mongo_data.save(form, function(err, form) {
@@ -394,8 +402,8 @@ app.post('/linktovsac', function (req, res) {
     return cdesvc.linktovsac(req, res);
 });
 
-app.get('/autocomplete', function(req, res) {
-    return cdesvc.name_autocomplete(req, res);
+app.get('/autocomplete/:name', function(req, res) {
+    return cdesvc.name_autocomplete(req.params.name, res);
 });
 
 app.get('/autocomplete/form', function(req, res) {

@@ -7,11 +7,11 @@ import org.testng.annotations.Test;
 
 public class FormTest extends NlmCdeBaseTest {
     
-    private static String testFormName = "CtepTestForm1";
-    
+    private static final String testFormName = "CtepTestForm1";
+        
     @Test
     public void createForm() {
-        loginAs(ctepCurator_username, ctepCurator_password);
+        loginAs(ctepCurator_username, ctepCurator_password);        
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("Form")).click();
         findElement(By.name("form.name")).sendKeys(testFormName);
@@ -30,7 +30,7 @@ public class FormTest extends NlmCdeBaseTest {
     @Test
         (dependsOnMethods = {"createForm"})
     public void addRemoveCart() {
-        loginAs(ctepCurator_username, ctepCurator_password);
+        loginAs(ctepCurator_username, ctepCurator_password);        
         driver.get(baseUrl + "/");
         findElement(By.id("formsLink")).click();
         findElement(By.name("search.name")).sendKeys(testFormName);
@@ -49,17 +49,47 @@ public class FormTest extends NlmCdeBaseTest {
     @Test
         (dependsOnMethods = {"createForm"})
     public void addSection() {
-        loginAs(ctepCurator_username, ctepCurator_password);
+        loginAs(ctepCurator_username, ctepCurator_password);        
         goToFormByName(testFormName);
-        findElement(By.id("addSection-0")).click();
+        addSection("Section 1 of the form");
+        addSection("Section 2 - Beyond the Intro");
+        goToFormByName(testFormName);
+        Assert.assertTrue(textPresent("Section 1 of the form"));
+        logout();
+    }
+    
+    @Test
+        (dependsOnMethods = {"addSection"})    
+    public void addQuestions() {
+        loginAs(ctepCurator_username, ctepCurator_password);        
+        goToFormByName(testFormName);
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-0']/a")).click();
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-0']/div/input")).sendKeys("Radiogra");
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-0']/div/ul/li")).click();
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-0']/div/button[@class = 'icon-ok']")).click();
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/a")).click();
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/input")).sendKeys("Genotyp");
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/ul/li")).click();
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/button[@class = 'icon-ok']")).click();
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/a")).click();
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/input")).sendKeys("Alkal");
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/ul/li")).click();
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/button[@class = 'icon-ok']")).click();
+        findElement(By.cssSelector("button.btn.btn-primary")).click(); 
+        goToFormByName(testFormName);
+        Assert.assertTrue(textPresent("Radiograph Evidence Type"));
+        Assert.assertTrue(findElement(By.linkText("Genotype Therapy Basis Mutation Analysis Indicator")).getLocation().y 
+                < findElement(By.linkText("Laboratory Procedure Alkaline Phosphatase Result Date")).getLocation().y);
+        logout();
+    }
+
+    private void addSection(String sectionName) {
+        findElement(By.id("addSection")).click();
         findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/div/div[1]/i")).click();
         findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/div/div[2]/input")).clear();
-        findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/div/div[2]/input")).sendKeys("Section 1 of this form");
+        findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/div/div[2]/input")).sendKeys(sectionName);
         findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/div/div[2]/button[@class = 'icon-ok']")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
-        goToFormByName(testFormName);
-        Assert.assertTrue(textPresent("Section 1 of this form"));
-        logout();
     }
     
 }

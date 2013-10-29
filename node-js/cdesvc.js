@@ -118,16 +118,15 @@ exports.save = function (req, res) {
     });
 };  
 
-exports.name_autocomplete = function(req, res) {
-    var search = req.query["search"]    
-    if (search == "undefined" || search.name == "undefined") {
+exports.name_autocomplete = function(name, res) {
+    if (name == "undefined") {
         res.send("");
     } else {
-        mongo_data.name_autocomplete(JSON.parse(search), function(err, nameList) {
+        mongo_data.name_autocomplete(name, function(err, nameList) {
             if (err) {
                 res.send("ERROR");
             } else {
-                res.send({names: nameList});
+                res.send(nameList);
             }
          });
     }
@@ -142,7 +141,7 @@ exports.name_autocomplete_form = function(req, res) {
             if (err) {
                 res.send("ERROR");
             } else {
-                res.send({names: nameList});
+                res.send(namelist);
             }
          });
     }
