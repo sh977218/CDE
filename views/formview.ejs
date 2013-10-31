@@ -34,6 +34,8 @@
             <div ng-repeat="module in form.modules">
 <!--                <a id="addSection-{{$index}}" class="btn btn-small" ng-click="insertSection($index)"><i class="icon-plus"></i> Insert Section</a>-->
                 <h3 id="{{module.name}}">
+                    <i id="sectionUp-{{$index}}" ng-show='!$first && isAllowed()' class="icon-arrow-up" ng-click="sectionUp($index)"></i> 
+                    <i id="sectionDown-{{$index}}" ng-show='!$last && isAllowed()' class="icon-arrow-down" ng-click='sectionDown($index)'></i> 
                     <inline-edit model="module.name" is-allowed="isAllowed()" on-ok="stageForm()"> </inline-edit>
                 </h3>
                 <h4>Questions</h4>

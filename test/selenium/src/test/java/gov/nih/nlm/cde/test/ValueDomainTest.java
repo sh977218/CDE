@@ -58,9 +58,9 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();        
-        findElement(By.xpath("//td[@id='pv-0']/inline-edit/div/div[1]/i")).click();
-        findElement(By.xpath("//td[@id='pv-0']/inline-edit/div/div[2]/input")).sendKeys(" added to pv");
-        findElement(By.xpath("//td[@id='pv-0']/inline-edit/div/div[2]/button[1]")).click();
+        findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[1]/i")).click();
+        findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[2]/input")).sendKeys(" added to pv");
+        findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[2]/button[1]")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Changed PV");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
@@ -118,10 +118,10 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Right Middle Abdomen"));
         findElement(By.id("pvRemove-8")).click();
         findElement(By.id("addPv")).click();
-        findElement(By.xpath("//td[@id='pv-10']/inline-edit/div/div[1]/i")).click();
-        findElement(By.xpath("//td[@id='pv-10']/inline-edit/div/div[2]/input")).clear();
-        findElement(By.xpath("//td[@id='pv-10']/inline-edit/div/div[2]/input")).sendKeys("New PV");
-        findElement(By.xpath("//td[@id='pv-10']/inline-edit/div/div[2]/button[1]")).click();
+        findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[1]/i")).click();
+        findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[2]/input")).clear();
+        findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[2]/input")).sendKeys("New PV");
+        findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[2]/button[1]")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Changed PV");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);

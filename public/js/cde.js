@@ -17,16 +17,16 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
     }).
     directive('inlineEdit', function() {
     return {
-        template: '<div >' + 
-                        '<div ng-hide="editMode">' + 
+        template: '<span >' + 
+                        '<span ng-hide="editMode">' + 
                             '<i ng-show="isAllowed()" class="icon-pencil" ng-click="value=model; editMode=true"></i> {{model}}' + 
-                        '</div>' + 
-                        '<div ng-show="editMode">' + 
+                        '</span>' + 
+                        '<span ng-show="editMode">' + 
                             '<input type="text" ng-model="value" />' + 
                             '<button class="icon-ok" ng-click="model = value; editMode = false; onOk()"/>' + 
                             '<button class="icon-remove" ng-click="editMode = false"/>' +
-                        '</div>' +       
-                    '</div>'
+                        '</span>' +       
+                    '</span>'
                 ,
         restrict: 'E',
         scope: {

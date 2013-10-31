@@ -27,7 +27,7 @@ fs.readFile(process.argv[2], function(err, data) {
     parser.parseString(data, function (err, result) {
 
     for (var i in result.DataElementsList.DataElement) {
-        console.log("---- " + i);
+//        console.log("---- " + i);
         var cadsrDE = result.DataElementsList.DataElement[i];
         
         if (cadsrDE.WORKFLOWSTATUS == 'DRAFT NEW') {

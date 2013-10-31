@@ -98,7 +98,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         loginAs(test_username, test_password);
         goToCdeByName("name of testuser CDE 1");
         findElement(By.cssSelector("i.icon-pencil")).click();
-        findElement(By.xpath("//inline-edit/div/div[2]/input")).sendKeys("[name change number 1]");
+        findElement(By.xpath("//inline-edit/span/span[2]/input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector("button.icon-ok")).click();
         findElement(By.cssSelector("inline-area-edit.ng-isolate-scope.ng-scope > div > div.ng-binding > i.icon-pencil")).click();
         findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("[def change number 1]");

@@ -822,7 +822,17 @@ function FormViewCtrl($scope, $routeParams, $http, Form, DataElement, CdesInForm
         qArray.splice(index + 1, 0, qArray.splice(index, 1)[0]);    
         $scope.stageForm();
     };
+
+    $scope.sectionUp = function(index) {
+        $scope.form.modules.splice(index - 1, 0, $scope.form.modules.splice(index, 1)[0]);    
+        $scope.stageForm();
+    };
     
+    $scope.sectionDown = function(index) {
+        $scope.form.modules.splice(index + 1, 0, $scope.form.modules.splice(index, 1)[0]);    
+        $scope.stageForm();
+    };
+        
     $scope.insertSection = function(index) {
         $scope.form.modules.splice(index, 0, {name: "Untitled Section", questions: []});
     };

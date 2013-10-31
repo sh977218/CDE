@@ -19,12 +19,10 @@ public class NlmCdeBaseTest {
     protected static String ctepCurator_password = "pass";
     protected static String test_username = "testuser";
     protected static String test_password = "Test123";
-    protected static String test_reg_auth = "OrgTest1";
-    
+    protected static String test_reg_auth = "OrgTest1";    
     
     public static WebDriverWait wait;
 
-    
     @BeforeTest
     public void setBaseUrl() {
         driver = new FirefoxDriver();

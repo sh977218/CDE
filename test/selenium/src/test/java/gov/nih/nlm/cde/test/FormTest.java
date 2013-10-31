@@ -99,6 +99,26 @@ public class FormTest extends NlmCdeBaseTest {
         logout();
     }
     
+    @Test(dependsOnMethods = {"addSection", "removeQuestion"})
+    public void reorderSections() {
+        loginAs(ctepCurator_username, ctepCurator_password);
+        goToFormByName(testFormName);
+        Assert.assertTrue(findElement(By.id("Section 1 of the form")).getLocation().y
+                < findElement(By.id("Section 2 - Beyond the Intro")).getLocation().y);
+        findElement(By.id("sectionDown-0")).click();
+        Assert.assertTrue(findElement(By.id("Section 1 of the form")).getLocation().y
+                > findElement(By.id("Section 2 - Beyond the Intro")).getLocation().y);
+        findElement(By.id("sectionUp-1")).click();
+        Assert.assertTrue(findElement(By.id("Section 1 of the form")).getLocation().y
+                < findElement(By.id("Section 2 - Beyond the Intro")).getLocation().y);
+        findElement(By.id("sectionDown-0")).click();
+        findElement(By.cssSelector("button.btn.btn-primary")).click();
+        goToFormByName(testFormName);
+        Assert.assertTrue(findElement(By.id("Section 1 of the form")).getLocation().y
+                > findElement(By.id("Section 2 - Beyond the Intro")).getLocation().y);                
+        logout();
+    }
+    
     @Test
         (dependsOnMethods = {"addQuestions"})
     public void removeQuestion() {
@@ -114,10 +134,10 @@ public class FormTest extends NlmCdeBaseTest {
 
     private void addSection(String sectionName) {
         findElement(By.id("addSection")).click();
-        findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/div/div[1]/i")).click();
-        findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/div/div[2]/input")).clear();
-        findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/div/div[2]/input")).sendKeys(sectionName);
-        findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/div/div[2]/button[@class = 'icon-ok']")).click();
+        findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/span/span[1]/i")).click();
+        findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/span/span[2]/input")).clear();
+        findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/span/span[2]/input")).sendKeys(sectionName);
+        findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/span/span[2]/button[@class = 'icon-ok']")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
     }
 
