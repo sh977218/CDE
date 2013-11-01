@@ -38,6 +38,12 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(csElements.get(2).getText(), "C3D");
         Assert.assertEquals(csElements.get(3).getText(), "caBIG");
     } 
+    
+    @Test
+    public void unitOfMeasure() {
+        goToCdeByName("Laboratory Procedure Blood");
+        Assert.assertTrue(textPresent("mg/dL"));
+    }
 
     @Test
     public void searchByClassification() {

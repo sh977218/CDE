@@ -71,6 +71,7 @@ var deJsonSchema = {
     , valueDomain: {
         name: String
         , definition: String
+        , uom: String
         , vsacOid: String
         , permissibleValues: [permissibleValueSchema]
     }

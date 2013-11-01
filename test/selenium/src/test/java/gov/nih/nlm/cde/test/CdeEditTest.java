@@ -90,6 +90,9 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("inline-area-edit.ng-isolate-scope.ng-scope > div > div.ng-binding > i.icon-pencil")).click();
         findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("[def change number 1]");
         findElement(By.xpath("//inline-area-edit/div/div[2]/button")).click();
+        findElement(By.xpath("//inline-edit[@id = 'uomEdit']//i[@class = 'icon-pencil']")).click();
+        findElement(By.xpath("//inline-edit[@id = 'uomEdit']//input")).sendKeys("myUom");
+        findElement(By.xpath("//inline-edit[@id = 'uomEdit']//button[@class = 'icon-ok']")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
         Assert.assertTrue(textPresent("This version number has already been used"));
@@ -104,6 +107,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("[name change number 1]"));
         Assert.assertTrue(textPresent("[def change number 1]"));
         Assert.assertTrue(textPresent("1.0alpha2"));
+        Assert.assertTrue(textPresent("myUom"));
         // test that label and its value are aligned. 
         Assert.assertEquals(findElement(By.id("dt_createdBy")).getLocation().y, findElement(By.id("dd_createdBy")).getLocation().y);
         logout();

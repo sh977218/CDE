@@ -60,6 +60,10 @@ fs.readFile(process.argv[2], function(err, data) {
 //            , formUsageCounter: 0
         });
         
+        if (cadsrDE.VALUEDOMAIN[0].UnitOfMeasure[0]['$'] == null) {
+            newDE.valueDomain.uom = cadsrDE.VALUEDOMAIN[0].UnitOfMeasure[0];
+        }
+        
         newDE.naming = [];
         var defaultNaming = {
            designation: cadsrDE.LONGNAME
