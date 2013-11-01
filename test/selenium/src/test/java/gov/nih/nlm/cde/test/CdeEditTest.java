@@ -12,21 +12,8 @@ import org.testng.annotations.Test;
  * @author ludetc
  */
 public class CdeEditTest extends NlmCdeBaseTest {    
-    
+        
     @Test
-    public void selfRegister() {
-        driver.get(baseUrl + "/");
-        findElement(By.linkText("Log In")).click();
-        findElement(By.linkText("Sign up")).click();
-        findElement(By.name("username")).sendKeys(test_username);
-        findElement(By.name("uPassword")).sendKeys(test_password);
-        findElement(By.name("ucPassword")).sendKeys(test_password);
-        findElement(By.cssSelector("input.btn")).click();
-        loginAs(test_username, test_password);
-        logout();
-    }
-    
-    @Test (dependsOnMethods = {"selfRegister"})
     public void comments() {
         loginAs(test_username, test_password);
         goToCdeByName("Hospital Confidential Institution Referred From");
@@ -56,7 +43,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         logout();
     }
     
-    @Test(dependsOnMethods = {"selfRegister", "addOrg"})
+    @Test(dependsOnMethods = {"addOrg"})
     public void promoteOrgAdmin() {
         loginAs(nlm_username, nlm_password);
         findElement(By.linkText("Account")).click();

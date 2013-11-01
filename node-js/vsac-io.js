@@ -3,6 +3,7 @@ var https = require('https')
     , config = require('../config')
     , fs = require('fs')
     , util = require('util')
+    , request = require('request')
 ;
 
 var envconfig = {};
@@ -61,6 +62,21 @@ var valueSetOptions = {
 };
 
 var vsacTGT = '';
+
+exports.umlsAuth = function(user, password, cb) {
+    request.post(
+        'https://uts-ws.nlm.nih.gov/restful/isValidUMLSUser',
+        { form: {
+        licenseCode:  config.umls.licenseCode
+        , user: user
+        , password: password
+        }}, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            cb(body);
+        }
+    }
+);
+};
 
 exports.getTGT = function (cb) {
     var req = https.request(tgtOptions, function(res) {

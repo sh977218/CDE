@@ -12,6 +12,7 @@ var express = require('express')
   , mongo_data = require('./node-js/mongo-data')
   , util = require('util')
   , xml2js = require('xml2js')
+  , vsac = require('./node-js/vsac-io')
   ;
 
 function findById(id, fn) {
@@ -45,12 +46,29 @@ passport.use(new LocalStrategy(
       // username, or the password is not correct, set the user to `false` to
       // indicate failure and set a flash message. Otherwise, return the
       // authenticated `user`.
-      findByUsername(username, function(err, user) {
-        if (err) { return done(err); }
-        if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
-        if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
-        return done(null, user);
-      });
+        vsac.umlsAuth(username, password, function(result) {
+            if (result.indexOf("true") > 0) {
+                findByUsername(username, function(err, user) {
+                    if (err) { return done(err); }
+                    // username password combo is good, but user is not here, so register him.
+                    if (!user) {
+                        mongo_data.addUser({username: username, password: "umls"}, function(newUser) {
+                            console.log("new user registered");
+                            return done(null, newUser);
+                        });
+                    } else {
+                        return done(null, user);
+                    }
+                });
+            } else {
+                findByUsername(username, function(err, user) {
+                    if (err) { return done(err); }
+                    if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
+                    if (user.password != password) { return done(null, false, { message: 'Invalid password' }); } 
+                    return done(null, user);
+                })                
+            }
+        });
     });
   }
 ));
@@ -397,7 +415,6 @@ app.get('/user/me', function(req, res) {
     }
 });
 
-
 app.post('/linktovsac', function (req, res) {
     return cdesvc.linktovsac(req, res);
 });
@@ -421,7 +438,6 @@ app.get('/classificationtree', function(req, res) {
 });
 
 // Get VSAC TGT.
-var vsac = require('./node-js/vsac-io');
 vsac.getTGT(function(tgt) {
 });
 

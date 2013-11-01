@@ -3,16 +3,24 @@
 <% } %>
 <div class="container">
     <div class="row-fluid">
-        <div>{{message}}</div>   
-<form action="/login" method="post" class="span6">
-    <fieldset>
-        <label>Username:</label>
-        <input type="text" name="username"/>
-        <label>Password:</label>
-        <input type="password" name="password"/><br>
-        <input type="submit" value="Submit" class="btn"/>
-    </fieldset>
-    <p><small>Hint - bob / secret</small></p>
-    <a href="#/signup">Sign up</a>
-</form>
-</div>
+        <div>{{message}}</div>  
+        <div><b>Please use your UMLS account to login</b><br/><br/></div>
+        <form action="/login" method="post" class="span6">
+            <fieldset>
+                <label>Username:</label>
+                <input type="text" name="username"/>
+                <label>Password:</label>
+                <input type="password" name="password"/><br>
+                <input type="submit" value="Submit" class="btn"/>
+            </fieldset>
+            <p>Don't have a UMLS license/account?<br/>
+                <a href="https://uts.nlm.nih.gov//license.html" class="vsloginLink" target="_blank">
+                    <span  class="vsloginLink">Request One Now</span></a>
+                <br/> 
+                <a href="https://uts.nlm.nih.gov/license.html#emailUsername" class="vsloginLink" target="_blank">
+                    <span  class="vsloginLink">Forgot Username</span></a>
+                <br/>        
+                <a href="https://uts.nlm.nih.gov/license.html#emailTemporaryPassword" class="vsloginLink" target="_blank">
+                    <span  class="vsloginLink">Forgot Password</span></a> </p>
+        </form>
+    </div>

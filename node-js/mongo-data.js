@@ -38,7 +38,7 @@ exports.userById = function(id, callback) {
 exports.addUser = function(user, callback) {
     var newUser = new User(user);
     newUser.save(function() {
-        callback();
+        callback(newUser);
     });
 };
 

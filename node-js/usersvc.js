@@ -7,7 +7,6 @@ exports.register = function(req, res) {
         if (found) {
             res.send("user already exists");
         } else {
-            console.log(req.body);
             var user = {username: req.body.username
                         , password: req.body.password};
             mongo_data.addUser(user, function() {
