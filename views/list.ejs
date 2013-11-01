@@ -26,27 +26,6 @@
                 <%- include concepts.ejs %>
             </div>
             <div class="span4">
-                <h4>Permissible Values</h4>
-                <div ng-controller="LinkVsacCtrl">
-                    <dl class="dl-horizontal">
-                        <dt>Value Set Name: </dt><dd><i class="icon-link" ng-show="isAllowed(cde)" ng-click="showLinkModal=true" tooltip="Link to VSAC "></i> {{cde.valueDomain.name}}</dd>
-                    </dl>
-                    <script type="text/ng-template" id="vsacLinkModalContent.html">
-                        <div class="modal-header">
-                            <h4>Save</h4>
-                        </div>
-                        <div class="modal-body">
-                            <label for="vsId">VSAC Value Set OID</label>
-                            <input type="text" ng-model="vsId" name="vsId" required></input><br />
-                            <label for="changeNote">Change Note</label>
-                            <textArea name="changeNote" ng-model="cde.changeNote" placeholder="Optional Change Note"></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn cancel" ng-click="showLinkModal = false">Cancel</button>
-                            <button class="btn btn-warning cancel" ng-click="linktovsac(cde, vsId); showLinkModal = false">Save</button>
-                        </div>
-                    </script>
-                </div>
                 <%- include valueDomainView.ejs %>
             </div>
           </div>
