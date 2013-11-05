@@ -8,20 +8,28 @@
 # processname: mongodb
 #
 
+
+## !! TODO
+## Confirm Log path unix team
+## find a better place for the mongod bin
+## find a better place for --dbpath
+## Got more space for --dbpath, then remove --smallfiles
+
+
 # Source function library
 . /etc/rc.d/init.d/functions
 
 if [ -f /etc/sysconfig/mongodb ]; then
-   . /etc/sysconfig/mongodb
+	. /etc/sysconfig/mongodb
 fi
 
 prog="mongod"
-mongod="/usr/local/mongodb/bin/mongod"
+mongod="/usr/nlm/cde/mongodb-linux-x86_64-2.4.4/bin/mongod"
 RETVAL=0
 
 start() {
 	echo -n $"Starting $prog: "
-	daemon $mongod "--fork --logpath /var/log/mongodb.log --logappend 2>&1 >>/var/log/mongodb.log"
+	daemon $mongod "--fork --logpath /var/log/mongodb.log --dbpath /usr/nlm/cde/mongo-data --smallfiles --logappend 2>&1 >>/var/log/mongodb.log"
 	RETVAL=$?
 	echo
 	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/$prog
@@ -29,49 +37,49 @@ start() {
 }
 
 stop() {
-       echo -n $"Stopping $prog: "
-       killproc $prog
-       RETVAL=$?
-       echo
-       [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$prog
-       return $RETVAL
+	echo -n $"Stopping $prog: "
+	killproc $prog
+	RETVAL=$?
+	echo
+	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$prog
+	return $RETVAL
 }
 
 reload() {
-	 echo -n $"Reloading $prog: "
-	 killproc $prog -HUP
-	 RETVAL=$?
-	 echo
-	 return $RETVAL
+	echo -n $"Reloading $prog: "
+	killproc $prog -HUP
+	RETVAL=$?
+	echo
+	return $RETVAL
 }
 
 case "$1" in
-     start)
-	start
+	start)
+		start
 		;;
-		stop)
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		start
+		;;
+	condrestart)
+		if [ -f /var/lock/subsys/$prog ]; then
 			stop
-				;;
-				restart)
-					stop
-						start
-							;;
-							condrestart)
-								if [ -f /var/lock/subsys/$prog ]; then
-								     stop
-										start
-											fi
-												;;
-												reload)
-													reload
-														;;
-														status)
-															status $mongod
-															       RETVAL=$?
-															        ;;
-																*)
-																 echo $"Usage: $0 {start|stop|restart|condrestart|reload|status}"
-																      RETVAL=1
+			start
+		fi
+		;;
+	reload)
+		reload
+		;;
+	status)
+		status $mongod
+		RETVAL=$?
+		;;
+	*)
+		echo $"Usage: $0 {start|stop|restart|condrestart|reload|status}"
+		RETVAL=1
 esac
 
 exit $RETVAL
