@@ -2,9 +2,14 @@
 # myapp daemon
 # chkconfig: 345 20 80
 
+## Script will expect the following to be set
+## MONGO_URI (if not set, will default to mongodb://localhost/nlmcde)
+## PORT (or will default to 3000, which is fine)
+## VSAC_USERNAME (has to be valid)
+## VSAC_PASSWORD (valid password)
+
 ## !! TODO
 ## Find a better place for node
-
 
 DAEMON_PATH="/usr/nlm/cde/code/nlm-cde"
 
