@@ -13,7 +13,7 @@
 
 DAEMON_PATH="/usr/nlm/cde/code/nlm-cde"
 
-DAEMON=node
+DAEMON=/usr/nlm/cde/node-v0.10.12-linux-x64/bin/node
 DAEMONOPTS="app"
 
 NAME=cdeapp
