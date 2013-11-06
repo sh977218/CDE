@@ -14,9 +14,10 @@ var express = require('express')
   , xml2js = require('xml2js')
   , vsac = require('./node-js/vsac-io')
   , winston = require('winston')
+  , envconfig = require('./envconfig.js')
   ;
 
-
+var logdir = process.env.LOGDIR || envconfig.logdir || __dirname;
 
 function findById(id, fn) {
     return mongo_data.userById(id, function(err, user) {
@@ -84,7 +85,7 @@ var expressLogger = new (winston.Logger)({
       json: true,
       colorize: true
       , level: 'verbose'
-      , filename: __dirname + "/expressLog.log"
+      , filename: logdir + "/expressLog.log"
       , maxsize: 10000000
       , maxFiles: 10
     })
@@ -102,7 +103,7 @@ var expressErrorLogger = new (winston.Logger)({
       json: true,
       colorize: true
       , level: 'warn'
-      , filename: __dirname + "/expressErrorLog.log"
+      , filename: logdir + "/expressErrorLog.log"
       , maxsize: 10000000
       , maxFiles: 10
     })
@@ -515,31 +516,6 @@ app.get('/vsacBridge/:vsacId', function(req, res) {
        }
    }) ;
 });
-
-//
-//var logger = new (winston.Logger)({
-//    transports: [
-//        new winston.transports.Console(
-//            {
-//                level: 'debug',
-//                colorize: true,
-//                timestamp: true
-//            }),
-//        new winston.transports.File(
-//            {
-//                level: 'debug',
-//                colorize: false,
-//                timestamp: true,
-//                json: true,
-//                filename: __dirname + '/mylog.log',
-//                handleExceptions: true
-//            })
-//    ]
-//    , exitOnError: false
-//});
-//logger.exitOnError = false;
-//
-//logger.log("hello");
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
