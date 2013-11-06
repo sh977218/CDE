@@ -13,7 +13,10 @@ var express = require('express')
   , util = require('util')
   , xml2js = require('xml2js')
   , vsac = require('./node-js/vsac-io')
+  , winston = require('winston')
   ;
+
+
 
 function findById(id, fn) {
     return mongo_data.userById(id, function(err, user) {
@@ -75,12 +78,49 @@ passport.use(new LocalStrategy(
 
 var app = express();
 
+var expressLogger = new (winston.Logger)({
+  transports: [
+    new winston.transports.File({
+      json: true,
+      colorize: true
+      , level: 'verbose'
+      , filename: __dirname + "/expressLog.log"
+      , maxsize: 10000000
+      , maxFiles: 10
+    })
+    , new winston.transports.Console(
+        {
+            level: 'verbose',
+            colorize: true,
+            timestamp: true
+        })          
+  ]
+});
+var expressErrorLogger = new (winston.Logger)({
+  transports: [
+    new winston.transports.File({
+      json: true,
+      colorize: true
+      , level: 'warn'
+      , filename: __dirname + "/expressErrorLog.log"
+      , maxsize: 10000000
+      , maxFiles: 10
+    })
+  ]
+});
+
+
+var winstonStream = {
+    write: function(message, encoding){
+        expressLogger.info(message);
+    }
+};
+
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(express.favicon());
-app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
@@ -88,8 +128,13 @@ app.use(express.session({ secret: 'omgnodeworks' }));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.logger({stream:winstonStream}));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(function(err, req, res, next){
+  expressErrorLogger.error(err.stack);
+  res.send(500, 'Something broke!');
+});
 
 // development only
 if ('development' == app.get('env')) {
@@ -437,6 +482,23 @@ app.get('/classificationtree', function(req, res) {
     });
 });
 
+app.post('/addAttachmentsToCde', function(req, res) {
+    if (req.files.uploadedFiles.length > 0) {
+        for (var i = 0; i < req.files.uploadedFiles.length; i++) {
+            mongo_data.addCdeAttachment(req.files.uploadedFiles[i], req.user, "some comment", req.body.de_id);
+        }
+    }    
+    res.send("done");     
+});
+
+app.get('/data/:imgtag', function(req, res) {
+    var x = fg.goo.name;
+  mongo_data.getFile( function(error,data) {
+     res.writeHead('200', {'Content-Type': 'image/png'});
+     res.end(data,'binary');
+  }, res, req.params.imgtag );
+});
+
 // Get VSAC TGT.
 vsac.getTGT(function(tgt) {
 });
@@ -453,6 +515,31 @@ app.get('/vsacBridge/:vsacId', function(req, res) {
        }
    }) ;
 });
+
+//
+//var logger = new (winston.Logger)({
+//    transports: [
+//        new winston.transports.Console(
+//            {
+//                level: 'debug',
+//                colorize: true,
+//                timestamp: true
+//            }),
+//        new winston.transports.File(
+//            {
+//                level: 'debug',
+//                colorize: false,
+//                timestamp: true,
+//                json: true,
+//                filename: __dirname + '/mylog.log',
+//                handleExceptions: true
+//            })
+//    ]
+//    , exitOnError: false
+//});
+//logger.exitOnError = false;
+//
+//logger.log("hello");
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
