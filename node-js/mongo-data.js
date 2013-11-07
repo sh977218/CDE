@@ -3,7 +3,9 @@ var mongoose = require('mongoose')
     , vsac_io = require('./vsac-io')
     , xml2js = require('xml2js')
     , uuid = require('node-uuid')
-;
+    , Grid = require('gridfs-stream')
+    , fs = require('fs')
+    ;
 
 var mongoUri = process.env.MONGO_URI || process.env.MONGOHQ_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/nlmcde';
 
@@ -22,6 +24,41 @@ var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var User = mongoose.model('User', schemas.userSchema);
 var Form = mongoose.model('Form', schemas.formSchema);
 var Org = mongoose.model('Org', schemas.orgSchema);
+
+var gfs = Grid(db.db, mongoose.mongo);
+
+exports.getFile = function(callback, res, id) {
+    res.writeHead(200, { "Content-Type" : "image/png"});
+    gfs.createReadStream({ _id: id }).pipe(res);
+};
+ 
+exports.addCdeAttachment = function(file, user, comment, de_id) {
+    var writestream = gfs.createWriteStream({});
+    writestream.on('close', function (newfile) {
+        DataElement.findOne({'_id': de_id}, function(err, cde) {
+            cde.attachments.push({
+                fileid: newfile._id
+                , filename: file.name
+                , filetype: file.type
+                , uploadDate: Date.now()
+                , comment: comment 
+                , uploadedBy: {
+    //                userId: user._id
+    //                , username: user.username
+                }
+                , filesize: file.size
+            });
+            cde.save(function() {
+
+            });
+        });
+    });
+    
+    fs.createReadStream(file.path).pipe(writestream);
+    
+    
+
+};
 
 exports.userByName = function(name, callback) {
     User.findOne({'username': name}).exec(function (err, u) {

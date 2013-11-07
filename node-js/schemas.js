@@ -38,6 +38,19 @@ var classificationSchema = mongoose.Schema({
     , concept: String
 }, {_id: false});
 
+var attachmentSchema = mongoose.Schema({
+    fileid: String
+    , filename: String
+    , filetype: String
+    , uploadDate: Date
+    , comment: String
+    , uploadedBy: {
+        userId: mongoose.Schema.Types.ObjectId
+        , username: String
+    }
+    , filesize: Number
+}, {_id: false})
+
 var deJsonSchema = {
     naming:[namingSchema]         
     , origin: String
@@ -91,6 +104,7 @@ var deJsonSchema = {
     , formUsageCounter: Number
     , comments: [commentSchema]
     , archived: Boolean
+    , attachments: [attachmentSchema]
 };
 
 var questionSchema = mongoose.Schema ({

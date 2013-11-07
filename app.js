@@ -484,7 +484,9 @@ app.get('/classificationtree', function(req, res) {
 });
 
 app.post('/addAttachmentsToCde', function(req, res) {
-    if (req.files.uploadedFiles.length > 0) {
+    if (!req.files.uploadedFiles.length) {
+        mongo_data.addCdeAttachment(req.files.uploadedFiles, req.user, "some comment", req.body.de_id);
+    } else {
         for (var i = 0; i < req.files.uploadedFiles.length; i++) {
             mongo_data.addCdeAttachment(req.files.uploadedFiles[i], req.user, "some comment", req.body.de_id);
         }
@@ -493,7 +495,6 @@ app.post('/addAttachmentsToCde', function(req, res) {
 });
 
 app.get('/data/:imgtag', function(req, res) {
-    var x = fg.goo.name;
   mongo_data.getFile( function(error,data) {
      res.writeHead('200', {'Content-Type': 'image/png'});
      res.end(data,'binary');

@@ -16,6 +16,21 @@
         VSAC_USERNAME=
         <br>
         VSAC_PASSWORD=
+        <br>
+        LOGDIR=
+        
+        <br>
+        It's also possible to set the variables in envconfig.js
+        <span>
+            var envconfig = {
+                vsac: {
+                    username: 'abc'
+                    , password: '123'
+                    , host: 'vsac-qa.nlm.nih.gov'
+                }
+                , logdir: /var/log
+            };
+        </span>
 
         
         <h1>Test</h1>

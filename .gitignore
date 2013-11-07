@@ -9,6 +9,10 @@ envconfig.js
 ## Local Files
 seed
 
+## Logs
+expressLog*
+expressErrorLog*
+
 # OS generated files #
 ######################
 .DS_Store
