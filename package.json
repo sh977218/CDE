@@ -24,5 +24,6 @@
     , "request": "*"
     , "winston": "*"
     , "express-winston": "*"
+    , "gridfs-stream": "*"
   }
 }
