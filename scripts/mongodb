@@ -28,7 +28,7 @@ RETVAL=0
 
 start() {
 	echo -n $"Starting $prog: "
-	daemon $mongod "--fork --logpath /var/nlm/logs/mongodb.log --dbpath /usr/nlm/cde/mongo-data --smallfiles --logappend 2>&1 >>/var/log/mongodb.log"
+	daemon $mongod "--fork --logpath /var/nlm/logs/mongodb.log --dbpath /usr/nlm/cde/mongo-data --smallfiles --logappend 2>&1 >>/var/nlm/logs/mongodb.log"
 	RETVAL=$?
 	echo
 	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/$prog
