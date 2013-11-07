@@ -10,7 +10,6 @@
 
 
 ## !! TODO
-## Confirm Log path unix team
 ## find a better place for the mongod bin
 ## find a better place for --dbpath
 ## Got more space for --dbpath, then remove --smallfiles
@@ -29,7 +28,7 @@ RETVAL=0
 
 start() {
 	echo -n $"Starting $prog: "
-	daemon $mongod "--fork --logpath /var/log/mongodb.log --dbpath /usr/nlm/cde/mongo-data --smallfiles --logappend 2>&1 >>/var/log/mongodb.log"
+	daemon $mongod "--fork --logpath /var/nlm/logs/mongodb.log --dbpath /usr/nlm/cde/mongo-data --smallfiles --logappend 2>&1 >>/var/log/mongodb.log"
 	RETVAL=$?
 	echo
 	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/$prog
