@@ -134,6 +134,7 @@ app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(err, req, res, next){
   expressErrorLogger.error(err.stack);
+  console.log(err.stack);
   res.send(500, 'Something broke!');
 });
 
@@ -484,14 +485,26 @@ app.get('/classificationtree', function(req, res) {
 });
 
 app.post('/addAttachmentsToCde', function(req, res) {
-    if (!req.files.uploadedFiles.length) {
-        mongo_data.addCdeAttachment(req.files.uploadedFiles, req.user, "some comment", req.body.de_id);
+    if (req.isAuthenticated()) {
+        return mongo_data.cdeById(req.body.de_id, function(err, cde) {
+            if (req.user.orgCurator.indexOf(cde.stewardOrg.name) < 0 
+                    && req.user.orgAdmin.indexOf(cde.stewardOrg.name) < 0 
+                    && !req.user.siteAdmin) {
+                res.send("not authorized");
+            } else {
+                if (!req.files.uploadedFiles.length) {
+                    mongo_data.addCdeAttachment(req.files.uploadedFiles, req.user, "some comment", cde);
+                } else {
+                    for (var i = 0; i < req.files.uploadedFiles.length; i++) {
+                        mongo_data.addCdeAttachment(req.files.uploadedFiles[i], req.user, "some comment", cde);
+                    }
+                }  
+                res.send("done");     
+            }
+        });
     } else {
-        for (var i = 0; i < req.files.uploadedFiles.length; i++) {
-            mongo_data.addCdeAttachment(req.files.uploadedFiles[i], req.user, "some comment", req.body.de_id);
-        }
-    }    
-    res.send("done");     
+        res.send("You need to be logged in to do this");
+    }
 });
 
 app.get('/data/:imgtag', function(req, res) {

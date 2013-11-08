@@ -25,10 +25,11 @@ fi
 prog="mongod"
 mongod="/usr/nlm/cde/mongodb-linux-x86_64-2.4.4/bin/mongod"
 RETVAL=0
+RUNASUSER=cdeuser
 
 start() {
 	echo -n $"Starting $prog: "
-	daemon $mongod "--fork --logpath /var/nlm/logs/mongodb.log --dbpath /usr/nlm/cde/mongo-data --smallfiles --logappend 2>&1 >>/var/nlm/logs/mongodb.log"
+	daemon --user=$RUNASUSER $mongod "--fork --logpath /var/nlm/logs/mongodb.log --dbpath /usr/nlm/cde/mongo-data --smallfiles --logappend 2>&1 >>/var/nlm/logs/mongodb.log"
 	RETVAL=$?
 	echo
 	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/$prog

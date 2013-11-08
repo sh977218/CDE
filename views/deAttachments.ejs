@@ -4,29 +4,30 @@
         <dl class="dl-horizontal">
             <dt>Filename: </dt><dd><a href="/data/{{attachment.fileid}}">{{attachment.filename}}</a></dd>
             <dt>Size: </dt><dd>{{attachment.filesize}}</a></dd>
-            <dt>Uploaded Date: </dt><dd>{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dt>Uploaded date: </dt><dd>{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dt>Uploaded by: </dt><dd>{{attachment.uploadedBy.username}}</dd>
         </dl>
     </div>
-    
-    
-    <label for="fileToUpload">Select a File to Upload</label><br />
-    <input type="file" ng-model-instant id="fileToUpload" multiple onchange="angular.element(this).scope().setFiles(this)" />
 
-    <div ng-show="files.length">
-        <div ng-repeat="file in files.slice(0)">
-            <span>{{file.webkitRelativePath || file.name}}</span>
-            (<span ng-switch="file.size > 1024*1024">
-                <span ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</span>
-                <span ng-switch-default>{{file.size / 1024 | number:2}} kB</span>
-            </span>)
-        </div>
-        <input type="button" ng-click="uploadFile()" value="Upload" />
-        <div ng-show="progressVisible">
-            <div class="percent">{{progress}}%</div>
-            <div class="progress-bar">
-                <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
+    <div ng-show="isAllowed(cde)">
+        <label for="fileToUpload">Select a File to Upload</label><br />
+        <input type="file" ng-model-instant id="fileToUpload" multiple onchange="angular.element(this).scope().setFiles(this)" />
+
+        <div ng-show="files.length">
+            <div ng-repeat="file in files.slice(0)">
+                <span>{{file.webkitRelativePath || file.name}}</span>
+                (<span ng-switch="file.size > 1024*1024">
+                    <span ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</span>
+                    <span ng-switch-default>{{file.size / 1024 | number:2}} kB</span>
+                </span>)
+            </div>
+            <input type="button" ng-click="uploadFile()" value="Upload" />
+            <div ng-show="progressVisible">
+                <div class="percent">{{progress}}%</div>
+                <div class="progress-bar">
+                    <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
+                </div>
             </div>
         </div>
-    </div>
-    
+    </div>    
 </div>

@@ -310,7 +310,6 @@ function DEListCtrl($scope, $http, CdeList, $modal) {
     };
     
     $scope.reload = function() {
-        console.log("reload 1")
         var newfrom = ($scope.currentPage - 1) * $scope.pageSize;
         var result = CdeList.get({from: newfrom, search: JSON.stringify($scope.search)}, function () {
            $scope.numPages = result.pages; 
@@ -606,7 +605,6 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
     };
     
     $scope.reload = function() {
-        console.log("reload 2")
         var newfrom = ($scope.currentPage - 1) * $scope.pageSize;
         var result = FormList.get({from: newfrom, search: JSON.stringify($scope.search)}, function () {
            $scope.numPages = result.pages; 
@@ -619,14 +617,11 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
     $scope.initialized = false;
     $scope.canLinkPv = false;
     $scope.reload = function(deId) {
-        console.log("reload 3")
         DataElement.get({deId: deId}, function (de) {
-           console.log("reloading");
            $scope.cde = de; 
            $scope.loadValueSet();
            $scope.initialized = true;
            $scope.canLinkPvFunc();
-           console.log("cde reloaded");
         });
         
         PriorCdes.getCdes({cdeId: deId}, function(dataElements) {
@@ -755,12 +750,12 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
                 dec.conceptualDomain != null &&
                 dec.conceptualDomain.vsac != null &&
                 dec.conceptualDomain.vsac.id != null);
-    };    
+    };   
+    
 }
 
 function FormViewCtrl($scope, $routeParams, $http, Form, DataElement, CdesInForm) {
     $scope.reload = function(formId) {
-        console.log("reload 4");
         Form.get({formId: formId}, function(form) {
             $scope.form = form;
             CdesInForm.getCdes({formId: formId}, function(cdes) {
@@ -908,7 +903,7 @@ function CreateFormCtrl($scope, $location, Form) {
     };     
  }
  
- function AttachmentsCtrl($scope) {
+ function AttachmentsCtrl($scope, $rootScope) {
      
     $scope.setFiles = function(element) {
         $scope.$apply(function($scope) {
@@ -932,7 +927,7 @@ function CreateFormCtrl($scope, $location, Form) {
         xhr.addEventListener("load", uploadComplete, false);
         xhr.addEventListener("error", uploadFailed, false);
         xhr.addEventListener("abort", uploadCanceled, false);
-        xhr.open("POST", "/addAttachmentsToCde")
+        xhr.open("POST", "/addAttachmentsToCde");
         $scope.progressVisible = true;
         xhr.send(fd);
     };
@@ -948,20 +943,22 @@ function CreateFormCtrl($scope, $location, Form) {
     }
 
     function uploadComplete(evt) {
-        $scope.files = [];
-        $scope.reload($scope.cde._id);
-        console.log($scope.files);
+//        alert(evt.target.responseText);
+        $rootScope.$apply (function() {
+            $scope.files = [];
+            $scope.reload($scope.cde._id);
+            $scope.message = evt.target.responseText;
+        });
     }
 
     function uploadFailed(evt) {
-        alert("There was an error attempting to upload the file.")
+        // TODO
     }
 
     function uploadCanceled(evt) {
         $scope.$apply(function(){
-            $scope.progressVisible = false
+            $scope.progressVisible = false;
         });
-        alert("The upload has been canceled by the user or the browser dropped the connection.")
     }
  }
  

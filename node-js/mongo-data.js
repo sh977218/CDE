@@ -32,31 +32,26 @@ exports.getFile = function(callback, res, id) {
     gfs.createReadStream({ _id: id }).pipe(res);
 };
  
-exports.addCdeAttachment = function(file, user, comment, de_id) {
+exports.addCdeAttachment = function(file, user, comment, cde) {
     var writestream = gfs.createWriteStream({});
     writestream.on('close', function (newfile) {
-        DataElement.findOne({'_id': de_id}, function(err, cde) {
-            cde.attachments.push({
-                fileid: newfile._id
-                , filename: file.name
-                , filetype: file.type
-                , uploadDate: Date.now()
-                , comment: comment 
-                , uploadedBy: {
-    //                userId: user._id
-    //                , username: user.username
-                }
-                , filesize: file.size
-            });
-            cde.save(function() {
-
-            });
+        cde.attachments.push({
+            fileid: newfile._id
+            , filename: file.name
+            , filetype: file.type
+            , uploadDate: Date.now()
+            , comment: comment 
+            , uploadedBy: {
+                userId: user._id
+                , username: user.username
+            }
+            , filesize: file.size
+        });
+        cde.save(function() {
         });
     });
     
     fs.createReadStream(file.path).pipe(writestream);
-    
-    
 
 };
 
