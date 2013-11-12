@@ -19,7 +19,7 @@ DAEMON="/usr/nlm/cde/node/current/bin/node"
 ROOT_DIR="/usr/nlm/cde/code/nlm-cde"
  
 SERVER="$ROOT_DIR/app.js"
-LOG_FILE="/var/nlm/ log/app.js.log"
+LOG_FILE="/var/nlm/log/app.js.log"
 
 NAME=cdeapp 
 
