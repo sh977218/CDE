@@ -11,8 +11,8 @@ var envconfig = {};
 if (fs.existsSync('./envconfig.js')) {
     envconfig = require('../envconfig');
 } else {
-    if (!process.env.VSAC_USERNAME || !process.env.VSAC_PASSWORD) {
-        console.log("No envconfig file exists. Expecting ENV Variables: VSAC_USERNAME and VSAC_PASSWORD ");
+    if (!process.env.VSAC_USERNAME || !process.env.VSAC_PASSWORD || !process.env.VSAC_HOST || !process.env.VSAC_PORT) {
+        console.log("No envconfig file exists. Expecting ENV Variables: VSAC_USERNAME, VSAC_PASSWORD, VSAC_HOST, VSAC_PORT ");
         exit(1);
     }
 }
