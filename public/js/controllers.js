@@ -903,7 +903,7 @@ function CreateFormCtrl($scope, $location, Form) {
     };     
  }
  
- function AttachmentsCtrl($scope, $rootScope) {
+ function AttachmentsCtrl($scope, $rootScope, Attachment) {
      
     $scope.setFiles = function(element) {
         $scope.$apply(function($scope) {
@@ -960,5 +960,17 @@ function CreateFormCtrl($scope, $location, Form) {
             $scope.progressVisible = false;
         });
     }
- }
+    
+    $scope.removeAttachment = function(index) {
+        Attachment.remove({
+            index: index
+            , deId: $scope.cde._id 
+        }, 
+        function (res) {
+            $scope.message = res;
+            $scope.reload($scope.cde._id);
+        });
+    };
+ };
+ 
  

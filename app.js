@@ -507,6 +507,36 @@ app.post('/addAttachmentsToCde', function(req, res) {
     }
 });
 
+app.post('/removeAttachment', function(req, res) {
+    if (req.isAuthenticated()) {
+        mongo_data.cdeById(req.body.deId, function (err, de) {
+            if (err) {
+                res.send("Data Element does not exist.");
+            }
+            var index = req.body.index;
+            if (!req.user 
+                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
+                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
+                  ) {
+              console.log("not auth");
+                res.send("You can only remove attachments you own.");
+            } else {
+                de.attachments.splice(index, 1);
+                de.save(function (err) {
+                   if (err) {
+                       res.send("error: " + err);
+                   } else {
+                       res.send("Attachment removed");
+                   }
+                });
+            }
+        });
+    } else {
+        res.send("You are not authorized.");                   
+    }
+});
+
+
 app.get('/data/:imgtag', function(req, res) {
   mongo_data.getFile( function(error,data) {
      res.writeHead('200', {'Content-Type': 'image/png'});

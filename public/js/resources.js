@@ -32,6 +32,13 @@ angular.module('resources', ['ngResource']).
             }
         };
     })
+    .factory("Attachment", function($http) {
+        return {
+          remove: function(dat, success, error) {
+              $http.post('/removeAttachment', dat).success(success).error(error);
+          } 
+        };
+    })
     .factory("Comment", function($http) {
         return {
           addComment: function(comment, success, error) {
