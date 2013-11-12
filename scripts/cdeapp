@@ -11,62 +11,57 @@
 ## !! TODO
 ## Find a better place for node
 
-DAEMON_PATH="/usr/nlm/cde/code/nlm-cde"
+. /etc/rc.d/init.d/functions
+ 
+USER="cdeuser"
+ 
+DAEMON="/usr/nlm/cde/node-v0.10.12-linux-x64/bin/node"
+ROOT_DIR="/usr/nlm/cde/code/nlm-cde"
+ 
+SERVER="$ROOT_DIR/app.js"
+LOG_FILE="/var/nlm.log/app.js.log"
 
-DAEMON=/usr/nlm/cde/node-v0.10.12-linux-x64/bin/node
-DAEMONOPTS="app"
+NAME=cdeapp 
 
-NAME=cdeapp
-RUNASUSER=cdeuser
-DESC="Node Server for CDE App"
-PIDFILE=/var/run/$NAME.pid
-SCRIPTNAME=/etc/init.d/$NAME
-
+LOCK_FILE="/var/run/$NAME.pid"
+ 
+do_start()
+{
+        if [ ! -f "$LOCK_FILE" ] ; then
+                echo -n $"Starting $SERVER: "
+                runuser -l "$USER" -c "$DAEMON $SERVER >> $LOG_FILE &" && echo_success || echo_failure
+                RETVAL=$?
+                echo
+                [ $RETVAL -eq 0 ] && touch $LOCK_FILE
+        else
+                echo "$SERVER is locked."
+                RETVAL=1
+        fi
+}
+do_stop()
+{
+        echo -n $"Stopping $SERVER: "
+        pid=`ps -aefw | grep "$DAEMON $SERVER" | grep -v " grep " | awk '{print $2}'`
+        kill -9 $pid > /dev/null 2>&1 && echo_success || echo_failure
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && rm -f $LOCK_FILE
+}
+ 
 case "$1" in
-start)
-	printf "%-50s" "Starting $NAME..."
-	cd $DAEMON_PATH
-	PID=`daemon  --user=$RUNASUSER $DAEMON $DAEMONOPTS > /dev/null 2>&1 & echo $!`
-	#echo "Saving PID" $PID " to " $PIDFILE
-        if [ -z $PID ]; then
-            printf "%s\n" "Fail"
-        else
-            echo $PID > $PIDFILE
-            printf "%s\n" "Ok"
-        fi
-;;
-status)
-        printf "%-50s" "Checking $NAME..."
-        if [ -f $PIDFILE ]; then
-            PID=`cat $PIDFILE`
-            if [ -z "`ps axf | grep ${PID} | grep -v grep`" ]; then
-                printf "%s\n" "Process dead but pidfile exists"
-            else
-                echo "Running"
-            fi
-        else
-            printf "%s\n" "Service not running"
-        fi
-;;
-stop)
-        printf "%-50s" "Stopping $NAME"
-            PID=`cat $PIDFILE`
-            cd $DAEMON_PATH
-        if [ -f $PIDFILE ]; then
-            kill -HUP $PID
-            printf "%s\n" "Ok"
-            rm -f $PIDFILE
-        else
-            printf "%s\n" "pidfile not found"
-        fi
-;;
-
-restart)
-  	$0 stop
-  	$0 start
-;;
-
-*)
-        echo "Usage: $0 {status|start|stop|restart}"
-        exit 1
+        start)
+                do_start
+                ;;
+        stop)
+                do_stop
+                ;;
+        restart)
+                do_stop
+                do_start
+                ;;
+        *)
+                echo "Usage: $0 {start|stop|restart}"
+                RETVAL=1
 esac
+ 
+exit $RETVAL
