@@ -15,7 +15,7 @@
  
 USER="cdeuser"
  
-DAEMON="/usr/nlm/cde/node-v0.10.12-linux-x64/bin/node"
+DAEMON="/usr/nlm/cde/node/current/bin/node"
 ROOT_DIR="/usr/nlm/cde/code/nlm-cde"
  
 SERVER="$ROOT_DIR/app.js"
