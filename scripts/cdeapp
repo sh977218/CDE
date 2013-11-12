@@ -29,6 +29,7 @@ do_start()
 {
         if [ ! -f "$LOCK_FILE" ] ; then
                 echo -n $"Starting $SERVER: "
+                cd $ROOT_DIR
                 runuser -l "$USER" -c "$DAEMON $SERVER >> $LOG_FILE &" && echo_success || echo_failure
                 RETVAL=$?
                 echo
