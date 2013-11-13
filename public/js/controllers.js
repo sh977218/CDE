@@ -616,12 +616,15 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
 function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, PriorCdes, CdeDiff) {
     $scope.initialized = false;
     $scope.canLinkPv = false;
-    $scope.reload = function(deId) {
+    $scope.reload = function(deId, cb) {
         DataElement.get({deId: deId}, function (de) {
-           $scope.cde = de; 
+           $scope.cde = de;          
            $scope.loadValueSet();
            $scope.initialized = true;
            $scope.canLinkPvFunc();
+           if (cb) {
+               cb();
+           }
         });
         
         PriorCdes.getCdes({cdeId: deId}, function(dataElements) {
@@ -943,11 +946,12 @@ function CreateFormCtrl($scope, $location, Form) {
     }
 
     function uploadComplete(evt) {
-//        alert(evt.target.responseText);
         $rootScope.$apply (function() {
+            $scope.reload($scope.cde._id, function () {
+            });
             $scope.files = [];
-            $scope.reload($scope.cde._id);
             $scope.message = evt.target.responseText;
+            console.log($scope.cde.attachments);
         });
     }
 
