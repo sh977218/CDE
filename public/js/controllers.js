@@ -951,7 +951,6 @@ function CreateFormCtrl($scope, $location, Form) {
             });
             $scope.files = [];
             $scope.message = evt.target.responseText;
-            console.log($scope.cde.attachments);
         });
     }
 
