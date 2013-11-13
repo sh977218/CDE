@@ -11,6 +11,9 @@
 ## !! TODO
 ## Find a better place for node
 
+# Source function library
+. /etc/rc.d/init.d/functions
+
 DAEMON_PATH="/usr/nlm/cde/code/nlm-cde"
 
 DAEMON=/usr/nlm/cde/node/current/bin/node
