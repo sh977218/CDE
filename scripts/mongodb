@@ -23,7 +23,7 @@ if [ -f /etc/sysconfig/mongodb ]; then
 fi
 
 prog="mongod"
-mongod="/usr/nlm/cde/mongodb-linux-x86_64-2.4.4/bin/mongod"
+mongod="/usr/nlm/cde/mongodb/current/bin/mongod"
 RETVAL=0
 RUNASUSER=cdeuser
 
