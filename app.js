@@ -110,6 +110,9 @@ var expressErrorLogger = new (winston.Logger)({
   ]
 });
 
+process.on('uncaughtException', function (err) {
+  expressErrorLogger.error('Caught exception: ' + err.stack);
+});
 
 var winstonStream = {
     write: function(message, encoding){
