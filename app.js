@@ -487,7 +487,7 @@ app.get('/classificationtree', function(req, res) {
     });
 });
 
-app.post('/addAttachmentsToCde', function(req, res) {
+app.post('/addAttachmentToCde', function(req, res) {
     if (req.isAuthenticated()) {
         return mongo_data.cdeById(req.body.de_id, function(err, cde) {
             if (req.user.orgCurator.indexOf(cde.stewardOrg.name) < 0 
@@ -495,14 +495,11 @@ app.post('/addAttachmentsToCde', function(req, res) {
                     && !req.user.siteAdmin) {
                 res.send("not authorized");
             } else {
-                if (!req.files.uploadedFiles.length) {
-                    mongo_data.addCdeAttachment(req.files.uploadedFiles, req.user, "some comment", cde);
-                } else {
-                    for (var i = 0; i < req.files.uploadedFiles.length; i++) {
-                        mongo_data.addCdeAttachment(req.files.uploadedFiles[i], req.user, "some comment", cde);
-                    }
-                }  
-                res.send("done");     
+                console.log("save to mongo");
+                mongo_data.addCdeAttachment(req.files.uploadedFiles, req.user, "some comment", cde, function() {
+                    console.log("sending back");
+                    res.send(cde);            
+                });                        
             }
         });
     } else {

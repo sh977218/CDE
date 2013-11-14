@@ -622,9 +622,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
            $scope.loadValueSet();
            $scope.initialized = true;
            $scope.canLinkPvFunc();
-           if (cb) {
-               cb();
-           }
         });
         
         PriorCdes.getCdes({cdeId: deId}, function(dataElements) {
@@ -906,7 +903,7 @@ function CreateFormCtrl($scope, $location, Form) {
     };     
  }
  
- function AttachmentsCtrl($scope, $rootScope, Attachment) {
+ function AttachmentsCtrl($scope, $rootScope, Attachment, DataElement) {
      
     $scope.setFiles = function(element) {
         $scope.$apply(function($scope) {
@@ -919,18 +916,22 @@ function CreateFormCtrl($scope, $location, Form) {
         });
     };
 
-    $scope.uploadFile = function() {
+    $scope.uploadFiles = function() {
+        for (var i in $scope.files) {
+            $scope.uploadFile($scope.files[i]);
+        }
+    }
+
+    $scope.uploadFile = function(file) {
         var fd = new FormData();
         fd.append("de_id", $scope.cde._id);
-        for (var i in $scope.files) {
-            fd.append("uploadedFiles", $scope.files[i]);
-        }
+        fd.append("uploadedFiles", file);
         var xhr = new XMLHttpRequest();
         xhr.upload.addEventListener("progress", uploadProgress, false);
         xhr.addEventListener("load", uploadComplete, false);
         xhr.addEventListener("error", uploadFailed, false);
         xhr.addEventListener("abort", uploadCanceled, false);
-        xhr.open("POST", "/addAttachmentsToCde");
+        xhr.open("POST", "/addAttachmentToCde");
         $scope.progressVisible = true;
         xhr.send(fd);
     };
@@ -946,11 +947,9 @@ function CreateFormCtrl($scope, $location, Form) {
     }
 
     function uploadComplete(evt) {
-        $rootScope.$apply (function() {
-            $scope.reload($scope.cde._id, function () {
-            });
+        $rootScope.$apply(function() {
+            $scope.cde = JSON.parse(evt.target.responseText);
             $scope.files = [];
-            $scope.message = evt.target.responseText;
         });
     }
 

@@ -32,7 +32,7 @@ exports.getFile = function(callback, res, id) {
     gfs.createReadStream({ _id: id }).pipe(res);
 };
  
-exports.addCdeAttachment = function(file, user, comment, cde) {
+exports.addCdeAttachment = function(file, user, comment, cde, cb) {
     var writestream = gfs.createWriteStream({});
     writestream.on('close', function (newfile) {
         cde.attachments.push({
@@ -48,6 +48,7 @@ exports.addCdeAttachment = function(file, user, comment, cde) {
             , filesize: file.size
         });
         cde.save(function() {
+            cb();
         });
     });
     
