@@ -56,8 +56,8 @@
     </div> 
     <div ng-show="editMode">
         <input name="vsacId" type="text" ng-model="cde.dataElementConcept.conceptualDomain.vsac.id" placeholder="VSAC O.I.D"/>
-        <button id="vsacIdCheck" class="icon-ok" ng-click="checkVsacId(cde); loadValueSet(); editMode = false"/>
-        <button class="icon-remove" ng-click="editMode = false"/>
+        <i id="vsacIdCheck" class="icon-check" ng-click="checkVsacId(cde); loadValueSet(); editMode = false"></i>
+        <i class="icon-remove" ng-click="editMode = false"></i>
     </div>
 </div>
 <hr>
