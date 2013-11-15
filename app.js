@@ -57,7 +57,6 @@ passport.use(new LocalStrategy(
                     // username password combo is good, but user is not here, so register him.
                     if (!user) {
                         mongo_data.addUser({username: username, password: "umls"}, function(newUser) {
-                            console.log("new user registered");
                             return done(null, newUser);
                         });
                     } else {
@@ -134,6 +133,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.logger({stream:winstonStream}));
 app.use(app.router);
+app.use(function noCachePlease(req, res, next) {
+    if (req.url === '/') {
+      res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+      res.header("Pragma", "no-cache");
+      res.header("Expires", 0);
+    }
+
+    next();
+  });
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(err, req, res, next){
   expressErrorLogger.error(err.stack);
@@ -348,8 +356,6 @@ app.post('/removeComment', function(req, res) {
             }
             for (var c in de.comments) {
                 if (de.comments[c]._id == req.body.commentId) {
-                    console.log(de.comments[c].user);
-                    console.log(req.user._id);
                     if (de.comments[c].user != req.user._id) {
                         res.send("You can only remove comments you own.");
                     } else {
@@ -495,9 +501,7 @@ app.post('/addAttachmentToCde', function(req, res) {
                     && !req.user.siteAdmin) {
                 res.send("not authorized");
             } else {
-                console.log("save to mongo");
                 mongo_data.addCdeAttachment(req.files.uploadedFiles, req.user, "some comment", cde, function() {
-                    console.log("sending back");
                     res.send(cde);            
                 });                        
             }
@@ -518,7 +522,6 @@ app.post('/removeAttachment', function(req, res) {
                   || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
                     && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
                   ) {
-              console.log("not auth");
                 res.send("You can only remove attachments you own.");
             } else {
                 de.attachments.splice(index, 1);

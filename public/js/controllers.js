@@ -2,7 +2,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u;
-            $scope.setMyOrgs();
+            $scope.setMyOrgs(); 
             callback();
         });
     };
