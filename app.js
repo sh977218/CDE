@@ -134,11 +134,9 @@ app.use(passport.session());
 app.use(express.logger({stream:winstonStream}));
 app.use(app.router);
 app.use(function noCachePlease(req, res, next) {
-    if (req.url === '/') {
       res.header("Cache-Control", "no-cache, no-store, must-revalidate");
       res.header("Pragma", "no-cache");
-      res.header("Expires", 0);
-    }
+      res.header("Expires", -1);
 
     next();
   });
