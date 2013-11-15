@@ -23,8 +23,8 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
                         '</span>' + 
                         '<span ng-show="editMode">' + 
                             '<input type="text" ng-model="value" />' + 
-                            '<button class="icon-ok" ng-click="model = value; editMode = false; onOk()"/>' + 
-                            '<button class="icon-remove" ng-click="editMode = false"/>' +
+                            '<i class="icon-check" ng-click="model = value; editMode = false; onOk()"></i>' + 
+                            '<i class="icon-remove" ng-click="editMode = false"></i>' +
                         '</span>' +       
                     '</span>'
                 ,
@@ -44,8 +44,8 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
                         '</div>' + 
                         '<div ng-show="editMode">' + 
                          '   <textarea ng-model="value" ></textarea>' + 
-                          '  <button class="icon-ok" ng-click="model = value;editMode = false; onOk()"/>' + 
-                           ' <button class="icon-remove" ng-click="editMode = false"/>' + 
+                          '  <i class="icon-check" ng-click="model = value;editMode = false; onOk()"></i>' + 
+                           ' <i class="icon-remove" ng-click="editMode = false"></i>' + 
                         '</div>       ' + 
                     '</div>',
         restrict: 'E',
