@@ -19,7 +19,7 @@
     <hr/>
     
     <div ng-show="isAllowed(cde)">
-        <label for="fileToUpload" class="icon-upload-alt"> Upload more files</label><br />
+        <label for="fileToUpload"><i class="icon-upload"></i> Upload more files</label>
         <input type="file" style="display: none" ng-model-instant id="fileToUpload" onchange="angular.element(this).scope().setFiles(this)" />
 
         <div ng-show="files.length">

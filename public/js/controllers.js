@@ -903,8 +903,7 @@ function CreateFormCtrl($scope, $location, Form) {
     };     
  }
  
- function AttachmentsCtrl($scope, $rootScope, Attachment, DataElement) {
-     
+ function AttachmentsCtrl($scope, $rootScope, Attachment, DataElement) {     
     $scope.setFiles = function(element) {
         $scope.$apply(function($scope) {
           // Turn the FileList object into an Array
