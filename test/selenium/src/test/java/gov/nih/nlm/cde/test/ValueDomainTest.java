@@ -60,7 +60,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.linkText("Permissible Values")).click();        
         findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[1]/i")).click();
         findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[2]/input")).sendKeys(" added to pv");
-        findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[2]/button[1]")).click();
+        findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[2]/i[1]")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Changed PV");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
@@ -82,7 +82,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.xpath("//td[@id='pvName-1']//i")).click();
         findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys(Keys.BACK_SPACE);
         findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys("o");
-        findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/button[1]")).click();
+        findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/i[1]")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("6");
@@ -121,7 +121,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[1]/i")).click();
         findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[2]/input")).clear();
         findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[2]/input")).sendKeys("New PV");
-        findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[2]/button[1]")).click();
+        findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[2]/i[1]")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Changed PV");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);

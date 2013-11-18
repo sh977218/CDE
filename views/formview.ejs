@@ -57,8 +57,8 @@
                     <div ng-show="addQuestionMode">
                         <input type="text" typeahead="cde as cde.naming[0].designation for cde in autocomplete($viewValue)" 
                                typeahead-wait-ms="300" ng-model="newQuestion">
-                        <button class="icon-ok" ng-click="addQuestionToSection(newQuestion, $index); newQuestion = ''; addQuestionMode = false"/>
-                        <button class="icon-remove" ng-click="newQuestion = ''; addQuestionMode = false"/>
+                        <i class="icon-check" ng-click="addQuestionToSection(newQuestion, $index); newQuestion = ''; addQuestionMode = false"/>
+                        <i class="icon-remove" ng-click="newQuestion = ''; addQuestionMode = false"/>
                     </div>
                 </div>
                 <hr/>

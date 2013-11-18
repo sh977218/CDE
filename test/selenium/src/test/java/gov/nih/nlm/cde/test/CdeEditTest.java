@@ -86,13 +86,13 @@ public class CdeEditTest extends NlmCdeBaseTest {
         goToCdeByName("name of testuser CDE 1");
         findElement(By.cssSelector("i.icon-pencil")).click();
         findElement(By.xpath("//inline-edit/span/span[2]/input")).sendKeys("[name change number 1]");
-        findElement(By.cssSelector("button.icon-ok")).click();
+        findElement(By.cssSelector("i.icon-check")).click();
         findElement(By.cssSelector("inline-area-edit.ng-isolate-scope.ng-scope > div > div.ng-binding > i.icon-pencil")).click();
         findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("[def change number 1]");
-        findElement(By.xpath("//inline-area-edit/div/div[2]/button")).click();
+        findElement(By.xpath("//inline-area-edit/div/div[2]/i")).click();
         findElement(By.xpath("//inline-edit[@id = 'uomEdit']//i[@class = 'icon-pencil']")).click();
         findElement(By.xpath("//inline-edit[@id = 'uomEdit']//input")).sendKeys("myUom");
-        findElement(By.xpath("//inline-edit[@id = 'uomEdit']//button[@class = 'icon-ok']")).click();
+        findElement(By.xpath("//inline-edit[@id = 'uomEdit']//i[@class = 'icon-check']")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
         Assert.assertTrue(textPresent("This version number has already been used"));

@@ -63,15 +63,15 @@ public class FormTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id = 'newQuestionDiv-0']/a")).click();
         findElement(By.xpath("//div[@id = 'newQuestionDiv-0']/div/input")).sendKeys("Radiogra");
         findElement(By.xpath("//div[@id = 'newQuestionDiv-0']/div/ul/li")).click();
-        findElement(By.xpath("//div[@id = 'newQuestionDiv-0']/div/button[@class = 'icon-ok']")).click();
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-0']/div/i[@class = 'icon-check']")).click();
         findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/a")).click();
         findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/input")).sendKeys("Genotyp");
         findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/ul/li")).click();
-        findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/button[@class = 'icon-ok']")).click();
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/i[@class = 'icon-check']")).click();
         findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/a")).click();
         findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/input")).sendKeys("Alkal");
         findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/ul/li")).click();
-        findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/button[@class = 'icon-ok']")).click();
+        findElement(By.xpath("//div[@id = 'newQuestionDiv-1']/div/i[@class = 'icon-check']")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         goToFormByName(testFormName);
         Assert.assertTrue(textPresent("Radiograph Evidence Type"));
@@ -137,7 +137,7 @@ public class FormTest extends NlmCdeBaseTest {
         findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/span/span[1]/i")).click();
         findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/span/span[2]/input")).clear();
         findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/span/span[2]/input")).sendKeys(sectionName);
-        findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/span/span[2]/button[@class = 'icon-ok']")).click();
+        findElement(By.xpath("//h3[@id = 'Untitled Section']/inline-edit/span/span[2]/i[@class = 'icon-check']")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
     }
 
