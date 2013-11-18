@@ -1,10 +1,8 @@
-db.dataelements.ensureIndex({
-    "name": 1, 
-    "stewardOrg.name": 1, 
-    "registationState.registrationStatus": 1, 
-    "registationState.registrationStatusSortOrder": 1, 
-    "originId": 1,
-    "uuid": 1,
-    "classification.conceptSystem": 1,
-    "formUsageCounter": 1
-})
+db.dataelements.ensureIndex({"name": 1}); 
+db.dataelements.ensureIndex({"stewardOrg.name": 1});
+db.dataelements.ensureIndex({"registationState.registrationStatus": 1}); 
+db.dataelements.ensureIndex({"registationState.registrationStatusSortOrder": 1}); 
+db.dataelements.ensureIndex({"originId": 1});
+db.dataelements.ensureIndex({"uuid": 1});
+db.dataelements.ensureIndex({"classification.conceptSystem": 1});
+db.dataelements.ensureIndex({"formUsageCounter": 1});

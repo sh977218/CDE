@@ -89,7 +89,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("i.icon-check")).click();
         findElement(By.cssSelector("inline-area-edit.ng-isolate-scope.ng-scope > div > div.ng-binding > i.icon-pencil")).click();
         findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("[def change number 1]");
-        findElement(By.xpath("//inline-area-edit/div/div[2]/i")).click();
+        findElement(By.xpath("//inline-area-edit/div/div[2]/i)").click();
         findElement(By.xpath("//inline-edit[@id = 'uomEdit']//i[@class = 'icon-pencil']")).click();
         findElement(By.xpath("//inline-edit[@id = 'uomEdit']//input")).sendKeys("myUom");
         findElement(By.xpath("//inline-edit[@id = 'uomEdit']//i[@class = 'icon-check']")).click();
