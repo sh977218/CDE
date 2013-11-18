@@ -169,7 +169,8 @@ exports.cdelist = function(from, limit, searchOptions, callback) {
     }        
         
     query.find(searchOptions).where("archived").equals(null).skip(from).limit(limit)
-            .sort({"registrationState.registrationStatusSortOrder": 1, '-formUsageCounter': 1})
+            .sort({"registrationState.registrationStatusSortOrder": 1})
+//            .sort({"registrationState.registrationStatusSortOrder": 1, '-formUsageCounter': 1})
             .slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
         query.find(searchOptions).where("archived").equals(null).count(searchOptions).exec(function (err, count) {
         callback("",{
