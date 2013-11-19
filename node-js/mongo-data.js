@@ -118,17 +118,26 @@ exports.addToCart = function (user, formId, callback) {
     });
 };
 
-exports.classificationTree = function(callback) {
-  DataElement.aggregate(
-          {$project: {classification: 1}}
-          , {$unwind: "$classification"} 
-          , {$group: {_id: {"system": "$classification.conceptSystem"}, concepts: {$addToSet: "$classification.concept"}}}
-          , {$sort: {"_id.system": 1}}
-//          , {$project: {label: "$_id.system", children: "$concepts"}}
-      , function (err, res) {
-          callback(res);
+exports.classificationSystems = function(callback) {
+      DataElement.find().distinct('classification.conceptSystem', function(error, classifs) {
+          callback(classifs);
       });
 };
+
+//exports.classificationTree = function(callback) {
+//  DataElement.aggregate(
+//          {$project: {classification: 1}}
+//          , {$unwind: "$classification"} 
+//          , {$group: {_id: {"system": "$classification.conceptSystem"}, concepts: {$addToSet: "$classification.concept"}}}
+//          , {$sort: {"_id.system": 1}}
+////          , {$project: {label: "$_id.system", children: "$concepts"}}
+//      , function (err, res) {
+//          callback(res);
+//      });
+//};
+
+
+
 
 exports.removeFromCart = function (user, formId, callback) {
     User.findOne({'_id': user._id}).exec(function (err, u) {

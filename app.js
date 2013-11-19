@@ -484,10 +484,16 @@ app.get('/cdediff/:deId', function(req, res) {
    return cdesvc.diff(req, res); 
 });
 
-app.get('/classificationtree', function(req, res) {
-    mongo_data.classificationTree(function(tree) {
-       res.send(tree); 
-    });
+//app.get('/classificationtree', function(req, res) {
+//    mongo_data.classificationTree(function(tree) {
+//       res.send(tree); 
+//    });
+//});
+
+app.get('/classificationSystems', function(req, res) {
+   return mongo_data.classificationSystems(function (result) {
+       res.send(result);
+   }) 
 });
 
 app.post('/addAttachmentToCde', function(req, res) {

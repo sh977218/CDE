@@ -268,9 +268,9 @@ function DEListCtrl($scope, $http, CdeList, $modal) {
     $scope.pageSize = 10;
     $scope.originOptions = ['CADSR', 'FITBIR'];
 
-    $scope.classificationTree = [{label: "loading", children: ['loading']}];
+    $scope.classificationSystems = ['Loading...'];
     $scope.loadTree = function() {
-        return $http.get("/classificationtree").then(function(response) {
+        return $http.get("/classificationSystems").then(function(response) {
             $scope.classificationTree = response.data;
         });
     };
