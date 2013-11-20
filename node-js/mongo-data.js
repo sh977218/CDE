@@ -176,7 +176,7 @@ exports.cdelist = function(from, limit, searchOptions, callback) {
             delete searchOptions.registrationState;
         }
     }        
-        
+    
     query.find(searchOptions).where("archived").equals(null).skip(from).limit(limit)
             .sort({"registrationState.registrationStatusSortOrder": 1})
 //            .sort({"registrationState.registrationStatusSortOrder": 1, '-formUsageCounter': 1})

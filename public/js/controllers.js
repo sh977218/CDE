@@ -524,7 +524,7 @@ function EditCtrl($scope, $location, $routeParams, DataElement) {
    };  
 }
 
-function CreateCdeCtrl($scope, $location, DataElement) {
+function CreateCdeCtrl($scope, $location, $timeout, DataElement, CdeList) {
     $scope.setActiveMenu('CREATECDE');
 
     $scope.save = function() {
@@ -544,6 +544,19 @@ function CreateCdeCtrl($scope, $location, DataElement) {
         DataElement.save($scope.cde, function(cde) {
             $location.path('#/');        
         });
+    };
+    
+    var suggestionPromise = 0;
+    $scope.showSuggestions = function () {
+        if (suggestionPromise !== 0) {
+            $timeout.cancel(suggestionPromise);
+        }
+        suggestionPromise = $timeout(function () {
+           var result = CdeList.get({search: JSON.stringify({name: $scope.cde.designation})}, function () {
+               $scope.cdes = result.cdes;
+           });
+           console.log("query sent: " + JSON.stringify($scope.cde.designation));        
+        }, 1000);
     };
 }
 
