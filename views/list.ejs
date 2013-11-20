@@ -1,7 +1,7 @@
 <pagination direction-links="true" num-pages="numPages" max-size="10" total-items="totalItems" page="currentPage"></pagination>
 
 <form class="form-search">
-<input name="search.name" type="text" ng-model="search.name" class="search-query" placeholder="Search Name" >
+<input name="search.name" type="text" ng-model="search.name" class="search-query" placeholder="Search Name" ng-change="onchangeSearch()">
 <select ng-model="search.stewardOrg.name" name="stewardOrg.name" ng-change="removeOwningOrg(); reload()">
     <option value="" >Any Organization</option>
     <option ng-repeat="o in orgs" ng-value="o">{{o}}</option>    

@@ -261,7 +261,7 @@ function AuthCtrl($scope, $rootScope, Auth, $location) {
     };
 }
 
-function DEListCtrl($scope, $http, CdeList, $modal) {
+function DEListCtrl($scope, $http, CdeList, $modal, $timeout) {
     $scope.setActiveMenu('LISTCDE');
     
     $scope.currentPage = 1;
@@ -307,6 +307,16 @@ function DEListCtrl($scope, $http, CdeList, $modal) {
 
     $scope.next = function () {
         $scope.currentPage++;
+    };
+    
+    var onchangePromise = 0;
+    $scope.onchangeSearch = function() {
+        if (onchangePromise !== 0) {
+            $timeout.cancel(onchangePromise);
+        }
+        onchangePromise = $timeout(function () {
+            $scope.reload();
+        }, 1000);
     };
     
     $scope.reload = function() {
@@ -555,7 +565,6 @@ function CreateCdeCtrl($scope, $location, $timeout, DataElement, CdeList) {
            var result = CdeList.get({search: JSON.stringify({name: $scope.cde.designation})}, function () {
                $scope.cdes = result.cdes;
            });
-           console.log("query sent: " + JSON.stringify($scope.cde.designation));        
         }, 1000);
     };
 }
