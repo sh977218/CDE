@@ -86,6 +86,25 @@ var deJsonSchema = {
         , definition: String
         , uom: String
         , vsacOid: String
+        , datatype: String
+        , datatypeText: {
+            minLength: String
+            , maxLength: String
+            , regex: String
+            , rule: String
+        }
+        , datatypeInteger: {
+            minValue: Number
+            , maxValue: Number
+        }
+        , datatypeFloat: {
+            minValue: Number
+            , maxValue: Number 
+            , precision: Number
+        }
+        , datatypeDate: {
+            format: String
+        }
         , permissibleValues: [permissibleValueSchema]
     }
     , history: [ObjectId]

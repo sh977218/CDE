@@ -1,0 +1,29 @@
+<dl class="dl-horizontal">
+  <dt>Minimum Value: </dt>
+  <dd>
+     <span ng-show="editMinMode">
+        <input ng-model="cde.valueDomain.datatypeFloat.minValue" integer/>
+        <i class="icon-check" ng-click="editMinMode = false; stageCde(cde)" id="confirmMin"></i>
+        <i class="icon-remove" ng-click="editMinMode = false"></i>
+     </span>
+     <span ng-hide="editMinMode"><i ng-show="isAllowed(cde)" class="icon-edit" ng-click="editMinMode = true"></i> {{cde.valueDomain.datatypeFloat.minValue}}</span>
+  </dd>
+  <dt>Maximum Value: </dt>
+  <dd>
+     <span ng-show="editMaxMode">
+        <input ng-model="cde.valueDomain.datatypeFloat.maxValue" integer/>
+        <i class="icon-check" ng-click="editMaxMode = false; stageCde(cde)" id="confirmMax"></i>
+        <i class="icon-remove" ng-click="editMaxMode = false"></i>
+     </span>
+     <span ng-hide="editMaxMode"><i ng-show="isAllowed(cde)" class="icon-edit" ng-click="editMaxMode = true"></i> {{cde.valueDomain.datatypeFloat.maxValue | placeholdEmpty}}</span>
+  </dd>  
+  <dt>Precision: </dt>
+  <dd>
+     <span ng-show="editPrecisionMode">
+        <input ng-model="cde.valueDomain.datatypeFloat.precision" integer/>
+        <i class="icon-check" ng-click="editPrecisionMode = false; stageCde(cde)" id="confirmMax"></i>
+        <i class="icon-remove" ng-click="editPrecisionMode = false"></i>
+     </span>
+     <span ng-hide="editPrecisionMode"><i ng-show="isAllowed(cde)" class="icon-edit" ng-click="editPrecisionMode = true"></i> {{cde.valueDomain.datatypeFloat.precision | placeholdEmpty}}</span>
+  </dd>  
+</dl>

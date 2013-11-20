@@ -1,0 +1,11 @@
+<dl class="dl-horizontal">
+  <dt>Date Format: </dt>
+  <dd>
+     <span ng-show="editFormatMode">
+        <input ng-model="cde.valueDomain.datatypeDate.format" />
+        <i class="icon-check" ng-click="editFormatMode = false; stageCde(cde)" id="confirmFormat"></i>
+        <i class="icon-remove" ng-click="editFormatMode = false"></i>
+     </span>
+     <span ng-hide="editFormatMode"><i ng-show="isAllowed(cde)" class="icon-edit" ng-click="editFormatMode = true"></i> {{cde.valueDomain.datatypeDate.format | placeholdEmpty}}</span>
+  </dd>
+</dl>
