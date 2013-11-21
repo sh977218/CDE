@@ -54,11 +54,16 @@ fs.readFile(process.argv[2], function(err, data) {
             }
             , version: cadsrDE.VERSION
             , valueDomain: {  
-                name: cadsrDE.VALUEDOMAIN[0].LongName,
-                definition: cadsrDE.VALUEDOMAIN[0].PreferredDefinition
+                name: cadsrDE.VALUEDOMAIN[0].LongName
+                , definition: cadsrDE.VALUEDOMAIN[0].PreferredDefinition
+                , datatype: cadsrDE.VALUEDOMAIN[0].Datatype
              }    
 //            , formUsageCounter: 0
         });
+        
+        if (cadsrDE.VALUEDOMAIN[0].ValueDomainType == "Enumerated") {
+            newDE.valueDomain.datatype = 'Value List';
+        }
         
         if (cadsrDE.VALUEDOMAIN[0].UnitOfMeasure[0]['$'] == null) {
             newDE.valueDomain.uom = cadsrDE.VALUEDOMAIN[0].UnitOfMeasure[0];
