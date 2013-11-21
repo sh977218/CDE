@@ -25,5 +25,6 @@
     , "winston": "*"
     , "express-winston": "*"
     , "gridfs-stream": "*"
+    , "crypto": "*"
   }
 }

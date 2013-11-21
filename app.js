@@ -8,6 +8,7 @@ var express = require('express')
   , orgsvc = require('./node-js/orgsvc')
   , flash = require('connect-flash')
   , passport = require('passport')
+  , crypto = require('crypto')
   , LocalStrategy = require('passport-local').Strategy
   , mongo_data = require('./node-js/mongo-data')
   , util = require('util')
@@ -158,7 +159,7 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/login');
 };
 
-app.get('/', function(req, res){
+app.get('/', function(req, res) {
   res.render('index');
 });
 
@@ -284,18 +285,34 @@ app.get('/deview', function(req, res) {
     res.render("deview");
 });
 
-app.get('/login', function(req, res){
-  req.session.regenerate(function() {
-      res.render('login', { user: req.user, message: req.flash('error') });
-  });
+app.get('/login', function(req, res) {
+   res.render('login', { user: req.user, message: req.flash('error') });
 });
 
-app.post('/login',
-  passport.authenticate('local', { failureRedirect: '#/login', failureFlash: true }),
-      function(req, res) {
-        res.redirect('/');
-      }  
-  );
+//app.post('/login', function (req, res) {
+//  passport.authenticate('local', { successRedirect: '/', failureRedirect: '#/login', failureFlash: true })
+//});
+
+
+app.post('/login', function(req, res, next) {
+  req.session.regenerate(function(err) {  
+    passport.authenticate('local', function(err, user, info) {
+      if (err) { return next(err); }
+      if (!user) { return res.redirect('/login'); }
+      req.logIn(user, function(err) {
+        if (err) { return next(err); }
+        req.session.passport = {user: req.user._id};
+        return res.redirect('/');
+      });
+    })(req, res, next);
+  })
+});
+
+//app.post('/login',
+//  passport.authenticate('local', { failureRedirect: '#/login', failureFlash: true }),
+//      function(req, res) {
+//          res.redirect('/');
+//     });
 
 app.get('/logout', function(req, res) {
   req.session.destroy(function (err) {
