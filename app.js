@@ -292,15 +292,16 @@ app.get('/login', function(req, res){
 
 app.post('/login',
   passport.authenticate('local', { failureRedirect: '#/login', failureFlash: true }),
-  function(req, res) {
-    res.redirect('/');
-});
+      function(req, res) {
+        res.redirect('/');
+      }  
+  );
 
 app.get('/logout', function(req, res) {
-  req.session.regenerate(function() {
+  req.session.destroy(function (err) {
       req.logout();
       res.redirect('/');
-  })
+  });
 });
 
 app.get('/listcde', function(req, res) {
