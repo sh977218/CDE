@@ -285,7 +285,9 @@ app.get('/deview', function(req, res) {
 });
 
 app.get('/login', function(req, res){
-  res.render('login', { user: req.user, message: req.flash('error') });
+  req.session.regenerate(function() {
+      res.render('login', { user: req.user, message: req.flash('error') });
+  });
 });
 
 app.post('/login',
@@ -294,8 +296,8 @@ app.post('/login',
     res.redirect('/');
 });
 
-app.get('/logout', function(req, res){
-  req.session.regenerate(function(){
+app.get('/logout', function(req, res) {
+  req.session.regenerate(function() {
       req.logout();
       res.redirect('/');
   })
