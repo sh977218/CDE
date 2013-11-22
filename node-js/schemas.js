@@ -172,6 +172,8 @@ var formSchema = {
 schemas.userSchema = mongoose.Schema ({
     username: String
     , password: String
+    , lastLogin: Date
+    , lockCounter: Number
     , orgAdmin: [String]
     , orgCurator: [String]
     , formCart: [String]

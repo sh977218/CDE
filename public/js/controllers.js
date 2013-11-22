@@ -232,6 +232,7 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
 function AuthCtrl($scope, $rootScope, Auth, $location) {
     $scope.setActiveMenu('LOGIN');
     $scope.login = function() {
+        console.log("login");
         Auth.login({
                 username: $scope.username,
                 password: $scope.password

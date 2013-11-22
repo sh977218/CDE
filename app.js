@@ -68,10 +68,22 @@ passport.use(new LocalStrategy(
                 findByUsername(username, function(err, user) {
                     if (err) { return done(err); }
                     if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
-                    if (user.password != password) { return done(null, false, { message: 'Invalid password' }); } 
-                    return done(null, user);
+                    if (user.lockCounter == 3) {
+                        return done(null, false, { message: 'User is locked out' }); 
+                    }
+                    if (user.password != password) { 
+                        user.lockCounter = user.lockCounter + 1;
+                        return mongo_data.save(user, function(err, user) {
+                            return done(null, false, { message: 'Invalid password' }); 
+                        });
+                    }
+                    user.lockCounter = 0;
+                    user.lastLogin = Date.now();
+                    return mongo_data.save(user, function(err, user) {
+                        return done(null, user);                    
+                    });
                 })                
-            }
+            };
         });
     });
   }
@@ -289,16 +301,12 @@ app.get('/login', function(req, res) {
    res.render('login', { user: req.user, message: req.flash('error') });
 });
 
-//app.post('/login', function (req, res) {
-//  passport.authenticate('local', { successRedirect: '/', failureRedirect: '#/login', failureFlash: true })
-//});
-
 
 app.post('/login', function(req, res, next) {
   req.session.regenerate(function(err) {  
     passport.authenticate('local', function(err, user, info) {
       if (err) { return next(err); }
-      if (!user) { return res.redirect('/login'); }
+      if (!user) { return res.redirect('#/login'); }
       req.logIn(user, function(err) {
         if (err) { return next(err); }
         req.session.passport = {user: req.user._id};
