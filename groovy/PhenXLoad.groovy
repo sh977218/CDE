@@ -58,8 +58,7 @@ doPage = {phenXObj ->
         phenXObj.append("loincId", div.getByXPath("p/table/tbody/tr[3]/td[3]")[0].getTextContent());
 
         phenXObj.append("protocolDescription", page.getByXPath("//div[@id='element_DESCRIPTION']/p")[0].getTextContent());
-        phenXObj.append("protocolDescription", page.getByXPath("//div[@id='element_PROTOCOL_TEXT']")[0].asXml())
-
+        phenXObj.append("protocolText", page.getByXPath("//div[@id='element_PROTOCOL_TEXT']")[0].asXml())
 
         mapColl.update(phenXObj);
     }
