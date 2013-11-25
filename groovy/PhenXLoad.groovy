@@ -49,7 +49,7 @@ doPage = {phenXObj ->
     def page = webClient.getPage(url);
 
     if (!cache.exists()) {
-        page.printXml(new PrintWriter(cache));
+        page.printXml(" ", new PrintWriter(cache));
     }
     
     final HtmlDivision div = page.getHtmlElementById("element_STANDARDS");
