@@ -46,6 +46,7 @@ doPage = {phenXObj ->
         println "Page not in cache: " + url;
         }
     
+    println "getting: " + url
     def page = webClient.getPage(url);
 
     if (!cache.exists()) {
