@@ -38,10 +38,20 @@ if (args.contains("--protIds")) {
 
 
 doPage = {phenXObj ->
-    def url = 'https://www.phenxtoolkit.org/index.php?pageLink=browse.protocoldetails&id=' + phenXObj.get("protocolId");
-    println("querying: " + url)
+    
+    def cache = new File("../nlm-seed/cache/" + phenXObj.get("protocolId"));
+    def url = "file:///usr/nlm/cde/code/nlm-seed/cache/" + phenXObj.get("protocolId");
+    if (!cache.exists()) {
+        url = 'https://www.phenxtoolkit.org/index.php?pageLink=browse.protocoldetails&id=' + phenXObj.get("protocolId");
+        println "Page not in cache: " + url;
+        }
+    
     def page = webClient.getPage(url);
 
+    if (!cache.exists()) {
+        page.printXml(new PrintWriter(cache));
+    }
+    
     final HtmlDivision div = page.getHtmlElementById("element_STANDARDS");
 
     def cdeTitle = div.getByXPath("p/table/tbody/tr[2]/td[1]")[0];
