@@ -16,7 +16,7 @@ def webClient = new WebClient();
 
 
 if (args.contains("--protIds")) {
-    def startUrl = "file:///Users/ludetc/Downloads/phenxtoolkit_report_112113.html";
+    def startUrl = "../nlm-seed/phenxtoolkit_report_112113.html";
     def startPage = webClient.getPage(startUrl);
 
     def allTables = startPage.getByXPath("//table");
