@@ -71,7 +71,10 @@ doPage = {phenXObj ->
         phenXObj.append("protocolDescription", page.getByXPath("//div[@id='element_DESCRIPTION']/p")[0].getTextContent());
         phenXObj.append("protocolText", page.getByXPath("//div[@id='element_PROTOCOL_TEXT']")[0].asXml())
 
-        mapColl.update(phenXObj);
+        BasicDBObject findObj = new BasicDBObject();
+        findObj.put("_id", phenXObj.get("_id"));
+        
+        mapColl.update(findObj, phenXObj);
     }
 }
 
