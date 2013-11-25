@@ -58,24 +58,25 @@ doPage = {phenXObj ->
     def cdeTitle = div.getByXPath("p/table/tbody/tr[2]/td[1]")[0];
     def loincTitle = div.getByXPath("p/table/tbody/tr[3]/td[1]")[0];
 
-    if (!cdeTitle.getTextContent().equals("Common Data Elements (CDE)")) {
+    if (cdeTitle == null || !cdeTitle.getTextContent().equals("Common Data Elements (CDE)")) {
         println "unexpected format. No CDE title for : " + url;
-    } else if (!loincTitle.getTextContent().equals("Logical Observation Identifiers Names and Codes (LOINC)")) {
+    } else if (loincTitle == null || !loincTitle.getTextContent().equals("Logical Observation Identifiers Names and Codes (LOINC)")) {
         println "unexpected format. No Loinc title for : " + url;
         println "actual content: " + loincTitle;
     } else {
         phenXObj.append("cadsrId", div.getByXPath("p/table/tbody/tr[2]/td[3]")[0].getTextContent());
         phenXObj.append("loincName", div.getByXPath("p/table/tbody/tr[3]/td[2]")[0].getTextContent());
         phenXObj.append("loincId", div.getByXPath("p/table/tbody/tr[3]/td[3]")[0].getTextContent());
-
-        phenXObj.append("protocolDescription", page.getByXPath("//div[@id='element_DESCRIPTION']/p")[0].getTextContent());
-        phenXObj.append("protocolText", page.getByXPath("//div[@id='element_PROTOCOL_TEXT']")[0].asXml())
-
-        BasicDBObject findObj = new BasicDBObject();
-        findObj.put("_id", phenXObj.get("_id"));
-        
-        mapColl.update(findObj, phenXObj);
     }
+    
+    phenXObj.append("protocolDescription", page.getByXPath("//div[@id='element_DESCRIPTION']/p")[0].getTextContent());
+    phenXObj.append("protocolText", page.getByXPath("//div[@id='element_PROTOCOL_TEXT']")[0].asXml())
+
+    BasicDBObject findObj = new BasicDBObject();
+    findObj.put("_id", phenXObj.get("_id"));
+
+    mapColl.update(findObj, phenXObj);
+    
 }
 
 if (args.contains("--map")) {
