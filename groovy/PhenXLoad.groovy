@@ -5,12 +5,14 @@ import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlDivision
 import com.mongodb.*;
 import java.text.SimpleDateFormat
+import java.util.regex.Pattern
 
 MongoClient mongoClient = new MongoClient( "localhost" );
 String dbName = args.contains("--testMode")?"test":"nlmcde"; 
 DB db = mongoClient.getDB(dbName);
 
 DBCollection mapColl = db.getCollection("phenXMap");
+DBCollection deColl = db.getCollection("dataelements");
 
 def webClient = new WebClient();
 
@@ -87,4 +89,62 @@ if (args.contains("--map")) {
         print (count++ / totalSize*100) + " ";
         doPage(record);
     }
+}
+
+mergeRecord = {phenXObj ->
+    def findObj = new BasicDBObject("originId", Pattern.compile("^" + phenXObj.get("cadsrId") + "v"));
+    
+    DBObject toUpdate = deColl.findOne(findObj)
+    
+    if (toUpdate != null) {
+        println toUpdate.get("naming");
+        def concepts = new ArrayList();
+        def loincConcept = new BasicDBObject();
+        loincConcept.append("name", phenXObj.get("loincName"));
+        loincConcept.append("origin", "LOINC");
+        loincConcept.append("originId", phenXObj.get("loincId"));
+        concepts.add(loincConcept);
+
+        findObj = new BasicDBObject("_id", toUpdate.get("_id"));
+
+        def newDocument = new BasicDBObject();
+        newDocument.append("\$set", new BasicDBObject().append("objectClass.concepts", concepts));
+
+        deColl.update(findObj, newDocument);
+        
+        newDocument = new BasicDBObject();
+        newDocument.append("\$set", new BasicDBObject().append("property.concepts", []));
+
+        deColl.update(findObj, newDocument);
+        
+        newDocument = new BasicDBObject();
+        newDocument.append("\$set", new BasicDBObject().append("protocolText", 
+                phenXObj.get("protocolText").replace("<div style=\"display:block\" id=\"element_PROTOCOL_TEXT\">\n  ", "").replace("</div>\n", "")
+                    .replace("toolkit_content/thumb", "https://www.phenxtoolkit.org/toolkit_content/thumb")
+                    .replace("toolkit_content/report", "https://www.phenxtoolkit.org/toolkit_content/report")                    
+                    ));        
+        deColl.update(findObj, newDocument);
+        
+        newDocument = new BasicDBObject();
+        newDocument.append("\$set", new BasicDBObject().append("protocolDescription", phenXObj.get("protocolDescription")));
+        
+        deColl.update(findObj, newDocument);
+    } else {
+        println "No record for id: " + phenXObj.get("cadsrId")
+    }
+    
+
+    
+//    toUpdate.append("protocolText", phenXObj.get("protocolText"));
+//    toUpdate.append("protocolDescription", phenXObj.get("protocolDescription"));
+}  
+
+if (args.contains("--merge")) {
+    recList = mapColl.find();
+    def totalSize = recList.size();
+    def count = 0;
+    for (DBObject record : recList ) {
+        print (count++ / totalSize*100) + " ";
+        mergeRecord(record);
+    }    
 }
