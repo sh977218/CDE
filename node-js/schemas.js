@@ -49,7 +49,8 @@ var attachmentSchema = mongoose.Schema({
         , username: String
     }
     , filesize: Number
-}, {_id: false})
+    , isDefault: Boolean
+}, {_id: false});
 
 var deJsonSchema = {
     naming:[namingSchema]         

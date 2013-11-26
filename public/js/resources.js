@@ -36,7 +36,10 @@ angular.module('resources', ['ngResource']).
         return {
           remove: function(dat, success, error) {
               $http.post('/removeAttachment', dat).success(success).error(error);
-          } 
+          }
+          , setDefault: function(dat, success, error) {
+              $http.post('/setAttachmentDefault', dat).success(success).error(error);
+          }
         };
     })
     .factory("Comment", function($http) {

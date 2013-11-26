@@ -358,6 +358,10 @@ function DEListCtrl($scope, $http, CdeList, $modal, $timeout) {
           }
         });
     };
+    
+    $scope.isDefaultAttachment = function (item) {
+      return item.isDefault;  
+    };
 }
 
 var AddToFormModalCtrl = function($scope, MyCart, $modalInstance, cde, AddCdeToForm) {
@@ -994,6 +998,18 @@ function CreateFormCtrl($scope, $location, Form) {
             $scope.message = res;
             $scope.reload($scope.cde._id);
         });
+    };
+    
+    $scope.setDefault = function(index, state) {
+        Attachment.setDefault({
+            index: index
+            , state: state
+            , deId: $scope.cde._id 
+        }, 
+        function (res) {
+            $scope.message = res;
+            $scope.reload($scope.cde._id);
+        });        
     };
  };
  

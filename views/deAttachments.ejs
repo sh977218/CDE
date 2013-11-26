@@ -3,6 +3,11 @@
     <div ng-repeat="attachment in cde.attachments">
         <dl class="dl-horizontal">
             <dt>Filename: </dt><dd><a href="/data/{{attachment.fileid}}">{{attachment.filename}}</a></dd>
+            <dt>Default Image: </dt>
+            <dd>
+                <i ng-hide="attachment.isDefault" class="fa fa-square-o" ng-click="setDefault($index, true)"></i>
+                <i ng-show="attachment.isDefault" class="fa fa-check-square-o" ng-click="setDefault($index, false)"></i>
+            </dd>
             <dt ng-show="isAllowed(cde)">Actions: </dt>
             <dd ng-show="isAllowed(cde)">
                 <span ng-show="showDelete">
