@@ -25,16 +25,10 @@
                         <!--<li ng-show='isOrgCurator()' class="{{menuCreate}}"><a href="#/createCde">Create</a></li>-->
                         
                         <li ng-show='user._id' class="dropdown">    
-                            <a class="dropdown-toggle caret-after" data-toggle="dropdown">
-                            Create
-                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Create <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li>
-                                    <a tabindex="-1" href="#/createCde">CDE</a>
-                                </li>
-                                <li>
-                                    <a tabindex="-1" href="#/createform">Form</a>
-                                </li>
+                                <li><a href="#/createCde">CDE</a></li>
+                                <li><a href="#/createform">Form</a></li>
                             </ul>
                         </li>                        
                         <li class="{{menuCart}}" ng-show='user._id'><a id="cartLink" href="#/cart">Cart ({{user.formCart.length}})</a></li>
