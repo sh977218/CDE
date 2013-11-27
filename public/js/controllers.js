@@ -923,7 +923,11 @@ function CreateFormCtrl($scope, $location, Form) {
           // Turn the FileList object into an Array
             $scope.files = [];
             for (var i = 0; i < element.files.length; i++) {
-              $scope.files.push(element.files[i]);
+                if (element.files[i].size > (5 * 1024 * 1024) ) {
+                    $scope.message = "Size is limited to 5Mb per attachment"; 
+                } else {
+                    $scope.files.push(element.files[i]);
+                }
             }
           $scope.progressVisible = false;
         });
