@@ -991,6 +991,9 @@ function CreateFormCtrl($scope, $location, Form) {
     };
     
     $scope.setDefault = function(index, state) {
+        if (!$scope.isAllowed($scope.cde)) {
+            return;
+        };
         Attachment.setDefault({
             index: index
             , state: state
