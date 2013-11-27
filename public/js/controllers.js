@@ -229,36 +229,23 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     };     
 }
 
-function AuthCtrl($scope, $rootScope, Auth, $location) {
+function AuthCtrl($scope, Auth, $window) {
     $scope.setActiveMenu('LOGIN');
     $scope.login = function() {
-        console.log("login");
         Auth.login({
                 username: $scope.username,
                 password: $scope.password
             },
             function(res) {
-                $rootScope.user = res;
-                $location.path('/');
-            },
+                if (res === "OK") {
+                    $window.location.href = "/";
+                } else {
+                    $scope.message = res;
+                }
+              },
             function(err) {
-                $rootScope.error = "Failed to login";
+                $scope.message = "Failed to login";
             });
-    };
-    
-    $scope.register = function() {
-        Auth.register({
-            username: $scope.user.username
-            , password: $scope.user.password
-        },
-        function(res) {
-            $rootScope.message = res;
-            $location.path("/login");
-        },
-        function(err) {
-            $rootScope.error = "failed";
-        }
-    );
     };
 }
 

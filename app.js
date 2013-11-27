@@ -51,7 +51,7 @@ passport.use(new LocalStrategy(
       // username, or the password is not correct, set the user to `false` to
       // indicate failure and set a flash message. Otherwise, return the
       // authenticated `user`.
-        vsac.umlsAuth(username, password, function(result) {
+        vsac.umlsAuth(username, password, function(result) {            
             if (result.indexOf("true") > 0) {
                 findByUsername(username, function(err, user) {
                     if (err) { return done(err); }
@@ -71,7 +71,7 @@ passport.use(new LocalStrategy(
                     if (user.lockCounter == 3) {
                         return done(null, false, { message: 'User is locked out' }); 
                     }
-                    if (user.password != password) { 
+                    if (user.password != password) {
                         user.lockCounter = user.lockCounter + 1;
                         return mongo_data.save(user, function(err, user) {
                             return done(null, false, { message: 'Invalid password' }); 
@@ -306,21 +306,17 @@ app.post('/login', function(req, res, next) {
   req.session.regenerate(function(err) {  
     passport.authenticate('local', function(err, user, info) {
       if (err) { return next(err); }
-      if (!user) { return res.redirect('#/login'); }
+      if (!user) { 
+          return res.send(info.message);
+      }
       req.logIn(user, function(err) {
         if (err) { return next(err); }
         req.session.passport = {user: req.user._id};
-        return res.redirect('/');
+        return res.send("OK");
       });
     })(req, res, next);
-  })
-});
-
-//app.post('/login',
-//  passport.authenticate('local', { failureRedirect: '#/login', failureFlash: true }),
-//      function(req, res) {
-//          res.redirect('/');
-//     });
+  });
+  });
 
 app.get('/logout', function(req, res) {
   req.session.destroy(function (err) {
@@ -586,7 +582,6 @@ app.post('/setAttachmentDefault', function(req, res) {
                 res.send("You can only remove attachments you own.");
             } else {
                 var state = req.body.state;
-                console.log("set to " + state);
                 for (var i = 0; i < de.attachments.length; i++) {
                     de.attachments[i].isDefault = false;
                 }
@@ -595,7 +590,6 @@ app.post('/setAttachmentDefault', function(req, res) {
                    if (err) {
                        res.send("error: " + err);
                    } else {
-                       console.log("done");
                        res.send("State Changed");
                    }
                 });

@@ -1,16 +1,13 @@
-<% if (message) { %>
-<p><%= message %></p>
-<% } %>
 <div class="container">
     <div class="row-fluid">
         <div>{{message}}</div>  
         <div><b>Please use your UMLS account to login</b><br/><br/></div>
-        <form action="/login" method="post" class="span6">
+        <form ng-submit="login()" class="span6">
             <fieldset>
                 <label>Username:</label>
-                <input type="text" name="username"/>
+                <input type="text" ng-model="username"/>
                 <label>Password:</label>
-                <input type="password" name="password"/><br>
+                <input type="password" ng-model="password"/><br>
                 <input type="submit" value="Submit" class="btn"/>
             </fieldset>
             <p>Don't have a UMLS license/account?<br/>
