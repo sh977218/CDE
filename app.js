@@ -590,7 +590,7 @@ app.post('/setAttachmentDefault', function(req, res) {
                    if (err) {
                        res.send("error: " + err);
                    } else {
-                       res.send("State Changed");
+                       res.send(de);
                    }
                 });
             }

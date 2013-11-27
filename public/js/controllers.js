@@ -997,9 +997,8 @@ function CreateFormCtrl($scope, $location, Form) {
             , deId: $scope.cde._id 
         }, 
         function (res) {
-            $scope.message = res;
-            $scope.reload($scope.cde._id);
-        });        
+            $scope.cde = res;
+        });
     };
  };
  
