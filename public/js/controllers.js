@@ -937,7 +937,7 @@ function CreateFormCtrl($scope, $location, Form) {
         for (var i in $scope.files) {
             $scope.uploadFile($scope.files[i]);
         }
-    }
+    };
 
     $scope.uploadFile = function(file) {
         var fd = new FormData();
@@ -986,8 +986,7 @@ function CreateFormCtrl($scope, $location, Form) {
             , deId: $scope.cde._id 
         }, 
         function (res) {
-            $scope.message = res;
-            $scope.reload($scope.cde._id);
+            $scope.cde = res;
         });
     };
     

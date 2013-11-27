@@ -558,7 +558,7 @@ app.post('/removeAttachment', function(req, res) {
                    if (err) {
                        res.send("error: " + err);
                    } else {
-                       res.send("Attachment removed");
+                       res.send(de);
                    }
                 });
             }
