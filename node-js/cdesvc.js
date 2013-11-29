@@ -172,6 +172,10 @@ exports.diff = function(req, res) {
                                diff.before.definition = priorDe.naming[0].definition;
                                diff.after.definition = dataElement.naming[0].definition;
                            }
+                           if (dataElement.version !== priorDe.version) {
+                               diff.before.version = priorDe.version;
+                               diff.after.version = dataElement.version;
+                           }
                            
                            res.send(diff);
                            

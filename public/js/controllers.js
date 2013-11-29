@@ -729,7 +729,13 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
                 var d = dmp.diff_main(diffResult.before.definition, diffResult.after.definition);
                 dmp.diff_cleanupSemantic(d);
                 $scope.diff.definition = dmp.diff_prettyHtml(d);
+            }            
+            if (diffResult.before.version) {
+                var d = dmp.diff_main(diffResult.before.version, diffResult.after.version);
+                dmp.diff_cleanupSemantic(d);
+                $scope.diff.definition = dmp.diff_prettyHtml(d);
             }
+
         });
     };
     
