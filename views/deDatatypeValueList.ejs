@@ -1,18 +1,19 @@
 <h4>Permissible Values</h4>
 <div ng-show="cde.valueDomain.permissibleValues.length == 0">No Permissible Values</div>
-<table ng-show="cde.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped">
+<table ng-show="cde.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped" summary="List of permissible values">
      <thead>
          <tr>
-             <th>Name</th>
-             <th>Code Name</th>
-             <th>Code</th>
-             <th>Code System</th>
+             <th id="name">Name</th>
+             <th id="codeName">Code Name</th>
+             <th id="code">Code</th>
+             <th id="codeSystem">Code System</th>
+             <th id="actions"></th>
          </tr>
      </thead>
      <tbody>
          <tr id="pv-{{$index}}" ng-repeat="pv in cde.valueDomain.permissibleValues">
-             <td id="pv-{{$index}}"><inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></td>
-             <td id="pvName-{{$index}}">
+             <td headers="name" id="pv-{{$index}}"><inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></td>
+             <td headers="codeName" id="pvName-{{$index}}">
                  <div>
                      <div ng-hide="editMode"> 
                          {{pv.valueMeaningName}} <i ng-show="canLinkPv" class="icon-link" ng-click="editMode=true"></i> 
@@ -24,9 +25,9 @@
                      </div>      
                  </div>
              </td>
-             <td id="pvCode-{{$index}}">{{pv.valueMeaningCode}}</td>
-             <td>{{pv.codeSystemName}}</td>
-             <td ng-show="isAllowed(cde)">
+             <td headers="code" id="pvCode-{{$index}}">{{pv.valueMeaningCode}}</td>
+             <td headers="codeSystem" >{{pv.codeSystemName}}</td>
+             <td headers="actions" ng-show="isAllowed(cde)">
                  <i id="pvRemove-{{$index}}" class="icon-remove-sign" ng-click="removePv($index)"></i>
                  <i id="pvUp-{{$index}}" class="icon-arrow-up" ng-click="movePvUp($index)" ng-hide="$first"></i>
                  <i id="pvDown-{{$index}}" class="icon-arrow-down" ng-click="movePvDown($index)" ng-hide="$last"></i>

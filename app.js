@@ -530,9 +530,16 @@ app.post('/addAttachmentToCde', function(req, res) {
                     && !req.user.siteAdmin) {
                 res.send("not authorized");
             } else {
-                mongo_data.addCdeAttachment(req.files.uploadedFiles, req.user, "some comment", cde, function() {
-                    res.send(cde);            
-                });                        
+                mongo_data.userTotalSpace(req.user.username, function(totalSpace) {
+                    if (totalSpace > req.user.quota) {
+                        res.send({message: "You have exceeded your quota"});
+                    } else {
+                        mongo_data.addCdeAttachment(req.files.uploadedFiles, req.user, "some comment", cde, function() {
+                            res.send(cde);            
+                         });                                            
+                    }
+                });
+                
             }
         });
     } else {
@@ -598,6 +605,12 @@ app.post('/setAttachmentDefault', function(req, res) {
     } else {
         res.send("You are not authorized.");                   
     }
+});
+
+app.get('/userTotalSpace/:uname', function(req, res) {
+   return mongo_data.userTotalSpace(req.params.uname, function(space) {
+       return res.send({username: req.params.uname, totalSize: space});
+   });
 });
 
 

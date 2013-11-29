@@ -179,6 +179,7 @@ schemas.userSchema = mongoose.Schema ({
     , orgCurator: [String]
     , formCart: [String]
     , siteAdmin: Boolean
+    , quota: Number
 });
 
 schemas.orgSchema = mongoose.Schema ({

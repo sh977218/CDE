@@ -56,6 +56,17 @@ exports.addCdeAttachment = function(file, user, comment, cde, cb) {
 
 };
 
+exports.userTotalSpace = function(name, callback) {
+  DataElement.aggregate(
+    {$match: {"attachments.uploadedBy.username": "cabigAdmin"}},
+    {$unwind: "$attachments"},
+    {$group: {_id: {uname: "$attachments.uploadedBy.username"} , totalSize: {$sum: "$attachments.filesize"}}},
+    {$sort: {totalSize : -1}}
+        , function (err, res) {
+           callback(res[0].totalSize);
+        });
+};
+
 exports.userByName = function(name, callback) {
     User.findOne({'username': name}).exec(function (err, u) {
        callback("", u); 

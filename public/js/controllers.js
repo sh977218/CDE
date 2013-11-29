@@ -965,8 +965,14 @@ function CreateFormCtrl($scope, $location, Form) {
 
     function uploadComplete(evt) {
         $rootScope.$apply(function() {
-            $scope.cde = JSON.parse(evt.target.responseText);
-            $scope.files = [];
+            var resp = JSON.parse(evt.target.responseText);
+            if (!resp.message) {
+                $scope.cde = JSON.parse(evt.target.responseText);
+                $scope.files = [];
+                $scope.message = "";
+            } else {
+                $scope.message = resp.message;
+            }
         });
     }
 
