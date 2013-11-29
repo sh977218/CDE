@@ -57,7 +57,7 @@ passport.use(new LocalStrategy(
                     if (err) { return done(err); }
                     // username password combo is good, but user is not here, so register him.
                     if (!user) {
-                        mongo_data.addUser({username: username, password: "umls"}, function(newUser) {
+                        mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
                             return done(null, newUser);
                         });
                     } else {
@@ -67,7 +67,7 @@ passport.use(new LocalStrategy(
             } else {
                 findByUsername(username, function(err, user) {
                     if (err) { return done(err); }
-                    if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
+                    if (!user) { return done(null, false, { message: 'Incorrect username or password' }); }
                     if (user.lockCounter == 3) {
                         return done(null, false, { message: 'User is locked out' }); 
                     }
