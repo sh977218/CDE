@@ -301,6 +301,9 @@ app.get('/login', function(req, res) {
    res.render('login', { user: req.user, message: req.flash('error') });
 });
 
+app.get('/profile', function(req, res) {
+   res.render("profile"); 
+});
 
 app.post('/login', function(req, res, next) {
   req.session.regenerate(function(err) {  

@@ -34,4 +34,7 @@ exports.orgaccountmanagement = function(req, res){
 exports.deview = function(req, res){
     res.render('deview');
 };
+exports.profile = function(req, res){
+    res.render('profile');
+};
 

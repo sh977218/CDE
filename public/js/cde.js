@@ -1,7 +1,6 @@
 var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular']).
     config(function($routeProvider) {
         $routeProvider.
-        when('/edit/:cdeId', {controller:EditCtrl, templateUrl:'detail.html'}).
         when('/', {controller:DEListCtrl, templateUrl:'/list'}).
         when('/login', {controller:AuthCtrl, templateUrl:'/login'}).
         when('/signup', {controller:AuthCtrl, templateUrl:'/signup'}).
@@ -13,6 +12,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
         when('/cart', {controller: CartCtrl, templateUrl: '/cart'}).
         when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
         when('/orgaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/orgaccountmanagement'}).
+        when('/profile', {controller: AccountManagementCtrl, templateUrl: '/profile'}).
         otherwise({redirectTo:'/'});
     }).
     directive('inlineEdit', function() {

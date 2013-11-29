@@ -1,0 +1,11 @@
+<div class="row-fluid">
+<div class="span11 offset1">
+<h4>Profile</h4>
+<dl class="dl-horizontal">
+    <dt>Username: </dt><dd>{{user.username}}</dd>
+    <dt>Quota: </dt><dd>{{user.quota / 1024 / 1024 | number:2 | placeholdEmpty}} MB</dd>
+    <dt>Curator for: </dt><dd>{{user.orgCurator}}</dd>
+    <dt>Admin for: </dt><dd>{{user.orgAdmin}}</dd>
+</dl>
+</div>
+</div>
