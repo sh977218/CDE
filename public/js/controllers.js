@@ -695,6 +695,9 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
     };
     
     $scope.isAllowed = function (cde) {
+        if ($scope.initialized && cde.archived) {
+            return false;
+        }
         if ($scope.user.siteAdmin) {
             return true;
         }        
@@ -733,7 +736,12 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
             if (diffResult.before.version) {
                 var d = dmp.diff_main(diffResult.before.version, diffResult.after.version);
                 dmp.diff_cleanupSemantic(d);
-                $scope.diff.definition = dmp.diff_prettyHtml(d);
+                $scope.diff.version = dmp.diff_prettyHtml(d);
+            }
+            if (diffResult.before.uom) {
+                var d = dmp.diff_main(diffResult.before.uom, diffResult.after.uom);
+                dmp.diff_cleanupSemantic(d);
+                $scope.diff.uom = dmp.diff_prettyHtml(d);
             }
 
         });

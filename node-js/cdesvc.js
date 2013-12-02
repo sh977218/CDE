@@ -176,6 +176,12 @@ exports.diff = function(req, res) {
                                diff.before.version = priorDe.version;
                                diff.after.version = dataElement.version;
                            }
+                           if (dataElement.valueDomain.uom !== priorDe.valueDomain.uom) {
+                               diff.before.uom = priorDe.valueDomain.uom;
+                               if (!diff.before.uom) {diff.before.uom = "None Specified";}
+                               diff.after.uom = dataElement.valueDomain.uom;
+                               if (!diff.after.uom) {diff.after.uom = "None Specified";}
+                           }
                            
                            res.send(diff);
                            

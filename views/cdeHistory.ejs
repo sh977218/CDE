@@ -8,6 +8,7 @@
                 <td>Updated by</td>
                 <td>Change Note</td>
                 <td>Diff</td>
+                <td>See Full</td>
             </tr>
         </thead>
         <tbody>
@@ -16,12 +17,14 @@
                 <td>{{priorCde.updatedBy.username}}</td>
                 <td>{{priorCde.changeNote}}</td>
                 <td><i ng-show="priorCde.updated" class="icon-eye-open" ng-click="viewDiff(priorCde)"></i></td>
+                <td><a href="#/deview?cdeId={{priorCde._id}}"> <i class="icon-eye-open"></i></a></td>
             </tr>
             <tr>
                 <td>{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
                 <td>{{cde.updatedBy.username}}</td>
                 <td>{{cde.changeNote}}</td>
                 <td><i class="icon-eye-open" ng-click="viewDiff(cde)"></i></td>
+                <td></td>
             </tr>
         </tbody>
 
@@ -33,6 +36,7 @@
             <dt ng-show="diff.name">Name: </dt><dd><span ng-bind-html="diff.name"></span></dd>
             <dt ng-show="diff.definition">Definition: </dt><dd><span ng-bind-html="diff.definition"></span></dd>
             <dt ng-show="diff.version">Version: </dt><dd><span ng-bind-html="diff.version"></span></dd>
+            <dt ng-show="diff.uom">Unit of Measure: </dt><dd><span ng-bind-html="diff.uom"></span></dd>
         </dl>
     </div>
 </div>
