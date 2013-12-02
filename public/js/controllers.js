@@ -734,16 +734,19 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
                 $scope.diff.definition = dmp.diff_prettyHtml(d);
             }            
             if (diffResult.before.version) {
-                var d = dmp.diff_main(diffResult.before.version, diffResult.after.version);
-                dmp.diff_cleanupSemantic(d);
-                $scope.diff.version = dmp.diff_prettyHtml(d);
+                $scope.diff.version = "Before: " + diffResult.before.version + " -- After: " + diffResult.after.version
+            }
+            if (diffResult.before.datatype || diffResult.after.datatype) {
+                $scope.diff.datatype = "Before: " + diffResult.before.datatype + " -- After: " + diffResult.after.datatype
             }
             if (diffResult.before.uom) {
                 var d = dmp.diff_main(diffResult.before.uom, diffResult.after.uom);
                 dmp.diff_cleanupSemantic(d);
                 $scope.diff.uom = dmp.diff_prettyHtml(d);
             }
-
+            if (diffResult.before.permissibleValues || diffResult.after.permissibleValues) {
+                $scope.diff.permissibleValues = "Modified";
+            }
         });
     };
     

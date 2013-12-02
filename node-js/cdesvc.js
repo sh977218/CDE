@@ -182,6 +182,16 @@ exports.diff = function(req, res) {
                                diff.after.uom = dataElement.valueDomain.uom;
                                if (!diff.after.uom) {diff.after.uom = "None Specified";}
                            }
+                           if (dataElement.valueDomain.datatype !== priorDe.valueDomain.datatype) {
+                               diff.before.datatype = priorDe.valueDomain.datatype;
+                               if (!diff.before.datatype) {diff.before.datatype = "None Specified";}
+                               diff.after.datatype = dataElement.valueDomain.datatype;
+                               if (!diff.after.datatype) {diff.after.datatype = "None Specified";}
+                           }
+                           if (dataElement.valueDomain.permissibleValues !== priorDe.valueDomain.permissibleValues) {
+                               diff.before.permissibleValues = priorDe.valueDomain.permissibleValues;
+                               diff.after.permissibleValues = dataElement.valueDomain.permissibleValues;                              
+                           }
                            
                            res.send(diff);
                            
