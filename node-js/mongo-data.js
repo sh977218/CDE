@@ -190,6 +190,7 @@ exports.cdelist = function(from, limit, searchOptions, callback) {
     
     query.find(searchOptions).where("archived").equals(null).skip(from).limit(limit)
             .sort({"registrationState.registrationStatusSortOrder": 1})
+            .sort({"views": -1})
 //            .sort({"registrationState.registrationStatusSortOrder": 1, '-formUsageCounter': 1})
             .slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
         query.find(searchOptions).where("archived").equals(null).count(searchOptions).exec(function (err, count) {
@@ -286,6 +287,10 @@ exports.cdeById = function(cdeId, callback) {
     DataElement.findOne({'_id': cdeId}, function(err, cde) {
         callback("", cde);
     });
+};
+
+exports.incDeView = function(cde) {
+    DataElement.update({_id: cde._id}, {$inc: {views: 1}}).exec();
 };
 
 

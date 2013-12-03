@@ -101,6 +101,7 @@ exports.show = function(req, res) {
         res.send("No Data Element Id");
     } else {
         mongo_data.cdeById(cdeId, function(err, cde) {
+           mongo_data.incDeView(cde); 
            res.send(cde); 
         });
     }

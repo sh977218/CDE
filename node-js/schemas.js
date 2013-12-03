@@ -125,6 +125,7 @@ var deJsonSchema = {
     , comments: [commentSchema]
     , archived: Boolean
     , attachments: [attachmentSchema]
+    , views: Number
 };
 
 var questionSchema = mongoose.Schema ({

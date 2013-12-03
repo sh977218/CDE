@@ -1,7 +1,9 @@
 db.dataelements.ensureIndex({"name": 1}); 
 db.dataelements.ensureIndex({"stewardOrg.name": 1});
 db.dataelements.ensureIndex({"registrationState.registrationStatus": 1}); 
-db.dataelements.ensureIndex({"registrationState.registrationStatusSortOrder": 1}); 
+db.dataelements.ensureIndex({"views": 1});
+db.dataelements.ensureIndex({"archived": 1});
+db.dataelements.ensureIndex({"registrationState.registrationStatusSortOrder": 1, "views": 1}); 
 db.dataelements.ensureIndex({"originId": 1});
 db.dataelements.ensureIndex({"uuid": 1});
 db.dataelements.ensureIndex({"classification.conceptSystem": 1});
