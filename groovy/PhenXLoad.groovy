@@ -16,7 +16,6 @@ DBCollection deColl = db.getCollection("dataelements");
 
 def webClient = new WebClient();
 
-
 if (args.contains("--protIds")) {
     def startUrl = "file:///usr/nlm/cde/code/nlm-seed/phenxtoolkit_report_112113.html";
     def startPage = webClient.getPage(startUrl);
@@ -129,14 +128,14 @@ mergeRecord = {phenXObj ->
         newDocument.append("\$set", new BasicDBObject().append("protocolDescription", phenXObj.get("protocolDescription")));
         
         deColl.update(findObj, newDocument);
+
+        newDocument = new BasicDBObject();
+        newDocument.append("\$set", new BasicDBObject().append("registrationState.registrationStatus", "Standard"));
+        
+        deColl.update(findObj, newDocument);
     } else {
         println "No record for id: " + phenXObj.get("cadsrId")
-    }
-    
-
-    
-//    toUpdate.append("protocolText", phenXObj.get("protocolText"));
-//    toUpdate.append("protocolDescription", phenXObj.get("protocolDescription"));
+    }    
 }  
 
 if (args.contains("--merge")) {
