@@ -249,20 +249,22 @@ function AuthCtrl($scope, Auth, $window) {
     };
 }
 
-function DEListCtrl($scope, $http, CdeList, $modal, $timeout) {
+function DEListCtrl($scope, $http, CdeList, CdeFtSearch, $modal, $timeout) {
     $scope.setActiveMenu('LISTCDE');
     
     $scope.currentPage = 1;
     $scope.pageSize = 10;
     $scope.originOptions = ['CADSR', 'FITBIR'];
+    
+    $scope.search = {name: ""};
 
-    $scope.classificationSystems = ['Loading...'];
-    $scope.loadTree = function() {
-        return $http.get("/classificationSystems").then(function(response) {
-            $scope.classificationTree = response.data;
-        });
-    };
-    $scope.loadTree();
+//    $scope.classificationSystems = ['Loading...'];
+//    $scope.loadTree = function() {
+//        return $http.get("/classificationSystems").then(function(response) {
+//            $scope.classificationTree = response.data;
+//        });
+//    };
+//    $scope.loadTree();
     
     // this one ensures that we don't send this as query when none is selected. 
     $scope.removeOwningOrg = function() {
@@ -309,7 +311,8 @@ function DEListCtrl($scope, $http, CdeList, $modal, $timeout) {
     
     $scope.reload = function() {
         var newfrom = ($scope.currentPage - 1) * $scope.pageSize;
-        var result = CdeList.get({from: newfrom, search: JSON.stringify($scope.search)}, function () {
+//        var result = CdeList.get({from: newfrom, search: JSON.stringify($scope.search)}, function () {
+        var result = CdeFtSearch.get({from: newfrom, q: JSON.stringify($scope.ftsearch)}, function () {
            $scope.numPages = result.pages; 
            $scope.cdes = result.cdes;
            $scope.totalItems = result.totalNumber;

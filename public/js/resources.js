@@ -2,6 +2,9 @@ angular.module('resources', ['ngResource']).
     factory('CdeList', function($resource) {
         return $resource('/listcde');
     })
+    .factory('CdeFtSearch', function($resource) {
+        return $resource('/ftsearch');
+    })
     .factory('DataElement', function($resource) {
         return $resource('/dataelement/:deId', {deId: '@deId'}, {update: {method: 'PUT'}});
     })

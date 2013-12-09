@@ -1,8 +1,9 @@
 <pagination direction-links="true" num-pages="numPages" max-size="10" total-items="totalItems" page="currentPage"></pagination>
 
 <form class="form-search">
-<input name="search.name" type="text" ng-model="search.name" class="search-query" placeholder="Search Name" ng-change="onchangeSearch()">
-<select ng-model="search.stewardOrg.name" name="stewardOrg.name" ng-change="removeOwningOrg(); reload()">
+<input name="ftsearch" type="text" ng-model="ftsearch" class="search-query" placeholder="Search" ng-change="onchangeSearch()">  
+<!--<input name="search.name" type="text" ng-model="search.name" class="search-query" placeholder="Search Name" ng-change="onchangeSearch()">-->
+<!--<select ng-model="search.stewardOrg.name" name="stewardOrg.name" ng-change="removeOwningOrg(); reload()">
     <option value="" >Any Organization</option>
     <option ng-repeat="o in orgs" ng-value="o">{{o}}</option>    
 </select>
@@ -12,7 +13,7 @@
 <select ng-model="search.classificationSystem" name="conceptSystem" ng-change="removeClassificationSystem(); reload()">
     <option ng-repeat="classif in classificationTree" ng-value="classif">{{classif}}</option>
     <option value="">Any Classification</option>
-</select>
+</select>-->
 <input id="search.submit" type="submit" value="Search" ng-click="reload()" class="btn"></input>
 </form>
 

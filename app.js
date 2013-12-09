@@ -328,6 +328,12 @@ app.get('/logout', function(req, res) {
   });
 });
 
+app.get('/ftsearch', function(req, res) {
+    cdesvc.elasticsearch(req, res);
+});
+
+
+
 app.get('/listcde', function(req, res) {
     cdesvc.listcde(req, res);
 });

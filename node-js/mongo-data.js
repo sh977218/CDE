@@ -63,7 +63,11 @@ exports.userTotalSpace = function(name, callback) {
     {$group: {_id: {uname: "$attachments.uploadedBy.username"} , totalSize: {$sum: "$attachments.filesize"}}},
     {$sort: {totalSize : -1}}
         , function (err, res) {
-           callback(res[0].totalSize);
+            var result = 0;
+            if (res.length > 0) {
+                result = res[0].totalSize;
+            }
+           callback(result);
         });
 };
 

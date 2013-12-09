@@ -1,7 +1,44 @@
 var express = require('express')
-  , http = require('http')
+  , request = require('request')
+  , util = require('util')
   , mongo_data = require('./mongo-data')
 ;
+
+exports.elasticsearch = function(req, res) {
+    var q = req.query["q"];
+    var from = req.query["from"];
+
+    var limit = 20;
+
+    var url = 'http://localhost:9200/nlmcde/_search';
+    var queryStuff = {size: limit};
+    
+    if (q != undefined && q !== "") {
+        queryStuff.query = {match: {_all: q}};
+    }
+    if (from) {
+        queryStuff.from = from;
+    }
+
+    request.post(url,{body: JSON.stringify(queryStuff)}, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+            var resp = JSON.parse(body);
+            var result = {cdes: []
+                , pages: Math.ceil(resp.hits.total / limit)
+                , page: Math.ceil(from/ limit)
+                , totalNumber: resp.hits.total};
+            for (var i = 0; i < resp.hits.hits.length; i++) {
+                var thisCde = resp.hits.hits[i]._source;
+                if (thisCde.valueDomain.permissibleValues.length > 10) {
+                    thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
+                } 
+                result.cdes.push(thisCde);
+            }
+          res.send(result);
+        }
+    });
+    
+}
 
 exports.listcde = function(req, res) {
     var from = req.query["from"],
