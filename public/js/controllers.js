@@ -427,7 +427,7 @@ function SaveCdeCtrl($scope, $modal, $http) {
     $scope.stageCde = function(cde) {
         cde.unsaved = true;
     };
-    
+        
     $scope.openRegStatusUpdate = function () {
         var modalInstance = $modal.open({
           templateUrl: 'regStatusUpdate.html',
@@ -436,6 +436,9 @@ function SaveCdeCtrl($scope, $modal, $http) {
               cde: function() {
                   return $scope.cde;
               }
+              , user: function() {
+                  return $scope.user;
+              }          
           }
         });
 
@@ -457,8 +460,9 @@ function SaveCdeCtrl($scope, $modal, $http) {
     };
 };
 
-var SaveCdeModalCtrl = function ($scope, $window, $modalInstance, cde) {
+var SaveCdeModalCtrl = function ($scope, $window, $modalInstance, cde, user) {
   $scope.cde = cde;
+  $scope.user = user;
 
   $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified'];
 
