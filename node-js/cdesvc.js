@@ -2,7 +2,10 @@ var express = require('express')
   , request = require('request')
   , util = require('util')
   , mongo_data = require('./mongo-data')
+  , envconfig = require('../envconfig.js')
 ;
+
+var elasticUri = process.env.ELASTIC_URI || envconfig.elasticUri || 'http://localhost:9200/nlmcde/_search';
 
 exports.elasticsearch = function(req, res) {
     var q = req.query["q"];
@@ -10,17 +13,34 @@ exports.elasticsearch = function(req, res) {
 
     var limit = 20;
 
-    var url = 'http://localhost:9200/nlmcde/_search';
     var queryStuff = {size: limit};
     
     if (q != undefined && q !== "") {
-        queryStuff.query = {match: {_all: q}};
+        queryStuff.query = {
+            query_string: {
+                fields: ["_all", "naming.designation^3"]
+                , query: q}
+        }
+        queryStuff.query = 
+            {
+                function_score: {
+                    script_score: {
+                        script: "(6 - doc[\"registrationState.registrationStatusSortOrder\"].value) / 6.0"
+                }
+                , query: {
+                    query_string: {
+                        fields: ["_all", "naming.designation^3"]
+                        , query: q}
+                    }
+                }                
+        }
     }
+    
     if (from) {
         queryStuff.from = from;
     }
 
-    request.post(url,{body: JSON.stringify(queryStuff)}, function (error, response, body) {
+    request.post(elasticUri,{body: JSON.stringify(queryStuff)}, function (error, response, body) {
     if (!error && response.statusCode == 200) {
             var resp = JSON.parse(body);
             var result = {cdes: []
