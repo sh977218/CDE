@@ -1,20 +1,7 @@
-<pagination direction-links="true" num-pages="numPages" max-size="10" total-items="totalItems" page="currentPage"></pagination>
 
-<form class="form-search">
-<input name="ftsearch" type="text" ng-model="ftsearch" class="search-query" placeholder="Search" ng-change="onchangeSearch()">  
-<!--<input name="search.name" type="text" ng-model="search.name" class="search-query" placeholder="Search Name" ng-change="onchangeSearch()">-->
-<!--<select ng-model="search.stewardOrg.name" name="stewardOrg.name" ng-change="removeOwningOrg(); reload()">
-    <option value="" >Any Organization</option>
-    <option ng-repeat="o in orgs" ng-value="o">{{o}}</option>    
-</select>
-<select ng-model="search.registrationState.registrationStatus" name="registrationStatus" ng-options="status as status for status in registrationStatuses" ng-change="removeRegistrationStatus(); reload()">
-    <option value="">Any Status</option>
-</select>
-<select ng-model="search.classificationSystem" name="conceptSystem" ng-change="removeClassificationSystem(); reload()">
-    <option ng-repeat="classif in classificationTree" ng-value="classif">{{classif}}</option>
-    <option value="">Any Classification</option>
-</select>-->
-<input id="search.submit" type="submit" value="Search" ng-click="reload()" class="btn"></input>
+<form class="form-search"  align="center" >
+    <input name="ftsearch" type="text" ng-model="ftsearch" class="search-query" placeholder="Search" ng-change="onchangeSearch()">  
+    <input id="search.submit" type="submit" value="Search" ng-click="reload()" class="btn"></input>
 </form>
 
 <div class="row-fluid">
@@ -29,33 +16,30 @@
         </ul>
     </div>
     <div class="span11">
-<accordion>
-    <accordion-group ng-repeat="cde in cdes" heading="{{cde.stewardOrg.name}} -- {{cde.naming[0].designation}}">
-         <div class="row-fluid">
-            <div class="span6">
-                <%- include cdegeneraldetails.ejs %>
-            </div>
-            <div class="span4">
-                <%- include valueDomainView.ejs %>
-            </div>
-             <div class="span2">
-                <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" src="/data/{{attachment.fileid}}"/> 
-             </div>
-         </div>
-        <div class="row-fluid" >
-            <!--<a ng-show="user._id" class="btn-small btn-primary" ng-click="openAddToForm(cde)"><i class="icon-list-alt"> Add to Form</i></a>-->
-            <a class='btn' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="icon-eye-open"></i> View Full Detail</a>
-<!--            <span ng-controller="RegistrationCtrl" ng-show='isAllowed(cde)'>
-                <span ng-show="cde.registrationStatus == 'Draft'">
-                    <a class="btn-small btn-primary" ng-click="changeStatus(cde, 'Internal Review')"><i class="icon-check-empty"> Submit for Internal Review</i></a>
-                </span>
-            </span>-->
-        </div>
-        <script type="text/ng-template" id="addToFormModalContent.html">
-            <%- include addToFormModal.ejs %>
-        </script>
+        <accordion>
+            <accordion-group ng-repeat="cde in cdes" heading="{{cde.stewardOrg.name}} -- {{cde.naming[0].designation}}">
+                 <div class="row-fluid">
+                    <div class="span6">
+                        <%- include cdegeneraldetails.ejs %>
+                    </div>
+                    <div class="span4">
+                        <%- include valueDomainView.ejs %>
+                    </div>
+                     <div class="span2">
+                        <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" src="/data/{{attachment.fileid}}"/> 
+                     </div>
+                 </div>
+                <div class="row-fluid" >
+                    <a class='btn' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="icon-eye-open"></i> View Full Detail</a>
+                </div>
+                <script type="text/ng-template" id="addToFormModalContent.html">
+                    <%- include addToFormModal.ejs %>
+                </script>
 
-    </accordion-group>
-</accordion>
+            </accordion-group>
+        </accordion>
     </div>
 </div>
+
+<pagination align="center" direction-links="true" num-pages="numPages" max-size="10" total-items="totalItems" page="currentPage"></pagination>
+

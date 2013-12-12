@@ -22,20 +22,16 @@
                     <a class="brand" href="/">CDEs and Forms</a>
                     <ul class="nav">
                         <li class="{{menuHome}}"><a href="/">CDEs</a></li>
-                        <li class="{{menuForm}}"><a id="formsLink" href="#/listforms">Forms</a></li>
-                        <!--<li ng-show='isOrgCurator()' class="{{menuCreate}}"><a href="#/createCde">Create</a></li>-->
+                        <!--<li class="{{menuForm}}"><a id="formsLink" href="#/listforms">Forms</a></li>-->
                         
                         <li ng-show='user._id' class="dropdown">    
                             <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Create <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="#/createCde">CDE</a></li>
-                                <li><a href="#/createform">Form</a></li>
+                                <!--<li><a href="#/createform">Form</a></li>-->
                             </ul>
                         </li>                        
-                        <li class="{{menuCart}}" ng-show='user._id'><a id="cartLink" href="#/cart">Cart ({{user.formCart.length}})</a></li>
-<!--
-                        <li class="{{menuIntRev}}" ng-show='isOrgAdmin()'><a href="#/internalreview">Review</a></li>
-                        <li class="{{menuNlmRev}}" ng-show='user.nlmAdmin'><a href='#/nlmreleased'>Admin</a></li> -->
+                        <!--<li class="{{menuCart}}" ng-show='user._id'><a id="cartLink" href="#/cart">Cart ({{user.formCart.length}})</a></li>-->
                     </ul>
                     <ul class="nav pull-right">
                         <li class="{{menuLogin}}" ng-show='!user._id'><a href="#/login">Log In</a></li>
