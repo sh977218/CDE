@@ -311,11 +311,11 @@ function DEListCtrl($scope, $http, CdeList, CdeFtSearch, $modal, $timeout) {
     
     $scope.reload = function() {
         var newfrom = ($scope.currentPage - 1) * $scope.pageSize;
-//        var result = CdeList.get({from: newfrom, search: JSON.stringify($scope.search)}, function () {
         var result = CdeFtSearch.get({from: newfrom, q: JSON.stringify($scope.ftsearch)}, function () {
            $scope.numPages = result.pages; 
            $scope.cdes = result.cdes;
            $scope.totalItems = result.totalNumber;
+           $scope.facets = result.facets;
         });
     } ;  
     
@@ -643,6 +643,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
            $scope.loadValueSet();
            $scope.initialized = true;
            $scope.canLinkPvFunc();
+           $scope.loadMlt();
         });
         
         PriorCdes.getCdes({cdeId: deId}, function(dataElements) {
@@ -789,6 +790,17 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
                 dec.conceptualDomain.vsac != null &&
                 dec.conceptualDomain.vsac.id != null);
     };   
+    
+    $scope.loadMlt = function() {
+        $http({method: "GET", url: "/moreLikeCde/" + $scope.cde._id}).
+             error(function(data, status) {
+             }).
+             success(function(data, status) {
+                 $scope.mltCdes = data.cdes;
+             })
+        ;
+    }
+    $scope.mltCdes = [];
     
 }
 

@@ -37,7 +37,7 @@
                     , host: 'vsac-qa.nlm.nih.gov'
                 }
                 , logdir: /var/log
-                , elasticUri: http://localhost:9200/nlmcde/_search
+                , elasticUri: http://localhost:9200/nlmcde/
             };
         </span>
         

@@ -5,7 +5,7 @@ var express = require('express')
   , envconfig = require('../envconfig.js')
 ;
 
-var elasticUri = process.env.ELASTIC_URI || envconfig.elasticUri || 'http://localhost:9200/nlmcde/_search';
+var elasticUri = process.env.ELASTIC_URI || envconfig.elasticUri || 'http://localhost:9200/nlmcde/';
 
 exports.elasticsearch = function(req, res) {
     var q = req.query["q"];
@@ -19,33 +19,65 @@ exports.elasticsearch = function(req, res) {
         queryStuff.query = {
             query_string: {
                 fields: ["_all", "naming.designation^3"]
-                , query: q}
+                , query: q
+            }
         }
         queryStuff.query = 
             {
                 function_score: {
                     script_score: {
                         script: "(6 - doc[\"registrationState.registrationStatusSortOrder\"].value) / 6.0"
-                }
-                , query: {
-                    query_string: {
-                        fields: ["_all", "naming.designation^3"]
-                        , query: q}
+                    }
+                    , query: {
+                        query_string: {
+                            fields: ["_all", "naming.designation^3"]
+                            , query: q
+                        }
                     }
                 }                
-        }
+           }
+    }
+    
+    queryStuff.facets = {
+        orgs: {terms: {field: "stewardOrg.name", size: 20}}
+        , statuses: {terms: {field: "registrationState.registrationStatus"}}
     }
     
     if (from) {
         queryStuff.from = from;
     }
 
-    request.post(elasticUri,{body: JSON.stringify(queryStuff)}, function (error, response, body) {
+    request.post(elasticUri + "_search",{body: JSON.stringify(queryStuff)}, function (error, response, body) {
     if (!error && response.statusCode == 200) {
+        var resp = JSON.parse(body);
+        var result = {cdes: []
+            , pages: Math.ceil(resp.hits.total / limit)
+            , page: Math.ceil(from/ limit)
+            , totalNumber: resp.hits.total};
+        for (var i = 0; i < resp.hits.hits.length; i++) {
+            var thisCde = resp.hits.hits[i]._source;
+            if (thisCde.valueDomain.permissibleValues.length > 10) {
+                thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
+            } 
+            result.cdes.push(thisCde);
+        }
+        result.facets = resp.facets;
+        res.send(result);
+      }
+    });
+    
+}
+
+exports.morelike = function(id, callback) {
+    var from = 0;
+    var limit = 20;
+
+    request.get(elasticUri + "documents/" + id + "/_mlt", function (error, response, body) {
+        if (!error && response.statusCode == 200) {
             var resp = JSON.parse(body);
             var result = {cdes: []
                 , pages: Math.ceil(resp.hits.total / limit)
-                , page: Math.ceil(from/ limit)
+                , page: Math.ceil(from / limit)
                 , totalNumber: resp.hits.total};
             for (var i = 0; i < resp.hits.hits.length; i++) {
                 var thisCde = resp.hits.hits[i]._source;
@@ -54,10 +86,12 @@ exports.elasticsearch = function(req, res) {
                 } 
                 result.cdes.push(thisCde);
             }
-          res.send(result);
+            callback(result);
+        } else {
+            callback("Error");
         }
+        
     });
-    
 }
 
 exports.listcde = function(req, res) {

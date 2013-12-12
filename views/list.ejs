@@ -17,6 +17,18 @@
 <input id="search.submit" type="submit" value="Search" ng-click="reload()" class="btn"></input>
 </form>
 
+<div class="row-fluid">
+    <div class="span1">
+        <strong>Stewards</strong>
+        <ul class="fa-ul">
+            <li ng-repeat="t in facets.orgs.terms" style="margin-right: -20px"><i class="fa-li fa fa-square-o"></i><small> {{t.term}} ({{t.count}})</small></li>
+        </ul>
+        <strong>Status</strong>
+        <ul class="fa-ul">
+            <li ng-repeat="t in facets.statuses.terms" style="margin-right: -20px"><i class="fa-li fa fa-square-o"></i><small> {{t.term}} ({{t.count}})</small></li>
+        </ul>
+    </div>
+    <div class="span11">
 <accordion>
     <accordion-group ng-repeat="cde in cdes" heading="{{cde.stewardOrg.name}} -- {{cde.naming[0].designation}}">
          <div class="row-fluid">
@@ -45,3 +57,5 @@
 
     </accordion-group>
 </accordion>
+    </div>
+</div>

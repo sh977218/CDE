@@ -630,6 +630,12 @@ app.get('/data/:imgtag', function(req, res) {
   }, res, req.params.imgtag );
 });
 
+app.get('/moreLikeCde/:cdeId', function(req, res) {
+    cdesvc.morelike(req.params.cdeId, function(result) {
+        res.send(result);
+    })
+})
+
 // Get VSAC TGT.
 vsac.getTGT(function(tgt) {
 });
