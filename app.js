@@ -286,7 +286,7 @@ app.get('/siteaccountmanagement', function(req, res) {
 });
 
 app.get('/orgaccountmanagement', function(req, res) {
-    res.render('orgaccountmanagement');
+    res.render('orgAccountManagement');
 });
 
 app.get('/formview', function(req, res) {
