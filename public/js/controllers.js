@@ -455,6 +455,9 @@ function SaveCdeCtrl($scope, $modal, $http) {
               cde: function() {
                   return $scope.cde;
               }
+              , user: function() {
+                  return $scope.user;
+              } 
           }
         });
     };
