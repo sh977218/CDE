@@ -66,13 +66,13 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
 
     };
     
-    $scope.listOrgs = function() {
-     return $http.get("/listorgs").then(function(response){ 
-        return response.data;
-     });
-    };
-    
-    $scope.orgs = $scope.listOrgs();
+//    $scope.listOrgs = function() {
+//     return $http.get("/listorgs").then(function(response){ 
+//        return response.data;
+//     });
+//    };
+//    
+//    $scope.orgs = $scope.listOrgs();
 
     $scope.scrollTo = function(id) {
         var old = $location.hash();

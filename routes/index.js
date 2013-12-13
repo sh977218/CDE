@@ -29,7 +29,7 @@ exports.siteaccountmanagement = function(req, res){
     res.render('siteaccountmanagement');
 };
 exports.orgaccountmanagement = function(req, res){
-    res.render('orgaccountmanagement');
+    res.render('orgAccountManagement');
 };
 exports.deview = function(req, res){
     res.render('deview');
