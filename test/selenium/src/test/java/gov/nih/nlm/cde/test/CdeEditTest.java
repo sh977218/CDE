@@ -72,7 +72,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText(test_reg_auth);
         findElement(By.id("cde.submit")).click();
         driver.get(baseUrl + "/");
-        findElement(By.name("search.name")).sendKeys("testUser CDE 1");
+        findElement(By.name("ftsearch")).sendKeys("testUser CDE 1");
         findElement(By.id("search.submit")).click();
         findElement(By.linkText(test_reg_auth + " -- name of testuser CDE 1")).click();
         findElement(By.linkText("View Full Detail")).click();

@@ -9,7 +9,7 @@ public class FormTest extends NlmCdeBaseTest {
 
     private static final String testFormName = "CtepTestForm1";
 
-    @Test
+//    @Test
     public void createForm() {
         loginAs(ctepCurator_username, ctepCurator_password);
         findElement(By.linkText("Create")).click();
@@ -27,7 +27,7 @@ public class FormTest extends NlmCdeBaseTest {
         logout();
     }
 
-    @Test(dependsOnMethods = {"createForm"})
+//    @Test(dependsOnMethods = {"createForm"})
     public void addRemoveCart() {
         loginAs(ctepCurator_username, ctepCurator_password);
         driver.get(baseUrl + "/");
@@ -45,7 +45,7 @@ public class FormTest extends NlmCdeBaseTest {
         logout();
     }
 
-    @Test(dependsOnMethods = {"createForm"})
+//    @Test(dependsOnMethods = {"createForm"})
     public void addSection() {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToFormByName(testFormName);
@@ -56,7 +56,7 @@ public class FormTest extends NlmCdeBaseTest {
         logout();
     }
 
-    @Test(dependsOnMethods = {"addSection"})
+//    @Test(dependsOnMethods = {"addSection"})
     public void addQuestions() {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToFormByName(testFormName);
@@ -80,8 +80,8 @@ public class FormTest extends NlmCdeBaseTest {
         logout();
     }
 
-    @Test
-        (dependsOnMethods = {"addQuestions"})
+//    @Test
+//        (dependsOnMethods = {"addQuestions"})
     public void reorderQuestions() {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToFormByName(testFormName);
@@ -99,7 +99,7 @@ public class FormTest extends NlmCdeBaseTest {
         logout();
     }
     
-    @Test(dependsOnMethods = {"addSection", "removeQuestion"})
+//    @Test(dependsOnMethods = {"addSection", "removeQuestion"})
     public void reorderSections() {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToFormByName(testFormName);
@@ -119,8 +119,8 @@ public class FormTest extends NlmCdeBaseTest {
         logout();
     }
     
-    @Test
-        (dependsOnMethods = {"addQuestions"})
+//    @Test
+//        (dependsOnMethods = {"addQuestions"})
     public void removeQuestion() {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToFormByName(testFormName);

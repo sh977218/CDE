@@ -38,7 +38,7 @@ public class NlmCdeBaseTest {
         
     protected void goToCdeByName(String name) {
         driver.get(baseUrl + "/");
-        findElement(By.name("search.name")).sendKeys(name);
+        findElement(By.name("ftsearch")).sendKeys(name);
         findElement(By.id("search.submit")).click();
         findElement(By.partialLinkText(name)).click();
         findElement(By.linkText("View Full Detail")).click();
@@ -76,11 +76,12 @@ public class NlmCdeBaseTest {
     protected void loginAs(String username, String password) {
         driver.get(baseUrl + "/");
         findElement(By.linkText("Log In")).click();
-        findElement(By.name("username")).clear();
-        findElement(By.name("username")).sendKeys(username);
-        findElement(By.name("password")).clear();
-        findElement(By.name("password")).sendKeys(password);
+        findElement(By.id("uname")).clear();
+        findElement(By.id("uname")).sendKeys(username);
+        findElement(By.id("passwd")).clear();
+        findElement(By.id("passwd")).sendKeys(password);
         findElement(By.cssSelector("input.btn")).click();
+        findElement(By.linkText("Account"));
     }
     
 }
