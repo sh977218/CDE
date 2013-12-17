@@ -20,6 +20,7 @@ expressErrorLog*
 ._*
 .Spotlight-V100
 .Trashes
+.npmignore
 Icon?
 ehthumbs.db
 Thumbs.db
@@ -27,3 +28,4 @@ Thumbs.db
 /test/selenium/.nb-gradle/profiles/private/
 /test/selenium/build/
 .nide
+/test/selenium/chromedriver

@@ -6,7 +6,9 @@
 
 package gov.nih.nlm.cde.test;
 
+import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -37,6 +39,14 @@ public class UserTest extends NlmCdeBaseTest {
         Assert.assertEquals("1,024.00 MB", findElement(By.id("dd_quota")).getText());
         Assert.assertEquals("[]", findElement(By.id("dd_curatorFor")).getText());
         Assert.assertEquals("[\"caBIG\"]", findElement(By.id("dd_adminFor")).getText());
+        logout();
+    }
+    
+    @Test
+    public void regUserCannotCreate() {
+        loginAs("user1", "pass");
+        findElement(By.linkText("Account"));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Create")));
         logout();
     }
 

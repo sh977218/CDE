@@ -42,6 +42,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         findElement(By.cssSelector("button.btn.btn-warning")).click();
+        Assert.assertTrue(textPresent("Standard"));
         goToCdeByName("Patient Name");
         Assert.assertTrue(textPresent("Standard"));
         logout();

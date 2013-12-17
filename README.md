@@ -84,6 +84,14 @@
         Start the vsac mock with $> ./node-js/mock/vsacMock
         You may need to generate your own ssl server key. 
 
+        <br>
+        Download ChromeDriver, possibly from here:
+        <a href="https://code.google.com/p/chromedriver/downloads/list"></a>
+        <br>
+        Move the chromedriver executable into test/selenium.
+        <br><small>You may try testing with Firefox but Selenium is bad with Firefox. At this time, version 24 seems ok, but not version 26.</small>
+        
+        <br>
         To run the test suite $> ./start-test-instance.sh
 
         <h1>Seed</h1>

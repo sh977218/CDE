@@ -1,7 +1,7 @@
 package gov.nih.nlm.cde.test;
 
 import org.testng.annotations.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +25,8 @@ public class NlmCdeBaseTest {
 
     @BeforeTest
     public void setBaseUrl() {
-        driver = new FirefoxDriver();
+        System.setProperty("webdriver.chrome.driver", "./chromedriver");
+        driver = new ChromeDriver();
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, 3);
