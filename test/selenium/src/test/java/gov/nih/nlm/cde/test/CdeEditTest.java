@@ -79,6 +79,20 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
         logout();
     }
+    
+    @Test
+    public void createCdeSuggest() {
+        loginAs(ctepCurator_username, ctepCurator_password);
+        findElement(By.linkText("Create")).click();
+        findElement(By.linkText("CDE")).click();
+        // wait for page to load
+        findElement(By.id("cde.submit"));
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Possible Matches") < 0);
+        findElement(By.name("cde.designation")).sendKeys("Patient Name");
+        Assert.assertTrue(textPresent("Possible Matches"));
+        Assert.assertTrue(textPresent("CTEP -- Patient Name"));
+        logout();
+    }
 
     @Test(dependsOnMethods = {"createCde"})
     public void editCde() {
@@ -100,7 +114,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys("2");
         findElement(By.cssSelector("button.btn.btn-warning")).click();
         findElement(By.linkText("CDEs")).click();
-        findElement(By.name("search.name")).sendKeys("testUser CDE 1");
+        findElement(By.name("ftsearch")).sendKeys("testUser CDE 1");
         findElement(By.id("search.submit")).click();
         findElement(By.linkText(test_reg_auth + " -- name of testuser CDE 1[name change number 1]")).click();
         findElement(By.linkText("View Full Detail")).click();

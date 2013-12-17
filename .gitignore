@@ -26,3 +26,4 @@ Thumbs.db
 *~
 /test/selenium/.nb-gradle/profiles/private/
 /test/selenium/build/
+.nide

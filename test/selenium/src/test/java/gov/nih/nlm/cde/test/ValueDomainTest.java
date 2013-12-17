@@ -88,7 +88,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys("6");
         findElement(By.cssSelector("button.btn.btn-warning")).click();
         driver.get(baseUrl + "/");
-        findElement(By.name("search.name")).sendKeys("Patient Ethnic Group Category");
+        findElement(By.name("ftsearch")).sendKeys("Patient Ethnic Group Category");
         findElement(By.id("search.submit")).click();
         findElement(By.partialLinkText("Patient Ethnic Group Category")).click();
         Assert.assertTrue(textPresent("2135-2"));

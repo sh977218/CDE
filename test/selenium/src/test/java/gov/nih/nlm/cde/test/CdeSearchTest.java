@@ -56,12 +56,39 @@ public class CdeSearchTest extends NlmCdeBaseTest {
 //    }
 
     @Test
+    public void stewardFacets() {
+        driver.get(baseUrl + "/");
+        Assert.assertTrue(textPresent("ccr (8)"));
+    }
+
+    @Test
+    public void statusFacets() {
+        driver.get(baseUrl + "/");
+        Assert.assertTrue(textPresent("candidate ("));
+    }
+
+    @Test
     public void basicPagination() {
         driver.get(baseUrl + "/");
         WebElement pagElt = findElement(By.cssSelector("div.pagination"));
         findElement(By.linkText("10"));
         List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
         Assert.assertEquals(linkList.size(), 12);                
+    }
+    
+    @Test
+    public void viewIncrement() {
+        goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
+        // wait for text to be here.
+        Assert.assertTrue(textPresent("Someone who gives blood"));
+        // do it twice to get at least one view
+        goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
+        Assert.assertTrue(textPresent("Someone who gives blood"));
+        int nbOfViews = Integer.valueOf(findElement(By.id("dd_views")).getText());
+        goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
+        Assert.assertTrue(textPresent("Someone who gives blood"));
+        int newNbOfViews = Integer.valueOf(findElement(By.id("dd_views")).getText());
+        Assert.assertEquals(newNbOfViews, nbOfViews + 1);
     }
     
 //    @Test
