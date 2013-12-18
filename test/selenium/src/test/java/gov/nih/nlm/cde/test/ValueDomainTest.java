@@ -41,8 +41,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         logout();
     }
 
-    @Test
-            (dependsOnMethods = {"assignVsacId"})
+    @Test(dependsOnMethods = {"assignVsacId"})
     public void vsacTable() {
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
@@ -72,8 +71,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         logout();
     }
     
-    @Test
-        (dependsOnMethods = {"assignVsacId"})
+    @Test(dependsOnMethods = {"assignVsacId"})
     public void linkPvToVsac() {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Ethnic Group Category");

@@ -1,3 +1,4 @@
+<hr/>
 <h4>Permissible Values</h4>
 <div ng-show="cde.valueDomain.permissibleValues.length == 0">No Permissible Values</div>
 <table ng-show="cde.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped" summary="List of permissible values">
@@ -16,7 +17,7 @@
              <td headers="codeName" id="pvName-{{$index}}">
                  <div>
                      <div ng-hide="editMode"> 
-                         {{pv.valueMeaningName}} <i ng-show="canLinkPv" class="icon-link" ng-click="editMode=true"></i> 
+                         {{pv.valueMeaningName}} <i ng-show="canLinkPv" class="fa fa-link" ng-click="editMode=true"></i> 
                      </div>
                      <div ng-show="editMode">
                          <input type="text" ng-model="pv.valueMeaningName" typeahead="code.displayName for code in vsacValueSet | filter:$viewValue | limitTo:8"/>
@@ -40,8 +41,7 @@
  </table>
 <a class="btn btn-small" ng-show="isAllowed(cde)" ng-click="addPv()"><i id="addPv" class="icon-plus-sign-alt"></i> Add Permissible Value</a>
 <hr/>
-
-<h3>VSAC Value Set</h3>
+<h4>VSAC Value Set</h4>
 <dl class="dl-horizontal" ng-show="cde.dataElementConcept.conceptualDomain.vsac">
     <dt>Value Set Name: </dt><dd>{{cde.dataElementConcept.conceptualDomain.vsac.name | placeholdEmpty}}</dd>
     <dt>Value Set ID: </dt><dd>{{cde.dataElementConcept.conceptualDomain.vsac.id | placeholdEmpty}}</dd>
@@ -76,4 +76,3 @@
          </tr>
      </tbody>
 </table>
-<hr/>
