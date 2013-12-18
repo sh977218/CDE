@@ -40,7 +40,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
     return {
         template: '<div>' + 
                         '<div ng-hide="editMode">' + 
-                         '   <i ng-show="isAllowed()" class="icon-pencil" ng-click="value=model; editMode=true"></i> {{model}}' +
+                         '   <i ng-show="isAllowed()" class="icon-pencil" ng-click="value=model; editMode=true"></i>&nbsp;<span ng-bind-html="model"/>' +
                         '</div>' + 
                         '<div ng-show="editMode">' + 
                          '   <textarea ng-model="value" ></textarea>' + 

@@ -101,7 +101,8 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("i.icon-pencil")).click();
         findElement(By.xpath("//inline-edit/span/span[2]/input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector("i.icon-check")).click();
-        findElement(By.cssSelector("inline-area-edit.ng-isolate-scope.ng-scope > div > div.ng-binding > i.icon-pencil")).click();
+        findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='icon-pencil']")).click();
+//        findElement(By.cssSelector("inline-area-edit.ng-isolate-scope.ng-scope > div > div.ng-binding > i.icon-pencil")).click();
         findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("[def change number 1]");
         findElement(By.xpath("//inline-area-edit/div/div[2]/i")).click();
         findElement(By.xpath("//inline-edit[@id = 'uomEdit']//i[@class = 'icon-pencil']")).click();
@@ -128,7 +129,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
     }
         
     @Test(dependsOnMethods = {"editCde"})
-    public void editHistory() {
+    public void viewHistory() {
         goToCdeByName("name of testuser CDE 1");
         findElement(By.linkText("History")).click();
         Assert.assertTrue(textPresent("testuser"));
@@ -137,6 +138,14 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("name of testuser CDE 1[name change number 1]"));
         Assert.assertTrue(textPresent("Definition for testUser CDE 1[def change number 1]"));
     }
-
+    
+    @Test(dependsOnMethods = {"editCde"})
+    public void viewPriorVersion() {
+        goToCdeByName("name of testuser CDE 1");
+        findElement(By.linkText("History")).click();
+        findElement(By.id("prior-0")).click();
+        Assert.assertTrue(textPresent("1.0alpha1"));
+        Assert.assertTrue(textPresent("Warning: this data element is archived."));
+    }
     
 }

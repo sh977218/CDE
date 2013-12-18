@@ -19,6 +19,18 @@ import org.testng.annotations.Test;
 public class UserTest extends NlmCdeBaseTest {
     
     @Test
+    public void wrongLogin() {
+        driver.get(baseUrl + "/");
+        findElement(By.linkText("Log In")).click();
+        findElement(By.id("uname")).clear();
+        findElement(By.id("uname")).sendKeys("bad-username");
+        findElement(By.id("passwd")).clear();
+        findElement(By.id("passwd")).sendKeys("bad-password");
+        findElement(By.cssSelector("input.btn")).click();
+        Assert.assertTrue(textPresent("Incorrect username or password"));
+    }
+    
+    @Test
     public void curatorProfile() {
         loginAs(ctepCurator_username, ctepCurator_password);
         findElement(By.linkText("Account")).click();

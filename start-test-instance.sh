@@ -6,9 +6,6 @@ export VSAC_HOST=localhost
 export VSAC_PORT=4000
 export ELASTIC_URI=http://localhost:9200/cdetest/
 
-mongo test test/dbInit.js
-mongo test db/indexes.txt
-
 # Remove ElasticSearch Index
 curl -XDELETE 'http://localhost:9200/cdetest'
 
@@ -26,6 +23,9 @@ curl -XPUT "localhost:9200/_river/cdetest/_meta" -d'
           "type": "documents"
         }           
     }'
+
+mongo test test/dbInit.js
+mongo test db/indexes.txt
 
 node ingester/uploadCadsr test/cadsrTestSeed.xml
 

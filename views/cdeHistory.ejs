@@ -17,7 +17,7 @@
                 <td>{{priorCde.updatedBy.username}}</td>
                 <td>{{priorCde.changeNote}}</td>
                 <td><i ng-show="priorCde.updated" class="icon-eye-open" ng-click="viewDiff(priorCde)"></i></td>
-                <td><a href="#/deview?cdeId={{priorCde._id}}"> <i class="icon-eye-open"></i></a></td>
+                <td><a href="#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}"> <i class="icon-eye-open"></i></a></td>
             </tr>
             <tr>
                 <td>{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>

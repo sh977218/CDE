@@ -1,6 +1,10 @@
 package gov.nih.nlm.cde.test;
 
+import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -42,7 +46,9 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         findElement(By.cssSelector("button.btn.btn-warning")).click();
-        Assert.assertTrue(textPresent("Standard"));
+        // clicking away too fast can interrupt the JS call to the backend. So we wait for the popup to be gone. 
+        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Status")));
+        findElement(By.linkText("Status")).click();
         goToCdeByName("Patient Name");
         Assert.assertTrue(textPresent("Standard"));
         logout();
