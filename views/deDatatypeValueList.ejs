@@ -8,7 +8,8 @@
              <th id="codeName">Code Name</th>
              <th id="code">Code</th>
              <th id="codeSystem">Code System</th>
-             <th id="actions"></th>
+             <th id="validation" ng-show="detailedView">Valid</th>
+             <th id="actions" ng-show="isAllowed(cde)"></th>
          </tr>
      </thead>
      <tbody>
@@ -27,7 +28,13 @@
                  </div>
              </td>
              <td headers="code" id="pvCode-{{$index}}">{{pv.valueMeaningCode}}</td>
-             <td headers="codeSystem" >{{pv.codeSystemName}}</td>
+             <td headers="codeSystem">{{pv.codeSystemName}}</td>
+             <td headers="validation" ng-show="detailedView">
+                 <span ng-switch="pv.isValid">
+                     <i ng-switch-when="true" class="fa fa-check text-success" id="pv-{{$index}}-valid"></i>
+                     <i ng-switch-default class="fa fa-exclamation text-warning" id="pv-{{$index}}-warning"></i>
+                 </span>
+             </td>
              <td headers="actions" ng-show="isAllowed(cde)">
                  <i id="pvRemove-{{$index}}" class="icon-remove-sign" ng-click="removePv($index)"></i>
                  <i id="pvUp-{{$index}}" class="icon-arrow-up" ng-click="movePvUp($index)" ng-hide="$first"></i>
@@ -41,6 +48,7 @@
  </table>
 <a class="btn btn-small" ng-show="isAllowed(cde)" ng-click="addPv()"><i id="addPv" class="icon-plus-sign-alt"></i> Add Permissible Value</a>
 <hr/>
+<div ng-show="detailedView">
 <h4>VSAC Value Set</h4>
 <dl class="dl-horizontal" ng-show="cde.dataElementConcept.conceptualDomain.vsac">
     <dt>Value Set Name: </dt><dd>{{cde.dataElementConcept.conceptualDomain.vsac.name | placeholdEmpty}}</dd>
@@ -66,6 +74,7 @@
              <th>Code Name</th>
              <th>Code</th>
              <th>Code System</th>
+             <th id="validation">Valid</th>
          </tr>
      </thead> 
      <tbody id="vsacTableBody">
@@ -73,6 +82,13 @@
              <td>{{con.displayName}}</td>
              <td>{{con.code}}</td>
              <td>{{con.codeSystemName}}</td>
+             <td headers="validation">
+                 <span ng-switch="con.isValid">
+                     <i ng-switch-when="true" class="fa fa-check text-success" id="vset-{{$index}}-valid"></i>
+                     <i ng-switch-default class="fa fa-exclamation text-warning" id="vset-{{$index}}-warning"></i>
+                 </span>
+             </td>
          </tr>
      </tbody>
 </table>
+</div>

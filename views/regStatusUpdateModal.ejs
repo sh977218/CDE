@@ -1,8 +1,8 @@
-<div class="modal-header">
+<div class="modal-header" id="regStatusModalHeader">
     <h4>Update Registration Status</h4>
 </div>
 <form name="form">
-<div class="modal-body">
+<div class="modal-body" id="regStatusModalBody">
     <label for="registrationStatus">Registration Status</label>
     <select ng-model="cde.registrationState.registrationStatus" name="registrationStatus">
         <option ng-repeat="s in stewardRegStatuses" ng-value="s">{{s}}</option>
@@ -27,7 +27,7 @@
 
 
 </div>
-<div class="modal-footer">
+<div class="modal-footer" id="regStatusModalFooter">
     <button class="btn cancel" ng-click="cancelSave()">Cancel</button>
     <button class="btn btn-warning" ng-click="ok()" ng-disabled="isClean() || form.$invalid" id="saveRegStatus">Save</button>
 </div>

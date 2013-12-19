@@ -77,9 +77,10 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();   
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
-        findElement(By.xpath("//td[@id='pvName-1']//i")).click();
+        findElement(By.xpath("//td[@id='pvName-1']/div/div[1]/i")).click();
         findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys(Keys.BACK_SPACE);
         findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys("o");
+        findElement(By.xpath("//td[@id = 'pvName-1']/div/div[2]//a")).click();
         findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/i[1]")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
@@ -93,8 +94,19 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         logout();
     }
     
-    @Test
-            (dependsOnMethods = {"assignVsacId"})
+    @Test(dependsOnMethods = {"linkPvToVsac"})
+    public void pvValidators() {
+        goToCdeByName("Patient Ethnic Group Category");
+        findElement(By.linkText("Permissible Values")).click(); 
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-2-warning")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-warning")));
+    }
+    
+    @Test(dependsOnMethods = {"assignVsacId"})
     public void visibilityOfPvLink() {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Ethnic Group Category");

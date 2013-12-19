@@ -639,6 +639,7 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
 
 function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, PriorCdes, CdeDiff) {
     $scope.initialized = false;
+    $scope.detailedView = true;
     $scope.canLinkPv = false;
     $scope.reload = function(deId, cb) {
         DataElement.get({deId: deId}, function (de) {
@@ -761,6 +762,46 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
         });
     };
     
+    $scope.isPvInVSet = function(pv, callback) {
+            for (var i = 0; i < $scope.vsacValueSet.length; i++) {
+                if (pv.valueMeaningCode == $scope.vsacValueSet[i].code && 
+                    pv.codeSystemName == $scope.vsacValueSet[i].codeSystemName &&
+                    pv.valueMeaningName == $scope.vsacValueSet[i].displayName) {
+                        return callback(true);
+                }
+            }
+            return callback(false);
+    };
+    
+    $scope.validatePvWithVsac = function() {
+        var pvs = $scope.cde.valueDomain.permissibleValues;
+        for (var i = 0; i < pvs.length; i++) {
+           $scope.isPvInVSet(pvs[i], function(wellIsIt) {
+                pvs[i].isValid = wellIsIt;
+           })
+        }
+    };
+    
+   $scope.isVsInPv = function(vs, callback) {
+       var pvs = $scope.cde.valueDomain.permissibleValues;
+            for (var i = 0; i < pvs.length; i++) {
+                if (pvs[i].valueMeaningCode == vs.code && 
+                    pvs[i].codeSystemName == vs.codeSystemName &&
+                    pvs[i].valueMeaningName == vs.displayName) {
+                        return callback(true);
+                }
+            }
+            return callback(false);
+    };
+    
+    $scope.validateVsacWithPv = function() {
+        for (var i = 0; i < $scope.vsacValueSet.length; i++) {
+           $scope.isVsInPv($scope.vsacValueSet[i], function(wellIsIt) {
+                $scope.vsacValueSet[i].isValid = wellIsIt;
+           })
+        }
+    }
+    
     $scope.vsacValueSet = [];
     $scope.loadValueSet = function() {
         var dec = $scope.cde.dataElementConcept;
@@ -777,6 +818,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
                     for (var i = 0; i < data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
                         $scope.vsacValueSet.push(data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$']);
                     }
+                    $scope.validatePvWithVsac();
+                    $scope.validateVsacWithPv();
                 }
              })
              ;

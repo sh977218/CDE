@@ -45,9 +45,11 @@ public class RegStatusTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Qualified"));
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
-        findElement(By.cssSelector("button.btn.btn-warning")).click();
+        findElement(By.id("saveRegStatus")).click();
         // clicking away too fast can interrupt the JS call to the backend. So we wait for the popup to be gone. 
-        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Status")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("regStatusModalFooter")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("regStatusModalHeader")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("regStatusModalBody")));
         findElement(By.linkText("Status")).click();
         goToCdeByName("Patient Name");
         Assert.assertTrue(textPresent("Standard"));
