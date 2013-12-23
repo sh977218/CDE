@@ -126,4 +126,8 @@ angular.module('resources', ['ngResource']).
     .factory('Myself', function($resource) {
         return $resource('/user/me');
     })
+    .factory('ViewingHistory', function($resource) {
+        return $resource('/viewingHistory/:start', {start: '@start'}, 
+            {'getCdes': {method: 'GET', isArray: true}});
+    })
     ;

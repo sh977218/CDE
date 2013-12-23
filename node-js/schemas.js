@@ -181,6 +181,7 @@ schemas.userSchema = mongoose.Schema ({
     , formCart: [String]
     , siteAdmin: Boolean
     , quota: Number
+    , viewHistory: [mongoose.Schema.Types.ObjectId]
 });
 
 schemas.orgSchema = mongoose.Schema ({

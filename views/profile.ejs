@@ -1,11 +1,35 @@
 <div class="row-fluid">
-<div class="span11 offset1">
-<h4>Profile</h4>
-<dl class="dl-horizontal">
-    <dt>Username: </dt><dd id="dd_username">{{user.username}}</dd>
-    <dt>Quota: </dt><dd id="dd_quota">{{user.quota / 1024 / 1024 | number:2 | placeholdEmpty}} MB</dd>
-    <dt>Curator for: </dt><dd id="dd_curatorFor">{{user.orgCurator}}</dd>
-    <dt>Admin for: </dt><dd id="dd_adminFor">{{user.orgAdmin}}</dd>
-</dl>
+    <div class="span11 offset1">
+        <h4>Profile</h4>
+        <dl class="dl-horizontal">
+            <dt>Username: </dt><dd id="dd_username">{{user.username}}</dd>
+            <dt>Quota: </dt><dd id="dd_quota">{{user.quota / 1024 / 1024 | number:2 | placeholdEmpty}} MB</dd>
+            <dt>Curator for: </dt><dd id="dd_curatorFor">{{user.orgCurator}}</dd>
+            <dt>Admin for: </dt><dd id="dd_adminFor">{{user.orgAdmin}}</dd>
+        </dl>
+    </div>
 </div>
+<div class="row-fluid" ng-controller="ProfileCtrl">
+    <div class="span11 offset1">
+        <h4>Viewing History</h4>
+        <accordion>
+            <accordion-group ng-repeat="cde in viewingHistory" heading="{{cde.stewardOrg.name}} -- {{cde.naming[0].designation}}">
+                 <div class="row-fluid">
+                    <div class="span6">
+                        <%- include cdegeneraldetails.ejs %>
+                    </div>
+                    <div class="span4">
+                        <%- include valueDomainView.ejs %>
+                    </div>
+                     <div class="span2">
+                        <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" src="/data/{{attachment.fileid}}"/> 
+                     </div>
+                 </div>
+                <div class="row-fluid" >
+                    <a class='btn' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="icon-eye-open"></i> View Full Detail</a>
+                </div>
+            </accordion-group>
+        </accordion>
+
+    </div>    
 </div>

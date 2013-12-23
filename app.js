@@ -503,6 +503,22 @@ app.get('/user/me', function(req, res) {
     }
 });
 
+app.get('/viewingHistory/:start', function(req, res) {
+    if (!req.user) {
+        res.send("You must be logged in to do that");
+    } else {
+        var splicedArray = splicedArray = req.user.viewHistory.splice(req.params.start, 10);
+        var idList = [];
+        for (var i = 0; i < splicedArray.length; i++) {
+            idList.push(splicedArray[i]);
+        }
+        mongo_data.cdesByIdList(idList, function(err, cdes) {
+            console.log(cdes);
+            res.send(cdes);
+        });
+    }
+});
+
 app.post('/linktovsac', function (req, res) {
     return cdesvc.linktovsac(req, res);
 });

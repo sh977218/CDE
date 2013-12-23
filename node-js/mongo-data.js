@@ -297,6 +297,15 @@ exports.incDeView = function(cde) {
     DataElement.update({_id: cde._id}, {$inc: {views: 1}}).exec();
 };
 
+exports.addToViewHistory = function(cde, user) {
+    User.findOne({'_id': user._id}, function (err, u) {
+        u.viewHistory.splice(0, 0, cde._id);
+        if (u.viewHistory.length > 1000) {
+            us.viewHistory.length(1000);
+        };
+        u.save();
+    });
+};
 
 exports.name_autocomplete = function(name, callback) {
     DataElement.find({}, {"naming.designation": 1}).where("naming").elemMatch(function(elem) {

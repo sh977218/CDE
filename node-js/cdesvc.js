@@ -200,8 +200,14 @@ exports.show = function(req, res) {
         res.send("No Data Element Id");
     } else {
         mongo_data.cdeById(cdeId, function(err, cde) {
-           mongo_data.incDeView(cde); 
-           res.send(cde); 
+            // Following have no callback because it's no big deal if it fails.
+            // So create new thread and move on.
+            mongo_data.incDeView(cde); 
+            if (req.isAuthenticated()) {
+                console.log("add");
+               mongo_data.addToViewHistory(cde, req.user);
+            };
+            res.send(cde); 
         });
     }
 };

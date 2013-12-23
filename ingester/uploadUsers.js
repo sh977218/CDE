@@ -17,11 +17,11 @@ var schemas = require('../node-js/schemas');
 var User = mongoose.model('User', schemas.userSchema);
 
 var users = [
-    {username: 'bob', password: 'secret'}
-  , {username: 'cabig', password: 'cabig', orgAdmin: []}
-  , {username: 'fitbir', password: 'fitbir', orgAdmin: []}
-  , {username: 'ludet', password: 'ludet', orgAdmin: []}
-  , {username: 'ctep', password: 'ctep', orgAdmin: []}
+    {username: 'bob', password: 'secret', viewHistory: []}
+  , {username: 'cabig', password: 'cabig', orgAdmin: [], viewHistory: []}
+  , {username: 'fitbir', password: 'fitbir', orgAdmin: [], viewHistory: []}
+  , {username: 'ludet', password: 'ludet', orgAdmin: [], viewHistory: []}
+  , {username: 'ctep', password: 'ctep', orgAdmin: [], viewHistory: []}
 ];
 
 for (var i in users) {

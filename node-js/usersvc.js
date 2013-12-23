@@ -8,7 +8,8 @@ exports.register = function(req, res) {
             res.send("user already exists");
         } else {
             var user = {username: req.body.username
-                        , password: req.body.password};
+                        , password: req.body.password
+                        , viewHistory: []};
             mongo_data.addUser(user, function() {
                 res.send("Thank you for registering");
             });
