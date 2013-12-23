@@ -2,8 +2,9 @@ package gov.nih.nlm.cde.test;
 
 import java.util.List;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -45,16 +46,6 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("mg/dL"));
     }
 
-//    @Test
-//    public void searchByClassification() {
-//        driver.get(baseUrl + "/");
-//        new Select(driver.findElement(By.name("conceptSystem"))).selectByVisibleText("PhenX");
-//        List<WebElement> webElts = findElement(By.xpath("//accordion/div")).findElements(By.cssSelector("div.accordion-group"));
-//        Assert.assertEquals(webElts.size(), 2);
-//        Assert.assertEquals(webElts.get(0).getText(), "caBIG -- Immunology Gonorrhea Assay Laboratory Finding Result");
-//        Assert.assertEquals(webElts.get(1).getText(), "caBIG -- Alcohol Retail Environment Assessment Description Text");
-//    }
-
     @Test
     public void stewardFacets() {
         driver.get(baseUrl + "/");
@@ -91,23 +82,31 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(newNbOfViews, nbOfViews + 1);
     }
     
-//    @Test
-//    public void filterByStatus() throws InterruptedException {
-//        driver.get(baseUrl + "/");
-//        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Candidate");
-//        findElement(By.linkText("caBIG -- Intervention Trial Study Protocol Document Classification Code StudyClassificationCategory"));
-//        WebElement pagElt = findElement(By.cssSelector("div.pagination"));
-//        List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
-//        Assert.assertEquals(linkList.size(), 7);        
-//    }
+    @Test
+    public void facets() {
+        driver.get(baseUrl + "/");
+        findElement(By.name("ftsearch")).sendKeys("Treatment");
+        findElement(By.id("search.submit")).click();
+        // expect 4 candidate records
+        Assert.assertTrue(textPresent("candidate (4)"));
+        findElement(By.id("li-blank-candidate")).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("NHLBI -- Disease or Disorder Response Surgical Procedure Documented Indicator")));
+        List<WebElement> linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        Assert.assertEquals(linkList.size(), 4);
+        findElement(By.id("li-blank-nhlbi")).click();
+        // Seems like we should wait for something , like below, but below doesn't work and I can't come up with something to wait for ...
+//            wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(
+//                    By.linkText("caBIG -- First Follow-up Visit Date"))));
+        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        Assert.assertEquals(linkList.size(), 2);
+        findElement(By.id("li-checked-candidate")).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.linkText("NHLBI -- Hydroxychloroquine Sulfate Administered Indicator")));
+        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        Assert.assertEquals(linkList.size(), 7);
+        findElement(By.id("li-checked-nhlbi")).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("6")));
+    }
     
-//    @Test
-//    public void filterByOrg() {
-//        driver.get(baseUrl + "/");
-//        new Select(driver.findElement(By.name("stewardOrg.name"))).selectByVisibleText("EDRN");
-//        List<WebElement> webElts = findElement(By.xpath("//accordion/div")).findElements(By.cssSelector("div.accordion-group"));
-//        Assert.assertEquals(webElts.size(), 1);
-//        Assert.assertEquals(webElts.get(0).getText(), "EDRN -- Specimen Process Time Value");
-//    }
     
 }

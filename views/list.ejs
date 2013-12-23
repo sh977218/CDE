@@ -8,11 +8,18 @@
     <div class="span1">
         <strong>Stewards</strong>
         <ul class="fa-ul">
-            <li ng-repeat="t in facets.orgs.terms" style="margin-right: -20px"><i class="fa-li fa fa-square-o"></i><small> {{t.term}} ({{t.count}})</small></li>
+            <li ng-repeat="t in facets.orgs.terms" style="margin-right: -20px" ng-switch="t.selected" ng-click="addFilter(t)">
+                <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
+                <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
+                <small> {{t.term}} ({{t.count}})</small>
+            </li>
         </ul>
         <strong>Status</strong>
         <ul class="fa-ul">
-            <li ng-repeat="t in facets.statuses.terms" style="margin-right: -20px"><i class="fa-li fa fa-square-o"></i><small> {{t.term}} ({{t.count}})</small></li>
+            <li ng-repeat="t in facets.statuses.terms" style="margin-right: -20px" ng-switch="t.selected" ng-click="addFilter(t)">
+                <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
+                <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
+            <small> {{t.term}} ({{t.count}})</small></li>
         </ul>
     </div>
     <div class="span11">

@@ -254,8 +254,7 @@ function DEListCtrl($scope, $http, CdeList, CdeFtSearch, $modal, $timeout) {
     
     $scope.currentPage = 1;
     $scope.pageSize = 10;
-    $scope.originOptions = ['CADSR', 'FITBIR'];
-    
+
     $scope.search = {name: ""};
 
 //    $scope.classificationSystems = ['Loading...'];
@@ -266,23 +265,11 @@ function DEListCtrl($scope, $http, CdeList, CdeFtSearch, $modal, $timeout) {
 //    };
 //    $scope.loadTree();
     
-    // this one ensures that we don't send this as query when none is selected. 
-    $scope.removeOwningOrg = function() {
-        if ($scope.search.stewardOrg.name == "") {
-            delete $scope.search.stewardOrg;
-        }
+    $scope.addFilter = function(t) {
+        t.selected = !t.selected;
+        $scope.facetSearch();
     };
-    $scope.removeRegistrationStatus = function() {
-        if (!$scope.search.registrationState || !$scope.search.registrationState.registrationStatus) {
-            delete $scope.search.registrationState;
-        }
-    };
-    $scope.removeClassificationSystem = function() {
-        if ($scope.search.classificationSystem == "") {
-            delete $scope.search.classificationSystem;
-        }
-    };
-   
+       
     $scope.$watch('currentPage', function() {
         $scope.reload();
     });
@@ -299,18 +286,65 @@ function DEListCtrl($scope, $http, CdeList, CdeFtSearch, $modal, $timeout) {
         $scope.currentPage++;
     };
     
-    var onchangePromise = 0;
-    $scope.onchangeSearch = function() {
-        if (onchangePromise !== 0) {
-            $timeout.cancel(onchangePromise);
+//    var onchangePromise = 0;
+//    $scope.onchangeSearch = function() {
+//        if (onchangePromise !== 0) {
+//            $timeout.cancel(onchangePromise);
+//        }
+//        onchangePromise = $timeout(function () {
+//            $scope.reload();
+//        }, 1000);
+//    };
+   
+    $scope.facetSearch = function() {
+        var filter = {
+            and: [
+                {terms: {
+                        "stewardOrg.name": []
+                        , execution: "or"
+                    }}
+                , {terms: {
+                    "registrationState.registrationStatus": []
+                    , execution: "or"
+                }}
+            ]
+        };
+  
+        if ($scope.facets != null) {
+            for (var i = 0; i < $scope.facets.orgs.terms.length; i++) {
+                var t = $scope.facets.orgs.terms[i];
+                if (t.selected) {
+                    filter.and[0].terms["stewardOrg.name"].push(t.term);
+                }
+            }
+        
+            for (var i = 0; i < $scope.facets.statuses.terms.length; i++) {
+                var t = $scope.facets.statuses.terms[i];
+                if (t.selected) {
+                    filter.and[1].terms["registrationState.registrationStatus"].push(t.term);
+                }
+            }
         }
-        onchangePromise = $timeout(function () {
-            $scope.reload();
-        }, 1000);
+
+        if (filter.and[1].terms["registrationState.registrationStatus"].length === 0) {
+             filter.and.splice(1, 1);
+        }
+        if (filter.and[0].terms["stewardOrg.name"].length === 0) {
+             filter.and.splice(0, 1);
+        }
+                
+        var newfrom = ($scope.currentPage - 1) * $scope.pageSize;
+        var result = CdeFtSearch.get({from: newfrom, q: JSON.stringify($scope.ftsearch), filter: filter}, function () {
+           $scope.numPages = result.pages; 
+           $scope.cdes = result.cdes;
+           $scope.totalItems = result.totalNumber;
+        });
+        
     };
     
     $scope.reload = function() {
         var newfrom = ($scope.currentPage - 1) * $scope.pageSize;
+        
         var result = CdeFtSearch.get({from: newfrom, q: JSON.stringify($scope.ftsearch)}, function () {
            $scope.numPages = result.pages; 
            $scope.cdes = result.cdes;

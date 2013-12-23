@@ -10,6 +10,7 @@ var elasticUri = process.env.ELASTIC_URI || envconfig.elasticUri || 'http://loca
 exports.elasticsearch = function(req, res) {
     var q = req.query["q"];
     var from = req.query["from"];
+    var filter = req.query["filter"];
 
     var limit = 20;
 
@@ -21,7 +22,7 @@ exports.elasticsearch = function(req, res) {
                 fields: ["_all", "naming.designation^3"]
                 , query: q
             }
-        }
+        };
         queryStuff.query = 
             {
                 function_score: {
@@ -35,14 +36,21 @@ exports.elasticsearch = function(req, res) {
                         }
                     }
                 }                
-           }
+           };
     }
     
     queryStuff.facets = {
         orgs: {terms: {field: "stewardOrg.name", size: 20}}
         , statuses: {terms: {field: "registrationState.registrationStatus"}}
+    };
+
+    if (filter != undefined) {
+        filter = JSON.parse(filter);
+        if (filter.and.length !== 0) {
+            queryStuff.filter = filter;
+        }
     }
-    
+        
     if (from) {
         queryStuff.from = from;
     }
