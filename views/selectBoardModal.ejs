@@ -1,0 +1,14 @@
+<div class="modal-header">
+    <h3>Select Board</h3>
+</div>
+<div class="modal-body" ng-switch="boards.length">
+    <div ng-switch-when="0"><a href="/#/myboards" ng-click="cancel()">Create a board now</a></div>
+    <ul ng-switch-default>
+        <li ng-repeat="board in boards">
+            <a ng-click="ok(board)">{{ board.name }}</a>
+        </li>
+    </ul>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
