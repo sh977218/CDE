@@ -31,7 +31,7 @@ node ingester/uploadCadsr test/cadsrTestSeed.xml
 
 #groovy groovy/UploadCadsrForms.groovy --testMode &
 #
-gradle -b test/selenium/build.gradle cleanTest test & 
+gradle -b test/selenium/build.gradle -Dtest.single=UserTest cleanTest test & 
 
 node app 
 

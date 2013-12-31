@@ -13,6 +13,8 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
         when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
         when('/orgaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/orgaccountmanagement'}).
         when('/profile', {controller: AccountManagementCtrl, templateUrl: '/profile'}).
+        when('/myboards', {controller: MyBoardsCtrl, templateUrl: '/myboards'}).
+        when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
         otherwise({redirectTo:'/'});
     }).
     directive('inlineEdit', function() {

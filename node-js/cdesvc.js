@@ -72,9 +72,8 @@ exports.elasticsearch = function(req, res) {
         result.facets = resp.facets;
         res.send(result);
       }
-    });
-    
-}
+    });  
+};
 
 exports.morelike = function(id, callback) {
     var from = 0;
@@ -100,7 +99,7 @@ exports.morelike = function(id, callback) {
         }
         
     });
-}
+};
 
 exports.listcde = function(req, res) {
     var from = req.query["from"],
@@ -166,7 +165,7 @@ exports.listform = function(req, res) {
            res.send(formlist);
        }
     });
-}
+};
 
 exports.listOrgs = function(req, res) {
     mongo_data.listOrgs(function(err, orgs) {

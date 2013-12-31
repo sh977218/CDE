@@ -171,6 +171,25 @@ var formSchema = {
     }
 };
 
+var pinSchema = mongoose.Schema ({
+   name: String
+   , pinnedDate: Date
+   , deUuid: String
+});
+
+schemas.pinningBoardSchema = mongoose.Schema ({
+   name: String
+   , description: String
+   , shareStatus: String
+   , createdDate: Date
+   , updatedDate: Date
+   , owner: {
+       userId: mongoose.Schema.Types.ObjectId
+        , username: String}
+   , pins: [pinSchema]
+});
+
+
 schemas.userSchema = mongoose.Schema ({
     username: String
     , password: String
@@ -210,11 +229,17 @@ schemas.dataElementSchema.pre('save', function(next) {
    next();
 });
 
+schemas.pinningBoardSchema.pre('save', function(next) {
+   this.updatedDate = Date.now(); 
+   next();
+});
+
 schemas.formSchema = mongoose.Schema(formSchema);
 
 schemas.dataElementSchema.set('collection', 'dataelements');
 schemas.formSchema.set('collection', 'forms');
 schemas.userSchema.set('collection', 'users');
 schemas.orgSchema.set('collection', 'orgs');
+schemas.pinningBoardSchema.set('collection', 'pinningBoards');
 
 module.exports = schemas;

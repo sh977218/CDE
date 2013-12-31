@@ -1,6 +1,4 @@
 var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
   , cdesvc = require('./node-js/cdesvc')
@@ -305,6 +303,10 @@ app.get('/profile', function(req, res) {
    res.render("profile"); 
 });
 
+app.get('/myboards', function(req, res) {
+   res.render("myboards"); 
+});
+
 app.post('/login', function(req, res, next) {
   req.session.regenerate(function(err) {  
     passport.authenticate('local', function(err, user, info) {
@@ -513,10 +515,93 @@ app.get('/viewingHistory/:start', function(req, res) {
             idList.push(splicedArray[i]);
         }
         mongo_data.cdesByIdList(idList, function(err, cdes) {
-            console.log(cdes);
             res.send(cdes);
         });
     }
+});
+
+app.get('/boards/:userId', function(req, res) {
+    mongo_data.boardsByUserId(req.params.userId, function(result) {
+        res.send(result);
+    });
+});
+
+app.get('/board', function(req, res) {
+   res.render("boardView"); 
+});
+
+app.get('/board/:boardId/:start', function(req, res) {
+    mongo_data.boardById(req.params.boardId, function (err, board) {
+        var pins = board.pins.splice(req.params.start, 20); 
+        board.pins = pins;
+        var idList = [];
+        for (var i = 0; i < pins.length; i++) {
+            idList.push(pins[i].deUuid);
+        }
+        mongo_data.cdesByUuidList(idList, function(err, cdes) {
+            res.send({board: board, cdes: cdes});
+        });
+    });
+});
+
+app.post('/board', function(req, res) {
+    if (req.isAuthenticated()) {
+        var board = req.body;
+        if (!board._id) {
+            board.createdDate = Date.now();
+            board.owner = {
+                userId: req.user._id
+                , username: req.user.username
+            };
+            return mongo_data.newBoard(board, function(err, newBoard) {
+               res.send(newBoard); 
+            });
+        } else  {
+            mongo_data.boardById(board._id, function(err, b) {
+                if (err) console.log(err);
+                b.name = board.name;
+                b.description = board.description;
+                return mongo_data.save(b, function(err) {
+                    if (err) console.log(err);
+                    res.send(b);
+                });                
+            });
+        }
+    } else {
+        res.send("You must be logged in to do this.");
+    }
+});
+
+app.delete('/board/:boardId', function (req, res) {
+    if (req.isAuthenticated()) {
+        mongo_data.boardById(req.params.boardId, function (err, board) {
+            if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
+                res.send("You must own the board that you wish to delete.");
+            }
+            mongo_data.removeBoard(req.params.boardId, function (err) {
+                res.send("Board Removed.");
+            });
+        });
+    } else {
+        res.send("You must be logged in to do this.");
+    }
+});
+
+// Check that apache will support delete
+app.delete('/pincde/:pinId/:boardId', function(req, res) {
+   if (req.isAuthenticated()) {
+       usersvc.removePinFromBoard(req, res);
+   } else {
+       res.send("Please login first.");
+   }
+});
+
+app.put('/pincde/:uuid/:boardId', function(req, res) {
+   if (req.isAuthenticated()) {
+       usersvc.pinToBoard(req, res);
+   } else {
+       res.send("Please login first.");
+   }
 });
 
 app.post('/linktovsac', function (req, res) {
@@ -544,7 +629,7 @@ app.get('/cdediff/:deId', function(req, res) {
 app.get('/classificationSystems', function(req, res) {
    return mongo_data.classificationSystems(function (result) {
        res.send(result);
-   }) 
+   }); 
 });
 
 app.post('/addAttachmentToCde', function(req, res) {
@@ -649,8 +734,8 @@ app.get('/data/:imgtag', function(req, res) {
 app.get('/moreLikeCde/:cdeId', function(req, res) {
     cdesvc.morelike(req.params.cdeId, function(result) {
         res.send(result);
-    })
-})
+    });
+});
 
 // Get VSAC TGT.
 vsac.getTGT(function(tgt) {
@@ -672,3 +757,4 @@ app.get('/vsacBridge/:vsacId', function(req, res) {
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+

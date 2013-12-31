@@ -46,6 +46,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         $scope.menuNlmRev = '';
         $scope.menuAccount = '';
         $scope.menuCreate = '';
+        $scope.menuMyBoards = '';
         if (key === 'LISTCDE') {
             $scope.menuHome = 'active';
         } else if (key === 'LOGIN') {
@@ -62,17 +63,11 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
             $scope.menuAccount = 'active';
         } else if (key === 'CREATECDE') {
             $scope.menuCreate = 'active';
+        } else if (key === 'MYBOARDS') {
+            $scope.menuMyBoards = 'active';
         }
 
     };
-    
-//    $scope.listOrgs = function() {
-//     return $http.get("/listorgs").then(function(response){ 
-//        return response.data;
-//     });
-//    };
-//    
-//    $scope.orgs = $scope.listOrgs();
 
     $scope.scrollTo = function(id) {
         var old = $location.hash();
@@ -89,9 +84,93 @@ function ProfileCtrl($scope, ViewingHistory) {
     ViewingHistory.getCdes({start: 0}, function(cdes) {
         $scope.viewingHistory = cdes;
     });
+}
+
+function BoardViewCtrl($scope, $routeParams, $http) {
+    $scope.setActiveMenu('MYBOARDS');
+    $scope.start = 0;
+    $scope.cdes = [];
+        
+    $scope.reload = function() {
+        $http.get("/board/" + $routeParams.boardId + "/" + $scope.start).then(function(response) {
+            $scope.cdes = [];
+            $scope.board = response.data.board;
+            var pins = $scope.board.pins;
+            var respCdes = response.data.cdes;
+            for (var i = 0; i < pins.length; i++) {
+                for (var j = 0; j < respCdes.length; j++) {
+                    if (pins[i].deUuid === respCdes[j].uuid) {
+                        pins[i].cde = respCdes[j];                    
+                        $scope.cdes.push(respCdes[j]);
+                    }
+                }
+            }
+        });
+    }; 
+        
+    $scope.unpin = function(pin) {
+        $http.delete("/pincde/" + pin._id + "/" + $scope.board._id).then(function(response) {
+            $scope.reload();
+        });
+    };
     
+    $scope.reload();
     
+}
+
+function MyBoardsCtrl($scope, $modal, $http) {
+    $scope.setActiveMenu('MYBOARDS');
+    $scope.boards = [];
     
+    $scope.reload = function() {
+        $http.get("/boards/" + $scope.user._id).then(function (response) {
+           $scope.boards = response.data;
+        }); 
+    };
+    
+    $scope.reload();
+    
+    $scope.removeBoard = function(index) {
+        $http.delete("/board/" + $scope.boards[index]._id).then(function (response) {
+            $scope.boards.splice(index, 1);
+        });
+    };    
+    
+    $scope.cancelSave = function(board) {
+        delete board.editMode;
+    };
+    
+    $scope.save = function(board) {
+        delete board.editMode; 
+        $http.post("/board", board).success(function(response) {
+            $scope.message = "saved";
+            $scope.reload();
+        });
+    };
+        
+    $scope.openNewBoard = function (cde) {
+        $modal.open({
+          templateUrl: 'newBoardModalContent.html',
+          controller: NewBoardModalCtrl,
+          resolve: {
+          }
+        });
+    };
+}
+
+function NewBoardModalCtrl($scope, $modalInstance, $location, Board) {
+    $scope.newBoard = {};
+    
+    $scope.cancelCreate = function() {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.okCreate = function() {
+        Board.save($scope.newBoard, function(cde) {
+            $location.path('#/myboards');        
+        });
+        $modalInstance.close();
+    };
 }
 
 function AccountManagementCtrl($scope, $http, AccountManagement) {
@@ -260,21 +339,56 @@ function AuthCtrl($scope, Auth, $window) {
     };
 }
 
-function DEListCtrl($scope, $http, CdeList, CdeFtSearch, $modal, $timeout) {
+function SelectBoardModalCtrl($scope, $modalInstance, boards) {
+    $scope.boards = boards;
+
+    $scope.ok = function (board) {
+      $modalInstance.close(board);
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+}
+
+function DEListCtrl($scope, $http, $timeout, CdeFtSearch, $modal, $location) {
     $scope.setActiveMenu('LISTCDE');
     
     $scope.currentPage = 1;
     $scope.pageSize = 10;
 
     $scope.search = {name: ""};
+    $scope.boards = [];
+    
+    $scope.openPinModal = function (cde) {
+        var modalInstance = $modal.open({
+          templateUrl: 'selectBoardModalContent.html',
+          controller: SelectBoardModalCtrl,
+          resolve: {
+            boards: function () {
+              return $scope.boards;
+            }
+          }
+        });
 
-//    $scope.classificationSystems = ['Loading...'];
-//    $scope.loadTree = function() {
-//        return $http.get("/classificationSystems").then(function(response) {
-//            $scope.classificationTree = response.data;
-//        });
-//    };
-//    $scope.loadTree();
+        modalInstance.result.then(function (selectedBoard) {
+            $http.put("/pincde/" + cde.uuid + "/" + selectedBoard._id).then(function(response) {
+                $scope.message = response.data;
+                $timeout(function() {
+                    delete $scope.message;
+                }, 3000);
+            });
+        }, function () {
+        });
+    };
+    
+    $http.get("/boards/" + $scope.user._id).then(function (response) {
+        $scope.boards = response.data;
+    }); 
+    
+    $scope.view = function(cde) {
+        $location.url("deview?cdeId=" + cde._id);
+    };
     
     $scope.addFilter = function(t) {
         t.selected = !t.selected;
@@ -296,17 +410,7 @@ function DEListCtrl($scope, $http, CdeList, CdeFtSearch, $modal, $timeout) {
     $scope.next = function () {
         $scope.currentPage++;
     };
-    
-//    var onchangePromise = 0;
-//    $scope.onchangeSearch = function() {
-//        if (onchangePromise !== 0) {
-//            $timeout.cancel(onchangePromise);
-//        }
-//        onchangePromise = $timeout(function () {
-//            $scope.reload();
-//        }, 1000);
-//    };
-   
+       
     $scope.facetSearch = function() {
         var filter = {
             and: [
@@ -352,7 +456,7 @@ function DEListCtrl($scope, $http, CdeList, CdeFtSearch, $modal, $timeout) {
         });
         
     };
-    
+
     $scope.reload = function() {
         var newfrom = ($scope.currentPage - 1) * $scope.pageSize;
         

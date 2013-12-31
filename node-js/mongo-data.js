@@ -24,8 +24,15 @@ var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var User = mongoose.model('User', schemas.userSchema);
 var Form = mongoose.model('Form', schemas.formSchema);
 var Org = mongoose.model('Org', schemas.orgSchema);
+var PinningBoard = mongoose.model('PinningBoard', schemas.pinningBoardSchema);
 
 var gfs = Grid(db.db, mongoose.mongo);
+
+exports.boardsByUserId = function(userId, callback) {
+    PinningBoard.find({"owner.userId": userId}).exec(function (err, result) {
+        callback(result); 
+    });
+};
 
 exports.getFile = function(callback, res, id) {
     res.writeHead(200, { "Content-Type" : "image/png"});
@@ -139,21 +146,6 @@ exports.classificationSystems = function(callback) {
       });
 };
 
-//exports.classificationTree = function(callback) {
-//  DataElement.aggregate(
-//          {$project: {classification: 1}}
-//          , {$unwind: "$classification"} 
-//          , {$group: {_id: {"system": "$classification.conceptSystem"}, concepts: {$addToSet: "$classification.concept"}}}
-//          , {$sort: {"_id.system": 1}}
-////          , {$project: {label: "$_id.system", children: "$concepts"}}
-//      , function (err, res) {
-//          callback(res);
-//      });
-//};
-
-
-
-
 exports.removeFromCart = function (user, formId, callback) {
     User.findOne({'_id': user._id}).exec(function (err, u) {
         if (u.formCart.indexOf(formId) > -1) {
@@ -195,7 +187,6 @@ exports.cdelist = function(from, limit, searchOptions, callback) {
     query.find(searchOptions).where("archived").equals(null).skip(from).limit(limit)
             .sort({"registrationState.registrationStatusSortOrder": 1})
             .sort({"views": -1})
-//            .sort({"registrationState.registrationStatusSortOrder": 1, '-formUsageCounter': 1})
             .slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
         query.find(searchOptions).where("archived").equals(null).count(searchOptions).exec(function (err, count) {
         callback("",{
@@ -243,6 +234,13 @@ exports.cdesByIdList = function(idList, callback) {
        callback("", cdes); 
     });
 };
+
+exports.cdesByUuidList = function(idList, callback) {
+    DataElement.find().where('uuid').in(idList).exec(function(err, cdes) {
+       callback("", cdes); 
+    });
+};
+
 
 exports.listOrgs = function(callback) {
     DataElement.find().distinct('stewardOrg.name', function(error, orgs) {
@@ -297,6 +295,18 @@ exports.incDeView = function(cde) {
     DataElement.update({_id: cde._id}, {$inc: {views: 1}}).exec();
 };
 
+exports.boardById = function(boardId, callback) {
+    PinningBoard.findOne({'_id': boardId}, function (err, b) {
+        callback("", b);
+    });
+};
+
+exports.removeBoard = function (boardId, callback) {
+    PinningBoard.remove({'_id': boardId}, function (err) {
+        callback();
+    });
+};
+
 exports.addToViewHistory = function(cde, user) {
     User.findOne({'_id': user._id}, function (err, u) {
         u.viewHistory.splice(0, 0, cde._id);
@@ -320,6 +330,13 @@ exports.name_autocomplete_form = function (searchOptions, callback) {
     delete searchOptions.name;
     Form.find(searchOptions, {name: 1, _id: 0}).where('name').equals(new RegExp(name, 'i')).limit(20).exec(function (err, result) {
         callback("", result);
+    });
+};
+
+exports.newBoard = function(board, callback) {
+    var newBoard = new PinningBoard(board);
+    newBoard.save(function(err) {
+        callback("", newBoard);        
     });
 };
 

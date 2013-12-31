@@ -37,4 +37,7 @@ exports.deview = function(req, res){
 exports.profile = function(req, res){
     res.render('profile');
 };
+exports.myboards = function(req, res){
+    res.render('myBoards');
+};
 

@@ -2,6 +2,13 @@ db.users.drop();
 db.dataelements.drop();
 db.orgs.drop();
 db.forms.drop();
+db.pinningBoards.drop();
+
+var defaultBoard = {
+    name: "default"
+    , shareStatus: "Private"
+    , pins: []
+};
 
 db.users.insert({username: 'nlm', password: 'nlm', siteAdmin: true, orgAdmin: ['NLM'], viewHistory: []});
 db.users.insert({username: 'cabigAdmin', password: 'pass', orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []});

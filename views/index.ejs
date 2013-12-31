@@ -19,7 +19,7 @@
         <div ng-controller="MainCtrl">
             <div class="navbar">
                 <div class="navbar-inner">
-                    <a class="brand" href="/">CDEs and Forms</a>
+                    <a class="brand" href="/">NLM CDEs</a>
                     <ul class="nav">
                         <li class="{{menuHome}}"><a href="/">CDEs</a></li>
                         <!--<li class="{{menuForm}}"><a id="formsLink" href="#/listforms">Forms</a></li>-->
@@ -30,7 +30,8 @@
                                 <li><a href="#/createCde">CDE</a></li>
                                 <!--<li><a href="#/createform">Form</a></li>-->
                             </ul>
-                        </li>                        
+                        </li>       
+                        <li class="{{menuMyBoards}}" ng-show="user._id"><a href="#/myboards">My Boards</a></li>
                         <!--<li class="{{menuCart}}" ng-show='user._id'><a id="cartLink" href="#/cart">Cart ({{user.formCart.length}})</a></li>-->
                     </ul>
                     <ul class="nav pull-right">

@@ -16,6 +16,12 @@ db.once('open', function callback () {
 var schemas = require('../node-js/schemas');
 var User = mongoose.model('User', schemas.userSchema);
 
+var defaultBoard = {
+    name: "default"
+    , shareStatus: "Private"
+    , pins: []
+};
+
 var users = [
     {username: 'bob', password: 'secret', viewHistory: []}
   , {username: 'cabig', password: 'cabig', orgAdmin: [], viewHistory: []}

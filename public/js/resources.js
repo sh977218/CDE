@@ -130,4 +130,8 @@ angular.module('resources', ['ngResource']).
         return $resource('/viewingHistory/:start', {start: '@start'}, 
             {'getCdes': {method: 'GET', isArray: true}});
     })
+    .factory('Board', function($resource) {
+        return $resource('/board/:id/:start', {id: '@id', start: '@start'}, 
+            {'getCdes': {method: 'GET', isArray: true}});
+    })
     ;
