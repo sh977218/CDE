@@ -32,7 +32,7 @@
         <accordion>
             <accordion-group ng-repeat="cde in cdes" >
                 <accordion-heading>
-                    {{cde.stewardOrg.name}} -- {{cde.naming[0].designation}}
+                    {{cde.stewardOrg.name}} -- <span id="list_name_0">{{cde.naming[0].designation}}</span>
                     --  <i class="fa fa-eye" ng-click="view(cde)" title="View"> </i>
                 </accordion-heading>
                  <div class="row-fluid">

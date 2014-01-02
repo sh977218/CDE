@@ -1,4 +1,11 @@
 <hr/>
+
+<div class="row-fluid" ng-show="message">
+<div class="span2 offset5 alert-success">
+    <center>{{message}}</center>
+</div>
+</div>
+
 <div ng-repeat="board in boards">
     <div class="row-fluid">
         <div class="span1 offset1">
@@ -20,12 +27,12 @@
                 <dd id="dd_name_{{$index}}">
                     <span ng-switch="board.editMode"> 
                         <span ng-switch-when="true"> 
-                            <input type="text" ng-model="board.name" />
-                            <i class="fa fa-check" ng-click="save(board)"></i>
+                            <input type="text" ng-model="board.name" id="name_input_{{$index}}"/>
+                            <i class="fa fa-check" ng-click="save(board)" id="name_confirm_{{$index}}"></i>
                             <i class="fa fa-times" ng-click="cancelSave(board)"></i>
                         </span>       
                         <span ng-switch-default> 
-                            <i class="fa fa-pencil" ng-click="board.editMode=true"></i> {{board.name | placeholdEmpty}} 
+                            <i class="fa fa-pencil" ng-click="board.editMode=true" id="name_edit_{{$index}}"></i> {{board.name | placeholdEmpty}} 
                         </span>
                     </span>
                 </dd>
@@ -33,12 +40,12 @@
                 <dd id="dd_def_{{$index}}">
                     <div ng-switch="board.editMode"> 
                         <div ng-switch-when="true">
-                           <textarea ng-model="board.description" ></textarea>
-                           <i class="fa fa-check" ng-click="save(board)"></i>
+                           <textarea ng-model="board.description" id="desc_input_{{$index}}"></textarea>
+                           <i class="fa fa-check" ng-click="save(board)" id="desc_confirm_{{$index}}"></i>
                            <i class="fa fa-times" ng-click="cancelSave(board)"></i>
                         </div>
                         <div ng-switch-default>
-                           <i class="fa fa-pencil" ng-click="board.editMode = true"></i>&nbsp;<span ng-bind-html="board.description"/>
+                           <i class="fa fa-pencil" ng-click="board.editMode = true" id="desc_edit_{{$index}}"></i>&nbsp;<span ng-bind-html="board.description"/>
                         </div>
                     </div>
                 </dd>

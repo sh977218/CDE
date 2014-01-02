@@ -71,11 +71,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("cde.version")).sendKeys("1.0alpha1");
         new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText(test_reg_auth);
         findElement(By.id("cde.submit")).click();
-        driver.get(baseUrl + "/");
-        findElement(By.name("ftsearch")).sendKeys("testUser CDE 1");
-        findElement(By.id("search.submit")).click();
-        findElement(By.linkText(test_reg_auth + " -- name of testuser CDE 1")).click();
-        findElement(By.linkText("View Full Detail")).click();
+        goToCdeByName("name of testuser CDE 1");
         Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
         logout();
     }
@@ -114,11 +110,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("2");
         findElement(By.cssSelector("button.btn.btn-warning")).click();
-        findElement(By.linkText("CDEs")).click();
-        findElement(By.name("ftsearch")).sendKeys("testUser CDE 1");
-        findElement(By.id("search.submit")).click();
-        findElement(By.linkText(test_reg_auth + " -- name of testuser CDE 1[name change number 1]")).click();
-        findElement(By.linkText("View Full Detail")).click();
+//        findElement(By.linkText("CDEs")).click();
+//        findElement(By.name("ftsearch")).sendKeys("testUser CDE 1");
+//        findElement(By.id("search.submit")).click();
+        goToCdeByName("name of testuser CDE 1");
+//        findElement(By.linkText(test_reg_auth + " -- name of testuser CDE 1[name change number 1]")).click();
+//        findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("[name change number 1]"));
         Assert.assertTrue(textPresent("[def change number 1]"));
         Assert.assertTrue(textPresent("1.0alpha2"));

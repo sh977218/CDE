@@ -29,7 +29,7 @@ public class NlmCdeBaseTest {
         driver = new ChromeDriver();
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-        wait = new WebDriverWait(driver, 3);
+        wait = new WebDriverWait(driver, 3, 200);
     }
     
     public void loginAsNlm() {
@@ -41,7 +41,8 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/");
         findElement(By.name("ftsearch")).sendKeys(name);
         findElement(By.id("search.submit")).click();
-        findElement(By.partialLinkText(name)).click();
+//        findElement(By.partialLinkText(name)).click();
+        findElement(By.id("list_name_0")).click();
         findElement(By.linkText("View Full Detail")).click();
     }
         
@@ -62,6 +63,15 @@ public class NlmCdeBaseTest {
     @AfterTest
     public void endSession() {
         driver.quit();
+    }
+    
+    public void modalHere() {
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                return webDriver.findElement(By.cssSelector("div.modal")).getCssValue("opacity").equals("1");
+            }
+        });
     }
     
     public boolean textPresent(String text) {

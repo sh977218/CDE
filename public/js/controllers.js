@@ -118,7 +118,7 @@ function BoardViewCtrl($scope, $routeParams, $http) {
     
 }
 
-function MyBoardsCtrl($scope, $modal, $http) {
+function MyBoardsCtrl($scope, $modal, $http, $timeout) {
     $scope.setActiveMenu('MYBOARDS');
     $scope.boards = [];
     
@@ -143,7 +143,11 @@ function MyBoardsCtrl($scope, $modal, $http) {
     $scope.save = function(board) {
         delete board.editMode; 
         $http.post("/board", board).success(function(response) {
-            $scope.message = "saved";
+            $scope.message = "Saved";
+            $timeout(function() {
+                delete $scope.message;
+            }, 3000);
+
             $scope.reload();
         });
     };

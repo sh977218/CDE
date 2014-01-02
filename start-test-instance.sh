@@ -9,6 +9,11 @@ export ELASTIC_URI=http://localhost:9200/cdetest/
 # Remove ElasticSearch Index
 curl -XDELETE 'http://localhost:9200/cdetest'
 
+mongo test test/dbInit.js
+mongo test db/indexes.txt
+
+node ingester/uploadCadsr test/cadsrTestSeed.xml
+
 # Add ElasticSearch Index
 curl -XPUT "localhost:9200/_river/cdetest/_meta" -d'
     {
@@ -24,15 +29,18 @@ curl -XPUT "localhost:9200/_river/cdetest/_meta" -d'
         }           
     }'
 
-mongo test test/dbInit.js
-mongo test db/indexes.txt
+sleep 8;
 
-node ingester/uploadCadsr test/cadsrTestSeed.xml
-
-#groovy groovy/UploadCadsrForms.groovy --testMode &
-#
-gradle -b test/selenium/build.gradle -Dtest.single=UserTest cleanTest test & 
-
-node app 
-
+export target='{"count":382,"_shards":{"total":5,"successful":5,"failed":0}}'
+export curl_res=$(curl http://localhost:9200/cdetest/_count)
+if [ "$curl_res" == "$target" ] 
+then
+    #groovy groovy/UploadCadsrForms.groovy --testMode &
+    #
+    gradle -b test/selenium/build.gradle cleanTest test & 
+    node app 
+else
+    echo "Not all documents indexed. Aborting"
+    echo $curl_res
+fi
 

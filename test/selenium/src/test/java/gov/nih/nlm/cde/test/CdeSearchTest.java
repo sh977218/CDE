@@ -90,7 +90,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         // expect 4 candidate records
         Assert.assertTrue(textPresent("candidate (4)"));
         findElement(By.id("li-blank-candidate")).click();
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("NHLBI -- Disease or Disorder Response Surgical Procedure Documented Indicator")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText("Disease or Disorder Response Surgical Procedure Documented Indicator")));
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
         Assert.assertEquals(linkList.size(), 4);
         findElement(By.id("li-blank-nhlbi")).click();
@@ -101,7 +101,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(linkList.size(), 2);
         findElement(By.id("li-checked-candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(
-                By.linkText("NHLBI -- Hydroxychloroquine Sulfate Administered Indicator")));
+                By.partialLinkText("Hydroxychloroquine Sulfate Administered Indicator")));
         linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
         Assert.assertEquals(linkList.size(), 7);
         findElement(By.id("li-checked-nhlbi")).click();

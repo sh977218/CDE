@@ -15,5 +15,5 @@ db.users.insert({username: 'cabigAdmin', password: 'pass', orgAdmin: ["caBIG"], 
 db.users.insert({username: 'user1', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'boardtest', password: 'pass', quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: []});
 
