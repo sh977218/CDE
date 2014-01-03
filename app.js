@@ -532,6 +532,11 @@ app.get('/board', function(req, res) {
 
 app.get('/board/:boardId/:start', function(req, res) {
     mongo_data.boardById(req.params.boardId, function (err, board) {
+        if (board.shareStatus !== "Public") {
+            if (!req.isAuthenticated() || (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))) {
+                return res.send("This board is private");
+            }
+        }
         var pins = board.pins.splice(req.params.start, 20); 
         board.pins = pins;
         var idList = [];
@@ -561,6 +566,7 @@ app.post('/board', function(req, res) {
                 if (err) console.log(err);
                 b.name = board.name;
                 b.description = board.description;
+                b.shareStatus = board.shareStatus;
                 return mongo_data.save(b, function(err) {
                     if (err) console.log(err);
                     res.send(b);

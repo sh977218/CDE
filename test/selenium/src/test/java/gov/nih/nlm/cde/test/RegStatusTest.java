@@ -1,8 +1,6 @@
 package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;

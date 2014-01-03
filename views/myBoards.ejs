@@ -8,7 +8,7 @@
 
 <div ng-repeat="board in boards">
     <div class="row-fluid">
-        <div class="span1 offset1">
+        <div class="span3 text-right">
             <div class="row-fluid">
                 <span ng-show="showDelete">
                     Confirm Delete <i class="fa fa-check" ng-click="showDelete = false; removeBoard($index)" id="confirmRemove-{{$index}}"></i>
@@ -16,12 +16,18 @@
                 </span>
                 <i ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeBoard-{{$index}}"></i></dd>
             </div>
-            <div class="row-fluid" ng-switch="board.shareStatus">
-                <i class="fa fa-unlock" ng-switch-when="Public" > </i>
-                <i class="fa fa-lock" ng-switch-default> </i>
+            <div class="row-fluid">
+                <span ng-show="showChangeStatus">
+                    Change Status? <i class="fa fa-check" ng-click="changeStatus($index)" id="confirmChangeStatus_{{$index}}"></i>
+                    <i class="fa fa-times" ng-click="showChangeStatus = false"></i>
+                </span>
+                <span ng-hide="showChangeStatus">
+                    <i class="fa fa-unlock" ng-show="board.shareStatus === 'Public'" ng-click="showChangeStatus = true" id="publicIcon_{{$index}}"> </i>
+                    <i class="fa fa-lock" ng-hide="board.shareStatus === 'Public'" ng-click="showChangeStatus = true" id="privateIcon_{{$index}}"> </i>
+                </span>
             </div>
         </div>
-        <div class="span10">
+        <div class="span9">
             <dl class="dl-horizontal">
                 <dt>Name: </dt> 
                 <dd id="dd_name_{{$index}}">

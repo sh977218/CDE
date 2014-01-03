@@ -140,6 +140,17 @@ function MyBoardsCtrl($scope, $modal, $http, $timeout) {
         delete board.editMode;
     };
     
+    $scope.changeStatus = function(index) {
+        var board = $scope.boards[index];
+        if (board.shareStatus === "Private") {
+            board.shareStatus = "Public";
+        } else {
+            board.shareStatus = "Private";
+        }
+        $scope.save(board);
+        $scope.showChangeStatus = false;
+    };
+    
     $scope.save = function(board) {
         delete board.editMode; 
         $http.post("/board", board).success(function(response) {
@@ -170,6 +181,7 @@ function NewBoardModalCtrl($scope, $modalInstance, $location, Board) {
     };
 
     $scope.okCreate = function() {
+        $scope.newBoard.shareStatus = "Private";
         Board.save($scope.newBoard, function(cde) {
             $location.path('#/myboards');        
         });

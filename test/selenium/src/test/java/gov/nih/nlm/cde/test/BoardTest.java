@@ -32,6 +32,71 @@ public class BoardTest extends NlmCdeBaseTest {
         logout();
     }
 
+    @Test
+    public void publicVsPrivateBoards() {
+        String boardName = "Public Board";
+        
+        createBoard(boardName, "This board will be public");
+        pinTo("Heart MUGA", boardName);
+        // by default, board is private.
+
+        goToBoard(boardName);
+        // I can view my own board.
+        Assert.assertTrue(textPresent("MUGA"));
+        String url = driver.getCurrentUrl();
+        String boardId = url.substring(url.lastIndexOf("/") + 1);
+        
+        logout();
+        driver.get(baseUrl + "/#/board/" + boardId);
+        // not logged in, I can't see
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Not a very useful") < 0);
+
+        loginAs(ctepCurator_username, ctepCurator_password);
+        driver.get(baseUrl + "/#/board/" + boardId);
+        // logged in as someone else, I can't see
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Not a very useful") < 0);
+        
+        logout();
+        
+        loginAs(boardUser, boardPassword);
+        findElement(By.linkText("My Boards")).click();
+        int length = driver.findElements(By.linkText("View Board")).size();
+        for (int i = 0; i < length; i++) {
+            String name = findElement(By.id("dd_name_" + i)).getText();
+            if (boardName.equals(name)) {
+                findElement(By.id("privateIcon_" + i)).click();
+                findElement(By.id("confirmChangeStatus_" + i)).click();
+            }
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("publicIcon_" + i)));
+        }
+        
+        logout();
+        
+        driver.get(baseUrl + "/#/board/" + boardId);
+        // Now I can see;
+        Assert.assertTrue(textPresent("MUGA"));
+
+        loginAs(boardUser, boardPassword);
+        findElement(By.linkText("My Boards")).click();
+        for (int i = 0; i < length; i++) {
+            String name = findElement(By.id("dd_name_" + i)).getText();
+            if (boardName.equals(name)) {
+                findElement(By.id("publicIcon_" + i)).click();
+                findElement(By.id("confirmChangeStatus_" + i)).click();
+            }
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("privateIcon_" + i)));
+        }
+        
+        logout();
+        
+        driver.get(baseUrl + "/#/board/" + boardId);
+        // private again, I can't see
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Not a very useful") < 0);
+
+        loginAs(boardUser, boardPassword);
+        
+        removeBoard(boardName);
+    }
     
     private void createBoard(String name, String description) {
         findElement(By.linkText("My Boards")).click();
@@ -49,6 +114,7 @@ public class BoardTest extends NlmCdeBaseTest {
             if (boardName.equals(name)) {
                 findElement(By.id("removeBoard-" + i)).click();
                 findElement(By.id("confirmRemove-" + i)).click();
+                Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(boardName) < 0);
                 return;
             }
         }
@@ -128,7 +194,7 @@ public class BoardTest extends NlmCdeBaseTest {
         driver.get(baseUrl + "/");
         findElement(By.name("ftsearch")).sendKeys(cdeName);
         findElement(By.id("search.submit")).click();
-        findElement(By.partialLinkText(cdeName)).click();
+        findElement(By.id("list_name_0")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pin_0")));
         findElement(By.id("pin_0")).click();
         modalHere();
@@ -163,7 +229,7 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.partialLinkText(cdeName)).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pin_0")));
         findElement(By.id("pin_0")).click();
-        
+        modalHere();
         Assert.assertTrue(textPresent("Create a board now"));
         findElement(By.id("cancelSelect")).click();
     }

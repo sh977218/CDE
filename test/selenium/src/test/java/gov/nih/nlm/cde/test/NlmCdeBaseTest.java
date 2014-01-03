@@ -5,6 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
 import java.util.concurrent.TimeUnit;
+import org.junit.Assert;
 
 public class NlmCdeBaseTest {
     
@@ -41,9 +42,9 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/");
         findElement(By.name("ftsearch")).sendKeys(name);
         findElement(By.id("search.submit")).click();
-//        findElement(By.partialLinkText(name)).click();
         findElement(By.id("list_name_0")).click();
         findElement(By.linkText("View Full Detail")).click();
+        Assert.assertTrue(textPresent("More Like This"));
     }
         
     protected void goToFormByName(String name) {
