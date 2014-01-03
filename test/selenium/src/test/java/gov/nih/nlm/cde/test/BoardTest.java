@@ -32,6 +32,20 @@ public class BoardTest extends NlmCdeBaseTest {
         logout();
     }
 
+    private void makePublic(String boardName) {
+        findElement(By.linkText("My Boards")).click();
+        int length = driver.findElements(By.linkText("View Board")).size();
+        for (int i = 0; i < length; i++) {
+            String name = findElement(By.id("dd_name_" + i)).getText();
+            if (boardName.equals(name)) {
+                findElement(By.id("privateIcon_" + i)).click();
+                findElement(By.id("confirmChangeStatus_" + i)).click();
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("publicIcon_" + i)));
+                return;
+            } 
+        }
+    }
+    
     @Test
     public void publicVsPrivateBoards() {
         String boardName = "Public Board";
@@ -59,16 +73,7 @@ public class BoardTest extends NlmCdeBaseTest {
         logout();
         
         loginAs(boardUser, boardPassword);
-        findElement(By.linkText("My Boards")).click();
-        int length = driver.findElements(By.linkText("View Board")).size();
-        for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("dd_name_" + i)).getText();
-            if (boardName.equals(name)) {
-                findElement(By.id("privateIcon_" + i)).click();
-                findElement(By.id("confirmChangeStatus_" + i)).click();
-            }
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("publicIcon_" + i)));
-        }
+        makePublic(boardName);
         
         logout();
         
@@ -78,6 +83,7 @@ public class BoardTest extends NlmCdeBaseTest {
 
         loginAs(boardUser, boardPassword);
         findElement(By.linkText("My Boards")).click();
+        int length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
             if (boardName.equals(name)) {
@@ -255,6 +261,34 @@ public class BoardTest extends NlmCdeBaseTest {
         Assert.assertNotEquals(mod + " --- " + findElement(By.id("dd_mod")).getText(), mod, findElement(By.id("dd_mod")).getText());
         
         removeBoard("Edit Board -- Name Edited");
+    }
+    
+    @Test
+    public void searchBoard() {
+        String pubBlood = "Public Blood Board";
+        String privBlood = "Private Blood Board";
+        String pubSmoking = "Public Smoking Board";
+        
+        createBoard(pubBlood, "");
+        createBoard(privBlood, "");
+        createBoard(pubSmoking, "");
+        
+        makePublic(pubBlood);
+        makePublic(pubSmoking);
+        
+        findElement(By.linkText("Boards")).click();
+        findElement(By.name("search")).sendKeys("Blood");
+        findElement(By.id("search.submit")).click();
+        
+        Assert.assertTrue(textPresent(pubBlood));
+
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Smoking") < 0);
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Private") < 0);
+        
+        removeBoard(pubBlood);
+        removeBoard(privBlood);
+        removeBoard(pubSmoking);
+        
     }
 
     

@@ -5,6 +5,9 @@ angular.module('resources', ['ngResource']).
     .factory('CdeFtSearch', function($resource) {
         return $resource('/ftsearch');
     })
+    .factory('BoardSearch', function($resource) {
+        return $resource('/listboards');
+    })
     .factory('DataElement', function($resource) {
         return $resource('/dataelement/:deId', {deId: '@deId'}, {update: {method: 'PUT'}});
     })

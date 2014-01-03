@@ -47,6 +47,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         $scope.menuAccount = '';
         $scope.menuCreate = '';
         $scope.menuMyBoards = '';
+        $scope.menuBoardList = '';
         if (key === 'LISTCDE') {
             $scope.menuHome = 'active';
         } else if (key === 'LOGIN') {
@@ -65,6 +66,8 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
             $scope.menuCreate = 'active';
         } else if (key === 'MYBOARDS') {
             $scope.menuMyBoards = 'active';
+        } else if (key === 'BOARDLIST') {
+            $scope.menuBoardList = 'active';
         }
 
     };
@@ -84,6 +87,26 @@ function ProfileCtrl($scope, ViewingHistory) {
     ViewingHistory.getCdes({start: 0}, function(cdes) {
         $scope.viewingHistory = cdes;
     });
+}
+
+function BoardListCtrl($scope, BoardSearch) {
+    $scope.setActiveMenu('BOARDLIST');
+    
+    $scope.search = {name: ""};
+    $scope.currentPage = 1;
+    $scope.pageSize = 10;
+
+    $scope.boards = [];
+
+    $scope.reload = function() {
+        var newfrom = ($scope.currentPage - 1) * $scope.pageSize;
+        var result = BoardSearch.get({from: newfrom, search: JSON.stringify($scope.search)}, function () {
+           $scope.numPages = result.pages; 
+           $scope.boards = result.boards;
+           $scope.totalItems = result.totalNumber;
+        });
+    } ;  
+    
 }
 
 function BoardViewCtrl($scope, $routeParams, $http) {

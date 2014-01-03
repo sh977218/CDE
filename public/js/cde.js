@@ -15,6 +15,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
         when('/profile', {controller: AccountManagementCtrl, templateUrl: '/profile'}).
         when('/myboards', {controller: MyBoardsCtrl, templateUrl: '/myboards'}).
         when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
+        when('/boardList', {controller: BoardListCtrl, templateUrl: '/boardList'}).
         otherwise({redirectTo:'/'});
     }).
     directive('inlineEdit', function() {

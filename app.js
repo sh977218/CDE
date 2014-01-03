@@ -2,6 +2,7 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , cdesvc = require('./node-js/cdesvc')
+  , boardsvc = require('./node-js/boardsvc')
   , usersvc = require('./node-js/usersvc')
   , orgsvc = require('./node-js/orgsvc')
   , flash = require('connect-flash')
@@ -175,6 +176,14 @@ app.get('/', function(req, res) {
 
 app.get('/list', function(req, res){
   res.render('list');
+});
+
+app.get('/boardList', function(req, res){
+  res.render('boardList');
+});
+
+app.get('/listboards', function(req, res) {
+   boardsvc.boardList(req, res); 
 });
 
 app.get('/signup', function(req, res){

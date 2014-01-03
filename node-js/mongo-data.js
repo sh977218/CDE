@@ -197,6 +197,19 @@ exports.cdelist = function(from, limit, searchOptions, callback) {
            });
         });
     });
+}; 
+
+exports.boardList = function(from, limit, searchOptions, callback) {
+    PinningBoard.find(searchOptions).exec(function (err, boards) {
+        PinningBoard.find(searchOptions).count(searchOptions).exec(function (err, count) {
+        callback("",{
+               boards: boards
+               , page: Math.ceil(from / limit)
+               , pages: Math.ceil(count / limit)
+               , totalNumber: count
+           });
+        });
+    });
 };  
 
 exports.formlist = function(from, limit, searchOptions, callback) {
