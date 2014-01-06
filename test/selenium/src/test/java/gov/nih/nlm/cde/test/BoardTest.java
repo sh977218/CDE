@@ -291,5 +291,36 @@ public class BoardTest extends NlmCdeBaseTest {
         
     }
 
+    @Test
+    public void cdeBoards() {
+        String board1 = "First CDE Board";
+        String board2 = "Second CDE Board";
+        
+        createBoard(board1, "");
+        createBoard(board2, "");
+        
+        makePublic(board1);
+        
+        pinTo("Biomarker Outcome", board1);
+        pinTo("Biomarker Outcome", board2);
+        
+        goToCdeByName("Biomarker Outcome");
+        findElement(By.xpath("//li[@heading='Boards']/a")).click();
+        
+        Assert.assertTrue(textPresent(board1));
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(board2) < 0);
+
+        makePublic(board2);
+
+        goToCdeByName("Biomarker Outcome");
+        findElement(By.xpath("//li[@heading='Boards']/a")).click();
+        
+        Assert.assertTrue(textPresent(board1));
+        Assert.assertTrue(textPresent(board2));
+        
+        removeBoard(board1);
+        removeBoard(board2);
+    }
+    
     
 }

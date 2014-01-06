@@ -535,6 +535,12 @@ app.get('/boards/:userId', function(req, res) {
     });
 });
 
+app.get('/deBoards/:uuid', function(req, res) {
+   mongo_data.publicBoardsByDeUuid(req.params.uuid, function (result) {
+        res.send(result);
+   });
+});
+
 app.get('/board', function(req, res) {
    res.render("boardView"); 
 });

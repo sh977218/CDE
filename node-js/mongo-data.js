@@ -34,6 +34,13 @@ exports.boardsByUserId = function(userId, callback) {
     });
 };
 
+exports.publicBoardsByDeUuid = function(uuid, callback) {
+    PinningBoard.find({"pins.deUuid": uuid, "shareStatus": "Public"}).exec(function (err, result) {
+        callback(result); 
+    });
+};
+
+
 exports.getFile = function(callback, res, id) {
     res.writeHead(200, { "Content-Type" : "image/png"});
     gfs.createReadStream({ _id: id }).pipe(res);

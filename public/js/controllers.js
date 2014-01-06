@@ -829,6 +829,11 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
     $scope.initialized = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;
+    $scope.vsacValueSet = [];
+    $scope.mltCdes = [];
+    $scope.boards = [];
+    $scope.comment = {};
+
     $scope.reload = function(deId, cb) {
         DataElement.get({deId: deId}, function (de) {
            $scope.cde = de;          
@@ -836,6 +841,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
            $scope.initialized = true;
            $scope.canLinkPvFunc();
            $scope.loadMlt();
+           $scope.loadBoards();
         });
         
         PriorCdes.getCdes({cdeId: deId}, function(dataElements) {
@@ -867,8 +873,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
             return classi.conceptSystem === system;
         };
     };
-
-    $scope.comment = {};
 
     $scope.addComment = function() {        
         Comment.addComment({
@@ -966,7 +970,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
         for (var i = 0; i < pvs.length; i++) {
            $scope.isPvInVSet(pvs[i], function(wellIsIt) {
                 pvs[i].isValid = wellIsIt;
-           })
+           });
         }
     };
     
@@ -986,11 +990,10 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
         for (var i = 0; i < $scope.vsacValueSet.length; i++) {
            $scope.isVsInPv($scope.vsacValueSet[i], function(wellIsIt) {
                 $scope.vsacValueSet[i].isValid = wellIsIt;
-           })
+           });
         }
-    }
+    };
     
-    $scope.vsacValueSet = [];
     $scope.loadValueSet = function() {
         var dec = $scope.cde.dataElementConcept;
         if (dec != null && dec.conceptualDomain != null && dec.conceptualDomain.vsac !=  null) {
@@ -1033,8 +1036,13 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
                  $scope.mltCdes = data.cdes;
              })
         ;
-    }
-    $scope.mltCdes = [];
+    };
+    
+    $scope.loadBoards = function() {
+        $http.get("/deBoards/" + $scope.cde.uuid).then(function(response) {
+            $scope.boards = response.data;
+        });
+    };
     
 }
 
