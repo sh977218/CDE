@@ -1,0 +1,26 @@
+<div class="modal-header" id="newConceptModalHeader">
+    <h4>Add Concept</h4>
+</div>
+<form name="form">
+<div class="modal-body" id="newConceptModalBody">
+    <label for="name">Code Name</label>
+    <input ng-model="newConcept.name" name="name" Placeholder="Concept Code Name" required/>
+    
+    <label for="codeId">Code ID</label>
+    <input name="codeId" ng-model="newConcept.originId" placeholder="Concept Code Identifier" required />
+    
+    <label for="codeSystem">Code System</label>
+    <input name="codeSystem" ng-model="newConcept.origin" value="LOINC" required />
+
+    <label for="conceptType">Concept Type</label>
+    <select ng-model="newConcept.type" name="conceptType" required>
+        <option value="dec">Data Element</option>
+        <option value="oc">Class</option>
+        <option value="prop">Property</option>
+    </select>
+</div>
+<div class="modal-footer" id="newConceptModalFooter">
+    <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
+    <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid" id="createConcept">Save</button>
+</div>
+</form>

@@ -649,6 +649,59 @@ function SaveCdeCtrl($scope, $modal, $http) {
           }
         });
     };
+
+    $scope.openNewConcept = function () {
+        $modal.open({
+          templateUrl: 'newConceptModalContent.html',
+          controller: NewConceptModalCtrl,
+          resolve: {
+              cde: function() {
+                  return $scope.cde;
+              }
+          }
+        });
+    };
+    
+    $scope.removeDecConcept = function (index) {
+        $scope.cde.dataElementConcept.concepts.splice(index, 1);
+        $scope.cde.unsaved = true;
+    };
+    
+    $scope.removeOcConcept = function (index) {
+        $scope.cde.objectClass.concepts.splice(index, 1);
+        $scope.cde.unsaved = true;
+    };
+    
+    $scope.removePropConcept = function (index) {
+        $scope.cde.property.concepts.splice(index, 1);
+        $scope.cde.unsaved = true;
+    };
+    
+};
+
+function NewConceptModalCtrl($scope, $modalInstance, cde) {
+    $scope.newConcept = {origin: "LOINC", type: "dec"};
+    $scope.cde = cde;
+    
+    $scope.cancelCreate = function() {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.okCreate = function() {
+        if (!cde.dataElementConcept) cde.dataElementConcept = {};
+        if ($scope.newConcept.type === "dec") {
+            if (!cde.dataElementConcept.concepts) cde.dataElementConcept.concepts = [];
+            cde.dataElementConcept.concepts.push($scope.newConcept);
+        } else if ($scope.newConcept.type === "prop") {
+            if (!cde.property.concepts) cde.property.concepts = [];
+            cde.property.concepts.push($scope.newConcept);
+        } else if ($scope.newConcept.type === "oc") {
+            if (!cde.objectClass.concepts) cde.objectClass.concepts = [];
+            cde.objectClass.concepts.push($scope.newConcept);
+        } 
+        cde.unsaved = true;
+        $modalInstance.close();
+    };
 };
 
 var SaveCdeModalCtrl = function ($scope, $window, $modalInstance, cde, user) {
@@ -1043,7 +1096,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
             $scope.boards = response.data;
         });
     };
-    
 }
 
 function FormViewCtrl($scope, $routeParams, $http, Form, DataElement, CdesInForm) {

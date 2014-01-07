@@ -72,7 +72,8 @@ var deJsonSchema = {
     , uuid: String
     , version: String
     , dataElementConcept: {
-        conceptualDomain: {
+        concepts: [conceptSchema]
+        , conceptualDomain: {
             vsac: {
                 id: String
                 , name: String
