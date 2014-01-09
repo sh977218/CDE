@@ -12,31 +12,31 @@
               <option value="Integer">Integer</option>
               <option value="Float">Float</option>
           </select>
-          <i class="icon-check" ng-click="editDtMode = false; stageCde(cde)" id="confirmDatatype"></i>
-          <i class="icon-remove" ng-click="editDtMode = false"></i>
+          or
+          <input ng-model="cde.valueDomain.datatype" name="datatypeFreeText"/>
+          <i class="fa fa-check-square-o" ng-click="editDtMode = false; stageCde(cde)" id="confirmDatatype"></i>
+          <i class="fa fa-trash-o" ng-click="editDtMode = false"></i>
      </span>
-      <span ng-hide="editDtMode"><i ng-show="isAllowed(cde)" class="icon-edit" ng-click="editDtMode = true"></i> {{cde.valueDomain.datatype | placeholdEmpty}}</span>
+      <span ng-hide="editDtMode"><i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="editDtMode = true" id="editDatatype"></i> {{cde.valueDomain.datatype | placeholdEmpty}}</span>
   </dd>
 </dl>
 
-<div ng-show="cde.valueDomain.datatype == 'Value List'">
-    <%- include deDatatypeValueList.ejs %>
-</div>
-
-<div ng-show="cde.valueDomain.datatype == 'Text'">
-    <%- include deDatatypeText.ejs %>
-</div>
-
-<div ng-show="cde.valueDomain.datatype == 'Integer'">
-    <%- include deDatatypeInt.ejs %>
-</div>
-
-<div ng-show="cde.valueDomain.datatype == 'Float'">
-    <%- include deDatatypeFloat.ejs %>
-</div>
-
-<div ng-show="cde.valueDomain.datatype == 'Date'">
-    <%- include deDatatypeDate.ejs %>
+<div ng-switch="cde.valueDomain.datatype">
+    <div ng-switch-when="Value List">
+        <%- include deDatatypeValueList.ejs %>
+    </div>
+    <div ng-switch-when="Text">
+        <%- include deDatatypeText.ejs %>
+    </div>
+    <div ng-switch-when="Integer">
+        <%- include deDatatypeInt.ejs %>
+    </div>
+    <div ng-switch-when="Float">
+        <%- include deDatatypeFloat.ejs %>
+    </div>
+    <div ng-switch-when="Date">
+        <%- include deDatatypeDate.ejs %>
+    </div>    
 </div>
 
 

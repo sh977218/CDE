@@ -56,7 +56,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     public void changePermissibleValue() {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Ethnic Group Category");
-        findElement(By.linkText("Permissible Values")).click();        
+        findElement(By.linkText("Permissible Values")).click(); 
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pv-0']/inline-edit/span/span[1]/i")));
         findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[1]/i")).click();
         findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[2]/input")).sendKeys(" added to pv");
         findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[2]/i[1]")).click();
@@ -153,14 +154,33 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertEquals(findElement(By.id("pvCode-6")).getText(), "C25594,C48046,C13717");
         findElement(By.id("pvUp-2")).click();
         findElement(By.id("pvDown-6")).click();
-                findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.id("openSave")).click();
         findElement(By.name("changeNote")).sendKeys("Reordered PV");
         findElement(By.name("version")).sendKeys(".addRemovePv");
-        findElement(By.cssSelector("button.btn.btn-warning")).click();
+        findElement(By.id("confirmSave")).click();
         goToCdeByName("Involved Organ Laterality Type");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertEquals(findElement(By.id("pvCode-1")).getText(), "C25229");
         Assert.assertEquals(findElement(By.id("pvCode-7")).getText(), "C25594,C48046,C13717");
+        logout();
+    }
+    
+    @Test
+    public void randomDatatype() {
+        loginAs(ctepCurator_username, ctepCurator_password);
+        goToCdeByName("Axillary Surgery");
+        findElement(By.linkText("Permissible Values")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));
+        findElement(By.id("editDatatype")).click();
+        findElement(By.name("datatypeFreeText")).clear();
+        findElement(By.name("datatypeFreeText")).sendKeys("java.lang.Date");
+        findElement(By.id("confirmDatatype")).click();
+        findElement(By.id("openSave")).click();
+        findElement(By.name("version")).sendKeys(".1");
+        findElement(By.id("confirmSave")).click();
+        goToCdeByName("Axillary Surgery");
+        findElement(By.linkText("Permissible Values")).click();        
+        Assert.assertTrue(textPresent("java.lang.Date"));
         logout();
     }
     

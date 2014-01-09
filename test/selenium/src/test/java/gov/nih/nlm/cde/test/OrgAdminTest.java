@@ -18,10 +18,10 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         loginAs(cabigAdmin_username, cabigAdmin_password);
         goToCdeByName("Cervical Tumor Clinical T Stage");
         Assert.assertTrue(textPresent("as defined by the AJCC Cancer Staging Manual, 6th Ed."));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("i.icon-pencil")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("i.fa-edit")));
         goToCdeByName("Communication Contact Email Address java.lang.String");
         Assert.assertTrue(textPresent("A modern Internet e-mail address (using SMTP)"));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("i.icon-pencil")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("i.fa-edit")));
         logout();
     }
     

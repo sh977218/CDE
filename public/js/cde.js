@@ -22,12 +22,12 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
     return {
         template: '<span >' + 
                         '<span ng-hide="editMode">' + 
-                            '<i ng-show="isAllowed()" class="icon-pencil" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' + 
+                            '<i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' + 
                         '</span>' + 
                         '<span ng-show="editMode">' + 
                             '<input type="text" ng-model="value" />' + 
-                            '<i class="icon-check" ng-click="model = value; editMode = false; onOk()"></i>' + 
-                            '<i class="icon-remove" ng-click="editMode = false"></i>' +
+                            '<i class="fa fa-check-square-o" ng-click="model = value; editMode = false; onOk()"> </i>&nbsp;' + 
+                            '<i class="fa fa-trash-o" ng-click="editMode = false"></i>' +
                         '</span>' +       
                     '</span>'
                 ,
@@ -43,12 +43,12 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
     return {
         template: '<div>' + 
                         '<div ng-hide="editMode">' + 
-                         '   <i ng-show="isAllowed()" class="icon-pencil" ng-click="value=model; editMode=true"></i>&nbsp;<span ng-bind-html="model"/>' +
+                         '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>&nbsp;<span ng-bind-html="model"/>' +
                         '</div>' + 
                         '<div ng-show="editMode">' + 
                          '   <textarea ng-model="value" ></textarea>' + 
-                          '  <i class="icon-check" ng-click="model = value;editMode = false; onOk()"></i>' + 
-                           ' <i class="icon-remove" ng-click="editMode = false"></i>' + 
+                          '  <i class="fa fa-check-square-o" ng-click="model = value;editMode = false; onOk()"> </i>' + 
+                           ' <i class="fa fa-trash-o" ng-click="editMode = false"></i>' + 
                         '</div>       ' + 
                     '</div>',
         restrict: 'E',
