@@ -5,6 +5,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.Assert;
 
 public class NlmCdeBaseTest {
@@ -73,6 +75,17 @@ public class NlmCdeBaseTest {
                 return webDriver.findElement(By.cssSelector("div.modal")).getCssValue("opacity").equals("1");
             }
         });
+    }
+    
+    /*
+    * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
+    */
+    public void modalGone()  {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public boolean textPresent(String text) {

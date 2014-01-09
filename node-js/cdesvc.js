@@ -17,25 +17,28 @@ exports.elasticsearch = function(req, res) {
     var queryStuff = {size: limit};
     
     if (q != undefined && q !== "") {
-        queryStuff.query = {
-            query_string: {
-                fields: ["_all", "naming.designation^3"]
-                , query: q
-            }
-        };
         queryStuff.query = 
-            {
-                function_score: {
-                    script_score: {
-                        script: "(6 - doc[\"registrationState.registrationStatusSortOrder\"].value) / 6.0"
-                    }
-                    , query: {
-                        query_string: {
-                            fields: ["_all", "naming.designation^3"]
-                            , query: q
+            {   
+                bool: {
+                    should: {
+                    function_score: {
+                        script_score: {
+                            script: "(6 - doc[\"registrationState.registrationStatusSortOrder\"].value) / 6.0"
+                        }
+                        , query: {
+                            query_string: {
+                                fields: ["_all", "naming.designation^3"]
+                                , query: q
+                            }
                         }
                     }
-                }                
+                    }
+                    , must_not: {
+                        term: {
+                            "registrationState.registrationStatus": "retired"
+                        }
+                    }
+                }
            };
     }
     

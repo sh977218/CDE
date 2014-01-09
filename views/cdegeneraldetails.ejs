@@ -1,5 +1,5 @@
 <div ng-controller="SaveCdeCtrl">
-<h4>General Details</h4>
+<h4>General Details</h4>    
 <dl class="dl-horizontal">
     <dt>Name: </dt> <dd><inline-edit id="nameEdit" model="cde.naming[0].designation" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></dd>
     <dt>Steward: </dt><dd>{{cde.stewardOrg.name}}</dd>
@@ -9,7 +9,7 @@
     <dt>Version: </dt><dd>{{cde.version}}</dd>
     <dt ng-show="cde.origin">Origin: </dt><dd>{{cde.origin}}</dd>
     <dt ng-show="cde.originId">Origin ID: </dt><dd>{{cde.originId}}</dd>
-    <dt>Status: </dt><dd><i id="editStatus" ng-show="isAllowed(cde)" class="icon-pencil" ng-click="openRegStatusUpdate()"></i> {{cde.registrationState.registrationStatus}}</dd>
+    <dt>Status: </dt><dd id="dd_status"><i id="editStatus" ng-show="isAllowed(cde)" class="icon-pencil" ng-click="openRegStatusUpdate()"></i> {{cde.registrationState.registrationStatus}}</dd>
     <dt ng-show="cde.formUsageCounter">Form Usage: </dt><dd>{{cde.formUsageCounter}}</dd>
     <dt ng-show="cde.views">Views: </dt><dd id="dd_views">{{cde.views}}</dd>
     <dt>Added to NLM: </dt>

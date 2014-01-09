@@ -1,8 +1,6 @@
 package gov.nih.nlm.cde.test;
 
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -18,13 +16,14 @@ public class RegStatusTest extends NlmCdeBaseTest {
         loginAs(cabigAdmin_username, cabigAdmin_password);
         goToCdeByName("Investigator Identifier java.lang.Integer");
         Assert.assertTrue(textPresent("Qualified"));
-        findElement(By.cssSelector("dd.ng-binding > i.icon-pencil")).click();
+        findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
         findElement(By.name("effectiveDate")).sendKeys("9/15/2013");
         findElement(By.name("untilDate")).sendKeys("10/31/2014");
         findElement(By.name("administrativeNote")).sendKeys("Admin Note 1");
         findElement(By.name("unresolvedIssue")).sendKeys("Unresolved Issue 1");
-        findElement(By.cssSelector("button.btn.btn-warning")).click();
+        findElement(By.id("saveRegStatus")).click();
+        modalGone();
         goToCdeByName("Investigator Identifier java.lang.Integer");
         Assert.assertTrue(textPresent("Recorded"));
         findElement(By.linkText("Status")).click();
@@ -44,13 +43,24 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         findElement(By.id("saveRegStatus")).click();
-        // clicking away too fast can interrupt the JS call to the backend. So we wait for the popup to be gone. 
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("regStatusModalFooter")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("regStatusModalHeader")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("regStatusModalBody")));
-        findElement(By.linkText("Status")).click();
+        modalGone();
         goToCdeByName("Patient Name");
         Assert.assertTrue(textPresent("Standard"));
+        logout();
+    }
+    
+    @Test
+    public void retire() {
+        loginAs(ctepCurator_username, ctepCurator_password);
+        goToCdeByName("Colitis Grade");
+        Assert.assertTrue(textPresent("Qualified"));
+        findElement(By.id("editStatus")).click();
+        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
+        findElement(By.id("saveRegStatus")).click();
+        modalGone();
+        driver.get(baseUrl + "/");
+        findElement(By.name("ftsearch")).sendKeys("Colitis");
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Common Toxicity Criteria Adverse Event Colitis Grade") < 0);
         logout();
     }
     

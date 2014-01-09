@@ -21,7 +21,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         return $scope.user.siteAdmin;
     };
     
-    $scope.registrationStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard'];
+    $scope.registrationStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard', 'Retired'];
 
     $scope.setMyOrgs = function() {
         if ($scope.user && $scope.user.orgAdmin) {
@@ -557,7 +557,7 @@ var AddToFormModalCtrl = function($scope, MyCart, $modalInstance, cde, AddCdeToF
     };
 };
 
-function SaveCdeCtrl($scope, $modal, $http) { 
+function SaveCdeCtrl($scope, $modal, $http, $timeout) { 
     $scope.checkVsacId = function(cde) {
         $http({method: "GET", url: "/vsacBridge/" + cde.dataElementConcept.conceptualDomain.vsac.id}).
          error(function(data, status) {
@@ -631,6 +631,10 @@ function SaveCdeCtrl($scope, $modal, $http) {
         });
 
         modalInstance.result.then(function () {
+            $scope.message = "Saved";
+            $timeout(function() {
+                delete $scope.message;
+            }, 3000);
         }, function () {
         });        
     };
@@ -708,7 +712,7 @@ var SaveCdeModalCtrl = function ($scope, $window, $modalInstance, cde, user) {
   $scope.cde = cde;
   $scope.user = user;
 
-  $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified'];
+  $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Retired'];
 
   $scope.ok = function () {
     $scope.cde.$save(function (cde) {

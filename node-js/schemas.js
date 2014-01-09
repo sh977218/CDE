@@ -213,7 +213,8 @@ schemas.managedContextSchema = mongoose.Schema ({
 });
 
 var regStatusSortMap = {
-    Incomplete: 5
+    Retired: 6
+    , Incomplete: 5
     , Candidate: 4
     , Recorded: 3
     , Qualified: 2
