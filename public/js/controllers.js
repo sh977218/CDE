@@ -681,6 +681,49 @@ function SaveCdeCtrl($scope, $modal, $http, $timeout) {
         $scope.cde.unsaved = true;
     };
     
+    $scope.openNewNamePair = function () {
+        $modal.open({
+          templateUrl: 'newNamePairModalContent.html',
+          controller: NewNamePairModalCtrl,
+          resolve: {
+              cde: function() {
+                  return $scope.cde;
+              }
+          }
+        });
+    };  
+    
+    $scope.stageNewName = function(namePair) {
+      $scope.stageCde($scope.cde);
+      namePair.editMode = false;
+    };
+    
+    $scope.removeNamePair = function(index) {
+        $scope.cde.naming.splice(index, 1);
+        $scope.stageCde($scope.cde);          
+    };
+    
+};
+
+function NewNamePairModalCtrl($scope, $modalInstance, cde) {
+    $scope.newNamePair = {
+        "languageCode" : "EN-US"
+        , context: {
+            contextName: "Health"
+            , "acceptability" : "preferred"
+        }
+    };
+    $scope.cde = cde;
+    
+    $scope.cancelCreate = function() {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.okCreate = function() {
+        cde.naming.push($scope.newNamePair);
+        cde.unsaved = true;
+        $modalInstance.close();
+    };
 };
 
 function NewConceptModalCtrl($scope, $modalInstance, cde) {

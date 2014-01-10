@@ -82,7 +82,7 @@ public class NlmCdeBaseTest {
     */
     public void modalGone()  {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException ex) {
             Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
         }

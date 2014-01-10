@@ -149,6 +149,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("name")).sendKeys("DEC1");
         findElement(By.name("codeId")).sendKeys("DEC_CODE_111");
         findElement(By.id("createConcept")).click();
+        modalGone();
         
         findElement(By.id("addConcept")).click();
         modalHere();
@@ -156,6 +157,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("codeId")).sendKeys("OC_CODE_111");
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Class");
         findElement(By.id("createConcept")).click();
+        modalGone();
 
         findElement(By.id("addConcept")).click();
         modalHere();
@@ -163,10 +165,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("codeId")).sendKeys("Prop_CODE_111");
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Property");
         findElement(By.id("createConcept")).click();
+        modalGone();
 
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
         findElement(By.id("confirmSave")).click();
+        modalGone();
 
         goToCdeByName("Patient Photograph");
         findElement(By.linkText("Concepts")).click();
@@ -181,6 +185,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".2");
         findElement(By.id("confirmSave")).click();
+        modalGone();
         
         goToCdeByName("Patient Photograph");
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("DEC1") < 0);

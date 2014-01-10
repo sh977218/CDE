@@ -150,7 +150,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Involved Organ Laterality Type");
         findElement(By.linkText("Permissible Values")).click();
-        Assert.assertEquals(findElement(By.id("pvCode-2")).getText(), "C25229");
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("pvCode-2"), "C25229"));
         Assert.assertEquals(findElement(By.id("pvCode-6")).getText(), "C25594,C48046,C13717");
         findElement(By.id("pvUp-2")).click();
         findElement(By.id("pvDown-6")).click();

@@ -1,0 +1,20 @@
+<div class="modal-header" id="newNamePairModalHeader">
+    <h4>Add Naming</h4>
+</div>
+<form name="form">
+<div class="modal-body" id="newNamePairModalBody">
+    <label for="designation">Name</label>
+    <input ng-model="newNamePair.designation" name="designation" Placeholder="Name / Designation" required/>
+    
+    <label for="definition">Definition</label>
+    <textarea ng-model="newNamePair.definition" name="definition" Placeholder="Definition" required></textarea>
+    
+    <label for="context">Context</label>
+    <input ng-model="newNamePair.context.contextName" name="context" Placeholder="Context" required/>
+    
+</div>
+<div class="modal-footer" id="newConceptModalFooter">
+    <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
+    <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid" id="createNamePair">Save</button>
+</div>
+</form>

@@ -398,8 +398,7 @@ exports.saveCde = function(req, callback) {
             delete jsonDe._id;
             var newDe = new DataElement(jsonDe);
             newDe.history.push(dataElement._id);
-            newDe.naming = [];
-            newDe.naming.push(req.body.naming[0]);
+            newDe.naming = req.body.naming;
             newDe.version = req.body.version;
             newDe.changeNote = req.body.changeNote;
             newDe.updated = new Date().toJSON();
@@ -416,6 +415,12 @@ exports.saveCde = function(req, callback) {
             newDe.valueDomain = req.body.valueDomain;
             
             dataElement.archived = true;
+            
+            if (newDe.naming.length < 1) {
+                console.log("Cannot save without names");
+                callback ("Cannot save without names");
+            }
+            
             dataElement.save(function (err) {
                  if (err) {
                      console.log(err);
