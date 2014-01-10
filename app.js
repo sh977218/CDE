@@ -313,7 +313,7 @@ app.get('/profile', function(req, res) {
 });
 
 app.get('/myboards', function(req, res) {
-   res.render("myboards"); 
+   res.render("myBoards"); 
 });
 
 app.post('/login', function(req, res, next) {
