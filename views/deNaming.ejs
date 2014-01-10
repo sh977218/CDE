@@ -60,7 +60,7 @@
     <hr/>
 </div>
 
-<button class="btn btn-small" value="add" ng-click="openNewNamePair()" id="addNamePair"><i class="fa fa-plus"> </i> Add Naming</button>
+<button ng-show="isAllowed(cde)" class="btn btn-small" value="add" ng-click="openNewNamePair()" id="addNamePair"><i class="fa fa-plus"> </i> Add Naming</button>
 
 <script type="text/ng-template" id="newNamePairModalContent.html">
     <%- include newNamePairModal.ejs %>
