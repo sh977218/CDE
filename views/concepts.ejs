@@ -74,7 +74,7 @@
 
 <hr/>
     
-<button class="btn btn-small" value="add" ng-click="openNewConcept()" id="addConcept"><i class="fa fa-plus"> </i> Add Concept</button>
+<button class="btn btn-small" value="add" ng-click="openNewConcept()" id="addConcept" ng-show="isAllowed(cde)"><i class="fa fa-plus"> </i> Add Concept</button>
 
 <script type="text/ng-template" id="newConceptModalContent.html">
     <%- include newConceptModal.ejs %>
