@@ -68,6 +68,7 @@
         <br>
         <span>
         POST to _aliases
+        curl -XPOST "localhost:9200/_aliases" -d'
         {
             "actions": [
                 { "add": {
@@ -75,7 +76,7 @@
                     "index": "nlmcde_mongo_v1"
                 }}
             ]
-        }
+        }'
         </span>
         <br>
         This will create an alias so that, when needed, a new index can be created in parallel, and the alias can be modified after indexing is complete. 
