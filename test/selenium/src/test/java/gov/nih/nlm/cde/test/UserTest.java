@@ -52,7 +52,7 @@ public class UserTest extends NlmCdeBaseTest {
     
     @Test
     public void viewingHistory() {
-        loginAs(ctepCurator_username, ctepCurator_password);
+        loginAs(history_username, history_password);
         goToCdeByName("Patient Eligibility Ind-2");
         findElement(By.linkText("Account")).click();
         findElement(By.linkText("Profile")).click();

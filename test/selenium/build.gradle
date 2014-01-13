@@ -24,5 +24,5 @@ dependencies {
 test {
     useTestNG()
     
-    maxParallelForks = 3
+    maxParallelForks = 4
 }

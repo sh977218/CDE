@@ -87,21 +87,23 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         driver.get(baseUrl + "/");
         findElement(By.name("ftsearch")).sendKeys("Treatment");
         findElement(By.id("search.submit")).click();
-        // expect 4 candidate records
         Assert.assertTrue(textPresent("candidate (4)"));
         findElement(By.id("li-blank-candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText("Disease or Disorder Response Surgical Procedure Documented Indicator")));
+        hangon();
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
         Assert.assertEquals(linkList.size(), 4);
         findElement(By.id("li-blank-nhlbi")).click();
         // Seems like we should wait for something , like below, but below doesn't work and I can't come up with something to wait for ...
 //            wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(
 //                    By.linkText("caBIG -- First Follow-up Visit Date"))));
+        hangon();
         linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
         Assert.assertEquals(linkList.size(), 2);
         findElement(By.id("li-checked-candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.partialLinkText("Hydroxychloroquine Sulfate Administered Indicator")));
+        hangon();
         linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
         Assert.assertEquals(linkList.size(), 7);
         findElement(By.id("li-checked-nhlbi")).click();
