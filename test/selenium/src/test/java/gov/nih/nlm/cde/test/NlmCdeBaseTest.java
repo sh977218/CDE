@@ -22,7 +22,9 @@ public class NlmCdeBaseTest {
     protected static String ctepCurator_password = "pass";
     protected static String test_username = "testuser";
     protected static String test_password = "Test123";
-    protected static String test_reg_auth = "OrgTest1";    
+    protected static String history_username = "historyuser";
+    protected static String history_password = "pass";
+    
     
     public static WebDriverWait wait;
 
@@ -44,6 +46,7 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/");
         findElement(By.name("ftsearch")).sendKeys(name);
         findElement(By.id("search.submit")).click();
+        Assert.assertTrue(textPresent(name));
         findElement(By.id("list_name_0")).click();
         findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("More Like This"));
@@ -81,6 +84,17 @@ public class NlmCdeBaseTest {
     * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
     */
     public void modalGone()  {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /*
+    * TODO - Find a better way than to wait. When testing that test is gone, I cannot find a way to do it reliably without waiting a bit 
+    */
+    public void hangon()  {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {

@@ -43,18 +43,6 @@ public class UserTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void adminProfile() {
-        loginAs(cabigAdmin_username, cabigAdmin_password);
-        findElement(By.linkText("Account")).click();
-        findElement(By.linkText("Profile")).click();
-        Assert.assertEquals("cabigAdmin", findElement(By.id("dd_username")).getText());
-        Assert.assertEquals("1,024.00 MB", findElement(By.id("dd_quota")).getText());
-        Assert.assertEquals("[]", findElement(By.id("dd_curatorFor")).getText());
-        Assert.assertEquals("[\"caBIG\"]", findElement(By.id("dd_adminFor")).getText());
-        logout();
-    }
-    
-    @Test
     public void regUserCannotCreate() {
         loginAs("user1", "pass");
         findElement(By.linkText("Account"));

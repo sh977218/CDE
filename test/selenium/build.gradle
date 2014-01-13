@@ -22,6 +22,7 @@ dependencies {
 }
 
 test {
-    useTestNG {
-    }
+    useTestNG()
+    
+    maxParallelForks = 3
 }

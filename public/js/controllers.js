@@ -421,9 +421,11 @@ function DEListCtrl($scope, $http, $timeout, CdeFtSearch, $modal, $location) {
         });
     };
     
-    $http.get("/boards/" + $scope.user._id).then(function (response) {
-        $scope.boards = response.data;
-    }); 
+    if ($scope.user) {
+        $http.get("/boards/" + $scope.user._id).then(function (response) {
+            $scope.boards = response.data;
+        }); 
+    }
     
     $scope.view = function(cde) {
         $location.url("deview?cdeId=" + cde._id);

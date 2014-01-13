@@ -16,4 +16,5 @@ db.users.insert({username: 'user1', password: 'pass', quota: 1073741824, viewHis
 db.users.insert({username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'historyuser', password: 'pass', quota: 1073741824, viewHistory: []});
 

@@ -120,6 +120,7 @@ public class BoardTest extends NlmCdeBaseTest {
             if (boardName.equals(name)) {
                 findElement(By.id("removeBoard-" + i)).click();
                 findElement(By.id("confirmRemove-" + i)).click();
+                hangon();
                 Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(boardName) < 0);
                 return;
             }
@@ -139,6 +140,7 @@ public class BoardTest extends NlmCdeBaseTest {
         driver.get(baseUrl + "/");
         findElement(By.name("ftsearch")).sendKeys(cdeName);
         findElement(By.id("search.submit")).click();
+        Assert.assertTrue(textPresent(cdeName));
         findElement(By.id("list_name_0")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pin_0")));
         findElement(By.id("pin_0")).click();

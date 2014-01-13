@@ -4,80 +4,42 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
  *
  * @author ludetc
+ * 
  */
 public class CdeEditTest extends NlmCdeBaseTest {
 
+    @BeforeClass
+    public void login() {
+        loginAs(ctepCurator_username, ctepCurator_password);
+    }
+
+    @AfterClass
+    public void logMeOut() {
+        logout();
+    }
+
     @Test
-    public void comments() {
-        loginAs(test_username, test_password);
-        goToCdeByName("Hospital Confidential Institution Referred From");
-        findElement(By.linkText("Discussions")).click();
-        findElement(By.name("comment")).sendKeys("My First Comment!");
-        findElement(By.name("postComment")).click();
-        Assert.assertTrue(textPresent("Comment added"));
-        Assert.assertTrue(textPresent("testuser"));
-        Assert.assertTrue(textPresent("My First Comment!"));
-        findElement(By.name("comment")).sendKeys("another comment");
-        findElement(By.name("postComment")).click();
-        Assert.assertTrue(textPresent("Comment added"));
-        findElement(By.xpath("//div[3]/div[2]/div[2]/i")).click();
-        Assert.assertTrue(textPresent("Comment removed"));
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("another comment") < 0);
-        logout();
-    }
-
-    @Test(priority = 0)
-    public void addOrg() {
-        loginAs(nlm_username, nlm_password);
-        findElement(By.linkText("Account")).click();
-        findElement(By.linkText("Site Management")).click();
-        findElement(By.linkText("Organizations")).click();
-        findElement(By.name("newOrg.name")).sendKeys(test_reg_auth);
-        findElement(By.id("addOrg")).click();
-        logout();
-    }
-
-    @Test(dependsOnMethods = {"addOrg"})
-    public void promoteOrgAdmin() {
-        loginAs(nlm_username, nlm_password);
-        findElement(By.linkText("Account")).click();
-        findElement(By.linkText("Site Management")).click();
-        findElement(By.linkText("Organizations Admins")).click();
-        new Select(driver.findElement(By.name("admin.orgName"))).selectByVisibleText(test_reg_auth);
-        findElement(By.name("orgAdmin.username")).sendKeys(test_username);
-        findElement(By.id("addOrgAdmin")).click();
-        logout();
-        loginAs(test_username, test_password);
-        findElement(By.linkText("Create")).click();
-        findElement(By.linkText("CDE")).click();
-        // following will assert that test user was indeed promoted
-        new Select(driver.findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText(test_reg_auth);
-        logout();
-    }
-
-    @Test(dependsOnMethods = {"promoteOrgAdmin"})
     public void createCde() {
-        loginAs(test_username, test_password);
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
         findElement(By.name("cde.designation")).sendKeys("name of testuser CDE 1");
         findElement(By.name("cde.definition")).sendKeys("Definition for testUser CDE 1");
         findElement(By.name("cde.version")).sendKeys("1.0alpha1");
-        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText(test_reg_auth);
+        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
         findElement(By.id("cde.submit")).click();
         goToCdeByName("name of testuser CDE 1");
         Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
-        logout();
     }
 
     @Test
     public void createCdeSuggest() {
-        loginAs(ctepCurator_username, ctepCurator_password);
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
         // wait for page to load
@@ -86,12 +48,10 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("cde.designation")).sendKeys("Patient Name");
         Assert.assertTrue(textPresent("Possible Matches"));
         Assert.assertTrue(textPresent("CTEP -- Patient Name"));
-        logout();
     }
 
-    @Test(dependsOnMethods = {"createCde"})
+    @Test
     public void editCde() {
-        loginAs(test_username, test_password);
         goToCdeByName("name of testuser CDE 1");
         findElement(By.cssSelector("i.fa-edit")).click();
         findElement(By.xpath("//inline-edit/span/span[2]/input")).sendKeys("[name change number 1]");
@@ -115,7 +75,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("myUom"));
         // test that label and its value are aligned. 
         Assert.assertEquals(findElement(By.id("dt_createdBy")).getLocation().y, findElement(By.id("dd_createdBy")).getLocation().y);
-        logout();
     }
 
     @Test(dependsOnMethods = {"editCde"})
@@ -140,10 +99,11 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test
     public void editConcepts() {
-        loginAs(ctepCurator_username, ctepCurator_password);
+        String cdeName = "Patient Photograph Malignant";
         
-        goToCdeByName("Patient Photograph");
+        goToCdeByName(cdeName);
         findElement(By.linkText("Concepts")).click();
+
         findElement(By.id("addConcept")).click();
         modalHere();
         findElement(By.name("name")).sendKeys("DEC1");
@@ -172,7 +132,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("confirmSave")).click();
         modalGone();
 
-        goToCdeByName("Patient Photograph");
+        goToCdeByName(cdeName);
         findElement(By.linkText("Concepts")).click();
         Assert.assertTrue(textPresent("DEC_CODE_111"));
         Assert.assertTrue(textPresent("OC_CODE_111"));
@@ -187,12 +147,10 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("confirmSave")).click();
         modalGone();
         
-        goToCdeByName("Patient Photograph");
+        goToCdeByName(cdeName);
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("DEC1") < 0);
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("OC1") < 0);
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("PROP1") < 0);
-        
-        logout();
     }
 
 }

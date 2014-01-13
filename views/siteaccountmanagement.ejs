@@ -14,7 +14,7 @@
     <tab heading="Organizations">
         <div class="row-fluid" ng-repeat="c in orgs">
             <div class="span11">{{c.name}}</div>
-            <div class="span1"><i class="icon-trash" ng-click="removeOrg(c._id)"></i></div>
+            <div class="span1"><i class="fa fa-trash-o" ng-click="removeOrg(c._id)" id="removeOrg-{{$index}}"></i></div>
         </div>
         <div class="row-fluid input-prepend input-append">
             <input class="span10" type="text" name="newOrg.name" ng-model="newOrg.name"></input>

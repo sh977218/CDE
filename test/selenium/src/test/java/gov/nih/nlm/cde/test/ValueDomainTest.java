@@ -9,6 +9,8 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -17,9 +19,18 @@ import org.testng.annotations.Test;
  */
 public class ValueDomainTest extends NlmCdeBaseTest {
     
+    @BeforeClass
+    public void login() {
+        loginAs(ctepCurator_username, ctepCurator_password);
+    }
+
+    @AfterClass
+    public void logMeOut() {
+        logout();
+    }
+    
     @Test
     public void assignVsacId() {
-        loginAs(nlm_username, nlm_password);
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("No Value Set specified."));
@@ -38,7 +49,6 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("3");
         findElement(By.cssSelector("button.btn.btn-warning")).click();
-        logout();
     }
 
     @Test(dependsOnMethods = {"assignVsacId"})
@@ -54,7 +64,6 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     
     @Test
     public void changePermissibleValue() {
-        loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click(); 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pv-0']/inline-edit/span/span[1]/i")));
@@ -69,12 +78,10 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("added to pv"));
-        logout();
     }
     
     @Test(dependsOnMethods = {"assignVsacId"})
     public void linkPvToVsac() {
-        loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();   
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
@@ -92,7 +99,6 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         findElement(By.partialLinkText("Patient Ethnic Group Category")).click();
         Assert.assertTrue(textPresent("2135-2"));
-        logout();
     }
     
     @Test(dependsOnMethods = {"linkPvToVsac"})
@@ -109,7 +115,6 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     
     @Test(dependsOnMethods = {"assignVsacId"})
     public void visibilityOfPvLink() {
-        loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
         // following asserts
@@ -118,12 +123,10 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.linkText("Permissible Values")).click();
         // following asserts
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
-        logout();
     }
 
     @Test
     public void addRemovePv() {
-        loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Surgical Procedure Hand Laparoscopic Port Anatomic Site");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("Right Middle Abdomen"));
@@ -142,12 +145,10 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("New PV"));
         Assert.assertEquals(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Right Middle Abdomen"), -1);
-        logout();
     }
     
     @Test
     public void reOrderPv() {
-        loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Involved Organ Laterality Type");
         findElement(By.linkText("Permissible Values")).click();
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("pvCode-2"), "C25229"));
@@ -162,12 +163,10 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertEquals(findElement(By.id("pvCode-1")).getText(), "C25229");
         Assert.assertEquals(findElement(By.id("pvCode-7")).getText(), "C25594,C48046,C13717");
-        logout();
     }
     
     @Test
     public void randomDatatype() {
-        loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Axillary Surgery");
         findElement(By.linkText("Permissible Values")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));
@@ -181,7 +180,6 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Axillary Surgery");
         findElement(By.linkText("Permissible Values")).click();        
         Assert.assertTrue(textPresent("java.lang.Date"));
-        logout();
     }
     
 }
