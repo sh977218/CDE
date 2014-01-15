@@ -170,6 +170,10 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/login');
 };
 
+app.get('/gonowhere', function(req, res) {
+   res.send("<html><body>Nothing here</body></html>"); 
+});
+
 app.get('/', function(req, res) {
   res.render('index');
 });
@@ -427,7 +431,7 @@ app.get('/dataelement/:id', function(req, res) {
     cdesvc.show(req, res);
 });
 
-app.get('/dataelement/:uuid/:version', function(req, res) {
+app.get('/debyuuid/:uuid/:version', function(req, res) {
     mongo_data.deByUuidAndVersion(req.params.uuid, req.params.version, function(err, de) {
         res.send(de);
     });

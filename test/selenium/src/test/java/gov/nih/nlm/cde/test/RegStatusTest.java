@@ -58,8 +58,9 @@ public class RegStatusTest extends NlmCdeBaseTest {
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
         findElement(By.id("saveRegStatus")).click();
         modalGone();
-        driver.get(baseUrl + "/");
+        goHome();
         findElement(By.name("ftsearch")).sendKeys("Colitis");
+        findElement(By.id("search.submit")).click();
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Common Toxicity Criteria Adverse Event Colitis Grade") < 0);
         logout();
     }

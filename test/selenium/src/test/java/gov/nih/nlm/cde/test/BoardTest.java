@@ -132,13 +132,13 @@ public class BoardTest extends NlmCdeBaseTest {
     public void removeBoard() {
         createBoard("Remove me board", "Not a very useful board");
         removeBoard("Remove me board");
-        driver.get(baseUrl + "/");
+        goHome();
         findElement(By.linkText("My Boards")).click();
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Not a very useful") < 0);
     }
     
     private void pinTo(String cdeName, String boardName) {
-        driver.get(baseUrl + "/");
+        goHome();
         findElement(By.name("ftsearch")).sendKeys(cdeName);
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent(cdeName));
@@ -200,7 +200,7 @@ public class BoardTest extends NlmCdeBaseTest {
         createBoard(boardName, "test");
         pinTo(cdeName, boardName);
         
-        driver.get(baseUrl + "/");
+        goHome();
         findElement(By.name("ftsearch")).sendKeys(cdeName);
         findElement(By.id("search.submit")).click();
         findElement(By.id("list_name_0")).click();
@@ -232,7 +232,7 @@ public class BoardTest extends NlmCdeBaseTest {
     public void iHaveNoBoard() {
         String cdeName = "Specimen Array";
 
-        driver.get(baseUrl + "/");
+        goHome();
         findElement(By.name("ftsearch")).sendKeys(cdeName);
         findElement(By.id("search.submit")).click();
         findElement(By.partialLinkText(cdeName)).click();
@@ -256,7 +256,7 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.id("desc_input_0")).sendKeys(" -- Desc Edited");
         findElement(By.id("desc_confirm_0")).click();
         
-        driver.get(baseUrl + "/");
+        goHome();
         findElement(By.linkText("My Boards")).click();
         Assert.assertTrue(textPresent("-- Name Edited"));
         Assert.assertTrue(textPresent("-- Desc Edited"));

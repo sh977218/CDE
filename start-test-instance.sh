@@ -37,9 +37,10 @@ if [ "$curl_res" == "$target" ]
 then
     #groovy groovy/UploadCadsrForms.groovy --testMode &
     #
-#    gradle -b test/selenium/build.gradle -Dtest.single=CdeEditTest cleanTest test & 
-    gradle -b test/selenium/build.gradle cleanTest test & 
-    node app 
+#    gradle -b test/selenium/build.gradle -Dtest.single=ValueDomainTest cleanTest test & 
+    gradle -b test/selenium/build.gradle test & 
+    rm test-console.out
+    node app | test-console.out
 else
     echo "Not all documents indexed. Aborting"
     echo $curl_res

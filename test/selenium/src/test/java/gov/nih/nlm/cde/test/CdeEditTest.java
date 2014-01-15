@@ -20,6 +20,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         loginAs(ctepCurator_username, ctepCurator_password);
     }
 
+    // TODO I think I am using this annotation incorrectly
     @AfterClass
     public void logMeOut() {
         logout();
@@ -67,7 +68,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("This version number has already been used"));
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("2");
-        findElement(By.cssSelector("button.btn.btn-warning")).click();
+        findElement(By.id("confirmSave")).click();
         goToCdeByName("name of testuser CDE 1");
         Assert.assertTrue(textPresent("[name change number 1]"));
         Assert.assertTrue(textPresent("[def change number 1]"));

@@ -48,11 +48,9 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("This version number has already been used"));
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("3");
-        findElement(By.cssSelector("button.btn.btn-warning")).click();
-    }
-
-    @Test(dependsOnMethods = {"assignVsacId"})
-    public void vsacTable() {
+        findElement(By.id("confirmSave")).click();
+        modalGone();
+        
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("20121025"));
@@ -60,7 +58,55 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("CDCREC"));
         List<WebElement> vsacLines = driver.findElements(By.xpath("//tbody[@id='vsacTableBody']/tr"));
         Assert.assertEquals(vsacLines.size(), 2);
+        
+        goToCdeByName("Patient Ethnic Group Category");
+        findElement(By.linkText("Permissible Values")).click();   
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
+        findElement(By.xpath("//td[@id='pvName-1']/div/div[1]/i")).click();
+        findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys("o");
+        findElement(By.xpath("//td[@id = 'pvName-1']/div/div[2]//a")).click();
+        findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/i[1]")).click();
+        findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("version")).sendKeys("6");
+        findElement(By.cssSelector("button.btn.btn-warning")).click();
+        goHome();
+        findElement(By.name("ftsearch")).sendKeys("Patient Ethnic Group Category");
+        findElement(By.id("search.submit")).click();
+        findElement(By.partialLinkText("Patient Ethnic Group Category")).click();
+        Assert.assertTrue(textPresent("2135-2"));
+        
+        goToCdeByName("Patient Ethnic Group Category");
+        findElement(By.linkText("Permissible Values")).click(); 
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-2-warning")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-warning")));
+        
+        goToCdeByName("Patient Ethnic Group Category");
+        findElement(By.linkText("Permissible Values")).click();
+        // following asserts
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
+        goToCdeByName("Involved Organ Laterality Type");
+        findElement(By.linkText("Permissible Values")).click();
+        // following asserts
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
+        
     }
+
+//    @Test(dependsOnMethods = {"assignVsacId"})
+//    public void vsacTable() {
+//        goToCdeByName("Patient Ethnic Group Category");
+//        findElement(By.linkText("Permissible Values")).click();
+//        Assert.assertTrue(textPresent("20121025"));
+//        Assert.assertTrue(textPresent("2135-2"));
+//        Assert.assertTrue(textPresent("CDCREC"));
+//        List<WebElement> vsacLines = driver.findElements(By.xpath("//tbody[@id='vsacTableBody']/tr"));
+//        Assert.assertEquals(vsacLines.size(), 2);
+//    }
     
     @Test
     public void changePermissibleValue() {
@@ -80,50 +126,51 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("added to pv"));
     }
     
-    @Test(dependsOnMethods = {"assignVsacId"})
-    public void linkPvToVsac() {
-        goToCdeByName("Patient Ethnic Group Category");
-        findElement(By.linkText("Permissible Values")).click();   
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
-        findElement(By.xpath("//td[@id='pvName-1']/div/div[1]/i")).click();
-        findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys("o");
-        findElement(By.xpath("//td[@id = 'pvName-1']/div/div[2]//a")).click();
-        findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/i[1]")).click();
-        findElement(By.cssSelector("button.btn.btn-primary")).click();
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("6");
-        findElement(By.cssSelector("button.btn.btn-warning")).click();
-        driver.get(baseUrl + "/");
-        findElement(By.name("ftsearch")).sendKeys("Patient Ethnic Group Category");
-        findElement(By.id("search.submit")).click();
-        findElement(By.partialLinkText("Patient Ethnic Group Category")).click();
-        Assert.assertTrue(textPresent("2135-2"));
-    }
+//    @Test(dependsOnMethods = {"assignVsacId"})
+//    public void linkPvToVsac() {
+//        goToCdeByName("Patient Ethnic Group Category");
+//        findElement(By.linkText("Permissible Values")).click();   
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
+//        findElement(By.xpath("//td[@id='pvName-1']/div/div[1]/i")).click();
+//        findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys(Keys.BACK_SPACE);
+//        findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys("o");
+//        findElement(By.xpath("//td[@id = 'pvName-1']/div/div[2]//a")).click();
+//        findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/i[1]")).click();
+//        findElement(By.cssSelector("button.btn.btn-primary")).click();
+//        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+//        findElement(By.name("version")).sendKeys("6");
+//        findElement(By.cssSelector("button.btn.btn-warning")).click();
+//        driver.get(baseUrl + "/");
+//        findElement(By.name("ftsearch")).sendKeys("Patient Ethnic Group Category");
+//        findElement(By.id("search.submit")).click();
+//        findElement(By.partialLinkText("Patient Ethnic Group Category")).click();
+//        Assert.assertTrue(textPresent("2135-2"));
+//    }
     
-    @Test(dependsOnMethods = {"linkPvToVsac"})
-    public void pvValidators() {
-        goToCdeByName("Patient Ethnic Group Category");
-        findElement(By.linkText("Permissible Values")).click(); 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-valid")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-2-warning")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-valid")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-warning")));
-    }
+//    @Test(dependsOnMethods = {"linkPvToVsac"})
+//    public void pvValidators() {
+//        goToCdeByName("Patient Ethnic Group Category");
+//        findElement(By.linkText("Permissible Values")).click(); 
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-valid")));
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-2-warning")));
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-valid")));
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-warning")));
+//    }
+//    
     
-    @Test(dependsOnMethods = {"assignVsacId"})
-    public void visibilityOfPvLink() {
-        goToCdeByName("Patient Ethnic Group Category");
-        findElement(By.linkText("Permissible Values")).click();
-        // following asserts
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
-        goToCdeByName("Involved Organ Laterality Type");
-        findElement(By.linkText("Permissible Values")).click();
-        // following asserts
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
-    }
+//    @Test(dependsOnMethods = {"assignVsacId"})
+//    public void visibilityOfPvLink() {
+//        goToCdeByName("Patient Ethnic Group Category");
+//        findElement(By.linkText("Permissible Values")).click();
+//        // following asserts
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
+//        goToCdeByName("Involved Organ Laterality Type");
+//        findElement(By.linkText("Permissible Values")).click();
+//        // following asserts
+//        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
+//    }
 
     @Test
     public void addRemovePv() {

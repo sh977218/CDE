@@ -8,6 +8,7 @@ package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -20,8 +21,13 @@ public class UserTest extends NlmCdeBaseTest {
     
     @Test
     public void wrongLogin() {
-        driver.get(baseUrl + "/");
-        findElement(By.linkText("Log In")).click();
+        goHome();
+        try {
+            findElement(By.linkText("Log In")).click();
+        } catch (TimeoutException e) {
+            logout();
+            findElement(By.linkText("Log In")).click();            
+        }
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys("bad-username");
         findElement(By.id("passwd")).clear();

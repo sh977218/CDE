@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Assert;
 
+@Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
     
     protected static String baseUrl = "http://localhost:3001";
@@ -43,8 +44,9 @@ public class NlmCdeBaseTest {
     }
         
     protected void goToCdeByName(String name) {
-        driver.get(baseUrl + "/");
-        findElement(By.name("ftsearch")).sendKeys(name);
+        goHome();
+        findElement(By.id("ftsearch-input")).click();
+        findElement(By.id("ftsearch-input")).sendKeys(name);
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent(name));
         findElement(By.id("list_name_0")).click();
@@ -53,7 +55,7 @@ public class NlmCdeBaseTest {
     }
         
     protected void goToFormByName(String name) {
-        driver.get(baseUrl + "/");
+        goHome();
         findElement(By.id("formsLink")).click();
         findElement(By.name("search.name")).sendKeys(name);
         findElement(By.id("search.submit")).click();
@@ -107,14 +109,30 @@ public class NlmCdeBaseTest {
         return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) > 0;
     }
     
+    protected void goHome() {
+        driver.get(baseUrl + "/gonowhere");
+        driver.get(baseUrl + "/");
+        findElement(By.name("ftsearch"));
+    }
+    
     protected void logout() {
-        findElement(By.linkText("Account")).click();
-        findElement(By.linkText("Log Out")).click();
+        try {
+            findElement(By.linkText("Account")).click();
+            findElement(By.linkText("Log Out")).click();
+            findElement(By.linkText("Log In"));
+        } catch (TimeoutException e) {
+            
+        } 
     }
     
     protected void loginAs(String username, String password) {
-        driver.get(baseUrl + "/");
-        findElement(By.linkText("Log In")).click();
+        goHome();
+        try {
+            findElement(By.linkText("Log In")).click();
+        } catch (TimeoutException e) {
+            logout();
+            findElement(By.linkText("Log In")).click();            
+        }
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();

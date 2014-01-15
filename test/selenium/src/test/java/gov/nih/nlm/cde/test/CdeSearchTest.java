@@ -16,7 +16,6 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void cdeFullDetail() {
-        driver.get(baseUrl + "/");
         goToCdeByName("Genotype Therapy Basis Mutation");
         Assert.assertTrue(textPresent("Genotype Therapy Basis Mutation Analysis Indicator"));
         Assert.assertTrue(textPresent("3157849v1"));
@@ -48,19 +47,19 @@ public class CdeSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void stewardFacets() {
-        driver.get(baseUrl + "/");
+        goHome();
         Assert.assertTrue(textPresent("ccr (8)"));
     }
 
     @Test
     public void statusFacets() {
-        driver.get(baseUrl + "/");
+        goHome();
         Assert.assertTrue(textPresent("candidate ("));
     }
 
     @Test
     public void basicPagination() {
-        driver.get(baseUrl + "/");
+        goHome();
         WebElement pagElt = findElement(By.cssSelector("div.pagination"));
         findElement(By.linkText("10"));
         List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
@@ -84,7 +83,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void facets() {
-        driver.get(baseUrl + "/");
+        goHome();
         findElement(By.name("ftsearch")).sendKeys("Treatment");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("candidate (4)"));

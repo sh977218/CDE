@@ -421,7 +421,7 @@ function DEListCtrl($scope, $http, $timeout, CdeFtSearch, $modal, $location) {
         });
     };
     
-    if ($scope.user) {
+    if ($scope.user._id) {
         $http.get("/boards/" + $scope.user._id).then(function (response) {
             $scope.boards = response.data;
         }); 
@@ -808,23 +808,23 @@ function AuditCtrl($scope) {
     };    
 }
 
-function EditCtrl($scope, $location, $routeParams, DataElement) {
-    var self = this;
-
-    DataElement.get({cdeId: $routeParams.cdeId}, function(dataElement) {
-        self.original = dataElement;
-        $scope.dataElement = new DataElement(self.original);
-    });
- 
-    $scope.isClean = function() {
-        return angular.equals(self.original, $scope.dataElement);
-    };
-    
-    $scope.save = function() {
-        $scope.dataElement.$update({cdeId: $scope.dataElement._id});
-        $location.path('/');
-   };  
-}
+//function EditCtrl($scope, $location, $routeParams, DataElement) {
+//    var self = this;
+//
+//    DataElement.get({cdeId: $routeParams.cdeId}, function(dataElement) {
+//        self.original = dataElement;
+//        $scope.dataElement = new DataElement(self.original);
+//    });
+// 
+//    $scope.isClean = function() {
+//        return angular.equals(self.original, $scope.dataElement);
+//    };
+//    
+//    $scope.save = function() {
+//        $scope.dataElement.$update({cdeId: $scope.dataElement._id});
+//        $location.path('/');
+//   };  
+//}
 
 function CreateCdeCtrl($scope, $location, $timeout, DataElement, CdeList) {
     $scope.setActiveMenu('CREATECDE');
