@@ -40,6 +40,11 @@ exports.publicBoardsByDeUuid = function(uuid, callback) {
     });
 };
 
+exports.conceptSystem_autocomplete = function(system, callback) {
+    DataElement.distinct("classification.conceptSystem", {"classification.conceptSystem": new RegExp(system, 'i')}, function(err, systems) {
+        callback(systems);
+    }); 
+};
 
 exports.getFile = function(callback, res, id) {
     res.writeHead(200, { "Content-Type" : "image/png"});

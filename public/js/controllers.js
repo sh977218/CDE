@@ -1296,7 +1296,72 @@ function CreateFormCtrl($scope, $location, Form) {
     };     
  }
  
- function AttachmentsCtrl($scope, $rootScope, Attachment, DataElement) {     
+ function ClassificationCtrl($scope, $timeout, $modal, Classification) {
+    $scope.removeClassification = function(classif) {
+        Classification.remove({
+            classification: classif
+            , deId: $scope.cde._id 
+        }, 
+        function (res) {
+            $scope.cde = res;
+            $scope.message = "Classification Removed";
+            $timeout(function() {
+                delete $scope.message;
+            }, 2000);
+
+        });
+    };
+    
+    $scope.openAddClassificationModal = function () {
+        var modalInstance = $modal.open({
+          templateUrl: 'addClassificationModalContent.html',
+          controller: AddClassificationModalCtrl,
+          resolve: {
+          }
+        });
+
+        modalInstance.result.then(function (newClassification) {
+            Classification.add({
+                classification: newClassification
+                , deId: $scope.cde._id
+            }, function (res) {
+                $scope.message = "Classification Added";
+                $scope.cde.classification.push(newClassification);
+                $timeout(function() {
+                    delete $scope.message;
+                }, 2000);
+                $scope.cde = res;
+            });
+        });
+    };
+    
+ }
+ 
+ function AddClassificationModalCtrl($scope, $modalInstance, $http) {
+    $scope.classAutocomplete = function (viewValue) {
+        return $http.get("/autocomplete/classification/" + viewValue).then(function(response) { 
+            var table = [];
+            for (var i =0; i < response.data.length; i++) {
+                if (response.data[i].toLowerCase().indexOf(viewValue.toLowerCase()) !== -1) {
+                    table.push(response.data[i]);
+                }
+            }
+            return table;
+        }); 
+     };
+     
+
+    $scope.okCreate = function (classification) {
+      $modalInstance.close(classification);
+    };
+
+    $scope.cancelCreate = function () {
+      $modalInstance.dismiss('cancel');
+    };
+}
+
+ 
+ function AttachmentsCtrl($scope, $rootScope, Attachment) {     
     $scope.setFiles = function(element) {
         $scope.$apply(function($scope) {
           // Turn the FileList object into an Array

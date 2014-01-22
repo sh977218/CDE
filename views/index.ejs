@@ -22,9 +22,7 @@
                     <a class="brand" href="/">NLM CDEs</a>
                     <ul class="nav">
                         <li class="{{menuHome}}"><a href="/">CDEs</a></li>
-                        <li class="{{menuBoardList}}"><a href="#/boardList">Boards</a></li>
-                        <!--<li class="{{menuForm}}"><a id="formsLink" href="#/listforms">Forms</a></li>-->
-                        
+                        <!--<li class="{{menuForm}}"><a id="formsLink" href="#/listforms">Forms</a></li>-->                        
                         <li ng-show='isOrgCurator()' class="dropdown">    
                             <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Create <span class="caret"></span></a>
                             <ul class="dropdown-menu">
@@ -32,6 +30,7 @@
                                 <!--<li><a href="#/createform">Form</a></li>-->
                             </ul>
                         </li>       
+                        <li class="{{menuBoardList}}"><a href="#/boardList">Boards</a></li>
                         <li class="{{menuMyBoards}}" ng-show="user._id"><a href="#/myboards">My Boards</a></li>
                         <!--<li class="{{menuCart}}" ng-show='user._id'><a id="cartLink" href="#/cart">Cart ({{user.formCart.length}})</a></li>-->
                     </ul>

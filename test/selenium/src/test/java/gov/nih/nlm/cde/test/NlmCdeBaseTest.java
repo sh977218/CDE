@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.Assert;
+import org.testng.Assert;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -45,8 +45,9 @@ public class NlmCdeBaseTest {
         
     protected void goToCdeByName(String name) {
         goHome();
-        findElement(By.id("ftsearch-input")).click();
         findElement(By.id("ftsearch-input")).sendKeys(name);
+        // TODO. Selenium doesn't seem to always send keys. Don't know why. Maybe catch and retry?
+        Assert.assertEquals(findElement(By.id("ftsearch-input")).getAttribute("value"), name);
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent(name));
         findElement(By.id("list_name_0")).click();

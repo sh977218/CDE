@@ -641,6 +641,12 @@ app.get('/autocomplete/form', function(req, res) {
     return cdesvc.name_autocomplete_form(req, res);
 });
 
+app.get('/autocomplete/classification/:conceptSystem', function (req, res) {
+    mongo_data.conceptSystem_autocomplete(req.params.conceptSystem, function (result) {
+        res.send(result);
+    });
+});
+
 app.get('/cdediff/:deId', function(req, res) {
    return cdesvc.diff(req, res); 
 });
@@ -682,6 +688,68 @@ app.post('/addAttachmentToCde', function(req, res) {
     }
 });
 
+app.post('/addClassification', function(req, res) {
+    if (req.isAuthenticated()) {
+        mongo_data.cdeById(req.body.deId, function (err, de) {
+            if (err) {
+                res.send("Data Element does not exist.");
+            }
+            if (!req.user 
+                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
+                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
+                  ) {
+                res.send("You do not own this data element.");
+            } else {
+                de.classification.push(req.body.classification);
+                return de.save(function(err) {
+                    if (err) {
+                        res.send("error: " + err);
+                    } else {
+                        res.send(de);
+                    }
+                });
+            }
+        });
+    } else {
+        res.send("You are not authorized.");                   
+    }
+});
+
+
+app.post('/removeClassification', function(req, res) {
+    if (req.isAuthenticated()) {
+        mongo_data.cdeById(req.body.deId, function (err, de) {
+            if (err) {
+                res.send("Data Element does not exist.");
+            }
+            if (!req.user 
+                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
+                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
+                  ) {
+                res.send("You do not own this data element.");
+            } else {
+                var toRemove = req.body.classification;
+                for (var i = 0; i < de.classification.length; i++) {
+                    if (de.classification[i].conceptSystem === toRemove.conceptSystem
+                            && de.classification[i].concept === toRemove.concept) {
+                        de.classification.splice(i, 1);
+                        return de.save(function(err) {
+                            if (err) {
+                                res.send("error: " + err);
+                            } else {
+                                res.send(de);
+                            }
+                        });
+                    }
+                }
+                res.send("Not found.");
+            }
+        });
+    } else {
+        res.send("You are not authorized.");                   
+    }
+});
+
 app.post('/removeAttachment', function(req, res) {
     if (req.isAuthenticated()) {
         mongo_data.cdeById(req.body.deId, function (err, de) {
@@ -709,6 +777,8 @@ app.post('/removeAttachment', function(req, res) {
         res.send("You are not authorized.");                   
     }
 });
+
+
 
 app.post('/setAttachmentDefault', function(req, res) {
     if (req.isAuthenticated()) {
