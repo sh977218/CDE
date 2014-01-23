@@ -58,6 +58,16 @@ angular.module('resources', ['ngResource']).
           }
         };
     })
+    .factory("UsedBy", function($http) {
+        return {
+          remove: function(dat, success, error) {
+              $http.post('/removeUsedBy', dat).success(success).error(error);
+          }
+          , add :function(dat, success, error) {
+              $http.post('/addUsedBy', dat).success(success).error(error);
+          }
+        };
+    })
     .factory("Comment", function($http) {
         return {
           addComment: function(comment, success, error) {

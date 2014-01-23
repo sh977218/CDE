@@ -1334,7 +1334,6 @@ function CreateFormCtrl($scope, $location, Form) {
             });
         });
     };
-    
  }
  
  function AddClassificationModalCtrl($scope, $modalInstance, $http) {
@@ -1350,7 +1349,6 @@ function CreateFormCtrl($scope, $location, Form) {
         }); 
      };
      
-
     $scope.okCreate = function (classification) {
       $modalInstance.close(classification);
     };
@@ -1360,8 +1358,63 @@ function CreateFormCtrl($scope, $location, Form) {
     };
 }
 
+ function UsedByCtrl($scope, $timeout, $modal, UsedBy) {
+    $scope.removeUsedBy = function(usedBy) {
+        UsedBy.remove({
+            usedBy: usedBy
+            , deId: $scope.cde._id 
+        }, 
+        function (res) {
+            $scope.cde = res;
+            $scope.message = "Usage Removed";
+            $timeout(function() {
+                delete $scope.message;
+            }, 2000);
+
+        });
+    };
+    
+    $scope.openAddUsedByModal = function () {
+        var modalInstance = $modal.open({
+          templateUrl: 'addUsedByModalContent.html',
+          controller: AddUsedByModalCtrl,
+          resolve: {
+          }
+        });
+
+        modalInstance.result.then(function (newUsedBy) {
+            UsedBy.add({
+                usedBy: newUsedBy
+                , deId: $scope.cde._id
+            }, function (res) {
+                $scope.message = "Usage Added";
+                $scope.cde.usedByOrgs.push(newUsedBy);
+                $timeout(function() {
+                    delete $scope.message;
+                }, 2000);
+                $scope.cde = res;
+            });
+        });
+    };
+ }
  
- function AttachmentsCtrl($scope, $rootScope, Attachment) {     
+ function AddUsedByModalCtrl($scope, $modalInstance, $http) {
+    $scope.orgAutocomplete = function (viewValue) {
+        return $http.get("/autocomplete/org/" + viewValue).then(function(response) { 
+            return response.data;
+        }); 
+     };     
+
+    $scope.okCreate = function (classification) {
+      $modalInstance.close(classification);
+    };
+
+    $scope.cancelCreate = function () {
+      $modalInstance.dismiss('cancel');
+    };
+}
+ 
+function AttachmentsCtrl($scope, $rootScope, Attachment) {     
     $scope.setFiles = function(element) {
         $scope.$apply(function($scope) {
           // Turn the FileList object into an Array

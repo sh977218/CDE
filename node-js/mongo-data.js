@@ -46,6 +46,12 @@ exports.conceptSystem_autocomplete = function(system, callback) {
     }); 
 };
 
+exports.org_autocomplete = function(name, callback) {
+    Org.find({"name": new RegExp(name, 'i')}, function(err, orgs) {
+        callback(orgs);
+    }); 
+};
+
 exports.getFile = function(callback, res, id) {
     res.writeHead(200, { "Content-Type" : "image/png"});
     gfs.createReadStream({ _id: id }).pipe(res);

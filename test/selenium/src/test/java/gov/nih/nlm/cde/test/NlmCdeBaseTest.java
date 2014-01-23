@@ -35,7 +35,7 @@ public class NlmCdeBaseTest {
         driver = new ChromeDriver();
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        wait = new WebDriverWait(driver, 5, 200);
+        wait = new WebDriverWait(driver, 8, 200);
     }
     
     public void loginAsNlm() {

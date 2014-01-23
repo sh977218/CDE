@@ -22,6 +22,7 @@ db.once('open', function callback () {
 var schemas = require('../node-js/schemas');
 
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
+var Org = mongoose.model('Org', schemas.orgSchema);
 
 fs.readFile(process.argv[2], function(err, data) {
     parser.parseString(data, function (err, result) {
@@ -105,10 +106,14 @@ fs.readFile(process.argv[2], function(err, data) {
             newDE.classification.push({conceptSystem: csi.ClassificationScheme[0].PreferredName, concept: csi.ClassificationSchemeItemName});
         }
             
-//        for (var ani in cadsrDE.ALTERNATENAMELIST.ALTERNATENAMELIST_ITEM) {
-//            
-//        }
-
+        newDE.usedByOrgs = [];    
+        for (var ani in cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM) {
+            var an = cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM[ani];
+            if (an.AlternateNameType == "USED_BY") {
+                newDE.usedByOrgs.push(an.AlternateName);
+            }
+        }
+        
 //        console.log(util.inspect(newDE));
         
         newDE.save(function (err, newDE) {

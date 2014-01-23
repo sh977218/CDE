@@ -2,6 +2,7 @@
 nbproject
 node_modules
 test/selenium/.gradle
+test/selenium/*.png
 
 ## Secret Config Files
 envconfig.js

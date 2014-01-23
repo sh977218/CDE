@@ -14,6 +14,12 @@
         <link href="assets/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
         <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+
+        <!-- fixes an issue in bootstrap #1078 -->
+        <style>
+            .modal-body{overflow-y: inherit;}
+        </style>
+
     </head>
     <body>
         <div ng-controller="MainCtrl">
