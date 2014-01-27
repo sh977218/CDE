@@ -441,13 +441,11 @@ app.get('/debyuuid/:uuid/:version', function(req, res) {
 // SECURITY LAMENESS HERE
 // Check the following:
 // 1. You are org owner
-// 2. If you are not nlm admin, remove workflow status from json obj so you can't update it.
+// 2. Only site admin can update reg status to standard & pref std.
+// 3. If status is already std + above, only site admin can update
+// Move all this validation logic to cdesvc. 
 app.post('/dataelement', function (req, res) {
-    if (req.isAuthenticated()) {
-        return cdesvc.save(req, res);
-    } else {
-        res.send("You are not authorized to do this.");
-    }
+    return cdesvc.save(req, res);
 });
 
 app.get('/cdesinform/:formId', function(req, res) {
@@ -657,12 +655,6 @@ app.get('/cdediff/:deId', function(req, res) {
    return cdesvc.diff(req, res); 
 });
 
-//app.get('/classificationtree', function(req, res) {
-//    mongo_data.classificationTree(function(tree) {
-//       res.send(tree); 
-//    });
-//});
-
 app.get('/classificationSystems', function(req, res) {
    return mongo_data.classificationSystems(function (result) {
        res.send(result);
@@ -845,8 +837,6 @@ app.post('/removeAttachment', function(req, res) {
         res.send("You are not authorized.");                   
     }
 });
-
-
 
 app.post('/setAttachmentDefault', function(req, res) {
     if (req.isAuthenticated()) {

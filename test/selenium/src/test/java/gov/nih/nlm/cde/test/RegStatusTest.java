@@ -1,6 +1,8 @@
 package gov.nih.nlm.cde.test;
 
+import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -62,6 +64,24 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys("Colitis");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Common Toxicity Criteria Adverse Event Colitis Grade") < 0);
+        logout();
+    }
+    
+    @Test
+    public void adminCantEditStandardCde() {
+        String cdeName = "Patient Visual Change";
+        loginAs(nlm_username, nlm_password);
+        goToCdeByName(cdeName);
+        findElement(By.id("editStatus")).click();
+        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
+        findElement(By.id("saveRegStatus")).click();
+        modalGone();
+        logout();
+        
+        loginAs(cabigAdmin_username, cabigAdmin_password);
+        goToCdeByName(cdeName);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("i.fa-edit")));
+        
         logout();
     }
     

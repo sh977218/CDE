@@ -1006,11 +1006,16 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
         }
         if ($scope.user.siteAdmin) {
             return true;
-        }        
-        if ($scope.initialized && $scope.myOrgs) {
-            return $scope.myOrgs.indexOf(cde.stewardOrg.name) > -1;
-        } else {
-            return false;
+        } else {   
+            if ($scope.initialized && 
+                    ((cde.registrationState.registrationStatus === "Standard" || cde.registrationState.registrationStatus === "Standard") )) {
+                return false;
+            }
+            if ($scope.initialized && $scope.myOrgs) {
+                return $scope.myOrgs.indexOf(cde.stewardOrg.name) > -1;
+            } else {
+                return false;
+            }
         }
     };
    
