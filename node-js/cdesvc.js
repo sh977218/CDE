@@ -22,8 +22,10 @@ exports.elasticsearch = function(req, res) {
                 bool: {
                     should: {
                     function_score: {
-                        script_score: {
-                            script: "(6 - doc[\"registrationState.registrationStatusSortOrder\"].value) / 6.0"
+                        boost_mode: "replace"
+                        , script_score: {
+//                            script: "(6 - doc[\"registrationState.registrationStatusSortOrder\"].value) / 6.0"
+                            script: "_score + (6 - doc[\"registrationState.registrationStatusSortOrder\"].value)"
                         }
                         , query: {
                             query_string: {
