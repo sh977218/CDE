@@ -23,6 +23,10 @@ dependencies {
 
 test {
     useTestNG()
+
+     beforeTest { descriptor ->
+         logger.lifecycle("Running test: " + descriptor)
+     }
     
     maxParallelForks = 4
 }

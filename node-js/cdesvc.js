@@ -222,25 +222,31 @@ exports.linktovsac = function(req, res) {
 
 exports.save = function (req, res) {
     if (req.isAuthenticated()) {
-        return mongo_data.cdeById(req.body._id, function(err, cde) {
-            if (cde.archived === true) {
-                return res.send("Element is archived.");
-            }
-            if (req.user.orgCurator.indexOf(cde.stewardOrg.name) < 0 
-                    && req.user.orgAdmin.indexOf(cde.stewardOrg.name) < 0 
-                    && !req.user.siteAdmin) {
-                res.send("not authorized");
-            } else {
-                if ((cde.registrationState.registrationStatus === "Standard" || cde.registrationState.registrationStatus === "Preferred Standard")
-                        && !req.user.siteAdmin) {
-                    res.send("This record is already standard.");
-                } else {
-                    return mongo_data.saveCde(req, function(err, savedCde) {
-                        res.send(savedCde);            
-                    });
+        if (!req.body._id) {
+            return mongo_data.saveCde(req, function(err, savedCde) {
+                res.send(savedCde);
+            });
+        } else {
+            return mongo_data.cdeById(req.body._id, function(err, cde) {
+                if (cde.archived === true) {
+                    return res.send("Element is archived.");
                 }
-            }
-        });
+                if (req.user.orgCurator.indexOf(cde.stewardOrg.name) < 0 
+                        && req.user.orgAdmin.indexOf(cde.stewardOrg.name) < 0 
+                        && !req.user.siteAdmin) {
+                    res.send("not authorized");
+                } else {
+                    if ((cde.registrationState.registrationStatus === "Standard" || cde.registrationState.registrationStatus === "Preferred Standard")
+                            && !req.user.siteAdmin) {
+                        res.send("This record is already standard.");
+                    } else {
+                        return mongo_data.saveCde(req, function(err, savedCde) {
+                            res.send(savedCde);            
+                        });
+                    }
+                }
+            });
+        }
     } else {
         res.send("You are not authorized to do this.");
     }

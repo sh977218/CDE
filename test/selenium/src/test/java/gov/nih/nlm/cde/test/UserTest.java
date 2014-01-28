@@ -50,7 +50,7 @@ public class UserTest extends NlmCdeBaseTest {
 
     @Test
     public void regUserCannotCreate() {
-        loginAs("user1", "pass");
+        loginAs("reguser", "pass");
         findElement(By.linkText("Account"));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Create")));
         logout();

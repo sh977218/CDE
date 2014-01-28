@@ -24,7 +24,7 @@
                             <i class="fa fa-times" ng-click="cancelSave(namePair)"></i>
                         </span>       
                         <span ng-switch-default> 
-                            <i class="fa fa-pencil" ng-click="namePair.editMode=true" id="name_edit_{{$index}}" ng-show="isAllowed(cde)"></i> {{namePair.designation | placeholdEmpty}} 
+                            <i class="fa fa-edit" ng-click="namePair.editMode=true" id="name_edit_{{$index}}" ng-show="isAllowed(cde)"></i> {{namePair.designation | placeholdEmpty}} 
                         </span>
                     </span>
                 </dd>
@@ -37,7 +37,7 @@
                            <i class="fa fa-times" ng-click="cancelSave(namePair)"></i>
                         </div>
                         <div ng-switch-default>
-                           <i class="fa fa-pencil" ng-click="namePair.editMode = true" id="def_edit_{{$index}}" ng-show="isAllowed(cde)"></i>&nbsp;<span ng-bind-html="namePair.definition"/>
+                           <i class="fa fa-edit" ng-click="namePair.editMode = true" id="def_edit_{{$index}}" ng-show="isAllowed(cde)"></i>&nbsp;<span ng-bind-html="namePair.definition"/>
                         </div>
                     </div>
                 </dd>
@@ -50,7 +50,7 @@
                             <i class="fa fa-times" ng-click="cancelSave(namePair)"></i>
                         </span>       
                         <span ng-switch-default> 
-                            <i class="fa fa-pencil" ng-click="namePair.editMode=true" id="context_edit_{{$index}}" ng-show="isAllowed(cde)"></i> {{namePair.context.contextName | placeholdEmpty}} 
+                            <i class="fa fa-edit" ng-click="namePair.editMode=true" id="context_edit_{{$index}}" ng-show="isAllowed(cde)"></i> {{namePair.context.contextName | placeholdEmpty}} 
                         </span>
                     </span>
                 </dd>

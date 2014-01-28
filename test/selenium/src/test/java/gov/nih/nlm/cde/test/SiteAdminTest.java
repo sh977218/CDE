@@ -28,8 +28,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
     @AfterClass
     public void logMeOut() {
         logout();
-    }
-    
+    }  
     
     private void addOrg(String orgName) {
         findElement(By.linkText("Account")).click();
@@ -44,8 +43,16 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.linkText("Account")).click();
         findElement(By.linkText("Site Management")).click();
         findElement(By.linkText("Organizations")).click();
-
-        findElement(By.id("removeOrg-0")).click();
+        
+        int length = driver.findElements(By.cssSelector("i.fa-trash-o")).size();
+        for (int i = 0; i < length; i++) {
+            String name = findElement(By.id("orgName-" + i)).getText();
+            if (orgName.equals(name)) {
+                findElement(By.id("removeOrg-" + i)).click();     
+                i = length;
+            }
+        }
+        
         Assert.assertTrue(textPresent("Org Removed"));
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(orgName) < 0);
     }
@@ -55,8 +62,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         String testOrg = "New Test Org";
 
         addOrg(testOrg);
-        removeOrg(testOrg);
-        
+        removeOrg(testOrg);    
     }
 
     @Test

@@ -13,7 +13,7 @@
     </tab>
     <tab heading="Organizations">
         <div class="row-fluid" ng-repeat="c in orgs">
-            <div class="span11">{{c.name}}</div>
+            <div class="span11" id="orgName-{{$index}}">{{c.name}}</div>
             <div class="span1"><i class="fa fa-trash-o" ng-click="removeOrg(c._id)" id="removeOrg-{{$index}}"></i></div>
         </div>
         <div class="row-fluid input-prepend input-append">

@@ -1,7 +1,5 @@
 package gov.nih.nlm.cde.test;
 
-
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ctepCurator_username;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -26,8 +24,6 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         logout();
     }
 
-    
-    
     @Test
     public void orgAdminCanEditHisCdes() {
         goToCdeByName("Cervical Tumor Clinical T Stage");
@@ -58,7 +54,21 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         findElement(By.id("addOrgAdmin")).click();
         Assert.assertTrue(textPresent("Organization Administrator Added"));
         Assert.assertTrue(textPresent("user1"));
-        findElement(By.xpath("//div[2]/div[2]/i")).click();
+
+        int orgLength = driver.findElements(By.xpath("//div[starts-with(@id, 'orgAdmin-')]")).size();
+        for (int i = 0; i < orgLength; i++) {
+            if ("caBIG".equals(findElement(By.xpath("//div[@id='orgAdmin-" + i + "']")).getText())) {
+                int userLength = driver.findElements(By.xpath("//div[starts-with(@id, 'orgAdminUsername-" + i + "-')]")).size();
+                for (int j = 0; j < userLength; j++) {
+                    if ("user1".equals(findElement(By.xpath("//div[@id='orgAdminUsername-" + i + "-" + j + "']")).getText())) {
+                        findElement(By.xpath("//i[@id='orgAdminTrash-" + i + "-" + j + "']")).click();
+                    }
+                }
+            }
+        }
+
+        
+//        findElement(By.xpath("//div[2]/div[2]/i")).click();
         Assert.assertTrue(textPresent("Organization Administrator Removed"));
         Assert.assertTrue(findElement(By.cssSelector("BODY")).getText().indexOf("user1") < 0);
     }

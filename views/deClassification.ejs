@@ -6,14 +6,14 @@
 </div>
 </div>
 
-<button class="btn btn-small" value="add" ng-click="openAddClassificationModal()" id="addClassification" ng-show="isAllowed(cde)"><i class="fa fa-plus"> </i> Add Classification</button>
+<button class="btn btn-small" value="add" ng-click="openAddClassificationModal()" id="addClassification" ng-show="isAllowedNonCuration(cde)"><i class="fa fa-plus"> </i> Add Classification</button>
 
 <dl id="repeatCs">
 <div ng-repeat="conceptSystemPerConcept in classificationToFilter() | filter:filterConceptSystemClassification">
     <dt>{{conceptSystemPerConcept.conceptSystem}}</dt>
     <dd>
         <div ng-repeat="class in cde.classification | filter:isInConceptSystem(conceptSystemPerConcept.conceptSystem)">
-            <span ng-show="isAllowed(cde)">
+            <span ng-show="isAllowedNonCuration(cde)">
                 <span ng-show="showDelete">
                     Confirm Delete <i class="icon-check" ng-click="showDelete = false; removeClassification(class)" id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}"></i>
                     <i class="fa fa-trash-o" ng-click="showDelete = false"></i>

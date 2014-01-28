@@ -51,7 +51,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         logout();
     }
     
-    @Test
+//    @Test
     public void retire() {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Colitis Grade");
@@ -80,7 +80,46 @@ public class RegStatusTest extends NlmCdeBaseTest {
         
         loginAs(cabigAdmin_username, cabigAdmin_password);
         goToCdeByName(cdeName);
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("i.fa-edit")));
+        // CDE is Standard.
+        // Can't edit name, def or status
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_def']//i[@class='fa fa-edit']")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_uom']//i[@class='fa fa-edit']")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_status']//i[@class='fa fa-edit']")));
+
+        // Can't edit Value Type or add / remove pv
+        findElement(By.linkText("Permissible Values")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_valueType']//i[@class='fa fa-edit']")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("pvRemove-1")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("pvUp-1")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("pvDown-1")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//td[@id='pv-1']//i[@class='fa fa-edit']")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Add Permissible Value")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Update O.I.D")));
+
+        // Can't edit naming
+        findElement(By.linkText("Naming")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_name_0']//i[@class='fa fa-edit']")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_def_0']//i[@class='fa fa-edit']")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_context_0']//i[@class='fa fa-edit']")));
+
+        // Can edit classifications
+        findElement(By.linkText("Classification")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addClassification")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("removeClassification-0-0")));
+
+        // Can edit Usage
+        findElement(By.linkText("Usage")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addUsedBy")));
+        
+        // Can't edit Concepts
+        findElement(By.linkText("Concepts")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("ocConceptRemove-0")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("propConceptRemove-0")));
+
+        // Can add Attachments
+        findElement(By.linkText("Attachments")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("i.icon-upload")));
         
         logout();
     }

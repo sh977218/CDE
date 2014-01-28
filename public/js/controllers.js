@@ -3,10 +3,21 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         Myself.get(function(u) {
             $scope.user = u;
             $scope.setMyOrgs(); 
+            $scope.loadBoards();
             callback();
         });
     };
     
+    $scope.boards = [];
+
+    $scope.loadBoards = function() {
+        if ($scope.user && $scope.user._id) {
+            $http.get("/boards/" + $scope.user._id).then(function (response) {
+                $scope.boards = response.data;
+            }); 
+        }        
+    }
+
     $scope.loadUser(function(){});    
     
     $scope.isOrgCurator = function() {        
@@ -397,7 +408,6 @@ function DEListCtrl($scope, $http, $timeout, CdeFtSearch, $modal, $location) {
     $scope.pageSize = 10;
 
     $scope.search = {name: ""};
-    $scope.boards = [];
     
     $scope.openPinModal = function (cde) {
         var modalInstance = $modal.open({
@@ -420,13 +430,7 @@ function DEListCtrl($scope, $http, $timeout, CdeFtSearch, $modal, $location) {
         }, function () {
         });
     };
-    
-    if ($scope.user._id) {
-        $http.get("/boards/" + $scope.user._id).then(function (response) {
-            $scope.boards = response.data;
-        }); 
-    }
-    
+        
     $scope.view = function(cde) {
         $location.url("deview?cdeId=" + cde._id);
     };
@@ -699,6 +703,10 @@ function SaveCdeCtrl($scope, $modal, $http, $timeout) {
       $scope.stageCde($scope.cde);
       namePair.editMode = false;
     };
+    
+    $scope.cancelSave = function(namePair) {
+        namePair.editMode = false;
+    }
     
     $scope.removeNamePair = function(index) {
         $scope.cde.naming.splice(index, 1);
@@ -999,6 +1007,22 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
             $scope.reload($scope.cde._id);
         });
     };
+    
+    $scope.isAllowedNonCuration = function (cde) {
+        if ($scope.initialized && cde.archived) {
+            return false;
+        }
+        if ($scope.user.siteAdmin) {
+            return true;
+        } else {   
+            if ($scope.initialized && $scope.myOrgs) {
+                return $scope.myOrgs.indexOf(cde.stewardOrg.name) > -1;
+            } else {
+                return false;
+            }
+        }
+
+    }
     
     $scope.isAllowed = function (cde) {
         if ($scope.initialized && cde.archived) {

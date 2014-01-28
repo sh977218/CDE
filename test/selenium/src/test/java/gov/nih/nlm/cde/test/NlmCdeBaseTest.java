@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+import java.util.Arrays;
 import org.testng.annotations.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.*;
@@ -7,6 +8,7 @@ import org.openqa.selenium.support.ui.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
 
 @Listeners({ScreenShotListener.class})
@@ -32,7 +34,9 @@ public class NlmCdeBaseTest {
     @BeforeTest
     public void setBaseUrl() {
         System.setProperty("webdriver.chrome.driver", "./chromedriver");
-        driver = new ChromeDriver();
+        DesiredCapabilities caps = DesiredCapabilities.chrome();
+        caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
+        driver = new ChromeDriver(caps);
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, 8, 200);
