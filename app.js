@@ -402,10 +402,9 @@ app.post('/removeComment', function(req, res) {
                 res.send("Data Element does not exist.");
             }
             for (var c in de.comments) {
-                if (de.comments[c]._id == req.body.commentId) {
-                    if (de.comments[c].user != req.user._id) {
-                        res.send("You can only remove comments you own.");
-                    } else {
+                var comment = de.comments[c];
+                if (comment._id == req.body.commentId) {
+                    if (req.user._id == comment.user || (req.user.orgAdmin.indexOf(de.stewardOrg.name) > -1)) {
                         de.comments.splice(c, 1);
                         de.save(function (err) {
                            if (err) {
@@ -413,7 +412,9 @@ app.post('/removeComment', function(req, res) {
                            } else {
                                res.send("Comment removed");
                            }
-                        });
+                        });                        
+                    } else {
+                        res.send("You can only remove comments you own.");
                     }
                 }
             }

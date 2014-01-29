@@ -36,6 +36,31 @@ public class CommentTest extends NlmCdeBaseTest {
         logout();
     }
 
+    @Test
+    public void adminCanRemoveComment() {
+        String commentText = "Inappropriate Comment";
+        
+        loginAs(test_username, test_password);
+        goToCdeByName("Genbank");
+        findElement(By.linkText("Discussions")).click();
+        findElement(By.name("comment")).sendKeys(commentText);
+        findElement(By.name("postComment")).click();
+        Assert.assertTrue(textPresent("Comment added"));
+        logout();
+        loginAs(cabigAdmin_username, cabigAdmin_password);
+        goToCdeByName("Genbank");
+        findElement(By.linkText("Discussions")).click();
+        int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
+        for (int i = 0; i < length; i++) {
+            if (commentText.equals(findElement(By.id("commentText-" + i)).getText())) {
+                findElement(By.id("removeComment-" + i)).click();
+                i = length;
+                Assert.assertTrue(textPresent("Comment removed"));
+                Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(commentText) < 0);
+            }
+        }
+        logout();
+    }
 
     
 }

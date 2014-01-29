@@ -935,7 +935,7 @@ function ListFormsCtrl($scope, FormList, AddToCart, RemoveFromCart, $http) {
     } ;    
 }
 
-function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, PriorCdes, CdeDiff) {
+function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes, CdeDiff) {
     $scope.initialized = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;
@@ -984,30 +984,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
         };
     };
 
-    $scope.addComment = function() {        
-        Comment.addComment({
-            comment: $scope.comment.content
-            , deId: $scope.cde._id
-            },
-            function(res) {
-                  $scope.message = res;
-                  $scope.reload($scope.cde._id);
-            }
-        );
-        $scope.comment.content = "";
-    };
-    
-    $scope.removeComment = function(commentId) {
-        Comment.removeComment({
-            commentId: commentId
-            , deId: $scope.cde._id 
-        }, 
-        function (res) {
-            $scope.message = res;
-            $scope.reload($scope.cde._id);
-        });
-    };
-    
     $scope.isAllowedNonCuration = function (cde) {
         if ($scope.initialized && cde.archived) {
             return false;
@@ -1172,6 +1148,37 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, Comment, 
     $scope.loadBoards = function() {
         $http.get("/deBoards/" + $scope.cde.uuid).then(function(response) {
             $scope.boards = response.data;
+        });
+    };
+}
+
+function CommentsCtrl($scope, Comment) {
+    
+    $scope.canRemoveComment = function(com) {
+        return (($scope.user._id) && ($scope.user._id == com.user || ($scope.user.orgAdmin.indexOf($scope.cde.stewardOrg.name) > -1)));
+    } 
+    
+    $scope.addComment = function() {        
+        Comment.addComment({
+            comment: $scope.comment.content
+            , deId: $scope.cde._id
+            },
+            function(res) {
+                  $scope.message = res;
+                  $scope.reload($scope.cde._id);
+            }
+        );
+        $scope.comment.content = "";
+    };
+    
+    $scope.removeComment = function(commentId) {
+        Comment.removeComment({
+            commentId: commentId
+            , deId: $scope.cde._id 
+        }, 
+        function (res) {
+            $scope.message = res;
+            $scope.reload($scope.cde._id);
         });
     };
 }
