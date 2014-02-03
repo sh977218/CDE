@@ -14,6 +14,7 @@ var permissibleValueSchema = mongoose.Schema({
     , valueMeaningName: String
     , valueMeaningCode: String
     , codeSystemName: String
+    , codeSystemVersion: String
 }, {_id: false});
 
 var commentSchema = mongoose.Schema({
