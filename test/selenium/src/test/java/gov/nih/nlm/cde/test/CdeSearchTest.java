@@ -108,5 +108,26 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("6")));
     }
     
+    @Test
+    public void facetPagination() {
+        goHome();
+        findElement(By.id("li-blank-ctep")).click();
+        // next line should make it wait.
+        findElement(By.cssSelector("i.fa-check-square-o"));
+        for (WebElement elt : driver.findElements(By.cssSelector("a.accordion-toggle"))) {
+            Assert.assertTrue(elt.getText().startsWith("CTEP"));
+        }
+        findElement(By.linkText("Next")).click();
+        hangon();
+        findElement(By.cssSelector("i.fa-check-square-o"));
+        for (WebElement elt : driver.findElements(By.cssSelector("a.accordion-toggle"))) {
+            Assert.assertTrue(elt.getText().startsWith("CTEP"));
+        }
+        findElement(By.name("ftsearch")).sendKeys("Kinetics");
+        findElement(By.id("search.submit")).click();
+        Assert.assertTrue(textPresent("DCE-MRI Kinetics T1 Mapping Quality Type"));
+
+    }
+    
     
 }

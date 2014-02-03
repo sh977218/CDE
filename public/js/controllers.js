@@ -457,7 +457,7 @@ function DEListCtrl($scope, $http, $timeout, CdeFtSearch, $modal, $location) {
     };
        
     $scope.facetSearch = function() {
-        var filter = {
+        $scope.filter = {
             and: [
                 {terms: {
                         "stewardOrg.name": []
@@ -474,27 +474,27 @@ function DEListCtrl($scope, $http, $timeout, CdeFtSearch, $modal, $location) {
             for (var i = 0; i < $scope.facets.orgs.terms.length; i++) {
                 var t = $scope.facets.orgs.terms[i];
                 if (t.selected) {
-                    filter.and[0].terms["stewardOrg.name"].push(t.term);
+                    $scope.filter.and[0].terms["stewardOrg.name"].push(t.term);
                 }
             }
         
             for (var i = 0; i < $scope.facets.statuses.terms.length; i++) {
                 var t = $scope.facets.statuses.terms[i];
                 if (t.selected) {
-                    filter.and[1].terms["registrationState.registrationStatus"].push(t.term);
+                    $scope.filter.and[1].terms["registrationState.registrationStatus"].push(t.term);
                 }
             }
         }
 
-        if (filter.and[1].terms["registrationState.registrationStatus"].length === 0) {
-             filter.and.splice(1, 1);
+        if ($scope.filter.and[1].terms["registrationState.registrationStatus"].length === 0) {
+             $scope.filter.and.splice(1, 1);
         }
-        if (filter.and[0].terms["stewardOrg.name"].length === 0) {
-             filter.and.splice(0, 1);
+        if ($scope.filter.and[0].terms["stewardOrg.name"].length === 0) {
+             $scope.filter.and.splice(0, 1);
         }
                 
         var newfrom = ($scope.currentPage - 1) * $scope.pageSize;
-        var result = CdeFtSearch.get({from: newfrom, q: JSON.stringify($scope.ftsearch), filter: filter}, function () {
+        var result = CdeFtSearch.get({from: newfrom, q: JSON.stringify($scope.ftsearch), filter: $scope.filter}, function () {
            $scope.numPages = result.pages; 
            $scope.cdes = result.cdes;
            $scope.totalItems = result.totalNumber;
@@ -502,14 +502,22 @@ function DEListCtrl($scope, $http, $timeout, CdeFtSearch, $modal, $location) {
         
     };
 
+    $scope.search = function() {
+        delete $scope.facets;
+        delete $scope.filter;
+        $scope.reload();
+    };
+
     $scope.reload = function() {
         var newfrom = ($scope.currentPage - 1) * $scope.pageSize;
         
-        var result = CdeFtSearch.get({from: newfrom, q: JSON.stringify($scope.ftsearch)}, function () {
+        var result = CdeFtSearch.get({from: newfrom, q: JSON.stringify($scope.ftsearch), filter: $scope.filter}, function () {
            $scope.numPages = result.pages; 
            $scope.cdes = result.cdes;
            $scope.totalItems = result.totalNumber;
-           $scope.facets = result.facets;
+           if (!$scope.facets) {
+               $scope.facets = result.facets;
+           }
         });
     } ;  
     
