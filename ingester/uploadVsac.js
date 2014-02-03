@@ -24,6 +24,24 @@ var schemas = require('../node-js/schemas');
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var Org = mongoose.model('Org', schemas.orgSchema);
 
+var orgMap = {
+    "Oklahoma Foundation for Medical Quality": "OFMQ"
+    , "National Library of Medicine": "NLM"
+    , "Joint Commission": "JointCommission"
+    , "American Medical Association-convened Physician Consortium for Performance Improvement(R)": "AMAPCPI"
+    , "PHDSC": "PHDSC"
+    , "CDC NCHS": "CDCNCHS"
+    , "Lantana": "Lantana"
+    , "National Quality Forum": "NQF"
+    , "National Committee for Quality Assurance": "NCQA"
+    , "Telligen": "Telligen"
+    , "California Maternal Quality Care Collaborative": "CMQCC"
+    , "Quality Insights of Pennsylvania": "QIP"
+    , "Centers for Medicare & Medicaid Services": "CMS"
+    , "CDC National Center on Birth Defects and Developmental Disabilities": "CDCNCBDDD"
+    , "American Board of Internal Medicine": "ABIM"
+};
+
 fs.readFile(process.argv[2], function(err, data) {
     parser.parseString(data, function (err, result) {
         for (var i = 0; i < result['ns0:RetrieveMultipleValueSetsResponse']['ns0:DescribedValueSet'].length; i++) {
@@ -32,8 +50,7 @@ fs.readFile(process.argv[2], function(err, data) {
             if (valueSet['ns0:Type'] == 'Extensional') {
 
                 console.log("Name: " + valueSet['$'].displayName);
-                console.log("        Definition: " + valueSet['ns0:Definition'])
-
+                console.log("        Definition: " + valueSet['ns0:Definition']);
 
                 var newDE = new DataElement({
                     uuid: uuid.v4()
@@ -41,7 +58,7 @@ fs.readFile(process.argv[2], function(err, data) {
                     , origin: 'VSAC'
                     , originId: valueSet['$'].ID + "v" + valueSet['$'].version
                     , stewardOrg: {
-                        name: valueSet['ns0:Source']
+                        name: orgMap[valueSet['ns0:Source']]
                     }
                     , registrationState: {
                         registrationStatus: 'Qualified'
