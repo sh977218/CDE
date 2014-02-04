@@ -891,11 +891,17 @@ app.get('/moreLikeCde/:cdeId', function(req, res) {
     });
 });
 
-// Get VSAC TGT.
-vsac.getTGT(function(tgt) {
-});
+var renewTgt = function() {
+    vsac.getTGT(function(tgt) {
+        console.log("Got TGT");
+    });    
+};
 
-var parser = new xml2js.Parser();
+// run every 10 hours
+renewTgt();
+setInterval(renewTgt, 36000000);
+
+
 app.get('/vsacBridge/:vsacId', function(req, res) {
    vsac.getValueSet(req.params.vsacId, function(result) {
        if (result === 404) {
