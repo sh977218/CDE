@@ -5,7 +5,7 @@ var mongoose = require('mongoose')
     , uuid = require('node-uuid')
     , Grid = require('gridfs-stream')
     , fs = require('fs')
-    , fs = require('../envconfig')
+    , envconfig = require('../envconfig')
     ;
 
 var mongoUri = process.env.MONGO_URI || envconfig.mongo_uri || 'mongodb://localhost/nlmcde';
