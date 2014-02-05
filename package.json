@@ -15,7 +15,6 @@
     "xml2js": "*",
     "node-restful": "*",
     "util": "*",
-    "office": "*",
     "passport": ">= 0.0.0",
     "passport-local": ">= 0.0.0",
     "connect-flash": "~0.1.0",
