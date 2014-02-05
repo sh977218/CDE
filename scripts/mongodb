@@ -23,13 +23,13 @@ if [ -f /etc/sysconfig/mongodb ]; then
 fi
 
 prog="mongod"
-mongod="/usr/nlm/cde/mongodb/current/bin/mongod"
+mongod="/usr/nlm/app/mongodb/current/bin/mongod"
 RETVAL=0
 RUNASUSER=cdeuser
 
 start() {
 	echo -n $"Starting $prog: "
-	daemon --user=$RUNASUSER $mongod "--fork --logpath /var/nlm/logs/mongodb.log --dbpath /usr/nlm/cde/mongo-data --replSet rs0 --smallfiles --logappend 2>&1 >>/var/nlm/logs/mongodb.log"
+	daemon --user=$RUNASUSER $mongod "--conf /usr/nlm/app/mongodb/mongodb.conf 2>&1 >>/var/nlm/logs/mongodb.log"
 	RETVAL=$?
 	echo
 	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/$prog

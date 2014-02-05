@@ -11,9 +11,20 @@
             <li>Elastic River for MongoDB</li>
         </ul>
 
-        <p>ElasticSearch should be installed with the river for mongo plugin. <br>
+        <p>ElasticSearch should be installed with the river for mongo plugin. <br/>
+            <div>$> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.7.tar.gz</div>
+            <div> configure elascticsearch.yml 
+                <ul>
+                    <li>path.data</li>
+                    <li>path.work</li>
+                    <li>path.logs</li>
+                    <li>plugin.mandatory: mapper-attachments, lang-javascript, river-mongodb
+                </ul>
+            </div>
             <a href="https://github.com/richardwilly98/elasticsearch-river-mongodb"/>
-            <br>Versions numbers should match per river plugin doc. 
+            <div> bin/plugin --install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/1.7.3 </div>
+                
+            <br/>Versions numbers should match per river plugin doc. 
         </p>
         
         <h1>Configure</h1>
