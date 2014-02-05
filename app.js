@@ -901,7 +901,7 @@ var renewTgt = function() {
 renewTgt();
 setInterval(renewTgt, 36000000);
 
-
+var parser = new xml2js.Parser();
 app.get('/vsacBridge/:vsacId', function(req, res) {
    vsac.getValueSet(req.params.vsacId, function(result) {
        if (result === 404) {
