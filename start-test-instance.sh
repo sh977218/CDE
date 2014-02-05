@@ -38,7 +38,7 @@ then
     #groovy groovy/UploadCadsrForms.groovy --testMode &
     #
 #    gradle -b test/selenium/build.gradle -Dtest.single=CdeSearchTest cleanTest test & 
-    gradle -b test/selenium/build.gradle test & 
+    gradle -b test/selenium/build.gradle clean test & 
 #    rm test-console.out
     node app > test-console.out
 else

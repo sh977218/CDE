@@ -1538,7 +1538,7 @@ function AttachmentsCtrl($scope, $rootScope, Attachment) {
     };
     
     $scope.setDefault = function(index, state) {
-        if (!$scope.isAllowed($scope.cde)) {
+        if (!$scope.isAllowedNonCuration($scope.cde)) {
             return;
         };
         Attachment.setDefault({
