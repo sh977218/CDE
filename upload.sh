@@ -6,6 +6,7 @@ find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec node ingester/uploadCadsr {} \;
 
 find ../nlm-seed/ExternalCDEs/Vsac/*.xml -exec node ingester/uploadVsac {} \;
 
+find ../nlm-seed/ExternalCDEs/Ahrq -name "de_*.json" -exec node ingester/uploadAhrq {} \;
 
 # node ingester/uploader fitbir ../nlm-seed/ExternalCDEs/FITBIR-Full.xml
 
