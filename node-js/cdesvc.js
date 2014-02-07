@@ -24,7 +24,6 @@ exports.elasticsearch = function(req, res) {
                     function_score: {
                         boost_mode: "replace"
                         , script_score: {
-//                            script: "(6 - doc[\"registrationState.registrationStatusSortOrder\"].value) / 6.0"
                             script: "_score + (6 - doc[\"registrationState.registrationStatusSortOrder\"].value)"
                         }
                         , query: {

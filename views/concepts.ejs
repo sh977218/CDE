@@ -1,5 +1,7 @@
 <h4>Concepts</h4>
-<div ng-controller="SaveCdeCtrl">
+<div ng-controller="ConceptsCtrl">
+<div class="row-fluid">
+    <div class="span5">
 <div ng-show="cde.dataElementConcept.concepts.length > 0">
 <h5>Data Element</h5>
 <table class="table-bordered table-condensed table-striped">
@@ -13,7 +15,7 @@
     </thead>
     <tbody>
         <tr ng-repeat="concept in cde.dataElementConcept.concepts">
-            <td>{{concept.name}}</td>
+            <td><a ng-click="relatedCdes(concept)">{{concept.name}}</a></td>
             <td>{{concept.origin}}</td>
             <td>{{concept.originId}}</td>
             <td headers="actions" ng-show="isAllowed(cde)">
@@ -37,7 +39,7 @@
     </thead>
     <tbody>
         <tr ng-repeat="concept in cde.objectClass.concepts">
-            <td>{{concept.name}}</td>
+            <td><a ng-click="relatedCdes(concept)">{{concept.name}}</a></td>
             <td>{{concept.origin}}</td>
             <td>{{concept.originId}}</td>
             <td headers="actions" ng-show="isAllowed(cde)">
@@ -61,7 +63,7 @@
     </thead>
     <tbody>
         <tr ng-repeat="concept in cde.property.concepts">
-            <td>{{concept.name}}</td>
+            <td><a ng-click="relatedCdes(concept)">{{concept.name}}</a></td>
             <td>{{concept.origin}}</td>
             <td>{{concept.originId}}</td>
             <td headers="actions" ng-show="isAllowed(cde)">
@@ -75,6 +77,22 @@
 <hr/>
     
 <button class="btn btn-small" value="add" ng-click="openNewConcept()" id="addConcept" ng-show="isAllowed(cde)"><i class="fa fa-plus"> </i> Add Concept</button>
+    </div>
+    
+    <div class="span7" ng-show="cdes">
+        <h4>Sharing Concept</h4>
+        <accordion>
+            <accordion-group ng-repeat="cde in cdes" heading="{{cde.stewardOrg.name}} -- {{cde.naming[0].designation}}">
+                 <div class="row-fluid">
+                        <%- include cdegeneraldetails.ejs %>
+                  </div>
+                  <div class="row-fluid" >
+                    <a class='btn' ng-href="#/deview/?cdeId={{cde._id}}"><i class="icon-eye-open"></i> View Full Detail</a>
+                  </div>
+            </accordion-group>
+        </accordion>
+    </div>
+</div>
 
 <script type="text/ng-template" id="newConceptModalContent.html">
     <%- include newConceptModal.ejs %>

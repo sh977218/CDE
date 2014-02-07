@@ -891,6 +891,12 @@ app.get('/moreLikeCde/:cdeId', function(req, res) {
     });
 });
 
+app.post('/desByConcept', function(req, res) {
+   mongo_data.desByConcept(req.body, function(result) {
+       res.send(result);
+   }); 
+});
+
 var renewTgt = function() {
     vsac.getTGT(function(tgt) {
         console.log("Got TGT");

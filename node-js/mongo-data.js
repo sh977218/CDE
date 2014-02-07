@@ -243,6 +243,19 @@ exports.formlist = function(from, limit, searchOptions, callback) {
     });
 };  
 
+exports.desByConcept = function (concept, callback) {
+    DataElement.find(
+            {'$or': [{'objectClass.concepts.originId': concept.originId},
+                     {'property.concepts.originId': concept.originId}, 
+                     {'dataElementConcept.concepts.originId': concept.originId}]},
+        "naming origin originId registrationState stewardOrg updated updatedBy createdBy uuid version views")
+                .limit(20)
+                .where("archived").equals(null)
+                .exec(function (err, cdes) {
+        callback(cdes); 
+    });
+};
+
 exports.deByUuidAndVersion = function(uuid, version, callback) {
     DataElement.findOne({'uuid': uuid, "version": version}).exec(function (err, de) {
        callback("", de); 

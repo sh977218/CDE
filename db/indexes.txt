@@ -8,6 +8,9 @@ db.dataelements.ensureIndex({"originId": 1});
 db.dataelements.ensureIndex({"uuid": 1});
 db.dataelements.ensureIndex({"classification.conceptSystem": 1});
 db.dataelements.ensureIndex({"formUsageCounter": 1});
+db.dataelements.ensureIndex({"objectClass.concepts.originId": 1});
+db.dataelements.ensureIndex({"property.concepts.originId": 1});
+db.dataelements.ensureIndex({"dataElementConcept.concepts.originId": 1});
 
 db.pinningBoard.ensureIndex({"name": 1});
 db.pinningBoard.ensureIndex({"shareStatus": 1});

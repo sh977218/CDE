@@ -571,6 +571,45 @@ var AddToFormModalCtrl = function($scope, MyCart, $modalInstance, cde, AddCdeToF
     };
 };
 
+function ConceptsCtrl($scope, $modal, $http, $timeout) {
+    $scope.openNewConcept = function () {
+        $modal.open({
+          templateUrl: 'newConceptModalContent.html',
+          controller: NewConceptModalCtrl,
+          resolve: {
+              cde: function() {
+                  return $scope.cde;
+              }
+          }
+        });
+    };
+    
+    $scope.removeDecConcept = function (index) {
+        $scope.cde.dataElementConcept.concepts.splice(index, 1);
+        $scope.cde.unsaved = true;
+    };
+    
+    $scope.removeOcConcept = function (index) {
+        $scope.cde.objectClass.concepts.splice(index, 1);
+        $scope.cde.unsaved = true;
+    };
+    
+    $scope.removePropConcept = function (index) {
+        $scope.cde.property.concepts.splice(index, 1);
+        $scope.cde.unsaved = true;
+    };
+    
+    $scope.relatedCdes = function (concept) {
+        console.log("related");
+        $http({method: "POST", url: "/desByConcept", data: concept})
+                .success(function (data, status) {
+                  $scope.cdes = data;         
+            })
+        
+    };
+
+}
+
 function SaveCdeCtrl($scope, $modal, $http, $timeout) { 
     $scope.checkVsacId = function(cde) {
         $http({method: "GET", url: "/vsacBridge/" + cde.dataElementConcept.conceptualDomain.vsac.id}).
@@ -667,33 +706,6 @@ function SaveCdeCtrl($scope, $modal, $http, $timeout) {
           }
         });
     };
-
-    $scope.openNewConcept = function () {
-        $modal.open({
-          templateUrl: 'newConceptModalContent.html',
-          controller: NewConceptModalCtrl,
-          resolve: {
-              cde: function() {
-                  return $scope.cde;
-              }
-          }
-        });
-    };
-    
-    $scope.removeDecConcept = function (index) {
-        $scope.cde.dataElementConcept.concepts.splice(index, 1);
-        $scope.cde.unsaved = true;
-    };
-    
-    $scope.removeOcConcept = function (index) {
-        $scope.cde.objectClass.concepts.splice(index, 1);
-        $scope.cde.unsaved = true;
-    };
-    
-    $scope.removePropConcept = function (index) {
-        $scope.cde.property.concepts.splice(index, 1);
-        $scope.cde.unsaved = true;
-    };
     
     $scope.openNewNamePair = function () {
         $modal.open({
@@ -714,7 +726,7 @@ function SaveCdeCtrl($scope, $modal, $http, $timeout) {
     
     $scope.cancelSave = function(namePair) {
         namePair.editMode = false;
-    }
+    };
     
     $scope.removeNamePair = function(index) {
         $scope.cde.naming.splice(index, 1);
