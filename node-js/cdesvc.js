@@ -105,38 +105,39 @@ exports.morelike = function(id, callback) {
     });
 };
 
-exports.listcde = function(req, res) {
-    var from = req.query["from"],
-        pagesize = req.query["pagesize"],
-        search = req.query["search"];
-   
-    if (!from) {
-        from = 0;
-    }
-    if (!pagesize) {
-        pagesize = 20;
-    }
-    if (search == 'undefined') {
-        search = "";
-    } else {
-        var searchObj;
-        if (search) {
-            searchObj = JSON.parse(search);
-            if (searchObj.name) {
-                var regex = new RegExp(searchObj.name, 'i');
-                searchObj.name = regex;
-            }
-        }
-    }
-
-    mongo_data.cdelist(from, pagesize, searchObj, function(err, cdelist) {
-       if (err) {
-           res.send("ERROR");
-       } else {
-           res.send(cdelist);
-       }
-    });
-};
+// TODO : Should be ready to remove this.
+//exports.listcde = function(req, res) {
+//    var from = req.query["from"],
+//        pagesize = req.query["pagesize"],
+//        search = req.query["search"];
+//   
+//    if (!from) {
+//        from = 0;
+//    }
+//    if (!pagesize) {
+//        pagesize = 20;
+//    }
+//    if (search == 'undefined') {
+//        search = "";
+//    } else {
+//        var searchObj;
+//        if (search) {
+//            searchObj = JSON.parse(search);
+//            if (searchObj.name) {
+//                var regex = new RegExp(searchObj.name, 'i');
+//                searchObj.name = regex;
+//            }
+//        }
+//    }
+//
+//    mongo_data.cdelist(from, pagesize, searchObj, function(err, cdelist) {
+//       if (err) {
+//           res.send("ERROR");
+//       } else {
+//           res.send(cdelist);
+//       }
+//    });
+//};
 
 exports.listform = function(req, res) {
     var from = req.query["from"],
