@@ -903,9 +903,9 @@ var renewTgt = function() {
     });    
 };
 
-// run every 4 hours
+// run every 1 hours
 renewTgt();
-setInterval(renewTgt, 1000 * 60 * 60 * 4);
+setInterval(renewTgt, 1000 * 60 * 60 * 1);
 
 var parser = new xml2js.Parser();
 app.get('/vsacBridge/:vsacId', function(req, res) {
