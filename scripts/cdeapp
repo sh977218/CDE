@@ -14,9 +14,9 @@
 # Source function library
 . /etc/rc.d/init.d/functions
 
-DAEMON_PATH="/usr/nlm/cde/code/nlm-cde"
+DAEMON_PATH="/usr/nlm/apps/code/cde"
 
-DAEMON=/usr/nlm/cde/node/current/bin/node
+DAEMON=/usr/nlm/apps/node/current/bin/node
 DAEMONOPTS="app"
 
 NAME=cdeapp
