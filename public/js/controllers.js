@@ -1083,6 +1083,12 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
         }
     };
     
+    $scope.runManualValidation = function () {
+        delete $scope.showValidateButton;
+        $scope.validatePvWithVsac();
+        $scope.validateVsacWithPv();
+    };
+    
    $scope.isVsInPv = function(vs, callback) {
        var pvs = $scope.cde.valueDomain.permissibleValues;
             for (var i = 0; i < pvs.length; i++) {
@@ -1118,8 +1124,12 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
                     for (var i = 0; i < data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
                         $scope.vsacValueSet.push(data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$']);
                     }
-                    $scope.validatePvWithVsac();
-                    $scope.validateVsacWithPv();
+                    if ($scope.vsacValueSet.length < 50 || $scope.cde.valueDomain.permissibleValues < 50) {
+                        $scope.validatePvWithVsac();
+                        $scope.validateVsacWithPv();
+                    } else {
+                        $scope.showValidateButton = true;
+                    }
                 }
              })
              ;
