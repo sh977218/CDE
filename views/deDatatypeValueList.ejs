@@ -36,9 +36,9 @@
                  </span>
              </td>
              <td headers="actions" ng-show="isAllowed(cde)">
-                 <i id="pvRemove-{{$index}}" class="fa fa-trash-o" ng-click="removePv($index)"></i>
-                 <i id="pvUp-{{$index}}" class="fa fa-arrow-up" ng-click="movePvUp($index)" ng-hide="$first"></i>
-                 <i id="pvDown-{{$index}}" class="fa fa-arrow-down" ng-click="movePvDown($index)" ng-hide="$last"></i>
+                 <a id="pvUp-{{$index}}" class="btn-mini fa fa-arrow-up" ng-click="movePvUp($index)" ng-hide="$first"> Up</a>
+                 <a id="pvDown-{{$index}}" class="btn-mini fa fa-arrow-down" ng-click="movePvDown($index)" ng-hide="$last"> Down</a><br/>
+                 <a id="pvRemove-{{$index}}" class="btn-mini fa fa-trash-o" ng-click="removePv($index)"> Remove</a>
              </td>
          </tr>
          <tr ng-show="cde.valueDomain.permissibleValues.length == 10">

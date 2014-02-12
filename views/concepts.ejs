@@ -19,7 +19,7 @@
             <td>{{concept.origin}}</td>
             <td>{{concept.originId}}</td>
             <td headers="actions" ng-show="isAllowed(cde)">
-                 <i id="decConceptRemove-{{$index}}" class="fa fa-trash-o" ng-click="removeDecConcept($index)"></i>
+                 <a id="decConceptRemove-{{$index}}" class="fa fa-trash-o" ng-click="removeDecConcept($index)"> Remove</a>
             </td>
         </tr>
     </tbody>
@@ -43,7 +43,7 @@
             <td>{{concept.origin}}</td>
             <td>{{concept.originId}}</td>
             <td headers="actions" ng-show="isAllowed(cde)">
-                 <i id="ocConceptRemove-{{$index}}" class="fa fa-trash-o" ng-click="removeOcConcept($index)"></i>
+                 <a id="ocConceptRemove-{{$index}}" class="fa fa-trash-o" ng-click="removeOcConcept($index)"> Remove</a>
             </td>
         </tr>
     </tbody>
@@ -67,7 +67,7 @@
             <td>{{concept.origin}}</td>
             <td>{{concept.originId}}</td>
             <td headers="actions" ng-show="isAllowed(cde)">
-                 <i id="propConceptRemove-{{$index}}" class="fa fa-trash-o" ng-click="removePropConcept($index)"></i>
+                 <a id="propConceptRemove-{{$index}}" class="fa fa-trash-o" ng-click="removePropConcept($index)"> Remove</a>
             </td>
         </tr>
     </tbody>
