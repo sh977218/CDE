@@ -1,39 +1,39 @@
 <dl class="dl-horizontal">
-  <dt>Mininum Length: </dt>
+  <dt>Minimum Length: </dt>
   <dd>
      <span ng-show="editMinMode">
         <input ng-model="cde.valueDomain.datatypeText.minLength" integer/>
-        <i class="icon-check" ng-click="editMinMode = false; stageCde(cde)" id="confirmMin"></i>
-        <i class="icon-remove" ng-click="editMinMode = false"></i>
+        <i class="fa fa-check" ng-click="editMinMode = false; stageCde(cde)" id="confirmMin"> OK</i>
+        <i class="fa fa-times" ng-click="editMinMode = false"> Cancel</i>
      </span>
-     <span ng-hide="editMinMode"><i ng-show="isAllowed(cde)" class="icon-edit" ng-click="editMinMode = true"></i> {{cde.valueDomain.datatypeText.minLength | placeholdEmpty}}</span>
+     <span ng-hide="editMinMode"><i ng-show="isAllowed(cde)" class="fa fa-pencil" ng-click="editMinMode = true"></i> {{cde.valueDomain.datatypeText.minLength | placeholdEmpty}}</span>
   </dd>
   <dt>Maximum Length: </dt>
   <dd>
      <span ng-show="editMaxMode">
         <input ng-model="cde.valueDomain.datatypeText.maxLength" integer/>
-        <i class="icon-check" ng-click="editMaxMode = false; stageCde(cde)" id="confirmMax"></i>
-        <i class="icon-remove" ng-click="editMaxMode = false"></i>
+        <i class="fa fa-check" ng-click="editMaxMode = false; stageCde(cde)" id="confirmMax"> OK</i>
+        <i class="fa fa-times" ng-click="editMaxMode = false"> Cancel</i>
      </span>
-     <span ng-hide="editMaxMode"><i ng-show="isAllowed(cde)" class="icon-edit" ng-click="editMaxMode = true"></i> {{cde.valueDomain.datatypeText.maxLength | placeholdEmpty}}</span>
+     <span ng-hide="editMaxMode"><i ng-show="isAllowed(cde)" class="fa fa-pencil" ng-click="editMaxMode = true"></i> {{cde.valueDomain.datatypeText.maxLength | placeholdEmpty}}</span>
   </dd>
   <dt>Regular Expression: </dt>
   <dd>
      <span ng-show="editRegexMode">
         <input ng-model="cde.valueDomain.datatypeText.regex" />
-        <i class="icon-check" ng-click="editRegexMode = false; stageCde(cde)" id="confirmRegex"></i>
-        <i class="icon-remove" ng-click="editRegexMode = false"></i>
+        <i class="fa fa-check" ng-click="editRegexMode = false; stageCde(cde)" id="confirmRegex"> OK</i>
+        <i class="fa fa-times" ng-click="editRegexMode = false"> Cancel</i>
      </span>
-     <span ng-hide="editRegexMode"><i ng-show="isAllowed(cde)" class="icon-edit" ng-click="editRegexMode = true"></i> {{cde.valueDomain.datatypeText.regex | placeholdEmpty}}</span>
+     <span ng-hide="editRegexMode"><i ng-show="isAllowed(cde)" class="fa fa-pencil" ng-click="editRegexMode = true"></i> {{cde.valueDomain.datatypeText.regex | placeholdEmpty}}</span>
   </dd>
   <dt>Free text rule: </dt>
   <dd>
      <span ng-show="editRuleMode">
         <input ng-model="cde.valueDomain.datatypeText.rule" />
-        <i class="icon-check" ng-click="editRuleMode = false; stageCde(cde)" id="confirmRegex"></i>
-        <i class="icon-remove" ng-click="editRuleMode = false"></i>
+        <i class="fa fa-check" ng-click="editRuleMode = false; stageCde(cde)" id="confirmRegex"> OK</i>
+        <i class="fa fa-times" ng-click="editRuleMode = false"> Cancel</i>
      </span>
-     <span ng-hide="editRuleMode"><i ng-show="isAllowed(cde)" class="icon-edit" ng-click="editRuleMode = true"></i> {{cde.valueDomain.datatypeText.rule | placeholdEmpty}}</span>
+     <span ng-hide="editRuleMode"><i ng-show="isAllowed(cde)" class="fa fa-pencil" ng-click="editRuleMode = true"></i> {{cde.valueDomain.datatypeText.rule | placeholdEmpty}}</span>
   </dd>
   
 </dl>

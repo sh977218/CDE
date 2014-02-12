@@ -22,8 +22,8 @@
                      </div>
                      <div ng-show="editMode">
                          <input type="text" ng-model="pv.valueMeaningName" typeahead="code.displayName for code in vsacValueSet | filter:$viewValue | limitTo:8"/>
-                         <i class="icon-check" ng-click="editMode = false; attachPv(pv)"></i>
-                         <i class="icon-remove" ng-click="editMode = false"></i>
+                         <i class="fa fa-check" ng-click="editMode = false; attachPv(pv)"> OK</i>
+                         <i class="fa fa-times" ng-click="editMode = false"> Cancel</i>
                      </div>      
                  </div>
              </td>
@@ -36,9 +36,9 @@
                  </span>
              </td>
              <td headers="actions" ng-show="isAllowed(cde)">
-                 <i id="pvRemove-{{$index}}" class="icon-remove-sign" ng-click="removePv($index)"></i>
-                 <i id="pvUp-{{$index}}" class="icon-arrow-up" ng-click="movePvUp($index)" ng-hide="$first"></i>
-                 <i id="pvDown-{{$index}}" class="icon-arrow-down" ng-click="movePvDown($index)" ng-hide="$last"></i>
+                 <i id="pvRemove-{{$index}}" class="fa fa-trash-o" ng-click="removePv($index)"></i>
+                 <i id="pvUp-{{$index}}" class="fa fa-arrow-up" ng-click="movePvUp($index)" ng-hide="$first"></i>
+                 <i id="pvDown-{{$index}}" class="fa fa-arrow-down" ng-click="movePvDown($index)" ng-hide="$last"></i>
              </td>
          </tr>
          <tr ng-show="cde.valueDomain.permissibleValues.length == 10">
@@ -46,7 +46,7 @@
          </tr>
      </tbody>
  </table>
-<a class="btn btn-small" ng-show="isAllowed(cde)" ng-click="addPv()"><i id="addPv" class="icon-plus-sign-alt"></i> Add Permissible Value</a>
+<a class="btn btn-small" ng-show="isAllowed(cde)" ng-click="addPv()"><i id="addPv" class="fa fa-plus"></i> Add Permissible Value</a>
 <hr/>
 <div ng-show="detailedView">
 <h4>VSAC Value Set</h4>
@@ -63,8 +63,8 @@
     </div> 
     <div ng-show="editMode">
         <input name="vsacId" type="text" ng-model="cde.dataElementConcept.conceptualDomain.vsac.id" placeholder="VSAC O.I.D"/>
-        <i id="vsacIdCheck" class="icon-check" ng-click="checkVsacId(cde); loadValueSet(); editMode = false"></i>
-        <i class="icon-remove" ng-click="editMode = false"></i>
+        <i id="vsacIdCheck" class="fa fa-check" ng-click="checkVsacId(cde); loadValueSet(); editMode = false"></i>
+        <i class="fa fa-times" ng-click="editMode = false"></i>
     </div>
 </div>
 <hr/>

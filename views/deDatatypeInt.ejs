@@ -3,18 +3,18 @@
   <dd>
      <span ng-show="editMinMode">
         <input ng-model="cde.valueDomain.datatypeInteger.minValue" integer/>
-        <i class="icon-check" ng-click="editMinMode = false; stageCde(cde)" id="confirmMin"></i>
-        <i class="icon-remove" ng-click="editMinMode = false"></i>
+        <i class="fa fa-check" ng-click="editMinMode = false; stageCde(cde)" id="confirmMin"> OK</i>
+        <i class="fa fa-times" ng-click="editMinMode = false"> Cancel</i>
      </span>
-     <span ng-hide="editMinMode"><i ng-show="isAllowed(cde)" class="icon-edit" ng-click="editMinMode = true"></i> {{cde.valueDomain.datatypeInteger.minValue}}</span>
+     <span ng-hide="editMinMode"><i ng-show="isAllowed(cde)" class="fa fa-pencil" ng-click="editMinMode = true"></i> {{cde.valueDomain.datatypeInteger.minValue | placeholdEmpty}}</span>
   </dd>
   <dt>Maximum Value: </dt>
   <dd>
      <span ng-show="editMaxMode">
         <input ng-model="cde.valueDomain.datatypeInteger.maxValue" integer/>
-        <i class="icon-check" ng-click="editMaxMode = false; stageCde(cde)" id="confirmMax"></i>
-        <i class="icon-remove" ng-click="editMaxMode = false"></i>
+        <i class="fa fa-check" ng-click="editMaxMode = false; stageCde(cde)" id="confirmMax"> OK</i>
+        <i class="fa fa-times" ng-click="editMaxMode = false"> Cancel</i>
      </span>
-     <span ng-hide="editMaxMode"><i ng-show="isAllowed(cde)" class="icon-edit" ng-click="editMaxMode = true"></i> {{cde.valueDomain.datatypeInteger.maxValue | placeholdEmpty}}</span>
+     <span ng-hide="editMaxMode"><i ng-show="isAllowed(cde)" class="fa fa-pencil" ng-click="editMaxMode = true"></i> {{cde.valueDomain.datatypeInteger.maxValue | placeholdEmpty}}</span>
   </dd>  
 </dl>

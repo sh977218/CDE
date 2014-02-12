@@ -23,9 +23,14 @@
             </div>
             <a href="https://github.com/richardwilly98/elasticsearch-river-mongodb"/>
             <div> bin/plugin --install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/1.7.3 </div>
-                
             <br/>Versions numbers should match per river plugin doc. 
-        </p>
+            <br/>
+            Install javascript plugin
+            bin/plugin -install elasticsearch/elasticsearch-lang-javascript/1.4.0
+            <br/>
+            Install mapper attachment plugin
+            bin/plugin -install elasticsearch/elasticsearch-mapper-attachments/1.6.0
+            </p>
         
         <h1>Configure</h1>
         Set these environment variables:<br>

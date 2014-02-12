@@ -18,6 +18,7 @@ db.users.insert({username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"]
 db.users.insert({username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'historyuser', password: 'pass', quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'appScan', password: 'I@mA88Scan', quota: 1073741824, viewHistory: []});
 
 db.orgs.insert({name: "NHLBI"});
 db.orgs.insert({name: "caCORE"});

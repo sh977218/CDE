@@ -84,7 +84,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.linkText("History")).click();
         Assert.assertTrue(textPresent("testuser"));
         Assert.assertTrue(textPresent("Change note for change number 1"));
-        findElement(By.xpath("//tr[2]//td[4]/i")).click();
+        findElement(By.xpath("//tr[2]//td[4]/a")).click();
         Assert.assertTrue(textPresent("name of testuser CDE 1[name change number 1]"));
         Assert.assertTrue(textPresent("Definition for testUser CDE 1[def change number 1]"));
     }

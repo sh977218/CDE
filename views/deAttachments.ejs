@@ -18,10 +18,10 @@
             <dt ng-show="isAllowedNonCuration(cde)">Actions: </dt>
             <dd ng-show="isAllowedNonCuration(cde)">
                 <span ng-show="showDelete">
-                    Confirm Delete <i class="icon-check" ng-click="showDelete = false; removeAttachment($index)" id="confirmRemove-{{$index}}"></i>
-                    <i class="fa fa-trash-o" ng-click="showDelete = false"></i>
+                    Confirm Delete <i class="fa fa-check" ng-click="showDelete = false; removeAttachment($index)" id="confirmRemove-{{$index}}"></i>
+                    <i class="fa fa-times" ng-click="showDelete = false"></i>
                 </span>
-                <i ng-click="showDelete = true" ng-hide="showDelete" class="icon-trash" id="removeAttachment-{{$index}}"></i></dd>
+                <i ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeAttachment-{{$index}}"></i></dd>
             <dt>Size: </dt><dd>
                 <span ng-switch="attachment.filesize > 1024*1024">
                     <span ng-switch-when="true">{{attachment.filesize / 1024 / 1024 | number:2}} MB</span>
@@ -36,7 +36,7 @@
     
     <div ng-show="isAllowedNonCuration(cde)">
         <div>{{message}}</div>
-        <label for="fileToUpload"><i class="icon-upload"></i> Upload more files</label>
+        <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files</label>
         <input type="file" style="display: none" ng-model-instant id="fileToUpload" onchange="angular.element(this).scope().setFiles(this)" />
 
         <div ng-show="files.length">

@@ -119,7 +119,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
 
         // Can add Attachments
         findElement(By.linkText("Attachments")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("i.icon-upload")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("i.fa-upload")));
         
         logout();
     }
