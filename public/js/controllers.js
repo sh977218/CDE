@@ -16,7 +16,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
                 $scope.boards = response.data;
             }); 
         }        
-    }
+    };
 
     $scope.loadUser(function(){});    
     
@@ -122,13 +122,20 @@ function BoardListCtrl($scope, BoardSearch) {
 
 function BoardViewCtrl($scope, $routeParams, $http) {
     $scope.setActiveMenu('MYBOARDS');
-    $scope.start = 0;
+
+    $scope.currentPage = 1;
     $scope.cdes = [];
         
+    $scope.$watch('currentPage', function() {
+        $scope.reload();
+    });
+
     $scope.reload = function() {
-        $http.get("/board/" + $routeParams.boardId + "/" + $scope.start).then(function(response) {
+        $http.get("/board/" + $routeParams.boardId + "/" + (($scope.currentPage-1) * 20)).then(function(response) {
             $scope.cdes = [];
             $scope.board = response.data.board;
+            $scope.totalItems = response.data.totalItems;
+            $scope.numPages = $scope.totalItems / 20;
             var pins = $scope.board.pins;
             var respCdes = response.data.cdes;
             for (var i = 0; i < pins.length; i++) {

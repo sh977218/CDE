@@ -555,6 +555,7 @@ app.get('/board/:boardId/:start', function(req, res) {
                 return res.send("This board is private");
             }
         }
+        var totalItems = board.pins.length;
         var pins = board.pins.splice(req.params.start, 20); 
         board.pins = pins;
         var idList = [];
@@ -562,7 +563,7 @@ app.get('/board/:boardId/:start', function(req, res) {
             idList.push(pins[i].deUuid);
         }
         mongo_data.cdesByUuidList(idList, function(err, cdes) {
-            res.send({board: board, cdes: cdes});
+            res.send({board: board, cdes: cdes, totalItems: totalItems});
         });
     });
 });
