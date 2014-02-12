@@ -2,8 +2,8 @@
     <div class='row-fluid'>   
         <div class="span3">
             <ul class="nav nav-list pull-left">
-                <li><a ng-click="scrollTo('general')"><i class="icon-chevron-right"></i> General</a></li>
-                <li ng-repeat="module in form.modules"><a ng-click="scrollTo(module.name)"><i class="icon-chevron-right"></i> {{module.name}}</a></li>
+                <li><a ng-click="scrollTo('general')"><i class="fa fa-chevron-right"></i> General</a></li>
+                <li ng-repeat="module in form.modules"><a ng-click="scrollTo(module.name)"><i class="fa fa-chevron-right"></i> {{module.name}}</a></li>
             </ul>
         </div>
 
@@ -17,25 +17,11 @@
                 <dt id="dt_createdBy" ng-show="form.createdBy.username">Created By: </dt><dd id="dd_createdBy">{{form.createdBy.username}}</dd>
             </dl>
 
-<!--            <accordion>
-                <accordion-group ng-repeat="question in form.questions" >
-                    <accordion-heading>
-                        <i ng-show='isAllowed()' class="icon-remove" ng-click="remove(form.questions, $index)"></i> 
-                        <i ng-show='!$first && isAllowed()' class="icon-arrow-up" ng-click="sortUp(form.questions, $index)"></i> 
-                        <i ng-show='!$last && isAllowed()' class="icon-arrow-down" ng-click='sortDown(form.questions, $index)'></i> 
-                        {{question.value}}
-                    </accordion-heading>
-                    <%- include questionView.ejs %>
-                </accordion-group>
-            </accordion>-->
-
-
             <h4>Sections</h4>
             <div ng-repeat="module in form.modules">
-<!--                <a id="addSection-{{$index}}" class="btn btn-small" ng-click="insertSection($index)"><i class="icon-plus"></i> Insert Section</a>-->
                 <h3 id="{{module.name}}">
-                    <i id="sectionUp-{{$index}}" ng-show='!$first && isAllowed()' class="icon-arrow-up" ng-click="sectionUp($index)"></i> 
-                    <i id="sectionDown-{{$index}}" ng-show='!$last && isAllowed()' class="icon-arrow-down" ng-click='sectionDown($index)'></i> 
+                    <i id="sectionUp-{{$index}}" ng-show='!$first && isAllowed()' class="fa fa-arrow-up" ng-click="sectionUp($index)"></i> 
+                    <i id="sectionDown-{{$index}}" ng-show='!$last && isAllowed()' class="fa fa-arrow-down" ng-click='sectionDown($index)'></i> 
                     <inline-edit model="module.name" is-allowed="isAllowed()" on-ok="stageForm()"> </inline-edit>
                 </h3>
                 <h4>Questions</h4>
@@ -43,9 +29,9 @@
                 <accordion>
                     <accordion-group ng-repeat="question in module.questions" >
                         <accordion-heading>
-                            <i id="removeQuestion-{{$parent.$parent.$index}}-{{$index}}" ng-show='isAllowed()' class="icon-remove" ng-click="remove(module.questions, $index)"></i> 
-                            <i id="upQuestion-{{$parent.$parent.$index}}-{{$index}}" ng-show='!$first && isAllowed()' class="icon-arrow-up" ng-click="sortUp(module.questions, $index)"></i> 
-                            <i id="downQuestion-{{$parent.$parent.$index}}-{{$index}}" ng-show='!$last && isAllowed()' class="icon-arrow-down" ng-click='sortDown(module.questions, $index)'></i> 
+                            <i id="removeQuestion-{{$parent.$parent.$index}}-{{$index}}" ng-show='isAllowed()' class="fa fa-trash-o" ng-click="remove(module.questions, $index)"></i> 
+                            <i id="upQuestion-{{$parent.$parent.$index}}-{{$index}}" ng-show='!$first && isAllowed()' class="fa fa-arrow-up" ng-click="sortUp(module.questions, $index)"></i> 
+                            <i id="downQuestion-{{$parent.$parent.$index}}-{{$index}}" ng-show='!$last && isAllowed()' class="fa fa-arrow-down" ng-click='sortDown(module.questions, $index)'></i> 
                             {{question.value}}
                         </accordion-heading>
                         <%- include questionView.ejs %>
@@ -53,18 +39,18 @@
                 </accordion>
                 <div ng-show="isAllowed()" id="newQuestionDiv-{{$index}}">
                     <a ng-hide="addQuestionMode" class="btn btn-small" ng-click="addQuestionMode = true">
-                        <i class="icon-plus"></i> Insert Question</a>
+                        <i class="fa fa-plus"></i> Insert Question</a>
                     <div ng-show="addQuestionMode">
                         <input type="text" typeahead="cde as cde.naming[0].designation for cde in autocomplete($viewValue)" 
                                typeahead-wait-ms="300" ng-model="newQuestion">
-                        <i class="icon-check" ng-click="addQuestionToSection(newQuestion, $index); newQuestion = ''; addQuestionMode = false"/>
-                        <i class="icon-remove" ng-click="newQuestion = ''; addQuestionMode = false"/>
+                        <i class="fa fa-check" ng-click="addQuestionToSection(newQuestion, $index); newQuestion = ''; addQuestionMode = false"/>
+                        <i class="fa fa-times" ng-click="newQuestion = ''; addQuestionMode = false"/>
                     </div>
                 </div>
                 <hr/>
             </div>
             <a id="addSection" class="btn btn-small" ng-click="insertSection(form.modules.length)" ng-show="isAllowed()">
-                <i class="icon-plus"></i> Insert Section</a>
+                <i class="fa fa-plus"></i> Insert Section</a>
 
             <div class="row-fluid">
                 <div class="span12" ng-show="form.unsaved">
