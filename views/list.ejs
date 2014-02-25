@@ -11,16 +11,35 @@
 </div>
 
 <div class="row-fluid">
-    <div class="span1">
+    <div class="span2">
         <strong>Stewards</strong>
         <ul class="fa-ul">
-            <li ng-repeat="t in facets.orgs.terms" style="margin-right: -20px" ng-switch="t.selected" ng-click="addFilter(t)">
+            <li ng-repeat="t in facets.orgs.terms" style="margin-right: -20px" ng-switch="t.selected" ng-click="addOrgFilter(t)" ng-show="t.selected === true || uniqueOrg === false">
                 <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
                 <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
                 <small> {{t.term}} ({{t.count}})</small>
             </li>
         </ul>
-        <strong>Status</strong>
+        <strong ng-show="facets.classification.terms">Classification</strong>
+        <ul class="fa-ul">
+            <li ng-repeat="g in facets.groups" style="margin-right: -20px" ng-switch="g.selected" >
+                <span ng-click="openGroup(g)">
+                    <i ng-switch-default class="fa-li fa fa-plus-square-o" id="li-blank-{{g.conceptSystem}}" ></i>
+                    <i ng-switch-when="true" class="fa-li fa fa-minus-square-o" id="li-checked-{{g.conceptSystem}}"></i>
+                    <small > {{g.conceptSystem}} ({{g.concepts.length}})</small>
+                </span>
+                <ul class="fa-ul" ng-show="g.selected">
+                    <li ng-repeat="subG in g.concepts" style="margin-left: -40px" ng-switch="subG.selected" >
+                        <span ng-click="selectSubGroup(subG)">
+                            <i ng-switch-default class="fa fa-square-o" id="li-blank-{{subG.term}}"></i> 
+                            <i ng-switch-when="true" class="fa fa-check-square-o" id="li-checked-{{subG.term}}"></i>
+                            <small>{{subG.term}} ({{subG.count}})</small>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <strong ng-show="facets.statuses.terms">Status</strong>
         <ul class="fa-ul">
             <li ng-repeat="t in facets.statuses.terms" style="margin-right: -20px" ng-switch="t.selected" ng-click="addFilter(t)">
                 <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
@@ -28,7 +47,7 @@
             <small> {{t.term}} ({{t.count}})</small></li>
         </ul>
     </div>
-    <div class="span11">
+    <div class="span10">
         <accordion>
             <accordion-group ng-repeat="cde in cdes" >
                 <accordion-heading>
@@ -63,5 +82,5 @@
     </div>
 </div>
 
-<pagination align="center" direction-links="true" num-pages="numPages" max-size="10" total-items="totalItems" page="currentPage"></pagination>
+<pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" page="currentPage"></pagination>
 

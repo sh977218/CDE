@@ -165,6 +165,13 @@ exports.classificationSystems = function(callback) {
       });
 };
 
+exports.orgByName = function(orgName,callback) {
+    Org.findOne({"name": orgName}).exec(function(error, org) {
+        callback(org);
+    });
+};
+
+
 exports.removeFromCart = function (user, formId, callback) {
     User.findOne({'_id': user._id}).exec(function (err, u) {
         if (u.formCart.indexOf(formId) > -1) {

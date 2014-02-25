@@ -28,7 +28,6 @@ fs.readFile(process.argv[2], function(err, data) {
     parser.parseString(data, function (err, result) {
 
     for (var i in result.DataElementsList.DataElement) {
-//        console.log("---- " + i);
         var cadsrDE = result.DataElementsList.DataElement[i];
         
         if (cadsrDE.WORKFLOWSTATUS == 'DRAFT NEW') {
@@ -103,7 +102,7 @@ fs.readFile(process.argv[2], function(err, data) {
 
         for (var csi_i in cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
             var csi = cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM[csi_i];
-            newDE.classification.push({conceptSystem: csi.ClassificationScheme[0].PreferredName, concept: csi.ClassificationSchemeItemName});
+            newDE.classification.push({conceptSystem: csi.ClassificationScheme[0].PreferredName, concept: csi.ClassificationSchemeItemName, stewardOrg: csi.ClassificationScheme[0].ContextName});
         }
             
         newDE.usedByOrgs = [];    

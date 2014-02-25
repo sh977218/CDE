@@ -76,7 +76,7 @@
                 "index": {
                   "name": "nlmcde_mongo_v1", 
                   "type": "documents"
-                }           
+                }        
             }'
         </span>
         <br>

@@ -34,9 +34,22 @@ var namingSchema = mongoose.Schema({
     }
 }, {_id: false});
 
+var classificationCollSchema = mongoose.Schema(
+{
+    conceptSystem: String
+    , concept: String
+    , stewardOrg: {
+        name: String
+    }
+}
+);
+
 var classificationSchema = mongoose.Schema({
     conceptSystem: String
     , concept: String
+    , stewardOrg: {
+        name: String
+    }
 }, {_id: false});
 
 var attachmentSchema = mongoose.Schema({
@@ -208,6 +221,7 @@ schemas.userSchema = mongoose.Schema ({
 
 schemas.orgSchema = mongoose.Schema ({
     name: String
+    , classifications: [classificationSchema]
 });
 
 schemas.managedContextSchema = mongoose.Schema ({
@@ -223,8 +237,6 @@ var regStatusSortMap = {
     , Standard: 1
     , "Preferred Standard": 0
 };
-    
-
 
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 
 schemas.dataElementSchema.pre('save', function(next) {

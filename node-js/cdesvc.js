@@ -7,64 +7,11 @@ var express = require('express')
 
 var elasticUri = process.env.ELASTIC_URI || envconfig.elasticUri || 'http://localhost:9200/nlmcde/';
 
-exports.elasticsearch = function(req, res) {
-    var q = req.query["q"];
-    var from = req.query["from"];
-    var filter = req.query["filter"];
-
-    var limit = 20;
-
-    var queryStuff = {size: limit};
-    
-    if (q != undefined && q !== "") {
-        queryStuff.query = 
-            {   
-                bool: {
-                    should: {
-                    function_score: {
-                        boost_mode: "replace"
-                        , script_score: {
-                            script: "_score + (6 - doc[\"registrationState.registrationStatusSortOrder\"].value)"
-                        }
-                        , query: {
-                            query_string: {
-                                fields: ["_all", "naming.designation^3"]
-                                , query: q
-                            }
-                        }
-                    }
-                    }
-                    , must_not: {
-                        term: {
-                            "registrationState.registrationStatus": "retired"
-                        }
-                    }
-                }
-           };
-    }
-    
-    queryStuff.facets = {
-        orgs: {terms: {field: "stewardOrg.name", size: 20}}
-        , statuses: {terms: {field: "registrationState.registrationStatus"}}
-    };
-
-    if (filter != undefined) {
-        filter = JSON.parse(filter);
-        if (filter.and.length !== 0) {
-            queryStuff.filter = filter;
-        }
-    }
-        
-    if (from) {
-        queryStuff.from = from;
-    }
-
-    request.post(elasticUri + "_search",{body: JSON.stringify(queryStuff)}, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
+exports.elasticsearch = function (query, res) {
+   request.post(elasticUri + "_search",{body: JSON.stringify(query)}, function (error, response, body) {
+       if (!error && response.statusCode == 200) {
         var resp = JSON.parse(body);
         var result = {cdes: []
-            , pages: Math.ceil(resp.hits.total / limit)
-            , page: Math.ceil(from/ limit)
             , totalNumber: resp.hits.total};
         for (var i = 0; i < resp.hits.hits.length; i++) {
             var thisCde = resp.hits.hits[i]._source;
@@ -75,7 +22,9 @@ exports.elasticsearch = function(req, res) {
         }
         result.facets = resp.facets;
         res.send(result);
-      }
+     } else {
+         console.log("error: " + error);
+     } 
     });  
 };
 

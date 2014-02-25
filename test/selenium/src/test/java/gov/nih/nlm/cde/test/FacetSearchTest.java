@@ -23,7 +23,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void stewardFacets() {
         goHome();
-        Assert.assertTrue(textPresent("ccr (8)"));
+        Assert.assertTrue(textPresent("CCR (8)"));
     }
 
     @Test
@@ -32,7 +32,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("candidate ("));
     }
 
-        @Test
+    @Test
     public void facets() {
         goHome();
         findElement(By.name("ftsearch")).sendKeys("Treatment");
@@ -43,7 +43,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         hangon();
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
         Assert.assertEquals(linkList.size(), 4);
-        findElement(By.id("li-blank-nhlbi")).click();
+        findElement(By.id("li-blank-NHLBI")).click();
         // Seems like we should wait for something , like below, but below doesn't work and I can't come up with something to wait for ...
 //            wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(
 //                    By.linkText("caBIG -- First Follow-up Visit Date"))));
@@ -56,14 +56,14 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         hangon();
         linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
         Assert.assertEquals(linkList.size(), 7);
-        findElement(By.id("li-checked-nhlbi")).click();
+        findElement(By.id("li-checked-NHLBI")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("6")));
     }
     
     @Test
     public void facetPagination() {
         goHome();
-        findElement(By.id("li-blank-ctep")).click();
+        findElement(By.id("li-blank-CTEP")).click();
         // next line should make it wait.
         findElement(By.cssSelector("i.fa-check-square-o"));
         for (WebElement elt : driver.findElements(By.cssSelector("a.accordion-toggle"))) {
@@ -81,5 +81,50 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
     }
 
+    
+    @Test
+    public void classificationFilters() {
+        goHome();
+        findElement(By.name("ftsearch")).sendKeys("Toxicity");
+        findElement(By.id("search.submit")).click();
+        Assert.assertTrue(textPresent("CTEP (9)"));
+        findElement(By.id("li-blank-CTEP")).click();
+        Assert.assertTrue(textPresent("DISEASE (14)"));
+
+        hangon();
+        List <WebElement> linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        Assert.assertEquals(linkList.size(), 9);
+
+        // Check that CTEP classification with 0 items does not show
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("ABTC") < 0);
+        
+        findElement(By.id("li-blank-DISEASE")).click();
+        Assert.assertTrue(textPresent("Lymphoma (1)"));
+        findElement(By.id("li-blank-Lymphoma")).click();
+        
+        hangon();
+        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        Assert.assertEquals(linkList.size(), 1);
+        
+        // Now test unclicking everything
+        findElement(By.id("li-checked-Lymphoma")).click();
+        hangon();
+        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        Assert.assertEquals(linkList.size(), 9);
+        
+        findElement(By.id("li-blank-DISEASE")).click();
+        Assert.assertTrue(textPresent("Lymphoma (1)"));
+        findElement(By.id("li-blank-Lymphoma")).click();
+        
+        hangon();
+        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        Assert.assertEquals(linkList.size(), 1);
+        
+        findElement(By.id("li-checked-CTEP")).click();
+        hangon();
+        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        Assert.assertEquals(linkList.size(), 10);
+
+    }
  
 }

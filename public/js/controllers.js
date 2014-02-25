@@ -408,13 +408,15 @@ function SelectBoardModalCtrl($scope, $modalInstance, boards) {
     };
 }
 
-function DEListCtrl($scope, $http, $timeout, CdeFtSearch, $modal, $location) {
+function DEListCtrl($scope, $http, $timeout, $modal, $location) {
     $scope.setActiveMenu('LISTCDE');
     
     $scope.currentPage = 1;
-    $scope.pageSize = 10;
+    $scope.resultPerPage = 20;
 
     $scope.search = {name: ""};
+    $scope.filter = [];
+    $scope.uniqueOrg = false;
     
     $scope.openPinModal = function (cde) {
         var modalInstance = $modal.open({
@@ -442,11 +444,17 @@ function DEListCtrl($scope, $http, $timeout, CdeFtSearch, $modal, $location) {
         $location.url("deview?cdeId=" + cde._id);
     };
     
+    $scope.addOrgFilter = function(t) {
+        t.selected = !t.selected;
+        delete $scope.facets.groups;
+        $scope.facetSearch();
+    };
+
     $scope.addFilter = function(t) {
         t.selected = !t.selected;
         $scope.facetSearch();
     };
-       
+
     $scope.$watch('currentPage', function() {
         $scope.reload();
     });
@@ -464,67 +472,197 @@ function DEListCtrl($scope, $http, $timeout, CdeFtSearch, $modal, $location) {
     };
        
     $scope.facetSearch = function() {
-        $scope.filter = {
-            and: [
-                {terms: {
-                        "stewardOrg.name": []
-                        , execution: "or"
-                    }}
-                , {terms: {
-                    "registrationState.registrationStatus": []
-                    , execution: "or"
-                }}
-            ]
-        };
+        $scope.filter = {and: []};
+        $scope.uniqueOrg = false;
   
         if ($scope.facets != null) {
             for (var i = 0; i < $scope.facets.orgs.terms.length; i++) {
                 var t = $scope.facets.orgs.terms[i];
-                if (t.selected) {
-                    $scope.filter.and[0].terms["stewardOrg.name"].push(t.term);
+                if (t.selected === true) {
+                      $scope.filter.and.push({term: {"stewardOrg.name": t.term}});
+                      $scope.uniqueOrg = t.term;
                 }
             }
-        
-            for (var i = 0; i < $scope.facets.statuses.terms.length; i++) {
-                var t = $scope.facets.statuses.terms[i];
-                if (t.selected) {
-                    $scope.filter.and[1].terms["registrationState.registrationStatus"].push(t.term);
+            
+            if ($scope.facets.groups) {
+                for (var i = 0; i < $scope.facets.groups.length; i++) {
+                    for (var j = 0; j < $scope.facets.groups[i].concepts.length; j++) {
+                        var t = $scope.facets.groups[i].concepts[j];
+                        if (t.selected === true) {
+                            $scope.filter.and.push({term: {"classification.concept": t.term}});
+                        }
+                    }
+                }
+            }
+            
+            if ($scope.facets.statuses != null) {
+                for (var i = 0; i < $scope.facets.statuses.terms.length; i++) {
+                    var t = $scope.facets.statuses.terms[i];
+                    if (t.selected === true) {
+                          $scope.filter.and.push({term: {"registrationState.registrationStatus": t.term}});
+                    }
                 }
             }
         }
 
-        if ($scope.filter.and[1].terms["registrationState.registrationStatus"].length === 0) {
-             $scope.filter.and.splice(1, 1);
-        }
-        if ($scope.filter.and[0].terms["stewardOrg.name"].length === 0) {
-             $scope.filter.and.splice(0, 1);
-        }
+        $scope.buildElasticQuery(function(query) {
+            $http.post("/elasticSearch", query).then(function (response) {
+                var result = response.data;
+                $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
+                $scope.cdes = result.cdes;
+                $scope.totalItems = result.totalNumber;
+                $scope.facets = result.facets;
                 
-        var newfrom = ($scope.currentPage - 1) * $scope.pageSize;
-        var result = CdeFtSearch.get({from: newfrom, q: JSON.stringify($scope.ftsearch), filter: $scope.filter}, function () {
-           $scope.numPages = result.pages; 
-           $scope.cdes = result.cdes;
-           $scope.totalItems = result.totalNumber;
-        });
+                for (var i = 0; i < $scope.filter.and.length; i++) {
+                    if ($scope.filter.and[i].term['registrationState.registrationStatus'] != undefined) {
+                        for (var j = 0; j < $scope.facets.statuses.terms.length; j++) {
+                            if ($scope.facets.statuses.terms[j].term === $scope.filter.and[i].term['registrationState.registrationStatus']) {
+                                $scope.facets.statuses.terms[j].selected = true;
+                            }
+                        }
+                    }
+                }
+
+                
+                if ($scope.facets.classification != undefined) {
+                     $http.get("/org/" + $scope.uniqueOrg).then(function(response) {
+                         var org = response.data;
+                         $scope.facets.groups = [];
+                         if (org.classifications) {
+                            for (var i = 0; i < org.classifications.length; i++) {
+                                var currentOrgClassif = org.classifications[i];
+                                var sysFound = false;
+                                for (var j = 0; j < $scope.facets.groups.length; j++) {
+                                    if ($scope.facets.groups[j].conceptSystem == currentOrgClassif.conceptSystem) {
+                                        sysFound = true;
+                                    }
+                                }
+                                if (sysFound == false) {
+                                    var newGroup = {conceptSystem: currentOrgClassif.conceptSystem, concepts: []};
+                                    for (var j = 0; j < org.classifications.length; j++) {
+                                        if (org.classifications[j].conceptSystem == currentOrgClassif.conceptSystem) {
+                                            var groupConcept = {term: org.classifications[j].concept};
+                                            for (var h = 0; h < $scope.facets.classification.terms.length; h++) {
+                                                if ($scope.facets.classification.terms[h].term == groupConcept.term) {
+                                                    groupConcept.count = $scope.facets.classification.terms[h].count;
+                                                }
+                                            }
+                                            if (groupConcept.count) {
+                                                newGroup.concepts.push(groupConcept);
+                                            }
+                                        }
+                                    }
+                                    if (newGroup.concepts.length > 0) {
+                                        $scope.facets.groups.push(newGroup);    
+                                    }
+                                 }
+                            }
+                        }
+                         for (var i = 0; i < $scope.filter.and.length; i++) {
+                            if ($scope.filter.and[i].term['stewardOrg.name'] != undefined) {
+                                for (var j = 0; j < $scope.facets.orgs.terms.length; j++) {
+                                    if ($scope.facets.orgs.terms[j].term === $scope.filter.and[i].term['stewardOrg.name']) {
+                                        $scope.facets.orgs.terms[j].selected = true;
+                                    }
+                                }
+                            }
+                            if ($scope.filter.and[i].term['classification.concept'] != undefined) {
+                                for (var j = 0; j < $scope.facets.groups.length; j++) {
+                                    for (var h = 0; h < $scope.facets.groups[j].concepts.length; h++) {
+                                        if ($scope.filter.and[i].term['classification.concept'] === $scope.facets.groups[j].concepts[h].term) {
+                                            $scope.facets.groups[j].selected = true;
+                                            $scope.facets.groups[j].concepts[h].selected = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                     });
+                }
+             });
+        });  
+    };
+
+    $scope.buildElasticQuery = function (callback) {
+        var queryStuff = {size: $scope.resultPerPage};
+        var searchQ = $scope.ftsearch;
+        if (searchQ != undefined && searchQ !== "") {
+            queryStuff.query = 
+                {   
+                    bool: {
+                        should: {
+                        function_score: {
+                            boost_mode: "replace"
+                            , script_score: {
+                                script: "_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)"
+                            }
+                            , query: {
+                                query_string: {
+                                    fields: ["_all", "naming.designation^3"]
+                                    , query: searchQ
+                                }
+                            }
+                        }
+                        }
+                        , must_not: {
+                            term: {
+                                "registrationState.registrationStatus": "retired"
+                            }
+                        }
+                    }
+               };
+        } 
+
+        queryStuff.facets = {
+            orgs: {terms: {field: "stewardOrg.name", size: 40, order: "term"}}
+            , statuses: {terms: {field: "registrationState.registrationStatus"}}
+        };    
+
+        if ($scope.filter != undefined && $scope.filter.and != undefined && $scope.filter.and.length !== 0) {
+            queryStuff.filter = $scope.filter;
+            for (var i = 0; i < $scope.filter.and.length; i++) {
+                if ($scope.filter.and[i].term['stewardOrg.name'] != undefined) {
+                    queryStuff.facets.classification = {
+                        terms: {field: "classification.concept", size: 150}
+                        , facet_filter: {term: {"stewardOrg.name": $scope.filter.and[i].term['stewardOrg.name']}}
+                    };
+                }  
+            }
+        }
+
+        var from = ($scope.currentPage - 1) * $scope.resultPerPage;
+        queryStuff.from = from;
         
+        return callback({query: queryStuff});
+
+    };
+
+    $scope.selectSubGroup = function(subG) {
+        subG.selected = !subG.selected;
+        $scope.facetSearch();
+    };
+
+    $scope.openGroup = function(g) {
+        g.selected = !g.selected;
     };
 
     $scope.search = function() {
         delete $scope.facets;
-        delete $scope.filter;
+        $scope.filter = [];
         $scope.reload();
     };
 
-    $scope.reload = function() {
-        var newfrom = ($scope.currentPage - 1) * $scope.pageSize;
-        
-        var result = CdeFtSearch.get({from: newfrom, q: JSON.stringify($scope.ftsearch), filter: $scope.filter}, function () {
-           $scope.numPages = result.pages; 
-           $scope.cdes = result.cdes;
-           $scope.totalItems = result.totalNumber;
-           if (!$scope.facets) {
-               $scope.facets = result.facets;
-           }
+    $scope.reload = function() {        
+        $scope.buildElasticQuery(function(query) {
+            $http.post("/elasticSearch", query).then(function (response) {
+               var result = response.data;
+               $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
+               $scope.cdes = result.cdes;
+               $scope.totalItems = result.totalNumber;
+               if (!$scope.facets) {
+                   $scope.facets = result.facets;
+               }
+            });     
         });
     } ;  
     
@@ -607,7 +745,6 @@ function ConceptsCtrl($scope, $modal, $http, $timeout) {
     };
     
     $scope.relatedCdes = function (concept) {
-        console.log("related");
         $http({method: "POST", url: "/desByConcept", data: concept})
                 .success(function (data, status) {
                   $scope.cdes = data;         
@@ -843,7 +980,7 @@ function AuditCtrl($scope) {
     };    
 }
 
-function CreateCdeCtrl($scope, $location, $timeout, DataElement, CdeFtSearch) {
+function CreateCdeCtrl($scope, $location, $timeout, DataElement, $http) {
     $scope.setActiveMenu('CREATECDE');
 
     $scope.save = function() {
@@ -871,7 +1008,34 @@ function CreateCdeCtrl($scope, $location, $timeout, DataElement, CdeFtSearch) {
             $timeout.cancel(suggestionPromise);
         }
         suggestionPromise = $timeout(function () {
-           var result = CdeFtSearch.get({q: JSON.stringify($scope.cde.designation)}, function () {
+            // @TODO Reuse this bit.
+            var queryStuff = {query: 
+                {   
+                    bool: {
+                        should: {
+                        function_score: {
+                            boost_mode: "replace"
+                            , script_score: {
+                                script: "_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)"
+                            }
+                            , query: {
+                                query_string: {
+                                    fields: ["_all", "naming.designation^3"]
+                                    , query: $scope.cde.designation
+                                }
+                            }
+                        }
+                        }
+                        , must_not: {
+                            term: {
+                                "registrationState.registrationStatus": "retired"
+                            }
+                        }
+                    }
+               }};
+            
+           var result = $http.post("/elasticSearch", {query: queryStuff}).then(function (response) {
+               var result = response.data;
                $scope.cdes = result.cdes;
            });
         }, 1000);

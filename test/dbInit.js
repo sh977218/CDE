@@ -34,5 +34,17 @@ db.orgs.insert({name: "SPOREs"});
 db.orgs.insert({name: "NICHD"});
 db.orgs.insert({name: "EDRN"});
 db.orgs.insert({name: "CIP"});
+db.orgs.insert({name: "AECC"});
+db.orgs.insert({name: "LCC"});
+db.orgs.insert({name: "USC/NCCC"});
+db.orgs.insert({name: "Training"});
+db.orgs.insert({name: "TEST"});
+db.orgs.insert({name: "PBTC"});
+db.orgs.insert({name: "CITN"});
+db.orgs.insert({name: "DCI"});
+db.orgs.insert({name: "CDC/PHIN"});
+db.orgs.insert({name: "ECOG-ACRIN"});
+db.orgs.insert({name: "OHSU Knight"});
+db.orgs.insert({name: "NHC-NCI"});
 
 

@@ -2,9 +2,6 @@ angular.module('resources', ['ngResource']).
     factory('CdeList', function($resource) {
         return $resource('/listcde');
     })
-    .factory('CdeFtSearch', function($resource) {
-        return $resource('/ftsearch');
-    })
     .factory('BoardSearch', function($resource) {
         return $resource('/listboards');
     })

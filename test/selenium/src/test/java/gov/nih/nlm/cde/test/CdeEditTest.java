@@ -15,6 +15,8 @@ import org.testng.annotations.Test;
  */
 public class CdeEditTest extends NlmCdeBaseTest {
 
+    private String newCdeName = "Abracadabra";
+    
     @BeforeClass
     public void login() {
         loginAs(ctepCurator_username, ctepCurator_password);
@@ -30,12 +32,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
     public void createCde() {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
-        findElement(By.name("cde.designation")).sendKeys("name of testuser CDE 1");
+        findElement(By.name("cde.designation")).sendKeys(newCdeName);
         findElement(By.name("cde.definition")).sendKeys("Definition for testUser CDE 1");
         findElement(By.name("cde.version")).sendKeys("1.0alpha1");
         new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
         findElement(By.id("cde.submit")).click();
-        goToCdeByName("name of testuser CDE 1");
+        goToCdeByName(newCdeName);
         Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
     }
 
@@ -53,7 +55,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test
     public void editCde() {
-        goToCdeByName("name of testuser CDE 1");
+        goToCdeByName(newCdeName);
         findElement(By.cssSelector("i.fa-edit")).click();
         findElement(By.xpath("//inline-edit/span/span[2]/input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector("i.fa-check-square-o")).click();
@@ -69,7 +71,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("2");
         findElement(By.id("confirmSave")).click();
-        goToCdeByName("name of testuser CDE 1");
+        goToCdeByName(newCdeName);
         Assert.assertTrue(textPresent("[name change number 1]"));
         Assert.assertTrue(textPresent("[def change number 1]"));
         Assert.assertTrue(textPresent("1.0alpha2"));
@@ -80,18 +82,18 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test(dependsOnMethods = {"editCde"})
     public void viewHistory() {
-        goToCdeByName("name of testuser CDE 1");
+        goToCdeByName(newCdeName);
         findElement(By.linkText("History")).click();
-        Assert.assertTrue(textPresent("testuser"));
+        Assert.assertTrue(textPresent(newCdeName));
         Assert.assertTrue(textPresent("Change note for change number 1"));
         findElement(By.xpath("//tr[2]//td[4]/a")).click();
-        Assert.assertTrue(textPresent("name of testuser CDE 1[name change number 1]"));
+        Assert.assertTrue(textPresent(newCdeName + "[name change number 1]"));
         Assert.assertTrue(textPresent("Definition for testUser CDE 1[def change number 1]"));
     }
 
     @Test(dependsOnMethods = {"editCde"})
     public void viewPriorVersion() {
-        goToCdeByName("name of testuser CDE 1");
+        goToCdeByName(newCdeName);
         findElement(By.linkText("History")).click();
         findElement(By.id("prior-0")).click();
         Assert.assertTrue(textPresent("1.0alpha1"));

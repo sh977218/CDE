@@ -343,12 +343,6 @@ app.get('/logout', function(req, res) {
   });
 });
 
-app.get('/ftsearch', function(req, res) {
-    cdesvc.elasticsearch(req, res);
-});
-
-
-
 app.get('/listcde', function(req, res) {
     cdesvc.listcde(req, res);
 });
@@ -661,6 +655,16 @@ app.get('/classificationSystems', function(req, res) {
    return mongo_data.classificationSystems(function (result) {
        res.send(result);
    }); 
+});
+
+app.get('/org/:name', function(req, res) {
+   return mongo_data.orgByName(req.params.name, function (result) {
+       res.send(result);
+   }); 
+});
+
+app.post('/elasticSearch', function(req, res) {
+   return cdesvc.elasticsearch(req.body.query, res); 
 });
 
 app.post('/addAttachmentToCde', function(req, res) {

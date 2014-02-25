@@ -39,7 +39,7 @@ public class NlmCdeBaseTest {
         driver = new ChromeDriver(caps);
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        wait = new WebDriverWait(driver, 8, 200);
+        wait = new WebDriverWait(driver, 4, 200);
     }
     
     public void loginAsNlm() {
@@ -110,7 +110,7 @@ public class NlmCdeBaseTest {
     }
     
     public boolean textPresent(String text) {
-        wait.until(ExpectedConditions.textToBePresentInElement(By.cssSelector("BODY"), text));
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
         return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) > 0;
     }
     
