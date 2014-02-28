@@ -41,6 +41,7 @@ def buildClassif = {conceptSystem, concept, org ->
     newClassif;
 }
 
+println ("ingesting: " + args[0]);
 def deList = new XmlSlurper().parse(new File(args[0]));
 
 for (int i  = 0; i < deList.DataElement.size(); i++) {

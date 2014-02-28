@@ -32,7 +32,7 @@ exports.morelike = function(id, callback) {
     var from = 0;
     var limit = 20;
 
-    request.get(elasticUri + "documents/" + id + "/_mlt", function (error, response, body) {
+    request.get(elasticUri + "dataelement/" + id + "/_mlt", function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var resp = JSON.parse(body);
             var result = {cdes: []

@@ -13,10 +13,39 @@ DBCollection orgColl = db.getCollection("orgs");
 
 def report = new XmlSlurper().parse(new File("../nlm-seed/ExternalCDEs/ninds/all/cdes.xml"));
 
-def classif = new Classif();
+def saveClassif = { newClassif ->
+    def foundOrg = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
+    
+    def found = false;
+    if (foundOrg == null) {
+        println("Missing Org: " + newClassif.get("stewardOrg").get("name"));
+    }
+    def classifications = foundOrg.get("classifications");
+    if (classifications == null) {
+        foundOrg.put("classifications", []);
+    }
+    for (BasicDBObject existingClassif : classifications) {
+        if ((existingClassif.get("conceptSystem").equals(newClassif.get("conceptSystem")) && (existingClassif.get("concept").equals(newClassif.get("concept"))))) {
+            found = true;
+        }
+    }
+    if (!found) {
+        foundOrg.classifications.add(newClassif);
+        orgColl.update(new BasicDBObject("_id", foundOrg.get("_id")), foundOrg);
+    }
+};
 
-def baseClassif = classif.buildClassif("Disease", "General (For all diseases)")
-classif.saveClassif(baseClassif);
+def buildClassif = {conceptSystem, concept ->
+    def newClassif = new BasicDBObject();
+    newClassif.put("conceptSystem", conceptSystem)
+    newClassif.put("concept", concept)
+    newClassif.put("stewardOrg", new BasicDBObject("name", "NINDS"));
+    newClassif;
+}
+
+
+def baseClassif = buildClassif("Disease", "General (For all diseases)")
+saveClassif(baseClassif);
 
 for (int i = 0 ; i < report.table1[0].table1_Group1_Collection[0].table1_Group1.size(); i++) {
     def cde = report.table1[0].table1_Group1_Collection[0].table1_Group1[i];
@@ -47,18 +76,19 @@ for (int i = 0 ; i < report.table1[0].table1_Group1_Collection[0].table1_Group1.
     naming.add(defaultName);
     newDE.put("naming", naming);
     
-    if (cde.@PvText != null) {
-        def permissibleValues = [];
+    def pvText = cde.@PvText as String;
+    def permissibleValues = [];
+    if (pvText != null && pvText.length() > 0) {
         newDE.get("valueDomain").put("datatype", 'Value List');
          
-        String[] pvs = ((String)cde.@PvText).split(";");
+        String[] pvs = pvText.split(";");
         for (String pv : pvs) {
             if (pv.length() >  0) {
                 permissibleValues.add(new BasicDBObject("permissibleValue", pv));
             }
         }
-        newDE.get("valueDomain").put("permissibleValues", permissibleValues);
     }
+    newDE.get("valueDomain").put("permissibleValues", permissibleValues);
     
     def classification = [];
     classification.add(baseClassif);
@@ -69,27 +99,27 @@ for (int i = 0 ; i < report.table1[0].table1_Group1_Collection[0].table1_Group1.
 //    }
 //            
 
-     def newClassif = classif.buildClassif("Classification", (String)cde.@textbox59);
-     classif.saveClassif(newClassif);
+     def newClassif = buildClassif("Classification", (String)cde.@textbox59);
+     saveClassif(newClassif);
      classification.add(newClassif);
             
     String[] population = ((String)cde.@textbox81).split(';');
     for (String pop : population) {
-        newClassif = classif.buildClassif("Population", pop);
-        classif.saveClassif(newClassif);
+        newClassif = buildClassif("Population", pop);
+        saveClassif(newClassif);
         classification.add(newClassif);
     }
             
-    newClassif = classif.buildClassif("Domain", (String)cde.@textbox87);
-    classif.saveClassif(newClassif);
+    newClassif = buildClassif("Domain", (String)cde.@textbox87);
+    saveClassif(newClassif);
     classification.add(newClassif);
     
-    newClassif = classif.buildClassif("Sub-Domain", (String)cde.@textbox62);
-    classif.saveClassif(newClassif);
+    newClassif = buildClassif("Sub-Domain", (String)cde.@textbox62);
+    saveClassif(newClassif);
     classification.add(newClassif);
 
-    newClassif = classif.buildClassif("CRF Module / Guideline", (String)cde.@textbox63);
-    classif.saveClassif(newClassif);
+    newClassif = buildClassif("CRF Module / Guideline", (String)cde.@textbox63);
+    saveClassif(newClassif);
     classification.add(newClassif);
     
     newDE.append("classification", classification);

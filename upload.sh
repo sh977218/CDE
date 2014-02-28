@@ -2,7 +2,7 @@
 
 mongo nlmcde test/dbInit.js
 
-find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec node ingester/uploadCadsr {} \;
+find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec groovy groovy/UploadCadsr {} \;
 
 find ../nlm-seed/ExternalCDEs/Vsac/*.xml -exec node ingester/uploadVsac {} \;
 

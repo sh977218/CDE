@@ -1,4 +1,6 @@
-       #!/bin/sh
+#!/bin/sh
+
+# TODO Make versions params.
         
 curl -XPOST "localhost:9200/_aliases" -d'
         {
@@ -11,7 +13,7 @@ curl -XPOST "localhost:9200/_aliases" -d'
                 },           
                 { "add": {
                     "alias": "nlmcde",
-                    "index": "nlmcde_v3"
+                    "index": "nlmcde_v1"
                 }}
             ]
         }'

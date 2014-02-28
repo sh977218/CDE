@@ -46,5 +46,6 @@ db.orgs.insert({name: "CDC/PHIN"});
 db.orgs.insert({name: "ECOG-ACRIN"});
 db.orgs.insert({name: "OHSU Knight"});
 db.orgs.insert({name: "NHC-NCI"});
+db.orgs.insert({name: "NIDA"});
 
 

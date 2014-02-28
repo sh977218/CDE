@@ -1,5 +1,6 @@
 #!/bin/sh
-curl -XPUT "localhost:9200/_river/nlmcde_v4/_meta" -d'
+## TODO- Make version a param.
+curl -XPUT "localhost:9200/_river/nlmcde_v1/_meta" -d'
 {
   "type": "mongodb",
     "mongodb": {
@@ -8,7 +9,7 @@ curl -XPUT "localhost:9200/_river/nlmcde_v4/_meta" -d'
       "script": "if( ctx.document.archived) { ctx.deleted = true; }" 
     },
     "index": {
-      "name": "nlmcde_v4", 
+      "name": "nlmcde_v1", 
       "type": "dataelement"                  
     }        
 }'

@@ -3,7 +3,6 @@ package gov.nih.nlm.cde.test;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -76,5 +75,40 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         hangon();
         Assert.assertTrue(textPresent("CTEP -- Specimen Inflammation Change Type"));
     }
-      
+    
+    @Test 
+    public void phraseSearch() {
+        goHome();
+        findElement(By.name("ftsearch")).sendKeys("Biomarker Gene");
+        findElement(By.id("search.submit")).click();
+        Assert.assertTrue(textPresent("Biomarker Gene"));
+        List<WebElement> linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        Assert.assertTrue(linkList.size() > 10);
+
+        findElement(By.name("ftsearch")).clear();
+        findElement(By.name("ftsearch")).sendKeys("\"Biomarker Gene\"");
+        findElement(By.id("search.submit")).click();
+        Assert.assertTrue(textPresent("caBIG (1)"));
+        
+        Assert.assertTrue(textPresent("Biomarker Gene"));
+        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        Assert.assertEquals(linkList.size(), 1);
+    }
+    
+    @Test
+    public void starSearch() {
+        goHome();
+        findElement(By.name("ftsearch")).sendKeys("ISO2109");
+        findElement(By.id("search.submit")).click();
+        Assert.assertTrue(textPresent("No Results"));
+        
+        goHome();
+        findElement(By.name("ftsearch")).sendKeys("ISO2109*");
+        findElement(By.id("search.submit")).click();
+        List<WebElement> linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        Assert.assertTrue(linkList.size() > 10);
+        Assert.assertTrue(textPresent("ISO21090.ST"));
+  
+    }
+    
 }

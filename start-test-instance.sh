@@ -15,7 +15,6 @@ sleep 3;
 mongo test test/dbInit.js
 mongo test db/indexes.txt
 
-#node ingester/uploadCadsr test/cadsrTestSeed.xml
 groovy groovy/UploadCadsr test/cadsrTestSeed.xml --testMode
 
 curl -XPOST "localhost:9200/cdetest" -d '
@@ -77,7 +76,7 @@ if [ "$curl_res" == "$target" ]
 then
     #groovy groovy/UploadCadsrForms.groovy --testMode &
     #
-#    gradle -b test/selenium/build.gradle -Dtest.single=FacetSearchTest cleanTest test & 
+#    gradle -b test/selenium/build.gradle -Dtest.single=CdeSearchTest cleanTest test & 
     gradle -b test/selenium/build.gradle clean test & 
 #    rm test-console.out
     node app > test-console.out

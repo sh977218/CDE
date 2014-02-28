@@ -623,7 +623,7 @@ function DEListCtrl($scope, $http, $timeout, $modal, $location) {
             for (var i = 0; i < $scope.filter.and.length; i++) {
                 if ($scope.filter.and[i].term['stewardOrg.name'] != undefined) {
                     queryStuff.facets.classification = {
-                        terms: {field: "classification.concept", size: 150}
+                        terms: {field: "classification.concept", size: 300}
                         , facet_filter: {term: {"stewardOrg.name": $scope.filter.and[i].term['stewardOrg.name']}}
                     };
                 }  

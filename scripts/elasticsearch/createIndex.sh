@@ -1,5 +1,6 @@
 #!/bin/sh
-curl -XPOST localhost:9200/nlmcde_v4 -d '
+## Make version a param
+curl -XPOST localhost:9200/nlmcde_v1 -d '
 {
     "settings" : {
         "number_of_shards" : 1
