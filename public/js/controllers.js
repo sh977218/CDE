@@ -932,10 +932,10 @@ var SaveCdeModalCtrl = function ($scope, $window, $modalInstance, cde, user) {
   $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Retired'];
 
   $scope.ok = function () {
-    $scope.cde.$save(function (cde) {
-        $window.location.href = "/#/deview?cdeId=" + cde._id;
+    $scope.cde.$save(function (newcde) {
+        $window.location.href = "/#/deview?cdeId=" + newcde._id;
+        $modalInstance.close();
     });
-    $modalInstance.close();
   };
 
   $scope.cancelSave = function () {

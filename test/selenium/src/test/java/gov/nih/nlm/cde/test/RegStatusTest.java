@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -12,6 +13,34 @@ import org.testng.annotations.Test;
  * @author ludetc
  */
 public class RegStatusTest extends NlmCdeBaseTest {
+
+    // TODO - Cannot get this test to pass. Can't figure out why.
+//    @Test
+    public void administrativeStatus() {
+        loginAs(ctepCurator_username, ctepCurator_password);
+        goToCdeByName("Small Cell Lung Carcinoma Invasion Status");
+        findElement(By.linkText("Status")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("dd_adminStatus")));
+        findElement(By.linkText("General Details")).click();
+        findElement(By.id("editStatus")).click();
+        findElement(By.name("administrativeStatus")).sendKeys("Ready For Review");
+        findElement(By.id("saveRegStatus")).click();
+        modalGone();
+        goToCdeByName("Small Cell Lung Carcinoma Invasion Status");
+        findElement(By.linkText("Status")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("dd_adminStatus")));
+        Assert.assertTrue(textPresent("Ready For Review"));
+        findElement(By.linkText("General Details")).click();
+        findElement(By.id("editStatus")).click();
+        findElement(By.name("administrativeStatus")).clear();
+        findElement(By.name("administrativeStatus")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.id("saveRegStatus")).click();
+        modalGone();  
+        goToCdeByName("Small Cell Lung Carcinoma Invasion Status");
+        findElement(By.linkText("Status")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("dd_adminStatus")));        
+        logout();
+    }
     
     @Test
     public void changeRegistrationStatus() {
@@ -51,7 +80,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         logout();
     }
     
-//    @Test
+    @Test
     public void retire() {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Colitis Grade");
