@@ -188,54 +188,17 @@ exports.removeFromCart = function (user, formId, callback) {
     });
 };
 
-// should be ready to remove this. 
-//exports.cdelist = function(from, limit, searchOptions, callback) {
-//    var query = DataElement;
-//    if (searchOptions != null) {
-//        if (searchOptions.name != null) {
-//            query = query.where("naming").elemMatch(function(elem) {
-//                elem.where("designation", searchOptions.name);
-//            });
-//            delete searchOptions.name;
-//        }
-//        if (searchOptions.classificationSystem != null) {
-//            query = query.where("classification").elemMatch(function (elem) {
-//               elem.where("conceptSystem", searchOptions.classificationSystem) 
-//            });
-//            delete searchOptions.classificationSystem;
-//        }
-//        if (searchOptions.registrationState != null) {
-//            query = query.where("registrationState.registrationStatus")
-//                    .equals(searchOptions.registrationState.registrationStatus);
-//            delete searchOptions.registrationState;
-//        }
-//    }        
-//    
-//    query.find(searchOptions).where("archived").equals(null).skip(from).limit(limit)
-//            .sort({"registrationState.registrationStatusSortOrder": 1})
-//            .sort({"views": -1})
-//            .slice('valueDomain.permissibleValues', 10).exec(function (err, cdes) {
-//        query.find(searchOptions).where("archived").equals(null).count(searchOptions).exec(function (err, count) {
-//        callback("",{
-//               cdes: cdes
-//               , page: Math.ceil(from / limit)
-//               , pages: Math.ceil(count / limit)
-//               , totalNumber: count
-//           });
-//        });
-//    });
-//}; 
-
 exports.boardList = function(from, limit, searchOptions, callback) {
     PinningBoard.find(searchOptions).exec(function (err, boards) {
+        // TODO Next line throws "undefined is not a function.why?
         PinningBoard.find(searchOptions).count(searchOptions).exec(function (err, count) {
-        callback("",{
-               boards: boards
-               , page: Math.ceil(from / limit)
-               , pages: Math.ceil(count / limit)
-               , totalNumber: count
-           });
-        });
+            callback("",{
+                    boards: boards
+                    , page: Math.ceil(from / limit)
+                    , pages: Math.ceil(count / limit)
+                    , totalNumber: count
+                });
+             });
     });
 };  
 

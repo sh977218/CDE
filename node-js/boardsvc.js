@@ -14,16 +14,15 @@ exports.boardList = function(req, res) {
     if (search == 'undefined') {
         search = "";
     } 
-    var searchObj;
+    var searchObj = {};
     if (search) {
         searchObj = JSON.parse(search);
         searchObj.shareStatus = "Public";
         if (searchObj.name) {
-            var regex = new RegExp(searchObj.name, 'i');
-            searchObj.name = regex;
+            searchObj.name = new RegExp(searchObj.name, 'i');
         }
     }
-    
+
     mongo_data.boardList(from, pagesize, searchObj, function(err, boardlist) {
        if (err) {
            res.send("ERROR");

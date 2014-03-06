@@ -161,15 +161,6 @@ function BoardViewCtrl($scope, $routeParams, $http) {
 
 function MyBoardsCtrl($scope, $modal, $http, $timeout) {
     $scope.setActiveMenu('MYBOARDS');
-    $scope.boards = [];
-    
-    $scope.reload = function() {
-        $http.get("/boards/" + $scope.user._id).then(function (response) {
-           $scope.boards = response.data;
-        }); 
-    };
-    
-    $scope.reload();
     
     $scope.removeBoard = function(index) {
         $http.delete("/board/" + $scope.boards[index]._id).then(function (response) {
@@ -200,16 +191,19 @@ function MyBoardsCtrl($scope, $modal, $http, $timeout) {
                 delete $scope.message;
             }, 3000);
 
-            $scope.reload();
+            $scope.loadBoards();
         });
     };
         
     $scope.openNewBoard = function (cde) {
-        $modal.open({
+        var modalInstance = $modal.open({
           templateUrl: 'newBoardModalContent.html',
           controller: NewBoardModalCtrl,
           resolve: {
           }
+        });
+        modalInstance.result.then(function() {
+           $scope.loadBoards(); 
         });
     };
 }
