@@ -30,7 +30,7 @@ public class ScreenShotListener extends TestListenerAdapter {
         if (!itr.isSuccess()) {
             File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
             try {
-                FileUtils.copyFile(scrFile, new File(methodName + "_" + formater.format(calendar.getTime()) + ".png"));
+                FileUtils.copyFile(scrFile, new File("build/screenshots/" + methodName + "_" + formater.format(calendar.getTime()) + ".png"));
             } catch (IOException e1) {
                 e1.printStackTrace();
             }

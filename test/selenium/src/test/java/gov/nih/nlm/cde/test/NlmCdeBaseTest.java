@@ -38,8 +38,8 @@ public class NlmCdeBaseTest {
         caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
         driver = new ChromeDriver(caps);
         driver.get(baseUrl);
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        wait = new WebDriverWait(driver, 4, 200);
+        driver.manage().timeouts().implicitlyWait(6, TimeUnit.SECONDS);
+        wait = new WebDriverWait(driver, 6, 200);
     }
     
     public void loginAsNlm() {

@@ -56,7 +56,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("20121025"));
         Assert.assertTrue(textPresent("2135-2"));
         Assert.assertTrue(textPresent("CDCREC"));
-        List<WebElement> vsacLines = driver.findElements(By.xpath("//tbody[@id='vsacTableBody']/tr"));
+        WebElement tbody = driver.findElement(By.id("vsacTableBody"));
+        List<WebElement> vsacLines = tbody.findElements(By.tagName("tr"));
         Assert.assertEquals(vsacLines.size(), 2);
         
         goToCdeByName("Patient Ethnic Group Category");

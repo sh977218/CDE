@@ -57,7 +57,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
         Assert.assertEquals(linkList.size(), 7);
         findElement(By.id("li-checked-NHLBI")).click();
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("6")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("3")));
     }
     
     @Test
