@@ -4,9 +4,14 @@ import com.mongodb.*;
 import com.mongodb.util.JSON;
 import java.util.UUID;
 
-MongoClient mongoClient = new MongoClient( "localhost" );
-String dbName = args.contains("--testMode")?"test":"nlmcde"; 
-DB db = mongoClient.getDB(dbName);
+def mongoHost = System.getenv()['MONGO_HOST'];
+if(mongoHost.length == 0) mongoHost = "localhost";
+
+def mongoDb = System.getenv()['MONGO_DB'];
+if(mongoDb.length == 0) mongoDb = "test";
+
+MongoClient mongoClient = new MongoClient( mongoHost );
+DB db = mongoClient.getDB(mongoDb);
 
 DBCollection deColl = db.getCollection("dataelements");
 DBCollection orgColl = db.getCollection("orgs");
