@@ -5,10 +5,10 @@ import com.mongodb.util.JSON;
 import java.util.UUID;
 
 def mongoHost = System.getenv()['MONGO_HOST'];
-if(mongoHost.length == 0) mongoHost = "localhost";
+if(mongoHost == 0) mongoHost = "localhost";
 
 def mongoDb = System.getenv()['MONGO_DB'];
-if(mongoDb.length == 0) mongoDb = "test";
+if(mongoDb == null) mongoDb = "test";
 
 MongoClient mongoClient = new MongoClient( mongoHost );
 DB db = mongoClient.getDB(mongoDb);
