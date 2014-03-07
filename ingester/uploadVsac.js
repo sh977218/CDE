@@ -27,10 +27,10 @@ var Org = mongoose.model('Org', schemas.orgSchema);
 var orgMap = {
     "Oklahoma Foundation for Medical Quality": "OFMQ"
     , "National Library of Medicine": "NLM"
-    , "Joint Commission": "JointCommission"
+    , "Joint Commission": "Joint Commission"
     , "American Medical Association-convened Physician Consortium for Performance Improvement(R)": "AMAPCPI"
     , "PHDSC": "PHDSC"
-    , "CDC NCHS": "CDCNCHS"
+    , "CDC NCHS": "CDC-NCHS"
     , "Lantana": "Lantana"
     , "National Quality Forum": "NQF"
     , "National Committee for Quality Assurance": "NCQA"
@@ -38,7 +38,7 @@ var orgMap = {
     , "California Maternal Quality Care Collaborative": "CMQCC"
     , "Quality Insights of Pennsylvania": "QIP"
     , "Centers for Medicare & Medicaid Services": "CMS"
-    , "CDC National Center on Birth Defects and Developmental Disabilities": "CDCNCBDDD"
+    , "CDC National Center on Birth Defects and Developmental Disabilities": "CDC-NCBDDD"
     , "American Board of Internal Medicine": "ABIM"
 };
 

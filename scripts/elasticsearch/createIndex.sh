@@ -3,7 +3,6 @@
 curl -XPOST localhost:9200/nlmcde_v1 -d '
 {
     "settings" : {
-        "number_of_shards" : 1
     },
     "mappings" : {
         "dataelement" : {
