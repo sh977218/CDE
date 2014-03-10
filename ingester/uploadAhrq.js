@@ -24,6 +24,7 @@ var schemas = require('../node-js/schemas');
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var Org = mongoose.model('Org', schemas.orgSchema);
 
+// TODO - Make this iterate over files. Otherwise, open connection is way too slow.
 fs.readFile(process.argv[2], function(err, result) {
     var data = JSON.parse(result);
     console.log("Name: " + data["Name:"]);
