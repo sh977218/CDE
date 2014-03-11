@@ -23,7 +23,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void stewardFacets() {
         goHome();
-        Assert.assertTrue(textPresent("CCR (8)"));
+        Assert.assertTrue(textPresent("CCR (49)"));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
                 By.partialLinkText("Hydroxychloroquine Sulfate Administered Indicator")));
         hangon();
         linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
-        Assert.assertEquals(linkList.size(), 7);
+        Assert.assertEquals(linkList.size(), 9);
         findElement(By.id("li-checked-NHLBI")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("3")));
     }
@@ -66,15 +66,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-CTEP")).click();
         // next line should make it wait.
         findElement(By.cssSelector("i.fa-check-square-o"));
-        for (WebElement elt : driver.findElements(By.cssSelector("a.accordion-toggle"))) {
-            Assert.assertTrue(elt.getText().startsWith("CTEP"));
-        }
         findElement(By.linkText("Next")).click();
         hangon();
         findElement(By.cssSelector("i.fa-check-square-o"));
-        for (WebElement elt : driver.findElements(By.cssSelector("a.accordion-toggle"))) {
-            Assert.assertTrue(elt.getText().startsWith("CTEP"));
-        }
         findElement(By.name("ftsearch")).sendKeys("Kinetics");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("DCE-MRI Kinetics T1 Mapping Quality Type"));

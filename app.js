@@ -815,6 +815,11 @@ app.post('/removeUsedBy', function(req, res) {
     }
 });
 
+app.get('/orgNames', function(req, res) {
+   mongo_data.orgNames(function (err, names) {
+       res.send(names);
+   }) 
+});
 
 app.post('/removeAttachment', function(req, res) {
     if (req.isAuthenticated()) {

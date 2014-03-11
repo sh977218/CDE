@@ -5,11 +5,11 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
         when('/login', {controller:AuthCtrl, templateUrl:'/login'}).
         when('/signup', {controller:AuthCtrl, templateUrl:'/signup'}).
         when('/createCde', {controller:CreateCdeCtrl, templateUrl:'/createcde'}).
-        when('/listforms', {controller: ListFormsCtrl, templateUrl: '/listforms'}).
-        when('/createform', {controller: CreateFormCtrl, templateUrl: '/createform'}).
-        when('/formview', {controller: FormViewCtrl, templateUrl: '/formview'}).
+//        when('/listforms', {controller: ListFormsCtrl, templateUrl: '/listforms'}).
+//        when('/createform', {controller: CreateFormCtrl, templateUrl: '/createform'}).
+//        when('/formview', {controller: FormViewCtrl, templateUrl: '/formview'}).
+//        when('/cart', {controller: CartCtrl, templateUrl: '/cart'}).
         when('/deview', {controller: DEViewCtrl, templateUrl: '/deview'}).
-        when('/cart', {controller: CartCtrl, templateUrl: '/cart'}).
         when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
         when('/orgaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/orgaccountmanagement'}).
         when('/profile', {controller: AccountManagementCtrl, templateUrl: '/profile'}).

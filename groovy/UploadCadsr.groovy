@@ -5,11 +5,16 @@ import com.mongodb.util.JSON;
 import java.util.UUID;
 
 def mongoHost = System.getenv()['MONGO_HOST'];
-if(mongoHost == 0) mongoHost = "localhost";
+if(mongoHost == null) {
+    println "please set MONGO_HOST"
+    System.exit(0);
+}
 
 def mongoDb = System.getenv()['MONGO_DB'];
-if(mongoDb == null) mongoDb = "test";
-
+if(mongoDb == null)  {
+    println "Please set MONGO_DB";
+    System.exit(0);
+}
 MongoClient mongoClient = new MongoClient( mongoHost );
 DB db = mongoClient.getDB(mongoDb);
 
@@ -39,9 +44,11 @@ def saveClassif = { newClassif ->
 };
 
 def buildClassif = {conceptSystem, concept, org ->
+    if (conceptSystem.trim().equals("PhenX")) org = "PhenX";
+    
     def newClassif = new BasicDBObject();
-    newClassif.put("conceptSystem", conceptSystem)
-    newClassif.put("concept", concept)
+    newClassif.put("conceptSystem", conceptSystem.trim())
+    newClassif.put("concept", concept.trim())
     newClassif.put("stewardOrg", new BasicDBObject("name", org));
     newClassif;
 }

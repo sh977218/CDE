@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export JAVA_OPTS="$JAVA_OPTS -Xmx512M"
+
 mongo nlmcde test/dbInit.js
 
 find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec groovy groovy/UploadCadsr {} \;

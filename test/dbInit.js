@@ -47,5 +47,7 @@ db.orgs.insert({name: "ECOG-ACRIN"});
 db.orgs.insert({name: "OHSU Knight"});
 db.orgs.insert({name: "NHC-NCI"});
 db.orgs.insert({name: "NIDA"});
+db.orgs.insert({name: "PhenX"});
+db.orgs.insert({name: "AHRQ"});
 
 

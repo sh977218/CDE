@@ -58,6 +58,12 @@ exports.getFile = function(callback, res, id) {
     gfs.createReadStream({ _id: id }).pipe(res);
 };
  
+exports.orgNames = function(callback) {
+    Org.find({}, {name: true, _id: false}).exec(function(err, result) {
+        callback(err, result);
+    });
+};
+ 
 exports.addCdeAttachment = function(file, user, comment, cde, cb) {
     var writestream = gfs.createWriteStream({});
     writestream.on('close', function (newfile) {

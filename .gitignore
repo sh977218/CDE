@@ -10,6 +10,7 @@ envconfig.js
 
 ## Local Files
 seed
+scripts/elasticsearch/my*
 
 ## Logs
 expressLog*
