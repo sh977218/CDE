@@ -438,25 +438,6 @@ function DEListCtrl($scope, $http, $timeout, $modal, $location) {
         $location.url("deview?cdeId=" + cde._id);
     };
     
-    $scope.addOrgFilter = function(t) {
-        if ($scope.selectedOrg === undefined) {
-            $scope.selectedOrg = t.term;
-        } else {
-            delete $scope.selectedOrg;
-        }
-        delete $scope.facets.groups;
-        $scope.facetSearch();
-    };
-
-    $scope.addFilter = function(t) {
-        t.selected = !t.selected;
-        $scope.facetSearch();
-    };
-
-    $scope.$watch('currentPage', function() {
-        $scope.reload();
-    });
-
     $scope.setPage = function (pageNo) {
       $scope.currentPage = pageNo;
     };       
@@ -468,11 +449,41 @@ function DEListCtrl($scope, $http, $timeout, $modal, $location) {
     $scope.next = function () {
         $scope.currentPage++;
     };
-       
+    
+    $scope.$watch('currentPage', function() {
+        $scope.reload();
+    });
+    
+    $scope.addOrgFilter = function(t) {
+        if ($scope.selectedOrg === undefined) {
+            $scope.selectedOrg = t.term;
+        } else {
+            delete $scope.selectedOrg;
+        }
+        delete $scope.facets.groups;
+        $scope.facetSearch();
+    };
+
+    $scope.selectSubGroup = function(subG, system) {
+        subG.selected = !subG.selected;
+        subG.conceptSystem = system;
+        $scope.facetSearch();
+    };
+
+    $scope.openGroup = function(g) {
+        g.selected = !g.selected;
+    };
+    
+    $scope.addFilter = function(t) {
+        t.selected = !t.selected;
+        $scope.facetSearch();
+    };
+    
     $scope.facetSearch = function() {
         $scope.filter = {and: []};
+        var regStatusOr = [];
   
-        if ($scope.facets != null) {
+        if ($scope.facets !== undefined) {
             if ($scope.selectedOrg !== undefined) {
                 $scope.filter.and.push({term: {"classification.stewardOrg.name": $scope.selectedOrg}});
             }
@@ -488,13 +499,16 @@ function DEListCtrl($scope, $http, $timeout, $modal, $location) {
                 }
             }
             
-            if ($scope.facets.statuses != null) {
+            if ($scope.facets.statuses !== undefined) {
                 for (var i = 0; i < $scope.facets.statuses.terms.length; i++) {
                     var t = $scope.facets.statuses.terms[i];
                     if (t.selected === true) {
-                          $scope.filter.and.push({term: {"registrationState.registrationStatus": t.term}});
+                        regStatusOr.push({term: {"registrationState.registrationStatus": t.term}});
                     }
                 }
+            }
+            if (regStatusOr.length > 0) {
+                $scope.filter.and.push({or: regStatusOr});
             }
         }
 
@@ -506,10 +520,10 @@ function DEListCtrl($scope, $http, $timeout, $modal, $location) {
                 $scope.totalItems = result.totalNumber;
                 $scope.facets = result.facets;
                 
-                for (var i = 0; i < $scope.filter.and.length; i++) {
-                    if ($scope.filter.and[i].term['registrationState.registrationStatus'] != undefined) {
+                for (var i = 0; i < regStatusOr.length; i++) {
+                    if (regStatusOr[i].term['registrationState.registrationStatus'] !== undefined) {
                         for (var j = 0; j < $scope.facets.statuses.terms.length; j++) {
-                            if ($scope.facets.statuses.terms[j].term === $scope.filter.and[i].term['registrationState.registrationStatus']) {
+                            if ($scope.facets.statuses.terms[j].term === regStatusOr[i].term['registrationState.registrationStatus']) {
                                 $scope.facets.statuses.terms[j].selected = true;
                             }
                         }
@@ -517,7 +531,7 @@ function DEListCtrl($scope, $http, $timeout, $modal, $location) {
                 }
 
                 
-                if ($scope.facets.classification != undefined) {
+                if ($scope.facets.classification !== undefined) {
                      $http.get("/org/" + $scope.selectedOrg).then(function(response) {
                          var org = response.data;
                          $scope.facets.groups = [];
@@ -526,7 +540,7 @@ function DEListCtrl($scope, $http, $timeout, $modal, $location) {
                                 var currentOrgClassif = org.classifications[i];
                                 var sysFound = false;
                                 for (var j = 0; j < $scope.facets.groups.length; j++) {
-                                    if ($scope.facets.groups[j].conceptSystem == currentOrgClassif.conceptSystem) {
+                                    if ($scope.facets.groups[j].conceptSystem === currentOrgClassif.conceptSystem) {
                                         sysFound = true;
                                     }
                                 }
@@ -552,19 +566,21 @@ function DEListCtrl($scope, $http, $timeout, $modal, $location) {
                             }
                         }
                          for (var i = 0; i < $scope.filter.and.length; i++) {
-                            if ($scope.filter.and[i].term['classification.stewardOrg.name'] != undefined) {
-                                for (var j = 0; j < $scope.facets.orgs.terms.length; j++) {
-                                    if ($scope.facets.orgs.terms[j].term === $scope.filter.and[i].term['classification.stewardOrg.name']) {
-                                        $scope.facets.orgs.terms[j].selected = true;
+                             if ($scope.filter.and[i].term !== undefined) {
+                                if ($scope.filter.and[i].term['classification.stewardOrg.name'] !== undefined) {
+                                    for (var j = 0; j < $scope.facets.orgs.terms.length; j++) {
+                                        if ($scope.facets.orgs.terms[j].term === $scope.filter.and[i].term['classification.stewardOrg.name']) {
+                                            $scope.facets.orgs.terms[j].selected = true;
+                                        }
                                     }
                                 }
-                            }
-                            if ($scope.filter.and[i].term['classification.concept'] != undefined) {
-                                for (var j = 0; j < $scope.facets.groups.length; j++) {
-                                    for (var h = 0; h < $scope.facets.groups[j].concepts.length; h++) {
-                                        if ($scope.filter.and[i].term['classification.concept'] === $scope.facets.groups[j].concepts[h].term) {
-                                            $scope.facets.groups[j].selected = true;
-                                            $scope.facets.groups[j].concepts[h].selected = true;
+                                if ($scope.filter.and[i].term['classification.concept'] !== undefined) {
+                                    for (var j = 0; j < $scope.facets.groups.length; j++) {
+                                        for (var h = 0; h < $scope.facets.groups[j].concepts.length; h++) {
+                                            if ($scope.filter.and[i].term['classification.concept'] === $scope.facets.groups[j].concepts[h].term) {
+                                                $scope.facets.groups[j].selected = true;
+                                                $scope.facets.groups[j].concepts[h].selected = true;
+                                            }
                                         }
                                     }
                                 }
@@ -579,7 +595,8 @@ function DEListCtrl($scope, $http, $timeout, $modal, $location) {
     $scope.buildElasticQuery = function (callback) {
         var queryStuff = {size: $scope.resultPerPage};
         var searchQ = $scope.ftsearch;
-        if (searchQ != undefined && searchQ !== "") {
+
+        if (searchQ !== undefined && searchQ !== "") {
             queryStuff.query = 
                 {   
                     bool: {
@@ -611,31 +628,33 @@ function DEListCtrl($scope, $http, $timeout, $modal, $location) {
             , statuses: {terms: {field: "registrationState.registrationStatus"}}
         };    
 
-        if ($scope.filter != undefined && $scope.filter.and != undefined && $scope.filter.and.length !== 0) {
-            queryStuff.filter = $scope.filter;
-            for (var i = 0; i < $scope.filter.and.length; i++) {
-                if ($scope.filter.and[i].term['classification.stewardOrg.name'] != undefined) {
-                    queryStuff.facets.classification = {
-                        terms: {field: "classification.concept", size: 300}
-                        , facet_filter: {term: {"classification.stewardOrg.name": $scope.filter.and[i].term['classification.stewardOrg.name']}}
-                    };
-                }  
+        if ($scope.filter !== undefined) {
+            if ($scope.filter.and !== undefined) {
+                if ($scope.filter.and.length === 0) {
+                    delete $scope.filter.and;
+                } else {
+                    for (var i = 0; i < $scope.filter.and.length; i++) {
+                         if ($scope.filter.and[i].term !== undefined && $scope.filter.and[i].term['classification.stewardOrg.name'] !== undefined) {
+                             queryStuff.facets.classification = {
+                                 terms: {field: "classification.concept", size: 300}
+                                 , facet_filter: {term: {"classification.stewardOrg.name": $scope.filter.and[i].term['classification.stewardOrg.name']}}
+                             };
+                         }  
+                     }
+                }
             }
+            if ($scope.filter.and === undefined) {
+                delete $scope.filter;
+            }
+        }
+
+        if ($scope.filter !== undefined) {
+            queryStuff.filter = $scope.filter;
         }
 
         var from = ($scope.currentPage - 1) * $scope.resultPerPage;
         queryStuff.from = from;
-                
         return callback({query: queryStuff});
-    };
-
-    $scope.selectSubGroup = function(subG) {
-        subG.selected = !subG.selected;
-        $scope.facetSearch();
-    };
-
-    $scope.openGroup = function(g) {
-        g.selected = !g.selected;
     };
 
     $scope.search = function() {

@@ -34,7 +34,7 @@
                 </span>
                 <ul class="fa-ul" ng-show="g.selected">
                     <li ng-repeat="subG in g.concepts | orderBy:'term'" style="margin-left: -40px" ng-switch="subG.selected" >
-                        <span ng-click="selectSubGroup(subG)">
+                        <span ng-click="selectSubGroup(subG, g.conceptSystem)">
                             <i ng-switch-default class="fa fa-square-o" id="li-blank-{{subG.term}}"></i> 
                             <i ng-switch-when="true" class="fa fa-check-square-o" id="li-checked-{{subG.term}}"></i>
                             <small>{{subG.term}} ({{subG.count}})</small>
