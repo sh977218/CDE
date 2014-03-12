@@ -46,4 +46,11 @@ for (var m  = 0; m < replaceMap.length; m++) {
             });
         }
     });
+    console.log('Done');
+
+    // wait 5 secs for mongoose to do it's thing before closing.  
+    setTimeout((function() {
+        process.exit();
+    }), 5000);
+    
 };
