@@ -24,6 +24,31 @@ var schemas = require('../node-js/schemas');
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var Org = mongoose.model('Org', schemas.orgSchema);
 
+
+var addClassification = function (system, concept) {
+  Org.findOne({name: 'AHRQ'}).exec(function (err, ahrqOrg) {
+      var found = false;
+      if (ahrqOrg.classifications === undefined) {
+          ahrqOrg.classifications = [];
+      }
+     for (var i = 0; i < ahrqOrg.classifications.length; i++) {
+         if (ahrqOrg.classifications[i].conceptSystem === system && ahrqOrg.classifications[i].concept === concept) {
+             found = true;
+         }
+     } 
+     if (found === false) {
+         ahrqOrg.classifications.push({
+             conceptSystem: system
+             , concept: concept
+             , stewardOrg: {name: 'AHRQ'}
+          });
+          ahrqOrg.save(function(err, newOrg) {
+              if (err) console.log("failed to update Org: " + err);
+          });
+     }
+  });
+};
+
 // TODO - Make this iterate over files. Otherwise, open connection is way too slow.
 fs.readFile(process.argv[2], function(err, result) {
     var data = JSON.parse(result);
@@ -114,6 +139,16 @@ fs.readFile(process.argv[2], function(err, result) {
        }     
     );
     
+    addClassification("Common Formats / Form", data["Form Name:"]);
+    
+    newDE.classification = [
+        {
+            conceptSystem: "Common Formats / Form"
+            , concept: data["Form Name:"]
+            , stewardOrg: {name: 'AHRQ'}
+        }
+    ];
+    
     newDE.save(function (err, newDE) {
         if (err) {
           console.log('unable to save DE: ' + util.inspect(newDE));
@@ -125,6 +160,6 @@ fs.readFile(process.argv[2], function(err, result) {
     // wait 5 secs for mongoose to do it's thing before closing.  
     setTimeout((function() {
         process.exit();
-    }), 5000);
+    }), 1000);
 });
 
