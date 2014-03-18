@@ -61,6 +61,7 @@
     <div>{{vsacError}}</div>
     <div ng-hide="editMode">
         <a class="btn" ng-show="isAllowed(cde)" ng-click="editMode=true">Update O.I.D</a>
+        <a class="btn" ng-show="isAllowed(cde) && cde.dataElementConcept.conceptualDomain.vsac" ng-click="removeVSMapping()" id="removeVSButton">Remove Mapping</a>
     </div> 
     <div ng-show="editMode">
         <input name="vsacId" type="text" ng-model="cde.dataElementConcept.conceptualDomain.vsac.id" placeholder="VSAC O.I.D"/>

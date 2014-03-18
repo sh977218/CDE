@@ -802,6 +802,13 @@ function SaveCdeCtrl($scope, $modal, $http, $timeout) {
         $scope.stageCde($scope.cde);
     };
     
+    
+    $scope.removeVSMapping = function() {
+        delete $scope.cde.dataElementConcept.conceptualDomain.vsac;
+        $scope.stageCde($scope.cde);
+    };
+    
+
     $scope.stageCde = function(cde) {
         cde.unsaved = true;
     };
