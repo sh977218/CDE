@@ -61,23 +61,22 @@
         <br>MongoDB must run in Replicate mode. For example
         <br>mongod --replSet rs0
         
-        With ElasticSearch running, execute the following to index mongodb.
+        With ElasticSearch running, execute the following to create an index:
         <br>
         <span>
-            #!/bin/sh
-            curl -XPUT "localhost:9200/_river/nlmcde_mongo_v1/_meta" -d'
-            {
-              "type": "mongodb",
-                "mongodb": {
-                  "db": "nlmcde", 
-                  "collection": "dataelements",
-                  "script": "if( ctx.document.archived) { ctx.deleted = true; }" 
-                },
-                "index": {
-                  "name": "nlmcde_mongo_v1", 
-                  "type": "documents"
-                }        
-            }'
+            $> ./scripts/elasticsearch/createIndex.sh
+        </span>
+        <br>
+        Next, create a river for data to flow from Mongo to ElasticSearch. 
+        You may need to edit the content of the file to point to the proper DB, in which case, you can make a local copy of this file.
+        <span>
+            $> ./scripts/elasticsearch/createRiver.sh
+        </span>
+        <br>
+        Finally, create an alias for the index. Alternatively, you can name the index nlmcde and not use aliases. The script removes a previous alias and adds a new one, 
+        this will fail if the alias doesn't already exist. Edit a local copy as needed.  
+        <span>
+           $> ./scripts/elasticsearch/aliasUpdate.sh 
         </span>
         <br>
         Create an alias with the following:
