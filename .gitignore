@@ -1,0 +1,34 @@
+## Generated
+nbproject
+node_modules
+test/selenium/.gradle
+test/selenium/*.png
+test-console.out
+
+## Secret Config Files
+envconfig.js
+
+## Local Files
+seed
+scripts/elasticsearch/my*
+
+## Logs
+expressLog*
+expressErrorLog*
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.npmignore
+Icon?
+ehthumbs.db
+Thumbs.db
+*~
+/test/selenium/.nb-gradle/profiles/private/
+/test/selenium/build/
+.nide
+/test/selenium/chromedriver

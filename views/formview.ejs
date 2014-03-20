@@ -1,0 +1,64 @@
+<div class="container">
+    <div class='row-fluid'>   
+        <div class="span3">
+            <ul class="nav nav-list pull-left">
+                <li><a ng-click="scrollTo('general')"><i class="fa fa-chevron-right"></i> General</a></li>
+                <li ng-repeat="module in form.modules"><a ng-click="scrollTo(module.name)"><i class="fa fa-chevron-right"></i> {{module.name}}</a></li>
+            </ul>
+        </div>
+
+        <div class='span9'>
+            <h4 id='general'>General Details</h4>
+            <dl class="dl-horizontal">
+                <dt>Name: </dt><dd id="dd_name">{{form.name}}</dd>
+                <dt>Owner: </dt><dd id="dd_owner">{{form.stewardOrg.name}}</dd>
+                <dt>Instructions: </dt><dd id="dd_instructions">{{form.instructions|| 'None'}}</dd>                
+                <dt>Created: </dt><dd>{{form.created| date: 'MM/dd/yyyy @ h:mma'}}</dd>    
+                <dt id="dt_createdBy" ng-show="form.createdBy.username">Created By: </dt><dd id="dd_createdBy">{{form.createdBy.username}}</dd>
+            </dl>
+
+            <h4>Sections</h4>
+            <div ng-repeat="module in form.modules">
+                <h3 id="{{module.name}}">
+                    <i id="sectionUp-{{$index}}" ng-show='!$first && isAllowed()' class="fa fa-arrow-up" ng-click="sectionUp($index)"></i> 
+                    <i id="sectionDown-{{$index}}" ng-show='!$last && isAllowed()' class="fa fa-arrow-down" ng-click='sectionDown($index)'></i> 
+                    <inline-edit model="module.name" is-allowed="isAllowed()" on-ok="stageForm()"> </inline-edit>
+                </h3>
+                <h4>Questions</h4>
+                <p ng-show="module.questions.length === 0">There are no questions in this section.</p>
+                <accordion>
+                    <accordion-group ng-repeat="question in module.questions" >
+                        <accordion-heading>
+                            <i id="removeQuestion-{{$parent.$parent.$index}}-{{$index}}" ng-show='isAllowed()' class="fa fa-trash-o" ng-click="remove(module.questions, $index)"></i> 
+                            <i id="upQuestion-{{$parent.$parent.$index}}-{{$index}}" ng-show='!$first && isAllowed()' class="fa fa-arrow-up" ng-click="sortUp(module.questions, $index)"></i> 
+                            <i id="downQuestion-{{$parent.$parent.$index}}-{{$index}}" ng-show='!$last && isAllowed()' class="fa fa-arrow-down" ng-click='sortDown(module.questions, $index)'></i> 
+                            {{question.value}}
+                        </accordion-heading>
+                        <%- include questionView.ejs %>
+                    </accordion-group>
+                </accordion>
+                <div ng-show="isAllowed()" id="newQuestionDiv-{{$index}}">
+                    <a ng-hide="addQuestionMode" class="btn btn-small" ng-click="addQuestionMode = true">
+                        <i class="fa fa-plus"></i> Insert Question</a>
+                    <div ng-show="addQuestionMode">
+                        <input type="text" typeahead="cde as cde.naming[0].designation for cde in autocomplete($viewValue)" 
+                               typeahead-wait-ms="300" ng-model="newQuestion">
+                        <i class="fa fa-check" ng-click="addQuestionToSection(newQuestion, $index); newQuestion = ''; addQuestionMode = false"/>
+                        <i class="fa fa-times" ng-click="newQuestion = ''; addQuestionMode = false"/>
+                    </div>
+                </div>
+                <hr/>
+            </div>
+            <a id="addSection" class="btn btn-small" ng-click="insertSection(form.modules.length)" ng-show="isAllowed()">
+                <i class="fa fa-plus"></i> Insert Section</a>
+
+            <div class="row-fluid">
+                <div class="span12" ng-show="form.unsaved">
+                    <button class="btn cancel" ng-click="revert()">Discard Changes</button>
+                    <button class="btn btn-primary" ng-click="save()">Save</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

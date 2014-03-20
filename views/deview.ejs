@@ -1,0 +1,65 @@
+<div class="container">
+
+<div class="alert" ng-show="cde.archived">Warning: this data element is archived.</div> 
+    
+{{cde.naming[0].designation}}
+<tabset>
+   <tab heading="General Details">
+        <%- include cdegeneraldetails.ejs %>
+        <hr/>
+        <%- include cdespecificdetails.ejs %>
+    </tab>
+   <tab heading="Permissible Values" href="#">
+        <%- include valueDomainView.ejs %>
+   </tab>
+    <tab heading="Naming">
+        <%- include deNaming.ejs %>
+    </tab>
+    <tab heading="Classification">
+        <%- include deClassification.ejs %>
+    </tab>
+    <tab heading="Usage">
+        <%- include deUsage.ejs %>
+    </tab>
+    <tab heading="Concepts">
+        <%- include concepts.ejs %>
+   </tab>
+    <tab heading="Status">
+        <%- include deStatus.ejs %>
+    </tab>
+    <tab heading="Discussions">
+        <%- include deDiscussions.ejs %>
+    </tab>
+    <tab heading="Boards">
+        <h4>Boards this Data Element is in</h4>
+        <%- include listOfBoards.ejs %>
+    </tab>
+    <tab heading="Attachments">
+        <%- include deAttachments.ejs %>
+    </tab>
+    <tab heading="More Like This">
+        <%- include deMlt.ejs %>
+    </tab>
+    <tab heading="History">
+        <%- include cdeHistory.ejs %>
+    </tab>
+
+</tabset>
+
+<hr/>
+
+<div class="row">
+     <div ng-controller="SaveCdeCtrl">
+     <div class="span12" ng-show="cde.unsaved">
+         <button class="btn cancel" ng-click="revert(cde)">Discard Changes</button>
+         <button class="btn btn-primary" ng-click="openSave()" id="openSave">Save</button>
+     </div>
+     <script type="text/ng-template" id="saveCdeModalContent.html">
+         <%- include saveCdeModal.ejs %>
+     </script>
+     </div>
+ </div>
+
+</div>
+   
+

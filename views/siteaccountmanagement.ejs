@@ -1,0 +1,44 @@
+<div class="container">
+<div>{{message}}</div>
+<tabset>
+    <tab heading="Site Admins">
+        <div class="row-fluid" ng-repeat="u in siteAdmins">
+            <div class="span11">{{u.username}}</div>
+            <div class="span1" ng-show="siteAdmins.length > 1"><span class="fa fa-trash-o" ng-click="removeSiteAdmin(u._id)"> Remove</span></div>
+        </div>
+        <div class="row-fluid input-prepend input-append">
+            <input class="span10" type="text" ng-model="admin.username"></input>
+            <span class="add-on" ng-click="addSiteAdmin()">+</span>
+        </div>
+    </tab>
+    <tab heading="Organizations">
+        <div class="row-fluid" ng-repeat="c in orgs">
+            <div class="span11" id="orgName-{{$index}}">{{c.name}}</div>
+            <div class="span1"><i class="fa fa-trash-o" ng-click="removeOrg(c._id)" id="removeOrg-{{$index}}"></i></div>
+        </div>
+        <div class="row-fluid input-prepend input-append">
+            <input class="span10" type="text" name="newOrg.name" ng-model="newOrg.name"></input>
+            <span class="add-on" ng-click="addOrg()" id="addOrg">+</span>
+        </div>
+    </tab>
+    <tab heading="Organizations Admins">
+        <div class="row-fluid" ng-repeat="adm in orgAdmins">
+            <div class="span4">{{adm.name}}</div>
+            <div class="span8">
+                <div class="row-fluid" ng-repeat="us in adm.users">
+                    <div class="span11">{{us.username}}</div>
+                    <div class="span1"><span class="fa fa-trash-o" ng-click="removeorgAdmin(adm.name, us._id)"></span> Remove</div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid input-prepend input-append">
+            <select class="span5" type="text" ng-model="admin.orgName" name="admin.orgName">
+                <option value="">--</option>
+                <option ng-repeat="a in orgs" ng-value="a.name">{{a.name}}</option>
+            </select>
+            <input class="span5" type="text" ng-model="orgAdmin.username" name="orgAdmin.username"></input>
+            <span class="add-on" ng-click="addOrgAdmin()" id="addOrgAdmin">+</span>
+        </div>
+    </tab>
+</tabset>
+</div>

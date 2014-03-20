@@ -1,0 +1,40 @@
+<div ng-show="cdes.length < 2">
+    <center>Add 2 data elements to the compare list. <br> Search for data elements and hit the compare button to add them to the list.</center>
+</div>
+
+<div class="row-fluid">
+    <div ng-repeat="cde in cdes" class="span6">
+        <center>
+            <a class='btn btn-small' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
+        </center>
+    </div>        
+</div>
+<div class="row-fluid">
+    <div ng-repeat="cde in cdes" class="span6">
+        <%- include deNaming.ejs %>
+    </div>        
+</div>
+<div class="row-fluid">
+    <div ng-repeat="cde in cdes" class="span6">
+        <dl class="dl-horizontal">
+            <dt>Steward: </dt><dd>{{cde.stewardOrg.name}}</dd>
+            <dt>Status: </dt><dd id="dd_status"><i id="editStatus" ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="openRegStatusUpdate()"></i> {{cde.registrationState.registrationStatus}}</dd>
+            <dt ng-show="cde.formUsageCounter">Form Usage: </dt><dd>{{cde.formUsageCounter}}</dd>
+            <dt ng-show="cde.views">Views: </dt><dd id="dd_views">{{cde.views}}</dd>
+            <dt>Added to NLM: </dt>
+            <dd ng-controller="AuditCtrl" >{{cde.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dt ng-show="cde.updated">Updated in NLM: </dt><dd>{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dt id="dt_createdBy" ng-show="cde.createdBy">Created By: </dt><dd id="dd_createdBy">{{cde.createdBy.username}}</dd>
+        </dl>
+    </div>        
+</div>
+<div class="row-fluid">
+    <div ng-repeat="cde in cdes" class="span6">
+        <%- include valueDomainSwitch.ejs %>
+    </div>        
+</div>
+<div class="row-fluid">
+    <div ng-repeat="cde in cdes" class="span6">
+        <%- include deConcepts.ejs %>
+    </div>        
+</div>

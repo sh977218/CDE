@@ -1,0 +1,15 @@
+<pagination data-boundary-links="true" num-pages="numPages" current-page="currentPage" max-size="10"></pagination>
+
+<form class="form-search">
+<input name="search.name" type="text" ng-model="search.name" class="search-query" placeholder="Search Name" >
+<select ng-model="search.stewardOrg.name" name="stewardOrg.name" ng-change="removeOwningOrg()">
+    <option value="" >All Organizations</option>
+    <option ng-repeat="o in orgs" ng-value="o">{{o}}</option>    
+</select>
+<select ng-model="search.registrationState.registrationStatus" name="registrationStatus" ng-options="status as status for status in registrationStatuses" ng-change="removeRegistrationStatus()">
+    <option value="">All Statuses</option>
+</select>
+<input id="search.submit" type="submit" value="Search" ng-click="reload()" class="btn"></input>
+</form>
+
+<%- include formAccordion.ejs %>

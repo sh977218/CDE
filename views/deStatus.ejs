@@ -1,0 +1,11 @@
+<h4>Registration State</h4>
+<dl class="dl-horizontal">
+    <dt>Effective Date</dt><dd>{{cde.registrationState.effectiveDate | date: 'MM/dd/yyyy' | placeholdEmpty}}</dd>
+    <dt>Until Date</dt><dd>{{cde.registrationState.untilDate | date: 'MM/dd/yyyy' | placeholdEmpty}}</dd>
+    <dt>Administrative Note</dt><dd>{{cde.registrationState.administrativeNote | placeholdEmpty}}</dd>
+    <dt>Unresolved Issue</dt><dd>{{cde.registrationState.unresolvedIssue | placeholdEmpty}}</dd>    
+    <dt>Status</dt><dd>{{cde.registrationState.registrationStatus | placeholdEmpty}}</dd>
+    <span ng-show="cde.registrationState.administrativeStatus">
+        <dt id="dd_adminStatus">Administrative Status</dt><dd>{{cde.registrationState.administrativeStatus}}</dd>    
+    </span>
+</dl>

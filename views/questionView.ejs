@@ -1,0 +1,19 @@
+<div class="row-fluid">
+    <div class="span5">
+        <h5>Question Details</h5>
+        <dl class="dl-horizontal">
+            <dt>Question: </dt><dd><inline-edit model="question.value" is-allowed="isAllowed()" on-ok="stageForm()"> </inline-edit></dd>
+            <dt>Instructions: </dt><dd><inline-area-edit model="question.instructions" is-allowed="isAllowed()" on-ok="stageForm()"> </inline-edit></dd>
+        </dl>
+    </div>
+    <div class="span7">
+        <h5>Data Element Details</h5>
+        <dl class="dl-horizontal">
+            <dt>Name: </dt><dd>{{question.cde.naming[0].designation}}</dd>
+            <dt>Origin: </dt><dd>{{question.cde.origin}}</dd>
+            <dt>Origin ID: </dt><dd>{{question.cde.originId}}</dd>
+            <dt>Owner: </dt><dd>{{question.cde.stewardOrg.name}}</dd>
+            <dt>Definition: </dt><dd>{{question.cde.naming[0].definition}}</dd>
+        </dl>
+    </div>
+</div>

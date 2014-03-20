@@ -1,0 +1,16 @@
+
+.inactive {
+    border: none;
+    background-color: #fff;
+}
+
+.inline-edit {
+    margin-right: 40px;    
+}
+
+.edit-button {
+    position:absolute;
+    right:0px;
+    width:300px;
+    background-color:#b0e0e6;
+}

@@ -1,0 +1,17 @@
+<div class="modal-header" id="addClassificationModalHeader">
+    <h4>Add Classification</h4>
+</div>
+<form name="form">
+<div class="modal-body" id="addClassificationModalBody">
+    <label for="conceptSystem">Category</label>
+    <input ng-model="newClassification.conceptSystem" name="conceptSystem" Placeholder="Category" 
+           typeahead="cs for cs in classAutocomplete($viewValue)" required/>
+
+    <label for="concept">Description</label>
+    <textArea name="concept" ng-model="newClassification.concept" placeholder="Classification" required></textarea>
+</div>
+<div class="modal-footer" id="addClassificationModalFooter">
+    <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
+    <button class="btn btn-warning" ng-click="okCreate(newClassification)" ng-disabled="isClean() || form.$invalid" id="saveClassification">Save</button>
+</div>
+</form>

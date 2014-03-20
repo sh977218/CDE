@@ -1,0 +1,87 @@
+<form class="form-search"  align="center" >
+    <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="search-query" placeholder="Search" ng-change="onchangeSearch()">  
+    <input id="search.submit" type="submit" value="Search" ng-click="search()" class="btn"></input>
+</form>
+
+<div class="row-fluid" ng-show="message">
+<div class="span2 offset5 alert-success">
+    <center>{{message}}</center>
+</div>
+</div>
+
+<div class="row-fluid">
+    <div class="span2">
+        <strong ng-show="facets.orgs.terms">Stewards</strong>
+        <ul class="fa-ul">
+            <li ng-repeat="t in facets.orgs.terms | orderBy:'term'" style="margin-right: -20px" ng-switch="t.term === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.term === selectedOrg || !selectedOrg">
+                <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
+                <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
+                <small> {{t.term}} ({{t.count}})</small>
+            </li>
+        </ul>
+        <strong ng-show="facets.classification.terms">Classification</strong>
+        <ul class="fa-ul">
+            <li ng-repeat="g in facets.groups | orderBy:'conceptSystem'" style="margin-right: -20px" ng-switch="g.selected" >
+                <span ng-click="openGroup(g)">
+                    <i ng-switch-default class="fa-li fa fa-plus-square-o" id="li-blank-{{g.conceptSystem}}" ></i>
+                    <i ng-switch-when="true" class="fa-li fa fa-minus-square-o" id="li-checked-{{g.conceptSystem}}"></i>
+                    <small > {{g.conceptSystem}} ({{g.concepts.length}})</small>
+                </span>
+                <ul class="fa-ul" ng-show="g.selected">
+                    <li ng-repeat="subG in g.concepts | orderBy:'term'" style="margin-left: -40px" ng-switch="subG.selected" >
+                        <span ng-click="selectSubGroup(subG, g.conceptSystem)">
+                            <i ng-switch-default class="fa fa-square-o" id="li-blank-{{subG.term}}"></i> 
+                            <i ng-switch-when="true" class="fa fa-check-square-o" id="li-checked-{{subG.term}}"></i>
+                            <small>{{subG.term}} ({{subG.count}})</small>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <strong ng-show="facets.statuses.terms">Status</strong>
+        <ul class="fa-ul">
+            <li ng-repeat="t in facets.statuses.terms" style="margin-right: -20px" ng-switch="t.selected" ng-click="addFilter(t)">
+                <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
+                <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
+            <small> {{t.term}} ({{t.count}})</small></li>
+        </ul>
+    </div>
+    <div class="span10">
+        <center ng-hide="cdes.length >= 0"> Loading</center>
+        <center ng-show="cdes.length === 0">No Results</center>
+        <accordion>
+            <accordion-group ng-repeat="cde in cdes" >
+                <accordion-heading>
+                    <span id="list_name_{{$index}}">{{cde.naming[0].designation}}</span> --  <i class="fa fa-eye" ng-click="view(cde)" title="View"> </i>
+                </accordion-heading>
+                 <div class="row-fluid">
+                    <div class="span6">
+                        <%- include cdegeneraldetails.ejs %>
+                    </div>
+                    <div class="span4">
+                        <%- include valueDomainView.ejs %>
+                    </div>
+                     <div class="span2">
+                        <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" src="/data/{{attachment.fileid}}"/> 
+                     </div>
+                 </div>
+                <div class="row-fluid" >
+                    <a class='btn btn-small' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
+                    <span ng-show="user._id">
+                        <a class="btn btn-small" ng-click="openPinModal(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack" title="Pin"></i> Attach to Board</a>
+                    </span>
+                    <a class="btn btn-small" ng-show="showCompareButton(cde)" ng-click="addToCompareCart(cde._id)" title="Add to Compare List" id="compare_{{$index}}"><i class="fa fa-plus"></i> Compare</a>
+                </div>
+                <script type="text/ng-template" id="addToFormModalContent.html">
+                    <%- include addToFormModal.ejs %>
+                </script>
+                <script type="text/ng-template" id="selectBoardModalContent.html">
+                    <%- include selectBoardModal.ejs %>
+                </script>
+            </accordion-group>
+        </accordion>
+        <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="currentPage"></pagination>
+    </div>
+</div>
+
+

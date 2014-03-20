@@ -1,0 +1,44 @@
+<h4>History</h4>
+<div class="row-fluid">
+    <div class="span6">
+    <table ng-show="priorCdes.length > 0" class="table-bordered table-condensed table-striped">
+        <thead>
+            <tr>
+                <td>Updated at</td>
+                <td>Updated by</td>
+                <td>Change Note</td>
+                <td>Diff</td>
+                <td>See Full</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="priorCde in priorCdes">
+                <td>{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+                <td>{{priorCde.updatedBy.username}}</td>
+                <td>{{priorCde.changeNote}}</td>
+                <td><a class="fa fa-eye" ng-show="priorCde.updated" ng-click="viewDiff(priorCde)"> View</a></td>
+                <td><a href="#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye"> View</a></td>
+            </tr>
+            <tr>
+                <td>{{cde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+                <td>{{cde.updatedBy.username}}</td>
+                <td>{{cde.changeNote}}</td>
+                <td><a class="fa fa-eye" ng-click="viewDiff(cde)"> View</a></td>
+                <td></td>
+            </tr>
+        </tbody>
+
+    </table>
+    <div ng-show="priorCdes.length == 0">This Data Element has no history</div>
+    </div>
+    <div class="span6">
+        <dl>
+            <dt ng-show="diff.name">Name: </dt><dd><span ng-bind-html="diff.name"></span></dd>
+            <dt ng-show="diff.definition">Definition: </dt><dd><span ng-bind-html="diff.definition"></span></dd>
+            <dt ng-show="diff.version">Version: </dt><dd><span ng-bind-html="diff.version"></span></dd>
+            <dt ng-show="diff.uom">Unit of Measure: </dt><dd><span ng-bind-html="diff.uom"></span></dd>
+            <dt ng-show="diff.datatype">Datatype: </dt><dd><span ng-bind-html="diff.datatype"></span></dd>
+            <dt ng-show="diff.permissibleValues">Permissible Values: </dt><dd><span ng-bind-html="diff.permissibleValues"></span></dd>
+        </dl>
+    </div>
+</div>

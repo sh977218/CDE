@@ -1,0 +1,71 @@
+<!doctype html>
+<html xmlns:ng="http://angularjs.org" ng-app="cde" id="ng-app" lang="en">
+    <head>        
+        <title>NLM CDE App</title>
+        <script src="assets/js/angular-1.2.0rc1.min.js"></script>
+        <script src="assets/js/angular-route.min.js"></script>
+        <script src="assets/js/angular-resource.min.js"></script>
+        <script src="assets/js/angular-sanitize.min.js"></script>
+        <script src="assets/js/textAngular-1.0.2.min.js"></script>
+        <script src="js/cde.js"></script>
+        <script src="js/resources.js"></script>
+        <script src="js/controllers.js"></script>
+        <script src="assets/js/ui-bootstrap-tpls-0.6.0.min.js"></script>
+        <link href="assets/css/bootstrap-combined.min.css" rel="stylesheet">
+        <!--<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" type="text/css" rel="stylesheet">-->
+        <!--<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">-->
+        <link rel="stylesheet" type="text/css" href="assets/font-awesome-4.0.3/css/font-awesome.css">
+        <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+
+        <!-- fixes an issue in bootstrap #1078 -->
+        <style>
+            .modal-body{overflow-y: inherit;}
+        </style>
+
+    </head>
+    <body>
+        <div ng-controller="MainCtrl">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <a class="brand" href="/">NLM CDEs</a>
+                    <ul class="nav">
+                        <li class="{{menuHome}}"><a href="/">CDEs</a></li>
+                        <!--<li class="{{menuForm}}"><a id="formsLink" href="#/listforms">Forms</a></li>-->                        
+                        <li ng-show='isOrgCurator()' class="dropdown">    
+                            <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Create <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#/createCde">CDE</a></li>
+                                <!--<li><a href="#/createform">Form</a></li>-->
+                            </ul>
+                        </li>       
+                        <li class="{{menuBoardList}}"><a href="#/boardList">Boards</a></li>
+                        <li class="{{menuMyBoards}}" ng-show="user._id"><a href="#/myboards">My Boards</a></li>
+                        <li class="{{menuCompare}}"><a href="#/deCompare">Compare (
+                                <span ng-switch="compareCart.length">
+                                    <span ng-switch-when="0">empty</span>
+                                    <span ng-switch-when="2">full</span>
+                                    <span ng-switch-default>{{compareCart.length}}</span>
+                                </span>)</a></li>
+                        <!--<li class="{{menuCart}}" ng-show='user._id'><a id="cartLink" href="#/cart">Cart ({{user.formCart.length}})</a></li>-->
+                    </ul>
+                    <ul class="nav pull-right">
+                        <li class="{{menuLogin}}" ng-show='!user._id'><a href="#/login">Log In</a></li>
+                        <li class="{{menuAccount}}" ng-show="user._id">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Account <span class="caret"></span></a>
+                            <ul class="dropdown-menu"> 
+                                <li ng-show='user._id'><a href="#/profile">Profile</a></li>                                                                         
+                                <li ng-show="isOrgAdmin() && !user.siteAdmin"><a href="#/orgaccountmanagement">Account Management</a></li>
+                                <li ng-show='user._id && user.siteAdmin'><a href="#/siteaccountmanagement">Site Management</a></li>
+                                <li ng-show='user._id'><a href="/logout">Log Out</a></li>                                         
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        <div ng-view>
+        </div>            
+        </div>
+        <script src="assets/js/diff_match_patch.js"></script>
+
+    </body>
+</html> 

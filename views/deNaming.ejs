@@ -1,0 +1,69 @@
+<div class="row-fluid" ng-show="message">
+<div class="span2 offset5 alert-success">
+    <center>{{message}}</center>
+</div>
+</div>
+
+<div ng-controller="SaveCdeCtrl">
+
+<div ng-repeat="namePair in cde.naming">
+    <div class="row-fluid">
+        <div class="span1 text-right" ng-show="isAllowed(cde) && cde.naming.length > 1">
+            <div class="row-fluid">
+                <i ng-click="removeNamePair($index)" class="fa fa-trash-o" id="removeNaming-{{$index}}"></i></dd>
+            </div>
+        </div>
+        <div class="span11">
+            <dl class="dl-horizontal">
+                <dt>Name: </dt> 
+                <dd id="dd_name_{{$index}}">
+                    <span ng-switch="namePair.editMode"> 
+                        <span ng-switch-when="true"> 
+                            <input type="text" ng-model="namePair.designation" id="name_input_{{$index}}"/>
+                            <i class="fa fa-check" ng-click="stageNewName(namePair)" id="name_confirm_{{$index}}"></i>
+                            <i class="fa fa-times" ng-click="cancelSave(namePair)"></i>
+                        </span>       
+                        <span ng-switch-default> 
+                            <i class="fa fa-edit" ng-click="namePair.editMode=true" id="name_edit_{{$index}}" ng-show="isAllowed(cde)"></i> {{namePair.designation | placeholdEmpty}} 
+                        </span>
+                    </span>
+                </dd>
+                <dt>Definition: </dt>
+                <dd id="dd_def_{{$index}}">
+                    <div ng-switch="namePair.editMode"> 
+                        <div ng-switch-when="true">
+                           <textarea ng-model="namePair.definition" id="def_input_{{$index}}"></textarea>
+                           <i class="fa fa-check" ng-click="stageNewName(namePair)" id="def_confirm_{{$index}}"></i>
+                           <i class="fa fa-times" ng-click="cancelSave(namePair)"></i>
+                        </div>
+                        <div ng-switch-default>
+                           <i class="fa fa-edit" ng-click="namePair.editMode = true" id="def_edit_{{$index}}" ng-show="isAllowed(cde)"></i>&nbsp;<span ng-bind-html="namePair.definition"/>
+                        </div>
+                    </div>
+                </dd>
+                <dt>Context: </dt> 
+                <dd id="dd_context_{{$index}}">
+                    <span ng-switch="namePair.editMode"> 
+                        <span ng-switch-when="true"> 
+                            <input type="text" ng-model="namePair.context.contextName" id="context_input_{{$index}}"/>
+                            <i class="fa fa-check" ng-click="stageNewName(namePair)" id="context_confirm_{{$index}}"></i>
+                            <i class="fa fa-times" ng-click="cancelSave(namePair)"></i>
+                        </span>       
+                        <span ng-switch-default> 
+                            <i class="fa fa-edit" ng-click="namePair.editMode=true" id="context_edit_{{$index}}" ng-show="isAllowed(cde)"></i> {{namePair.context.contextName | placeholdEmpty}} 
+                        </span>
+                    </span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<button ng-show="isAllowed(cde)" class="btn btn-small" value="add" ng-click="openNewNamePair()" id="addNamePair"><i class="fa fa-plus"> </i> Add Naming</button>
+
+<script type="text/ng-template" id="newNamePairModalContent.html">
+    <%- include newNamePairModal.ejs %>
+</script>
+
+</div>

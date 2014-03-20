@@ -1,0 +1,28 @@
+<div ng-controller="SaveCdeCtrl">
+<h3>Values Allowed</h3>
+<dl class="dl-horizontal">
+  <dt>Value Type: </dt>
+  <dd id="dd_valueType">
+      <span ng-show="editDtMode">
+          <select ng-model="cde.valueDomain.datatype">
+              <option value="" >None Selected</option>
+              <option value="Value List">Value List</option>
+              <option value="Text">Text</option>
+              <option value="Date">Date</option>
+              <option value="Integer">Integer</option>
+              <option value="Float">Float</option>
+          </select>
+          or
+          <input ng-model="cde.valueDomain.datatype" name="datatypeFreeText"/>
+          <i class="fa fa-check-square-o" ng-click="editDtMode = false; stageCde(cde)" id="confirmDatatype"></i>
+          <i class="fa fa-trash-o" ng-click="editDtMode = false"></i>
+     </span>
+      <span ng-hide="editDtMode"><i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="editDtMode = true" id="editDatatype"></i> {{cde.valueDomain.datatype | placeholdEmpty}}</span>
+  </dd>
+</dl>
+
+<%- include valueDomainSwitch.ejs %>
+
+</div>
+
+    

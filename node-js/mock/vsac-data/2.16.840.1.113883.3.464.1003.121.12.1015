@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns0:RetrieveValueSetResponse xmlns:ns0="urn:ihe:iti:svs:2008" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ns0:ValueSet ID="2.16.840.1.113883.3.464.1003.121.12.1015" displayName="Weight" version="20130614">
+        <ns0:ConceptList>
+            <ns0:Concept code="18833-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeSystemVersion="2.42" displayName="First Body weight"/>
+            <ns0:Concept code="29463-7" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeSystemVersion="2.42" displayName="Body weight"/>
+            <ns0:Concept code="3141-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeSystemVersion="2.42" displayName="Body weight Measured"/>
+            <ns0:Concept code="3142-7" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeSystemVersion="2.42" displayName="Body weight Stated"/>
+            <ns0:Concept code="8350-1" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeSystemVersion="2.42" displayName="Body weight Measured --with clothes"/>
+            <ns0:Concept code="8351-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeSystemVersion="2.42" displayName="Body weight Measured --without clothes"/>
+        </ns0:ConceptList>
+    </ns0:ValueSet>
+</ns0:RetrieveValueSetResponse>

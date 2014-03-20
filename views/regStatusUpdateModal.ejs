@@ -1,0 +1,37 @@
+<div class="modal-header" id="regStatusModalHeader">
+    <h4>Update Registration Status</h4>
+</div>
+<form name="form">
+<div class="modal-body" id="regStatusModalBody">
+    <label for="registrationStatus">Registration Status</label>
+    <select ng-model="cde.registrationState.registrationStatus" name="registrationStatus">
+        <option ng-repeat="s in stewardRegStatuses" ng-value="s">{{s}}</option>
+        <option ng-if="user.siteAdmin === true" value="Standard">Standard</option>
+        <option ng-if="user.siteAdmin === true" value="Preferred Standard">Preferred Standard</option>
+    </select>
+
+    
+    <label for="effectiveDate">Effective Date</label>
+    <input name="effectiveDate" type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="cde.registrationState.effectiveDate" 
+              datepicker-options="dateOptions" />
+    
+    <label for="untilDate">Until Date</label>
+    <input name="untilDate" type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="cde.registrationState.untilDate" 
+              datepicker-options="dateOptions" />
+    
+    <label for="administrativeStatus">Administrative Status</label>
+    <input type="text" name="administrativeStatus" ng-model="cde.registrationState.administrativeStatus" placeholder="Optional Administrative Status"></input>
+
+    <label for="administrativeNote">Administrative Note</label>
+    <textArea name="administrativeNote" ng-model="cde.registrationState.administrativeNote" placeholder="Optional Administrative Note"></textarea>
+
+    <label for="unresolvedIssue">Unresolved Issue</label>
+    <textArea name="unresolvedIssue" ng-model="cde.registrationState.unresolvedIssue" placeholder="Optional Unresolved Issue Note"></textarea>
+
+
+</div>
+<div class="modal-footer" id="regStatusModalFooter">
+    <button class="btn cancel" ng-click="cancelSave()">Cancel</button>
+    <button class="btn btn-warning" ng-click="ok()" ng-disabled="isClean() || form.$invalid" id="saveRegStatus">Save</button>
+</div>
+</form>
