@@ -186,6 +186,10 @@ app.get('/boardList', function(req, res){
   res.render('boardList');
 });
 
+app.get('/deCompare', function(req, res){
+  res.render('deCompare');
+});
+
 app.get('/listboards', function(req, res) {
    boardsvc.boardList(req, res); 
 });

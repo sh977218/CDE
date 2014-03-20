@@ -1,0 +1,52 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package gov.nih.nlm.cde.test;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+/**
+ *
+ * @author ludetc
+ */
+public class CompareTest extends NlmCdeBaseTest{
+    
+    @Test
+    public void emptyCompareList() {
+        goHome();
+        findElement(By.linkText("Compare ( empty )")).click();
+        Assert.assertTrue(textPresent("Search for data elements and hit the compare button"));
+    }
+    
+    @Test
+    public void Compare2Elements() {
+        goHome();
+        Assert.assertTrue(textPresent("Compare ( empty )"));
+        findElement(By.name("ftsearch")).sendKeys("Male Female");
+        findElement(By.id("search.submit")).click();
+        findElement(By.id("list_name_0")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
+        findElement(By.id("compare_0")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
+        Assert.assertTrue(textPresent("Compare ( 1 )"));
+        findElement(By.id("list_name_1")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_1")));
+        findElement(By.id("compare_1")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_1")));
+        Assert.assertTrue(textPresent("Compare ( full )"));
+        findElement(By.id("list_name_2")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_2")));
+        findElement(By.linkText("Compare ( full )")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
+        
+    }
+
+    
+}

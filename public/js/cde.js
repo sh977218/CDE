@@ -16,6 +16,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
         when('/myboards', {controller: MyBoardsCtrl, templateUrl: '/myboards'}).
         when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
         when('/boardList', {controller: BoardListCtrl, templateUrl: '/boardList'}).
+        when('/deCompare', {controller: CompareCtrl, templateUrl: '/deCompare'}).
         otherwise({redirectTo:'/'});
     }).
     directive('inlineEdit', function() {

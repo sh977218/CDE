@@ -1,4 +1,3 @@
-
 <form class="form-search"  align="center" >
     <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="search-query" placeholder="Search" ng-change="onchangeSearch()">  
     <input id="search.submit" type="submit" value="Search" ng-click="search()" class="btn"></input>
@@ -18,10 +17,6 @@
                 <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
                 <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
                 <small> {{t.term}} ({{t.count}})</small>
-<!--            <li ng-repeat="o in orgNames | orderBy:'name'" style="margin-right: -20px" ng-switch="o.name === selectedOrg" ng-click="addOrgFilter(o)" ng-show="o.name === selectedOrg || !selectedOrg">
-                <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{o.name}}" ></i>
-                <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{o.name}}"></i>
-                <small> {{o.name}}</small>-->
             </li>
         </ul>
         <strong ng-show="facets.classification.terms">Classification</strong>
@@ -57,7 +52,7 @@
         <accordion>
             <accordion-group ng-repeat="cde in cdes" >
                 <accordion-heading>
-                    <span id="list_name_0">{{cde.naming[0].designation}}</span> --  <i class="fa fa-eye" ng-click="view(cde)" title="View"> </i>
+                    <span id="list_name_{{$index}}">{{cde.naming[0].designation}}</span> --  <i class="fa fa-eye" ng-click="view(cde)" title="View"> </i>
                 </accordion-heading>
                  <div class="row-fluid">
                     <div class="span6">
@@ -75,6 +70,7 @@
                     <span ng-show="user._id">
                         <a class="btn btn-small" ng-click="openPinModal(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack" title="Pin"></i> Attach to Board</a>
                     </span>
+                    <a class="btn btn-small" ng-show="showCompareButton(cde)" ng-click="addToCompareCart(cde._id)" title="Add to Compare List" id="compare_{{$index}}"><i class="fa fa-plus"></i> Compare</a>
                 </div>
                 <script type="text/ng-template" id="addToFormModalContent.html">
                     <%- include addToFormModal.ejs %>

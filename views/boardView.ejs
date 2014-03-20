@@ -1,4 +1,4 @@
-<h3><center>CDE Board <br/> {{board.name}}<center></h3>
+<h3><center>{{board.name}}<center></h3>
 
 <accordion>
     <accordion-group ng-repeat="cde in cdes">
@@ -9,6 +9,7 @@
                 <i class="fa fa-thumb-tack fa-rotate-90" ng-click="unpin(board.pins[$index])" title="unPin" id="unpin_{{$index}}"> </i>
             </span>
         </accordion-heading>
+
          <div class="row-fluid">
             <div class="span6">
                 <%- include cdegeneraldetails.ejs %>
@@ -21,10 +22,11 @@
              </div>
          </div>
         <div class="row-fluid" >
-            <a class='btn' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
+            <a class='btn btn-small' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
+            <a class="btn btn-small" ng-show="showCompareButton(cde)" ng-click="addToCompareCart(cde._id)" title="Add to Compare List"><i class="fa fa-plus"></i> Compare</a>
         </div>
     </accordion-group>
 </accordion>
-            
+
 <pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems" page="currentPage"></pagination>
 

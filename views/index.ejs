@@ -40,6 +40,12 @@
                         </li>       
                         <li class="{{menuBoardList}}"><a href="#/boardList">Boards</a></li>
                         <li class="{{menuMyBoards}}" ng-show="user._id"><a href="#/myboards">My Boards</a></li>
+                        <li class="{{menuCompare}}"><a href="#/deCompare">Compare (
+                                <span ng-switch="compareCart.length">
+                                    <span ng-switch-when="0">empty</span>
+                                    <span ng-switch-when="2">full</span>
+                                    <span ng-switch-default>{{compareCart.length}}</span>
+                                </span>)</a></li>
                         <!--<li class="{{menuCart}}" ng-show='user._id'><a id="cartLink" href="#/cart">Cart ({{user.formCart.length}})</a></li>-->
                     </ul>
                     <ul class="nav pull-right">

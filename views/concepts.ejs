@@ -2,83 +2,14 @@
 <div ng-controller="ConceptsCtrl">
 <div class="row-fluid">
     <div class="span5">
-<div ng-show="cde.dataElementConcept.concepts.length > 0">
-<h5>Data Element</h5>
-<table class="table-bordered table-condensed table-striped">
-    <thead>
-        <tr>
-            <th>Code Name</th>
-            <th>Code System</th>
-            <th>Code ID</th>
-            <th id="conceptActions" ng-show="isAllowed(cde)"></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="concept in cde.dataElementConcept.concepts">
-            <td><a ng-click="relatedCdes(concept)">{{concept.name}}</a></td>
-            <td>{{concept.origin}}</td>
-            <td>{{concept.originId}}</td>
-            <td headers="actions" ng-show="isAllowed(cde)">
-                 <a id="decConceptRemove-{{$index}}" class="fa fa-trash-o" ng-click="removeDecConcept($index)"> Remove</a>
-            </td>
-        </tr>
-    </tbody>
-</table>
-</div>
 
-<div ng-show="cde.objectClass.concepts.length > 0">
-<h5>Class</h5>
-<table class="table-bordered table-condensed table-striped">
-    <thead>
-        <tr>
-            <th>Code Name</th>
-            <th>Code System</th>
-            <th>Code ID</th>
-            <th id="conceptActions" ng-show="isAllowed(cde)"></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="concept in cde.objectClass.concepts">
-            <td><a ng-click="relatedCdes(concept)">{{concept.name}}</a></td>
-            <td>{{concept.origin}}</td>
-            <td>{{concept.originId}}</td>
-            <td headers="actions" ng-show="isAllowed(cde)">
-                 <a id="ocConceptRemove-{{$index}}" class="fa fa-trash-o" ng-click="removeOcConcept($index)"> Remove</a>
-            </td>
-        </tr>
-    </tbody>
-</table>
-</div>
+        <%- include deConcepts.ejs %>
+        
+        <hr/>
 
-<div ng-show="cde.property.concepts.length > 0">
-<h5>Property</h5>
-<table class="table-bordered table-condensed table-striped">
-    <thead>
-        <tr>
-            <th>Code Name</th>
-            <th>Code System</th>
-            <th>Code ID</th>
-            <th id="conceptActions" ng-show="isAllowed(cde)"></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="concept in cde.property.concepts">
-            <td><a ng-click="relatedCdes(concept)">{{concept.name}}</a></td>
-            <td>{{concept.origin}}</td>
-            <td>{{concept.originId}}</td>
-            <td headers="actions" ng-show="isAllowed(cde)">
-                 <a id="propConceptRemove-{{$index}}" class="fa fa-trash-o" ng-click="removePropConcept($index)"> Remove</a>
-            </td>
-        </tr>
-    </tbody>
-</table>
-</div>
-
-<hr/>
-    
-<button class="btn btn-small" value="add" ng-click="openNewConcept()" id="addConcept" ng-show="isAllowed(cde)"><i class="fa fa-plus"> </i> Add Concept</button>
+        <button class="btn btn-small" value="add" ng-click="openNewConcept()" id="addConcept" ng-show="isAllowed(cde)"><i class="fa fa-plus"> </i> Add Concept</button>
     </div>
-    
+
     <div class="span7" ng-show="cdes">
         <h4>Sharing Concept</h4>
         <accordion>

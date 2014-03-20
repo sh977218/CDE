@@ -1,0 +1,18 @@
+
+<div ng-switch="cde.valueDomain.datatype">
+    <div ng-switch-when="Value List">
+        <%- include deDatatypeValueList.ejs %>
+    </div>
+    <div ng-switch-when="Text">
+        <%- include deDatatypeText.ejs %>
+    </div>
+    <div ng-switch-when="Integer">
+        <%- include deDatatypeInt.ejs %>
+    </div>
+    <div ng-switch-when="Float">
+        <%- include deDatatypeFloat.ejs %>
+    </div>
+    <div ng-switch-when="Date">
+        <%- include deDatatypeDate.ejs %>
+    </div>    
+</div>
