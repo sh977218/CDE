@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.Select;
@@ -7,7 +8,6 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
 /**
  *
  * @author ludetc
@@ -53,7 +53,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("CTEP -- Patient Name"));
     }
 
-    @Test
+    @Test(dependsOnMethods = {"createCde"})
     public void editCde() {
         goToCdeByName(newCdeName);
         findElement(By.cssSelector("i.fa-edit")).click();
@@ -146,6 +146,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("propConceptRemove-3")).click();
         
         findElement(By.id("openSave")).click();
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         findElement(By.name("version")).sendKeys(".2");
         findElement(By.id("confirmSave")).click();
         modalGone();

@@ -27,13 +27,22 @@ public class NlmCdeBaseTest {
     protected static String test_password = "Test123";
     protected static String history_username = "historyuser";
     protected static String history_password = "pass";
+    protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";    
+    protected static String macosx_detected_message = "Max OS X Detected\nStarting ./chromedriver";     
     
     
     public static WebDriverWait wait;
 
     @BeforeTest
     public void setBaseUrl() {
-        System.setProperty("webdriver.chrome.driver", "./chromedriver");
+        if (isWindows()){
+            System.out.println(windows_detected_message);
+            System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
+        }
+        else {
+            System.out.println(windows_detected_message);
+            System.setProperty("webdriver.chrome.driver", "./chromedriver");
+        }
         DesiredCapabilities caps = DesiredCapabilities.chrome();
         caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
         driver = new ChromeDriver(caps);
@@ -69,7 +78,7 @@ public class NlmCdeBaseTest {
     }
     
     protected WebElement findElement(By by) {
-        wait.until(ExpectedConditions.presenceOfElementLocated(by));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }
     
@@ -144,6 +153,11 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).sendKeys(password);
         findElement(By.cssSelector("input.btn")).click();
         findElement(By.linkText("Account"));
+    }
+    
+    private boolean isWindows(){
+        String OS = System.getProperty("os.name").toLowerCase();
+        return (OS.indexOf("win") >= 0);
     }
     
 }
