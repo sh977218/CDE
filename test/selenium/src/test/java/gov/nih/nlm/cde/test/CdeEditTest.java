@@ -8,6 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
 /**
  *
  * @author ludetc
@@ -146,7 +147,10 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("propConceptRemove-3")).click();
         
         findElement(By.id("openSave")).click();
+<<<<<<< HEAD
         driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+=======
+>>>>>>> 1ab3aff728a12b86f1217b6ebec2f2e9ae3f4c49
         findElement(By.name("version")).sendKeys(".2");
         findElement(By.id("confirmSave")).click();
         modalGone();

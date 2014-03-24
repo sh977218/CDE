@@ -15,6 +15,7 @@ exports.elasticsearch = function (query, res) {
             , totalNumber: resp.hits.total};
         for (var i = 0; i < resp.hits.hits.length; i++) {
             var thisCde = resp.hits.hits[i]._source;
+            thisCde.score = resp.hits.hits[i]._score;
             if (thisCde.valueDomain.permissibleValues.length > 10) {
                 thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
             } 

@@ -1,8 +1,8 @@
 package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import java.util.concurrent.TimeUnit;
+import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;

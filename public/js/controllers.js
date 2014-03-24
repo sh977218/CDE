@@ -32,7 +32,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         return $scope.user.siteAdmin;
     };
     
-    $scope.registrationStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard', 'Retired'];
+    $scope.registrationStatuses = ['Retired', 'Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard'];
 
     $scope.setMyOrgs = function() {
         if ($scope.user && $scope.user.orgAdmin) {
