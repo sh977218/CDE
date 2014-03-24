@@ -100,11 +100,7 @@ public class NlmCdeBaseTest {
     * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
     */
     public void modalGone()  {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
     }
 
     /*
