@@ -68,6 +68,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-check-square-o"));
         findElement(By.linkText("Next")).click();
         hangon();
+        Assert.assertTrue(textPresent("OPEN to Rave Standard "));
         findElement(By.cssSelector("i.fa-check-square-o"));
         findElement(By.name("ftsearch")).sendKeys("Kinetics");
         findElement(By.id("search.submit")).click();

@@ -734,7 +734,9 @@ function DEListCtrl($scope, $http, $timeout, $modal, $location) {
                $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                $scope.cdes = result.cdes;
                $scope.totalItems = result.totalNumber;
-               $scope.facets = result.facets;
+               if (!$scope.facets) {
+                   $scope.facets = result.facets;
+               }
                $scope.uniqueOrg = false;
             });     
         });
