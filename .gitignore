@@ -32,4 +32,3 @@ Thumbs.db
 /test/selenium/build/
 .nide
 /test/selenium/chromedriver
-/test/selenium/.nb-gradle/private/

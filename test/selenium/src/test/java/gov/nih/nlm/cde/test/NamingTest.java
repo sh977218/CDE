@@ -6,7 +6,6 @@
 
 package gov.nih.nlm.cde.test;
 
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
