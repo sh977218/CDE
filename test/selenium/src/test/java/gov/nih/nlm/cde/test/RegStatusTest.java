@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+import java.util.concurrent.TimeUnit;
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -84,8 +85,9 @@ public class RegStatusTest extends NlmCdeBaseTest {
     public void retire() {
         loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Colitis Grade");
-        Assert.assertTrue(textPresent("Qualified"));
+        Assert.assertTrue(textPresent("Qualified"));        
         findElement(By.id("editStatus")).click();
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
         findElement(By.id("saveRegStatus")).click();
         modalGone();
