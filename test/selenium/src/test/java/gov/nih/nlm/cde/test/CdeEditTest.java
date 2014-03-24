@@ -25,6 +25,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
     // TODO I think I am using this annotation incorrectly
     @AfterClass
     public void logMeOut() {
+        System.out.println("logMeOut Runned");
         logout();
     }
 
@@ -55,6 +56,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test(dependsOnMethods = {"createCde"})
     public void editCde() {
+        System.out.println("editCde test Runned");
         goToCdeByName(newCdeName);
         findElement(By.cssSelector("i.fa-edit")).click();
         findElement(By.xpath("//inline-edit/span/span[2]/input")).sendKeys("[name change number 1]");

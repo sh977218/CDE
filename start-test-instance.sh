@@ -80,7 +80,7 @@ then
     #groovy groovy/UploadCadsrForms.groovy --testMode &
     #
 #    gradle -b test/selenium/build.gradle -Dtest.single=BoardTest test & 
-    gradle -b test/selenium/build.gradle clean test & 
+    gradle -b test/selenium/build.gradle --info clean test & 
 #    rm test-console.out
     node app > test-console.out
 else

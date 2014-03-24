@@ -6,6 +6,8 @@
 
 package gov.nih.nlm.cde.test;
 
+import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
+import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -44,6 +46,7 @@ public class NamingTest extends NlmCdeBaseTest {
         
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         findElement(By.id("confirmSave")).click();
         modalGone();
 
