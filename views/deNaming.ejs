@@ -1,5 +1,5 @@
-<div class="row-fluid" ng-show="message">
-<div class="span2 offset5 alert-success">
+<div class="row" ng-show="message">
+<div class="col-md-2 col-md-offset5 alert-success">
     <center>{{message}}</center>
 </div>
 </div>
@@ -7,13 +7,13 @@
 <div ng-controller="SaveCdeCtrl">
 
 <div ng-repeat="namePair in cde.naming">
-    <div class="row-fluid">
-        <div class="span1 text-right" ng-show="isAllowed(cde) && cde.naming.length > 1">
-            <div class="row-fluid">
+    <div class="row">
+        <div class="col-md-1 text-right" ng-show="isAllowed(cde) && cde.naming.length > 1">
+            <div class="row">
                 <i ng-click="removeNamePair($index)" class="fa fa-trash-o" id="removeNaming-{{$index}}"></i></dd>
             </div>
         </div>
-        <div class="span11">
+        <div class="col-md-11">
             <dl class="dl-horizontal">
                 <dt>Name: </dt> 
                 <dd id="dd_name_{{$index}}">
