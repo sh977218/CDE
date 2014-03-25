@@ -78,11 +78,6 @@ public class NlmCdeBaseTest {
         findElement(By.linkText("View Full Detail")).click();
     }
     
-    protected void click(By by) {
-        wait.until(ExpectedConditions.elementToBeClickable(by));
-        findElement(by).click();
-    }
-    
     protected WebElement findElement(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
