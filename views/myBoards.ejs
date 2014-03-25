@@ -1,22 +1,22 @@
 <hr/>
 
-<div class="row-fluid" ng-show="message">
-<div class="span2 offset5 alert-success">
+<div class="row" ng-show="message">
+<div class="col-md-2 col-md-offset5 alert-success">
     <center>{{message}}</center>
 </div>
 </div>
 
 <div ng-repeat="board in boards">
-    <div class="row-fluid">
-        <div class="span3 text-right">
-            <div class="row-fluid">
+    <div class="row">
+        <div class="col-md-3 text-right">
+            <div class="row">
                 <span ng-show="showDelete">
                     Confirm Delete <i class="fa fa-check" ng-click="showDelete = false; removeBoard($index)" id="confirmRemove-{{$index}}"></i>
                     <i class="fa fa-times" ng-click="showDelete = false"></i>
                 </span>
                 <i ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeBoard-{{$index}}"></i></dd>
             </div>
-            <div class="row-fluid">
+            <div class="row">
                 <span ng-show="showChangeStatus">
                     Change Status? <i class="fa fa-check" ng-click="changeStatus($index)" id="confirmChangeStatus_{{$index}}"></i>
                     <i class="fa fa-times" ng-click="showChangeStatus = false"></i>
@@ -27,7 +27,7 @@
                 </span>
             </div>
         </div>
-        <div class="span9">
+        <div class="col-md-9">
             <dl class="dl-horizontal">
                 <dt>Name: </dt> 
                 <dd id="dd_name_{{$index}}">
@@ -58,13 +58,13 @@
                 <dt>Number of Cdes: </dt><dd id="dd_numb">{{board.pins.length}}</dd>
                 <dt>Modified: </dt><dd id="dd_mod">{{board.updatedDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
             </dl>
-            <a class="btn" href="#/board/{{board._id}}" id="view_{{$index}}">View Board</a> 
+            <a class="btn btn-default" href="#/board/{{board._id}}" id="view_{{$index}}">View Board</a> 
         </div>
     </div>
     <hr/>
 </div>
 
-<button class="btn btn-small" value="add" ng-click="openNewBoard()" id="addBoard"><i class="fa fa-plus"> </i> Add Board</button>
+<button class="btn btn-small btn-default" value="add" ng-click="openNewBoard()" id="addBoard"><i class="fa fa-plus"> </i> Add Board</button>
 
 <script type="text/ng-template" id="newBoardModalContent.html">
     <%- include newBoardModal.ejs %>

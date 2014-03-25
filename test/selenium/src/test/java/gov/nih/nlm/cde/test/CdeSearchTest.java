@@ -47,7 +47,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     @Test
     public void basicPagination() {
         goHome();
-        WebElement pagElt = findElement(By.cssSelector("div.pagination"));
+        WebElement pagElt = findElement(By.cssSelector("ul.pagination"));
         findElement(By.linkText("10"));
         List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
         Assert.assertEquals(linkList.size(), 12);                
@@ -73,8 +73,8 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         goToCdeByName("Patient Visual Change Chief Complaint Indicator");
         findElement(By.linkText("Concepts")).click();
         findElement(By.linkText("Change")).click();
-        hangon();
-        Assert.assertTrue(textPresent("CTEP -- Specimen Inflammation Change Type"));
+        hangon(2);
+        Assert.assertTrue(textPresent("Specimen Inflammation Change Type"));
     }
     
     @Test 
@@ -83,7 +83,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys("Biomarker Gene");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("Biomarker Gene"));
-        List<WebElement> linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(linkList.size() > 10);
 
         findElement(By.name("ftsearch")).clear();
@@ -92,7 +92,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("caBIG (1)"));
         
         Assert.assertTrue(textPresent("Biomarker Gene"));
-        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 1);
     }
     
@@ -106,7 +106,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         goHome();
         findElement(By.name("ftsearch")).sendKeys("ISO2109*");
         findElement(By.id("search.submit")).click();
-        List<WebElement> linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(linkList.size() > 10);
         Assert.assertTrue(textPresent("ISO21090.ST"));
   

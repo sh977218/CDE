@@ -41,7 +41,7 @@ public class BoardTest extends NlmCdeBaseTest {
                 findElement(By.id("privateIcon_" + i)).click();
                 findElement(By.id("confirmChangeStatus_" + i)).click();
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("publicIcon_" + i)));
-                hangon();
+                hangon(1);
                 return;
             } 
         }
@@ -110,7 +110,8 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.id("addBoard")).click();
         findElement(By.name("name")).sendKeys(name);
         findElement(By.name("description")).sendKeys(description);
-        findElement(By.id("createBoard")).click();        
+        findElement(By.id("createBoard")).click();
+        modalGone();
     }
     
     private void removeBoard(String boardName) {
@@ -121,7 +122,7 @@ public class BoardTest extends NlmCdeBaseTest {
             if (boardName.equals(name)) {
                 findElement(By.id("removeBoard-" + i)).click();
                 findElement(By.id("confirmRemove-" + i)).click();
-                hangon();
+                hangon(1);
                 Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(boardName) < 0);
                 return;
             }
@@ -142,11 +143,12 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys(cdeName);
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent(cdeName));
-        findElement(By.id("list_name_0")).click();
+        findElement(By.id("acc_link_0")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pin_0")));
         findElement(By.id("pin_0")).click();
         modalHere();        
         findElement(By.linkText(boardName)).click();
+        modalGone();
         // wed driver does not seem to poll every 200ms as requested and so misses the fact the the text does appear. 
 //        Assert.assertTrue(textPresent("Added to Board"));    
     }
@@ -165,6 +167,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     @Test
     public void pin() {
+        goHome();
         createBoard("Blood Board", "Collect blood related cdes here");
         createBoard("Smoking Board", "Collect Smoking CDEs here");
         
@@ -178,12 +181,12 @@ public class BoardTest extends NlmCdeBaseTest {
         pinTo("Smoking Cessation", "Smoking Board");
         
         goToBoard("Smoking Board");
-        Assert.assertEquals(driver.findElements(By.cssSelector("div.accordion-heading")).size(), 2);
+        Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 2);
         Assert.assertTrue(textPresent("Smoking History"));
         Assert.assertTrue(textPresent("Smoking Cessation"));
 
         goToBoard("Blood Board");
-        Assert.assertEquals(driver.findElements(By.cssSelector("div.accordion-heading")).size(), 2);
+        Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 2);
         Assert.assertTrue(textPresent("Companion Blood"));
         Assert.assertTrue(textPresent("Umbilical Cord Blood"));
         
@@ -194,6 +197,7 @@ public class BoardTest extends NlmCdeBaseTest {
 
     @Test
     public void noDoublePin() {
+        goHome();
         String cdeName = "Specimen Array";
         String boardName = "Double Pin Board";
         
@@ -203,7 +207,7 @@ public class BoardTest extends NlmCdeBaseTest {
         goHome();
         findElement(By.name("ftsearch")).sendKeys(cdeName);
         findElement(By.id("search.submit")).click();
-        findElement(By.id("list_name_0")).click();
+        findElement(By.id("acc_link_0")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pin_0")));
         findElement(By.id("pin_0")).click();
         modalHere();
@@ -211,15 +215,17 @@ public class BoardTest extends NlmCdeBaseTest {
         
         // TODO: Following is unreliable. 
 //        Assert.assertTrue(textPresent("Already added"));
+        modalGone();
         
         goToBoard(boardName);
-        Assert.assertEquals(driver.findElements(By.cssSelector("div.accordion-heading")).size(), 1);
+        Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 1);
         
         removeBoard(boardName);
     }
     
     @Test
     public void unpin() {
+        goHome();
         createBoard("Unpin Board", "test");
         pinTo("Volumetric", "Unpin Board");
         goToBoard("Unpin Board");

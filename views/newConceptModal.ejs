@@ -1,23 +1,29 @@
 <div class="modal-header" id="newConceptModalHeader">
     <h4>Add Concept</h4>
 </div>
-<form name="form">
+<form name="form" role="form">
 <div class="modal-body" id="newConceptModalBody">
-    <label for="name">Code Name</label>
-    <input ng-model="newConcept.name" name="name" Placeholder="Concept Code Name" required/>
+    <div class="form-group">
+        <label for="name">Code Name</label>
+        <input class="form-control" ng-model="newConcept.name" name="name" Placeholder="Concept Code Name" required/>
+    </div>    
+    <div class="form-group">
+        <label for="codeId">Code ID</label>
+        <input class="form-control" name="codeId" ng-model="newConcept.originId" placeholder="Concept Code Identifier" required />
+    </div>
     
-    <label for="codeId">Code ID</label>
-    <input name="codeId" ng-model="newConcept.originId" placeholder="Concept Code Identifier" required />
-    
-    <label for="codeSystem">Code System</label>
-    <input name="codeSystem" ng-model="newConcept.origin" value="LOINC" required />
-
+    <div class="form-group">
+        <label for="codeSystem">Code System</label>
+        <input class="form-control" name="codeSystem" ng-model="newConcept.origin" value="LOINC" required />
+    </div>
+    <div class="form-group">
     <label for="conceptType">Concept Type</label>
-    <select ng-model="newConcept.type" name="conceptType" required>
-        <option value="dec">Data Element</option>
-        <option value="oc">Class</option>
-        <option value="prop">Property</option>
-    </select>
+        <select class="form-control" ng-model="newConcept.type" name="conceptType" required>
+            <option value="dec">Data Element</option>
+            <option value="oc">Class</option>
+            <option value="prop">Property</option>
+        </select>
+    </div>
 </div>
 <div class="modal-footer" id="newConceptModalFooter">
     <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>

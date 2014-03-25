@@ -32,7 +32,7 @@ public class UserTest extends NlmCdeBaseTest {
         findElement(By.id("uname")).sendKeys("bad-username");
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys("bad-password");
-        findElement(By.cssSelector("input.btn")).click();
+        findElement(By.cssSelector("button.btn")).click();
         Assert.assertTrue(textPresent("Incorrect username or password"));
     }
     
