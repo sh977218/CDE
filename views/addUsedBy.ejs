@@ -1,11 +1,13 @@
 <div class="modal-header" id="addUsedByModalHeader">
     <h4>Add Usage</h4>
 </div>
-<form name="form">
+<form name="form" role="form">
 <div class="modal-body" id="addUsedByModalBody">
-    <label for="usedBy">Used By: </label>
-    <input ng-model="newUsedBy" name="usedBy" Placeholder="Used By" 
-           typeahead="org.name for org in orgAutocomplete($viewValue)" required/>
+    <div class="form-group">
+        <label for="usedBy">Used By</label>
+        <input class="form-control" ng-model="newUsedBy" name="usedBy" Placeholder="Used By" 
+               typeahead="org.name for org in orgAutocomplete($viewValue)" required/>
+    </div>
 </div>
 <div class="modal-footer" id="addUsedByModalFooter">
     <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>

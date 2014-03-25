@@ -1,7 +1,7 @@
 <accordion>
     <accordion-group ng-repeat="form in forms" heading="{{form.stewardOrg.name}} -- {{form.name}}">
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col-md-12">
                 <h4>General Details</h4>
                 <dl class="dl-horizontal">
                     <dt>Name: </dt><dd>{{form.name}}</dd>
@@ -11,10 +11,10 @@
                 </dl>
             </div>   
         </div>
-        <div class="row-fluid">
+        <div class="fluid">
           <a class='btn' ng-href="#/formview/?formId={{form._id}}"><i class="fa fa-eye"></i> View Full Detail</a>        
         </div>
-            <div class="span2">
+            <div class="col-md-2">
                 <div class="row">
                     <a class="btn" ng-show="isInCart(form._id)" ng-click="removeFromCart(form)"><i class="fa fa-shopping-cart"></i> Remove from Cart</a>
                     <a class="btn" ng-show="!isInCart(form._id)" ng-click="addToCart(form)"><i class="fa fa-shopping-cart"></i> Add to Cart</a>

@@ -1,6 +1,6 @@
 <div ng-repeat="board in boards">
-    <div class="row-fluid">
-        <div class="span12">
+    <div class="row">
+        <div class="col-md-12">
             <dl class="dl-horizontal">
                 <dt>Name: </dt> 
                 <dd id="dd_name_{{$index}}">{{board.name | placeholdEmpty}}</dd>
@@ -10,7 +10,7 @@
                 <dt>Number of Cdes: </dt><dd id="dd_numb">{{board.pins.length}}</dd>
                 <dt>Modified: </dt><dd id="dd_mod">{{board.updatedDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
             </dl>
-            <a class="btn" href="#/board/{{board._id}}" id="view_{{$index}}">View Board</a> 
+            <a class="btn btn-default" href="#/board/{{board._id}}" id="view_{{$index}}">View Board</a> 
         </div>
     </div>
     <hr/>

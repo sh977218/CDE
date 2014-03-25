@@ -1,14 +1,16 @@
 <div class="modal-header" id="newBoardModalHeader">
     <h4>Create New Board</h4>
 </div>
-<form name="form">
+<form name="form" role="form">
 <div class="modal-body" id="newBoardModalBody">
-    <label for="name">Name</label>
-    <input ng-model="newBoard.name" name="name" Placeholder="Board Name / Title" required/>
-    
-    <label for="description">Description</label>
-    <textArea name="description" ng-model="newBoard.description" placeholder="Optional Board Description"></textarea>
-    
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input class="form-control" ng-model="newBoard.name" name="name" Placeholder="Board Name / Title" required/>
+    </div> 
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textArea class="form-control" name="description" ng-model="newBoard.description" placeholder="Optional Board Description"></textarea>
+    </div>    
 </div>
 <div class="modal-footer" id="newBoardModalFooter">
     <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
