@@ -47,7 +47,7 @@ public class NamingTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(".1");
         driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         findElement(By.id("confirmSave")).click();
-        modalGone();
+        hangon(2);
 
         findElement(By.linkText("Naming")).click();
         Assert.assertTrue(textPresent("New Name"));
@@ -61,7 +61,7 @@ public class NamingTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("2");
         findElement(By.id("confirmSave")).click();
-        modalGone();
+        hangon(2);
 
         findElement(By.linkText("Naming")).click();
         Assert.assertTrue(textPresent("New Name Changed"));
@@ -74,7 +74,7 @@ public class NamingTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("3");
         findElement(By.id("confirmSave")).click();
-        modalGone();
+        hangon(2);
 
         findElement(By.linkText("Naming")).click();
         Assert.assertTrue(textPresent("New Definition Changed"));
@@ -87,7 +87,7 @@ public class NamingTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("4");
         findElement(By.id("confirmSave")).click();
-        modalGone();
+        hangon(2);
 
         findElement(By.linkText("Naming")).click();
         Assert.assertTrue(textPresent("Health Changed"));
@@ -98,7 +98,7 @@ public class NamingTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("5");
         findElement(By.id("confirmSave")).click();
-        modalGone();
+        hangon(2);
         
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("New Name") < 0);
         

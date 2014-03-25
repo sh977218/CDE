@@ -47,6 +47,7 @@ public class NlmCdeBaseTest {
         caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
         driver = new ChromeDriver(caps);
         driver.get(baseUrl);
+        driver.manage().window().setSize(new Dimension(1024,768));
         driver.manage().timeouts().implicitlyWait(6, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, 6, 200);
     }
@@ -63,7 +64,7 @@ public class NlmCdeBaseTest {
         Assert.assertEquals(findElement(By.id("ftsearch-input")).getAttribute("value"), name);
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent(name));
-        findElement(By.id("list_name_0")).click();
+        findElement(By.id("acc_link_0")).click();
         findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("More Like This"));
     }
@@ -75,6 +76,11 @@ public class NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         findElement(By.partialLinkText(name)).click();
         findElement(By.linkText("View Full Detail")).click();
+    }
+    
+    protected void click(By by) {
+        wait.until(ExpectedConditions.elementToBeClickable(by));
+        findElement(by).click();
     }
     
     protected WebElement findElement(By by) {
@@ -100,15 +106,16 @@ public class NlmCdeBaseTest {
     * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
     */
     public void modalGone()  {
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+//        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+        hangon(2);
     }
-
+    
     /*
-    * TODO - Find a better way than to wait. When testing that test is gone, I cannot find a way to do it reliably without waiting a bit 
+    * TODO - Combien this method with modalgone and give param. 
     */
-    public void hangon()  {
+    public void hangon(int i)  {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(i * 1000);
         } catch (InterruptedException ex) {
             Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -147,7 +154,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
-        findElement(By.cssSelector("input.btn")).click();
+        findElement(By.cssSelector("button.btn")).click();
         findElement(By.linkText("Account"));
     }
     

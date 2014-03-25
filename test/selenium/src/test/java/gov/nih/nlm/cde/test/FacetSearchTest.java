@@ -40,21 +40,21 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("candidate (4)"));
         findElement(By.id("li-blank-candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText("Disease or Disorder Response Surgical Procedure Documented Indicator")));
-        hangon();
-        List<WebElement> linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        hangon(1);
+        List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 4);
         findElement(By.id("li-blank-NHLBI")).click();
         // Seems like we should wait for something , like below, but below doesn't work and I can't come up with something to wait for ...
 //            wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(
 //                    By.linkText("caBIG -- First Follow-up Visit Date"))));
-        hangon();
-        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        hangon(1);
+        linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);
         findElement(By.id("li-checked-candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.partialLinkText("Hydroxychloroquine Sulfate Administered Indicator")));
-        hangon();
-        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        hangon(1);
+        linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 9);
         findElement(By.id("li-checked-NHLBI")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("3")));
@@ -67,7 +67,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         // next line should make it wait.
         findElement(By.cssSelector("i.fa-check-square-o"));
         findElement(By.linkText("Next")).click();
-        hangon();
+        hangon(1);
         Assert.assertTrue(textPresent("OPEN to Rave Standard "));
         findElement(By.cssSelector("i.fa-check-square-o"));
         findElement(By.name("ftsearch")).sendKeys("Kinetics");
@@ -86,8 +86,8 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-CTEP")).click();
         Assert.assertTrue(textPresent("DISEASE (14)"));
 
-        hangon();
-        List <WebElement> linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        hangon(1);
+        List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 9);
 
         // Check that CTEP classification with 0 items does not show
@@ -97,27 +97,27 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Lymphoma (1)"));
         findElement(By.id("li-blank-Lymphoma")).click();
         
-        hangon();
-        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        hangon(1);
+        linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 1);
         
         // Now test unclicking everything
         findElement(By.id("li-checked-Lymphoma")).click();
-        hangon();
-        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        hangon(1);
+        linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 9);
         
         findElement(By.id("li-blank-DISEASE")).click();
         Assert.assertTrue(textPresent("Lymphoma (1)"));
         findElement(By.id("li-blank-Lymphoma")).click();
         
-        hangon();
-        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        hangon(1);
+        linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 1);
         
         findElement(By.id("li-checked-CTEP")).click();
-        hangon();
-        linkList = driver.findElements(By.cssSelector("div.accordion-heading"));
+        hangon(1);
+        linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 10);
 
     }
