@@ -42,6 +42,7 @@ public class NamingTest extends NlmCdeBaseTest {
         findElement(By.name("designation")).sendKeys("New Name");
         findElement(By.name("definition")).sendKeys("New Definition");
         findElement(By.id("createNamePair")).click();
+        modalGone();
         
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
