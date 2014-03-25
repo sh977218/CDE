@@ -101,13 +101,9 @@ public class NlmCdeBaseTest {
     * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
     */
     public void modalGone()  {
-//        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         hangon(2);
     }
     
-    /*
-    * TODO - Combien this method with modalgone and give param. 
-    */
     public void hangon(int i)  {
         try {
             Thread.sleep(i * 1000);
