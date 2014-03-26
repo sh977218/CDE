@@ -492,7 +492,7 @@ function DEListCtrl($scope, $http, $modal, $location) {
             $http.put("/pincde/" + cde.uuid + "/" + selectedBoard._id).then(function(response) {
                 $scope.alerts.push({type: "success", msg: response.data});
             }, function (response){
-                $scope.alerts.push({type: "danger", msg: response.data});
+                $scope.alerts.push({type: "warning", msg: response.data});
             });
         }, function () {
         });
