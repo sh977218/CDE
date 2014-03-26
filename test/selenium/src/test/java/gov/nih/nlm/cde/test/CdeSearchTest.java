@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.annotations.DataProvider;
 
 /**
  *
@@ -110,5 +111,21 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("ISO21090.ST"));
   
     }
+
+    @DataProvider(name = "moreLikeThisDP")
+    public Object[][] getMoreLikeThisData() {
+        return new Object[][] {
+            { "Patient Gender Category", new String[] {"Person Gender Text Type", "Patient Gender Code"} },
+            { "Ethnic Group Category Text", new String[] {"Participant Ethnic Group Category", "Patient Ethnic Group Category"} },
+        };
+    }
     
+    @Test(dataProvider = "moreLikeThisDP")
+    public void moreLikeThis(String cdeSource, String[] cdeTargets){
+        goToCdeByName(cdeSource);
+        findElement(By.linkText("More Like This")).click();
+        for (String tCde : cdeTargets) {
+            Assert.assertTrue(textPresent(tCde));
+        }
+    }
 }

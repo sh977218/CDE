@@ -7,8 +7,23 @@ var express = require('express')
 
 var elasticUri = process.env.ELASTIC_URI || envconfig.elasticUri || 'http://localhost:9200/nlmcde/';
 
+var mltConf = {
+    "mlt_fields" : [
+        "naming.designation",
+        "naming.definition",
+        "valueDomain.permissibleValues.permissibleValue",
+        "valueDomain.permissibleValues.valueMeaningName",
+        "valueDomain.permissibleValues.valueMeaningCode",
+        "property.concepts.name",
+        "property.concepts.originId"
+    ],
+    "min_term_freq" : 1,
+    "min_doc_freq" : 1,
+    "min_word_length" : 2
+};
+    
 exports.elasticsearch = function (query, res) {
-   request.post(elasticUri + "_search",{body: JSON.stringify(query)}, function (error, response, body) {
+   request.post(elasticUri + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
        if (!error && response.statusCode == 200) {
         var resp = JSON.parse(body);
         var result = {cdes: []
@@ -29,11 +44,17 @@ exports.elasticsearch = function (query, res) {
     });  
 };
 
+function jsonToUri(object){
+    return Object.keys(object).map(function(key){ 
+        return encodeURIComponent(key) + '=' + encodeURIComponent(object[key]); 
+    }).join('&');
+}
+
 exports.morelike = function(id, callback) {
     var from = 0;
     var limit = 20;
-
-    request.get(elasticUri + "dataelement/" + id + "/_mlt", function (error, response, body) {
+    var mltConfUri = jsonToUri(mltConf);
+    request.get(elasticUri + "dataelement/" + id + "/_mlt?" + mltConfUri, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var resp = JSON.parse(body);
             var result = {cdes: []
@@ -50,9 +71,8 @@ exports.morelike = function(id, callback) {
             callback(result);
         } else {
             callback("Error");
-        }
-        
-    });
+        }        
+    }); 
 };
 
 exports.listform = function(req, res) {
