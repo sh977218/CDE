@@ -19,9 +19,7 @@ var mltConf = {
     ],
     "min_term_freq" : 1,
     "min_doc_freq" : 1,
-    "percent_terms_to_match" : 0.3 ,
-    "min_word_length" : 0,
-    "max_query_terms" : 25
+    "min_word_length" : 2
 };
     
 exports.elasticsearch = function (query, res) {
