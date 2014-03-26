@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
@@ -44,8 +38,22 @@ public class CompareTest extends NlmCdeBaseTest{
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_2")));
         findElement(By.linkText("Compare ( full )")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
-        
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));    
+    }
+    
+    @Test
+    public void compareMeWithMlt() {
+        goToCdeByName("Patient Race Category");
+        findElement(By.linkText("More Like This")).click();
+        findElement(By.id("compareMe")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compareMe")));
+        findElement(By.linkText("Race Category Text")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
+        findElement(By.id("compare_0")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
+        findElement(By.linkText("Compare ( full )")).click();
+        Assert.assertTrue(textPresent("OMB approved categories"));
+        Assert.assertTrue(textPresent("Office of Management and Budget (OMB)"));
     }
 
     
