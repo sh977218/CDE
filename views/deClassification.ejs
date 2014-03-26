@@ -15,10 +15,10 @@
         <div ng-repeat="class in cde.classification | filter:isInConceptSystem(conceptSystemPerConcept.conceptSystem)">
             <span ng-show="isAllowedNonCuration(cde)">
                 <span ng-show="showDelete">
-                    Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(class)" id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}"> OK</a>
-                    <a class="fa fa-times" ng-click="showDelete = false"> Cancel</a>
+                    Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(class)" id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
+                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
                 </span>
-                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}"> Remove</a>
+                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
             </span>
             <span id="classification-{{$parent.$index}}-{{$index}}">
                 {{class.concept}}            

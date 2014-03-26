@@ -23,8 +23,8 @@
                      </div>
                      <div ng-show="editMode">
                          <input type="text" ng-model="pv.valueMeaningName" typeahead="code.displayName for code in vsacValueSet | filter:$viewValue | limitTo:8"/>
-                         <i class="fa fa-check" ng-click="editMode = false; attachPv(pv)"> OK</i>
-                         <i class="fa fa-times" ng-click="editMode = false"> Cancel</i>
+                         <a class="fa fa-check" ng-click="editMode = false; attachPv(pv)" title="OK" href=""></a>
+                         <a class="fa fa-times" ng-click="editMode = false" title="Cancel" href=""></a>
                      </div>      
                  </div>
              </td>
@@ -37,9 +37,9 @@
                  </span>
              </td>
              <td headers="actions" ng-show="isAllowed(cde)">
-                 <a id="pvUp-{{$index}}" class="btn-mini fa fa-arrow-up" ng-click="movePvUp($index)" ng-hide="$first"> Up</a>
-                 <a id="pvDown-{{$index}}" class="btn-mini fa fa-arrow-down" ng-click="movePvDown($index)" ng-hide="$last"> Down</a><br/>
-                 <a id="pvRemove-{{$index}}" class="btn-mini fa fa-trash-o" ng-click="removePv($index)"> Remove</a>
+                 <a id="pvUp-{{$index}}" class="btn-mini fa fa-arrow-up" ng-click="movePvUp($index)" ng-hide="$first" title="Up" href=""></a>
+                 <a id="pvDown-{{$index}}" class="btn-mini fa fa-arrow-down" ng-click="movePvDown($index)" ng-hide="$last" title="Down" href=""></a>
+                 <a id="pvRemove-{{$index}}" class="btn-mini fa fa-trash-o" ng-click="removePv($index)" title="Remove" href=""></a>
              </td>
          </tr>
          <tr ng-show="cde.valueDomain.permissibleValues.length == 10">
@@ -47,7 +47,7 @@
          </tr>
      </tbody>
  </table>
-<a class="btn btn-small" ng-show="isAllowed(cde)" ng-click="addPv()"><i id="addPv" class="fa fa-plus"></i> Add Permissible Value</a>
+<a class="btn btn-small btn-default" ng-show="isAllowed(cde)" ng-click="addPv()"><i id="addPv" class="fa fa-plus"></i> Add Permissible Value</a>
 <hr/>
 <div ng-show="detailedView">
 <h4>VSAC Value Set</h4>
@@ -60,8 +60,8 @@
 <div ng-controller="SaveCdeCtrl">
     <div>{{vsacError}}</div>
     <div ng-hide="editMode">
-        <a class="btn" ng-show="isAllowed(cde)" ng-click="editMode=true">Update O.I.D</a>
-        <a class="btn" ng-show="isAllowed(cde) && cde.dataElementConcept.conceptualDomain.vsac" ng-click="removeVSMapping()" id="removeVSButton">Remove Mapping</a>
+        <a class="btn btn-default" ng-show="isAllowed(cde)" ng-click="editMode=true">Update O.I.D</a>
+        <a class="btn btn-default" ng-show="isAllowed(cde) && cde.dataElementConcept.conceptualDomain.vsac" ng-click="removeVSMapping()" id="removeVSButton">Remove Mapping</a>
     </div> 
     <div ng-show="editMode">
         <input name="vsacId" type="text" ng-model="cde.dataElementConcept.conceptualDomain.vsac.id" placeholder="VSAC O.I.D"/>
