@@ -3,25 +3,7 @@
 <div class="row">
     <div class="col-md-5">
 
-        <% var deConceptName, deConceptSource, deConceptId, deConceptCallback; %>
-        
-        <%  deConceptName = "Data Element"; 
-            deConceptSource = "dataElementConcept";
-            deConceptId = "decConceptRemove";
-            deConceptCallback = "removeDecConcept"; %>
-        <%- include deConcepts.ejs %>        
-        
-        <%  deConceptName = "Class"; 
-            deConceptSource = "objectClass";
-            deConceptId = "ocConceptRemove";
-            deConceptCallback = "removeOcConcept"; %>
-        <%- include deConcepts.ejs %> 
-        
-        <%  deConceptName = "Property"; 
-            deConceptSource = "property";
-            deConceptId = "propConceptRemove";
-            deConceptCallback = "removePropConcept"; %>
-        <%- include deConcepts.ejs %> 
+        <%- include deConcepts.ejs %>
         
         <hr/>
 
