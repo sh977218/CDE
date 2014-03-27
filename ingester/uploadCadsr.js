@@ -56,7 +56,6 @@ fs.readFile(process.argv[2], function(err, data) {
             , valueDomain: {  
                 name: cadsrDE.VALUEDOMAIN[0].LongName
                 , definition: cadsrDE.VALUEDOMAIN[0].PreferredDefinition
-                , definitionFormat: "plaintext"
                 , datatype: cadsrDE.VALUEDOMAIN[0].Datatype
              }    
 //            , formUsageCounter: 0

@@ -27,7 +27,6 @@ var commentSchema = mongoose.Schema({
 var namingSchema = mongoose.Schema({
     designation: String
     , definition: String
-    , definitionFormat: String
     , languageCode: String
     , context: {
         contextName: String
