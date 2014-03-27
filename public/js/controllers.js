@@ -16,7 +16,6 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll, $timeout) {
         var id = (new Date()).getTime();
         $scope.alerts.push({type: type, msg: msg, id: id});
         $timeout(function() {
-            console.log("search: " + id);
             for (var i = 0; i < $scope.alerts.length; i++) {
                 if ($scope.alerts[i].id === id) {
                     $scope.alerts.splice(i, 1);
