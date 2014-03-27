@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
@@ -149,8 +143,7 @@ public class BoardTest extends NlmCdeBaseTest {
         modalHere();        
         findElement(By.linkText(boardName)).click();
         modalGone();
-        // wed driver does not seem to poll every 200ms as requested and so misses the fact the the text does appear. 
-//        Assert.assertTrue(textPresent("Added to Board"));    
+        Assert.assertTrue(textPresent("Added to Board"));    
     }
     
     private void goToBoard(String boardName) {
@@ -213,8 +206,7 @@ public class BoardTest extends NlmCdeBaseTest {
         modalHere();
         findElement(By.linkText(boardName)).click();
         
-        // TODO: Following is unreliable. 
-//        Assert.assertTrue(textPresent("Already added"));
+        Assert.assertTrue(textPresent("Already added"));
         modalGone();
         
         goToBoard(boardName);
@@ -259,8 +251,9 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.id("name_edit_0")).click();
         findElement(By.id("name_input_0")).sendKeys(" -- Name Edited");
         findElement(By.id("name_confirm_0")).click();
-        // TODO
-//        Assert.assertTrue(textPresent("Saved"));
+
+        Assert.assertTrue(textPresent("Saved"));
+
         findElement(By.id("desc_edit_0")).click();
         findElement(By.id("desc_input_0")).sendKeys(" -- Desc Edited");
         findElement(By.id("desc_confirm_0")).click();

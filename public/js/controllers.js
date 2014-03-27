@@ -1,4 +1,4 @@
-function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
+function MainCtrl($scope, Myself, $http, $location, $anchorScroll, $timeout) {
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u;
@@ -6,6 +6,23 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
             $scope.loadBoards();
             callback();
         });
+    };
+    
+    $scope.alerts = [];
+    $scope.closeAlert = function(index) {
+        $scope.alerts.splice(index, 1);
+    };
+    $scope.addAlert = function(type, msg) {
+        var id = (new Date()).getTime();
+        $scope.alerts.push({type: type, msg: msg, id: id});
+        $timeout(function() {
+            console.log("search: " + id);
+            for (var i = 0; i < $scope.alerts.length; i++) {
+                if ($scope.alerts[i].id === id) {
+                    $scope.alerts.splice(i, 1);
+                }
+            }
+        }, 5000);
     };
     
     $scope.boards = [];
@@ -223,7 +240,7 @@ function BoardViewCtrl($scope, $routeParams, $http) {
     
 }
 
-function MyBoardsCtrl($scope, $modal, $http, $timeout) {
+function MyBoardsCtrl($scope, $modal, $http) {
     $scope.setActiveMenu('MYBOARDS');
     
     $scope.removeBoard = function(index) {
@@ -246,15 +263,11 @@ function MyBoardsCtrl($scope, $modal, $http, $timeout) {
         $scope.save(board);
         $scope.showChangeStatus = false;
     };
-    
+        
     $scope.save = function(board) {
         delete board.editMode; 
         $http.post("/board", board).success(function(response) {
-            $scope.message = "Saved";
-            $timeout(function() {
-                delete $scope.message;
-            }, 3000);
-
+            $scope.addAlert("success", "Saved");
             $scope.loadBoards();
         });
     };
@@ -466,7 +479,7 @@ function SelectBoardModalCtrl($scope, $modalInstance, boards) {
     };
 }
 
-function DEListCtrl($scope, $http, $timeout, $modal, $location) {
+function DEListCtrl($scope, $http, $modal, $location) {
     $scope.setActiveMenu('LISTCDE');
     
     $scope.currentPage = 1;
@@ -489,10 +502,12 @@ function DEListCtrl($scope, $http, $timeout, $modal, $location) {
 
         modalInstance.result.then(function (selectedBoard) {
             $http.put("/pincde/" + cde.uuid + "/" + selectedBoard._id).then(function(response) {
-                $scope.message = response.data;
-                $timeout(function() {
-                    delete $scope.message;
-                }, 3000);
+                if (response.status==200)
+                    $scope.addAlert("success", response.data);
+                else
+                    $scope.addAlert("warning", response.data);
+            }, function (response){
+                $scope.addAlert("danger", response.data);
             });
         }, function () {
         });
@@ -777,7 +792,7 @@ function DEListCtrl($scope, $http, $timeout, $modal, $location) {
     };
 }
 
-function ConceptsCtrl($scope, $modal, $http, $timeout) {
+function ConceptsCtrl($scope, $modal, $http) {
     $scope.openNewConcept = function () {
         $modal.open({
           templateUrl: 'newConceptModalContent.html',
@@ -813,7 +828,7 @@ function ConceptsCtrl($scope, $modal, $http, $timeout) {
     };
 }
 
-function SaveCdeCtrl($scope, $modal, $http, $timeout) { 
+function SaveCdeCtrl($scope, $modal, $http) { 
     $scope.checkVsacId = function(cde) {
         $http({method: "GET", url: "/vsacBridge/" + cde.dataElementConcept.conceptualDomain.vsac.id}).
          error(function(data, status) {
@@ -894,11 +909,8 @@ function SaveCdeCtrl($scope, $modal, $http, $timeout) {
         });
 
         modalInstance.result.then(function () {
-            $scope.message = "Saved";
-            $timeout(function() {
-                delete $scope.message;
-            }, 3000);
-        }, function () {
+            $scope.addAlert("success", "Saved");
+         }, function () {
         });        
     };
     
@@ -1377,7 +1389,7 @@ function CommentsCtrl($scope, Comment) {
     };     
  }
  
- function ClassificationCtrl($scope, $timeout, $modal, Classification) {
+ function ClassificationCtrl($scope, $modal, Classification) {
     $scope.removeClassification = function(classif) {
         Classification.remove({
             classification: classif
@@ -1385,11 +1397,7 @@ function CommentsCtrl($scope, Comment) {
         }, 
         function (res) {
             $scope.cde = res;
-            $scope.message = "Classification Removed";
-            $timeout(function() {
-                delete $scope.message;
-            }, 2000);
-
+            $scope.addAlert("success", "Classification Removed");
         });
     };
     
@@ -1406,11 +1414,7 @@ function CommentsCtrl($scope, Comment) {
                 classification: newClassification
                 , deId: $scope.cde._id
             }, function (res) {
-                $scope.message = "Classification Added";
-                $scope.cde.classification.push(newClassification);
-                $timeout(function() {
-                    delete $scope.message;
-                }, 2000);
+                $scope.addAlert("success", "Classification Added");
                 $scope.cde = res;
             });
         });
@@ -1439,7 +1443,7 @@ function CommentsCtrl($scope, Comment) {
     };
 }
 
- function UsedByCtrl($scope, $timeout, $modal, UsedBy) {
+ function UsedByCtrl($scope, $modal, UsedBy) {
     $scope.removeUsedBy = function(usedBy) {
         UsedBy.remove({
             usedBy: usedBy
@@ -1447,11 +1451,7 @@ function CommentsCtrl($scope, Comment) {
         }, 
         function (res) {
             $scope.cde = res;
-            $scope.message = "Usage Removed";
-            $timeout(function() {
-                delete $scope.message;
-            }, 2000);
-
+            $scope.addAlert("success", "Usage Removed");
         });
     };
     
@@ -1468,11 +1468,8 @@ function CommentsCtrl($scope, Comment) {
                 usedBy: newUsedBy
                 , deId: $scope.cde._id
             }, function (res) {
-                $scope.message = "Usage Added";
+                $scope.addAlert("success", "Usage Added");
                 $scope.cde.usedByOrgs.push(newUsedBy);
-                $timeout(function() {
-                    delete $scope.message;
-                }, 2000);
                 $scope.cde = res;
             });
         });
