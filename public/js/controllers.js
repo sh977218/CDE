@@ -70,7 +70,7 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll, $timeout) {
     };
 
     $scope.showCompareButton = function(cde) {
-        return $scope.compareCart.length < 2 &&
+        return $scope.compareCart.length < 2 && cde !== undefined &&
                 $scope.compareCart.indexOf(cde._id) < 0;
     };
     
