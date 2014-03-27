@@ -1,4 +1,4 @@
-function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
+function MainCtrl($scope, Myself, $http, $location, $anchorScroll, $timeout) {
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u;
@@ -11,6 +11,18 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     $scope.alerts = [];
     $scope.closeAlert = function(index) {
         $scope.alerts.splice(index, 1);
+    };
+    $scope.addAlert = function(type, msg) {
+        var id = (new Date()).getTime();
+        $scope.alerts.push({type: type, msg: msg, id: id});
+        $timeout(function() {
+            console.log("search: " + id);
+            for (var i = 0; i < $scope.alerts.length; i++) {
+                if ($scope.alerts[i].id === id) {
+                    $scope.alerts.splice(i, 1);
+                }
+            }
+        }, 5000);
     };
     
     $scope.boards = [];
@@ -255,7 +267,7 @@ function MyBoardsCtrl($scope, $modal, $http) {
     $scope.save = function(board) {
         delete board.editMode; 
         $http.post("/board", board).success(function(response) {
-            $scope.alerts.push({type: "success", msg: "Saved"});
+            $scope.addAlert("success", "Saved");
             $scope.loadBoards();
         });
     };
@@ -491,11 +503,11 @@ function DEListCtrl($scope, $http, $modal, $location) {
         modalInstance.result.then(function (selectedBoard) {
             $http.put("/pincde/" + cde.uuid + "/" + selectedBoard._id).then(function(response) {
                 if (response.status==200)
-                    $scope.alerts.push({type: "success", msg: response.data});
+                    $scope.addAlert("success", response.data);
                 else
-                    $scope.alerts.push({type: "warning", msg: response.data});
+                    $scope.addAlert("warning", response.data);
             }, function (response){
-                $scope.alerts.push({type: "danger", msg: response.data});
+                $scope.addAlert("danger", response.data);
             });
         }, function () {
         });
@@ -897,8 +909,8 @@ function SaveCdeCtrl($scope, $modal, $http) {
         });
 
         modalInstance.result.then(function () {
-           $scope.alerts.push({type: "success", msg: "Saved"});
-        }, function () {
+            $scope.addAlert("success", "Saved");
+         }, function () {
         });        
     };
     
@@ -1385,7 +1397,7 @@ function CommentsCtrl($scope, Comment) {
         }, 
         function (res) {
             $scope.cde = res;
-            $scope.alerts.push({type: "success", msg: "Classification Removed"});
+            $scope.addAlert("success", "Classification Removed");
         });
     };
     
@@ -1402,7 +1414,7 @@ function CommentsCtrl($scope, Comment) {
                 classification: newClassification
                 , deId: $scope.cde._id
             }, function (res) {
-                $scope.alerts.push({type: "success", msg: "Classification Added"});
+                $scope.addAlert("success", "Classification Added");
                 $scope.cde = res;
             });
         });
@@ -1439,7 +1451,7 @@ function CommentsCtrl($scope, Comment) {
         }, 
         function (res) {
             $scope.cde = res;
-            $scope.alerts.push({type: "success", msg: "Usage Removed"});
+            $scope.addAlert("success", "Usage Removed");
         });
     };
     
@@ -1456,7 +1468,7 @@ function CommentsCtrl($scope, Comment) {
                 usedBy: newUsedBy
                 , deId: $scope.cde._id
             }, function (res) {
-                $scope.alerts.push({type: "success", msg: "Usage Added"});
+                $scope.addAlert("success", "Usage Added");
                 $scope.cde.usedByOrgs.push(newUsedBy);
                 $scope.cde = res;
             });

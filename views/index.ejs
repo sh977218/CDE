@@ -61,8 +61,10 @@
                         </ul>
                     </div>                
                 </div>                
-            </nav>                     
-        <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+            </nav>
+        <div class="navbar-fixed-bottom">
+            <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+        </div>
         <div ng-view>
         </div>            
     </div>
