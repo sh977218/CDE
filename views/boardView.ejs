@@ -1,7 +1,7 @@
 <h3><center>{{board.name}}<center></h3>
 
             
-<div class="panel-group" id="accordion">
+<!--<div class="panel-group" id="accordion">
     <div class="panel panel-default" ng-repeat="cde in cdes">
         <div class="panel-heading">
             <a data-toggle="collapse" data-parent="#accordion" id="acc_head_{{$index}}" data-target="#acc_body_{{$index}}" href="">
@@ -31,7 +31,9 @@
               </div>
         </div>
     </div>
-</div>
+</div>-->
+
+<%- include accordionList.ejs %> 
 
 <pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems" page="currentPage"></pagination>
 
