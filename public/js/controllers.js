@@ -488,6 +488,24 @@ function DEListCtrl($scope, $http, $modal, $location) {
     $scope.filter = [];
     $scope.uniqueOrg = false;
     
+    $scope.cdeIconAction = function (cde, action, event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        switch (action) {
+            case "view":
+                $scope.view(cde);
+            break;
+            case "openPinModal":
+                $scope.openPinModal(cde);
+            break;
+            case "addToCompareCart":
+                $scope.addToCompareCart(cde);
+            break;
+        }        
+    };
+    
     $scope.openPinModal = function (cde) {
         var modalInstance = $modal.open({
           templateUrl: 'selectBoardModalContent.html',
@@ -512,7 +530,7 @@ function DEListCtrl($scope, $http, $modal, $location) {
         });
     };
         
-    $scope.view = function(cde) {
+    $scope.view = function(cde) {       
         $location.url("deview?cdeId=" + cde._id);
     };
     
