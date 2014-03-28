@@ -65,7 +65,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     $scope.compareCart = [];
     $scope.addToCompareCart = function(cdeId) {
         if ($scope.compareCart.length < 2) {
-            $scope.compareCart.push(cdeId);
+            $scope.compareCart.push(cdeId._id);
         }
     };
     
