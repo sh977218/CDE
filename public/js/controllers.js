@@ -285,11 +285,12 @@ function BoardViewCtrl($scope, $routeParams, $http) {
     
 }
 
-function MyBoardsCtrl($scope, $modal, $http) {
+function MyBoardsCtrl($scope, $modal, $http, Board) {
     $scope.setActiveMenu('MYBOARDS');
     
     $scope.removeBoard = function(index) {
         $http.delete("/board/" + $scope.boards[index]._id).then(function (response) {
+            $scope.addAlert("success", "Board removed");
             $scope.boards.splice(index, 1);
         });
     };    
@@ -311,26 +312,30 @@ function MyBoardsCtrl($scope, $modal, $http) {
         
     $scope.save = function(board) {
         delete board.editMode; 
-        $http.post("/board", board).success(function(response) {
+        $http.post("/board", board).then(function(response) {
             $scope.addAlert("success", "Saved");
             $scope.loadBoards();
         });
     };
         
-    $scope.openNewBoard = function (cde) {
+    $scope.openNewBoard = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newBoardModalContent.html',
           controller: NewBoardModalCtrl,
           resolve: {
           }
         });
-        modalInstance.result.then(function() {
-           $scope.loadBoards(); 
+        modalInstance.result.then(function (newBoard) {
+            newBoard.shareStatus = "Private";
+            Board.save(newBoard, function(res) {
+                $scope.addAlert("success", "Board created.");
+                $scope.loadBoards();
+            });
         });
     };
 }
 
-function NewBoardModalCtrl($scope, $modalInstance, $location, Board) {
+function NewBoardModalCtrl($scope, $modalInstance) {
     $scope.newBoard = {};
     
     $scope.cancelCreate = function() {
@@ -338,11 +343,7 @@ function NewBoardModalCtrl($scope, $modalInstance, $location, Board) {
     };
 
     $scope.okCreate = function() {
-        $scope.newBoard.shareStatus = "Private";
-        Board.save($scope.newBoard, function(cde) {
-            $location.path('#/myboards');        
-        });
-        $modalInstance.close();
+        $modalInstance.close($scope.newBoard);
     };
 }
 
