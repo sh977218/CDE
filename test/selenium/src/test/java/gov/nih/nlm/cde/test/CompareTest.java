@@ -12,10 +12,22 @@ import org.testng.annotations.Test;
 public class CompareTest extends NlmCdeBaseTest{
     
     @Test
-    public void emptyCompareList() {
+    public void noElementCompareList() {
         goHome();
         findElement(By.linkText("Compare ( empty )")).click();
         Assert.assertTrue(textPresent("Search for data elements and hit the compare button"));
+    }
+    
+    @Test
+    public void emptyList() {
+        goHome();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
+        findElement(By.name("ftsearch")).sendKeys("sleep");
+        findElement(By.id("search.submit")).click();
+        findElement(By.id("acc_link_0")).click();       
+        Assert.assertTrue(textPresent("Compare ( 1 )"));
+        findElement(By.id("emptyCart")).click();
+        Assert.assertTrue(textPresent("Compare ( empty )"));        
     }
     
     @Test
