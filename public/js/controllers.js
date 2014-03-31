@@ -1,4 +1,4 @@
-function MainCtrl($scope, Myself, $http, $location, $anchorScroll, $timeout) {
+function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout) {
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u;
@@ -65,9 +65,55 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll, $timeout) {
     $scope.compareCart = [];
     $scope.addToCompareCart = function(cdeId) {
         if ($scope.compareCart.length < 2) {
-            $scope.compareCart.push(cdeId);
+            $scope.compareCart.push(cdeId._id);
         }
     };
+    
+    $scope.cdeIconAction = function (cde, action, event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        switch (action) {
+            case "view":
+                $scope.view(cde);
+            break;
+            case "openPinModal":
+                $scope.openPinModal(cde);
+            break;
+            case "addToCompareCart":
+                $scope.addToCompareCart(cde);
+            break;
+        }        
+    };
+    
+    $scope.openPinModal = function (cde) {
+        var modalInstance = $modal.open({
+          templateUrl: 'selectBoardModalContent.html',
+          controller: SelectBoardModalCtrl,
+          resolve: {
+            boards: function () {
+              return $scope.boards;
+            }
+          }
+        });
+
+        modalInstance.result.then(function (selectedBoard) {
+            $http.put("/pincde/" + cde.uuid + "/" + selectedBoard._id).then(function(response) {
+                if (response.status==200)
+                    $scope.addAlert("success", response.data);
+                else
+                    $scope.addAlert("warning", response.data);
+            }, function (response){
+                $scope.addAlert("danger", response.data);
+            });
+        }, function () {
+        });
+    };
+        
+    $scope.view = function(cde) {       
+        $location.url("deview?cdeId=" + cde._id);
+    };    
 
     $scope.showCompareButton = function(cde) {
         return $scope.compareCart.length < 2 && cde !== undefined &&
@@ -488,34 +534,6 @@ function DEListCtrl($scope, $http, $modal, $location) {
     $scope.search = {name: ""};
     $scope.filter = [];
     $scope.uniqueOrg = false;
-    
-    $scope.openPinModal = function (cde) {
-        var modalInstance = $modal.open({
-          templateUrl: 'selectBoardModalContent.html',
-          controller: SelectBoardModalCtrl,
-          resolve: {
-            boards: function () {
-              return $scope.boards;
-            }
-          }
-        });
-
-        modalInstance.result.then(function (selectedBoard) {
-            $http.put("/pincde/" + cde.uuid + "/" + selectedBoard._id).then(function(response) {
-                if (response.status==200)
-                    $scope.addAlert("success", response.data);
-                else
-                    $scope.addAlert("warning", response.data);
-            }, function (response){
-                $scope.addAlert("danger", response.data);
-            });
-        }, function () {
-        });
-    };
-        
-    $scope.view = function(cde) {
-        $location.url("deview?cdeId=" + cde._id);
-    };
     
     $scope.setPage = function (pageNo) {
       $scope.currentPage = pageNo;

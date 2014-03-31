@@ -50,48 +50,8 @@
     <div class="col-md-10">
         <center ng-hide="cdes.length >= 0"> Loading</center>
         <center ng-show="cdes.length === 0">No Results</center>
-        <div class="panel-group" id="accordion">
-            <div class="panel panel-default" ng-repeat="cde in cdes" >
-                <div class="panel-heading">
-                  <h3 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" id="acc_link_{{$index}}" data-target="#acc_body_{{$index}}" href="">
-                        {{cde.naming[0].designation}}                    
-                    </a>
-                    <i class="fa fa-eye" ng-click="view(cde)" title="View"></i> 
-                  </h3>
-                </div>
-                <div id="acc_body_{{$index}}" class="panel-collapse collapse">
-                  <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-6">
-    <!--                        <small>relevance: {{cde.score}}</small>-->
-                            <%- include cdegeneraldetails.ejs %>
-                        </div>
-                        <div class="col-md-4">
-                            <%- include valueDomainView.ejs %>
-                        </div>
-                         <div class="col-md-2">
-                            <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" src="/data/{{attachment.fileid}}"/> 
-                         </div>
-                     </div>
-                    <div class="row" >
-                        <a class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
-                        <span ng-show="user._id">
-                            <a class="btn btn-small btn-default" ng-click="openPinModal(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack" title="Pin"></i> Attach to Board</a>
-                        </span>
-                        <a class="btn btn-small btn-default" ng-show="showCompareButton(cde)" ng-click="addToCompareCart(cde._id)" title="Add to Compare List" id="compare_{{$index}}"><i class="fa fa-plus"></i> Compare</a>
-                    </div>
-                    <script type="text/ng-template" id="addToFormModalContent.html">
-                        <%- include addToFormModal.ejs %>
-                    </script>
-                    <script type="text/ng-template" id="selectBoardModalContent.html">
-                        <%- include selectBoardModal.ejs %>
-                    </script>
-                  </div>
-                </div>
-            </div>
-        </div>
-                
+        <% var ejsPage = "list"; %>
+        <%- include accordionList.ejs %>                
         <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="currentPage"></pagination>
     </div>
 </div>
