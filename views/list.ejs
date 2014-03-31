@@ -2,6 +2,9 @@
 <form class="form-inline">
     <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="search-query" placeholder="Search" ng-change="onchangeSearch()">  
     <input id="search.submit" type="submit" value="Search" ng-click="search()" class="btn btn-default"></input>
+    <small ng-show="cdes.length > 0" class="pull-right">
+        {{totalItems}} hits
+    </small>
 </form>
 </center>
 
