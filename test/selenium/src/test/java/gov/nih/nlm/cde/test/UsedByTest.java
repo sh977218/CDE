@@ -53,8 +53,7 @@ public class UsedByTest extends NlmCdeBaseTest {
         String toRemove = findElement(By.id("usedBy-2")).getText();
         findElement(By.id("removeUsedBy-2")).click();
         findElement(By.id("confirmRemoveUsedBy-2")).click();
-        // TODO - Find a way to make this work. Selenium doesn't seem to poll often enough.
-//        org.testng.Assert.assertTrue(textPresent("Usage Removed"));
+        org.testng.Assert.assertTrue(textPresent("Usage Removed"));
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(toRemove) < 0);
      
     }
