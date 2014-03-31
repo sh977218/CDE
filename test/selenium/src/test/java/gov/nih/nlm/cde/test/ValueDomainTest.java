@@ -66,8 +66,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.xpath("//td[@id='pvName-1']/div/div[1]/i")).click();
         findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys(Keys.BACK_SPACE);
         findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys("o");
-        findElement(By.xpath("//td[@id = 'pvName-1']/div/div[2]//a")).click();
-        findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/i[1]")).click();
+        findElement(By.xpath("//td[@id = 'pvName-1']/div/div[2]/ul/li[1]")).click();
+        findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/a[1]")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("6");
