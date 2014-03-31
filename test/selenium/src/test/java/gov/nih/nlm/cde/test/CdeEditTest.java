@@ -148,7 +148,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("propConceptRemove-3")).click();
         
         findElement(By.id("openSave")).click();
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+        modalHere();
         findElement(By.name("version")).sendKeys(".2");
         findElement(By.id("confirmSave")).click();
         hangon(2);
