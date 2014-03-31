@@ -25,6 +25,7 @@ public class CompareTest extends NlmCdeBaseTest{
         findElement(By.name("ftsearch")).sendKeys("sleep");
         findElement(By.id("search.submit")).click();
         findElement(By.id("acc_link_0")).click();       
+        findElement(By.id("compare_0")).click();
         Assert.assertTrue(textPresent("Compare ( 1 )"));
         findElement(By.id("emptyCart")).click();
         Assert.assertTrue(textPresent("Compare ( empty )"));        
