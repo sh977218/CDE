@@ -40,12 +40,17 @@
                             </li>       
                             <li class="{{menuBoardList}}"><a href="#/boardList">Boards</a></li>
                             <li class="{{menuMyBoards}}" ng-show="user._id"><a href="#/myboards">My Boards</a></li>
-                            <li class="{{menuCompare}}"><a href="#/deCompare">Compare (
+                            <li class="{{menuCompare}}">
+                                <p class="navbar-text"><a class="navbar-link" href="#/deCompare" style="text-decoration:none;">Compare (
                                     <span ng-switch="compareCart.length">
                                         <span ng-switch-when="0">empty</span>
                                         <span ng-switch-when="2">full</span>
                                         <span ng-switch-default>{{compareCart.length}}</span>
-                                    </span>)</a></li>
+                                    </span>)
+                                    </a>
+                                    <a class="fa fa-trash-o navbar-link" style="text-decoration:none;" ng-show="compareCart.length > 0" ng-click="emptyCart()" title="Empty cart" id="emptyCart"></a>
+                                </p>
+                            </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="{{menuLogin}}" ng-show='!user._id'><a href="#/login">Log In</a></li>
@@ -58,7 +63,6 @@
                                     <li ng-show='user._id'><a href="/logout">Log Out</a></li>                                         
                                 </ul>
                             </li>
-
                         </ul>
                     </div>                
                 </div>                

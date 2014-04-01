@@ -83,6 +83,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys("Biomarker Gene");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("Biomarker Gene"));
+        Assert.assertTrue(textPresent("24 hits"));
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(linkList.size() > 10);
 
@@ -92,6 +93,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("caBIG (1)"));
         
         Assert.assertTrue(textPresent("Biomarker Gene"));
+        Assert.assertTrue(textPresent("1 hits"));
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 1);
     }
