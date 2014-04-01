@@ -9,7 +9,6 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
     };
     
     $scope.boards = [];
-
     $scope.loadBoards = function() {
         if ($scope.user && $scope.user._id) {
             $http.get("/boards/" + $scope.user._id).then(function (response) {
@@ -1114,7 +1113,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
     $scope.mltCdes = [];
     $scope.boards = [];
     $scope.comment = {};
-
     $scope.reload = function(deId, cb) {
         DataElement.get({deId: deId}, function (de) {
            $scope.cde = de;          
@@ -1170,7 +1168,9 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
         }
 
     };
-    
+    $scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
+        return areaFormat==cdeFormat;
+    };        
     $scope.isAllowed = function (cde) {
         if ($scope.initialized && cde.archived) {
             return false;
