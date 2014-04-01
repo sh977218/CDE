@@ -1113,6 +1113,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
     $scope.mltCdes = [];
     $scope.boards = [];
     $scope.comment = {};
+    $scope.saveDefinitionAsHtml = false;
     $scope.reload = function(deId, cb) {
         DataElement.get({deId: deId}, function (de) {
            $scope.cde = de;          
@@ -1171,6 +1172,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
     $scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
         return areaFormat==cdeFormat;
     };        
+    
     $scope.isAllowed = function (cde) {
         if ($scope.initialized && cde.archived) {
             return false;
