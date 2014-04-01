@@ -542,24 +542,22 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
 
     $scope.ftsearch = cache.get("ftsearch");
 
+    $scope.totalItems = cache.get("totalItems");
     $scope.currentPage = cache.get("currentPage");
-    console.log($scope.currentPage);
+   
     if ($scope.currentPage === undefined) {
         $scope.currentPage = 1;
     }
-    console.log($scope.currentPage);
-
+    
     $scope.filter = [];
     
-    $scope.pageSelected = function (pageno) {
-        cache.put("currentPage", pageno);
-    }
-    
     $scope.$watch('currentPage', function() {
-        console.log("watch current page: " + $scope.currentPage);
+        console.log("watch");
+        cache.put("currentPage", $scope.currentPage)
         $scope.reload();
     });
     
+
     $scope.addOrgFilter = function(t) {
         if ($scope.selectedOrg === undefined) {
             $scope.selectedOrg = t.term;
@@ -760,7 +758,6 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
 
         var from = ($scope.currentPage - 1) * $scope.resultPerPage;
         queryStuff.from = from;
-        console.log("from " + from);
         return callback({query: queryStuff});
     };
 
@@ -777,13 +774,14 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         $scope.reload();
     };
 
-    $scope.reload = function() {        
+    $scope.reload = function() {  
         $scope.buildElasticQuery(function(query) {
             $http.post("/elasticSearch", query).then(function (response) {
                var result = response.data;
                $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                $scope.cdes = result.cdes;
                $scope.totalItems = result.totalNumber;
+               cache.put("totalItems", $scope.totalItems);
                if (!$scope.facets) {
                    $scope.facets = result.facets;
                }
