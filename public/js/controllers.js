@@ -68,6 +68,9 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             $scope.compareCart.push(cdeId._id);
         }
     };
+    $scope.emptyCart = function() {
+        $scope.compareCart = [];
+    }
     
     $scope.cdeIconAction = function (cde, action, event) {
         if (event) {
