@@ -525,29 +525,35 @@ function SelectBoardModalCtrl($scope, $modalInstance, boards) {
     };
 }
 
-function DEListCtrl($scope, $http, $modal, $location) {
+function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     $scope.setActiveMenu('LISTCDE');
     
-    $scope.currentPage = 1;
+    var cache;
+    if ($cacheFactory.get("deListCache") === undefined) {
+        cache = $cacheFactory("deListCache");
+    } else {
+        cache = $cacheFactory.get("deListCache");
+    }
+    
     $scope.resultPerPage = 20;
 
-    $scope.search = {name: ""};
+    $scope.ftsearch = cache.get("ftsearch");
+
+    $scope.currentPage = cache.get("currentPage");
+    console.log($scope.currentPage);
+    if ($scope.currentPage === undefined) {
+        $scope.currentPage = 1;
+    }
+    console.log($scope.currentPage);
+
     $scope.filter = [];
-    $scope.uniqueOrg = false;
     
-    $scope.setPage = function (pageNo) {
-      $scope.currentPage = pageNo;
-    };       
-
-    $scope.previous = function () {
-        $scope.currentPage--;
-    };
-
-    $scope.next = function () {
-        $scope.currentPage++;
-    };
+    $scope.pageSelected = function (pageno) {
+        cache.put("currentPage", pageno);
+    }
     
     $scope.$watch('currentPage', function() {
+        console.log("watch current page: " + $scope.currentPage);
         $scope.reload();
     });
     
@@ -751,12 +757,20 @@ function DEListCtrl($scope, $http, $modal, $location) {
 
         var from = ($scope.currentPage - 1) * $scope.resultPerPage;
         queryStuff.from = from;
+        console.log("from " + from);
         return callback({query: queryStuff});
     };
 
-    $scope.search = function() {
+    $scope.resetSearch = function() {
         delete $scope.facets;
-        $scope.filter = [];
+        $scope.filter = []; 
+        delete $scope.ftsearch;
+        delete $scope.selectedOrg;
+        $scope.reload();
+    }
+
+    $scope.search = function() {
+        cache.put("ftsearch", $scope.ftsearch);
         $scope.reload();
     };
 
@@ -770,24 +784,9 @@ function DEListCtrl($scope, $http, $modal, $location) {
                if (!$scope.facets) {
                    $scope.facets = result.facets;
                }
-               $scope.uniqueOrg = false;
             });     
         });
     } ;  
-    
-    $scope.autocomplete = function(viewValue) {
-        // @TODO
-        // Typeahead gets called before ng-model binding 
-        // So I am setting is manually. Is there a better way to do the next 3 lines?
-        if (!$scope.search) {
-            $scope.search = {};
-        }
-        $scope.search.name = viewValue;
-        
-        return $http.get("/autocomplete?search="+JSON.stringify($scope.search)).then(function(response){ 
-            return response.data.names;
-        }); 
-    };
     
     $scope.isAllowed = function (cde) {
         return false;
