@@ -542,6 +542,12 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
 
     $scope.ftsearch = cache.get("ftsearch");
 
+    $scope.selectedOrg = cache.get("selectedOrg");
+
+    $scope.filter = cache.get("filter");
+    if ($scope.filter === undefined) {
+        $scope.filter = [];    
+    }
     $scope.totalItems = cache.get("totalItems");
     $scope.currentPage = cache.get("currentPage");
    
@@ -549,20 +555,18 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         $scope.currentPage = 1;
     }
     
-    $scope.filter = [];
-    
     $scope.$watch('currentPage', function() {
-        console.log("watch");
         cache.put("currentPage", $scope.currentPage)
         $scope.reload();
     });
-    
 
     $scope.addOrgFilter = function(t) {
         if ($scope.selectedOrg === undefined) {
             $scope.selectedOrg = t.term;
+            cache.put("selectedOrg", t.term);
         } else {
             delete $scope.selectedOrg;
+            cache.remove("selectedOrg");
         }
         delete $scope.facets.groups;
         $scope.facetSearch();
