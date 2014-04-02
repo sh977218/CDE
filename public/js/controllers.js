@@ -31,7 +31,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };
     
     $scope.boards = [];
-    
+
     $scope.loadBoards = function() {
         if ($scope.user && $scope.user._id) {
             $http.get("/boards/" + $scope.user._id).then(function (response) {
