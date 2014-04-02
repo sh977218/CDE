@@ -1035,7 +1035,7 @@ function NewConceptModalCtrl($scope, $modalInstance, cde) {
     };
 };
 
-var SaveCdeModalCtrl = function ($scope, $window, $rootScope, $modalInstance, cde, user) {
+var SaveCdeModalCtrl = function ($scope, $window, $modalInstance, cde, user) {
   $scope.cde = cde;
   $scope.user = user;
 
