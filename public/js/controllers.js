@@ -31,6 +31,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };
     
     $scope.boards = [];
+    
     $scope.loadBoards = function() {
         if ($scope.user && $scope.user._id) {
             $http.get("/boards/" + $scope.user._id).then(function (response) {
@@ -854,7 +855,7 @@ function ConceptsCtrl($scope, $modal, $http) {
     };
 }
 
-function SaveCdeCtrl($scope, $modal, $http) {
+function SaveCdeCtrl($scope, $modal, $http) { 
     $scope.checkVsacId = function(cde) {
         $http({method: "GET", url: "/vsacBridge/" + cde.dataElementConcept.conceptualDomain.vsac.id}).
          error(function(data, status) {
