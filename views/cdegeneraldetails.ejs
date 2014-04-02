@@ -4,7 +4,7 @@
     <dt>Name: </dt> <dd id="dd_general_name"><inline-edit id="nameEdit" model="cde.naming[0].designation" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></dd>
     <dt>Steward: </dt><dd>{{cde.stewardOrg.name}}</dd>
     <dt>Definition: </dt><dd id="dd_def">   
-        <inline-area-edit type-visibility="inlineAreaEditVisibility" model="cde.naming[0].definition" is-allowed="isAllowed(cde)" def-type-model="cde.naming[0].definitionFormat" on-ok="stageCde(cde)"> </inline-area-edit>
+        <inline-area-edit validate-html="validateHtmlForDescriptionEdit" inline-area-visibility="inlineAreaEditVisibility" model="cde.naming[0].definition" is-allowed="isAllowed(cde)" def-type-model="cde.naming[0].definitionFormat" on-ok="stageCde(cde)"> </inline-area-edit>
     </dd>
     <dt>Unit of Measure: </dt><dd id="dd_uom"><inline-edit id="uomEdit" model="cde.valueDomain.uom" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></dd> 
     <dt>Id: </dt><dd>{{cde.uuid}}</dd>

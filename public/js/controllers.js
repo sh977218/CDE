@@ -8,11 +8,11 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         });
     };
     
-    $scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
+    /*$scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
         if (cdeFormat===false)
             cdeFormat=null;
         return areaFormat==cdeFormat;
-    };    
+    };*/    
     
     $scope.alerts = [];
     $scope.closeAlert = function(index) {
@@ -1044,12 +1044,12 @@ var SaveCdeModalCtrl = function ($scope, $window, $modalInstance, cde, user) {
   $scope.ok = function () {
     var cdeIsHtml = $scope.cde.naming[0].definitionFormat == 'html';                
     if (cdeIsHtml) {
-        var leftBracketCount = $scope.cde.naming[0].definition.match(/</g).length;
+        /*var leftBracketCount = $scope.cde.naming[0].definition.match(/</g).length;
         var rightBracketCount = $scope.cde.naming[0].definition.match(/>/g).length;
         if (leftBracketCount!=rightBracketCount) {
             alert("Definition does not include valid HTML.");
             return false;
-        }
+        }*/
     }
       
     $scope.cde.$save(function (newcde) {
@@ -1226,6 +1226,16 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
         }
 
     };      
+    
+    $scope.validateHtmlForDescriptionEdit = function(value){
+        console.log(value);
+    };
+    
+    $scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
+        if (cdeFormat===false)
+            cdeFormat=null;
+        return areaFormat==cdeFormat;
+    };       
     
     $scope.isAllowed = function (cde) {
         if ($scope.initialized && cde.archived) {
