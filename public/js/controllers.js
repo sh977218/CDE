@@ -855,9 +855,6 @@ function ConceptsCtrl($scope, $modal, $http) {
 }
 
 function SaveCdeCtrl($scope, $modal, $http) {
-    $scope.checkHtmlValidity = function(cde){
-        console.log("checkHtmlValidity");
-    };  
     $scope.checkVsacId = function(cde) {
         $http({method: "GET", url: "/vsacBridge/" + cde.dataElementConcept.conceptualDomain.vsac.id}).
          error(function(data, status) {
@@ -1227,12 +1224,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
             }
         }
 
-    };
-    /*$scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
-        if (cdeFormat===false)
-            cdeFormat=null;
-        return areaFormat==cdeFormat;
-    };*/        
+    };      
     
     $scope.isAllowed = function (cde) {
         if ($scope.initialized && cde.archived) {

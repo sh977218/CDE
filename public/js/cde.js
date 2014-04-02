@@ -52,7 +52,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
                              '   <textarea ng-model="value" ></textarea>' +   
                               '  <i class="fa fa-check-square-o" ng-click="model = value;editMode = false; onOk();"> </i>' + 
                                ' <i class="fa fa-trash-o" ng-click="editMode = false"></i>' + 
-                               '  <span class="checkbox"><label><input ng-click="checkHtmlValidity()" ng-model="defTypeModel" ng-true-value="html" ng-click="saveDefType()" type="checkbox" >Save as HTML</label></span>' +                           
+                               '  <span class="checkbox"><label><input ng-model="defTypeModel" ng-true-value="html" ng-click="saveDefType()" type="checkbox" >Save as HTML</label></span>' +                           
                             '</div>       ' + 
                         '</div>',
             restrict: 'E',
@@ -63,7 +63,6 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
                 , saveDefType: '&'
                 , defTypeModel: '='
                 , typeVisibility: '='
-                , checkHtmlValidity: '&'
             }
         };
     });
