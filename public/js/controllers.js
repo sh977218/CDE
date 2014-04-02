@@ -817,6 +817,9 @@ function ConceptsCtrl($scope, $modal, $http, $timeout) {
 }
 
 function SaveCdeCtrl($scope, $modal, $http, $timeout) { 
+    $scope.checkHtmlValidity = function(cde){
+        console.log("checkHtmlValidity");
+    };        
     $scope.checkVsacId = function(cde) {
         $http({method: "GET", url: "/vsacBridge/" + cde.dataElementConcept.conceptualDomain.vsac.id}).
          error(function(data, status) {
@@ -1007,8 +1010,13 @@ var SaveCdeModalCtrl = function ($scope, $window, $rootScope, $modalInstance, cd
 
   $scope.ok = function () {
     var cdeIsHtml = $scope.cde.naming[0].definitionFormat == 'html';                
-    if (cdeIsHtml!=$rootScope.saveDefinitionAsHtml)
-        console.log("Now we will convert!");      
+    if (cdeIsHtml) {
+        var leftBracketCount = $scope.cde.naming[0].definition.match(/</g).length;
+        var rightBracketCount = $scope.cde.naming[0].definition.match(/>/g).length;
+        if (leftBracketCount!=rightBracketCount)
+            return false;
+    }
+      
     $scope.cde.$save(function (newcde) {
         $window.location.href = "/#/deview?cdeId=" + newcde._id;
         $modalInstance.close();
