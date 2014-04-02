@@ -8,6 +8,12 @@ function MainCtrl($scope, Myself, $http, $location, $anchorScroll) {
         });
     };
     
+    $scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
+        if (cdeFormat===false)
+            cdeFormat=null;
+        return areaFormat==cdeFormat;
+    };    
+    
     $scope.boards = [];
     $scope.loadBoards = function() {
         if ($scope.user && $scope.user._id) {
@@ -1177,11 +1183,11 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
         }
 
     };
-    $scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
+    /*$scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
         if (cdeFormat===false)
             cdeFormat=null;
         return areaFormat==cdeFormat;
-    };        
+    };*/        
     
     $scope.isAllowed = function (cde) {
         if ($scope.initialized && cde.archived) {
