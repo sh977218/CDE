@@ -1229,9 +1229,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
     };      
     
     $scope.validateHtmlForDescriptionEdit = function(value){
-        var leftBracketCount = value.match(/</g).length;
-        var rightBracketCount = value.match(/>/g).length;      
-        $scope.definitionIsValid = leftBracketCount==rightBracketCount;
+        console.log("no validation");     
+        $scope.definitionIsValid = true;
     };
     
     $scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){

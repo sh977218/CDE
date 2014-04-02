@@ -46,17 +46,18 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
                             '<div ng-hide="editMode">' + 
                             '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>&nbsp;' +
                             '<span ng-if="inlineAreaVisibility(null,defTypeModel)"><span ng-bind="model"></span></span>' +
-                            '<span ng-if="inlineAreaVisibility(\'html\',defTypeModel)"><span ng-bind-html="model"></span></span>  ' +
+                            '<span ng-if="inlineAreaVisibility(\'html\',defTypeModel)"><span ng-bind-html="model"></span></span>' +
                             '</div>' + 
                             '<div ng-show="editMode">' + 
-                             //'  class="form-group"  <textarea ng-change="validateHtml(value)" ng-model="value" ></textarea>' +   
-                            '<div  ng-class="{\'has-error\': !definitionIsValid}">'+
-                            '<textarea class="form-control" ng-change="validateHtml(value)" ng-model="value" ></textarea>'+
-                            '<span ng-hide="definitionIsValid">Not valid HTML.</span>'+
-                            '</div>' +
+                             '<textarea ng-show="inlineAreaVisibility(null,defTypeModel)" ng-change="validateHtml(value)" ng-model="value" ></textarea>' +  
+                             '<text-angular ng-show="inlineAreaVisibility(\'html\',defTypeModel)" ng-change="validateHtml(value)" ng-model="value" ></text-angular>' +                             
+                            //'<div  ng-class="{\'has-error\': !definitionIsValid}">'+
+                            //'<textarea class="form-control" ng-change="validateHtml(value)" ng-model="value" ></textarea>'+
+                            //'<span ng-hide="definitionIsValid">Not valid HTML.</span>'+
+                            //'</div>' +
                               '  <i class="fa fa-check-square-o" ng-click="model = value;editMode = false; onOk();"> </i>' + 
                                ' <i class="fa fa-trash-o" ng-click="editMode = false"></i>' + 
-                               '  <span class="checkbox"><label><input ng-model="defTypeModel" ng-true-value="html" type="checkbox" >Save as HTML</label></span>' +                           
+                               '  <span class="checkbox"><label><input ng-model="defTypeModel" ng-true-value="html" type="checkbox" >Edit as HTML</label></span>' +                           
                             '</div>       ' + 
                         '</div>',
             restrict: 'E',
