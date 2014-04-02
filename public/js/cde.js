@@ -40,71 +40,31 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
         }
     };
     })
-    /*directive('inlineAreaEdit', function() {
-    return {
-        template: '<div>' + 
-                        '<div ng-hide="editMode">' + 
-                         '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>&nbsp;<span ng-bind-html="model"/>' +
-                        '</div>' + 
-                        '<div ng-show="editMode">' + 
-                         '   <textarea ng-model="value" ></textarea>' + 
-                          '  <i class="fa fa-check-square-o" ng-click="model = value;editMode = false; onOk()"> </i>' + 
-                           ' <i class="fa fa-trash-o" ng-click="editMode = false"></i>' + 
-                        '</div>       ' + 
-                    '</div>',
-        restrict: 'E',
-        scope: {
-            model: '='
-            , isAllowed: '&'
-            , onOk: '&'
-        }
-    };
-    });*/
     .directive('inlineAreaEdit', function() {
-    return {
-        template: '<div>' + 
-                        '<div ng-hide="editMode">' + 
-                         '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>&nbsp;<span ng-bind="model"/>' +
-                        '</div>' + 
-                        '<div ng-show="editMode">' + 
-                        '  <div class="checkbox"><label><input ng-model="defTypeModel" ng-true-value="html" ng-false-value="null" ng-click="saveDefType()" type="checkbox" >Save as HTML</label></div>' +
-                         '   <textarea ng-model="value" ></textarea>' + 
-                          '  <i class="fa fa-check-square-o" ng-click="model = value;editMode = false; onOk();"> </i>' + 
-                           ' <i class="fa fa-trash-o" ng-click="editMode = false"></i>' + 
-                        '</div>       ' + 
-                    '</div>',
-        restrict: 'E',
-        scope: {
-            model: '='
-            , isAllowed: '&'
-            , onOk: '&'
-            , saveDefType: '&'
-            , defTypeModel: '='
-        }
-    };
-    })
-    .directive('inlineAreaEditHtml', function() {
-    return {
-        template: '<div>' + 
-                        '<div ng-hide="editMode">' + 
-                         '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>&nbsp;<span ng-bind-html="model"/>' +
-                        '</div>' + 
-                        '<div ng-show="editMode">' + 
-                        '  <div class="checkbox"><label><input ng-model="defTypeModel" ng-true-value="html" ng-false-value="null" ng-click="saveDefType()" type="checkbox" >Save as HTML</label></div>' +
-                         '   <textarea ng-model="value" ></textarea>' + 
-                          '  <i class="fa fa-check-square-o" ng-click="model = value;editMode = false; onOk()"> </i>' + 
-                           ' <i class="fa fa-trash-o" ng-click="editMode = false"></i>' + 
-                        '</div>       ' + 
-                    '</div>',
-        restrict: 'E',
-        scope: {
-            model: '='
-            , isAllowed: '&'
-            , onOk: '&'
-            , saveDefType: '&'
-            , defTypeModel: '='
-        }
-    };
+        return {
+            template: '<div>' + 
+                            '<div ng-hide="editMode">' + 
+                            '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>&nbsp;' +
+                            '<div ng-if="typeVisibility(null,defTypeModel)"><span ng-bind="model"/></div>' +
+                            '<div ng-if="typeVisibility(\'html\',defTypeModel)"><span ng-bind-html="model"/></div>  ' +
+                            '</div>' + 
+                            '<div ng-show="editMode">' + 
+                            '  <div class="checkbox"><label><input ng-model="defTypeModel" ng-true-value="html" ng-click="saveDefType()" type="checkbox" >Save as HTML</label></div>' +
+                             '   <textarea ng-model="value" ></textarea>' + 
+                              '  <i class="fa fa-check-square-o" ng-click="model = value;editMode = false; onOk();"> </i>' + 
+                               ' <i class="fa fa-trash-o" ng-click="editMode = false"></i>' + 
+                            '</div>       ' + 
+                        '</div>',
+            restrict: 'E',
+            scope: {
+                model: '='
+                , isAllowed: '&'
+                , onOk: '&'
+                , saveDefType: '&'
+                , defTypeModel: '='
+                , typeVisibility: '='
+            }
+        };
     });
 
 cdeApp.directive('ngCdeAvailable', ['$http', function($http) {

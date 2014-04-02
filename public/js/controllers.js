@@ -811,10 +811,6 @@ function ConceptsCtrl($scope, $modal, $http, $timeout) {
 }
 
 function SaveCdeCtrl($scope, $modal, $http, $timeout) { 
-    $scope.saveDefType = function(){
-        console.log("saveDefType2");
-    };    
-    
     $scope.checkVsacId = function(cde) {
         $http({method: "GET", url: "/vsacBridge/" + cde.dataElementConcept.conceptualDomain.vsac.id}).
          error(function(data, status) {
@@ -877,6 +873,11 @@ function SaveCdeCtrl($scope, $modal, $http, $timeout) {
     
 
     $scope.stageCde = function(cde) {
+        //TODO - Since we store plaintext in our DB as .definitionFormat=null,
+        // but AngularJS model directive for checkbox does not support null,
+        // there is this conversion.
+        if (cde.naming[0].definitionFormat===false)
+            cde.naming[0].definitionFormat=null;
         cde.unsaved = true;
     };
         
@@ -1177,12 +1178,10 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
 
     };
     $scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
+        if (cdeFormat===false)
+            cdeFormat=null;
         return areaFormat==cdeFormat;
     };        
-    
-    $scope.saveDefType = function(){
-        console.log("saveDefType1");
-    };
     
     $scope.isAllowed = function (cde) {
         if ($scope.initialized && cde.archived) {
