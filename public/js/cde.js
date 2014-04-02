@@ -49,7 +49,11 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
                             '<span ng-if="inlineAreaVisibility(\'html\',defTypeModel)"><span ng-bind-html="model"></span></span>  ' +
                             '</div>' + 
                             '<div ng-show="editMode">' + 
-                             '   <textarea ng-change="validateHtml(value)" ng-model="value" ></textarea>' +   
+                             //'  class="form-group"  <textarea ng-change="validateHtml(value)" ng-model="value" ></textarea>' +   
+                            '<div  ng-class="{\'has-error\': !definitionIsValid}">'+
+                            '<textarea class="form-control" ng-change="validateHtml(value)" ng-model="value" ></textarea>'+
+                            '<span ng-hide="definitionIsValid">Not valid HTML.</span>'+
+                            '</div>' +
                               '  <i class="fa fa-check-square-o" ng-click="model = value;editMode = false; onOk();"> </i>' + 
                                ' <i class="fa fa-trash-o" ng-click="editMode = false"></i>' + 
                                '  <span class="checkbox"><label><input ng-model="defTypeModel" ng-true-value="html" type="checkbox" >Save as HTML</label></span>' +                           
@@ -63,6 +67,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
                 , defTypeModel: '='
                 , inlineAreaVisibility: '='
                 , validateHtml: '='
+                , definitionIsValid: '='
             }
         };
     });

@@ -1042,15 +1042,15 @@ var SaveCdeModalCtrl = function ($scope, $window, $modalInstance, cde, user) {
   $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Retired'];
 
   $scope.ok = function () {
-    var cdeIsHtml = $scope.cde.naming[0].definitionFormat == 'html';                
+    /*var cdeIsHtml = $scope.cde.naming[0].definitionFormat == 'html';                
     if (cdeIsHtml) {
-        /*var leftBracketCount = $scope.cde.naming[0].definition.match(/</g).length;
+        var leftBracketCount = $scope.cde.naming[0].definition.match(/</g).length;
         var rightBracketCount = $scope.cde.naming[0].definition.match(/>/g).length;
         if (leftBracketCount!=rightBracketCount) {
             alert("Definition does not include valid HTML.");
             return false;
-        }*/
-    }
+        }
+    }*/
       
     $scope.cde.$save(function (newcde) {
         $window.location.href = "/#/deview?cdeId=" + newcde._id;
@@ -1171,6 +1171,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
     $scope.boards = [];
     $scope.comment = {};
     $scope.saveDefinitionAsHtml = false;
+    $scope.definitionIsValid = true;
     $scope.reload = function(deId, cb) {
         DataElement.get({deId: deId}, function (de) {
            $scope.cde = de;          
@@ -1228,7 +1229,9 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
     };      
     
     $scope.validateHtmlForDescriptionEdit = function(value){
-        console.log(value);
+        var leftBracketCount = value.match(/</g).length;
+        var rightBracketCount = value.match(/>/g).length;      
+        $scope.definitionIsValid = leftBracketCount==rightBracketCount;
     };
     
     $scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
