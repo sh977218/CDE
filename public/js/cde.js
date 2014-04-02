@@ -67,9 +67,9 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
                          '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>&nbsp;<span ng-bind="model"/>' +
                         '</div>' + 
                         '<div ng-show="editMode">' + 
-                        '  <div class="checkbox"><label><input type="checkbox" ng-model="saveDefinitionAsHtml">Save as HTML</label></div>' +
+                        '  <div class="checkbox"><label><input ng-click="saveDefType()"  type="checkbox" >Save as HTML</label></div>' +
                          '   <textarea ng-model="value" ></textarea>' + 
-                          '  <i class="fa fa-check-square-o" ng-click="model = value;editMode = false; onOk()"> </i>' + 
+                          '  <i class="fa fa-check-square-o" ng-click="model = value;editMode = false; onOk();saveDefType();"> </i>' + 
                            ' <i class="fa fa-trash-o" ng-click="editMode = false"></i>' + 
                         '</div>       ' + 
                     '</div>',
@@ -78,6 +78,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
             model: '='
             , isAllowed: '&'
             , onOk: '&'
+            , saveDefType: '&'
         }
     };
     })
@@ -88,7 +89,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
                          '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>&nbsp;<span ng-bind-html="model"/>' +
                         '</div>' + 
                         '<div ng-show="editMode">' + 
-                        '  <div class="checkbox"><label><input type="checkbox" ng-model="saveDefinitionAsHtml">Save as HTML</label></div>' +
+                        '  <div class="checkbox"><label><input type="checkbox" ng-click="saveDefType()">Save as HTML</label></div>' +
                          '   <textarea ng-model="value" ></textarea>' + 
                           '  <i class="fa fa-check-square-o" ng-click="model = value;editMode = false; onOk()"> </i>' + 
                            ' <i class="fa fa-trash-o" ng-click="editMode = false"></i>' + 
@@ -99,6 +100,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
             model: '='
             , isAllowed: '&'
             , onOk: '&'
+            , saveDefType: '&'
         }
     };
     });

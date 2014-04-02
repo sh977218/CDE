@@ -5,10 +5,10 @@
     <dt>Steward: </dt><dd>{{cde.stewardOrg.name}}</dd>
     <dt>Definition: </dt><dd id="dd_def">
         <div ng-if="inlineAreaEditVisibility(null,cde.naming[0].definitionFormat)">
-            <inline-area-edit model="cde.naming[0].definition" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-area-edit>
+            <inline-area-edit model="cde.naming[0].definition" is-allowed="isAllowed(cde)" save-def-type="saveDefType()" on-ok="stageCde(cde)"> </inline-area-edit>
         </div>
         <div ng-if="inlineAreaEditVisibility('html',cde.naming[0].definitionFormat)">
-            <inline-area-edit-html model="cde.naming[0].definition" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-area-edit-html>
+            <inline-area-edit-html model="cde.naming[0].definition" is-allowed="isAllowed(cde)" save-def-type="saveDefType()" on-ok="stageCde(cde)"> </inline-area-edit-html>
         </div>        
     </dd>
     <dt>Unit of Measure: </dt><dd id="dd_uom"><inline-edit id="uomEdit" model="cde.valueDomain.uom" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></dd> 

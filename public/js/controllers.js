@@ -811,6 +811,10 @@ function ConceptsCtrl($scope, $modal, $http, $timeout) {
 }
 
 function SaveCdeCtrl($scope, $modal, $http, $timeout) { 
+    $scope.saveDefType = function(){
+        console.log("saveDefType2");
+    };    
+    
     $scope.checkVsacId = function(cde) {
         $http({method: "GET", url: "/vsacBridge/" + cde.dataElementConcept.conceptualDomain.vsac.id}).
          error(function(data, status) {
@@ -988,13 +992,16 @@ function NewConceptModalCtrl($scope, $modalInstance, cde) {
     };
 };
 
-var SaveCdeModalCtrl = function ($scope, $window, $modalInstance, cde, user) {
+var SaveCdeModalCtrl = function ($scope, $window, $rootScope, $modalInstance, cde, user) {
   $scope.cde = cde;
   $scope.user = user;
 
   $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Retired'];
 
   $scope.ok = function () {
+    var cdeIsHtml = $scope.cde.naming[0].definitionFormat == 'html';                
+    if (cdeIsHtml!=$rootScope.saveDefinitionAsHtml)
+        console.log("Now we will C0NV3RT!");      
     $scope.cde.$save(function (newcde) {
         $window.location.href = "/#/deview?cdeId=" + newcde._id;
         $modalInstance.close();
@@ -1172,6 +1179,10 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
     $scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
         return areaFormat==cdeFormat;
     };        
+    
+    $scope.saveDefType = function(){
+        console.log("saveDefType1");
+    };
     
     $scope.isAllowed = function (cde) {
         if ($scope.initialized && cde.archived) {
