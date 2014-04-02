@@ -1002,7 +1002,7 @@ var SaveCdeModalCtrl = function ($scope, $window, $rootScope, $modalInstance, cd
   $scope.ok = function () {
     var cdeIsHtml = $scope.cde.naming[0].definitionFormat == 'html';                
     if (cdeIsHtml!=$rootScope.saveDefinitionAsHtml)
-        console.log("Now we will C0NV3RT!");      
+        console.log("Now we will convert!");      
     $scope.cde.$save(function (newcde) {
         $window.location.href = "/#/deview?cdeId=" + newcde._id;
         $modalInstance.close();

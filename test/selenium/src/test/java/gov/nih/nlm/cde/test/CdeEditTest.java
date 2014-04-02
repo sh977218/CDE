@@ -55,6 +55,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test(dependsOnMethods = {"createCde"})
     public void editCde() {
+        login();
         goToCdeByName(newCdeName);
         findElement(By.cssSelector("i.fa-edit")).click();
         findElement(By.xpath("//inline-edit/span/span[2]/input")).sendKeys("[name change number 1]");
@@ -156,5 +157,30 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("OC1") < 0);
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("PROP1") < 0);
     }
+    
+    @Test(dependsOnMethods = {"editCde"})
+    public void changeDefinitionFormat() {
+        login();
+        goToCdeByName(newCdeName);
+        findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("[def change number 2: adding html characters][<b>bold</b>]");
+        findElement(By.xpath("//inline-area-edit/div/div[2]/i")).click();
+        findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("version")).sendKeys("-plaintext"); 
+        findElement(By.id("confirmSave")).click();
+        goToCdeByName(newCdeName);   
+        Assert.assertTrue(textPresent("<b>bold</b>"));
+        
+        findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']")).click();
+        findElement(By.cssSelector("[type=checkbox]")).click();
+        findElement(By.xpath("//inline-area-edit/div/div[2]/i")).click();
+        findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("version")).sendKeys("-html"); 
+        findElement(By.id("confirmSave")).click();
+        goToCdeByName(newCdeName);   
+        Assert.assertTrue(textNotPresent("<b>bold</b>"));        
+    }    
 
 }

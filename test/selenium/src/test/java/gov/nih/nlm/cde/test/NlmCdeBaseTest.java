@@ -123,6 +123,10 @@ public class NlmCdeBaseTest {
         return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) > 0;
     }
     
+    public boolean textNotPresent(String text){
+        return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) <= 0;
+    }
+    
     protected void goHome() {
         driver.get(baseUrl + "/gonowhere");
         driver.get(baseUrl + "/");

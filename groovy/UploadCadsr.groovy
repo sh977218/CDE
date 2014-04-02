@@ -91,6 +91,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     BasicDBObject defaultName = new BasicDBObject();
     defaultName.put("designation", cadsrDE.LONGNAME.text());
     defaultName.put("definition", cadsrDE.PREFERREDDEFINITION.text());
+    defaultName.put("definitionFormat", null);
     defaultName.put("languageCode", "EN-US");
     
     BasicDBObject defContext = new BasicDBObject();
