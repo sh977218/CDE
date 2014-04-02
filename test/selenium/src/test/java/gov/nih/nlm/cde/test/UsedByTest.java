@@ -8,8 +8,8 @@ package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ctepCurator_username;
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
-import junit.framework.Assert;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -53,9 +53,8 @@ public class UsedByTest extends NlmCdeBaseTest {
         String toRemove = findElement(By.id("usedBy-2")).getText();
         findElement(By.id("removeUsedBy-2")).click();
         findElement(By.id("confirmRemoveUsedBy-2")).click();
-        // TODO - Find a way to make this work. Selenium doesn't seem to poll often enough.
-//        org.testng.Assert.assertTrue(textPresent("Usage Removed"));
-        org.testng.Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(toRemove) < 0);
+        org.testng.Assert.assertTrue(textPresent("Usage Removed"));
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(toRemove) < 0);
      
     }
     

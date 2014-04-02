@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
@@ -18,10 +12,23 @@ import org.testng.annotations.Test;
 public class CompareTest extends NlmCdeBaseTest{
     
     @Test
-    public void emptyCompareList() {
+    public void noElementCompareList() {
         goHome();
         findElement(By.linkText("Compare ( empty )")).click();
         Assert.assertTrue(textPresent("Search for data elements and hit the compare button"));
+    }
+    
+    @Test
+    public void emptyList() {
+        goHome();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
+        findElement(By.name("ftsearch")).sendKeys("sleep");
+        findElement(By.id("search.submit")).click();
+        findElement(By.id("acc_link_0")).click();       
+        findElement(By.id("compare_0")).click();
+        Assert.assertTrue(textPresent("Compare ( 1 )"));
+        findElement(By.id("emptyCart")).click();
+        Assert.assertTrue(textPresent("Compare ( empty )"));        
     }
     
     @Test
@@ -30,22 +37,36 @@ public class CompareTest extends NlmCdeBaseTest{
         Assert.assertTrue(textPresent("Compare ( empty )"));
         findElement(By.name("ftsearch")).sendKeys("Male Female");
         findElement(By.id("search.submit")).click();
-        findElement(By.id("list_name_0")).click();
+        findElement(By.id("acc_link_0")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
         findElement(By.id("compare_0")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         Assert.assertTrue(textPresent("Compare ( 1 )"));
-        findElement(By.id("list_name_1")).click();
+        findElement(By.id("acc_link_1")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_1")));
         findElement(By.id("compare_1")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_1")));
         Assert.assertTrue(textPresent("Compare ( full )"));
-        findElement(By.id("list_name_2")).click();
+        findElement(By.id("acc_link_2")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_2")));
         findElement(By.linkText("Compare ( full )")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
-        
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));    
+    }
+    
+    @Test
+    public void compareMeWithMlt() {
+        goToCdeByName("Patient Race Category");
+        findElement(By.linkText("More Like This")).click();
+        findElement(By.id("compareMe")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compareMe")));
+        findElement(By.linkText("Race Category Text")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
+        findElement(By.id("compare_0")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
+        findElement(By.linkText("Compare ( full )")).click();
+        Assert.assertTrue(textPresent("OMB approved categories"));
+        Assert.assertTrue(textPresent("Office of Management and Budget (OMB)"));
     }
 
     

@@ -3,11 +3,13 @@ package gov.nih.nlm.cde.test;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
 /**
  *
  * @author ludetc
@@ -50,7 +52,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Possible Matches") < 0);
         findElement(By.name("cde.designation")).sendKeys("Patient Name");
         Assert.assertTrue(textPresent("Possible Matches"));
-        Assert.assertTrue(textPresent("CTEP -- Patient Name"));
+        Assert.assertTrue(textPresent("Patient Name"));
     }
 
     @Test(dependsOnMethods = {"createCde"})
@@ -113,15 +115,15 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("name")).sendKeys("DEC1");
         findElement(By.name("codeId")).sendKeys("DEC_CODE_111");
         findElement(By.id("createConcept")).click();
-        modalGone();
-        
+        hangon(5);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("addConcept")));
         findElement(By.id("addConcept")).click();
         modalHere();
         findElement(By.name("name")).sendKeys("OC1");
         findElement(By.name("codeId")).sendKeys("OC_CODE_111");
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Class");
         findElement(By.id("createConcept")).click();
-        modalGone();
+        hangon(2);
 
         findElement(By.id("addConcept")).click();
         modalHere();
@@ -129,13 +131,13 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("codeId")).sendKeys("Prop_CODE_111");
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Property");
         findElement(By.id("createConcept")).click();
-        modalGone();
+        hangon(2);
 
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
         hangon();
         findElement(By.id("confirmSave")).click();
-        modalGone();
+        hangon(2);
 
         goToCdeByName(cdeName);
         findElement(By.linkText("Concepts")).click();
@@ -148,10 +150,10 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("propConceptRemove-3")).click();
         
         findElement(By.id("openSave")).click();
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+        modalHere();
         findElement(By.name("version")).sendKeys(".2");
         findElement(By.id("confirmSave")).click();
-        modalGone();
+        hangon(2);
         
         goToCdeByName(cdeName);
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("DEC1") < 0);

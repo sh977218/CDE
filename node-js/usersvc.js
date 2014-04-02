@@ -223,6 +223,7 @@ exports.pinToBoard = function(req, res) {
                 };
                 for (var i = 0 ; i < board.pins.length; i++) {
                     if (JSON.stringify(board.pins[i].deUuid) === JSON.stringify(uuid)) {
+                        res.statusCode = 202;
                         return res.send("Already added to the board.");
                     }
                 }

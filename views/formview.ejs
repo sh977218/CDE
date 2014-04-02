@@ -1,13 +1,12 @@
-<div class="container">
-    <div class='row-fluid'>   
-        <div class="span3">
+    <div class='row'>   
+        <div class="col-md-3">
             <ul class="nav nav-list pull-left">
                 <li><a ng-click="scrollTo('general')"><i class="fa fa-chevron-right"></i> General</a></li>
                 <li ng-repeat="module in form.modules"><a ng-click="scrollTo(module.name)"><i class="fa fa-chevron-right"></i> {{module.name}}</a></li>
             </ul>
         </div>
 
-        <div class='span9'>
+        <div class='col-md-9'>
             <h4 id='general'>General Details</h4>
             <dl class="dl-horizontal">
                 <dt>Name: </dt><dd id="dd_name">{{form.name}}</dd>
@@ -52,8 +51,8 @@
             <a id="addSection" class="btn btn-small" ng-click="insertSection(form.modules.length)" ng-show="isAllowed()">
                 <i class="fa fa-plus"></i> Insert Section</a>
 
-            <div class="row-fluid">
-                <div class="span12" ng-show="form.unsaved">
+            <div class="row">
+                <div class="col-md-12" ng-show="form.unsaved">
                     <button class="btn cancel" ng-click="revert()">Discard Changes</button>
                     <button class="btn btn-primary" ng-click="save()">Save</button>
                 </div>

@@ -8,7 +8,7 @@ curl -XPOST "localhost:9200/_aliases" -d'
                 {
                  "remove": {                                                                                                                                                                                                                          
                     "alias": "nlmcde",                                                                                                                                                                                                              
-                    "index": "nlmcde_v4"                                                                                                                                                                                                      
+                    "index": "nlmcde_v1"                                                                                                                                                                                                      
                     }
                 },           
                 { "add": {

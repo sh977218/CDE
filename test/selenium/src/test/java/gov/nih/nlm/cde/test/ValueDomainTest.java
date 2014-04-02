@@ -49,7 +49,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("3");
         findElement(By.id("confirmSave")).click();
-        modalGone();
+        hangon(2);
         
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
@@ -66,8 +66,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.xpath("//td[@id='pvName-1']/div/div[1]/i")).click();
         findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys(Keys.BACK_SPACE);
         findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys("o");
-        findElement(By.xpath("//td[@id = 'pvName-1']/div/div[2]//a")).click();
-        findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/i[1]")).click();
+        findElement(By.xpath("//td[@id = 'pvName-1']/div/div[2]/ul/li[1]")).click();
+        findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/a[1]")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("6");
@@ -110,7 +110,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("version")).sendKeys(".1");
         findElement(By.id("confirmSave")).click();
-        modalGone();
+        hangon(2);
 
         goToCdeByName("Left Colon Excision Ind-2");
         findElement(By.linkText("Permissible Values")).click();   
@@ -123,7 +123,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("2");
         findElement(By.id("confirmSave")).click();
-        modalGone();
+        hangon(2);
         
         goToCdeByName("Left Colon Excision Ind-2");
         findElement(By.linkText("Permissible Values")).click();   

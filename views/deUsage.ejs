@@ -1,22 +1,17 @@
 <div ng-controller="UsedByCtrl" >
 <h4>Organizational Use</h4>
-<div class="row-fluid" ng-show="message">
-<div class="span2 offset5 alert-success">
-    <center>{{message}}</center>
-</div>
-</div>
 
-<button class="btn btn-small" value="add" ng-click="openAddUsedByModal()" id="addUsedBy" ng-show="isAllowedNonCuration(cde)"><i class="fa fa-plus"> </i> Add Usage</button>
+<button class="btn btn-small btn-default" value="add" ng-click="openAddUsedByModal()" id="addUsedBy" ng-show="isAllowedNonCuration(cde)"><i class="fa fa-plus"> </i> Add Usage</button>
 
 <hr/>
 
 <div ng-repeat="usedBy in cde.usedByOrgs">
     <span ng-show="isAllowedNonCuration(cde)">
         <span ng-show="showDelete">
-            Confirm Delete <i class="fa fa-check" ng-click="showDelete = false; removeUsedBy(usedBy)" id="confirmRemoveUsedBy-{{$index}}"> OK</i>
-            <i class="fa fa-times" ng-click="showDelete = false"> Cancel</i>
+            Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeUsedBy(usedBy)" id="confirmRemoveUsedBy-{{$index}}" title="OK" href=""></a>
+            <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
         </span>
-        <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeUsedBy-{{$index}}"> Remove</a>
+        <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeUsedBy-{{$index}}" title="Remove" href=""></a>
     </span>
     <span id="usedBy-{{$index}}">
         {{usedBy}}            

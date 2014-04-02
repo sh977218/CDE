@@ -34,7 +34,6 @@ app.post('/vsac/ws/Ticket/:ticketId', function(req, res) {
 
 
 app.get('/vsac/ws/RetrieveValueSet', function(req, res) {
-    console.log("hello")
     var key = req.query['id'];
     if (!fs.existsSync('node-js/mock/vsac-data/' + key)) {
         res.status(404).send("The requested resource () is not available.");
