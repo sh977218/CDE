@@ -1228,11 +1228,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
 
     };      
     
-    $scope.validateHtmlForDescriptionEdit = function(value){
-        console.log("no validation");     
-        $scope.definitionIsValid = true;
-    };
-    
     $scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
         if (cdeFormat===false)
             cdeFormat=null;
