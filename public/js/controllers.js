@@ -766,6 +766,8 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         $scope.filter = []; 
         delete $scope.ftsearch;
         delete $scope.selectedOrg;
+        delete $scope.selectedGroup;
+        delete $scope.selectedSubGroup;
         $scope.reload();
     }
 
