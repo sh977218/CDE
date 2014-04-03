@@ -43,18 +43,18 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
     .directive('inlineAreaEdit', function() {
         return {
             template: '<div>' + 
-                            '<div ng-hide="editMode">' + 
+                            '<div ng-hide="editMode" ng-switch="defTypeModel">' + 
                             '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>&nbsp;' +
-                            '   <span ng-if="inlineAreaVisibility(null,defTypeModel)"><span ng-bind="model"></span></span>' +
-                            '   <span ng-if="inlineAreaVisibility(\'html\',defTypeModel)"><span ng-bind-html="model"></span></span>' +
+                            '   <span ng-switch-default><span ng-bind="model"></span></span>' +
+                            '   <span ng-switch-when="html"><span ng-bind-html="model"></span></span>' +
                             '</div>' + 
-                            '<div ng-show="editMode">' + 
+                            '<div ng-show="editMode" ng-switch="defTypeModel">' + 
                             '   <div class="btn-group">' +
                             '       <button type="button" class="btn btn-default btn-xs" ng-model="defTypeModel" btn-radio="null">Plain Text</button>' +
                             '       <button type="button" class="btn btn-default btn-xs" ng-model="defTypeModel" btn-radio="\'html\'">Rich Text</button>' +
                             '   </div>' +                            
-                            '   <textarea ng-show="inlineAreaVisibility(null,defTypeModel)" ng-change="validateHtml(value)" ng-model="value" class="form-control"></textarea>' +  
-                            '   <text-angular ng-show="inlineAreaVisibility(\'html\',defTypeModel)" ng-change="validateHtml(value)" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ></text-angular>' +                             
+                            '   <textarea ng-switch-default ng-change="validateHtml(value)" ng-model="value" class="form-control"></textarea>' +  
+                            '   <text-angular ng-switch-when="html" ng-change="validateHtml(value)" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ></text-angular>' +                             
                             '   <button class="fa fa-check" ng-click="model = value;editMode = false; onOk();"> Confirm</button>' + 
                             '   <button class="fa fa-times" ng-click="editMode = false"> Discard</button>' + 
                             '</div>       ' + 
