@@ -50,7 +50,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
                             '</div>' + 
                             '<div ng-show="editMode">' + 
                             '   <textarea ng-show="inlineAreaVisibility(null,defTypeModel)" ng-change="validateHtml(value)" ng-model="value" class="form-control"></textarea>' +  
-                            '   <text-angular ng-show="inlineAreaVisibility(\'html\',defTypeModel)" ng-change="validateHtml(value)" ng-model="value" ></text-angular>' +                             
+                            '   <text-angular ng-show="inlineAreaVisibility(\'html\',defTypeModel)" ng-change="validateHtml(value)" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ></text-angular>' +                             
                             '   <i class="fa fa-check" ng-click="model = value;editMode = false; onOk();"> </i>' + 
                             '   <i class="fa fa-times" ng-click="editMode = false"></i>' + 
                             '   <span class="checkbox"><label><input ng-model="defTypeModel" ng-true-value="html" type="checkbox" >Edit as HTML</label></span>' +                           
