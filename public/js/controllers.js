@@ -615,13 +615,14 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     };
     
     $scope.reload = function() {
- 
+        console.log("reload");
         $scope.buildElasticQuery(function(query) {
             $http.post("/elasticSearch", query).then(function (response) {
                 var result = response.data;
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
                 $scope.totalItems = result.totalNumber;
+                cache.put("totalItems", $scope.totalItems);
                 $scope.facets = result.facets;
                 
                 if ($scope.facets.statuses !== undefined) {
