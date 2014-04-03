@@ -6,13 +6,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             $scope.loadBoards();
             callback();
         });
-    };
-    
-    /*$scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
-        if (cdeFormat===false)
-            cdeFormat=null;
-        return areaFormat==cdeFormat;
-    };*/    
+    };    
     
     $scope.alerts = [];
     $scope.closeAlert = function(index) {
@@ -917,11 +911,6 @@ function SaveCdeCtrl($scope, $modal, $http) {
     
 
     $scope.stageCde = function(cde) {
-        //TODO - Since we store plaintext in our DB as .definitionFormat=null,
-        // but AngularJS model directive for checkbox does not support null,
-        // there is this conversion.
-        if (cde.naming[0].definitionFormat===false)
-            cde.naming[0].definitionFormat=null;
         cde.unsaved = true;
     };
         
@@ -1159,8 +1148,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
     $scope.mltCdes = [];
     $scope.boards = [];
     $scope.comment = {};
-    $scope.saveDefinitionAsHtml = false;
-    $scope.definitionIsValid = true;
     $scope.reload = function(deId, cb) {
         DataElement.get({deId: deId}, function (de) {
            $scope.cde = de;          
@@ -1215,13 +1202,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
             }
         }
 
-    };      
-    
-    $scope.inlineAreaEditVisibility = function (areaFormat,cdeFormat){
-        if (cdeFormat===false)
-            cdeFormat=null;
-        return areaFormat==cdeFormat;
-    };       
+    };           
     
     $scope.isAllowed = function (cde) {
         if ($scope.initialized && cde.archived) {

@@ -73,7 +73,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         goToCdeByName("Patient Name");
         Assert.assertTrue(textPresent("Qualified"));
         findElement(By.id("editStatus")).click();
-        hangon(1);
+        modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         findElement(By.id("saveRegStatus")).click();
         hangon(2);
@@ -88,7 +88,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         goToCdeByName("Colitis Grade");
         Assert.assertTrue(textPresent("Qualified"));        
         findElement(By.id("editStatus")).click();
-        hangon(1);
+        modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
         findElement(By.id("saveRegStatus")).click();
         hangon(2);

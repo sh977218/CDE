@@ -114,11 +114,11 @@ public class NlmCdeBaseTest {
     
     public boolean textPresent(String text) {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
-        return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) > 0;
+        return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) >= 0;
     }
     
     public boolean textNotPresent(String text){
-        return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) <= 0;
+        return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) < 0;
     }
     
     protected void goHome() {

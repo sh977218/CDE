@@ -94,7 +94,6 @@ fs.readFile(process.argv[2], function(err, data) {
                 var defaultNaming = {
                    designation: valueSet['$'].displayName
                    , definition: valueSet['ns0:Definition']
-                   , definitionFormat: null
                    , languageCode: "EN-US" 
                    , context: {
                         contextName: 'Health'

@@ -95,7 +95,6 @@ fs.readFile(process.argv[2], function(err, result) {
        {
         designation: data["Name:"]
         , definition: data["Definition:"]
-        , definitionFormat: null
         , languageCode: "EN-US" 
         , context: {
              contextName: 'Health'
