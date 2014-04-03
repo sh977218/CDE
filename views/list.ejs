@@ -25,8 +25,8 @@
         <ul class="fa-ul">
             <li ng-repeat="g in groups | orderBy:'conceptSystem'" style="margin-right: -20px" ng-switch="g.name === selectedGroup.name" ng-show="g.name === selectedGroup.name || !selectedGroup">
                 <span ng-click="selectGroup(g)" class="hand-cursor">
-                    <i ng-switch-default class="fa-li fa fa-plus-square-o" id="li-blank-{{g.conceptSystem}}" ></i>
-                    <i ng-switch-when="true" class="fa-li fa fa-minus-square-o" id="li-checked-{{g.conceptSystem}}"></i>
+                    <i ng-switch-default class="fa-li fa fa-plus-square-o" id="li-blank-{{g.name}}" ></i>
+                    <i ng-switch-when="true" class="fa-li fa fa-minus-square-o" id="li-checked-{{g.name}}"></i>
                     <small > {{g.name}}</small>
                 </span>
                 <ul class="fa-ul" ng-show="g.name === selectedGroup.name">
@@ -44,8 +44,8 @@
         <ul class="fa-ul">
             <li ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
                 <span class="hand-cursor" ng-show="t.count > 0">
-                    <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
-                    <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
+                    <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.name}}" ></i>
+                    <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
                     <small> {{t.name}} ({{t.count}})</small>
                 </span>
             </li>

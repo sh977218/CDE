@@ -29,7 +29,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void statusFacets() {
         goHome();
-        Assert.assertTrue(textPresent("candidate ("));
+        Assert.assertTrue(textPresent("Candidate ("));
     }
 
     @Test
@@ -37,8 +37,8 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         goHome();
         findElement(By.name("ftsearch")).sendKeys("Treatment");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("candidate (4)"));
-        findElement(By.id("li-blank-candidate")).click();
+        Assert.assertTrue(textPresent("Candidate (4)"));
+        findElement(By.id("li-blank-Candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText("Disease or Disorder Response Surgical Procedure Documented Indicator")));
         hangon(1);
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
@@ -50,7 +50,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);
-        findElement(By.id("li-checked-candidate")).click();
+        findElement(By.id("li-checked-Candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.partialLinkText("Hydroxychloroquine Sulfate Administered Indicator")));
         hangon(1);
@@ -70,10 +70,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         hangon(1);
         Assert.assertTrue(textPresent("OPEN to Rave Standard "));
         findElement(By.cssSelector("i.fa-check-square-o"));
+        findElement(By.id("resetSearch")).click();
         findElement(By.name("ftsearch")).sendKeys("Kinetics");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("DCE-MRI Kinetics T1 Mapping Quality Type"));
-
     }
 
     
@@ -84,7 +84,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("CTEP (9)"));
         findElement(By.id("li-blank-CTEP")).click();
-        Assert.assertTrue(textPresent("DISEASE (14)"));
+        Assert.assertTrue(textPresent("DISEASE"));
 
         hangon(1);
         List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
@@ -107,7 +107,6 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 9);
         
-        findElement(By.id("li-blank-DISEASE")).click();
         Assert.assertTrue(textPresent("Lymphoma (1)"));
         findElement(By.id("li-blank-Lymphoma")).click();
         

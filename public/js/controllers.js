@@ -576,6 +576,10 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         } else {
             delete $scope.selectedOrg;
             cache.remove("selectedOrg");
+            delete $scope.selectedSubGroup;
+            cache.remove("selectedSubGroup");
+            delete $scope.selectedGroup;
+            cache.remove("selectedGroup");
         }
         delete $scope.facets.groups;
         $scope.reload();
@@ -599,6 +603,8 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         } else {
             delete $scope.selectedGroup;
             cache.remove("selectedGroup");
+            delete $scope.selectedSubGroup;
+            cache.remove("selectedSubGroup");
         }
     };
     
