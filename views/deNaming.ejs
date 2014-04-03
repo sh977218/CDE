@@ -11,7 +11,7 @@
             <dl class="dl-horizontal">
                 <dt>Name: </dt> 
                 <dd id="dd_name_{{$index}}">
-                    <span ng-switch="namePair.editMode"> 
+                    <!--span ng-switch="namePair.editMode"> 
                         <span ng-switch-when="true"> 
                             <input type="text" ng-model="namePair.designation" id="name_input_{{$index}}"/>
                             <i class="fa fa-check" ng-click="stageNewName(namePair)" id="name_confirm_{{$index}}"></i>
@@ -20,11 +20,12 @@
                         <span ng-switch-default> 
                             <i class="fa fa-edit" ng-click="namePair.editMode=true" id="name_edit_{{$index}}" ng-show="isAllowed(cde)"></i> {{namePair.designation | placeholdEmpty}} 
                         </span>
-                    </span>
+                    </span-->
+                    <inline-edit id="nameEdit" model="namePair.designation" is-allowed="isAllowed(cde)" on-ok="stageNewName(namePair)"> </inline-edit>
                 </dd>
                 <dt>Definition: </dt>
                 <dd id="dd_def_{{$index}}">
-                    <div ng-switch="namePair.editMode"> 
+                    <!--div ng-switch="namePair.editMode"> 
                         <div ng-switch-when="true">
                            <textarea ng-model="namePair.definition" id="def_input_{{$index}}"></textarea>
                            <i class="fa fa-check" ng-click="stageNewName(namePair)" id="def_confirm_{{$index}}"></i>
@@ -33,11 +34,12 @@
                         <div ng-switch-default>
                            <i class="fa fa-edit" ng-click="namePair.editMode = true" id="def_edit_{{$index}}" ng-show="isAllowed(cde)"></i>&nbsp;<span ng-bind-html="namePair.definition"/>
                         </div>
-                    </div>
+                    </div-->
+                    <inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="namePair.definition" is-allowed="isAllowed(cde)" def-type-model="namePair.definitionFormat" on-ok="stageNewName(namePair)"> </inline-area-edit>
                 </dd>
                 <dt>Context: </dt> 
                 <dd id="dd_context_{{$index}}">
-                    <span ng-switch="namePair.editMode"> 
+                    <!--span ng-switch="namePair.editMode"> 
                         <span ng-switch-when="true"> 
                             <input type="text" ng-model="namePair.context.contextName" id="context_input_{{$index}}"/>
                             <i class="fa fa-check" ng-click="stageNewName(namePair)" id="context_confirm_{{$index}}"></i>
@@ -46,7 +48,8 @@
                         <span ng-switch-default> 
                             <i class="fa fa-edit" ng-click="namePair.editMode=true" id="context_edit_{{$index}}" ng-show="isAllowed(cde)"></i> {{namePair.context.contextName | placeholdEmpty}} 
                         </span>
-                    </span>
+                    </span-->
+                    <inline-edit id="nameEdit" model="namePair.context.contextName" is-allowed="isAllowed(cde)" on-ok="stageNewName(namePair)"> </inline-edit>
                 </dd>
             </dl>
         </div>
