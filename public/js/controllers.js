@@ -367,39 +367,38 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
         
     $scope.getSiteAdmins = function() {
         return $http.get("/siteAdmins").then(function(response) {
-            return response.data;
+            $scope.siteAdmins = response.data;
         });
     };
-    $scope.siteAdmins = $scope.getSiteAdmins();
+    $scope.getSiteAdmins();
 
     $scope.getOrgs = function() {
         return $http.get("/managedOrgs").then(function(response) {
-            return response.data.orgs;
+            $scope.orgs = response.data.orgs;
         });
     };
-    $scope.orgs = $scope.getOrgs(); 
+    $scope.getOrgs(); 
 
     $scope.getOrgAdmins = function() {
         return $http.get("/orgAdmins").then(function(response) {
-            return response.data.orgs;
+            $scope.orgAdmins = response.data.orgs;
         });
     };
-    $scope.orgAdmins = $scope.getOrgAdmins(); 
-
+    $scope.getOrgAdmins(); 
     
     $scope.getMyOrgAdmins = function() {
         return $http.get("/myOrgsAdmins").then(function(response) {
-            return response.data.orgs;
+            $scope.myOrgAdmins = response.data.orgs;
         });
     };
-    $scope.myOrgAdmins = $scope.getMyOrgAdmins();
+    $scope.getMyOrgAdmins();
 
     $scope.getOrgCurators = function() {
         return $http.get("/orgcurators").then(function(response) {
-            return response.data.orgs;
+            $scope.orgCurators = response.data.orgs;
         });
     };
-    $scope.orgCurators = $scope.getOrgCurators(); 
+    $scope.getOrgCurators(); 
     
     $scope.addSiteAdmin = function() {
         AccountManagement.addSiteAdmin({
