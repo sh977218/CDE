@@ -61,7 +61,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         goToCdeByName(newCdeName);
         findElement(By.cssSelector("i.fa-edit")).click();
         findElement(By.xpath("//inline-edit/span/span[2]/input")).sendKeys("[name change number 1]");
-        findElement(By.cssSelector("i.fa-check-square-o")).click();
+        findElement(By.cssSelector("i.fa-check")).click();
         findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("[def change number 1]");
         findElement(By.xpath("//inline-area-edit/div/div[2]/i")).click();
