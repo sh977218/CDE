@@ -615,7 +615,6 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     };
     
     $scope.reload = function() {
-        console.log("reload");
         $scope.buildElasticQuery(function(query) {
             $http.post("/elasticSearch", query).then(function (response) {
                 var result = response.data;
