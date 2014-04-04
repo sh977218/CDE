@@ -527,165 +527,143 @@ function SelectBoardModalCtrl($scope, $modalInstance, boards) {
     };
 }
 
-function DEListCtrl($scope, $http, $modal, $location) {
+function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     $scope.setActiveMenu('LISTCDE');
     
-    $scope.currentPage = 1;
+    var cache;
+    if ($cacheFactory.get("deListCache") === undefined) {
+        cache = $cacheFactory("deListCache");
+    } else {
+        cache = $cacheFactory.get("deListCache");
+    }
+    
+    $scope.registrationStatuses = cache.get("registrationStatuses");
+    if ($scope.registrationStatuses === undefined) {
+        $scope.registrationStatuses = [
+            {name: 'Preferred Standard'}
+            , {name: 'Standard'}
+            , {name: 'Qualified'}
+            , {name: 'Recorded'}
+            , {name: 'Candidate'}
+            , {name: 'Incomplete'}
+        ];
+    }
+        
     $scope.resultPerPage = 20;
 
-    $scope.search = {name: ""};
-    $scope.filter = [];
-    $scope.uniqueOrg = false;
+    $scope.ftsearch = cache.get("ftsearch");
+
+    $scope.selectedOrg = cache.get("selectedOrg");
+    $scope.selectedGroup = cache.get("selectedGroup");
+    $scope.selectedSubGroup = cache.get("selectedSubGroup"); 
+    $scope.totalItems = cache.get("totalItems");
     
-    $scope.setPage = function (pageNo) {
-      $scope.currentPage = pageNo;
-    };       
-
-    $scope.previous = function () {
-        $scope.currentPage--;
-    };
-
-    $scope.next = function () {
-        $scope.currentPage++;
-    };
+    $scope.currentPage = cache.get("currentPage");
+    if ($scope.currentPage === undefined) {
+        $scope.currentPage = 1;
+    }
     
     $scope.$watch('currentPage', function() {
+        cache.put("currentPage", $scope.currentPage)
         $scope.reload();
     });
-    
+
     $scope.addOrgFilter = function(t) {
         if ($scope.selectedOrg === undefined) {
             $scope.selectedOrg = t.term;
+            cache.put("selectedOrg", t.term);
         } else {
             delete $scope.selectedOrg;
+            cache.remove("selectedOrg");
+            delete $scope.selectedSubGroup;
+            cache.remove("selectedSubGroup");
+            delete $scope.selectedGroup;
+            cache.remove("selectedGroup");
         }
         delete $scope.facets.groups;
-        $scope.facetSearch();
+        $scope.reload();
     };
 
     $scope.selectSubGroup = function(subG, system) {
-        subG.selected = !subG.selected;
-        subG.conceptSystem = system;
-        $scope.facetSearch();
-    };
-
-    $scope.openGroup = function(g) {
-        g.selected = !g.selected;
-    };
-    
-    $scope.addFilter = function(t) {
-        t.selected = !t.selected;
-        $scope.facetSearch();
-    };
-    
-    $scope.facetSearch = function() {
-        $scope.filter = {and: []};
-        var regStatusOr = [];
-  
-        if ($scope.facets !== undefined) {
-            if ($scope.selectedOrg !== undefined) {
-                $scope.filter.and.push({term: {"classification.stewardOrg.name": $scope.selectedOrg}});
-            }
-            
-            if ($scope.facets.groups) {
-                for (var i = 0; i < $scope.facets.groups.length; i++) {
-                    for (var j = 0; j < $scope.facets.groups[i].concepts.length; j++) {
-                        var t = $scope.facets.groups[i].concepts[j];
-                        if (t.selected === true) {
-                            $scope.filter.and.push({term: {"classification.concept": t.term}});
-                        }
-                    }
-                }
-            }
-            
-            if ($scope.facets.statuses !== undefined) {
-                for (var i = 0; i < $scope.facets.statuses.terms.length; i++) {
-                    var t = $scope.facets.statuses.terms[i];
-                    if (t.selected === true) {
-                        regStatusOr.push({term: {"registrationState.registrationStatus": t.term}});
-                    }
-                }
-            }
-            if (regStatusOr.length > 0) {
-                $scope.filter.and.push({or: regStatusOr});
-            }
+        if ($scope.selectedSubGroup === undefined) {
+            $scope.selectedSubGroup = subG;
+            cache.put("selectedSubGroup", subG);
+        } else {
+            delete $scope.selectedSubGroup;
+            cache.remove("selectedSubGroup");
         }
+        $scope.reload();
+    };
 
+    $scope.selectGroup = function(g) {
+        if ($scope.selectedGroup === undefined) {
+            $scope.selectedGroup = g;
+            cache.put("selectedGroup", g);
+        } else {
+            delete $scope.selectedGroup;
+            cache.remove("selectedGroup");
+            delete $scope.selectedSubGroup;
+            cache.remove("selectedSubGroup");
+        }
+    };
+    
+    $scope.addStatusFilter = function(t) {
+        t.selected = !t.selected;
+        cache.put("registrationStatuses", $scope.registrationStatuses);
+        $scope.reload();
+    };
+    
+    $scope.reload = function() {
         $scope.buildElasticQuery(function(query) {
             $http.post("/elasticSearch", query).then(function (response) {
                 var result = response.data;
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
                 $scope.totalItems = result.totalNumber;
+                cache.put("totalItems", $scope.totalItems);
                 $scope.facets = result.facets;
                 
-                for (var i = 0; i < regStatusOr.length; i++) {
-                    if (regStatusOr[i].term['registrationState.registrationStatus'] !== undefined) {
-                        for (var j = 0; j < $scope.facets.statuses.terms.length; j++) {
-                            if ($scope.facets.statuses.terms[j].term === regStatusOr[i].term['registrationState.registrationStatus']) {
-                                $scope.facets.statuses.terms[j].selected = true;
+                if ($scope.facets.statuses !== undefined) {
+                    for (var i = 0; i < $scope.facets.statuses.terms.length; i++) {
+                        for (var j = 0; j < $scope.registrationStatuses.length; j++) {
+                            if ($scope.facets.statuses.terms[i].term === $scope.registrationStatuses[j].name.toLowerCase()) {
+                                $scope.registrationStatuses[j].count = $scope.facets.statuses.terms[i].count;
                             }
                         }
                     }
-                }
-
+                }    
                 
-                if ($scope.facets.classification !== undefined) {
-                     $http.get("/org/" + $scope.selectedOrg).then(function(response) {
-                         var org = response.data;
-                         $scope.facets.groups = [];
-                         if (org.classifications) {
-                            for (var i = 0; i < org.classifications.length; i++) {
-                                var currentOrgClassif = org.classifications[i];
-                                var sysFound = false;
-                                for (var j = 0; j < $scope.facets.groups.length; j++) {
-                                    if ($scope.facets.groups[j].conceptSystem === currentOrgClassif.conceptSystem) {
-                                        sysFound = true;
+                $scope.groups = [];
+                
+                if ($scope.facets.groups !== undefined) {
+                    $http.get("/org/" + $scope.selectedOrg).then(function(response) {
+                        var org = response.data;
+                        if (org.classifications) {
+                            for (var i = 0; i < $scope.facets.groups.terms.length; i++) {
+                                var groupFound = false;
+                                var g = $scope.facets.groups.terms[i];
+                                for (var j = 0; !groupFound && j < org.classifications.length; j++) {
+                                    if (org.classifications[j].conceptSystem === g.term) {
+                                        groupFound = true;
                                     }
                                 }
-                                if (sysFound == false) {
-                                    var newGroup = {conceptSystem: currentOrgClassif.conceptSystem, concepts: []};
-                                    for (var j = 0; j < org.classifications.length; j++) {
-                                        if (org.classifications[j].conceptSystem == currentOrgClassif.conceptSystem) {
-                                            var groupConcept = {term: org.classifications[j].concept};
-                                            for (var h = 0; h < $scope.facets.classification.terms.length; h++) {
-                                                if ($scope.facets.classification.terms[h].term == groupConcept.term) {
-                                                    groupConcept.count = $scope.facets.classification.terms[h].count;
+                                if (groupFound) {
+                                    var group = {name: g.term, concepts: []};
+                                    if ($scope.facets.concepts !== undefined) {
+                                        for (var k = 0; k < $scope.facets.concepts.terms.length; k++) {
+                                            var c = $scope.facets.concepts.terms[k];
+                                            for (var l = 0; l < org.classifications.length; l++) {
+                                                if (org.classifications[l].conceptSystem === g.term && c.term === org.classifications[l].concept) {
+                                                    group.concepts.push(c);
                                                 }
                                             }
-                                            if (groupConcept.count) {
-                                                newGroup.concepts.push(groupConcept);
-                                            }
                                         }
                                     }
-                                    if (newGroup.concepts.length > 0) {
-                                        $scope.facets.groups.push(newGroup);    
-                                    }
-                                 }
-                            }
-                        }
-                         for (var i = 0; i < $scope.filter.and.length; i++) {
-                             if ($scope.filter.and[i].term !== undefined) {
-                                if ($scope.filter.and[i].term['classification.stewardOrg.name'] !== undefined) {
-                                    for (var j = 0; j < $scope.facets.orgs.terms.length; j++) {
-                                        if ($scope.facets.orgs.terms[j].term === $scope.filter.and[i].term['classification.stewardOrg.name']) {
-                                            $scope.facets.orgs.terms[j].selected = true;
-                                        }
-                                    }
-                                }
-                                if ($scope.filter.and[i].term['classification.concept'] !== undefined) {
-                                    for (var j = 0; j < $scope.facets.groups.length; j++) {
-                                        for (var h = 0; h < $scope.facets.groups[j].concepts.length; h++) {
-                                            if ($scope.filter.and[i].term['classification.concept'] === $scope.facets.groups[j].concepts[h].term) {
-                                                $scope.facets.groups[j].selected = true;
-                                                $scope.facets.groups[j].concepts[h].selected = true;
-                                            }
-                                        }
-                                    }
+                                    $scope.groups.push(group);
                                 }
                             }
                         }
-                     });
+                    });    
                 }
              });
         });  
@@ -694,32 +672,53 @@ function DEListCtrl($scope, $http, $modal, $location) {
     $scope.buildElasticQuery = function (callback) {
         var queryStuff = {size: $scope.resultPerPage};
         var searchQ = $scope.ftsearch;
+        
+        $scope.filter = {and: []};
+        
+        if ($scope.selectedOrg !== undefined) {
+            $scope.filter.and.push({term: {"classification.stewardOrg.name": $scope.selectedOrg}});
+        }
+
+        if ($scope.selectedSubGroup !== undefined) {
+            $scope.filter.and.push({term: {"classification.concept": $scope.selectedSubGroup.term}});
+        }
+        
+        var regStatusOr = [];
+        for (var i = 0; i < $scope.registrationStatuses.length; i++) {
+            var t = $scope.registrationStatuses[i];
+            if (t.selected === true) {
+                regStatusOr.push({term: {"registrationState.registrationStatus": t.name.toLowerCase()}});
+            }
+        }
+        if (regStatusOr.length > 0) {
+            $scope.filter.and.push({or: regStatusOr});
+        }       
 
         if (searchQ !== undefined && searchQ !== "") {
             queryStuff.query = 
-                {   
-                    bool: {
-                        should: {
-                        function_score: {
-                            boost_mode: "replace"
-                            , script_score: {
-                                script: "_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)"
-                            }
-                            , query: {
-                                query_string: {
-                                    fields: ["_all", "naming.designation^3"]
-                                    , query: searchQ
-                                }
-                            }
+            {   
+                bool: {
+                    should: {
+                    function_score: {
+                        boost_mode: "replace"
+                        , script_score: {
+                            script: "_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)"
                         }
-                        }
-                        , must_not: {
-                            term: {
-                                "registrationState.registrationStatus": "retired"
+                        , query: {
+                            query_string: {
+                                fields: ["_all", "naming.designation^3"]
+                                , query: searchQ
                             }
                         }
                     }
-               };
+                    }
+                    , must_not: {
+                        term: {
+                            "registrationState.registrationStatus": "retired"
+                        }
+                    }
+                }
+           };
         } 
 
         queryStuff.facets = {
@@ -727,20 +726,24 @@ function DEListCtrl($scope, $http, $modal, $location) {
             , statuses: {terms: {field: "registrationState.registrationStatus"}}
         };    
 
+        if ($scope.selectedOrg !== undefined) {
+            queryStuff.facets.groups = {
+                terms: {field: "classification.conceptSystem", size: 200}
+                , facet_filter: {term: {"classification.stewardOrg.name": $scope.selectedOrg}}
+            }
+            queryStuff.facets.concepts = {
+                terms: {field: "classification.concept", size: 300}
+                , facet_filter: {
+                    term: {"classification.stewardOrg.name": $scope.selectedOrg}
+                }
+            }                
+        }
+
         if ($scope.filter !== undefined) {
             if ($scope.filter.and !== undefined) {
                 if ($scope.filter.and.length === 0) {
                     delete $scope.filter.and;
-                } else {
-                    for (var i = 0; i < $scope.filter.and.length; i++) {
-                         if ($scope.filter.and[i].term !== undefined && $scope.filter.and[i].term['classification.stewardOrg.name'] !== undefined) {
-                             queryStuff.facets.classification = {
-                                 terms: {field: "classification.concept", size: 300}
-                                 , facet_filter: {term: {"classification.stewardOrg.name": $scope.filter.and[i].term['classification.stewardOrg.name']}}
-                             };
-                         }  
-                     }
-                }
+                } 
             }
             if ($scope.filter.and === undefined) {
                 delete $scope.filter;
@@ -756,39 +759,19 @@ function DEListCtrl($scope, $http, $modal, $location) {
         return callback({query: queryStuff});
     };
 
-    $scope.search = function() {
+    $scope.resetSearch = function() {
         delete $scope.facets;
-        $scope.filter = [];
+        $scope.filter = []; 
+        delete $scope.ftsearch;
+        delete $scope.selectedOrg;
+        delete $scope.selectedGroup;
+        delete $scope.selectedSubGroup;
         $scope.reload();
-    };
+    }
 
-    $scope.reload = function() {        
-        $scope.buildElasticQuery(function(query) {
-            $http.post("/elasticSearch", query).then(function (response) {
-               var result = response.data;
-               $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
-               $scope.cdes = result.cdes;
-               $scope.totalItems = result.totalNumber;
-               if (!$scope.facets) {
-                   $scope.facets = result.facets;
-               }
-               $scope.uniqueOrg = false;
-            });     
-        });
-    } ;  
-    
-    $scope.autocomplete = function(viewValue) {
-        // @TODO
-        // Typeahead gets called before ng-model binding 
-        // So I am setting is manually. Is there a better way to do the next 3 lines?
-        if (!$scope.search) {
-            $scope.search = {};
-        }
-        $scope.search.name = viewValue;
-        
-        return $http.get("/autocomplete?search="+JSON.stringify($scope.search)).then(function(response){ 
-            return response.data.names;
-        }); 
+    $scope.search = function() {
+        cache.put("ftsearch", $scope.ftsearch);
+        $scope.reload();
     };
     
     $scope.isAllowed = function (cde) {

@@ -2,6 +2,7 @@
 <form class="form-inline">
     <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="search-query" placeholder="Search" ng-change="onchangeSearch()">  
     <input id="search.submit" type="submit" value="Search" ng-click="search()" class="btn btn-default"></input>
+    <button id="resetSearch" ng-click="resetSearch()" class="btn btn-default">Reset</button> 
     <small ng-show="cdes.length > 0" class="pull-right">
         {{totalItems}} hits
     </small>
@@ -22,14 +23,14 @@
         </ul>
         <strong ng-show="facets.classification.terms">Classification</strong>
         <ul class="fa-ul">
-            <li ng-repeat="g in facets.groups | orderBy:'conceptSystem'" style="margin-right: -20px" ng-switch="g.selected" >
-                <span ng-click="openGroup(g)" class="hand-cursor">
-                    <i ng-switch-default class="fa-li fa fa-plus-square-o" id="li-blank-{{g.conceptSystem}}" ></i>
-                    <i ng-switch-when="true" class="fa-li fa fa-minus-square-o" id="li-checked-{{g.conceptSystem}}"></i>
-                    <small > {{g.conceptSystem}} ({{g.concepts.length}})</small>
+            <li ng-repeat="g in groups | orderBy:'conceptSystem'" style="margin-right: -20px" ng-switch="g.name === selectedGroup.name" ng-show="g.name === selectedGroup.name || !selectedGroup">
+                <span ng-click="selectGroup(g)" class="hand-cursor">
+                    <i ng-switch-default class="fa-li fa fa-plus-square-o" id="li-blank-{{g.name}}" ></i>
+                    <i ng-switch-when="true" class="fa-li fa fa-minus-square-o" id="li-checked-{{g.name}}"></i>
+                    <small > {{g.name}}</small>
                 </span>
-                <ul class="fa-ul" ng-show="g.selected">
-                    <li ng-repeat="subG in g.concepts | orderBy:'term'" style="margin-left: -40px" ng-switch="subG.selected" >
+                <ul class="fa-ul" ng-show="g.name === selectedGroup.name">
+                    <li ng-repeat="subG in g.concepts | orderBy:'term'" style="margin-left: -40px" ng-switch="subG.term === selectedSubGroup.term" >
                         <span ng-click="selectSubGroup(subG, g.conceptSystem)" class="hand-cursor">
                             <i ng-switch-default class="fa fa-square-o" id="li-blank-{{subG.term}}"></i> 
                             <i ng-switch-when="true" class="fa fa-check-square-o" id="li-checked-{{subG.term}}"></i>
@@ -41,11 +42,11 @@
         </ul>
         <strong ng-show="facets.statuses.terms">Status</strong>
         <ul class="fa-ul">
-            <li ng-repeat="t in facets.statuses.terms" style="margin-right: -20px" ng-switch="t.selected" ng-click="addFilter(t)">
-                <span class="hand-cursor">
-                    <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
-                    <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
-                    <small> {{t.term}} ({{t.count}})</small>
+            <li ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
+                <span class="hand-cursor" ng-show="t.count > 0">
+                    <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.name}}" ></i>
+                    <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
+                    <small> {{t.name}} ({{t.count}})</small>
                 </span>
             </li>
         </ul>
