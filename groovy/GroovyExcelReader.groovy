@@ -52,7 +52,7 @@ class GroovyExcelReader {
         else{
             switch (cell.getCellType()) {
                 case Cell.CELL_TYPE_STRING:
-                    return cell.getRichStringCellValue().toString();
+                    return cell.getStringCellValue().toString();
                 case Cell.CELL_TYPE_NUMERIC:
                     if (DateUtil.isCellDateFormatted(cell)) {
                         return cell.getDateCellValue().toString();

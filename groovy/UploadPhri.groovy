@@ -28,4 +28,4 @@ println "PHRI Ingester"
     print "\n------------------------------------------------------------------------------\n"
 }*/
 
-new GroovyExcelReader().readExcel("../nlm-seed/phri.xlsx");
+new GroovyExcelReader().readExcel("../../nlm-seed/phri.xlsx");
