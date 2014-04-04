@@ -54,9 +54,9 @@ public class NamingTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("New Name"));
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("removeNaming-0")));
-        findElement(By.id("name_edit_1")).click();
-        findElement(By.id("name_input_1")).sendKeys(" Changed");
-        findElement(By.id("name_confirm_1")).click();
+        findElement(By.cssSelector("#dd_name_1 .fa-edit")).click();
+        findElement(By.cssSelector("#dd_name_1 input")).sendKeys(" Changed");
+        findElement(By.cssSelector("#dd_name_1 .fa-check")).click();
         
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
@@ -67,9 +67,9 @@ public class NamingTest extends NlmCdeBaseTest {
         findElement(By.linkText("Naming")).click();
         Assert.assertTrue(textPresent("New Name Changed"));
 
-        findElement(By.id("def_edit_1")).click();
-        findElement(By.id("def_input_1")).sendKeys(" Changed");
-        findElement(By.id("def_confirm_1")).click();
+        findElement(By.cssSelector("#dd_def_1 .fa-edit")).click();
+        findElement(By.cssSelector("#dd_def_1 input")).sendKeys(" Changed");
+        findElement(By.cssSelector("#dd_def_1 .fa-check")).click();
         
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
@@ -80,9 +80,9 @@ public class NamingTest extends NlmCdeBaseTest {
         findElement(By.linkText("Naming")).click();
         Assert.assertTrue(textPresent("New Definition Changed"));
 
-        findElement(By.id("context_edit_1")).click();
-        findElement(By.id("context_input_1")).sendKeys(" Changed");
-        findElement(By.id("context_confirm_1")).click();
+        findElement(By.cssSelector("#dd_context_1 .fa-edit")).click();
+        findElement(By.cssSelector("#dd_context_1 input")).sendKeys(" Changed");
+        findElement(By.cssSelector("#dd_context_1 .fa-check")).click();
         
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);

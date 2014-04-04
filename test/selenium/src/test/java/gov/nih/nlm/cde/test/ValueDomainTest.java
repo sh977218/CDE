@@ -138,7 +138,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pv-0']/inline-edit/span/span[1]/i")));
         findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[1]/i")).click();
         findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[2]/input")).sendKeys(" added to pv");
-        findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[2]/i[1]")).click();
+        findElement(By.cssSelector("#pv-0 .fa-check")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Changed PV");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
@@ -159,7 +159,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[1]/i")).click();
         findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[2]/input")).clear();
         findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[2]/input")).sendKeys("New PV");
-        findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[2]/i[1]")).click();
+        findElement(By.cssSelector("#pv-10 .fa-check")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Changed PV");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
