@@ -1,12 +1,10 @@
 @Grab(group='org.apache.poi', module='poi-ooxml', version='3.9')
 
-package extract.excel
- 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook
-import org.apache.poi.hssf.usermodel.HSSFSheet
-import org.apache.poi.hssf.usermodel.HSSFRow
-import org.apache.poi.hssf.usermodel.HSSFCell
-import org.apache.poi.hssf.usermodel.HSSFDateUtil
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import org.apache.poi.xssf.usermodel.XSSFSheet
+import org.apache.poi.xssf.usermodel.XSSFRow
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.DateUtil
  
 /**
  * Groovy Builder that extracts data from
@@ -20,21 +18,21 @@ class ExcelBuilder {
     def row
  
     ExcelBuilder(String fileName) {
-        HSSFRow.metaClass.getAt = {int idx ->
+        XSSFRow.metaClass.getAt = {int idx ->
             def cell = delegate.getCell(idx)
             if(! cell) {
                 return null
             }
             def value
             switch(cell.cellType) {
-                case HSSFCell.CELL_TYPE_NUMERIC:
-                if(HSSFDateUtil.isCellDateFormatted(cell)) {
+                case Cell.CELL_TYPE_NUMERIC:
+                if(DateUtil.isCellDateFormatted(cell)) {
                     value = cell.dateCellValue
                 } else {
                     value = cell.numericCellValue
                 }
                 break
-                case HSSFCell.CELL_TYPE_BOOLEAN:
+                case Cell.CELL_TYPE_BOOLEAN:
                 value = cell.booleanCellValue
                 break
                 default:
@@ -45,7 +43,7 @@ class ExcelBuilder {
         }
  
         new File(fileName).withInputStream{is->
-            workbook = new HSSFWorkbook(is)
+            workbook = new XSSFWorkbook(is)
         }
     }
  
