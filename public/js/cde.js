@@ -26,9 +26,9 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
                             '<i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' + 
                         '</span>' + 
                         '<span ng-show="editMode">' + 
-                            '<input type="text" ng-model="value" />' + 
-                            '<i class="fa fa-check-square-o" ng-click="model = value; editMode = false; onOk()"> </i>&nbsp;' + 
-                            '<i class="fa fa-trash-o" ng-click="editMode = false"></i>' +
+                            '<input type="text" ng-model="value" class="form-control"/>' + 
+                            '<button class="fa fa-check" ng-click="model = value;editMode = false; onOk();"> Confirm</button>' + 
+                            '<button class="fa fa-times" ng-click="editMode = false"> Discard</button>' + 
                         '</span>' +       
                     '</span>'
                 ,
@@ -39,26 +39,35 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
             , onOk: '&'
         }
     };
-    }).
-    directive('inlineAreaEdit', function() {
-    return {
-        template: '<div>' + 
-                        '<div ng-hide="editMode">' + 
-                         '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>&nbsp;<span ng-bind-html="model"/>' +
-                        '</div>' + 
-                        '<div ng-show="editMode">' + 
-                         '   <textarea ng-model="value" ></textarea>' + 
-                          '  <i class="fa fa-check-square-o" ng-click="model = value;editMode = false; onOk()"> </i>' + 
-                           ' <i class="fa fa-trash-o" ng-click="editMode = false"></i>' + 
-                        '</div>       ' + 
-                    '</div>',
-        restrict: 'E',
-        scope: {
-            model: '='
-            , isAllowed: '&'
-            , onOk: '&'
-        }
-    };
+    })
+    .directive('inlineAreaEdit', function() {
+        return {
+            template: '<div>' + 
+                            '<div ng-hide="editMode" ng-switch="defFormat">' + 
+                            '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>&nbsp;' +
+                            '   <span ng-switch-default><span ng-bind="model"></span></span>' +
+                            '   <span ng-switch-when="html"><span ng-bind-html="model"></span></span>' +
+                            '</div>' + 
+                            '<div ng-show="editMode">' + 
+                            '   <div class="btn-group definitionFormatRadio">' +
+                            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="null">text</button>' +
+                            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="\'html\'">HTML</button>' +
+                            '   </div>' +                            
+                            '   <textarea ng-show="defFormat!=\'html\'" ng-model="value" class="form-control"></textarea>' +  
+                            '   <text-angular ng-show="defFormat==\'html\'" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ></text-angular>' +                             
+                            '   <button class="fa fa-check" ng-click="model = value;editMode = false; onOk();">Confirm</button>' + 
+                            '   <button class="fa fa-times" ng-click="editMode = false">Cancel</button>' + 
+                            '</div>       ' + 
+                        '</div>',
+            restrict: 'E',
+            scope: {
+                model: '='
+                , isAllowed: '&'
+                , onOk: '&'
+                , defFormat: '='
+                , inlineAreaVisibility: '='
+            }
+        };
     });
 
 cdeApp.directive('ngCdeAvailable', ['$http', function($http) {

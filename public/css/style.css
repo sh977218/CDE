@@ -18,3 +18,7 @@
 .accordion-toggle:hover {
     text-decoration: none;
 }
+
+#taTextElement {
+    height: auto;
+}

@@ -79,6 +79,8 @@ if [ "$curl_res" == "$target" ]
 then
     #groovy groovy/UploadCadsrForms.groovy --testMode &
     #
+    gradle -b test/selenium/build.gradle -Dtest.single=NamingTest test & 
+#    gradle -b test/selenium/build.gradle clean test & 
 #    gradle -b test/selenium/build.gradle -Dtest.single=StoreSearchTest test & 
     gradle -b test/selenium/build.gradle clean test & 
 #    rm test-console.out

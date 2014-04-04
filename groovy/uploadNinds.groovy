@@ -72,7 +72,7 @@ for (int i = 0 ; i < report.table1[0].table1_Group1_Collection[0].table1_Group1.
     defaultName.put("designation", (String)cde.@VariableName);
     defaultName.put("definition", (String)cde.@Definition);
     defaultName.put("languageCode", "EN-US");
-    
+
     BasicDBObject defContext = new BasicDBObject();
     defContext.put("contextName", 'Health');
     defContext.put("acceptability", "preferred");

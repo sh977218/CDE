@@ -57,16 +57,17 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test(dependsOnMethods = {"createCde"})
     public void editCde() {
+        login();
         goToCdeByName(newCdeName);
         findElement(By.cssSelector("i.fa-edit")).click();
         findElement(By.xpath("//inline-edit/span/span[2]/input")).sendKeys("[name change number 1]");
-        findElement(By.cssSelector("i.fa-check-square-o")).click();
+        findElement(By.cssSelector(".fa-check")).click();
         findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("[def change number 1]");
-        findElement(By.xpath("//inline-area-edit/div/div[2]/i")).click();
+        findElement(By.cssSelector("inline-area-edit .fa-check")).click();
         findElement(By.xpath("//inline-edit[@id = 'uomEdit']//i[@class = 'fa fa-edit']")).click();
         findElement(By.xpath("//inline-edit[@id = 'uomEdit']//input")).sendKeys("myUom");
-        findElement(By.xpath("//inline-edit[@id = 'uomEdit']//i[@class = 'fa fa-check-square-o']")).click();
+        findElement(By.cssSelector("#dd_uom .fa-check")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
         Assert.assertTrue(textPresent("This version number has already been used"));
@@ -134,6 +135,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
+        modalHere();
         findElement(By.id("confirmSave")).click();
         hangon(2);
 
@@ -158,5 +160,30 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("OC1") < 0);
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("PROP1") < 0);
     }
+    
+    @Test(dependsOnMethods = {"editCde"})
+    public void changeDefinitionFormat() {
+        login();
+        goToCdeByName(newCdeName);
+        findElement(By.cssSelector("#dd_def .fa-edit")).click();
+        findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("[def change number 2: adding html characters][<b>bold</b>]");
+        findElement(By.cssSelector("inline-area-edit .fa-check")).click();
+        findElement(By.id("openSave")).click();
+        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("version")).sendKeys("-plaintext"); 
+        findElement(By.id("confirmSave")).click();
+        goToCdeByName(newCdeName);   
+        Assert.assertTrue(textPresent("<b>bold</b>"));
+        
+        findElement(By.cssSelector("#dd_def .fa-edit")).click();
+        findElement(By.cssSelector(".tab-pane:nth-child(1) .definitionFormatRadio button:nth-child(2)")).click();
+        findElement(By.cssSelector("inline-area-edit .fa-check")).click();
+        findElement(By.id("openSave")).click();
+        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("version")).sendKeys("-html"); 
+        findElement(By.id("confirmSave")).click();
+        goToCdeByName(newCdeName);   
+        Assert.assertTrue(textNotPresent("<b>bold</b>"));        
+    }    
 
 }

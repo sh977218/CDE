@@ -47,7 +47,7 @@ public class NlmCdeBaseTest {
         caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
         driver = new ChromeDriver(caps);
         driver.get(baseUrl);
-        driver.manage().window().setSize(new Dimension(1024,768));
+        driver.manage().window().setSize(new Dimension(1024,800));
         driver.manage().timeouts().implicitlyWait(6, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, 6, 200);
     }
@@ -65,6 +65,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent(name));
         findElement(By.id("acc_link_0")).click();
+        hangon(1);
         findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("More Like This"));
     }
@@ -114,7 +115,11 @@ public class NlmCdeBaseTest {
     
     public boolean textPresent(String text) {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
-        return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) > 0;
+        return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) >= 0;
+    }
+    
+    public boolean textNotPresent(String text){
+        return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) < 0;
     }
     
     protected void goHome() {

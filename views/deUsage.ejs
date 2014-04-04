@@ -1,11 +1,11 @@
-<div ng-controller="UsedByCtrl" >
+<div ng-controller="UsedByCtrl">
 <h4>Organizational Use</h4>
 
 <button class="btn btn-small btn-default" value="add" ng-click="openAddUsedByModal()" id="addUsedBy" ng-show="isAllowedNonCuration(cde)"><i class="fa fa-plus"> </i> Add Usage</button>
 
 <hr/>
 
-<div ng-repeat="usedBy in cde.usedByOrgs">
+<div ng-repeat="usedBy in cde.usedByOrgs track by $index">
     <span ng-show="isAllowedNonCuration(cde)">
         <span ng-show="showDelete">
             Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeUsedBy(usedBy)" id="confirmRemoveUsedBy-{{$index}}" title="OK" href=""></a>
