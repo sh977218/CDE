@@ -6,7 +6,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             $scope.loadBoards();
             callback();
         });
-    };    
+    };
     
     $scope.alerts = [];
     $scope.closeAlert = function(index) {
@@ -1148,6 +1148,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
     $scope.mltCdes = [];
     $scope.boards = [];
     $scope.comment = {};
+
     $scope.reload = function(deId, cb) {
         DataElement.get({deId: deId}, function (de) {
            $scope.cde = de;          
@@ -1202,7 +1203,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
             }
         }
 
-    };           
+    };
     
     $scope.isAllowed = function (cde) {
         if ($scope.initialized && cde.archived) {

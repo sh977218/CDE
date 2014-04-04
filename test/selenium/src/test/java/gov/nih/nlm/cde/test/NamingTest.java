@@ -68,7 +68,7 @@ public class NamingTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("New Name Changed"));
 
         findElement(By.cssSelector("#dd_def_1 .fa-edit")).click();
-        findElement(By.cssSelector("#dd_def_1 input")).sendKeys(" Changed");
+        findElement(By.cssSelector("#dd_def_1 textarea ")).sendKeys(" Changed");
         findElement(By.cssSelector("#dd_def_1 .fa-check")).click();
         
         findElement(By.id("openSave")).click();
