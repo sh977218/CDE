@@ -200,6 +200,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.id("confirmDatatype")).click();
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
+        modalHere();
         findElement(By.id("confirmSave")).click();
         goToCdeByName("Axillary Surgery");
         findElement(By.linkText("Permissible Values")).click();        
