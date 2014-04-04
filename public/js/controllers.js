@@ -171,6 +171,10 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };
 }
 
+function ClassificationManagementCtrl($scope) {
+    
+}
+
 function ProfileCtrl($scope, ViewingHistory) {
     $scope.viewingHistory = [];
                 
