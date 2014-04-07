@@ -16,8 +16,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 @Field def mongoHost = System.getenv()['MONGO_HOST'];
 if(mongoHost == 0) mongoHost = "localhost";
 
-@Field def mongoDb /*= System.getenv()['MONGO_DB'];
-if(mongoDb == null) mongoDb*/ = "phri";
+@Field def mongoDb = System.getenv()['MONGO_DB'];
+if(mongoDb == null) mongoDb = "nlmcde";
 
 @Field MongoClient mongoClient = new MongoClient( mongoHost );
 @Field DB db = mongoClient.getDB(mongoDb);
@@ -67,6 +67,8 @@ def xlsMap = [
     , valueDomain_1: 4
     , valueDomain_2: 5
     , valueDomain_3: 6
+    
+    , comments: 9                        
 ];
 
 
@@ -117,14 +119,33 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
                             
     BasicDBObject valueDomain = new BasicDBObject();
-    valueDomain.put("datatype", "EXTERNAL");
+    valueDomain.put("datatype", "Externally Defined");
     def vdLink = getCellValue(row.getCell(xlsMap.valueDomain_2));
-    if (vdLink!="")
-        valueDomain.put("link", vdLink);
+    //valueDomain.put("link", vdLink);
     def vdExplanation = getCellValue(row.getCell(xlsMap.valueDomain_1)) + getCellValue(row.getCell(xlsMap.valueDomain_3));
-    if (vdExplanation!="")
-        valueDomain.put("explanation", vdExplanation);
-    newDE.put("valueDomain", valueDomain);                               
+    //valueDomain.put("explanation", vdExplanation);
+    
+    
+    BasicDBObject valueDomainExternallyDefined = new BasicDBObject();
+    valueDomainExternallyDefined.put("link",vdLink);
+    valueDomainExternallyDefined.put("explanation",vdExplanation);
+    valueDomain.put("datatypeExternallyDefined", valueDomainExternallyDefined);
+    
+    newDE.put("valueDomain", valueDomain);  
+    
+    def usedByOrgs = ["PHRI"];    
+    newDE.put("usedByOrgs", usedByOrgs);     
+    
+    def comment = getCellValue(row.getCell(xlsMap.comments));
+    
+    if (comment!="") {
+        BasicDBObject co = new BasicDBObject();
+        co.put("username","FinalDRAFT_PHRI_CoreCommon_10262012.xlsx");
+        co.put("created", new Date());
+        co.put("text", comment);
+        def comments = [co];
+        newDE.put("comments", comments);
+    }
                             
     newDE;
 }

@@ -122,6 +122,10 @@ var deJsonSchema = {
         , datatypeDate: {
             format: String
         }
+        , datatypeExternallyDefined: {
+            link: String,
+            explanation: String
+        }
         , permissibleValues: [permissibleValueSchema]
     }
     , history: [ObjectId]
