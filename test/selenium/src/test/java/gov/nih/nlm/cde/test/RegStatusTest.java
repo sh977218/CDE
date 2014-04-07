@@ -75,6 +75,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.id("editStatus")).click();
         modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
+        modalHere();
         findElement(By.id("saveRegStatus")).click();
         hangon(2);
         goToCdeByName("Patient Name");
@@ -106,6 +107,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
+        modalHere();
         findElement(By.id("saveRegStatus")).click();
         hangon(2);
         logout();
