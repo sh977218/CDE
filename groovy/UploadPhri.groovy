@@ -13,15 +13,15 @@ import groovy.transform.Field;
 import java.util.Iterator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 
-/*@Field */def mongoHost = System.getenv()['MONGO_HOST'];
+@Field def mongoHost = System.getenv()['MONGO_HOST'];
 if(mongoHost == 0) mongoHost = "localhost";
 
-/*@Field */def mongoDb /*= System.getenv()['MONGO_DB'];
+@Field def mongoDb /*= System.getenv()['MONGO_DB'];
 if(mongoDb == null) mongoDb*/ = "phri";
 
-/*@Field */MongoClient mongoClient = new MongoClient( mongoHost );
-/*@Field */DB db = mongoClient.getDB(mongoDb);
-/*@Field */DBCollection deColl = db.getCollection("dataelements");
+@Field MongoClient mongoClient = new MongoClient( mongoHost );
+@Field DB db = mongoClient.getDB(mongoDb);
+@Field DBCollection deColl = db.getCollection("dataelements");
 DBCollection orgColl = db.getCollection("orgs");
 
 println "PHRI Ingester"
@@ -61,21 +61,18 @@ static def String getCellValue(Cell cell) {
 def xlsMap = [
     namingDesignation: 1
     , namingDefinition: 2
+    , namingFhimDesignation: 8
+    , defaultClassification: 1
+    
+    , valueDomain_1: 4
+    , valueDomain_2: 5
+    , valueDomain_3: 6
 ];
 
 
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
-    
-        def mongoHost = System.getenv()['MONGO_HOST'];
-        if(mongoHost == 0) mongoHost = "localhost";
-        def mongoDb = "phri";    
-        MongoClient mongoClient = new MongoClient( mongoHost );
-        DB db = mongoClient.getDB(mongoDb);
-        DBCollection deColl = db.getCollection("dataelements");    
-    
     DBObject newDE = new BasicDBObject();
-    newDE.put("id",1);
-    /*newDE.put("uuid", UUID.randomUUID() as String);
+    newDE.put("uuid", UUID.randomUUID() as String);
     newDE.put("created", new Date()); 
     newDE.put("origin", 'PHRI'); 
     newDE.put("originId", "FinalDRAFT_PHRI_CoreCommon_10262012.xlsx");
@@ -85,20 +82,63 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     defaultName.put("designation", getCellValue(row.getCell(xlsMap.namingDesignation)));
     defaultName.put("definition", getCellValue(row.getCell(xlsMap.namingDefinition)));
     defaultName.put("languageCode", "EN-US");  
+    
+    BasicDBObject defContext = new BasicDBObject();
+    defContext.put("contextName", 'Health');
+    defContext.put("acceptability", "preferred");
+    defaultName.put("context", defContext);     
+                            
+    def fhimName = new BasicDBObject();
+    fhimName.put("designation", getCellValue(row.getCell(xlsMap.namingFhimDesignation)));  
+    fhimName.put("context", defContext);  
+    
     def naming = [];
     naming.add(defaultName);
-    newDE.put("naming", naming);*/    
+    naming.add(fhimName);
+    newDE.put("naming", naming);     
+    
+    BasicDBObject defClassification = new BasicDBObject();
+    defClassification.put("conceptSystem", "S&I PHRI Category");
+    defClassification.put("concept", getCellValue(row.getCell(xlsMap.defaultClassification)));
+    def classification = [defClassification];
+    BasicDBObject stewardOrg = new BasicDBObject();
+    stewardOrg.put("name","PHRI");
+    defClassification.put("stewardOrg",stewardOrg);
+    newDE.put("classification", classification);  
 
-    deColl.insert((BasicDBObject)newDE);
+    newDE.put("stewardOrg",stewardOrg);
+    
+
+                            
+    BasicDBObject registrationState = new BasicDBObject();
+    registrationState.put("registrationStatus", "Qualified");
+    registrationState.put("registrationStatusSortOrder", 1);
+    newDE.put("registrationState", registrationState);    
+    
+                            
+    BasicDBObject valueDomain = new BasicDBObject();
+    valueDomain.put("datatype", "EXTERNAL");
+    def vdLink = getCellValue(row.getCell(xlsMap.valueDomain_2));
+    if (vdLink!="")
+        valueDomain.put("link", vdLink);
+    def vdExplanation = getCellValue(row.getCell(xlsMap.valueDomain_1)) + getCellValue(row.getCell(xlsMap.valueDomain_3));
+    if (vdExplanation!="")
+        valueDomain.put("explanation", vdExplanation);
+    newDE.put("valueDomain", valueDomain);                               
+                            
+    newDE;
 }
 
 def void PersistSheet(String name, Map xlsMap) {
     XSSFSheet sheet = book.getSheet(name);
     Iterator<XSSFRow> it = sheet.iterator();
     it.next();
+    it.next();
+    it.next();
     while (it.hasNext()) {
         XSSFRow row = it.next();
-        ParseRow(row, xlsMap);
+        BasicDBObject newDE = ParseRow(row, xlsMap);
+        deColl.insert(newDE);
     }
 }
 
