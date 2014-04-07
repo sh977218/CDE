@@ -62,12 +62,10 @@ def xlsMap = [
     namingDesignation: 1
     , namingDefinition: 2
     , namingFhimDesignation: 8
-    , defaultClassification: 1
-    
+    , defaultClassification: 0    
     , valueDomain_1: 4
     , valueDomain_2: 5
-    , valueDomain_3: 6
-    
+    , valueDomain_3: 6    
     , comments: 9                        
 ];
 
@@ -81,7 +79,10 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     newDE.put("version", "FinalDRAFT_PHRI_CoreCommon_10262012.xlsx");
     
     def defaultName = new BasicDBObject();
-    defaultName.put("designation", getCellValue(row.getCell(xlsMap.namingDesignation)));
+    def namingDesignation = getCellValue(row.getCell(xlsMap.namingDesignation));
+    if (namingDesignation=="")
+        return null;
+    defaultName.put("designation", namingDesignation);
     defaultName.put("definition", getCellValue(row.getCell(xlsMap.namingDefinition)));
     defaultName.put("languageCode", "EN-US");  
     
@@ -101,35 +102,33 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
     BasicDBObject defClassification = new BasicDBObject();
     defClassification.put("conceptSystem", "S&I PHRI Category");
-    defClassification.put("concept", getCellValue(row.getCell(xlsMap.defaultClassification)));
+    def phriCategory = getCellValue(row.getCell(xlsMap.defaultClassification));
+    if (phriCategory=="")
+        return null;
+    defClassification.put("concept", phriCategory);
     def classification = [defClassification];
     BasicDBObject stewardOrg = new BasicDBObject();
     stewardOrg.put("name","PHRI");
     defClassification.put("stewardOrg",stewardOrg);
     newDE.put("classification", classification);  
 
-    newDE.put("stewardOrg",stewardOrg);
-    
-
+    newDE.put("stewardOrg",stewardOrg);  
                             
     BasicDBObject registrationState = new BasicDBObject();
     registrationState.put("registrationStatus", "Qualified");
     registrationState.put("registrationStatusSortOrder", 1);
-    newDE.put("registrationState", registrationState);    
-    
+    newDE.put("registrationState", registrationState);        
                             
     BasicDBObject valueDomain = new BasicDBObject();
     valueDomain.put("datatype", "Externally Defined");
     def vdLink = getCellValue(row.getCell(xlsMap.valueDomain_2));
-    //valueDomain.put("link", vdLink);
     def vdExplanation = getCellValue(row.getCell(xlsMap.valueDomain_1)) + getCellValue(row.getCell(xlsMap.valueDomain_3));
-    //valueDomain.put("explanation", vdExplanation);
-    
     
     BasicDBObject valueDomainExternallyDefined = new BasicDBObject();
     valueDomainExternallyDefined.put("link",vdLink);
     valueDomainExternallyDefined.put("explanation",vdExplanation);
     valueDomain.put("datatypeExternallyDefined", valueDomainExternallyDefined);
+    valueDomain.put("permissibleValues", []);
     
     newDE.put("valueDomain", valueDomain);  
     
@@ -159,9 +158,37 @@ def void PersistSheet(String name, Map xlsMap) {
     while (it.hasNext()) {
         XSSFRow row = it.next();
         BasicDBObject newDE = ParseRow(row, xlsMap);
-        deColl.insert(newDE);
+        if (newDE!=null)
+            deColl.insert(newDE);
     }
 }
 
-PersistSheet("Allergy | Adverse Event", xlsMap);
+def sheetsToParse = [
+    "Allergy | Adverse Event",
+    "Medical Device",
+    "Exposure | Injury",
+    "Health Problems",
+    "Physical Exam",
+    "Report MetaData", 
+    "Facility",
+    "Encounter | Patient Visit",
+    "Patient Information",
+    "Immunization",
+    "Medication",
+    "Vital Sign Indicator",
+    "Patient Contact Information",
+    "Payer Information",
+    "Provider Information",
+    "Procedure",
+    "Social History",
+    "Family History",
+    "Order | Diag Test", 
+    "Result",
+    "Specimen",
+    "Employment Information"
+];          
+
+for (sheetName in sheetsToParse) {
+    PersistSheet(sheetName, xlsMap);
+}                    
 
