@@ -171,7 +171,43 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };
 }
 
-function ClassificationManagementCtrl($scope) {
+function ClassificationManagementCtrl($scope, $http) {
+    if ($scope.myOrgs.length > 0) {
+        $scope.orgToManage = $scope.myOrgs[0];
+    }
+    
+    $scope.org = {};
+    
+    $scope.updateOrg = function() {
+        if ($scope.orgToManage !== undefined) {
+            $http.get("/org/" + $scope.orgToManage).then(function(response) {
+               $scope.org = response.data;
+            });
+        }
+    }
+    
+    $scope.updateOrg();
+    
+    var indexedConceptSystemClassifications = [];
+    $scope.classificationToFilter = function() {
+         indexedConceptSystemClassifications = [];
+         return $scope.org.classifications;
+    };
+    
+    $scope.filterConceptSystemClassification = function(item) {
+      var systemIsNew = indexedConceptSystemClassifications.indexOf(item.conceptSystem) == -1;
+      if (systemIsNew) {
+          indexedConceptSystemClassifications.push(item.conceptSystem);
+      }
+      return systemIsNew;
+    };
+    
+    $scope.isInConceptSystem = function(system) {
+        return function(classi) {
+            return classi.conceptSystem === system;
+        };
+    };
+
     
 }
 
