@@ -9,27 +9,28 @@ import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import groovy.transform.Field;
+import java.util.Iterator;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 
-def mongoHost = System.getenv()['MONGO_HOST'];
+/*@Field */def mongoHost = System.getenv()['MONGO_HOST'];
 if(mongoHost == 0) mongoHost = "localhost";
 
-def mongoDb = System.getenv()['MONGO_DB'];
-if(mongoDb == null) mongoDb = "test";
+/*@Field */def mongoDb /*= System.getenv()['MONGO_DB'];
+if(mongoDb == null) mongoDb*/ = "phri";
 
-MongoClient mongoClient = new MongoClient( mongoHost );
-DB db = mongoClient.getDB(mongoDb);
-
-DBCollection deColl = db.getCollection("dataelements");
+/*@Field */MongoClient mongoClient = new MongoClient( mongoHost );
+/*@Field */DB db = mongoClient.getDB(mongoDb);
+/*@Field */DBCollection deColl = db.getCollection("dataelements");
 DBCollection orgColl = db.getCollection("orgs");
 
 println "PHRI Ingester"
 
-XSSFWorkbook book = new XSSFWorkbook("../nlm-seed/phri.xlsx");
-XSSFSheet[] sheets = book.sheets;
+@Field XSSFWorkbook book = new XSSFWorkbook("../nlm-seed/phri.xlsx");
+@Field XSSFSheet[] sheets = book.sheets;
 
 static def String getCellValue(Cell cell) {
-   if(cell == null)
-   {
+   if(cell == null) {
        println("EMPTY CELL");
        return "";
    }
@@ -57,16 +58,49 @@ static def String getCellValue(Cell cell) {
    }
 }
 
-for (XSSFSheet sheet : sheets)
-{
-    println("\nSHEET NAME:"+sheet.getSheetName()+"\n");
-    sheet.each { row ->
-        Iterator cellIterator = row.cellIterator();
-        while(cellIterator.hasNext())
-        {
-            XSSFCell cell = cellIterator.next();
-            print(getCellValue(cell)+" ");
-        }
-        println();
+def xlsMap = [
+    namingDesignation: 1
+    , namingDefinition: 2
+];
+
+
+def DBObject ParseRow(XSSFRow row, Map xlsMap) {
+    
+        def mongoHost = System.getenv()['MONGO_HOST'];
+        if(mongoHost == 0) mongoHost = "localhost";
+        def mongoDb = "phri";    
+        MongoClient mongoClient = new MongoClient( mongoHost );
+        DB db = mongoClient.getDB(mongoDb);
+        DBCollection deColl = db.getCollection("dataelements");    
+    
+    DBObject newDE = new BasicDBObject();
+    newDE.put("id",1);
+    /*newDE.put("uuid", UUID.randomUUID() as String);
+    newDE.put("created", new Date()); 
+    newDE.put("origin", 'PHRI'); 
+    newDE.put("originId", "FinalDRAFT_PHRI_CoreCommon_10262012.xlsx");
+    newDE.put("version", "FinalDRAFT_PHRI_CoreCommon_10262012.xlsx");
+    
+    def defaultName = new BasicDBObject();
+    defaultName.put("designation", getCellValue(row.getCell(xlsMap.namingDesignation)));
+    defaultName.put("definition", getCellValue(row.getCell(xlsMap.namingDefinition)));
+    defaultName.put("languageCode", "EN-US");  
+    def naming = [];
+    naming.add(defaultName);
+    newDE.put("naming", naming);*/    
+
+    deColl.insert((BasicDBObject)newDE);
+}
+
+def void PersistSheet(String name, Map xlsMap) {
+    XSSFSheet sheet = book.getSheet(name);
+    Iterator<XSSFRow> it = sheet.iterator();
+    it.next();
+    while (it.hasNext()) {
+        XSSFRow row = it.next();
+        ParseRow(row, xlsMap);
     }
 }
+
+PersistSheet("Allergy | Adverse Event", xlsMap);
+
