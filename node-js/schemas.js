@@ -123,8 +123,9 @@ var deJsonSchema = {
             format: String
         }
         , datatypeExternallyDefined: {
-            link: String,
-            explanation: String
+            link: String
+            , description: String
+            , descriptionFormat: String
         }
         , permissibleValues: [permissibleValueSchema]
     }

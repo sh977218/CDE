@@ -75,8 +75,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     newDE.put("uuid", UUID.randomUUID() as String);
     newDE.put("created", new Date()); 
     newDE.put("origin", 'PHRI'); 
-    newDE.put("originId", "FinalDRAFT_PHRI_CoreCommon_10262012.xlsx");
-    newDE.put("version", "FinalDRAFT_PHRI_CoreCommon_10262012.xlsx");
+    newDE.put("originId", null);
+    newDE.put("version", 1);
     
     def defaultName = new BasicDBObject();
     def namingDesignation = getCellValue(row.getCell(xlsMap.namingDesignation));
@@ -93,7 +93,10 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
                             
     def fhimName = new BasicDBObject();
     fhimName.put("designation", getCellValue(row.getCell(xlsMap.namingFhimDesignation)));  
-    fhimName.put("context", defContext);  
+    BasicDBObject phriContext = new BasicDBObject();
+    phriContext.put("contextName", 'FHIM');
+    phriContext.put("acceptability", "preferred"); 
+    fhimName.put("context", phriContext);  
     
     def naming = [];
     naming.add(defaultName);
@@ -122,11 +125,11 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     BasicDBObject valueDomain = new BasicDBObject();
     valueDomain.put("datatype", "Externally Defined");
     def vdLink = getCellValue(row.getCell(xlsMap.valueDomain_2));
-    def vdExplanation = getCellValue(row.getCell(xlsMap.valueDomain_1)) + getCellValue(row.getCell(xlsMap.valueDomain_3));
+    def vdDescription = getCellValue(row.getCell(xlsMap.valueDomain_1)) + getCellValue(row.getCell(xlsMap.valueDomain_3));
     
     BasicDBObject valueDomainExternallyDefined = new BasicDBObject();
     valueDomainExternallyDefined.put("link",vdLink);
-    valueDomainExternallyDefined.put("explanation",vdExplanation);
+    valueDomainExternallyDefined.put("description",vdDescription);
     valueDomain.put("datatypeExternallyDefined", valueDomainExternallyDefined);
     valueDomain.put("permissibleValues", []);
     

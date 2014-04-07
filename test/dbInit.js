@@ -49,5 +49,6 @@ db.orgs.insert({name: "NHC-NCI"});
 db.orgs.insert({name: "NIDA"});
 db.orgs.insert({name: "PhenX"});
 db.orgs.insert({name: "AHRQ"});
+db.orgs.insert({name: "PHRI"});
 
 
