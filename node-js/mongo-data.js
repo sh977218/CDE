@@ -42,7 +42,13 @@ exports.publicBoardsByDeUuid = function(uuid, callback) {
 };
 
 exports.conceptSystem_autocomplete = function(system, callback) {
-    DataElement.distinct("classification.conceptSystem", {"classification.conceptSystem": new RegExp(system, 'i')}, function(err, systems) {
+    Org.distinct("classifications.conceptSystem", {"classifications.conceptSystem": new RegExp(system, 'i')}, function(err, systems) {
+        callback(systems);
+    }); 
+};
+
+exports.conceptSystem_autocomplete = function(orgName, system, callback) {
+    Org.distinct("classifications.conceptSystem", {"classifications.stewardOrg.name": orgName, "classifications.conceptSystem": new RegExp(system, 'i')}, function(err, systems) {
         callback(systems);
     }); 
 };
@@ -51,6 +57,35 @@ exports.org_autocomplete = function(name, callback) {
     Org.find({"name": new RegExp(name, 'i')}, function(err, orgs) {
         callback(orgs);
     }); 
+};
+
+exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, callback) {
+    DataElement.update({}, {$pull: {classification: {conceptSystem: conceptSystem, concept: concept, "stewardOrg.name": orgName}}}, {multi: true}).exec(function(err) {
+        if (err) { 
+            callback("Unable to unclassify. " + err);
+            return;
+        } else {
+            Org.update({name: orgName}, {$pull: {classifications: {conceptSystem: conceptSystem, concept: concept}}}, false).exec(function(err) {
+                if (err) { 
+                    callback("Unable to remove Classification. " + err);
+                    return;
+                } else {
+                    return callback();
+                }
+            });
+        }
+    });
+};
+
+exports.addClassificationToOrg = function(orgName, conceptSystem, concept, callback) {
+    Org.update({name: orgName}, {$push: {classifications: {conceptSystem: conceptSystem, concept: concept, stewardOrg: {name: orgName}}}}, false).exec(function(err) {
+        if (err) { 
+            callback("Unable to add Classification. " + err);
+            return;
+        } else {
+            return callback();
+        }        
+    });
 };
 
 exports.getFile = function(callback, res, id) {

@@ -383,6 +383,35 @@ app.post('/removeOrg', function(req, res) {
     orgsvc.removeOrg(req, res);
 });
 
+app.post('/removeClassificationFromOrg', function(req, res) {
+    if (!req.user 
+        || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0)
+          && (!req.user.orgCurator || req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0)
+        ) {
+        res.send("You are not authorized to do this.");
+    } else {
+        mongo_data.removeClassificationFromOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err) {
+            if (err) res.send("error: " + err);
+            else res.send("Classification Removed");
+        });
+    }
+});
+
+app.post('/addClassificationToOrg', function(req, res) {
+    if (!req.user 
+        || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0)
+          && (!req.user.orgCurator || req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0)
+        ) {
+        res.send("You are not authorized to do this.");
+    } else {
+        mongo_data.addClassificationToOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err) {
+            if (err) res.send("error: " + err);
+            else res.send("Classification Added");
+        });
+    }
+});
+
+
 app.post('/addComment', function(req, res) {
     if (req.isAuthenticated()) {
         mongo_data.addComment(req.body.deId, req.body.comment, req.user._id, function (err) {
@@ -645,6 +674,12 @@ app.get('/autocomplete/form', function(req, res) {
 
 app.get('/autocomplete/classification/:conceptSystem', function (req, res) {
     mongo_data.conceptSystem_autocomplete(req.params.conceptSystem, function (result) {
+        res.send(result);
+    });
+});
+
+app.get('/autocomplete/classification/:orgName/:conceptSystem', function (req, res) {
+    mongo_data.conceptSystem_autocomplete(req.params.orgName, req.params.conceptSystem, function (result) {
         res.send(result);
     });
 });

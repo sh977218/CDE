@@ -6,6 +6,7 @@
 </div>
 
 <dl id="repeatCs">
+<button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification"><i class="fa fa-plus"> </i> Add Classification</button>
 <div ng-repeat="conceptSystemPerConcept in classificationToFilter() | filter:filterConceptSystemClassification">
     <dt>{{conceptSystemPerConcept.conceptSystem}}</dt>
     <dd>
@@ -22,3 +23,8 @@
     </dd>
 </div>
 </dl>
+
+<script type="text/ng-template" id="addClassificationModalContent.html">
+    <%- include addClassification.ejs %>
+</script>
+
