@@ -70,40 +70,35 @@ def xlsMap = [
     , valueDomainType: 3
 ];
 
-def BasicDBObject parseValueDomain(XSSFRow row, Map xlsMap/*, DBObject newDE*/){
+def BasicDBObject parseValueDomain(XSSFRow row, Map xlsMap){
     def type = getCellValue(row.getCell(xlsMap.valueDomainType));
     
     BasicDBObject valueDomain = new BasicDBObject();
-    println("parseValueDomain");
-    if (type=="Coded Value") {println("parseValueDomain: Coded Value");
-        valueDomain.put("datatype", "Externally Defined");    
-        def vdLink = row.getCell(xlsMap.valueDomain_2).getHyperlink();    
-        def vdDescription = getCellValue(row.getCell(xlsMap.valueDomain_1)) + getCellValue(row.getCell(xlsMap.valueDomain_3));    
-        BasicDBObject valueDomainExternallyDefined = new BasicDBObject();
-        if (vdLink!=null) {
-            valueDomainExternallyDefined.put("link",vdLink.getAddress());
-        }
-        //valueDomainExternallyDefined.put("description",vdDescription);
-        valueDomain.put("datatypeExternallyDefined", valueDomainExternallyDefined);
-    } 
     
-    else if (type=="Date/Time"||type=="Date/Time or Timestamp (TS)") {println("parseValueDomain: Date/Time");
-        valueDomain.put("datatype", "Date");
-    }
-    
-    else if (type=="String") {println("parseValueDomain: String");
-        valueDomain.put("datatype", "Text");
-    }    
-    
-    else if (type=="Integer") {println("parseValueDomain: Integer");
-        valueDomain.put("datatype", "Integer");
-    }    
-    
-    else {println("parseValueDomain: type: "+type);
-        valueDomain.put("datatype", type);
-        /*def vdDescription = getCellValue(row.getCell(xlsMap.valueDomain_1)) + getCellValue(row.getCell(xlsMap.valueDomain_3));
-        def naming = newDE.get("naming");
-        def defaultName = naming[0];*/
+    switch (type) {
+        case "Coded Value":
+            valueDomain.put("datatype", "Externally Defined");    
+            def vdLink = row.getCell(xlsMap.valueDomain_2).getHyperlink();    
+            def vdDescription = getCellValue(row.getCell(xlsMap.valueDomain_1)) + getCellValue(row.getCell(xlsMap.valueDomain_3));    
+            BasicDBObject valueDomainExternallyDefined = new BasicDBObject();
+            if (vdLink!=null) {
+                valueDomainExternallyDefined.put("link",vdLink.getAddress());
+            }
+            if (vdDescription!=null) {
+                valueDomainExternallyDefined.put("description",vdDescription);
+            }            
+            valueDomain.put("datatypeExternallyDefined", valueDomainExternallyDefined);
+        break;
+        case "Date/Time":
+        case "Date/Time or Timestamp (TS)":
+            valueDomain.put("datatype", "Date");
+        break;    
+        case "String":
+            valueDomain.put("datatype", "Text");
+        break;          
+        default:
+            valueDomain.put("datatype", type);
+        break;
     }
     
     valueDomain.put("permissibleValues", []); 
@@ -159,7 +154,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     newDE.put("stewardOrg",stewardOrg);  
                             
     BasicDBObject registrationState = new BasicDBObject();
-    registrationState.put("registrationStatus", "Qualified");
+    registrationState.put("registrationStatus", "Recorded");
     registrationState.put("registrationStatusSortOrder", 1);
     newDE.put("registrationState", registrationState);        
                             
