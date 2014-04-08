@@ -66,9 +66,49 @@ def xlsMap = [
     , valueDomain_1: 4
     , valueDomain_2: 5
     , valueDomain_3: 6    
-    , comments: 9                        
+    , comments: 9 
+    , valueDomainType: 3
 ];
 
+def BasicDBObject parseValueDomain(XSSFRow row, Map xlsMap/*, DBObject newDE*/){
+    def type = getCellValue(row.getCell(xlsMap.valueDomainType));
+    
+    BasicDBObject valueDomain = new BasicDBObject();
+    println("parseValueDomain");
+    if (type=="Coded Value") {println("parseValueDomain: Coded Value");
+        valueDomain.put("datatype", "Externally Defined");    
+        def vdLink = row.getCell(xlsMap.valueDomain_2).getHyperlink();    
+        def vdDescription = getCellValue(row.getCell(xlsMap.valueDomain_1)) + getCellValue(row.getCell(xlsMap.valueDomain_3));    
+        BasicDBObject valueDomainExternallyDefined = new BasicDBObject();
+        if (vdLink!=null) {
+            valueDomainExternallyDefined.put("link",vdLink.getAddress());
+        }
+        //valueDomainExternallyDefined.put("description",vdDescription);
+        valueDomain.put("datatypeExternallyDefined", valueDomainExternallyDefined);
+    } 
+    
+    else if (type=="Date/Time"||type=="Date/Time or Timestamp (TS)") {println("parseValueDomain: Date/Time");
+        valueDomain.put("datatype", "Date");
+    }
+    
+    else if (type=="String") {println("parseValueDomain: String");
+        valueDomain.put("datatype", "Text");
+    }    
+    
+    else if (type=="Integer") {println("parseValueDomain: Integer");
+        valueDomain.put("datatype", "Integer");
+    }    
+    
+    else {println("parseValueDomain: type: "+type);
+        valueDomain.put("datatype", type);
+        /*def vdDescription = getCellValue(row.getCell(xlsMap.valueDomain_1)) + getCellValue(row.getCell(xlsMap.valueDomain_3));
+        def naming = newDE.get("naming");
+        def defaultName = naming[0];*/
+    }
+    
+    valueDomain.put("permissibleValues", []); 
+    valueDomain;
+}
 
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     DBObject newDE = new BasicDBObject();
@@ -83,7 +123,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     if (namingDesignation=="")
         return null;
     defaultName.put("designation", namingDesignation);
-    defaultName.put("definition", getCellValue(row.getCell(xlsMap.namingDefinition)));
+    def namingDefinition = getCellValue(row.getCell(xlsMap.namingDefinition));
+    defaultName.put("definition", namingDefinition);
     defaultName.put("languageCode", "EN-US");  
     
     BasicDBObject defContext = new BasicDBObject();
@@ -122,16 +163,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     registrationState.put("registrationStatusSortOrder", 1);
     newDE.put("registrationState", registrationState);        
                             
-    BasicDBObject valueDomain = new BasicDBObject();
-    valueDomain.put("datatype", "Externally Defined");
-    def vdLink = getCellValue(row.getCell(xlsMap.valueDomain_2));
-    def vdDescription = getCellValue(row.getCell(xlsMap.valueDomain_1)) + getCellValue(row.getCell(xlsMap.valueDomain_3));
-    
-    BasicDBObject valueDomainExternallyDefined = new BasicDBObject();
-    valueDomainExternallyDefined.put("link",vdLink);
-    valueDomainExternallyDefined.put("description",vdDescription);
-    valueDomain.put("datatypeExternallyDefined", valueDomainExternallyDefined);
-    valueDomain.put("permissibleValues", []);
+    def valueDomain = parseValueDomain(row, xlsMap);
     
     newDE.put("valueDomain", valueDomain);  
     
