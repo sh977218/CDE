@@ -57,15 +57,9 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         findElement(By.linkText("Account")).click();
         findElement(By.linkText("Classifications")).click();
         new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
-               
-        List <WebElement> linkList = driver.findElements(By.cssSelector("a .fa-trash-o"));
-        for (WebElement elt : linkList) {
-            if ("NonHodgkins Lymphoma".equals(elt.getText())) {
-                System.out.println("Clicking");
-                elt.click();
-                findElement(By.cssSelector("a .fa-check")).click();
-            }
-        }
+
+        findElement(By.xpath("//div[span[contains(., 'NonHodgkins Lymphoma')]]/a")).click();
+        findElement(By.xpath("//div[span[contains(., 'NonHodgkins Lymphoma')]]//a[@title='OK']")).click();
         Assert.assertTrue(textPresent("Classification Removed"));
 
         hangon(1);
