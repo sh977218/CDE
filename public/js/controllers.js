@@ -171,6 +171,94 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };
 }
 
+function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
+    if ($scope.myOrgs.length > 0) {
+        $scope.orgToManage = $scope.myOrgs[0];
+    }
+    
+    $scope.org = {};
+    
+    $scope.updateOrg = function() {
+        if ($scope.orgToManage !== undefined) {
+            $http.get("/org/" + $scope.orgToManage).then(function(response) {
+               $scope.org = response.data;
+            });
+        }
+    }
+    
+    $scope.updateOrg();
+    
+    var indexedConceptSystemClassifications = [];
+    $scope.classificationToFilter = function() {
+         indexedConceptSystemClassifications = [];
+         return $scope.org.classifications;
+    };
+    
+    $scope.filterConceptSystemClassification = function(item) {
+      var systemIsNew = indexedConceptSystemClassifications.indexOf(item.conceptSystem) == -1;
+      if (systemIsNew) {
+          indexedConceptSystemClassifications.push(item.conceptSystem);
+      }
+      return systemIsNew;
+    };
+    
+    $scope.isInConceptSystem = function(system) {
+        return function(classi) {
+            return classi.conceptSystem === system;
+        };
+    };
+
+    $scope.removeClassification = function(classif) {
+        $http.post("/removeClassificationFromOrg", classif).then(function(response) {
+            $scope.addAlert("success", response.data);
+            $scope.updateOrg();
+        });
+    }
+    
+    $scope.openAddClassificationModal = function () {
+        var modalInstance = $modal.open({
+          templateUrl: 'addClassificationModalContent.html',
+          controller: AddClassificationToOrgModalCtrl,
+          resolve: {
+            org: function() {
+                return $scope.orgToManage;
+            }          
+          }
+        });
+
+        modalInstance.result.then(function (newClassification) {
+            newClassification.stewardOrg = {name: $scope.orgToManage};
+            Classification.addToOrg(newClassification, function (res) {
+                $scope.addAlert("success", "Classification Added");
+                $scope.updateOrg();
+            });
+        });
+    };
+}
+
+ function AddClassificationToOrgModalCtrl($scope, $modalInstance, $http, org) {
+    $scope.classAutocomplete = function (viewValue) {
+        return $http.get("/autocomplete/classification/" + org + "/" + viewValue).then(function(response) { 
+            var table = [];
+            for (var i =0; i < response.data.length; i++) {
+                if (response.data[i].toLowerCase().indexOf(viewValue.toLowerCase()) !== -1) {
+                    table.push(response.data[i]);
+                }
+            }
+            return table;
+        }); 
+     };
+     
+    $scope.okCreate = function (classification) {
+      $modalInstance.close(classification);
+    };
+
+    $scope.cancelCreate = function () {
+      $modalInstance.dismiss('cancel');
+    };
+}
+
+
 function ProfileCtrl($scope, ViewingHistory) {
     $scope.viewingHistory = [];
                 

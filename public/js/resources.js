@@ -53,6 +53,9 @@ angular.module('resources', ['ngResource']).
           , add :function(dat, success, error) {
               $http.post('/addClassification', dat).success(success).error(error);
           }
+          , addToOrg: function(dat, success, error) {
+              $http.post('/addClassificationToOrg', dat).success(success).error(error);              
+          }
         };
     })
     .factory("UsedBy", function($http) {

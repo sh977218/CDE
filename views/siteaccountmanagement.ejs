@@ -7,7 +7,7 @@
         </div>
         <div class="row input-prepend input-append">
             <input class="col-md-10" type="text" ng-model="admin.username"></input>
-            <span class="add-on" ng-click="addSiteAdmin()">+</span>
+            <button class="add-on fa fa-plus btn btn-default" ng-click="addSiteAdmin()"> Add</button>
         </div>
     </tab>
     <tab heading="Organizations">
@@ -26,7 +26,7 @@
             <div class="col-md-8">
                 <div class="row" ng-repeat="us in adm.users">
                     <div class="col-md-11">{{us.username}}</div>
-                    <div class="col-md-1"><span class="fa fa-trash-o" ng-click="removeorgAdmin(adm.name, us._id)"></span> Remove</div>
+                    <div class="col-md-1"><i class="fa fa-trash-o" ng-click="removeorgAdmin(adm.name, us._id)" title="Remove"></i></div>
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
                 <option ng-repeat="a in orgs" ng-value="a.name">{{a.name}}</option>
             </select>
             <input class="col-md-5" type="text" ng-model="orgAdmin.username" name="orgAdmin.username"></input>
-            <span class="add-on" ng-click="addOrgAdmin()" id="addOrgAdmin">+</span>
+            <button class="add-on btn btn-default fa fa-plus" title="Add" ng-click="addOrgAdmin()" id="addOrgAdmin"> Add</button>
         </div>
     </tab>
 </tabset>
