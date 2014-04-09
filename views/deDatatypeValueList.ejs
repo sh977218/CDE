@@ -10,7 +10,7 @@
              <th id="code">Code</th>
              <th id="codeSystem">Code System</th>
              <th id="validation" ng-show="detailedView">Valid</th>
-             <th id="actions" ng-show="isAllowed(cde)"></th>
+             <th id="actions" ng-show="isAllowed(cde)">Actions</th>
          </tr>
      </thead>
      <tbody>
@@ -48,6 +48,7 @@
      </tbody>
  </table>
 <a class="btn btn-small btn-default" ng-show="isAllowed(cde)" ng-click="addPv()"><i id="addPv" class="fa fa-plus"></i> Add Permissible Value</a>
+<a class="btn btn-small btn-default" ng-show="isAllowed(cde)" ng-click="removeAllPvs()"><i id="removeAllPvs" class="fa fa-trash-o"></i> Remove All Values</a>
 <hr/>
 <div ng-show="detailedView">
 <h4>VSAC Value Set</h4>
@@ -77,6 +78,7 @@
              <th>Code</th>
              <th>Code System</th>
              <th id="validation">Valid</th>
+             <th ng-show="isAllowed(cde)">Actions</th>
          </tr>
      </thead> 
      <tbody id="vsacTableBody">
@@ -89,6 +91,9 @@
                      <i ng-switch-when="true" class="fa fa-check text-success" id="vset-{{$index}}-valid"></i>
                      <i ng-switch-default class="fa fa-exclamation text-warning" id="vset-{{$index}}-warning"></i>
                  </span>
+             </td>
+             <td ng-show="isAllowed(cde)">
+                 <i ng-click="addVsacValue(con)" class="fa fa fa-arrow-up"></i>
              </td>
          </tr>
      </tbody>

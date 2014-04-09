@@ -89,4 +89,3 @@ else
     echo "Not all documents indexed. Aborting"
     echo $curl_res
 fi
-

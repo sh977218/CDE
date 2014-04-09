@@ -892,6 +892,29 @@ function SaveCdeCtrl($scope, $modal, $http) {
         $scope.stageCde($scope.cde);
     };
     
+    $scope.removeAllPvs = function() {
+        delete $scope.cde.valueDomain.permissibleValues;
+        $scope.stageCde($scope.cde);
+    };  
+    
+    $scope.addVsacValue = function(vsacValue) {
+        var mongoPv = $scope.convertVsacValueToMongoPv(vsacValue);
+        $scope.cde.valueDomain.permissibleValues.push(mongoPv);
+        $scope.stageCde($scope.cde);
+    };    
+    
+    $scope.convertVsacValueToMongoPv = function(vsacValue) {
+        var mongoPv = {
+            "permissibleValue": vsacValue.displayName,
+            "valueMeaningName": vsacValue.displayName,
+            "valueMeaningCode": vsacValue.code,
+            "codeSystemName": vsacValue.codeSystemName,
+            "codeSystemVersion": vsacValue.codeSystemVersion,
+            "isValid": vsacValue.isValid
+        };        
+        return mongoPv;
+    };
+    
 
     $scope.stageCde = function(cde) {
         cde.unsaved = true;
