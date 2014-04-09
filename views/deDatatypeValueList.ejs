@@ -92,8 +92,8 @@
                      <i ng-switch-default class="fa fa-exclamation text-warning" id="vset-{{$index}}-warning"></i>
                  </span>
              </td>
-             <td ng-show="isAllowed(cde)">
-                 <i ng-click="addVsacValue(con)" class="fa fa fa-arrow-up"></i>
+             <td ng-show="isAllowed(cde) && isVsInPv(con)">
+                 <i ng-click="addVsacValue(con)" class="fa fa fa-plus"></i>
              </td>
          </tr>
      </tbody>

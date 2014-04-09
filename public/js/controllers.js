@@ -869,6 +869,7 @@ function SaveCdeCtrl($scope, $modal, $http) {
     $scope.removePv = function(index) {
         $scope.cde.valueDomain.permissibleValues.splice(index, 1);
         $scope.stageCde($scope.cde);
+        $scope.runManualValidation();
     };
     $scope.addPv = function() {
         $scope.cde.valueDomain.permissibleValues.push({permissibleValue: "Unspecified"});
@@ -893,7 +894,8 @@ function SaveCdeCtrl($scope, $modal, $http) {
     };
     
     $scope.removeAllPvs = function() {
-        delete $scope.cde.valueDomain.permissibleValues;
+        $scope.cde.valueDomain.permissibleValues = [];
+        $scope.runManualValidation();
         $scope.stageCde($scope.cde);
     };  
     
@@ -901,6 +903,7 @@ function SaveCdeCtrl($scope, $modal, $http) {
         var mongoPv = $scope.convertVsacValueToMongoPv(vsacValue);
         $scope.cde.valueDomain.permissibleValues.push(mongoPv);
         $scope.stageCde($scope.cde);
+        $scope.runManualValidation();
     };    
     
     $scope.convertVsacValueToMongoPv = function(vsacValue) {
@@ -1285,6 +1288,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
     
     $scope.validatePvWithVsac = function() {
         var pvs = $scope.cde.valueDomain.permissibleValues;
+        if (!pvs)
+            return;
         for (var i = 0; i < pvs.length; i++) {
            $scope.isPvInVSet(pvs[i], function(wellIsIt) {
                 pvs[i].isValid = wellIsIt;
@@ -1299,15 +1304,18 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
     };
     
    $scope.isVsInPv = function(vs, callback) {
-       var pvs = $scope.cde.valueDomain.permissibleValues;
-            for (var i = 0; i < pvs.length; i++) {
-                if (pvs[i].valueMeaningCode == vs.code && 
-                    pvs[i].codeSystemName == vs.codeSystemName &&
-                    pvs[i].valueMeaningName == vs.displayName) {
-                        return callback(true);
-                }
+        var pvs = $scope.cde.valueDomain.permissibleValues;
+        if (!pvs){
+            return callback(false);       
+        }
+        for (var i = 0; i < pvs.length; i++) {
+            if (pvs[i].valueMeaningCode == vs.code && 
+                pvs[i].codeSystemName == vs.codeSystemName &&
+                pvs[i].valueMeaningName == vs.displayName) {
+                    return callback(true);
             }
-            return callback(false);
+        }
+        return callback(false);
     };
     
     $scope.validateVsacWithPv = function() {
