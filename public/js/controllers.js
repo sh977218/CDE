@@ -202,12 +202,6 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
       return systemIsNew;
     };
     
-    $scope.isInConceptSystem = function(system) {
-        return function(classi) {
-            return classi.conceptSystem === system;
-        };
-    };
-
     $scope.removeClassification = function(classif) {
         $http.post("/removeClassificationFromOrg", classif).then(function(response) {
             $scope.addAlert("success", response.data);
