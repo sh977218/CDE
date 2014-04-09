@@ -56,7 +56,7 @@ def BasicDBObject buildClassif (String conceptSystem, String concept) {
     def newClassif = new BasicDBObject();
     newClassif.put("conceptSystem", conceptSystem)
     newClassif.put("concept", concept)
-    newClassif.put("stewardOrg", new BasicDBObject("name", "NINDS"));
+    newClassif.put("stewardOrg", new BasicDBObject("name", "PHRI"));
     newClassif;
 }
 
@@ -214,7 +214,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
         def comments = [co];
         newDE.put("comments", comments);
     }
-    newDE.append("classification", array);                        
+    newDE.append("classification", classificationArray);                        
     newDE;
 }
 
