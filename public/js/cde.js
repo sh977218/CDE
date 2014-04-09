@@ -50,8 +50,8 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
                             '</div>' + 
                             '<div ng-show="editMode">' + 
                             '   <div class="btn-group definitionFormatRadio">' +
-                            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="null">text</button>' +
-                            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="\'html\'">HTML</button>' +
+                            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="null">Plain Text</button>' +
+                            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="\'html\'">Rich Text</button>' +
                             '   </div>' +                            
                             '   <textarea ng-show="defFormat!=\'html\'" ng-model="value" class="form-control"></textarea>' +  
                             '   <text-angular ng-show="defFormat==\'html\'" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ></text-angular>' +                             

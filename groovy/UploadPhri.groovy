@@ -22,12 +22,43 @@ if(mongoDb == null) mongoDb = "nlmcde";
 @Field MongoClient mongoClient = new MongoClient( mongoHost );
 @Field DB db = mongoClient.getDB(mongoDb);
 @Field DBCollection deColl = db.getCollection("dataelements");
-DBCollection orgColl = db.getCollection("orgs");
+@Field DBCollection orgColl = db.getCollection("orgs");
 
 println "PHRI Ingester"
 
 @Field XSSFWorkbook book = new XSSFWorkbook("../nlm-seed/phri.xlsx");
 @Field XSSFSheet[] sheets = book.sheets;
+
+@Field def saveClassif = { newClassif ->
+    def foundOrg = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
+    
+    def found = false;
+    if (foundOrg == null) {
+        println("Missing Org: " + newClassif.get("stewardOrg").get("name"));
+    }
+    def classifications = foundOrg.get("classifications");
+    if (classifications == null) {
+        foundOrg.put("classifications", []);
+    }
+    for (BasicDBObject existingClassif : classifications) {
+        if ((existingClassif.get("conceptSystem").equals(newClassif.get("conceptSystem")) && (existingClassif.get("concept").equals(newClassif.get("concept"))))) {
+            found = true;
+        }
+    }
+    if (!found) {
+        foundOrg.classifications.add(newClassif);
+        orgColl.update(new BasicDBObject("_id", foundOrg.get("_id")), foundOrg);
+    }
+};
+
+//@Field def buildClassif = {conceptSystem, concept ->
+def BasicDBObject buildClassif (String conceptSystem, String concept) {
+    def newClassif = new BasicDBObject();
+    newClassif.put("conceptSystem", conceptSystem)
+    newClassif.put("concept", concept)
+    newClassif.put("stewardOrg", new BasicDBObject("name", "NINDS"));
+    newClassif;
+}
 
 static def String getCellValue(Cell cell) {
    if(cell == null) {
@@ -105,6 +136,16 @@ def BasicDBObject parseValueDomain(XSSFRow row, Map xlsMap){
     valueDomain;
 }
 
+def BasicDBObject classify (BasicDBObject newDE, BasicDBObject stewardOrg, String conceptSystem, String concept) {
+    /*BasicDBObject defClassification = new BasicDBObject();
+    defClassification.put("conceptSystem", conceptSystem);
+    defClassification.put("stewardOrg",stewardOrg);
+    defClassification.put("concept", concept);*/
+    def classif = buildClassif(conceptSystem, concept);
+    saveClassif(classif);
+    classif;      
+}
+
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     DBObject newDE = new BasicDBObject();
     newDE.put("uuid", UUID.randomUUID() as String);
@@ -137,21 +178,19 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     def naming = [];
     naming.add(defaultName);
     naming.add(fhimName);
-    newDE.put("naming", naming);     
+    newDE.put("naming", naming);
     
-    BasicDBObject defClassification = new BasicDBObject();
-    defClassification.put("conceptSystem", "S&I PHRI Category");
+    BasicDBObject stewardOrg = new BasicDBObject();
+    stewardOrg.put("name","PHRI");    
+    newDE.put("stewardOrg",stewardOrg);  
+    
     def phriCategory = getCellValue(row.getCell(xlsMap.defaultClassification));
     if (phriCategory=="")
-        return null;
-    defClassification.put("concept", phriCategory);
-    def classification = [defClassification];
-    BasicDBObject stewardOrg = new BasicDBObject();
-    stewardOrg.put("name","PHRI");
-    defClassification.put("stewardOrg",stewardOrg);
-    newDE.put("classification", classification);  
-
-    newDE.put("stewardOrg",stewardOrg);  
+        return null;    
+    
+    def classif = classify (newDE, stewardOrg, "S&I PHRI Category", phriCategory);
+    def classificationArray = [classif];
+    
                             
     BasicDBObject registrationState = new BasicDBObject();
     registrationState.put("registrationStatus", "Recorded");
@@ -175,7 +214,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
         def comments = [co];
         newDE.put("comments", comments);
     }
-                            
+    newDE.append("classification", array);                        
     newDE;
 }
 
