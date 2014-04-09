@@ -30,12 +30,17 @@ println "PHRI Ingester"
 @Field XSSFSheet[] sheets = book.sheets;
 
 @Field def saveClassif = { newClassif ->
-    def foundOrg = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
-    
+    def orgObject = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg")));
+    if (orgObject == null) {
+        println("Missing Org: " + newClassif.get("stewardOrg").get("name")+"\nCreating new one.");
+        def newOrg = new BasicDBObject();
+        newOrg.put("name",newClassif.get("stewardOrg"));
+        orgColl.insert(newOrg);
+        orgObject = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg")));
+    }            
+    def foundOrg = orgObject.get("name");    
     def found = false;
-    if (foundOrg == null) {
-        println("Missing Org: " + newClassif.get("stewardOrg").get("name"));
-    }
+
     def classifications = foundOrg.get("classifications");
     if (classifications == null) {
         foundOrg.put("classifications", []);
