@@ -14,6 +14,8 @@ node ingester/matchToVsac.js
 
 groovy groovy/PhenXLoad --merge
 
+groovy groovy/UploadPhri.groovy
+
 # node ingester/uploader fitbir ../nlm-seed/ExternalCDEs/FITBIR-Full.xml
 
 #node ingester/uploadUsers
