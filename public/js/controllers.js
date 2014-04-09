@@ -1514,6 +1514,7 @@ function CommentsCtrl($scope, Comment) {
  
  function AddClassificationModalCtrl($scope, $modalInstance, $http) {
     $scope.classAutocomplete = function (viewValue) {
+        console.log("auto");
         return $http.get("/autocomplete/classification/" + viewValue).then(function(response) { 
             var table = [];
             for (var i =0; i < response.data.length; i++) {

@@ -679,7 +679,7 @@ app.get('/autocomplete/classification/:conceptSystem', function (req, res) {
 });
 
 app.get('/autocomplete/classification/:orgName/:conceptSystem', function (req, res) {
-    mongo_data.conceptSystem_autocomplete(req.params.orgName, req.params.conceptSystem, function (result) {
+    mongo_data.conceptSystem_org_autocomplete(req.params.orgName, req.params.conceptSystem, function (result) {
         res.send(result);
     });
 });
