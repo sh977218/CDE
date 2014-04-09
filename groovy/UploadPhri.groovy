@@ -26,7 +26,7 @@ if(mongoDb == null) mongoDb = "nlmcde";
 
 println "PHRI Ingester"
 
-@Field XSSFWorkbook book = new XSSFWorkbook("../nlm-seed/phri.xlsx");
+@Field XSSFWorkbook book = new XSSFWorkbook("../nlm-seed/ExternalCDEs/phri/phri.xlsx");
 @Field XSSFSheet[] sheets = book.sheets;
 
 @Field def saveClassif = { newClassif ->
