@@ -23,7 +23,7 @@
         </ul>
         <strong ng-show="facets.classification.terms">Classification</strong>
         <ul class="fa-ul">
-            <li ng-repeat="g in groups | orderBy:'conceptSystem'" style="margin-right: -20px" ng-switch="g.name === selectedGroup.name" ng-show="g.name === selectedGroup.name || !selectedGroup">
+            <li ng-repeat="g in groups | orderBy:'name'" style="margin-right: -20px" ng-switch="g.name === selectedGroup.name" ng-show="g.name === selectedGroup.name || !selectedGroup">
                 <span ng-click="selectGroup(g)" class="hand-cursor">
                     <i ng-switch-default class="fa-li fa fa-plus-square-o" id="li-blank-{{g.name}}" ></i>
                     <i ng-switch-when="true" class="fa-li fa fa-minus-square-o" id="li-checked-{{g.name}}"></i>

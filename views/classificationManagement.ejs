@@ -7,10 +7,10 @@
 
 <dl id="repeatCs">
 <button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification"><i class="fa fa-plus"> </i> Add Classification</button>
-<div ng-repeat="conceptSystemPerConcept in classificationToFilter() | filter:filterConceptSystemClassification">
+<div ng-repeat="conceptSystemPerConcept in classificationToFilter() | filter:filterConceptSystemClassification | orderBy:'conceptSystem'">
     <dt>{{conceptSystemPerConcept.conceptSystem}}</dt>
     <dd>
-        <div ng-repeat="class in org.classifications | filter:isInConceptSystem(conceptSystemPerConcept.conceptSystem)">
+        <div ng-repeat="class in org.classifications | filter:isInConceptSystem(conceptSystemPerConcept.conceptSystem) | orderBy:'concept'">
             <span ng-show="showDelete">
                 Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(class)" id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
                 <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
