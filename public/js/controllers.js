@@ -899,7 +899,17 @@ function SaveCdeCtrl($scope, $modal, $http) {
         $scope.stageCde($scope.cde);
     };  
     
+    $scope.addAllVsac = function () {
+        for (var i=0;i<$scope.vsacValueSet.length;i++){ 
+            var vsacValue = $scope.vsacValueSet[i];
+            $scope.addVsacValue(vsacValue);
+        }        
+    };
+    
     $scope.addVsacValue = function(vsacValue) {
+        if ($scope.isVsInPv(vsacValue)) {
+            return;
+        }
         var mongoPv = $scope.convertVsacValueToMongoPv(vsacValue);
         $scope.cde.valueDomain.permissibleValues.push(mongoPv);
         $scope.stageCde($scope.cde);
@@ -1302,21 +1312,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
         $scope.validatePvWithVsac();
         $scope.validateVsacWithPv();
     };
-    
-   /*$scope.isVsInPv = function(vs, callback) {
-        var pvs = $scope.cde.valueDomain.permissibleValues;
-        if (!pvs){
-            return callback(false);       
-        }
-        for (var i = 0; i < pvs.length; i++) {
-            if (pvs[i].valueMeaningCode == vs.code && 
-                pvs[i].codeSystemName == vs.codeSystemName &&
-                pvs[i].valueMeaningName == vs.displayName) {
-                    return callback(true);
-            }
-        }
-        return callback(false);
-    };*/
     
     $scope.isVsInPv = function(vs, callback) {
         var returnVal = function(value){
