@@ -1303,7 +1303,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
         $scope.validateVsacWithPv();
     };
     
-   $scope.isVsInPv = function(vs, callback) {
+   /*$scope.isVsInPv = function(vs, callback) {
         var pvs = $scope.cde.valueDomain.permissibleValues;
         if (!pvs){
             return callback(false);       
@@ -1316,7 +1316,29 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
             }
         }
         return callback(false);
-    };
+    };*/
+    
+    $scope.isVsInPv = function(vs, callback) {
+        var returnVal = function(value){
+            if (callback) {
+                return callback(value);
+            } else {
+                return value;
+            }
+        };
+        var pvs = $scope.cde.valueDomain.permissibleValues;
+        if (!pvs){
+            return returnVal(false);       
+        }
+        for (var i = 0; i < pvs.length; i++) {
+            if (pvs[i].valueMeaningCode == vs.code && 
+                pvs[i].codeSystemName == vs.codeSystemName &&
+                pvs[i].valueMeaningName == vs.displayName) {
+                    return returnVal(true);
+            }
+        }
+        return returnVal(false);
+    };    
     
     $scope.validateVsacWithPv = function() {
         for (var i = 0; i < $scope.vsacValueSet.length; i++) {
