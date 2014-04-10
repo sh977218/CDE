@@ -29,7 +29,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         logout();
     }
     
-    @Test
+    /*@Test
     public void assignVsacId() {
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
@@ -205,7 +205,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Axillary Surgery");
         findElement(By.linkText("Permissible Values")).click();        
         Assert.assertTrue(textPresent("java.lang.Date"));
-    }
+    }*/
     
     @Test
     public void importVsacValues() {
@@ -240,6 +240,38 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));   
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-3-valid")));        
-    }    
-    
+    }  
+   
+    @Test(dependsOnMethods = {"importVsacValues"})
+    public void modifyValueCode() {
+        goToCdeByName("Patient Race Category");
+        findElement(By.linkText("Permissible Values")).click();         
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-valid")));
+        findElement(By.cssSelector("#pvName-4 .fa-edit")).click(); 
+        findElement(By.cssSelector("#pvName-4 input")).sendKeys(" Category");
+        findElement(By.cssSelector("#pvName-4 .fa-check")).click();
+        hangon(1);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-warning")));
+        
+        findElement(By.cssSelector("#pvCode-4 .fa-edit")).click(); 
+        findElement(By.cssSelector("#pvCode-4 input")).sendKeys(".1");
+        findElement(By.cssSelector("#pvCode-4 .fa-check")).click();  
+        
+        findElement(By.cssSelector("#pvCodeSystem-4 .fa-edit")).click(); 
+        findElement(By.cssSelector("#pvCodeSystem-4 input")).sendKeys(".1");
+        findElement(By.cssSelector("#pvCodeSystem-4 .fa-check")).click();        
+        
+        findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.name("changeNote")).sendKeys("Modified VS Codes");
+        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("version")).sendKeys("6");        
+        findElement(By.id("confirmSave")).click();
+        hangon(2);
+        
+        goToCdeByName("Patient Race Category");  
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(textPresent("Other Race Category"));
+        Assert.assertTrue(textPresent("2131-1.1"));
+        Assert.assertTrue(textPresent("CDCREC.1"));
+    }     
 }

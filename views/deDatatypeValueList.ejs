@@ -24,7 +24,7 @@
              <td headers="code" id="pvCode-{{$index}}">
                 <inline-edit model="pv.valueMeaningCode" is-allowed="isAllowed(cde)" on-ok="stageCde(cde); runDelayedManualValidation();"></inline-edit>
              </td>
-             <td headers="codeSystem">
+             <td headers="codeSystem" id="pvCodeSystem-{{$index}}">
                  <inline-edit model="pv.codeSystemName" is-allowed="isAllowed(cde)" on-ok="stageCde(cde); runDelayedManualValidation();"></inline-edit>
              </td>
              <td headers="validation" ng-show="detailedView">
