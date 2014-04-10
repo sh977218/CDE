@@ -30,12 +30,17 @@ println "PHRI Ingester"
 @Field XSSFSheet[] sheets = book.sheets;
 
 @Field def saveClassif = { newClassif ->
-    def foundOrg = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
-    
+    def orgObject = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
+    if (orgObject == null) {
+        println("Missing Org: " + newClassif.get("stewardOrg").get("name")+"\nCreating new one.");
+        def newOrg = new BasicDBObject();
+        newOrg.put("name",newClassif.get("stewardOrg").get("name"));
+        orgColl.insert(newOrg);
+        orgObject = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
+    }            
+    def foundOrg = orgObject;    
     def found = false;
-    if (foundOrg == null) {
-        println("Missing Org: " + newClassif.get("stewardOrg").get("name"));
-    }
+
     def classifications = foundOrg.get("classifications");
     if (classifications == null) {
         foundOrg.put("classifications", []);
@@ -62,7 +67,6 @@ def BasicDBObject buildClassif (String conceptSystem, String concept) {
 
 static def String getCellValue(Cell cell) {
    if(cell == null) {
-       println("EMPTY CELL");
        return "";
    }
    else{
@@ -298,6 +302,7 @@ def void PersistSheet(String name, Map xlsMap) {
         if (newDE!=null)
             deColl.insert(newDE);
     }
+    println("Ingestion Complete");
 }
 
 def sheetsToParse = [

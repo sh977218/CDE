@@ -12,6 +12,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
         when('/deview', {controller: DEViewCtrl, templateUrl: '/deview'}).
         when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
         when('/orgaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/orgaccountmanagement'}).
+        when('/classificationmanagement', {controller: ClassificationManagementCtrl, templateUrl: '/classificationmanagement'}).
         when('/profile', {controller: AccountManagementCtrl, templateUrl: '/profile'}).
         when('/myboards', {controller: MyBoardsCtrl, templateUrl: '/myboards'}).
         when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
