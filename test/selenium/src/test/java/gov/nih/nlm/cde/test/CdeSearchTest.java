@@ -1,7 +1,6 @@
 package gov.nih.nlm.cde.test;
 
 import java.util.List;
-import org.junit.internal.runners.statements.ExpectException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
