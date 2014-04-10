@@ -19,7 +19,17 @@
                 <inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde);"> </inline-edit>
             </td>
              <td headers="codeName" id="pvName-{{$index}}">
-                <inline-edit model="pv.valueMeaningName" is-allowed="isAllowed(cde)" on-ok="stageCde(cde); runDelayedManualValidation();"></inline-edit>
+                <inline-edit model="pv.valueMeaningName" is-allowed="isAllowed(cde)" typeahead-source="vsacValueSet" on-ok="stageCde(cde); runDelayedManualValidation();"></inline-edit>
+                 <div>
+                     <div ng-hide="editMode"> 
+                         {{pv.valueMeaningName}} <i ng-show="canLinkPv" class="fa fa-link" ng-click="editMode=true"></i> 
+                     </div>
+                     <div ng-show="editMode">
+                         <input type="text" ng-model="pv.valueMeaningName" typeahead="code.displayName for code in vsacValueSet | filter:$viewValue | limitTo:8"/>
+                         <a class="fa fa-check" ng-click="editMode = false; attachPv(pv)" title="OK" href=""></a>
+                         <a class="fa fa-times" ng-click="editMode = false" title="Cancel" href=""></a>
+                     </div>      
+                 </div>
              </td>
              <td headers="code" id="pvCode-{{$index}}">
                 <inline-edit model="pv.valueMeaningCode" is-allowed="isAllowed(cde)" on-ok="stageCde(cde); runDelayedManualValidation();"></inline-edit>

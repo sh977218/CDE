@@ -29,7 +29,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         logout();
     }
     
-    /*@Test
+    @Test
     public void assignVsacId() {
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
@@ -63,11 +63,17 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();   
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
-        findElement(By.xpath("//td[@id='pvName-1']/div/div[1]/i")).click();
+        /*findElement(By.xpath("//td[@id='pvName-1']/div/div[1]/i")).click();
         findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys(Keys.BACK_SPACE);
         findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys("o");
         findElement(By.xpath("//td[@id = 'pvName-1']/div/div[2]/ul/li[1]")).click();
-        findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/a[1]")).click();
+        findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/a[1]")).click();*/
+        
+        findElement(By.cssSelector("#pvName-1 .fa-edit")).click(); 
+        findElement(By.cssSelector("#pvCode-4 input")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.cssSelector("#pvCode-4 input")).sendKeys(".1");
+        findElement(By.cssSelector("#pvCode-4 .fa-check")).click();          
+        
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("6");
@@ -205,7 +211,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Axillary Surgery");
         findElement(By.linkText("Permissible Values")).click();        
         Assert.assertTrue(textPresent("java.lang.Date"));
-    }*/
+    }
     
     @Test
     public void importVsacValues() {
