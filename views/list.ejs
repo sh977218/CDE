@@ -3,6 +3,7 @@
     <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="search-query" placeholder="Search" ng-change="onchangeSearch()">  
     <input id="search.submit" type="submit" value="Search" ng-click="search()" class="btn btn-default"></input>
     <button id="resetSearch" ng-click="resetSearch()" class="btn btn-default">Reset</button> 
+    <input type="checkbox" ng-change="openAll()" ng-model="openAllModel" id="openAllCb"> Open All</input>
     <small ng-show="cdes.length > 0" class="pull-right">
         {{totalItems}} hits
     </small>

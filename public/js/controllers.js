@@ -619,6 +619,8 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         cache = $cacheFactory.get("deListCache");
     }
     
+    $scope.openAllModel = cache.get("openAll");
+    
     $scope.registrationStatuses = cache.get("registrationStatuses");
     if ($scope.registrationStatuses === undefined) {
         $scope.registrationStatuses = [
@@ -701,6 +703,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                 var result = response.data;
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
+                $scope.openAll();
                 $scope.totalItems = result.totalNumber;
                 cache.put("totalItems", $scope.totalItems);
                 $scope.facets = result.facets;
@@ -875,6 +878,14 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     $scope.isDefaultAttachment = function (item) {
       return item.isDefault;  
     };
+    
+    $scope.openAll = function() {
+        for (var i = 0; i < $scope.cdes.length; i++) {
+            $scope.cdes[i].isOpen = $scope.openAllModel;
+        }
+        cache.put("openAll", $scope.openAllModel);
+    }
+    
 }
 
 function ConceptsCtrl($scope, $modal, $http) {

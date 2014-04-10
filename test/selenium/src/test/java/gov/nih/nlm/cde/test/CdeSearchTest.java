@@ -1,8 +1,10 @@
 package gov.nih.nlm.cde.test;
 
 import java.util.List;
+import org.junit.internal.runners.statements.ExpectException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
@@ -130,4 +132,17 @@ public class CdeSearchTest extends NlmCdeBaseTest {
             Assert.assertTrue(textPresent(tCde));
         }
     }
+    
+    @Test
+    public void openAllButton() {
+        goHome();
+        for (int i = 0; i < 19; i++) {
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("acc_link_" + i)));
+        }
+        findElement(By.id("openAllCb")).click();
+        for (int i = 0; i < 19; i++) {
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("acc_link_" + i)));
+        }
+    }
+    
 }
