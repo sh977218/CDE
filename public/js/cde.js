@@ -22,13 +22,13 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
     }).
     directive('inlineEdit', function() {
     return {
-        template: '<span >{{typeaheadSource.length}}' + 
+        template: '<span>' + 
                         '<span ng-hide="editMode">' + 
                             '<i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' + 
                         '</span>' + 
-                        '<span ng-show="editMode" ng-switch on="typeaheadSource.length>0">' +                         
-                            '<input ng-switch-default type="text" ng-model="value" class="form-control"/>' + 
-                            '<input ng-switch-when="true" type="text" ng-model="value" typeahead="code.displayName for code in typeaheadSource | filter:$viewValue | limitTo:8" class="form-control"/>' +                             
+                        '<span ng-show="editMode">' +                         
+                            '<input ng-hide="typeaheadSource.length>0" type="text" ng-model="value" class="form-control"/>' + 
+                            '<input ng-show="typeaheadSource.length>0" type="text" ng-model="value" typeahead="code.displayName for code in typeaheadSource | filter:$viewValue | limitTo:8" class="form-control"/>' +                                                        
                             '<button class="fa fa-check" ng-click="model = value;editMode = false; onOk();"> Confirm</button>' + 
                             '<button class="fa fa-times" ng-click="editMode = false"> Discard</button>' + 
                         '</span>' +       
