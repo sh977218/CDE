@@ -1241,7 +1241,7 @@ function CreateCdeCtrl($scope, $location, $timeout, DataElement, $http) {
     };
 }
 
-function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes, CdeDiff) {
+function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, PriorCdes, CdeDiff) {
     $scope.initialized = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;
@@ -1395,6 +1395,12 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
         $scope.validateVsacWithPv();
     };
     
+    $scope.runDelayedManualValidation = function() {
+        $timeout(function(){
+            $scope.runManualValidation();
+        },100);
+    };
+       
     $scope.isVsInPv = function(vs, callback) {
         var returnVal = function(value){
             if (callback) {
