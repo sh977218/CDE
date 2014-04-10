@@ -207,4 +207,39 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("java.lang.Date"));
     }
     
+    @Test
+    public void importVsacValues() {
+        goToCdeByName("Patient Race Category");
+        findElement(By.linkText("Permissible Values")).click();         
+        Assert.assertTrue(textPresent("Native Hawaiian or other Pacific Islander"));    
+        findElement(By.id("removeAllPvs")).click();
+        Assert.assertTrue(textNotPresent("Native Hawaiian or other Pacific Islander"));        
+        findElement(By.linkText("Update O.I.D")).click();
+        findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.836");
+        findElement(By.id("vsacIdCheck")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
+        findElement(By.id("addVsacValue-0")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-valid")));
+        findElement(By.id("addAllVsac")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));   
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-3-valid")));
+        findElement(By.id("pvRemove-0")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));        
+        
+        findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.name("changeNote")).sendKeys("Importing All VSAC Values");
+        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("version")).sendKeys("5");        
+        findElement(By.id("confirmSave")).click();
+        hangon(2);
+        
+        goToCdeByName("Patient Race Category");
+        findElement(By.linkText("Permissible Values")).click(); 
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));   
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-3-valid")));        
+    }    
+    
 }

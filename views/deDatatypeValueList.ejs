@@ -82,7 +82,7 @@
          </tr>
      </thead> 
      <tbody id="vsacTableBody">
-         <tr ng-repeat="con in vsacValueSet">
+         <tr id="vsacValue-{{$index}}" ng-repeat="con in vsacValueSet">
              <td>{{con.displayName}}</td>
              <td>{{con.code}}</td>
              <td>{{con.codeSystemName}}</td>
@@ -93,7 +93,7 @@
                  </span>
              </td>
              <td ng-show="isAllowed(cde)">
-                 <i ng-click="addVsacValue(con)" ng-show="!isVsInPv(con)" class="fa fa fa-plus"></i>
+                 <i id="addVsacValue-{{$index}}" ng-click="addVsacValue(con)" ng-show="!isVsInPv(con)" class="fa fa fa-plus"></i>
              </td>
          </tr>
      </tbody>
