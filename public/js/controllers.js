@@ -1431,6 +1431,14 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         }
     };
     
+    $scope.allVsacMatch = function () {
+        var allVsacMatch = true;
+        for (var i = 0; i < $scope.vsacValueSet.length; i++) {
+            allVsacMatch = allVsacMatch && $scope.vsacValueSet[i].isValid;
+        }
+        return allVsacMatch;
+    };
+    
     $scope.loadValueSet = function() {
         var dec = $scope.cde.dataElementConcept;
         if (dec != null && dec.conceptualDomain != null && dec.conceptualDomain.vsac !=  null) {
