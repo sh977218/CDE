@@ -951,6 +951,7 @@ function SaveCdeCtrl($scope, $modal, $http) {
     $scope.removePv = function(index) {
         $scope.cde.valueDomain.permissibleValues.splice(index, 1);
         $scope.stageCde($scope.cde);
+        $scope.runManualValidation();
     };
     $scope.addPv = function() {
         $scope.cde.valueDomain.permissibleValues.push({permissibleValue: "Unspecified"});
@@ -972,6 +973,38 @@ function SaveCdeCtrl($scope, $modal, $http) {
     $scope.removeVSMapping = function() {
         delete $scope.cde.dataElementConcept.conceptualDomain.vsac;
         $scope.stageCde($scope.cde);
+    };
+    
+    $scope.removeAllPvs = function() {
+        $scope.cde.valueDomain.permissibleValues = [];
+        $scope.runManualValidation();
+        $scope.stageCde($scope.cde);
+    };  
+    
+    $scope.addAllVsac = function () {
+        for (var i=0; i<$scope.vsacValueSet.length; i++) { 
+            $scope.addVsacValue($scope.vsacValueSet[i]);
+        }        
+    };
+    
+    $scope.addVsacValue = function(vsacValue) {
+        if ($scope.isVsInPv(vsacValue)) {
+            return;
+        }
+        $scope.cde.valueDomain.permissibleValues.push($scope.convertVsacValueToPv(vsacValue));
+        $scope.stageCde($scope.cde);
+        $scope.runManualValidation();
+    };    
+    
+    $scope.convertVsacValueToPv = function(vsacValue) {
+        var mongoPv = {
+            "permissibleValue": vsacValue.displayName,
+            "valueMeaningName": vsacValue.displayName,
+            "valueMeaningCode": vsacValue.code,
+            "codeSystemName": vsacValue.codeSystemName,
+            "codeSystemVersion": vsacValue.codeSystemVersion
+        };        
+        return mongoPv;
     };
     
 
@@ -1205,7 +1238,7 @@ function CreateCdeCtrl($scope, $location, $timeout, DataElement, $http) {
     };
 }
 
-function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes, CdeDiff) {
+function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, PriorCdes, CdeDiff) {
     $scope.initialized = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;
@@ -1213,7 +1246,9 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
     $scope.mltCdes = [];
     $scope.boards = [];
     $scope.comment = {};
-
+    $scope.pVTypeheadVsacNameList = [];
+    $scope.pVTypeaheadCodeSystemNameList = [];
+    
     $scope.reload = function(deId, cb) {
         DataElement.get({deId: deId}, function (de) {
            $scope.cde = de;          
@@ -1221,7 +1256,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
            $scope.initialized = true;
            $scope.canLinkPvFunc();
            $scope.loadMlt();
-           $scope.loadBoards();
+           $scope.loadBoards();      
+           $scope.getPVTypeaheadCodeSystemNameList();   
         });
         
         PriorCdes.getCdes({cdeId: deId}, function(dataElements) {
@@ -1344,6 +1380,9 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
     
     $scope.validatePvWithVsac = function() {
         var pvs = $scope.cde.valueDomain.permissibleValues;
+        if (!pvs) {
+            return;
+        }
         for (var i = 0; i < pvs.length; i++) {
            $scope.isPvInVSet(pvs[i], function(wellIsIt) {
                 pvs[i].isValid = wellIsIt;
@@ -1357,17 +1396,33 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
         $scope.validateVsacWithPv();
     };
     
-   $scope.isVsInPv = function(vs, callback) {
-       var pvs = $scope.cde.valueDomain.permissibleValues;
-            for (var i = 0; i < pvs.length; i++) {
-                if (pvs[i].valueMeaningCode == vs.code && 
-                    pvs[i].codeSystemName == vs.codeSystemName &&
-                    pvs[i].valueMeaningName == vs.displayName) {
-                        return callback(true);
-                }
-            }
-            return callback(false);
+    $scope.runDelayedManualValidation = function() {
+        $timeout(function(){
+            $scope.runManualValidation();
+        },100);
     };
+       
+    $scope.isVsInPv = function(vs, callback) {
+        var returnVal = function(value){
+            if (callback) {
+                return callback(value);
+            } else {
+                return value;
+            }
+        };
+        var pvs = $scope.cde.valueDomain.permissibleValues;
+        if (!pvs) {
+            return returnVal(false);       
+        }
+        for (var i = 0; i < pvs.length; i++) {
+            if (pvs[i].valueMeaningCode === vs.code && 
+                pvs[i].codeSystemName === vs.codeSystemName &&
+                pvs[i].valueMeaningName === vs.displayName) {
+                    return returnVal(true);
+            }
+        }
+        return returnVal(false);
+    };    
     
     $scope.validateVsacWithPv = function() {
         for (var i = 0; i < $scope.vsacValueSet.length; i++) {
@@ -1375,6 +1430,14 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
                 $scope.vsacValueSet[i].isValid = wellIsIt;
            });
         }
+    };
+    
+    $scope.allVsacMatch = function () {
+        var allVsacMatch = true;
+        for (var i = 0; i < $scope.vsacValueSet.length; i++) {
+            allVsacMatch = allVsacMatch && $scope.vsacValueSet[i].isValid;
+        }
+        return allVsacMatch;
     };
     
     $scope.loadValueSet = function() {
@@ -1398,6 +1461,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
                     } else {
                         $scope.showValidateButton = true;
                     }
+                    $scope.getPVTypeheadVsacNameList();                   
                 }
              })
              ;
@@ -1430,6 +1494,18 @@ function DEViewCtrl($scope, $routeParams, $window, $http, DataElement, PriorCdes
             $scope.boards = response.data;
         });
     };
+    
+    $scope.getPVTypeheadVsacNameList = function() {
+        $scope.pVTypeheadVsacNameList =  $scope.vsacValueSet.map(function(obj) {
+            return obj.displayName;
+        });       
+    };    
+    
+    $scope.getPVTypeaheadCodeSystemNameList = function() {
+        $http.get("/permissibleValueCodeSystemList").then(function(response) {
+            $scope.pVTypeaheadCodeSystemNameList = response.data;
+        });
+    }; 
 }
 
 function CommentsCtrl($scope, Comment) {

@@ -22,12 +22,13 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
     }).
     directive('inlineEdit', function() {
     return {
-        template: '<span >' + 
+        template: '<span>' + 
                         '<span ng-hide="editMode">' + 
                             '<i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' + 
                         '</span>' + 
-                        '<span ng-show="editMode">' + 
-                            '<input type="text" ng-model="value" class="form-control"/>' + 
+                        '<span ng-show="editMode">' +                         
+                            '<input ng-hide="typeaheadSource.length>0" type="text" ng-model="value" class="form-control"/>' + 
+                            '<input ng-show="typeaheadSource.length>0" type="text" ng-model="value" typeahead="name for name in typeaheadSource | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +                                                        
                             '<button class="fa fa-check" ng-click="model = value;editMode = false; onOk();"> Confirm</button>' + 
                             '<button class="fa fa-times" ng-click="editMode = false"> Discard</button>' + 
                         '</span>' +       
@@ -38,6 +39,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
             model: '='
             , isAllowed: '&'
             , onOk: '&'
+            , typeaheadSource: '='
         }
     };
     })
