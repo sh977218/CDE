@@ -37,7 +37,7 @@ public class CompareTest extends NlmCdeBaseTest{
         Assert.assertTrue(textPresent("Compare ( empty )"));
         findElement(By.name("ftsearch")).sendKeys("Male Female");
         findElement(By.id("search.submit")).click();
-        findElement(By.id("acc_link_0")).click();
+        findElement(By.linkText("Person Gender Text Type")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
         findElement(By.id("compare_0")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
