@@ -10,26 +10,23 @@
              <th id="code">Code</th>
              <th id="codeSystem">Code System</th>
              <th id="validation" ng-show="detailedView">Match</th>
-             <th id="actions" ng-show="isAllowed(cde)"></th>
+             <th id="actions" ng-show="isAllowed(cde)">Actions</th>
          </tr>
      </thead>
      <tbody>
          <tr id="pv-{{$index}}" ng-repeat="pv in cde.valueDomain.permissibleValues">
-             <td headers="name" id="pv-{{$index}}"><inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></td>
+            <td headers="name" id="pv-{{$index}}">
+                <inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde);"> </inline-edit>
+            </td>
              <td headers="codeName" id="pvName-{{$index}}">
-                 <div>
-                     <div ng-hide="editMode"> 
-                         {{pv.valueMeaningName}} <i ng-show="canLinkPv" class="fa fa-link" ng-click="editMode=true"></i> 
-                     </div>
-                     <div ng-show="editMode">
-                         <input type="text" ng-model="pv.valueMeaningName" typeahead="code.displayName for code in vsacValueSet | filter:$viewValue | limitTo:8"/>
-                         <a class="fa fa-check" ng-click="editMode = false; attachPv(pv)" title="OK" href=""></a>
-                         <a class="fa fa-times" ng-click="editMode = false" title="Cancel" href=""></a>
-                     </div>      
-                 </div>
+                <inline-edit model="pv.valueMeaningName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeheadVsacNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></inline-edit>
              </td>
-             <td headers="code" id="pvCode-{{$index}}">{{pv.valueMeaningCode}}</td>
-             <td headers="codeSystem">{{pv.codeSystemName}}</td>
+             <td headers="code" id="pvCode-{{$index}}">
+                <inline-edit model="pv.valueMeaningCode" is-allowed="isAllowed(cde)" on-ok="stageCde(cde); runDelayedManualValidation();"></inline-edit>
+             </td>
+             <td headers="codeSystem" id="pvCodeSystem-{{$index}}">
+                 <inline-edit model="pv.codeSystemName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeaheadCodeSystemNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></inline-edit>
+             </td>
              <td headers="validation" ng-show="detailedView">
                  <span ng-switch="pv.isValid">
                      <i ng-switch-when="true" class="fa fa-check text-success" id="pv-{{$index}}-valid"></i>
@@ -48,6 +45,7 @@
      </tbody>
  </table>
 <a class="btn btn-small btn-default" ng-show="isAllowed(cde)" ng-click="addPv()"><i id="addPv" class="fa fa-plus"></i> Add Permissible Value</a>
+<a class="btn btn-small btn-default" ng-show="isAllowed(cde)" ng-click="removeAllPvs()"><i id="removeAllPvs" class="fa fa-trash-o"></i> Remove All Values</a>
 <hr/>
 <div ng-show="detailedView">
 <h4>VSAC Value Set</h4>
@@ -77,10 +75,11 @@
              <th>Code</th>
              <th>Code System</th>
              <th id="validation">Match</th>
+             <th ng-show="isAllowed(cde)">Actions</th>
          </tr>
      </thead> 
      <tbody id="vsacTableBody">
-         <tr ng-repeat="con in vsacValueSet">
+         <tr id="vsacValue-{{$index}}" ng-repeat="con in vsacValueSet">
              <td>{{con.displayName}}</td>
              <td>{{con.code}}</td>
              <td>{{con.codeSystemName}}</td>
@@ -90,7 +89,11 @@
                      <i ng-switch-default class="fa fa-exclamation text-warning" id="vset-{{$index}}-warning"></i>
                  </span>
              </td>
+             <td ng-show="isAllowed(cde)">
+                 <i id="addVsacValue-{{$index}}" ng-click="addVsacValue(con)" ng-show="!isVsInPv(con)" class="fa fa fa-plus"></i>
+             </td>
          </tr>
      </tbody>
 </table>
+<a class="btn btn-small btn-default" ng-show="cde.dataElementConcept.conceptualDomain.vsac.id && isAllowed(cde) && !allVsacMatch()" ng-click="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
 </div>

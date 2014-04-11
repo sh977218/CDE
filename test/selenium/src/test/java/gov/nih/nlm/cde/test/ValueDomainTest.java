@@ -59,42 +59,6 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         WebElement tbody = driver.findElement(By.id("vsacTableBody"));
         List<WebElement> vsacLines = tbody.findElements(By.tagName("tr"));
         Assert.assertEquals(vsacLines.size(), 2);
-        
-        goToCdeByName("Patient Ethnic Group Category");
-        findElement(By.linkText("Permissible Values")).click();   
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
-        findElement(By.xpath("//td[@id='pvName-1']/div/div[1]/i")).click();
-        findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.xpath("//td[@id='pvName-1']//input")).sendKeys("o");
-        findElement(By.xpath("//td[@id = 'pvName-1']/div/div[2]/ul/li[1]")).click();
-        findElement(By.xpath("//td[@id='pvName-1']/div/div[2]/a[1]")).click();
-        findElement(By.cssSelector("button.btn.btn-primary")).click();
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("6");
-        findElement(By.cssSelector("button.btn.btn-warning")).click();
-        goHome();
-        findElement(By.name("ftsearch")).sendKeys("Patient Ethnic Group Category");
-        findElement(By.id("search.submit")).click();
-        findElement(By.partialLinkText("Patient Ethnic Group Category")).click();
-        Assert.assertTrue(textPresent("2135-2"));
-        
-        goToCdeByName("Patient Ethnic Group Category");
-        findElement(By.linkText("Permissible Values")).click(); 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-valid")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-2-warning")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-valid")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-warning")));
-        
-        goToCdeByName("Patient Ethnic Group Category");
-        findElement(By.linkText("Permissible Values")).click();
-        // following asserts
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
-        goToCdeByName("Involved Organ Laterality Type");
-        findElement(By.linkText("Permissible Values")).click();
-        // following asserts
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i"))); 
     }
     
     @Test
@@ -207,4 +171,71 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("java.lang.Date"));
     }
     
+    @Test
+    public void importVsacValues() {
+        goToCdeByName("Patient Race Category");
+        findElement(By.linkText("Permissible Values")).click();         
+        Assert.assertTrue(textPresent("Native Hawaiian or other Pacific Islander"));    
+        findElement(By.id("removeAllPvs")).click();
+        Assert.assertTrue(textNotPresent("Native Hawaiian or other Pacific Islander"));        
+        findElement(By.linkText("Update O.I.D")).click();
+        findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.836");
+        findElement(By.id("vsacIdCheck")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
+        findElement(By.id("addVsacValue-0")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-valid")));
+        findElement(By.id("addAllVsac")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));   
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-3-valid")));
+        findElement(By.id("pvRemove-0")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));        
+        
+        findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.name("changeNote")).sendKeys("Importing All VSAC Values");
+        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("version")).sendKeys("5");        
+        findElement(By.id("confirmSave")).click();
+        hangon(2);
+        
+        goToCdeByName("Patient Race Category");
+        findElement(By.linkText("Permissible Values")).click(); 
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));   
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-3-valid")));        
+    }  
+   
+    @Test(dependsOnMethods = {"importVsacValues"})
+    public void modifyValueCode() {
+        goToCdeByName("Patient Race Category");
+        findElement(By.linkText("Permissible Values")).click();         
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-valid")));
+        findElement(By.cssSelector("#pvName-4 .fa-edit")).click(); 
+        findElement(By.cssSelector("#pvName-4 input.typeahead")).sendKeys(" Category");
+        findElement(By.cssSelector("#pvName-4 .fa-check")).click();
+        hangon(1);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-warning")));
+        
+        findElement(By.cssSelector("#pvCode-4 .fa-edit")).click(); 
+        findElement(By.cssSelector("#pvCode-4 input")).sendKeys(".1");
+        findElement(By.cssSelector("#pvCode-4 .fa-check")).click();  
+        
+        findElement(By.cssSelector("#pvCodeSystem-4 .fa-edit")).click(); 
+        findElement(By.cssSelector("#pvCodeSystem-4 input")).sendKeys(".1");
+        findElement(By.cssSelector("#pvCodeSystem-4 .fa-check")).click();        
+        
+        findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.name("changeNote")).sendKeys("Modified VS Codes");
+        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("version")).sendKeys("6");        
+        findElement(By.id("confirmSave")).click();
+        hangon(2);
+        
+        goToCdeByName("Patient Race Category");  
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(textPresent("Other Race Category"));
+        Assert.assertTrue(textPresent("2131-1.1"));
+        Assert.assertTrue(textPresent("CDCREC.1"));
+    }     
 }

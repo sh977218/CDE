@@ -950,15 +950,16 @@ app.post('/desByConcept', function(req, res) {
    }); 
 });
 
-var renewTgt = function() {
+var fetchRemoteData = function() {
     vsac.getTGT(function(tgt) {
         console.log("Got TGT");
-    });    
+    });
+    mongo_data.fetchPVCodeSystemList();   
 };
 
 // run every 1 hours
-renewTgt();
-setInterval(renewTgt, 1000 * 60 * 60 * 1);
+fetchRemoteData();
+setInterval(fetchRemoteData, 1000 * 60 * 60 * 1);
 
 var parser = new xml2js.Parser();
 app.get('/vsacBridge/:vsacId', function(req, res) {
@@ -971,6 +972,10 @@ app.get('/vsacBridge/:vsacId', function(req, res) {
            });
        }
    }) ;
+});
+
+app.get('/permissibleValueCodeSystemList', function(req, res) {
+    res.send(mongo_data.pVCodeSystemList);
 });
 
 http.createServer(app).listen(app.get('port'), function(){
