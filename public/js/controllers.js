@@ -209,6 +209,13 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
         });
     }
     
+    $scope.isInConceptSystem = function(system) {
+        return function(classi) {
+            return classi.conceptSystem === system;
+        };
+    };
+
+    
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
           templateUrl: 'addClassificationModalContent.html',
