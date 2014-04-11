@@ -29,7 +29,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         logout();
     }
     
-    /*@Test
+    @Test
     public void assignVsacId() {
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
@@ -49,7 +49,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("3");
         findElement(By.id("confirmSave")).click();
-        hangon(20);
+        hangon(2);
         
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
@@ -59,15 +59,6 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         WebElement tbody = driver.findElement(By.id("vsacTableBody"));
         List<WebElement> vsacLines = tbody.findElements(By.tagName("tr"));
         Assert.assertEquals(vsacLines.size(), 2);
-        
-        goToCdeByName("Patient Ethnic Group Category");
-        findElement(By.linkText("Permissible Values")).click();
-        // following asserts
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i")));
-        goToCdeByName("Involved Organ Laterality Type");
-        findElement(By.linkText("Permissible Values")).click();
-        // following asserts
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//td[@id='pvName-1']//i"))); 
     }
     
     @Test
@@ -178,7 +169,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Axillary Surgery");
         findElement(By.linkText("Permissible Values")).click();        
         Assert.assertTrue(textPresent("java.lang.Date"));
-    }*/
+    }
     
     @Test
     public void importVsacValues() {

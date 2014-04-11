@@ -982,9 +982,8 @@ function SaveCdeCtrl($scope, $modal, $http) {
     };  
     
     $scope.addAllVsac = function () {
-        for (var i=0;i<$scope.vsacValueSet.length;i++){ 
-            var vsacValue = $scope.vsacValueSet[i];
-            $scope.addVsacValue(vsacValue);
+        for (var i=0; i<$scope.vsacValueSet.length; i++) { 
+            $scope.addVsacValue($scope.vsacValueSet[i]);
         }        
     };
     
@@ -992,20 +991,18 @@ function SaveCdeCtrl($scope, $modal, $http) {
         if ($scope.isVsInPv(vsacValue)) {
             return;
         }
-        var mongoPv = $scope.convertVsacValueToMongoPv(vsacValue);
-        $scope.cde.valueDomain.permissibleValues.push(mongoPv);
+        $scope.cde.valueDomain.permissibleValues.push($scope.convertVsacValueToPv(vsacValue));
         $scope.stageCde($scope.cde);
         $scope.runManualValidation();
     };    
     
-    $scope.convertVsacValueToMongoPv = function(vsacValue) {
+    $scope.convertVsacValueToPv = function(vsacValue) {
         var mongoPv = {
             "permissibleValue": vsacValue.displayName,
             "valueMeaningName": vsacValue.displayName,
             "valueMeaningCode": vsacValue.code,
             "codeSystemName": vsacValue.codeSystemName,
-            "codeSystemVersion": vsacValue.codeSystemVersion,
-            "isValid": vsacValue.isValid
+            "codeSystemVersion": vsacValue.codeSystemVersion
         };        
         return mongoPv;
     };
@@ -1380,8 +1377,9 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     
     $scope.validatePvWithVsac = function() {
         var pvs = $scope.cde.valueDomain.permissibleValues;
-        if (!pvs)
+        if (!pvs) {
             return;
+        }
         for (var i = 0; i < pvs.length; i++) {
            $scope.isPvInVSet(pvs[i], function(wellIsIt) {
                 pvs[i].isValid = wellIsIt;
@@ -1410,13 +1408,13 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             }
         };
         var pvs = $scope.cde.valueDomain.permissibleValues;
-        if (!pvs){
+        if (!pvs) {
             return returnVal(false);       
         }
         for (var i = 0; i < pvs.length; i++) {
-            if (pvs[i].valueMeaningCode == vs.code && 
-                pvs[i].codeSystemName == vs.codeSystemName &&
-                pvs[i].valueMeaningName == vs.displayName) {
+            if (pvs[i].valueMeaningCode === vs.code && 
+                pvs[i].codeSystemName === vs.codeSystemName &&
+                pvs[i].valueMeaningName === vs.displayName) {
                     return returnVal(true);
             }
         }
