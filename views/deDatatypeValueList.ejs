@@ -15,7 +15,6 @@
      </thead>
      <tbody>
          <tr id="pv-{{$index}}" ng-repeat="pv in cde.valueDomain.permissibleValues">
-             {{vsacValueSet}}
             <td headers="name" id="pv-{{$index}}">
                 <inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde);"> </inline-edit>
             </td>

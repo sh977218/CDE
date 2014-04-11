@@ -29,7 +29,7 @@ var PinningBoard = mongoose.model('PinningBoard', schemas.pinningBoardSchema);
 
 var gfs = Grid(db.db, mongoose.mongo);
 
-exports.pVCodeSystemNameList = [];
+exports.pVCodeSystemList = [];
 
 exports.boardsByUserId = function(userId, callback) {
     PinningBoard.find({"owner.userId": userId}).exec(function (err, result) {
@@ -497,9 +497,9 @@ exports.saveCde = function(req, callback) {
     }
 };
 
-exports.fetchPVCodeSystemNameList = function() {
+exports.fetchPVCodeSystemList = function() {
     var mongo_data = this;
     DataElement.distinct("valueDomain.permissibleValues.codeSystemName").exec(function(err, codeSystemNames) {
-        mongo_data.pVCodeSystemNameList = codeSystemNames;
+        mongo_data.pVCodeSystemList = codeSystemNames;
     });
 };

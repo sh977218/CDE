@@ -1502,7 +1502,9 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     };    
     
     $scope.getPVTypeaheadCodeSystemNameList = function() {
-        $scope.pVTypeaheadCodeSystemNameList = ["code system name 1", "code system name 2"];
+        $http.get("/permissibleValueCodeSystemList").then(function(response) {
+            $scope.pVTypeaheadCodeSystemNameList = response.data;
+        });
     }; 
 }
 

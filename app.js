@@ -954,7 +954,7 @@ var fetchRemoteData = function() {
     vsac.getTGT(function(tgt) {
         console.log("Got TGT");
     });
-    mongo_data.fetchPVCodeSystemNameList();   
+    mongo_data.fetchPVCodeSystemList();   
 };
 
 // run every 1 hours
@@ -972,6 +972,10 @@ app.get('/vsacBridge/:vsacId', function(req, res) {
            });
        }
    }) ;
+});
+
+app.get('/permissibleValueCodeSystemList', function(req, res) {
+    res.send(mongo_data.pVCodeSystemList);
 });
 
 http.createServer(app).listen(app.get('port'), function(){
