@@ -53,6 +53,11 @@ var classificationSchema = mongoose.Schema({
     }
 }, {_id: false});
 
+var csEltSchema = mongoose.Schema({
+    name: String
+    , elements: [csEltSchema]
+}, {_id: false});
+
 var attachmentSchema = mongoose.Schema({
     fileid: String
     , filename: String
@@ -141,7 +146,10 @@ var deJsonSchema = {
             , unresolvedIssue: String
             , administrativeStatus: String
         }
-    , classification:  [classificationSchema]
+    , classification:  [
+        {stewardOrg: {name: String}
+            , elements: [csEltSchema]}
+        ]
     , formUsageCounter: Number
     , comments: [commentSchema]
     , archived: Boolean
