@@ -28,7 +28,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
                         '</span>' + 
                         '<span ng-show="editMode">' +                         
                             '<input ng-hide="typeaheadSource.length>0" type="text" ng-model="value" class="form-control"/>' + 
-                            '<input ng-show="typeaheadSource.length>0" type="text" ng-model="value" typeahead="code.displayName for code in typeaheadSource | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +                                                        
+                            '<input ng-show="typeaheadSource.length>0" type="text" ng-model="value" typeahead="name for name in typeaheadSource | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +                                                        
                             '<button class="fa fa-check" ng-click="model = value;editMode = false; onOk();"> Confirm</button>' + 
                             '<button class="fa fa-times" ng-click="editMode = false"> Discard</button>' + 
                         '</span>' +       

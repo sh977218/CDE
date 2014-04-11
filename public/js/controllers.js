@@ -1246,7 +1246,9 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     $scope.mltCdes = [];
     $scope.boards = [];
     $scope.comment = {};
-
+    $scope.pVTypeheadVsacNameList = [];
+    $scope.pVTypeaheadCodeSystemNameList = [];
+    
     $scope.reload = function(deId, cb) {
         DataElement.get({deId: deId}, function (de) {
            $scope.cde = de;          
@@ -1254,7 +1256,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
            $scope.initialized = true;
            $scope.canLinkPvFunc();
            $scope.loadMlt();
-           $scope.loadBoards();
+           $scope.loadBoards();      
+           $scope.getPVTypeaheadCodeSystemNameList();   
         });
         
         PriorCdes.getCdes({cdeId: deId}, function(dataElements) {
@@ -1458,6 +1461,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
                     } else {
                         $scope.showValidateButton = true;
                     }
+                    $scope.getPVTypeheadVsacNameList();                   
                 }
              })
              ;
@@ -1490,6 +1494,16 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             $scope.boards = response.data;
         });
     };
+    
+    $scope.getPVTypeheadVsacNameList = function() {
+        $scope.pVTypeheadVsacNameList =  $scope.vsacValueSet.map(function(obj) {
+            return obj.displayName;
+        });       
+    };    
+    
+    $scope.getPVTypeaheadCodeSystemNameList = function() {
+        $scope.pVTypeaheadCodeSystemNameList = ["code system name 1", "code system name 2"];
+    }; 
 }
 
 function CommentsCtrl($scope, Comment) {
