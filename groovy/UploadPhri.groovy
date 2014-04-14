@@ -280,17 +280,14 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     element.put("name","S&I PHRI Category");
     element.put("elements",[el]);
     def stewardClassificationsArray = [element];    
-    
-    def stewardClassification = new BasicDBObject();
+    def classif = classifications.buildClassif("S&I PHRI Category", phriCategory);
+    classifications.saveClassif(classif);        
+    def stewardClassification = classifications.buildStewardClassifictions(stewardClassificationsArray, "PHRI");
+    /*def stewardClassification = new BasicDBObject();
     stewardClassification.put("stewardOrg", stewardOrg);
     stewardClassification.put("elements",stewardClassificationsArray);
-    
-
-
-    //////
     def classif = classifications.buildClassif("S&I PHRI Category", phriCategory);
-    classifications.saveClassif(classif);    
-    //////////////////////
+    classifications.saveClassif(classif);  */  
     parsePatientStory(stewardClassificationsArray, stewardOrg, xlsMap, row);    
     def classificationArray = [stewardClassification];        
     newDE.put("classification", classificationArray);

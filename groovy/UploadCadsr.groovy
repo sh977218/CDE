@@ -147,12 +147,16 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     PROP.put("concepts", propConcepts);
     newDE.put("property", PROP);
     
-    def classification = [];
+    //def classification = [];
+    def classificationArray = [];
     for (int csi_i = 0; csi_i < cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.size(); csi_i++) {
         def csi = cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM[csi_i];
-        newClassif = buildClassif(csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text(), csi.ClassificationScheme[0].ContextName.text());
-        saveClassif(newClassif);
-        classification.add(newClassif);
+        //newClassif = buildClassif(csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text(), csi.ClassificationScheme[0].ContextName.text());
+        //saveClassif(newClassif);
+        //classification.add(newClassif);
+        Classifications classifications = new Classifications(orgColl);
+        classifications.classify(classificationArray, cadsrDE.CONTEXTNAME.text(), csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());        
+        
     }
     newDE.append("classification", classification);
 
