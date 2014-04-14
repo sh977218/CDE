@@ -810,7 +810,6 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
 
         if ($scope.selectedOrg !== undefined) {
             queryStuff.facets.groups = {
-                //terms: {field: "classification.conceptSystem", size: 200}
                 terms: {field: "classification.elements.name", size: 200}
                 , facet_filter: {term: {"classification.stewardOrg.name": $scope.selectedOrg}}
             }
