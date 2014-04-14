@@ -13,11 +13,10 @@
     <tab heading="Organizations">
         <div class="row" ng-repeat="c in orgs">
             <div class="col-md-11" id="orgName-{{$index}}">{{c.name}}</div>
-            <div class="col-md-1"><i class="fa fa-trash-o" ng-click="removeOrg(c._id)" id="removeOrg-{{$index}}"></i></div>
         </div>
         <div class="row input-prepend input-append">
             <input class="col-md-10" type="text" name="newOrg.name" ng-model="newOrg.name"></input>
-            <span class="add-on" ng-click="addOrg()" id="addOrg">+</span>
+            <span class="add-on" ng-click="addOrg()" id="addOrg"> +</span>
         </div>
     </tab>
     <tab heading="Organizations Admins">
