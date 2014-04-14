@@ -62,7 +62,8 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys(name);
         // TODO. Selenium doesn't seem to always send keys. Don't know why. Maybe catch and retry?
         Assert.assertEquals(findElement(By.id("ftsearch-input")).getAttribute("value"), name);
-        findElement(By.id("search.submit")).click();
+//        findElement(By.id("search.submit")).click();
+        findElement(By.cssSelector("i.fa-search")).click();
         Assert.assertTrue(textPresent(name));
         findElement(By.id("acc_link_0")).click();
         hangon(1);
