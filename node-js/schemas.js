@@ -147,8 +147,10 @@ var deJsonSchema = {
             , administrativeStatus: String
         }
     , classification:  [
-        {stewardOrg: {name: String}
-            , elements: [csEltSchema]}
+            {
+                stewardOrg: {name: String}
+                , elements: [csEltSchema]
+            }
         ]
     , formUsageCounter: Number
     , comments: [commentSchema]

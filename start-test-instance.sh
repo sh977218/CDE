@@ -28,8 +28,7 @@ curl -XPOST "localhost:9200/cdetest" -d '
         "dataelement" : {
             "properties" : {
                 "stewardOrg.name" : { "type" : "string", "index" : "not_analyzed" }
-                , "classification.conceptSystem": { "type" : "string", "index" : "not_analyzed" }
-                , "classification.concept": { "type" : "string", "index" : "not_analyzed" }
+                , "classification.elements.name": { "type" : "string", "index" : "not_analyzed" }
                 , "classification.stewardOrg.name": { "type" : "string", "index" : "not_analyzed" }
                 , "origin" : { "type" : "string", "index" : "not_analyzed" }
 
@@ -75,21 +74,17 @@ sleep 8;
 
 export target='{"count":382,"_shards":{"total":1,"successful":1,"failed":0}}'
 export curl_res=$(curl http://localhost:9200/cdetest/_count)
-if [ "$curl_res" == "$target" ] 
-then
+#if [ "$curl_res" == "$target" ] 
+#then
     #groovy groovy/UploadCadsrForms.groovy --testMode &
     #
-<<<<<<< HEAD
     gradle -b test/selenium/build.gradle -Dtest.single=ValueDomainTest test & 
 #    gradle -b test/selenium/build.gradle clean test & 
-=======
 #    gradle -b test/selenium/build.gradle -Dtest.single=CdeSearchTest test & 
     gradle -b test/selenium/build.gradle clean test & 
->>>>>>> dfd7a299db0c6645655720f7e84eab6ae6cc4354
 #    rm test-console.out
     node app > test-console.out
 else
     echo "Not all documents indexed. Aborting"
     echo $curl_res
 fi
-
