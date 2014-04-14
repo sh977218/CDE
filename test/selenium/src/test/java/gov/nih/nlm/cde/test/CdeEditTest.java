@@ -39,6 +39,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("cde.version")).sendKeys("1.0alpha1");
         new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
         findElement(By.id("cde.submit")).click();
+        hangon(1);
         goToCdeByName(newCdeName);
         Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
     }
@@ -172,6 +173,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("-plaintext"); 
         findElement(By.id("confirmSave")).click();
+        hangon(1);
         goToCdeByName(newCdeName);   
         Assert.assertTrue(textPresent("<b>bold</b>"));
         

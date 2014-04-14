@@ -1,6 +1,5 @@
-
-<accordion>
-    <accordion-group ng-repeat="cde in (cdes+mltCdes)">
+<accordion close-others="false">
+    <accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
         <accordion-heading>
             <span id="acc_link_{{$index}}" class="hand-cursor">{{cde.naming[0].designation}}</span>   
             <i class="fa fa-eye hand-cursor" ng-click="cdeIconAction(cde,'view',$event)" title="View"></i>
