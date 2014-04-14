@@ -74,9 +74,9 @@ sleep 8;
 
 export target='{"count":382,"_shards":{"total":1,"successful":1,"failed":0}}'
 export curl_res=$(curl http://localhost:9200/cdetest/_count)
-#if [ "$curl_res" == "$target" ] 
-#then
-    #groovy groovy/UploadCadsrForms.groovy --testMode &
+if [ "$curl_res" == "$target" ] 
+then
+    groovy groovy/UploadCadsrForms.groovy --testMode &
     #
     gradle -b test/selenium/build.gradle -Dtest.single=ValueDomainTest test & 
 #    gradle -b test/selenium/build.gradle clean test & 

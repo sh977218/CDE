@@ -171,17 +171,18 @@ def classify (ArrayList<BasicDBObject> classificationArray, BasicDBObject stewar
 }
 
 def parsePatientStory(ArrayList<BasicDBObject> classificationArray, BasicDBObject stewardOrg, Map xlsMap, XSSFRow row){
-    //def namingDefinition = getCellValue(row.getCell(xlsMap.namingDefinition));
-    if(getCellValue(row.getCell(xlsMap.chronicDisease.cancerGenetics))=="Yes")
+    /*if(getCellValue(row.getCell(xlsMap.chronicDisease.cancerGenetics))=="Yes")
         classify(classificationArray, stewardOrg, "Chronic Disease", "Cancer Genetics");        
     if(getCellValue(row.getCell(xlsMap.chronicDisease.cancerReporting))=="Yes")
         classify(classificationArray, stewardOrg, "Chronic Disease", "Cancer Reporting");        
     if(getCellValue(row.getCell(xlsMap.chronicDisease.nationalHospitalCareSurvey))=="Yes")
         classify(classificationArray, stewardOrg, "Chronic Disease", "National Hospital Care Survey");       
     if(getCellValue(row.getCell(xlsMap.chronicDisease.occupationalHealth))=="Yes")
-        classify(classificationArray, stewardOrg, "Chronic Disease", "Occupational Health");       
+        classify(classificationArray, stewardOrg, "Chronic Disease", "Occupational Health");*/  
+        
     
-    if(getCellValue(row.getCell(xlsMap.communicableDisease.any))=="Yes")
+    
+    /*if(getCellValue(row.getCell(xlsMap.communicableDisease.any))=="Yes")
         classify(classificationArray, stewardOrg, "Communicable Disease", "Any");           
     if(getCellValue(row.getCell(xlsMap.communicableDisease.communicableSyndromic))=="Yes")
         classify(classificationArray, stewardOrg, "Communicable Disease", "Communicable & Syndromic");       
@@ -206,12 +207,13 @@ def parsePatientStory(ArrayList<BasicDBObject> classificationArray, BasicDBObjec
     if(getCellValue(row.getCell(xlsMap.adverseEvents.ASTERD))=="Yes")
         classify(classificationArray, stewardOrg, "Adverse Events", "ASTER D");      
     if(getCellValue(row.getCell(xlsMap.adverseEvents.ICSRR2))=="Yes")
-        classify(classificationArray, stewardOrg, "Adverse Events", "ICSR R2");          
+        classify(classificationArray, stewardOrg, "Adverse Events", "ICSR R2"); */         
 }
 
 
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
-    DBObject newDE = new BasicDBObject();
+    BasicDBObject newDE = new BasicDBObject();
+    
     newDE.put("uuid", UUID.randomUUID() as String);
     newDE.put("created", new Date()); 
     newDE.put("origin", 'PHRI'); 
@@ -254,11 +256,18 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
         
     def classificationArray = [];
     
-    classify(classificationArray, stewardOrg, "S&I PHRI Category", phriCategory);
+    //classify(classificationArray, stewardOrg, "S&I PHRI Category", phriCategory);
     
+    def element = new BasicDBObject();
+    element.put("name",phriCategory);
+    
+    def stewClass = new BasicDBObject();
+    stewClass.put("stewardOrg", stewardOrg);
+    stewClass.put("elements",[element]);
+    newDE.put("classification",[stewClass]);
     //////////////////////
     
-    parsePatientStory(classificationArray, stewardOrg, xlsMap, row);
+    //parsePatientStory(classificationArray, stewardOrg, xlsMap, row);
     
     
     //////////////////////
@@ -286,7 +295,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
         def comments = [co];
         newDE.put("comments", comments);
     }
-    newDE.append("classification", classificationArray);                        
+    //newDE.append("classification", classificationArray);                        
     newDE;
 }
 
@@ -298,9 +307,9 @@ def void PersistSheet(String name, Map xlsMap) {
     it.next();
     while (it.hasNext()) {
         XSSFRow row = it.next();
-        BasicDBObject newDE = ParseRow(row, xlsMap);
-        if (newDE!=null)
-            deColl.insert(newDE);
+        BasicDBObject newDE1 = ParseRow(row, xlsMap);
+        if (newDE1!=null)
+            deColl.insert(newDE1);
     }
     println("Ingestion Complete");
 }
