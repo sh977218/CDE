@@ -36,11 +36,15 @@ var tgtOptions = {
     port: vsacPort,
     path: config.vsac.ticket.path,
     method: 'POST',
+    agent: false,
+    requestCert: true,
+    rejectUnauthorized: false,
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Length': authData.length
     }
 };
+
 
 var ticketOptions = {
     host: vsacHost,
@@ -48,6 +52,10 @@ var ticketOptions = {
     port: vsacPort,
     path: config.vsac.ticket.path,
     method: 'POST',
+    requestCert: true,
+    agent: false,
+    requestCert: true,
+    rejectUnauthorized: false,
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Length': ticketData.length
@@ -58,8 +66,12 @@ var valueSetOptions = {
     host: vsacHost,
     port: vsacPort,
     path: config.vsac.valueSet.path,
-    method: 'GET'
+    method: 'GET',
+    agent: false,
+    requestCert: true,
+    rejectUnauthorized: false
 };
+valueSetOptions.agent = new https.Agent(valueSetOptions);
 
 var vsacTGT = '';
 
@@ -79,6 +91,7 @@ exports.umlsAuth = function(user, password, cb) {
 };
 
 exports.getTGT = function (cb) {
+    console.log(JSON.stringify(tgtOptions));
     var req = https.request(tgtOptions, function(res) {
         var output = '';
         res.setEncoding('utf8');
@@ -93,7 +106,7 @@ exports.getTGT = function (cb) {
     });
     
     req.on('error', function (e) {
-        console.log('ERROR with request ' + e);
+        console.log('getTgt: ERROR with request ' + e);
     });
     
     req.write(authData);
@@ -114,7 +127,7 @@ exports.getTicket = function(cb) {
     });
     
     req.on('error', function (e) {
-        console.log('ERROR with request ' + e);
+        console.log('getTicket: ERROR with request ' + e);
     });
     
     req.write(ticketData);
@@ -141,7 +154,8 @@ exports.getValueSet = function(vs_id, cb) {
         });
 
         req.on('error', function (e) {
-            console.log('ERROR with request ' + e);
+            console.log('getValueSet: ERROR with request ' + e);
+            cb(400);
         });
 
         req.end();

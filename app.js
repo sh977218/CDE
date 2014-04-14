@@ -964,7 +964,11 @@ setInterval(fetchRemoteData, 1000 * 60 * 60 * 1);
 var parser = new xml2js.Parser();
 app.get('/vsacBridge/:vsacId', function(req, res) {
    vsac.getValueSet(req.params.vsacId, function(result) {
-       if (result === 404) {
+       console.log("received: " + result);
+       
+       if (result === 404 || result === 400) {
+           console.log("code error");
+           res.status(result);
            res.end();
        } else {
            parser.parseString(result, function (err, jsonResult) {

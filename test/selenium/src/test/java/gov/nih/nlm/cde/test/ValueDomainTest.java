@@ -38,6 +38,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("vsacId")).sendKeys("invalidId");
         findElement(By.id("vsacIdCheck")).click();
         Assert.assertTrue(textPresent("Invalid VSAC OID"));
+        findElement(By.cssSelector("button.close")).click();
         findElement(By.linkText("Update O.I.D")).click();
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
         findElement(By.id("vsacIdCheck")).click();
