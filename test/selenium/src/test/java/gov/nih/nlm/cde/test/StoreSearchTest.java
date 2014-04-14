@@ -57,7 +57,11 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         findElement(By.id("resetSearch")).click();
         Assert.assertTrue(textPresent("10"));
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertTrue(linkList.size() > 10);        
+        Assert.assertTrue(linkList.size() > 10);  
+        findElement(By.linkText("NLM CDEs")).click();
+        hangon(1);
+        linkList = driver.findElements(By.cssSelector("div.panel-default"));
+        Assert.assertTrue(linkList.size() > 10);  
     }
     
 }
