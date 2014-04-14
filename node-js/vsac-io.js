@@ -26,7 +26,6 @@ var ticketData = querystring.stringify({
     service: 'http://umlsks.nlm.nih.gov'
 });
 
-
 var vsacHost = process.env.VSAC_HOST || envconfig.vsac.host || config.vsac.host;
 var vsacPort = process.env.VSAC_PORT || envconfig.vsac.port || config.vsac.port;
 
@@ -54,7 +53,6 @@ var ticketOptions = {
     method: 'POST',
     requestCert: true,
     agent: false,
-    requestCert: true,
     rejectUnauthorized: false,
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -71,7 +69,6 @@ var valueSetOptions = {
     requestCert: true,
     rejectUnauthorized: false
 };
-valueSetOptions.agent = new https.Agent(valueSetOptions);
 
 var vsacTGT = '';
 
@@ -144,7 +141,7 @@ exports.getValueSet = function(vs_id, cb) {
                 output += chunk;
             });
             res.on('end', function() {
-                if (res.statusCode == 404) {
+                if (res.statusCode === 404) {
                     cb(404);
                 }
                 if (output.length > 0) {

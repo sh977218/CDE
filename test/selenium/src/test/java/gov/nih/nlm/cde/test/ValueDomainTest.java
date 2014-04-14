@@ -148,6 +148,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("changeNote")).sendKeys("Reordered PV");
         findElement(By.name("version")).sendKeys(".addRemovePv");
         findElement(By.id("confirmSave")).click();
+        hangon(1);
         goToCdeByName("Involved Organ Laterality Type");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertEquals(findElement(By.id("pvCode-1")).getText(), "C25229");
@@ -167,6 +168,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(".1");
         modalHere();
         findElement(By.id("confirmSave")).click();
+        hangon(1);
         goToCdeByName("Axillary Surgery");
         findElement(By.linkText("Permissible Values")).click();        
         Assert.assertTrue(textPresent("java.lang.Date"));
