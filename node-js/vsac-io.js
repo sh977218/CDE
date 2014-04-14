@@ -88,7 +88,6 @@ exports.umlsAuth = function(user, password, cb) {
 };
 
 exports.getTGT = function (cb) {
-    console.log(JSON.stringify(tgtOptions));
     var req = https.request(tgtOptions, function(res) {
         var output = '';
         res.setEncoding('utf8');
