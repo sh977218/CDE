@@ -760,9 +760,13 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         if ($scope.selectedOrg !== undefined) {
             $scope.filter.and.push({term: {"classification.stewardOrg.name": $scope.selectedOrg}});
         }
+        
+        if ($scope.selecteGroup !== undefined) {
+            $scope.filter.and.push({term: {"classification.elements.name": $scope.selecteGroup.term}});
+        }        
 
         if ($scope.selectedSubGroup !== undefined) {
-            $scope.filter.and.push({term: {"classification.concept": $scope.selectedSubGroup.term}});
+            $scope.filter.and.push({term: {"classification.elements.elements.name": $scope.selectedSubGroup.term}});
         }
         
         var regStatusOr = [];
