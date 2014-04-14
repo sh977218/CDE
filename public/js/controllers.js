@@ -209,6 +209,13 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
         });
     }
     
+    $scope.isInConceptSystem = function(system) {
+        return function(classi) {
+            return classi.conceptSystem === system;
+        };
+    };
+
+    
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
           templateUrl: 'addClassificationModalContent.html',
@@ -619,6 +626,8 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         cache = $cacheFactory.get("deListCache");
     }
     
+    $scope.openAllModel = cache.get("openAll");
+    
     $scope.registrationStatuses = cache.get("registrationStatuses");
     if ($scope.registrationStatuses === undefined) {
         $scope.registrationStatuses = [
@@ -701,6 +710,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                 var result = response.data;
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
+                $scope.openAll();
                 $scope.totalItems = result.totalNumber;
                 cache.put("totalItems", $scope.totalItems);
                 $scope.facets = result.facets;
@@ -875,6 +885,14 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     $scope.isDefaultAttachment = function (item) {
       return item.isDefault;  
     };
+    
+    $scope.openAll = function() {
+        for (var i = 0; i < $scope.cdes.length; i++) {
+            $scope.cdes[i].isOpen = $scope.openAllModel;
+        }
+        cache.put("openAll", $scope.openAllModel);
+    }
+    
 }
 
 function ConceptsCtrl($scope, $modal, $http) {
@@ -915,22 +933,8 @@ function ConceptsCtrl($scope, $modal, $http) {
 
 function SaveCdeCtrl($scope, $modal, $http) { 
     $scope.checkVsacId = function(cde) {
-        $http({method: "GET", url: "/vsacBridge/" + cde.dataElementConcept.conceptualDomain.vsac.id}).
-         error(function(data, status) {
-            $scope.vsacError = "Error quering VSAC.";
-            cde.dataElementConcept.conceptualDomain.vsac.id = "";
-         }).
-         success(function(data, status) {
-            if (data === "") {
-                $scope.vsacError = "Invalid VSAC OID";
-                cde.dataElementConcept.conceptualDomain.vsac.id = "";
-            } else {
-                cde.dataElementConcept.conceptualDomain.vsac.name = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
-                cde.dataElementConcept.conceptualDomain.vsac.version = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].version;
-                cde.unsaved = true;
-            }
-         })
-         ;
+        $scope.loadValueSet();
+        cde.unsaved = true;
     };
     
     $scope.attachPv = function(pv) {
@@ -1446,12 +1450,19 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             $scope.vsacValueSet = [];
             $http({method: "GET", url: "/vsacBridge/" + dec.conceptualDomain.vsac.id}).
              error(function(data, status) {
-                $scope.vsacError = "Error quering VSAC.";
-                cde.dataElementConcept.conceptualDomain.vsac.id = "";
+                if (status === 404) {
+                   $scope.addAlert("warning", "Invalid VSAC OID");
+                   $scope.cde.dataElementConcept.conceptualDomain.vsac.id = "";                 
+                } else { 
+                   $scope.addAlert("danger", "Error quering VSAC");
+                   $scope.cde.dataElementConcept.conceptualDomain.vsac.id = "";
+                }
              }).
              success(function(data, status) {
                 if (data === "") {
                 } else {
+                    $scope.cde.dataElementConcept.conceptualDomain.vsac.name = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
+                    $scope.cde.dataElementConcept.conceptualDomain.vsac.version = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].version;
                     for (var i = 0; i < data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
                         $scope.vsacValueSet.push(data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$']);
                     }
