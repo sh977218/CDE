@@ -167,18 +167,37 @@ def BasicDBObject parseValueDomain(XSSFRow row, Map xlsMap){
 def classify (ArrayList<BasicDBObject> classificationArray, BasicDBObject stewardOrg, String conceptSystem, String concept) {
     def classif = buildClassif(conceptSystem, concept);
     saveClassif(classif);
-    classificationArray.add(classif);      
+    def cls = new BasicDBObject();
+    cls.put("name",concept);
+    
+    def existed = false;
+    for (int i=0; i<classificationArray.size(); i++) {
+        def classification = classificationArray.get(i);
+        if (classification.get("name")==conceptSystem) {
+            def elements = classification.get("elements");
+            elements.add(cls);
+            classification.put("elements",elements);
+            existed = true;            
+        }
+    }
+    if (!existed) {
+        def newOrg =  new BasicDBObject();
+        newOrg.put("name", conceptSystem);
+        newOrg.put("elements", [cls]);
+        classificationArray.add(newOrg);
+    } 
+        
 }
 
-def parsePatientStory(ArrayList<BasicDBObject> classificationArray, BasicDBObject stewardOrg, Map xlsMap, XSSFRow row){
-    /*if(getCellValue(row.getCell(xlsMap.chronicDisease.cancerGenetics))=="Yes")
+def parsePatientStory(ArrayList<BasicDBObject> classificationArray, BasicDBObject stewardOrg, Map xlsMap, XSSFRow row){    
+    if(getCellValue(row.getCell(xlsMap.chronicDisease.cancerGenetics))=="Yes")
         classify(classificationArray, stewardOrg, "Chronic Disease", "Cancer Genetics");        
     if(getCellValue(row.getCell(xlsMap.chronicDisease.cancerReporting))=="Yes")
         classify(classificationArray, stewardOrg, "Chronic Disease", "Cancer Reporting");        
     if(getCellValue(row.getCell(xlsMap.chronicDisease.nationalHospitalCareSurvey))=="Yes")
         classify(classificationArray, stewardOrg, "Chronic Disease", "National Hospital Care Survey");       
     if(getCellValue(row.getCell(xlsMap.chronicDisease.occupationalHealth))=="Yes")
-        classify(classificationArray, stewardOrg, "Chronic Disease", "Occupational Health");*/  
+        classify(classificationArray, stewardOrg, "Chronic Disease", "Occupational Health");
         
     
     
@@ -254,29 +273,28 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     if (phriCategory=="")
         return null;
         
-    def classificationArray = [];
-    
-    //classify(classificationArray, stewardOrg, "S&I PHRI Category", phriCategory);
+//
     
     def el = new BasicDBObject();
-    el.put("name",phriCategory);
-    
+    el.put("name",phriCategory);    
     def element = new BasicDBObject();
     element.put("name","S&I PHRI Category");
     element.put("elements",[el]);
+    def stewardClassificationsArray = [element];    
     
-    def stewClass = new BasicDBObject();
-    stewClass.put("stewardOrg", stewardOrg);
-    stewClass.put("elements",[element]);
-    newDE.put("classification",[stewClass]);
+    def stewardClassification = new BasicDBObject();
+    stewardClassification.put("stewardOrg", stewardOrg);
+    stewardClassification.put("elements",stewardClassificationsArray);
     
+
+
+    //////
     def classif = buildClassif("S&I PHRI Category", phriCategory);
     saveClassif(classif);    
     //////////////////////
-    
-    //parsePatientStory(classificationArray, stewardOrg, xlsMap, row);
-    
-    
+    parsePatientStory(stewardClassificationsArray, stewardOrg, xlsMap, row);    
+    def classificationArray = [stewardClassification];        
+    newDE.put("classification", classificationArray);
     //////////////////////
     
                             
