@@ -178,9 +178,17 @@ exports.save = function (req, res) {
                             && !req.user.siteAdmin) {
                         res.send("This record is already standard.");
                     } else {
-                        return mongo_data.saveCde(req, function(err, savedCde) {
-                            res.send(savedCde);            
-                        });
+                        if (cde.registrationState.registrationStatusSortOrder > 1 && 
+                                (req.body.registrationState.registrationStatus === "Standard" || req.body.registrationState.registrationStatus === " Preferred Standard")
+                                    && !req.user.siteAdmin
+                                ) 
+                        {
+                            res.send("not authorized");
+                        } else {
+                            return mongo_data.saveCde(req, function(err, savedCde) {
+                                res.send(savedCde);            
+                            });
+                        }
                     }
                 }
             });
