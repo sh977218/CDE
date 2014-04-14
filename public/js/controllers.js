@@ -814,7 +814,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                 , facet_filter: {term: {"classification.stewardOrg.name": $scope.selectedOrg}}
             }
             queryStuff.facets.concepts = {
-                terms: {field: "classification.concept", size: 300}
+                terms: {field: "classification.elements.elements.name", size: 300}
                 , facet_filter: {
                     term: {"classification.stewardOrg.name": $scope.selectedOrg}
                 }

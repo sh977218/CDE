@@ -258,13 +258,20 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
     //classify(classificationArray, stewardOrg, "S&I PHRI Category", phriCategory);
     
+    def el = new BasicDBObject();
+    el.put("name",phriCategory);
+    
     def element = new BasicDBObject();
-    element.put("name",phriCategory);
+    element.put("name","S&I PHRI Category");
+    element.put("elements",[el]);
     
     def stewClass = new BasicDBObject();
     stewClass.put("stewardOrg", stewardOrg);
     stewClass.put("elements",[element]);
     newDE.put("classification",[stewClass]);
+    
+    def classif = buildClassif("S&I PHRI Category", phriCategory);
+    saveClassif(classif);    
     //////////////////////
     
     //parsePatientStory(classificationArray, stewardOrg, xlsMap, row);
