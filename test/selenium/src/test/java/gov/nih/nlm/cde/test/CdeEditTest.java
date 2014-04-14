@@ -74,7 +74,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("This version number has already been used"));
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("2");
-        findElement(By.id("confirmSave")).click();
+        saveCde();
         goToCdeByName(newCdeName);
         Assert.assertTrue(textPresent("[name change number 1]"));
         Assert.assertTrue(textPresent("[def change number 1]"));
@@ -137,8 +137,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
         modalHere();
-        findElement(By.id("confirmSave")).click();
-        hangon(2);
+        saveCde();
 
         goToCdeByName(cdeName);
         findElement(By.linkText("Concepts")).click();
@@ -153,8 +152,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("openSave")).click();
         modalHere();
         findElement(By.name("version")).sendKeys(".2");
-        findElement(By.id("confirmSave")).click();
-        hangon(2);
+        saveCde();
         
         goToCdeByName(cdeName);
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("DEC1") < 0);
@@ -172,8 +170,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("-plaintext"); 
-        findElement(By.id("confirmSave")).click();
-        hangon(1);
+        saveCde();
         goToCdeByName(newCdeName);   
         Assert.assertTrue(textPresent("<b>bold</b>"));
         
@@ -183,7 +180,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("-html"); 
-        findElement(By.id("confirmSave")).click();
+        saveCde();
         goToCdeByName(newCdeName);   
         Assert.assertTrue(textNotPresent("<b>bold</b>"));        
     }    

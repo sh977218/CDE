@@ -48,8 +48,8 @@ public class NlmCdeBaseTest {
         driver = new ChromeDriver(caps);
         driver.get(baseUrl);
         driver.manage().window().setSize(new Dimension(1024,800));
-        driver.manage().timeouts().implicitlyWait(6, TimeUnit.SECONDS);
-        wait = new WebDriverWait(driver, 6, 200);
+        driver.manage().timeouts().implicitlyWait(8, TimeUnit.SECONDS);
+        wait = new WebDriverWait(driver, 8, 200);
     }
     
     public void loginAsNlm() {
@@ -103,6 +103,11 @@ public class NlmCdeBaseTest {
     * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
     */
     public void modalGone()  {
+        hangon(2);
+    }
+    
+    protected void saveCde() {
+        findElement(By.id("confirmSave")).click();
         hangon(2);
     }
     
