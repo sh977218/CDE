@@ -735,7 +735,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                                         for (var k = 0; k < $scope.facets.concepts.terms.length; k++) {
                                             var c = $scope.facets.concepts.terms[k];
                                             for (var l = 0; l < org.classifications.length; l++) {
-                                                if (org.classifications[l].conceptSystem === g.term && c.term === org.classifications[l].concept) {
+                                                if (org.classifications[l].name === g.term && c.term === org.classifications[l].concept) {
                                                     group.concepts.push(c);
                                                 }
                                             }
