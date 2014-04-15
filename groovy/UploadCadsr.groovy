@@ -21,7 +21,7 @@ DB db = mongoClient.getDB(mongoDb);
 DBCollection deColl = db.getCollection("dataelements");
 DBCollection orgColl = db.getCollection("orgs");
 
-def saveClassif = { newClassif ->
+/*def saveClassif = { newClassif ->
     def foundOrg = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
     
     def found = false;
@@ -51,7 +51,7 @@ def buildClassif = {conceptSystem, concept, org ->
     newClassif.put("concept", concept.trim())
     newClassif.put("stewardOrg", new BasicDBObject("name", org));
     newClassif;
-}
+}*/
 
 println ("ingesting: " + args[0]);
 def deList = new XmlSlurper().parse(new File(args[0]));
@@ -147,14 +147,10 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     PROP.put("concepts", propConcepts);
     newDE.put("property", PROP);
     
-    //def classification = [];
     def stewardClassificationsArray = [];
     Classifications classifications = new Classifications(orgColl);
     for (int csi_i = 0; csi_i < cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.size(); csi_i++) {
         def csi = cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM[csi_i];
-        //newClassif = buildClassif(csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text(), csi.ClassificationScheme[0].ContextName.text());
-        //saveClassif(newClassif);
-        //classification.add(newClassif);
         if (csi.ClassificationScheme[0].PreferredName.text()!=""
             && csi.ClassificationScheme[0].PreferredName.text()!=null
             && csi.ClassificationSchemeItemName.text()!=""
