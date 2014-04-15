@@ -725,7 +725,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                                 var groupFound = false;
                                 var g = $scope.facets.groups.terms[i];
                                 for (var j = 0; !groupFound && j < org.classifications.length; j++) {
-                                    if (org.classifications[j].conceptSystem === g.term) {
+                                    if (org.classifications[j].name === g.term) {
                                         groupFound = true;
                                     }
                                 }
@@ -735,9 +735,16 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                                         for (var k = 0; k < $scope.facets.concepts.terms.length; k++) {
                                             var c = $scope.facets.concepts.terms[k];
                                             for (var l = 0; l < org.classifications.length; l++) {
-                                                if (org.classifications[l].name === g.term && c.term === org.classifications[l].concept) {
-                                                    group.concepts.push(c);
-                                                }
+                                                //if (org.classifications[l].conceptSystem === g.term && c.term === org.classifications[l].concept) {
+                                                //    group.concepts.push(c);
+                                                //}
+                                                if (org.classifications[l].name === g.term) {
+                                                    for (var m = 0; m < org.classifications[l].elements.length; m++) {
+                                                        if (org.classifications[l].elements[m].name===c.term) {
+                                                            group.concepts.push(c);
+                                                        }
+                                                    }                                                    
+                                                }                                                
                                             }
                                         }
                                     }
