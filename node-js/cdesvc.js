@@ -179,7 +179,7 @@ exports.save = function (req, res) {
                         res.send("This record is already standard.");
                     } else {
                         if (cde.registrationState.registrationStatusSortOrder > 1 && 
-                                (req.body.registrationState.registrationStatus === "Standard" || req.body.registrationState.registrationStatus === " Preferred Standard")
+                                (req.body.registrationState.registrationStatus === "Standard" || req.body.registrationState.registrationStatus === "Preferred Standard")
                                     && !req.user.siteAdmin
                                 ) 
                         {
