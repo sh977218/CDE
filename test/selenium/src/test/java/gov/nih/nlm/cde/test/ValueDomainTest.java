@@ -49,8 +49,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("This version number has already been used"));
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("3");
-        findElement(By.id("confirmSave")).click();
-        hangon(2);
+        saveCde();
         
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
@@ -74,8 +73,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("version")).sendKeys(".1");
-        findElement(By.id("confirmSave")).click();
-        hangon(2);
+        saveCde();
 
         goToCdeByName("Left Colon Excision Ind-2");
         findElement(By.linkText("Permissible Values")).click();   
@@ -87,8 +85,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("2");
-        findElement(By.id("confirmSave")).click();
-        hangon(2);
+        saveCde();
         
         goToCdeByName("Left Colon Excision Ind-2");
         findElement(By.linkText("Permissible Values")).click();   
@@ -109,6 +106,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("4");
         findElement(By.cssSelector("button.btn.btn-warning")).click();
+        modalGone();
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("added to pv"));
@@ -147,8 +145,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.id("openSave")).click();
         findElement(By.name("changeNote")).sendKeys("Reordered PV");
         findElement(By.name("version")).sendKeys(".addRemovePv");
-        findElement(By.id("confirmSave")).click();
-        hangon(1);
+        saveCde();
         goToCdeByName("Involved Organ Laterality Type");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertEquals(findElement(By.id("pvCode-1")).getText(), "C25229");
@@ -167,8 +164,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
         modalHere();
-        findElement(By.id("confirmSave")).click();
-        hangon(1);
+        saveCde();
         goToCdeByName("Axillary Surgery");
         findElement(By.linkText("Permissible Values")).click();        
         Assert.assertTrue(textPresent("java.lang.Date"));
@@ -198,8 +194,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("changeNote")).sendKeys("Importing All VSAC Values");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("5");        
-        findElement(By.id("confirmSave")).click();
-        hangon(2);
+        saveCde();
         
         goToCdeByName("Patient Race Category");
         findElement(By.linkText("Permissible Values")).click(); 
@@ -232,8 +227,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("changeNote")).sendKeys("Modified VS Codes");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("6");        
-        findElement(By.id("confirmSave")).click();
-        hangon(2);
+        saveCde();
         
         goToCdeByName("Patient Race Category");  
         findElement(By.linkText("Permissible Values")).click();
