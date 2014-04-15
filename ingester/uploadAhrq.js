@@ -141,13 +141,31 @@ fs.readFile(process.argv[2], function(err, result) {
     
     addClassification("Common Formats / Form", data["Form Name:"]);
     
-    newDE.classification = [
+    /*newDE.classification = [
         {
             conceptSystem: "Common Formats / Form"
             , concept: data["Form Name:"]
             , stewardOrg: {name: 'AHRQ'}
         }
-    ];
+    ];*/
+    
+    newDE.classification = [ 
+        {
+            stewardOrg : {
+                name : "AHRQ"
+            },
+            elements : [ 
+                {
+                    name : "Common Formats / Form",
+                    elements : [ 
+                        {
+                            name : data["Form Name:"]
+                        }
+                    ]
+                }
+            ]
+        }
+    ];  
     
     newDE.save(function (err, newDE) {
         if (err) {
