@@ -1276,15 +1276,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
              return $scope.cde.classification;
          } 
     };
-    
-    $scope.filterConceptSystemClassification = function(item) {
-      var systemIsNew = indexedConceptSystemClassifications.indexOf(item.conceptSystem) == -1;
-      if (systemIsNew) {
-          indexedConceptSystemClassifications.push(item.conceptSystem);
-      }
-      return systemIsNew;
-    };
-    
+
     $scope.isInConceptSystem = function(system) {
         return function(classi) {
             return classi.conceptSystem === system;
