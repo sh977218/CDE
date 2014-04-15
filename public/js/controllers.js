@@ -858,6 +858,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         delete $scope.selectedOrg;
         delete $scope.selectedGroup;
         delete $scope.selectedSubGroup;
+        cache.removeAll();
         $scope.reload();
     }
 
