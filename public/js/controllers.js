@@ -721,34 +721,24 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                     $http.get("/org/" + $scope.selectedOrg).then(function(response) {
                         var org = response.data;
                         if (org.classifications) {
+                            // Foreach conceptSystem in query.facets
                             for (var i = 0; i < $scope.facets.groups.terms.length; i++) {
-                                var groupFound = false;
                                 var g = $scope.facets.groups.terms[i];
-                                for (var j = 0; !groupFound && j < org.classifications.length; j++) {
+                                // Find conceptSystem in db.org.classifications
+                                for (var j = 0; j < org.classifications.length; j++) {
                                     if (org.classifications[j].name === g.term) {
-                                        groupFound = true;
-                                    }
-                                }
-                                if (groupFound) {
-                                    var group = {name: g.term, concepts: []};
-                                    if ($scope.facets.concepts !== undefined) {
-                                        for (var k = 0; k < $scope.facets.concepts.terms.length; k++) {
-                                            var c = $scope.facets.concepts.terms[k];
-                                            for (var l = 0; l < org.classifications.length; l++) {
-                                                //if (org.classifications[l].conceptSystem === g.term && c.term === org.classifications[l].concept) {
-                                                //    group.concepts.push(c);
-                                                //}
-                                                if (org.classifications[l].name === g.term) {
-                                                    for (var m = 0; m < org.classifications[l].elements.length; m++) {
-                                                        if (org.classifications[l].elements[m].name===c.term) {
-                                                            group.concepts.push(c);
-                                                        }
-                                                    }                                                    
-                                                }                                                
+                                       var group = {name: g.term, concepts: []};
+                                       // Add concepts from db.org.classifications.elements
+                                       for (var m = 0; m < org.classifications[j].elements.length; m++) {
+                                            for (var h=0; h<$scope.facets.concepts.terms.length; h++) {
+                                                var c = $scope.facets.concepts.terms[h];
+                                                if (org.classifications[j].elements[m].name===c.term) {
+                                                    group.concepts.push(c);
+                                                }                                               
                                             }
-                                        }
+                                        } 
+                                        $scope.groups.push(group);
                                     }
-                                    $scope.groups.push(group);
                                 }
                             }
                         }
