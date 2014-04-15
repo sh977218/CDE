@@ -59,6 +59,7 @@ public class NlmCdeBaseTest {
         
     protected void goToCdeByName(String name) {
         goHome();
+        Assert.assertTrue(textPresent("Qualified ("));
         findElement(By.id("ftsearch-input")).sendKeys(name);
         // TODO. Selenium doesn't seem to always send keys. Don't know why. Maybe catch and retry?
         Assert.assertEquals(findElement(By.id("ftsearch-input")).getAttribute("value"), name);
