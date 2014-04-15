@@ -192,40 +192,40 @@ def BasicDBObject parseValueDomain(XSSFRow row, Map xlsMap){
 
 def parsePatientStory(ArrayList<BasicDBObject> classificationArray, BasicDBObject stewardOrg, Map xlsMap, XSSFRow row){    
     if(getCellValue(row.getCell(xlsMap.chronicDisease.cancerGenetics))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Chronic Disease", "Cancer Genetics");        
+        classifications.classify(classificationArray, "PHRI", "Chronic Disease", "Cancer Genetics");        
     if(getCellValue(row.getCell(xlsMap.chronicDisease.cancerReporting))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Chronic Disease", "Cancer Reporting");        
+        classifications.classify(classificationArray, "PHRI", "Chronic Disease", "Cancer Reporting");        
     if(getCellValue(row.getCell(xlsMap.chronicDisease.nationalHospitalCareSurvey))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Chronic Disease", "National Hospital Care Survey");       
+        classifications.classify(classificationArray, "PHRI", "Chronic Disease", "National Hospital Care Survey");       
     if(getCellValue(row.getCell(xlsMap.chronicDisease.occupationalHealth))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Chronic Disease", "Occupational Health");    
+        classifications.classify(classificationArray, "PHRI", "Chronic Disease", "Occupational Health");    
     
     if(getCellValue(row.getCell(xlsMap.communicableDisease.any))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Communicable Disease", "Any");           
+        classifications.classify(classificationArray, "PHRI", "Communicable Disease", "Any");           
     if(getCellValue(row.getCell(xlsMap.communicableDisease.communicableSyndromic))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Communicable Disease", "Communicable & Syndromic");       
+        classifications.classify(classificationArray, "PHRI", "Communicable Disease", "Communicable & Syndromic");       
     if(getCellValue(row.getCell(xlsMap.communicableDisease.HAI))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Communicable Disease", "HAI"); 
+        classifications.classify(classificationArray, "PHRI", "Communicable Disease", "HAI"); 
         
     if(getCellValue(row.getCell(xlsMap.childHealth.any))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Child Health", "Any");        
+        classifications.classify(classificationArray, "PHRI", "Child Health", "Any");        
     if(getCellValue(row.getCell(xlsMap.childHealth.immunization))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Child Health", "Immunization");        
+        classifications.classify(classificationArray, "PHRI", "Child Health", "Immunization");        
     if(getCellValue(row.getCell(xlsMap.childHealth.newbornHearing))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Child Health", "Newborn Hearing");       
+        classifications.classify(classificationArray, "PHRI", "Child Health", "Newborn Hearing");       
     if(getCellValue(row.getCell(xlsMap.childHealth.vitalStatistics))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Child Health", "Vital Statistics");    
+        classifications.classify(classificationArray, "PHRI", "Child Health", "Vital Statistics");    
         
     if(getCellValue(row.getCell(xlsMap.adverseEvents.any))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Adverse Events", "Any");        
+        classifications.classify(classificationArray, "PHRI", "Adverse Events", "Any");        
     if(getCellValue(row.getCell(xlsMap.adverseEvents.ASTER1))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Adverse Events", "ASTER 1");        
+        classifications.classify(classificationArray, "PHRI", "Adverse Events", "ASTER 1");        
     if(getCellValue(row.getCell(xlsMap.adverseEvents.AHRQCommonFormats))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Adverse Events", "AHRQ Common Formats");       
+        classifications.classify(classificationArray, "PHRI", "Adverse Events", "AHRQ Common Formats");       
     if(getCellValue(row.getCell(xlsMap.adverseEvents.ASTERD))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Adverse Events", "ASTER D");      
+        classifications.classify(classificationArray, "PHRI", "Adverse Events", "ASTER D");      
     if(getCellValue(row.getCell(xlsMap.adverseEvents.ICSRR2))=="Yes")
-        classifications.classify(classificationArray, stewardOrg, "Adverse Events", "ICSR R2");       
+        classifications.classify(classificationArray, "PHRI", "Adverse Events", "ICSR R2");       
 }
 
 
@@ -280,19 +280,14 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     element.put("name","S&I PHRI Category");
     element.put("elements",[el]);
     def stewardClassificationsArray = [element];    
-    def classif = classifications.buildClassif("S&I PHRI Category", phriCategory);
-    classifications.saveClassif(classif);        
+    def classif = classifications.buildClassif("S&I PHRI Category", phriCategory, "PHRI");
+    classifications.saveClassif(classif);     
+    
     def stewardClassification = classifications.buildStewardClassifictions(stewardClassificationsArray, "PHRI");
-    /*def stewardClassification = new BasicDBObject();
-    stewardClassification.put("stewardOrg", stewardOrg);
-    stewardClassification.put("elements",stewardClassificationsArray);
-    def classif = classifications.buildClassif("S&I PHRI Category", phriCategory);
-    classifications.saveClassif(classif);  */  
     parsePatientStory(stewardClassificationsArray, stewardOrg, xlsMap, row);    
     def classificationArray = [stewardClassification];        
     newDE.put("classification", classificationArray);
-    //////////////////////
-    
+   
                             
     BasicDBObject registrationState = new BasicDBObject();
     registrationState.put("registrationStatus", "Recorded");
