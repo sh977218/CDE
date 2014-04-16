@@ -5,10 +5,6 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
         when('/login', {controller:AuthCtrl, templateUrl:'/login'}).
         when('/signup', {controller:AuthCtrl, templateUrl:'/signup'}).
         when('/createCde', {controller:CreateCdeCtrl, templateUrl:'/createcde'}).
-//        when('/listforms', {controller: ListFormsCtrl, templateUrl: '/listforms'}).
-//        when('/createform', {controller: CreateFormCtrl, templateUrl: '/createform'}).
-//        when('/formview', {controller: FormViewCtrl, templateUrl: '/formview'}).
-//        when('/cart', {controller: CartCtrl, templateUrl: '/cart'}).
         when('/deview', {controller: DEViewCtrl, templateUrl: '/deview'}).
         when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
         when('/orgaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/orgaccountmanagement'}).
@@ -18,7 +14,7 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
         when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
         when('/boardList', {controller: BoardListCtrl, templateUrl: '/boardList'}).
         when('/deCompare', {controller: CompareCtrl, templateUrl: '/deCompare'}).
-        when('/cdeSearchExport', {controller: ExportCtrl, templateUrl: '/exportCdeSearch'}).
+        when('/cdeSearchExport', {controller: DEListCtrl, templateUrl: '/exportCdeSearch'}).
         otherwise({redirectTo:'/'});
     }).
     directive('inlineEdit', function() {

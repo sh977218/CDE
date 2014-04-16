@@ -5,6 +5,8 @@
     height: 600px;
 }
 </style>
-<div class="gridStyle" ng-grid="gridOptions"></div>
-
+<div ng-controller="ExportCtrl">
+    <div class="gridStyle" ng-grid="gridOptions"></div>
+    <a class="btn btn-mini fa fa-external-link" ng-click="downloadCsv()"> Export</a>
+</div>
 
