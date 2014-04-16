@@ -194,16 +194,9 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
          return $scope.org.classifications;
     };
     
-    $scope.filterConceptSystemClassification = function(item) {
-      var systemIsNew = indexedConceptSystemClassifications.indexOf(item.conceptSystem) == -1;
-      if (systemIsNew) {
-          indexedConceptSystemClassifications.push(item.conceptSystem);
-      }
-      return systemIsNew;
-    };
-    
-    $scope.removeClassification = function(classif) {
-        $http.post("/removeClassificationFromOrg", classif).then(function(response) {
+    $scope.removeClassification = function(orgName, conceptSystem, concept) {
+        var classToDel = {stewardOrg:{name:orgName}, conceptSystem:conceptSystem, concept:concept};
+        $http.post("/removeClassificationFromOrg", classToDel).then(function(response) {
             $scope.addAlert("success", response.data);
             $scope.updateOrg();
         });

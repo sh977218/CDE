@@ -62,12 +62,29 @@ exports.org_autocomplete = function(name, callback) {
 };
 
 exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, callback) {
-    DataElement.update({}, {$pull: {classification: {conceptSystem: conceptSystem, concept: concept, "stewardOrg.name": orgName}}}, {multi: true}).exec(function(err) {
+    //DataElement.update({}, {$pull: {classification: {conceptSystem: conceptSystem, concept: concept, "stewardOrg.name": orgName}}}, {multi: true}).exec(function(err) {
+    var mongoQuery = {
+        $pull: {
+            classification: {
+                "stewardOrg.name": orgName,
+                "elements.name": conceptSystem,
+                "elements.elements.name": concept
+            }
+        }
+    };
+    DataElement.update({}, mongoQuery, {multi: true}).exec(function(err) {
         if (err) { 
             callback("Unable to unclassify. " + err);
             return;
         } else {
-            Org.update({name: orgName}, {$pull: {classifications: {conceptSystem: conceptSystem, concept: concept}}}, false).exec(function(err) {
+            var mongoQuery = {
+                $pull: {
+                        "classifications.$.elements": {
+                            "name": concept
+                        }
+                }
+            };
+            Org.update({"name": orgName, "classifications.name": conceptSystem}, mongoQuery).exec(function(err) {
                 if (err) { 
                     callback("Unable to remove Classification. " + err);
                     return;
