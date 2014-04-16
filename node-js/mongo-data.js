@@ -49,10 +49,10 @@ exports.conceptSystem_autocomplete = function(system, callback) {
     }); 
 };
 
-exports.conceptSystem_org_autocomplete = function(orgName, system, callback) {
-    Org.distinct("classifications.conceptSystem", {"classifications.stewardOrg.name": orgName, "classifications.conceptSystem": new RegExp(system, 'i')}, function(err, systems) {
+exports.conceptSystem_org_autocomplete = function(orgName, callback) {
+    Org.distinct("classifications.name", {"name": orgName}, function(err, systems) {
         callback(systems);
-    }); 
+    });    
 };
 
 exports.org_autocomplete = function(name, callback) {

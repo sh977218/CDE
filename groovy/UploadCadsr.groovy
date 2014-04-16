@@ -21,38 +21,6 @@ DB db = mongoClient.getDB(mongoDb);
 DBCollection deColl = db.getCollection("dataelements");
 DBCollection orgColl = db.getCollection("orgs");
 
-/*def saveClassif = { newClassif ->
-    def foundOrg = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
-    
-    def found = false;
-    if (foundOrg == null) {
-        println("Missing Org: " + newClassif.get("stewardOrg").get("name"));
-    }
-    def classifications = foundOrg.get("classifications");
-    if (classifications == null) {
-        foundOrg.put("classifications", []);
-    }
-    for (BasicDBObject existingClassif : classifications) {
-        if ((existingClassif.get("conceptSystem").equals(newClassif.get("conceptSystem")) && (existingClassif.get("concept").equals(newClassif.get("concept"))))) {
-            found = true;
-        }
-    }
-    if (!found) {
-        foundOrg.classifications.add(newClassif);
-        orgColl.update(new BasicDBObject("_id", foundOrg.get("_id")), foundOrg);
-    }
-};
-
-def buildClassif = {conceptSystem, concept, org ->
-    if (conceptSystem.trim().equals("PhenX")) org = "PhenX";
-    
-    def newClassif = new BasicDBObject();
-    newClassif.put("conceptSystem", conceptSystem.trim())
-    newClassif.put("concept", concept.trim())
-    newClassif.put("stewardOrg", new BasicDBObject("name", org));
-    newClassif;
-}*/
-
 println ("ingesting: " + args[0]);
 def deList = new XmlSlurper().parse(new File(args[0]));
 
@@ -147,7 +115,9 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     PROP.put("concepts", propConcepts);
     newDE.put("property", PROP);
     
-    def stewardClassificationsArray = [];
+    //def stewardClassificationsArray = [];
+    //def classificationsArrayMap = new Map<String, ArrayList<BasicDBObject>>();
+    def classificationsArrayMap = [:];
     Classifications classifications = new Classifications(orgColl);
     for (int csi_i = 0; csi_i < cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.size(); csi_i++) {
         def csi = cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM[csi_i];
@@ -155,12 +125,27 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
             && csi.ClassificationScheme[0].PreferredName.text()!=null
             && csi.ClassificationSchemeItemName.text()!=""
             && csi.ClassificationSchemeItemName.text()!=null) {
-                classifications.classify(stewardClassificationsArray, csi.ClassificationScheme[0].ContextName.text(), csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());        
+                //classifications.classify(stewardClassificationsArray, csi.ClassificationScheme[0].ContextName.text(), csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());    
+                def list = classificationsArrayMap.get(csi.ClassificationScheme[0].ContextName.text());
+                if (!list) { 
+                    list = [];
+                    classificationsArrayMap.put(csi.ClassificationScheme[0].ContextName.text(),list);
+                }                
+                classifications.classify(list, csi.ClassificationScheme[0].ContextName.text(), csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());                        
         }
     }
-    if (stewardClassificationsArray.size()>0) {
+    /*if (stewardClassificationsArray.size()>0) {
         def stewardClassification = classifications.buildStewardClassifictions(stewardClassificationsArray, cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM[0].ClassificationScheme[0].ContextName.text());
         newDE.append("classification", [stewardClassification]);
+    }*/
+    
+    for (steward in classificationsArrayMap) {
+        def list = steward.value;
+        def stewardClassification = classifications.buildStewardClassifictions(list, steward.key);
+        def classifs = newDE.get("classification");
+        if (!classifs) classifs=[];
+        classifs.add(stewardClassification);   
+        newDE.append("classification",classifs);
     }
 
     

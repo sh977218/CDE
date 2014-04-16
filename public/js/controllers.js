@@ -223,18 +223,14 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
     };
 }
 
- function AddClassificationToOrgModalCtrl($scope, $modalInstance, $http, org) {
-    $scope.classAutocomplete = function (viewValue) {
-        return $http.get("/autocomplete/classification/" + org + "/" + viewValue).then(function(response) { 
-            var table = [];
-            for (var i =0; i < response.data.length; i++) {
-                if (response.data[i].toLowerCase().indexOf(viewValue.toLowerCase()) !== -1) {
-                    table.push(response.data[i]);
-                }
-            }
-            return table;
-        }); 
-     };
+function AddClassificationToOrgModalCtrl($scope, $modalInstance, $http, org) {
+    $scope.orgClassSystems = [];
+    $scope.getOrgClassSystems = function () {
+        $http.get("/autocomplete/classification/org/" + org).then(function(response) { 
+            $scope.orgClassSystems = response.data;
+        });
+    };
+    $scope.getOrgClassSystems();
      
     $scope.okCreate = function (classification) {
       $modalInstance.close(classification);

@@ -17,7 +17,7 @@ sleep 3;
 mongo test test/dbInit.js
 mongo test db/indexes.txt
 
-groovy groovy/UploadCadsr test/cadsrTestSeed.xml --testMode
+groovy -cp groovy/ groovy/UploadCadsr test/cadsrTestSeed.xml --testMode
 
 curl -XPOST "localhost:9200/cdetest" -d '
 {
@@ -70,7 +70,7 @@ curl -XPUT "localhost:9200/_river/cdetest/_meta" -d'
 #        }           
 #    }'
 
-sleep 8;
+sleep 20;
 
 export target='{"count":382,"_shards":{"total":1,"successful":1,"failed":0}}'
 export curl_res=$(curl http://localhost:9200/cdetest/_count)
@@ -78,13 +78,14 @@ if [ "$curl_res" == "$target" ]
 then
     groovy groovy/UploadCadsrForms.groovy --testMode &
     #
-    gradle -b test/selenium/build.gradle -Dtest.single=ValueDomainTest test & 
+    gradle -b test/selenium/build.gradle -Dtest.single=CdeSearchTest test & 
 #    gradle -b test/selenium/build.gradle clean test & 
 #    gradle -b test/selenium/build.gradle -Dtest.single=CdeSearchTest test & 
-    gradle -b test/selenium/build.gradle clean test & 
+#    gradle -b test/selenium/build.gradle clean test & 
 #    rm test-console.out
     node app > test-console.out
 else
     echo "Not all documents indexed. Aborting"
+    sleep 900;
     echo $curl_res
 fi
