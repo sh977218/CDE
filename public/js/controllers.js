@@ -177,6 +177,7 @@ function ExportCtrl($scope, $http, $window) {
         data: 'gridCdes'
         , enableColumnResize: true
         , enableRowReordering: true
+        , enableCellSelection: true
     };
     
     $scope.downloadCsv = function() {
