@@ -1,4 +1,4 @@
-var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular']).
+var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular']).
     config(function($routeProvider) {
         $routeProvider.
         when('/', {controller:DEListCtrl, templateUrl:'/list'}).
@@ -18,6 +18,7 @@ var cdeApp = angular.module('cde', ['resources', 'ui.bootstrap', 'ngSanitize', '
         when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
         when('/boardList', {controller: BoardListCtrl, templateUrl: '/boardList'}).
         when('/deCompare', {controller: CompareCtrl, templateUrl: '/deCompare'}).
+        when('/cdeSearchExport', {controller: ExportCtrl, templateUrl: '/exportCdeSearch'}).
         otherwise({redirectTo:'/'});
     }).
     directive('inlineEdit', function() {

@@ -178,6 +178,10 @@ app.get('/', function(req, res) {
   res.render('index');
 });
 
+app.get('/exportCdeSearch', function(req, res) {
+  res.render('cdeExport');
+});
+
 app.get('/list', function(req, res){
   res.render('list');
 });

@@ -171,6 +171,147 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };
 }
 
+function ExportCtrl($scope, $cacheFactory, $http) {
+    var cache;
+    if ($cacheFactory.get("deListCache") === undefined) {
+        cache = $cacheFactory("deListCache");
+    } else {
+        cache = $cacheFactory.get("deListCache");
+    }
+    
+    $scope.registrationStatuses = cache.get("registrationStatuses");
+    if ($scope.registrationStatuses === undefined) {
+        $scope.registrationStatuses = [
+            {name: 'Preferred Standard'}
+            , {name: 'Standard'}
+            , {name: 'Qualified'}
+            , {name: 'Recorded'}
+            , {name: 'Candidate'}
+            , {name: 'Incomplete'}
+        ];
+    }
+    
+    $scope.ftsearch = cache.get("ftsearch");
+    $scope.selectedOrg = cache.get("selectedOrg");
+    $scope.selectedGroup = cache.get("selectedGroup");
+    $scope.selectedSubGroup = cache.get("selectedSubGroup"); 
+    
+    $scope.buildElasticQuery = function (callback) {
+        var queryStuff = {size: 1000};
+        var searchQ = $scope.ftsearch;
+        
+        $scope.filter = {and: []};
+        
+        if ($scope.selectedOrg !== undefined) {
+            $scope.filter.and.push({term: {"classification.stewardOrg.name": $scope.selectedOrg}});
+        }
+
+        if ($scope.selectedSubGroup !== undefined) {
+            $scope.filter.and.push({term: {"classification.concept": $scope.selectedSubGroup.term}});
+        }
+        
+        var regStatusOr = [];
+        for (var i = 0; i < $scope.registrationStatuses.length; i++) {
+            var t = $scope.registrationStatuses[i];
+            if (t.selected === true) {
+                regStatusOr.push({term: {"registrationState.registrationStatus": t.name.toLowerCase()}});
+            }
+        }
+        if (regStatusOr.length > 0) {
+            $scope.filter.and.push({or: regStatusOr});
+        }       
+
+        if (searchQ !== undefined && searchQ !== "") {
+            queryStuff.query = 
+            {   
+                bool: {
+                    should: {
+                    function_score: {
+                        boost_mode: "replace"
+                        , script_score: {
+                            script: "_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)"
+                        }
+                        , query: {
+                            query_string: {
+                                fields: ["_all", "naming.designation^3"]
+                                , query: searchQ
+                            }
+                        }
+                    }
+                    }
+                    , must_not: {
+                        term: {
+                            "registrationState.registrationStatus": "retired"
+                        }
+                    }
+                }
+           };
+        } 
+
+        if ($scope.filter !== undefined) {
+            if ($scope.filter.and !== undefined) {
+                if ($scope.filter.and.length === 0) {
+                    delete $scope.filter.and;
+                } 
+            }
+            if ($scope.filter.and === undefined) {
+                delete $scope.filter;
+            }
+        }
+
+        if ($scope.filter !== undefined) {
+            queryStuff.filter = $scope.filter;
+        }
+
+        return callback({query: queryStuff});
+    };
+  
+    $scope.cdes = [];
+    $scope.gridOptions = {
+        data: 'cdes'
+        , enableColumnResize: true
+        , enableRowReordering: true
+    };
+    
+    $scope.buildElasticQuery(function(query) {
+        $http.post("/elasticSearch", query).then(function (response) {
+            var result = response.data;
+            $scope.cdes = [];
+            var list = result.cdes;
+            for (var i in list) {
+                var cde = list[i];
+                var thisCde = 
+                {
+                    ID: cde.uuid
+                    , Version: cde.version
+                    , Name: cde.naming[0].designation
+                    , Definition: cde.naming[0].definition
+                    , Steward: cde.stewardOrg.name
+                    , "OriginId": cde.originId 
+                    , Origin: cde.origin
+                    , "RegistrationStatus": cde.registrationState.registrationStatus
+               }
+               var otherNames = "";
+               for (var j = 1; j < cde.naming.length; j++) {
+                   otherNames = otherNames.concat(" " + cde.naming[j].designation);
+               } 
+               thisCde.otherNames = otherNames;
+               
+               var permissibleValues = "";
+               for (var j = 0; j < cde.valueDomain.permissibleValues.length; j++) {
+                   permissibleValues = permissibleValues.concat(cde.valueDomain.permissibleValues[j].permissibleValue + "; ");
+               } 
+               thisCde.permissbleValues = permissibleValues;
+        
+               $scope.cdes.push(thisCde);               
+            }
+        });
+    });
+    
+
+ 
+}
+
 function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
     if ($scope.myOrgs.length > 0) {
         $scope.orgToManage = $scope.myOrgs[0];
@@ -892,6 +1033,12 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             $scope.cdes[i].isOpen = $scope.openAllModel;
         }
         cache.put("openAll", $scope.openAllModel);
+    }
+    
+    $scope.export = function() {
+        $scope.buildElasticQuery(function(result) {
+            
+        });
     }
     
 }
