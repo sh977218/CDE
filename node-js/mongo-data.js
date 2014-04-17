@@ -1,4 +1,4 @@
-var mongoose = require('mongoose')
+ var mongoose = require('mongoose')
     , util = require('util')
     , vsac_io = require('./vsac-io')
     , xml2js = require('xml2js')
@@ -97,13 +97,34 @@ exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, 
 };
 
 exports.addClassificationToOrg = function(orgName, conceptSystem, concept, callback) {
-    Org.update({name: orgName}, {$push: {classifications: {conceptSystem: conceptSystem, concept: concept, stewardOrg: {name: orgName}}}}, false).exec(function(err) {
+    /*Org.update({name: orgName}, {$push: {classifications: {conceptSystem: conceptSystem, concept: concept, stewardOrg: {name: orgName}}}}, false).exec(function(err) {
         if (err) { 
             callback("Unable to add Classification. " + err);
             return;
         } else {
             return callback();
         }        
+    });*/
+    //db.cars.update({"model":"Accord"},{$push:{"owners":{"name":"Vasek"}}})
+    //db.cars.update({"model":"Accord","owners.name":"Vasek"},{$push:{"owners.$.accidents":{"severity":"super"}}})
+    var mongo_data = this;
+    this.existsConceptSystem = function(stewardOrg, conceptSystem) {
+        for(var i=0; i<stewardOrg._doc.classifications.length; i++) {
+            if(stewardOrg._doc.classifications[i]._doc.name===conceptSystem) {
+                return true;
+            }
+        }
+        return false;
+    };
+    this.addConceptSystem = function(stewardOrg, conceptSystem) {
+        stewardOrg._doc.classifications.push({name: conceptSystem});
+    };    
+    Org.findOne({"name": orgName}).exec(function(err, stewardOrg) {
+        var conceptSystemExists = mongo_data.existsConceptSystem(stewardOrg, conceptSystem);
+        if (!conceptSystemExists) {
+            mongo_data.addConceptSystem(stewardOrg, conceptSystem);
+        }
+        console.log(stewardOrg);
     });
 };
 
