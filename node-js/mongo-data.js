@@ -44,7 +44,7 @@ exports.publicBoardsByDeUuid = function(uuid, callback) {
 };
 
 exports.conceptSystem_autocomplete = function(system, callback) {
-    Org.distinct("classifications.elements.name", function(err, systems) {
+    Org.distinct("classifications.name", function(err, systems) {
         callback(systems);
     }); 
 };
