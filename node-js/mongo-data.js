@@ -96,7 +96,7 @@ exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, 
     });
 };
 
-exports.addClassificationToOrg = function(orgName, conceptSystem, concept, callback) {
+exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptName, callback) {
     /*Org.update({name: orgName}, {$push: {classifications: {conceptSystem: conceptSystem, concept: concept, stewardOrg: {name: orgName}}}}, false).exec(function(err) {
         if (err) { 
             callback("Unable to add Classification. " + err);
@@ -108,23 +108,49 @@ exports.addClassificationToOrg = function(orgName, conceptSystem, concept, callb
     //db.cars.update({"model":"Accord"},{$push:{"owners":{"name":"Vasek"}}})
     //db.cars.update({"model":"Accord","owners.name":"Vasek"},{$push:{"owners.$.accidents":{"severity":"super"}}})
     var mongo_data = this;
-    this.existsConceptSystem = function(stewardOrg, conceptSystem) {
-        for(var i=0; i<stewardOrg._doc.classifications.length; i++) {
-            if(stewardOrg._doc.classifications[i]._doc.name===conceptSystem) {
-                return true;
+    this.findConceptSystem = function(stewardOrg, conceptSystemName) {
+        for(var i=0; i<stewardOrg.classifications.length; i++) {
+            if(stewardOrg.classifications[i].name===conceptSystemName) {
+                return stewardOrg.classifications[i];
             }
         }
-        return false;
+        return null;
     };
-    this.addConceptSystem = function(stewardOrg, conceptSystem) {
-        stewardOrg._doc.classifications.push({name: conceptSystem});
-    };    
-    Org.findOne({"name": orgName}).exec(function(err, stewardOrg) {
-        var conceptSystemExists = mongo_data.existsConceptSystem(stewardOrg, conceptSystem);
-        if (!conceptSystemExists) {
-            mongo_data.addConceptSystem(stewardOrg, conceptSystem);
+    this.findConcept = function(conceptSystem, conceptName) {
+        for(var i=0; i<conceptSystem.elements.length; i++) {
+            if(conceptSystem.elements[i].name===conceptName) {
+                return conceptSystem.elements[i];
+            }
         }
-        console.log(stewardOrg);
+        return null;
+    };    
+    this.addConceptSystem = function(stewardOrg, conceptSystemName) {
+        stewardOrg.classifications.push({name: conceptSystemName});
+        return stewardOrg.classifications[stewardOrg.classifications.length-1];
+    };  
+    this.addConcept = function(conceptSystem, conceptName) {
+        if (!conceptSystem.elements) {
+            conceptSystem.elements = [];
+        }
+        conceptSystem.elements.push({name: conceptName});
+    };     
+    Org.findOne({"name": orgName}).exec(function(err, stewardOrg) {
+        conceptSystem = mongo_data.findConceptSystem(stewardOrg, conceptSystemName);
+        if (!conceptSystem) {
+            conceptSystem = mongo_data.addConceptSystem(stewardOrg, conceptSystemName);
+        }
+        concept = mongo_data.findConcept(conceptSystem, conceptName);
+        if (!concept) {
+            mongo_data.addConcept(conceptSystem, conceptName);
+        }    
+        stewardOrg.save(function (err) {
+            if (err) { 
+                callback("Unable to add Classification. " + err);
+                return;
+            } else {
+                return callback();
+            }  
+        });
     });
 };
 
@@ -261,7 +287,7 @@ exports.removeFromCart = function (user, formId, callback) {
                 if (err) {
                     console.log("Could not remove from cart");
                 }
-               callback(""); 
+                callback(""); 
             });
         } else {
             console.log("This form is not in the cart. " + formId);
