@@ -1565,7 +1565,7 @@ function CommentsCtrl($scope, Comment) {
  }
  
  function AddClassificationModalCtrl($scope, $modalInstance, $http) {
-    $scope.classAutocomplete = function (viewValue) {
+    /*$scope.classAutocomplete = function (viewValue) {
         return $http.get("/autocomplete/classification/" + viewValue).then(function(response) { 
             var table = [];
             for (var i =0; i < response.data.length; i++) {
@@ -1575,7 +1575,14 @@ function CommentsCtrl($scope, Comment) {
             }
             return table;
         }); 
-     };
+     };*/
+    $scope.orgClassSystems = [];
+    $scope.getOrgClassSystems = function () {
+        $http.get("/autocomplete/classification/all").then(function(response) { 
+            $scope.orgClassSystems = response.data;
+        });
+    };
+    $scope.getOrgClassSystems();     
      
     $scope.okCreate = function (classification) {
       $modalInstance.close(classification);

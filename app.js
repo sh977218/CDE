@@ -672,7 +672,7 @@ app.get('/autocomplete/form', function(req, res) {
     return cdesvc.name_autocomplete_form(req, res);
 });
 
-app.get('/autocomplete/classification/:conceptSystem', function (req, res) {
+app.get('/autocomplete/classification/all', function (req, res) {
     mongo_data.conceptSystem_autocomplete(req.params.conceptSystem, function (result) {
         res.send(result);
     });
