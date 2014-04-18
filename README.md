@@ -27,7 +27,7 @@ configure **elascticsearch.yml**
     * plugin.mandatory: mapper-attachments, lang-javascript, river-mongodb
 
 ```sh
-bin/plugin --install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/1.7.3
+$> bin/plugin --install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/1.7.3
 ```
 
 Versions numbers should match per river plugin doc. 
@@ -35,14 +35,14 @@ Versions numbers should match per river plugin doc.
 Install javascript plugin
 
 ```sh
-bin/plugin -install elasticsearch/elasticsearch-lang-javascript/1.4.0
+$> bin/plugin -install elasticsearch/elasticsearch-lang-javascript/1.4.0
 ```
 
 
 Install mapper attachment plugin
 
 ```sh
-bin/plugin -install elasticsearch/elasticsearch-mapper-attachments/1.6.0
+$> bin/plugin -install elasticsearch/elasticsearch-mapper-attachments/1.6.0
 ```
 
 ## Configure
