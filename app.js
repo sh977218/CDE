@@ -741,7 +741,26 @@ app.post('/addClassification', function(req, res) {
                   ) {
                 res.send("You do not own this data element.");
             } else {
-                de.classification.push(req.body.classification);
+                var steward = classification.findSteward(de, req.body.classification.orgName);
+                if (!steward) {
+                    var newSteward = {
+                        stewardOrg : {
+                            name: req.body.classification.orgName
+                        },
+                        elements: []
+                    };
+                    de.classification.push(newSteward);  
+                    var i = de.classification.length-1;
+                    steward = {index: i, object: de.classification[i]};
+                }  
+                var conceptSystem = classification.findConcept(steward.object, req.body.classification.conceptSystem);                
+                if (!conceptSystem) {
+                    conceptSystem = classification.addElement(steward.object, req.body.classification.conceptSystem);
+                }
+                var concept = classification.findConcept(conceptSystem.object, req.body.classification.concept);      
+                if (!concept) {
+                    concept = classification.addElement(conceptSystem.object, req.body.classification.concept);
+                }                
                 return de.save(function(err) {
                     if (err) {
                         res.send("error: " + err);
@@ -769,7 +788,6 @@ app.post('/removeClassification', function(req, res) {
                   ) {
                 res.send("You do not own this data element.");
             } else {
-                var toRemove = req.body.classification;
                 var steward = classification.findSteward(de, req.body.orgName);
                 var conceptSystem = classification.findConcept(steward.object, req.body.conceptSystemName);
                 var concept = classification.findConcept(conceptSystem.object, req.body.conceptName);
