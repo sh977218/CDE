@@ -12,9 +12,9 @@ public class ExportTest extends NlmCdeBaseTest {
     @Test
     public void gridView() {
         goHome();
-        findElement(By.linkText("ACRIN (3)")).click();
+        findElement(By.id("li-blank-ACRIN")).click();
         hangon(2);
-        findElement(By.linkText(" Grid View")).click();
+        findElement(By.id("gridView")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.id("exportLink")));
         List<WebElement> rows = driver.findElements(By.xpath("//div[@class='ngCanvas']/div"));
         Assert.assertEquals(3, rows.size());

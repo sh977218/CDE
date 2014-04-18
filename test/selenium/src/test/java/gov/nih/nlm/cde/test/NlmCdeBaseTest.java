@@ -59,18 +59,21 @@ public class NlmCdeBaseTest {
         
     protected void goToCdeByName(String name) {
         goHome();
-        findElement(By.id("ftsearch-input")).sendKeys(name);
-        // TODO. Selenium doesn't seem to always send keys. Don't know why. Maybe catch and retry?
-        Assert.assertEquals(findElement(By.id("ftsearch-input")).getAttribute("value"), name);
-//        findElement(By.id("search.submit")).click();
-        findElement(By.cssSelector("i.fa-search")).click();
-        Assert.assertTrue(textPresent(name));
-        findElement(By.id("acc_link_0")).click();
-        hangon(1);
+        openCdeInList(name);
         findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("More Like This"));
     }
         
+    
+    protected void openCdeInList(String name) {
+        findElement(By.id("ftsearch-input")).sendKeys(name);
+        Assert.assertEquals(findElement(By.id("ftsearch-input")).getAttribute("value"), name);
+        findElement(By.cssSelector("i.fa-search")).click();
+        Assert.assertTrue(textPresent(name));
+        findElement(By.id("acc_link_0")).click();
+        hangon(0.5);
+    }
+    
     protected void goToFormByName(String name) {
         goHome();
         findElement(By.id("formsLink")).click();
@@ -111,9 +114,9 @@ public class NlmCdeBaseTest {
         hangon(2);
     }
     
-    public void hangon(int i)  {
+    public void hangon(double i)  {
         try {
-            Thread.sleep(i * 1000);
+            Thread.sleep((long)(i * 1000));
         } catch (InterruptedException ex) {
             Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
         }

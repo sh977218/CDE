@@ -134,11 +134,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     private void pinTo(String cdeName, String boardName) {
         goHome();
-        findElement(By.name("ftsearch")).sendKeys(cdeName);
-        findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent(cdeName));
-        findElement(By.id("acc_link_0")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pin_0")));
+        openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
         modalHere();        
         findElement(By.linkText(boardName)).click();
@@ -198,10 +194,7 @@ public class BoardTest extends NlmCdeBaseTest {
         pinTo(cdeName, boardName);
         
         goHome();
-        findElement(By.name("ftsearch")).sendKeys(cdeName);
-        findElement(By.id("search.submit")).click();
-        findElement(By.id("acc_link_0")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pin_0")));
+        openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
         modalHere();
         findElement(By.linkText(boardName)).click();
@@ -233,10 +226,7 @@ public class BoardTest extends NlmCdeBaseTest {
         String cdeName = "Specimen Array";
 
         goHome();
-        findElement(By.name("ftsearch")).sendKeys(cdeName);
-        findElement(By.id("search.submit")).click();
-        findElement(By.partialLinkText(cdeName)).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pin_0")));
+        openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
         modalHere();
         Assert.assertTrue(textPresent("Create a board now"));
