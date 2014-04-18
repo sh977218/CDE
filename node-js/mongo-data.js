@@ -62,7 +62,6 @@ exports.org_autocomplete = function(name, callback) {
 };
 
 exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, callback) {
-    //DataElement.update({}, {$pull: {classification: {conceptSystem: conceptSystem, concept: concept, "stewardOrg.name": orgName}}}, {multi: true}).exec(function(err) {
     var mongoQuery = {
         $pull: {
             classification: {
@@ -97,16 +96,6 @@ exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, 
 };
 
 exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptName, callback) {
-    /*Org.update({name: orgName}, {$push: {classifications: {conceptSystem: conceptSystem, concept: concept, stewardOrg: {name: orgName}}}}, false).exec(function(err) {
-        if (err) { 
-            callback("Unable to add Classification. " + err);
-            return;
-        } else {
-            return callback();
-        }        
-    });*/
-    //db.cars.update({"model":"Accord"},{$push:{"owners":{"name":"Vasek"}}})
-    //db.cars.update({"model":"Accord","owners.name":"Vasek"},{$push:{"owners.$.accidents":{"severity":"super"}}})
     var mongo_data = this;
     this.findConceptSystem = function(stewardOrg, conceptSystemName) {
         for(var i=0; i<stewardOrg.classifications.length; i++) {

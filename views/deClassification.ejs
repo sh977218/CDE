@@ -40,6 +40,13 @@
             <h6>{{ conceptSystem.name }}</h6>
             <ul>
                 <li ng-repeat="concept in conceptSystem.elements">
+                    <span ng-show="isAllowedNonCuration(cde)">
+                        <span ng-show="showDelete">
+                            Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(stewardClassifications.stewardOrg.name, conceptSystem.name, concept.name)" id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
+                            <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
+                        </span>
+                        <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
+                    </span>                    
                     {{ concept.name }}
                 </li>
             </ul>

@@ -200,7 +200,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
             $scope.addAlert("success", response.data);
             $scope.updateOrg();
         });
-    }
+    };
     
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
@@ -1533,7 +1533,7 @@ function CommentsCtrl($scope, Comment) {
  }
  
  function ClassificationCtrl($scope, $modal, Classification) {
-    $scope.removeClassification = function(classif) {
+    /*$scope.removeClassification = function(classif) {
         Classification.remove({
             classification: classif
             , deId: $scope.cde._id 
@@ -1542,7 +1542,26 @@ function CommentsCtrl($scope, Comment) {
             $scope.cde = res;
             $scope.addAlert("success", "Classification Removed");
         });
-    };
+    };*/
+    /*$scope.removeClassification = function(orgName, conceptSystem, concept) {
+        var classToDel = {stewardOrg:{name:orgName}, conceptSystem:conceptSystem, concept:concept};
+        $http.post("/removeClassificationFromOrg", classToDel).then(function(response) {
+            $scope.addAlert("success", response.data);
+            $scope.updateOrg();
+        });
+    };*/
+    $scope.removeClassification = function(orgName, conceptSystemName, conceptName) {
+        Classification.remove({
+            orgName: orgName
+            , conceptSystemName: conceptSystemName
+            , conceptName: conceptName
+            , deId: $scope.cde._id 
+        }, 
+        function (res) {
+            $scope.cde = res;
+            $scope.addAlert("success", "Classification Removed");
+        });
+    };     
     
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
@@ -1565,17 +1584,6 @@ function CommentsCtrl($scope, Comment) {
  }
  
  function AddClassificationModalCtrl($scope, $modalInstance, $http) {
-    /*$scope.classAutocomplete = function (viewValue) {
-        return $http.get("/autocomplete/classification/" + viewValue).then(function(response) { 
-            var table = [];
-            for (var i =0; i < response.data.length; i++) {
-                if (response.data[i].toLowerCase().indexOf(viewValue.toLowerCase()) !== -1) {
-                    table.push(response.data[i]);
-                }
-            }
-            return table;
-        }); 
-     };*/
     $scope.orgClassSystems = [];
     $scope.getOrgClassSystems = function () {
         $http.get("/autocomplete/classification/all").then(function(response) { 

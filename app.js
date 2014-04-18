@@ -776,7 +776,7 @@ app.post('/removeClassification', function(req, res) {
                 res.send("You do not own this data element.");
             } else {
                 var toRemove = req.body.classification;
-                for (var i = 0; i < de.classification.length; i++) {
+                /*for (var i = 0; i < de.classification.length; i++) {
                     if (de.classification[i].conceptSystem === toRemove.conceptSystem
                             && de.classification[i].concept === toRemove.concept) {
                         de.classification.splice(i, 1);
@@ -789,7 +789,33 @@ app.post('/removeClassification', function(req, res) {
                         });
                     }
                 }
-                res.send("Not found.");
+                res.send("Not found.");*/
+                var findSteward = function(de, orgName) {
+                    for (var i = 0; i < de.classification.length; i++) {
+                        if (de.classification[i].stewardOrg.name===orgName) {
+                            return {index:i, object: de.classification[i]};
+                        }
+                    }
+                };
+                var findConcept = function(system, name) {
+                    for (var i = 0; i < system.elements.length; i++) {
+                        if (system.elements[i].name===name) {
+                            //return system.elements[i];
+                            return {index:i, object: system.elements[i]};
+                        }
+                    }
+                };                 
+                var steward = findSteward(de, req.body.orgName);
+                var conceptSystem = findConcept(steward.object, req.body.conceptSystemName);
+                var concept = findConcept(conceptSystem.object, req.body.conceptName);
+                conceptSystem.object.elements.splice(concept.index);
+                if (conceptSystem.object.elements.length===0) {
+                    steward.object.elements.splice(conceptSystem.index);
+                }
+                if (steward.object.elements.length===0) {
+                    de.classification.splice(steward.index);
+                }       
+                de.save();
             }
         });
     } else {
