@@ -53,21 +53,21 @@ MONGOHQ_URL=mongodb://mongo_username:mongo_passwrod@mongo_host:mongo_port/db_nam
 VSAC_USERNAME=
 VSAC_PASSWORD=
 LOGDIR=
-ELASTIC_URI
+ELASTIC_URI=
 ```
 
 It's also possible to set the variables in envconfig.js
 
 ```javascript
-    var envconfig = {
-        vsac: {
-            username: 'abc'
-            , password: '123'
-            , host: 'vsac-qa.nlm.nih.gov'
-        }
-        , logdir: /var/log
-        , elasticUri: http://localhost:9200/nlmcde/
-    };
+var envconfig = {
+    vsac: {
+        username: 'abc'
+        , password: '123'
+        , host: 'vsac-qa.nlm.nih.gov'
+    }
+    , logdir: /var/log
+    , elasticUri: http://localhost:9200/nlmcde/
+};
 ```
 
 ### Configure Elastic Search
@@ -75,13 +75,13 @@ It's also possible to set the variables in envconfig.js
 **MongoDB** must run in **Replicate mode**. For example
 
 ```sh
-mongod --replSet rs0
+$> mongod --replSet rs0
 ```
 
 With **ElasticSearch** running, execute the following to create an index:
 
 ```sh
-    $> ./scripts/elasticsearch/createIndex.sh
+$> ./scripts/elasticsearch/createIndex.sh
 ```
 
 
@@ -89,14 +89,14 @@ Next, create a **river** for data to flow from **MongoDB** to **ElasticSearch**.
 You may need to edit the content of the file to point to the proper DB, in which case, you can make a local copy of this file.
 
 ```sh
-    $> ./scripts/elasticsearch/createRiver.sh
+$> ./scripts/elasticsearch/createRiver.sh
 ```
 
 Finally, create an **alias** for the index. Alternatively, you can name the index nlmcde and not use aliases. The script removes a previous alias and adds a new one, 
 this will fail if the alias does not already exist. Edit a local copy as needed.  
 
 ```sh
-   $> ./scripts/elasticsearch/aliasUpdate.sh 
+$> ./scripts/elasticsearch/aliasUpdate.sh 
 ```
 
 Create an **alias** with the following:
