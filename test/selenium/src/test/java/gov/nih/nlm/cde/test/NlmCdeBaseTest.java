@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -50,6 +51,17 @@ public class NlmCdeBaseTest {
         driver.manage().window().setSize(new Dimension(1024,800));
         driver.manage().timeouts().implicitlyWait(8, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, 8, 200);
+    }
+    
+    protected void checkLoggedIn() {
+        //if (not ExpectedConditions.visibilityOfElementLocated(By.linkText("Account"))) {
+        if(textNotPresent("Account")) {
+            login();
+        }            
+    }
+    
+    protected void login() {
+    
     }
     
     public void loginAsNlm() {
