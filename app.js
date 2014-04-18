@@ -469,13 +469,6 @@ app.get('/debyuuid/:uuid/:version', function(req, res) {
     });
 });
 
-// @TODO
-// SECURITY LAMENESS HERE
-// Check the following:
-// 1. You are org owner
-// 2. Only site admin can update reg status to standard & pref std.
-// 3. If status is already std + above, only site admin can update
-// Move all this validation logic to cdesvc. 
 app.post('/dataelement', function (req, res) {
     return cdesvc.save(req, res);
 });
@@ -989,8 +982,9 @@ setInterval(fetchRemoteData, 1000 * 60 * 60 * 1);
 
 var parser = new xml2js.Parser();
 app.get('/vsacBridge/:vsacId', function(req, res) {
-   vsac.getValueSet(req.params.vsacId, function(result) {
-       if (result === 404) {
+   vsac.getValueSet(req.params.vsacId, function(result) {       
+       if (result === 404 || result === 400) {
+           res.status(result);
            res.end();
        } else {
            parser.parseString(result, function (err, jsonResult) {

@@ -26,7 +26,6 @@ var ticketData = querystring.stringify({
     service: 'http://umlsks.nlm.nih.gov'
 });
 
-
 var vsacHost = process.env.VSAC_HOST || envconfig.vsac.host || config.vsac.host;
 var vsacPort = process.env.VSAC_PORT || envconfig.vsac.port || config.vsac.port;
 
@@ -36,11 +35,15 @@ var tgtOptions = {
     port: vsacPort,
     path: config.vsac.ticket.path,
     method: 'POST',
+    agent: false,
+    requestCert: true,
+    rejectUnauthorized: false,
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Length': authData.length
     }
 };
+
 
 var ticketOptions = {
     host: vsacHost,
@@ -48,6 +51,9 @@ var ticketOptions = {
     port: vsacPort,
     path: config.vsac.ticket.path,
     method: 'POST',
+    requestCert: true,
+    agent: false,
+    rejectUnauthorized: false,
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Length': ticketData.length
@@ -58,7 +64,10 @@ var valueSetOptions = {
     host: vsacHost,
     port: vsacPort,
     path: config.vsac.valueSet.path,
-    method: 'GET'
+    method: 'GET',
+    agent: false,
+    requestCert: true,
+    rejectUnauthorized: false
 };
 
 var vsacTGT = '';
@@ -93,7 +102,7 @@ exports.getTGT = function (cb) {
     });
     
     req.on('error', function (e) {
-        console.log('ERROR with request ' + e);
+        console.log('getTgt: ERROR with request ' + e);
     });
     
     req.write(authData);
@@ -114,7 +123,7 @@ exports.getTicket = function(cb) {
     });
     
     req.on('error', function (e) {
-        console.log('ERROR with request ' + e);
+        console.log('getTicket: ERROR with request ' + e);
     });
     
     req.write(ticketData);
@@ -131,7 +140,7 @@ exports.getValueSet = function(vs_id, cb) {
                 output += chunk;
             });
             res.on('end', function() {
-                if (res.statusCode == 404) {
+                if (res.statusCode === 404) {
                     cb(404);
                 }
                 if (output.length > 0) {
@@ -141,7 +150,8 @@ exports.getValueSet = function(vs_id, cb) {
         });
 
         req.on('error', function (e) {
-            console.log('ERROR with request ' + e);
+            console.log('getValueSet: ERROR with request ' + e);
+            cb(400);
         });
 
         req.end();

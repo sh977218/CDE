@@ -1,8 +1,18 @@
 <center>
 <form class="form-inline">
-    <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="search-query" placeholder="Search" ng-change="onchangeSearch()">  
-    <input id="search.submit" type="submit" value="Search" ng-click="search()" class="btn btn-default"></input>
-    <button id="resetSearch" ng-click="resetSearch()" class="btn btn-default">Reset</button> 
+    <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="form-control search-query" placeholder="Search" ng-change="onchangeSearch()">  
+    <button id="search.submit" type="submit" value="Search" ng-click="search()" class="btn btn-default">
+        <i class="fa fa-search"></i>
+        Search
+    </button>
+    <button id="resetSearch" ng-click="resetSearch()" class="btn btn-default">
+        <i class="fa fa-trash-o"></i>
+        Reset
+    </button> 
+    <button  ng-click="openAllModel=!openAllModel; openAll()" class="btn btn-default btn-checkbox" id="openAllCb">
+        <span ng-hide="openAllModel"><i class="fa fa-arrows-v"></i> Expand All</span>
+        <span ng-show="openAllModel"><i class="fa fa-compress"></i> Collapse All</span>
+    </button>
     <small ng-show="cdes.length > 0" class="pull-right">
         {{totalItems}} hits
     </small>
