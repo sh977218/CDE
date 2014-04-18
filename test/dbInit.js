@@ -1,8 +1,8 @@
-db.users.drop();
-db.dataelements.drop();
-db.orgs.drop();
-db.forms.drop();
-db.pinningBoards.drop();
+db.users.remove();
+db.dataelements.remove();
+db.orgs.remove();
+db.forms.remove();
+db.pinningBoards.remove();
 
 var defaultBoard = {
     name: "default"
