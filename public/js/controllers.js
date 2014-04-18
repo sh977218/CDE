@@ -1584,6 +1584,7 @@ function CommentsCtrl($scope, Comment) {
         });
 
         modalInstance.result.then(function (newClassification) {
+            newClassification.stewardOrg = {name: $scope.user.orgCurator[0]};
             Classification.add({
                 classification: newClassification
                 , deId: $scope.cde._id

@@ -10,6 +10,7 @@ var express = require('express')
   , crypto = require('crypto')
   , LocalStrategy = require('passport-local').Strategy
   , mongo_data = require('./node-js/mongo-data')
+  , classification = require('./node-js/classification')
   , util = require('util')
   , xml2js = require('xml2js')
   , vsac = require('./node-js/vsac-io')
@@ -769,44 +770,15 @@ app.post('/removeClassification', function(req, res) {
                 res.send("You do not own this data element.");
             } else {
                 var toRemove = req.body.classification;
-                /*for (var i = 0; i < de.classification.length; i++) {
-                    if (de.classification[i].conceptSystem === toRemove.conceptSystem
-                            && de.classification[i].concept === toRemove.concept) {
-                        de.classification.splice(i, 1);
-                        return de.save(function(err) {
-                            if (err) {
-                                res.send("error: " + err);
-                            } else {
-                                res.send(de);
-                            }
-                        });
-                    }
-                }
-                res.send("Not found.");*/
-                var findSteward = function(de, orgName) {
-                    for (var i = 0; i < de.classification.length; i++) {
-                        if (de.classification[i].stewardOrg.name===orgName) {
-                            return {index:i, object: de.classification[i]};
-                        }
-                    }
-                };
-                var findConcept = function(system, name) {
-                    for (var i = 0; i < system.elements.length; i++) {
-                        if (system.elements[i].name===name) {
-                            //return system.elements[i];
-                            return {index:i, object: system.elements[i]};
-                        }
-                    }
-                };                 
-                var steward = findSteward(de, req.body.orgName);
-                var conceptSystem = findConcept(steward.object, req.body.conceptSystemName);
-                var concept = findConcept(conceptSystem.object, req.body.conceptName);
-                conceptSystem.object.elements.splice(concept.index);
+                var steward = classification.findSteward(de, req.body.orgName);
+                var conceptSystem = classification.findConcept(steward.object, req.body.conceptSystemName);
+                var concept = classification.findConcept(conceptSystem.object, req.body.conceptName);
+                conceptSystem.object.elements.splice(concept.index,1);
                 if (conceptSystem.object.elements.length===0) {
-                    steward.object.elements.splice(conceptSystem.index);
+                    steward.object.elements.splice(conceptSystem.index,1);
                 }
                 if (steward.object.elements.length===0) {
-                    de.classification.splice(steward.index);
+                    de.classification.splice(steward.index,1);
                 }       
                 de.save();
             }
