@@ -5,25 +5,13 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class CdeEditTest extends NlmCdeBaseTest {
-    
-    @BeforeClass
-    public void login() {
-        loginAs(ctepCurator_username, ctepCurator_password);
-    }
-
-    // TODO I think I am using this annotation incorrectly
-    @AfterClass
-    public void logMeOut() {
-        logout();
-    }
-
-//    @Test
+        
+    @Test
     public void createCde() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
         findElement(By.name("cde.designation")).sendKeys("Abracadabra");
@@ -36,8 +24,9 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
     }
 
-//    @Test
+    @Test
     public void createCdeSuggest() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
         // wait for page to load
@@ -50,6 +39,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test
     public void editCde() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         String cdeName = "Mediastinal Lymph Node Physical Examination Specify";
         goToCdeByName(cdeName);
         findElement(By.cssSelector("i.fa-edit")).click();
@@ -90,8 +80,9 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Warning: this data element is archived."));
     }
 
-//    @Test
+    @Test
     public void editConcepts() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         String cdeName = "Patient Photograph Malignant";
         
         goToCdeByName(cdeName);
@@ -146,8 +137,10 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("PROP1"));
     }
     
-//    @Test
+    @Test
     public void changeDefinitionFormat() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+
         String cdeName = "INSS";
         goToCdeByName(cdeName);
         findElement(By.cssSelector("#dd_def .fa-edit")).click();

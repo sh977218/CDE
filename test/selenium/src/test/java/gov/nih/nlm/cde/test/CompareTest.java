@@ -36,27 +36,15 @@ public class CompareTest extends NlmCdeBaseTest{
         findElement(By.id("compare_0")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         Assert.assertTrue(textPresent("Compare ( 1 )"));
-<<<<<<< HEAD
-//<<<<<<< HEAD
-=======
->>>>>>> c5948511ca70c67a20dfb1053f00f7307a893a59
-        findElement(By.id("acc_link_1")).click();
+        findElement(By.name("ftsearch")).clear();
+        findElement(By.name("ftsearch")).sendKeys("Patient Gender Category");
+        hangon(1);
+        findElement(By.id("search.submit")).click();
+        hangon(2);
+        findElement(By.linkText("Patient Gender Category")).click();
         hangon(.5);
-        findElement(By.id("compare_1")).click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_1")));
-<<<<<<< HEAD
-//=======
-//        findElement(By.name("ftsearch")).sendKeys("Patient Gender Category");
-//        hangon(1);
-//        findElement(By.id("search.submit")).click();
-//        hangon(2);
-//        findElement(By.linkText("Patient Gender Category")).click();
-//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
-//        findElement(By.id("compare_0")).click();   
-//        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));        
-//>>>>>>> master
-=======
->>>>>>> c5948511ca70c67a20dfb1053f00f7307a893a59
+        findElement(By.id("compare_0")).click();   
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));        
         Assert.assertTrue(textPresent("Compare ( full )"));
         findElement(By.id("acc_link_2")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_2")));

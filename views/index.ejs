@@ -54,10 +54,11 @@
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li class="{{menuLogin}}" ng-show='!user._id'><a href="#/login">Log In</a></li>
+                            <li class="{{menuLogin}}" ng-show='!user._id'><a href="#/login" id="login_link">Log In</a></li>
                             <li class="dropdown {{menuAccount}}" ng-show="user._id">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Account <span class="caret"></span></a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="username_link">{{user.username}}<span class="caret"></span></a>
                                 <ul class="dropdown-menu"> 
+                                    <li 
                                     <li ng-show='user._id'><a href="#/profile">Profile</a></li>
                                     <li ng-show="isOrgCurator()"><a href="#/classificationmanagement">Classifications</a></li>
                                     <li ng-show="isOrgAdmin() && !user.siteAdmin"><a href="#/orgaccountmanagement">Account Management</a></li>

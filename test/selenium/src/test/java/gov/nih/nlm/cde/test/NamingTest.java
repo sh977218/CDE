@@ -6,33 +6,17 @@
 
 package gov.nih.nlm.cde.test;
 
-import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-/**
- *
- * @author ludetc
- */
 public class NamingTest extends NlmCdeBaseTest {
-    
-    @BeforeClass
-    public void login() {
-        loginAs(ctepCurator_username, ctepCurator_password);
-    }
-
-    @AfterClass
-    public void logMeOut() {
-        logout();
-    }
-
+ 
     @Test
     public void addRemoveEdit() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         String cdeName = "Radiation Therapy Modality";
         goToCdeByName(cdeName);
         findElement(By.linkText("Naming")).click();

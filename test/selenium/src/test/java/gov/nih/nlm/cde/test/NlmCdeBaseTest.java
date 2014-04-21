@@ -1,16 +1,17 @@
 package gov.nih.nlm.cde.test;
 
 import java.util.Arrays;
-import org.testng.annotations.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.testng.Assert;
+import org.openqa.selenium.support.ui.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
+import org.testng.annotations.*;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -53,16 +54,19 @@ public class NlmCdeBaseTest {
         wait = new WebDriverWait(driver, 8, 200);
     }
     
-    protected void checkLoggedIn() {
-        if(textNotPresent("Account")) {
-            login();
-        }            
+    protected void mustBeLoggedInAs(String username, String password) {
+        WebElement loginLinkList = driver.findElement(By.id("login_link"));
+        if (loginLinkList.isDisplayed()) {
+            loginAs(username, password);
+        } else {
+            WebElement unameLink = driver.findElements(By.id("username_link")).get(0);
+            if (!unameLink.getText().equals(username)) {
+                logout();
+                loginAs(username, password);
+            } 
+        }
     }
-    
-    protected void login() {
-    
-    }
-    
+
     public void loginAsNlm() {
         loginAs("nlm", "nlm");
         logout();
@@ -96,7 +100,6 @@ public class NlmCdeBaseTest {
     }
     
     protected WebElement findElement(By by) {
-//        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }
     
@@ -152,7 +155,7 @@ public class NlmCdeBaseTest {
     
     protected void logout() {
         try {
-            findElement(By.linkText("Account")).click();
+            findElement(By.id("username_link")).click();
             findElement(By.linkText("Log Out")).click();
             findElement(By.linkText("Log In"));
         } catch (TimeoutException e) {
@@ -173,7 +176,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
         findElement(By.cssSelector("button.btn")).click();
-        findElement(By.linkText("Account"));
+        findElement(By.linkText(username));
     }
     
     private boolean isWindows(){
