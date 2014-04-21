@@ -1,4 +1,4 @@
-function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout) {
+function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory) {
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u;
@@ -169,6 +169,53 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         //reset to old to keep any additional routing logic from kicking in
         $location.hash(old);
     };
+    
+    $scope.initCache = function() {
+        if ($cacheFactory.get("deListCache") === undefined) {
+            $scope.cache = $cacheFactory("deListCache");
+        } else {
+            $scope.cache = $cacheFactory.get("deListCache");
+        }        
+    };   
+    
+    $scope.addOrgFilter = function(t) {
+        if ($scope.selectedOrg === undefined) {
+            $scope.selectedOrg = t.term;
+            $scope.cache.put("selectedOrg", t.term);
+        } else {
+            delete $scope.selectedOrg;
+            $scope.cache.remove("selectedOrg");
+            delete $scope.selectedSubGroup;
+            $scope.cache.remove("selectedSubGroup");
+            delete $scope.selectedGroup;
+            $scope.cache.remove("selectedGroup");
+        }
+        delete $scope.facets.groups;
+        $scope.reload();
+    };
+
+    $scope.selectSubGroup = function(subG, system) {
+        if ($scope.selectedSubGroup === undefined) {
+            $scope.selectedSubGroup = subG;
+            $scope.cache.put("selectedSubGroup", subG);
+        } else {
+            delete $scope.selectedSubGroup;
+            $scope.cache.remove("selectedSubGroup");
+        }
+        $scope.reload();
+    };
+
+    $scope.selectGroup = function(g) {
+        if ($scope.selectedGroup === undefined) {
+            $scope.selectedGroup = g;
+            $scope.cache.put("selectedGroup", g);
+        } else {
+            delete $scope.selectedGroup;
+            $scope.cache.remove("selectedGroup");
+            delete $scope.selectedSubGroup;
+            $scope.cache.remove("selectedSubGroup");
+        }
+    };    
 }
 
 function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
@@ -608,15 +655,15 @@ function SelectBoardModalCtrl($scope, $modalInstance, boards) {
 function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     $scope.setActiveMenu('LISTCDE');
     
-    $scope.initCache = function() {
+    /*$scope.initCache = function() {
         if ($cacheFactory.get("deListCache") === undefined) {
             $scope.cache = $cacheFactory("deListCache");
         } else {
             $scope.cache = $cacheFactory.get("deListCache");
         }        
     };
-    $scope.initCache();
-
+    $scope.initCache();*/
+    $scope.initCache(); 
     
     $scope.openAllModel = $scope.cache.get("openAll");
     
@@ -651,44 +698,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         $scope.reload();
     });
 
-    $scope.addOrgFilter = function(t) {
-        if ($scope.selectedOrg === undefined) {
-            $scope.selectedOrg = t.term;
-            $scope.cache.put("selectedOrg", t.term);
-        } else {
-            delete $scope.selectedOrg;
-            $scope.cache.remove("selectedOrg");
-            delete $scope.selectedSubGroup;
-            $scope.cache.remove("selectedSubGroup");
-            delete $scope.selectedGroup;
-            $scope.cache.remove("selectedGroup");
-        }
-        delete $scope.facets.groups;
-        $scope.reload();
-    };
 
-    $scope.selectSubGroup = function(subG, system) {
-        if ($scope.selectedSubGroup === undefined) {
-            $scope.selectedSubGroup = subG;
-            $scope.cache.put("selectedSubGroup", subG);
-        } else {
-            delete $scope.selectedSubGroup;
-            $scope.cache.remove("selectedSubGroup");
-        }
-        $scope.reload();
-    };
-
-    $scope.selectGroup = function(g) {
-        if ($scope.selectedGroup === undefined) {
-            $scope.selectedGroup = g;
-            $scope.cache.put("selectedGroup", g);
-        } else {
-            delete $scope.selectedGroup;
-            $scope.cache.remove("selectedGroup");
-            delete $scope.selectedSubGroup;
-            $scope.cache.remove("selectedSubGroup");
-        }
-    };
     
     $scope.addStatusFilter = function(t) {
         t.selected = !t.selected;
@@ -1548,6 +1558,8 @@ function CommentsCtrl($scope, Comment) {
  }
  
  function ClassificationCtrl($scope, $modal, $route, Classification) {
+    $scope.initCache(); 
+     
     $scope.removeClassification = function(orgName, conceptSystemName, conceptName) {
         Classification.remove({
             orgName: orgName
