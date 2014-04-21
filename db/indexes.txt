@@ -6,7 +6,6 @@ db.dataelements.ensureIndex({"archived": 1});
 db.dataelements.ensureIndex({"registrationState.registrationStatusSortOrder": 1, "views": 1}); 
 db.dataelements.ensureIndex({"originId": 1});
 db.dataelements.ensureIndex({"uuid": 1});
-db.dataelements.ensureIndex({"classification.conceptSystem": 1});
 db.dataelements.ensureIndex({"classification.elements.name": 1});
 db.dataelements.ensureIndex({"formUsageCounter": 1});
 db.dataelements.ensureIndex({"objectClass.concepts.originId": 1});

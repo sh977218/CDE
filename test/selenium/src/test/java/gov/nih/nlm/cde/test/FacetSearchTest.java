@@ -55,8 +55,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
                 By.partialLinkText("Hydroxychloroquine Sulfate Administered Indicator")));
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        //Assert.assertEquals(linkList.size(), 9);
-        Assert.assertTrue(linkList.size()==9 || linkList.size()==8);
+        Assert.assertEquals(linkList.size(), 9);
         findElement(By.id("li-checked-NHLBI")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("3")));
     }
@@ -84,14 +83,13 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         goHome();
         findElement(By.name("ftsearch")).sendKeys("Toxicity");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("CTEP (9)")||textPresent("CTEP (8)"));
+        Assert.assertTrue(textPresent("CTEP (9)"));
         findElement(By.id("li-blank-CTEP")).click();
         Assert.assertTrue(textPresent("DISEASE"));
 
         hangon(1);
         List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        //Assert.assertEquals(linkList.size(), 8);
-        Assert.assertTrue(linkList.size()==8||linkList.size()==9);
+        Assert.assertEquals(linkList.size(), 9);
 
         // Check that CTEP classification with 0 items does not show
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("ABTC") < 0);

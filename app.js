@@ -667,7 +667,7 @@ app.get('/autocomplete/form', function(req, res) {
 });
 
 app.get('/autocomplete/classification/all', function (req, res) {
-    mongo_data.conceptSystem_autocomplete(req.params.conceptSystem, function (result) {
+    mongo_data.conceptSystem_autocomplete(function (result) {
         res.send(result);
     });
 });
@@ -750,7 +750,7 @@ app.post('/addClassification', function(req, res) {
                         elements: []
                     };
                     de.classification.push(newSteward);  
-                    var i = de.classification.length-1;
+                    var i = de.classification.length - 1;
                     steward = {index: i, object: de.classification[i]};
                 }  
                 var conceptSystem = classification.findConcept(steward.object, req.body.classification.conceptSystem);                
@@ -791,12 +791,12 @@ app.post('/removeClassification', function(req, res) {
                 var steward = classification.findSteward(de, req.body.orgName);
                 var conceptSystem = classification.findConcept(steward.object, req.body.conceptSystemName);
                 var concept = classification.findConcept(conceptSystem.object, req.body.conceptName);
-                conceptSystem.object.elements.splice(concept.index,1);
-                if (conceptSystem.object.elements.length===0) {
-                    steward.object.elements.splice(conceptSystem.index,1);
+                conceptSystem.object.elements.splice(concept.index, 1);
+                if (conceptSystem.object.elements.length === 0) {
+                    steward.object.elements.splice(conceptSystem.index, 1);
                 }
-                if (steward.object.elements.length===0) {
-                    de.classification.splice(steward.index,1);
+                if (steward.object.elements.length === 0) {
+                    de.classification.splice(steward.index, 1);
                 }       
                 return de.save(function(err) {
                     if (err) {
