@@ -181,14 +181,10 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     //$scope.addOrgFilter = function(t) {
     $scope.cacheOrgFilter = function(t) {
         if ($scope.selectedOrg === undefined) {
-            $scope.selectedOrg = t.term;
             $scope.cache.put("selectedOrg", t.term);
-        } else {
-            delete $scope.selectedOrg;
+        } else {         
             $scope.cache.remove("selectedOrg");
-            delete $scope.selectedSubGroup;
-            $scope.cache.remove("selectedSubGroup");
-            delete $scope.selectedGroup;
+            $scope.cache.remove("selectedSubGroup");            
             $scope.cache.remove("selectedGroup");
         }
         //delete $scope.facets.groups;
@@ -898,10 +894,17 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             $scope.cdes[i].isOpen = $scope.openAllModel;
         }
         $scope.cache.put("openAll", $scope.openAllModel);
-    }
+    };
     
     $scope.addOrgFilter = function(t) {
-        $scope.cacheOrgFilter(t);
+        $scope.cacheOrgFilter(t);        
+        if ($scope.selectedOrg === undefined) {
+            $scope.selectedOrg = t.term;
+        } else {
+            delete $scope.selectedOrg;
+            delete $scope.selectedSubGroup;
+            delete $scope.selectedGroup;            
+        }  
         delete $scope.facets.groups;
         $scope.reload();
     };
