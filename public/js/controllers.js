@@ -608,16 +608,19 @@ function SelectBoardModalCtrl($scope, $modalInstance, boards) {
 function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     $scope.setActiveMenu('LISTCDE');
     
-    var cache;
-    if ($cacheFactory.get("deListCache") === undefined) {
-        cache = $cacheFactory("deListCache");
-    } else {
-        cache = $cacheFactory.get("deListCache");
-    }
+    $scope.initCache = function() {
+        if ($cacheFactory.get("deListCache") === undefined) {
+            $scope.cache = $cacheFactory("deListCache");
+        } else {
+            $scope.cache = $cacheFactory.get("deListCache");
+        }        
+    };
+    $scope.initCache();
+
     
-    $scope.openAllModel = cache.get("openAll");
+    $scope.openAllModel = $scope.cache.get("openAll");
     
-    $scope.registrationStatuses = cache.get("registrationStatuses");
+    $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
     if ($scope.registrationStatuses === undefined) {
         $scope.registrationStatuses = [
             {name: 'Preferred Standard'}
@@ -631,34 +634,34 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         
     $scope.resultPerPage = 20;
 
-    $scope.ftsearch = cache.get("ftsearch");
+    $scope.ftsearch = $scope.cache.get("ftsearch");
 
-    $scope.selectedOrg = cache.get("selectedOrg");
-    $scope.selectedGroup = cache.get("selectedGroup");
-    $scope.selectedSubGroup = cache.get("selectedSubGroup"); 
-    $scope.totalItems = cache.get("totalItems");
+    $scope.selectedOrg = $scope.cache.get("selectedOrg");
+    $scope.selectedGroup = $scope.cache.get("selectedGroup");
+    $scope.selectedSubGroup = $scope.cache.get("selectedSubGroup"); 
+    $scope.totalItems = $scope.cache.get("totalItems");
     
-    $scope.currentPage = cache.get("currentPage");
+    $scope.currentPage = $scope.cache.get("currentPage");
     if ($scope.currentPage === undefined) {
         $scope.currentPage = 1;
     }
     
     $scope.$watch('currentPage', function() {
-        cache.put("currentPage", $scope.currentPage)
+        $scope.cache.put("currentPage", $scope.currentPage)
         $scope.reload();
     });
 
     $scope.addOrgFilter = function(t) {
         if ($scope.selectedOrg === undefined) {
             $scope.selectedOrg = t.term;
-            cache.put("selectedOrg", t.term);
+            $scope.cache.put("selectedOrg", t.term);
         } else {
             delete $scope.selectedOrg;
-            cache.remove("selectedOrg");
+            $scope.cache.remove("selectedOrg");
             delete $scope.selectedSubGroup;
-            cache.remove("selectedSubGroup");
+            $scope.cache.remove("selectedSubGroup");
             delete $scope.selectedGroup;
-            cache.remove("selectedGroup");
+            $scope.cache.remove("selectedGroup");
         }
         delete $scope.facets.groups;
         $scope.reload();
@@ -667,10 +670,10 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     $scope.selectSubGroup = function(subG, system) {
         if ($scope.selectedSubGroup === undefined) {
             $scope.selectedSubGroup = subG;
-            cache.put("selectedSubGroup", subG);
+            $scope.cache.put("selectedSubGroup", subG);
         } else {
             delete $scope.selectedSubGroup;
-            cache.remove("selectedSubGroup");
+            $scope.cache.remove("selectedSubGroup");
         }
         $scope.reload();
     };
@@ -678,18 +681,18 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     $scope.selectGroup = function(g) {
         if ($scope.selectedGroup === undefined) {
             $scope.selectedGroup = g;
-            cache.put("selectedGroup", g);
+            $scope.cache.put("selectedGroup", g);
         } else {
             delete $scope.selectedGroup;
-            cache.remove("selectedGroup");
+            $scope.cache.remove("selectedGroup");
             delete $scope.selectedSubGroup;
-            cache.remove("selectedSubGroup");
+            $scope.cache.remove("selectedSubGroup");
         }
     };
     
     $scope.addStatusFilter = function(t) {
         t.selected = !t.selected;
-        cache.put("registrationStatuses", $scope.registrationStatuses);
+        $scope.cache.put("registrationStatuses", $scope.registrationStatuses);
         $scope.reload();
     };
     
@@ -701,7 +704,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                 $scope.cdes = result.cdes;
                 $scope.openAll();
                 $scope.totalItems = result.totalNumber;
-                cache.put("totalItems", $scope.totalItems);
+                $scope.cache.put("totalItems", $scope.totalItems);
                 $scope.facets = result.facets;
                 
                 if ($scope.facets.statuses !== undefined) {
@@ -848,12 +851,12 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         delete $scope.selectedOrg;
         delete $scope.selectedGroup;
         delete $scope.selectedSubGroup;
-        cache.removeAll();
+        $scope.cache.removeAll();
         $scope.reload();
     }
 
     $scope.search = function() {
-        cache.put("ftsearch", $scope.ftsearch);
+        $scope.cache.put("ftsearch", $scope.ftsearch);
         $scope.reload();
     };
     
@@ -881,7 +884,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         for (var i = 0; i < $scope.cdes.length; i++) {
             $scope.cdes[i].isOpen = $scope.openAllModel;
         }
-        cache.put("openAll", $scope.openAllModel);
+        $scope.cache.put("openAll", $scope.openAllModel);
     }
     
 }

@@ -1,33 +1,3 @@
-<!--div ng-controller="ClassificationCtrl" >
-<h4>Classification</h4>
-<button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification" ng-show="isAllowedNonCuration(cde)"><i class="fa fa-plus"> </i> Add Classification</button>
-
-<dl id="repeatCs">
-<div ng-repeat="conceptSystemPerConcept in classificationToFilter() | filter:filterConceptSystemClassification">
-    <dt>{{conceptSystemPerConcept.conceptSystem}}</dt>
-    <dd>
-        <div ng-repeat="class in cde.classification | filter:isInConceptSystem(conceptSystemPerConcept.conceptSystem)">
-            <span ng-show="isAllowedNonCuration(cde)">
-                <span ng-show="showDelete">
-                    Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(class)" id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
-                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
-                </span>
-                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
-            </span>
-            <span id="classification-{{$parent.$index}}-{{$index}}">
-                {{class.concept}}            
-            </span>
-        </div>
-    </dd>
-</div>
-</dl>
-
-<script type="text/ng-template" id="addClassificationModalContent.html">
-    <%- include addClassification.ejs %>
-</script>
-
-</div-->
-
 <div ng-controller="ClassificationCtrl" >
 <h4>Classification</h4>
 <button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification" ng-show="isAllowedNonCuration(cde)"><i class="fa fa-plus"> </i> Add Classification</button>
