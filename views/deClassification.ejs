@@ -17,9 +17,11 @@
                         </span>
                         <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
                     </span>                    
-                    <span id="classification-{{$parent.$index}}-{{$index}}">
-                        {{ concept.name }}  
-                    </span>                    
+                    <a href="/">
+                        <span ng-click="searchConcept(stewardClassifications.stewardOrg.name, conceptSystem.name, concept.name)" id="classification-{{$parent.$index}}-{{$index}}" class="hand-cursor">
+                            {{ concept.name }}  
+                        </span>
+                    </a>                    
                 </li>
             </ul>
         </div>
