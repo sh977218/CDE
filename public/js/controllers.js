@@ -255,20 +255,13 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
          return $scope.org.classifications;
     };
     
-    $scope.filterConceptSystemClassification = function(item) {
-      var systemIsNew = indexedConceptSystemClassifications.indexOf(item.conceptSystem) == -1;
-      if (systemIsNew) {
-          indexedConceptSystemClassifications.push(item.conceptSystem);
-      }
-      return systemIsNew;
-    };
-    
-    $scope.removeClassification = function(classif) {
-        $http.post("/removeClassificationFromOrg", classif).then(function(response) {
+    $scope.removeClassification = function(orgName, conceptSystem, concept) {
+        var classToDel = {stewardOrg:{name:orgName}, conceptSystem:conceptSystem, concept:concept};
+        $http.post("/removeClassificationFromOrg", classToDel).then(function(response) {
             $scope.addAlert("success", response.data);
             $scope.updateOrg();
         });
-    }
+    };
     
     $scope.isInConceptSystem = function(system) {
         return function(classi) {
@@ -298,18 +291,14 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
     };
 }
 
- function AddClassificationToOrgModalCtrl($scope, $modalInstance, $http, org) {
-    $scope.classAutocomplete = function (viewValue) {
-        return $http.get("/autocomplete/classification/" + org + "/" + viewValue).then(function(response) { 
-            var table = [];
-            for (var i =0; i < response.data.length; i++) {
-                if (response.data[i].toLowerCase().indexOf(viewValue.toLowerCase()) !== -1) {
-                    table.push(response.data[i]);
-                }
-            }
-            return table;
-        }); 
-     };
+function AddClassificationToOrgModalCtrl($scope, $modalInstance, $http, org) {
+    $scope.orgClassSystems = [];
+    $scope.getOrgClassSystems = function () {
+        $http.get("/autocomplete/classification/org/" + org).then(function(response) { 
+            $scope.orgClassSystems = response.data;
+        });
+    };
+    $scope.getOrgClassSystems();
      
     $scope.okCreate = function (classification) {
       $modalInstance.close(classification);
@@ -792,27 +781,24 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                     $http.get("/org/" + $scope.selectedOrg).then(function(response) {
                         var org = response.data;
                         if (org.classifications) {
+                            // Foreach conceptSystem in query.facets
                             for (var i = 0; i < $scope.facets.groups.terms.length; i++) {
-                                var groupFound = false;
                                 var g = $scope.facets.groups.terms[i];
-                                for (var j = 0; !groupFound && j < org.classifications.length; j++) {
-                                    if (org.classifications[j].conceptSystem === g.term) {
-                                        groupFound = true;
-                                    }
-                                }
-                                if (groupFound) {
-                                    var group = {name: g.term, concepts: []};
-                                    if ($scope.facets.concepts !== undefined) {
-                                        for (var k = 0; k < $scope.facets.concepts.terms.length; k++) {
-                                            var c = $scope.facets.concepts.terms[k];
-                                            for (var l = 0; l < org.classifications.length; l++) {
-                                                if (org.classifications[l].conceptSystem === g.term && c.term === org.classifications[l].concept) {
+                                // Find conceptSystem in db.org.classifications
+                                for (var j = 0; j < org.classifications.length; j++) {
+                                    if (org.classifications[j].name === g.term) {
+                                       var group = {name: g.term, concepts: []};
+                                       // Add concepts from db.org.classifications.elements
+                                       for (var m = 0; m < org.classifications[j].elements.length; m++) {
+                                            for (var h=0; h<$scope.facets.concepts.terms.length; h++) {
+                                                var c = $scope.facets.concepts.terms[h];
+                                                if (org.classifications[j].elements[m].name===c.term) {
                                                     group.concepts.push(c);
-                                                }
+                                                }                                               
                                             }
-                                        }
+                                        } 
+                                        $scope.groups.push(group);
                                     }
-                                    $scope.groups.push(group);
                                 }
                             }
                         }
@@ -831,9 +817,13 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         if ($scope.selectedOrg !== undefined) {
             $scope.filter.and.push({term: {"classification.stewardOrg.name": $scope.selectedOrg}});
         }
+        
+        if ($scope.selecteGroup !== undefined) {
+            $scope.filter.and.push({term: {"classification.elements.name": $scope.selecteGroup.term}});
+        }        
 
         if ($scope.selectedSubGroup !== undefined) {
-            $scope.filter.and.push({term: {"classification.concept": $scope.selectedSubGroup.term}});
+            $scope.filter.and.push({term: {"classification.elements.elements.name": $scope.selectedSubGroup.term}});
         }
         
         var regStatusOr = [];
@@ -881,11 +871,11 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
 
         if ($scope.selectedOrg !== undefined) {
             queryStuff.facets.groups = {
-                terms: {field: "classification.conceptSystem", size: 200}
+                terms: {field: "classification.elements.name", size: 200}
                 , facet_filter: {term: {"classification.stewardOrg.name": $scope.selectedOrg}}
             }
             queryStuff.facets.concepts = {
-                terms: {field: "classification.concept", size: 300}
+                terms: {field: "classification.elements.elements.name", size: 300}
                 , facet_filter: {
                     term: {"classification.stewardOrg.name": $scope.selectedOrg}
                 }
@@ -1347,15 +1337,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
              return $scope.cde.classification;
          } 
     };
-    
-    $scope.filterConceptSystemClassification = function(item) {
-      var systemIsNew = indexedConceptSystemClassifications.indexOf(item.conceptSystem) == -1;
-      if (systemIsNew) {
-          indexedConceptSystemClassifications.push(item.conceptSystem);
-      }
-      return systemIsNew;
-    };
-    
+
     $scope.isInConceptSystem = function(system) {
         return function(classi) {
             return classi.conceptSystem === system;
@@ -1629,17 +1611,20 @@ function CommentsCtrl($scope, Comment) {
     };     
  }
  
- function ClassificationCtrl($scope, $modal, Classification) {
-    $scope.removeClassification = function(classif) {
+ function ClassificationCtrl($scope, $modal, $route, Classification) {
+    $scope.removeClassification = function(orgName, conceptSystemName, conceptName) {
         Classification.remove({
-            classification: classif
+            orgName: orgName
+            , conceptSystemName: conceptSystemName
+            , conceptName: conceptName
             , deId: $scope.cde._id 
         }, 
         function (res) {
             $scope.cde = res;
             $scope.addAlert("success", "Classification Removed");
+            $route.reload();
         });
-    };
+    };     
     
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
@@ -1650,29 +1635,27 @@ function CommentsCtrl($scope, Comment) {
         });
 
         modalInstance.result.then(function (newClassification) {
+            newClassification.orgName = $scope.user.orgCurator[0];
             Classification.add({
                 classification: newClassification
                 , deId: $scope.cde._id
             }, function (res) {
                 $scope.addAlert("success", "Classification Added");
                 $scope.cde = res;
+                $route.reload();
             });
         });
     };
  }
  
  function AddClassificationModalCtrl($scope, $modalInstance, $http) {
-    $scope.classAutocomplete = function (viewValue) {
-        return $http.get("/autocomplete/classification/" + viewValue).then(function(response) { 
-            var table = [];
-            for (var i =0; i < response.data.length; i++) {
-                if (response.data[i].toLowerCase().indexOf(viewValue.toLowerCase()) !== -1) {
-                    table.push(response.data[i]);
-                }
-            }
-            return table;
-        }); 
-     };
+    $scope.orgClassSystems = [];
+    $scope.getOrgClassSystems = function () {
+        $http.get("/autocomplete/classification/all").then(function(response) { 
+            $scope.orgClassSystems = response.data;
+        });
+    };
+    $scope.getOrgClassSystems();     
      
     $scope.okCreate = function (classification) {
       $modalInstance.close(classification);
