@@ -178,7 +178,6 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         }        
     };   
     
-    //$scope.addOrgFilter = function(t) {
     $scope.cacheOrgFilter = function(t) {
         if ($scope.selectedOrg === undefined) {
             $scope.cache.put("selectedOrg", t.term);
@@ -187,31 +186,21 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             $scope.cache.remove("selectedSubGroup");            
             $scope.cache.remove("selectedGroup");
         }
-        //delete $scope.facets.groups;
-        //$scope.reload();
     };
 
-    //$scope.selectSubGroup = function(subG, system) {
     $scope.cacheSubGroup = function(subG, system) {
         if ($scope.selectedSubGroup === undefined) {
-            $scope.selectedSubGroup = subG;
             $scope.cache.put("selectedSubGroup", subG);
         } else {
-            delete $scope.selectedSubGroup;
             $scope.cache.remove("selectedSubGroup");
         }
-        //$scope.reload();
     };
 
-    //$scope.selectGroup = function(g) {
     $scope.cacheGroup = function(g) {
         if ($scope.selectedGroup === undefined) {
-            $scope.selectedGroup = g;
             $scope.cache.put("selectedGroup", g);
         } else {
-            delete $scope.selectedGroup;
             $scope.cache.remove("selectedGroup");
-            delete $scope.selectedSubGroup;
             $scope.cache.remove("selectedSubGroup");
         }
     };    
@@ -911,11 +900,22 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
 
     $scope.selectSubGroup = function(subG, system) {
         $scope.cacheSubGroup(subG, system);
+        if ($scope.selectedSubGroup === undefined) {
+            $scope.selectedSubGroup = subG;
+        } else {
+            delete $scope.selectedSubGroup;
+        }        
         $scope.reload();
     };
 
     $scope.selectGroup = function(g) {
         $scope.cacheGroup(g);
+        if ($scope.selectedGroup === undefined) {
+            $scope.selectedGroup = g;
+        } else {
+            delete $scope.selectedGroup;
+            delete $scope.selectedSubGroup;
+        }        
     };     
     
 }
