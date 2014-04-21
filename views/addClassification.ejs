@@ -6,7 +6,7 @@
     <div class="form-group">
         <label for="conceptSystem">Category</label>
         <input class="form-control" ng-model="newClassification.conceptSystem" name="conceptSystem" Placeholder="Category" 
-               typeahead="cs for cs in classAutocomplete($viewValue)" required/>
+               typeahead="cs for cs in orgClassSystems | filter:$viewValue | limitTo:8" required/>
     </div>
 
     <div class="form-group">

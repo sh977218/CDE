@@ -14,6 +14,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+
 /**
  *
  * @author ludetc
@@ -21,7 +22,7 @@ import org.testng.annotations.Test;
 public class SiteAdminTest extends NlmCdeBaseTest {
     
     @BeforeClass
-    public void login() {
+    protected void login() {
         loginAs(nlm_username, nlm_password);
     }
 
@@ -31,6 +32,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
     }  
     
     private void addOrg(String orgName) {
+        checkLoggedIn();
         findElement(By.linkText("Account")).click();
         findElement(By.linkText("Site Management")).click();
         findElement(By.linkText("Organizations")).click();

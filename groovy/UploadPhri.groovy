@@ -29,41 +29,7 @@ println "PHRI Ingester"
 @Field XSSFWorkbook book = new XSSFWorkbook("../nlm-seed/ExternalCDEs/phri/phri.xlsx");
 @Field XSSFSheet[] sheets = book.sheets;
 
-@Field def saveClassif = { newClassif ->
-    def orgObject = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
-    if (orgObject == null) {
-        println("Missing Org: " + newClassif.get("stewardOrg").get("name")+"\nCreating new one.");
-        def newOrg = new BasicDBObject();
-        newOrg.put("name",newClassif.get("stewardOrg").get("name"));
-        orgColl.insert(newOrg);
-        orgObject = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
-    }            
-    def foundOrg = orgObject;    
-    def found = false;
-
-    def classifications = foundOrg.get("classifications");
-    if (classifications == null) {
-        foundOrg.put("classifications", []);
-    }
-    for (BasicDBObject existingClassif : classifications) {
-        if ((existingClassif.get("conceptSystem").equals(newClassif.get("conceptSystem")) && (existingClassif.get("concept").equals(newClassif.get("concept"))))) {
-            found = true;
-        }
-    }
-    if (!found) {
-        foundOrg.classifications.add(newClassif);
-        orgColl.update(new BasicDBObject("_id", foundOrg.get("_id")), foundOrg);
-    }
-};
-
-//@Field def buildClassif = {conceptSystem, concept ->
-def BasicDBObject buildClassif (String conceptSystem, String concept) {
-    def newClassif = new BasicDBObject();
-    newClassif.put("conceptSystem", conceptSystem)
-    newClassif.put("concept", concept)
-    newClassif.put("stewardOrg", new BasicDBObject("name", "PHRI"));
-    newClassif;
-}
+@Field Classifications classifications = new Classifications(orgColl);
 
 static def String getCellValue(Cell cell) {
    if(cell == null) {
@@ -164,54 +130,48 @@ def BasicDBObject parseValueDomain(XSSFRow row, Map xlsMap){
     valueDomain;
 }
 
-def classify (ArrayList<BasicDBObject> classificationArray, BasicDBObject stewardOrg, String conceptSystem, String concept) {
-    def classif = buildClassif(conceptSystem, concept);
-    saveClassif(classif);
-    classificationArray.add(classif);      
-}
-
-def parsePatientStory(ArrayList<BasicDBObject> classificationArray, BasicDBObject stewardOrg, Map xlsMap, XSSFRow row){
-    //def namingDefinition = getCellValue(row.getCell(xlsMap.namingDefinition));
+def parsePatientStory(ArrayList<BasicDBObject> classificationArray, BasicDBObject stewardOrg, Map xlsMap, XSSFRow row){    
     if(getCellValue(row.getCell(xlsMap.chronicDisease.cancerGenetics))=="Yes")
-        classify(classificationArray, stewardOrg, "Chronic Disease", "Cancer Genetics");        
+        classifications.classify(classificationArray, "PHRI", "Chronic Disease", "Cancer Genetics");        
     if(getCellValue(row.getCell(xlsMap.chronicDisease.cancerReporting))=="Yes")
-        classify(classificationArray, stewardOrg, "Chronic Disease", "Cancer Reporting");        
+        classifications.classify(classificationArray, "PHRI", "Chronic Disease", "Cancer Reporting");        
     if(getCellValue(row.getCell(xlsMap.chronicDisease.nationalHospitalCareSurvey))=="Yes")
-        classify(classificationArray, stewardOrg, "Chronic Disease", "National Hospital Care Survey");       
+        classifications.classify(classificationArray, "PHRI", "Chronic Disease", "National Hospital Care Survey");       
     if(getCellValue(row.getCell(xlsMap.chronicDisease.occupationalHealth))=="Yes")
-        classify(classificationArray, stewardOrg, "Chronic Disease", "Occupational Health");       
+        classifications.classify(classificationArray, "PHRI", "Chronic Disease", "Occupational Health");    
     
     if(getCellValue(row.getCell(xlsMap.communicableDisease.any))=="Yes")
-        classify(classificationArray, stewardOrg, "Communicable Disease", "Any");           
+        classifications.classify(classificationArray, "PHRI", "Communicable Disease", "Any");           
     if(getCellValue(row.getCell(xlsMap.communicableDisease.communicableSyndromic))=="Yes")
-        classify(classificationArray, stewardOrg, "Communicable Disease", "Communicable & Syndromic");       
+        classifications.classify(classificationArray, "PHRI", "Communicable Disease", "Communicable & Syndromic");       
     if(getCellValue(row.getCell(xlsMap.communicableDisease.HAI))=="Yes")
-        classify(classificationArray, stewardOrg, "Communicable Disease", "HAI"); 
+        classifications.classify(classificationArray, "PHRI", "Communicable Disease", "HAI"); 
         
     if(getCellValue(row.getCell(xlsMap.childHealth.any))=="Yes")
-        classify(classificationArray, stewardOrg, "Child Health", "Any");        
+        classifications.classify(classificationArray, "PHRI", "Child Health", "Any");        
     if(getCellValue(row.getCell(xlsMap.childHealth.immunization))=="Yes")
-        classify(classificationArray, stewardOrg, "Child Health", "Immunization");        
+        classifications.classify(classificationArray, "PHRI", "Child Health", "Immunization");        
     if(getCellValue(row.getCell(xlsMap.childHealth.newbornHearing))=="Yes")
-        classify(classificationArray, stewardOrg, "Child Health", "Newborn Hearing");       
+        classifications.classify(classificationArray, "PHRI", "Child Health", "Newborn Hearing");       
     if(getCellValue(row.getCell(xlsMap.childHealth.vitalStatistics))=="Yes")
-        classify(classificationArray, stewardOrg, "Child Health", "Vital Statistics");    
+        classifications.classify(classificationArray, "PHRI", "Child Health", "Vital Statistics");    
         
     if(getCellValue(row.getCell(xlsMap.adverseEvents.any))=="Yes")
-        classify(classificationArray, stewardOrg, "Adverse Events", "Any");        
+        classifications.classify(classificationArray, "PHRI", "Adverse Events", "Any");        
     if(getCellValue(row.getCell(xlsMap.adverseEvents.ASTER1))=="Yes")
-        classify(classificationArray, stewardOrg, "Adverse Events", "ASTER 1");        
+        classifications.classify(classificationArray, "PHRI", "Adverse Events", "ASTER 1");        
     if(getCellValue(row.getCell(xlsMap.adverseEvents.AHRQCommonFormats))=="Yes")
-        classify(classificationArray, stewardOrg, "Adverse Events", "AHRQ Common Formats");       
+        classifications.classify(classificationArray, "PHRI", "Adverse Events", "AHRQ Common Formats");       
     if(getCellValue(row.getCell(xlsMap.adverseEvents.ASTERD))=="Yes")
-        classify(classificationArray, stewardOrg, "Adverse Events", "ASTER D");      
+        classifications.classify(classificationArray, "PHRI", "Adverse Events", "ASTER D");      
     if(getCellValue(row.getCell(xlsMap.adverseEvents.ICSRR2))=="Yes")
-        classify(classificationArray, stewardOrg, "Adverse Events", "ICSR R2");          
+        classifications.classify(classificationArray, "PHRI", "Adverse Events", "ICSR R2");       
 }
 
 
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
-    DBObject newDE = new BasicDBObject();
+    BasicDBObject newDE = new BasicDBObject();
+    
     newDE.put("uuid", UUID.randomUUID() as String);
     newDE.put("created", new Date()); 
     newDE.put("origin", 'PHRI'); 
@@ -251,18 +211,21 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     def phriCategory = getCellValue(row.getCell(xlsMap.defaultClassification));
     if (phriCategory=="")
         return null;
-        
-    def classificationArray = [];
     
-    classify(classificationArray, stewardOrg, "S&I PHRI Category", phriCategory);
+    def el = new BasicDBObject();
+    el.put("name",phriCategory);    
+    def element = new BasicDBObject();
+    element.put("name","S&I PHRI Category");
+    element.put("elements",[el]);
+    def stewardClassificationsArray = [element];    
+    def classif = classifications.buildClassif("S&I PHRI Category", phriCategory, "PHRI");
+    classifications.saveClassif(classif);     
     
-    //////////////////////
-    
-    parsePatientStory(classificationArray, stewardOrg, xlsMap, row);
-    
-    
-    //////////////////////
-    
+    def stewardClassification = classifications.buildStewardClassifictions(stewardClassificationsArray, "PHRI");
+    parsePatientStory(stewardClassificationsArray, stewardOrg, xlsMap, row);    
+    def classificationArray = [stewardClassification];        
+    newDE.put("classification", classificationArray);
+   
                             
     BasicDBObject registrationState = new BasicDBObject();
     registrationState.put("registrationStatus", "Recorded");
@@ -285,8 +248,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
         co.put("text", comment);
         def comments = [co];
         newDE.put("comments", comments);
-    }
-    newDE.append("classification", classificationArray);                        
+    }                       
     newDE;
 }
 
@@ -298,9 +260,9 @@ def void PersistSheet(String name, Map xlsMap) {
     it.next();
     while (it.hasNext()) {
         XSSFRow row = it.next();
-        BasicDBObject newDE = ParseRow(row, xlsMap);
-        if (newDE!=null)
-            deColl.insert(newDE);
+        BasicDBObject newDE1 = ParseRow(row, xlsMap);
+        if (newDE1!=null)
+            deColl.insert(newDE1);
     }
     println("Ingestion Complete");
 }
