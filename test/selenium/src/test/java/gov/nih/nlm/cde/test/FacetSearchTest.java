@@ -83,7 +83,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         goHome();
         findElement(By.name("ftsearch")).sendKeys("Toxicity");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("CIP (9)"));
+        Assert.assertTrue(textPresent("CTEP (9)"));
         findElement(By.id("li-blank-CTEP")).click();
         Assert.assertTrue(textPresent("DISEASE"));
 

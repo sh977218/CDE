@@ -66,6 +66,7 @@ public class NlmCdeBaseTest {
         
     
     protected void openCdeInList(String name) {
+        findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys(name);
         Assert.assertEquals(findElement(By.id("ftsearch-input")).getAttribute("value"), name);
         findElement(By.cssSelector("i.fa-search")).click();
@@ -84,7 +85,7 @@ public class NlmCdeBaseTest {
     }
     
     protected WebElement findElement(By by) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }
     
