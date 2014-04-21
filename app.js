@@ -798,7 +798,13 @@ app.post('/removeClassification', function(req, res) {
                 if (steward.object.elements.length===0) {
                     de.classification.splice(steward.index,1);
                 }       
-                de.save();
+                return de.save(function(err) {
+                    if (err) {
+                        res.send("error: " + err);
+                    } else {
+                        res.send(de);
+                    }
+                });              
             }
         });
     } else {

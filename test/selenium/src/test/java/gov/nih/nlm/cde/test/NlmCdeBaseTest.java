@@ -54,7 +54,6 @@ public class NlmCdeBaseTest {
     }
     
     protected void checkLoggedIn() {
-        //if (not ExpectedConditions.visibilityOfElementLocated(By.linkText("Account"))) {
         if(textNotPresent("Account")) {
             login();
         }            

@@ -47,7 +47,9 @@
                         </span>
                         <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
                     </span>                    
-                    {{ concept.name }}
+                    <span id="classification-{{$parent.$index}}-{{$index}}">
+                        {{ concept.name }}  
+                    </span>                    
                 </li>
             </ul>
         </div>
