@@ -115,8 +115,6 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     PROP.put("concepts", propConcepts);
     newDE.put("property", PROP);
     
-    //def stewardClassificationsArray = [];
-    //def classificationsArrayMap = new Map<String, ArrayList<BasicDBObject>>();
     def classificationsArrayMap = [:];
     Classifications classifications = new Classifications(orgColl);
     for (int csi_i = 0; csi_i < cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.size(); csi_i++) {
@@ -124,8 +122,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         if (csi.ClassificationScheme[0].PreferredName.text()!=""
             && csi.ClassificationScheme[0].PreferredName.text()!=null
             && csi.ClassificationSchemeItemName.text()!=""
-            && csi.ClassificationSchemeItemName.text()!=null) {
-                //classifications.classify(stewardClassificationsArray, csi.ClassificationScheme[0].ContextName.text(), csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());    
+            && csi.ClassificationSchemeItemName.text()!=null) {               
                 def list = classificationsArrayMap.get(csi.ClassificationScheme[0].ContextName.text());
                 if (!list) { 
                     list = [];
@@ -134,10 +131,6 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
                 classifications.classify(list, csi.ClassificationScheme[0].ContextName.text(), csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());                        
         }
     }
-    /*if (stewardClassificationsArray.size()>0) {
-        def stewardClassification = classifications.buildStewardClassifictions(stewardClassificationsArray, cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM[0].ClassificationScheme[0].ContextName.text());
-        newDE.append("classification", [stewardClassification]);
-    }*/
     
     for (steward in classificationsArrayMap) {
         def list = steward.value;

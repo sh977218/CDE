@@ -31,66 +31,6 @@ println "PHRI Ingester"
 
 @Field Classifications classifications = new Classifications(orgColl);
 
-/*@Field def saveClassif = { newClassif ->
-    def orgObject = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
-    if (orgObject == null) {
-        println("Missing Org: " + newClassif.get("stewardOrg").get("name")+"\nCreating new one.");
-        def newOrg = new BasicDBObject();
-        newOrg.put("name",newClassif.get("stewardOrg").get("name"));
-        orgColl.insert(newOrg);
-        orgObject = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
-    }            
-    def foundOrg = orgObject;    
-    def found = false;
-
-    def classifications = foundOrg.get("classifications");
-    if (classifications == null) {
-        foundOrg.put("classifications", []);
-    }
-    for (BasicDBObject existingClassif : classifications) {
-        if ((existingClassif.get("conceptSystem").equals(newClassif.get("conceptSystem")) && (existingClassif.get("concept").equals(newClassif.get("concept"))))) {
-            found = true;
-        }
-    }
-    if (!found) {
-        foundOrg.classifications.add(newClassif);
-        orgColl.update(new BasicDBObject("_id", foundOrg.get("_id")), foundOrg);
-    }
-};
-
-//@Field def buildClassif = {conceptSystem, concept ->
-def BasicDBObject buildClassif (String conceptSystem, String concept) {
-    def newClassif = new BasicDBObject();
-    newClassif.put("conceptSystem", conceptSystem)
-    newClassif.put("concept", concept)
-    newClassif.put("stewardOrg", new BasicDBObject("name", "PHRI"));
-    newClassif;
-}
-
-def classify (ArrayList<BasicDBObject> classificationArray, BasicDBObject stewardOrg, String conceptSystem, String concept) {
-    def classif = buildClassif(conceptSystem, concept);
-    saveClassif(classif);
-    def conceptObj = new BasicDBObject();
-    conceptObj.put("name",concept);  
-    conceptObj.put("elements",[]); 
-    def existed = false;
-    for (int i=0; i<classificationArray.size(); i++) {
-        def classification = classificationArray.get(i);
-        if (classification.get("name")==conceptSystem) {
-            def elements = classification.get("elements");
-            elements.add(conceptObj);
-            classification.put("elements",elements);
-            existed = true;            
-        }
-    }
-    if (!existed) {
-        def conceptSystemObj =  new BasicDBObject();
-        conceptSystemObj.put("name", conceptSystem);
-        conceptSystemObj.put("elements", [conceptObj]);
-        classificationArray.add(conceptSystemObj);
-    }
-}*/
-
 static def String getCellValue(Cell cell) {
    if(cell == null) {
        return "";
@@ -271,8 +211,6 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     def phriCategory = getCellValue(row.getCell(xlsMap.defaultClassification));
     if (phriCategory=="")
         return null;
-        
-//
     
     def el = new BasicDBObject();
     el.put("name",phriCategory);    
@@ -310,8 +248,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
         co.put("text", comment);
         def comments = [co];
         newDE.put("comments", comments);
-    }
-    //newDE.append("classification", classificationArray);                        
+    }                       
     newDE;
 }
 

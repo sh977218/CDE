@@ -19,36 +19,6 @@ DBCollection orgColl = db.getCollection("orgs");
 
 def report = new XmlSlurper().parse(new File("../nlm-seed/ExternalCDEs/ninds/all/cdes.xml"));
 
-/*def saveClassif = { newClassif ->
-    def foundOrg = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
-    
-    def found = false;
-    if (foundOrg == null) {
-        println("Missing Org: " + newClassif.get("stewardOrg").get("name"));
-    }
-    def classifications = foundOrg.get("classifications");
-    if (classifications == null) {
-        foundOrg.put("classifications", []);
-    }
-    for (BasicDBObject existingClassif : classifications) {
-        if ((existingClassif.get("conceptSystem").equals(newClassif.get("conceptSystem")) && (existingClassif.get("concept").equals(newClassif.get("concept"))))) {
-            found = true;
-        }
-    }
-    if (!found) {
-        foundOrg.classifications.add(newClassif);
-        orgColl.update(new BasicDBObject("_id", foundOrg.get("_id")), foundOrg);
-    }
-};
-
-def buildClassif = {conceptSystem, concept ->
-    def newClassif = new BasicDBObject();
-    newClassif.put("conceptSystem", conceptSystem)
-    newClassif.put("concept", concept)
-    newClassif.put("stewardOrg", new BasicDBObject("name", "NINDS"));
-    newClassif;
-}*/
-
 Classifications classifications = new Classifications(orgColl);
 
 for (int i = 0 ; i < report.table1[0].table1_Group1_Collection[0].table1_Group1.size(); i++) {
