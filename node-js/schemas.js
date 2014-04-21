@@ -45,12 +45,9 @@ var classificationCollSchema = mongoose.Schema(
 }
 );
 
-var classificationSchema = mongoose.Schema({
-    conceptSystem: String
-    , concept: String
-    , stewardOrg: {
-        name: String
-    }
+var csEltSchema = mongoose.Schema({
+    name: String
+    , elements: [csEltSchema]
 }, {_id: false});
 
 var attachmentSchema = mongoose.Schema({
@@ -141,7 +138,12 @@ var deJsonSchema = {
             , unresolvedIssue: String
             , administrativeStatus: String
         }
-    , classification:  [classificationSchema]
+    , classification:  [
+            {
+                stewardOrg: {name: String}
+                , elements: [csEltSchema]
+            }
+        ]
     , formUsageCounter: Number
     , comments: [commentSchema]
     , archived: Boolean
@@ -227,7 +229,7 @@ schemas.userSchema = mongoose.Schema ({
 
 schemas.orgSchema = mongoose.Schema ({
     name: String
-    , classifications: [classificationSchema]
+    , classifications: [csEltSchema]
 });
 
 schemas.managedContextSchema = mongoose.Schema ({

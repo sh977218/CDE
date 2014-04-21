@@ -10,17 +10,16 @@ export ELASTIC_URI=http://localhost:9200/cdetest/
 
 mongo test test/dbInit.js
 
-groovy groovy/UploadCadsr test/cadsrTestSeed.xml --testMode
+groovy -cp groovy/ groovy/UploadCadsr test/cadsrTestSeed.xml --testMode
 
-sleep 8;
+sleep 3;
 
 export target='{"count":382,"_shards":{"total":1,"successful":1,"failed":0}}'
 export curl_res=$(curl http://localhost:9200/cdetest/_count)
+
 if [ "$curl_res" == "$target" ] 
 then
-    gradle -b test/selenium/build.gradle -Dtest.single=ValueDomainTest test & 
-#    gradle -b test/selenium/build.gradle clean test & 
-#    rm test-console.out
+    gradle -b test/selenium/build.gradle clean test & 
     node app > test-console.out
 else
     echo "Not all documents indexed. Aborting"

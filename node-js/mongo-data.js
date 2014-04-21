@@ -1,4 +1,4 @@
-var mongoose = require('mongoose')
+ var mongoose = require('mongoose')
     , util = require('util')
     , vsac_io = require('./vsac-io')
     , xml2js = require('xml2js')
@@ -43,16 +43,16 @@ exports.publicBoardsByDeUuid = function(uuid, callback) {
     });
 };
 
-exports.conceptSystem_autocomplete = function(system, callback) {
-    Org.distinct("classifications.conceptSystem", {"classifications.conceptSystem": new RegExp(system, 'i')}, function(err, systems) {
+exports.conceptSystem_autocomplete = function(callback) {
+    Org.distinct("classifications.name", function(err, systems) {
         callback(systems);
     }); 
 };
 
-exports.conceptSystem_org_autocomplete = function(orgName, system, callback) {
-    Org.distinct("classifications.conceptSystem", {"classifications.stewardOrg.name": orgName, "classifications.conceptSystem": new RegExp(system, 'i')}, function(err, systems) {
+exports.conceptSystem_org_autocomplete = function(orgName, callback) {
+    Org.distinct("classifications.name", {"name": orgName}, function(err, systems) {
         callback(systems);
-    }); 
+    });    
 };
 
 exports.org_autocomplete = function(name, callback) {
@@ -62,12 +62,28 @@ exports.org_autocomplete = function(name, callback) {
 };
 
 exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, callback) {
-    DataElement.update({}, {$pull: {classification: {conceptSystem: conceptSystem, concept: concept, "stewardOrg.name": orgName}}}, {multi: true}).exec(function(err) {
+    var mongoQuery = {
+        $pull: {
+            classification: {
+                "stewardOrg.name": orgName,
+                "elements.name": conceptSystem,
+                "elements.elements.name": concept
+            }
+        }
+    };
+    DataElement.update({}, mongoQuery, {multi: true}).exec(function(err) {
         if (err) { 
             callback("Unable to unclassify. " + err);
             return;
         } else {
-            Org.update({name: orgName}, {$pull: {classifications: {conceptSystem: conceptSystem, concept: concept}}}, false).exec(function(err) {
+            var mongoQuery = {
+                $pull: {
+                        "classifications.$.elements": {
+                            "name": concept
+                        }
+                }
+            };
+            Org.update({"name": orgName, "classifications.name": conceptSystem}, mongoQuery).exec(function(err) {
                 if (err) { 
                     callback("Unable to remove Classification. " + err);
                     return;
@@ -79,14 +95,51 @@ exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, 
     });
 };
 
-exports.addClassificationToOrg = function(orgName, conceptSystem, concept, callback) {
-    Org.update({name: orgName}, {$push: {classifications: {conceptSystem: conceptSystem, concept: concept, stewardOrg: {name: orgName}}}}, false).exec(function(err) {
-        if (err) { 
-            callback("Unable to add Classification. " + err);
-            return;
-        } else {
-            return callback();
-        }        
+exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptName, callback) {
+    var mongo_data = this;
+    this.findConceptSystem = function(stewardOrg, conceptSystemName) {
+        for(var i=0; i<stewardOrg.classifications.length; i++) {
+            if(stewardOrg.classifications[i].name===conceptSystemName) {
+                return stewardOrg.classifications[i];
+            }
+        }
+        return null;
+    };
+    this.findConcept = function(conceptSystem, conceptName) {
+        for(var i=0; i<conceptSystem.elements.length; i++) {
+            if(conceptSystem.elements[i].name===conceptName) {
+                return conceptSystem.elements[i];
+            }
+        }
+        return null;
+    };    
+    this.addConceptSystem = function(stewardOrg, conceptSystemName) {
+        stewardOrg.classifications.push({name: conceptSystemName});
+        return stewardOrg.classifications[stewardOrg.classifications.length-1];
+    };  
+    this.addConcept = function(conceptSystem, conceptName) {
+        if (!conceptSystem.elements) {
+            conceptSystem.elements = [];
+        }
+        conceptSystem.elements.push({name: conceptName});
+    };     
+    Org.findOne({"name": orgName}).exec(function(err, stewardOrg) {
+        conceptSystem = mongo_data.findConceptSystem(stewardOrg, conceptSystemName);
+        if (!conceptSystem) {
+            conceptSystem = mongo_data.addConceptSystem(stewardOrg, conceptSystemName);
+        }
+        concept = mongo_data.findConcept(conceptSystem, conceptName);
+        if (!concept) {
+            mongo_data.addConcept(conceptSystem, conceptName);
+        }    
+        stewardOrg.save(function (err) {
+            if (err) { 
+                callback("Unable to add Classification. " + err);
+                return;
+            } else {
+                return callback();
+            }  
+        });
     });
 };
 
@@ -223,7 +276,7 @@ exports.removeFromCart = function (user, formId, callback) {
                 if (err) {
                     console.log("Could not remove from cart");
                 }
-               callback(""); 
+                callback(""); 
             });
         } else {
             console.log("This form is not in the cart. " + formId);

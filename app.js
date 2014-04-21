@@ -10,6 +10,7 @@ var express = require('express')
   , crypto = require('crypto')
   , LocalStrategy = require('passport-local').Strategy
   , mongo_data = require('./node-js/mongo-data')
+  , classification = require('./node-js/classification')
   , util = require('util')
   , xml2js = require('xml2js')
   , vsac = require('./node-js/vsac-io')
@@ -669,14 +670,14 @@ app.get('/autocomplete/form', function(req, res) {
     return cdesvc.name_autocomplete_form(req, res);
 });
 
-app.get('/autocomplete/classification/:conceptSystem', function (req, res) {
-    mongo_data.conceptSystem_autocomplete(req.params.conceptSystem, function (result) {
+app.get('/autocomplete/classification/all', function (req, res) {
+    mongo_data.conceptSystem_autocomplete(function (result) {
         res.send(result);
     });
 });
 
-app.get('/autocomplete/classification/:orgName/:conceptSystem', function (req, res) {
-    mongo_data.conceptSystem_org_autocomplete(req.params.orgName, req.params.conceptSystem, function (result) {
+app.get('/autocomplete/classification/org/:orgName', function (req, res) {
+    mongo_data.conceptSystem_org_autocomplete(req.params.orgName, function (result) {
         res.send(result);
     });
 });
@@ -744,7 +745,26 @@ app.post('/addClassification', function(req, res) {
                   ) {
                 res.send("You do not own this data element.");
             } else {
-                de.classification.push(req.body.classification);
+                var steward = classification.findSteward(de, req.body.classification.orgName);
+                if (!steward) {
+                    var newSteward = {
+                        stewardOrg : {
+                            name: req.body.classification.orgName
+                        },
+                        elements: []
+                    };
+                    de.classification.push(newSteward);  
+                    var i = de.classification.length - 1;
+                    steward = {index: i, object: de.classification[i]};
+                }  
+                var conceptSystem = classification.findConcept(steward.object, req.body.classification.conceptSystem);                
+                if (!conceptSystem) {
+                    conceptSystem = classification.addElement(steward.object, req.body.classification.conceptSystem);
+                }
+                var concept = classification.findConcept(conceptSystem.object, req.body.classification.concept);      
+                if (!concept) {
+                    concept = classification.addElement(conceptSystem.object, req.body.classification.concept);
+                }                
                 return de.save(function(err) {
                     if (err) {
                         res.send("error: " + err);
@@ -772,21 +792,23 @@ app.post('/removeClassification', function(req, res) {
                   ) {
                 res.send("You do not own this data element.");
             } else {
-                var toRemove = req.body.classification;
-                for (var i = 0; i < de.classification.length; i++) {
-                    if (de.classification[i].conceptSystem === toRemove.conceptSystem
-                            && de.classification[i].concept === toRemove.concept) {
-                        de.classification.splice(i, 1);
-                        return de.save(function(err) {
-                            if (err) {
-                                res.send("error: " + err);
-                            } else {
-                                res.send(de);
-                            }
-                        });
-                    }
+                var steward = classification.findSteward(de, req.body.orgName);
+                var conceptSystem = classification.findConcept(steward.object, req.body.conceptSystemName);
+                var concept = classification.findConcept(conceptSystem.object, req.body.conceptName);
+                conceptSystem.object.elements.splice(concept.index, 1);
+                if (conceptSystem.object.elements.length === 0) {
+                    steward.object.elements.splice(conceptSystem.index, 1);
                 }
-                res.send("Not found.");
+                if (steward.object.elements.length === 0) {
+                    de.classification.splice(steward.index, 1);
+                }       
+                return de.save(function(err) {
+                    if (err) {
+                        res.send("error: " + err);
+                    } else {
+                        res.send(de);
+                    }
+                });              
             }
         });
     } else {

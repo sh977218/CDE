@@ -29,17 +29,28 @@ public class CompareTest extends NlmCdeBaseTest{
     public void Compare2Elements() {
         goHome();
         Assert.assertTrue(textPresent("Compare ( empty )"));
-        findElement(By.name("ftsearch")).sendKeys("Male Female");
+        findElement(By.name("ftsearch")).sendKeys("Person Gender Text Type");
         findElement(By.id("search.submit")).click();
         findElement(By.linkText("Person Gender Text Type")).click();
         hangon(.5);
         findElement(By.id("compare_0")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         Assert.assertTrue(textPresent("Compare ( 1 )"));
+//<<<<<<< HEAD
         findElement(By.id("acc_link_1")).click();
         hangon(.5);
         findElement(By.id("compare_1")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_1")));
+//=======
+//        findElement(By.name("ftsearch")).sendKeys("Patient Gender Category");
+//        hangon(1);
+//        findElement(By.id("search.submit")).click();
+//        hangon(2);
+//        findElement(By.linkText("Patient Gender Category")).click();
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
+//        findElement(By.id("compare_0")).click();   
+//        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));        
+//>>>>>>> master
         Assert.assertTrue(textPresent("Compare ( full )"));
         findElement(By.id("acc_link_2")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_2")));

@@ -22,3 +22,26 @@
 #taTextElement {
     height: auto;
 }
+#repeatCs hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#repeatCs h5 {
+    font-size: 19px;
+}
+#repeatCs h6 {
+    font-size: 15px;
+    font-weight: bold;
+}
+#repeatCs ul {
+    font-size: 12px;
+    list-style-type: none;
+    padding-left: 10px;
+}
+#repeatCs > .col-md-5 {
+    border: 1px solid rgb(220,220,220);
+    border-radius: 5px;
+}
+#repeatCs > .col-md-5 {
+    margin: 10px;
+}
