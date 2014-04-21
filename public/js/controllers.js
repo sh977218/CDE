@@ -178,7 +178,8 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         }        
     };   
     
-    $scope.addOrgFilter = function(t) {
+    //$scope.addOrgFilter = function(t) {
+    $scope.cacheOrgFilter = function(t) {
         if ($scope.selectedOrg === undefined) {
             $scope.selectedOrg = t.term;
             $scope.cache.put("selectedOrg", t.term);
@@ -190,11 +191,12 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             delete $scope.selectedGroup;
             $scope.cache.remove("selectedGroup");
         }
-        delete $scope.facets.groups;
-        $scope.reload();
+        //delete $scope.facets.groups;
+        //$scope.reload();
     };
 
-    $scope.selectSubGroup = function(subG, system) {
+    //$scope.selectSubGroup = function(subG, system) {
+    $scope.cacheSubGroup = function(subG, system) {
         if ($scope.selectedSubGroup === undefined) {
             $scope.selectedSubGroup = subG;
             $scope.cache.put("selectedSubGroup", subG);
@@ -202,10 +204,11 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             delete $scope.selectedSubGroup;
             $scope.cache.remove("selectedSubGroup");
         }
-        $scope.reload();
+        //$scope.reload();
     };
 
-    $scope.selectGroup = function(g) {
+    //$scope.selectGroup = function(g) {
+    $scope.cacheGroup = function(g) {
         if ($scope.selectedGroup === undefined) {
             $scope.selectedGroup = g;
             $scope.cache.put("selectedGroup", g);
@@ -896,6 +899,21 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         }
         $scope.cache.put("openAll", $scope.openAllModel);
     }
+    
+    $scope.addOrgFilter = function(t) {
+        $scope.cacheOrgFilter(t);
+        delete $scope.facets.groups;
+        $scope.reload();
+    };
+
+    $scope.selectSubGroup = function(subG, system) {
+        $scope.cacheSubGroup(subG, system);
+        $scope.reload();
+    };
+
+    $scope.selectGroup = function(g) {
+        $scope.cacheGroup(g);
+    };     
     
 }
 
