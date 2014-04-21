@@ -5,10 +5,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-/**
- *
- * @author ludetc
- */
 public class CompareTest extends NlmCdeBaseTest{
     
     @Test
@@ -22,9 +18,7 @@ public class CompareTest extends NlmCdeBaseTest{
     public void emptyList() {
         goHome();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
-        findElement(By.name("ftsearch")).sendKeys("sleep");
-        findElement(By.id("search.submit")).click();
-        findElement(By.id("acc_link_0")).click();       
+        openCdeInList("Sleep");
         findElement(By.id("compare_0")).click();
         Assert.assertTrue(textPresent("Compare ( 1 )"));
         findElement(By.id("emptyCart")).click();
@@ -38,16 +32,17 @@ public class CompareTest extends NlmCdeBaseTest{
         findElement(By.name("ftsearch")).sendKeys("Person Gender Text Type");
         findElement(By.id("search.submit")).click();
         findElement(By.linkText("Person Gender Text Type")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
+        hangon(.5);
         findElement(By.id("compare_0")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         Assert.assertTrue(textPresent("Compare ( 1 )"));
+        findElement(By.name("ftsearch")).clear();
         findElement(By.name("ftsearch")).sendKeys("Patient Gender Category");
         hangon(1);
         findElement(By.id("search.submit")).click();
         hangon(2);
         findElement(By.linkText("Patient Gender Category")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
+        hangon(.5);
         findElement(By.id("compare_0")).click();   
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));        
         Assert.assertTrue(textPresent("Compare ( full )"));
@@ -60,18 +55,17 @@ public class CompareTest extends NlmCdeBaseTest{
     
     @Test
     public void compareMeWithMlt() {
-        goToCdeByName("Patient Race Category");
+        goToCdeByName("Common Toxicity Criteria Adverse Event Iron Excess Grade");
         findElement(By.linkText("More Like This")).click();
         findElement(By.id("compareMe")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compareMe")));
-        findElement(By.linkText("Race Category Text")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
+        findElement(By.linkText("Common Toxicity Criteria Adverse Event Prolonged Chest Tube Grade")).click();
+        hangon(.5);
         findElement(By.id("compare_0")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         findElement(By.linkText("Compare ( full )")).click();
-        Assert.assertTrue(textPresent("OMB approved categories"));
-        Assert.assertTrue(textPresent("Office of Management and Budget (OMB)"));
+        Assert.assertTrue(textPresent("in CTC category Blood/Bone Marrow"));
+        Assert.assertTrue(textPresent("in CTC category Pulmonary/Upper Respiratory"));
     }
-
     
 }

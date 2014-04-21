@@ -36,7 +36,7 @@ public class OrgAdminTest extends NlmCdeBaseTest {
     
     @Test
     public void orgAdminTasks() {
-        findElement(By.linkText("Account")).click();
+        findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
         findElement(By.linkText("Organizations Curators")).click();       
         new Select(findElement(By.name("curator.orgName"))).selectByVisibleText("caBIG");
@@ -75,7 +75,7 @@ public class OrgAdminTest extends NlmCdeBaseTest {
     
     @Test
     public void adminProfile() {
-        findElement(By.linkText("Account")).click();
+        findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         Assert.assertEquals("cabigAdmin", findElement(By.id("dd_username")).getText());
         Assert.assertEquals("1,024.00 MB", findElement(By.id("dd_quota")).getText());

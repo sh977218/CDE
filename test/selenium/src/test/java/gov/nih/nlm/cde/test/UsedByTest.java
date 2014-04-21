@@ -10,28 +10,13 @@ import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ctepCurator_username;
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
 import org.openqa.selenium.By;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-/**
- *
- * @author ludetc
- */
 public class UsedByTest extends NlmCdeBaseTest {
-    
-    @BeforeClass
-    public void login() {
-        loginAs(ctepCurator_username, ctepCurator_password);
-    }
-
-    @AfterClass
-    public void logMeOut() {
-        logout();
-    }
 
     @Test
-    public void addUsedBy() {
+    public void addUsedBy() {        
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Surgical Procedure Pelvis");
         findElement(By.linkText("Usage")).click();
         findElement(By.id("addUsedBy")).click();
@@ -48,6 +33,7 @@ public class UsedByTest extends NlmCdeBaseTest {
     
     @Test
     public void removeUsedBy() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Name");
         findElement(By.linkText("Usage")).click();
         String toRemove = findElement(By.id("usedBy-2")).getText();
