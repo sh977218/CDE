@@ -206,6 +206,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
    
     @Test(dependsOnMethods = {"importVsacValues"})
     public void modifyValueCode() {
+        checkLoggedIn();
         goToCdeByName("Patient Race Category");
         findElement(By.linkText("Permissible Values")).click();         
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-valid")));

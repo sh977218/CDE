@@ -1544,24 +1544,7 @@ function CommentsCtrl($scope, Comment) {
     };     
  }
  
- function ClassificationCtrl($scope, $modal, Classification) {
-    /*$scope.removeClassification = function(classif) {
-        Classification.remove({
-            classification: classif
-            , deId: $scope.cde._id 
-        }, 
-        function (res) {
-            $scope.cde = res;
-            $scope.addAlert("success", "Classification Removed");
-        });
-    };*/
-    /*$scope.removeClassification = function(orgName, conceptSystem, concept) {
-        var classToDel = {stewardOrg:{name:orgName}, conceptSystem:conceptSystem, concept:concept};
-        $http.post("/removeClassificationFromOrg", classToDel).then(function(response) {
-            $scope.addAlert("success", response.data);
-            $scope.updateOrg();
-        });
-    };*/
+ function ClassificationCtrl($scope, $modal, $route, Classification) {
     $scope.removeClassification = function(orgName, conceptSystemName, conceptName) {
         Classification.remove({
             orgName: orgName
@@ -1572,6 +1555,7 @@ function CommentsCtrl($scope, Comment) {
         function (res) {
             $scope.cde = res;
             $scope.addAlert("success", "Classification Removed");
+            $route.reload();
         });
     };     
     
@@ -1591,6 +1575,7 @@ function CommentsCtrl($scope, Comment) {
             }, function (res) {
                 $scope.addAlert("success", "Classification Added");
                 $scope.cde = res;
+                $route.reload();
             });
         });
     };

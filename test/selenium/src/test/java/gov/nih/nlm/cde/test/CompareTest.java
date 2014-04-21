@@ -33,7 +33,6 @@ public class CompareTest extends NlmCdeBaseTest{
     
     @Test
     public void Compare2Elements() {
-        checkLoggedIn();
         goHome();
         Assert.assertTrue(textPresent("Compare ( empty )"));
         findElement(By.name("ftsearch")).sendKeys("Person Gender Text Type");
@@ -45,6 +44,7 @@ public class CompareTest extends NlmCdeBaseTest{
         Assert.assertTrue(textPresent("Compare ( 1 )"));
         findElement(By.name("ftsearch")).sendKeys("Patient Gender Category");
         findElement(By.id("search.submit")).click();
+        hangon(1);
         findElement(By.linkText("Patient Gender Category")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
         findElement(By.id("compare_0")).click();   
