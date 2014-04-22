@@ -904,7 +904,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         delete $scope.selectedSubGroup;
         $scope.cache.removeAll();
         $scope.reload();
-    }
+    };
 
     $scope.search = function() {
         $scope.cache.put("ftsearch", $scope.ftsearch);
@@ -1678,7 +1678,8 @@ function CommentsCtrl($scope, Comment) {
         });
     };
     
-    $scope.searchConcept = function(orgName, systemName, conceptName) {
+    $scope.searchByClassification = function(orgName, systemName, conceptName) {
+        $scope.cache.removeAll();
         $scope.cacheOrgFilter(orgName); 
         $scope.cacheSubGroup({term:conceptName});
         $scope.cacheGroup({name:systemName});
