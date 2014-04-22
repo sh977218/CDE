@@ -19,7 +19,12 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void statusFacets() {
         goHome();
-        Assert.assertTrue(textPresent("Candidate ("));
+        Assert.assertTrue(textPresent("Candidate (49)"));
+        Assert.assertTrue(textPresent("Qualified (333)"));
+        findElement(By.id("li-blank-CTEP")).click();
+        findElement(By.cssSelector("i.fa-check-square-o"));
+        Assert.assertTrue(textPresent("Candidate (26)"));
+        Assert.assertTrue(textPresent("Qualified (197)"));
     }
 
     @Test
@@ -109,7 +114,6 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 10);
-
     }
- 
+    
 }
