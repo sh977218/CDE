@@ -703,15 +703,7 @@ function SelectBoardModalCtrl($scope, $modalInstance, boards) {
 
 function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     $scope.setActiveMenu('LISTCDE');
-    
-    /*$scope.initCache = function() {
-        if ($cacheFactory.get("deListCache") === undefined) {
-            $scope.cache = $cacheFactory("deListCache");
-        } else {
-            $scope.cache = $cacheFactory.get("deListCache");
-        }        
-    };
-    $scope.initCache();*/
+
     $scope.initCache(); 
     
     $scope.openAllModel = $scope.cache.get("openAll");
