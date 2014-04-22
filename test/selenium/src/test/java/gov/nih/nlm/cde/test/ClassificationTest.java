@@ -55,4 +55,12 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(toRemove) < 0);
     }
     
+    @Test
+    public void classificationLink() {
+        goToCdeByName("Ethnic Group Category Text");
+        findElement(By.linkText("Classification")).click();
+        findElement(By.linkText("COAD")).click();
+        Assert.assertTrue(textPresent("COAD"));
+        Assert.assertTrue(textPresent("BLCA"));
+    }    
 }
