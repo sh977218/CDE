@@ -1,6 +1,9 @@
 package gov.nih.nlm.cde.test;
 
+import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
+import java.util.List;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -40,4 +43,18 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(toRemove) < 0);
     }
     
+    @Test
+    public void classificationLink() {
+        goToCdeByName("Cigarette Average");
+        findElement(By.linkText("Classification")).click();
+        findElement(By.linkText("Iloprost 12079")).click();
+        Assert.assertTrue(textPresent("Iloprost 12079"));
+        Assert.assertTrue(textPresent("Iloprost Trial"));  
+        Assert.assertTrue(textPresent("Patient Gender Category"));
+        Assert.assertTrue(textPresent("Patient Ethnic Group Category"));
+        Assert.assertTrue(textPresent("Cigarette Average Daily Pack Use Count"));
+        List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
+        Assert.assertEquals(linkList.size(), 3);
+
+    }    
 }
