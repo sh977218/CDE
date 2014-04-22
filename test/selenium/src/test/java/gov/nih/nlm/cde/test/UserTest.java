@@ -39,7 +39,7 @@ public class UserTest extends NlmCdeBaseTest {
     @Test
     public void curatorProfile() {
         loginAs(ctepCurator_username, ctepCurator_password);
-        findElement(By.linkText("Account")).click();
+        findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         Assert.assertEquals("ctepCurator", findElement(By.id("dd_username")).getText());
         Assert.assertEquals("1,024.00 MB", findElement(By.id("dd_quota")).getText());
@@ -51,7 +51,7 @@ public class UserTest extends NlmCdeBaseTest {
     @Test
     public void regUserCannotCreate() {
         loginAs("reguser", "pass");
-        findElement(By.linkText("Account"));
+        findElement(By.id("username_link"));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Create")));
         logout();
     }
@@ -60,7 +60,7 @@ public class UserTest extends NlmCdeBaseTest {
     public void viewingHistory() {
         loginAs(history_username, history_password);
         goToCdeByName("Patient Eligibility Ind-2");
-        findElement(By.linkText("Account")).click();
+        findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         Assert.assertTrue(textPresent("Patient Eligibility Ind-2"));
         
@@ -76,7 +76,7 @@ public class UserTest extends NlmCdeBaseTest {
         goToCdeByName("Specimen Block Received Count");
         goToCdeByName("Systemic Lupus Erythematosus Skin Involvement Ind-2");
         
-        findElement(By.linkText("Account")).click();
+        findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         Assert.assertTrue(textPresent("Specimen Inflammation Change Type"));
         Assert.assertTrue(textPresent("Person Mother Onset Menopause Age Value"));

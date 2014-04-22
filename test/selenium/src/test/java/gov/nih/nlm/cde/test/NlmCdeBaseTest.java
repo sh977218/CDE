@@ -1,16 +1,17 @@
 package gov.nih.nlm.cde.test;
 
 import java.util.Arrays;
-import org.testng.annotations.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.testng.Assert;
+import org.openqa.selenium.support.ui.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
+import org.testng.annotations.*;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -53,16 +54,19 @@ public class NlmCdeBaseTest {
         wait = new WebDriverWait(driver, 8, 200);
     }
     
-    protected void checkLoggedIn() {
-        if(textNotPresent("Account")) {
-            login();
-        }            
+    protected void mustBeLoggedInAs(String username, String password) {
+        WebElement loginLinkList = driver.findElement(By.id("login_link"));
+        if (loginLinkList.isDisplayed()) {
+            loginAs(username, password);
+        } else {
+            WebElement unameLink = driver.findElements(By.id("username_link")).get(0);
+            if (!unameLink.getText().equals(username)) {
+                logout();
+                loginAs(username, password);
+            } 
+        }
     }
-    
-    protected void login() {
-    
-    }
-    
+
     public void loginAsNlm() {
         loginAs("nlm", "nlm");
         logout();
@@ -70,19 +74,22 @@ public class NlmCdeBaseTest {
         
     protected void goToCdeByName(String name) {
         goHome();
-        Assert.assertTrue(textPresent("Qualified ("));
-        findElement(By.id("ftsearch-input")).sendKeys(name);
-        // TODO. Selenium doesn't seem to always send keys. Don't know why. Maybe catch and retry?
-        Assert.assertEquals(findElement(By.id("ftsearch-input")).getAttribute("value"), name);
-//        findElement(By.id("search.submit")).click();
-        findElement(By.cssSelector("i.fa-search")).click();
-        Assert.assertTrue(textPresent(name));
-        findElement(By.id("acc_link_0")).click();
-        hangon(1);
+        openCdeInList(name);
         findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("More Like This"));
     }
         
+    
+    protected void openCdeInList(String name) {
+        findElement(By.id("ftsearch-input")).clear();
+        findElement(By.id("ftsearch-input")).sendKeys(name);
+        Assert.assertEquals(findElement(By.id("ftsearch-input")).getAttribute("value"), name);
+        findElement(By.cssSelector("i.fa-search")).click();
+        Assert.assertTrue(textPresent(name));
+        findElement(By.id("acc_link_0")).click();
+        hangon(0.5);
+    }
+    
     protected void goToFormByName(String name) {
         goHome();
         findElement(By.id("formsLink")).click();
@@ -93,7 +100,6 @@ public class NlmCdeBaseTest {
     }
     
     protected WebElement findElement(By by) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }
     
@@ -123,9 +129,9 @@ public class NlmCdeBaseTest {
         hangon(2);
     }
     
-    public void hangon(int i)  {
+    public void hangon(double i)  {
         try {
-            Thread.sleep(i * 1000);
+            Thread.sleep((long)(i * 1000));
         } catch (InterruptedException ex) {
             Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -144,11 +150,12 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/gonowhere");
         driver.get(baseUrl + "/");
         findElement(By.name("ftsearch"));
+        Assert.assertTrue(textPresent("Qualified ("));
     }
     
     protected void logout() {
         try {
-            findElement(By.linkText("Account")).click();
+            findElement(By.id("username_link")).click();
             findElement(By.linkText("Log Out")).click();
             findElement(By.linkText("Log In"));
         } catch (TimeoutException e) {
@@ -169,7 +176,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
         findElement(By.cssSelector("button.btn")).click();
-        findElement(By.linkText("Account"));
+        findElement(By.linkText(username));
     }
     
     private boolean isWindows(){

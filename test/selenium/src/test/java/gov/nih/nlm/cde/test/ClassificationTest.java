@@ -2,28 +2,13 @@ package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-/**
- *
- * @author ludetc
- */
 public class ClassificationTest extends NlmCdeBaseTest {
-    
-    @BeforeClass
-    public void login() {
-        loginAs(ctepCurator_username, ctepCurator_password);
-    }
-
-    @AfterClass
-    public void logMeOut() {
-        logout();
-    }
     
     @Test
     public void addClassification() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Pills Quantity");
         findElement(By.linkText("Classification")).click();
         findElement(By.id("addClassification")).click();
@@ -41,11 +26,11 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.linkText("Classification")).click();
         Assert.assertTrue(textPresent("MyCategory"));
         Assert.assertTrue(textPresent("MyClassification"));
-
     }
     
     @Test
     public void removeClassification() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Cigarette");
         findElement(By.linkText("Classification")).click();
         String toRemove = findElement(By.id("classification-3-0")).getText();

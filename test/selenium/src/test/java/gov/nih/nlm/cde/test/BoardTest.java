@@ -3,29 +3,13 @@ package gov.nih.nlm.cde.test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-/**
- *
- * @author ludetc
- */
 public class BoardTest extends NlmCdeBaseTest {
     
     private static final String boardUser = "boarduser";
     private static final String boardPassword = "pass";
     
-    @BeforeClass
-    public void login() {
-        loginAs(boardUser, boardPassword);
-    }
-
-    @AfterClass
-    public void logMeOut() {
-        logout();
-    }
-
     private void makePublic(String boardName) {
         findElement(By.linkText("My Boards")).click();
         int length = driver.findElements(By.linkText("View Board")).size();
@@ -43,6 +27,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     @Test
     public void publicVsPrivateBoards() {
+        mustBeLoggedInAs(boardUser, boardPassword);
         String boardName = "Public Board";
         
         createBoard(boardName, "This board will be public");
@@ -125,6 +110,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     @Test
     public void removeBoard() {
+        mustBeLoggedInAs(boardUser, boardPassword);
         createBoard("Remove me board", "Not a very useful board");
         removeBoard("Remove me board");
         goHome();
@@ -134,11 +120,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     private void pinTo(String cdeName, String boardName) {
         goHome();
-        findElement(By.name("ftsearch")).sendKeys(cdeName);
-        findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent(cdeName));
-        findElement(By.id("acc_link_0")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pin_0")));
+        openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
         modalHere();        
         findElement(By.linkText(boardName)).click();
@@ -160,6 +142,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     @Test
     public void pin() {
+        mustBeLoggedInAs(boardUser, boardPassword);
         goHome();
         createBoard("Blood Board", "Collect blood related cdes here");
         createBoard("Smoking Board", "Collect Smoking CDEs here");
@@ -190,6 +173,7 @@ public class BoardTest extends NlmCdeBaseTest {
 
     @Test
     public void noDoublePin() {
+        mustBeLoggedInAs(boardUser, boardPassword);
         goHome();
         String cdeName = "Specimen Array";
         String boardName = "Double Pin Board";
@@ -198,10 +182,7 @@ public class BoardTest extends NlmCdeBaseTest {
         pinTo(cdeName, boardName);
         
         goHome();
-        findElement(By.name("ftsearch")).sendKeys(cdeName);
-        findElement(By.id("search.submit")).click();
-        findElement(By.id("acc_link_0")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pin_0")));
+        openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
         modalHere();
         findElement(By.linkText(boardName)).click();
@@ -217,6 +198,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     @Test
     public void unpin() {
+        mustBeLoggedInAs(boardUser, boardPassword);
         goHome();
         createBoard("Unpin Board", "test");
         pinTo("Volumetric", "Unpin Board");
@@ -230,13 +212,11 @@ public class BoardTest extends NlmCdeBaseTest {
     
     @Test
     public void iHaveNoBoard() {
+        mustBeLoggedInAs(boardUser, boardPassword);
         String cdeName = "Specimen Array";
 
         goHome();
-        findElement(By.name("ftsearch")).sendKeys(cdeName);
-        findElement(By.id("search.submit")).click();
-        findElement(By.partialLinkText(cdeName)).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pin_0")));
+        openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
         modalHere();
         Assert.assertTrue(textPresent("Create a board now"));
@@ -245,6 +225,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     @Test
     public void editBoard() {
+        mustBeLoggedInAs(boardUser, boardPassword);
         createBoard("Edit Board", "Test");
         findElement(By.linkText("My Boards")).click();
         String mod = findElement(By.id("dd_mod")).getText();
@@ -270,6 +251,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     @Test
     public void searchBoard() {
+        mustBeLoggedInAs(boardUser, boardPassword);
         String pubBlood = "Public Blood Board";
         String privBlood = "Private Blood Board";
         String pubSmoking = "Public Smoking Board";
@@ -298,6 +280,7 @@ public class BoardTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeBoards() {
+        mustBeLoggedInAs(boardUser, boardPassword);
         String board1 = "First CDE Board";
         String board2 = "Second CDE Board";
         
@@ -325,7 +308,5 @@ public class BoardTest extends NlmCdeBaseTest {
         
         removeBoard(board1);
         removeBoard(board2);
-    }
-    
-    
+    }  
 }

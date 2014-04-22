@@ -8,10 +8,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
 
-/**
- *
- * @author ludetc
- */
 public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
