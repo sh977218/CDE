@@ -830,7 +830,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             }
        };
        if (searchQ !== undefined && searchQ !== "") {
-            queryStuff.query.bool.should = {
+            queryStuff.query.bool.must = [{
                 function_score: {
                     boost_mode: "replace"
                     , script_score: {
@@ -843,11 +843,9 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                         }
                     }
                 }
-            }
+            }]
         } 
-        
-        queryStuff.query.bool.must = [];
-        
+                
         if ($scope.selectedOrg !== undefined) {
             queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": $scope.selectedOrg}});
         }

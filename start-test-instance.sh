@@ -2,7 +2,7 @@
 
 export PORT=3001
 export MONGO_URI=mongodb://localhost/test
-xport MONGO_HOST=localhost
+export MONGO_HOST=localhost
 export MONGO_DB=test
 export VSAC_HOST=localhost
 export VSAC_PORT=4000
