@@ -808,6 +808,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         var queryStuff = {size: $scope.resultPerPage};
         var searchQ = $scope.ftsearch;
         
+        $scope.filter = {and: []};
         var regStatusOr = [];
         for (var i = 0; i < $scope.registrationStatuses.length; i++) {
             var t = $scope.registrationStatuses[i];
@@ -829,8 +830,11 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                 }
             }
        };
+       
+       queryStuff.query.bool.must = [];
+
        if (searchQ !== undefined && searchQ !== "") {
-            queryStuff.query.bool.must = [{
+            queryStuff.query.bool.must.push({
                 function_score: {
                     boost_mode: "replace"
                     , script_score: {
@@ -843,9 +847,9 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                         }
                     }
                 }
-            }]
+            });
         } 
-                
+               
         if ($scope.selectedOrg !== undefined) {
             queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": $scope.selectedOrg}});
         }
@@ -889,6 +893,10 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
 
         if ($scope.filter !== undefined) {
             queryStuff.filter = $scope.filter;
+        }
+        
+        if (queryStuff.query.bool.must.length === 0) {
+            delete queryStuff.query.bool.must;
         }
 
         var from = ($scope.currentPage - 1) * $scope.resultPerPage;

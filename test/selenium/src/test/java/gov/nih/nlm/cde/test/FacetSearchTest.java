@@ -21,10 +21,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         goHome();
         Assert.assertTrue(textPresent("Candidate (49)"));
         Assert.assertTrue(textPresent("Qualified (333)"));
-        findElement(By.id("li-blank-CTEP")).click();
+        findElement(By.id("li-blank-caBIG")).click();
         findElement(By.cssSelector("i.fa-check-square-o"));
         Assert.assertTrue(textPresent("Candidate (26)"));
-        Assert.assertTrue(textPresent("Qualified (197)"));
+        Assert.assertTrue(textPresent("Qualified (199)"));
     }
 
     @Test
