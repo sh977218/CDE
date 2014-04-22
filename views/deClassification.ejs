@@ -2,25 +2,31 @@
 <h4>Classification</h4>
 <button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification" ng-show="isAllowedNonCuration(cde)"><i class="fa fa-plus"> </i> Add Classification</button>
 
-<dl id="repeatCs">
-<div ng-repeat="conceptSystemPerConcept in classificationToFilter() | filter:filterConceptSystemClassification">
-    <dt>{{conceptSystemPerConcept.conceptSystem}}</dt>
-    <dd>
-        <div ng-repeat="class in cde.classification | filter:isInConceptSystem(conceptSystemPerConcept.conceptSystem)">
-            <span ng-show="isAllowedNonCuration(cde)">
-                <span ng-show="showDelete">
-                    Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(class)" id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
-                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
-                </span>
-                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
-            </span>
-            <span id="classification-{{$parent.$index}}-{{$index}}">
-                {{class.concept}}            
-            </span>
+<div id="repeatCs" class="container">
+    <div ng-repeat="stewardClassifications in classificationToFilter()" class="col-md-5 container">
+        <h5>{{stewardClassifications.stewardOrg.name}}</h5>
+        <hr/>
+        <div ng-repeat="conceptSystem in stewardClassifications.elements" class="col-md-6">
+            <h6>{{ conceptSystem.name }}</h6>
+            <ul>
+                <li ng-repeat="concept in conceptSystem.elements">
+                    <span ng-show="isAllowedNonCuration(cde)">
+                        <span ng-show="showDelete">
+                            Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(stewardClassifications.stewardOrg.name, conceptSystem.name, concept.name)" id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
+                            <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
+                        </span>
+                        <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
+                    </span>                    
+                    <a href="/">
+                        <span ng-click="searchByClassification(stewardClassifications.stewardOrg.name, conceptSystem.name, concept.name)" id="classification-{{$parent.$index}}-{{$index}}" class="hand-cursor">
+                            {{ concept.name }}  
+                        </span>
+                    </a>                    
+                </li>
+            </ul>
         </div>
-    </dd>
+    </div>
 </div>
-</dl>
 
 <script type="text/ng-template" id="addClassificationModalContent.html">
     <%- include addClassification.ejs %>

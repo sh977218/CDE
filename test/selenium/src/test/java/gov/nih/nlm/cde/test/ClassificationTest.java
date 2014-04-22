@@ -1,29 +1,17 @@
 package gov.nih.nlm.cde.test;
 
+import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
+import java.util.List;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-/**
- *
- * @author ludetc
- */
 public class ClassificationTest extends NlmCdeBaseTest {
-    
-    @BeforeClass
-    public void login() {
-        loginAs(ctepCurator_username, ctepCurator_password);
-    }
-
-    @AfterClass
-    public void logMeOut() {
-        logout();
-    }
     
     @Test
     public void addClassification() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Pills Quantity");
         findElement(By.linkText("Classification")).click();
         findElement(By.id("addClassification")).click();
@@ -41,11 +29,11 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.linkText("Classification")).click();
         Assert.assertTrue(textPresent("MyCategory"));
         Assert.assertTrue(textPresent("MyClassification"));
-
     }
     
     @Test
     public void removeClassification() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Cigarette");
         findElement(By.linkText("Classification")).click();
         String toRemove = findElement(By.id("classification-3-0")).getText();
@@ -55,4 +43,18 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(toRemove) < 0);
     }
     
+    @Test
+    public void classificationLink() {
+        goToCdeByName("Cigarette Average");
+        findElement(By.linkText("Classification")).click();
+        findElement(By.linkText("Iloprost 12079")).click();
+        Assert.assertTrue(textPresent("Iloprost 12079"));
+        Assert.assertTrue(textPresent("Iloprost Trial"));  
+        Assert.assertTrue(textPresent("Patient Gender Category"));
+        Assert.assertTrue(textPresent("Patient Ethnic Group Category"));
+        Assert.assertTrue(textPresent("Cigarette Average Daily Pack Use Count"));
+        List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
+        Assert.assertEquals(linkList.size(), 3);
+
+    }    
 }

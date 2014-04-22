@@ -3,24 +3,14 @@ package gov.nih.nlm.cde.test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class ClassificationMgtTest extends NlmCdeBaseTest {
-    @BeforeClass
-    public void login() {
-        loginAs("classificationMgtUser", "pass");
-    }
-
-    @AfterClass
-    public void logMeOut() {
-        logout();
-    }
 
     @Test
     public void viewOrgClassifications() {
-        findElement(By.linkText("Account")).click();
+        mustBeLoggedInAs("classificationMgtUser", "pass");
+        findElement(By.id("username_link")).click();
         findElement(By.linkText("Classifications")).click();
         new Select(findElement(By.cssSelector("select"))).selectByValue("caBIG");
         Assert.assertTrue(textPresent("gov.nih.nci.cananolab.domain.characterization.invitro"));
@@ -32,7 +22,8 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
 
     @Test
     public void createClassifications() {
-        findElement(By.linkText("Account")).click();
+        mustBeLoggedInAs("classificationMgtUser", "pass");
+        findElement(By.id("username_link")).click();
         findElement(By.linkText("Classifications")).click();
         new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
         findElement(By.id("addClassification")).click();
@@ -48,10 +39,11 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
 
     @Test
     public void removeClassification() {
+        mustBeLoggedInAs("classificationMgtUser", "pass");
         goToCdeByName("Person Birth Date");
         findElement(By.linkText("Classification")).click();
         Assert.assertTrue(textPresent("NonHodgkins Lymphoma"));
-        findElement(By.linkText("Account")).click();
+        findElement(By.id("username_link")).click();
         findElement(By.linkText("Classifications")).click();
         new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
 

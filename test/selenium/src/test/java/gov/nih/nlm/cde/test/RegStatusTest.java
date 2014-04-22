@@ -1,7 +1,5 @@
 package gov.nih.nlm.cde.test;
 
-import java.util.concurrent.TimeUnit;
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -9,10 +7,6 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-/**
- *
- * @author ludetc
- */
 public class RegStatusTest extends NlmCdeBaseTest {
 
     // TODO - Cannot get this test to pass. Can't figure out why.
@@ -85,8 +79,9 @@ public class RegStatusTest extends NlmCdeBaseTest {
     
     @Test
     public void retire() {
+        String cdeName = "Laboratory Procedure Alkaline Phosphatase Result Date";
         loginAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName("Colitis Grade");
+        goToCdeByName(cdeName);
         Assert.assertTrue(textPresent("Qualified"));        
         findElement(By.id("editStatus")).click();
         modalHere();
@@ -94,9 +89,9 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.id("saveRegStatus")).click();
         hangon(2);
         goHome();
-        findElement(By.name("ftsearch")).sendKeys("Colitis");
+        findElement(By.name("ftsearch")).sendKeys("Alkaline");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Common Toxicity Criteria Adverse Event Colitis Grade") < 0);
+        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(cdeName));
         logout();
     }
     

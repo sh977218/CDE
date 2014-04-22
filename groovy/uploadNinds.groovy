@@ -19,39 +19,7 @@ DBCollection orgColl = db.getCollection("orgs");
 
 def report = new XmlSlurper().parse(new File("../nlm-seed/ExternalCDEs/ninds/all/cdes.xml"));
 
-def saveClassif = { newClassif ->
-    def foundOrg = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
-    
-    def found = false;
-    if (foundOrg == null) {
-        println("Missing Org: " + newClassif.get("stewardOrg").get("name"));
-    }
-    def classifications = foundOrg.get("classifications");
-    if (classifications == null) {
-        foundOrg.put("classifications", []);
-    }
-    for (BasicDBObject existingClassif : classifications) {
-        if ((existingClassif.get("conceptSystem").equals(newClassif.get("conceptSystem")) && (existingClassif.get("concept").equals(newClassif.get("concept"))))) {
-            found = true;
-        }
-    }
-    if (!found) {
-        foundOrg.classifications.add(newClassif);
-        orgColl.update(new BasicDBObject("_id", foundOrg.get("_id")), foundOrg);
-    }
-};
-
-def buildClassif = {conceptSystem, concept ->
-    def newClassif = new BasicDBObject();
-    newClassif.put("conceptSystem", conceptSystem)
-    newClassif.put("concept", concept)
-    newClassif.put("stewardOrg", new BasicDBObject("name", "NINDS"));
-    newClassif;
-}
-
-
-def baseClassif = buildClassif("Disease", "General (For all diseases)")
-saveClassif(baseClassif);
+Classifications classifications = new Classifications(orgColl);
 
 for (int i = 0 ; i < report.table1[0].table1_Group1_Collection[0].table1_Group1.size(); i++) {
     def cde = report.table1[0].table1_Group1_Collection[0].table1_Group1[i];
@@ -95,42 +63,20 @@ for (int i = 0 ; i < report.table1[0].table1_Group1_Collection[0].table1_Group1.
         }
     }
     newDE.get("valueDomain").put("permissibleValues", permissibleValues);
-    
-    def classification = [];
-    classification.add(baseClassif);
-//            
-//    if (process.argv[2] === "all") {
-//        var newClassif = {conceptSystem: "Disease", concept: "General (For all diseases)", stewardOrg: {name: "NINDS"}};
-//        newDE.classification.push(newClassif);                
-//    }
-//            
-
-     def newClassif = buildClassif("Classification", (String)cde.@textbox59);
-     saveClassif(newClassif);
-     classification.add(newClassif);
-            
+    def stewardClassificationsArray = []; 
+    classifications.classify(stewardClassificationsArray, "NINDS", "Disease", "General (For all diseases)");    
+    classifications.classify(stewardClassificationsArray, "NINDS", "Classification", (String)cde.@textbox59);            
     String[] population = ((String)cde.@textbox81).split(';');
     for (String pop : population) {
-        newClassif = buildClassif("Population", pop);
-        saveClassif(newClassif);
-        classification.add(newClassif);
+        classifications.classify(stewardClassificationsArray, "NINDS", "Population", pop);
+    }            
+    classifications.classify(stewardClassificationsArray, "NINDS", "Domain", (String)cde.@textbox87);
+    classifications.classify(stewardClassificationsArray, "NINDS", "Sub-Domain", (String)cde.@textbox62);
+    classifications.classify(stewardClassificationsArray, "NINDS", "CRF Module / Guideline", (String)cde.@textbox63);    
+    if (stewardClassificationsArray.size()>0) {
+        def stewardClassification = classifications.buildStewardClassifictions(stewardClassificationsArray, "NINDS");
+        newDE.append("classification", [stewardClassification]);
     }
-            
-    newClassif = buildClassif("Domain", (String)cde.@textbox87);
-    saveClassif(newClassif);
-    classification.add(newClassif);
-    
-    newClassif = buildClassif("Sub-Domain", (String)cde.@textbox62);
-    saveClassif(newClassif);
-    classification.add(newClassif);
-
-    newClassif = buildClassif("CRF Module / Guideline", (String)cde.@textbox63);
-    saveClassif(newClassif);
-    classification.add(newClassif);
-    
-    newDE.append("classification", classification);
-
     deColl.insert(newDE);
     println("saved");
-
 }

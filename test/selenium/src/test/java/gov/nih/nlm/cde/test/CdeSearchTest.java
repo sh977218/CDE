@@ -8,10 +8,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
 
-/**
- *
- * @author ludetc
- */
 public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
@@ -31,7 +27,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("This Data Element has no history"));
         findElement(By.linkText("Classification")).click();
         WebElement csDl = findElement(By.id("repeatCs"));
-        List<WebElement> csElements = csDl.findElements(By.xpath("//div/dd/div"));
+        List<WebElement> csElements = csDl.findElements(By.cssSelector("#repeatCs ul li"));
         Assert.assertEquals(csElements.size(), 4);
         Assert.assertEquals(csElements.get(0).getText(), "GO Trial");
         Assert.assertEquals(csElements.get(1).getText(), "GO New CDEs");
