@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 
 public class UsedByTest extends NlmCdeBaseTest {
 
-    @Test
+//    @Test
     public void addUsedBy() {        
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Surgical Procedure Pelvis");
@@ -31,7 +31,7 @@ public class UsedByTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("NINDS"));
     }
     
-    @Test
+//    @Test
     public void removeUsedBy() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Name");
