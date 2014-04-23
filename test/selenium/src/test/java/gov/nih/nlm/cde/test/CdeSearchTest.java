@@ -140,4 +140,18 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         }
     }
     
+    @Test
+    public void usedBySummary() {
+        goHome();
+        openCdeInList("Patient Race Category");
+        String usedBy = findElement(By.id("dd_usedBy")).getText();
+        Assert.assertTrue(usedBy.contains("CTEP"));
+        Assert.assertTrue(usedBy.contains("NIDCR"));
+        Assert.assertTrue(usedBy.contains("PS&CC"));
+        Assert.assertTrue(usedBy.contains("caBIG"));
+        Assert.assertTrue(usedBy.contains("NHLBI"));
+        Assert.assertTrue(usedBy.contains("CCR"));
+        Assert.assertTrue(usedBy.contains("CIP"));
+    }
+    
 }
