@@ -831,6 +831,10 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             }
        };
        
+       var lowRegStatusOr = [];
+       lowRegStatusOr.push({range: {"registrationState.registrationStatusSortOrder": {lte: 2}}});
+       $scope.filter.and.push({or: lowRegStatusOr});
+       
        queryStuff.query.bool.must = [];
 
        if (searchQ !== undefined && searchQ !== "") {
@@ -863,20 +867,20 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         }
 
         queryStuff.facets = {
-            orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}}
-            , statuses: {terms: {field: "registrationState.registrationStatus"}}
+            orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}, facet_filter: {or: lowRegStatusOr}}
+            , statuses: {terms: {field: "registrationState.registrationStatus"}, facet_filter: {or: lowRegStatusOr}}
         };    
 
         if ($scope.selectedOrg !== undefined) {
             queryStuff.facets.groups = {
                 terms: {field: "classification.elements.name", size: 200}
-                , facet_filter: {term: {"classification.stewardOrg.name": $scope.selectedOrg}}
+                , facet_filter: {and: [{term: {"classification.stewardOrg.name": $scope.selectedOrg}}, {or: lowRegStatusOr}]}
             }
             queryStuff.facets.concepts = {
                 terms: {field: "classification.elements.elements.name", size: 300}
-                , facet_filter: {
+                , facet_filter: {and: [{
                     term: {"classification.stewardOrg.name": $scope.selectedOrg}
-                }
+                }, {or: lowRegStatusOr}]}
             }                
         }
 
