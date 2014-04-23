@@ -59,6 +59,8 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
                     $scope.myOrgs.push($scope.user.orgCurator[i]);
                 }
             }
+        } else {
+            $scope.myOrgs = [];
         }
     };
     
@@ -833,6 +835,9 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
        
        var lowRegStatusOr = [];
        lowRegStatusOr.push({range: {"registrationState.registrationStatusSortOrder": {lte: 2}}});
+       for (var i = 0; i < $scope.myOrgs.length; i++) {
+           lowRegStatusOr.push({term: {"stewardOrg.name": $scope.myOrgs[i]}});
+       }
        $scope.filter.and.push({or: lowRegStatusOr});
        
        queryStuff.query.bool.must = [];
