@@ -3,6 +3,7 @@
 import com.mongodb.*;
 import com.mongodb.util.JSON;
 import java.util.UUID;
+import org.xml.sax.InputSource;
 
 def mongoHost = System.getenv()['MONGO_HOST'];
 if(mongoHost == null) {
@@ -22,7 +23,13 @@ DBCollection deColl = db.getCollection("dataelements");
 DBCollection orgColl = db.getCollection("orgs");
 
 println ("ingesting: " + args[0]);
-def deList = new XmlSlurper().parse(new File(args[0]));
+
+File file = new File(args[0]);
+InputStream inputStream = new FileInputStream(file);
+Reader reader = new InputStreamReader(inputStream,"UTF-8"); 
+InputSource is = new InputSource(reader);
+is.setEncoding("UTF-8");
+def deList = new XmlSlurper().parse(is);
 
 for (int i  = 0; i < deList.DataElement.size(); i++) {
     def cadsrDE = deList.DataElement[i];
