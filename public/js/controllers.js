@@ -833,12 +833,12 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             }
        };
        
-       var lowRegStatusOr = [];
-       lowRegStatusOr.push({range: {"registrationState.registrationStatusSortOrder": {lte: 2}}});
+       var lowRegStatusOrCuratorFilter = [];
+       lowRegStatusOrCuratorFilter.push({range: {"registrationState.registrationStatusSortOrder": {lte: 2}}});
        for (var i = 0; i < $scope.myOrgs.length; i++) {
-           lowRegStatusOr.push({term: {"stewardOrg.name": $scope.myOrgs[i]}});
+           lowRegStatusOrCuratorFilter.push({term: {"stewardOrg.name": $scope.myOrgs[i]}});
        }
-       $scope.filter.and.push({or: lowRegStatusOr});
+       $scope.filter.and.push({or: lowRegStatusOrCuratorFilter});
        
        queryStuff.query.bool.must = [];
 
@@ -872,20 +872,20 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         }
 
         queryStuff.facets = {
-            orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}, facet_filter: {or: lowRegStatusOr}}
-            , statuses: {terms: {field: "registrationState.registrationStatus"}, facet_filter: {or: lowRegStatusOr}}
+            orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}, facet_filter: {or: lowRegStatusOrCuratorFilter}}
+            , statuses: {terms: {field: "registrationState.registrationStatus"}, facet_filter: {or: lowRegStatusOrCuratorFilter}}
         };    
 
         if ($scope.selectedOrg !== undefined) {
             queryStuff.facets.groups = {
                 terms: {field: "classification.elements.name", size: 200}
-                , facet_filter: {and: [{term: {"classification.stewardOrg.name": $scope.selectedOrg}}, {or: lowRegStatusOr}]}
+                , facet_filter: {and: [{term: {"classification.stewardOrg.name": $scope.selectedOrg}}, {or: lowRegStatusOrCuratorFilter}]}
             }
             queryStuff.facets.concepts = {
                 terms: {field: "classification.elements.elements.name", size: 300}
                 , facet_filter: {and: [{
                     term: {"classification.stewardOrg.name": $scope.selectedOrg}
-                }, {or: lowRegStatusOr}]}
+                }, {or: lowRegStatusOrCuratorFilter}]}
             }                
         }
 
