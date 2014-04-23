@@ -151,7 +151,7 @@ public class BoardTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Collect blood"));
         Assert.assertTrue(textPresent("Smoking CDEs"));
 
-        pinTo("Companion Blood Culture", "Blood Board");
+        pinTo("Laboratory Procedure Blood Urea Nitrogen", "Blood Board");
         pinTo("Umbilical Cord Blood", "Blood Board");
         pinTo("Smoking History", "Smoking Board");
         pinTo("Smoking Cessation", "Smoking Board");
@@ -163,7 +163,7 @@ public class BoardTest extends NlmCdeBaseTest {
 
         goToBoard("Blood Board");
         Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 2);
-        Assert.assertTrue(textPresent("Companion Blood"));
+        Assert.assertTrue(textPresent("Laboratory Procedure Blood Urea Nitrogen"));
         Assert.assertTrue(textPresent("Umbilical Cord Blood"));
         
         removeBoard("Blood Board");

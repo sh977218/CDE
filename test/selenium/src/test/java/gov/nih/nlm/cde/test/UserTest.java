@@ -21,6 +21,7 @@ public class UserTest extends NlmCdeBaseTest {
     
     @Test
     public void wrongLogin() {
+        mustBeLoggedOut();
         goHome();
         try {
             findElement(By.linkText("Log In")).click();
@@ -70,11 +71,11 @@ public class UserTest extends NlmCdeBaseTest {
         goToCdeByName("Definition Type Definition Type String");
         goToCdeByName("Service Item Display Name java.lang.String");
         goToCdeByName("Apgar Score Created By java.lang.Long");
-        goToCdeByName("Tissue Sample Hormone Measurement java.lang.Short");
+        goToCdeByName("Target Lesion Sum Short Longest Dimension Measurement");
         goToCdeByName("Smoking Cessation Other Method Specify Text");
         goToCdeByName("Treatment Text Other Text");
         goToCdeByName("Specimen Block Received Count");
-        goToCdeByName("Systemic Lupus Erythematosus Skin Involvement Ind-2");
+        goToCdeByName("Malignant Neoplasm Metastatic Involvement Anatomic");
         
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
@@ -83,13 +84,13 @@ public class UserTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Definition Type Definition Type String"));
         Assert.assertTrue(textPresent("Service Item Display Name java.lang.String"));
         Assert.assertTrue(textPresent("Apgar Score Created By java.lang.Long"));
-        Assert.assertTrue(textPresent("Tissue Sample Hormone Measurement java.lang.Short"));
+        Assert.assertTrue(textPresent("Target Lesion Sum Short Longest Dimension Measurement"));
         Assert.assertTrue(textPresent("Smoking Cessation Other Method Specify Text"));
         Assert.assertTrue(textPresent("Treatment Text Other Text"));
         Assert.assertTrue(textPresent("Specimen Block Received Count"));
-        Assert.assertTrue(textPresent("Systemic Lupus Erythematosus Skin Involvement Ind-2"));
+        Assert.assertTrue(textPresent("Malignant Neoplasm Metastatic Involvement Anatomic"));
         
-        Assert.assertTrue(findElement(By.cssSelector("BODY")).getText().indexOf("Patient Eligibility Ind-2") < 0);
+        Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("Patient Eligibility Ind-2"));
 
         logout();
     }

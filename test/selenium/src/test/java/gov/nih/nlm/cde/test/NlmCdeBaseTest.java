@@ -66,6 +66,13 @@ public class NlmCdeBaseTest {
             } 
         }
     }
+    
+    protected void mustBeLoggedOut() {
+        WebElement loginLinkList = driver.findElement(By.id("login_link"));
+        if (!loginLinkList.isDisplayed()) {
+            logout();
+        }
+    }
 
     public void loginAsNlm() {
         loginAs("nlm", "nlm");

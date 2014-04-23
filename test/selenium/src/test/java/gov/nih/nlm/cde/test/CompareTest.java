@@ -18,7 +18,7 @@ public class CompareTest extends NlmCdeBaseTest{
     public void emptyList() {
         goHome();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
-        openCdeInList("Sleep");
+        openCdeInList("Prognostic");
         findElement(By.id("compare_0")).click();
         Assert.assertTrue(textPresent("Compare ( 1 )"));
         findElement(By.id("emptyCart")).click();
