@@ -758,6 +758,9 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                 $scope.cache.put("totalItems", $scope.totalItems);
                 $scope.facets = result.facets;
                 
+                for (var j = 0; j < $scope.registrationStatuses.length; j++) {
+                   $scope.registrationStatuses[j].count = 0; 
+                }
                 if ($scope.facets.statuses !== undefined) {
                     for (var i = 0; i < $scope.facets.statuses.terms.length; i++) {
                         for (var j = 0; j < $scope.registrationStatuses.length; j++) {
@@ -806,19 +809,6 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         var searchQ = $scope.ftsearch;
         
         $scope.filter = {and: []};
-        
-        if ($scope.selectedOrg !== undefined) {
-            $scope.filter.and.push({term: {"classification.stewardOrg.name": $scope.selectedOrg}});
-        }
-        
-        if ($scope.selecteGroup !== undefined) {
-            $scope.filter.and.push({term: {"classification.elements.name": $scope.selecteGroup.term}});
-        }        
-
-        if ($scope.selectedSubGroup !== undefined) {
-            $scope.filter.and.push({term: {"classification.elements.elements.name": $scope.selectedSubGroup.term}});
-        }
-        
         var regStatusOr = [];
         for (var i = 0; i < $scope.registrationStatuses.length; i++) {
             var t = $scope.registrationStatuses[i];
@@ -830,32 +820,47 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             $scope.filter.and.push({or: regStatusOr});
         }       
 
-        if (searchQ !== undefined && searchQ !== "") {
-            queryStuff.query = 
-            {   
-                bool: {
-                    should: {
-                    function_score: {
-                        boost_mode: "replace"
-                        , script_score: {
-                            script: "_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)"
-                        }
-                        , query: {
-                            query_string: {
-                                fields: ["_all", "naming.designation^3"]
-                                , query: searchQ
-                            }
-                        }
+        queryStuff.query = 
+        {   
+            bool: {
+                must_not: {
+                    term: {
+                        "registrationState.registrationStatus": "retired"
                     }
+                }
+            }
+       };
+       
+       queryStuff.query.bool.must = [];
+
+       if (searchQ !== undefined && searchQ !== "") {
+            queryStuff.query.bool.must.push({
+                function_score: {
+                    boost_mode: "replace"
+                    , script_score: {
+                        script: "_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)"
                     }
-                    , must_not: {
-                        term: {
-                            "registrationState.registrationStatus": "retired"
+                    , query: {
+                        query_string: {
+                            fields: ["_all", "naming.designation^3"]
+                            , query: searchQ
                         }
                     }
                 }
-           };
+            });
         } 
+               
+        if ($scope.selectedOrg !== undefined) {
+            queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": $scope.selectedOrg}});
+        }
+        
+        if ($scope.selecteGroup !== undefined) {
+            queryStuff.query.bool.must.push({term: {"classification.elements.name": $scope.selecteGroup.term}});
+        }        
+
+        if ($scope.selectedSubGroup !== undefined) {
+            queryStuff.query.bool.must.push({term: {"classification.elements.elements.name": $scope.selectedSubGroup.term}});
+        }
 
         queryStuff.facets = {
             orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}}
@@ -888,6 +893,10 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
 
         if ($scope.filter !== undefined) {
             queryStuff.filter = $scope.filter;
+        }
+        
+        if (queryStuff.query.bool.must.length === 0) {
+            delete queryStuff.query.bool.must;
         }
 
         var from = ($scope.currentPage - 1) * $scope.resultPerPage;

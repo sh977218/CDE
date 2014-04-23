@@ -19,7 +19,12 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void statusFacets() {
         goHome();
-        Assert.assertTrue(textPresent("Candidate ("));
+        Assert.assertTrue(textPresent("Candidate (49)"));
+        Assert.assertTrue(textPresent("Qualified (3"));
+        findElement(By.id("li-blank-caBIG")).click();
+        findElement(By.cssSelector("i.fa-check-square-o"));
+        Assert.assertTrue(textPresent("Candidate (26)"));
+        Assert.assertTrue(textPresent("Qualified (19)"));
     }
 
     @Test
@@ -45,7 +50,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
                 By.partialLinkText("Hydroxychloroquine Sulfate Administered Indicator")));
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 9);
+        Assert.assertTrue(linkList.size() > 5);
+        Assert.assertTrue(linkList.size() < 12);
+        Assert.assertTrue(textPresent("Surgical Procedure Other Anatomic Site"));
         findElement(By.id("li-checked-NHLBI")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("3")));
     }
@@ -109,7 +116,6 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 10);
-
     }
- 
+    
 }
