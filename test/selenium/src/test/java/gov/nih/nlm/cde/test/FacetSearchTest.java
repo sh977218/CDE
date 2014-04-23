@@ -19,42 +19,38 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void statusFacets() {
         goHome();
-        Assert.assertTrue(textPresent("Candidate (49)"));
         Assert.assertTrue(textPresent("Qualified (3"));
         findElement(By.id("li-blank-caBIG")).click();
         findElement(By.cssSelector("i.fa-check-square-o"));
-        Assert.assertTrue(textPresent("Candidate (26)"));
-        Assert.assertTrue(textPresent("Qualified (19)"));
+        Assert.assertTrue(textPresent("Qualified (1"));
     }
 
     @Test
     public void facets() {
+        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
         goHome();
-        findElement(By.name("ftsearch")).sendKeys("Treatment");
+        findElement(By.name("ftsearch")).sendKeys("Study");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("Candidate (4)"));
+        Assert.assertTrue(textPresent("Candidate (10)"));
         findElement(By.id("li-blank-Candidate")).click();
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText("Disease or Disorder Response Surgical Procedure Documented Indicator")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText("Intervention Trial Study Protocol Document Classification ")));
         hangon(1);
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 4);
-        findElement(By.id("li-blank-NHLBI")).click();
+        Assert.assertEquals(linkList.size(), 10);
+        findElement(By.id("li-blank-caBIG")).click();
         // Seems like we should wait for something , like below, but below doesn't work and I can't come up with something to wait for ...
 //            wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(
 //                    By.linkText("caBIG -- First Follow-up Visit Date"))));
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 2);
+        Assert.assertEquals(linkList.size(), 9);
         findElement(By.id("li-checked-Candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(
-                By.partialLinkText("Hydroxychloroquine Sulfate Administered Indicator")));
+                By.partialLinkText("Work Or Study Difficulty With Homework ")));
         hangon(1);
-        linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertTrue(linkList.size() > 5);
-        Assert.assertTrue(linkList.size() < 12);
-        Assert.assertTrue(textPresent("Surgical Procedure Other Anatomic Site"));
-        findElement(By.id("li-checked-NHLBI")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("3")));
+        findElement(By.id("li-checked-caBIG")).click();
+        Assert.assertTrue(textPresent("Event Pre-Surgical Study Period Code"));
     }
     
     @Test
@@ -69,9 +65,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("OPEN to Rave Standard "));
         findElement(By.cssSelector("i.fa-check-square-o"));
         findElement(By.id("resetSearch")).click();
-        findElement(By.name("ftsearch")).sendKeys("Kinetics");
+        findElement(By.name("ftsearch")).sendKeys("Immunology");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("DCE-MRI Kinetics T1 Mapping Quality Type"));
+        Assert.assertTrue(textPresent("Immunology Gonorrhea Assay Laboratory Finding Result"));
     }
 
     
@@ -115,7 +111,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-checked-CTEP")).click();
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 10);
+        Assert.assertEquals(linkList.size(), 9);
     }
     
 }
