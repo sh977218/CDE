@@ -80,7 +80,6 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys("Biomarker Gene");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("Biomarker Gene"));
-        Assert.assertTrue(textPresent("22 hits"));
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(linkList.size() > 10);
 
@@ -138,6 +137,19 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         for (int i = 0; i < 19; i++) {
             wait.until(ExpectedConditions.elementToBeClickable(By.id("acc_link_" + i)));
         }
+    }
+    
+    @Test
+    public void usedBySummary() {
+        goHome();
+        openCdeInList("Patient Race Category");
+        String usedBy = findElement(By.id("dd_usedBy")).getText();
+        Assert.assertTrue(usedBy.contains("NIDCR"));
+        Assert.assertTrue(usedBy.contains("PS&CC"));
+        Assert.assertTrue(usedBy.contains("caBIG"));
+        Assert.assertTrue(usedBy.contains("NHLBI"));
+        Assert.assertTrue(usedBy.contains("CCR"));
+        Assert.assertTrue(usedBy.contains("CIP"));
     }
     
 }

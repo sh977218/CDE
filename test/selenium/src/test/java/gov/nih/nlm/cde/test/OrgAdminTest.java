@@ -4,28 +4,13 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-/**
- *
- * @author ludetc
- */
 public class OrgAdminTest extends NlmCdeBaseTest {
-    
-    @BeforeClass
-    public void login() {
-        loginAs(cabigAdmin_username, cabigAdmin_password);
-    }
-
-    @AfterClass
-    public void logMeOut() {
-        logout();
-    }
 
     @Test
     public void orgAdminCanEditHisCdes() {
+        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
         goToCdeByName("Cervical Tumor Clinical T Stage");
         Assert.assertTrue(textPresent("as defined by the AJCC Cancer Staging Manual, 6th Ed."));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("i.fa-edit")));
@@ -36,6 +21,7 @@ public class OrgAdminTest extends NlmCdeBaseTest {
     
     @Test
     public void orgAdminTasks() {
+        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
         findElement(By.linkText("Organizations Curators")).click();       
@@ -62,6 +48,8 @@ public class OrgAdminTest extends NlmCdeBaseTest {
                 for (int j = 0; j < userLength; j++) {
                     if ("user1".equals(findElement(By.xpath("//div[@id='orgAdminUsername-" + i + "-" + j + "']")).getText())) {
                         findElement(By.xpath("//i[@id='orgAdminTrash-" + i + "-" + j + "']")).click();
+                        j = userLength;
+                        i = orgLength;
                     }
                 }
             }
@@ -75,6 +63,7 @@ public class OrgAdminTest extends NlmCdeBaseTest {
     
     @Test
     public void adminProfile() {
+        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         Assert.assertEquals("cabigAdmin", findElement(By.id("dd_username")).getText());
