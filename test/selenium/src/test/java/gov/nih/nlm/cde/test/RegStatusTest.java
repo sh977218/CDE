@@ -39,7 +39,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
     
     @Test
     public void changeRegistrationStatus() {
-        loginAs(cabigAdmin_username, cabigAdmin_password);
+        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
         goToCdeByName("Investigator Identifier java.lang.Integer");
         Assert.assertTrue(textPresent("Qualified"));
         findElement(By.id("editStatus")).click();
@@ -58,12 +58,11 @@ public class RegStatusTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("10/31/2014"));
         Assert.assertTrue(textPresent("Admin Note 1"));
         Assert.assertTrue(textPresent("Unresolved Issue 1"));
-        logout();
     }
         
     @Test
     public void nlmPromotesToStandard() {
-        loginAs(nlm_username, nlm_password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Patient Name");
         Assert.assertTrue(textPresent("Qualified"));
         findElement(By.id("editStatus")).click();
@@ -74,13 +73,12 @@ public class RegStatusTest extends NlmCdeBaseTest {
         hangon(2);
         goToCdeByName("Patient Name");
         Assert.assertTrue(textPresent("Standard"));
-        logout();
     }
     
     @Test
     public void retire() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         String cdeName = "Laboratory Procedure Alkaline Phosphatase Result Date";
-        loginAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName(cdeName);
         Assert.assertTrue(textPresent("Qualified"));        
         findElement(By.id("editStatus")).click();
@@ -92,13 +90,12 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys("Alkaline");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(cdeName));
-        logout();
     }
     
     @Test
     public void adminCantEditStandardCde() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
         String cdeName = "Patient Visual Change";
-        loginAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
@@ -137,9 +134,9 @@ public class RegStatusTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addClassification")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("removeClassification-0-0")));
 
-        // Can edit Usage
-        findElement(By.linkText("Usage")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addUsedBy")));
+//        // Can edit Usage
+//        findElement(By.linkText("Usage")).click();
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addUsedBy")));
         
         // Can't edit Concepts
         findElement(By.linkText("Concepts")).click();
@@ -150,7 +147,6 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.linkText("Attachments")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("i.fa-upload")));
         
-        logout();
     }
     
 }

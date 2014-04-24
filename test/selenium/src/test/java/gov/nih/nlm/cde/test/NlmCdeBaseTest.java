@@ -7,6 +7,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -47,6 +50,9 @@ public class NlmCdeBaseTest {
         }
         DesiredCapabilities caps = DesiredCapabilities.chrome();
         caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
+        LoggingPreferences logPrefs = new LoggingPreferences();
+        logPrefs.enable(LogType.BROWSER, Level.ALL);
+        caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);        
         driver = new ChromeDriver(caps);
         driver.get(baseUrl);
         driver.manage().window().setSize(new Dimension(1024,800));
