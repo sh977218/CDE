@@ -9,7 +9,7 @@ public class CommentTest extends NlmCdeBaseTest {
     
     @Test
     public void comments() {
-        loginAs(test_username, test_password);
+        mustBeLoggedInAs(test_username, test_password);
         goToCdeByName("Hospital Confidential Institution Referred From");
         findElement(By.linkText("Discussions")).click();
         findElement(By.name("comment")).sendKeys("My First Comment!");
@@ -23,14 +23,12 @@ public class CommentTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[3]/div[2]/div[2]/i")).click();
         Assert.assertTrue(textPresent("Comment removed"));
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("another comment") < 0);
-        logout();
     }
 
     @Test
-    public void adminCanRemoveComment() {
+    public void adminCanRemoveComment() {        
+        mustBeLoggedInAs(test_username, test_password);
         String commentText = "Inappropriate Comment";
-        
-        loginAs(test_username, test_password);
         goToCdeByName("Genbank");
         findElement(By.linkText("Discussions")).click();
         findElement(By.name("comment")).sendKeys(commentText);
@@ -49,7 +47,6 @@ public class CommentTest extends NlmCdeBaseTest {
                 Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(commentText) < 0);
             }
         }
-        logout();
     }
 
     

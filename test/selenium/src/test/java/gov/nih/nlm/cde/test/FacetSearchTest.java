@@ -74,41 +74,41 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void classificationFilters() {
         goHome();
-        findElement(By.name("ftsearch")).sendKeys("Toxicity");
+        findElement(By.name("ftsearch")).sendKeys("Image");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("CTEP ("));
-        findElement(By.id("li-blank-CTEP")).click();
-        Assert.assertTrue(textPresent("DISEASE"));
+        Assert.assertTrue(textPresent("caBIG (8)"));
+        findElement(By.id("li-blank-caBIG")).click();
+        Assert.assertTrue(textPresent("Generic Image"));
 
         hangon(1);
         List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertTrue(linkList.size() > 7);
+        Assert.assertEquals(linkList.size(), 8);
 
         // Check that CTEP classification with 0 items does not show
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("ABTC") < 0);
+        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("Medical Imaging Table Position Value"));
         
-        findElement(By.id("li-blank-DISEASE")).click();
-        Assert.assertTrue(textPresent("Lymphoma (1)"));
-        findElement(By.id("li-blank-Lymphoma")).click();
+        findElement(By.id("li-blank-Generic Image")).click();
+        Assert.assertTrue(textPresent("genericimage (2)"));
+        findElement(By.id("li-blank-gov.nih.nci.ivi.genericimage")).click();
         
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 1);
+        Assert.assertEquals(linkList.size(), 2);
         
         // Now test unclicking everything
-        findElement(By.id("li-checked-Lymphoma")).click();
+        findElement(By.id("li-checked-gov.nih.nci.ivi.genericimage")).click();
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 9);
+        Assert.assertEquals(linkList.size(), 8);
         
-        Assert.assertTrue(textPresent("Lymphoma (1)"));
-        findElement(By.id("li-blank-Lymphoma")).click();
+        Assert.assertTrue(textPresent("genericimage (2)"));
+        findElement(By.id("li-blank-gov.nih.nci.ivi.genericimage")).click();
         
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 1);
+        Assert.assertEquals(linkList.size(), 2);
         
-        findElement(By.id("li-checked-CTEP")).click();
+        findElement(By.id("li-checked-caBIG")).click();
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 9);

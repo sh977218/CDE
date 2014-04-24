@@ -835,8 +835,10 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
        
        var lowRegStatusOrCuratorFilter = [];
        lowRegStatusOrCuratorFilter.push({range: {"registrationState.registrationStatusSortOrder": {lte: 2}}});
-       for (var i = 0; i < $scope.myOrgs.length; i++) {
-           lowRegStatusOrCuratorFilter.push({term: {"stewardOrg.name": $scope.myOrgs[i]}});
+       if ($scope.myOrgs !== undefined) {
+            for (var i = 0; i < $scope.myOrgs.length; i++) {
+                lowRegStatusOrCuratorFilter.push({term: {"stewardOrg.name": $scope.myOrgs[i]}});
+            }
        }
        $scope.filter.and.push({or: lowRegStatusOrCuratorFilter});
        
