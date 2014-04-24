@@ -236,6 +236,21 @@ schemas.managedContextSchema = mongoose.Schema ({
    name: String 
 });
 
+schemas.mergeRequestSchema = mongoose.Schema ({
+    source: {uuid: String}
+    , destination: {uuid: String}
+    , fields: {
+        ids: Boolean
+        , naming: Boolean
+        , attachments: Boolean
+    }
+    , states: [{
+        action: String
+        , date: Date
+        , comment: String
+    }]
+});
+
 var regStatusSortMap = {
     Retired: 6
     , Incomplete: 5
@@ -265,5 +280,6 @@ schemas.formSchema.set('collection', 'forms');
 schemas.userSchema.set('collection', 'users');
 schemas.orgSchema.set('collection', 'orgs');
 schemas.pinningBoardSchema.set('collection', 'pinningBoards');
+schemas.mergeRequestSchema.set('collection', 'mergeRequests');
 
 module.exports = schemas;
