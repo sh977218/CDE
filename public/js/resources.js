@@ -157,4 +157,11 @@ angular.module('resources', ['ngResource']).
         return $resource('/board/:id/:start', {id: '@id', start: '@start'}, 
             {'getCdes': {method: 'GET', isArray: true}});
     })
+    .factory('MergeRequest', function($http) {
+        return {
+          create :function(dat, success, error) {
+              $http.post('/mergeRequest/create', dat).success(success).error(error);
+          }
+        };
+    })    
     ;

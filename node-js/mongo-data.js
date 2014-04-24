@@ -26,6 +26,7 @@ var User = mongoose.model('User', schemas.userSchema);
 var Form = mongoose.model('Form', schemas.formSchema);
 var Org = mongoose.model('Org', schemas.orgSchema);
 var PinningBoard = mongoose.model('PinningBoard', schemas.pinningBoardSchema);
+var MergeRequest = mongoose.model('MergeRequest', schemas.mergeRequestSchema);
 
 var gfs = Grid(db.db, mongoose.mongo);
 
@@ -555,4 +556,9 @@ exports.fetchPVCodeSystemList = function() {
     DataElement.distinct("valueDomain.permissibleValues.codeSystemName").exec(function(err, codeSystemNames) {
         mongo_data.pVCodeSystemList = codeSystemNames;
     });
+};
+
+exports.createMergeRequest = function(merReq) {
+    var mergeRequest = new MergeRequest(merReq);
+    mergeRequest.save();
 };

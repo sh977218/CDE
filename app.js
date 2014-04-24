@@ -998,6 +998,10 @@ app.get('/permissibleValueCodeSystemList', function(req, res) {
     res.send(mongo_data.pVCodeSystemList);
 });
 
+app.post('/mergeRequest/create', function(req, res) {
+    mongo_data.createMergeRequest(req.body);
+});
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
