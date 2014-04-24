@@ -90,6 +90,7 @@ public class NlmCdeBaseTest {
         openCdeInList(name);
         findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("More Like This"));
+        Assert.assertTrue(textPresent(name));
     }
         
     
