@@ -58,24 +58,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
 
     };
     
-    $scope.isAllowed = function (cde) {
-        if ($scope.initialized && cde.archived) {
-            return false;
-        }
-        if ($scope.user.siteAdmin) {
-            return true;
-        } else {   
-            if ($scope.initialized && 
-                    ((cde.registrationState.registrationStatus === "Standard" || cde.registrationState.registrationStatus === "Standard") )) {
-                return false;
-            }
-            if ($scope.initialized && $scope.myOrgs) {
-                return $scope.myOrgs.indexOf(cde.stewardOrg.name) > -1;
-            } else {
-                return false;
-            }
-        }
-    };
+
    
     $scope.save = function() {
         $scope.cde.$save(function (cde) {

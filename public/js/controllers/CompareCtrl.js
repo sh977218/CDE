@@ -46,4 +46,8 @@ function CompareCtrl($scope, DataElement) {
         }
     };
     
+    $scope.mergeButtonVisibility = function(cde) {
+        
+    };
+    
 };

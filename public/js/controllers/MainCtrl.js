@@ -4,6 +4,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             $scope.user = u;
             $scope.setMyOrgs(); 
             $scope.loadBoards();
+            $scope.initialized = true;
             callback();
         });
     };
@@ -205,5 +206,24 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     $scope.removeCacheGroup = function() {
         $scope.cache.remove("selectedGroup");
         $scope.cache.remove("selectedSubGroup");
-    };     
+    };  
+    
+    $scope.isAllowed = function (cde) {
+        if ($scope.initialized && cde.archived) {
+            return false;
+        }
+        if ($scope.user.siteAdmin) {
+            return true;
+        } else {   
+            if ($scope.initialized && 
+                    ((cde.registrationState.registrationStatus === "Standard" || cde.registrationState.registrationStatus === "Standard") )) {
+                return false;
+            }
+            if ($scope.initialized && $scope.myOrgs) {
+                return $scope.myOrgs.indexOf(cde.stewardOrg.name) > -1;
+            } else {
+                return false;
+            }
+        }
+    };    
 }

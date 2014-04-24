@@ -6,6 +6,7 @@
     <div ng-repeat="cde in cdes" class="col-md-6">
         <center>
             <a class='btn btn-small btn-default fa fa-eye' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"> View Full Detail</a>
+            <a ng-controller="MergeCtrl" class='btn btn-small btn-default fa fa-plus-square' ng-show="isAllowed(cde)" ng-click="openMergeModal()" title="Merge {{cde.naming[0].designation}}">Retire & Merge</a>
         </center>
     </div>        
 </div>
@@ -38,3 +39,6 @@
         <%- include deConcepts.ejs %>
     </div>        
 </div>
+<script type="text/ng-template" id="MergeModal.html">
+    <%- include MergeModal.ejs %>
+</script>
