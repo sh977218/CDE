@@ -58,6 +58,7 @@
                                 <ul class="dropdown-menu"> 
                                     <li 
                                     <li ng-show='user._id'><a href="#/profile">Profile</a></li>
+                                    <li ng-show='isOrgAdmin()'><a href="#/inbox">Inbox</a></li>
                                     <li ng-show="isOrgCurator()"><a href="#/classificationmanagement">Classifications</a></li>
                                     <li ng-show="isOrgAdmin() && !user.siteAdmin"><a href="#/orgaccountmanagement">Account Management</a></li>
                                     <li ng-show='user._id && user.siteAdmin'><a href="#/siteaccountmanagement">Site Management</a></li>

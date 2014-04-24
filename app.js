@@ -1002,6 +1002,14 @@ app.post('/mergeRequest/create', function(req, res) {
     mongo_data.createMergeRequest(req.body);
 });
 
+app.get('/mail/template/inbox', function(req, res) {
+    res.render("inbox"); 
+});
+
+app.get('/mail/data/received/all', function(req, res) {
+    res.render("inbox"); 
+});
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
