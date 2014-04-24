@@ -39,27 +39,25 @@ public class UserTest extends NlmCdeBaseTest {
     
     @Test
     public void curatorProfile() {
-        loginAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         Assert.assertEquals("ctepCurator", findElement(By.id("dd_username")).getText());
         Assert.assertEquals("1,024.00 MB", findElement(By.id("dd_quota")).getText());
         Assert.assertEquals("[\"CTEP\"]", findElement(By.id("dd_curatorFor")).getText());
         Assert.assertEquals("[]", findElement(By.id("dd_adminFor")).getText());
-        logout();
     }
 
     @Test
     public void regUserCannotCreate() {
-        loginAs("reguser", "pass");
+        mustBeLoggedInAs("reguser", "pass");
         findElement(By.id("username_link"));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Create")));
-        logout();
     }
     
     @Test
     public void viewingHistory() {
-        loginAs(history_username, history_password);
+        mustBeLoggedInAs(history_username, history_password);
         goToCdeByName("Patient Eligibility Ind-2");
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
@@ -91,8 +89,6 @@ public class UserTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Malignant Neoplasm Metastatic Involvement Anatomic"));
         
         Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("Patient Eligibility Ind-2"));
-
-        logout();
     }
 
 }

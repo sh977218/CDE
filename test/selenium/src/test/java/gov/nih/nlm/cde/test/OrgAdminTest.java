@@ -48,6 +48,8 @@ public class OrgAdminTest extends NlmCdeBaseTest {
                 for (int j = 0; j < userLength; j++) {
                     if ("user1".equals(findElement(By.xpath("//div[@id='orgAdminUsername-" + i + "-" + j + "']")).getText())) {
                         findElement(By.xpath("//i[@id='orgAdminTrash-" + i + "-" + j + "']")).click();
+                        j = userLength;
+                        i = orgLength;
                     }
                 }
             }

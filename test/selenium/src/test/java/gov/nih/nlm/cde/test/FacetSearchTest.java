@@ -85,7 +85,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(linkList.size(), 8);
 
         // Check that CTEP classification with 0 items does not show
-        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("Medical Imaging Table Position Value"));
+        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("Radiograph Evidence Type"));
         
         findElement(By.id("li-blank-Generic Image")).click();
         Assert.assertTrue(textPresent("genericimage (2)"));
