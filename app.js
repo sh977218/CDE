@@ -998,7 +998,7 @@ app.get('/permissibleValueCodeSystemList', function(req, res) {
     res.send(mongo_data.pVCodeSystemList);
 });
 
-app.post('/mail/message/new', function(req, res) {
+app.post('/mail/messages/new', function(req, res) {
     mongo_data.createMessage(req.body);
 });
 
@@ -1006,8 +1006,10 @@ app.get('/mail/template/inbox', function(req, res) {
     res.render("inbox"); 
 });
 
-app.get('/mail/data/received', function(req, res) {
-    res.render("inbox"); 
+app.get('/mail/messages/:type', function(req, res) {
+    mongo_data.getMessages(req.params.type, function(messages) {
+        res.send(messages);
+    });
 });
 
 http.createServer(app).listen(app.get('port'), function(){

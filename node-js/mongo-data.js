@@ -562,3 +562,9 @@ exports.createMessage = function(msg) {
     var message = new Message(msg);
     message.save();
 };
+
+exports.getMessages = function(type, callback) {
+    Message.find({}).exec(function(err, result) {
+        callback(result);
+    });
+};

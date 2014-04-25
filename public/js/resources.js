@@ -162,7 +162,7 @@ angular.module('resources', ['ngResource']).
           create :function(dat, success, error) {              
               var message = {
                   recipient: {type: "stewardOrg", name: dat.recipient},
-                  author: {type: "stewardOrg", name: dat.author},
+                  author: {type: "user", name: dat.author},
                   date: new Date(),
                   type: "Merge Request",
                   typeMergeRequest: dat.mergeRequest
@@ -176,7 +176,7 @@ angular.module('resources', ['ngResource']).
             {'getCdes': {method: 'GET', isArray: true}});*/
         return {
             sendMessage: function(dat, success, error) {              
-                $http.post('/mail/message/new', dat).success(success).error(error);
+                $http.post('/mail/messages/new', dat).success(success).error(error);
             }
         };        
     })     
