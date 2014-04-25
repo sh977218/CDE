@@ -160,10 +160,9 @@ angular.module('resources', ['ngResource']).
     .factory('MergeRequest', function(Mail) {
         return {
           create :function(dat, success, error) {              
-              //$http.post('/mergeRequest/create', dat).success(success).error(error);
               var message = {
-                  recipient: "rcpt",
-                  author: "athr",
+                  recipient: {type: "stewardOrg", name: dat.recipient},
+                  author: {type: "stewardOrg", name: dat.author},
                   date: new Date(),
                   type: "Merge Request",
                   typeMergeRequest: dat.mergeRequest

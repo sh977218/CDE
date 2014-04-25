@@ -252,8 +252,8 @@ var mergeRequestSchema = {
 };
 
 schemas.message = mongoose.Schema ({
-    recipient: String,
-    author: String,
+    recipient: {type: String, name: String},
+    author: {type: String, name: String},
     date: Date,
     type: String,
     typeMergeRequest: mergeRequestSchema
