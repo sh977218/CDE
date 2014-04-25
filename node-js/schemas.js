@@ -236,7 +236,7 @@ schemas.managedContextSchema = mongoose.Schema ({
    name: String 
 });
 
-schemas.mergeRequestSchema = mongoose.Schema ({
+var mergeRequestSchema = {
     source: {uuid: String}
     , destination: {uuid: String}
     , fields: {
@@ -249,6 +249,14 @@ schemas.mergeRequestSchema = mongoose.Schema ({
         , date: Date
         , comment: String
     }]
+};
+
+schemas.message = mongoose.Schema ({
+    recipient: String,
+    author: String,
+    date: Date,
+    type: String,
+    typeMergeRequest: mergeRequestSchema
 });
 
 var regStatusSortMap = {
@@ -280,6 +288,6 @@ schemas.formSchema.set('collection', 'forms');
 schemas.userSchema.set('collection', 'users');
 schemas.orgSchema.set('collection', 'orgs');
 schemas.pinningBoardSchema.set('collection', 'pinningBoards');
-schemas.mergeRequestSchema.set('collection', 'mergeRequests');
+schemas.message.set('collection', 'messages');
 
 module.exports = schemas;

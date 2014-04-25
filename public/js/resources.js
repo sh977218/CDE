@@ -157,11 +157,28 @@ angular.module('resources', ['ngResource']).
         return $resource('/board/:id/:start', {id: '@id', start: '@start'}, 
             {'getCdes': {method: 'GET', isArray: true}});
     })
-    .factory('MergeRequest', function($http) {
+    .factory('MergeRequest', function(Mail) {
         return {
-          create :function(dat, success, error) {
-              $http.post('/mergeRequest/create', dat).success(success).error(error);
+          create :function(dat, success, error) {              
+              //$http.post('/mergeRequest/create', dat).success(success).error(error);
+              var message = {
+                  recipient: "rcpt",
+                  author: "athr",
+                  date: new Date(),
+                  type: "Merge Request",
+                  typeMergeRequest: dat.mergeRequest
+              };
+              Mail.sendMessage(message);
           }
         };
-    })    
+    })   
+    .factory('Mail', function($http) {
+        /*return $resource('/mail/data/:type', {type: 'received'}, 
+            {'getCdes': {method: 'GET', isArray: true}});*/
+        return {
+            sendMessage: function(dat, success, error) {              
+                $http.post('/mail/message/new', dat).success(success).error(error);
+            }
+        };        
+    })     
     ;

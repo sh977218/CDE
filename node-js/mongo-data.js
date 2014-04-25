@@ -26,7 +26,7 @@ var User = mongoose.model('User', schemas.userSchema);
 var Form = mongoose.model('Form', schemas.formSchema);
 var Org = mongoose.model('Org', schemas.orgSchema);
 var PinningBoard = mongoose.model('PinningBoard', schemas.pinningBoardSchema);
-var MergeRequest = mongoose.model('MergeRequest', schemas.mergeRequestSchema);
+var Message = mongoose.model('Message', schemas.message);
 
 var gfs = Grid(db.db, mongoose.mongo);
 
@@ -558,7 +558,7 @@ exports.fetchPVCodeSystemList = function() {
     });
 };
 
-exports.createMergeRequest = function(merReq) {
-    var mergeRequest = new MergeRequest(merReq);
-    mergeRequest.save();
+exports.createMessage = function(msg) {
+    var message = new Message(msg);
+    message.save();
 };
