@@ -19,6 +19,7 @@ function InboxCtrl($scope, Mail, CdeList) {
            result.map(function(cde) { cdesKeyValuePair[cde.uuid] = cde; });
            $scope.receivedMail.map(function(message) {
                if (message.type!=="Merge Request") return;
+               message.typeMergeRequest.source.object = cdesKeyValuePair[message.typeMergeRequest.source.uuid];
                message.typeMergeRequest.destination.object = cdesKeyValuePair[message.typeMergeRequest.destination.uuid];
            });
         });

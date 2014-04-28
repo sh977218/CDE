@@ -5,7 +5,12 @@
         </accordion-heading>
         
         <h4>Merge Request</h4>        
-        <h5>CDE <a target="_blank" href="#/deview?cdeId={{message.typeMergeRequest.destination.object._id}}">{{message.typeMergeRequest.destination.object.naming[0].designation}}</a></h5>
-        
+        CDE <a target="_blank" href="#/deview?cdeId={{message.typeMergeRequest.destination.object._id}}">{{message.typeMergeRequest.destination.object.naming[0].designation}}</a>
+        <hr/>
+        Imported Fields<br>
+        Names <br>
+        <ul>
+            <li ng-repeat="n in message.typeMergeRequest.source.object.naming">{{ n.designation }}</li>
+        </ul>
     </accordion-group>
 </accordion>
