@@ -145,6 +145,9 @@ var deJsonSchema = {
             }
         ]
     , formUsageCounter: Number
+    , freeProperties: [
+        {key: String, value: String}
+    ]
     , comments: [commentSchema]
     , archived: Boolean
     , attachments: [attachmentSchema]
