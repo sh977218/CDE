@@ -145,7 +145,7 @@ var deJsonSchema = {
             }
         ]
     , formUsageCounter: Number
-    , freeProperties: [
+    , properties: [
         {key: String, value: String}
     ]
     , comments: [commentSchema]
