@@ -1,7 +1,7 @@
 <accordion ng-repeat="message in receivedMail" close-others="oneAtATime">
     <accordion-group>
         <accordion-heading>
-            {{message.date | date : medium}} | {{message.type}} | {{message.author.name}}
+            {{message.date | date : medium}} | {{message.type}} | {{receivedMail[0].typeMergeRequest.destination.object.naming[0].designation}} | {{message.author.name}}
         </accordion-heading>
         This is just some content to illustrate fancy headings.
     </accordion-group>

@@ -9,9 +9,17 @@ function InboxCtrl($scope, Mail, CdeList) {
     $scope.getReceivedMail();
     
     $scope.fetchMRCdes = function() {
-        var uuidList = $scope.receivedMail.map(function(m) {return m.typeMergeRequest.destination.uuid});
+        var uuidList = $scope.receivedMail.map(function(m) {return m.typeMergeRequest.destination.uuid;});
         CdeList.byUuidList(uuidList, function(result) {
-           console.log(result); 
+           if (!result) {
+               return;
+           }
+           var cdesKeyValuePair = {};
+           result.map(function(cde) { cdesKeyValuePair[cde.uuid] = cde; });
+           $scope.receivedMail.map(function(message) {
+               if (message.type!=="Merge Request") return;
+               message.typeMergeRequest.destination.object = cdesKeyValuePair[message.typeMergeRequest.destination.uuid];
+           });
         });
     };
 }
