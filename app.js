@@ -938,7 +938,7 @@ app.get('/mail/template/inbox', function(req, res) {
 });
 
 app.get('/mail/messages/:type', function(req, res) {
-    mongo_data.getMessages(req.params, function(messages) {
+    mongo_data.getMessages(req, function(messages) {
         res.send(messages);
     });
 });

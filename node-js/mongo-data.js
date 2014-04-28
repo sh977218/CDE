@@ -563,8 +563,20 @@ exports.createMessage = function(msg) {
     message.save();
 };
 
-exports.getMessages = function(params, callback) {
-    Message.find({"recipient.name":params.user}).exec(function(err, result) {
+exports.getMessages = function(req, callback) {
+    var query = {
+        $or: [
+            {
+                "recipient.recipientType":"stewardOrg"
+                , "recipient.name": {$in: req.user.orgAdmin}
+            }
+            , {
+                "recipient.recipientType":"user"
+                , "recipient.name": req.user.username
+            }
+        ]
+    };
+    Message.find(query).exec(function(err, result) {
         callback(result);
     });
 };
