@@ -9,8 +9,8 @@
     <tbody>
         <tr ng-repeat="message in receivedMail">
             <td>{{message.type}}</td>
-            <td>{{message.date}}</td>
-            <td>Otto</td>
+            <td>{{message.date | date : medium}}</td>
+            <td>{{message.author.name}}</td>
         </tr>
     </tbody>
 </table>
