@@ -207,19 +207,19 @@ function checkCdeOwnership(deId, req, cb) {
    if (req.isAuthenticated()) {
         mongo_data.cdeById(deId, function (err, de) {
             if (err) {
-                return cb("Data Element does not exist.");
+                return cb("Data Element does not exist.", null);
             }
             if (!req.user 
                   || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
                     && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
                   ) {
-                return cb("You do not own this data element.");
+                return cb("You do not own this data element.", null);
             } else {
-                cb();
+                cb(null, de);
             }
         });
     } else {
-        return cb("You are not authorized.");                   
+        return cb("You are not authorized.", null);                   
     }
 }
 
@@ -729,14 +729,14 @@ app.post('/elasticSearch', function(req, res) {
 });
 
 app.post('/addAttachmentToCde', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) return res.send(err);
         mongo_data.userTotalSpace(req.user.username, function(totalSpace) {
             if (totalSpace > req.user.quota) {
                 res.send({message: "You have exceeded your quota"});
             } else {
-                mongo_data.addCdeAttachment(req.files.uploadedFiles, req.user, "some comment", cde, function() {
-                    res.send(cde);            
+                mongo_data.addCdeAttachment(req.files.uploadedFiles, req.user, "some comment", de, function() {
+                    res.send(de);            
                  });                                            
             }
         });
@@ -744,8 +744,10 @@ app.post('/addAttachmentToCde', function(req, res) {
 });
 
 app.post('/addClassification', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err) {
-        if (err) return res.send(err);
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
+        if (err) {
+            return res.send(err);
+        }
         var steward = classification.findSteward(de, req.body.classification.orgName);
         if (!steward) {
             var newSteward = {
@@ -778,7 +780,7 @@ app.post('/addClassification', function(req, res) {
 
 
 app.post('/removeClassification', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) return res.send(err);        
         var steward = classification.findSteward(de, req.body.orgName);
         var conceptSystem = classification.findConcept(steward.object, req.body.conceptSystemName);
@@ -801,7 +803,7 @@ app.post('/removeClassification', function(req, res) {
 });
 
 app.post('/addUsedBy', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) return res.send(err);  
         de.usedByOrgs.push(req.body.usedBy);
         return de.save(function(err) {
@@ -815,7 +817,7 @@ app.post('/addUsedBy', function(req, res) {
 });
 
 app.post('/removeUsedBy', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) return res.send(err);  
         var toRemove = req.body.usedBy;
         for (var i = 0; i < de.usedByOrgs.length; i++) {
@@ -841,7 +843,7 @@ app.get('/orgNames', function(req, res) {
 });
 
 app.post('/removeAttachment', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) return res.send(err);  
         de.attachments.splice(index, 1);
         de.save(function (err) {
@@ -855,7 +857,7 @@ app.post('/removeAttachment', function(req, res) {
 });
 
 app.post('/setAttachmentDefault', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) return res.send(err);  
         var state = req.body.state;
         for (var i = 0; i < de.attachments.length; i++) {

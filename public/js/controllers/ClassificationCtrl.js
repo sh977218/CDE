@@ -1,4 +1,4 @@
- function ClassificationCtrl($scope, $modal, $route, $location, Classification) {
+ function ClassificationCtrl($scope, $modal, $route, Classification) {
     $scope.initCache(); 
      
     $scope.removeClassification = function(orgName, conceptSystemName, conceptName) {
