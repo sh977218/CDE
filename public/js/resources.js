@@ -161,8 +161,8 @@ angular.module('resources', ['ngResource']).
         return {
           create :function(dat, success, error) {              
               var message = {
-                  recipient: {type: "stewardOrg", name: dat.recipient},
-                  author: {type: "user", name: dat.author},
+                  recipient: {recipientType: "stewardOrg", name: dat.recipient},
+                  author: {authorType: "user", name: dat.author},
                   date: new Date(),
                   type: "Merge Request",
                   typeMergeRequest: dat.mergeRequest
