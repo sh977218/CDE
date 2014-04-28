@@ -177,7 +177,12 @@ angular.module('resources', ['ngResource']).
         return {
             sendMessage: function(dat, success, error) {              
                 $http.post('/mail/messages/new', dat).success(success).error(error);
-            }
+            },
+            getReceived: function(user, cb) {              
+                $http.get("/mail/messages/received").then(function(response) {
+                    cb(response.data);
+                });
+            }          
         };        
     })     
     ;

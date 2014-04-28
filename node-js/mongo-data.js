@@ -560,31 +560,11 @@ exports.fetchPVCodeSystemList = function() {
 
 exports.createMessage = function(msg) {
     var message = new Message(msg);
-    /*var message = new Message({
-        recipient: {type: msg.recipient.type, name: msg.recipient.name},
-        author: {type: msg.author.type, name: msg.author.name},
-        date: new Date(),
-        type: "Merge Request",
-        typeMergeRequest: {
-            source: {uuid: msg.typeMergeRequest.source.uuid}
-            , destination: {uuid: msg.typeMergeRequest.destination.uuid}
-            , fields: {
-                ids: msg.typeMergeRequest.fields.ids
-                , naming: msg.typeMergeRequest.fields.naming
-                , attachments: msg.typeMergeRequest.fields.attachments
-            }
-            , states: [{
-                action: msg.typeMergeRequest.states[0].action
-                , date: new Date()
-                , comment: msg.typeMergeRequest.states[0].comment
-            }]
-        }
-    });*/
     message.save();
 };
 
-exports.getMessages = function(type, callback) {
-    Message.find({}).exec(function(err, result) {
+exports.getMessages = function(params, callback) {
+    Message.find({"recipient.name":params.user}).exec(function(err, result) {
         callback(result);
     });
 };

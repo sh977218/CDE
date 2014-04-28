@@ -1,8 +1,8 @@
-function InboxCtrl($scope, $http, $window) {
+function InboxCtrl($scope, Mail) {
     $scope.receivedMail = [];
     $scope.getReceivedMail = function() {
-        $http.get("/mail/messages/received").then(function(response) {
-            $scope.receivedMail = response.data;
+        Mail.getReceived($scope.user, function(mail) {
+            $scope.receivedMail = mail;
         });
     };
     $scope.getReceivedMail();
