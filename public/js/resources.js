@@ -1,7 +1,4 @@
-angular.module('resources', ['ngResource']).
-    factory('CdeList', function($resource) {
-        return $resource('/listcde');
-    })
+angular.module('resources', ['ngResource'])
     .factory('BoardSearch', function($resource) {
         return $resource('/listboards');
     })
@@ -18,7 +15,7 @@ angular.module('resources', ['ngResource']).
     })
     .factory('CdeDiff', function($resource) {
         return $resource('/cdediff/:deId', {deId: '@deId'});
-    })
+    })       
 //    .factory('AutocompleteSvc', function($resource) {
 //        return $resource("/autocomplete");
 //    })
@@ -184,5 +181,14 @@ angular.module('resources', ['ngResource']).
                 });
             }          
         };        
-    })     
+    }) 
+    .factory('CdeList', function($http) {
+        return {
+            byUuidList: function(ids, cb) {              
+                $http.post("/cdesByUuidList", ids).then(function(response) {
+                    cb(response.data);
+                });
+            }
+        } 
+    })    
     ;

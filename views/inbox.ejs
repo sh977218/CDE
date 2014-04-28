@@ -1,16 +1,8 @@
-<table ng-controller="InboxCtrl" class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <th>Type</th>
-            <th>Date</th>
-            <th>Author</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="message in receivedMail">
-            <td>{{message.type}}</td>
-            <td>{{message.date | date : medium}}</td>
-            <td>{{message.author.name}}</td>
-        </tr>
-    </tbody>
-</table>
+<accordion ng-repeat="message in receivedMail" close-others="oneAtATime">
+    <accordion-group>
+        <accordion-heading>
+            {{message.date | date : medium}} | {{message.type}} | {{message.author.name}}
+        </accordion-heading>
+        This is just some content to illustrate fancy headings.
+    </accordion-group>
+</accordion>

@@ -39,6 +39,6 @@ function MergeModalCtrl($scope, $modalInstance, cdes, retiredIndex, user) {
         $modalInstance.dismiss('cancel');
     };  
     $scope.sendMergeRequest = function() {
-        $modalInstance.close({mergeRequest:$scope.mergeRequest, recipient: target.origin, author: user.username});
+        $modalInstance.close({mergeRequest:$scope.mergeRequest, recipient: target.stewardOrg.name, author: user.username});
     };
 }

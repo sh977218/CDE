@@ -380,6 +380,12 @@ app.get('/listcde', function(req, res) {
     cdesvc.listcde(req, res);
 });
 
+app.post('/cdesByUuidList', function(req, res) {
+    mongo_data.cdesByUuidList(req.body, function(err, cdes) {
+        res.send(cdes);
+    });
+});
+
 app.get('/cdesforapproval', function(req, res) {
     mongo_data.cdesforapproval(req.user.orgAdmin, function(err, cdes) {
         res.send(cdes);
