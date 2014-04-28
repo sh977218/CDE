@@ -1,0 +1,56 @@
+<div ng-controller="IdsCtrl">
+
+<div ng-repeat="id in cde.ids">
+    <div class="row">
+        <div class="col-md-1 text-right" ng-show="isAllowed(cde) && cde.ids.length > 0">
+            <div class="row">
+                <span ng-show="showDelete">
+                    Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeId($index)" id="confirmRemoveId-{{$index}}" title="OK" href=""></a>
+                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
+                </span>
+                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeId-{{$index}}" title="Remove" href=""></a>
+            </div>
+        </div>
+        <div class="col-md-11">
+            <dl class="dl-horizontal">
+                <dt>Origin: </dt> 
+                <dd id="dd_name_{{$index}}">{{id.origin}}</dd>
+                <dt>Id: </dt>
+                <dd id="dd_def_{{$index}}">{{id.id}}</dd>
+                <dt>Version: </dt>
+                <dd id="dd_def_{{$index}}">{{id.version}}</dd>
+            </dl>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<button ng-show="isAllowed(cde)" class="btn btn-small btn-default" value="add" ng-click="openNewId()" id="addId"><i class="fa fa-plus"> </i> Add Identifier</button>
+
+<script type="text/ng-template" id="newIdModalContent.html">
+    <div class="modal-header" id="newIdModalHeader">
+    <h4>Add Identifier</h4>
+    </div>
+    <form name="form" role="form">
+    <div class="modal-body" id="newIdModalBody">
+        <div class="form-group">
+            <label for="origin">Origin</label>
+            <input class="form-control" ng-model="newId.origin" name="origin" Placeholder="Id Origin" required/>
+        </div>    
+        <div class="form-group">
+            <label for="id">Identifier</label>
+            <textarea class="form-control" ng-model="newId.id" name="id" Placeholder="Identifier" required></textarea>
+        </div>    
+        <div class="form-group">
+            <label for="version">Version</label>
+            <textarea class="form-control" ng-model="newId.version" name="version" Placeholder="Version" required></textarea>
+        </div>    
+    </div>
+    <div class="modal-footer" id="newIdModalFooter">
+        <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
+        <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid" id="createId">Save</button>
+    </div>
+    </form>
+</script>
+
+</div>

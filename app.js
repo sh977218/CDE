@@ -843,6 +843,41 @@ app.post("/removeProperty", function(req, res) {
     });    
 });
 
+app.post('/addId', function(req, res) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
+        if (err) return res.send({error: err});  
+        var newId = req.body.newId;
+        if (newId === undefined || newId.origin === undefined || newId.id === undefined) {
+            res.send({error: "Incorrect parameter"});
+        }
+        if (de.ids === undefined) {
+            de.ids = [];
+        } 
+        de.ids.push(newId);
+        return de.save(function(err) {
+            if (err) {
+                res.send({error: err});
+            } else {
+                res.send({de: de});
+            }
+        });
+    });    
+});
+
+app.post("/removeId", function(req, res) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
+        if (err) return res.send({error: err});  
+        de.ids.splice(req.body.index, 1);
+        return de.save(function(err) {
+            if (err) {
+                res.send({error: err});
+            } else {
+                res.send({de: de});
+            }
+        });        
+    });    
+});
+
 app.post('/addUsedBy', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) return res.send({error: err});  
