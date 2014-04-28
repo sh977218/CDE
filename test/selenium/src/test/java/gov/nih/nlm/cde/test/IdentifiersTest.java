@@ -43,7 +43,7 @@ public class IdentifiersTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Identifier Removed"));
         
         goToCdeByName(cdeName);
-        findElement(By.linkText("Properties")).click();
+        findElement(By.linkText("Identifiers")).click();
         Assert.assertTrue(textPresent("MyOrigin1"));
         Assert.assertTrue(textPresent("MyId1"));
         Assert.assertTrue(textPresent("MyVersion1"));
