@@ -1,0 +1,16 @@
+<table ng-controller="InboxCtrl" class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Author</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="message in receivedMail">
+            <td>{{message.type}}</td>
+            <td>{{message.date}}</td>
+            <td>Otto</td>
+        </tr>
+    </tbody>
+</table>

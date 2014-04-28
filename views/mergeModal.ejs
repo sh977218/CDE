@@ -1,0 +1,36 @@
+<!--div class="btn-group">
+<button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="true">Yes</button>
+<button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="false">No</button>
+</div>-->
+<div class="modal-header ng-scope">
+    <h4>Retire & Merge CDE</h4>
+</div>     
+
+<div class="modal-body">
+        <div class="row">
+          <div class="col-md-offset-2 col-md-1">Import IDs</div>
+          <div class="col-md-offset-1 col-md-3">
+              <yes-no-checkbox model="mergeRequest.fields.ids"></yes-no-checkbox>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-offset-2 col-md-1">Import Names</div>
+          <div class="col-md-offset-1 col-md-3">
+              <yes-no-checkbox model="mergeRequest.fields.naming"></yes-no-checkbox>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-offset-2 col-md-1">Import Attachments:</div>
+          <div class="col-md-offset-1 col-md-3">
+              <yes-no-checkbox model="mergeRequest.fields.attachments"></yes-no-checkbox>
+          </div>
+        </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default cancel" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-warning cancel" ng-click="sendMergeRequest()">Merge</button>
+</div>
+
+
+
