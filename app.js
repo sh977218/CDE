@@ -203,6 +203,26 @@ app.get('/signup', function(req, res){
   res.render('signup');
 });
 
+function checkCdeOwnership(deId, req, cb) {
+   if (req.isAuthenticated()) {
+        mongo_data.cdeById(deId, function (err, de) {
+            if (err) {
+                return cb("Data Element does not exist.", null);
+            }
+            if (!req.user 
+                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
+                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
+                  ) {
+                return cb("You do not own this data element.", null);
+            } else {
+                cb(null, de);
+            }
+        });
+    } else {
+        return cb("You are not authorized.", null);                   
+    }
+}
+
 app.post('/register', function(req, res) {
   usersvc.register(req, res);
 });
@@ -709,126 +729,100 @@ app.post('/elasticSearch', function(req, res) {
 });
 
 app.post('/addAttachmentToCde', function(req, res) {
-    if (req.isAuthenticated()) {
-        return mongo_data.cdeById(req.body.de_id, function(err, cde) {
-            if (req.user.orgCurator.indexOf(cde.stewardOrg.name) < 0 
-                    && req.user.orgAdmin.indexOf(cde.stewardOrg.name) < 0 
-                    && !req.user.siteAdmin) {
-                res.send("not authorized");
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
+        if (err) return res.send(err);
+        mongo_data.userTotalSpace(req.user.username, function(totalSpace) {
+            if (totalSpace > req.user.quota) {
+                res.send({message: "You have exceeded your quota"});
             } else {
-                mongo_data.userTotalSpace(req.user.username, function(totalSpace) {
-                    if (totalSpace > req.user.quota) {
-                        res.send({message: "You have exceeded your quota"});
-                    } else {
-                        mongo_data.addCdeAttachment(req.files.uploadedFiles, req.user, "some comment", cde, function() {
-                            res.send(cde);            
-                         });                                            
-                    }
-                });
-                
+                mongo_data.addCdeAttachment(req.files.uploadedFiles, req.user, "some comment", de, function() {
+                    res.send(de);            
+                 });                                            
             }
         });
-    } else {
-        res.send("You need to be logged in to do this");
-    }
+    });
 });
 
 app.post('/addClassification', function(req, res) {
-    if (req.isAuthenticated()) {
-        mongo_data.cdeById(req.body.deId, function (err, de) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
+        if (err) {
+            return res.send(err);
+        }
+        var steward = classification.findSteward(de, req.body.classification.orgName);
+        if (!steward) {
+            var newSteward = {
+                stewardOrg : {
+                    name: req.body.classification.orgName
+                },
+                elements: []
+            };
+            de.classification.push(newSteward);  
+            var i = de.classification.length - 1;
+            steward = {index: i, object: de.classification[i]};
+        }  
+        var conceptSystem = classification.findConcept(steward.object, req.body.classification.conceptSystem);                
+        if (!conceptSystem) {
+            conceptSystem = classification.addElement(steward.object, req.body.classification.conceptSystem);
+        }
+        var concept = classification.findConcept(conceptSystem.object, req.body.classification.concept);      
+        if (!concept) {
+            concept = classification.addElement(conceptSystem.object, req.body.classification.concept);
+        }                
+        return de.save(function(err) {
             if (err) {
-                res.send("Data Element does not exist.");
-            }
-            if (!req.user 
-                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
-                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
-                  ) {
-                res.send("You do not own this data element.");
+                res.send("error: " + err);
             } else {
-                var steward = classification.findSteward(de, req.body.classification.orgName);
-                if (!steward) {
-                    var newSteward = {
-                        stewardOrg : {
-                            name: req.body.classification.orgName
-                        },
-                        elements: []
-                    };
-                    de.classification.push(newSteward);  
-                    var i = de.classification.length - 1;
-                    steward = {index: i, object: de.classification[i]};
-                }  
-                var conceptSystem = classification.findConcept(steward.object, req.body.classification.conceptSystem);                
-                if (!conceptSystem) {
-                    conceptSystem = classification.addElement(steward.object, req.body.classification.conceptSystem);
-                }
-                var concept = classification.findConcept(conceptSystem.object, req.body.classification.concept);      
-                if (!concept) {
-                    concept = classification.addElement(conceptSystem.object, req.body.classification.concept);
-                }                
-                return de.save(function(err) {
-                    if (err) {
-                        res.send("error: " + err);
-                    } else {
-                        res.send(de);
-                    }
-                });
+                res.send(de);
             }
         });
-    } else {
-        res.send("You are not authorized.");                   
-    }
+    });
 });
 
 
 app.post('/removeClassification', function(req, res) {
-    if (req.isAuthenticated()) {
-        mongo_data.cdeById(req.body.deId, function (err, de) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
+        if (err) return res.send(err);        
+        var steward = classification.findSteward(de, req.body.orgName);
+        var conceptSystem = classification.findConcept(steward.object, req.body.conceptSystemName);
+        var concept = classification.findConcept(conceptSystem.object, req.body.conceptName);
+        conceptSystem.object.elements.splice(concept.index, 1);
+        if (conceptSystem.object.elements.length === 0) {
+            steward.object.elements.splice(conceptSystem.index, 1);
+        }
+        if (steward.object.elements.length === 0) {
+            de.classification.splice(steward.index, 1);
+        }       
+        return de.save(function(err) {
             if (err) {
-                res.send("Data Element does not exist.");
-            }
-            if (!req.user 
-                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
-                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
-                  ) {
-                res.send("You do not own this data element.");
+                res.send("error: " + err);
             } else {
-                var steward = classification.findSteward(de, req.body.orgName);
-                var conceptSystem = classification.findConcept(steward.object, req.body.conceptSystemName);
-                var concept = classification.findConcept(conceptSystem.object, req.body.conceptName);
-                conceptSystem.object.elements.splice(concept.index, 1);
-                if (conceptSystem.object.elements.length === 0) {
-                    steward.object.elements.splice(conceptSystem.index, 1);
-                }
-                if (steward.object.elements.length === 0) {
-                    de.classification.splice(steward.index, 1);
-                }       
-                return de.save(function(err) {
-                    if (err) {
-                        res.send("error: " + err);
-                    } else {
-                        res.send(de);
-                    }
-                });              
+                res.send(de);
             }
         });
-    } else {
-        res.send("You are not authorized.");                   
-    }
+    });
 });
 
 app.post('/addUsedBy', function(req, res) {
-    if (req.isAuthenticated()) {
-        mongo_data.cdeById(req.body.deId, function (err, de) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
+        if (err) return res.send(err);  
+        de.usedByOrgs.push(req.body.usedBy);
+        return de.save(function(err) {
             if (err) {
-                res.send("Data Element does not exist.");
-            }
-            if (!req.user 
-                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
-                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
-                  ) {
-                res.send("You do not own this data element.");
+                res.send("error: " + err);
             } else {
-                de.usedByOrgs.push(req.body.usedBy);
+                res.send(de);
+            }
+        });
+    });
+});
+
+app.post('/removeUsedBy', function(req, res) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
+        if (err) return res.send(err);  
+        var toRemove = req.body.usedBy;
+        for (var i = 0; i < de.usedByOrgs.length; i++) {
+            if (de.usedByOrgs[i] === toRemove) {
+                de.usedByOrgs.splice(i, 1);
                 return de.save(function(err) {
                     if (err) {
                         res.send("error: " + err);
@@ -837,44 +831,9 @@ app.post('/addUsedBy', function(req, res) {
                     }
                 });
             }
-        });
-    } else {
-        res.send("You are not authorized.");                   
-    }
-});
-
-
-app.post('/removeUsedBy', function(req, res) {
-    if (req.isAuthenticated()) {
-        mongo_data.cdeById(req.body.deId, function (err, de) {
-            if (err) {
-                res.send("Data Element does not exist.");
-            }
-            if (!req.user 
-                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
-                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
-                  ) {
-                res.send("You do not own this data element.");
-            } else {
-                var toRemove = req.body.usedBy;
-                for (var i = 0; i < de.usedByOrgs.length; i++) {
-                    if (de.usedByOrgs[i] === toRemove) {
-                        de.usedByOrgs.splice(i, 1);
-                        return de.save(function(err) {
-                            if (err) {
-                                res.send("error: " + err);
-                            } else {
-                                res.send(de);
-                            }
-                        });
-                    }
-                }
-                res.send("Not found.");
-            }
-        });
-    } else {
-        res.send("You are not authorized.");                   
-    }
+        }
+        res.send("Not found.");
+    });
 });
 
 app.get('/orgNames', function(req, res) {
@@ -884,63 +843,35 @@ app.get('/orgNames', function(req, res) {
 });
 
 app.post('/removeAttachment', function(req, res) {
-    if (req.isAuthenticated()) {
-        mongo_data.cdeById(req.body.deId, function (err, de) {
-            if (err) {
-                res.send("Data Element does not exist.");
-            }
-            var index = req.body.index;
-            if (!req.user 
-                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
-                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
-                  ) {
-                res.send("You can only remove attachments you own.");
-            } else {
-                de.attachments.splice(index, 1);
-                de.save(function (err) {
-                   if (err) {
-                       res.send("error: " + err);
-                   } else {
-                       res.send(de);
-                   }
-                });
-            }
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
+        if (err) return res.send(err);  
+        de.attachments.splice(index, 1);
+        de.save(function (err) {
+           if (err) {
+               res.send("error: " + err);
+           } else {
+               res.send(de);
+           }
         });
-    } else {
-        res.send("You are not authorized.");                   
-    }
+    });
 });
 
 app.post('/setAttachmentDefault', function(req, res) {
-    if (req.isAuthenticated()) {
-        mongo_data.cdeById(req.body.deId, function (err, de) {
-            if (err) {
-                res.send("Data Element does not exist.");
-            }
-            var index = req.body.index;
-            if (!req.user 
-                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
-                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
-                  ) {
-                res.send("You can only remove attachments you own.");
-            } else {
-                var state = req.body.state;
-                for (var i = 0; i < de.attachments.length; i++) {
-                    de.attachments[i].isDefault = false;
-                }
-                de.attachments[index].isDefault = state;
-                de.save(function (err) {
-                   if (err) {
-                       res.send("error: " + err);
-                   } else {
-                       res.send(de);
-                   }
-                });
-            }
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
+        if (err) return res.send(err);  
+        var state = req.body.state;
+        for (var i = 0; i < de.attachments.length; i++) {
+            de.attachments[i].isDefault = false;
+        }
+        de.attachments[index].isDefault = state;
+        de.save(function (err) {
+           if (err) {
+               res.send("error: " + err);
+           } else {
+               res.send(de);
+           }
         });
-    } else {
-        res.send("You are not authorized.");                   
-    }
+    });
 });
 
 app.get('/userTotalSpace/:uname', function(req, res) {
