@@ -16,11 +16,13 @@
 
          <!--[if lte IE 8]>
            <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.1/json3.min.js"></script>
-           <script>
-              document.createElement('text-angular');                
-           </script>
         <![endif]-->
    
+         <!--[if lt IE 9]>
+            <script src="assets/js/html5shiv.min.js"></script>
+            <script src="assets/js/respond.min.js"></script>
+         <![endif]--> 
+         
         <!-- fixes an issue in bootstrap #1078 -->
         <style>
             .modal-body{overflow-y: inherit;}
@@ -30,7 +32,7 @@
     </head>
     <body>
         <div class="container-fluid" ng-controller="MainCtrl">
-            <nav class="navbar navbar-default" role="navigation">
+            <div nav class="navbar navbar-default" role="navigation">
                 <div class="container-fluid">
                     <div class="navbar-header">
                         <a class="navbar-brand" href="/">NLM CDEs</a>
@@ -74,7 +76,7 @@
                         </ul>
                     </div>                
                 </div>                
-            </nav>
+            </div>
         <div class="navbar-fixed-bottom">
             <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
         </div>
