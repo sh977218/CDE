@@ -563,6 +563,12 @@ exports.createMessage = function(msg) {
     message.save();
 };
 
+exports.updateMessage = function(msg, cb) {
+    Message.update({_id: msg._id}, msg).exec(function(err) {
+        cb(err);
+    });    
+};
+
 exports.getMessages = function(req, callback) {
     var query = {
         $or: [

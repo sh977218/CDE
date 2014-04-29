@@ -939,6 +939,17 @@ app.post('/mail/messages/new', function(req, res) {
     mongo_data.createMessage(req.body);
 });
 
+app.post('/mail/messages/update', function(req, res) {
+    mongo_data.updateMessage(req.body, function(err) {
+        if (err) {
+            res.statusCode = 404;
+            res.send("Error while updating the message");
+        } else {
+            res.send();
+        }
+    });
+});
+
 app.get('/mail/template/inbox', function(req, res) {
     res.render("inbox"); 
 });

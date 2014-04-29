@@ -176,7 +176,10 @@ angular.module('resources', ['ngResource'])
                 $http.get("/mail/messages/received").then(function(response) {
                     cb(response.data);
                 });
-            }          
+            },
+            updateMessage: function(msg, success, error) {
+                $http.post('/mail/messages/update', msg).success(success).error(error);
+            }
         };        
     }) 
     .factory('CdeList', function($http) {
