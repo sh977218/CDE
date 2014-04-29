@@ -564,7 +564,9 @@ exports.createMessage = function(msg) {
 };
 
 exports.updateMessage = function(msg, cb) {
-    Message.update({_id: msg._id}, msg).exec(function(err) {
+    var id = msg._id;
+    delete msg._id;
+    Message.update({_id: id}, msg).exec(function(err) {
         cb(err);
     });    
 };

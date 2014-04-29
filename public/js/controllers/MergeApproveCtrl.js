@@ -20,7 +20,7 @@ function MergeApproveCtrl($scope, DataElement, Mail) {
     
     $scope.transferNames = function(source, destination) {
         source.naming.map(function(name) {
-            destination.naming.push({
+            destination.naming.unshift({
                 designation: name.designation
                 , definition: name.definition
                 , context: name.context
