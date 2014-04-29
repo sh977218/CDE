@@ -1,6 +1,7 @@
-<accordion close-others="false">
-    <accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
-        <accordion-heading>
+<div accordion close-others="false">
+    <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
+        <div accordion-heading>
+            <div>
             <span id="acc_link_{{$index}}" class="hand-cursor">{{cde.naming[0].designation}}</span>   
             <i class="fa fa-eye hand-cursor" ng-click="cdeIconAction(cde,'view',$event)" title="View"></i>
             <% if (ejsPage!="board") { %>
@@ -9,16 +10,17 @@
                 <i ng-show="user._id" class="fa fa-thumb-tack fa-rotate-90 hand-cursor" ng-click="unpin(board.pins[$index])" title="unPin" id="unpin_{{$index}}"> </i>
             <% } %>
             <i ng-show="showCompareButton(cde)" class="fa fa-plus hand-cursor" ng-click="cdeIconAction(cde,'addToCompareCart',$event)" title="Compare"></i>
-        </accordion-heading>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-6">
                 <%- include cdegeneraldetails.ejs %>
             </div>
             <div class="col-md-4">
-                <%- include valueDomainView.ejs %>
+                <!--<%- include valueDomainView.ejs %>-->
             </div>
             <div class="col-md-2">
-                <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" src="/data/{{attachment.fileid}}"/> 
+                <!--<img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" src="/data/{{attachment.fileid}}"/>--> 
             </div>
         </div>
        <div class="row" >
@@ -30,8 +32,8 @@
             <% } %>
             <a ng-show="showCompareButton(cde)" class="btn btn-small btn-default" ng-click="addToCompareCart(cde)" title="Add to Compare List" id="compare_{{$index}}"><i class="fa fa-plus"></i> Compare</a>
        </div>
-    </accordion-group>
-</accordion>
+    </div>
+</div>
 <script type="text/ng-template" id="addToFormModalContent.html">
     <%- include addToFormModal.ejs %>
 </script>
