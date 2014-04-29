@@ -24,18 +24,18 @@
                 </dd>
                 <dt>Definition: </dt>
                 <dd id="dd_def_{{$index}}">
-                    <div ng-hide="editMode" ng-switch="defFormat">
+                    <div ng-hide="editMode" ng-switch="namePair.definitionFormat">
                        <i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="editMode=true"></i>&nbsp;
                        <span ng-switch-default><span ng-bind="namePair.definition"></span></span>
                        <span ng-switch-when="html"><span ng-bind-html="namePair.definition"></span></span>
                     </div>
                     <div ng-show="editMode">
                        <div class="btn-group definitionFormatRadio">
-                           <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="null">Plain Text</button>
-                           <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="'html'">Rich Text</button>
+                           <button type="button" class="btn btn-default btn-xs" ng-model="namePair.definitionFormat" btn-radio="null">Plain Text</button>
+                           <button type="button" class="btn btn-default btn-xs" ng-model="namePair.definitionFormat" btn-radio="'html'">Rich Text</button>
                        </div>                            
-                       <textarea ng-show="defFormat != 'html'" ng-model="namePair.definition" class="form-control"></textarea> 
-                       <div text-angular ng-show="defFormat == 'html'" ng-model="namePair.definition" ta-toolbar-group-class="btn-group btn-group-sm" ></div>                            
+                       <textarea ng-show="namePair.definitionFormat != 'html'" ng-model="namePair.definition" class="form-control"></textarea> 
+                       <div text-angular ng-show="namePair.definitionFormat == 'html'" ng-model="namePair.definition" ta-toolbar-group-class="btn-group btn-group-sm" ></div>                            
                        <button class="fa fa-check" ng-click="editMode = false; stageCde(cde)">Confirm</button>
                        <button class="fa fa-times" ng-click="editMode = false">Cancel</button>
                     </div>
