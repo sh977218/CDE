@@ -1,4 +1,4 @@
-function CompareCtrl($scope, DataElement) {
+function CompareCtrl($scope, $modal, DataElement, MergeRequest) {
     $scope.setActiveMenu('COMPARE');
     
     $scope.detailedView = true;
@@ -49,5 +49,22 @@ function CompareCtrl($scope, DataElement) {
     $scope.mergeButtonVisibility = function(cde) {
         
     };
+    
+    $scope.openMergeModal = function(retiredIndex) {
+        $scope.retiredIndex = retiredIndex;
+        var modalInstance = $modal.open({
+            templateUrl: 'mergeModal.html',
+            controller: MergeModalCtrl,
+            resolve: {
+                cdes: function() {return $scope.cdes;},
+                retiredIndex: function() {return $scope.retiredIndex;},
+                user: function() {return $scope.user;}
+            }
+        });        
+        
+        modalInstance.result.then(function (dat) {
+            MergeRequest.create(dat);
+        });
+    };    
     
 };
