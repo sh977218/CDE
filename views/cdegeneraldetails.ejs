@@ -3,15 +3,51 @@
 <dl class="dl-horizontal">
     <dt>Name: </dt>
     <dd id="dd_general_name">    
-        
-    <!--<inline-edit id="nameEdit" model="cde.naming[0].designation" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit>\-->
+        <span>
+            <span ng-hide="editMode">
+                <i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="editMode=true"></i> {{cde.naming[0].designation | placeholdEmpty}}
+            </span> 
+            <span ng-show="editMode">                       
+                <input type="text" ng-model="cde.naming[0].designation" class="form-control"/>
+                <button class="fa fa-check" ng-click="editMode = false; stageCde(cde)"> Confirm</button>
+                <button class="fa fa-times" ng-click="editMode = false"> Discard</button>
+            </span>       
+        </span>
     </dd>
     <dt>Steward: </dt><dd>{{cde.stewardOrg.name}}</dd>
     <dt>Definition: </dt><dd id="dd_def">   
-        <!--<inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="cde.naming[0].definition" is-allowed="isAllowed(cde)" def-format="cde.naming[0].definitionFormat" on-ok="stageCde(cde)"> </inline-area-edit>-->
+        <div>
+            <div ng-hide="editMode" ng-switch="defFormat">
+               <i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="editMode=true"></i>&nbsp;
+               <span ng-switch-default><span ng-bind="cde.naming[0].definition"></span></span>
+               <span ng-switch-when="html"><span ng-bind-html="cde.naming[0].definition"></span></span>
+            </div>
+            <div ng-show="editMode">
+               <div class="btn-group definitionFormatRadio">
+                   <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="null">Plain Text</button>
+                   <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="'html'">Rich Text</button>
+               </div>                            
+               <textarea ng-show="defFormat != 'html'" ng-model="cde.naming[0].definition" class="form-control"></textarea> 
+               <div text-angular ng-show="defFormat == 'html'" ng-model="cde.naming[0].definition" ta-toolbar-group-class="btn-group btn-group-sm" ></div>                            
+               <button class="fa fa-check" ng-click="editMode = false; stageCde(cde)">Confirm</button>
+               <button class="fa fa-times" ng-click="editMode = false">Cancel</button>
+            </div>
+        </div>
     </dd>
     <dt>Used By: </dt><dd id="dd_usedBy"><span ng-repeat="cl in cde.classification">{{cl.stewardOrg.name}} </span></dd>
-    <!--<dt>Unit of Measure: </dt><dd id="dd_uom"><inline-edit id="uomEdit" model="cde.valueDomain.uom" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></dd>--> 
+    <dt>Unit of Measure: </dt>
+    <dd id="dd_uom">
+        <span>
+            <span ng-hide="editMode">
+                <i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="editMode=true"></i> {{cde.valueDomain.uom | placeholdEmpty}}
+            </span> 
+            <span ng-show="editMode">                       
+                <input type="text" ng-model="cde.valueDomain.uom" class="form-control"/>
+                <button class="fa fa-check" ng-click="editMode = false; stageCde(cde)"> Confirm</button>
+                <button class="fa fa-times" ng-click="editMode = false"> Discard</button>
+            </span>       
+        </span>    
+    </dd> 
     <dt>Id: </dt><dd>{{cde.uuid}}</dd>
     <dt>Version: </dt><dd>{{cde.version}}</dd>
     <dt ng-show="cde.origin">Origin: </dt><dd>{{cde.origin}}</dd>
