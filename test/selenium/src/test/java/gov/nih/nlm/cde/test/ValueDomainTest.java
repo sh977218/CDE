@@ -111,9 +111,9 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Right Middle Abdomen"));
         findElement(By.id("pvRemove-8")).click();
         findElement(By.id("addPv")).click();
-        findElement(By.xpath("//td[@id='pv-10']/span/span[1]/i")).click();
-        findElement(By.xpath("//td[@id='pv-10']/span/span[2]/input")).clear();
-        findElement(By.xpath("//td[@id='pv-10']/span/span[2]/input")).sendKeys("New PV");
+        findElement(By.xpath("//td[@id='pv-10']//i")).click();
+        findElement(By.xpath("//td[@id='pv-10']//input")).clear();
+        findElement(By.xpath("//td[@id='pv-10']//input")).sendKeys("New PV");
         findElement(By.cssSelector("#pv-10 .fa-check")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Changed PV");
