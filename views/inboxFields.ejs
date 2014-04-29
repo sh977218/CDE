@@ -1,0 +1,48 @@
+
+<div id="repeatCs" class="container">
+    <div ng-repeat="n in message.typeMergeRequest.source.object.naming" class="col-md-5 container">
+        <h5>Naming {{$index+1}}</h5>
+        <hr>
+        <div class="row">
+            <div class="col-sm-2"><b>Name</b></div>
+            <div class="col-sm-9 col-sm-offset-1">{{n.designation}}</div>
+        </div>    
+        <div class="row">
+            <div class="col-sm-2"><b>Definition</b></div>
+            <div class="col-sm-9 col-sm-offset-1">{{n.definition}}</div>
+        </div>  
+        <div class="row">
+            <div class="col-sm-2"><b>Context</b></div>
+            <div class="col-sm-9 col-sm-offset-1">{{n.context.contextName}}</div>
+        </div>                  
+    </div>
+
+    <div ng-repeat="attachment in message.typeMergeRequest.source.object.attachments" class="col-md-5 container">
+        <h5>Attachment {{$index+1}}</h5>
+        <hr>
+        <div class="row">
+            <div class="col-sm-2"><b>Date</b></div>
+            <div class="col-sm-9 col-sm-offset-1">{{attachment.uploadDate | date : medium }}</div>
+        </div>                 
+        <div class="row">
+            <div class="col-sm-2"><b>Type</b></div>
+            <div class="col-sm-9 col-sm-offset-1">{{attachment.filetype}}</div>
+        </div>    
+        <div class="row">
+            <div class="col-sm-2"><b>Filename</b></div>
+            <div class="col-sm-9 col-sm-offset-1"><a target="_blank" href="/data/{{attachment.fileid}}">{{attachment.filename}}</a></div>
+        </div>  
+        <div class="row">
+            <div class="col-sm-2"><b>Comment</b></div>
+            <div class="col-sm-9 col-sm-offset-1">{{attachment.comment}}</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2"><b>Size</b></div>
+            <div class="col-sm-9 col-sm-offset-1">{{attachment.filesize | bytes}}</div>
+        </div>  
+        <div class="row">
+            <div class="col-sm-2"><b>Uploaded by</b></div>
+            <div class="col-sm-9 col-sm-offset-1">{{attachment.uploadedBy.username}}</div>
+        </div>                  
+    </div>            
+</div>
