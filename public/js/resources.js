@@ -16,9 +16,6 @@ angular.module('resources', ['ngResource'])
     .factory('CdeDiff', function($resource) {
         return $resource('/cdediff/:deId', {deId: '@deId'});
     })       
-//    .factory('AutocompleteSvc', function($resource) {
-//        return $resource("/autocomplete");
-//    })
     .factory('Auth', function($http){
         return {
             register: function(user, success, error) {
