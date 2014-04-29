@@ -735,7 +735,7 @@ app.post('/elasticSearch', function(req, res) {
 });
 
 app.post('/addAttachmentToCde', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err, de) {
+    checkCdeOwnership(req.body.de_id, req, function(err, de) {
         if (err) return res.send(err);
         mongo_data.userTotalSpace(req.user.username, function(totalSpace) {
             if (totalSpace > req.user.quota) {

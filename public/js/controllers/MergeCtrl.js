@@ -19,11 +19,11 @@ function MergeCtrl($scope, $modal, MergeRequest) {
 }
 
 function MergeModalCtrl($scope, $modalInstance, cdes, retiredIndex, user) {
-    var source = cdes[retiredIndex];
-    var target = cdes[(retiredIndex + 1) % 2];
+    $scope.source = cdes[retiredIndex];
+    $scope.target = cdes[(retiredIndex + 1) % 2];
     $scope.mergeRequest = {
-        source: {uuid: source.uuid}
-        , destination: {uuid: target.uuid}
+        source: {uuid: $scope.source.uuid}
+        , destination: {uuid: $scope.target.uuid}
         , fields: {
             ids: true
             , naming: true
@@ -39,6 +39,6 @@ function MergeModalCtrl($scope, $modalInstance, cdes, retiredIndex, user) {
         $modalInstance.dismiss('cancel');
     };  
     $scope.sendMergeRequest = function() {
-        $modalInstance.close({mergeRequest:$scope.mergeRequest, recipient: target.stewardOrg.name, author: user.username});
+        $modalInstance.close({mergeRequest:$scope.mergeRequest, recipient: $scope.target.stewardOrg.name, author: user.username});
     };
 }

@@ -6,30 +6,60 @@
     <h4>Retire & Merge CDE</h4>
 </div>     
 
+<!--div class="modal-body">
+    <b>Fields to Import</b>
+        <div class="row">
+          <div class="col-md-offset-2 col-md-2">IDs</div>
+          <div class="col-md-offset-1 col-md-3">
+              <input type="checkbox" ng-model="mergeRequest.fields.ids">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-offset-2 col-md-2">Names</div>
+          <div class="col-md-offset-1 col-md-3">
+              <input type="checkbox" ng-model="mergeRequest.fields.naming">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-offset-2 col-md-2">Attachments</div>
+          <div class="col-md-offset-1 col-md-3">
+              <input type="checkbox" ng-model="mergeRequest.fields.attachments">
+          </div>
+        </div>
+</div-->
+
 <div class="modal-body">
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1">
+        The following CDE <br>
+        <a target="_blank" href="#/deview?cdeId={{$parent.source._id}}">{{$parent.source.naming[0].designation}}</a>
+        (owned by {{ $parent.source.stewardOrg.name }})
+        <br>
+        is about to be <b>retired & merged</b> to the CDE <br>
+        <a target="_blank" href="#/deview?cdeId={{$parent.target._id}}">{{$parent.target.naming[0].designation}}</a>
+        (owned by {{ $parent.target.stewardOrg.name }}).
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1">
+            Fields to be Imported
         <div class="row">
-          <div class="col-md-offset-2 col-md-1">Import IDs</div>
-          <div class="col-md-offset-1 col-md-3">
-              <yes-no-checkbox model="mergeRequest.fields.ids"></yes-no-checkbox>
-          </div>
+          <div class="col-md-offset-1 col-md-4"><input type="checkbox" ng-model="mergeRequest.fields.ids"> IDs</div>
         </div>
         <div class="row">
-          <div class="col-md-offset-2 col-md-1">Import Names</div>
-          <div class="col-md-offset-1 col-md-3">
-              <yes-no-checkbox model="mergeRequest.fields.naming"></yes-no-checkbox>
-          </div>
+          <div class="col-md-offset-1 col-md-4"><input type="checkbox" ng-model="mergeRequest.fields.naming"> Names</div>
         </div>
         <div class="row">
-          <div class="col-md-offset-2 col-md-1">Import Attachments:</div>
-          <div class="col-md-offset-1 col-md-3">
-              <yes-no-checkbox model="mergeRequest.fields.attachments"></yes-no-checkbox>
-          </div>
+          <div class="col-md-offset-1 col-md-4"><input type="checkbox" ng-model="mergeRequest.fields.attachments"> Attachments</div>
+        </div>            
         </div>
+    </div>
 </div>
 
 <div class="modal-footer">
     <button class="btn btn-default cancel" ng-click="cancel()">Cancel</button>
-    <button class="btn btn-warning cancel" ng-click="sendMergeRequest()">Merge</button>
+    <button class="btn btn-warning cancel" ng-click="sendMergeRequest()">Retire & Merge</button>
 </div>
 
 

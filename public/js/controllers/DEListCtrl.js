@@ -288,11 +288,5 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             delete $scope.selectedSubGroup;
         }        
     };     
-    
-    $scope.export = function() {
-        $scope.buildElasticQuery(function(result) {
-            
-        });
-    }
-    
+   
 }
