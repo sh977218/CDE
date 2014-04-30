@@ -38,8 +38,8 @@ public class IdentifiersTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Identifier Added"));
         modalGone();
 
-        findElement(By.id("removeId-1")).click();
-        findElement(By.id("confirmRemoveId-1")).click();
+        findElement(By.id("removeId-2")).click();
+        findElement(By.id("confirmRemoveId-2")).click();
         Assert.assertTrue(textPresent("Identifier Removed"));
         
         goToCdeByName(cdeName);
