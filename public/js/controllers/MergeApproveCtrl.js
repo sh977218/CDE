@@ -1,16 +1,18 @@
-function MergeApproveCtrl($scope, DataElement, Mail) {
+function MergeApproveCtrl($scope, $window, DataElement, Mail) {
     $scope.approveMerge = function(message) {
         var source = message.typeMergeRequest.source.object;
         var destination = message.typeMergeRequest.destination.object;
         $scope.transferNames(source, destination);
+        $scope.transferAttachments(source, destination);
         DataElement.save(destination, function(cde) {
-            message.typeMergeRequest.states.push({
+            message.typeMergeRequest.states.unshift({
                 "action" : "Approved",
                 "date" : new Date(),
                 "comment" : ""
             });
             Mail.updateMessage(message, function() {
-                $scope.addAlert("success", "The CDEs have been merged!");        
+                $scope.addAlert("success", "The CDEs have been merged!");   
+                $window.location.href = "/#/inbox";
             }, function () {
                 $scope.addAlert("alert", "The merge operation failed!");        
             });
@@ -20,11 +22,21 @@ function MergeApproveCtrl($scope, DataElement, Mail) {
     
     $scope.transferNames = function(source, destination) {
         source.naming.map(function(name) {
-            destination.naming.unshift({
-                designation: name.designation
-                , definition: name.definition
-                , context: name.context
-            });
+            destination.naming.push(name);
         });
     };
+    
+    $scope.transferAttachments = function(source, destination) {
+        if (!source.attachments) return;
+        source.attachments.map(function(att) {
+            if (!destination.attachments) destination.attachments = [];
+            destination.attachments.push(att);
+        });
+    };    
+    
+    /*$scope.transferClassifications = function(source, destination) {
+        source.attachments.map(function(att) {
+            destination.attachments.push(att);
+        });
+    }; */     
 }

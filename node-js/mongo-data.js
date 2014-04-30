@@ -352,7 +352,7 @@ exports.cdesByIdList = function(idList, callback) {
 };
 
 exports.cdesByUuidList = function(idList, callback) {
-    DataElement.find().where('uuid')
+    DataElement.find({'archived':null}).where('uuid')
             .in(idList)
             .slice('valueDomain.permissibleValues', 10)
             .exec(function(err, cdes) {
@@ -497,7 +497,6 @@ exports.saveCde = function(req, callback) {
             var jsonDe = JSON.parse(JSON.stringify(dataElement));
             delete jsonDe._id;
             var newDe = new DataElement(jsonDe);
-            console.log(JSON.stringify(req.body));
             newDe.history.push(dataElement._id);
             newDe.naming = req.body.naming;
             newDe.version = req.body.version;
@@ -515,6 +514,7 @@ exports.saveCde = function(req, callback) {
             newDe.objectClass = req.body.objectClass;
             newDe.property = req.body.property;
             newDe.valueDomain = req.body.valueDomain;
+            newDe.attachments = req.body.attachments;
             
             dataElement.archived = true;
             
