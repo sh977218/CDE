@@ -25,6 +25,8 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail) {
     
     $scope.transferNames = function(source, destination) {
         source.naming.map(function(name) {
+            delete name.$$hashKey;
+            if (destination.naming.map(function(name) {return JSON.stringify(name)}).indexOf(JSON.stringify(name))>=0) return;
             destination.naming.push(name);
         });
     };
@@ -33,6 +35,8 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail) {
         if (!source.attachments) return;
         source.attachments.map(function(att) {
             if (!destination.attachments) destination.attachments = [];
+            delete att.$$hashKey;
+            if (destination.attachments.map(function(att) {return JSON.stringify(att)}).indexOf(JSON.stringify(att))>=0) return;
             destination.attachments.push(att);
         });
     }; 
@@ -41,6 +45,8 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail) {
         if (!source.ids) return;
         source.ids.map(function(id) {
             if (!destination.ids) destination.ids = [];
+            delete id.$$hashKey;
+            if (destination.ids.map(function(id) {return JSON.stringify(id)}).indexOf(JSON.stringify(id))>=0) return;
             destination.ids.push(id);
         });
     };     
@@ -49,6 +55,8 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail) {
         if (!source.properties) return;
         source.properties.map(function(property) {
             if (!destination.properties) destination.properties = [];
+            delete property.$$hashKey;
+            if (destination.properties.map(function(property) {return JSON.stringify(property)}).indexOf(JSON.stringify(property))>=0) return;
             destination.properties.push(property);
         });
     };     
@@ -57,5 +65,5 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail) {
         source.attachments.map(function(att) {
             destination.attachments.push(att);
         });
-    }; */     
+    };*/    
 }
