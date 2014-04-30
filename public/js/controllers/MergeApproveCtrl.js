@@ -2,10 +2,15 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail) {
     $scope.approveMerge = function(message) {
         var source = message.typeMergeRequest.source.object;
         var destination = message.typeMergeRequest.destination.object;
-        $scope.transferNames(source, destination);
+        /*$scope.transferNames(source, destination);
         $scope.transferAttachments(source, destination);
         $scope.transferIdentifiers(source, destination);
-        $scope.transferProperties(source, destination);
+        $scope.transferProperties(source, destination);*/
+        $scope.transferFields(source, destination, 'naming');
+        $scope.transferFields(source, destination, 'attachments');
+        $scope.transferFields(source, destination, 'ids');
+        $scope.transferFields(source, destination, 'properties');
+        
         destination.version = parseInt(destination.version)+1;
         DataElement.save(destination, function(cde) {
             message.typeMergeRequest.states.unshift({
@@ -23,7 +28,15 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail) {
         });
     };
     
-    $scope.transferNames = function(source, destination) {
+    $scope.transferFields = function(source, destination, type) {
+        source[type].map(function(obj) {
+            delete obj.$$hashKey;
+            if (destination[type].map(function(obj) {return JSON.stringify(obj)}).indexOf(JSON.stringify(obj))>=0) return;
+            destination[type].push(obj);
+        });
+    };    
+    
+    /*$scope.transferNames = function(source, destination) {
         source.naming.map(function(name) {
             delete name.$$hashKey;
             if (destination.naming.map(function(name) {return JSON.stringify(name)}).indexOf(JSON.stringify(name))>=0) return;
@@ -59,7 +72,7 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail) {
             if (destination.properties.map(function(property) {return JSON.stringify(property)}).indexOf(JSON.stringify(property))>=0) return;
             destination.properties.push(property);
         });
-    };     
+    };*/     
     
     /*$scope.transferClassifications = function(source, destination) {
         source.attachments.map(function(att) {
