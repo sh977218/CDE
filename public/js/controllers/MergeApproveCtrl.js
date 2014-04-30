@@ -4,6 +4,7 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail) {
         var destination = message.typeMergeRequest.destination.object;
         $scope.transferNames(source, destination);
         $scope.transferAttachments(source, destination);
+        $scope.transferIdentifiers(source, destination);
         DataElement.save(destination, function(cde) {
             message.typeMergeRequest.states.unshift({
                 "action" : "Approved",
@@ -32,7 +33,15 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail) {
             if (!destination.attachments) destination.attachments = [];
             destination.attachments.push(att);
         });
-    };    
+    }; 
+    
+    $scope.transferIdentifiers = function(source, destination) {
+        if (!source.ids) return;
+        source.ids.map(function(id) {
+            if (!destination.ids) destination.ids = [];
+            destination.ids.push(id);
+        });
+    };        
     
     /*$scope.transferClassifications = function(source, destination) {
         source.attachments.map(function(att) {

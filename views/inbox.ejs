@@ -19,45 +19,58 @@
                 <h5>Naming {{$index+1}}</h5>
                 <hr>
                 <div class="row">
-                    <div class="col-sm-2"><b>Name</b></div>
-                    <div class="col-sm-9 col-sm-offset-1">{{n.designation}}</div>
+                    <div class="col-sm-3"><b>Name</b></div>
+                    <div class="col-sm-9">{{n.designation}}</div>
                 </div>    
                 <div class="row">
-                    <div class="col-sm-2"><b>Definition</b></div>
-                    <div class="col-sm-9 col-sm-offset-1">{{n.definition}}</div>
+                    <div class="col-sm-3"><b>Definition</b></div>
+                    <div class="col-sm-9">{{n.definition}}</div>
                 </div>  
                 <div class="row">
-                    <div class="col-sm-2"><b>Context</b></div>
-                    <div class="col-sm-9 col-sm-offset-1">{{n.context.contextName}}</div>
+                    <div class="col-sm-3"><b>Context</b></div>
+                    <div class="col-sm-9">{{n.context.contextName}}</div>
                 </div>                  
             </div>
+            
+            <div ng-repeat="id in message.typeMergeRequest.source.object.ids" class="col-md-5 container">
+                <h5>Identifier {{$index+1}}</h5>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3"><b>Origin</b></div>
+                    <div class="col-sm-9">{{ id.origin }}</div>
+                </div>                 
+                <div class="row">
+                    <div class="col-sm-3"><b>ID</b></div>
+                    <div class="col-sm-9">{{ id.id }}</div>
+                </div>                    
+            </div>             
 
             <div ng-repeat="attachment in message.typeMergeRequest.source.object.attachments" class="col-md-5 container">
                 <h5>Attachment {{$index+1}}</h5>
                 <hr>
                 <div class="row">
-                    <div class="col-sm-2"><b>Date</b></div>
-                    <div class="col-sm-9 col-sm-offset-1">{{attachment.uploadDate | date : medium }}</div>
+                    <div class="col-sm-3"><b>Date</b></div>
+                    <div class="col-sm-9">{{attachment.uploadDate | date : medium }}</div>
                 </div>                 
                 <div class="row">
-                    <div class="col-sm-2"><b>Type</b></div>
-                    <div class="col-sm-9 col-sm-offset-1">{{attachment.filetype}}</div>
+                    <div class="col-sm-3"><b>Type</b></div>
+                    <div class="col-sm-9">{{attachment.filetype}}</div>
                 </div>    
                 <div class="row">
-                    <div class="col-sm-2"><b>Filename</b></div>
-                    <div class="col-sm-9 col-sm-offset-1"><a target="_blank" href="/data/{{attachment.fileid}}">{{attachment.filename}}</a></div>
+                    <div class="col-sm-3"><b>Filename</b></div>
+                    <div class="col-sm-9"><a target="_blank" href="/data/{{attachment.fileid}}">{{attachment.filename}}</a></div>
                 </div>  
                 <div class="row">
-                    <div class="col-sm-2"><b>Comment</b></div>
-                    <div class="col-sm-9 col-sm-offset-1">{{attachment.comment}}</div>
+                    <div class="col-sm-3"><b>Comment</b></div>
+                    <div class="col-sm-9">{{attachment.comment}}</div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-2"><b>Size</b></div>
-                    <div class="col-sm-9 col-sm-offset-1">{{attachment.filesize | bytes}}</div>
+                    <div class="col-sm-3"><b>Size</b></div>
+                    <div class="col-sm-9">{{attachment.filesize | bytes}}</div>
                 </div>  
                 <div class="row">
-                    <div class="col-sm-2"><b>Uploaded by</b></div>
-                    <div class="col-sm-9 col-sm-offset-1">{{attachment.uploadedBy.username}}</div>
+                    <div class="col-sm-3"><b>Uploaded by</b></div>
+                    <div class="col-sm-9">{{attachment.uploadedBy.username}}</div>
                 </div>                  
             </div>            
         </div>
