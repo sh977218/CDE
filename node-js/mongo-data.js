@@ -513,6 +513,7 @@ exports.saveCde = function(req, callback) {
             newDe.dataElementConcept = req.body.dataElementConcept;
             newDe.objectClass = req.body.objectClass;
             newDe.property = req.body.property;
+            newDe.properties = req.body.properties;
             newDe.valueDomain = req.body.valueDomain;
             newDe.attachments = req.body.attachments;
             newDe.ids = req.body.ids;

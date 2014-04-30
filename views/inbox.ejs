@@ -43,6 +43,19 @@
                     <div class="col-sm-3"><b>ID</b></div>
                     <div class="col-sm-9">{{ id.id }}</div>
                 </div>                    
+            </div>  
+            
+            <div ng-repeat="property in message.typeMergeRequest.source.object.properties" class="col-md-5 container">
+                <h5>Property {{$index+1}}</h5>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3"><b>Key</b></div>
+                    <div class="col-sm-9">{{property.key }}</div>
+                </div>                 
+                <div class="row">
+                    <div class="col-sm-3"><b>Value</b></div>
+                    <div class="col-sm-9">{{property.value}}</div>
+                </div>                      
             </div>             
 
             <div ng-repeat="attachment in message.typeMergeRequest.source.object.attachments" class="col-md-5 container">
