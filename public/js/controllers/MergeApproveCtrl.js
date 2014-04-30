@@ -8,35 +8,7 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail, Classification) {
         $scope.transferFields($scope.source, $scope.destination, 'properties');        
         $scope.destination.version = parseInt($scope.destination.version)+1;
         DataElement.save($scope.destination, function(cde) {
-            /////
-            /*$scope.source.classification.map(function(classif){
-                Classification.add({
-                    classification: {
-                        orgName: classif
-                        , concept: classif.elements.elements.name
-                        , conceptSystem: classif.elements.name                        
-                    }
-                    , deId: cde._id
-                });
-            });*/
-            $scope.source.classification.map(function(stewardOrgClassifications) {
-                var orgName = stewardOrgClassifications.stewardOrg.name;
-                stewardOrgClassifications.elements.map(function(conceptSystem) {
-                    var conceptSystemName = conceptSystem.name;
-                    conceptSystem.elements.map(function(concept) {
-                        var conceptName = concept.name;
-                        Classification.add({
-                            classification: {
-                                orgName: orgName
-                                , conceptSystem: conceptSystemName                      
-                                , concept: conceptName                                
-                            }
-                            , deId: cde._id
-                        });                        
-                    });
-                });
-            });            
-            /////
+            $scope.transferClassifications(cde);
             message.typeMergeRequest.states.unshift({
                 "action" : "Approved",
                 "date" : new Date(),
@@ -62,7 +34,25 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail, Classification) {
             if (fieldsTransfer.alreadyExists(obj)) return;
             destination[type].push(obj);
         });
-    };      
+    };     
     
-    //$scope.transferClassifications = function
+    $scope.transferClassifications = function (target) {
+        $scope.source.classification.map(function(stewardOrgClassifications) {
+            var orgName = stewardOrgClassifications.stewardOrg.name;
+            stewardOrgClassifications.elements.map(function(conceptSystem) {
+                var conceptSystemName = conceptSystem.name;
+                conceptSystem.elements.map(function(concept) {
+                    var conceptName = concept.name;
+                    Classification.add({
+                        classification: {
+                            orgName: orgName
+                            , conceptSystem: conceptSystemName                      
+                            , concept: conceptName                                
+                        }
+                        , deId: target._id
+                    });                        
+                });
+            });
+        });          
+    };
 }
