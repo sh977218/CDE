@@ -1,4 +1,4 @@
-function MergeApproveCtrl($scope, $window, DataElement, Mail, Classification) {
+function MergeApproveCtrl($scope, $window, $interval,  DataElement, Mail, Classification) {
     $scope.approveMerge = function(message) {
         $scope.source = message.typeMergeRequest.source.object;
         $scope.destination = message.typeMergeRequest.destination.object;
@@ -7,21 +7,30 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail, Classification) {
         $scope.transferFields($scope.source, $scope.destination, 'ids');
         $scope.transferFields($scope.source, $scope.destination, 'properties');        
         $scope.destination.version = parseInt($scope.destination.version)+1;
+        $scope.nrDefinitions = 0;
         DataElement.save($scope.destination, function(cde) {
             $scope.transferClassifications(cde);
-            message.typeMergeRequest.states.unshift({
-                "action" : "Approved",
-                "date" : new Date(),
-                "comment" : ""
-            });
-            Mail.updateMessage(message, function() {
-                $scope.addAlert("success", "The CDEs have been merged!");   
-                $scope.fetchMRCdes();
-            }, function () {
-                $scope.addAlert("alert", "The merge operation failed!");        
-            });
-            
+            var intervalHandle = $interval(function() {
+                if ($scope.nrDefinitions === 0) {
+                    $interval.cancel(intervalHandle);
+                    $scope.closeMessage(message);
+                }
+            }, 100, 20);            
         });
+    };
+    
+    $scope.closeMessage = function(message) {
+        message.typeMergeRequest.states.unshift({
+            "action" : "Approved",
+            "date" : new Date(),
+            "comment" : ""
+        });
+        Mail.updateMessage(message, function() {
+            $scope.addAlert("success", "The CDEs have been merged!");   
+            $scope.fetchMRCdes();
+        }, function () {
+            $scope.addAlert("alert", "The merge operation failed!");        
+        });        
     };
     
     $scope.transferFields = function(source, destination, type) {
@@ -43,6 +52,7 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail, Classification) {
                 var conceptSystemName = conceptSystem.name;
                 conceptSystem.elements.map(function(concept) {
                     var conceptName = concept.name;
+                    $scope.nrDefinitions++;
                     Classification.add({
                         classification: {
                             orgName: orgName
@@ -50,7 +60,9 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail, Classification) {
                             , concept: conceptName                                
                         }
                         , deId: target._id
-                    });                        
+                    }, function() {
+                        $scope.nrDefinitions--;
+                    });
                 });
             });
         });          
