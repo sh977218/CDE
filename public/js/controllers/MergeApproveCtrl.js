@@ -15,7 +15,7 @@ function MergeApproveCtrl($scope, $window, DataElement, Mail) {
             });
             Mail.updateMessage(message, function() {
                 $scope.addAlert("success", "The CDEs have been merged!");   
-                $window.location.href = "/#/inbox";
+                $scope.fetchMRCdes();
             }, function () {
                 $scope.addAlert("alert", "The merge operation failed!");        
             });
