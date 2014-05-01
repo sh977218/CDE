@@ -578,7 +578,7 @@ exports.getMessages = function(req, callback) {
         $or: [
             {
                 "recipient.recipientType":"stewardOrg"
-                , "recipient.name": {$in: req.user.orgAdmin}
+                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
             }
             , {
                 "recipient.recipientType":"user"
