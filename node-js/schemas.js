@@ -148,6 +148,9 @@ var deJsonSchema = {
     , properties: [
         {key: String, value: String}
     ]
+    , ids: [
+        {origin: String, id: String, version: String}
+    ]
     , comments: [commentSchema]
     , archived: Boolean
     , attachments: [attachmentSchema]

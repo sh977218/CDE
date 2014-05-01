@@ -514,6 +514,8 @@ exports.saveCde = function(req, callback) {
             newDe.objectClass = req.body.objectClass;
             newDe.property = req.body.property;
             newDe.valueDomain = req.body.valueDomain;
+            newDe.properties = req.body.properties;
+            newDe.ids = req.body.ids;
             
             dataElement.archived = true;
             

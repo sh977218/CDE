@@ -18,9 +18,9 @@ public class ExportTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.presenceOfElementLocated(By.id("exportLink")));
         List<WebElement> rows = driver.findElements(By.xpath("//div[@class='ngCanvas']/div"));
         Assert.assertEquals(7, rows.size());
-        Assert.assertTrue(textPresent("3436564v2"));
-        Assert.assertTrue(textPresent("2746311v1"));
-        Assert.assertTrue(textPresent("2182832v1"));
+        Assert.assertTrue(textPresent("Noncompliant Reason"));
+        Assert.assertTrue(textPresent("Race Category Text"));
+        Assert.assertTrue(textPresent("Prostate Cancer American"));
     }
     
 }
