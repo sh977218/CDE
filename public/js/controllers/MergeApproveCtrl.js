@@ -2,10 +2,11 @@ function MergeApproveCtrl($scope, $window, $interval,  DataElement, Mail, Classi
     $scope.approveMerge = function(message) {
         $scope.source = message.typeMergeRequest.source.object;
         $scope.destination = message.typeMergeRequest.destination.object;
-        $scope.transferFields($scope.source, $scope.destination, 'naming');
-        $scope.transferFields($scope.source, $scope.destination, 'attachments');
-        $scope.transferFields($scope.source, $scope.destination, 'ids');
-        $scope.transferFields($scope.source, $scope.destination, 'properties');        
+        Object.keys(message.typeMergeRequest.fields).map(function(field) {
+            if (message.typeMergeRequest.fields[field]) {
+                $scope.transferFields($scope.source, $scope.destination, field);
+            }
+        });
         $scope.destination.version = parseInt($scope.destination.version)+1;
         $scope.nrDefinitions = 0;
         DataElement.save($scope.destination, function(cde) {

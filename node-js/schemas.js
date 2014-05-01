@@ -249,6 +249,7 @@ var mergeRequestSchema = {
         ids: Boolean
         , naming: Boolean
         , attachments: Boolean
+        , properties: Boolean
     }
     , states: [{
         action: String
