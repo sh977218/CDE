@@ -124,6 +124,10 @@ var deJsonSchema = {
             , description: String
             , descriptionFormat: String
         }
+        , datatypeValueList: {
+            datatype: String
+            , multi: Boolean
+        }
         , permissibleValues: [permissibleValueSchema]
     }
     , history: [ObjectId]

@@ -71,7 +71,7 @@ def xlsMap = [
     , minValue: 9
     , maxValue: 10
     , answerList: 11
-    , answerDescription: 12
+    , answerDescriptions: 12
     , uom: 13
     , guidelines: 14
     , notes: 15
@@ -126,10 +126,139 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     newDE.put("created", new Date()); 
     newDE.put("origin", 'NINDS'); 
     
-    def defaultName = new BasicDBObject();
-    def namingDesignation = getCellValue(row.getCell(xlsMap.namingDesignation));
+    def properties = [];
+    def prop = new BasicDBObject();
+    prop.put("key", "NINDS Variable Name");
+    prop.put("value", getCellValue(row.getCell(xlsMap.variableName)));
+    properties.add(prop);
+    
+    def namings = [];
+    def naming = new BasicDBObject();
+    naming.put("designation", getCellValue(row.getCell(xlsMap.name)));
+    naming.put("definition", getCellValue(row.getCell(xlsMap.description)));
+    namings.add(naming);
+    
+    if (getCellValue(row.getCell(xlsMap.description)).equals(getCellValue(row.getCell(xlsMap.shortDescription)))) {
+        def shortDef = new BasicDBObject();
+        naming.put("definition", getCellValue(row.getCell(xlsMap.shortDescription)));
+        namings.add(naming);        
+    }
+    
+    def vd = new BasicDBObject();
+    
+    def datatype = getCellValue(row.getCell(xlsMap.datatype));
+    if (datatype.toLowerCase().trim().equals("numeric value")) {
+        def datatypeFloat;
+        if (!getCellValue(row.getCell(xlsMap.minValue)).isEmpty()) {
+            datatypeFloat = new BasicDBObject();
+            datatypeFloat.put(minValue, getCellValue(row.getCell(xlsMap.minValue)));
+        }
+        if (!getCellValue(row.getCell(xlsMap.maxValue)).isEmpty()) {
+            if (datatypeFloat == null) {
+                datatypeFloat = new BasicDBObject();
+            }
+            datatypeFloat.put(maxValue, getCellValue(row.getCell(xlsMap.maxValue)));
+        }
+        datatype = "Float";
+        if (datatypeFloat != null) {
+            vd.put("datatypeFloat", datatypeFloat);
+        }
+    } else if (datatype.toLowerCase().trim().equals("alphanumeric")) {
+        datatype = "Text";
+        if (!getCellValue(row.getCell(xlsMap.datatypeTextSize)).isEmpty()) {
+            def datatypeText = new BasicDBObject();
+            datatypeText.put("maxLength", getCellValue(row.getCell(xlsMap.datatypeTextSize)));
+            vd.put("datatypeText", datatypeText);
+        }
+    } else if (datatype.toLowerCase().trim().equals("date or date & time")) {
+        datatype = "Date"
+    }
+    
+    def inputType = getCellValue(row.getCell(xlsMap.inputType));
+    if (inputType.toLowerCase().trim().equals("single pre-defined value selected")) {
+        def listDatatype = new BasicDBObject();
+        listDatatype.put("datatype", datatype);
+        datatype = "Value List";
+    } else if (inputType.toLowerCase().trim().equals("multiple pre-defined values selected")) {
+        def listDatatype = new BasicDBObject();
+        listDatatype.put("datatype", datatype);
+        listDatatype.put("multi", true);        
+        datatype = "Value List";
+    }
 
+    if (datatype.equals("Value List")) {
+        def answers = getCellValue(row.getCell(xlsMap.answerList)).split(";");
+        def descs = getCellValue(row.getCell(xlsMap.answerDescriptions)).split(";");
+        def permValues = [];
+        for (int i = 0 ; i < answers.length; i++) {
+            def permValue = new BasicDBObject();
+            permValue.put("permissibleValue", answers[i]);
+            permValue.put("valueMeaningName", descriptions[i]);
+            permValues.add(permValues);
+        }
+        if (answers.length > 0) {
+            vd.put("permissibleValues", permValues);
+        }
+    }
+    
+    def uom = getCellValue(row.getCell(xlsMap.uom));
+    if (!uom.isEmpty()) {
+        vd.put("uom", uom);
+    }
+
+    def guidelines = getCellValue(row.getCell(xlsMap.guidelines));
+    if (!guidelines.isEmtpy()) {
+        def p = new BasicDBObject();
+        p.put("key", "NINDS Guidelines");
+        p.put("value", getCellValue(row.getCell(xlsMap.guidelines)));
+        properties.add(p);
+    }
+    
+    def notes = getCellValue(row.getCell(xlsMap.notes));
+    if (!notes.isEmtpy()) {
+        def p = new BasicDBObject();
+        p.put("key", "NINDS Notes");
+        p.put("value", getCellValue(row.getCell(xlsMap.notes)));
+        properties.add(p);
+    }
+
+    def suggestedQuestion = getCellValue(row.getCell(xlsMap.suggestedQuestion));
+    if (!suggestedQuestion.isEmtpy()) {
+        def p = new BasicDBObject();
+        p.put("key", "NINDS Suggested Question");
+        p.put("value", getCellValue(row.getCell(xlsMap.suggestedQuestion)));
+        properties.add(p);
+    }
+    
+    def keywords = getCellValue(row.getCell(xlsMap.keywords));
+    if (!keyword.isEmtpy()) {
+        def p = new BasicDBObject();
+        p.put("key", "NINDS Keywords");
+        p.put("value", getCellValue(row.getCell(xlsMap.keywords)));
+        properties.add(p);
+    }
+
+    def references = getCellValue(row.getCell(xlsMap.references));
+    if (!references.isEmtpy()) {
+        def p = new BasicDBObject();
+        p.put("key", "NINDS References");
+        p.put("value", getCellValue(row.getCell(xlsMap.references)));
+        properties.add(p);
+    }
+    
+    def ids = [];
+    def nindsId = new BasicDBObject();
+    nindsId.put("origin", "NINDS");
+    nindsId.put("id", getCellValue(row.getCell(xlsMap.nindsId)));
+    ids.add(nindsId);
+    
+    def cadsrId = getCellValue(row.getCell(xlsMap.nindsId));
+    if ()
+    
     newDE;
+    
+    
+    
 }
 
 def void PersistSheet(String name, Map xlsMap) {
