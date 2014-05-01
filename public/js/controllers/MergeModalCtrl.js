@@ -5,9 +5,10 @@ function MergeModalCtrl($scope, $modalInstance, cdes, retiredIndex, user) {
         source: {uuid: $scope.source.uuid}
         , destination: {uuid: $scope.target.uuid}
         , fields: {
-            ids: true
-            , naming: true
-            , attachments: true
+            ids: false
+            , naming: false
+            , properties: false            
+            , attachments: false
         }
         , states: [{
             action: "Filed"

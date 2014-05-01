@@ -1,33 +1,6 @@
-<!--div class="btn-group">
-<button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="true">Yes</button>
-<button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="false">No</button>
-</div>-->
 <div class="modal-header ng-scope">
     <h4>Retire & Merge CDE</h4>
 </div>     
-
-<!--div class="modal-body">
-    <b>Fields to Import</b>
-        <div class="row">
-          <div class="col-md-offset-2 col-md-2">IDs</div>
-          <div class="col-md-offset-1 col-md-3">
-              <input type="checkbox" ng-model="mergeRequest.fields.ids">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-offset-2 col-md-2">Names</div>
-          <div class="col-md-offset-1 col-md-3">
-              <input type="checkbox" ng-model="mergeRequest.fields.naming">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-offset-2 col-md-2">Attachments</div>
-          <div class="col-md-offset-1 col-md-3">
-              <input type="checkbox" ng-model="mergeRequest.fields.attachments">
-          </div>
-        </div>
-</div-->
-
 <div class="modal-body">
     <div class="row">
         <div class="col-xs-10 col-xs-offset-1">
@@ -45,11 +18,14 @@
         <div class="col-xs-10 col-xs-offset-1">
             Fields to be Imported
         <div class="row">
-          <div class="col-md-offset-1 col-md-4"><input type="checkbox" ng-model="mergeRequest.fields.ids"> IDs</div>
+          <div class="col-md-offset-1 col-md-4"><input type="checkbox" ng-model="mergeRequest.fields.ids"> Identifiers</div>
         </div>
         <div class="row">
           <div class="col-md-offset-1 col-md-4"><input type="checkbox" ng-model="mergeRequest.fields.naming"> Names</div>
         </div>
+        <div class="row">
+          <div class="col-md-offset-1 col-md-4"><input type="checkbox" ng-model="mergeRequest.fields.properties"> Properties</div>
+        </div>             
         <div class="row">
           <div class="col-md-offset-1 col-md-4"><input type="checkbox" ng-model="mergeRequest.fields.attachments"> Attachments</div>
         </div>            
