@@ -5,12 +5,9 @@
         </accordion-heading>
         
         <h4>Merge Request</h4> 
-        User {{message.author.name}} would like to merge their CDE <a target="_blank" href="#/deview?cdeId={{message.typeMergeRequest.source.object._id}}">{{message.typeMergeRequest.source.object.naming[0].designation}}</a>
-        <br>
-        with your CDE <a target="_blank" href="#/deview?cdeId={{message.typeMergeRequest.destination.object._id}}">{{message.typeMergeRequest.destination.object.naming[0].designation}}</a>.
-        <br>
-        <br>
-        As a result, the following fields will be imported to your CDE:
+            <a target="_blank" href="#/deview?cdeId={{message.typeMergeRequest.source.object._id}}">{{message.typeMergeRequest.source.object.naming[0].designation}}</a> [{{ message.typeMergeRequest.source.object.stewardOrg.name }}]
+            <br><i class="fa fa-arrow-down"></i><br>
+            <a target="_blank" href="#/deview?cdeId={{message.typeMergeRequest.destination.object._id}}">{{message.typeMergeRequest.destination.object.naming[0].designation}}</a> [{{ message.typeMergeRequest.destination.object.stewardOrg.name }}]
         <hr/>
         <h4>Imported Fields</h4>      
 

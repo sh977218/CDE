@@ -4,13 +4,9 @@
 <div class="modal-body">
     <div class="row">
         <div class="col-xs-10 col-xs-offset-1">
-        The following CDE <br>
-        <a target="_blank" href="#/deview?cdeId={{$parent.source._id}}">{{$parent.source.naming[0].designation}}</a>
-        (owned by {{ $parent.source.stewardOrg.name }})
-        <br>
-        is about to be <b>retired & merged</b> to the CDE <br>
-        <a target="_blank" href="#/deview?cdeId={{$parent.target._id}}">{{$parent.target.naming[0].designation}}</a>
-        (owned by {{ $parent.target.stewardOrg.name }}).
+            <a target="_blank" href="#/deview?cdeId={{$parent.source._id}}">{{$parent.source.naming[0].designation}}</a> [{{ $parent.source.stewardOrg.name }}]
+            <br><i class="fa fa-arrow-down"></i><br>
+            <a target="_blank" href="#/deview?cdeId={{$parent.target._id}}">{{$parent.target.naming[0].designation}}</a> [{{ $parent.target.stewardOrg.name }}]
         </div>
     </div>
     <hr/>

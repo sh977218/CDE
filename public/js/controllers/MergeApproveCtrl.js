@@ -34,6 +34,7 @@ function MergeApproveCtrl($scope, $window, $interval,  DataElement, Mail, Classi
     };
     
     $scope.transferFields = function(source, destination, type) {
+        if (!source[type]) return;
         var fieldsTransfer = this;
         this.alreadyExists = function(obj) {
             delete obj.$$hashKey;
