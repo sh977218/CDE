@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class MergeTest extends NlmCdeBaseTest {
     
-    private void createMergeRequest() {
+    private void createMergeRequest() { 
         loginAs(cabigAdmin_username, cabigAdmin_password);
         addToCompare("Smoking Cessation Other Method Specify Text", "Smoking History Ind");
         findElement(By.linkText("Retire & Merge")).click();  
@@ -38,7 +38,7 @@ public class MergeTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Free-text field to capture another method used to help stop smoking that is not already specified or mentioned."));
         Assert.assertTrue(textPresent("3279225"));
         findElement(By.cssSelector("[ng-click='approveMerge(message)']")).click();
-        hangon(2);
+        hangon(2); 
     }    
     
     private void checkResult() {

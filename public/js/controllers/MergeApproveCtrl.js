@@ -14,7 +14,9 @@ function MergeApproveCtrl($scope, $window, $interval,  DataElement, Mail, Classi
             var intervalHandle = $interval(function() {
                 if ($scope.nrDefinitions === 0) {
                     $interval.cancel(intervalHandle);
-                    $scope.closeMessage(message);
+                    $scope.retireSource($scope.source, $scope.destination, function() {
+                        $scope.closeMessage(message);
+                    });                     
                 }
             }, 100, 20);            
         });
@@ -69,4 +71,9 @@ function MergeApproveCtrl($scope, $window, $interval,  DataElement, Mail, Classi
             });
         });          
     };
+    
+    $scope.retireSource = function(source, destination, cb) {
+        source 
+        if (cb) cb();
+    };     
 }
