@@ -55,7 +55,6 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     newDE.put("uuid", UUID.randomUUID() as String); 
     newDE.put("created", new Date()); 
     newDE.put("origin", 'caDSR'); 
-    newDE.put("originId", cadsrDE.PUBLICID.text() + "v" + cadsrDE.VERSION.text()); 
 
     newDE.put("version", cadsrDE.VERSION.text());
     newDE.put("valueDomain", new BasicDBObject("datatype": cadsrDE.VALUEDOMAIN[0].Datatype.text()));
@@ -77,6 +76,15 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     naming.add(defaultName);
     newDE.put("naming", naming);
 
+    BasicDBObject cadsrID = new BasicDBObject();
+    cadsrID.put("origin", 'caDSR');
+    cadsrID.put("id", cadsrDE.PUBLICID.text());
+    cadsrID.put("version", cadsrDE.VERSION.text());
+    def ids = [];
+    ids.add(cadsrID);
+    newDE.put("ids", ids);
+
+    
     if (cadsrDE.VALUEDOMAIN[0].ValueDomainType.text().equals("Enumerated")) {
         newDE.get("valueDomain").put("datatype", 'Value List');
     }

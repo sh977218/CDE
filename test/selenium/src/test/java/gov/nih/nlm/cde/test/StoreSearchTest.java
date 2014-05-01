@@ -20,6 +20,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
     public void rememberPageNumber() {
         goHome();
         findElement(By.linkText("2")).click();
+        hangon(2);
         findElement(By.id("acc_link_0")).click();
         hangon(1);
         findElement(By.linkText("NLM CDEs")).click();
