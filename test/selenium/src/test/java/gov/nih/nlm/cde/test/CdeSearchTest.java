@@ -14,7 +14,6 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     public void cdeFullDetail() {
         goToCdeByName("Genotype Therapy Basis Mutation");
         Assert.assertTrue(textPresent("Genotype Therapy Basis Mutation Analysis Indicator"));
-        Assert.assertTrue(textPresent("3157849v1"));
         Assert.assertTrue(textPresent("Text descriptor to indicate whether "
                 + "genotype directed therapy was based on mutation testing"));
         Assert.assertTrue(textPresent("Qualified"));
@@ -33,6 +32,8 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(csElements.get(1).getText(), "GO New CDEs");
         Assert.assertEquals(csElements.get(2).getText(), "C3D");
         Assert.assertEquals(csElements.get(3).getText(), "caBIG");
+        findElement(By.linkText("Identifiers")).click();
+        Assert.assertTrue(textPresent("3157849"));
     } 
     
     @Test
