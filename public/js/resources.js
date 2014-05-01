@@ -153,7 +153,7 @@ angular.module('resources', ['ngResource'])
     })
     .factory('MergeRequest', function(Mail) {
         return {
-          create :function(dat, success, error) {              
+          create: function(dat, success, error) {              
               var message = {
                   recipient: {recipientType: "stewardOrg", name: dat.recipient},
                   author: {authorType: "user", name: dat.author},
@@ -161,7 +161,7 @@ angular.module('resources', ['ngResource'])
                   type: "Merge Request",
                   typeMergeRequest: dat.mergeRequest
               };
-              Mail.sendMessage(message);
+              Mail.sendMessage(message, success);
           }
         };
     })   

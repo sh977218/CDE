@@ -560,9 +560,11 @@ exports.fetchPVCodeSystemList = function() {
     });
 };
 
-exports.createMessage = function(msg) {
+exports.createMessage = function(msg, cb) {
     var message = new Message(msg);
-    message.save();
+    message.save(function() {
+        cb();
+    });
 };
 
 exports.updateMessage = function(msg, cb) {

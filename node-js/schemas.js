@@ -137,6 +137,7 @@ var deJsonSchema = {
             , administrativeNote: String
             , unresolvedIssue: String
             , administrativeStatus: String
+            , replacedBy: {uuid: String} 
         }
     , classification:  [
             {
@@ -250,6 +251,7 @@ var mergeRequestSchema = {
         , naming: Boolean
         , attachments: Boolean
         , properties: Boolean
+        , classifications: Boolean
     }
     , states: [{
         action: String

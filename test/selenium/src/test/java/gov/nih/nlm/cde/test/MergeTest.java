@@ -61,6 +61,7 @@ public class MergeTest extends NlmCdeBaseTest {
         createMergeRequest();
         acceptMergeRequest();
         checkResult();
+        
     }
 
 }

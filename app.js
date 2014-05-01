@@ -1012,7 +1012,9 @@ app.get('/permissibleValueCodeSystemList', function(req, res) {
 });
 
 app.post('/mail/messages/new', function(req, res) {
-    mongo_data.createMessage(req.body);
+    mongo_data.createMessage(req.body, function() {
+        res.send();
+    });    
 });
 
 app.post('/mail/messages/update', function(req, res) {

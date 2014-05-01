@@ -1,5 +1,6 @@
 <div class="container">
-<div class="alert" ng-show="cde.archived">Warning: this data element is archived.</div> 
+<div class="alert" ng-show="cde.archived"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is archived.</div> 
+<div class="alert" ng-show="cde.registrationState.administrativeStatus=='Retire Candidate'"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is about to be retired.</div> 
 
 <div class="navbar-header">
     <span> {{cde.naming[0].designation}}</span>
@@ -25,9 +26,6 @@
     <tab heading="Classification">
         <%- include deClassification.ejs %>
     </tab>
-<!--    <tab heading="Usage">
-        <%- include deUsage.ejs %>
-    </tab>-->
     <tab heading="Concepts">
         <%- include concepts.ejs %>
    </tab>
