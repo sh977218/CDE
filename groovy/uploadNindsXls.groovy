@@ -14,22 +14,29 @@ import java.util.Iterator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 
 @Field def mongoHost = System.getenv()['MONGO_HOST'];
-if(mongoHost == 0) mongoHost = "localhost";
+if(mongoHost == null) mongoHost = "localhost";
 
 @Field def mongoDb = System.getenv()['MONGO_DB'];
 if(mongoDb == null) mongoDb = "nlmcde";
 
-@Field MongoClient mongoClient = new MongoClient( mongoHost );
-@Field DB db = mongoClient.getDB(mongoDb);
-@Field DBCollection deColl = db.getCollection("dataelements");
-@Field DBCollection orgColl = db.getCollection("orgs");
+@Field MongoClient mongoClient 
+mongoClient = new MongoClient( mongoHost );
+@Field DB db 
+db = mongoClient.getDB(mongoDb);
+@Field DBCollection deColl
+deColl = db.getCollection("dataelements");
+@Field DBCollection orgColl
+orgColl = db.getCollection("orgs");
 
 println "NINDS Ingester"
 
-@Field XSSFWorkbook book = new XSSFWorkbook(args[0]);
-@Field XSSFSheet[] sheets = book.sheets;
+@Field XSSFWorkbook book 
+book = new XSSFWorkbook(args[0]);
+@Field XSSFSheet[] sheets 
+sheets = book.sheets;
 
-@Field Classifications classifications = new Classifications(orgColl);
+@Field Classifications classifications 
+classifications = new Classifications(orgColl);
 
 static def String getCellValue(Cell cell) {
    if(cell == null) {
@@ -136,13 +143,37 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     def naming = new BasicDBObject();
     naming.put("designation", getCellValue(row.getCell(xlsMap.name)));
     naming.put("definition", getCellValue(row.getCell(xlsMap.description)));
+    naming.put("languageCode", "EN-US");  
+    
+    BasicDBObject defContext = new BasicDBObject();
+    defContext.put("contextName", 'Health');
+    defContext.put("acceptability", "preferred");
+    naming.put("context", defContext);     
+    
     namings.add(naming);
     
     if (getCellValue(row.getCell(xlsMap.description)).equals(getCellValue(row.getCell(xlsMap.shortDescription)))) {
         def shortDef = new BasicDBObject();
-        naming.put("definition", getCellValue(row.getCell(xlsMap.shortDescription)));
-        namings.add(naming);        
+        shortDef.put("definition", getCellValue(row.getCell(xlsMap.shortDescription)));
+        shortDef.put("languageCode", "EN-US");  
+    
+        BasicDBObject defContext2 = new BasicDBObject();
+        defContext2.put("contextName", 'Short');
+        defContext2.put("acceptability", "preferred");
+        shortDef.put("context", defContext2);     
+        namings.add(shortDef);        
     }
+    
+    BasicDBObject stewardOrg = new BasicDBObject();
+    stewardOrg.put("name","NINDS");    
+    newDE.put("stewardOrg",stewardOrg);  
+
+    
+    BasicDBObject registrationState = new BasicDBObject();
+    registrationState.put("registrationStatus", "Qualified");
+    registrationState.put("registrationStatusSortOrder", 2);
+    newDE.put("registrationState", registrationState);        
+
     
     def vd = new BasicDBObject();
     
@@ -207,42 +238,42 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     }
 
     def guidelines = getCellValue(row.getCell(xlsMap.guidelines));
-    if (!guidelines.isEmtpy()) {
+    if (!guidelines.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS Guidelines");
-        p.put("value", getCellValue(row.getCell(xlsMap.guidelines)));
+        p.put("value", guidelines);
         properties.add(p);
     }
     
     def notes = getCellValue(row.getCell(xlsMap.notes));
-    if (!notes.isEmtpy()) {
+    if (!notes.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS Notes");
-        p.put("value", getCellValue(row.getCell(xlsMap.notes)));
+        p.put("value", notes);
         properties.add(p);
     }
 
     def suggestedQuestion = getCellValue(row.getCell(xlsMap.suggestedQuestion));
-    if (!suggestedQuestion.isEmtpy()) {
+    if (!suggestedQuestion.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS Suggested Question");
-        p.put("value", getCellValue(row.getCell(xlsMap.suggestedQuestion)));
+        p.put("value", suggestedQuestion);
         properties.add(p);
     }
     
     def keywords = getCellValue(row.getCell(xlsMap.keywords));
-    if (!keyword.isEmtpy()) {
+    if (!keywords.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS Keywords");
-        p.put("value", getCellValue(row.getCell(xlsMap.keywords)));
+        p.put("value", keywords);
         properties.add(p);
     }
 
     def references = getCellValue(row.getCell(xlsMap.references));
-    if (!references.isEmtpy()) {
+    if (!references.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS References");
-        p.put("value", getCellValue(row.getCell(xlsMap.references)));
+        p.put("value", references);
         properties.add(p);
     }
     
@@ -253,11 +284,19 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     ids.add(nindsId);
     
     def cadsrId = getCellValue(row.getCell(xlsMap.nindsId));
-    if ()
+    if (!cadsrId.equals("")) {
+        def id = new BasicDBObject();
+        id.put("origin", "caDSR");
+        id.put("id", cadsrId);
+        ids.add(id); 
+    }
+    
+    newDE.put("naming", namings)
+    newDE.put("valueDomain", vd);
+    newDE.put("properties", properties);
+    newDE.put("ids", ids);
     
     newDE;
-    
-    
     
 }
 
@@ -265,7 +304,10 @@ def void PersistSheet(String name, Map xlsMap) {
     XSSFSheet sheet = book.getSheet(name);
     Iterator<XSSFRow> it = sheet.iterator();
     it.next();
+    int max = sheet.getLastRowNum();
+    int count = 1;
     while (it.hasNext()) {
+        println (max + " / " + count++);
         XSSFRow row = it.next();
         BasicDBObject newDE1 = ParseRow(row, xlsMap);
         if (newDE1!=null) {
