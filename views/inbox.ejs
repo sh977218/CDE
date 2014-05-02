@@ -86,7 +86,7 @@
                 </div>                  
             </div>            
         </div>
-        <button ng-controller="MergeApproveCtrl" ng-click="approveMerge(message)" ng-class="{disabled: message.typeMergeRequest.states[0].action==='Approved'}" class="btn btn-sm btn-default" type="button" >Approve & Merge</button>
+        <button ng-controller="MergeApproveCtrl" ng-click="approveMergeMessage(message)" ng-class="{disabled: message.typeMergeRequest.states[0].action==='Approved'}" class="btn btn-sm btn-default" type="button" >Approve & Merge</button>
         <span ng-show="message.typeMergeRequest.states[0].action==='Approved'">Approved on {{ message.typeMergeRequest.states[0].date | date:medium }}</span>
     </accordion-group>
 </accordion>

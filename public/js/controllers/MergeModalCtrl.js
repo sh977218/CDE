@@ -21,7 +21,7 @@ function MergeModalCtrl($scope, $modalInstance, cdes, retiredIndex, user) {
         $modalInstance.dismiss('cancel');
     };  
     $scope.sendMergeRequest = function() {
-        $modalInstance.close({mergeRequest:$scope.mergeRequest, recipient: $scope.target.stewardOrg.name, author: user.username, approval: true});
+        $modalInstance.close({mergeRequest:$scope.mergeRequest, recipient: $scope.target.stewardOrg.name, author: user.username, approval: $scope.approvalNecessary() });
     };
     $scope.approvalNecessary = function() {
         return $scope.mergeRequest.fields.ids || $scope.mergeRequest.fields.naming || $scope.mergeRequest.fields.properties || $scope.mergeRequest.fields.attachments;

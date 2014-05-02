@@ -37,8 +37,8 @@ public class MergeTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Smoking History Ind")));
         Assert.assertTrue(textPresent("Free-text field to capture another method used to help stop smoking that is not already specified or mentioned."));
         Assert.assertTrue(textPresent("3279225"));
-        findElement(By.cssSelector("[ng-click='approveMerge(message)']")).click();
-        hangon(2); 
+        findElement(By.cssSelector("[ng-click='approveMergeMessage(message)']")).click();
+        hangon(3); 
     }    
     
     private void checkResult() {

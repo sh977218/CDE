@@ -1,9 +1,16 @@
-function MergeApproveCtrl($scope, $window, $interval,  DataElement, Mail, Classification, CDE) {
-    $scope.approveMerge = function(message) {
-        $scope.source = message.typeMergeRequest.source.object;
-        $scope.destination = message.typeMergeRequest.destination.object;
-        Object.keys(message.typeMergeRequest.fields).map(function(field) {
-            if (message.typeMergeRequest.fields[field]) {
+function MergeApproveCtrl($scope, $interval,  DataElement, Mail, Classification, CDE) {
+    
+    $scope.approveMergeMessage = function(message) { 
+        $scope.approveMerge(message.typeMergeRequest.source.object, message.typeMergeRequest.destination.object, message.typeMergeRequest.fields, function() {
+            $scope.closeMessage(message);
+        });
+    };
+    
+    $scope.approveMerge = function(source, destination, fields, callback) {
+        $scope.source = source;
+        $scope.destination = destination;
+        Object.keys(fields).map(function(field) {
+            if (fields[field]) {
                 $scope.transferFields($scope.source, $scope.destination, field);
             }
         });
@@ -15,7 +22,7 @@ function MergeApproveCtrl($scope, $window, $interval,  DataElement, Mail, Classi
                 if ($scope.nrDefinitions === 0) {
                     $interval.cancel(intervalHandle);
                     $scope.retireSource($scope.source, $scope.destination, function() {
-                        $scope.closeMessage(message);
+                        if (callback) callback();
                     });                     
                 }
             }, 100, 20);            
