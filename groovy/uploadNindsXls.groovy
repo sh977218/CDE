@@ -68,62 +68,62 @@ static def String getCellValue(Cell cell) {
 
 // input type is free-form, single value or multi value.
 def xlsMap = [
-    variableName: 1
-    , name: 2
-    , description: 4
-    , shortDescription: 5
-    , datatype: 6
-    , datatypeTextSize: 7
-    , inputType: 8
-    , minValue: 9
-    , maxValue: 10
-    , answerList: 11
-    , answerDescriptions: 12
-    , uom: 13
-    , guidelines: 14
-    , notes: 15
-    , suggestedQuestion: 16
-    , keywords: 17
-    , references: 18
-    , cadsrId: 21
-    , nindsId: 23
-    , population: 24
-    , generalDomain: 25
-    , tbiDomain: 26
-    , parkinsonDomain: 27
-    , ataxiaDomain: 28
-    , strokeDomain: 29
-    , alsDomain: 30
-    , huntingtonDomain: 31
-    , msDomain: 32
-    , neuromuscDomain: 33
-    , myastheniaDomain: 34
-    , spinalDomain: 35
-    , duchenneDomain: 36
-    , congenitalDomain: 37
-    , spinalCordInjuryDomain: 38
-    , headacheDomain: 39
-    , epilepsyDomain: 40
-    , generalClassif: 41
-    , acuteHospClassif: 42
-    , concussionClassif: 43
-    , epidemiologyClassif: 44
-    , modTbiClassif: 45
-    , parkinsonClassif: 46
-    , friedrichClassif: 47
-    , strokeClassif: 48
-    , alsClassif: 49
-    , huntingtonClassif: 50
-    , msClassif: 51
-    , neuroClassif: 52
-    , myastheniaClassif: 53
-    , spinalMuscAtrophClassif: 54
-    , duchenneClassif: 55
-    , congenitalClassif: 56
-    , spinalCordInjuryClassif: 57
-    , headacheClassif: 58
-    , epilepsy: 59
-    , previousTitle: 60
+    variableName: 0
+    , name: 1
+    , description: 3
+    , shortDescription: 4
+    , datatype: 5
+    , datatypeTextSize: 6
+    , inputType: 7
+    , minValue: 8
+    , maxValue: 9
+    , answerList: 10
+    , answerDescriptions: 11
+    , uom: 12
+    , guidelines: 13
+    , notes: 14
+    , suggestedQuestion: 15
+    , keywords: 16
+    , references: 17
+    , cadsrId: 20
+    , nindsId: 22
+    , population: 23
+    , generalDomain: 24
+    , tbiDomain: 25
+    , parkinsonDomain: 26
+    , ataxiaDomain: 27
+    , strokeDomain: 28
+    , alsDomain: 29
+    , huntingtonDomain: 30
+    , msDomain: 31
+    , neuromuscDomain: 32
+    , myastheniaDomain: 33
+    , spinalDomain: 34
+    , duchenneDomain: 35
+    , congenitalDomain: 36
+    , spinalCordInjuryDomain: 37
+    , headacheDomain: 38
+    , epilepsyDomain: 39
+    , generalClassif: 40
+    , acuteHospClassif: 41
+    , concussionClassif: 42
+    , epidemiologyClassif: 43
+    , modTbiClassif: 44
+    , parkinsonClassif: 45
+    , friedrichClassif: 46
+    , strokeClassif: 47
+    , alsClassif: 48
+    , huntingtonClassif: 49
+    , msClassif: 50
+    , neuroClassif: 51
+    , myastheniaClassif: 52
+    , spinalMuscAtrophClassif: 53
+    , duchenneClassif: 54
+    , congenitalClassif: 55
+    , spinalCordInjuryClassif: 56
+    , headacheClassif: 57
+    , epilepsy: 58
+    , previousTitle: 59
 ];
 
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
@@ -217,20 +217,18 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
         datatype = "Value List";
     }
 
+    def permValues = [];
     if (datatype.equals("Value List")) {
         def answers = getCellValue(row.getCell(xlsMap.answerList)).split(";");
         def descs = getCellValue(row.getCell(xlsMap.answerDescriptions)).split(";");
-        def permValues = [];
         for (int i = 0 ; i < answers.length; i++) {
             def permValue = new BasicDBObject();
             permValue.put("permissibleValue", answers[i]);
-            permValue.put("valueMeaningName", descriptions[i]);
+            permValue.put("valueMeaningName", descs[i]);
             permValues.add(permValues);
         }
-        if (answers.length > 0) {
-            vd.put("permissibleValues", permValues);
-        }
     }
+    vd.put("permissibleValues", permValues);
     
     def uom = getCellValue(row.getCell(xlsMap.uom));
     if (!uom.isEmpty()) {
@@ -283,7 +281,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     nindsId.put("id", getCellValue(row.getCell(xlsMap.nindsId)));
     ids.add(nindsId);
     
-    def cadsrId = getCellValue(row.getCell(xlsMap.nindsId));
+    def cadsrId = getCellValue(row.getCell(xlsMap.cadsrId));
     if (!cadsrId.equals("")) {
         def id = new BasicDBObject();
         id.put("origin", "caDSR");
