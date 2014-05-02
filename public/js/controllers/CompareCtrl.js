@@ -44,12 +44,5 @@ function CompareCtrl($scope, DataElement) {
                 list1[i].isValid = wellIsIt;
            });
         }
-    };
-    
-    $scope.mergeButtonVisibility = function(cde) {
-        
-    };
-    
- 
-    
+    }; 
 };

@@ -73,7 +73,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };
     $scope.emptyCart = function() {
         $scope.compareCart = [];
-    }
+    };
     
     $scope.cdeIconAction = function (cde, action, event) {
         if (event) {
@@ -209,6 +209,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };  
     
     $scope.isAllowed = function (cde) {
+        if (!cde) return false;
         if ($scope.initialized && cde.archived) {
             return false;
         }
