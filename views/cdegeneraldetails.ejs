@@ -6,7 +6,7 @@
     <dt>Definition: </dt><dd id="dd_def">   
         <inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="cde.naming[0].definition" is-allowed="isAllowed(cde)" def-format="cde.naming[0].definitionFormat" on-ok="stageCde(cde)"> </inline-area-edit>
     </dd>
-    <dt>Used By: </dt><dd id="dd_usedBy"><span ng-repeat="cl in cde.classification">{{cl.stewardOrg.name}} </span></dd>
+    <dt>Used By: </dt><dd id="dd_usedBy">.<span ng-repeat="cl in cde.classification">{{cl.stewardOrg.name}}</span></dd>
     <dt>Unit of Measure: </dt><dd id="dd_uom"><inline-edit id="uomEdit" model="cde.valueDomain.uom" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </inline-edit></dd> 
     <dt>Id: </dt><dd>{{cde.uuid}}</dd>
     <dt>Version: </dt><dd>{{cde.version}}</dd>

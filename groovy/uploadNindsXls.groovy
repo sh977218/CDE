@@ -124,6 +124,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     newDE.put("uuid", UUID.randomUUID() as String);
     newDE.put("created", new Date()); 
     newDE.put("origin", 'NINDS'); 
+    newDE.put("version", '1'); 
     
     def properties = [];
     def prop = new BasicDBObject();
@@ -131,10 +132,12 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     prop.put("value", getCellValue(row.getCell(xlsMap.variableName)));
     properties.add(prop);
     
+    def description = getCellValue(row.getCell(xlsMap.description)).trim();
+    
     def namings = [];
     def naming = new BasicDBObject();
     naming.put("designation", getCellValue(row.getCell(xlsMap.name)));
-    naming.put("definition", getCellValue(row.getCell(xlsMap.description)));
+    naming.put("definition", description);
     naming.put("languageCode", "EN-US");  
     
     BasicDBObject defContext = new BasicDBObject();
@@ -144,9 +147,10 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
     namings.add(naming);
     
-    if (getCellValue(row.getCell(xlsMap.description)).equals(getCellValue(row.getCell(xlsMap.shortDescription)))) {
+    def shortDescription = getCellValue(row.getCell(xlsMap.shortDescription)).trim();
+    if (!description.equalsIgnoreCase(shortDescription)) {
         def shortDef = new BasicDBObject();
-        shortDef.put("definition", getCellValue(row.getCell(xlsMap.shortDescription)));
+        shortDef.put("definition", shortDescription);
         shortDef.put("languageCode", "EN-US");  
     
         BasicDBObject defContext2 = new BasicDBObject();
@@ -170,17 +174,17 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     def vd = new BasicDBObject();
     
     def datatype = getCellValue(row.getCell(xlsMap.datatype));
-    if (datatype.toLowerCase().trim().equals("numeric value")) {
+    if (datatype.toLowerCase().trim().equals("numeric values")) {
         def datatypeFloat;
         if (!getCellValue(row.getCell(xlsMap.minValue)).isEmpty()) {
             datatypeFloat = new BasicDBObject();
-            datatypeFloat.put(minValue, getCellValue(row.getCell(xlsMap.minValue)));
+            datatypeFloat.put("minValue", getCellValue(row.getCell(xlsMap.minValue)));
         }
         if (!getCellValue(row.getCell(xlsMap.maxValue)).isEmpty()) {
             if (datatypeFloat == null) {
                 datatypeFloat = new BasicDBObject();
             }
-            datatypeFloat.put(maxValue, getCellValue(row.getCell(xlsMap.maxValue)));
+            datatypeFloat.put("maxValue", getCellValue(row.getCell(xlsMap.maxValue)));
         }
         datatype = "Float";
         if (datatypeFloat != null) {
@@ -216,7 +220,11 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
         for (int i = 0 ; i < answers.length; i++) {
             def permValue = new BasicDBObject();
             permValue.put("permissibleValue", answers[i]);
-            permValue.put("valueMeaningName", descs[i]);
+            if (i < descs.length) {
+                permValue.put("valueMeaningName", descs[i]);
+            } else {                
+                permValue.put("valueMeaningName", answers[i]);
+            }
             permValues.add(permValue);
         }
     }
@@ -227,6 +235,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
         vd.put("uom", uom);
     }
 
+    vd.put("datatype", datatype);
+    
     def guidelines = getCellValue(row.getCell(xlsMap.guidelines));
     if (!guidelines.equals("")) {
         def p = new BasicDBObject();
@@ -294,7 +304,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     XSSFSheet[] sheets = book.sheets;    
     XSSFSheet sheet = book.getSheet("Sheet1");
     int max = sheet.getLastRowNum();
-    for (int i = 2438; i < 2439; i++) {
+    for (int i = 1; i < max + 1; i++) {
         println (i + " / " + max);
         BasicDBObject newDE1 = ParseRow(sheet.getRow(i), xlsMap);
         if (newDE1!=null) {
