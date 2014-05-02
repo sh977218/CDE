@@ -23,20 +23,12 @@ if(mongoDb == null) mongoDb = "nlmcde";
 mongoClient = new MongoClient( mongoHost );
 @Field DB db 
 db = mongoClient.getDB(mongoDb);
-@Field DBCollection deColl
-deColl = db.getCollection("dataelements");
-@Field DBCollection orgColl
-orgColl = db.getCollection("orgs");
+DBCollection deColl = db.getCollection("dataelements");
+DBCollection orgColl = db.getCollection("orgs");
 
 println "NINDS Ingester"
 
-@Field XSSFWorkbook book 
-book = new XSSFWorkbook(args[0]);
-@Field XSSFSheet[] sheets 
-sheets = book.sheets;
-
-@Field Classifications classifications 
-classifications = new Classifications(orgColl);
+Classifications classifications = new Classifications(orgColl);
 
 static def String getCellValue(Cell cell) {
    if(cell == null) {
@@ -67,7 +59,7 @@ static def String getCellValue(Cell cell) {
 }
 
 // input type is free-form, single value or multi value.
-def xlsMap = [
+@Field def xlsMap = [
     variableName: 0
     , name: 1
     , description: 3
@@ -225,7 +217,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
             def permValue = new BasicDBObject();
             permValue.put("permissibleValue", answers[i]);
             permValue.put("valueMeaningName", descs[i]);
-            permValues.add(permValues);
+            permValues.add(permValue);
         }
     }
     vd.put("permissibleValues", permValues);
@@ -298,29 +290,16 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
 }
 
-def void PersistSheet(String name, Map xlsMap) {
-    XSSFSheet sheet = book.getSheet(name);
-    Iterator<XSSFRow> it = sheet.iterator();
-    it.next();
+    XSSFWorkbook book = new XSSFWorkbook(args[0]);
+    XSSFSheet[] sheets = book.sheets;    
+    XSSFSheet sheet = book.getSheet("Sheet1");
     int max = sheet.getLastRowNum();
-    int count = 1;
-    while (it.hasNext()) {
-        println (max + " / " + count++);
-        XSSFRow row = it.next();
-        BasicDBObject newDE1 = ParseRow(row, xlsMap);
+    for (int i = 2438; i < 2439; i++) {
+        println (i + " / " + max);
+        BasicDBObject newDE1 = ParseRow(sheet.getRow(i), xlsMap);
         if (newDE1!=null) {
             deColl.insert(newDE1);
         }
     }
     println("Ingestion Complete");
-}
-
-def sheetsToParse = [
-    "Sheet1"
-];          
-
-
-for (sheetName in sheetsToParse) {
-    PersistSheet(sheetName, xlsMap);
-}                    
 
