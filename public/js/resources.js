@@ -168,14 +168,12 @@ angular.module('resources', ['ngResource'])
         };
     })   
     .factory('Mail', function($http) {
-        /*return $resource('/mail/data/:type', {type: 'received'}, 
-            {'getCdes': {method: 'GET', isArray: true}});*/
         return {
             sendMessage: function(dat, success, error) {              
                 $http.post('/mail/messages/new', dat).success(success).error(error);
             },
-            getReceived: function(user, cb) {              
-                $http.get("/mail/messages/received").then(function(response) {
+            getMail: function(user, type, cb) {              
+                $http.get("/mail/messages/"+type).then(function(response) {
                     cb(response.data);
                 });
             },

@@ -576,20 +576,43 @@ exports.updateMessage = function(msg, cb) {
 };
 
 exports.getMessages = function(req, callback) {
-    var query = {
-        $or: [
-            {
-                "recipient.recipientType":"stewardOrg"
-                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
-            }
-            , {
-                "recipient.recipientType":"user"
-                , "recipient.name": req.user.username
-            }
-        ]
-    };
+   switch (req.params.type) {
+       case "received":
+            var query = {
+                $or: [
+                    {
+                        "recipient.recipientType":"stewardOrg"
+                        , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                    }
+                    , {
+                        "recipient.recipientType":"user"
+                        , "recipient.name": req.user.username
+                    }
+                ]
+            };
+            break;
+        case "sent":
+            var query = {
+                $or: [
+                    {
+                        "author.authorType":"stewardOrg"
+                        , "author.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                    }
+                    , {
+                        "author.authorType":"user"
+                        , "author.name": req.user.username
+                    }
+                ]
+            };
+            break;         
+    }
+    if (!query) {
+        callback("Type not specified!");
+        return;
+    }
     Message.find(query).exec(function(err, result) {
-        callback(result);
+        if (!err) callback(null, result);
+        else callback(err);
     });
 };
 
