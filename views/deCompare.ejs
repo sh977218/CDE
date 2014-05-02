@@ -9,7 +9,7 @@
             <span ng-controller="MergeRequestCtrl">
                 <a class='btn btn-small btn-default fa fa-plus-square' ng-show="isMergeRequestPossible(cde)" ng-click="openMergeModal($index)" title="Merge {{cde.naming[0].designation}}"> Retire & Merge</a>
                 <span ng-show="cde.registrationState.administrativeStatus === 'Retire Candidate'">
-                    Pending Merge Request
+                    <a href="#/inbox">Pending Merge Request</a>
                 </span>
             </span>
         </center>
