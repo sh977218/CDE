@@ -12,7 +12,7 @@ function MergeApproveCtrl($scope, Mail, MergeCdes) {
         });
         Mail.updateMessage(message, function() {
             $scope.addAlert("success", "The CDEs have been merged!");   
-            $scope.fetchMRCdes();
+            $scope.fetchMRCdes("received");
         }, function () {
             $scope.addAlert("alert", "The merge operation failed!");        
         });        
