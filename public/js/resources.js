@@ -1,3 +1,5 @@
+//TODO - refactor all CDE related services into one factory
+// with prospective methods.
 angular.module('resources', ['ngResource'])
     .factory('BoardSearch', function($resource) {
         return $resource('/listboards');
@@ -15,7 +17,7 @@ angular.module('resources', ['ngResource'])
     })
     .factory('CdeDiff', function($resource) {
         return $resource('/cdediff/:deId', {deId: '@deId'});
-    })       
+    })           
     .factory('Auth', function($http){
         return {
             register: function(user, success, error) {
@@ -186,6 +188,15 @@ angular.module('resources', ['ngResource'])
         return {
             byUuidList: function(ids, cb) {              
                 $http.post("/cdesByUuidList", ids).then(function(response) {
+                    cb(response.data);
+                });
+            }
+        } 
+    })
+    .factory('CDE', function($http) {
+        return {
+            archive: function(cde, cb) {              
+                $http.post("/archiveCde", cde).then(function(response) {
                     cb(response.data);
                 });
             }

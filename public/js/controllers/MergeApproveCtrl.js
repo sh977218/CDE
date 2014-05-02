@@ -1,4 +1,4 @@
-function MergeApproveCtrl($scope, $window, $interval,  DataElement, Mail, Classification) {
+function MergeApproveCtrl($scope, $window, $interval,  DataElement, Mail, Classification, CDE) {
     $scope.approveMerge = function(message) {
         $scope.source = message.typeMergeRequest.source.object;
         $scope.destination = message.typeMergeRequest.destination.object;
@@ -73,7 +73,9 @@ function MergeApproveCtrl($scope, $window, $interval,  DataElement, Mail, Classi
     };
     
     $scope.retireSource = function(source, destination, cb) {
-        source 
-        if (cb) cb();
+         CDE.archive(source, function() {
+             if (cb) cb();
+         });
+         
     };     
 }

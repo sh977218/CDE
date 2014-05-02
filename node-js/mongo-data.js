@@ -592,3 +592,12 @@ exports.getMessages = function(req, callback) {
         callback(result);
     });
 };
+
+exports.archiveCde = function(cde, callback) {
+    DataElement.findOne({'_id': cde._id}, function(err, cde) {
+        cde.archived = true;        
+        cde.save(function() {
+            callback("", cde);
+        });
+    });
+};

@@ -918,7 +918,11 @@ app.post('/removeUsedBy', function(req, res) {
     });
 });
 
-
+app.post('/archiveCde', function(req, res) {
+    mongo_data.archiveCde(req.body, function(messages) {
+        res.send(messages);
+    });
+});
 
 app.get('/orgNames', function(req, res) {
    mongo_data.orgNames(function (err, names) {

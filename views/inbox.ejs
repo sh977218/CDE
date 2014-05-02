@@ -5,8 +5,10 @@
         </accordion-heading>
         
         <h4>Merge Request</h4> 
+        <div ng-show="message.typeMergeRequest.source.object._id">
             <a target="_blank" href="#/deview?cdeId={{message.typeMergeRequest.source.object._id}}">{{message.typeMergeRequest.source.object.naming[0].designation}}</a> [{{ message.typeMergeRequest.source.object.stewardOrg.name }}]
             <br><i class="fa fa-arrow-down"></i><br>
+        </div>
             <a target="_blank" href="#/deview?cdeId={{message.typeMergeRequest.destination.object._id}}">{{message.typeMergeRequest.destination.object.naming[0].designation}}</a> [{{ message.typeMergeRequest.destination.object.stewardOrg.name }}]
         <hr/>
         <h4>Imported Fields</h4>      
