@@ -225,7 +225,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     parsePatientStory(stewardClassificationsArray, stewardOrg, xlsMap, row);    
     def classificationArray = [stewardClassification];        
     newDE.put("classification", classificationArray);
-   
+
+    newDE.put("classificationBoost", .3f);    
                             
     BasicDBObject registrationState = new BasicDBObject();
     registrationState.put("registrationStatus", "Recorded");
