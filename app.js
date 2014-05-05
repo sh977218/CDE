@@ -768,7 +768,6 @@ app.post('/addClassification', function(req, res) {
         if (!concept) {
             concept = classification.addElement(conceptSystem.object, req.body.classification.concept);
         }
-        de.classificationBoost = classification.calculateBoost(de);
         return de.save(function(err) {
             if (err) {
                 res.send("error: " + err);
@@ -793,7 +792,6 @@ app.post('/removeClassification', function(req, res) {
         if (steward.object.elements.length === 0) {
             de.classification.splice(steward.index, 1);
         }       
-        de.classificationBoost = classification.calculateBoost(de);
         return de.save(function(err) {
             if (err) {
                 res.send("error: " + err);

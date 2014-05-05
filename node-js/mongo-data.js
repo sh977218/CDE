@@ -502,7 +502,6 @@ exports.saveCde = function(req, callback) {
             newDe.version = req.body.version;
             newDe.changeNote = req.body.changeNote;
             newDe.updated = new Date().toJSON();
-            newDe.classificationBoost = classification.calculateBoost(newDe);
             newDe.updatedBy.userId = req.user._id;
             newDe.updatedBy.username = req.user.username;
             newDe.registrationState.registrationStatus = req.body.registrationState.registrationStatus;

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var ObjectId = require('mongodb').ObjectId;
-
+var classification = require('./classification')
 var schemas = {};
 
 var conceptSchema = mongoose.Schema({
@@ -256,6 +256,9 @@ var regStatusSortMap = {
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 
 schemas.dataElementSchema.pre('save', function(next) {
    this.registrationState.registrationStatusSortOrder = regStatusSortMap[this.registrationState.registrationStatus]; 
+   
+   this.classificationBoost = classification.calculateBoost(this);
+ 
    
    next();
 });
