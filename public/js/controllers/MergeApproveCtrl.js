@@ -11,7 +11,7 @@ function MergeApproveCtrl($scope, $modal, Mail, MergeCdes) {
                 } 
             }
         });           
-        modalInstance.result.then(function (newClassification) {
+        modalInstance.result.then(function () {
             $scope.approveMergeMessage(message);
         });        
     };    
@@ -36,13 +36,10 @@ function MergeApproveCtrl($scope, $modal, Mail, MergeCdes) {
     };      
 }
 
-var MergeApproveModalCtrl = function ($scope, $window, $modalInstance, cde, user) {
+var MergeApproveModalCtrl = function ($scope, $modalInstance, cde, user) {
     $scope.cde = cde;
     $scope.user = user;
     $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Retired'];
-    $scope.ok = function () {
-        
-    };
     $scope.ok = function () {
         $modalInstance.close();
     };    
