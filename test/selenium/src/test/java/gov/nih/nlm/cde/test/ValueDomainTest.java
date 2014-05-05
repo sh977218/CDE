@@ -88,7 +88,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click(); 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pv-0']/span/span[1]/i")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pv-0']/div/span/span[1]/i")));
         findElement(By.cssSelector("#pv-0 .fa-edit")).click();
         findElement(By.cssSelector("#pv-0 input")).sendKeys(" added to pv");
         findElement(By.cssSelector("#pv-0 .fa-check")).click();
