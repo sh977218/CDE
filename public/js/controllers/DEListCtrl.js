@@ -144,6 +144,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                 boost_mode: "replace"
                 , script_score: {
                     script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value"
+//                    script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value))"
                 }
             }
         });

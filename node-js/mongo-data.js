@@ -497,12 +497,24 @@ exports.saveCde = function(req, callback) {
             var jsonDe = JSON.parse(JSON.stringify(dataElement));
             delete jsonDe._id;
             var newDe = new DataElement(jsonDe);
-            console.log(JSON.stringify(req.body));
             newDe.history.push(dataElement._id);
+            newDe.naming = req.body.naming;
+            newDe.version = req.body.version;
+            newDe.changeNote = req.body.changeNote;
             newDe.updated = new Date().toJSON();
             newDe.classificationBoost = classification.calculateBoost(newDe);
             newDe.updatedBy.userId = req.user._id;
             newDe.updatedBy.username = req.user.username;
+            newDe.registrationState.registrationStatus = req.body.registrationState.registrationStatus;
+            newDe.registrationState.effectiveDate = req.body.registrationState.effectiveDate;
+            newDe.registrationState.untilDate = req.body.registrationState.untilDate;
+            newDe.registrationState.administrativeNote = req.body.registrationState.administrativeNote;
+            newDe.registrationState.unresolvedIssue = req.body.registrationState.unresolvedIssue;
+            newDe.registrationState.administrativeStatus = req.body.registrationState.administrativeStatus;
+            newDe.dataElementConcept = req.body.dataElementConcept;
+            newDe.objectClass = req.body.objectClass;
+            newDe.property = req.body.property;
+            newDe.valueDomain = req.body.valueDomain;
             
             dataElement.archived = true;
             
