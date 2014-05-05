@@ -144,6 +144,7 @@ var deJsonSchema = {
                 , elements: [csEltSchema]
             }
         ]
+    , classificationBoost: Number
     , formUsageCounter: Number
     , properties: [
         {key: String, value: String}

@@ -165,7 +165,15 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         }
     }
     newDE.append("usedByOrgs", usedByOrgs);
-
+    
+    def classifs = newDE.get("classification");
+    if (!classifs) classifs=[];
+    if (classifs.size() > 10) {
+        newDE.put("classificationBoost", 2.1f);
+    } else {
+        newDE.put("classificationBoost", classifs.size() * 0.21 + 0.1f);
+    }
+    
     deColl.insert(newDE);
         
 }

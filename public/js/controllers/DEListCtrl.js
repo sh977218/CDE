@@ -139,22 +139,24 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
        
        queryStuff.query.bool.must = [];
 
-       if (searchQ !== undefined && searchQ !== "") {
-            queryStuff.query.bool.must.push({
-                function_score: {
-                    boost_mode: "replace"
-                    , script_score: {
-                        script: "_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)"
-                    }
-                    , query: {
-                        query_string: {
-                            fields: ["_all", "naming.designation^3"]
-                            , query: searchQ
-                        }
-                    }
+        queryStuff.query.bool.must.push({
+            function_score: {
+                boost_mode: "replace"
+                , script_score: {
+                    script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value"
                 }
-            });
-        } 
+            }
+        });
+        
+       if (searchQ !== undefined && searchQ !== "") {
+            queryStuff.query.bool.must[0].function_score.query =
+                {
+                    query_string: {
+                        fields: ["_all", "naming.designation^3"]
+                        , query: searchQ
+                    }
+                };
+        }
                
         if ($scope.selectedOrg !== undefined) {
             queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": $scope.selectedOrg}});
