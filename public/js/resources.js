@@ -1,7 +1,6 @@
-angular.module('resources', ['ngResource']).
-    factory('CdeList', function($resource) {
-        return $resource('/listcde');
-    })
+//TODO - refactor all CDE related services into one factory
+// with prospective methods.
+angular.module('resources', ['ngResource'])
     .factory('BoardSearch', function($resource) {
         return $resource('/listboards');
     })
@@ -18,10 +17,7 @@ angular.module('resources', ['ngResource']).
     })
     .factory('CdeDiff', function($resource) {
         return $resource('/cdediff/:deId', {deId: '@deId'});
-    })
-//    .factory('AutocompleteSvc', function($resource) {
-//        return $resource("/autocomplete");
-//    })
+    })           
     .factory('Auth', function($http){
         return {
             register: function(user, success, error) {
@@ -156,5 +152,5 @@ angular.module('resources', ['ngResource']).
     .factory('Board', function($resource) {
         return $resource('/board/:id/:start', {id: '@id', start: '@start'}, 
             {'getCdes': {method: 'GET', isArray: true}});
-    })
+    })  
     ;
