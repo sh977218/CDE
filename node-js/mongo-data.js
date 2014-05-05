@@ -578,7 +578,7 @@ exports.updateMessage = function(msg, cb) {
 exports.getMessages = function(req, callback) {
    switch (req.params.type) {
        case "received":
-            var query = {
+            /*var query = {
                 $or: [
                     {
                         "recipient.recipientType":"stewardOrg"
@@ -589,7 +589,26 @@ exports.getMessages = function(req, callback) {
                         , "recipient.name": req.user.username
                     }
                 ]
-            };
+            };*/
+            var query = {
+                $and: [
+                    {
+                        $or: [
+                            {
+                                "recipient.recipientType": "stewardOrg"
+                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                            }
+                            , {
+                                "recipient.recipientType": "user"
+                                , "recipient.name": req.user.username
+                            }
+                        ]
+                    },
+                    {
+                        "typeMergeRequest.states.0.action": "Filed"
+                    }
+                ]
+            }            
             break;
         case "sent":
             var query = {
@@ -604,7 +623,28 @@ exports.getMessages = function(req, callback) {
                     }
                 ]
             };
-            break;         
+            break; 
+        case "archive":
+            var query = {
+                $and: [
+                    {
+                        $or: [
+                            {
+                                "recipient.recipientType": "stewardOrg"
+                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                            }
+                            , {
+                                "recipient.recipientType": "user"
+                                , "recipient.name": req.user.username
+                            }
+                        ]
+                    },
+                    {
+                        "typeMergeRequest.states.0.action": "Approved"
+                    }
+                ]
+            };             
+            break;
     }
     if (!query) {
         callback("Type not specified!");
