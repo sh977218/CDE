@@ -23,6 +23,14 @@
             <script src="assets/js/respond.min.js"></script>
          <![endif]--> 
          
+        <!--[if lte IE 9]>
+          <script>
+            document.createElement('inline-edit');
+            document.createElement('inline-area-edit');
+            document.createElement('text-angular');
+          </script>
+        <![endif]-->         
+         
         <!-- fixes an issue in bootstrap #1078 -->
         <style>
             .modal-body{overflow-y: inherit;}

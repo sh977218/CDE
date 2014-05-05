@@ -16,54 +16,16 @@
      <tbody>
          <tr id="pv-{{$index}}" ng-repeat="pv in cde.valueDomain.permissibleValues">
             <td headers="name" id="pv-{{$index}}">
-                <span>
-                    <span ng-hide="editMode">
-                        <i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="editMode=true"></i> {{pv.permissibleValue | placeholdEmpty}}
-                    </span> 
-                    <span ng-show="editMode">                       
-                        <input type="text" ng-model="pv.permissibleValue" class="form-control"/>
-                        <button class="fa fa-check" ng-click="editMode = false; stageCde(cde)"> Confirm</button>
-                        <button class="fa fa-times" ng-click="editMode = false"> Discard</button>
-                    </span>       
-                </span>
+                <div inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde);"> </div>
             </td>
              <td headers="codeName" id="pvName-{{$index}}">
-                <span>
-                    <span ng-hide="editMode">
-                        <i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="editMode=true"></i> {{pv.valueMeaningName | placeholdEmpty}}
-                    </span> 
-                    <span ng-show="editMode">                       
-                        <input ng-hide="pVTypeheadVsacNameList.length>0" type="text" ng-model="pv.valueMeaningName" class="form-control"/>
-                        <input ng-show="pVTypeheadVsacNameList.length>0" type="text" ng-model="pv.valueMeaningName" typeahead="name for name in typeaheadSource | filter:$viewValue | limitTo:8" class="form-control typeahead"/>                                                      
-                        <button class="fa fa-check" ng-click="editMode = false; stageCde(cde); runDelayedManualValidation();"> Confirm</button>
-                        <button class="fa fa-times" ng-click="editMode = false"> Discard</button>
-                    </span>       
-                </span>
+                <div inline-edit model="pv.valueMeaningName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeheadVsacNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
              </td>
              <td headers="code" id="pvCode-{{$index}}">
-                <span>
-                    <span ng-hide="editMode">
-                        <i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="editMode=true"></i> {{pv.valueMeaningCode | placeholdEmpty}}
-                    </span> 
-                    <span ng-show="editMode">                       
-                        <input type="text" ng-model="pv.valueMeaningCode" class="form-control"/>
-                        <button class="fa fa-check" ng-click="editMode = false; stageCde(cde); runDelayedManualValidation();"> Confirm</button>
-                        <button class="fa fa-times" ng-click="editMode = false"> Discard</button>
-                    </span>       
-                </span>
+                <div inline-edit model="pv.valueMeaningCode" is-allowed="isAllowed(cde)" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
              </td>
              <td headers="codeSystem" id="pvCodeSystem-{{$index}}">
-                <span>
-                    <span ng-hide="editMode">
-                        <i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="editMode=true"></i> {{pv.codeSystemName | placeholdEmpty}}
-                    </span> 
-                    <span ng-show="editMode">                       
-                        <input ng-hide="pVTypeaheadCodeSystemNameList.length>0" type="text" ng-model="pv.codeSystemName" class="form-control"/>
-                        <input ng-show="pVTypeaheadCodeSystemNameList.length>0" type="text" ng-model="pv.codeSystemName" typeahead="name for name in typeaheadSource | filter:$viewValue | limitTo:8" class="form-control typeahead"/>                                                      
-                        <button class="fa fa-check" ng-click="editMode = false; stageCde(cde); runDelayedManualValidation();"> Confirm</button>
-                        <button class="fa fa-times" ng-click="editMode = false"> Discard</button>
-                    </span>       
-                </span>
+                <div inline-edit model="pv.codeSystemName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeaheadCodeSystemNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
              </td>
              <td headers="validation" ng-show="detailedView">
                  <span ng-switch="pv.isValid">

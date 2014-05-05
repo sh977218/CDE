@@ -1,7 +1,6 @@
-angular.module('resources', ['ngResource']).
-    factory('CdeList', function($resource) {
-        return $resource('/listcde');
-    })
+//TODO - refactor all CDE related services into one factory
+// with prospective methods.
+angular.module('resources', ['ngResource'])
     .factory('BoardSearch', function($resource) {
         return $resource('/listboards');
     })
@@ -18,10 +17,7 @@ angular.module('resources', ['ngResource']).
     })
     .factory('CdeDiff', function($resource) {
         return $resource('/cdediff/:deId', {deId: '@deId'});
-    })
-//    .factory('AutocompleteSvc', function($resource) {
-//        return $resource("/autocomplete");
-//    })
+    })           
     .factory('Auth', function($http){
         return {
             register: function(user, success, error) {
@@ -157,4 +153,125 @@ angular.module('resources', ['ngResource']).
         return $resource('/board/:id/:start', {id: '@id', start: '@start'}, 
             {'getCdes': {method: 'GET', isArray: true}});
     })
+    .factory('MergeRequest', function(Mail) {
+        return {
+          create: function(dat, success, error) {              
+              var message = {
+                  recipient: {recipientType: "stewardOrg", name: dat.recipient},
+                  author: {authorType: "user", name: dat.author},
+                  date: new Date(),
+                  type: "Merge Request",
+                  typeMergeRequest: dat.mergeRequest
+              };
+              Mail.sendMessage(message, success);
+          }
+        };
+    })   
+    .factory('Mail', function($http) {
+        return {
+            sendMessage: function(dat, success, error) {              
+                $http.post('/mail/messages/new', dat).success(success).error(error);
+            },
+            getMail: function(user, type, cb) {              
+                $http.get("/mail/messages/"+type).then(function(response) {
+                    cb(response.data);
+                });
+            },
+            updateMessage: function(msg, success, error) {
+                $http.post('/mail/messages/update', msg).success(success).error(error);
+            }
+        };        
+    }) 
+    .factory('CdeList', function($http) {
+        return {
+            byUuidList: function(ids, cb) {              
+                $http.post("/cdesByUuidList", ids).then(function(response) {
+                    cb(response.data);
+                });
+            }
+        } 
+    })
+    .factory('CDE', function($http) {
+        return {
+            archive: function(cde, cb) {              
+                $http.post("/archiveCde", cde).then(function(response) {
+                    cb(response.data);
+                });
+            }
+        } 
+    })    
+    .factory('MergeCdes', function($interval, DataElement, Mail, Classification, CDE) {
+        var service = this;
+        service.approveMergeMessage = function(message) { 
+            service.approveMerge(message.typeMergeRequest.source.object, message.typeMergeRequest.destination.object, message.typeMergeRequest.fields, function() {
+                service.closeMessage(message);
+            });
+        };
+        service.approveMerge = function(source, destination, fields, callback) {
+            service.source = source;
+            service.destination = destination;
+            Object.keys(fields).map(function(field) {
+                if (fields[field]) {
+                    service.transferFields(service.source, service.destination, field);
+                }
+            });
+            service.destination.version = parseInt(service.destination.version)+1;
+            service.nrDefinitions = 0;
+            DataElement.save(service.destination, function(cde) {
+                service.transferClassifications(cde);
+                var intervalHandle = $interval(function() {
+                    if (service.nrDefinitions === 0) {
+                        $interval.cancel(intervalHandle);
+                        service.retireSource(service.source, service.destination, function() {
+                            if (callback) callback(cde);
+                        });                     
+                    }
+                }, 100, 20);            
+            });
+        };
+        service.transferFields = function(source, destination, type) {
+            if (!source[type]) return;
+            var fieldsTransfer = this;
+            service.alreadyExists = function(obj) {
+                delete obj.$$hashKey;
+                return destination[type].map(function(obj) {
+                    return JSON.stringify(obj);
+                }).indexOf(JSON.stringify(obj))>=0;
+            };
+            source[type].map(function(obj) {            
+                if (fieldsTransfer.alreadyExists(obj)) return;
+                destination[type].push(obj);
+            });
+        };
+        service.transferClassifications = function (target) {
+            service.source.classification.map(function(stewardOrgClassifications) {
+                var orgName = stewardOrgClassifications.stewardOrg.name;
+                stewardOrgClassifications.elements.map(function(conceptSystem) {
+                    var conceptSystemName = conceptSystem.name;
+                    conceptSystem.elements.map(function(concept) {
+                        var conceptName = concept.name;
+                        service.nrDefinitions++;
+                        Classification.add({
+                            classification: {
+                                orgName: orgName
+                                , conceptSystem: conceptSystemName                      
+                                , concept: conceptName                                
+                            }
+                            , deId: target._id
+                        }, function() {
+                            service.nrDefinitions--;
+                        });
+                    });
+                });
+            });          
+        };
+        service.retireSource = function(source, destination, cb) {
+             CDE.archive(source, function() {
+                 if (cb) cb();
+             });
+        }; 
+        return service;
+    })
+    
+    
     ;
