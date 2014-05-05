@@ -52,6 +52,9 @@ angular.module('resources', ['ngResource'])
           , addToOrg: function(dat, success, error) {
               $http.post('/addClassificationToOrg', dat).success(success).error(error);              
           }
+          , addListToCde: function(dat, success, error) {
+              $http.post('/addClassificationGroup', dat).success(success).error(error);
+          }
         };
     })
     .factory("UsedBy", function($http) {
@@ -215,17 +218,12 @@ angular.module('resources', ['ngResource'])
                     service.transferFields(service.source, service.destination, field);
                 }
             });
-            service.nrDefinitions = 0;
             DataElement.save(service.destination, function(cde) {
-                service.transferClassifications(cde);
-                var intervalHandle = $interval(function() {
-                    if (service.nrDefinitions === 0) {
-                        $interval.cancel(intervalHandle);
-                        service.retireSource(service.source, service.destination, function() {
-                            if (callback) callback(cde);
-                        });                     
-                    }
-                }, 100, 20);            
+                service.transferClassifications(cde, function() {
+                    service.retireSource(service.source, service.destination, function() {
+                        if (callback) callback(cde);
+                    });                     
+                });                              
             });
         };
         service.transferFields = function(source, destination, type) {
@@ -240,32 +238,35 @@ angular.module('resources', ['ngResource'])
                 destination[type].push(obj);
             });
         };
-        service.transferClassifications = function (target) {
+        service.transferClassifications = function (target, callback) {
+            var classifications = [];
             service.source.classification.map(function(stewardOrgClassifications) {
                 var orgName = stewardOrgClassifications.stewardOrg.name;
                 stewardOrgClassifications.elements.map(function(conceptSystem) {
                     var conceptSystemName = conceptSystem.name;
                     conceptSystem.elements.map(function(concept) {
                         var conceptName = concept.name;
-                        service.nrDefinitions++;
-                        Classification.add({
-                            classification: {
-                                orgName: orgName
-                                , conceptSystem: conceptSystemName                      
-                                , concept: conceptName                                
-                            }
-                            , deId: target._id
-                        }, function() {
-                            service.nrDefinitions--;
-                        });
+                        classifications.push({
+                            orgName: orgName
+                            , conceptSystem: conceptSystemName                      
+                            , concept: conceptName                                
+                        });   
                     });
                 });
-            });          
+            });
+            Classification.addListToCde({
+                classifications: classifications
+                , deId: target._id
+            }, callback);
         };
         service.retireSource = function(source, destination, cb) {
-             CDE.archive(source, function() {
+             /*CDE.archive(source, function() {
                  if (cb) cb();
-             });
+             });*/
+            source.registrationState.registrationStatus = "Retired";
+            DataElement.save(source, function(cde) {
+                if (cb) cb();
+            });
         }; 
         return service;
     })

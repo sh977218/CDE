@@ -754,26 +754,7 @@ app.post('/addClassification', function(req, res) {
         if (err) {
             return res.send(err);
         }
-        var steward = classification.findSteward(de, req.body.classification.orgName);
-        if (!steward) {
-            var newSteward = {
-                stewardOrg : {
-                    name: req.body.classification.orgName
-                },
-                elements: []
-            };
-            de.classification.push(newSteward);  
-            var i = de.classification.length - 1;
-            steward = {index: i, object: de.classification[i]};
-        }  
-        var conceptSystem = classification.findConcept(steward.object, req.body.classification.conceptSystem);                
-        if (!conceptSystem) {
-            conceptSystem = classification.addElement(steward.object, req.body.classification.conceptSystem);
-        }
-        var concept = classification.findConcept(conceptSystem.object, req.body.classification.concept);      
-        if (!concept) {
-            concept = classification.addElement(conceptSystem.object, req.body.classification.concept);
-        }                
+        cdesvc.addClassificationToCde(de, req.body.classification.orgName, req.body.classification.conceptSystem, req.body.classification.concept)
         return de.save(function(err) {
             if (err) {
                 res.send("error: " + err);
@@ -784,6 +765,23 @@ app.post('/addClassification', function(req, res) {
     });
 });
 
+app.post('/addClassificationGroup', function(req, res) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
+        if (err) {
+            return res.send(err);
+        }
+        req.body.classifications.forEach(function(c) {
+            cdesvc.addClassificationToCde(de, c.orgName, c.conceptSystem, c.concept);
+        });        
+        return de.save(function(err) {
+            if (err) {
+                res.send("error: " + err);
+            } else {
+                res.send(de);
+            }
+        });
+    });
+});
 
 app.post('/removeClassification', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
@@ -1042,6 +1040,13 @@ app.get('/mail/messages/:type', function(req, res) {
     mongo_data.getMessages(req, function(err, messages) {
         if (err) res.send(404, err);
         else res.send(messages);
+    });
+});
+
+app.post('/retireCde', function (req, res) {
+    req.action = 'retire';
+    checkCdeOwnership(req.body.de_id, req, function(err, de) {
+        
     });
 });
 
