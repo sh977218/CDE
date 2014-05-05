@@ -9,6 +9,7 @@
                 <i ng-show="user._id" class="fa fa-thumb-tack fa-rotate-90 hand-cursor" ng-click="unpin(board.pins[$index])" title="unPin" id="unpin_{{$index}}"> </i>
             <% } %>
             <i ng-show="showCompareButton(cde)" class="fa fa-plus hand-cursor" ng-click="cdeIconAction(cde,'addToCompareCart',$event)" title="Compare"></i>
+            <span class="pull-right">{{cde.score}}</span>
         </accordion-heading>
         <div class="row">
             <div class="col-md-6">
