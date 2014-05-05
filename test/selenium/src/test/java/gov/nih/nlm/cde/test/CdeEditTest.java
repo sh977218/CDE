@@ -43,13 +43,13 @@ public class CdeEditTest extends NlmCdeBaseTest {
         String cdeName = "Mediastinal Lymph Node Physical Examination Specify";
         goToCdeByName(cdeName);
         findElement(By.cssSelector("i.fa-edit")).click();
-        findElement(By.xpath("//inline-edit/span/span[2]/input")).sendKeys("[name change number 1]");
+        findElement(By.xpath("//span/span[2]/input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector(".fa-check")).click();
         findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']")).click();
-        findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("[def change number 1]");
-        findElement(By.cssSelector("inline-area-edit .fa-check")).click();
-        findElement(By.xpath("//inline-edit[@id = 'uomEdit']//i[@class = 'fa fa-edit']")).click();
-        findElement(By.xpath("//inline-edit[@id = 'uomEdit']//input")).sendKeys("myUom");
+        findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
+        findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
+        findElement(By.xpath("//dd[@id = 'dd_uom']//i[@class = 'fa fa-edit']")).click();
+        findElement(By.xpath("//dd[@id = 'dd_uom']//input")).sendKeys("myUom");
         findElement(By.cssSelector("#dd_uom .fa-check")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
@@ -144,18 +144,20 @@ public class CdeEditTest extends NlmCdeBaseTest {
         String cdeName = "INSS";
         goToCdeByName(cdeName);
         findElement(By.cssSelector("#dd_def .fa-edit")).click();
-        findElement(By.xpath("//inline-area-edit/div/div[2]/textarea")).sendKeys("[def change: adding html characters][<b>bold</b>]");
-        findElement(By.cssSelector("inline-area-edit .fa-check")).click();
+        findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change: adding html characters][<b>bold</b>]");
+        findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("-plaintext"); 
         saveCde();
+
         goToCdeByName(cdeName);   
         Assert.assertTrue(textPresent("<b>bold</b>"));
-        
         findElement(By.cssSelector("#dd_def .fa-edit")).click();
-        findElement(By.cssSelector(".tab-pane:nth-child(1) .definitionFormatRadio button:nth-child(2)")).click();
-        findElement(By.cssSelector("inline-area-edit .fa-check")).click();
+//        findElement(By.cssSelector(".tab-pane:nth-child(1) .definitionFormatRadio button:nth-child(2)")).click();
+        findElement(By.xpath("//dd[@id='dd_def']//button[text() = 'Rich Text']")).click();
+        hangon(2);
+        findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("-html"); 

@@ -16,16 +16,16 @@
      <tbody>
          <tr id="pv-{{$index}}" ng-repeat="pv in cde.valueDomain.permissibleValues">
             <td headers="name" id="pv-{{$index}}">
-                <inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde);"> </inline-edit>
+                <div inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde);"> </div>
             </td>
              <td headers="codeName" id="pvName-{{$index}}">
-                <inline-edit model="pv.valueMeaningName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeheadVsacNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></inline-edit>
+                <div inline-edit model="pv.valueMeaningName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeheadVsacNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
              </td>
              <td headers="code" id="pvCode-{{$index}}">
-                <inline-edit model="pv.valueMeaningCode" is-allowed="isAllowed(cde)" on-ok="stageCde(cde); runDelayedManualValidation();"></inline-edit>
+                <div inline-edit model="pv.valueMeaningCode" is-allowed="isAllowed(cde)" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
              </td>
              <td headers="codeSystem" id="pvCodeSystem-{{$index}}">
-                 <inline-edit model="pv.codeSystemName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeaheadCodeSystemNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></inline-edit>
+                <div inline-edit model="pv.codeSystemName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeaheadCodeSystemNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
              </td>
              <td headers="validation" ng-show="detailedView">
                  <span ng-switch="pv.isValid">
@@ -40,7 +40,7 @@
              </td>
          </tr>
          <tr ng-show="cde.valueDomain.permissibleValues.length == 10">
-             <td colspan="3">See full list in Detailed View</td>
+             <td colspan="6">See full list in Detailed View</td>
          </tr>
      </tbody>
  </table>

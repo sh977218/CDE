@@ -11,15 +11,15 @@
             <dl class="dl-horizontal">
                 <dt>Name: </dt> 
                 <dd id="dd_name_{{$index}}">
-                    <inline-edit id="nameEdit" model="namePair.designation" is-allowed="isAllowed(cde)" on-ok="stageNewName(namePair)"> </inline-edit>
+                    <div inline-edit id="nameEdit" model="namePair.designation" is-allowed="isAllowed(cde)" on-ok="stageNewName(namePair)"> </div>
                 </dd>
                 <dt>Definition: </dt>
                 <dd id="dd_def_{{$index}}">
-                    <inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="namePair.definition" is-allowed="isAllowed(cde)" def-format="namePair.definitionFormat" on-ok="stageNewName(namePair)"> </inline-area-edit>
+                    <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="namePair.definition" is-allowed="isAllowed(cde)" def-format="namePair.definitionFormat" on-ok="stageNewName(namePair)"> </div>
                 </dd>
                 <dt>Context: </dt> 
                 <dd id="dd_context_{{$index}}">
-                    <inline-edit id="nameEdit" model="namePair.context.contextName" is-allowed="isAllowed(cde)" on-ok="stageNewName(namePair)"> </inline-edit>
+                    <div inline-edit id="nameEdit" model="namePair.context.contextName" is-allowed="isAllowed(cde)" on-ok="stageNewName(namePair)"> </div>
                 </dd>
             </dl>
         </div>
