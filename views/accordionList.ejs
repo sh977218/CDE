@@ -1,6 +1,7 @@
-<accordion close-others="false">
-    <accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
-        <accordion-heading>
+<div accordion close-others="false">
+    <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
+        <div accordion-heading>
+            <div>
             <span id="acc_link_{{$index}}" class="hand-cursor">{{cde.naming[0].designation}}</span>   
             <i class="fa fa-eye hand-cursor" ng-click="cdeIconAction(cde,'view',$event)" title="View"></i>
             <% if (ejsPage!="board") { %>
@@ -10,7 +11,8 @@
             <% } %>
             <i ng-show="showCompareButton(cde)" class="fa fa-plus hand-cursor" ng-click="cdeIconAction(cde,'addToCompareCart',$event)" title="Compare"></i>
             <span class="pull-right">{{cde.score}}</span>
-        </accordion-heading>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-6">
                 <%- include cdegeneraldetails.ejs %>
@@ -31,8 +33,8 @@
             <% } %>
             <a ng-show="showCompareButton(cde)" class="btn btn-small btn-default" ng-click="addToCompareCart(cde)" title="Add to Compare List" id="compare_{{$index}}"><i class="fa fa-plus"></i> Compare</a>
        </div>
-    </accordion-group>
-</accordion>
+    </div>
+</div>
 <script type="text/ng-template" id="addToFormModalContent.html">
     <%- include addToFormModal.ejs %>
 </script>
