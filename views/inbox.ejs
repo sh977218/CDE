@@ -94,7 +94,7 @@
     </accordion-group>
 </accordion>
 </script>
-
+<h4 ng-show='mail[mailTypeReceived].length==0 && mail[mailTypeSent].length==0'><center>Your Inbox is empty.</center></h4>
 <div ng-repeat="type in [mailTypeReceived, mailTypeSent]">
     <h3 ng-show="type==mailTypeReceived && mail[type].length>0">Received</h3>
     <h3 ng-show="type==mailTypeSent && mail[type].length>0">Sent</h3>
