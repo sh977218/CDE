@@ -88,7 +88,7 @@
             </div>            
         </div>
         <span ng-show="type==mailTypeReceived">
-            <button ng-controller="MergeApproveCtrl" ng-click="approveMergeMessage(message)" ng-class="{disabled: message.typeMergeRequest.states[0].action==='Approved'}" class="btn btn-sm btn-default" type="button" >Approve & Merge</button>
+            <button ng-controller="MergeApproveCtrl" ng-click="showMergeApproveDialog(message)" ng-class="{disabled: message.typeMergeRequest.states[0].action==='Approved'}" class="btn btn-sm btn-default" type="button" >Approve & Merge</button>
             <span ng-show="message.typeMergeRequest.states[0].action==='Approved'">Approved on {{ message.typeMergeRequest.states[0].date | date:medium }}</span>
         </span>
     </accordion-group>
@@ -101,3 +101,7 @@
     <h3 ng-show="type==mailTypeArchive && mail[type].length>0">Archive</h3>    
    <div ng-include src="'mailTemplate'"></div>
 </div>
+
+<script type="text/ng-template" id="saveCdeModalContent.html">
+    <%- include saveCdeModal.ejs %>
+</script>

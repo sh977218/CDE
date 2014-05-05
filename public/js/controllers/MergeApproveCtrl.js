@@ -1,4 +1,21 @@
-function MergeApproveCtrl($scope, Mail, MergeCdes) {
+function MergeApproveCtrl($scope, $modal, Mail, MergeCdes) {
+    $scope.showMergeApproveDialog = function(message) {
+        var modalInstance = $modal.open({
+            templateUrl: 'saveCdeModalContent.html'
+            , controller: MergeApproveModalCtrl
+            , resolve: {
+                cde: function() {
+                    return message.typeMergeRequest.destination.object;
+                }, user: function() {
+                    return $scope.user;
+                } 
+            }
+        });           
+        modalInstance.result.then(function (newClassification) {
+            $scope.approveMergeMessage(message);
+        });        
+    };    
+    
     $scope.approveMergeMessage = function(message) { 
         MergeCdes.approveMerge(message.typeMergeRequest.source.object, message.typeMergeRequest.destination.object, message.typeMergeRequest.fields, function() {
             $scope.closeMessage(message);
@@ -18,3 +35,18 @@ function MergeApproveCtrl($scope, Mail, MergeCdes) {
         });        
     };      
 }
+
+var MergeApproveModalCtrl = function ($scope, $window, $modalInstance, cde, user) {
+    $scope.cde = cde;
+    $scope.user = user;
+    $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Retired'];
+    $scope.ok = function () {
+        
+    };
+    $scope.ok = function () {
+        $modalInstance.close();
+    };    
+    $scope.cancelSave = function () {
+        $modalInstance.dismiss('cancel');
+    };
+};

@@ -215,7 +215,6 @@ angular.module('resources', ['ngResource'])
                     service.transferFields(service.source, service.destination, field);
                 }
             });
-            service.destination.version = parseInt(service.destination.version)+1;
             service.nrDefinitions = 0;
             DataElement.save(service.destination, function(cde) {
                 service.transferClassifications(cde);
