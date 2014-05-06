@@ -196,8 +196,8 @@ angular.module('resources', ['ngResource'])
     })
     .factory('CDE', function($http) {
         return {
-            archive: function(cde, cb) {              
-                $http.post("/archiveCde", cde).then(function(response) {
+            retire: function(cde, cb) {              
+                $http.post("/retireCde", cde).then(function(response) {
                     cb(response.data);
                 });
             }
@@ -260,11 +260,7 @@ angular.module('resources', ['ngResource'])
             }, callback);
         };
         service.retireSource = function(source, destination, cb) {
-             /*CDE.archive(source, function() {
-                 if (cb) cb();
-             });*/
-            source.registrationState.registrationStatus = "Retired";
-            DataElement.save(source, function(cde) {
+            CDE.retire(source, function() {
                 if (cb) cb();
             });
         }; 

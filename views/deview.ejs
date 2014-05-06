@@ -1,5 +1,6 @@
 <div class="container">
 <div class="alert" ng-show="cde.archived"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is archived.</div> 
+<div class="alert" ng-show="cde.registrationState.registrationStatus=='Retired'"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is retired.</div> 
 <div class="alert" ng-show="cde.registrationState.administrativeStatus=='Retire Candidate'"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is about to be retired.</div> 
 
 <div class="navbar-header">

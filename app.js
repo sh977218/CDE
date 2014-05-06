@@ -204,15 +204,22 @@ app.get('/signup', function(req, res){
 });
 
 function checkCdeOwnership(deId, req, cb) {
-   if (req.isAuthenticated()) {
+    this.userSessionExists = function(req) {
+        return req.user;
+    };
+    this.isCuratorOrAdmin = function(req, de) {
+        return (req.user.orgAdmin && req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
+               || (req.user.orgCurator && req.user.orgCurator.indexOf(de.stewardOrg.name) < 0);
+    };
+    var authorization = this;
+    if (req.isAuthenticated()) {
         mongo_data.cdeById(deId, function (err, de) {
             if (err) {
                 return cb("Data Element does not exist.", null);
             }
-            if (!req.user 
-                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
-                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
-                  ) {
+            if (!authorization.userSessionExists(req)
+               || !authorization.isCuratorOrAdmin(req, de)
+               ) {
                 return cb("You do not own this data element.", null);
             } else {
                 cb(null, de);
@@ -1044,9 +1051,15 @@ app.get('/mail/messages/:type', function(req, res) {
 });
 
 app.post('/retireCde', function (req, res) {
-    req.action = 'retire';
-    checkCdeOwnership(req.body.de_id, req, function(err, de) {
-        
+    mongo_data.cdeById(req.body._id, function(err, cde) {
+        if (err!="") res.send(404, err);
+        if (!cde.registrationState.administrativeStatus === "Retire Candidate") return res.send(409, "CDE is not a Retire Candidate");
+        cde.registrationState.registrationStatus = "Retired";
+        cde.registrationState.registrationStatusSortOrder = 6;
+        cde.registrationState.administrativeStatus = null;
+        cde.save(function() {
+            res.send();
+        });        
     });
 });
 
