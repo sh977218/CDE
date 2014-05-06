@@ -1,7 +1,7 @@
 <div class="container">
 <div class="alert" ng-show="cde.archived"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is archived.</div> 
-<div class="alert" ng-show="cde.registrationState.registrationStatus=='Retired'"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is retired.</div> 
-<div class="alert" ng-show="cde.registrationState.administrativeStatus=='Retire Candidate'"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is about to be retired.</div> 
+<div class="alert" ng-show="cde.registrationState.registrationStatus=='Retired'"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is retired. <span ng-show="cde.registrationState.replacedBy"><a href="#/deview?uuid={{cde.registrationState.replacedBy.uuid}}">Replacement</a></span></div> 
+<div class="alert" ng-show="cde.registrationState.administrativeStatus=='Retire Candidate'"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is about to be retired. <span ng-show="cde.registrationState.replacedBy"><a href="#/deview?uuid={{cde.registrationState.replacedBy.uuid}}">Possible Replacement</a></span></div> 
 
 <div class="navbar-header">
     <span> {{cde.naming[0].designation}}</span>

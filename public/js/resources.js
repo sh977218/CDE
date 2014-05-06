@@ -5,7 +5,7 @@ angular.module('resources', ['ngResource'])
         return $resource('/listboards');
     })
     .factory('DataElement', function($resource) {
-        return $resource('/dataelement/:deId/:type', {deId: '@deId', type: '_id'}, {update: {method: 'PUT'}});
+        return $resource('/dataelement/:deId/:type', {deId: '@deId', type: '_id'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
     })
     .factory('PriorCdes', function($resource) {
         return $resource('/priorcdes/:cdeId', {cdeId: '@cdeId'}, 
@@ -218,13 +218,15 @@ angular.module('resources', ['ngResource'])
                     service.transferFields(service.source, service.destination, field);
                 }
             });
-            DataElement.save(service.destination, function(cde) {
-                service.transferClassifications(cde, function() {
-                    service.retireSource(service.source, service.destination, function() {
-                        if (callback) callback(cde);
-                    });                     
-                });                              
-            });
+            var classif = function(cde) {
+                    service.transferClassifications(cde, function() {
+                        service.retireSource(service.source, service.destination, function() {
+                            if (callback) callback(cde);
+                        });                     
+                    });
+                };
+            if (fields.ids || fields.properties || fields.naming) DataElement.save(service.destination, classif);
+            else classif(service.destination);
         };
         service.transferFields = function(source, destination, type) {
             if (!source[type]) return;

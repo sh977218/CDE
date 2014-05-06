@@ -510,6 +510,7 @@ exports.saveCde = function(req, callback) {
             newDe.registrationState.administrativeNote = req.body.registrationState.administrativeNote;
             newDe.registrationState.unresolvedIssue = req.body.registrationState.unresolvedIssue;
             newDe.registrationState.administrativeStatus = req.body.registrationState.administrativeStatus;
+            newDe.registrationState.replacedBy = req.body.registrationState.replacedBy;
             newDe.dataElementConcept = req.body.dataElementConcept;
             newDe.objectClass = req.body.objectClass;
             newDe.property = req.body.property;
