@@ -24,6 +24,12 @@ configure **elascticsearch.yml**
     * path.work
     * path.logs
     * plugin.mandatory: mapper-attachments, lang-javascript, river-mongodb
+    * cluster.name: yourclustername
+    * node.name: "Your Name"
+    * node.master: true
+    * node.data: true
+    * index.number_of_shards: 1
+    * index.number_of_replicas: 0
 
 ```sh
 $> bin/plugin --install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/1.7.3
