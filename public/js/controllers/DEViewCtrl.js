@@ -1,4 +1,4 @@
-function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, PriorCdes, CdeDiff) {
+function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, PriorCdes, CdeDiff, CdeList) {
     $scope.initialized = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;
@@ -9,24 +9,24 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     $scope.pVTypeheadVsacNameList = [];
     $scope.pVTypeaheadCodeSystemNameList = [];
     
-    $scope.reload = function(deId, cb) {
-        DataElement.get({deId: deId}, function (de) {
+    $scope.reload = function(route, cb) {
+        if (route.cdeId) var query = {deId: route.cdeId, type: '_id'};
+        if (route.uuid) var query = {deId: route.uuid, type: 'uuid'};
+        DataElement.get(query, function (de) {
            $scope.cde = de;          
            $scope.loadValueSet();
            $scope.initialized = true;
            $scope.canLinkPvFunc();
            $scope.loadMlt();
            $scope.loadBoards();      
-           $scope.getPVTypeaheadCodeSystemNameList();   
-        });
-        
-        PriorCdes.getCdes({cdeId: deId}, function(dataElements) {
-            $scope.priorCdes = dataElements;
-        }); 
-        
+           $scope.getPVTypeaheadCodeSystemNameList(); 
+            PriorCdes.getCdes({cdeId: de._id}, function(dataElements) {
+                $scope.priorCdes = dataElements;
+            });                
+        });       
     };
     
-    $scope.reload($routeParams.cdeId);
+    $scope.reload($routeParams);
 
     var indexedConceptSystemClassifications = [];
     $scope.classificationToFilter = function() {

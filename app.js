@@ -497,7 +497,7 @@ app.get('/priorcdes/:id', function(req, res) {
     cdesvc.priorCdes(req, res);
 });
 
-app.get('/dataelement/:id', function(req, res) {
+app.get('/dataelement/:id/:type', function(req, res) {
     cdesvc.show(req, res);
 });
 

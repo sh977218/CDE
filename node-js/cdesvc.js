@@ -136,10 +136,12 @@ exports.priorCdes = function(req, res) {
 
 exports.show = function(req, res) {
     var cdeId = req.params.id;
-    
+    var type = req.params.type;
     if (!cdeId) {
         res.send("No Data Element Id");
-    } else {
+        return;
+    }
+    if (type!=='uuid') {
         mongo_data.cdeById(cdeId, function(err, cde) {
             // Following have no callback because it's no big deal if it fails.
             // So create new thread and move on.
@@ -149,8 +151,12 @@ exports.show = function(req, res) {
                mongo_data.addToViewHistory(cde, req.user);
             };
             res.send(cde); 
-        });
-    }
+        }); 
+    } else {
+        mongo_data.cdesByUuidList([cdeId], function(err, cdes) {
+            res.send(cdes[0]);
+        });    
+    }    
 };
 
 exports.linktovsac = function(req, res) {

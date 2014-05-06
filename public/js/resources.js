@@ -5,7 +5,7 @@ angular.module('resources', ['ngResource'])
         return $resource('/listboards');
     })
     .factory('DataElement', function($resource) {
-        return $resource('/dataelement/:deId', {deId: '@deId'}, {update: {method: 'PUT'}});
+        return $resource('/dataelement/:deId/:type', {deId: '@deId', type: '_id'}, {update: {method: 'PUT'}});
     })
     .factory('PriorCdes', function($resource) {
         return $resource('/priorcdes/:cdeId', {cdeId: '@cdeId'}, 
