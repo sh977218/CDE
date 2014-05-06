@@ -138,25 +138,33 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
        $scope.filter.and.push({or: lowRegStatusOrCuratorFilter});
        
        queryStuff.query.bool.must = [];
-
-        queryStuff.query.bool.must.push({
-            function_score: {
-                boost_mode: "replace"
-                , script_score: {
-                    script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value"
-//                    script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value))"
-                }
-            }
-        });
+       
+       var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
+       
+       queryStuff.query.bool.must.push({
+          dis_max: {
+              queries: [
+                  {function_score: {boost_mode: "replace", script_score: {script: script}}}
+              ]
+          } 
+       });
         
        if (searchQ !== undefined && searchQ !== "") {
-            queryStuff.query.bool.must[0].function_score.query =
+            queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
                 {
                     query_string: {
-                        fields: ["_all", "naming.designation^3"]
-                        , query: searchQ
+                        query: searchQ
                     }
                 };
+            queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {boost_mode: "replace", script_score: {script: script}}});
+            queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query = 
+            {
+                query_string: {
+                    fields: ["naming.designation^5", "naming.definition^2"]
+                    , query: searchQ
+                }
+            };
+            queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2.5";
         }
                
         if ($scope.selectedOrg !== undefined) {
@@ -180,14 +188,14 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             queryStuff.facets.groups = {
                 terms: {field: "classification.elements.name", size: 200}
                 , facet_filter: {and: [{term: {"classification.stewardOrg.name": $scope.selectedOrg}}, {or: lowRegStatusOrCuratorFilter}]}
-            }
+            };
             queryStuff.facets.concepts = {
                 terms: {field: "classification.elements.elements.name", size: 300}
                 , facet_filter: {and: [{
                     term: {"classification.stewardOrg.name": $scope.selectedOrg}
                 }, {or: lowRegStatusOrCuratorFilter}]}
             }                
-        }
+        };
 
         if ($scope.filter !== undefined) {
             if ($scope.filter.and !== undefined) {
@@ -210,6 +218,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
 
         var from = ($scope.currentPage - 1) * $scope.resultPerPage;
         queryStuff.from = from;
+        console.log(queryStuff);
         return callback({query: queryStuff});
     };
 
