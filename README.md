@@ -18,6 +18,8 @@
 $> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.7.tar.gz
 ```
 
+**Note:** Get the latest version of elasticsearch
+
 configure **elascticsearch.yml** 
 
     * path.data
@@ -50,6 +52,8 @@ Install mapper attachment plugin
 $> bin/plugin -install elasticsearch/elasticsearch-mapper-attachments/1.6.0
 ```
 
+**Note:** Get the latest version of the plugins at: http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/modules-plugins.html
+
 ## Configure
 
 Set these environment variables:
@@ -62,7 +66,7 @@ LOGDIR=
 ELASTIC_URI=
 ```
 
-It's also possible to set the variables in envconfig.js
+It's also possible to create a file called envconfig.js in your cde project root directory.
 
 ```javascript
 var envconfig = {
@@ -83,6 +87,9 @@ var envconfig = {
 ```sh
 $> mongod --replSet rs0
 ```
+
+**Note:** If you run mongod with no data and with the replSet option, you might get this error "replSet can't get local.system.relpSet config from self or any seed (EMPTYCONFIG)".  
+To solve this, run command "rs.initiate()" from mongo.
 
 With **ElasticSearch** running, execute the following to create an index:
 
@@ -121,6 +128,12 @@ curl -XPOST "localhost:9200/_aliases" -d'
 ```
 
 This will create an alias so that, when needed, a new index can be created in parallel, and the alias can be modified after indexing is complete. 
+
+## Run Node from the cde project directory
+
+```sh
+$> node app
+```
 
 ## Test
 
