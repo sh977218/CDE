@@ -28,7 +28,8 @@ DBCollection orgColl = db.getCollection("orgs");
 
 println "NINDS Ingester"
 
-Classifications classifications = new Classifications(orgColl);
+@Field Classifications classifications;
+classifications = new Classifications(orgColl);
 
 static def String getCellValue(Cell cell) {
    if(cell == null) {
@@ -296,20 +297,28 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     newDE.put("properties", properties);
     newDE.put("ids", ids);
     
-    newDE;
+    // Population Classification
+    def pops = getCellValue(row.getCell(xlsMap.population)).split(";");
+    for (pop in pops) {
+        def classifToAdd = classifications.buildMultiLevelClassif("NINDS", "Population", pop);
+        classifications.addClassifToDe(classifToAdd, newDE);
+        classifications.addClassifToOrg(classifToAdd);
+    }
     
+    newDE;
 }
 
-    XSSFWorkbook book = new XSSFWorkbook(args[0]);
-    XSSFSheet[] sheets = book.sheets;    
-    XSSFSheet sheet = book.getSheet("Sheet1");
-    int max = sheet.getLastRowNum();
-    for (int i = 1; i < max + 1; i++) {
-        println (i + " / " + max);
-        BasicDBObject newDE1 = ParseRow(sheet.getRow(i), xlsMap);
-        if (newDE1!=null) {
-            deColl.insert(newDE1);
-        }
+
+XSSFWorkbook book = new XSSFWorkbook(args[0]);
+XSSFSheet[] sheets = book.sheets;    
+XSSFSheet sheet = book.getSheet("Sheet1");
+int max = sheet.getLastRowNum();
+for (int i = 1; i < max + 1; i++) {
+    println (i + " / " + max);
+    BasicDBObject newDE1 = ParseRow(sheet.getRow(i), xlsMap);
+    if (newDE1!=null) {
+        deColl.insert(newDE1);
     }
-    println("Ingestion Complete");
+}
+println("Ingestion Complete");
 

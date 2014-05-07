@@ -11,6 +11,26 @@ public class Classifications {
     public Classifications(DBCollection org){
         orgColl = org;
     }
+    
+    def addClassifToOrg = { newClassif ->
+        def orgObject = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
+        if (orgObject == null) {
+            println("Missing Org: " + newClassif.get("stewardOrg").get("name")+"\nCreating new one.");
+            def newOrg = new BasicDBObject();
+            newOrg.put("name",newClassif.get("stewardOrg").get("name"));
+            orgColl.insert(newOrg);
+            orgObject = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
+        }            
+        def foundOrg = orgObject;    
+
+        if (foundOrg.get("classifications") == null) {
+            foundOrg.put("classifications", []);
+        }
+//                addElement(classif.get("elements").get(0), deClassif.get("elements"))
+        addElement(newClassif.get("elements").get(0), foundOrg.get("classifications"));
+        orgColl.update(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")), foundOrg);
+    }
+    
     def saveClassif = { newClassif ->
         def orgObject = orgColl.findOne(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")));
         if (orgObject == null) {
@@ -90,6 +110,61 @@ public class Classifications {
         stewardClassification.put("stewardOrg", new BasicDBObject("name", stewardOrgName));
         stewardClassification.put("elements",stewardClassificationsArray);
         stewardClassification;
-    }        
+    } 
+    
+    def BasicDBObject buildMultiLevelClassif(String orgName, String... elements) {
+        if (elements.size() == 0) return null;
+        BasicDBObject result = new BasicDBObject();
+        result.put("stewardOrg", new BasicDBObject("name", orgName));
+
+        def currentElt = result;
+        for (elt in elements) {
+            BasicDBObject eltObj = new BasicDBObject("name", elt.trim());
+            currentElt.put("elements", []);
+            currentElt.get("elements").add(eltObj);
+            currentElt = eltObj;
+        }
+        
+        result;
+    }
+
+    def addElement = {eltToAdd, target ->
+        def foundName = false;
+        for (targetElt in target) {
+            if (targetElt.get("name").equals(eltToAdd.get("name"))) {
+                foundName = true;
+                println "eltToAdd " + eltToAdd
+                println "targetElt" + targetElt
+                if (eltToAdd.get("elements") != null) {
+                    addElement(eltToAdd.get("elements").get(0), targetElt.get("elements"));
+                }
+            }
+        }
+        if (foundName == false) {
+            target.add(eltToAdd);
+        }
+    }
+    
+    def addClassifToDe = {classif, de ->
+        def orgName = classif.get("stewardOrg").get("name");
+        
+        def allClassifs = de.get("classification");
+        if (allClassifs == null) {
+            allClassifs = [];
+            de.put("classification", allClassifs);
+        }
+        
+        def orgFound = false;
+        for (deClassif in allClassifs) {
+            if (deClassif.get("stewardOrg").get("name").equals(orgName)) {
+                orgFound = true;
+                addElement(classif.get("elements").get(0), deClassif.get("elements"))
+            }
+        }
+        if (!orgFound) {
+            allClassifs.add(classif);
+        }
+        
+    }
     
 }
