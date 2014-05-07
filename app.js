@@ -923,12 +923,6 @@ app.post('/removeUsedBy', function(req, res) {
     });
 });
 
-app.post('/archiveCde', function(req, res) {
-    mongo_data.archiveCde(req.body, function(messages) {
-        res.send(messages);
-    });
-});
-
 app.get('/orgNames', function(req, res) {
    mongo_data.orgNames(function (err, names) {
        res.send(names);
@@ -1055,8 +1049,7 @@ app.post('/retireCde', function (req, res) {
         if (err!="") res.send(404, err);
         if (!cde.registrationState.administrativeStatus === "Retire Candidate") return res.send(409, "CDE is not a Retire Candidate");
         cde.registrationState.registrationStatus = "Retired";
-        cde.registrationState.registrationStatusSortOrder = 6;
-        cde.registrationState.administrativeStatus = null;
+        delete cde.registrationState.administrativeStatus;
         cde.save(function() {
             res.send();
         });        

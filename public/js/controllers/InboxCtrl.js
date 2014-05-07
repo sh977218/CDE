@@ -1,9 +1,9 @@
 function InboxCtrl($scope, Mail, CdeList) {
     $scope.mailTypeReceived = "received";
     $scope.mailTypeSent = "sent";
-    $scope.mailTypeArchive = "archive";
+    $scope.mailTypeArchived = "archived";
     
-    $scope.mail = {received: [], sent: [], archive:[]};
+    $scope.mail = {received: [], sent: [], archived:[]};
     $scope.getMail = function(type) {
         Mail.getMail($scope.user, type, function(mail) {
             $scope.mail[type] = mail;
@@ -12,7 +12,7 @@ function InboxCtrl($scope, Mail, CdeList) {
     };
     $scope.getMail($scope.mailTypeReceived);
     $scope.getMail($scope.mailTypeSent);
-    $scope.getMail($scope.mailTypeArchive);
+    $scope.getMail($scope.mailTypeArchived);
     
     $scope.fetchMRCdes = function(type) {           
         var uuidList = $scope.mail[type].map(function(m) {return m.typeMergeRequest.source.uuid;});

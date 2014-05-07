@@ -99,19 +99,6 @@ cdeApp.filter('placeholdEmpty', function() {
     };
 });
 
-cdeApp.directive('yesNoCheckbox', function() {
-    return {
-        template: '<div class="btn-group">\
-                <button type="button" class="btn btn-default btn-xs" ng-model="model" btn-radio="true">Yes</button>\
-                <button type="button" class="btn btn-default btn-xs" ng-model="model" btn-radio="false">No</button>\
-            </div>',
-        restrict: 'E',
-        scope: {
-            model: '='
-        }
-    };
-});
-
 cdeApp.filter('bytes', function() {
 	return function(bytes, precision) {
 		if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';

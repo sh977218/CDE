@@ -613,7 +613,7 @@ exports.getMessages = function(req, callback) {
                 ]
             };
             break; 
-        case "archive":
+        case "archived":
             var query = {
                 $and: [
                     {
