@@ -144,7 +144,6 @@ var deJsonSchema = {
                 , elements: [csEltSchema]
             }
         ]
-    , classificationBoost: Number
     , formUsageCounter: Number
     , properties: [
         {key: String, value: String}
@@ -256,10 +255,7 @@ var regStatusSortMap = {
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 
 schemas.dataElementSchema.pre('save', function(next) {
    this.registrationState.registrationStatusSortOrder = regStatusSortMap[this.registrationState.registrationStatus]; 
-   
-   this.classificationBoost = classification.calculateBoost(this);
- 
-   
+
    next();
 });
 
