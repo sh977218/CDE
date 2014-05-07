@@ -579,18 +579,6 @@ exports.updateMessage = function(msg, cb) {
 exports.getMessages = function(req, callback) {
    switch (req.params.type) {
        case "received":
-            /*var query = {
-                $or: [
-                    {
-                        "recipient.recipientType":"stewardOrg"
-                        , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
-                    }
-                    , {
-                        "recipient.recipientType":"user"
-                        , "recipient.name": req.user.username
-                    }
-                ]
-            };*/
             var query = {
                 $and: [
                     {
