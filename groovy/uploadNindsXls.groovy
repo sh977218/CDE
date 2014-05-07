@@ -119,6 +119,18 @@ static def String getCellValue(Cell cell) {
     , previousTitle: 59
 ];
 
+def addClassification = {classifications, type, subtype, value -> 
+    if (!getCellValue(row.getCell(value)).equals("")) {
+        def cls = new ArrayList<String>();
+        cls.add(type);
+        cls.add(subtype)
+        cls.addAll(getCellValue(row.getCell(value)).split("\\."));
+        def classifToAdd = classifications.buildMultiLevelClassif("NINDS", cls.toArray(new String[cls.size()]));
+        classifications.addClassifToDe(classifToAdd, newDE);
+        classifications.addClassifToOrg(classifToAdd);
+    }
+}
+
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     BasicDBObject newDE = new BasicDBObject();
     
@@ -305,16 +317,46 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
         classifications.addClassifToOrg(classifToAdd);
     }
     
-    // General Domain
-    if (!getCellValue(row.getCell(xlsMap.generalDomain)).equals("")) {
-        def cls = new ArrayList<String>();
-        cls.add("Disease");
-        cls.add("General (For all diseases)")
-        cls.addAll(getCellValue(row.getCell(xlsMap.generalDomain)).split("\\."));
-        def classifToAdd = classifications.buildMultiLevelClassif("NINDS", cls.toArray(new String[cls.size()]));
-        classifications.addClassifToDe(classifToAdd, newDE);
-        classifications.addClassifToOrg(classifToAdd);
-    }
+    
+    
+    addClassification(classifications, "Disease", "General (For all diseases)", xlsMap.generalDomain);
+    addClassification(classifications, "Disease", "Traumatic Brain Injury", xlsMap.tbiDomain);
+    addClassification(classifications, "Disease", "Parkinson's Disease", xlsMap.parkinsonDomain);
+    addClassification(classifications, "Disease", "Friedreich's Ataxia", xlsMap.ataxiaDomain);
+    addClassification(classifications, "Disease", "Stroke", xlsMap.strokeDomain);
+    addClassification(classifications, "Disease", "Amyotrophic Lateral Sclerosis", xlsMap.alsDomain);
+    addClassification(classifications, "Disease", "Huntington's Disease", xlsMap.huntingtonDomain);
+    addClassification(classifications, "Disease", "Multiple Sclerosis", xlsMap.msDomain);
+    addClassification(classifications, "Disease", "Neuromuscular Disease", xlsMap.neuromuscDomain);
+    addClassification(classifications, "Disease", "Myasthenia Gravis", xlsMap.myastheniaDomain);
+    addClassification(classifications, "Disease", "Spinal Muscular Atrophy", xlsMap.spinalDomain);
+    addClassification(classifications, "Disease", "Duchenne Muscular Dystrophy/Becker Muscular Dystrophy", xlsMap.duchenneDomain);
+    addClassification(classifications, "Disease", "Congenital Muscular Dystrophy", xlsMap.congenitalDomain);
+    addClassification(classifications, "Disease", "Spinal Cord Injury", xlsMap.spinalCordInjuryDomain);
+    addClassification(classifications, "Disease", "Headache", xlsMap.headacheDomain);
+    addClassification(classifications, "Disease", "Epilepsy", xlsMap.epilepsyDomain);
+
+    
+    , generalClassif: 40
+    , acuteHospClassif: 41
+    , concussionClassif: 42
+    , epidemiologyClassif: 43
+    , modTbiClassif: 44
+    , parkinsonClassif: 45
+    , friedrichClassif: 46
+    , strokeClassif: 47
+    , alsClassif: 48
+    , huntingtonClassif: 49
+    , msClassif: 50
+    , neuroClassif: 51
+    , myastheniaClassif: 52
+    , spinalMuscAtrophClassif: 53
+    , duchenneClassif: 54
+    , congenitalClassif: 55
+    , spinalCordInjuryClassif: 56
+    , headacheClassif: 57
+    , epilepsy: 58
+    
     
     newDE;
 }
