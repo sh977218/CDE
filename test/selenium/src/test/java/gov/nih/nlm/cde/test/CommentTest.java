@@ -44,6 +44,7 @@ public class CommentTest extends NlmCdeBaseTest {
                 findElement(By.id("removeComment-" + i)).click();
                 i = length;
                 Assert.assertTrue(textPresent("Comment removed"));
+                hangon(1);
                 Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(commentText) < 0);
             }
         }
