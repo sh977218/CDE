@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var ObjectId = require('mongodb').ObjectId;
-var classification = require('./classification')
 var schemas = {};
 
 var conceptSchema = mongoose.Schema({

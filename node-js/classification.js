@@ -21,13 +21,3 @@ exports.addElement = function (conceptSystem, concept) {
     conceptSystem.elements.push(newConcept);                    
     return {index:0, object: conceptSystem.elements[conceptSystem.elements.length-1]};
 };
-exports.calculateBoost = function(de) {
-  var size = de.classification.length;
-  var result = 1;
-  if (size > 10) {
-      result = 2.1;
-  } else {
-      result = 0.1 + 0.2 * size;
-  }
-  return result;
-};
