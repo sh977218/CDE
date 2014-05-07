@@ -12,51 +12,56 @@
     </ul>
 </div>
 
-<tabset>
-   <tab heading="General Details">
+<div tabset>
+   <div tab heading="General Details">
         <%- include cdegeneraldetails.ejs %>
         <hr/>
         <%- include cdespecificdetails.ejs %>
-    </tab>
-   <tab heading="Permissible Values" href="#">
+    </div>
+   <div tab heading="Permissible Values" href="#">
         <%- include valueDomainView.ejs %>
-   </tab>
-    <tab heading="Naming">
+   </div>
+    <div tab heading="Naming">
         <%- include deNaming.ejs %>
-    </tab>
-    <tab heading="Classification">
+    </div>
+    <div tab heading="Classification">
         <%- include deClassification.ejs %>
+<<<<<<< HEAD
     </tab>
     <tab heading="Concepts">
+=======
+    </div>
+    <div tab heading="Concepts">
+>>>>>>> eeb05223fb7666342ece24110dd92852adbb527d
         <%- include concepts.ejs %>
-   </tab>
-    <tab heading="Status">
+   </div>
+    <div tab heading="Status">
         <%- include deStatus.ejs %>
-    </tab>
-    <tab heading="Properties">
+    </div>
+    <div tab heading="Properties">
         <%- include deProperties.ejs %>
-    </tab>
-    <tab heading="Identifiers">
+    </div>
+    <div tab heading="Identifiers">
         <%- include deIds.ejs %>
-    </tab>
-    <tab heading="Discussions">
+    </div>
+    <div tab heading="Discussions">
         <%- include deDiscussions.ejs %>
-    </tab>
-    <tab heading="Boards">
+    </div>
+    <div tab heading="Boards">
         <h4>Boards this Data Element is in</h4>
         <%- include listOfBoards.ejs %>
-    </tab>
-    <tab heading="Attachments">
+    </div>
+    <div tab heading="Attachments">
         <%- include deAttachments.ejs %>
-    </tab>
-    <tab heading="More Like This">
+    </div>
+    <div tab heading="More Like This">
         <%- include deMlt.ejs %>
-    </tab>
-    <tab heading="History">
+    </div>
+    <div tab heading="History">
         <%- include cdeHistory.ejs %>
-    </tab>
+    </div>
 
-</tabset>
+</div>
 
 <hr/>
 
