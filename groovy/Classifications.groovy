@@ -26,7 +26,6 @@ public class Classifications {
         if (foundOrg.get("classifications") == null) {
             foundOrg.put("classifications", []);
         }
-//                addElement(classif.get("elements").get(0), deClassif.get("elements"))
         addElement(newClassif.get("elements").get(0), foundOrg.get("classifications"));
         orgColl.update(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")), foundOrg);
     }
@@ -133,8 +132,6 @@ public class Classifications {
         for (targetElt in target) {
             if (targetElt.get("name").equals(eltToAdd.get("name"))) {
                 foundName = true;
-                println "eltToAdd " + eltToAdd
-                println "targetElt" + targetElt
                 if (eltToAdd.get("elements") != null) {
                     addElement(eltToAdd.get("elements").get(0), targetElt.get("elements"));
                 }

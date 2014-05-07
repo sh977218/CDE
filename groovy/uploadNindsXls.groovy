@@ -305,6 +305,17 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
         classifications.addClassifToOrg(classifToAdd);
     }
     
+    // General Domain
+    if (!getCellValue(row.getCell(xlsMap.generalDomain)).equals("")) {
+        def cls = new ArrayList<String>();
+        cls.add("Disease");
+        cls.add("General (For all diseases)")
+        cls.addAll(getCellValue(row.getCell(xlsMap.generalDomain)).split("\\."));
+        def classifToAdd = classifications.buildMultiLevelClassif("NINDS", cls.toArray(new String[cls.size()]));
+        classifications.addClassifToDe(classifToAdd, newDE);
+        classifications.addClassifToOrg(classifToAdd);
+    }
+    
     newDE;
 }
 
