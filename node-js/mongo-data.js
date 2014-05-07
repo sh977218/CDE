@@ -6,7 +6,6 @@
     , Grid = require('gridfs-stream')
     , fs = require('fs')
     , envconfig = require('../envconfig')
-    , classification = require('./classification')
     ;
 
 var mongoUri = process.env.MONGO_URI || envconfig.mongo_uri || 'mongodb://localhost/nlmcde';
