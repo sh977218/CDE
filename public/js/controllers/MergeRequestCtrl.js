@@ -19,14 +19,14 @@ function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, Me
                     dat.mergeRequest.source.object.registrationState.replacedBy = {uuid: $scope.cdes[($scope.retiredIndex + 1) % 2].uuid};
                     DataElement.save(dat.mergeRequest.source.object, function(cde) {   
                         $window.location.href = "/#/deCompare";
-                        $scope.addAlert("success", "Merge Request sent for approval!");
+                        $scope.addAlert("success", "Merge request sent");
                     });                
                 });            
             } else {
                 var gotoNewElement = function(mr) {
                     MergeCdes.approveMerge(mr.source.object, mr.destination.object, mr.fields, function(cde) {                                        
                         $window.location.href = "/#/deview?cdeId=" + cde._id;
-                        $scope.addAlert("success", "CDEs successfully merged!");
+                        $scope.addAlert("success", "CDEs successfully merged");
                     }); 
                 };
                 if (dat.approval.ownDestinationCde) {
