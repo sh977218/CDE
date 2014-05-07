@@ -268,6 +268,4 @@ angular.module('resources', ['ngResource'])
         }; 
         return service;
     })
-    
-    
     ;

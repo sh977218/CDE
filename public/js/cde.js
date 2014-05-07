@@ -32,7 +32,7 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
                         '</span>' +       
                     '</span>'
                 ,
-        restrict: 'E',
+        restrict: 'AE',
         scope: {
             model: '='
             , isAllowed: '&'
@@ -55,12 +55,12 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
                             '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="\'html\'">Rich Text</button>' +
                             '   </div>' +                            
                             '   <textarea ng-show="defFormat!=\'html\'" ng-model="value" class="form-control"></textarea>' +  
-                            '   <text-angular ng-show="defFormat==\'html\'" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ></text-angular>' +                             
+                            '   <div text-angular ng-show="defFormat==\'html\'" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ></div>' +                             
                             '   <button class="fa fa-check" ng-click="model = value;editMode = false; onOk();">Confirm</button>' + 
                             '   <button class="fa fa-times" ng-click="editMode = false">Cancel</button>' + 
                             '</div>       ' + 
                         '</div>',
-            restrict: 'E',
+            restrict: 'AE',
             scope: {
                 model: '='
                 , isAllowed: '&'

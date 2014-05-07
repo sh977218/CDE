@@ -28,8 +28,7 @@ function BoardViewCtrl($scope, $routeParams, $http) {
     }; 
         
     $scope.unpin = function(pin) {
-        //TODO - use angular $resource
-        $http.get("/pincde/" + pin._id + "/" + $scope.board._id).then(function(response) {
+        $http['delete']("/pincde/" + pin._id + "/" + $scope.board._id).then(function(response) {
             $scope.reload();
         });
     };

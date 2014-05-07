@@ -288,5 +288,4 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             delete $scope.selectedSubGroup;
         }        
     };     
-   
 }
