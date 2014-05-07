@@ -23,11 +23,13 @@ function MergeModalCtrl($scope, $modalInstance, cdes, retiredIndex, user) {
     $scope.sendMergeRequest = function() {
         $modalInstance.close({mergeRequest:$scope.mergeRequest, recipient: $scope.target.stewardOrg.name, author: user.username, approval: $scope.approvalNecessary()});
     };
+    $scope.showApprovalAlert = function() {
+        return $scope.approvalNecessary().fieldsRequireApproval && !$scope.approvalNecessary().ownDestinationCde;
+    };
     $scope.approvalNecessary = function() {
         return {
             fieldsRequireApproval: $scope.mergeRequest.fields.ids || $scope.mergeRequest.fields.naming || $scope.mergeRequest.fields.properties || $scope.mergeRequest.fields.attachments,
             ownDestinationCde: user.orgAdmin.concat(user.orgCurator).indexOf($scope.mergeRequest.destination.object.stewardOrg.name)>-1 
         };
-            //return fieldsRequireApproval && !ownDestinationCde;
     };
 }

@@ -8,17 +8,21 @@ import java.util.ArrayList;
 
 public class MergeTest extends NlmCdeBaseTest {
     
+    private void checkEverything() {
+        findElement(By.cssSelector("[ng-model='mergeRequest.fields.ids']")).click();  
+        findElement(By.cssSelector("[ng-model='mergeRequest.fields.attachments']")).click();  
+        findElement(By.cssSelector("[ng-model='mergeRequest.fields.properties']")).click();  
+        findElement(By.cssSelector("[ng-model='mergeRequest.fields.naming']")).click();     
+    }
+    
     private void createMergeRequest() { 
-        loginAs(cabigAdmin_username, cabigAdmin_password);
+        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
         addToCompare("Smoking Cessation Other Method Specify Text", "Smoking History Ind");
         findElement(By.linkText("Retire & Merge")).click();  
         modalHere();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Smoking Cessation Other Method Specify Text")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Smoking History Ind")));
-        findElement(By.cssSelector("[ng-model='mergeRequest.fields.ids']")).click();  
-        findElement(By.cssSelector("[ng-model='mergeRequest.fields.attachments']")).click();  
-        findElement(By.cssSelector("[ng-model='mergeRequest.fields.properties']")).click();  
-        findElement(By.cssSelector("[ng-model='mergeRequest.fields.naming']")).click();  
+        checkEverything();
         findElement(By.cssSelector("[ng-click='sendMergeRequest()']")).click(); 
         hangon(1);
     }
@@ -29,8 +33,7 @@ public class MergeTest extends NlmCdeBaseTest {
     }
     
     private void acceptMergeRequest() {
-        logout();
-        loginAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         gotoInbox();
         findElement(By.cssSelector(".accordion-toggle")).click();  
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Smoking Cessation Other Method Specify Text")));
@@ -60,13 +63,45 @@ public class MergeTest extends NlmCdeBaseTest {
         driver.close();
         driver.switchTo().window(tabs2.get(i));
     }
+    
+    @Test
+    public void mergeMineMineEverything() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        addToCompare("Common Toxicity Criteria Adverse Event Colitis Grade", "Common Toxicity Criteria Adverse Event Short Name Type");
+        findElement(By.id("retireMerge-0")).click();   
+        Assert.assertTrue(textPresent("Common Toxicity Criteria Adverse Event Colitis Grade"));
+        checkEverything();
+        findElement(By.id("sendMergeRequest")).click();
+        findElement(By.cssSelector("[ng-model='cde.version']")).sendKeys(".2");
+        findElement(By.cssSelector("#confirmSave")).click(); 
+        findElement(By.linkText("Naming")).click();
+        Assert.assertTrue(textPresent("Common Toxicity Criteria Adverse Event Colitis Grade"));
+        findElement(By.linkText("Classification")).click();
+        Assert.assertTrue(textPresent("Common Terminology Criteria for Adverse Events v3.0"));
+        findElement(By.linkText("Identifiers")).click();
+        Assert.assertTrue(textPresent("2005490"));        
+    }    
+    
+    @Test
+    public void mergeMineTheirsClassificationsOnly() {
+        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        addToCompare("Diagnosis Change Date java.util.Date", "Form Element End Date java.util.Date");
+        findElement(By.linkText("Retire & Merge")).click();  
+        modalHere();    
+        Assert.assertTrue(textPresent("Diagnosis Change Date"));
+        Assert.assertTrue(textPresent("Form Element End Date"));
+        findElement(By.cssSelector("[ng-click='sendMergeRequest()']")).click();
+        findElement(By.linkText("Classification")).click();
+        Assert.assertTrue(textPresent("caBIG"));
+        Assert.assertTrue(textPresent("caLIMS2"));      
+        Assert.assertTrue(textPresent("gov.nih.nci.calims2.domain.inventory"));    
+    }    
   
     @Test
-    public void merge() {
+    public void mergeMineTheirsEverything() {
         createMergeRequest();
         acceptMergeRequest();
-        checkResult();
-        
+        checkResult();        
     }
 
 }

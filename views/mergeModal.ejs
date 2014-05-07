@@ -32,13 +32,13 @@
     </div>
 </div>
 
-<div  ng-show="approvalNecessary()" class="alert alert-warning">
+<div  ng-show="showApprovalAlert()" class="alert alert-warning">
     <div class=""><i class="fa fa-exclamation-triangle"></i> The action will require an approval.</div>
 </div>
 
 <div class="modal-footer">
     <button class="btn btn-default cancel" ng-click="cancel()">Cancel</button>
-    <button class="btn btn-warning cancel" ng-click="sendMergeRequest()">Retire & Merge</button>
+    <button class="btn btn-warning cancel" ng-click="sendMergeRequest()" id="sendMergeRequest">Retire & Merge</button>
 </div>
 
 
