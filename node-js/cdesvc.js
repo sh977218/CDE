@@ -144,7 +144,6 @@ exports.show = function(req, res) {
             // So create new thread and move on.
             mongo_data.incDeView(cde); 
             if (req.isAuthenticated()) {
-                console.log("add");
                mongo_data.addToViewHistory(cde, req.user);
             };
             res.send(cde); 

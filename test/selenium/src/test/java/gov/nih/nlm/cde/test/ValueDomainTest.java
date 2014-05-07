@@ -88,9 +88,9 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click(); 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pv-0']/inline-edit/span/span[1]/i")));
-        findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[1]/i")).click();
-        findElement(By.xpath("//td[@id='pv-0']/inline-edit/span/span[2]/input")).sendKeys(" added to pv");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pv-0']/span/span[1]/i")));
+        findElement(By.cssSelector("#pv-0 .fa-edit")).click();
+        findElement(By.cssSelector("#pv-0 input")).sendKeys(" added to pv");
         findElement(By.cssSelector("#pv-0 .fa-check")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Changed PV");
@@ -111,9 +111,9 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Right Middle Abdomen"));
         findElement(By.id("pvRemove-8")).click();
         findElement(By.id("addPv")).click();
-        findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[1]/i")).click();
-        findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[2]/input")).clear();
-        findElement(By.xpath("//td[@id='pv-10']/inline-edit/span/span[2]/input")).sendKeys("New PV");
+        findElement(By.xpath("//td[@id='pv-10']//i")).click();
+        findElement(By.xpath("//td[@id='pv-10']//input")).clear();
+        findElement(By.xpath("//td[@id='pv-10']//input")).sendKeys("New PV");
         findElement(By.cssSelector("#pv-10 .fa-check")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Changed PV");
