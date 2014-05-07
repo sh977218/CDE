@@ -205,6 +205,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         findElement(By.linkText(cdeName1)).click();
         hangon(.5);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
         findElement(By.id("compare_0")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         Assert.assertTrue(textPresent("Compare ( 1 )"));
