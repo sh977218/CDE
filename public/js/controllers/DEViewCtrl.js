@@ -67,7 +67,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     }; 
     
     $scope.revert = function(cde) {
-        $scope.reload(cde._id);
+        $scope.reload({cdeId: cde._id});
     };
     
     $scope.viewDiff = function (cde) {
