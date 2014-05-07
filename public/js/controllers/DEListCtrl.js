@@ -218,7 +218,6 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
 
         var from = ($scope.currentPage - 1) * $scope.resultPerPage;
         queryStuff.from = from;
-        console.log(queryStuff);
         return callback({query: queryStuff});
     };
 
