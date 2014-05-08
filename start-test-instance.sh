@@ -10,7 +10,8 @@ export ELASTIC_URI=http://localhost:9200/cdetest/
 
 mongo test test/dbInit.js
 
-groovy -cp ./groovy/ groovy/UploadCadsr test/cadsrTestSeed.xml --testMode
+groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml --testMode
+groovy -cp ./groovy/ groovy/UploadNindsXls test/data/ninds-test.xlsx
 
 sleep 3;
 
