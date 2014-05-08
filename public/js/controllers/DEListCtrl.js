@@ -177,14 +177,14 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             queryStuff.facets.groups = {
                 terms: {field: "classification.elements.name", size: 200}
                 , facet_filter: {and: [{term: {"classification.stewardOrg.name": $scope.selectedOrg}}, {or: lowRegStatusOrCuratorFilter}]}
-            }
+            };
             queryStuff.facets.concepts = {
                 terms: {field: "classification.elements.elements.name", size: 300}
                 , facet_filter: {and: [{
                     term: {"classification.stewardOrg.name": $scope.selectedOrg}
                 }, {or: lowRegStatusOrCuratorFilter}]}
             }                
-        }
+        };
 
         if ($scope.filter !== undefined) {
             if ($scope.filter.and !== undefined) {

@@ -15,7 +15,7 @@ groovy -cp ./groovy/ groovy/UploadNindsXls test/data/ninds-test.xlsx
 
 sleep 3;
 
-export target='{"count":382,"_shards":{"total":1,"successful":1,"failed":0}}'
+export target='{"count":521,"_shards":{"total":1,"successful":1,"failed":0}}'
 export curl_res=$(curl http://localhost:9200/cdetest/_count)
 
 if [ "$curl_res" == "$target" ] 
