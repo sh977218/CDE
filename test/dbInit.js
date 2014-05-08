@@ -1,9 +1,9 @@
-db.users.remove();
-db.dataelements.remove();
-db.orgs.remove();
-db.forms.remove();
-db.pinningBoards.remove();
-db.messages.remove();
+db.users.remove({});
+db.dataelements.remove({});
+db.orgs.remove({});
+db.forms.remove({});
+db.pinningBoards.remove({});
+db.messages.remove({});
 
 var defaultBoard = {
     name: "default"
