@@ -119,31 +119,44 @@ static def String getCellValue(Cell cell) {
     , previousTitle: 59
 ];
 
-def addDomain = {classifications, type, subtype, value -> 
-    if (!getCellValue(row.getCell(value)).equals("")) {
+def void addDomain(de, type, subtype, value) { 
+    if (!value.equals("")) {
         def cls = new ArrayList<String>();
         cls.add(type);
         cls.add(subtype)
-        cls.addAll(getCellValue(row.getCell(value)).split("\\."));
+        cls.addAll(value.split("\\."));
         def classifToAdd = classifications.buildMultiLevelClassif("NINDS", cls.toArray(new String[cls.size()]));
-        classifications.addClassifToDe(classifToAdd, newDE);
+        classifications.addClassifToDe(classifToAdd, de);
         classifications.addClassifToOrg(classifToAdd);
     }
 }
 
-def addClassification = {classifications, type, subtype, value -> 
-    if (!getCellValue(row.getCell(value)).equals("")) {
+def void addClassification(de, type, disease, value) { 
+    if (!value.equals("")) {
         def cls = new ArrayList<String>();
         cls.add(type);
-        cls.add(subtype)
+        cls.add(disease)
         cls.add("Classification")
-        cls.addAll(getCellValue(row.getCell(value)));
+        cls.addAll(value);
         def classifToAdd = classifications.buildMultiLevelClassif("NINDS", cls.toArray(new String[cls.size()]));
-        classifications.addClassifToDe(classifToAdd, newDE);
+        classifications.addClassifToDe(classifToAdd, de);
         classifications.addClassifToOrg(classifToAdd);
     }
 }
 
+def void addSubDiseaseClassification(de, type, disease, subDisease, value) {
+    if (!value.equals("")) {
+        def cls = new ArrayList<String>();
+        cls.add(type);
+        cls.add(disease)
+        cls.add(subDisease)
+        cls.add("Classification")
+        cls.addAll(value);
+        def classifToAdd = classifications.buildMultiLevelClassif("NINDS", cls.toArray(new String[cls.size()]));
+        classifications.addClassifToDe(classifToAdd, de);
+        classifications.addClassifToOrg(classifToAdd);
+    }
+}
 
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     BasicDBObject newDE = new BasicDBObject();
@@ -333,45 +346,43 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
     
     
-    addDomain(classifications, "Disease", "General (For all diseases)", xlsMap.generalDomain);
-    addDomain(classifications, "Disease", "Traumatic Brain Injury", xlsMap.tbiDomain);
-    addDomain(classifications, "Disease", "Parkinson's Disease", xlsMap.parkinsonDomain);
-    addDomain(classifications, "Disease", "Friedreich's Ataxia", xlsMap.ataxiaDomain);
-    addDomain(classifications, "Disease", "Stroke", xlsMap.strokeDomain);
-    addDomain(classifications, "Disease", "Amyotrophic Lateral Sclerosis", xlsMap.alsDomain);
-    addDomain(classifications, "Disease", "Huntington's Disease", xlsMap.huntingtonDomain);
-    addDomain(classifications, "Disease", "Multiple Sclerosis", xlsMap.msDomain);
-    addDomain(classifications, "Disease", "Neuromuscular Disease", xlsMap.neuromuscDomain);
-    addDomain(classifications, "Disease", "Myasthenia Gravis", xlsMap.myastheniaDomain);
-    addDomain(classifications, "Disease", "Spinal Muscular Atrophy", xlsMap.spinalDomain);
-    addDomain(classifications, "Disease", "Duchenne Muscular Dystrophy/Becker Muscular Dystrophy", xlsMap.duchenneDomain);
-    addDomain(classifications, "Disease", "Congenital Muscular Dystrophy", xlsMap.congenitalDomain);
-    addDomain(classifications, "Disease", "Spinal Cord Injury", xlsMap.spinalCordInjuryDomain);
-    addDomain(classifications, "Disease", "Headache", xlsMap.headacheDomain);
-    addDomain(classifications, "Disease", "Epilepsy", xlsMap.epilepsyDomain);
+    addDomain(newDE, "Disease", "General (For all diseases)", getCellValue(row.getCell(xlsMap.generalDomain)));
+    addDomain(newDE, "Disease", "Traumatic Brain Injury", getCellValue(row.getCell(xlsMap.tbiDomain)));
+    addDomain(newDE, "Disease", "Parkinson's Disease", getCellValue(row.getCell(xlsMap.parkinsonDomain)));
+    addDomain(newDE, "Disease", "Friedreich's Ataxia", getCellValue(row.getCell(xlsMap.ataxiaDomain)));
+    addDomain(newDE, "Disease", "Stroke", getCellValue(row.getCell(xlsMap.strokeDomain)));
+    addDomain(newDE, "Disease", "Amyotrophic Lateral Sclerosis", getCellValue(row.getCell(xlsMap.alsDomain)));
+    addDomain(newDE, "Disease", "Huntington's Disease", getCellValue(row.getCell(xlsMap.huntingtonDomain)));
+    addDomain(newDE, "Disease", "Multiple Sclerosis", getCellValue(row.getCell(xlsMap.msDomain)));
+    addDomain(newDE, "Disease", "Neuromuscular Disease", getCellValue(row.getCell(xlsMap.neuromuscDomain)));
+    addDomain(newDE, "Disease", "Myasthenia Gravis", getCellValue(row.getCell(xlsMap.myastheniaDomain)));
+    addDomain(newDE, "Disease", "Spinal Muscular Atrophy",getCellValue(row.getCell(xlsMap.spinalDomain)));
+    addDomain(newDE, "Disease", "Duchenne Muscular Dystrophy/Becker Muscular Dystrophy",getCellValue(row.getCell(xlsMap.duchenneDomain)));
+    addDomain(newDE, "Disease", "Congenital Muscular Dystrophy",getCellValue(row.getCell(xlsMap.congenitalDomain)));
+    addDomain(newDE, "Disease", "Spinal Cord Injury",getCellValue(row.getCell(xlsMap.spinalCordInjuryDomain)));
+    addDomain(newDE, "Disease", "Headache",getCellValue(row.getCell(xlsMap.headacheDomain)));
+    addDomain(newDE, "Disease", "Epilepsy",getCellValue(row.getCell(xlsMap.epilepsyDomain)));
 
-    addClassification(classifications, "Disease", "General (For all diseases)", xlsMap.generalClassif);
+    addClassification(newDE, "Disease", "General (For all diseases)",getCellValue(row.getCell(xlsMap.generalClassif)));
+    addClassification(newDE, "Disease", "Parkinson's Disease",getCellValue(row.getCell(xlsMap.parkinsonClassif)));
+    addClassification(newDE, "Disease", "Friedreich's Ataxia",getCellValue(row.getCell(xlsMap.friedrichClassif)));
+    addClassification(newDE, "Disease", "Stroke",getCellValue(row.getCell(xlsMap.strokeClassif)));
+    addClassification(newDE, "Disease", "Amyotrophic Lateral Sclerosis",getCellValue(row.getCell(xlsMap.alsClassif)));
+    addClassification(newDE, "Disease", "Huntington's Disease",getCellValue(row.getCell(xlsMap.huntingtonClassif)));
+    addClassification(newDE, "Disease", "Multiple Sclerosis",getCellValue(row.getCell(xlsMap.msClassif)));
+    addClassification(newDE, "Disease", "Neuromuscular Disease",getCellValue(row.getCell(xlsMap.neuroClassif)));
+    addClassification(newDE, "Disease", "Myasthenia Gravis",getCellValue(row.getCell(xlsMap.myastheniaClassif)));
+    addClassification(newDE, "Disease", "Spinal Muscular Atrophy",getCellValue(row.getCell(xlsMap.spinalMuscAtrophClassif)));
+    addClassification(newDE, "Disease", "Duchenne Muscular Dystrophy/Becker Muscular Dystrophy",getCellValue(row.getCell(xlsMap.duchenneClassif)));
+    addClassification(newDE, "Disease", "Congenital Muscular Dystrophy",getCellValue(row.getCell(xlsMap.congenitalClassif)));
+    addClassification(newDE, "Disease", "Spinal Cord Injury",getCellValue(row.getCell(xlsMap.spinalCordInjuryClassif)));
+    addClassification(newDE, "Disease", "Headache",getCellValue(row.getCell(xlsMap.headacheClassif)));
+    addClassification(newDE, "Disease", "Epilepsy",getCellValue(row.getCell(xlsMap.epilepsy)));
     
-    
-    , acuteHospClassif: 41
-    , concussionClassif: 42
-    , epidemiologyClassif: 43
-    , modTbiClassif: 44
-    , parkinsonClassif: 45
-    , friedrichClassif: 46
-    , strokeClassif: 47
-    , alsClassif: 48
-    , huntingtonClassif: 49
-    , msClassif: 50
-    , neuroClassif: 51
-    , myastheniaClassif: 52
-    , spinalMuscAtrophClassif: 53
-    , duchenneClassif: 54
-    , congenitalClassif: 55
-    , spinalCordInjuryClassif: 56
-    , headacheClassif: 57
-    , epilepsy: 58
-    
+    addSubDiseaseClassification(newDE, "Disease", "Traumatic Brain Injury", "Acute Hospitalized", getCellValue(row.getCell(xlsMap.acuteHospClassif)));
+    addSubDiseaseClassification(newDE, "Disease", "Traumatic Brain Injury", "Concussion/Mild TBI", getCellValue(row.getCell(xlsMap.concussionClassif)));
+    addSubDiseaseClassification(newDE, "Disease", "Traumatic Brain Injury", "Epidemiology", getCellValue(row.getCell(xlsMap.epidemiologyClassif)));
+    addSubDiseaseClassification(newDE, "Disease", "Traumatic Brain Injury", "Moderate/Severe TBI: Rehabilitation", getCellValue(row.getCell(xlsMap.modTbiClassif)));
     
     newDE;
 }
