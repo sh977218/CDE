@@ -5,7 +5,7 @@ angular.module('resources', ['ngResource'])
         return $resource('/listboards');
     })
     .factory('DataElement', function($resource) {
-        return $resource('/dataelement/:deId', {deId: '@deId'}, {update: {method: 'PUT'}});
+        return $resource('/dataelement/:deId/:type', {deId: '@deId', type: '_id'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
     })
     .factory('PriorCdes', function($resource) {
         return $resource('/priorcdes/:cdeId', {cdeId: '@cdeId'}, 
@@ -51,6 +51,9 @@ angular.module('resources', ['ngResource'])
           }
           , addToOrg: function(dat, success, error) {
               $http.post('/addClassificationToOrg', dat).success(success).error(error);              
+          }
+          , addListToCde: function(dat, success, error) {
+              $http.post('/addClassificationGroup', dat).success(success).error(error);
           }
         };
     })
@@ -152,5 +155,52 @@ angular.module('resources', ['ngResource'])
     .factory('Board', function($resource) {
         return $resource('/board/:id/:start', {id: '@id', start: '@start'}, 
             {'getCdes': {method: 'GET', isArray: true}});
-    })  
+    })
+    .factory('MergeRequest', function(Mail) {
+        return {
+          create: function(dat, success, error) {              
+              var message = {
+                  recipient: {recipientType: "stewardOrg", name: dat.recipient},
+                  author: {authorType: "user", name: dat.author},
+                  date: new Date(),
+                  type: "Merge Request",
+                  typeMergeRequest: dat.mergeRequest
+              };
+              Mail.sendMessage(message, success);
+          }
+        };
+    })   
+    .factory('Mail', function($http) {
+        return {
+            sendMessage: function(dat, success, error) {              
+                $http.post('/mail/messages/new', dat).success(success).error(error);
+            },
+            getMail: function(type, query, cb) {              
+                $http.post("/mail/messages/"+type, query).then(function(response) {
+                    cb(response.data);
+                });
+            },
+            updateMessage: function(msg, success, error) {
+                $http.post('/mail/messages/update', msg).success(success).error(error);
+            }
+        };        
+    }) 
+    .factory('CdeList', function($http) {
+        return {
+            byUuidList: function(ids, cb) {              
+                $http.post("/cdesByUuidList", ids).then(function(response) {
+                    cb(response.data);
+                });
+            }
+        } 
+    })
+    .factory('CDE', function($http) {
+        return {
+            retire: function(cde, cb) {              
+                $http.post("/retireCde", cde).then(function(response) {
+                    cb(response.data);
+                });
+            }
+        } 
+    })    
     ;

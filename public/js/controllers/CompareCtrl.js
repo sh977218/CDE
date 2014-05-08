@@ -44,6 +44,5 @@ function CompareCtrl($scope, DataElement) {
                 list1[i].isValid = wellIsIt;
            });
         }
-    };
-    
+    }; 
 };

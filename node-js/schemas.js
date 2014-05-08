@@ -136,6 +136,7 @@ var deJsonSchema = {
             , administrativeNote: String
             , unresolvedIssue: String
             , administrativeStatus: String
+            , replacedBy: {uuid: String} 
         }
     , classification:  [
             {
@@ -241,6 +242,31 @@ schemas.managedContextSchema = mongoose.Schema ({
    name: String 
 });
 
+var mergeRequestSchema = {
+    source: {uuid: String}
+    , destination: {uuid: String}
+    , fields: {
+        ids: Boolean
+        , naming: Boolean
+        , attachments: Boolean
+        , properties: Boolean
+        , classifications: Boolean
+    }
+    , states: [{
+        action: String
+        , date: Date
+        , comment: String
+    }]
+};
+
+schemas.message = mongoose.Schema ({
+    recipient: {recipientType: String, name: String},
+    author: {authorType: String, name: String},
+    date: Date,
+    type: String,
+    typeMergeRequest: mergeRequestSchema
+});
+
 var regStatusSortMap = {
     Retired: 6
     , Incomplete: 5
@@ -270,5 +296,6 @@ schemas.formSchema.set('collection', 'forms');
 schemas.userSchema.set('collection', 'users');
 schemas.orgSchema.set('collection', 'orgs');
 schemas.pinningBoardSchema.set('collection', 'pinningBoards');
+schemas.message.set('collection', 'messages');
 
 module.exports = schemas;

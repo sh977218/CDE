@@ -45,3 +45,16 @@
 #repeatCs > .col-md-5 {
     margin: 10px;
 }
+
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.btn {
+    margin-left: 10px;
+}
+
+#repeatCs .container {
+    word-wrap: break-word;
+}

@@ -25,31 +25,11 @@ public class CompareTest extends NlmCdeBaseTest{
         Assert.assertTrue(textPresent("Compare ( empty )"));        
     }
     
+  
+    
     @Test
     public void Compare2Elements() {
-        goHome();
-        Assert.assertTrue(textPresent("Compare ( empty )"));
-        findElement(By.name("ftsearch")).sendKeys("Person Gender Text Type");
-        findElement(By.id("search.submit")).click();
-        hangon(1);
-        findElement(By.linkText("Person Gender Text Type")).click();
-        hangon(.5);
-        findElement(By.id("compare_0")).click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
-        Assert.assertTrue(textPresent("Compare ( 1 )"));
-        findElement(By.name("ftsearch")).clear();
-        findElement(By.name("ftsearch")).sendKeys("Patient Gender Category");
-        hangon(1);
-        findElement(By.id("search.submit")).click();
-        hangon(2);
-        findElement(By.linkText("Patient Gender Category")).click();
-        hangon(.5);
-        findElement(By.id("compare_0")).click();   
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));        
-        Assert.assertTrue(textPresent("Compare ( full )"));
-        findElement(By.id("acc_link_2")).click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_2")));
-        findElement(By.linkText("Compare ( full )")).click();
+        addToCompare("Person Gender Text Type", "Patient Gender Category");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));    
     }
@@ -62,6 +42,7 @@ public class CompareTest extends NlmCdeBaseTest{
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compareMe")));
         findElement(By.linkText("Common Toxicity Criteria Adverse Event Prolonged Chest Tube Grade")).click();
         hangon(.5);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
         findElement(By.id("compare_0")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         findElement(By.linkText("Compare ( full )")).click();
