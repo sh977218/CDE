@@ -200,7 +200,7 @@ public class NlmCdeBaseTest {
     public void addToCompare(String cdeName1, String cdeName2) {
         goHome();
         Assert.assertTrue(textPresent("Compare ( empty )"));
-        findElement(By.name("ftsearch")).sendKeys(cdeName1);
+        findElement(By.name("ftsearch")).sendKeys("\""+cdeName1+"\"");
         findElement(By.id("search.submit")).click();
         findElement(By.linkText(cdeName1)).click();
         hangon(.5);
@@ -209,7 +209,7 @@ public class NlmCdeBaseTest {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         Assert.assertTrue(textPresent("Compare ( 1 )"));
         findElement(By.name("ftsearch")).clear();
-        findElement(By.name("ftsearch")).sendKeys(cdeName2);
+        findElement(By.name("ftsearch")).sendKeys("\""+cdeName2+"\"");
         hangon(1);
         findElement(By.id("search.submit")).click();
         hangon(2);
