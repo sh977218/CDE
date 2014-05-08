@@ -3,6 +3,7 @@ var express = require('express')
   , util = require('util')
   , mongo_data = require('./mongo-data')
   , envconfig = require('../envconfig.js')
+  , classification = require('./classification')
 ;
 
 var elasticUri = process.env.ELASTIC_URI || envconfig.elasticUri || 'http://localhost:9200/nlmcde/';
@@ -39,7 +40,7 @@ exports.elasticsearch = function (query, res) {
         result.facets = resp.facets;
         res.send(result);
      } else {
-         console.log("error: " + error);
+         console.log("es error: " + error + " response: " + response.statusCode);
      } 
     });  
 };
@@ -135,10 +136,12 @@ exports.priorCdes = function(req, res) {
 
 exports.show = function(req, res) {
     var cdeId = req.params.id;
-    
+    var type = req.params.type;
     if (!cdeId) {
         res.send("No Data Element Id");
-    } else {
+        return;
+    }
+    if (type!=='uuid') {
         mongo_data.cdeById(cdeId, function(err, cde) {
             // Following have no callback because it's no big deal if it fails.
             // So create new thread and move on.
@@ -147,8 +150,12 @@ exports.show = function(req, res) {
                mongo_data.addToViewHistory(cde, req.user);
             };
             res.send(cde); 
-        });
-    }
+        }); 
+    } else {
+        mongo_data.cdesByUuidList([cdeId], function(err, cdes) {
+            res.send(cdes[0]);
+        });    
+    }    
 };
 
 exports.linktovsac = function(req, res) {
@@ -282,4 +289,27 @@ exports.diff = function(req, res) {
            }
         });
     }
+};
+
+exports.addClassificationToCde = function(de, orgName, conceptSystemName, conceptName) {
+    var steward = classification.findSteward(de, orgName);
+    if (!steward) {
+        var newSteward = {
+            stewardOrg : {
+                name: orgName
+            },
+            elements: []
+        };
+        de.classification.push(newSteward);  
+        var i = de.classification.length - 1;
+        steward = {index: i, object: de.classification[i]};
+    }  
+    var conceptSystem = classification.findConcept(steward.object, conceptSystemName);                
+    if (!conceptSystem) {
+        conceptSystem = classification.addElement(steward.object, conceptSystemName);
+    }
+    var concept = classification.findConcept(conceptSystem.object, conceptName);      
+    if (!concept) {
+        concept = classification.addElement(conceptSystem.object, conceptName);
+    } 
 };

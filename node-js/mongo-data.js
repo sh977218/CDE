@@ -26,6 +26,7 @@ var User = mongoose.model('User', schemas.userSchema);
 var Form = mongoose.model('Form', schemas.formSchema);
 var Org = mongoose.model('Org', schemas.orgSchema);
 var PinningBoard = mongoose.model('PinningBoard', schemas.pinningBoardSchema);
+var Message = mongoose.model('Message', schemas.message);
 
 var gfs = Grid(db.db, mongoose.mongo);
 
@@ -351,7 +352,7 @@ exports.cdesByIdList = function(idList, callback) {
 };
 
 exports.cdesByUuidList = function(idList, callback) {
-    DataElement.find().where('uuid')
+    DataElement.find({'archived':null}).where('uuid')
             .in(idList)
             .slice('valueDomain.permissibleValues', 10)
             .exec(function(err, cdes) {
@@ -496,7 +497,6 @@ exports.saveCde = function(req, callback) {
             var jsonDe = JSON.parse(JSON.stringify(dataElement));
             delete jsonDe._id;
             var newDe = new DataElement(jsonDe);
-            console.log(JSON.stringify(req.body));
             newDe.history.push(dataElement._id);
             newDe.naming = req.body.naming;
             newDe.version = req.body.version;
@@ -510,13 +510,14 @@ exports.saveCde = function(req, callback) {
             newDe.registrationState.administrativeNote = req.body.registrationState.administrativeNote;
             newDe.registrationState.unresolvedIssue = req.body.registrationState.unresolvedIssue;
             newDe.registrationState.administrativeStatus = req.body.registrationState.administrativeStatus;
+            newDe.registrationState.replacedBy = req.body.registrationState.replacedBy;
             newDe.dataElementConcept = req.body.dataElementConcept;
             newDe.objectClass = req.body.objectClass;
             newDe.property = req.body.property;
-            newDe.valueDomain = req.body.valueDomain;
             newDe.properties = req.body.properties;
+            newDe.valueDomain = req.body.valueDomain;
+            newDe.attachments = req.body.attachments;
             newDe.ids = req.body.ids;
-            
             dataElement.archived = true;
             
             if (newDe.naming.length < 1) {
@@ -556,5 +557,99 @@ exports.fetchPVCodeSystemList = function() {
     var mongo_data = this;
     DataElement.distinct("valueDomain.permissibleValues.codeSystemName").exec(function(err, codeSystemNames) {
         mongo_data.pVCodeSystemList = codeSystemNames;
+    });
+};
+
+exports.createMessage = function(msg, cb) {
+    var message = new Message(msg);
+    message.save(function() {
+        cb();
+    });
+};
+
+exports.updateMessage = function(msg, cb) {
+    var id = msg._id;
+    delete msg._id;
+    Message.update({_id: id}, msg).exec(function(err) {
+        cb(err);
+    });    
+};
+
+exports.getMessages = function(req, callback) {
+   switch (req.params.type) {
+       case "received":
+            var authorRecipient = {
+                $and: [
+                    {
+                        $or: [
+                            {
+                                "recipient.recipientType": "stewardOrg"
+                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                            }
+                            , {
+                                "recipient.recipientType": "user"
+                                , "recipient.name": req.user.username
+                            }
+                        ]
+                    },
+                    {
+                        "typeMergeRequest.states.0.action": "Filed"
+                    }
+                ]
+            };            
+            break;
+        case "sent":
+            var authorRecipient = {
+                $or: [
+                    {
+                        "author.authorType":"stewardOrg"
+                        , "author.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                    }
+                    , {
+                        "author.authorType":"user"
+                        , "author.name": req.user.username
+                    }
+                ]
+            };
+            break; 
+        case "archived":
+            var authorRecipient = {
+                $and: [
+                    {
+                        $or: [
+                            {
+                                "recipient.recipientType": "stewardOrg"
+                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                            }
+                            , {
+                                "recipient.recipientType": "user"
+                                , "recipient.name": req.user.username
+                            }
+                        ]
+                    },
+                    {
+                        "typeMergeRequest.states.0.action": "Approved"
+                    }
+                ]
+            };             
+            break;
+    }
+    if (!authorRecipient) {
+        callback("Type not specified!");
+        return;
+    }
+    
+    Message.find(authorRecipient).where().exec(function(err, result) {
+        if (!err) callback(null, result);
+        else callback(err);
+    });
+};
+
+exports.archiveCde = function(cde, callback) {
+    DataElement.findOne({'_id': cde._id}, function(err, cde) {
+        cde.archived = true;        
+        cde.save(function() {
+            callback("", cde);
+        });
     });
 };

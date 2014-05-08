@@ -13,6 +13,11 @@
         <link rel="stylesheet" type="text/css" href="assets/font-awesome-4.0.3/css/font-awesome.css">
         <link rel="stylesheet" type="text/css" href="assets/css/ng-grid.min.css" />
         <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+        
+        <!--[if lte IE 8]>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.1/json3.min.js"></script>
+        <![endif]-->
+        
 
          <!--[if lte IE 8]>
            <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.1/json3.min.js"></script>
@@ -74,6 +79,7 @@
                                 <ul class="dropdown-menu"> 
                                     <li 
                                     <li ng-show='user._id'><a href="#/profile">Profile</a></li>
+                                    <li ng-show='isOrgCurator()||isOrgAdmin()'><a href="#/inbox">Inbox</a></li>
                                     <li ng-show="isOrgCurator()"><a href="#/classificationmanagement">Classifications</a></li>
                                     <li ng-show="isOrgAdmin() && !user.siteAdmin"><a href="#/orgaccountmanagement">Account Management</a></li>
                                     <li ng-show='user._id && user.siteAdmin'><a href="#/siteaccountmanagement">Site Management</a></li>

@@ -138,23 +138,34 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
        $scope.filter.and.push({or: lowRegStatusOrCuratorFilter});
        
        queryStuff.query.bool.must = [];
-
+       
+       var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
+       
+       queryStuff.query.bool.must.push({
+          dis_max: {
+              queries: [
+                  {function_score: {boost_mode: "replace", script_score: {script: script}}}
+              ]
+          } 
+       });
+        
        if (searchQ !== undefined && searchQ !== "") {
-            queryStuff.query.bool.must.push({
-                function_score: {
-                    boost_mode: "replace"
-                    , script_score: {
-                        script: "_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)"
+            queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
+                {
+                    query_string: {
+                        query: searchQ
                     }
-                    , query: {
-                        query_string: {
-                            fields: ["_all", "naming.designation^3"]
-                            , query: searchQ
-                        }
-                    }
+                };
+            queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {boost_mode: "replace", script_score: {script: script}}});
+            queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query = 
+            {
+                query_string: {
+                    fields: ["naming.designation^5", "naming.definition^2"]
+                    , query: searchQ
                 }
-            });
-        } 
+            };
+            queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2.5";
+        }
                
         if ($scope.selectedOrg !== undefined) {
             queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": $scope.selectedOrg}});
