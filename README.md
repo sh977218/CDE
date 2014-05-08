@@ -15,10 +15,8 @@
 **ElasticSearch** should be installed with the river for mongo plugin.
 
 ```sh
-$> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.7.tar.gz
+$> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.1.tar.gz
 ```
-
-**Note:** Get the latest version of elasticsearch
 
 configure **elascticsearch.yml** 
 
@@ -88,8 +86,11 @@ var envconfig = {
 $> mongod --replSet rs0
 ```
 
-**Note:** If you run mongod with no data and with the replSet option, you might get this error "replSet can't get local.system.relpSet config from self or any seed (EMPTYCONFIG)".  
-To solve this, run command "rs.initiate()" from mongo.
+Initiate MongoDB replica set:
+
+```javascript
+rs.initiate()
+```
 
 With **ElasticSearch** running, execute the following to create an index:
 
