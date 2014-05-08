@@ -15,10 +15,8 @@
 **ElasticSearch** should be installed with the river for mongo plugin.
 
 ```sh
-$> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.7.tar.gz
+$> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.1.tar.gz
 ```
-
-**Note:** Get the latest version of elasticsearch
 
 configure **elascticsearch.yml** 
 
