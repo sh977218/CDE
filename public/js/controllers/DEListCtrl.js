@@ -32,7 +32,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     }
     
     $scope.$watch('currentPage', function() {
-        $scope.cache.put("currentPage", $scope.currentPage)
+        $scope.cache.put("currentPage", $scope.currentPage);
         $scope.reload();
     });
 
