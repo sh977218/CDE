@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var ObjectId = require('mongodb').ObjectId;
-
 var schemas = {};
 
 var conceptSchema = mongoose.Schema({
@@ -281,7 +280,7 @@ var regStatusSortMap = {
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 
 schemas.dataElementSchema.pre('save', function(next) {
    this.registrationState.registrationStatusSortOrder = regStatusSortMap[this.registrationState.registrationStatus]; 
-   
+
    next();
 });
 

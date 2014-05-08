@@ -40,7 +40,7 @@ exports.elasticsearch = function (query, res) {
         result.facets = resp.facets;
         res.send(result);
      } else {
-         console.log("error: " + error);
+         console.log("es error: " + error + " response: " + response.statusCode);
      } 
     });  
 };

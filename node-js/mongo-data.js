@@ -518,7 +518,6 @@ exports.saveCde = function(req, callback) {
             newDe.valueDomain = req.body.valueDomain;
             newDe.attachments = req.body.attachments;
             newDe.ids = req.body.ids;
-            
             dataElement.archived = true;
             
             if (newDe.naming.length < 1) {

@@ -96,8 +96,7 @@ public class NlmCdeBaseTest {
     
     protected void openCdeInList(String name) {
         findElement(By.id("ftsearch-input")).clear();
-        findElement(By.id("ftsearch-input")).sendKeys(name);
-        Assert.assertEquals(findElement(By.id("ftsearch-input")).getAttribute("value"), name);
+        findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
         Assert.assertTrue(textPresent(name));
         findElement(By.id("acc_link_0")).click();
