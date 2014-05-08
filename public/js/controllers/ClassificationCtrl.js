@@ -24,7 +24,8 @@
         });
 
         modalInstance.result.then(function (newClassification) {
-            newClassification.orgName = $scope.user.orgCurator[0];
+            //TO-DO: Ability to classify as any organization in the list.
+            newClassification.orgName = $scope.user.orgCurator[0]?$scope.user.orgCurator[0]:$scope.user.orgAdmin[0];
             Classification.add({
                 classification: newClassification
                 , deId: $scope.cde._id

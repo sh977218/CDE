@@ -27,7 +27,7 @@ public class NlmCdeBaseTest {
     protected static String cabigAdmin_username = "cabigAdmin";
     protected static String cabigAdmin_password = "pass";
     protected static String ctepCurator_username = "ctepCurator";
-    protected static String ctepCurator_password = "pass";
+    protected static String ctepCurator_password = "pass";   
     protected static String test_username = "testuser";
     protected static String test_password = "Test123";
     protected static String history_username = "historyuser";
@@ -96,8 +96,7 @@ public class NlmCdeBaseTest {
     
     protected void openCdeInList(String name) {
         findElement(By.id("ftsearch-input")).clear();
-        findElement(By.id("ftsearch-input")).sendKeys(name);
-        Assert.assertEquals(findElement(By.id("ftsearch-input")).getAttribute("value"), name);
+        findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
         Assert.assertTrue(textPresent(name));
         findElement(By.id("acc_link_0")).click();
@@ -197,5 +196,31 @@ public class NlmCdeBaseTest {
         String OS = System.getProperty("os.name").toLowerCase();
         return (OS.indexOf("win") >= 0);
     }
+    
+    public void addToCompare(String cdeName1, String cdeName2) {
+        goHome();
+        Assert.assertTrue(textPresent("Compare ( empty )"));
+        findElement(By.name("ftsearch")).sendKeys("\""+cdeName1+"\"");
+        findElement(By.id("search.submit")).click();
+        findElement(By.linkText(cdeName1)).click();
+        hangon(.5);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
+        findElement(By.id("compare_0")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
+        Assert.assertTrue(textPresent("Compare ( 1 )"));
+        findElement(By.name("ftsearch")).clear();
+        findElement(By.name("ftsearch")).sendKeys("\""+cdeName2+"\"");
+        hangon(1);
+        findElement(By.id("search.submit")).click();
+        hangon(2);
+        findElement(By.linkText(cdeName2)).click();
+        hangon(.5);
+        findElement(By.id("compare_0")).click();   
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));        
+        Assert.assertTrue(textPresent("Compare ( full )"));
+        findElement(By.id("acc_link_2")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_2")));
+        findElement(By.linkText("Compare ( full )")).click();   
+    }      
     
 }

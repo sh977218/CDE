@@ -11,7 +11,7 @@ function CommentsCtrl($scope, Comment) {
             },
             function(res) {
                   $scope.message = res;
-                  $scope.reload($scope.cde._id);
+                  $scope.reload({cdeId: $scope.cde._id});
             }
         );
         $scope.comment.content = "";
@@ -24,7 +24,7 @@ function CommentsCtrl($scope, Comment) {
         }, 
         function (res) {
             $scope.message = res;
-            $scope.reload($scope.cde._id);
+            $scope.reload({cdeId: $scope.cde._id});
         });
     };
 }

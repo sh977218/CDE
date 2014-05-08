@@ -204,15 +204,22 @@ app.get('/signup', function(req, res){
 });
 
 function checkCdeOwnership(deId, req, cb) {
-   if (req.isAuthenticated()) {
+    this.userSessionExists = function(req) {
+        return req.user;
+    };
+    this.isCuratorOrAdmin = function(req, de) {
+        return (req.user.orgAdmin && req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
+               || (req.user.orgCurator && req.user.orgCurator.indexOf(de.stewardOrg.name) < 0);
+    };
+    var authorization = this;
+    if (req.isAuthenticated()) {
         mongo_data.cdeById(deId, function (err, de) {
             if (err) {
                 return cb("Data Element does not exist.", null);
             }
-            if (!req.user 
-                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
-                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(de.stewardOrg.name) < 0)
-                  ) {
+            if (!authorization.userSessionExists(req)
+               || !authorization.isCuratorOrAdmin(req, de)
+               ) {
                 return cb("You do not own this data element.", null);
             } else {
                 cb(null, de);
@@ -380,6 +387,12 @@ app.get('/listcde', function(req, res) {
     cdesvc.listcde(req, res);
 });
 
+app.post('/cdesByUuidList', function(req, res) {
+    mongo_data.cdesByUuidList(req.body, function(err, cdes) {
+        res.send(cdes);
+    });
+});
+
 app.get('/cdesforapproval', function(req, res) {
     mongo_data.cdesforapproval(req.user.orgAdmin, function(err, cdes) {
         res.send(cdes);
@@ -484,7 +497,7 @@ app.get('/priorcdes/:id', function(req, res) {
     cdesvc.priorCdes(req, res);
 });
 
-app.get('/dataelement/:id', function(req, res) {
+app.get('/dataelement/:id/:type?', function(req, res) {
     cdesvc.show(req, res);
 });
 
@@ -729,7 +742,7 @@ app.post('/elasticSearch', function(req, res) {
 });
 
 app.post('/addAttachmentToCde', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err, de) {
+    checkCdeOwnership(req.body.de_id, req, function(err, de) {
         if (err) return res.send(err);
         mongo_data.userTotalSpace(req.user.username, function(totalSpace) {
             if (totalSpace > req.user.quota) {
@@ -748,26 +761,7 @@ app.post('/addClassification', function(req, res) {
         if (err) {
             return res.send(err);
         }
-        var steward = classification.findSteward(de, req.body.classification.orgName);
-        if (!steward) {
-            var newSteward = {
-                stewardOrg : {
-                    name: req.body.classification.orgName
-                },
-                elements: []
-            };
-            de.classification.push(newSteward);  
-            var i = de.classification.length - 1;
-            steward = {index: i, object: de.classification[i]};
-        }  
-        var conceptSystem = classification.findConcept(steward.object, req.body.classification.conceptSystem);                
-        if (!conceptSystem) {
-            conceptSystem = classification.addElement(steward.object, req.body.classification.conceptSystem);
-        }
-        var concept = classification.findConcept(conceptSystem.object, req.body.classification.concept);      
-        if (!concept) {
-            concept = classification.addElement(conceptSystem.object, req.body.classification.concept);
-        }                
+        cdesvc.addClassificationToCde(de, req.body.classification.orgName, req.body.classification.conceptSystem, req.body.classification.concept)
         return de.save(function(err) {
             if (err) {
                 res.send("error: " + err);
@@ -778,6 +772,23 @@ app.post('/addClassification', function(req, res) {
     });
 });
 
+app.post('/addClassificationGroup', function(req, res) {
+    checkCdeOwnership(req.body.deId, req, function(err, de) {
+        if (err) {
+            return res.send(err);
+        }
+        req.body.classifications.forEach(function(c) {
+            cdesvc.addClassificationToCde(de, c.orgName, c.conceptSystem, c.concept);
+        });        
+        return de.save(function(err) {
+            if (err) {
+                res.send("error: " + err);
+            } else {
+                res.send(de);
+            }
+        });
+    });
+});
 
 app.post('/removeClassification', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
@@ -1003,6 +1014,47 @@ app.get('/vsacBridge/:vsacId', function(req, res) {
 
 app.get('/permissibleValueCodeSystemList', function(req, res) {
     res.send(mongo_data.pVCodeSystemList);
+});
+
+app.post('/mail/messages/new', function(req, res) {
+    mongo_data.createMessage(req.body, function() {
+        res.send();
+    });    
+});
+
+app.post('/mail/messages/update', function(req, res) {
+    mongo_data.updateMessage(req.body, function(err) {
+        if (err) {
+            res.statusCode = 404;
+            res.send("Error while updating the message");
+        } else {
+            res.send();
+        }
+    });
+});
+
+app.get('/mail/template/inbox', function(req, res) {
+    res.render("inbox"); 
+});
+
+app.post('/mail/messages/:type', function(req, res) {
+    mongo_data.getMessages(req, function(err, messages) {
+        if (err) res.send(404, err);
+        else res.send(messages);
+    });
+});
+
+app.post('/retireCde', function (req, res) {
+    req.params.type = "received";
+    mongo_data.cdeById(req.body._id, function(err, cde) {
+        if (err!="") res.send(404, err);
+        if (!cde.registrationState.administrativeStatus === "Retire Candidate") return res.send(409, "CDE is not a Retire Candidate");
+        cde.registrationState.registrationStatus = "Retired";
+        delete cde.registrationState.administrativeStatus;
+        cde.save(function() {
+            res.send();
+        });        
+    });
 });
 
 http.createServer(app).listen(app.get('port'), function(){

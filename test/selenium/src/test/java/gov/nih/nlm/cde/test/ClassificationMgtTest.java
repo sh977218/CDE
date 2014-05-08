@@ -12,9 +12,11 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Classifications")).click();
+        hangon(1);
         new Select(findElement(By.cssSelector("select"))).selectByValue("caBIG");
         Assert.assertTrue(textPresent("gov.nih.nci.cananolab.domain.characterization.invitro"));
         Assert.assertTrue(textNotPresent("Common Terminology Criteria for Adverse Events v3.0"));
+        hangon(1);
         new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
         Assert.assertTrue(textPresent("Common Terminology Criteria for Adverse Events v3.0"));
         Assert.assertTrue(textNotPresent("gov.nih.nci.cananolab.domain.characterization.invitro"));        
@@ -25,6 +27,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Classifications")).click();
+        hangon(1);
         new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
         findElement(By.id("addClassification")).click();
         modalHere();
@@ -45,6 +48,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("NonHodgkins Lymphoma"));
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Classifications")).click();
+        hangon(1);
         new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
 
         findElement(By.xpath("//div[span[contains(., 'NonHodgkins Lymphoma')]]/a")).click();
