@@ -86,8 +86,11 @@ var envconfig = {
 $> mongod --replSet rs0
 ```
 
-**Note:** If you run mongod with no data and with the replSet option, you might get this error "replSet can't get local.system.relpSet config from self or any seed (EMPTYCONFIG)".  
-To solve this, run command "rs.initiate()" from mongo.
+Initiate MongoDB replica set:
+
+```javascript
+rs.initiate()
+```
 
 With **ElasticSearch** running, execute the following to create an index:
 
