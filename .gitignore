@@ -16,6 +16,11 @@ scripts/elasticsearch/my*
 expressLog*
 expressErrorLog*
 
+## Tests
+/test/selenium/build/
+/test/selenium/chromedriver
+/test/selenium/chromedriver.exe
+
 # OS generated files #
 ######################
 .DS_Store
@@ -29,7 +34,6 @@ ehthumbs.db
 Thumbs.db
 *~
 /test/selenium/.nb-gradle/profiles/private/
-/test/selenium/build/
 .nide
-/test/selenium/chromedriver
 /test/selenium/.nb-gradle/private/
+
