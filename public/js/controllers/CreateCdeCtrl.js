@@ -1,4 +1,4 @@
-function CreateCdeCtrl($scope, $location, $timeout, DataElement, $http) {
+function CreateCdeCtrl($scope, $location, $timeout, DataElement, Elastic) {
     $scope.setActiveMenu('CREATECDE');
 
     $scope.save = function() {
@@ -50,12 +50,10 @@ function CreateCdeCtrl($scope, $location, $timeout, DataElement, $http) {
                             }
                         }
                     }
-               }};
-            
-           var result = $http.post("/elasticSearch", {query: queryStuff}).then(function (response) {
-               var result = response.data;
-               $scope.cdes = result.cdes;
-           });
+               }};            
+            Elastic.generalSearchQuery({query: queryStuff}, function(result) {
+                $scope.cdes = result.cdes;
+            });
         }, 1000);
     };
 }

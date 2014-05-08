@@ -1,4 +1,4 @@
-function DEListCtrl($scope, $http, $modal, $cacheFactory) {
+function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
     $scope.setActiveMenu('LISTCDE');
 
     $scope.initCache(); 
@@ -46,8 +46,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     
     $scope.reload = function() {
         $scope.buildElasticQuery(function(query) {
-            $http.post("/elasticSearch", query).then(function (response) {
-                var result = response.data;
+            Elastic.generalSearchQuery(query, function(result) {
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
                 $scope.openAll();
@@ -120,11 +119,15 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         queryStuff.query = 
         {   
             bool: {
-                must_not: {
+                must_not: [{
                     term: {
                         "registrationState.registrationStatus": "retired"
                     }
-                }
+                },{
+                    term: {
+                        "registrationState.administrativeStatus": "retire"
+                    }
+                }]
             }
        };
        
@@ -136,6 +139,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             }
        }
        $scope.filter.and.push({or: lowRegStatusOrCuratorFilter});
+       
        
        queryStuff.query.bool.must = [];
        
