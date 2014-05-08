@@ -496,7 +496,6 @@ exports.saveCde = function(req, callback) {
             var jsonDe = JSON.parse(JSON.stringify(dataElement));
             delete jsonDe._id;
             var newDe = new DataElement(jsonDe);
-            console.log(JSON.stringify(req.body));
             newDe.history.push(dataElement._id);
             newDe.naming = req.body.naming;
             newDe.version = req.body.version;
@@ -515,8 +514,7 @@ exports.saveCde = function(req, callback) {
             newDe.property = req.body.property;
             newDe.valueDomain = req.body.valueDomain;
             newDe.properties = req.body.properties;
-            newDe.ids = req.body.ids;
-            
+            newDe.ids = req.body.ids;            
             dataElement.archived = true;
             
             if (newDe.naming.length < 1) {

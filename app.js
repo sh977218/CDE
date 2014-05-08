@@ -767,7 +767,7 @@ app.post('/addClassification', function(req, res) {
         var concept = classification.findConcept(conceptSystem.object, req.body.classification.concept);      
         if (!concept) {
             concept = classification.addElement(conceptSystem.object, req.body.classification.concept);
-        }                
+        }
         return de.save(function(err) {
             if (err) {
                 res.send("error: " + err);
