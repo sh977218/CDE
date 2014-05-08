@@ -140,7 +140,7 @@ $> node app
 Start the **vsac mock** with 
 
 ```sh
-$> ./node-js/mock/vsacMock
+$> node ./node-js/mock/vsacMock
 ```
 
 You may need to generate your own **ssl** server key. 
