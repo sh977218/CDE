@@ -579,7 +579,7 @@ exports.updateMessage = function(msg, cb) {
 exports.getMessages = function(req, callback) {
    switch (req.params.type) {
        case "received":
-            var query = {
+            var authorRecipient = {
                 $and: [
                     {
                         $or: [
@@ -597,10 +597,10 @@ exports.getMessages = function(req, callback) {
                         "typeMergeRequest.states.0.action": "Filed"
                     }
                 ]
-            }            
+            };            
             break;
         case "sent":
-            var query = {
+            var authorRecipient = {
                 $or: [
                     {
                         "author.authorType":"stewardOrg"
@@ -614,7 +614,7 @@ exports.getMessages = function(req, callback) {
             };
             break; 
         case "archived":
-            var query = {
+            var authorRecipient = {
                 $and: [
                     {
                         $or: [
@@ -635,11 +635,12 @@ exports.getMessages = function(req, callback) {
             };             
             break;
     }
-    if (!query) {
+    if (!authorRecipient) {
         callback("Type not specified!");
         return;
     }
-    Message.find(query).exec(function(err, result) {
+    
+    Message.find(authorRecipient).where().exec(function(err, result) {
         if (!err) callback(null, result);
         else callback(err);
     });

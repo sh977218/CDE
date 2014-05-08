@@ -5,7 +5,7 @@ function InboxCtrl($scope, Mail, CdeList) {
     
     $scope.mail = {received: [], sent: [], archived:[]};
     $scope.getMail = function(type) {
-        Mail.getMail($scope.user, type, function(mail) {
+        Mail.getMail(type, null, function(mail) {
             $scope.mail[type] = mail;
             $scope.fetchMRCdes(type);
         });

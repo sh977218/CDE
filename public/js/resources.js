@@ -175,8 +175,8 @@ angular.module('resources', ['ngResource'])
             sendMessage: function(dat, success, error) {              
                 $http.post('/mail/messages/new', dat).success(success).error(error);
             },
-            getMail: function(user, type, cb) {              
-                $http.get("/mail/messages/"+type).then(function(response) {
+            getMail: function(type, query, cb) {              
+                $http.post("/mail/messages/"+type, query).then(function(response) {
                     cb(response.data);
                 });
             },

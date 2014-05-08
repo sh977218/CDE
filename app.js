@@ -1037,7 +1037,7 @@ app.get('/mail/template/inbox', function(req, res) {
     res.render("inbox"); 
 });
 
-app.get('/mail/messages/:type', function(req, res) {
+app.post('/mail/messages/:type', function(req, res) {
     mongo_data.getMessages(req, function(err, messages) {
         if (err) res.send(404, err);
         else res.send(messages);
@@ -1045,6 +1045,7 @@ app.get('/mail/messages/:type', function(req, res) {
 });
 
 app.post('/retireCde', function (req, res) {
+    req.params.type = "received";
     mongo_data.cdeById(req.body._id, function(err, cde) {
         if (err!="") res.send(404, err);
         if (!cde.registrationState.administrativeStatus === "Retire Candidate") return res.send(409, "CDE is not a Retire Candidate");
