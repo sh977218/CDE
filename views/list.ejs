@@ -19,6 +19,14 @@
 </form>
 </center>
 
+<script type="text/ng-template"  id="facet_elements_tree.html">
+    <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="selectedElements.indexOf(e.name) > -1">
+        <i ng-switch-default class="fa-li fa fa-plus-square-o" id="li-blank-{{e.name}}" ></i>
+        <i ng-switch-when="true" class="fa-li fa fa-minus-square-o" id="li-checked-{{e.name}}"></i>
+        <small> {{e.name}} ({{e.count}})</small>
+    </span>
+</script>
+
 <div class="row">
     <div class="col-md-2">
         <strong ng-show="facets.orgs.terms">Stewards</strong>
@@ -31,15 +39,14 @@
                 </span>
             </li>
         </ul>
-        <strong ng-show="facets.classification.terms">Classification</strong>
+        <!--<strong ng-show="facets.classification.terms">Classification</strong>-->
         <ul class="fa-ul">
-            <li ng-repeat="g in groups | orderBy:'name'" style="margin-right: -20px" ng-switch="g.name === selectedGroup.name" ng-show="g.name === selectedGroup.name || !selectedGroup">
-                <span ng-click="selectGroup(g)" class="hand-cursor">
-                    <i ng-switch-default class="fa-li fa fa-plus-square-o" id="li-blank-{{g.name}}" ></i>
-                    <i ng-switch-when="true" class="fa-li fa fa-minus-square-o" id="li-checked-{{g.name}}"></i>
-                    <small > {{g.name}}</small>
-                </span>
-                <ul class="fa-ul" ng-show="g.name === selectedGroup.name">
+            <li ng-repeat="e in classifications.elements | orderBy:'name'" style="margin-right: -20px"
+                ng-show="selectedElements.indexOf(e.name) > -1 || selectedElements.length === 0"
+                ng-include="'facet_elements_tree.html'"
+                >
+
+<!--                <ul class="fa-ul" ng-show="e.name === selectedElement.name">
                     <li ng-repeat="subG in g.concepts | orderBy:'term'" style="margin-left: -40px" ng-switch="subG.term === selectedSubGroup.term" >
                         <span ng-click="selectSubGroup(subG, g.conceptSystem)" class="hand-cursor">
                             <i ng-switch-default class="fa fa-square-o" id="li-blank-{{subG.term}}"></i> 
@@ -47,7 +54,7 @@
                             <small>{{subG.term}} ({{subG.count}})</small>
                         </span>
                     </li>
-                </ul>
+                </ul>-->
             </li>
         </ul>
         <strong ng-show="facets.statuses.terms">Status</strong>
