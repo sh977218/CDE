@@ -79,42 +79,33 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             });
         });   
         return result;*/
-        this.match = function(facets, orgClassifs, parent) {
-            if (facets !== undefined) {
-                  facets.terms.forEach(function (e3) {
-                      if (orgClassifs.elements) {
-                        orgClassifs.elements.forEach(function (oe3) {
-                            if (oe3.name === e3.term) {
-                                var elt3 = {name: e3.term, count: e3.count, elements: [], level: 2};
-                                parent.elements.push(elt3);
-                            }
-                        });
+        this.match = function(facets, orgClassifs, parent, i) {
+            if (facets === undefined || facets.terms === undefined) return;
+            facets.terms.forEach(function (term) {
+                if (orgClassifs) {
+                  orgClassifs.forEach(function (oe3) {
+                      if (oe3.name === term.term) {
+                          var elt = {name: term.term, count: term.count, elements: [], level: i};
+                          facetsMatcher.match($scope.facets["elements"+(i+1)], oe3.elements, elt.elements, i+1);
+                          parent.push(elt);
                       }
                   });
-              }                       
+                }
+            });                     
         };
         
         var result = [];
         var facetsMatcher = this;
-        $scope.facets.elements.terms.forEach(function (e) {
+        /*$scope.facets.elements.terms.forEach(function (e) {
             org.classifications.forEach(function(oe) {                                    
                 if (oe.name === e.term) {
                    var elt = {name: e.term, count: e.count, elements: [], level: 0};
-                   if ($scope.facets.elements2 !== undefined) {
-                        $scope.facets.elements2.terms.forEach(function (e2) {
-                            oe.elements.forEach(function (oe2) {
-                                if (oe2.name === e2.term) {
-                                    var elt2 = {name: e2.term, count: e2.count, elements: [], level: 1};
-                                    facetsMatcher.match($scope.facets.elements3, oe2, elt2);
-                                    elt.elements.push(elt2); 
-                                }
-                            }); 
-                        });
-                    }
+                    facetsMatcher.match($scope.facets.elements2, oe, elt, 2);
                     result.push(elt);                    
                 }
             });
-        });   
+        }); */  
+        facetsMatcher.match($scope.facets.elements, org.classifications, result, 1);
         return result;        
     };
     
