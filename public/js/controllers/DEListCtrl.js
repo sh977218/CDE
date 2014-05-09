@@ -47,38 +47,6 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     };
     
     $scope.matchFacetsOrgs = function(org) {
-        /*var result = [];
-        $scope.facets.elements.terms.forEach(function (e) {
-            org.classifications.forEach(function(oe) {                                    
-                if (oe.name === e.term) {
-                   var elt = {name: e.term, count: e.count, elements: [], level: 0};
-                   if ($scope.facets.elements2 !== undefined) {
-                        $scope.facets.elements2.terms.forEach(function (e2) {
-                            oe.elements.forEach(function (oe2) {
-                                if (oe2.name === e2.term) {
-                                    var elt2 = {name: e2.term, count: e2.count, elements: [], level: 1};
-                                    if ($scope.facets.elements3 !== undefined) {
-                                          $scope.facets.elements3.terms.forEach(function (e3) {
-                                              if (oe2.elements) {
-                                                oe2.elements.forEach(function (oe3) {
-                                                    if (oe3.name === e3.term) {
-                                                        var elt3 = {name: e3.term, count: e3.count, elements: [], level: 2};
-                                                        elt2.elements.push(elt3);
-                                                    }
-                                                });
-                                              }
-                                          });
-                                      }
-                                    elt.elements.push(elt2);
-                                }
-                            }); 
-                        });
-                    }
-                    result.push(elt);                    
-                }
-            });
-        });   
-        return result;*/
         this.match = function(facets, orgClassifs, parent, i) {
             if (facets === undefined || facets.terms === undefined) return;
             facets.terms.forEach(function (term) {
@@ -95,16 +63,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         };
         
         var result = [];
-        var facetsMatcher = this;
-        /*$scope.facets.elements.terms.forEach(function (e) {
-            org.classifications.forEach(function(oe) {                                    
-                if (oe.name === e.term) {
-                   var elt = {name: e.term, count: e.count, elements: [], level: 0};
-                    facetsMatcher.match($scope.facets.elements2, oe, elt, 2);
-                    result.push(elt);                    
-                }
-            });
-        }); */  
+        var facetsMatcher = this; 
         facetsMatcher.match($scope.facets.elements, org.classifications, result, 1);
         return result;        
     };
@@ -150,6 +109,12 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     };
 
     $scope.buildElasticQuery = function (callback) {
+        this.countFacetsDepthString = function (depth) {
+            var fd = "classification";
+            for (var j=1; j<=depth; j++) fd += ".elements";
+            fd += ".name";  
+            return fd;
+        };        
         var queryStuff = {size: $scope.resultPerPage};
         var searchQ = $scope.ftsearch;
         
@@ -219,14 +184,12 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": $scope.selectedOrg}});
         }
         
-        if ($scope.selectedElements.length > 0) {
-            queryStuff.query.bool.must.push({term: {"classification.elements.name": $scope.selectedElements[0]}});
-            if ($scope.selectedElements.length > 1) {
-                queryStuff.query.bool.must.push({term: {"classification.elements.elements.name": $scope.selectedElements[1]}});
-                if ($scope.selectedElements.length > 2) {
-                    queryStuff.query.bool.must.push({term: {"classification.elements.elements.elements.name": $scope.selectedElements[2]}});
-                }
-            }
+        var queryBuilder = this;
+        for (var i=0; i<$scope.selectedElements.length; i++) {
+            var facetsDepth = queryBuilder.countFacetsDepthString(i+1);            
+            var term = {term:{}};
+            term.term[facetsDepth] = $scope.selectedElements[i];
+            queryStuff.query.bool.must.push(term);
         }
 
 
@@ -234,8 +197,32 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
             orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}, facet_filter: {or: lowRegStatusOrCuratorFilter}}
             , statuses: {terms: {field: "registrationState.registrationStatus"}, facet_filter: {or: lowRegStatusOrCuratorFilter}}
         };    
-
+        
         if ($scope.selectedOrg !== undefined) {
+            queryStuff.facets.elements = {
+                terms: {field: "classification.elements.name", size: 200}
+                , facet_filter: {and: [{term: {"classification.stewardOrg.name": $scope.selectedOrg}}, {or: lowRegStatusOrCuratorFilter}]}
+            };
+            
+            for (var i=2; i<=$scope.selectedElements.length+1; i++) {   
+                var fd = queryBuilder.countFacetsDepthString(i);
+                queryStuff.facets["elements"+i] = {
+                    terms: {field: fd, size: 200}
+                    , facet_filter: {and: [
+                            {term: {"classification.stewardOrg.name": $scope.selectedOrg}}
+                            //, {term: {"classification.elements.name": $scope.selectedElements[0]}}
+                            , {or: lowRegStatusOrCuratorFilter}]}
+                };
+                for (var j=1; j<$scope.selectedElements.length; j++) {
+                    fd = queryBuilder.countFacetsDepthString(j);
+                    var f = {term: {}};
+                    f.term[fd] = $scope.selectedElements[j-1];
+                    queryStuff.facets["elements"+i].facet_filter.and.push(f);
+                }
+            }            
+        }        
+
+        /*if ($scope.selectedOrg !== undefined) {
             queryStuff.facets.elements = {
                 terms: {field: "classification.elements.name", size: 200}
                 , facet_filter: {and: [{term: {"classification.stewardOrg.name": $scope.selectedOrg}}, {or: lowRegStatusOrCuratorFilter}]}
@@ -259,7 +246,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                     };
                 }
             }
-        }
+        }*/
 
         if ($scope.filter !== undefined) {
             if ($scope.filter.and !== undefined) {
