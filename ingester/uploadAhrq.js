@@ -3,6 +3,7 @@ var fs = require('fs')
     , xml2js = require('xml2js')
     , mongoose = require('mongoose')
     , uuid = require('node-uuid')
+	, mongodata = require('../node-js/mongo-data')
 ;
 
 var parser = new xml2js.Parser();
@@ -10,7 +11,10 @@ var parser = new xml2js.Parser();
 var mongoUri = process.env.MONGO_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/nlmcde';
 console.log("connecting to " + mongoUri);
 
-mongoose.connect(mongoUri);
+if( !mongoose.connection ) {
+	mongoose.connect(mongoUri);
+}
+
 console.log("Loading file: " + process.argv[2]);
 
 var db = mongoose.connection;
@@ -32,40 +36,8 @@ var globals = {
 };
 
 // Adds classifications to 'orgs' collection.
-var addClassification = function (system, concept) {
-
-  Org.findOne({name: globals.orgName}).exec(function (err, ahrqOrg) {
-      var found = false;
-	  
-	  // Create an 'orgs' collection if it doesn't exist.
-	  if( ahrqOrg === null || ahrqOrg === undefined ) {
-	    ahrqOrg = new Org();
-	  }
-	  
-      if (ahrqOrg.classifications === null || ahrqOrg.classifications === undefined) {
-		ahrqOrg.classifications = [];
-      }
-     for (var i = 0; i < ahrqOrg.classifications.length; i++) {
-		 if ( ahrqOrg.classifications[i].name === system && ahrqOrg.classifications[i].elements[0].name === concept ) {
-             found = true;
-         }
-     } 
-     if (found === false) {
-		ahrqOrg.name = globals.orgName;
-		ahrqOrg.classifications.push({
-			name: system,
-            elements : [ 
-                {
-                    name : concept
-                }
-            ]
-        });
-		  
-        ahrqOrg.save(function(err, newOrg) {
-            if (err) console.log("failed to update Org: " + err);
-        });
-    }
-  });
+var addClassification = function (orgName, system, concept) {
+	mongodata.addClassificationToOrg( orgName, system, concept );
 };
 
 // TODO - Make this iterate over files. Otherwise, open connection is way too slow.
@@ -158,7 +130,7 @@ fs.readFile(process.argv[2], function(err, result) {
        }     
     );
 	
-    addClassification(globals.system, data[globals.concept]);
+    addClassification(globals.orgName, globals.system, data[globals.concept]);
       
     newDE.classification = [];    
     newDE.classification.push({
