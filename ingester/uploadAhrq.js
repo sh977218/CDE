@@ -24,28 +24,47 @@ var schemas = require('../node-js/schemas');
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var Org = mongoose.model('Org', schemas.orgSchema);
 
+// Global variables
+var globals = {
+    orgName : "AHRQ",
+    system : "Common Formats / Form",
+	concept : "Form Name:"
+};
 
+// Adds classifications to 'orgs' collection.
 var addClassification = function (system, concept) {
-  Org.findOne({name: 'AHRQ'}).exec(function (err, ahrqOrg) {
+
+  Org.findOne({name: globals.orgName}).exec(function (err, ahrqOrg) {
       var found = false;
-      if (ahrqOrg.classifications === undefined) {
-          ahrqOrg.classifications = [];
+	  
+	  // Create an 'orgs' collection if it doesn't exist.
+	  if( ahrqOrg === null || ahrqOrg === undefined ) {
+	    ahrqOrg = new Org();
+	  }
+	  
+      if (ahrqOrg.classifications === null || ahrqOrg.classifications === undefined) {
+		ahrqOrg.classifications = [];
       }
      for (var i = 0; i < ahrqOrg.classifications.length; i++) {
-         if (ahrqOrg.classifications[i].conceptSystem === system && ahrqOrg.classifications[i].concept === concept) {
+		 if ( ahrqOrg.classifications[i].name === system && ahrqOrg.classifications[i].elements[0].name === concept ) {
              found = true;
          }
      } 
      if (found === false) {
-         ahrqOrg.classifications.push({
-             conceptSystem: system
-             , concept: concept
-             , stewardOrg: {name: 'AHRQ'}
-          });
-          ahrqOrg.save(function(err, newOrg) {
-              if (err) console.log("failed to update Org: " + err);
-          });
-     }
+		ahrqOrg.name = globals.orgName;
+		ahrqOrg.classifications.push({
+			name: system,
+            elements : [ 
+                {
+                    name : concept
+                }
+            ]
+        });
+		  
+        ahrqOrg.save(function(err, newOrg) {
+            if (err) console.log("failed to update Org: " + err);
+        });
+    }
   });
 };
 
@@ -57,10 +76,10 @@ fs.readFile(process.argv[2], function(err, result) {
     var newDE = new DataElement({
         uuid: uuid.v4()
         , created: Date.now()
-        , origin: 'AHRQ'
+        , origin: globals.orgName
         , originId: data["Data Element ID:"] + "v" + data["Version:"]
         , stewardOrg: {
-            name: "AHRQ"
+            name: globals.orgName
         }
         , registrationState: {
             registrationStatus: 'Qualified'
@@ -138,21 +157,20 @@ fs.readFile(process.argv[2], function(err, result) {
         }
        }     
     );
-    
-    addClassification("Common Formats / Form", data["Form Name:"]);
-    
-  
+	
+    addClassification(globals.system, data[globals.concept]);
+      
     newDE.classification = [];    
     newDE.classification.push({
         stewardOrg : {
-            name : "AHRQ"
+            name : globals.orgName
         },
         elements : [ 
             {
-                name : "Common Formats / Form",
+                name : globals.system,
                 elements : [ 
                     {
-                        name : data["Form Name:"]
+                        name : data[globals.concept]
                     }
                 ]
             }

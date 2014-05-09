@@ -34,6 +34,7 @@ var namingSchema = mongoose.Schema({
     }
 }, {_id: false});
 
+/* Note: Old classification
 var classificationCollSchema = mongoose.Schema(
 {
     conceptSystem: String
@@ -42,7 +43,7 @@ var classificationCollSchema = mongoose.Schema(
         name: String
     }
 }
-);
+);*/
 
 var csEltSchema = mongoose.Schema({
     name: String
