@@ -78,18 +78,32 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                         if (org.classifications) {
                             $scope.facets.elements.terms.forEach(function (e) {
                                 // Find conceptSystem in db.org.classifications
-                                org.classifications.forEach(function(o) {                                    
-                                    if (o.name === e.term) {
-                                       var elt = {name: e.term, count: e.count, concepts: []};
-                                       // Add concepts from db.org.classifications.elements
-//                                       for (var m = 0; m < org.classifications[j].elements.length; m++) {
-//                                            for (var h=0; h<$scope.facets.concepts.terms.length; h++) {
-//                                                var c = $scope.facets.concepts.terms[h];
-//                                                if (org.classifications[j].elements[m].name===c.term) {
-//                                                    group.concepts.push(c);
-//                                                }                                               
-//                                            }
-//                                        } 
+                                org.classifications.forEach(function(oe) {                                    
+                                    if (oe.name === e.term) {
+                                       var elt = {name: e.term, count: e.count, elements: [], level: 0};
+                                       if ($scope.facets.elements2 !== undefined) {
+                                            $scope.facets.elements2.terms.forEach(function (e2) {
+                                                oe.elements.forEach(function (oe2) {
+                                                    if (oe2.name === e2.term) {
+                                                        var elt2 = {name: e2.term, count: e2.count, elements: [], level: 1};
+                                                        if ($scope.facets.elements3 !== undefined) {
+                                                              $scope.facets.elements3.terms.forEach(function (e3) {
+                                                                  if (oe2.elements) {
+                                                                    oe2.elements.forEach(function (oe3) {
+                                                                        if (oe3.name === e3.term) {
+                                                                            var elt3 = {name: e3.term, count: e3.count, elements: [], level: 2};
+
+                                                                            elt2.elements.push(elt3);
+                                                                        }
+                                                                    });
+                                                                  }
+                                                              });
+                                                          }
+                                                        elt.elements.push(elt2);
+                                                    }
+                                                }); 
+                                            });
+                                        }
                                         $scope.classifications.elements.push(elt);
                                     }
                                 });
@@ -97,36 +111,6 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                         }
                     });
                 }
-                
-//                $scope.groups = [];
-//                
-//                if ($scope.facets.groups !== undefined) {
-//                    $http.get("/org/" + $scope.selectedOrg).then(function(response) {
-//                        var org = response.data;
-//                        if (org.classifications) {
-//                            // Foreach conceptSystem in query.facets
-//                            for (var i = 0; i < $scope.facets.groups.terms.length; i++) {
-//                                var g = $scope.facets.groups.terms[i];
-//                                // Find conceptSystem in db.org.classifications
-//                                for (var j = 0; j < org.classifications.length; j++) {
-//                                    if (org.classifications[j].name === g.term) {
-//                                       var group = {name: g.term, concepts: []};
-//                                       // Add concepts from db.org.classifications.elements
-//                                       for (var m = 0; m < org.classifications[j].elements.length; m++) {
-//                                            for (var h=0; h<$scope.facets.concepts.terms.length; h++) {
-//                                                var c = $scope.facets.concepts.terms[h];
-//                                                if (org.classifications[j].elements[m].name===c.term) {
-//                                                    group.concepts.push(c);
-//                                                }                                               
-//                                            }
-//                                        } 
-//                                        $scope.groups.push(group);
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    });    
-//                }
              });
         });  
     };
@@ -203,11 +187,14 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         
         if ($scope.selectedElements.length > 0) {
             queryStuff.query.bool.must.push({term: {"classification.elements.name": $scope.selectedElements[0]}});
+            if ($scope.selectedElements.length > 1) {
+                queryStuff.query.bool.must.push({term: {"classification.elements.elements.name": $scope.selectedElements[1]}});
+                if ($scope.selectedElements.length > 2) {
+                    queryStuff.query.bool.must.push({term: {"classification.elements.elements.elements.name": $scope.selectedElements[2]}});
+                }
+            }
         }
 
-//        if ($scope.selectedSubGroup !== undefined) {
-//            queryStuff.query.bool.must.push({term: {"classification.elements.elements.name": $scope.selectedSubGroup.term}});
-//        }
 
         queryStuff.facets = {
             orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}, facet_filter: {or: lowRegStatusOrCuratorFilter}}
@@ -227,21 +214,18 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                             , {term: {"classification.elements.name": $scope.selectedElements[0]}}
                             , {or: lowRegStatusOrCuratorFilter}]}
                 };
+                if ($scope.selectedElements.length > 1) {
+                    queryStuff.facets.elements3 = {
+                        terms: {field: "classification.elements.elements.elements.name", size: 200}
+                        , facet_filter: {and: [
+                                {term: {"classification.stewardOrg.name": $scope.selectedOrg}}
+                                , {term: {"classification.elements.name": $scope.selectedElements[0]}}
+                                , {term: {"classification.elements.elements.name": $scope.selectedElements[1]}}
+                                , {or: lowRegStatusOrCuratorFilter}]}
+                    };
+                }
             }
         }
-
-//        if ($scope.selectedOrg !== undefined) {
-//            queryStuff.facets.groups = {
-//                terms: {field: "classification.elements.name", size: 200}
-//                , facet_filter: {and: [{term: {"classification.stewardOrg.name": $scope.selectedOrg}}, {or: lowRegStatusOrCuratorFilter}]}
-//            };
-//            queryStuff.facets.concepts = {
-//                terms: {field: "classification.elements.elements.name", size: 300}
-//                , facet_filter: {and: [{
-//                    term: {"classification.stewardOrg.name": $scope.selectedOrg}
-//                }, {or: lowRegStatusOrCuratorFilter}]}
-//            }                
-//        };
 
         if ($scope.filter !== undefined) {
             if ($scope.filter.and !== undefined) {
@@ -323,17 +307,6 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         delete $scope.facets.groups;
         $scope.reload();
     };
-
-//    $scope.selectSubGroup = function(subG) {        
-//        if ($scope.selectedSubGroup === undefined) {
-//            $scope.cacheSubGroup(subG);
-//            $scope.selectedSubGroup = subG;
-//        } else {
-//            $scope.removeCacheSubGroup();
-//            delete $scope.selectedSubGroup;
-//        }        
-//        $scope.reload();
-//    };
 
     $scope.selectElement = function(e) {        
         if ($scope.selectedElements === undefined) {
