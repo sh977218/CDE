@@ -109,6 +109,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     };
 
     $scope.buildElasticQuery = function (callback) {
+        //TODO - 1) Move to a service. 2) Refactor into smaller functions.
         this.countFacetsDepthString = function (depth) {
             var fd = "classification";
             for (var j=1; j<=depth; j++) fd += ".elements";
@@ -210,44 +211,17 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                     terms: {field: fd, size: 200}
                     , facet_filter: {and: [
                             {term: {"classification.stewardOrg.name": $scope.selectedOrg}}
-                            //, {term: {"classification.elements.name": $scope.selectedElements[0]}}
                             , {or: lowRegStatusOrCuratorFilter}]}
                 };
-                for (var j=1; j<$scope.selectedElements.length; j++) {
-                    fd = queryBuilder.countFacetsDepthString(j);
+                for (var j=0; j<$scope.selectedElements.length; j++) {
+                    fd = queryBuilder.countFacetsDepthString(j+1);
                     var f = {term: {}};
-                    f.term[fd] = $scope.selectedElements[j-1];
+                    f.term[fd] = $scope.selectedElements[j];
                     queryStuff.facets["elements"+i].facet_filter.and.push(f);
                 }
             }            
         }        
-
-        /*if ($scope.selectedOrg !== undefined) {
-            queryStuff.facets.elements = {
-                terms: {field: "classification.elements.name", size: 200}
-                , facet_filter: {and: [{term: {"classification.stewardOrg.name": $scope.selectedOrg}}, {or: lowRegStatusOrCuratorFilter}]}
-            };
-            if ($scope.selectedElements.length > 0) {
-                queryStuff.facets.elements2 = {
-                    terms: {field: "classification.elements.elements.name", size: 200}
-                    , facet_filter: {and: [
-                            {term: {"classification.stewardOrg.name": $scope.selectedOrg}}
-                            , {term: {"classification.elements.name": $scope.selectedElements[0]}}
-                            , {or: lowRegStatusOrCuratorFilter}]}
-                };
-                if ($scope.selectedElements.length > 1) {
-                    queryStuff.facets.elements3 = {
-                        terms: {field: "classification.elements.elements.elements.name", size: 200}
-                        , facet_filter: {and: [
-                                {term: {"classification.stewardOrg.name": $scope.selectedOrg}}
-                                , {term: {"classification.elements.name": $scope.selectedElements[0]}}
-                                , {term: {"classification.elements.elements.name": $scope.selectedElements[1]}}
-                                , {or: lowRegStatusOrCuratorFilter}]}
-                    };
-                }
-            }
-        }*/
-
+        
         if ($scope.filter !== undefined) {
             if ($scope.filter.and !== undefined) {
                 if ($scope.filter.and.length === 0) {
