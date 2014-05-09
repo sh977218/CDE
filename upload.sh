@@ -8,7 +8,7 @@ find ../nlm-seed/ExternalCDEs/Vsac/*.xml -exec node ingester/uploadVsac {} \;
 
 find ../nlm-seed/ExternalCDEs/Ahrq -name "de_*.json" -exec node ingester/uploadAhrq {} \;
 
-groovy -cp ./groovy/ groovy/uploadNinds ../nlm-seed/ExternalCDEs/ninds/all/cdes.xml
+groovy -cp ./groovy/ groovy/uploadNindsXls "../nlm-seed/ExternalCDEs/ninds/Copy of Data Element Import_20140424.xlsx"
 
 node ingester/matchToVsac.js
 

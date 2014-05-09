@@ -46,6 +46,78 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         $scope.reload();
     };
     
+    $scope.matchFacetsOrgs = function(org) {
+        /*var result = [];
+        $scope.facets.elements.terms.forEach(function (e) {
+            org.classifications.forEach(function(oe) {                                    
+                if (oe.name === e.term) {
+                   var elt = {name: e.term, count: e.count, elements: [], level: 0};
+                   if ($scope.facets.elements2 !== undefined) {
+                        $scope.facets.elements2.terms.forEach(function (e2) {
+                            oe.elements.forEach(function (oe2) {
+                                if (oe2.name === e2.term) {
+                                    var elt2 = {name: e2.term, count: e2.count, elements: [], level: 1};
+                                    if ($scope.facets.elements3 !== undefined) {
+                                          $scope.facets.elements3.terms.forEach(function (e3) {
+                                              if (oe2.elements) {
+                                                oe2.elements.forEach(function (oe3) {
+                                                    if (oe3.name === e3.term) {
+                                                        var elt3 = {name: e3.term, count: e3.count, elements: [], level: 2};
+                                                        elt2.elements.push(elt3);
+                                                    }
+                                                });
+                                              }
+                                          });
+                                      }
+                                    elt.elements.push(elt2);
+                                }
+                            }); 
+                        });
+                    }
+                    result.push(elt);                    
+                }
+            });
+        });   
+        return result;*/
+        this.match = function(facets, orgClassifs, parent) {
+            if (facets !== undefined) {
+                  facets.terms.forEach(function (e3) {
+                      if (orgClassifs.elements) {
+                        orgClassifs.elements.forEach(function (oe3) {
+                            if (oe3.name === e3.term) {
+                                var elt3 = {name: e3.term, count: e3.count, elements: [], level: 2};
+                                parent.elements.push(elt3);
+                            }
+                        });
+                      }
+                  });
+              }                       
+        };
+        
+        var result = [];
+        var facetsMatcher = this;
+        $scope.facets.elements.terms.forEach(function (e) {
+            org.classifications.forEach(function(oe) {                                    
+                if (oe.name === e.term) {
+                   var elt = {name: e.term, count: e.count, elements: [], level: 0};
+                   if ($scope.facets.elements2 !== undefined) {
+                        $scope.facets.elements2.terms.forEach(function (e2) {
+                            oe.elements.forEach(function (oe2) {
+                                if (oe2.name === e2.term) {
+                                    var elt2 = {name: e2.term, count: e2.count, elements: [], level: 1};
+                                    facetsMatcher.match($scope.facets.elements3, oe2, elt2);
+                                    elt.elements.push(elt2); 
+                                }
+                            }); 
+                        });
+                    }
+                    result.push(elt);                    
+                }
+            });
+        });   
+        return result;        
+    };
+    
     $scope.reload = function() {
         $scope.buildElasticQuery(function(query) {
             $http.post("/elasticSearch", query).then(function (response) {
@@ -76,38 +148,9 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
                     $http.get("/org/" + $scope.selectedOrg).then(function(response) {
                         var org = response.data;
                         if (org.classifications) {
-                            $scope.facets.elements.terms.forEach(function (e) {
-                                // Find conceptSystem in db.org.classifications
-                                org.classifications.forEach(function(oe) {                                    
-                                    if (oe.name === e.term) {
-                                       var elt = {name: e.term, count: e.count, elements: [], level: 0};
-                                       if ($scope.facets.elements2 !== undefined) {
-                                            $scope.facets.elements2.terms.forEach(function (e2) {
-                                                oe.elements.forEach(function (oe2) {
-                                                    if (oe2.name === e2.term) {
-                                                        var elt2 = {name: e2.term, count: e2.count, elements: [], level: 1};
-                                                        if ($scope.facets.elements3 !== undefined) {
-                                                              $scope.facets.elements3.terms.forEach(function (e3) {
-                                                                  if (oe2.elements) {
-                                                                    oe2.elements.forEach(function (oe3) {
-                                                                        if (oe3.name === e3.term) {
-                                                                            var elt3 = {name: e3.term, count: e3.count, elements: [], level: 2};
-
-                                                                            elt2.elements.push(elt3);
-                                                                        }
-                                                                    });
-                                                                  }
-                                                              });
-                                                          }
-                                                        elt.elements.push(elt2);
-                                                    }
-                                                }); 
-                                            });
-                                        }
-                                        $scope.classifications.elements.push(elt);
-                                    }
-                                });
-                            });
+                            $scope.matchFacetsOrgs(org).forEach(function (elt) {
+                                $scope.classifications.elements.push(elt);
+                            });                            
                         }
                     });
                 }
