@@ -291,12 +291,11 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     
     $scope.addOrgFilter = function(t) {               
         if ($scope.selectedOrg === undefined) {
-//            $scope.cacheOrgFilter(t.term);
+            $scope.cacheOrgFilter(t.term);
             $scope.selectedOrg = t.term;
         } else {
             $scope.removeCacheOrgFilter();
             delete $scope.selectedOrg;
-//            delete $scope.selectedSubGroup;
             delete $scope.selectedElements;            
         }  
         delete $scope.facets.groups;

@@ -39,9 +39,9 @@
     
     $scope.searchByClassification = function(orgName, systemName, conceptName) {
         $scope.cache.removeAll();
-        $scope.cacheOrgFilter(orgName); 
-        $scope.cacheSubGroup({term:conceptName});
-        $scope.cacheGroup({name:systemName});
+        $scope.cacheOrgFilter(orgName);
+        var elts = [systemName, conceptName];
+        $scope.cache.put("selectedElements", elts);
     };
  }
  
