@@ -37,10 +37,9 @@
         });
     };
     
-    $scope.searchByClassification = function(orgName, systemName, conceptName) {
+    $scope.searchByClassification = function(orgName, elts) {
         $scope.cache.removeAll();
         $scope.cacheOrgFilter(orgName);
-        var elts = [systemName, conceptName];
         $scope.cache.put("selectedElements", elts);
     };
  }
