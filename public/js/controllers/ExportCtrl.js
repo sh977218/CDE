@@ -1,4 +1,4 @@
-function ExportCtrl($scope, $http, $window) {  
+function ExportCtrl($scope, Elastic, $window) {  
     $scope.gridCdes = [];
     $scope.gridOptions = {
         data: 'gridCdes'
@@ -24,8 +24,7 @@ function ExportCtrl($scope, $http, $window) {
         query.query.size = 1000;
         delete query.query.facets;
         delete query.query.from;
-        $http.post("/elasticSearch", query).then(function (response) {
-            var result = response.data;
+        Elastic.generalSearchQuery(query, function(result) {
             $scope.gridCdes = [];
             var list = result.cdes;
             for (var i in list) {
