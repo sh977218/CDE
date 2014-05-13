@@ -758,10 +758,12 @@ app.post('/addAttachmentToCde', function(req, res) {
 
 app.post('/addClassification', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
+            console.log("1")
         if (err) {
             return res.send(err);
         }
         cdesvc.addClassificationToCde(de, req.body.classification.orgName, req.body.classification.conceptSystem, req.body.classification.concept)
+            console.log("3")
         return de.save(function(err) {
             if (err) {
                 res.send("error: " + err);
@@ -772,23 +774,23 @@ app.post('/addClassification', function(req, res) {
     });
 });
 
-app.post('/addClassificationGroup', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err, de) {
-        if (err) {
-            return res.send(err);
-        }
-        req.body.classifications.forEach(function(c) {
-            cdesvc.addClassificationToCde(de, c.orgName, c.conceptSystem, c.concept);
-        });        
-        return de.save(function(err) {
-            if (err) {
-                res.send("error: " + err);
-            } else {
-                res.send(de);
-            }
-        });
-    });
-});
+//app.post('/addClassificationGroup', function(req, res) {
+//    checkCdeOwnership(req.body.deId, req, function(err, de) {
+//        if (err) {
+//            return res.send(err);
+//        }
+//        req.body.classifications.forEach(function(c) {
+//            cdesvc.addClassificationToCde(de, c.orgName, c.conceptSystem, c.concept);
+//        });        
+//        return de.save(function(err) {
+//            if (err) {
+//                res.send("error: " + err);
+//            } else {
+//                res.send(de);
+//            }
+//        });
+//    });
+//});
 
 app.post('/removeClassification', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
