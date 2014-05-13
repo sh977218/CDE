@@ -61,10 +61,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-check-square-o"));
         hangon(1);
         findElement(By.linkText("Next")).click();
-        hangon(1);
         Assert.assertTrue(textPresent("OPEN to Rave Standard "));
         findElement(By.cssSelector("i.fa-check-square-o"));
         findElement(By.id("resetSearch")).click();
+        Assert.assertTrue(textPresent("Qualified (4"));
         findElement(By.name("ftsearch")).sendKeys("Immunology");
         findElement(By.cssSelector("i.fa-search")).click();
         Assert.assertTrue(textPresent("Immunology Gonorrhea Assay Laboratory Finding Result"));

@@ -251,8 +251,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         $scope.filter = []; 
         delete $scope.ftsearch;
         delete $scope.selectedOrg;
-        delete $scope.selectedElements;
-        delete $scope.selectedSubGroup;
+        $scope.selectedElements = [];
         $scope.cache.removeAll();
         $scope.reload();
     };
@@ -296,7 +295,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
         } else {
             $scope.removeCacheOrgFilter();
             delete $scope.selectedOrg;
-            delete $scope.selectedElements;            
+            $scope.selectedElements = [];            
         }  
         delete $scope.facets.groups;
         $scope.reload();

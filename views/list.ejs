@@ -37,7 +37,7 @@
 
 <div class="row">
     <div class="col-md-2">
-        <strong ng-show="facets.orgs.terms">Stewards</strong>
+        <strong ng-show="facets.orgs.terms">Organizations</strong>
         <ul class="fa-ul">
             <li ng-repeat="t in facets.orgs.terms | orderBy:'term'" style="margin-right: -20px" ng-switch="t.term === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.term === selectedOrg || !selectedOrg">
                 <span class="hand-cursor">
@@ -47,22 +47,11 @@
                 </span>
             </li>
         </ul>
-        <!--<strong ng-show="facets.classification.terms">Classification</strong>-->
         <ul class="fa-ul">
             <li ng-repeat="e in classifications.elements | orderBy:'name'" style="margin-right: -20px"
                 ng-show="selectedElements.indexOf(e.name) > -1 || selectedElements.length < 1"
                 ng-include="'facet_elements_tree.html'"
                 >
-
-<!--                <ul class="fa-ul" ng-show="e.name === selectedElement.name">
-                    <li ng-repeat="subG in g.concepts | orderBy:'term'" style="margin-left: -40px" ng-switch="subG.term === selectedSubGroup.term" >
-                        <span ng-click="selectSubGroup(subG, g.conceptSystem)" class="hand-cursor">
-                            <i ng-switch-default class="fa fa-square-o" id="li-blank-{{subG.term}}"></i> 
-                            <i ng-switch-when="true" class="fa fa-check-square-o" id="li-checked-{{subG.term}}"></i>
-                            <small>{{subG.term}} ({{subG.count}})</small>
-                        </span>
-                    </li>
-                </ul>-->
             </li>
         </ul>
         <strong ng-show="facets.statuses.terms">Status</strong>
