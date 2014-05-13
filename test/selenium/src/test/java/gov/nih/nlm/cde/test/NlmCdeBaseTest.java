@@ -194,7 +194,7 @@ public class NlmCdeBaseTest {
     
     private boolean isWindows(){
         String OS = System.getProperty("os.name").toLowerCase();
-        return (OS.indexOf("win") >= 0);
+        return OS.contains("win");
     }
     
     public void addToCompare(String cdeName1, String cdeName2) {
@@ -209,8 +209,7 @@ public class NlmCdeBaseTest {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         Assert.assertTrue(textPresent("Compare ( 1 )"));
         findElement(By.name("ftsearch")).clear();
-        findElement(By.name("ftsearch")).sendKeys("\""+cdeName2+"\"");
-        hangon(1);
+        findElement(By.name("ftsearch")).sendKeys(cdeName2);
         findElement(By.id("search.submit")).click();
         hangon(2);
         findElement(By.linkText(cdeName2)).click();
