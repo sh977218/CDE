@@ -19,7 +19,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void statusFacets() {
         goHome();
-        Assert.assertTrue(textPresent("Qualified (3"));
+        Assert.assertTrue(textPresent("Qualified (4"));
         findElement(By.id("li-blank-caBIG")).click();
         findElement(By.cssSelector("i.fa-check-square-o"));
         Assert.assertTrue(textPresent("Qualified (1"));
@@ -50,7 +50,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         hangon(1);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("3")));
         findElement(By.id("li-checked-caBIG")).click();
-        Assert.assertTrue(textPresent("Event Pre-Surgical Study Period Code"));
+        Assert.assertTrue(textPresent("Patient Ethnic Group"));
     }
     
     @Test
@@ -66,7 +66,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-check-square-o"));
         findElement(By.id("resetSearch")).click();
         findElement(By.name("ftsearch")).sendKeys("Immunology");
-        findElement(By.id("search.submit")).click();
+        findElement(By.cssSelector("i.fa-search")).click();
         Assert.assertTrue(textPresent("Immunology Gonorrhea Assay Laboratory Finding Result"));
     }
 
@@ -96,13 +96,13 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(linkList.size(), 2);
         
         // Now test unclicking everything
-        findElement(By.id("li-checked-gov.nih.nci.ivi.genericimage")).click();
+        findElement(By.id("li-checked-Generic Image")).click();
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 8);
         
-        Assert.assertTrue(textPresent("genericimage (2)"));
-        findElement(By.id("li-blank-gov.nih.nci.ivi.genericimage")).click();
+        Assert.assertTrue(textPresent("Generic Image (2)"));
+        findElement(By.id("li-blank-Generic Image")).click();
         
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));

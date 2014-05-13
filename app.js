@@ -792,17 +792,11 @@ app.post('/addClassificationGroup', function(req, res) {
 
 app.post('/removeClassification', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
-        if (err) return res.send(err);        
+        if (err) return res.send(err);
         var steward = classification.findSteward(de, req.body.orgName);
-        var conceptSystem = classification.findConcept(steward.object, req.body.conceptSystemName);
-        var concept = classification.findConcept(conceptSystem.object, req.body.conceptName);
-        conceptSystem.object.elements.splice(concept.index, 1);
-        if (conceptSystem.object.elements.length === 0) {
-            steward.object.elements.splice(conceptSystem.index, 1);
-        }
-        if (steward.object.elements.length === 0) {
-            de.classification.splice(steward.index, 1);
-        }       
+        classification.removeClassificationFromTree(steward.object.elements, req.body.elements);
+        // this looks like a bug in mongoose. If too deeply nested, it won't update unless you explicitely say.
+        de.markModified("classification");
         return de.save(function(err) {
             if (err) {
                 res.send("error: " + err);

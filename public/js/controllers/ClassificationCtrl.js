@@ -1,11 +1,10 @@
  function ClassificationCtrl($scope, $modal, $route, Classification) {
     $scope.initCache(); 
      
-    $scope.removeClassification = function(orgName, conceptSystemName, conceptName) {
+    $scope.removeClassification = function(orgName, elts) {
         Classification.remove({
             orgName: orgName
-            , conceptSystemName: conceptSystemName
-            , conceptName: conceptName
+            , elements: elts
             , deId: $scope.cde._id 
         }, 
         function (res) {
