@@ -26,6 +26,25 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     }
 
     @Test
+    public void deepFacets() {
+        goHome();
+        findElement(By.id("li-blank-NINDS")).click();
+        findElement(By.id("li-blank-Disease")).click();
+        findElement(By.id("li-blank-Traumatic Brain Injury")).click();
+        findElement(By.id("li-blank-Acute Hospitalized")).click();
+        findElement(By.id("li-blank-Classification")).click();
+        findElement(By.id("li-blank-Basic")).click();
+        Assert.assertTrue(textPresent("11 hits"));
+        Assert.assertTrue(textPresent("Traffic accident other party role type"));
+        findElement(By.id("li-checked-Acute Hospitalized")).click();
+        Assert.assertTrue(textPresent("24 hits"));
+        findElement(By.id("li-blank-Assessments")).click();
+        Assert.assertTrue(textPresent("8 hits"));
+        findElement(By.id("li-checked-Disease")).click();
+        Assert.assertTrue(textPresent("139 hits"));
+    }
+    
+    @Test
     public void facets() {
         mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
         goHome();

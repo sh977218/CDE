@@ -47,14 +47,14 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory) {
     };
     
     $scope.matchFacetsOrgs = function(org) {
-        this.match = function(facets, orgClassifs, parent, i) {
+        this.match = function(facets, orgClassifs, parent, level) {
             if (facets === undefined || facets.terms === undefined) return;
             facets.terms.forEach(function (term) {
                 if (orgClassifs) {
                   orgClassifs.forEach(function (oe3) {
                       if (oe3.name === term.term) {
-                          var elt = {name: term.term, count: term.count, elements: [], level: i};
-                          facetsMatcher.match($scope.facets["elements"+(i+1)], oe3.elements, elt.elements, i+1);
+                          var elt = {name: term.term, count: term.count, elements: [], level: level};
+                          facetsMatcher.match($scope.facets["elements"+(level+1)], oe3.elements, elt.elements, level+1);
                           parent.push(elt);
                       }
                   });

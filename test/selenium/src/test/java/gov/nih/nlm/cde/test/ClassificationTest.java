@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
+import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -55,6 +56,18 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Cigarette Average Daily Pack Use Count"));
         List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 3);
-
     }    
+    
+    @Test
+    public void deepClassifications() {
+        goToCdeByName("snore frequency");
+        findElement(By.linkText("Classification")).click();
+     
+        Assert.assertTrue(textPresent("Adult"));
+        Assert.assertTrue(textPresent("Parkinson's Disease"));
+        Assert.assertTrue(textPresent("Classification"));
+        Assert.assertTrue(textPresent("Supplemental"));
+        Assert.assertTrue(textPresent("Outcomes and End Points"));
+        Assert.assertTrue(textPresent("Other Non-Motor"));
+    }
 }

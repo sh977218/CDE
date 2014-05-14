@@ -20,19 +20,21 @@
 </center>
 
 <script type="text/ng-template"  id="facet_elements_tree.html">
-    <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="selectedElements.indexOf(e.name) > -1">
-        <i ng-switch-default class="fa-li fa fa-plus-square-o" id="li-blank-{{e.name}}" ></i>
-        <i ng-switch-when="true" class="fa-li fa fa-minus-square-o" id="li-checked-{{e.name}}"></i>
-        <small> {{e.name}} ({{e.count}})</small>
+    <span ng-click="selectElement(e)" class="hand-cursor">
+        <div class="row">
+            <i class="fa fa-angle-right" class="col-md-1"></i>
+            <span class="col-md-11">
+                <small> {{e.name}} ({{e.count}})</small>
+            </span>
+        </div>
     </span>
-    <ul class="fa-ul" ng-show="selectedElements.indexOf(e.name) > -1">
-            <li ng-repeat="e in e.elements | orderBy:'name'" style="margin-right: -20px"
-                ng-show="selectedElements.indexOf(e.name) > -1 || selectedElements.length <= e.level"
+    <div ng-show="selectedElements.indexOf(e.name) > -1">
+            <div ng-repeat="e in e.elements | orderBy:'name'"
+                ng-show="selectedElements.indexOf(e.name) > -1 || e.level > selectedElements.length"
                 ng-include="'facet_elements_tree.html'"
                 >        
-            </li>
-        </li>
-    </ul>
+            </div>
+    </div>
 </script>
 
 <div class="row">
@@ -47,13 +49,13 @@
                 </span>
             </li>
         </ul>
-        <ul class="fa-ul">
-            <li ng-repeat="e in classifications.elements | orderBy:'name'" style="margin-right: -20px"
+        <div>
+            <div ng-repeat="e in classifications.elements | orderBy:'name'"
                 ng-show="selectedElements.indexOf(e.name) > -1 || selectedElements.length < 1"
                 ng-include="'facet_elements_tree.html'"
                 >
-            </li>
-        </ul>
+            </div>
+        </div>
         <strong ng-show="facets.statuses.terms">Status</strong>
         <ul class="fa-ul">
             <li ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
