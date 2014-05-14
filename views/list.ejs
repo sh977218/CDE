@@ -19,9 +19,29 @@
 </form>
 </center>
 
+<script type="text/ng-template"  id="facet_elements_tree.html">
+    
+    <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="selectedElements.indexOf(e.name) > -1">
+            <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e.name}}" ></i>
+            <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e.name}}" ></i>
+            <span>
+                <small> {{e.name}} ({{e.count}})</small>
+            </span>
+        </div>
+    </span>
+    <div ng-show="selectedElements.indexOf(e.name) > -1" style="margin-left: 5px">
+            <div ng-repeat="e in e.elements | orderBy:'name'"
+                ng-show="selectedElements.indexOf(e.name) > -1 || e.level > selectedElements.length"
+                ng-include="'facet_elements_tree.html'"
+                >        
+            </div>
+            
+    </div>
+</script>
+
 <div class="row">
     <div class="col-md-2">
-        <strong ng-show="facets.orgs.terms">Stewards</strong>
+        <strong ng-show="facets.orgs.terms">Organizations</strong>
         <ul class="fa-ul">
             <li ng-repeat="t in facets.orgs.terms | orderBy:'term'" style="margin-right: -20px" ng-switch="t.term === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.term === selectedOrg || !selectedOrg">
                 <span class="hand-cursor">
@@ -31,25 +51,13 @@
                 </span>
             </li>
         </ul>
-        <strong ng-show="facets.classification.terms">Classification</strong>
-        <ul class="fa-ul">
-            <li ng-repeat="g in groups | orderBy:'name'" style="margin-right: -20px" ng-switch="g.name === selectedGroup.name" ng-show="g.name === selectedGroup.name || !selectedGroup">
-                <span ng-click="selectGroup(g)" class="hand-cursor">
-                    <i ng-switch-default class="fa-li fa fa-plus-square-o" id="li-blank-{{g.name}}" ></i>
-                    <i ng-switch-when="true" class="fa-li fa fa-minus-square-o" id="li-checked-{{g.name}}"></i>
-                    <small > {{g.name}}</small>
-                </span>
-                <ul class="fa-ul" ng-show="g.name === selectedGroup.name">
-                    <li ng-repeat="subG in g.concepts | orderBy:'term'" style="margin-left: -40px" ng-switch="subG.term === selectedSubGroup.term" >
-                        <span ng-click="selectSubGroup(subG, g.conceptSystem)" class="hand-cursor">
-                            <i ng-switch-default class="fa fa-square-o" id="li-blank-{{subG.term}}"></i> 
-                            <i ng-switch-when="true" class="fa fa-check-square-o" id="li-checked-{{subG.term}}"></i>
-                            <small>{{subG.term}} ({{subG.count}})</small>
-                        </span>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+        <div id="classification-facets">
+            <div ng-repeat="e in classifications.elements | orderBy:'name'"
+                ng-show="selectedElements.indexOf(e.name) > -1 || selectedElements.length < 1"
+                ng-include="'facet_elements_tree.html'"
+                >
+            </div>
+        </div>
         <strong ng-show="facets.statuses.terms">Status</strong>
         <ul class="fa-ul">
             <li ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">

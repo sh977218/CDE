@@ -1,12 +1,13 @@
 package gov.nih.nlm.cde.test;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
-import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 public class CdeSearchTest extends NlmCdeBaseTest {
     
@@ -28,10 +29,20 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         WebElement csDl = findElement(By.id("repeatCs"));
         List<WebElement> csElements = csDl.findElements(By.cssSelector("#repeatCs ul li"));
         Assert.assertEquals(csElements.size(), 4);
-        Assert.assertEquals(csElements.get(0).getText(), "GO Trial");
-        Assert.assertEquals(csElements.get(1).getText(), "GO New CDEs");
-        Assert.assertEquals(csElements.get(2).getText(), "C3D");
-        Assert.assertEquals(csElements.get(3).getText(), "caBIG");
+        List<String> assertList = new ArrayList<String>();
+        assertList.add("GO Trial");
+        assertList.add("GO New CDEs");
+        assertList.add("C3D");
+        assertList.add("caBIG");
+
+        List<String> actualList = new ArrayList<String>();
+        for (WebElement csElt : csElements) {
+            actualList.add(csElt.getText());
+        }
+        for (String a : assertList) {
+            Assert.assertTrue(actualList.contains(a));
+        }
+        
         findElement(By.linkText("Identifiers")).click();
         Assert.assertTrue(textPresent("3157849"));
     } 
