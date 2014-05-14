@@ -1,11 +1,10 @@
  function ClassificationCtrl($scope, $modal, $route, Classification) {
     $scope.initCache(); 
      
-    $scope.removeClassification = function(orgName, conceptSystemName, conceptName) {
+    $scope.removeClassification = function(orgName, elts) {
         Classification.remove({
             orgName: orgName
-            , conceptSystemName: conceptSystemName
-            , conceptName: conceptName
+            , elements: elts
             , deId: $scope.cde._id 
         }, 
         function (res) {
@@ -37,11 +36,10 @@
         });
     };
     
-    $scope.searchByClassification = function(orgName, systemName, conceptName) {
+    $scope.searchByClassification = function(orgName, elts) {
         $scope.cache.removeAll();
-        $scope.cacheOrgFilter(orgName); 
-        $scope.cacheSubGroup({term:conceptName});
-        $scope.cacheGroup({name:systemName});
+        $scope.cacheOrgFilter(orgName);
+        $scope.cache.put("selectedElements", elts);
     };
  }
  

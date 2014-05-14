@@ -19,12 +19,42 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void statusFacets() {
         goHome();
-        Assert.assertTrue(textPresent("Qualified (3"));
+        Assert.assertTrue(textPresent("Qualified (4"));
         findElement(By.id("li-blank-caBIG")).click();
         findElement(By.cssSelector("i.fa-check-square-o"));
         Assert.assertTrue(textPresent("Qualified (1"));
     }
 
+    @Test
+    public void deepFacets() {
+        goHome();
+        findElement(By.id("li-blank-NINDS")).click();
+        findElement(By.id("li-blank-Disease")).click();
+        findElement(By.id("li-blank-Traumatic Brain Injury")).click();
+        findElement(By.id("li-blank-Acute Hospitalized")).click();
+        List<WebElement> elts = driver.findElements(By.id("li-blank-Classification"));
+        for (int i = 0; i < elts.size(); i++) {
+            if (elts.get(i).isDisplayed()) {
+                elts.get(i).click();
+                i = elts.size();
+            }
+        }
+        findElement(By.id("li-blank-Basic")).click();
+        Assert.assertTrue(textPresent("11 hits"));
+        Assert.assertTrue(textPresent("Traffic accident other party role type"));
+        findElement(By.id("li-checked-Acute Hospitalized")).click();
+        Assert.assertTrue(textPresent("24 hits"));
+        elts = driver.findElements(By.id("li-blank-Assessments and Examinations"));
+        for (int i = 0; i < elts.size(); i++) {
+            if (elts.get(i).isDisplayed()) {
+                elts.get(i).click();
+                i = elts.size();
+            }
+        }
+        Assert.assertTrue(textPresent("8 hits"));
+        findElement(By.id("li-checked-Disease")).click();
+    }
+    
     @Test
     public void facets() {
         mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
@@ -50,7 +80,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         hangon(1);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("3")));
         findElement(By.id("li-checked-caBIG")).click();
-        Assert.assertTrue(textPresent("Event Pre-Surgical Study Period Code"));
+        Assert.assertTrue(textPresent("Patient Ethnic Group"));
     }
     
     @Test
@@ -61,12 +91,12 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-check-square-o"));
         hangon(1);
         findElement(By.linkText("Next")).click();
-        hangon(1);
         Assert.assertTrue(textPresent("OPEN to Rave Standard "));
         findElement(By.cssSelector("i.fa-check-square-o"));
         findElement(By.id("resetSearch")).click();
+        Assert.assertTrue(textPresent("Qualified (4"));
         findElement(By.name("ftsearch")).sendKeys("Immunology");
-        findElement(By.id("search.submit")).click();
+        findElement(By.cssSelector("i.fa-search")).click();
         Assert.assertTrue(textPresent("Immunology Gonorrhea Assay Laboratory Finding Result"));
     }
 
@@ -96,13 +126,13 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(linkList.size(), 2);
         
         // Now test unclicking everything
-        findElement(By.id("li-checked-gov.nih.nci.ivi.genericimage")).click();
+        findElement(By.id("li-checked-Generic Image")).click();
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 8);
         
-        Assert.assertTrue(textPresent("genericimage (2)"));
-        findElement(By.id("li-blank-gov.nih.nci.ivi.genericimage")).click();
+        Assert.assertTrue(textPresent("Generic Image (2)"));
+        findElement(By.id("li-blank-Generic Image")).click();
         
         hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));

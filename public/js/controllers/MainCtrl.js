@@ -187,26 +187,8 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     
     $scope.removeCacheOrgFilter = function() {
         $scope.cache.remove("selectedOrg");
-        $scope.cache.remove("selectedSubGroup");            
-        $scope.cache.remove("selectedGroup");        
+        $scope.cache.remove("selectedElements");            
     };
-
-    $scope.cacheSubGroup = function(subG) {
-        $scope.cache.put("selectedSubGroup", subG);
-    };
-    
-    $scope.removeCacheSubGroup = function() {
-        $scope.cache.remove("selectedSubGroup");
-    };    
-
-    $scope.cacheGroup = function(g) {
-        $scope.cache.put("selectedGroup", g);
-    };  
-    
-    $scope.removeCacheGroup = function() {
-        $scope.cache.remove("selectedGroup");
-        $scope.cache.remove("selectedSubGroup");
-    };  
     
     $scope.isAllowed = function (cde) {
         if (!cde) return false;
