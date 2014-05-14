@@ -5,10 +5,10 @@ exports.findSteward = function(de, orgName) {
         }
     }
 };
-exports.findConcept = function(system, name) {
-    for (var i = 0; i < system.elements.length; i++) {
-        if (system.elements[i].name === name) {
-            return {index:i, object: system.elements[i]};
+exports.findElement = function(element, name) {
+    for (var i = 0; i < element.elements.length; i++) {
+        if (element.elements[i].name === name) {
+            return {index:i, object: element.elements[i]};
         }
     }
 };
@@ -20,4 +20,22 @@ exports.addElement = function (conceptSystem, concept) {
     if(!conceptSystem.elements) conceptSystem.elements = [];
     conceptSystem.elements.push(newConcept);                    
     return {index:0, object: conceptSystem.elements[conceptSystem.elements.length-1]};
+};
+
+exports.removeClassificationFromTree = function(sourceElements, pathElements) {
+    if (pathElements.length > 0) {
+        for (var i = 0; i < sourceElements.length; i++) {
+           if (sourceElements[i].name === pathElements[0]) {
+               if (pathElements.length > 1) {
+                   pathElements.splice(0, 1);
+                   this.removeClassificationFromTree(sourceElements[i].elements, pathElements);
+                   if (sourceElements[i].elements.length === 0) {
+                       sourceElements.splice(i, 1);
+                   }
+               } else {
+                   sourceElements.splice(i, 1);
+               }
+           }             
+        }
+    }
 };

@@ -2,28 +2,34 @@
 <h4>Classification</h4>
 <button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification" ng-show="isAllowedNonCuration(cde)"><i class="fa fa-plus"> </i> Add Classification</button>
 
+<script type="text/ng-template"  id="classif-sub-elements.html">
+    <ul class="fa-ul">
+        <li ng-repeat="elt in elt.elements | orderBy:'name'" style="margin-right: -20px" ng-init="pathArray = pathArray.slice(0); pathArray.push(elt.name)">
+            <span ng-show="isAllowedNonCuration(cde)">
+                <span ng-show="showDelete">
+                    Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(stewardClassifications.stewardOrg.name, pathArray)" 
+                                      id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
+                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
+                </span>
+                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
+            </span>
+            <a href="/">
+                <span ng-click="searchByClassification(stewardClassifications.stewardOrg.name, pathArray)" id="classification-{{$parent.$index}}-{{$index}}" class="hand-cursor">
+                    {{elt.name}}  
+                </span>
+            </a> 
+            <div ng-include="'classif-sub-elements.html'"></div>
+        </li>
+    </ul>
+</script>
+
 <div id="repeatCs" class="container">
     <div ng-repeat="stewardClassifications in classificationToFilter()" class="col-md-5 container">
         <h5>{{stewardClassifications.stewardOrg.name}}</h5>
         <hr/>
-        <div ng-repeat="conceptSystem in stewardClassifications.elements" class="col-md-6">
-            <h6>{{ conceptSystem.name }}</h6>
-            <ul>
-                <li ng-repeat="concept in conceptSystem.elements">
-                    <span ng-show="isAllowedNonCuration(cde)">
-                        <span ng-show="showDelete">
-                            Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(stewardClassifications.stewardOrg.name, conceptSystem.name, concept.name)" id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
-                            <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
-                        </span>
-                        <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
-                    </span>                    
-                    <a href="/">
-                        <span ng-click="searchByClassification(stewardClassifications.stewardOrg.name, conceptSystem.name, concept.name)" id="classification-{{$parent.$index}}-{{$index}}" class="hand-cursor">
-                            {{ concept.name }}  
-                        </span>
-                    </a>                    
-                </li>
-            </ul>
+        <div ng-repeat="elt in stewardClassifications.elements" class="col-md-6" ng-init='pathArray = [elt.name]'>
+            <h6>{{elt.name}}</h6>
+            <div ng-include="'classif-sub-elements.html'"></div>
         </div>
     </div>
 </div>

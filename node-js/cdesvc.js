@@ -304,11 +304,12 @@ exports.addClassificationToCde = function(de, orgName, conceptSystemName, concep
         var i = de.classification.length - 1;
         steward = {index: i, object: de.classification[i]};
     }  
-    var conceptSystem = classification.findConcept(steward.object, conceptSystemName);                
+    var conceptSystem = classification.findElement(steward.object, conceptSystemName);  
+
     if (!conceptSystem) {
         conceptSystem = classification.addElement(steward.object, conceptSystemName);
     }
-    var concept = classification.findConcept(conceptSystem.object, conceptName);      
+    var concept = classification.findElement(conceptSystem.object, conceptName);      
     if (!concept) {
         concept = classification.addElement(conceptSystem.object, conceptName);
     } 
