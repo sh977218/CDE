@@ -217,8 +217,6 @@ public class NlmCdeBaseTest {
         findElement(By.id("compare_0")).click();   
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));        
         Assert.assertTrue(textPresent("Compare ( full )"));
-//        findElement(By.id("acc_link_2")).click();
-//        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_2")));
         findElement(By.linkText("Compare ( full )")).click();   
     }      
     
