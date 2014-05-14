@@ -20,20 +20,22 @@
 </center>
 
 <script type="text/ng-template"  id="facet_elements_tree.html">
+    
     <span ng-click="selectElement(e)" class="hand-cursor">
         <div class="row">
-            <i class="fa fa-angle-right" class="col-md-1"></i>
+            <i class="fa fa-angle-right col-md-1" ></i>
             <span class="col-md-11">
                 <small> {{e.name}} ({{e.count}})</small>
             </span>
         </div>
     </span>
-    <div ng-show="selectedElements.indexOf(e.name) > -1">
+    <div ng-show="selectedElements.indexOf(e.name) > -1" style="margin-left: 5px">
             <div ng-repeat="e in e.elements | orderBy:'name'"
                 ng-show="selectedElements.indexOf(e.name) > -1 || e.level > selectedElements.length"
                 ng-include="'facet_elements_tree.html'"
                 >        
             </div>
+            
     </div>
 </script>
 
