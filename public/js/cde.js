@@ -91,7 +91,7 @@ cdeApp.directive('ngCdeAvailable', ['$http', function($http) {
 
 cdeApp.filter('placeholdEmpty', function() {
     return function(input) {
-        if (!(input == undefined || input == null || input == "")) {
+        if (!(input === undefined || input === null || input === "")) {
             return input;
         } else {
             return "N/A";
