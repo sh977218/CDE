@@ -758,12 +758,10 @@ app.post('/addAttachmentToCde', function(req, res) {
 
 app.post('/addClassification', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
-            console.log("1")
         if (err) {
             return res.send(err);
         }
         cdesvc.addClassificationToCde(de, req.body.classification.orgName, req.body.classification.conceptSystem, req.body.classification.concept)
-            console.log("3")
         return de.save(function(err) {
             if (err) {
                 res.send("error: " + err);
