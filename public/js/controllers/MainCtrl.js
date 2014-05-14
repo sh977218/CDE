@@ -106,9 +106,10 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
 
         modalInstance.result.then(function (selectedBoard) {
             $http.put("/pincde/" + cde.uuid + "/" + selectedBoard._id).then(function(response) {
-                if (response.status==200)
+                if (response.status==200) {
                     $scope.addAlert("success", response.data);
-                else
+                    $scope.loadBoards();
+                } else
                     $scope.addAlert("warning", response.data);
             }, function (response){
                 $scope.addAlert("danger", response.data);
