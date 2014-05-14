@@ -51,7 +51,7 @@
                 </span>
             </li>
         </ul>
-        <div>
+        <div id="classification-facets">
             <div ng-repeat="e in classifications.elements | orderBy:'name'"
                 ng-show="selectedElements.indexOf(e.name) > -1 || selectedElements.length < 1"
                 ng-include="'facet_elements_tree.html'"

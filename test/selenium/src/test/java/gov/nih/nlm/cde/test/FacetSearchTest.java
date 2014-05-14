@@ -32,13 +32,19 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Disease")).click();
         findElement(By.id("li-blank-Traumatic Brain Injury")).click();
         findElement(By.id("li-blank-Acute Hospitalized")).click();
-        findElement(By.id("li-blank-Classification")).click();
+        List<WebElement> elts = driver.findElements(By.id("li-blank-Classification"));
+        for (int i = 0; i < elts.size(); i++) {
+            if (elts.get(i).isDisplayed()) {
+                elts.get(i).click();
+                i = elts.size();
+            }
+        }
         findElement(By.id("li-blank-Basic")).click();
         Assert.assertTrue(textPresent("11 hits"));
         Assert.assertTrue(textPresent("Traffic accident other party role type"));
         findElement(By.id("li-checked-Acute Hospitalized")).click();
         Assert.assertTrue(textPresent("24 hits"));
-        findElement(By.id("li-blank-Assessments")).click();
+        findElement(By.id("li-blank-Assessments and Examinations")).click();
         Assert.assertTrue(textPresent("8 hits"));
         findElement(By.id("li-checked-Disease")).click();
         Assert.assertTrue(textPresent("139 hits"));
