@@ -70,7 +70,7 @@ public class UserTest extends NlmCdeBaseTest {
         goToCdeByName("Service Item Display Name java.lang.String");
         goToCdeByName("Apgar Score Created By java.lang.Long");
         goToCdeByName("Target Lesion Sum Short Longest Dimension Measurement");
-        goToCdeByName("Smoking Cessation Other Method Specify Text");
+        goToCdeByName("Form Element End Date");
         goToCdeByName("Treatment Text Other Text");
         goToCdeByName("Specimen Block Received Count");
         goToCdeByName("Malignant Neoplasm Metastatic Involvement Anatomic");
@@ -83,7 +83,7 @@ public class UserTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Service Item Display Name java.lang.String"));
         Assert.assertTrue(textPresent("Apgar Score Created By java.lang.Long"));
         Assert.assertTrue(textPresent("Target Lesion Sum Short Longest Dimension Measurement"));
-        Assert.assertTrue(textPresent("Smoking Cessation Other Method Specify Text"));
+        Assert.assertTrue(textPresent("Form Element End Date"));
         Assert.assertTrue(textPresent("Treatment Text Other Text"));
         Assert.assertTrue(textPresent("Specimen Block Received Count"));
         Assert.assertTrue(textPresent("Malignant Neoplasm Metastatic Involvement Anatomic"));

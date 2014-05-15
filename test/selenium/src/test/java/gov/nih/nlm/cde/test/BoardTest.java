@@ -172,12 +172,12 @@ public class BoardTest extends NlmCdeBaseTest {
         pinTo("Laboratory Procedure Blood Urea Nitrogen", "Blood Board");
         pinTo("Umbilical Cord Blood", "Blood Board");
         pinTo("Smoking History", "Smoking Board");
-        pinTo("Smoking Cessation", "Smoking Board");
+        pinTo("Form Element End Date", "Smoking Board");
         
         goToBoard("Smoking Board");
         Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 2);
         Assert.assertTrue(textPresent("Smoking History"));
-        Assert.assertTrue(textPresent("Smoking Cessation"));
+        Assert.assertTrue(textPresent("Form Element End Date"));
 
         goToBoard("Blood Board");
         Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 2);
