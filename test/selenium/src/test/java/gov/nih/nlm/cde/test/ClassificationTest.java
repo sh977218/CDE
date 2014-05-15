@@ -41,7 +41,8 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.id("removeClassification-3-0")).click();
         findElement(By.id("confirmRemoveClassification-3-0")).click();
         Assert.assertTrue(textPresent("Classification Removed"));
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(toRemove) < 0);
+        findElement(By.linkText("Classification")).click();
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().contains(toRemove));
     }
     
     @Test
