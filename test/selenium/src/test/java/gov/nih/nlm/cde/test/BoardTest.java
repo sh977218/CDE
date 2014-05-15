@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -138,6 +139,23 @@ public class BoardTest extends NlmCdeBaseTest {
                 return;
             }
         }
+    }
+    
+    @Test
+    public void cdeNumbIncrement() {
+        mustBeLoggedInAs(boardUser, boardPassword);
+        goHome();
+        createBoard("Number Increment Board", "Number Increment Definition");
+        findElement(By.linkText("My Boards")).click();           
+        WebElement numElt = findElement(By.id("dd_numb"));
+        int num = new Integer(numElt.getText());
+        Assert.assertEquals(0, num);
+        pinTo("Lymph Node Procedure", "Number Increment Board");
+        findElement(By.linkText("My Boards")).click();           
+        numElt = findElement(By.id("dd_numb"));
+        num = new Integer(numElt.getText());
+        Assert.assertEquals(1, num);
+        removeBoard("Number Increment Board");
     }
     
     @Test
