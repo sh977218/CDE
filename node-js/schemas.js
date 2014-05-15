@@ -34,16 +34,6 @@ var namingSchema = mongoose.Schema({
     }
 }, {_id: false});
 
-var classificationCollSchema = mongoose.Schema(
-{
-    conceptSystem: String
-    , concept: String
-    , stewardOrg: {
-        name: String
-    }
-}
-);
-
 var csEltSchema = mongoose.Schema({
     name: String
     , elements: [csEltSchema]
