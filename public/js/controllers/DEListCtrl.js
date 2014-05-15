@@ -141,7 +141,12 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
                     term: {
                         "registrationState.administrativeStatus": "retire"
                     }
-                }]
+                },{
+                    term: {
+                        "archived": "true"
+                    }
+                } 
+                ]
             }
        };
        

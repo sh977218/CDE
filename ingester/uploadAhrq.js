@@ -3,6 +3,7 @@ var fs = require('fs')
     , xml2js = require('xml2js')
     , mongoose = require('mongoose')
     , uuid = require('node-uuid')
+	, mongodata = require('../node-js/mongo-data')
 ;
 
 var parser = new xml2js.Parser();
@@ -10,7 +11,10 @@ var parser = new xml2js.Parser();
 var mongoUri = process.env.MONGO_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/nlmcde';
 console.log("connecting to " + mongoUri);
 
-mongoose.connect(mongoUri);
+if( !mongoose.connection ) {
+	mongoose.connect(mongoUri);
+}
+
 console.log("Loading file: " + process.argv[2]);
 
 var db = mongoose.connection;
@@ -24,29 +28,16 @@ var schemas = require('../node-js/schemas');
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var Org = mongoose.model('Org', schemas.orgSchema);
 
+// Global variables
+var globals = {
+    orgName : "AHRQ",
+    system : "Common Formats / Form",
+	concept : "Form Name:"
+};
 
-var addClassification = function (system, concept) {
-  Org.findOne({name: 'AHRQ'}).exec(function (err, ahrqOrg) {
-      var found = false;
-      if (ahrqOrg.classifications === undefined) {
-          ahrqOrg.classifications = [];
-      }
-     for (var i = 0; i < ahrqOrg.classifications.length; i++) {
-         if (ahrqOrg.classifications[i].conceptSystem === system && ahrqOrg.classifications[i].concept === concept) {
-             found = true;
-         }
-     } 
-     if (found === false) {
-         ahrqOrg.classifications.push({
-             conceptSystem: system
-             , concept: concept
-             , stewardOrg: {name: 'AHRQ'}
-          });
-          ahrqOrg.save(function(err, newOrg) {
-              if (err) console.log("failed to update Org: " + err);
-          });
-     }
-  });
+// Adds classifications to 'orgs' collection.
+var addClassification = function (orgName, system, concept) {
+	mongodata.addClassificationToOrg( orgName, system, concept );
 };
 
 // TODO - Make this iterate over files. Otherwise, open connection is way too slow.
@@ -57,10 +48,10 @@ fs.readFile(process.argv[2], function(err, result) {
     var newDE = new DataElement({
         uuid: uuid.v4()
         , created: Date.now()
-        , origin: 'AHRQ'
+        , origin: globals.orgName
         , originId: data["Data Element ID:"] + "v" + data["Version:"]
         , stewardOrg: {
-            name: "AHRQ"
+            name: globals.orgName
         }
         , registrationState: {
             registrationStatus: 'Qualified'
@@ -138,21 +129,20 @@ fs.readFile(process.argv[2], function(err, result) {
         }
        }     
     );
-    
-    addClassification("Common Formats / Form", data["Form Name:"]);
-    
-  
+	
+    addClassification(globals.orgName, globals.system, data[globals.concept]);
+      
     newDE.classification = [];    
     newDE.classification.push({
         stewardOrg : {
-            name : "AHRQ"
+            name : globals.orgName
         },
         elements : [ 
             {
-                name : "Common Formats / Form",
+                name : globals.system,
                 elements : [ 
                     {
-                        name : data["Form Name:"]
+                        name : data[globals.concept]
                     }
                 ]
             }

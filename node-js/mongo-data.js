@@ -125,6 +125,16 @@ exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptNam
         conceptSystem.elements.push({name: conceptName});
     };     
     Org.findOne({"name": orgName}).exec(function(err, stewardOrg) {
+		// Create 'orgs' collection if it doesn't exist
+		if( !stewardOrg ) {
+			stewardOrg = new Org({name:orgName});
+		}
+		
+		// Create 'classifications' array if it doesn't exist
+		if( !stewardOrg.classifications ) {
+			stewardOrg.classifications = [];
+		}
+	
         conceptSystem = mongo_data.findConceptSystem(stewardOrg, conceptSystemName);
         if (!conceptSystem) {
             conceptSystem = mongo_data.addConceptSystem(stewardOrg, conceptSystemName);
@@ -135,10 +145,9 @@ exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptNam
         }    
         stewardOrg.save(function (err) {
             if (err) { 
-                callback("Unable to add Classification. " + err);
-                return;
+                if(callback) callback("Unable to add Classification. " + err);
             } else {
-                return callback();
+                if(callback) callback();
             }  
         });
     });
