@@ -294,6 +294,12 @@ exports.removeFromCart = function (user, formId, callback) {
     });
 };
 
+exports.deCount = function (callback) {
+    DataElement.find().count().exec(function (err, count) {
+        callback(count);
+    });
+};
+
 exports.boardList = function(from, limit, searchOptions, callback) {
     PinningBoard.find(searchOptions).exec(function (err, boards) {
         // TODO Next line throws "undefined is not a function.why?

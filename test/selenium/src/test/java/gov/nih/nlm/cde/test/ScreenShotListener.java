@@ -53,4 +53,8 @@ public class ScreenShotListener extends TestListenerAdapter {
         }
     }
     
+    public void onTestSuccess(ITestResult itr) {
+        
+    }
+    
 }
