@@ -250,7 +250,7 @@ exports.addComment = function(deId, comment, userId, callback) {
                 , text: comment
             });
             de.save(function (err) {
-                callback("");
+                callback(err, de);
             });
         });
     });

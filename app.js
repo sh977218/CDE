@@ -452,15 +452,15 @@ app.post('/addClassificationToOrg', function(req, res) {
 
 app.post('/addComment', function(req, res) {
     if (req.isAuthenticated()) {
-        mongo_data.addComment(req.body.deId, req.body.comment, req.user._id, function (err) {
+        mongo_data.addComment(req.body.deId, req.body.comment, req.user._id, function (err, de) {
             if (err) {
                 res.send(err);
                 return;
             }
-            res.send("Comment added");
+            res.send({message: "Comment added", de: de});
         });
     } else {
-        res.send("You are not authorized.");                   
+        res.send({message: "You are not authorized."});                   
     }
 });
 
@@ -477,9 +477,9 @@ app.post('/removeComment', function(req, res) {
                         de.comments.splice(c, 1);
                         de.save(function (err) {
                            if (err) {
-                               res.send("error: " + err);
+                               res.send({"message": err});
                            } else {
-                               res.send("Comment removed");
+                               res.send({message: "Comment removed", de: de});
                            }
                         });                        
                     } else {
