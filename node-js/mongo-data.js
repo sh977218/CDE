@@ -63,20 +63,24 @@ exports.org_autocomplete = function(name, callback) {
 };
 
 exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, callback) {
-    var mongoQuery = {
-        $pull: {
-            classification: {
-                "stewardOrg.name": orgName,
-                "elements.name": conceptSystem,
-                "elements.elements.name": concept
-            }
-        }
-    };
-    DataElement.update({}, mongoQuery, {multi: true}).exec(function(err) {
+//    var mongoQuery = {
+//        // Pull is probably not doing was is intended. Instead, removing all classif where either condition is met
+//        $pull: {
+//            classification: {                
+//                "elements.$.elements.name": concept
+//            }
+//        }
+//    };
+    //error: Unable to unclassify. MongoError: can't append to array using string field name: elements
+    DataElement.update(
+            {"classification.stewardOrg.name": orgName, "classification.elements.name": conceptSystem}
+            ,{$pull: {"classification.elements.$.elements": {name: concept}}}
+            , {multi: true}).exec(function(err, nb) {
         if (err) { 
             callback("Unable to unclassify. " + err);
             return;
         } else {
+            console.log("updated " + nb + " records");
             var mongoQuery = {
                 $pull: {
                         "classifications.$.elements": {
@@ -84,13 +88,8 @@ exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, 
                         }
                 }
             };
-            Org.update({"name": orgName, "classifications.name": conceptSystem}, mongoQuery).exec(function(err) {
-                if (err) { 
-                    callback("Unable to remove Classification. " + err);
-                    return;
-                } else {
-                    return callback();
-                }
+            Org.update({"name": orgName, "classifications.name": conceptSystem}, mongoQuery).exec(function(err, org) {
+                return callback(err, org);
             });
         }
     });
@@ -125,15 +124,15 @@ exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptNam
         conceptSystem.elements.push({name: conceptName});
     };     
     Org.findOne({"name": orgName}).exec(function(err, stewardOrg) {
-		// Create 'orgs' collection if it doesn't exist
-		if( !stewardOrg ) {
-			stewardOrg = new Org({name:orgName});
-		}
-		
-		// Create 'classifications' array if it doesn't exist
-		if( !stewardOrg.classifications ) {
-			stewardOrg.classifications = [];
-		}
+        // Create 'orgs' collection if it doesn't exist
+        if( !stewardOrg ) {
+                stewardOrg = new Org({name:orgName});
+        }
+
+        // Create 'classifications' array if it doesn't exist
+        if( !stewardOrg.classifications ) {
+                stewardOrg.classifications = [];
+        }
 	
         conceptSystem = mongo_data.findConceptSystem(stewardOrg, conceptSystemName);
         if (!conceptSystem) {
@@ -144,11 +143,7 @@ exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptNam
             mongo_data.addConcept(conceptSystem, conceptName);
         }    
         stewardOrg.save(function (err) {
-            if (err) { 
-                if(callback) callback("Unable to add Classification. " + err);
-            } else {
-                if(callback) callback();
-            }  
+            if(callback) callback(err, stewardOrg);
         });
     });
 };

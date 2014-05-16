@@ -426,11 +426,11 @@ app.post('/removeClassificationFromOrg', function(req, res) {
         || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0)
           && (!req.user.orgCurator || req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0)
         ) {
-        res.send("You are not authorized to do this.");
+        res.send({message: "You are not authorized to do this."});
     } else {
-        mongo_data.removeClassificationFromOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err) {
-            if (err) res.send("error: " + err);
-            else res.send("Classification Removed");
+        mongo_data.removeClassificationFromOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err, org) {
+            if (err) res.send({message: "error: " + err});
+            else res.send({message: "Classification Removed", org: org});
         });
     }
 });
@@ -440,11 +440,11 @@ app.post('/addClassificationToOrg', function(req, res) {
         || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0)
           && (!req.user.orgCurator || req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0)
         ) {
-        res.send("You are not authorized to do this.");
+        res.send({message: "You are not authorized to do this."});
     } else {
-        mongo_data.addClassificationToOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err) {
-            if (err) res.send("error: " + err);
-            else res.send("Classification Added");
+        mongo_data.addClassificationToOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err, org) {
+            if (err) res.send({message: "error: " + err});
+            else res.send({message: "Classification Added", org: org});
         });
     }
 });
