@@ -6,6 +6,7 @@ var mongoose = require('mongoose')
     , Grid = require('gridfs-stream')
     , fs = require('fs')
     , envconfig = require('../envconfig')
+    , classification = require('./classification')
     ;
 
 var mongoUri = process.env.MONGO_URI || envconfig.mongo_uri || 'mongodb://localhost/nlmcde';
@@ -63,36 +64,29 @@ exports.org_autocomplete = function(name, callback) {
 };
 
 exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, callback) {
-//    var mongoQuery = {
-//        // Pull is probably not doing was is intended. Instead, removing all classif where either condition is met
-//        $pull: {
-//            classification: {                
-//                "elements.$.elements.name": concept
-//            }
-//        }
-//    };
-    //error: Unable to unclassify. MongoError: can't append to array using string field name: elements
-    DataElement.update(
-            {"classification.stewardOrg.name": orgName, "classification.elements.name": conceptSystem}
-            ,{$pull: {"classification.elements.$.elements": {name: concept}}}
-            , {multi: true}).exec(function(err, nb) {
-        if (err) { 
-            callback("Unable to unclassify. " + err);
-            return;
-        } else {
-            console.log("updated " + nb + " records");
-            var mongoQuery = {
-                $pull: {
-                        "classifications.$.elements": {
-                            "name": concept
-                        }
+    var mongoQuery = {
+        $pull: {
+                "classifications.$.elements": {
+                    "name": concept
                 }
-            };
-            Org.update({"name": orgName, "classifications.name": conceptSystem}, mongoQuery).exec(function(err, org) {
-                return callback(err, org);
-            });
         }
-    });
+    };
+    Org.update(
+        {"name": orgName, "classifications.name": conceptSystem}
+        , mongoQuery).exec(function(err) {
+        DataElement.find({"classification.stewardOrg.name": orgName, "classification.elements.name": conceptSystem}).exec(function(err, result) {
+            for (var i = 0; i < result.length; i++) {
+                var cde = result[i];
+                var steward = classification.findSteward(cde, orgName);
+                classification.removeClassificationFromTree(steward.object.elements, [conceptSystem, concept]);
+                cde.save(function(err) {
+                });
+            };
+        });
+        Org.findOne({"name": orgName}).exec(function (err, result) {
+            callback(err, result);
+        });
+    });  
 };
 
 exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptName, callback) {
