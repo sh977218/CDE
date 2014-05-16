@@ -11,6 +11,7 @@ function CommentsCtrl($scope, Comment) {
             },
             function(res) {
                   $scope.message = res;
+                  // TODO : RACE
                   $scope.reload({cdeId: $scope.cde._id});
             }
         );
@@ -24,6 +25,7 @@ function CommentsCtrl($scope, Comment) {
         }, 
         function (res) {
             $scope.message = res;
+             // TODO : RACE
             $scope.reload({cdeId: $scope.cde._id});
         });
     };
