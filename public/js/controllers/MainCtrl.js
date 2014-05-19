@@ -16,7 +16,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
            }
            $timeout(function() {
                $scope.checkSystemAlert();
-           }, 10000);
+           }, 120000);
         });
     };
     $scope.checkSystemAlert();
