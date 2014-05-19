@@ -66,5 +66,6 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         new Select(driver.findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText(testOrg);
         logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
-    }    
+    } 
+    
 }

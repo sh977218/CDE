@@ -1,5 +1,14 @@
 <div>{{message}}</div>
 <tabset>
+    <tab heading="Broadcast">
+        <form name="form" role="form">
+            <div class="control-group" ng-class="{error: form.version.$invalid}">
+               <label for="message">Broadcast Message: </label>
+               <input class="form-control" name="message" type="text" ng-model="broadcast.message"></input>
+            </div>
+            <button class="btn btn-warning" ng-click="saveMessage()" id="saveMessage">Save</button>
+        </form>
+    </tab>
     <tab heading="Site Admins">
         <div class="row" ng-repeat="u in siteAdmins">
             <div class="col-md-11">{{u.username}}</div>

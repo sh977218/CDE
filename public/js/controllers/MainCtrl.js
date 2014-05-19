@@ -9,6 +9,18 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         });
     };
     
+    $scope.checkSystemAlert = function() {
+        $http.get('/systemAlert').then(function (response) {
+           if (response.data.length > 0) {
+               $scope.addAlert("warning", response.data);
+           }
+           $timeout(function() {
+               $scope.checkSystemAlert();
+           }, 10000);
+        });
+    };
+    $scope.checkSystemAlert();
+    
     $scope.alerts = [];
     $scope.closeAlert = function(index) {
         $scope.alerts.splice(index, 1);

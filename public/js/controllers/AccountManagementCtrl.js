@@ -6,6 +6,10 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     $scope.orgCurator = {};
     $scope.admin = {};
     $scope.curator = {};
+    
+    $http.get("/systemAlert").then(function(response) {
+       $scope.broadcast = {message: response.data}; 
+    });
         
     $scope.getSiteAdmins = function() {
         return $http.get("/siteAdmins").then(function(response) {
@@ -140,5 +144,10 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
                   $scope.orgs = $scope.getOrgs();
             }
         );
-    };     
+    };    
+    
+    $scope.saveMessage = function() {
+        $http.post('/systemAlert', {alert: $scope.broadcast.message});
+    };
+    
 }

@@ -1048,7 +1048,7 @@ app.post('/mail/messages/:type', function(req, res) {
 app.post('/retireCde', function (req, res) {
     req.params.type = "received";
     mongo_data.cdeById(req.body._id, function(err, cde) {
-        if (err!="") res.send(404, err);
+        if (err != "") res.send(404, err);
         if (!cde.registrationState.administrativeStatus === "Retire Candidate") return res.send(409, "CDE is not a Retire Candidate");
         cde.registrationState.registrationStatus = "Retired";
         delete cde.registrationState.administrativeStatus;
@@ -1056,6 +1056,21 @@ app.post('/retireCde', function (req, res) {
             res.send();
         });        
     });
+});
+
+var systemAlert = "";
+app.get("/systemAlert", function(req, res) {
+    res.send(systemAlert);
+});
+
+app.post("/systemAlert", function(req, res) {
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        systemAlert = req.body.alert;
+        console.log("system: " + systemAlert);
+        res.send("OK");
+    } else {
+        res.send(401, "Not Authorized");
+    };
 });
 
 http.createServer(app).listen(app.get('port'), function(){
