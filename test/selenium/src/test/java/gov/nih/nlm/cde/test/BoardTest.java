@@ -251,6 +251,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     @Test
     public void searchBoard() {
+        hangon(.5);
         mustBeLoggedInAs(boardUser, boardPassword);
         String pubBlood = "Public Blood Board";
         String privBlood = "Private Blood Board";
@@ -280,6 +281,7 @@ public class BoardTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeBoards() {
+        hangon(.5);
         mustBeLoggedInAs(boardUser, boardPassword);
         String board1 = "First CDE Board";
         String board2 = "Second CDE Board";
