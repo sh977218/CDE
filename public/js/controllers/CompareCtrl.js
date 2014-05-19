@@ -4,6 +4,10 @@ function CompareCtrl($scope, DataElement) {
     $scope.detailedView = true;
     $scope.cdes = [];
     
+    $scope.isAllowed = function(cde) {
+        return false;
+    };
+    
     if ($scope.compareCart.length === 2) {
         for (var i = 0; i < $scope.compareCart.length; i++) {
             DataElement.get({deId: $scope.compareCart[i]}, function (de) {
