@@ -31,6 +31,8 @@ InputSource is = new InputSource(reader);
 is.setEncoding("UTF-8");
 def deList = new XmlSlurper().parse(is);
 
+def contextIgnoreList = ['NINDS'];
+
 for (int i  = 0; i < deList.DataElement.size(); i++) {
     def cadsrDE = deList.DataElement[i];
     def String workflowStatus = "";
@@ -134,16 +136,19 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     Classifications classifications = new Classifications(orgColl);
     for (int csi_i = 0; csi_i < cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.size(); csi_i++) {
         def csi = cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM[csi_i];
+        def ctx = csi.ClassificationScheme[0].ContextName.text();
         if (csi.ClassificationScheme[0].PreferredName.text()!=""
             && csi.ClassificationScheme[0].PreferredName.text()!=null
             && csi.ClassificationSchemeItemName.text()!=""
-            && csi.ClassificationSchemeItemName.text()!=null) {               
-                def list = classificationsArrayMap.get(csi.ClassificationScheme[0].ContextName.text());
-                if (!list) { 
-                    list = [];
-                    classificationsArrayMap.put(csi.ClassificationScheme[0].ContextName.text(),list);
-                }                
-                classifications.classify(list, csi.ClassificationScheme[0].ContextName.text(), csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());                        
+            && csi.ClassificationSchemeItemName.text()!=null) {
+                if (!contextIgnoreList.contains(ctx)) {
+                    def list = classificationsArrayMap.get(ctx);
+                    if (!list) { 
+                        list = [];
+                        classificationsArrayMap.put(ctx,list);
+                    }                
+                    classifications.classify(list, ctx, csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());       
+                }
         }
     }
     
