@@ -12,7 +12,8 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     $scope.checkSystemAlert = function() {
         $http.get('/systemAlert').then(function (response) {
            if (response.data.length > 0) {
-               $scope.addAlert("warning", response.data);
+                var id = (new Date()).getTime();
+                $scope.alerts.push({type: "warning", msg: response.data, id: id});
            }
            $timeout(function() {
                $scope.checkSystemAlert();
