@@ -6,6 +6,7 @@ var mongoose = require('mongoose')
     , Grid = require('gridfs-stream')
     , fs = require('fs')
     , envconfig = require('../envconfig')
+    , classification = require('./classification')
     ;
 
 var mongoUri = process.env.MONGO_URI || envconfig.mongo_uri || 'mongodb://localhost/nlmcde';
@@ -65,35 +66,27 @@ exports.org_autocomplete = function(name, callback) {
 exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, callback) {
     var mongoQuery = {
         $pull: {
-            classification: {
-                "stewardOrg.name": orgName,
-                "elements.name": conceptSystem,
-                "elements.elements.name": concept
-            }
+                "classifications.$.elements": {
+                    "name": concept
+                }
         }
     };
-    DataElement.update({}, mongoQuery, {multi: true}).exec(function(err) {
-        if (err) { 
-            callback("Unable to unclassify. " + err);
-            return;
-        } else {
-            var mongoQuery = {
-                $pull: {
-                        "classifications.$.elements": {
-                            "name": concept
-                        }
-                }
+    Org.update(
+        {"name": orgName, "classifications.name": conceptSystem}
+        , mongoQuery).exec(function(err) {
+        DataElement.find({"classification.stewardOrg.name": orgName, "classification.elements.name": conceptSystem}).exec(function(err, result) {
+            for (var i = 0; i < result.length; i++) {
+                var cde = result[i];
+                var steward = classification.findSteward(cde, orgName);
+                classification.removeClassificationFromTree(steward.object.elements, [conceptSystem, concept]);
+                cde.save(function(err) {
+                });
             };
-            Org.update({"name": orgName, "classifications.name": conceptSystem}, mongoQuery).exec(function(err) {
-                if (err) { 
-                    callback("Unable to remove Classification. " + err);
-                    return;
-                } else {
-                    return callback();
-                }
-            });
-        }
-    });
+        });
+        Org.findOne({"name": orgName}).exec(function (err, result) {
+            callback(err, result);
+        });
+    });  
 };
 
 exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptName, callback) {
@@ -125,15 +118,15 @@ exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptNam
         conceptSystem.elements.push({name: conceptName});
     };     
     Org.findOne({"name": orgName}).exec(function(err, stewardOrg) {
-		// Create 'orgs' collection if it doesn't exist
-		if( !stewardOrg ) {
-			stewardOrg = new Org({name:orgName});
-		}
-		
-		// Create 'classifications' array if it doesn't exist
-		if( !stewardOrg.classifications ) {
-			stewardOrg.classifications = [];
-		}
+        // Create 'orgs' collection if it doesn't exist
+        if( !stewardOrg ) {
+                stewardOrg = new Org({name:orgName});
+        }
+
+        // Create 'classifications' array if it doesn't exist
+        if( !stewardOrg.classifications ) {
+                stewardOrg.classifications = [];
+        }
 	
         conceptSystem = mongo_data.findConceptSystem(stewardOrg, conceptSystemName);
         if (!conceptSystem) {
@@ -144,11 +137,7 @@ exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptNam
             mongo_data.addConcept(conceptSystem, conceptName);
         }    
         stewardOrg.save(function (err) {
-            if (err) { 
-                if(callback) callback("Unable to add Classification. " + err);
-            } else {
-                if(callback) callback();
-            }  
+            if(callback) callback(err, stewardOrg);
         });
     });
 };
@@ -250,7 +239,7 @@ exports.addComment = function(deId, comment, userId, callback) {
                 , text: comment
             });
             de.save(function (err) {
-                callback("");
+                callback(err, de);
             });
         });
     });
@@ -291,6 +280,12 @@ exports.removeFromCart = function (user, formId, callback) {
         } else {
             console.log("This form is not in the cart. " + formId);
         }
+    });
+};
+
+exports.deCount = function (callback) {
+    DataElement.find().count().exec(function (err, count) {
+        callback(count);
     });
 };
 

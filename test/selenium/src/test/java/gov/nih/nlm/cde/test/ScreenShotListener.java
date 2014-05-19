@@ -9,6 +9,9 @@ package gov.nih.nlm.cde.test;
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,7 +29,9 @@ import org.testng.TestListenerAdapter;
  * @author ludetc
  */
 public class ScreenShotListener extends TestListenerAdapter {
-    
+    SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
+    Calendar calendar = Calendar.getInstance();
+
     public void onTestFailure(ITestResult itr) {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
@@ -50,6 +55,24 @@ public class ScreenShotListener extends TestListenerAdapter {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
+        }
+    }
+    
+    public void onTestSuccess(ITestResult itr) {
+        String methodName = itr.getName();
+        try {
+            InputStream response = new URL("http://localhost:9200/cdetest/_count").openStream();
+            byte [] esStr = new byte[100];
+            response.read(esStr);
+            
+            response = new URL("http://localhost:3001/deCount").openStream();
+            byte [] mongoStr = new byte[100];
+            response.read(mongoStr);
+            
+            FileUtils.writeStringToFile(new File("build/testlogs/" + methodName + "_" + formater.format(calendar.getTime()) + ".txt"),
+                    "mongo: " + new String(mongoStr) + "\nES: " + new String(esStr));
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
     }
     

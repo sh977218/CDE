@@ -11,11 +11,10 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
                $scope.org = response.data;
             });
         }
-    }
+    };
     
     $scope.updateOrg();
     
-    var indexedConceptSystemClassifications = [];
     $scope.classificationToFilter = function() {
          indexedConceptSystemClassifications = [];
          return $scope.org.classifications;
@@ -24,8 +23,8 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
     $scope.removeClassification = function(orgName, conceptSystem, concept) {
         var classToDel = {stewardOrg:{name:orgName}, conceptSystem:conceptSystem, concept:concept};
         $http.post("/removeClassificationFromOrg", classToDel).then(function(response) {
-            $scope.addAlert("success", response.data);
-            $scope.updateOrg();
+            $scope.addAlert("success", response.data.message);
+            $scope.org = response.data.org;
         });
     };
     

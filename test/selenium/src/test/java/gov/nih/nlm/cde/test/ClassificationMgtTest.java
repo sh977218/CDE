@@ -23,7 +23,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void createClassifications() {
+    public void createClassificationsMgt() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Classifications")).click();
@@ -41,7 +41,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void removeClassification() {
+    public void removeClassificationMgt() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         goToCdeByName("Person Birth Date");
         findElement(By.linkText("Classification")).click();

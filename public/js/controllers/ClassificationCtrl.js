@@ -10,7 +10,6 @@
         function (res) {
             $scope.cde = res;
             $scope.addAlert("success", "Classification Removed");
-            $route.reload();
         });
     };     
     
@@ -31,7 +30,6 @@
             }, function (res) {
                 $scope.addAlert("success", "Classification Added");
                 $scope.cde = res;
-                $route.reload();
             });
         });
     };
