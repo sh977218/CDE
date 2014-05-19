@@ -426,11 +426,11 @@ app.post('/removeClassificationFromOrg', function(req, res) {
         || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0)
           && (!req.user.orgCurator || req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0)
         ) {
-        res.send("You are not authorized to do this.");
+        res.send({message: "You are not authorized to do this."});
     } else {
-        mongo_data.removeClassificationFromOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err) {
-            if (err) res.send("error: " + err);
-            else res.send("Classification Removed");
+        mongo_data.removeClassificationFromOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err, org) {
+            if (err) res.send({message: "error: " + err});
+            else res.send({message: "Classification Removed", org: org});
         });
     }
 });
@@ -440,11 +440,11 @@ app.post('/addClassificationToOrg', function(req, res) {
         || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0)
           && (!req.user.orgCurator || req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0)
         ) {
-        res.send("You are not authorized to do this.");
+        res.send({message: "You are not authorized to do this."});
     } else {
-        mongo_data.addClassificationToOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err) {
-            if (err) res.send("error: " + err);
-            else res.send("Classification Added");
+        mongo_data.addClassificationToOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err, org) {
+            if (err) res.send({message: "error: " + err});
+            else res.send({message: "Classification Added", org: org});
         });
     }
 });
@@ -452,15 +452,15 @@ app.post('/addClassificationToOrg', function(req, res) {
 
 app.post('/addComment', function(req, res) {
     if (req.isAuthenticated()) {
-        mongo_data.addComment(req.body.deId, req.body.comment, req.user._id, function (err) {
+        mongo_data.addComment(req.body.deId, req.body.comment, req.user._id, function (err, de) {
             if (err) {
                 res.send(err);
                 return;
             }
-            res.send("Comment added");
+            res.send({message: "Comment added", de: de});
         });
     } else {
-        res.send("You are not authorized.");                   
+        res.send({message: "You are not authorized."});                   
     }
 });
 
@@ -477,9 +477,9 @@ app.post('/removeComment', function(req, res) {
                         de.comments.splice(c, 1);
                         de.save(function (err) {
                            if (err) {
-                               res.send("error: " + err);
+                               res.send({"message": err});
                            } else {
-                               res.send("Comment removed");
+                               res.send({message: "Comment removed", de: de});
                            }
                         });                        
                     } else {
@@ -979,6 +979,13 @@ app.post('/desByConcept', function(req, res) {
    mongo_data.desByConcept(req.body, function(result) {
        res.send(result);
    }); 
+});
+
+app.get('/deCount', function(req, res) {
+   mongo_data.deCount(function (result) {
+       console.log(result);
+       res.send({count: result});
+   });
 });
 
 var fetchRemoteData = function() {

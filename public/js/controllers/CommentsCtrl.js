@@ -2,7 +2,7 @@ function CommentsCtrl($scope, Comment) {
     
     $scope.canRemoveComment = function(com) {
         return (($scope.user._id) && ($scope.user._id == com.user || ($scope.user.orgAdmin.indexOf($scope.cde.stewardOrg.name) > -1)));
-    } 
+    };
     
     $scope.addComment = function() {        
         Comment.addComment({
@@ -10,8 +10,8 @@ function CommentsCtrl($scope, Comment) {
             , deId: $scope.cde._id
             },
             function(res) {
-                  $scope.message = res;
-                  $scope.reload({cdeId: $scope.cde._id});
+                  $scope.addAlert("success", res.message);  
+                  $scope.cde = res.de;
             }
         );
         $scope.comment.content = "";
@@ -23,8 +23,8 @@ function CommentsCtrl($scope, Comment) {
             , deId: $scope.cde._id 
         }, 
         function (res) {
-            $scope.message = res;
-            $scope.reload({cdeId: $scope.cde._id});
+            $scope.addAlert("success", res.message);
+            $scope.cde = res.de;
         });
     };
 }

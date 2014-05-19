@@ -1,7 +1,6 @@
 package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
-import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -41,7 +40,8 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.id("removeClassification-3-0")).click();
         findElement(By.id("confirmRemoveClassification-3-0")).click();
         Assert.assertTrue(textPresent("Classification Removed"));
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(toRemove) < 0);
+        findElement(By.linkText("Classification")).click();
+        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().contains(toRemove));
     }
     
     @Test
