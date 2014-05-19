@@ -1,4 +1,4 @@
-function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, MergeCdes) {
+function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, MergeCdes, isAllowedModel) {
     $scope.openMergeModal = function(retiredIndex) {
         $scope.retiredIndex = retiredIndex;
         var modalInstance = $modal.open({
@@ -42,7 +42,7 @@ function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, Me
     
     $scope.isMergeRequestPossible = function(cde, otherCde) {
         if ((!cde)||(!otherCde)) return false;
-        return $scope.isAllowed(cde)
+        return isAllowedModel.isAllowed($scope, cde)
                && !(cde.registrationState.administrativeStatus === "Retire Candidate")
                && !(otherCde.registrationState.administrativeStatus === "Retire Candidate")
                && !(cde.registrationState.registrationStatus === "Standard");
