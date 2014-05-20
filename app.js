@@ -16,9 +16,14 @@ var express = require('express')
   , vsac = require('./node-js/vsac-io')
   , winston = require('winston')
   , envconfig = require('./envconfig.js')
+  , MongoStore = require('connect-mongo')(express)
   ;
 
-var logdir = process.env.LOGDIR || envconfig.logdir || __dirname;
+// Global variables
+var GLOBALS = {
+    logdir : process.env.LOGDIR || envconfig.logdir || __dirname,
+    mongodbName : process.env.MONGO_DB || envconfig.mongo_db || 'nlmcde'
+};
 
 function findById(id, fn) {
     return mongo_data.userById(id, function(err, user) {
@@ -97,7 +102,7 @@ var expressLogger = new (winston.Logger)({
       json: true,
       colorize: true
       , level: 'verbose'
-      , filename: logdir + "/expressLog.log"
+      , filename: GLOBALS.logdir + "/expressLog.log"
       , maxsize: 10000000
       , maxFiles: 10
     })
@@ -115,7 +120,7 @@ var expressErrorLogger = new (winston.Logger)({
       json: true,
       colorize: true
       , level: 'warn'
-      , filename: logdir + "/expressErrorLog.log"
+      , filename: GLOBALS.logdir + "/expressErrorLog.log"
       , maxsize: 10000000
       , maxFiles: 10
     })
@@ -147,12 +152,10 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 
-//app.use(express.session({ secret: 'omgnodeworks' }));
-
 // Creates session store
-MongoStore = require('connect-mongo')(express);
-var sessionStore = new MongoStore({db: 'nlmcde'});
+var sessionStore = new MongoStore({db: GLOBALS.mongodbName});
 app.use(express.session({ secret: "omgnodeworks", store:sessionStore }));
+//app.use(express.session({ secret: 'omgnodeworks' }));
 
 app.use(flash());
 app.use(passport.initialize());
