@@ -22,7 +22,6 @@ var express = require('express')
 // Global variables
 var GLOBALS = {
     logdir : process.env.LOGDIR || envconfig.logdir || __dirname,
-    mongodbName : process.env.MONGO_DB || envconfig.mongo_db || 'nlmcde'
 };
 
 function findById(id, fn) {
@@ -153,9 +152,8 @@ app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 
 // Creates session store
-var sessionStore = new MongoStore({db: GLOBALS.mongodbName});
+var sessionStore = new MongoStore({mongoose_connection: mongo_data.db});
 app.use(express.session({ secret: "omgnodeworks", store:sessionStore }));
-//app.use(express.session({ secret: 'omgnodeworks' }));
 
 app.use(flash());
 app.use(passport.initialize());

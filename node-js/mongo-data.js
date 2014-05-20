@@ -16,7 +16,8 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
 	console.log('mongodb connection open');
-    });
+    });    
+exports.db = db;
 
 var xmlParser = new xml2js.Parser();
 
