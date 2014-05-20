@@ -146,13 +146,21 @@ app.use(express.favicon());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
-app.use(express.session({ secret: 'omgnodeworks' }));
+
+//app.use(express.session({ secret: 'omgnodeworks' }));
+
+// Creates session store
+MongoStore = require('connect-mongo')(express);
+var sessionStore = new MongoStore({db: 'nlmcde'});
+app.use(express.session({ secret: "omgnodeworks", store:sessionStore }));
+
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.logger({stream:winstonStream}));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(function(err, req, res, next){
   expressErrorLogger.error(err.stack);
   console.log(err.stack);
