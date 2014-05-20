@@ -1,4 +1,4 @@
-function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory) {
+function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, isAllowedModel) {
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u;
@@ -205,22 +205,6 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };
     
     $scope.isAllowed = function (cde) {
-        if (!cde) return false;
-        if ($scope.initialized && cde.archived) {
-            return false;
-        }
-        if ($scope.user.siteAdmin) {
-            return true;
-        } else {   
-            if ($scope.initialized && 
-                    ((cde.registrationState.registrationStatus === "Standard" || cde.registrationState.registrationStatus === "Standard") )) {
-                return false;
-            }
-            if ($scope.initialized && $scope.myOrgs) {
-                return $scope.myOrgs.indexOf(cde.stewardOrg.name) > -1;
-            } else {
-                return false;
-            }
-        }
-    };    
+        return isAllowedModel.isAllowed($scope, cde);  
+    };
 }

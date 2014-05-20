@@ -100,11 +100,38 @@ cdeApp.filter('placeholdEmpty', function() {
 });
 
 cdeApp.filter('bytes', function() {
-	return function(bytes, precision) {
-		if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
-		if (typeof precision === 'undefined') precision = 1;
-		var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
-			number = Math.floor(Math.log(bytes) / Math.log(1024));
-		return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
-	}
+    return function(bytes, precision) {
+            if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
+            if (typeof precision === 'undefined') precision = 1;
+            var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
+                    number = Math.floor(Math.log(bytes) / Math.log(1024));
+            return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
+    };
+});
+
+cdeApp.factory('isAllowedModel', function () {
+    var isAllowedModel = {
+    };
+    
+    isAllowedModel.isAllowed = function ($scope, cde) {
+        if (!cde) return false;
+        if ($scope.initialized && cde.archived) {
+            return false;
+        }
+        if ($scope.user.siteAdmin) {
+            return true;
+        } else {   
+            if ($scope.initialized && 
+                    ((cde.registrationState.registrationStatus === "Standard" || cde.registrationState.registrationStatus === "Standard") )) {
+                return false;
+            }
+            if ($scope.initialized && $scope.myOrgs) {
+                return $scope.myOrgs.indexOf(cde.stewardOrg.name) > -1;
+            } else {
+                return false;
+            }
+        }
+    };
+    
+    return isAllowedModel;
 });
