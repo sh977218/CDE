@@ -16,6 +16,7 @@ var express = require('express')
   , vsac = require('./node-js/vsac-io')
   , winston = require('winston')
   , envconfig = require('./envconfig.js')
+  , config = require('./config.js')
   ;
 
 var logdir = process.env.LOGDIR || envconfig.logdir || __dirname;
@@ -329,8 +330,12 @@ app.get('/cdereview', function(req, res) {
 });
 
 app.get('/siteaccountmanagement', function(req, res) {
-    console.log("IP: " + req.ip);
-    res.render('siteaccountmanagement');
+    var ip = req.ip;
+    if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
+        res.render('siteaccountmanagement');
+    } else {
+        res.send(403, "Not Authorized");
+    }
 });
 
 app.get('/orgaccountmanagement', function(req, res) {
@@ -401,9 +406,14 @@ app.get('/cdesforapproval', function(req, res) {
 });
 
 app.get('/siteadmins', function(req, res) {
-    mongo_data.siteadmins(function(err, users) {
-        res.send(users);
-    });
+    var ip = req.ip;
+    if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
+        mongo_data.siteadmins(function(err, users) {
+            res.send(users);
+        });
+    } else {
+        res.send(403, "Not Authorized");
+    }
 });
 
 app.get('/listorgs', function(req, res) {
