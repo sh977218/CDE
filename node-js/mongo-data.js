@@ -11,12 +11,15 @@ var mongoose = require('mongoose')
 
 var mongoUri = process.env.MONGO_URI || envconfig.mongo_uri || 'mongodb://localhost/nlmcde';
 
+var uri = 'mongodb://user:pass@localhost:port/database,mongodb://anotherhost:port,mongodb://yetanother:port';
+
 mongoose.connect(mongoUri);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
 	console.log('mongodb connection open');
-    });
+    });    
+exports.mongoose_connection = db;
 
 var xmlParser = new xml2js.Parser();
 
