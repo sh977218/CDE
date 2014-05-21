@@ -234,7 +234,7 @@ app.post('/addSiteAdmin', function(req, res) {
     if (req.isAuthenticated() && req.user.siteAdmin) {
         usersvc.addSiteAdmin(req, res);
     } else {
-        return cb("You are not authorized.", null);                    
+        res.send(403, "You are not authorized.");                    
     }
 });
 
@@ -242,7 +242,7 @@ app.post('/removeSiteAdmin', function(req, res) {
     if (req.isAuthenticated() && req.user.siteAdmin) {
         usersvc.removeSiteAdmin(req, res);
     } else {
-        return cb("You are not authorized.", null);                    
+        res.send(403, "You are not authorized.");                    
     }
 });
 
@@ -255,69 +255,44 @@ app.get('/orgAdmins', function(req, res) {
     usersvc.orgAdmins(req, res);
 });
 
-app.post('/addOrgAdmin', function(req, res) {
-    usersvc.addOrgAdmin(req, res);
-});
-
-app.post('/removeOrgAdmin', function(req, res) {
-    usersvc.removeOrgAdmin(req, res);
-});
-
 app.get('/orgCurators', function(req, res) {
     usersvc.orgCurators(req, res);
 });
 
+app.post('/addOrgAdmin', function(req, res) {
+    if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+        usersvc.orgAdmins(req, res);
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
+});
+
+app.post('/removeOrgAdmin', function(req, res) {
+    if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+        usersvc.removeOrgAdmin(req, res);
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
+});
+
 app.post('/addOrgCurator', function(req, res) {
-    usersvc.addOrgCurator(req, res);
+    if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+        usersvc.addOrgCurator(req, res);
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
 });
 
 app.post('/removeOrgCurator', function(req, res) {
-    usersvc.removeOrgCurator(req, res);
+    if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+        usersvc.removeOrgCurator(req, res);
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
 });
 
 app.get('/cart', function(req, res) {
     res.render('cart');
-});
-
-app.post('/addtocart/:formId', function(req, res) {
-    var user = req.user;
-    mongo_data.addToCart(user, req.body.formId, function(err) {
-        res.send();    
-    });
-});
-
-app.post('/removefromcart/:formId', function(req, res) {
-    var user = req.user;
-    mongo_data.removeFromCart(user, req.body.formId, function(err) {
-        res.send();    
-    });
-});
-
-app.get('/listforms', function(req, res) {
-    res.render('listforms', { user: req.user });
-});
-
-app.get('/formlist', function(req, res) {
-    cdesvc.listform(req, res);
-});
-
-app.get('/cartcontent', function(req, res) {
-    // @TODO Check for undefined req.user here.
-    mongo_data.formsByIdList(req.user.formCart, function(err, forms) {
-        res.send({'forms': forms});
-    });
-});
-
-app.post('/form', function(req, res) {
-    return mongo_data.saveForm(req, function(err, form) {
-       res.send(form); 
-    });
-});
-
-app.get('/form/:formId', function(req, res) {
-    mongo_data.formById(req.params.formId, function(err, form) {
-       res.send(form); 
-    });
 });
 
 app.get('/createcde', function(req, res) {
@@ -418,12 +393,16 @@ app.get('/managedOrgs', function(req, res) {
 });
 
 app.post('/addOrg', function(req, res) {
-    orgsvc.addOrg(req, res);
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        orgsvc.addOrg(req, res);
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
 });
 
-app.post('/removeOrg', function(req, res) {
-    orgsvc.removeOrg(req, res);
-});
+//app.post('/removeOrg', function(req, res) {
+//    orgsvc.removeOrg(req, res);
+//});
 
 app.post('/removeClassificationFromOrg', function(req, res) {
     if (!req.user 
@@ -512,65 +491,13 @@ app.get('/debyuuid/:uuid/:version', function(req, res) {
 });
 
 app.post('/dataelement', function (req, res) {
-    return cdesvc.save(req, res);
-});
-
-app.get('/cdesinform/:formId', function(req, res) {
-    mongo_data.formById(req.params.formId, function(err, form) {
-        if (!form) {
-            res.send("The requested form does not exist.");
+    checkCdeOwnership(req.body._id, req, function(err, de) {
+        if (err) {
+            return res.send(err);
         } else {
-            var idList = [];
-            if (form.modules) {
-                for (var j = 0; j < form.modules.length; j++) {
-                    for (var i = 0; i < form.modules[j].questions.length; i++) {
-                        if (form.modules[j].questions[i].dataElement.de_id) {
-                            idList.push(form.modules[j].questions[i].dataElement.de_id);
-                        }
-                    }
-                }
-            }
-            for (var i = 0; i < form.questions.length; i++) {
-                if (form.questions[i].dataElement.de_id) {
-                    idList.push(form.questions[i].dataElement.de_id);
-                }
-            }
-            mongo_data.cdesByIdList(idList, function(err, cdes) {
-                res.send(cdes);
-            });
+            return cdesvc.save(req, res);
         }
     });
-});
-
-app.post('/addcdetoform/:cdeId/:formId', function (req, res) {
-  mongo_data.formById(req.body.formId, function(err, form) {
-      if (!form) {
-          res.send("The requested form does not exist.");
-      } else {
-          if (!req.user 
-                  || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(form.stewardOrg.name) < 0)
-                    && (!req.user.orgCurator || req.user.orgCurator.indexOf(form.stewardOrg.name) < 0)
-                  ) {
-            res.send("You are not authorized to do this.");           
-          } else {
-            mongo_data.cdeById(req.body.cdeId, function(err, cde) {
-                if (!cde) {
-                    res.send("The requested CDE does not exist.");
-                } else {
-                    var question = {
-                        value: cde.naming[0].designation
-                        , instructions: ''
-                        , dataElement: {de_id: cde._id}
-                    };
-                    form.questions.push(question);
-                    mongo_data.save(form, function(err, form) {
-                        res.send(form);
-                    });
-                };
-            });
-          }
-      }
-  });
 });
 
 app.get('/user/me', function(req, res) {
@@ -695,16 +622,8 @@ app.put('/pincde/:uuid/:boardId', function(req, res) {
    }
 });
 
-app.post('/linktovsac', function (req, res) {
-    return cdesvc.linktovsac(req, res);
-});
-
 app.get('/autocomplete/:name', function(req, res) {
     return cdesvc.name_autocomplete(req.params.name, res);
-});
-
-app.get('/autocomplete/form', function(req, res) {
-    return cdesvc.name_autocomplete_form(req, res);
 });
 
 app.get('/autocomplete/classification/all', function (req, res) {

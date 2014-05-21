@@ -158,12 +158,6 @@ exports.show = function(req, res) {
     }    
 };
 
-exports.linktovsac = function(req, res) {
-    return mongo_data.linktovsac(req, function(err, cde) {
-        res.send(cde);
-    });
-};
-
 exports.save = function (req, res) {
     if (req.isAuthenticated()) {
         if (!req.body._id) {
