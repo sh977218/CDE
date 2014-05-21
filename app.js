@@ -291,16 +291,8 @@ app.post('/removeOrgCurator', function(req, res) {
     }
 });
 
-app.get('/cart', function(req, res) {
-    res.render('cart');
-});
-
 app.get('/createcde', function(req, res) {
    res.render('createcde'); 
-});
-
-app.get('/createform', function(req, res) {
-    res.render('createform', { user: req.user });
 });
 
 app.get('/cdereview', function(req, res) {
@@ -487,13 +479,7 @@ app.get('/debyuuid/:uuid/:version', function(req, res) {
 });
 
 app.post('/dataelement', function (req, res) {
-    checkCdeOwnership(req.body._id, req, function(err, de) {
-        if (err) {
-            return res.send(err);
-        } else {
-            return cdesvc.save(req, res);
-        }
-    });
+    return cdesvc.save(req, res);
 });
 
 app.get('/user/me', function(req, res) {

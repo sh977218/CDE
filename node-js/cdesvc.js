@@ -25,7 +25,7 @@ var mltConf = {
     
 exports.elasticsearch = function (query, res) {
    request.post(elasticUri + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
-       if (!error && response.statusCode == 200) {
+       if (!error && response.statusCode === 200) {
         var resp = JSON.parse(body);
         var result = {cdes: []
             , totalNumber: resp.hits.total};
@@ -161,9 +161,19 @@ exports.show = function(req, res) {
 exports.save = function (req, res) {
     if (req.isAuthenticated()) {
         if (!req.body._id) {
-            return mongo_data.saveCde(req, function(err, savedCde) {
-                res.send(savedCde);
-            });
+            if (!req.body.stewardOrg.name) {
+                res.send("Missing Steward");
+            } else {
+                if (req.user.orgCurator.indexOf(cde.stewardOrg.name) < 0 
+                            && req.user.orgAdmin.indexOf(cde.stewardOrg.name) < 0 
+                            && !req.user.siteAdmin) {
+                    res.send(403, "not authorized");
+                } else {
+                    return mongo_data.saveCde(req, function(err, savedCde) {
+                        res.send(savedCde);
+                    });
+                }
+            }
         } else {
             return mongo_data.cdeById(req.body._id, function(err, cde) {
                 if (cde.archived === true) {
@@ -172,7 +182,7 @@ exports.save = function (req, res) {
                 if (req.user.orgCurator.indexOf(cde.stewardOrg.name) < 0 
                         && req.user.orgAdmin.indexOf(cde.stewardOrg.name) < 0 
                         && !req.user.siteAdmin) {
-                    res.send("not authorized");
+                    res.send(403, "not authorized");
                 } else {
                     if ((cde.registrationState.registrationStatus === "Standard" || cde.registrationState.registrationStatus === "Preferred Standard")
                             && !req.user.siteAdmin) {
@@ -183,7 +193,7 @@ exports.save = function (req, res) {
                                     && !req.user.siteAdmin
                                 ) 
                         {
-                            res.send("not authorized");
+                            res.send(403, "not authorized");
                         } else {
                             return mongo_data.saveCde(req, function(err, savedCde) {
                                 res.send(savedCde);            
@@ -194,7 +204,7 @@ exports.save = function (req, res) {
             });
         }
     } else {
-        res.send("You are not authorized to do this.");
+        res.send(403, "You are not authorized to do this.");
     }
 };  
 
