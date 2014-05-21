@@ -261,7 +261,7 @@ app.get('/orgCurators', function(req, res) {
 
 app.post('/addOrgAdmin', function(req, res) {
     if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
-        usersvc.orgAdmins(req, res);
+        usersvc.addOrgAdmin(req, res);
     } else {
         res.send(403, "You are not authorized.");                    
     }
@@ -399,10 +399,6 @@ app.post('/addOrg', function(req, res) {
         res.send(403, "You are not authorized.");                    
     }
 });
-
-//app.post('/removeOrg', function(req, res) {
-//    orgsvc.removeOrg(req, res);
-//});
 
 app.post('/removeClassificationFromOrg', function(req, res) {
     if (!req.user 
