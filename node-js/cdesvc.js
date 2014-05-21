@@ -164,8 +164,8 @@ exports.save = function (req, res) {
             if (!req.body.stewardOrg.name) {
                 res.send("Missing Steward");
             } else {
-                if (req.user.orgCurator.indexOf(cde.stewardOrg.name) < 0 
-                            && req.user.orgAdmin.indexOf(cde.stewardOrg.name) < 0 
+                if (req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0 
+                            && req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0 
                             && !req.user.siteAdmin) {
                     res.send(403, "not authorized");
                 } else {
