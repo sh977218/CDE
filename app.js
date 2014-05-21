@@ -230,16 +230,20 @@ function checkCdeOwnership(deId, req, cb) {
     }
 }
 
-app.post('/register', function(req, res) {
-  usersvc.register(req, res);
-});
-
 app.post('/addSiteAdmin', function(req, res) {
-    usersvc.addSiteAdmin(req, res);
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        usersvc.addSiteAdmin(req, res);
+    } else {
+        return cb("You are not authorized.", null);                    
+    }
 });
 
 app.post('/removeSiteAdmin', function(req, res) {
-    usersvc.removeSiteAdmin(req, res);
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        usersvc.removeSiteAdmin(req, res);
+    } else {
+        return cb("You are not authorized.", null);                    
+    }
 });
 
 app.get('/myOrgsAdmins', function(req, res) {
