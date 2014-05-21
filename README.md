@@ -57,7 +57,6 @@ $> bin/plugin -install elasticsearch/elasticsearch-mapper-attachments/1.6.0
 Set these environment variables:
 
 ```sh
-MONGOHQ_URL=mongodb://mongo_username:mongo_passwrod@mongo_host:mongo_port/db_name
 VSAC_USERNAME=
 VSAC_PASSWORD=
 LOGDIR=

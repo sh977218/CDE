@@ -16,9 +16,13 @@ var express = require('express')
   , vsac = require('./node-js/vsac-io')
   , winston = require('winston')
   , envconfig = require('./envconfig.js')
+  , MongoStore = require('connect-mongo')(express)
   ;
 
-var logdir = process.env.LOGDIR || envconfig.logdir || __dirname;
+// Global variables
+var GLOBALS = {
+    logdir : process.env.LOGDIR || envconfig.logdir || __dirname,
+};
 
 function findById(id, fn) {
     return mongo_data.userById(id, function(err, user) {
@@ -97,7 +101,7 @@ var expressLogger = new (winston.Logger)({
       json: true,
       colorize: true
       , level: 'verbose'
-      , filename: logdir + "/expressLog.log"
+      , filename: GLOBALS.logdir + "/expressLog.log"
       , maxsize: 10000000
       , maxFiles: 10
     })
@@ -115,7 +119,7 @@ var expressErrorLogger = new (winston.Logger)({
       json: true,
       colorize: true
       , level: 'warn'
-      , filename: logdir + "/expressErrorLog.log"
+      , filename: GLOBALS.logdir + "/expressErrorLog.log"
       , maxsize: 10000000
       , maxFiles: 10
     })
@@ -146,13 +150,18 @@ app.use(express.favicon());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
-app.use(express.session({ secret: 'omgnodeworks' }));
+
+// Creates session store
+var sessionStore = new MongoStore({mongoose_connection: mongo_data.mongoose_connection});
+app.use(express.session({ secret: "omgnodeworks", store:sessionStore }));
+
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.logger({stream:winstonStream}));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(function(err, req, res, next){
   expressErrorLogger.error(err.stack);
   console.log(err.stack);
