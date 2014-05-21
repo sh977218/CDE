@@ -25,5 +25,6 @@
     , "express-winston": "*"
     , "gridfs-stream": "*"
     , "crypto": "*"
+    , "connect-mongo": "*"
   }
 }
