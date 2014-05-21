@@ -50,4 +50,15 @@ public class CompareTest extends NlmCdeBaseTest{
         Assert.assertTrue(textPresent("in CTC category Pulmonary/Upper Respiratory"));
     }
     
+    @Test
+    public void cantEditInCompare() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        addToCompare("Person Birth Date", "Patient Ethnic Group Category");
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editStatus")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("addNamePair")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//a[@title='Remove']")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("fa-edit")));
+        
+    }
+    
 }

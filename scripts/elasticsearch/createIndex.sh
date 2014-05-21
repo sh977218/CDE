@@ -11,9 +11,11 @@ curl -XPOST localhost:9200/nlmcde_v1 -d '
                 "stewardOrg.name" : { "type" : "string", "index" : "not_analyzed" }
                 , "classification.elements.name": { "type" : "string", "index" : "not_analyzed" }
                 , "classification.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
+                , "classification.elements.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
+                , "classification.elements.elements.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
+                , "classification.elements.elements.elements.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
                 , "classification.stewardOrg.name": { "type" : "string", "index" : "not_analyzed" }
                 , "origin" : { "type" : "string", "index" : "not_analyzed" }
-
             }
         }
     }
