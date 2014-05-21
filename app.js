@@ -329,6 +329,7 @@ app.get('/cdereview', function(req, res) {
 });
 
 app.get('/siteaccountmanagement', function(req, res) {
+    console.log("IP: " + req.ip);
     res.render('siteaccountmanagement');
 });
 
