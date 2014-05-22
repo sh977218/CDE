@@ -16,7 +16,8 @@ var express = require('express')
   , vsac = require('./node-js/vsac-io')
   , winston = require('winston')
   , envconfig = require('./envconfig.js')
-  , MongoStore = require('connect-mongo')(express)
+  , config = require('./config.js')
+  , MongoStore = require('./node-js/assets/connect-mongo.js')(express)
   ;
 
 // Global variables
@@ -152,7 +153,10 @@ app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 
 // Creates session store
-var sessionStore = new MongoStore({mongoose_connection: mongo_data.mongoose_connection});
+var mongoHost = process.env.MONGO_HOST || envconfig.mongo_host || '127.0.0.1';
+var sessionStore = new MongoStore({
+    mongoose_connection: mongo_data.mongoose_connection  
+});
 app.use(express.session({ secret: "omgnodeworks", store:sessionStore }));
 
 app.use(flash());
@@ -309,7 +313,12 @@ app.get('/cdereview', function(req, res) {
 });
 
 app.get('/siteaccountmanagement', function(req, res) {
-    res.render('siteaccountmanagement');
+    var ip = req.ip;
+    if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
+        res.render('siteaccountmanagement');
+    } else {
+        res.send(403, "Not Authorized");
+    }
 });
 
 app.get('/orgaccountmanagement', function(req, res) {
@@ -380,9 +389,14 @@ app.get('/cdesforapproval', function(req, res) {
 });
 
 app.get('/siteadmins', function(req, res) {
-    mongo_data.siteadmins(function(err, users) {
-        res.send(users);
-    });
+    var ip = req.ip;
+    if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
+        mongo_data.siteadmins(function(err, users) {
+            res.send(users);
+        });
+    } else {
+        res.send(403, "Not Authorized");
+    }
 });
 
 app.get('/listorgs', function(req, res) {
