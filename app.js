@@ -152,7 +152,12 @@ app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 
 // Creates session store
-var sessionStore = new MongoStore({mongoose_connection: mongo_data.mongoose_connection});
+var mongoHost = process.env.MONGO_HOST || envconfig.mongo_host || '127.0.0.1';
+var sessionStore = new MongoStore({
+    host: mongoHost
+    , mongoose_connection: mongo_data.mongoose_connection
+    
+});
 app.use(express.session({ secret: "omgnodeworks", store:sessionStore }));
 
 app.use(flash());
