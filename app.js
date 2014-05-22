@@ -16,7 +16,7 @@ var express = require('express')
   , vsac = require('./node-js/vsac-io')
   , winston = require('winston')
   , envconfig = require('./envconfig.js')
-  , MongoStore = require('./assets/connect-mongo.js')(express)
+  , MongoStore = require('./node-js/assets/connect-mongo.js')(express)
   ;
 
 // Global variables
