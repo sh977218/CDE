@@ -21,7 +21,7 @@ var express = require('express')
 
 // Global variables
 var GLOBALS = {
-    logdir : process.env.LOGDIR || envconfig.logdir || __dirname,
+    logdir : process.env.LOGDIR || envconfig.logdir || __dirname
 };
 
 function findById(id, fn) {
@@ -277,7 +277,7 @@ app.post('/addOrgAdmin', function(req, res) {
 });
 
 app.post('/removeOrgAdmin', function(req, res) {
-    if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+    if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {        
         usersvc.removeOrgAdmin(req, res);
     } else {
         res.send(403, "You are not authorized.");                    
@@ -293,7 +293,7 @@ app.post('/addOrgCurator', function(req, res) {
 });
 
 app.post('/removeOrgCurator', function(req, res) {
-    if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+    if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
         usersvc.removeOrgCurator(req, res);
     } else {
         res.send(403, "You are not authorized.");                    
