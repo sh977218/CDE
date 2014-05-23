@@ -323,6 +323,8 @@ public class BoardTest extends NlmCdeBaseTest {
         goToCdeByName("Biomarker Outcome");
         findElement(By.xpath("//li[@heading='Boards']/a")).click();
         
+        hangon(4);
+        
         Assert.assertTrue(textPresent(board1));
         Assert.assertTrue(textPresent(board2));
         
