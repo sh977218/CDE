@@ -25,7 +25,6 @@ var schemas = require('./schemas');
 
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var User = mongoose.model('User', schemas.userSchema);
-var Form = mongoose.model('Form', schemas.formSchema);
 var Org = mongoose.model('Org', schemas.orgSchema);
 var PinningBoard = mongoose.model('PinningBoard', schemas.pinningBoardSchema);
 var Message = mongoose.model('Message', schemas.message);
@@ -246,15 +245,6 @@ exports.addComment = function(deId, comment, userId, callback) {
     });
 };
 
-exports.addToCart = function (user, formId, callback) {
-    User.findOne({'_id': user._id}).exec(function (err, u) {
-       u.formCart.push(formId);
-       u.save(function (err) {
-          callback(""); 
-       });
-    });
-};
-
 exports.classificationSystems = function(callback) {
       DataElement.find().distinct('classification.conceptSystem', function(error, classifs) {
           callback(classifs);
@@ -264,23 +254,6 @@ exports.classificationSystems = function(callback) {
 exports.orgByName = function(orgName,callback) {
     Org.findOne({"name": orgName}).exec(function(error, org) {
         callback(org);
-    });
-};
-
-
-exports.removeFromCart = function (user, formId, callback) {
-    User.findOne({'_id': user._id}).exec(function (err, u) {
-        if (u.formCart.indexOf(formId) > -1) {
-            u.formCart.splice(u.formCart.indexOf(formId), 1);
-            u.save(function (err) {
-                if (err) {
-                    console.log("Could not remove from cart");
-                }
-                callback(""); 
-            });
-        } else {
-            console.log("This form is not in the cart. " + formId);
-        }
     });
 };
 
@@ -304,18 +277,6 @@ exports.boardList = function(from, limit, searchOptions, callback) {
     });
 };  
 
-exports.formlist = function(from, limit, searchOptions, callback) {
-    Form.find(searchOptions).skip(from).limit(limit).sort('name').exec(function (err, forms) {
-        Form.count(searchOptions).exec(function (err, count) {
-        callback("",{
-               forms: forms,
-               page: Math.ceil(from / limit),
-               pages: Math.ceil(count / limit)
-           });
-        });
-    });
-};  
-
 exports.desByConcept = function (concept, callback) {
     DataElement.find(
             {'$or': [{'objectClass.concepts.originId': concept.originId},
@@ -332,18 +293,6 @@ exports.desByConcept = function (concept, callback) {
 exports.deByUuidAndVersion = function(uuid, version, callback) {
     DataElement.findOne({'uuid': uuid, "version": version}).exec(function (err, de) {
        callback("", de); 
-    });
-};
-
-exports.formById = function(formId, callback) {
-    Form.findOne({'_id': formId}).exec(function(err, form) {
-        callback("", form);
-    });
-};
-
-exports.formsByIdList = function(idList, callback) {
-    Form.find().where('_id').in(idList).exec(function(err, forms) {
-       callback("", forms); 
     });
 };
 
@@ -450,44 +399,11 @@ exports.name_autocomplete = function(name, callback) {
     });
 };
 
-exports.name_autocomplete_form = function (searchOptions, callback) {
-    var name = searchOptions.name;
-    delete searchOptions.name;
-    Form.find(searchOptions, {name: 1, _id: 0}).where('name').equals(new RegExp(name, 'i')).limit(20).exec(function (err, result) {
-        callback("", result);
-    });
-};
-
 exports.newBoard = function(board, callback) {
     var newBoard = new PinningBoard(board);
     newBoard.save(function(err) {
         callback("", newBoard);        
     });
-};
-
-exports.saveForm = function(req, callback) {
-    if (!req.body._id ) {
-        var form = new Form(req.body);
-        form.created = Date.now();
-        form.createdBy.userId = req.user._id;
-        form.createdBy.username = req.user.username;
-        return form.save(function(err) {
-            if (err) {
-                callback(err, form);
-            }
-            callback("", form);
-        });
-    } else {
-        var form = new Form(req.body);
-        var formId = req.body._id;
-        delete req.body._id;
-        Form.update({'_id': formId}, req.body, function(err) {
-            if (err) {
-                console.log("Error Saving Form " + err);
-            }
-            callback("", form);
-        });
-    }
 };
 
 exports.save = function(mongooseObject, callback) {

@@ -152,49 +152,6 @@ var deJsonSchema = {
     , usedByOrgs: [String]
 };
 
-var questionSchema = mongoose.Schema ({
-    value: String
-    , instructions: String
-    , dataElement: {
-        de_id: String
-    }
-}, {_id: false});
-
-var moduleSchema = mongoose.Schema ({
-    name: String
-    , instructions: String
-    , questions: [questionSchema]
-}, {_id: false});
-
-var formSchema = {
-    name: String
-    , instructions: String
-    , registrationStatus: String
-    , stewardOrg: {
-        name: String
-    }
-    , updated: Date
-    , created: Date
-    , questions: [questionSchema]
-    , modules: [moduleSchema]
-    , createdBy: {
-        userId: mongoose.Schema.Types.ObjectId
-        , username: String
-    }
-    , updatedBy: {
-        userId: mongoose.Schema.Types.ObjectId
-        , username: String
-    }
-    , registrationState: {
-        registrationStatus: String
-        , effectiveDate: Date
-        , untilDate: Date
-        , administrativeNote: String
-        , unresolvedIssue: String
-        , administrativeStatus: String
-    }
-};
-
 var pinSchema = mongoose.Schema ({
    name: String
    , pinnedDate: Date
@@ -221,10 +178,10 @@ schemas.userSchema = mongoose.Schema ({
     , lockCounter: Number
     , orgAdmin: [String]
     , orgCurator: [String]
-    , formCart: [String]
     , siteAdmin: Boolean
     , quota: Number
     , viewHistory: [mongoose.Schema.Types.ObjectId]
+    , knownIPs: [String]
 });
 
 schemas.orgSchema = mongoose.Schema ({
@@ -283,10 +240,7 @@ schemas.pinningBoardSchema.pre('save', function(next) {
    next();
 });
 
-schemas.formSchema = mongoose.Schema(formSchema);
-
 schemas.dataElementSchema.set('collection', 'dataelements');
-schemas.formSchema.set('collection', 'forms');
 schemas.userSchema.set('collection', 'users');
 schemas.orgSchema.set('collection', 'orgs');
 schemas.pinningBoardSchema.set('collection', 'pinningBoards');
