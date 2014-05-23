@@ -365,6 +365,28 @@ app.get('/siteaccountmanagement', function(req, res) {
     }
 });
 
+app.get('/siteaudit', function(req, res) {
+    var ip = req.ip;
+    if ((ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) 
+            && req.user && req.user.siteAdmin) {
+        res.render('siteAudit');
+    } else {
+        res.send(403, "Not Authorized");
+    }
+});
+
+app.get('/searchUsers/:username?', function(req, res) {
+    var ip = req.ip;
+    if ((ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) 
+            && req.user && req.user.siteAdmin) {
+        mongo_data.usersByPartialName(req.params.username, function (err, users) {
+            res.send({users: users});
+        });
+    } else {
+        res.send(403, "Not Authorized");
+    }
+});
+
 app.get('/orgaccountmanagement', function(req, res) {
     res.render('orgAccountManagement');
 });

@@ -198,6 +198,16 @@ exports.userByName = function(name, callback) {
     });
 };
 
+exports.usersByPartialName = function(name, callback) {
+    User.find({'username': new RegExp(name, 'i')}).exec(function (err, users) {
+        for (var i = 0; i < users.length; i++) {
+            delete users[i].password;
+        }
+        callback("", users); 
+    });
+};
+
+
 exports.userById = function(id, callback) {
     User.findOne({'_id': id}).exec(function (err, u) {
        callback("", u); 

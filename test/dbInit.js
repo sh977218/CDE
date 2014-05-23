@@ -11,7 +11,7 @@ var defaultBoard = {
     , pins: []
 };
 
-db.users.insert({username: 'nlm', password: 'nlm', siteAdmin: true, orgAdmin: ['NLM'], viewHistory: []});
+db.users.insert({username: 'nlm', password: 'nlm', siteAdmin: true, orgAdmin: [], viewHistory: []});
 db.users.insert({username: 'cabigAdmin', password: 'pass', orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'user1', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'reguser', password: 'pass', quota: 1073741824, viewHistory: []});
