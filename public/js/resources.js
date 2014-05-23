@@ -112,38 +112,8 @@ angular.module('resources', ['ngResource'])
                 {link: {method: 'POST'}}
             );
     })
-    .factory('Form', function($resource) {
-        return $resource('/form/:formId', {formId: '@formId'});
-    })
-    .factory('FormList', function($resource) {
-        return $resource('/formlist');
-    })
     .factory('CdesForApproval', function($resource) {
         return $resource('/cdesforapproval');
-    })
-    .factory('MyCart', function($resource) {
-        return $resource('/cartcontent');
-    })
-    .factory("AddToCart", function($resource) {
-        return $resource(
-                "/addtocart/:formId", 
-                {formId: '@formId'}, 
-                {add: {method: 'POST'}}
-            );
-    })
-    .factory("AddCdeToForm", function($resource) {
-        return $resource(
-                "/addcdetoform/:cdeId/:formId", 
-                {formId: '@formId', cdeId: '@cdeId'}, 
-                {add: {method: 'POST'}}
-            );
-    })
-    .factory("RemoveFromCart", function($resource) {
-        return $resource(
-                "/removefromcart/:formId", 
-                {formId: '@formId'}, 
-                {add: {method: 'POST'}}
-            );
     })
     .factory('Myself', function($resource) {
         return $resource('/user/me');
@@ -192,7 +162,7 @@ angular.module('resources', ['ngResource'])
                     cb(response.data);
                 });
             }
-        } 
+        }; 
     })
     .factory('CDE', function($http) {
         return {
@@ -201,7 +171,7 @@ angular.module('resources', ['ngResource'])
                     cb(response.data);
                 });
             }
-        } 
+        }; 
     })    
     .factory('Elastic', function($http) {
         return {
@@ -210,6 +180,6 @@ angular.module('resources', ['ngResource'])
                    cb(response.data);
                 });
             }
-        } 
+        };
     })      
     ;
