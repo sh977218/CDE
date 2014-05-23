@@ -11,8 +11,6 @@ var mongoose = require('mongoose')
 
 var mongoUri = process.env.MONGO_URI || envconfig.mongo_uri || 'mongodb://localhost/nlmcde';
 
-var uri = 'mongodb://user:pass@localhost:port/database,mongodb://anotherhost:port,mongodb://yetanother:port';
-
 mongoose.connect(mongoUri);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -337,18 +335,6 @@ exports.deByUuidAndVersion = function(uuid, version, callback) {
     });
 };
 
-exports.formById = function(formId, callback) {
-    Form.findOne({'_id': formId}).exec(function(err, form) {
-        callback("", form);
-    });
-};
-
-exports.formsByIdList = function(idList, callback) {
-    Form.find().where('_id').in(idList).exec(function(err, forms) {
-       callback("", forms); 
-    });
-};
-
 exports.cdesByIdList = function(idList, callback) {
     DataElement.find().where('_id')
             .in(idList)
@@ -452,44 +438,11 @@ exports.name_autocomplete = function(name, callback) {
     });
 };
 
-exports.name_autocomplete_form = function (searchOptions, callback) {
-    var name = searchOptions.name;
-    delete searchOptions.name;
-    Form.find(searchOptions, {name: 1, _id: 0}).where('name').equals(new RegExp(name, 'i')).limit(20).exec(function (err, result) {
-        callback("", result);
-    });
-};
-
 exports.newBoard = function(board, callback) {
     var newBoard = new PinningBoard(board);
     newBoard.save(function(err) {
         callback("", newBoard);        
     });
-};
-
-exports.saveForm = function(req, callback) {
-    if (!req.body._id ) {
-        var form = new Form(req.body);
-        form.created = Date.now();
-        form.createdBy.userId = req.user._id;
-        form.createdBy.username = req.user.username;
-        return form.save(function(err) {
-            if (err) {
-                callback(err, form);
-            }
-            callback("", form);
-        });
-    } else {
-        var form = new Form(req.body);
-        var formId = req.body._id;
-        delete req.body._id;
-        Form.update({'_id': formId}, req.body, function(err) {
-            if (err) {
-                console.log("Error Saving Form " + err);
-            }
-            callback("", form);
-        });
-    }
 };
 
 exports.save = function(mongooseObject, callback) {
