@@ -26,7 +26,7 @@ public class CommentTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void adminCanRemoveComment() {        
+    public void orgAdminCanRemoveComment() {        
         mustBeLoggedInAs(test_username, test_password);
         String commentText = "Inappropriate Comment";
         goToCdeByName("Genbank");
@@ -50,5 +50,29 @@ public class CommentTest extends NlmCdeBaseTest {
         }
     }
 
-    
+    @Test
+    public void siteAdminCanRemoveComment() {        
+        mustBeLoggedInAs(test_username, test_password);
+        String commentText = "Another Inappropriate Comment";
+        goToCdeByName("Genbank");
+        findElement(By.linkText("Discussions")).click();
+        findElement(By.name("comment")).sendKeys(commentText);
+        findElement(By.name("postComment")).click();
+        Assert.assertTrue(textPresent("Comment added"));
+        logout();
+        loginAs(nlm_username, nlm_password);
+        goToCdeByName("Genbank");
+        findElement(By.linkText("Discussions")).click();
+        int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
+        for (int i = 0; i < length; i++) {
+            if (commentText.equals(findElement(By.id("commentText-" + i)).getText())) {
+                findElement(By.id("removeComment-" + i)).click();
+                i = length;
+                Assert.assertTrue(textPresent("Comment removed"));
+                hangon(1);
+                Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(commentText) < 0);
+            }
+        }
+    }
+
 }

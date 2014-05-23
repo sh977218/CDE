@@ -482,17 +482,20 @@ app.post('/removeComment', function(req, res) {
             for (var c in de.comments) {
                 var comment = de.comments[c];
                 if (comment._id == req.body.commentId) {
-                    if (req.user._id == comment.user || (req.user.orgAdmin.indexOf(de.stewardOrg.name) > -1)) {
+                    if( req.user._id == comment.user || 
+                        (req.user.orgAdmin.indexOf(de.stewardOrg.name) > -1) ||
+                        req.user.siteAdmin
+                    ) {
                         de.comments.splice(c, 1);
                         de.save(function (err) {
                            if (err) {
-                               res.send({"message": err});
+                               res.send({message: err});
                            } else {
                                res.send({message: "Comment removed", de: de});
                            }
                         });                        
                     } else {
-                        res.send("You can only remove comments you own.");
+                        res.send({message: "You can only remove comments you own."});
                     }
                 }
             }
