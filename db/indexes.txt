@@ -16,5 +16,3 @@ db.pinningBoard.ensureIndex({"name": 1});
 db.pinningBoard.ensureIndex({"shareStatus": 1});
 db.pinningBoard.ensureIndex({"owner.userId": 1});
 
-db.pinningBoard.ensureIndex({"owner.userId": 1});
-
