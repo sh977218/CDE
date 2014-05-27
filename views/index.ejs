@@ -83,6 +83,7 @@
                                     <li ng-show="isOrgCurator()"><a href="#/classificationmanagement">Classifications</a></li>
                                     <li ng-show="isOrgAdmin() && !user.siteAdmin"><a href="#/orgaccountmanagement">Account Management</a></li>
                                     <li ng-show='user._id && user.siteAdmin'><a href="#/siteaccountmanagement">Site Management</a></li>
+                                    <li ng-show='user._id && user.siteAdmin'><a href="#/siteAudit">Audit</a></li>
                                     <li ng-show='user._id'><a href="/logout">Log Out</a></li>                                         
                                 </ul>
                             </li>
