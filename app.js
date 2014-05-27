@@ -727,7 +727,7 @@ app.post('/addAttachmentToCde', function(req, res) {
 });
 
 app.isCuratorOf = function(user, orgName){
-    return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.orgAdmin.indexOf("NLM")>-1;
+    return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
 };
 
 app.post('/addClassification', function(req, res) {
