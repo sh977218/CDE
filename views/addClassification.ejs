@@ -3,13 +3,13 @@
 </div>
 <form name="form" role="form">
 <div class="modal-body" id="addClassificationModalBody">
-    organizations: {{organizations}}
-    user: {{user}}
     <div class="form-group">
         <label for="conceptSystem">Organization</label>
-        <input class="form-control" ng-model="newClassification.orgName" name="orgName" Placeholder="Organization" 
-               typeahead="org for org in organizations | filter:$viewValue | limitTo:8" required/>
+        <select class="form-control" ng-model="newClassification.orgName" name="orgName" required ng-change="updateOrg()">
+            <option ng-repeat="org in myOrgs" ng-value="org">{{org}}</option>
+        </select>        
     </div>    
+      
     
     <div class="form-group">
         <label for="conceptSystem">Category</label>

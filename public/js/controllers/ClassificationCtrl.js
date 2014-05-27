@@ -18,8 +18,8 @@
           templateUrl: 'addClassificationModalContent.html',
           controller: AddClassificationModalCtrl,
           resolve: {
-              organizations: function () {
-                  return $scope.user.orgAdmin.concat($scope.user.orgCurator);
+              myOrgs: function () {
+                  return $scope.myOrgs;
               }
           }          
         });
