@@ -48,15 +48,28 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-passport.use(new LocalStrategy(
-  function(username, password, done) {
+passport.use(new LocalStrategy({passReqToCallback: true},
+  function(req, username, password, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
       // Find the user by username. If there is no user with the given
       // username, or the password is not correct, set the user to `false` to
       // indicate failure and set a flash message. Otherwise, return the
       // authenticated `user`.
-        vsac.umlsAuth(username, password, function(result) {            
+        vsac.umlsAuth(username, password, function(result) { 
+            this.updateUserOnLogin = function(req, user) {
+                user.lockCounter = 0;
+                user.lastLogin = Date.now();
+                if (!user.knowIPs) {
+                    user.knownIPs = [];
+                }
+                if (user.knownIPs.length > 100) {
+                    user.knownIPs.pop();
+                }
+                if (user.knownIPs.indexOf(req.ip) < 0) {
+                    user.knownIPs.unshift(req.ip);
+                };
+            };
             if (result.indexOf("true") > 0) {
                 findByUsername(username, function(err, user) {
                     if (err) { return done(err); }
@@ -66,7 +79,10 @@ passport.use(new LocalStrategy(
                             return done(null, newUser);
                         });
                     } else {
-                        return done(null, user);
+                        this.updateUserOnLogin(req, user);
+                        return mongo_data.save(user, function(err, user) {
+                            return done(null, user);
+                        });
                     }
                 });
             } else {
@@ -82,12 +98,11 @@ passport.use(new LocalStrategy(
                             return done(null, false, { message: 'Invalid password' }); 
                         });
                     }
-                    user.lockCounter = 0;
-                    user.lastLogin = Date.now();
+                    this.updateUserOnLogin(req, user);
                     return mongo_data.save(user, function(err, user) {
                         return done(null, user);                    
                     });
-                })                
+                });                
             };
         });
     });
@@ -316,6 +331,30 @@ app.get('/siteaccountmanagement', function(req, res) {
     var ip = req.ip;
     if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
         res.render('siteaccountmanagement');
+    } else {
+        res.send(403, "Not Authorized");
+    }
+});
+
+app.isLocalIp = function (ip) {
+    return ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0;
+};
+
+app.get('/siteaudit', function(req, res) {
+    if (app.isLocalIp(req.ip) 
+            && req.user && req.user.siteAdmin) {
+        res.render('siteAudit');
+    } else {
+        res.send(403, "Not Authorized");
+    }
+});
+
+app.get('/searchUsers/:username?', function(req, res) {
+    if (app.isLocalIp(req.ip) 
+            && req.user && req.user.siteAdmin) {
+        mongo_data.usersByPartialName(req.params.username, function (err, users) {
+            res.send({users: users});
+        });
     } else {
         res.send(403, "Not Authorized");
     }
@@ -866,12 +905,15 @@ app.post('/removeAttachment', function(req, res) {
 
 app.post('/setAttachmentDefault', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
-        if (err) return res.send(err);  
+        if (err) {
+            expressLogger.info(err);
+            return res.send(err);
+        }  
         var state = req.body.state;
         for (var i = 0; i < de.attachments.length; i++) {
             de.attachments[i].isDefault = false;
         }
-        de.attachments[index].isDefault = state;
+        de.attachments[req.body.index].isDefault = state;
         de.save(function (err) {
            if (err) {
                res.send("error: " + err);
