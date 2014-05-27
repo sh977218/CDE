@@ -22,7 +22,7 @@ if [ "$curl_res" == "$target" ]
 then
     #gradle -b test/selenium/build.gradle clean test & 
     gradle -b test/selenium/build.gradle -Dtest.single=ClassificationTest clean test & 
-    node --debug app > test-console.out
+    node app > test-console.out
 else
     echo "Not all documents indexed. Aborting"
     echo $curl_res
