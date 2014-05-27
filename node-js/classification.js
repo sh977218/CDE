@@ -46,6 +46,7 @@ exports.removeClassificationFromTree = function(sourceElements, pathElements) {
 exports.addClassificationToCde = function (dat, res) {
     mongo_data.cdeById(dat.deId, function(err, de) {
         if (err) {
+            res.statusCode = 404;
             return res.send(err);
         }
         cdesvc.addClassificationToCde(de, dat.classification.orgName, dat.classification.conceptSystem, dat.classification.concept);
