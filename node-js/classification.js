@@ -1,3 +1,6 @@
+var mongo_data = require('./mongo-data')
+    , cdesvc = require('./cdesvc');
+
 exports.findSteward = function(de, orgName) {
     for (var i = 0; i < de.classification.length; i++) {
         if (de.classification[i].stewardOrg.name === orgName) {
@@ -38,4 +41,20 @@ exports.removeClassificationFromTree = function(sourceElements, pathElements) {
            }             
         }
     }
+};
+
+exports.addClassificationToCde = function (dat, res) {
+    mongo_data.cdeById(dat.deId, function(err, de) {
+        if (err) {
+            return res.send(err);
+        }
+        cdesvc.addClassificationToCde(de, dat.classification.orgName, dat.classification.conceptSystem, dat.classification.concept);
+        return de.save(function(err) {
+            if (err) {
+                res.send("error: " + err);
+            } else {
+                res.send(de);
+            }
+        });        
+    });    
 };

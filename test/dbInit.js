@@ -4,6 +4,7 @@ db.orgs.remove({});
 db.forms.remove({});
 db.pinningBoards.remove({});
 db.messages.remove({});
+db.sessions.remove({});
 
 var defaultBoard = {
     name: "default"

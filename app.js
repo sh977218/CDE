@@ -687,21 +687,16 @@ app.post('/addAttachmentToCde', function(req, res) {
     });
 });
 
+app.isCuratorOf = function(user, orgName){
+    return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.orgAdmin.indexOf("NLM")>-1;
+};
+
 app.post('/addClassification', function(req, res) {
-    //checkCdeOwnership(req.body.deId, req, function(err, de) {
-    mongo_data.cdeById(req.body.deId, function(err, de) {
-        if (err) {
-            return res.send(err);
-        }
-        cdesvc.addClassificationToCde(de, req.body.classification.orgName, req.body.classification.conceptSystem, req.body.classification.concept);
-        return de.save(function(err) {
-            if (err) {
-                res.send("error: " + err);
-            } else {
-                res.send(de);
-            }
-        });        
-    });
+    if (app.isCuratorOf(req.user,req.body.classification.orgName)) {
+        classification.addClassificationToCde(req.body, res);
+    } else {
+        res.send(403);
+    }
 });
 
 app.post('/addClassificationGroup', function(req, res) {
