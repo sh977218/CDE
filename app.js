@@ -909,12 +909,15 @@ app.post('/removeAttachment', function(req, res) {
 
 app.post('/setAttachmentDefault', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
-        if (err) return res.send(err);  
+        if (err) {
+            expressLogger.info(err);
+            return res.send(err);
+        }  
         var state = req.body.state;
         for (var i = 0; i < de.attachments.length; i++) {
             de.attachments[i].isDefault = false;
         }
-        de.attachments[index].isDefault = state;
+        de.attachments[req.body.index].isDefault = state;
         de.save(function (err) {
            if (err) {
                res.send("error: " + err);
