@@ -18,9 +18,9 @@
           templateUrl: 'addClassificationModalContent.html',
           controller: AddClassificationModalCtrl,
           resolve: {
-              myOrgs: function () {
+              myOrgs: function() {
                   return $scope.myOrgs;
-              }
+              }   
           }          
         });
 

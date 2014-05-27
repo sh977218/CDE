@@ -1,110 +1,12 @@
-<script type='text/ng-template' id="mailTemplate">
-<accordion ng-repeat="message in mail[type]" close-others="oneAtATime">
-    <accordion-group>
-        <accordion-heading>
-            {{message.date | date : medium}} | {{message.type}} | {{message.typeMergeRequest.destination.object.naming[0].designation}} | {{message.author.name}}
-        </accordion-heading>
-        
-        <h4>Merge Request</h4> 
-        <div ng-show="message.typeMergeRequest.source.object._id">
-            <a target="_blank" href="#/deview?cdeId={{message.typeMergeRequest.source.object._id}}">{{message.typeMergeRequest.source.object.naming[0].designation}}</a> [{{ message.typeMergeRequest.source.object.stewardOrg.name }}]
-            <br><i class="fa fa-arrow-down"></i><br>
-        </div>
-            <a target="_blank" href="#/deview?cdeId={{message.typeMergeRequest.destination.object._id}}">{{message.typeMergeRequest.destination.object.naming[0].designation}}</a> [{{ message.typeMergeRequest.destination.object.stewardOrg.name }}]
-        <hr/>
-        <h4>Imported Fields</h4>      
-
-        <div id="repeatCs" class="container">
-            <div ng-repeat="n in message.typeMergeRequest.source.object.naming" class="col-md-5 container">
-                <h5>Naming {{$index+1}}</h5>
-                <hr>
-                <div class="row">
-                    <div class="col-sm-3"><b>Name</b></div>
-                    <div class="col-sm-9">{{n.designation}}</div>
-                </div>    
-                <div class="row">
-                    <div class="col-sm-3"><b>Definition</b></div>
-                    <div class="col-sm-9">{{n.definition}}</div>
-                </div>  
-                <div class="row">
-                    <div class="col-sm-3"><b>Context</b></div>
-                    <div class="col-sm-9">{{n.context.contextName}}</div>
-                </div>                  
-            </div>
-            
-            <div ng-repeat="id in message.typeMergeRequest.source.object.ids" class="col-md-5 container">
-                <h5>Identifier {{$index+1}}</h5>
-                <hr>
-                <div class="row">
-                    <div class="col-sm-3"><b>Origin</b></div>
-                    <div class="col-sm-9">{{ id.origin }}</div>
-                </div>                 
-                <div class="row">
-                    <div class="col-sm-3"><b>ID</b></div>
-                    <div class="col-sm-9">{{ id.id }}</div>
-                </div>                    
-            </div>  
-            
-            <div ng-repeat="property in message.typeMergeRequest.source.object.properties" class="col-md-5 container">
-                <h5>Property {{$index+1}}</h5>
-                <hr>
-                <div class="row">
-                    <div class="col-sm-3"><b>Key</b></div>
-                    <div class="col-sm-9">{{property.key }}</div>
-                </div>                 
-                <div class="row">
-                    <div class="col-sm-3"><b>Value</b></div>
-                    <div class="col-sm-9">{{property.value}}</div>
-                </div>                      
-            </div>             
-
-            <div ng-repeat="attachment in message.typeMergeRequest.source.object.attachments" class="col-md-5 container">
-                <h5>Attachment {{$index+1}}</h5>
-                <hr>
-                <div class="row">
-                    <div class="col-sm-3"><b>Date</b></div>
-                    <div class="col-sm-9">{{attachment.uploadDate | date : medium }}</div>
-                </div>                 
-                <div class="row">
-                    <div class="col-sm-3"><b>Type</b></div>
-                    <div class="col-sm-9">{{attachment.filetype}}</div>
-                </div>    
-                <div class="row">
-                    <div class="col-sm-3"><b>Filename</b></div>
-                    <div class="col-sm-9"><a target="_blank" href="/data/{{attachment.fileid}}">{{attachment.filename}}</a></div>
-                </div>  
-                <div class="row">
-                    <div class="col-sm-3"><b>Comment</b></div>
-                    <div class="col-sm-9">{{attachment.comment}}</div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-3"><b>Size</b></div>
-                    <div class="col-sm-9">{{attachment.filesize | bytes}}</div>
-                </div>  
-                <div class="row">
-                    <div class="col-sm-3"><b>Uploaded by</b></div>
-                    <div class="col-sm-9">{{attachment.uploadedBy.username}}</div>
-                </div>                  
-            </div>            
-        </div>
-        <span ng-show="type==mailTypeReceived">
-            <button ng-controller="MergeApproveCtrl" ng-click="showMergeApproveDialog(message)" ng-class="{disabled: message.typeMergeRequest.states[0].action==='Approved'}" class="btn btn-sm btn-default" type="button" >Approve & Merge</button>
-            <span ng-show="message.typeMergeRequest.states[0].action==='Approved'">Approved on {{ message.typeMergeRequest.states[0].date | date:medium }}</span>
-        </span>
-    </accordion-group>
-</accordion>
-</script>
-
-
 <div class="modal-header" id="addClassificationModalHeader">
     <h4>Add Classification</h4>
 </div>
 <form name="form" role="form">
 <div class="modal-body" id="addClassificationModalBody">
     
-    <div class="form-group">
+    <div ng-show="classificationType == 'cdeClass'" class="form-group">
         <label for="conceptSystem">Organization</label>
-        <select class="form-control" ng-model="newClassification.orgName" name="orgName" required ng-change="updateOrg()" ng-options='org for org in myOrgs'>
+        <select class="form-control" ng-model="newClassification.orgName" name="orgName" ng-change="updateOrg()" ng-options='org for org in myOrgs'>
         </select>        
     </div>     
     
