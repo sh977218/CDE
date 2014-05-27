@@ -64,10 +64,10 @@ passport.use(new LocalStrategy({passReqToCallback: true},
                     user.knownIPs = [];
                 }
                 if (user.knownIPs.length > 100) {
-                    user.knownIPs.length = 99;
+                    user.knownIPs.pop();
                 }
                 if (user.knownIPs.indexOf(req.ip) < 0) {
-                    user.knownIPs.splice(0, 0, req.ip);
+                    user.knownIPs.unshift(req.ip);
                 };
             };
             if (result.indexOf("true") > 0) {
