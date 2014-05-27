@@ -1,4 +1,6 @@
  function AddClassificationModalCtrl($scope, $modalInstance, $http, myOrgs) {
+    $scope.newClassification = {};
+    $scope.newClassification.orgName = myOrgs[0];
     $scope.myOrgs = myOrgs;  
     $scope.orgClassSystems = [];
     $scope.getOrgClassSystems = function () {
