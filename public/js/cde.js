@@ -1,7 +1,8 @@
 var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular']).
     config(function($routeProvider) {
         $routeProvider.
-        when('/', {controller:DEListCtrl, templateUrl:'/list'}).
+        when('/', {controller:HomeCtrl, templateUrl:'/home'}).
+        when('/search', {controller:DEListCtrl, templateUrl:'/list'}).
         when('/login', {controller:AuthCtrl, templateUrl:'/login'}).
         when('/signup', {controller:AuthCtrl, templateUrl:'/signup'}).
         when('/createCde', {controller:CreateCdeCtrl, templateUrl:'/createcde'}).

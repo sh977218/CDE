@@ -1,3 +1,16 @@
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    background-color:#fff;
+}
+
+.jumbotron {
+    background-color: #a8c4e1;
+}
+
+.drop-cap-img {
+    padding-right: 10px;
+}
 
 .inactive {
     border: none;

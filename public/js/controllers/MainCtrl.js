@@ -144,6 +144,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     // Is there a more elegant way to do this?
     $scope.setActiveMenu = function(key) {
         $scope.menuHome = '';
+        $scope.menuSearch = '';
         $scope.menuForm = '';
         $scope.menuLogin = '';
         $scope.menuCart = '';
@@ -154,8 +155,11 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         $scope.menuMyBoards = '';
         $scope.menuBoardList = '';
         $scope.menuCompare = '';
-        if (key === 'LISTCDE') {
+        
+        if (key === 'HOME') {
             $scope.menuHome = 'active';
+        } else if (key === 'LISTCDE') {
+            $scope.menuSearch = 'active';
         } else if (key === 'LOGIN') {
             $scope.menuLogin = 'active';
         } else if (key === 'LISTFORMS') {
