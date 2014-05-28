@@ -24,7 +24,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Classification Added"));
     }
     
-    /*@Test
+    @Test
     public void addClassification() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Pills Quantity");
@@ -33,7 +33,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.linkText("Classification")).click();
         Assert.assertTrue(textPresent("MyCategory"));
         Assert.assertTrue(textPresent("MyClassification"));
-    }*/
+    }
     
     @Test
     public void classifyAs() {
@@ -52,7 +52,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(driver.findElement(By.cssSelector("#conceptSystem-caBIG-MyCategory [data-id='classification-2-0']")).getText().equals("MyClassification"));
         Assert.assertTrue(driver.findElement(By.cssSelector("#conceptSystem-CTEP-CATEGORY [data-id='classification-0-0']")).getText().equals("AdEERS"));
     }
-    /*
+    
     @Test
     public void removeClassification() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
@@ -91,5 +91,5 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Supplemental"));
         Assert.assertTrue(textPresent("Outcomes and End Points"));
         Assert.assertTrue(textPresent("Other Non-Motor"));
-    }*/
+    }
 }
