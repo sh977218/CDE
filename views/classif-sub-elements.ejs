@@ -1,7 +1,7 @@
 <script type="text/ng-template"  id="classif-sub-elements.html">
     <ul class="fa-ul">
         <li ng-repeat="elt in elt.elements | orderBy:'name'" style="margin-right: -20px" ng-init="pathArray = pathArray.slice(0); pathArray.push(elt.name)">
-            <span ng-show="isAllowedNonCuration(cde)">
+            <span ng-show="myOrg">
                 <span ng-show="showDelete">
                     Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(stewardClassifications.stewardOrg.name, pathArray)" 
                                       id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>

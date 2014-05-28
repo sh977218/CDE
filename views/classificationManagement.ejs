@@ -41,10 +41,8 @@
 </div>
 
 <div id="repeatCs" class="container">
-    <div  class="col-md-5 container">
-        <h5>{{orgToManage}}</h5>
-        <hr/>
-        <div ng-repeat="elt in classificationToFilter()" class="col-md-6" ng-init='pathArray = [elt.name]'>
+    <div  class="col-md-12 container">
+        <div ng-repeat="elt in classificationToFilter()" class="col-md-6" ng-init='pathArray = [elt.name]; myOrg = true;'>
             <h6>{{elt.name}}</h6>
             <div ng-include="'classif-sub-elements.html'"></div>
         </div>
