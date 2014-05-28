@@ -14,7 +14,7 @@
                 <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
             </span>
             <a href="/">
-                <span ng-click="searchByClassification(stewardClassifications.stewardOrg.name, pathArray)" id="classification-{{$parent.$index}}-{{$index}}" class="hand-cursor">
+                <span ng-click="searchByClassification(stewardClassifications.stewardOrg.name, pathArray)" data-id="classification-{{$parent.$index}}-{{$index}}" class="hand-cursor">
                     {{elt.name}}  
                 </span>
             </a> 
@@ -24,10 +24,10 @@
 </script>
 
 <div id="repeatCs" class="container">
-    <div ng-repeat="stewardClassifications in classificationToFilter()" class="col-md-5 container">
+    <div ng-repeat="stewardClassifications in classificationToFilter()" class="col-md-5 container" id="stewardClassificationGroup-{{stewardClassifications.stewardOrg.name}}">
         <h5>{{stewardClassifications.stewardOrg.name}}</h5>
         <hr/>
-        <div ng-repeat="elt in stewardClassifications.elements" class="col-md-6" ng-init='pathArray = [elt.name]'>
+        <div ng-repeat="elt in stewardClassifications.elements" class="col-md-6" ng-init='pathArray = [elt.name]' id="conceptSystem-{{stewardClassifications.stewardOrg.name}}-{{elt.name}}">
             <h6>{{elt.name}}</h6>
             <div ng-include="'classif-sub-elements.html'"></div>
         </div>
