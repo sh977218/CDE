@@ -93,6 +93,7 @@
                                     <li ng-show="isOrgCurator()"><a href="#/classificationmanagement">Classifications</a></li>
                                     <li ng-show="isOrgAdmin() && !user.siteAdmin"><a href="#/orgaccountmanagement">Account Management</a></li>
                                     <li ng-show='user._id && user.siteAdmin'><a href="#/siteaccountmanagement">Site Management</a></li>
+                                    <li ng-show='user._id && user.siteAdmin'><a href="#/siteAudit">Audit</a></li>
                                     <li ng-show='user._id'><a href="/logout">Log Out</a></li>                                         
                                 </ul>
                             </li>
@@ -100,54 +101,6 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- div nav class="navbar navbar-default" role="navigation">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <a class="navbar-brand" href="/">NLM CDEs</a>
-                    </div>
-                    
-                    <div class="collapse navbar-collapse" id="main-navbar-collapse">
-                        <ul class="nav navbar-nav">
-                            <li class="{{menuHome}}"><a href="/">CDEs</a></li>
-                            <li ng-show='isOrgCurator()' class="dropdown">    
-                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Create <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#/createCde">CDE</a></li>
-                                </ul>
-                            </li>       
-                            <li class="{{menuBoardList}}"><a href="#/boardList">Boards</a></li>
-                            <li class="{{menuMyBoards}}" ng-show="user._id"><a href="#/myboards">My Boards</a></li>
-                            <li class="{{menuCompare}}">
-                                <p class="navbar-text"><a class="navbar-link" href="#/deCompare" style="text-decoration:none;">Compare (
-                                    <span ng-switch="compareCart.length">
-                                        <span ng-switch-when="0">empty</span>
-                                        <span ng-switch-when="2">full</span>
-                                        <span ng-switch-default>{{compareCart.length}}</span>
-                                    </span>)
-                                    </a>
-                                    <a class="fa fa-trash-o navbar-link" style="text-decoration:none;" ng-show="compareCart.length > 0" ng-click="emptyCart()" title="Empty cart" id="emptyCart"></a>
-                                </p>
-                            </li>
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li class="{{menuLogin}}" ng-show='!user._id'><a href="#/login" id="login_link">Log In</a></li>
-                            <li class="dropdown {{menuAccount}}" ng-show="user._id">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="username_link">{{user.username}}<span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li ng-show='user._id'><a href="#/profile">Profile</a></li>
-                                    <li ng-show='isOrgCurator()||isOrgAdmin()'><a href="#/inbox">Inbox</a></li>
-                                    <li ng-show="isOrgCurator()"><a href="#/classificationmanagement">Classifications</a></li>
-                                    <li ng-show="isOrgAdmin() && !user.siteAdmin"><a href="#/orgaccountmanagement">Account Management</a></li>
-                                    <li ng-show='user._id && user.siteAdmin'><a href="#/siteaccountmanagement">Site Management</a></li>
-                                    <li ng-show='user._id && user.siteAdmin'><a href="#/siteAudit">Audit</a></li>
-                                    <li ng-show='user._id'><a href="/logout">Log Out</a></li>                                         
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>                
-                </div>                
-            </div -->
             
             <div class="navbar-fixed-bottom">
                 <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
