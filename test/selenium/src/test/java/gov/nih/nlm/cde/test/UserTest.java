@@ -22,7 +22,7 @@ public class UserTest extends NlmCdeBaseTest {
     @Test
     public void wrongLogin() {
         mustBeLoggedOut();
-        goHome();
+        goToSearch();
         try {
             findElement(By.linkText("Log In")).click();
         } catch (TimeoutException e) {

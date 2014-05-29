@@ -1,7 +1,10 @@
 function CommentsCtrl($scope, Comment) {
     
     $scope.canRemoveComment = function(com) {
-        return (($scope.user._id) && ($scope.user._id == com.user || ($scope.user.orgAdmin.indexOf($scope.cde.stewardOrg.name) > -1)));
+        return (($scope.user._id) && 
++                ($scope.user._id == com.user ||
++                ($scope.user.orgAdmin.indexOf($scope.cde.stewardOrg.name) > -1) ||
++                $scope.user.siteAdmin ) );
     };
     
     $scope.addComment = function() {        
