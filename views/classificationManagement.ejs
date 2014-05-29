@@ -12,7 +12,7 @@
     <div  class="col-md-12 container">
         <div ng-repeat="elt in classificationToFilter()" class="col-md-6" ng-init='pathArray = [elt.name]; myOrg = true;'>
             <h6>{{elt.name}}</h6>
-            <div ng-include="'classif-sub-elements.html'"></div>
+            <div ng-include="'classif-sub-elements.html'" ng-init="orgName = orgToManage;"></div>
         </div>
     </div>
 </div>

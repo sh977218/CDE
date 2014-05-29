@@ -59,3 +59,7 @@ exports.addClassificationToCde = function (dat, res) {
         });        
     });    
 };
+
+exports.removeOrgClassification = function(query) {
+    
+};

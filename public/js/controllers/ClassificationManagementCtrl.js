@@ -1,4 +1,4 @@
-function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
+function ClassificationManagementCtrl($scope, $http, $modal, Classification, OrgClassification) {
     if ($scope.myOrgs.length > 0) {
         $scope.orgToManage = $scope.myOrgs[0];
     }
@@ -27,6 +27,25 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
             $scope.org = response.data.org;
         });
     };
+    
+    $scope.removeClassification = function(orgName, elts) {
+        OrgClassification.remove({
+            orgName: orgName
+            , categories: elts
+        }, function (res) {
+            
+        });
+        /*OrgClassification.remove({
+            orgName: orgName
+            , elements: elts
+            , deId: $scope.cde._id 
+        }, 
+        function (res) {
+            $scope.cde = res;
+            $scope.addAlert("success", "Classification Removed");
+        });*/
+        OrgClassification
+    };    
     
     $scope.isInConceptSystem = function(system) {
         return function(classi) {

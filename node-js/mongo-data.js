@@ -63,7 +63,7 @@ exports.org_autocomplete = function(name, callback) {
     }); 
 };
 
-exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, callback) {
+/*exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, callback) {
     var mongoQuery = {
         $pull: {
                 "classifications.$.elements": {
@@ -87,6 +87,15 @@ exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, 
             callback(err, result);
         });
     });  
+};*/
+exports.removeOrgClassification = function(request, callback) {
+    Org.findOne({"name": request.orgName}).exec(function (err, stewardOrg) {
+        classification.removeClassificationFromTree(stewardOrg.classifications, request.categories);
+        stewardOrg.markModified("classifications");
+        stewardOrg.save(function (err) {
+            if(callback) callback(err, stewardOrg);
+        });
+    });    
 };
 
 exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptName, callback) {

@@ -57,6 +57,9 @@ angular.module('resources', ['ngResource'])
           }
         };
     })
+    .factory('OrgClassification', function($resource) {
+        return $resource('/classification/org');
+    })    
     .factory("UsedBy", function($http) {
         return {
           remove: function(dat, success, error) {

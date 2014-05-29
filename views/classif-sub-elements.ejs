@@ -1,9 +1,9 @@
-<script type="text/ng-template"  id="classif-sub-elements.html">
+<script type="text/ng-template"  id="classif-sub-elements.html"> on : {{orgName}} -
     <ul class="fa-ul">
         <li ng-repeat="elt in elt.elements | orderBy:'name'" style="margin-right: -20px" ng-init="pathArray = pathArray.slice(0); pathArray.push(elt.name)">
             <span ng-show="myOrg">
                 <span ng-show="showDelete">
-                    Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(stewardClassifications.stewardOrg.name, pathArray)" 
+                    Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(orgName, pathArray)" 
                                       id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
                     <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
                 </span>

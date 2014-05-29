@@ -454,20 +454,6 @@ app.post('/addOrg', function(req, res) {
     }
 });
 
-app.post('/removeClassificationFromOrg', function(req, res) {
-    if (!req.user 
-        || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0)
-          && (!req.user.orgCurator || req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0)
-        ) {
-        res.send({message: "You are not authorized to do this."});
-    } else {
-        mongo_data.removeClassificationFromOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err, org) {
-            if (err) res.send({message: "error: " + err});
-            else res.send({message: "Classification Removed", org: org});
-        });
-    }
-});
-
 app.post('/addClassificationToOrg', function(req, res) {
     if (!req.user 
         || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0)
@@ -482,6 +468,25 @@ app.post('/addClassificationToOrg', function(req, res) {
     }
 });
 
+app.post('/removeClassificationFromOrg', function(req, res) {
+    if (!req.user 
+        || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0)
+          && (!req.user.orgCurator || req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0)
+        ) {
+        res.send({message: "You are not authorized to do this."});
+    } else {
+        mongo_data.removeClassificationFromOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err, org) {
+            if (err) res.send({message: "error: " + err});
+            else res.send({message: "Classification Removed", org: org});
+        });
+    }
+});
+
+app.delete('/classification/org', function(req, res) {
+    mongo_data.removeOrgClassification(req.query, function() {
+        res.send();
+    });
+});
 
 app.post('/addComment', function(req, res) {
     if (req.isAuthenticated()) {
@@ -730,13 +735,7 @@ app.isCuratorOf = function(user, orgName){
     return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
 };
 
-app.post('/addClassification', function(req, res) {
-    if (app.isCuratorOf(req.user,req.body.classification.orgName)) {
-        classification.addClassificationToCde(req.body, res);
-    } else {
-        res.send(403);
-    }
-});
+
 
 app.post('/addClassificationGroup', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
@@ -754,6 +753,14 @@ app.post('/addClassificationGroup', function(req, res) {
             }
         });
     });
+});
+
+app.post('/addClassification', function(req, res) {
+    if (app.isCuratorOf(req.user,req.body.classification.orgName)) {
+        classification.addClassificationToCde(req.body, res);
+    } else {
+        res.send(403);
+    }
 });
 
 app.post('/removeClassification', function(req, res) {

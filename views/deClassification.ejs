@@ -10,7 +10,7 @@
         <hr/>
         <div ng-repeat="elt in stewardClassifications.elements" class="col-md-6" ng-init='pathArray = [elt.name]' id="conceptSystem-{{stewardClassifications.stewardOrg.name}}-{{elt.name}}">
             <h6>{{elt.name}}</h6>
-            <div ng-include="'classif-sub-elements.html'" ng-init="myOrg = myOrgs.indexOf(stewardClassifications.stewardOrg.name)>=0"></div>
+            <div ng-include="'classif-sub-elements.html'" ng-init="myOrg = myOrgs.indexOf(stewardClassifications.stewardOrg.name)>=0; orgName = stewardClassifications.stewardOrg.name;"></div>
         </div>
     </div>
 </div>
