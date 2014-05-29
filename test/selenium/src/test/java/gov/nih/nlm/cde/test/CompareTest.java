@@ -31,7 +31,8 @@ public class CompareTest extends NlmCdeBaseTest{
     public void Compare2Elements() {
         addToCompare("Person Gender Text Type", "Patient Gender Category");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));    
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
+        Assert.assertTrue(textNotPresent("VSAC Value Set"));
     }
     
     @Test

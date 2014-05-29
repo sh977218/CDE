@@ -42,7 +42,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
           resolve: {
             org: function() {
                 return $scope.orgToManage;
-            }          
+            }           
           }
         });
 

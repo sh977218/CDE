@@ -204,7 +204,7 @@ public class NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName1+"\"");
         findElement(By.id("search.submit")).click();
         findElement(By.linkText(cdeName1)).click();
-        hangon(.5);
+        hangon(1);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
         findElement(By.id("compare_0")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
@@ -215,7 +215,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         hangon(2);
         findElement(By.linkText(cdeName2)).click();
-        hangon(.5);
+        hangon(1);
         findElement(By.id("compare_0")).click();   
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));        
         Assert.assertTrue(textPresent("Compare ( full )"));

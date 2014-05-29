@@ -25,7 +25,6 @@ var schemas = require('./schemas');
 
 var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
 var User = mongoose.model('User', schemas.userSchema);
-var Form = mongoose.model('Form', schemas.formSchema);
 var Org = mongoose.model('Org', schemas.orgSchema);
 var PinningBoard = mongoose.model('PinningBoard', schemas.pinningBoardSchema);
 var Message = mongoose.model('Message', schemas.message);
@@ -199,6 +198,16 @@ exports.userByName = function(name, callback) {
     });
 };
 
+exports.usersByPartialName = function(name, callback) {
+    User.find({'username': new RegExp(name, 'i')}).exec(function (err, users) {
+        for (var i = 0; i < users.length; i++) {
+            delete users[i].password;
+        }
+        callback("", users); 
+    });
+};
+
+
 exports.userById = function(id, callback) {
     User.findOne({'_id': id}).exec(function (err, u) {
        callback("", u); 
@@ -246,15 +255,6 @@ exports.addComment = function(deId, comment, userId, callback) {
     });
 };
 
-exports.addToCart = function (user, formId, callback) {
-    User.findOne({'_id': user._id}).exec(function (err, u) {
-       u.formCart.push(formId);
-       u.save(function (err) {
-          callback(""); 
-       });
-    });
-};
-
 exports.classificationSystems = function(callback) {
       DataElement.find().distinct('classification.conceptSystem', function(error, classifs) {
           callback(classifs);
@@ -264,23 +264,6 @@ exports.classificationSystems = function(callback) {
 exports.orgByName = function(orgName,callback) {
     Org.findOne({"name": orgName}).exec(function(error, org) {
         callback(org);
-    });
-};
-
-
-exports.removeFromCart = function (user, formId, callback) {
-    User.findOne({'_id': user._id}).exec(function (err, u) {
-        if (u.formCart.indexOf(formId) > -1) {
-            u.formCart.splice(u.formCart.indexOf(formId), 1);
-            u.save(function (err) {
-                if (err) {
-                    console.log("Could not remove from cart");
-                }
-                callback(""); 
-            });
-        } else {
-            console.log("This form is not in the cart. " + formId);
-        }
     });
 };
 
@@ -301,18 +284,6 @@ exports.boardList = function(from, limit, searchOptions, callback) {
                     , totalNumber: count
                 });
              });
-    });
-};  
-
-exports.formlist = function(from, limit, searchOptions, callback) {
-    Form.find(searchOptions).skip(from).limit(limit).sort('name').exec(function (err, forms) {
-        Form.count(searchOptions).exec(function (err, count) {
-        callback("",{
-               forms: forms,
-               page: Math.ceil(from / limit),
-               pages: Math.ceil(count / limit)
-           });
-        });
     });
 };  
 

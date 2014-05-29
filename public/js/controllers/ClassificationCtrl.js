@@ -1,4 +1,4 @@
- function ClassificationCtrl($scope, $modal, $route, Classification) {
+ function ClassificationCtrl($scope, $modal, Classification) {
     $scope.initCache(); 
      
     $scope.removeClassification = function(orgName, elts) {
@@ -18,12 +18,13 @@
           templateUrl: 'addClassificationModalContent.html',
           controller: AddClassificationModalCtrl,
           resolve: {
-          }
+              myOrgs: function() {
+                  return $scope.myOrgs;
+              }   
+          }          
         });
 
         modalInstance.result.then(function (newClassification) {
-            //TO-DO: Ability to classify as any organization in the list.
-            newClassification.orgName = $scope.user.orgCurator[0]?$scope.user.orgCurator[0]:$scope.user.orgAdmin[0];
             Classification.add({
                 classification: newClassification
                 , deId: $scope.cde._id

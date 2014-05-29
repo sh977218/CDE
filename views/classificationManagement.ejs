@@ -1,35 +1,4 @@
 <div class="container">
-    <!--div class="form-group">
-        <label for="orgToManage">Manage Classifications for</label>
-        <select class="form-control" ng-model="orgToManage" name="orgToManage" required ng-change="updateOrg()">
-            <option ng-repeat="o in myOrgs" ng-value="o">{{o}}</option>
-        </select>
-    </div>
-
-    <dl id="repeatCs">
-    <button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification"><i class="fa fa-plus"> </i> Add Classification</button>
-    <div ng-repeat="conceptSystemPerConcept in classificationToFilter() | filter:filterConceptSystemClassification | orderBy:'conceptSystem'">
-        <dt>{{conceptSystemPerConcept.conceptSystem}}</dt>
-        <dd>
-            <div ng-repeat="class in org.classifications | filter:isInConceptSystem(conceptSystemPerConcept.conceptSystem) | orderBy:'concept'">
-                <span ng-show="showDelete">
-                    Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(class)" id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
-                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
-                </span>
-                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
-                <span id="classification-{{$parent.$index}}-{{$index}}">
-                    {{class.concept}}            
-                </span>
-            </div>
-        </dd>
-    </div>
-    </dl>
-
-    <script type="text/ng-template" id="addClassificationModalContent.html">
-        <%- include addClassification.ejs %>
-    </script-->
-
-
     <div class="form-group">
         <label for="orgToManage">Manage Classifications for</label>
         <select class="form-control" ng-model="orgToManage" name="orgToManage" required ng-change="updateOrg()">
