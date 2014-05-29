@@ -90,9 +90,26 @@ exports.org_autocomplete = function(name, callback) {
 };*/
 exports.removeOrgClassification = function(request, callback) {
     Org.findOne({"name": request.orgName}).exec(function (err, stewardOrg) {
-        classification.removeClassificationFromTree(stewardOrg.classifications, request.categories);
+        classification.removeClassificationFromTree(stewardOrg.classifications, request.categories.slice(0));
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
+            var query = {"classification.stewardOrg.name": request.orgName};
+            for (var i = 0; i<request.categories.length; i++) {
+                var key = "classification";
+                for (var j = 0; j<=i; j++) key += ".elements";
+                key += ".name";
+                query[key] = request.categories[i];
+            }            
+            DataElement.find(query).exec(function(err, result) {
+                for (var i = 0; i < result.length; i++) {
+                    var cde = result[i];
+                    var steward = classification.findSteward(cde, request.orgName);
+                    classification.removeClassificationFromTree(steward.object.elements, request.categories.slice(0));
+                    cde.markModified("classification");
+                    cde.save(function(err) {
+                    });
+                };
+            });            
             if(callback) callback(err, stewardOrg);
         });
     });    

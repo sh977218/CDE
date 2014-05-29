@@ -1,4 +1,4 @@
-function ClassificationManagementCtrl($scope, $http, $modal, Classification, OrgClassification) {
+function ClassificationManagementCtrl($scope, $http, $modal, $route, Classification, OrgClassification) {
     if ($scope.myOrgs.length > 0) {
         $scope.orgToManage = $scope.myOrgs[0];
     }
@@ -33,18 +33,9 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification, Org
             orgName: orgName
             , categories: elts
         }, function (res) {
-            
+            $route.reload();
+            $scope.addAlert("success", "Classification Deleted");
         });
-        /*OrgClassification.remove({
-            orgName: orgName
-            , elements: elts
-            , deId: $scope.cde._id 
-        }, 
-        function (res) {
-            $scope.cde = res;
-            $scope.addAlert("success", "Classification Removed");
-        });*/
-        OrgClassification
     };    
     
     $scope.isInConceptSystem = function(system) {
