@@ -8,38 +8,6 @@
 <dl id="repeatCs">
 <button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification"><i class="fa fa-plus"> </i> Add Classification</button>
 
-<!--div ng-repeat="conceptSystem in classificationToFilter() | orderBy:'name'">
-    <dt>{{conceptSystem.name}}</dt>
-    <dd>
-        <div ng-repeat="concept in conceptSystem.elements | orderBy:'name'">
-            <span ng-show="showDelete">
-                Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(orgToManage, conceptSystem.name, concept.name)" id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
-                <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
-            </span>
-            <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
-            <span id="classification-{{$parent.$index}}-{{$index}}">
-                {{concept.name}}            
-            </span>
-        </div>
-    </dd>
-</div-->
-
-<div ng-repeat="conceptSystem in classificationToFilter() | orderBy:'name'">
-    <dt>{{conceptSystem.name}}</dt>
-    <dd>
-        <div ng-repeat="concept in conceptSystem.elements | orderBy:'name'">
-            <span ng-show="showDelete">
-                Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(orgToManage, conceptSystem.name, concept.name)" id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
-                <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
-            </span>
-            <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
-            <span id="classification-{{$parent.$index}}-{{$index}}">
-                {{concept.name}}            
-            </span>
-        </div>
-    </dd>
-</div>
-
 <div id="repeatCs" class="container">
     <div  class="col-md-12 container">
         <div ng-repeat="elt in classificationToFilter()" class="col-md-6" ng-init='pathArray = [elt.name]; myOrg = true;'>
