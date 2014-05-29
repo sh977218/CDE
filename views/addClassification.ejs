@@ -3,6 +3,13 @@
 </div>
 <form name="form" role="form">
 <div class="modal-body" id="addClassificationModalBody">
+    
+    <div ng-show="classificationType == 'cdeClass'" class="form-group">
+        <label for="conceptSystem">Organization</label>
+        <select class="form-control" ng-model="newClassification.orgName" name="orgName" ng-change="updateOrg()" ng-options='org for org in myOrgs'>
+        </select>        
+    </div>     
+    
     <div class="form-group">
         <label for="conceptSystem">Category</label>
         <input class="form-control" ng-model="newClassification.conceptSystem" name="conceptSystem" Placeholder="Category" 
@@ -19,3 +26,4 @@
     <button class="btn btn-warning" ng-click="okCreate(newClassification)" ng-disabled="isClean() || form.$invalid" id="saveClassification">Save</button>
 </div>
 </form>
+

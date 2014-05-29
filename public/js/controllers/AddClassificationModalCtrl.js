@@ -1,4 +1,8 @@
- function AddClassificationModalCtrl($scope, $modalInstance, $http) {
+ function AddClassificationModalCtrl($scope, $modalInstance, $http, myOrgs) {
+    $scope.classificationType = "cdeClass";
+    $scope.newClassification = {};
+    $scope.newClassification.orgName = myOrgs[0];
+    $scope.myOrgs = myOrgs;  
     $scope.orgClassSystems = [];
     $scope.getOrgClassSystems = function () {
         $http.get("/autocomplete/classification/all").then(function(response) { 
