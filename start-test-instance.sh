@@ -21,7 +21,7 @@ export curl_res=$(curl http://localhost:9200/cdetest/_count)
 if [ "$curl_res" == "$target" ] 
 then
     gradle -b test/selenium/build.gradle clean test & 
-    #gradle -b test/selenium/build.gradle -Dtest.single=MergeTest test & 
+    #gradle -b test/selenium/build.gradle -Dtest.single=SiteAdminTest test & 
     node app > test-console.out
 else
     echo "Not all documents indexed. Aborting"
