@@ -39,29 +39,52 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         hangon(1);
         Assert.assertTrue(textPresent("Made up disease"));
     }
-
-    @Test
-    public void removeClassificationMgt() {
-        mustBeLoggedInAs("classificationMgtUser", "pass");
-        goToCdeByName("Person Birth Date");
-        findElement(By.linkText("Classification")).click();
-        Assert.assertTrue(textPresent("NonHodgkins Lymphoma"));
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Classifications")).click();
-        hangon(1);
-        new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
-
-        findElement(By.xpath("//div[span[contains(., 'NonHodgkins Lymphoma')]]/a")).click();
-        findElement(By.xpath("//div[span[contains(., 'NonHodgkins Lymphoma')]]//a[@title='OK']")).click();
-        Assert.assertTrue(textPresent("Classification Removed"));
-
-        hangon(1);
-        Assert.assertTrue(textNotPresent("NonHodgkins Lymphoma"));
-        goToCdeByName("Person Birth Date");
-        findElement(By.linkText("Classification"));
-        Assert.assertTrue(textNotPresent("NonHodgkins Lymphoma"));
-
+    
+    private void searchNestedClassifiedCdes() {
+        goHome();
+        findElement(By.name("ftsearch")).sendKeys("classification.elements.elements.elements.name=\"Acute Hospitalized\"");
+        findElement(By.id("search.submit")).click();    
     }
     
+    private void gotoClassifMgt() {
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Classifications")).click();          
+    }
     
+    private void checkNestedClassifs() {
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized'] .name")).getText().equals("Acute Hospitalized"));
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Disease/Injury Related Events,History of Disease/Injury Event'] .name")).getText().equals("History of Disease/Injury Event"));
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Amyotrophic Lateral Sclerosis,Assessments and Examinations,Physical/Neurological Examination'] .name")).getText().equals("Physical/Neurological Examination"));
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Outcomes and End Points,Post-concussive/TBI-Related Symptoms'] .name")).getText().equals("Post-concussive/TBI-Related Symptoms"));    
+        
+        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification']"));
+        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification,Basic']"));
+        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification,Core']"));
+        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification,Supplemental']"));
+    }
+    
+    private void deleteNestedClassifTree() {
+        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized'] [title=\"Remove\"]")).click();    
+        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized'] [title=\"OK\"]")).click();         
+        Assert.assertTrue(textPresent("Classification Deleted"));
+        Assert.assertTrue(textNotPresent("Acute Hospitalized"));
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification']");
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification,Basic']");
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification,Core']");
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification,Supplemental']");
+    }
+    
+    @Test
+    public void removeClassificationMgt() {
+        mustBeLoggedInAs("ninds", "pass");
+        searchNestedClassifiedCdes();
+        Assert.assertTrue(textPresent("NINDS (24)"));
+        gotoClassifMgt();
+        
+        checkNestedClassifs();
+        deleteNestedClassifTree();  
+        searchNestedClassifiedCdes();
+        hangon(3);
+        Assert.assertTrue(textNotPresent("NINDS (24)"));
+    }
 }

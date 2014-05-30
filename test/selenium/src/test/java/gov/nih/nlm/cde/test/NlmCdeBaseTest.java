@@ -15,6 +15,7 @@ import org.openqa.selenium.support.ui.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.*;
+import org.openqa.selenium.NoSuchElementException;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -219,5 +220,18 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Compare ( full )"));
         findElement(By.linkText("Compare ( full )")).click();   
     }      
+    
+    protected boolean checkElementDoesNotExistByCSS(String selector) {
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+        boolean elementVisible;
+        try {
+            driver.findElement(By.cssSelector(selector));
+            elementVisible = false;
+        } catch(NoSuchElementException e) {
+            elementVisible = true;
+        }
+        driver.manage().timeouts().implicitlyWait(8, TimeUnit.SECONDS);
+        return elementVisible;
+    }
     
 }
