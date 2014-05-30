@@ -32,9 +32,9 @@ exports.removeClassificationFromTree = function(sourceElements, pathElements) {
                if (pathElements.length > 1) {
                    pathElements.splice(0, 1);
                    this.removeClassificationFromTree(sourceElements[i].elements, pathElements);
-                   if (sourceElements[i].elements.length === 0) {
+                   /*if (sourceElements[i].elements.length === 0) {
                        sourceElements.splice(i, 1);
-                   }
+                   }*/
                } else {
                    sourceElements.splice(i, 1);
                }
@@ -58,8 +58,4 @@ exports.addClassificationToCde = function (dat, res) {
             }
         });        
     });    
-};
-
-exports.removeOrgClassification = function(query) {
-    
 };
