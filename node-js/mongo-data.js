@@ -326,7 +326,7 @@ exports.cdesByUuidList = function(idList, callback) {
 
 
 exports.listOrgs = function(callback) {
-    DataElement.find().distinct('stewardOrg.name', function(error, orgs) {
+    DataElement.find().distinct('classification.stewardOrg.name', function(error, orgs) {
         callback("", orgs.sort());
     });
 };

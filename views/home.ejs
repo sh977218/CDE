@@ -7,26 +7,23 @@
             <small>Common Data Elements (CDE) is a new venture (project) to explore the understanding, construction and practice of data elements to support the development of infrastructure to facilitate the use of electronic health records (EHRs) in comparative effectiveness research (CER). <a target="_cde" href="http://www.nlm.nih.gov/cde/">Click here to learn more &raquo;</a></small>
         </p>
         
-        <center>
+        <!-- center>
             <a class="btn btn-danger btn-lg" role="button" href="/#/search">Go to CDE Search Tool</a>
-        </center>
+        </center -->
         
-        <!-- p class="top40"><strong>Quick CDE Search:</strong>
+        <p class="top40"><strong>Quick CDE Search:</strong>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-8">
                         <div class="input-group input-group-lg">
                           <div class="input-group-btn">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">All Organizations <span class="caret"></span></button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-click="orgList">All Organizations <span class="caret"></span></button>
                             <ul class="dropdown-menu">
                               <li><a href="#">All Organizations</a></li>
                               <li class="divider"></li>
-                              <li><a href="#">Organization 1</a></li>
-                              <li><a href="#">Organization 2</a></li>
-                              <li><a href="#">Organization 3</a></li>
-                              <li><a href="#">Organization 4</a></li>
-                              <li><a href="#">Organization 5</a></li>
-                              <li><a href="#">...</a></li>
+                              <li ng-repeat="org in orgList" style="" ng-switch="" ng-click="">
+                                <a href="#">blah</a>
+                              </li>
                             </ul>
                           </div>
                           <input type="text" class="form-control" placeholder="type search terms here..." >
@@ -38,7 +35,7 @@
                 </div>
                 <br/>
             </div>
-        </p-->
+        </p>
     </div>
 </div>
 
