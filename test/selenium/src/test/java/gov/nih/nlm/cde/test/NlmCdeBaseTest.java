@@ -13,6 +13,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import org.openqa.selenium.NoSuchElementException;
@@ -87,7 +88,7 @@ public class NlmCdeBaseTest {
     }
         
     protected void goToCdeByName(String name) {
-        goHome();
+        goToSearch();
         openCdeInList(name);
         findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("More Like This"));
@@ -105,7 +106,7 @@ public class NlmCdeBaseTest {
     }
     
     protected void goToFormByName(String name) {
-        goHome();
+        goToSearch();
         findElement(By.id("formsLink")).click();
         findElement(By.name("search.name")).sendKeys(name);
         findElement(By.id("search.submit")).click();
@@ -160,9 +161,9 @@ public class NlmCdeBaseTest {
         return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) < 0;
     }
     
-    protected void goHome() {
+    protected void goToSearch() {
         driver.get(baseUrl + "/gonowhere");
-        driver.get(baseUrl + "/");
+        driver.get(baseUrl + "/#/search");
         findElement(By.name("ftsearch"));
         Assert.assertTrue(textPresent("Qualified ("));
     }
@@ -178,7 +179,7 @@ public class NlmCdeBaseTest {
     }
     
     protected void loginAs(String username, String password) {
-        goHome();
+        goToSearch();
         try {
             findElement(By.linkText("Log In")).click();
         } catch (TimeoutException e) {
@@ -199,7 +200,7 @@ public class NlmCdeBaseTest {
     }
     
     public void addToCompare(String cdeName1, String cdeName2) {
-        goHome();
+        goToSearch();
         Assert.assertTrue(textPresent("Compare ( empty )"));
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName1+"\"");
         findElement(By.id("search.submit")).click();
@@ -211,6 +212,7 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Compare ( 1 )"));
         findElement(By.name("ftsearch")).clear();
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName2 + "\"");
+        scrollToTop();
         findElement(By.id("search.submit")).click();
         hangon(2);
         findElement(By.linkText(cdeName2)).click();
@@ -219,7 +221,11 @@ public class NlmCdeBaseTest {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));        
         Assert.assertTrue(textPresent("Compare ( full )"));
         findElement(By.linkText("Compare ( full )")).click();   
-    }      
+    }
+    
+    public void scrollToTop() {
+        scrollTo( "0" );
+    }
     
     protected boolean checkElementDoesNotExistByCSS(String selector) {
         driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
@@ -234,4 +240,7 @@ public class NlmCdeBaseTest {
         return elementVisible;
     }
     
+    public void scrollTo( String y ) {
+        ((JavascriptExecutor)driver).executeScript("scroll(0," + y + ");");
+    }
 }

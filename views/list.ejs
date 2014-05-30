@@ -1,85 +1,89 @@
-<center>
-<form class="form-inline">
-    <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="form-control search-query" placeholder="Search" ng-change="onchangeSearch()">  
-    <button id="search.submit" type="submit" value="Search" ng-click="search()" class="btn btn-default">
-        <i class="fa fa-search"></i>
-        Search
-    </button>
-    <button id="resetSearch" ng-click="resetSearch()" class="btn btn-default">
-        <i class="fa fa-trash-o"></i>
-        Reset
-    </button> 
-    <button  ng-click="openAllModel=!openAllModel; openAll()" class="btn btn-default btn-checkbox" id="openAllCb">
-        <span ng-hide="openAllModel"><i class="fa fa-arrows-v"></i> Expand All</span>
-        <span ng-show="openAllModel"><i class="fa fa-compress"></i> Collapse All</span>
-    </button>
-    <small ng-show="cdes.length > 0" class="pull-right">
-        {{totalItems}} hits
-    </small>
-</form>
-</center>
-
-<script type="text/ng-template"  id="facet_elements_tree.html">
+<div class="container-fluid">
+    <br/><br/>
     
-    <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="selectedElements.indexOf(e.name) > -1">
-            <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e.name}}" ></i>
-            <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e.name}}" ></i>
-            <span>
-                <small> {{e.name}} ({{e.count}})</small>
+    <center>
+    <form class="form-inline">
+        <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="form-control search-query" placeholder="Search" ng-change="onchangeSearch()">  
+        <button id="search.submit" type="submit" value="Search" ng-click="search()" class="btn btn-default">
+            <i class="fa fa-search"></i>
+            Search
+        </button>
+        <button id="resetSearch" ng-click="resetSearch()" class="btn btn-default">
+            <i class="fa fa-trash-o"></i>
+            Reset
+        </button> 
+        <button  ng-click="openAllModel=!openAllModel; openAll()" class="btn btn-default btn-checkbox" id="openAllCb">
+            <span ng-hide="openAllModel"><i class="fa fa-arrows-v"></i> Expand All</span>
+            <span ng-show="openAllModel"><i class="fa fa-compress"></i> Collapse All</span>
+        </button>
+        <small ng-show="cdes.length > 0" class="pull-right">
+            {{totalItems}} hits
+        </small>
+    </form>
+    </center>
+    
+    <br/><br/>
+    
+    <script type="text/ng-template"  id="facet_elements_tree.html">
+
+        <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="selectedElements.indexOf(e.name) > -1">
+                <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e.name}}" ></i>
+                <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e.name}}" ></i>
+                <span>
+                    <small> {{e.name}} ({{e.count}})</small>
+                </span>
+            </div>
+        </span>
+        <div ng-show="selectedElements.indexOf(e.name) > -1" style="margin-left: 5px">
+                <div ng-repeat="e in e.elements | orderBy:'name'"
+                    ng-show="selectedElements.indexOf(e.name) > -1 || e.level > selectedElements.length"
+                    ng-include="'facet_elements_tree.html'"
+                    >        
+                </div>
+
+        </div>
+    </script>
+
+    <div class="row">
+        <div class="col-md-2">
+            <strong ng-show="facets.orgs.terms">Organizations</strong>
+            <ul class="fa-ul">
+                <li ng-repeat="t in facets.orgs.terms | orderBy:'term'" style="margin-right: -20px" ng-switch="t.term === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.term === selectedOrg || !selectedOrg">
+                    <span class="hand-cursor">
+                        <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
+                        <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
+                        <small> {{t.term}} ({{t.count}})</small>
+                    </span>
+                </li>
+            </ul>
+            <div id="classification-facets">
+                <div ng-repeat="e in classifications.elements | orderBy:'name'"
+                    ng-show="selectedElements.indexOf(e.name) > -1 || selectedElements.length < 1"
+                    ng-include="'facet_elements_tree.html'"
+                    >
+                </div>
+            </div>
+            <strong ng-show="facets.statuses.terms">Status</strong>
+            <ul class="fa-ul">
+                <li ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
+                    <span class="hand-cursor" ng-show="t.count > 0">
+                        <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.name}}" ></i>
+                        <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
+                        <small> {{t.name}} ({{t.count}})</small>
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-10">
+            <center ng-hide="cdes.length >= 0"> Loading</center>
+            <center ng-show="cdes.length === 0">No Results</center>
+            <% var ejsPage = "list"; %>
+            <%- include accordionList.ejs %>                
+            <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="currentPage"></pagination>
+
+            <span class="pull-right">
+                <a class="btn btn-mini fa fa-table" href="#/cdeSearchExport" id="gridView"> Grid View</a>
             </span>
         </div>
-    </span>
-    <div ng-show="selectedElements.indexOf(e.name) > -1" style="margin-left: 5px">
-            <div ng-repeat="e in e.elements | orderBy:'name'"
-                ng-show="selectedElements.indexOf(e.name) > -1 || e.level > selectedElements.length"
-                ng-include="'facet_elements_tree.html'"
-                >        
-            </div>
-            
     </div>
-</script>
-
-<div class="row">
-    <div class="col-md-2">
-        <strong ng-show="facets.orgs.terms">Organizations</strong>
-        <ul class="fa-ul">
-            <li ng-repeat="t in facets.orgs.terms | orderBy:'term'" style="margin-right: -20px" ng-switch="t.term === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.term === selectedOrg || !selectedOrg">
-                <span class="hand-cursor">
-                    <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
-                    <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
-                    <small> {{t.term}} ({{t.count}})</small>
-                </span>
-            </li>
-        </ul>
-        <div id="classification-facets">
-            <div ng-repeat="e in classifications.elements | orderBy:'name'"
-                ng-show="selectedElements.indexOf(e.name) > -1 || selectedElements.length < 1"
-                ng-include="'facet_elements_tree.html'"
-                >
-            </div>
-        </div>
-        <strong ng-show="facets.statuses.terms">Status</strong>
-        <ul class="fa-ul">
-            <li ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
-                <span class="hand-cursor" ng-show="t.count > 0">
-                    <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.name}}" ></i>
-                    <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
-                    <small> {{t.name}} ({{t.count}})</small>
-                </span>
-            </li>
-        </ul>
-    </div>
-    <div class="col-md-10">
-        <center ng-hide="cdes.length >= 0"> Loading</center>
-        <center ng-show="cdes.length === 0">No Results</center>
-        <% var ejsPage = "list"; %>
-        <%- include accordionList.ejs %>                
-        <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="currentPage"></pagination>
-        
-        <span class="pull-right">
-            <a class="btn btn-mini fa fa-table" href="#/cdeSearchExport" id="gridView"> Grid View</a>
-        </span>
-    </div>
-</div>
-
-
+</div>    

@@ -58,7 +58,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Cigarette");
         findElement(By.linkText("Classification")).click();
-        String toRemove = findElement(By.id("classification-3-0")).getText();
+        String toRemove = findElement(By.cssSelector("[data-id=classification-3-0]")).getText();
         findElement(By.id("removeClassification-3-0")).click();
         findElement(By.id("confirmRemoveClassification-3-0")).click();
         Assert.assertTrue(textPresent("Classification Removed"));

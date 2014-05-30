@@ -9,14 +9,14 @@ public class CompareTest extends NlmCdeBaseTest{
     
     @Test
     public void noElementCompareList() {
-        goHome();
+        goToSearch();
         findElement(By.linkText("Compare ( empty )")).click();
         Assert.assertTrue(textPresent("Search for data elements and hit the compare button"));
     }
     
     @Test
     public void emptyList() {
-        goHome();
+        goToSearch();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
         openCdeInList("Prognostic");
         findElement(By.id("compare_0")).click();
@@ -31,7 +31,8 @@ public class CompareTest extends NlmCdeBaseTest{
     public void Compare2Elements() {
         addToCompare("Person Gender Text Type", "Patient Gender Category");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));    
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
+        Assert.assertTrue(textNotPresent("VSAC Value Set"));
     }
     
     @Test

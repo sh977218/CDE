@@ -1,26 +1,25 @@
-<div class="form-group">
-    <label for="orgToManage">Manage Classifications for</label>
-    <select class="form-control" ng-model="orgToManage" name="orgToManage" required ng-change="updateOrg()">
-        <option ng-repeat="o in myOrgs" ng-value="o">{{o}}</option>
-    </select>
-</div>
-
-<dl id="repeatCs">
-<button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification"><i class="fa fa-plus"> </i> Add Classification</button>
-
-<div id="repeatCs" class="container">
-    <div  class="col-md-12 container">
-        <div ng-repeat="elt in classificationToFilter()" class="col-md-6" ng-init='pathArray = [elt.name]; myOrg = true;'>
-            <h6>{{elt.name}}</h6>
-            <div ng-include="'classif-sub-elements.html'" ng-init="orgName = orgToManage;"></div>
-        </div>
+<div class="container-fluid">
+    <div class="form-group">
+        <label for="orgToManage">Manage Classifications for</label>
+        <select class="form-control" ng-model="orgToManage" name="orgToManage" required ng-change="updateOrg()">
+            <option ng-repeat="o in myOrgs" ng-value="o">{{o}}</option>
+        </select>
     </div>
+
+    <dl id="repeatCs">
+        <button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification"><i class="fa fa-plus"> </i> Add Classification</button>
+        <div id="repeatCs" class="container">
+            <div  class="col-md-12 container">
+                <div ng-repeat="elt in classificationToFilter()" class="col-md-6" ng-init='pathArray = [elt.name]; myOrg = true;'>
+                    <h6>{{elt.name}}</h6>
+                    <div ng-include="'classif-sub-elements.html'" ng-init="orgName = orgToManage;"></div>
+                </div>
+            </div>
+        </div>
+        <%- include classif-sub-elements.ejs %>
+    </dl>
+
+    <script type="text/ng-template" id="addClassificationModalContent.html">
+        <%- include addClassification.ejs %>
+    </script>
 </div>
-
-<%- include classif-sub-elements.ejs %>
-
-</dl>
-
-<script type="text/ng-template" id="addClassificationModalContent.html">
-    <%- include addClassification.ejs %>
-</script>

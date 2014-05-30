@@ -1,7 +1,7 @@
 function CompareCtrl($scope, DataElement) {
     $scope.setActiveMenu('COMPARE');
     
-    $scope.detailedView = true;
+    $scope.compareView = true;
     $scope.cdes = [];
     
     $scope.isAllowed = function(cde) {
