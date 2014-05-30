@@ -217,7 +217,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
             for (var i=2; i<=$scope.selectedElements.length+1; i++) {   
                 var fd = queryBuilder.countFacetsDepthString(i);
                 queryStuff.facets["elements"+i] = {
-                    terms: {field: fd, size: 200}
+                    terms: {field: fd, size: 500}
                     , facet_filter: {and: [
                             {term: {"classification.stewardOrg.name": $scope.selectedOrg}}
                             , {or: lowRegStatusOrCuratorFilter}]}
