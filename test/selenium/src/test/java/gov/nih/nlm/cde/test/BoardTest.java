@@ -114,13 +114,13 @@ public class BoardTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(boardUser, boardPassword);
         createBoard("Remove me board", "Not a very useful board");
         removeBoard("Remove me board");
-        goHome();
+        goToSearch();
         findElement(By.linkText("My Boards")).click();
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Not a very useful") < 0);
     }
     
     private void pinTo(String cdeName, String boardName) {
-        goHome();
+        goToSearch();
         openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
         modalHere();        
@@ -144,7 +144,7 @@ public class BoardTest extends NlmCdeBaseTest {
     @Test
     public void cdeNumbIncrement() {
         mustBeLoggedInAs(boardUser, boardPassword);
-        goHome();
+        goToSearch();
         createBoard("Number Increment Board", "Number Increment Definition");
         findElement(By.linkText("My Boards")).click();           
         WebElement numElt = findElement(By.id("dd_numb"));
@@ -161,7 +161,7 @@ public class BoardTest extends NlmCdeBaseTest {
     @Test
     public void pin() {
         mustBeLoggedInAs(boardUser, boardPassword);
-        goHome();
+        goToSearch();
         createBoard("Blood Board", "Collect blood related cdes here");
         createBoard("Smoking Board", "Collect Smoking CDEs here");
         
@@ -192,14 +192,14 @@ public class BoardTest extends NlmCdeBaseTest {
     @Test
     public void noDoublePin() {
         mustBeLoggedInAs(boardUser, boardPassword);
-        goHome();
+        goToSearch();
         String cdeName = "Specimen Array";
         String boardName = "Double Pin Board";
         
         createBoard(boardName, "test");
         pinTo(cdeName, boardName);
         
-        goHome();
+        goToSearch();
         openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
         modalHere();
@@ -217,7 +217,7 @@ public class BoardTest extends NlmCdeBaseTest {
     @Test
     public void unpin() {
         mustBeLoggedInAs(boardUser, boardPassword);
-        goHome();
+        goToSearch();
         createBoard("Unpin Board", "test");
         pinTo("Volumetric", "Unpin Board");
         goToBoard("Unpin Board");
@@ -233,7 +233,7 @@ public class BoardTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(boardUser, boardPassword);
         String cdeName = "Specimen Array";
 
-        goHome();
+        goToSearch();
         openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
         modalHere();
@@ -257,7 +257,7 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.id("desc_input_0")).sendKeys(" -- Desc Edited");
         findElement(By.id("desc_confirm_0")).click();
         
-        goHome();
+        goToSearch();
         findElement(By.linkText("My Boards")).click();
         Assert.assertTrue(textPresent("-- Name Edited"));
         Assert.assertTrue(textPresent("-- Desc Edited"));

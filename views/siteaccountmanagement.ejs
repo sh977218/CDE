@@ -1,51 +1,53 @@
-<div>{{message}}</div>
-<tabset>
-    <tab heading="Broadcast">
-        <form name="form" role="form">
-            <div class="control-group" ng-class="{error: form.version.$invalid}">
-               <label for="message">Broadcast Message: </label>
-               <input class="form-control" name="message" type="text" ng-model="broadcast.message"></input>
+<div class="container-fluid">
+    <div>{{message}}</div>
+    <tabset>
+        <tab heading="Broadcast">
+            <form name="form" role="form">
+                <div class="control-group" ng-class="{error: form.version.$invalid}">
+                   <label for="message">Broadcast Message: </label>
+                   <input class="form-control" name="message" type="text" ng-model="broadcast.message"></input>
+                </div>
+                <button class="btn btn-warning" ng-click="saveMessage()" id="saveMessage">Save</button>
+            </form>
+        </tab>
+        <tab heading="Site Admins">
+            <div class="row" ng-repeat="u in siteAdmins">
+                <div class="col-md-11">{{u.username}}</div>
+                <div class="col-md-1" ng-show="siteAdmins.length > 1"><span class="fa fa-trash-o" ng-click="removeSiteAdmin(u._id)"> Remove</span></div>
             </div>
-            <button class="btn btn-warning" ng-click="saveMessage()" id="saveMessage">Save</button>
-        </form>
-    </tab>
-    <tab heading="Site Admins">
-        <div class="row" ng-repeat="u in siteAdmins">
-            <div class="col-md-11">{{u.username}}</div>
-            <div class="col-md-1" ng-show="siteAdmins.length > 1"><span class="fa fa-trash-o" ng-click="removeSiteAdmin(u._id)"> Remove</span></div>
-        </div>
-        <div class="row input-prepend input-append">
-            <input class="col-md-10" type="text" ng-model="admin.username"></input>
-            <button class="add-on fa fa-plus btn btn-default" ng-click="addSiteAdmin()"> Add</button>
-        </div>
-    </tab>
-    <tab heading="Organizations">
-        <div class="row" ng-repeat="c in orgs">
-            <div class="col-md-11" id="orgName-{{$index}}">{{c.name}}</div>
-        </div>
-        <div class="row input-prepend input-append">
-            <input class="col-md-10" type="text" name="newOrg.name" ng-model="newOrg.name"></input>
-            <span class="add-on" ng-click="addOrg()" id="addOrg"> +</span>
-        </div>
-    </tab>
-    <tab heading="Organizations Admins">
-        <div class="row" ng-repeat="adm in orgAdmins">
-            <div class="col-md-4">{{adm.name}}</div>
-            <div class="col-md-8">
-                <div class="row" ng-repeat="us in adm.users">
-                    <div class="col-md-11">{{us.username}}</div>
-                    <div class="col-md-1"><i class="fa fa-trash-o" ng-click="removeorgAdmin(adm.name, us._id)" title="Remove"></i></div>
+            <div class="row input-prepend input-append">
+                <input class="col-md-10" type="text" ng-model="admin.username"></input>
+                <button class="add-on fa fa-plus btn btn-default" ng-click="addSiteAdmin()"> Add</button>
+            </div>
+        </tab>
+        <tab heading="Organizations">
+            <div class="row" ng-repeat="c in orgs">
+                <div class="col-md-11" id="orgName-{{$index}}">{{c.name}}</div>
+            </div>
+            <div class="row input-prepend input-append">
+                <input class="col-md-10" type="text" name="newOrg.name" ng-model="newOrg.name"></input>
+                <span class="add-on" ng-click="addOrg()" id="addOrg"> +</span>
+            </div>
+        </tab>
+        <tab heading="Organizations Admins">
+            <div class="row" ng-repeat="adm in orgAdmins">
+                <div class="col-md-4">{{adm.name}}</div>
+                <div class="col-md-8">
+                    <div class="row" ng-repeat="us in adm.users">
+                        <div class="col-md-11">{{us.username}}</div>
+                        <div class="col-md-1"><i class="fa fa-trash-o" ng-click="removeorgAdmin(adm.name, us._id)" title="Remove"></i></div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row input-prepend input-append">
-            <select class="col-md-5" type="text" ng-model="admin.orgName" name="admin.orgName">
-                <option value="">--</option>
-                <option ng-repeat="a in orgs" ng-value="a.name">{{a.name}}</option>
-            </select>
-            <input class="col-md-5" type="text" ng-model="orgAdmin.username" name="orgAdmin.username"></input>
-            <button class="add-on btn btn-default fa fa-plus" title="Add" ng-click="addOrgAdmin()" id="addOrgAdmin"> Add</button>
-        </div>
-    </tab>
-</tabset>
-</div>
+            <div class="row input-prepend input-append">
+                <select class="col-md-5" type="text" ng-model="admin.orgName" name="admin.orgName">
+                    <option value="">--</option>
+                    <option ng-repeat="a in orgs" ng-value="a.name">{{a.name}}</option>
+                </select>
+                <input class="col-md-5" type="text" ng-model="orgAdmin.username" name="orgAdmin.username"></input>
+                <button class="add-on btn btn-default fa fa-plus" title="Add" ng-click="addOrgAdmin()" id="addOrgAdmin"> Add</button>
+            </div>
+        </tab>
+    </tabset>
+    </div>
+</div>    

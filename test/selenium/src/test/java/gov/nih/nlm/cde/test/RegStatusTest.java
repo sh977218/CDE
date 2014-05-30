@@ -86,7 +86,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
         findElement(By.id("saveRegStatus")).click();
         hangon(2);
-        goHome();
+        goToSearch();
         findElement(By.name("ftsearch")).sendKeys("Alkaline");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(cdeName));

@@ -207,6 +207,10 @@ app.get('/', function(req, res) {
   res.render('index');
 });
 
+app.get('/home', function(req, res) {
+  res.render('home');
+});
+
 app.get('/exportCdeSearch', function(req, res) {
   res.render('cdeExport');
 });

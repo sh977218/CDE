@@ -9,14 +9,14 @@ public class CompareTest extends NlmCdeBaseTest{
     
     @Test
     public void noElementCompareList() {
-        goHome();
+        goToSearch();
         findElement(By.linkText("Compare ( empty )")).click();
         Assert.assertTrue(textPresent("Search for data elements and hit the compare button"));
     }
     
     @Test
     public void emptyList() {
-        goHome();
+        goToSearch();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
         openCdeInList("Prognostic");
         findElement(By.id("compare_0")).click();

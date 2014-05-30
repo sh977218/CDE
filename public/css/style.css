@@ -1,3 +1,20 @@
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    background-color:#fff;
+}
+
+.jumbotron {
+    background-color: #a8c4e1;
+}
+
+.drop-cap-img {
+    padding-right: 10px;
+}
+
+.top20 { margin-top:20px; }
+.top40 { margin-top:40px; }
+.top60 { margin-top:60px; }
 
 .inactive {
     border: none;

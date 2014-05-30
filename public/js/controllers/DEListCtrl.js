@@ -324,5 +324,5 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
         }
         $scope.cache.put("selectedElements", $scope.selectedElements);
         $scope.reload();
-    };     
+    };    
 }

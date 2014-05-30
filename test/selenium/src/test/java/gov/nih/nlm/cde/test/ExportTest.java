@@ -11,7 +11,7 @@ public class ExportTest extends NlmCdeBaseTest {
     
     @Test
     public void gridView() {
-        goHome();
+        goToSearch();
         findElement(By.id("li-blank-AECC")).click();
         hangon(2);
         findElement(By.id("gridView")).click();

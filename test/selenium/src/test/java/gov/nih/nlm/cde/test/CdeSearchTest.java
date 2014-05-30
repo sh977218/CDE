@@ -55,7 +55,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void basicPagination() {
-        goHome();
+        goToSearch();
         WebElement pagElt = findElement(By.cssSelector("ul.pagination"));
         findElement(By.linkText("10"));
         List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
@@ -88,7 +88,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test 
     public void phraseSearch() {
-        goHome();
+        goToSearch();
         findElement(By.name("ftsearch")).sendKeys("Biomarker Gene");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("Biomarker Gene"));
@@ -108,12 +108,12 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void starSearch() {
-        goHome();
+        goToSearch();
         findElement(By.name("ftsearch")).sendKeys("ISO2109");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("No Results"));
         
-        goHome();
+        goToSearch();
         findElement(By.name("ftsearch")).sendKeys("ISO2109*");
         findElement(By.id("search.submit")).click();
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
@@ -141,7 +141,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void openAllButton() {
-        goHome();
+        goToSearch();
         for (int i = 0; i < 19; i++) {
             wait.until(ExpectedConditions.elementToBeClickable(By.id("acc_link_" + i)));
         }
@@ -153,7 +153,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void usedBySummary() {
-        goHome();
+        goToSearch();
         openCdeInList("Patient Race Category");
         String usedBy = findElement(By.id("dd_usedBy")).getText();
         Assert.assertTrue(usedBy.contains("NIDCR"));

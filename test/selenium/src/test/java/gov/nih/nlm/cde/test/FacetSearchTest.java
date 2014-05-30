@@ -12,13 +12,13 @@ import org.testng.annotations.Test;
 public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void stewardFacets() {
-        goHome();
+        goToSearch();
         Assert.assertTrue(textPresent("CCR (49)"));
     }
 
     @Test
     public void statusFacets() {
-        goHome();
+        goToSearch();
         Assert.assertTrue(textPresent("Qualified (4"));
         findElement(By.id("li-blank-caBIG")).click();
         findElement(By.cssSelector("i.fa-check-square-o"));
@@ -27,7 +27,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void deepFacets() {
-        goHome();
+        goToSearch();
         findElement(By.id("li-blank-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
         findElement(By.id("li-blank-Traumatic Brain Injury")).click();
@@ -58,7 +58,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void facets() {
         mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
-        goHome();
+        goToSearch();
         findElement(By.name("ftsearch")).sendKeys("Study");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("Candidate (10)"));
@@ -79,13 +79,14 @@ public class FacetSearchTest extends NlmCdeBaseTest {
                 By.partialLinkText("Work Or Study Difficulty With Homework ")));
         hangon(1);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("3")));
+        scrollToTop();
         findElement(By.id("li-checked-caBIG")).click();
         Assert.assertTrue(textPresent("Patient Ethnic Group"));
     }
     
     @Test
     public void facetPagination() {
-        goHome();
+        goToSearch();
         findElement(By.id("li-blank-CTEP")).click();
         // next line should make it wait.
         findElement(By.cssSelector("i.fa-check-square-o"));
@@ -93,6 +94,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.linkText("Next")).click();
         Assert.assertTrue(textPresent("OPEN to Rave Standard "));
         findElement(By.cssSelector("i.fa-check-square-o"));
+        
+        scrollToTop();
+        
         findElement(By.id("resetSearch")).click();
         Assert.assertTrue(textPresent("Qualified (4"));
         findElement(By.name("ftsearch")).sendKeys("Immunology");
@@ -100,10 +104,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Immunology Gonorrhea Assay Laboratory Finding Result"));
     }
 
-    
     @Test
     public void classificationFilters() {
-        goHome();
+        goToSearch();
         findElement(By.name("ftsearch")).sendKeys("Image");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("caBIG (8)"));
