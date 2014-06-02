@@ -199,10 +199,6 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));   
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-3-valid")));        
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));   
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-valid")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-2-valid")));        
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-warning")));
     }  
    
     @Test(dependsOnMethods = {"importVsacValues"})

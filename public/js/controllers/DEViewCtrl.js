@@ -21,7 +21,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
            $scope.canLinkPvFunc();
            $scope.loadMlt();
            $scope.loadBoards();
-           $scope.showValidateIcons = $scope.cde.dataElementConcept.conceptualDomain.vsac.id;
+           $scope.showValidationIcons = $scope.cde.dataElementConcept.conceptualDomain != null && $scope.cde.dataElementConcept.conceptualDomain.vsac.id != null;
            $scope.getPVTypeaheadCodeSystemNameList(); 
             PriorCdes.getCdes({cdeId: de._id}, function(dataElements) {
                 $scope.priorCdes = dataElements;
