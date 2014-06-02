@@ -40,7 +40,7 @@
             </select>        
         </div>
        <!--div ng-include="'addClassificationCategory.html'" ng-init="categories = org.classifications;"></div-->  
-       <div ng-include="'addClassificationCategory.html'" ng-repeat="i in [0,1,2]" ng-init="categories = org.classifications;level=i;"></div>
+       <div ng-include="'addClassificationCategory.html'" ng-repeat="i in newClassification.categories.concat(['a']) track by $index" ng-init="categories = org.classifications;level=$index;"></div>
     </div>
     <div class="modal-footer" id="addClassificationModalFooter">
         <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>

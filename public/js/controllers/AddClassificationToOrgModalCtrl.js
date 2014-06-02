@@ -38,6 +38,6 @@ function AddClassificationToOrgModalCtrl($scope, $modalInstance, $http, org) {
     };  
     $scope.getNumber = function(num) {
         return new Array(num);   
-    }    
+    };    
 }
 
