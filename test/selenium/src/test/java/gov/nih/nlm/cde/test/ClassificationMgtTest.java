@@ -41,8 +41,8 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     }
     
     private void searchNestedClassifiedCdes() {
-        goHome();
-        findElement(By.name("ftsearch")).sendKeys("classification.elements.elements.elements.name=\"Acute Hospitalized\"");
+        goToSearch();
+        findElement(By.name("ftsearch")).sendKeys("classification.elements.elements.elements.name=\"Concussion/Mild TBI\"");
         findElement(By.id("search.submit")).click();    
     }
     
@@ -52,29 +52,28 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     }
     
     private void checkNestedClassifs() {
-        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized'] .name")).getText().equals("Acute Hospitalized"));
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI'] .name")).getText().equals("Concussion/Mild TBI"));
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Disease/Injury Related Events,History of Disease/Injury Event'] .name")).getText().equals("History of Disease/Injury Event"));
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Amyotrophic Lateral Sclerosis,Assessments and Examinations,Physical/Neurological Examination'] .name")).getText().equals("Physical/Neurological Examination"));
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Outcomes and End Points,Post-concussive/TBI-Related Symptoms'] .name")).getText().equals("Post-concussive/TBI-Related Symptoms"));    
         
-        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification']"));
-        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification,Basic']"));
-        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification,Core']"));
-        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification,Supplemental']"));
+        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification']"));
+        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification,Basic']"));
+        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification,Core']"));
+        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification,Supplemental']"));
     }
     
     private void deleteNestedClassifTree() {
-        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized'] [title=\"Remove\"]")).click();    
-        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized'] [title=\"OK\"]")).click();         
+        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI'] [title=\"Remove\"]")).click();    
+        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI'] [title=\"OK\"]")).click();         
         Assert.assertTrue(textPresent("Classification Deleted"));
-        Assert.assertTrue(textNotPresent("Acute Hospitalized"));
-        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification']");
-        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification,Basic']");
-        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification,Core']");
-        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Acute Hospitalized,Classification,Supplemental']");
+        Assert.assertTrue(textNotPresent("Concussion/Mild TBI"));
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification']");
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification,Basic']");
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification,Core']");
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification,Supplemental']");
     }
     
-    @Test
     public void removeClassificationMgt() {
         mustBeLoggedInAs("ninds", "pass");
         searchNestedClassifiedCdes();

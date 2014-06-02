@@ -1,4 +1,4 @@
-<div class="modal-header" id="addClassificationModalHeader">
+<!--<div class="modal-header" id="addClassificationModalHeader">
     <h4>Add Classification</h4>
 </div>
 <form name="form" role="form">
@@ -25,5 +25,44 @@
     <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
     <button class="btn btn-warning" ng-click="okCreate(newClassification)" ng-disabled="isClean() || form.$invalid" id="saveClassification">Save</button>
 </div>
+</form>-->
+
+<div class="modal-header" id="addClassificationModalHeader">
+    <h4>Add Classification</h4>
+    {{newClassification}}
+</div>
+<form name="form" role="form">
+    <div class="modal-body" id="addClassificationModalBody">
+        <!--div ng-show="classificationType == 'cdeClass'" class="form-group"-->
+        <div ng-show="classificationType == 'cdeClass'" class="form-group">
+            <label for="conceptSystem">Organization</label>
+            <select class="form-control" ng-model="newClassification.orgName" name="orgName" ng-change="updateOrg()" ng-options='org for org in myOrgs'>
+            </select>        
+        </div>
+       <!--div ng-include="'addClassificationCategory.html'" ng-init="categories = org.classifications;"></div-->  
+       <div ng-include="'addClassificationCategory.html'" ng-repeat="i in [0,1,2]" ng-init="categories = org.classifications;level=i;"></div>
+    </div>
+    <div class="modal-footer" id="addClassificationModalFooter">
+        <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
+        <button class="btn btn-warning" ng-click="okCreate(newClassification)" ng-disabled="isClean() || form.$invalid" id="saveClassification">Save</button>
+    </div>
 </form>
 
+<!--script type="text/ng-template" id="addClassificationCategory.html">   
+    categories:{{categories}}
+    <div class="form-group">
+        <label for="conceptSystem">Category</label>
+        <select class="form-control" ng-model="newClassification.categories[level]" ng-change="" ng-options='cat.name for cat in getCategories(level)'>
+        </select>   
+    </div>   
+    <div ng-include="'addClassificationCategory.html'" ng-init="level=level+1;" ng-if="level<3"></div>      
+</script-->
+
+<script type="text/ng-template" id="addClassificationCategory.html">   
+    <div class="form-group">
+        <label>Category</label> level:{{level}} 
+        <select class="form-control" ng-model="newClassification.categories[level]" ng-change="" ng-options='cat.name as cat.name for cat in getCategories(level,1)'>
+        </select>   
+    </div>   
+    <div ng-include="'addClassificationCategory.html'" ng-init="level=level+1;" ng-if="level<3"></div>      
+</script>

@@ -20,14 +20,6 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, Classificat
          return $scope.org.classifications;
     };
     
-    $scope.removeClassification = function(orgName, conceptSystem, concept) {
-        var classToDel = {stewardOrg:{name:orgName}, conceptSystem:conceptSystem, concept:concept};
-        $http.post("/removeClassificationFromOrg", classToDel).then(function(response) {
-            $scope.addAlert("success", response.data.message);
-            $scope.org = response.data.org;
-        });
-    };
-    
     $scope.removeClassification = function(orgName, elts) {
         OrgClassification.remove({
             orgName: orgName
@@ -51,17 +43,19 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, Classificat
           controller: AddClassificationToOrgModalCtrl,
           resolve: {
             org: function() {
-                return $scope.orgToManage;
+                console.log($scope.org);
+                return $scope.org;
             }           
           }
         });
 
         modalInstance.result.then(function (newClassification) {
-            newClassification.stewardOrg = {name: $scope.orgToManage};
-            Classification.addToOrg(newClassification, function (res) {
+            newClassification.orgName = $scope.orgToManage;
+            console.log(newClassification);
+            /*Classification.addToOrg(newClassification, function (res) {
                 $scope.addAlert("success", "Classification Added");
                 $scope.updateOrg();
-            });
+            });*/
         });
     };
 }

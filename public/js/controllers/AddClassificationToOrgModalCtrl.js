@@ -1,12 +1,7 @@
 function AddClassificationToOrgModalCtrl($scope, $modalInstance, $http, org) {
     $scope.classificationType = "orgClass";
-    $scope.orgClassSystems = [];
-    $scope.getOrgClassSystems = function () {
-        $http.get("/autocomplete/classification/org/" + org).then(function(response) { 
-            $scope.orgClassSystems = response.data;
-        });
-    };
-    $scope.getOrgClassSystems();
+    $scope.org = org;
+    $scope.newClassification = { categories: [] };
      
     $scope.okCreate = function (classification) {
       $modalInstance.close(classification);
@@ -14,6 +9,12 @@ function AddClassificationToOrgModalCtrl($scope, $modalInstance, $http, org) {
 
     $scope.cancelCreate = function () {
       $modalInstance.dismiss('cancel');
+    };
+    
+    $scope.getCategories = function(level, choice) {
+        var elt = org.classifications;
+        for (var i = 0; i < level; i++) { elt = elt[choice]["elements"]; }
+        return elt;
     };
 }
 
