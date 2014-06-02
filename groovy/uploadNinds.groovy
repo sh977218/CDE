@@ -33,7 +33,6 @@ for (int i = 0 ; i < report.table1[0].table1_Group1_Collection[0].table1_Group1.
     newDE.put("version", (String)cde.@VersionNumber);
     newDE.put("valueDomain", new BasicDBObject("datatype": (String)cde.@textbox26));
     newDE.put("registrationState", new BasicDBObject("registrationStatus": "Qualified"));
-    newDE.get("registrationState").put("registrationStatusSortOrder", 2);
     newDE.put("stewardOrg", new BasicDBObject("name", "NINDS"));
     
     BasicDBObject defaultName = new BasicDBObject();
