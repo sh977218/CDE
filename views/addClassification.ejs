@@ -64,5 +64,6 @@
         <select class="form-control" ng-model="newClassification.categories[level]" ng-options='cat.name as cat.name for cat in getCategories(level)'>
         </select>   
     </div>   
-    <div ng-include="'addClassificationCategory.html'" ng-init="level=level+1;" ng-if="level<3"></div>      
+
+    <!--div ng-include="'addClassificationCategory.html'" ng-init="level=level+1;" ng-if="getCategories(level+1).length>0"></div-->      
 </script>

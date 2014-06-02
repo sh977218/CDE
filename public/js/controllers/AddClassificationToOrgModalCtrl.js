@@ -12,7 +12,7 @@ function AddClassificationToOrgModalCtrl($scope, $modalInstance, $http, org) {
       $modalInstance.dismiss('cancel');
     };
     
-    $scope.getCategories = function(level) {
+    /*$scope.getCategories = function(level) {
         var elt = org.classifications;
         for (var i = 0; i < level; i++) { 
             var choice  = 0;
@@ -23,6 +23,21 @@ function AddClassificationToOrgModalCtrl($scope, $modalInstance, $http, org) {
             elt = elt[choice]["elements"]; 
         }
         return elt;
-    };
+    };*/
+    
+    $scope.getCategories = function(level) {
+        var elt = org.classifications;
+        for (var i = 0; i < level; i++) { 
+            var choice  = 0;
+            for (var j = 0; j < elt.length; j++) {
+                if (elt[j].name === $scope.newClassification.categories[i]) elt[choice]["elements"] ? elt = elt[choice]["elements"] : elt = [];
+                choice++;
+            }            
+        }
+        return elt;
+    };  
+    $scope.getNumber = function(num) {
+        return new Array(num);   
+    }    
 }
 
