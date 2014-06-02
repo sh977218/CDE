@@ -1,4 +1,4 @@
-function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, PriorCdes, CdeDiff, CdeList) {
+function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, PriorCdes, CdeDiff) {
     $scope.initialized = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;
@@ -9,6 +9,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     $scope.pVTypeheadVsacNameList = [];
     $scope.pVTypeaheadCodeSystemNameList = [];
     
+    $scope.showValidationIcons = false;
+    
     $scope.reload = function(route, cb) {
         if (route.cdeId) var query = {deId: route.cdeId, type: '_id'};
         if (route.uuid) var query = {deId: route.uuid, type: 'uuid'};
@@ -18,7 +20,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
            $scope.initialized = true;
            $scope.canLinkPvFunc();
            $scope.loadMlt();
-           $scope.loadBoards();      
+           $scope.loadBoards();
+           $scope.showValidateIcons = $scope.cde.dataElementConcept.conceptualDomain.vsac.id;
            $scope.getPVTypeaheadCodeSystemNameList(); 
             PriorCdes.getCdes({cdeId: de._id}, function(dataElements) {
                 $scope.priorCdes = dataElements;
