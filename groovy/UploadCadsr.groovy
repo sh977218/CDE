@@ -36,19 +36,14 @@ def contextIgnoreList = ['NINDS'];
 for (int i  = 0; i < deList.DataElement.size(); i++) {
     def cadsrDE = deList.DataElement[i];
     def String workflowStatus = "";
-    def int workflowStatusScore = 6;
 
     if (cadsrDE.WORKFLOWSTATUS.text().equals('DRAFT NEW')) {
         workflowStatus = 'Candidate';
-        workflowStatusScore = 4;
     } else if (cadsrDE.WORKFLOWSTATUS.text().equals('DRAFT MOD')) {
         workflowStatus = 'Recorded';            
-        workflowStatusScore = 3;
     } else if (cadsrDE.WORKFLOWSTATUS.text().equals('RELEASED')) {
         workflowStatus = 'Qualified';                        
-        workflowStatusScore = 2;
     } else if (cadsrDE.WORKFLOWSTATUS.text().equals('APPRVD FOR TRIAL USE')) {
-        workflowStatusScore = 1;
         workflowStatus = 'Standard';            
     }
 
@@ -61,7 +56,6 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     newDE.put("version", cadsrDE.VERSION.text());
     newDE.put("valueDomain", new BasicDBObject("datatype": cadsrDE.VALUEDOMAIN[0].Datatype.text()));
     newDE.put("registrationState", new BasicDBObject("registrationStatus": workflowStatus));
-    newDE.get("registrationState").put("registrationStatusSortOrder", workflowStatusScore);
     newDE.put("stewardOrg", new BasicDBObject("name", cadsrDE.CONTEXTNAME.text()));
     
     BasicDBObject defaultName = new BasicDBObject();

@@ -124,7 +124,6 @@ var deJsonSchema = {
     , cadsrRegStatus: String
     , registrationState: {
             registrationStatus: String
-            , registrationStatusSortOrder: Number
             , effectiveDate: Date
             , untilDate: Date
             , administrativeNote: String
@@ -218,22 +217,7 @@ schemas.message = mongoose.Schema ({
     typeMergeRequest: mergeRequestSchema
 });
 
-var regStatusSortMap = {
-    Retired: 6
-    , Incomplete: 5
-    , Candidate: 4
-    , Recorded: 3
-    , Qualified: 2
-    , Standard: 1
-    , "Preferred Standard": 0
-};
-
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 
-schemas.dataElementSchema.pre('save', function(next) {
-   this.registrationState.registrationStatusSortOrder = regStatusSortMap[this.registrationState.registrationStatus]; 
-
-   next();
-});
 
 schemas.pinningBoardSchema.pre('save', function(next) {
    this.updatedDate = Date.now(); 
