@@ -48,6 +48,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         WebElement tbody = driver.findElement(By.id("vsacTableBody"));
         List<WebElement> vsacLines = tbody.findElements(By.tagName("tr"));
         Assert.assertEquals(vsacLines.size(), 2);
+        Assert.assertTrue(textPresent("Match"));
     }
     
     @Test
@@ -169,7 +170,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Race Category");
         findElement(By.linkText("Permissible Values")).click();         
-        Assert.assertTrue(textPresent("Native Hawaiian or other Pacific Islander"));    
+        Assert.assertTrue(textPresent("Native Hawaiian or other Pacific Islander")); 
+        Assert.assertTrue(textNotPresent("Match"));
         findElement(By.id("removeAllPvs")).click();
         Assert.assertTrue(textNotPresent("Native Hawaiian or other Pacific Islander"));        
         findElement(By.linkText("Update O.I.D")).click();
@@ -197,6 +199,10 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));   
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-3-valid")));        
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));   
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-2-valid")));        
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-warning")));
     }  
    
     @Test(dependsOnMethods = {"importVsacValues"})
