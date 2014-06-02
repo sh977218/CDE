@@ -66,7 +66,6 @@ for (int i = 0; i < deList.'ns0:DescribedValueSet'.size(); i++) {
     newDE.put("version", 1);
     newDE.put("valueDomain", new BasicDBObject("datatype": "Value List"));
     newDE.put("registrationState", new BasicDBObject("registrationStatus": "Qualified"));
-    newDE.get("registrationState").put("registrationStatusSortOrder", 2);
     newDE.put("stewardOrg", new BasicDBObject("name", "VSAC"));
     
     ded vsacObj = new BasicDBObject();
