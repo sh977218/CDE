@@ -29,7 +29,7 @@
 
 <div class="modal-header" id="addClassificationModalHeader">
     <h4>Add Classification</h4>
-    {{newClassification}}
+    nc: {{newClassification}}, in: {{ indices }}
 </div>
 <form name="form" role="form">
     <div class="modal-body" id="addClassificationModalBody">
@@ -60,8 +60,8 @@
 
 <script type="text/ng-template" id="addClassificationCategory.html">   
     <div class="form-group">
-        <label>Category</label> level:{{level}} 
-        <select class="form-control" ng-model="newClassification.categories[level]" ng-change="" ng-options='cat.name as cat.name for cat in getCategories(level,1)'>
+        <label>Category</label> level:{{level}}, previous index: {{indices[level-1]}}
+        <select class="form-control" ng-model="newClassification.categories[level]" ng-options='cat.name as cat.name for cat in getCategories(level)'>
         </select>   
     </div>   
     <div ng-include="'addClassificationCategory.html'" ng-init="level=level+1;" ng-if="level<3"></div>      
