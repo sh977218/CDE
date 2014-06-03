@@ -11,7 +11,7 @@
             </select>        
         </div>
        <div ng-include="'addClassificationCategory.html'" ng-repeat="i in newClassification.categories track by $index" ng-init="categories = org.classifications;level=$index;"></div>
-       <button class="btn" ng-show="newClassification.categories[newClassification.categories.length-1]" ng-click="newClassification.categories.push('')"><i class="fa fa-plus"> </i> More</button>
+       <button class="btn" ng-show="newClassification.categories[newClassification.categories.length-1]!=emptyCat" ng-click="newClassification.categories.push(emptyCat)"><i class="fa fa-plus"> </i> More</button>
     </div>
     <div class="modal-footer" id="addClassificationModalFooter">
         <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
@@ -25,11 +25,12 @@
     <div ng-show="!addnew && cats.length>0" class="input-group">
         <select class="form-control" ng-model="newClassification.categories[level]" ng-options='cat.name as cat.name for cat in cats' ng-change='wipeRest(level+1)'>
         </select>   
-        <span class="btn input-group-addon" ng-click="addnew = true; wipeRest(level);"><i class="fa fa-plus"> </i> Create New</button>
+        <span class="btn input-group-addon" ng-click="addnew = true; wipeRest(level+1); newClassification.categories[level]=emptyCat; "><i class="fa fa-plus"> </i> Create New</span>
     </div>     
+    addnew || cats.length<=0: {{addnew || cats.length<=0}}
     <div ng-show="addnew || cats.length<=0" class="input-group">
         <input ng-model="newClassification.categories[level]" type="text" class="form-control" placeholder="New Category">            
-        <span class="btn input-group-addon" ng-click="addnew = false; wipeRest(level);"><i class="fa fa-times"> </i> Back</button>      
+        <span class="btn input-group-addon" ng-click="addnew = false; wipeRest(level+1); newClassification.categories[level]='';"><i class="fa fa-times"> </i> Back</span>      
     </div>   
     <div> 
 </script>
