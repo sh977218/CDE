@@ -92,6 +92,7 @@ public class MergeTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Diagnosis Change Date"));
         Assert.assertTrue(textPresent("Form Element End Date"));
         findElement(By.cssSelector("[ng-click='sendMergeRequest()']")).click();
+        hangon(1);
         findElement(By.linkText("Classification")).click();
         Assert.assertTrue(textPresent("caBIG"));
         Assert.assertTrue(textPresent("caLIMS2"));      
