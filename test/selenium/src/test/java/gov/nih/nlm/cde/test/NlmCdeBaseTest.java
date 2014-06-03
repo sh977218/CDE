@@ -160,6 +160,12 @@ public class NlmCdeBaseTest {
         return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) < 0;
     }
     
+    protected void goHome() {
+        driver.get(baseUrl + "/gonowhere");
+        driver.get(baseUrl + "/");
+        findElement(By.id("selectOrgDropdown"));
+    }
+    
     protected void goToSearch() {
         driver.get(baseUrl + "/gonowhere");
         driver.get(baseUrl + "/#/search");
