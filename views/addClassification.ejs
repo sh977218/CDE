@@ -14,7 +14,7 @@
     </div>
     <div class="modal-footer" id="addClassificationModalFooter">
         <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
-        <button class="btn btn-warning" ng-click="okCreate(newClassification)" ng-disabled="isClean() || form.$invalid" id="saveClassification">Save</button>
+        <button ng-disabled="newClassification.categories[newClassification.categories.length-1]==emptyCat" class="btn btn-warning" ng-click="okCreate(newClassification)" ng-disabled="isClean() || form.$invalid" id="saveClassification">Save</button>
     </div>
 </form>
 
