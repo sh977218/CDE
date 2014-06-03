@@ -20,7 +20,7 @@ public class BoardTest extends NlmCdeBaseTest {
                 findElement(By.id("privateIcon_" + i)).click();
                 findElement(By.id("confirmChangeStatus_" + i)).click();
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("publicIcon_" + i)));
-                hangon(1);
+                hangon(2);
                 return;
             } 
         }

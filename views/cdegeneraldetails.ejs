@@ -12,7 +12,7 @@
     <dt>Used By: </dt><dd id="dd_usedBy"><span ng-repeat="cl in cde.classification">{{cl.stewardOrg.name}} </span></dd>
     <dt>Unit of Measure: </dt>
     <dd id="dd_uom">
-        <div inline-edit id="uomEdit" model="cde.valueDomain.uom" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </div></dd>   
+        <div inline-edit id="uomEdit" model="cde.valueDomain.uom" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </div>   
     </dd> 
     <dt>Id: </dt><dd>{{cde.uuid}}</dd>
     <dt>Version: </dt><dd>{{cde.version}}</dd>
