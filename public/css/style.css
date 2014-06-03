@@ -75,3 +75,25 @@ body {
 #repeatCs .container {
     word-wrap: break-word;
 }
+
+.fake-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.fake-link:hover {
+    text-decoration: underline;
+}
+
+#addClassificationModalBody ul {
+    list-style: none;
+}
+
+#addClassificationModalBody ul li:before {
+    content: "+";
+    margin-right: 4px;
+}
+
+#addNewClassifToOrgName {
+    width: 200px;
+}

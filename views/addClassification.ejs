@@ -1,4 +1,4 @@
-<div class="modal-header" id="addClassificationModalHeader">
+<!--div class="modal-header" id="addClassificationModalHeader">
     <h4>Add Classification</h4>
 </div>
 {{ newClassification }}
@@ -37,4 +37,43 @@
 
 <script type="text/ng-template" id="addClassificationCategory.html">      
     <span class="btn input-group-addon" ng-click="wipeRest(level);"><i class="fa fa-times"> </i> Cancel</span>
-</script>
+</script-->
+
+<div class="modal-header" id="addClassificationModalHeader">
+    <h4>Add Classification</h4>
+</div>
+{{ newClassification }}
+<form name="form" role="form">
+    <div class="modal-body" id="addClassificationModalBody">
+
+        <!--ol class="breadcrumb">
+            <li ng-click="wipeRest(0)"><span class="fake-link">{{org.name}}</span></li>
+            <li ng-repeat="cat in newClassification.categories" ng-click="wipeRest($index+1)" ><span class="fake-link">{{cat}}</span></li>
+        </ol>
+
+        <ul>
+            <li ng-repeat="cat in getCategories(newClassification.categories.length)" ng-click="newClassification.categories.push(cat.name)"><span class="fake-link">{{cat.name}}</span></li>
+        </ul-->
+        
+        <!--ol class="breadcrumb">
+            <li ng-click="wipeRest(0)"><span class="fake-link">{{org.name}}</span></li>
+            <li ng-repeat="cat in newClassification.categories" ng-click="wipeRest($index+1)" ><span class="fake-link">{{cat}}</span></li>
+        </ol>
+
+        <ul>
+            <li ng-repeat="cat in getCategories(newClassification.categories.length)" ng-click="newClassification.categories.push(cat.name)"><span class="fake-link">{{cat.name}}</span></li>
+        </ul-->   
+        <div ng-click="wipeRest(0)"><span class="fake-link">{{org.name}}</span></div>        
+        <div ng-repeat="cat in newClassification.categories" ng-click="wipeRest($index+1)" style="margin-left: {{10+10*$index}}px"><span class="fake-link">{{cat}}</span></div>
+        <div ng-repeat="cat in getCategories(newClassification.categories.length)" ng-click="newClassification.categories.push(cat.name)" style="margin-left: {{10+10*newClassification.categories.length}}px">> <span class="fake-link">{{cat.name}}</span></div>
+        <span class="input-group" id="addNewClassifToOrgName" style="margin-left: {{10+10*newClassification.categories.length}}px;">
+            <input ng-click="" id="addNewCatName" class="form-control">
+            <span class="input-group-addon" ><i class="fa-times"></i> Add</span>
+        </span>
+
+        
+    </div>
+    <div class="modal-footer" id="addClassificationModalFooter">
+        <button class="btn cancel" ng-click="close()">Close</button>
+    </div>
+</form>
