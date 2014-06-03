@@ -37,3 +37,4 @@ Thumbs.db
 .nide
 /test/selenium/.nb-gradle/private/
 
+test/selenium/chromedriver.exe.old
