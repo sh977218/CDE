@@ -22,6 +22,7 @@ function AddClassificationToOrgModalCtrl($scope, $modalInstance, $http, org) {
                 if (elt[j].name === $scope.newClassification.categories[i]) {
                     elt[choice]["elements"] ? elt = elt[choice]["elements"] : elt = [];
                     selectedLast = true;
+                    break;
                 }
                 choice++;
             }            
