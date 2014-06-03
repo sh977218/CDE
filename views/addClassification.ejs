@@ -10,7 +10,8 @@
             <select class="form-control" ng-model="newClassification.orgName" name="orgName" ng-change="updateOrg()" ng-options='org for org in myOrgs'>
             </select>        
         </div>
-       <div ng-include="'addClassificationCategory.html'" ng-repeat="i in newClassification.categories.concat(['a']) track by $index" ng-init="categories = org.classifications;level=$index;"></div>
+       <div ng-include="'addClassificationCategory.html'" ng-repeat="i in newClassification.categories track by $index" ng-init="categories = org.classifications;level=$index;"></div>
+       <button class="btn" ng-show="newClassification.categories[newClassification.categories.length-1]" ng-click="newClassification.categories.push('')"><i class="fa fa-plus"> </i> More</button>
     </div>
     <div class="modal-footer" id="addClassificationModalFooter">
         <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
@@ -18,8 +19,7 @@
     </div>
 </form>
 
-<script type="text/ng-template" id="addClassificationCategory.html">  
-    
+<script type="text/ng-template" id="addClassificationCategory.html">      
     <div class="form-group" ng-init="cats = getCategories(level);">
     <div ng-if="level>0">Sub-category of {{ newClassification.categories[level-1] }}</div>
     <div ng-show="!addnew && cats.length>0" class="input-group">

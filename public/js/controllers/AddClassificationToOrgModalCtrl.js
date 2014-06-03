@@ -1,7 +1,7 @@
 function AddClassificationToOrgModalCtrl($scope, $modalInstance, $http, org) {
     $scope.classificationType = "orgClass";
     $scope.org = org;
-    $scope.newClassification = { categories: [] };
+    $scope.newClassification = { categories: [''] };
     $scope.indices = [];
      
     $scope.okCreate = function (classification) {
