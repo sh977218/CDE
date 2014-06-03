@@ -18,10 +18,18 @@
     </div>
 </form>
 
-<script type="text/ng-template" id="addClassificationCategory.html">   
-    <div class="form-group">
-        <label>Category</label>
-        <select class="form-control" ng-model="newClassification.categories[level]" ng-options='cat.name as cat.name for cat in getCategories(level)' ng-change='wipeRest(level)'>
+<script type="text/ng-template" id="addClassificationCategory.html">  
+    
+    <div class="form-group" ng-init="cats = getCategories(level);">
+    <div ng-if="level>0">Sub-category of {{ newClassification.categories[level-1] }}</div>
+    <div ng-show="!addnew && cats.length>0" class="input-group">
+        <select class="form-control" ng-model="newClassification.categories[level]" ng-options='cat.name as cat.name for cat in cats' ng-change='wipeRest(level+1)'>
         </select>   
+        <span class="btn input-group-addon" ng-click="addnew = true; wipeRest(level);"><i class="fa fa-plus"> </i> Create New</button>
     </div>     
+    <div ng-show="addnew || cats.length<=0" class="input-group">
+        <input ng-model="newClassification.categories[level]" type="text" class="form-control" placeholder="New Category">            
+        <span class="btn input-group-addon" ng-click="addnew = false; wipeRest(level);"><i class="fa fa-times"> </i> Back</button>      
+    </div>   
+    <div> 
 </script>
