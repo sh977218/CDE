@@ -3,7 +3,7 @@
     
     <center>
     <form class="form-inline">
-        <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="form-control search-query" placeholder="Search" ng-change="onchangeSearch()">  
+        <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="form-control search-query" placeholder="Search" ng-change="">  
         <button id="search.submit" type="submit" value="Search" ng-click="search()" class="btn btn-default">
             <i class="fa fa-search"></i>
             Search
@@ -78,7 +78,7 @@
             <center ng-hide="cdes.length >= 0">Loading</center>
             <center ng-show="cdes.length === 0">No Results</center>
             <% var ejsPage = "list"; %>
-            <%- include accordionList.ejs %>                
+            <%- include accordionList.ejs %>
             <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="currentPage"></pagination>
 
             <span class="pull-right">

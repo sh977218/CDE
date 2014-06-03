@@ -13,27 +13,32 @@
         
         <p class="top40"><strong>Quick CDE Search:</strong>
             <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="input-group input-group-lg">
-                          <div class="input-group-btn">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-click="orgList">All Organizations <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                              <li><a href="#">All Organizations</a></li>
-                              <li class="divider"></li>
-                              <li ng-repeat="org in orgList" style="" ng-switch="" ng-click="">
-                                <a href="#">blah</a>
-                              </li>
-                            </ul>
-                          </div>
-                          <input type="text" class="form-control" placeholder="type search terms here..." >
+                <form name="quickSearhForm" id="quickSearhForm" class="form-inline" ng-submit="submitForm( quickSearhForm.$valid )" novalidate>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <!-- Search dropdown and text field -->
+                            <div class="input-group input-group-lg">
+                                <div class="input-group-btn">
+                                    <button name="selectOrgDropdown" id="selectOrgDropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-model="selectedOrg" ng-click="">{{selectedOrg}} <span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                        <li ng-click="updateSelectedOrg( 'All Organizations' )"><a href="">All Organizations</a></li>
+                                        <li class="divider"></li>
+                                        <li ng-repeat="org in orgList" style="" ng-switch="" ng-click="updateSelectedOrg( org )">
+                                            <a href="">{{org}}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="100" placeholder="type search terms here...">
+                            </div>
+                            <!-- Error display area -->
+                            <p class="error-block" ng-show="quickSearhForm.searchTerms.$invalid && !quickSearhForm.searchTerms.$pristine"><small>Search term must be 100 characters or less.</small></p>
+                        </div>
+                        <div class="col-md-4">
+                            <!-- Search and reset buttons -->
+                            <a name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearhForm.$valid )" ng-disabled="quickSearhForm.$invalid"><i class="fa fa-search"></i> Search</a><a name="quickSearchReset" id="quickSearchReset" class="btn btn-default btn-lg" ng-click="clearSearch()"><i class="fa fa-trash-o"></i> Reset</a>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <a class="btn btn-danger btn-lg" role="button"><i class="fa fa-search"></i> Search</a><a class="btn btn-default btn-lg" role="button"><i class="fa fa-trash-o"></i> Clear</a>
-                    </div>
-                </div>
-                <br/>
+                </form>
             </div>
         </p>
     </div>
@@ -54,7 +59,7 @@
       <div class="col-md-4">
         <h2>Create Account</h2>
         <p>Register for an account to be able to create boards and discuss or create Data Elements.</p>
-        <p><a class="btn btn-default" href="/#/login" role="button">Sign in or register &raquo;</a></p>
+        <p><a class="btn btn-default" href="/#/login" role="button">Log in or register &raquo;</a></p>
       </div>
     </div>
     <br/>
