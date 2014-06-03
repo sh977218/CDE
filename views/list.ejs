@@ -75,8 +75,8 @@
             </ul>
         </div>
         <div class="col-md-10">
-            <center ng-hide="cdes.length >= 0"> Loading</center>
-            <center ng-show="cdes.length === 0">No Results</center>
+            <span ng-hide="cdes.length >= 0"><h4><i class="fa fa-spinner fa-spin"></i> Searching...</h4></span>
+            <span ng-show="cdes.length === 0"><h4>This query returned no results.</h4></span>
             <% var ejsPage = "list"; %>
             <%- include accordionList.ejs %>                
             <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="currentPage"></pagination>
