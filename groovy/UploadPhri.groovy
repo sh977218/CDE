@@ -228,7 +228,6 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
                             
     BasicDBObject registrationState = new BasicDBObject();
     registrationState.put("registrationStatus", "Recorded");
-    registrationState.put("registrationStatusSortOrder", 3);
     newDE.put("registrationState", registrationState);        
                             
     def valueDomain = parseValueDomain(row, xlsMap);

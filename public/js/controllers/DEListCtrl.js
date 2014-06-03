@@ -159,7 +159,6 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
        }
        $scope.filter.and.push({or: lowRegStatusOrCuratorFilter});
        
-       
        queryStuff.query.bool.must = [];
        
        var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
@@ -210,14 +209,14 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
         
         if ($scope.selectedOrg !== undefined) {
             queryStuff.facets.elements = {
-                terms: {field: "classification.elements.name", size: 200}
+                terms: {field: "classification.elements.name", size: 500}
                 , facet_filter: {and: [{term: {"classification.stewardOrg.name": $scope.selectedOrg}}, {or: lowRegStatusOrCuratorFilter}]}
             };
             
             for (var i=2; i<=$scope.selectedElements.length+1; i++) {   
                 var fd = queryBuilder.countFacetsDepthString(i);
                 queryStuff.facets["elements"+i] = {
-                    terms: {field: fd, size: 200}
+                    terms: {field: fd, size: 500}
                     , facet_filter: {and: [
                             {term: {"classification.stewardOrg.name": $scope.selectedOrg}}
                             , {or: lowRegStatusOrCuratorFilter}]}

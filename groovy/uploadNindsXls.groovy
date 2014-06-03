@@ -117,6 +117,7 @@ static def String getCellValue(Cell cell) {
     , headacheClassif: 57
     , epilepsy: 58
     , previousTitle: 59
+    , cdeVersion: 60
 ];
 
 def void addDomain(de, type, subtype, value) { 
@@ -164,7 +165,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     newDE.put("uuid", UUID.randomUUID() as String);
     newDE.put("created", new Date()); 
     newDE.put("origin", 'NINDS'); 
-    newDE.put("version", '1'); 
+    newDE.put("version", getCellValue(row.getCell(xlsMap.cdeVersion))); 
     
     def properties = [];
     def prop = new BasicDBObject();
@@ -207,7 +208,6 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
     BasicDBObject registrationState = new BasicDBObject();
     registrationState.put("registrationStatus", "Qualified");
-    registrationState.put("registrationStatusSortOrder", 2);
     newDE.put("registrationState", registrationState);        
 
     

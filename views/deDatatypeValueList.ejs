@@ -9,7 +9,7 @@
              <th id="codeName">Code Name</th>
              <th id="code">Code</th>
              <th id="codeSystem">Code System</th>
-             <th id="validation" ng-show="detailedView || compareView">Match</th>
+             <th id="validation" ng-show="showValidationIcons || compareView">Match</th>
              <th id="actions" ng-show="isAllowed(cde)">Actions</th>
          </tr>
      </thead>
@@ -27,7 +27,7 @@
              <td headers="codeSystem" id="pvCodeSystem-{{$index}}">
                 <div inline-edit model="pv.codeSystemName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeaheadCodeSystemNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
              </td>
-             <td headers="validation" ng-show="detailedView || compareView">
+             <td headers="validation" ng-show="showValidationIcons || compareView">
                  <span ng-switch="pv.isValid">
                      <i ng-switch-when="true" class="fa fa-check text-success" id="pv-{{$index}}-valid"></i>
                      <i ng-switch-default class="fa fa-exclamation text-warning" id="pv-{{$index}}-warning"></i>
