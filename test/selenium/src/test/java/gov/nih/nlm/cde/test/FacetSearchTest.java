@@ -32,6 +32,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Disease")).click();
         findElement(By.id("li-blank-Traumatic Brain Injury")).click();
         findElement(By.id("li-blank-Acute Hospitalized")).click();
+        hangon(1);
         List<WebElement> elts = driver.findElements(By.id("li-blank-Classification"));
         for (int i = 0; i < elts.size(); i++) {
             if (elts.get(i).isDisplayed()) {
