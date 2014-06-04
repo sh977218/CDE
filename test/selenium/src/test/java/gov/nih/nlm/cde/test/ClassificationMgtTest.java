@@ -52,6 +52,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     }
     
     private void checkNestedClassifs() {
+        // replace tbi with "Laboratory Tests and Biospecimens/Biomarkers;Participant/Subject History and Family History"
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI'] .name")).getText().equals("Concussion/Mild TBI"));
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Disease/Injury Related Events,History of Disease/Injury Event'] .name")).getText().equals("History of Disease/Injury Event"));
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Amyotrophic Lateral Sclerosis,Assessments and Examinations,Physical/Neurological Examination'] .name")).getText().equals("Physical/Neurological Examination"));
