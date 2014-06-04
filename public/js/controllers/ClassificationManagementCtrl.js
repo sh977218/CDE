@@ -55,10 +55,6 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, Classificat
                 $route.reload();
                 $scope.addAlert("success", "Classification Added");                
             });
-            /*Classification.addToOrg(newClassification, function (res) {
-                $scope.addAlert("success", "Classification Added");
-                $scope.updateOrg();
-            });*/
         });
     };
 }

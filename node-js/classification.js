@@ -32,9 +32,6 @@ exports.removeClassificationFromTree = function(sourceElements, pathElements) {
                if (pathElements.length > 1) {
                    pathElements.splice(0, 1);
                    this.removeClassificationFromTree(sourceElements[i].elements, pathElements);
-                   /*if (sourceElements[i].elements.length === 0) {
-                       sourceElements.splice(i, 1);
-                   }*/
                } else {
                    sourceElements.splice(i, 1);
                }
@@ -58,4 +55,21 @@ exports.addClassificationToCde = function (dat, res) {
             }
         });        
     });    
+};
+
+exports.addNestedClassification = function(tree, fields) {
+    var classifications = this;
+    var subTree = tree;
+    this.findCategory = function(subTree, catname) {
+        for (var i = 0; i<subTree.length; i++) {
+            if (subTree[i].name === catname) {
+                return subTree[i].elements;
+            }
+        }
+        subTree.push({name:catname, elements:[]});
+        return subTree[i].elements;
+    };
+    for (var j = 0; j<fields.length; j++) {
+        subTree = classifications.findCategory(subTree, fields[j]);
+    }
 };

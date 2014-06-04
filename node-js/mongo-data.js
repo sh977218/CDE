@@ -115,7 +115,7 @@ exports.removeOrgClassification = function(request, callback) {
     });    
 };
 
-exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptName, callback) {
+/*exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptName, callback) {
     var mongo_data = this;
     this.findConceptSystem = function(stewardOrg, conceptSystemName) {
         for(var i=0; i<stewardOrg.classifications.length; i++) {
@@ -164,6 +164,17 @@ exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptNam
         }    
         stewardOrg.save(function (err) {
             if(callback) callback(err, stewardOrg);
+        });
+    });
+};*/
+
+exports.addOrgClassification = function(body, cb) {
+    var categories = body.categories;
+    Org.findOne({"name": body.orgName}).exec(function(err, stewardOrg) {
+        classification.addNestedClassification(stewardOrg.classifications, categories);
+        stewardOrg.markModified("classifications");
+        stewardOrg.save(function (err) {
+            if(cb) cb(err, stewardOrg);
         });
     });
 };

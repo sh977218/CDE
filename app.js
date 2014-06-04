@@ -458,7 +458,7 @@ app.post('/addOrg', function(req, res) {
     }
 });
 
-app.post('/addClassificationToOrg', function(req, res) {
+/*app.post('/addClassificationToOrg', function(req, res) {
     if (!req.user 
         || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0)
           && (!req.user.orgCurator || req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0)
@@ -484,10 +484,16 @@ app.post('/removeClassificationFromOrg', function(req, res) {
             else res.send({message: "Classification Removed", org: org});
         });
     }
-});
+});*/
 
 app.delete('/classification/org', function(req, res) {
     mongo_data.removeOrgClassification(req.query, function() {
+        res.send();
+    });
+});
+
+app.post('/classification/org', function(req, res) {
+    mongo_data.addOrgClassification(req.body, function() {
         res.send();
     });
 });
