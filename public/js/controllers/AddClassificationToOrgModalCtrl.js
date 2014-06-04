@@ -1,7 +1,7 @@
 function AddClassificationToOrgModalCtrl($scope, $modalInstance, org) {
     $scope.org = org;
     $scope.newClassification = { categories: [] };
-    $scope.parentScope = {newClassifName: "xxx"};
+    $scope.parentScope = {newClassifName: ""};
      
     $scope.close = function () {
         $modalInstance.close();

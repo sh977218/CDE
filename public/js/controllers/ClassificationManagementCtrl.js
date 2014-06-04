@@ -39,18 +39,17 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, Classificat
     
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
-          templateUrl: 'addClassificationModalContent.html',
-          controller: AddClassificationToOrgModalCtrl,
-          resolve: {
-            org: function() {
-                return $scope.org;
-            }           
-          }
+            templateUrl: 'addClassificationModalContent.html',
+            controller: AddClassificationToOrgModalCtrl,
+            resolve: {
+                org: function() {
+                    return $scope.org;
+                }           
+            }
         });
 
         modalInstance.result.then(function (newClassification) {
             newClassification.orgName = $scope.orgToManage;
-            console.log(newClassification);
             OrgClassification.save(newClassification, function() {
                 $route.reload();
                 $scope.addAlert("success", "Classification Added");                

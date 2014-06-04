@@ -63,34 +63,12 @@ exports.org_autocomplete = function(name, callback) {
     }); 
 };
 
-/*exports.removeClassificationFromOrg = function(orgName, conceptSystem, concept, callback) {
-    var mongoQuery = {
-        $pull: {
-                "classifications.$.elements": {
-                    "name": concept
-                }
-        }
-    };
-    Org.update(
-        {"name": orgName, "classifications.name": conceptSystem}
-        , mongoQuery).exec(function(err) {
-        DataElement.find({"classification.stewardOrg.name": orgName, "classification.elements.name": conceptSystem}).exec(function(err, result) {
-            for (var i = 0; i < result.length; i++) {
-                var cde = result[i];
-                var steward = classification.findSteward(cde, orgName);
-                classification.removeClassificationFromTree(steward.object.elements, [conceptSystem, concept]);
-                cde.save(function(err) {
-                });
-            };
-        });
-        Org.findOne({"name": orgName}).exec(function (err, result) {
-            callback(err, result);
-        });
-    });  
-};*/
 exports.removeOrgClassification = function(request, callback) {
     Org.findOne({"name": request.orgName}).exec(function (err, stewardOrg) {
-        classification.removeClassificationFromTree(stewardOrg.classifications, request.categories.slice(0));
+        /*classification.fetchLastLevel(stewardOrg.classifications, request.categories, function(lastCategory) {
+            delete lastCategory[request.categories[request.categories.length-1]];
+        });*/       
+        classification.deleteCategory(stewardOrg.classifications, request.categories);
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             var query = {"classification.stewardOrg.name": request.orgName};
@@ -104,7 +82,10 @@ exports.removeOrgClassification = function(request, callback) {
                 for (var i = 0; i < result.length; i++) {
                     var cde = result[i];
                     var steward = classification.findSteward(cde, request.orgName);
-                    classification.removeClassificationFromTree(steward.object.elements, request.categories.slice(0));
+                    /*classification.fetchLastLevel(steward.object.elements, request.categories, function(lastCategory) {
+                        delete lastCategory[request.categories[request.categories.length-1]];
+                    });*/     
+                    classification.deleteCategory(steward.object.elements, request.categories);
                     cde.markModified("classification");
                     cde.save(function(err) {
                     });
@@ -115,65 +96,10 @@ exports.removeOrgClassification = function(request, callback) {
     });    
 };
 
-/*exports.addClassificationToOrg = function(orgName, conceptSystemName, conceptName, callback) {
-    var mongo_data = this;
-    this.findConceptSystem = function(stewardOrg, conceptSystemName) {
-        for(var i=0; i<stewardOrg.classifications.length; i++) {
-            if(stewardOrg.classifications[i].name===conceptSystemName) {
-                return stewardOrg.classifications[i];
-            }
-        }
-        return null;
-    };
-    this.findConcept = function(conceptSystem, conceptName) {
-        for(var i=0; i<conceptSystem.elements.length; i++) {
-            if(conceptSystem.elements[i].name===conceptName) {
-                return conceptSystem.elements[i];
-            }
-        }
-        return null;
-    };    
-    this.addConceptSystem = function(stewardOrg, conceptSystemName) {
-        stewardOrg.classifications.push({name: conceptSystemName});
-        return stewardOrg.classifications[stewardOrg.classifications.length-1];
-    };  
-    this.addConcept = function(conceptSystem, conceptName) {
-        if (!conceptSystem.elements) {
-            conceptSystem.elements = [];
-        }
-        conceptSystem.elements.push({name: conceptName});
-    };     
-    Org.findOne({"name": orgName}).exec(function(err, stewardOrg) {
-        // Create 'orgs' collection if it doesn't exist
-        if( !stewardOrg ) {
-                stewardOrg = new Org({name:orgName});
-        }
-
-        // Create 'classifications' array if it doesn't exist
-        if( !stewardOrg.classifications ) {
-                stewardOrg.classifications = [];
-        }
-	
-        conceptSystem = mongo_data.findConceptSystem(stewardOrg, conceptSystemName);
-        if (!conceptSystem) {
-            conceptSystem = mongo_data.addConceptSystem(stewardOrg, conceptSystemName);
-        }
-        concept = mongo_data.findConcept(conceptSystem, conceptName);
-        if (!concept) {
-            mongo_data.addConcept(conceptSystem, conceptName);
-        }    
-        stewardOrg.save(function (err) {
-            if(callback) callback(err, stewardOrg);
-        });
-    });
-};*/
-
 exports.addOrgClassification = function(body, cb) {
     var categories = body.categories;
     Org.findOne({"name": body.orgName}).exec(function(err, stewardOrg) {
-        classification.fetchLastLevel(stewardOrg.classifications, categories, function(lastCategory) {
-            lastCategory.push({name: categories[categories.length-1], elements:[]});
-        });
+        classifications.addCategory(stewardOrg.classifications, categories);
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             if(cb) cb(err, stewardOrg);

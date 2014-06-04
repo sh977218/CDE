@@ -22,7 +22,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         Assert.assertTrue(textNotPresent("gov.nih.nci.cananolab.domain.characterization.invitro"));        
     }
 
-    @Test
+    /*@Test
     public void createClassificationsMgt() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         findElement(By.id("username_link")).click();
@@ -38,7 +38,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Classification Added"));
         hangon(1);
         Assert.assertTrue(textPresent("Made up disease"));
-    }
+    }*/
     
     private void searchNestedClassifiedCdes() {
         goToSearch();
@@ -74,6 +74,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification,Supplemental']");
     }
     
+    @Test
     public void removeClassificationMgt() {
         mustBeLoggedInAs("ninds", "pass");
         searchNestedClassifiedCdes();
