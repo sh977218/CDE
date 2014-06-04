@@ -1,7 +1,6 @@
 package gov.nih.nlm.cde.test;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -153,11 +152,11 @@ public class NlmCdeBaseTest {
     
     public boolean textPresent(String text) {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
-        return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) >= 0;
+        return driver.findElement(By.cssSelector("BODY")).getText().contains(text);
     }
     
     public boolean textNotPresent(String text){
-        return driver.findElement(By.cssSelector("BODY")).getText().indexOf(text) < 0;
+        return !driver.findElement(By.cssSelector("BODY")).getText().contains(text);
     }
     
     protected void goHome() {
@@ -209,6 +208,7 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Compare ( empty )"));
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName1+"\"");
         findElement(By.id("search.submit")).click();
+        Assert.assertTrue(textPresent("1 hits"));
         findElement(By.linkText(cdeName1)).click();
         hangon(1);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
