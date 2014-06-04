@@ -16,6 +16,10 @@ body {
 .top40 { margin-top:40px; }
 .top60 { margin-top:60px; }
 
+.error-block {
+    color: brown;
+}
+
 .inactive {
     border: none;
     background-color: #fff;
