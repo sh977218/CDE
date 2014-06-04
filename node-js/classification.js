@@ -57,7 +57,7 @@ exports.addClassificationToCde = function (dat, res) {
     });    
 };
 
-exports.addNestedClassification = function(tree, fields) {
+exports.fetchLastLevel = function(tree, fields, cb) {
     var classifications = this;
     var subTree = tree;
     this.findCategory = function(subTree, catname) {
@@ -71,5 +71,5 @@ exports.addNestedClassification = function(tree, fields) {
     for (var j = 0; j<fields.length-1; j++) {
         if (subTree) subTree = classifications.findCategory(subTree, fields[j]);
     }
-    if (subTree) subTree.push({name: fields[fields.length-1], elements:[]});
+    if (subTree) cb(subTree);
 };

@@ -171,7 +171,9 @@ exports.removeOrgClassification = function(request, callback) {
 exports.addOrgClassification = function(body, cb) {
     var categories = body.categories;
     Org.findOne({"name": body.orgName}).exec(function(err, stewardOrg) {
-        classification.addNestedClassification(stewardOrg.classifications, categories);
+        classification.fetchLastLevel(stewardOrg.classifications, categories, function(lastCategory) {
+            lastCategory.push({name: categories[categories.length-1], elements:[]});
+        });
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             if(cb) cb(err, stewardOrg);
