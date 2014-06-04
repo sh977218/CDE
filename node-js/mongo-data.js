@@ -99,7 +99,7 @@ exports.removeOrgClassification = function(request, callback) {
 exports.addOrgClassification = function(body, cb) {
     var categories = body.categories;
     Org.findOne({"name": body.orgName}).exec(function(err, stewardOrg) {
-        classifications.addCategory(stewardOrg.classifications, categories);
+        classification.addCategory(stewardOrg.classifications, categories);
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             if(cb) cb(err, stewardOrg);
