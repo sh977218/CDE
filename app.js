@@ -442,8 +442,12 @@ app.get('/siteadmins', function(req, res) {
     }
 });
 
-app.get('/listorgs', function(req, res) {
+app.get('/listOrgs', function(req, res) {
     cdesvc.listOrgs(req, res);
+});
+
+app.get('/listOrgsFromDEClassification', function(req, res) {
+    cdesvc.listOrgsFromDEClassification(req, res);
 });
 
 app.get('/managedOrgs', function(req, res) {

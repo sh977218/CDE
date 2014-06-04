@@ -1,19 +1,20 @@
 function HomeCtrl($scope, $http, $location) {
     $scope.setActiveMenu('HOME');
     
+    // Declare variables that will be used. Not needed but makes the code clear to understand.
+    $scope.ALLORGS = 'All Organizations';
     $scope.orgList = [];
-    $scope.selectedOrg = "";
-    $scope.ftsearch = "";
-    
+    $scope.selectedOrg = '';
+    $scope.ftsearch = '';
     
     $scope.getOrgList = function() {
-        $http.get("/listorgs").then(function(response) {
+        $http.get('/listOrgsFromDEClassification').then(function(response) {
             $scope.orgList = response.data;
         });
     };
 
     $scope.resetSelectedOrg = function() {
-        $scope.selectedOrg = "All Organizations";
+        $scope.selectedOrg = '';
     };
     
     $scope.updateSelectedOrg = function( neworg ) {
@@ -24,23 +25,23 @@ function HomeCtrl($scope, $http, $location) {
         delete $scope.ftsearch;
         $scope.resetSelectedOrg();
     };
-    
+
     $scope.gotoSearch = function() {
         $scope.initCache();
         
-        if( $scope.selectedOrg !== "All Organizations" ) {
-            $scope.cache.put( "selectedOrg", $scope.selectedOrg );
+        if( $scope.selectedOrg !== '' ) {
+            $scope.cache.put( 'selectedOrg', $scope.selectedOrg );
         }
-        $scope.cache.put( "ftsearch", $scope.ftsearch );
+        $scope.cache.put( 'ftsearch', $scope.ftsearch );
 
-        $location.url("search");
+        $location.url( 'search' );
     };
     
     $scope.submitForm = function( isValid ) {
         if( isValid ) {
             $scope.gotoSearch();
         } else {
-            alert( "Please correct form error(s) and resubmit." );
+            alert( 'Please correct form error(s) and resubmit.' );
         }
     };
     

@@ -7,22 +7,18 @@
             <small>Common Data Elements (CDE) is a new venture (project) to explore the understanding, construction and practice of data elements to support the development of infrastructure to facilitate the use of electronic health records (EHRs) in comparative effectiveness research (CER). <a target="_cde" href="http://www.nlm.nih.gov/cde/">Click here to learn more &raquo;</a></small>
         </p>
         
-        <!-- center>
-            <a class="btn btn-danger btn-lg" role="button" href="/#/search">Go to CDE Search Tool</a>
-        </center -->
-        
         <p class="top40"><strong>Quick CDE Search:</strong>
             <div class="container-fluid">
-                <form name="quickSearhForm" id="quickSearhForm" class="form-inline" ng-submit="submitForm( quickSearhForm.$valid )" novalidate>
+                <form name="quickSearchForm" id="quickSearchForm" class="form-inline" ng-submit="submitForm( quickSearchForm.$valid )" novalidate>
                     <div class="row">
                         <div class="col-md-8">
                             <!-- Search dropdown and text field -->
                             <div class="input-group input-group-lg">
                                 <div class="input-group-btn">
                                     <button name="selectOrgDropdown" id="selectOrgDropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" 
-                                            ng-model="selectedOrg" ng-click="">{{selectedOrg}} <span class="caret"></span></button>
+                                            ng-model="selectedOrg" ng-click="">{{ selectedOrg!=='' ? selectedOrg : ALLORGS }} <span class="caret"></span></button>
                                     <ul class="dropdown-menu">
-                                        <li ng-click="updateSelectedOrg( 'All Organizations' )"><a href="">All Organizations</a></li>
+                                        <li ng-click="updateSelectedOrg( '' )"><a href="">{{ALLORGS}}</a></li>
                                         <li class="divider"></li>
                                         <li ng-repeat="org in orgList" style="" ng-switch="" ng-click="updateSelectedOrg( org )">
                                             <a href="">{{org}}</a>
@@ -32,11 +28,11 @@
                                 <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="100" placeholder="Type search terms here">
                             </div>
                             <!-- Error display area -->
-                            <p class="error-block" ng-show="quickSearhForm.searchTerms.$invalid && !quickSearhForm.searchTerms.$pristine"><small>Query must be 100 characters or less.</small></p>
+                            <p class="error-block" ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><small>Query must be 100 characters or less.</small></p>
                         </div>
                         <div class="col-md-4">
                             <!-- Search and reset buttons -->
-                            <a name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearhForm.$valid )" ng-disabled="quickSearhForm.$invalid">
+                            <a name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid">
                                 <i class="fa fa-search"></i> Search</a><a name="quickSearchReset" id="quickSearchReset" class="btn btn-default btn-lg" ng-click="clearSearch()"><i class="fa fa-trash-o"></i> Reset</a>
                         </div>
                     </div>

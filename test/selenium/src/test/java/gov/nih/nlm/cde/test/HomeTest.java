@@ -45,7 +45,6 @@ public class HomeTest extends NlmCdeBaseTest {
         findElement(By.linkText("CCR")).click();
         findElement(By.id("searchTerms")).sendKeys("Person Birth");
         findElement(By.id("quickSearchButton")).click();
-        hangon(1);
         findElement(By.name("ftsearch"));
         Assert.assertTrue(textPresent("Qualified ("));
         Assert.assertTrue( textPresent("Person Other Premalignant Non-Melanomatous Lesion Indicator") );
