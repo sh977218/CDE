@@ -66,10 +66,10 @@ exports.addNestedClassification = function(tree, fields) {
                 return subTree[i].elements;
             }
         }
-        subTree.push({name:catname, elements:[]});
-        return subTree[i].elements;
+        return null;
     };
-    for (var j = 0; j<fields.length; j++) {
-        subTree = classifications.findCategory(subTree, fields[j]);
+    for (var j = 0; j<fields.length-1; j++) {
+        if (subTree) subTree = classifications.findCategory(subTree, fields[j]);
     }
+    if (subTree) subTree.push({name: fields[fields.length-1], elements:[]});
 };
