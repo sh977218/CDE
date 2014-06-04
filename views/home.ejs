@@ -19,7 +19,8 @@
                             <!-- Search dropdown and text field -->
                             <div class="input-group input-group-lg">
                                 <div class="input-group-btn">
-                                    <button name="selectOrgDropdown" id="selectOrgDropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-model="selectedOrg" ng-click="">{{selectedOrg}} <span class="caret"></span></button>
+                                    <button name="selectOrgDropdown" id="selectOrgDropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" 
+                                            ng-model="selectedOrg" ng-click="">{{selectedOrg}} <span class="caret"></span></button>
                                     <ul class="dropdown-menu">
                                         <li ng-click="updateSelectedOrg( 'All Organizations' )"><a href="">All Organizations</a></li>
                                         <li class="divider"></li>
@@ -28,7 +29,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="100" placeholder="type search terms here...">
+                                <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="100" placeholder="Type search terms here">
                             </div>
                             <!-- Error display area -->
                             <p class="error-block" ng-show="quickSearhForm.searchTerms.$invalid && !quickSearhForm.searchTerms.$pristine"><small>Search term must be 100 characters or less.</small></p>
