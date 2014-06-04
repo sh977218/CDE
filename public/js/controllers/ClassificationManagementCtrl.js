@@ -43,7 +43,6 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, Classificat
           controller: AddClassificationToOrgModalCtrl,
           resolve: {
             org: function() {
-                console.log($scope.org);
                 return $scope.org;
             }           
           }
@@ -52,6 +51,10 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, Classificat
         modalInstance.result.then(function (newClassification) {
             newClassification.orgName = $scope.orgToManage;
             console.log(newClassification);
+            OrgClassification.save(newClassification, function() {
+                $route.reload();
+                $scope.addAlert("success", "Classification Added");                
+            });
             /*Classification.addToOrg(newClassification, function (res) {
                 $scope.addAlert("success", "Classification Added");
                 $scope.updateOrg();
