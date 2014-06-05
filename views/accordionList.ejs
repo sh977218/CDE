@@ -15,10 +15,10 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <%- include cdegeneraldetails.ejs %>
+                <%- include cdeList/generalDetails.ejs %>
             </div>
             <div class="col-md-4">
-                <%- include valueDomainView.ejs %>
+                <%- include cdeList/valueDomain.ejs %>
             </div>
             <div class="col-md-2">
                 <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" ng-src="/data/{{attachment.fileid}}"/> 
@@ -35,9 +35,6 @@
        </div>
     </div>
 </div>
-<script type="text/ng-template" id="addToFormModalContent.html">
-    <%- include addToFormModal.ejs %>
-</script>
 <script type="text/ng-template" id="selectBoardModalContent.html">
     <%- include selectBoardModal.ejs %>
 </script>

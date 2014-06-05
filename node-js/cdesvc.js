@@ -119,6 +119,16 @@ exports.listOrgs = function(req, res) {
     });
 };
 
+exports.listOrgsFromDEClassification = function(req, res) {
+    mongo_data.listOrgsFromDEClassification(function(err, orgs) {
+       if (err) {
+           res.send("ERROR");
+       } else {
+           res.send(orgs);
+       }   
+    });
+};
+
 exports.priorCdes = function(req, res) {
     var cdeId = req.params.id;
     
@@ -188,7 +198,7 @@ exports.save = function (req, res) {
                             && !req.user.siteAdmin) {
                         res.send("This record is already standard.");
                     } else {
-                        if (cde.registrationState.registrationStatusSortOrder > 1 && 
+                        if ((cde.registrationState.registrationStatus !== "Standard"  && cde.registrationState.registrationStatus !== " Preferred Standard") && 
                                 (req.body.registrationState.registrationStatus === "Standard" || req.body.registrationState.registrationStatus === "Preferred Standard")
                                     && !req.user.siteAdmin
                                 ) 
@@ -237,6 +247,18 @@ exports.name_autocomplete_form = function(req, res) {
     }
 };
 
+function arrayEquals(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+    for (var i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
 exports.diff = function(req, res) {
     if (req.params.deId == "undefined") {
         res.send("Please specify an identifier as input.");
@@ -278,7 +300,7 @@ exports.diff = function(req, res) {
                                diff.after.datatype = dataElement.valueDomain.datatype;
                                if (!diff.after.datatype) {diff.after.datatype = "None Specified";}
                            }
-                           if (dataElement.valueDomain.permissibleValues !== priorDe.valueDomain.permissibleValues) {
+                           if (!arrayEquals(dataElement.valueDomain.permissibleValues, priorDe.valueDomain.permissibleValues)) {
                                diff.before.permissibleValues = priorDe.valueDomain.permissibleValues;
                                diff.after.permissibleValues = dataElement.valueDomain.permissibleValues;                              
                            }

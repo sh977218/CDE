@@ -72,7 +72,9 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
         Assert.assertTrue(textPresent(cdeName + "[name change number 1]"));
         Assert.assertTrue(textPresent("the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]"));
-
+        Assert.assertTrue(textNotPresent("Permissible Values:"));
+        Assert.assertTrue(textNotPresent("Modified"));
+        
         // View Prior Version
         findElement(By.linkText("History")).click();
         findElement(By.id("prior-0")).click();

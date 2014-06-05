@@ -48,6 +48,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         WebElement tbody = driver.findElement(By.id("vsacTableBody"));
         List<WebElement> vsacLines = tbody.findElements(By.tagName("tr"));
         Assert.assertEquals(vsacLines.size(), 2);
+        Assert.assertTrue(textPresent("Match"));
     }
     
     @Test
@@ -101,6 +102,11 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("added to pv"));
+        findElement(By.linkText("History")).click();
+        hangon(1);
+        findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
+        Assert.assertTrue(textPresent("Permissible Values:"));
+        Assert.assertTrue(textPresent("Modified"));
     }
     
     @Test
@@ -169,7 +175,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Race Category");
         findElement(By.linkText("Permissible Values")).click();         
-        Assert.assertTrue(textPresent("Native Hawaiian or other Pacific Islander"));    
+        Assert.assertTrue(textPresent("Native Hawaiian or other Pacific Islander")); 
+        Assert.assertTrue(textNotPresent("Match"));
         findElement(By.id("removeAllPvs")).click();
         Assert.assertTrue(textNotPresent("Native Hawaiian or other Pacific Islander"));        
         findElement(By.linkText("Update O.I.D")).click();

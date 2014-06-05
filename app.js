@@ -156,12 +156,6 @@ var winstonStream = {
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-app.use(function noCachePlease(req, res, next) {
-    res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-    res.header("Pragma", "no-cache");
-    res.header("Expires", -1);
-    next();
-  });
 app.use(express.favicon());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
@@ -442,8 +436,12 @@ app.get('/siteadmins', function(req, res) {
     }
 });
 
-app.get('/listorgs', function(req, res) {
+app.get('/listOrgs', function(req, res) {
     cdesvc.listOrgs(req, res);
+});
+
+app.get('/listOrgsFromDEClassification', function(req, res) {
+    cdesvc.listOrgsFromDEClassification(req, res);
 });
 
 app.get('/managedOrgs', function(req, res) {

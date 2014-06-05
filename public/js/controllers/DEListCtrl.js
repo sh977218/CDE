@@ -159,7 +159,6 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
        }
        $scope.filter.and.push({or: lowRegStatusOrCuratorFilter});
        
-       
        queryStuff.query.bool.must = [];
        
        var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
