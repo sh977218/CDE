@@ -20,7 +20,7 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
         when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
         otherwise({redirectTo:'/'});
     })
-    .directive('inlineEditTypeahead', function() {
+    .directive('inlineEdit', function() {
     return {
         template: '<span>' + 
                         '<span ng-hide="editMode">' + 
@@ -40,26 +40,6 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
             , isAllowed: '&'
             , onOk: '&'
             , typeaheadSource: '='
-        }
-    };
-    })
-    .directive('inlineEdit', function() {
-    return {
-        template: '<span>' + 
-                        '<span ng-hide="editMode">' + 
-                            '<i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' + 
-                        '</span>' + 
-                        '<span ng-show="editMode">' +                         
-                            '<button class="fa fa-check" ng-click="model = value;editMode = false; onOk();"> Confirm</button>' + 
-                            '<button class="fa fa-times" ng-click="editMode = false"> Discard</button>' + 
-                        '</span>' +       
-                    '</span>'
-                ,
-        restrict: 'AE',
-        scope: {
-            model: '='
-            , isAllowed: '&'
-            , onOk: '&'
         }
     };
     })

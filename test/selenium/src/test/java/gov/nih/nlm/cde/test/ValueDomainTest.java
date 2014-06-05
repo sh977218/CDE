@@ -245,7 +245,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.linkText("Permissible Values")).click();         
         Assert.assertTrue(textPresent("Hemoglobinuria"));
         Assert.assertTrue(textNotPresent("Hypermagnesemia"));
-        findElement(By.id("showAllPvs"));
+        findElement(By.id("showMorePvs"));
+        hangon(5);
         Assert.assertTrue(textPresent("Hypermagnesemia"));
     }
 }
