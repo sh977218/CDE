@@ -457,12 +457,20 @@ app.post('/addOrg', function(req, res) {
 });
 
 app.delete('/classification/org', function(req, res) {
+    if (!app.isCuratorOf(req.user, req.query.orgName)) {
+        res.send(403);
+        return;
+    }  
     mongo_data.removeOrgClassification(req.query, function() {
         res.send();
     });
 });
 
 app.post('/classification/org', function(req, res) {
+    if (!app.isCuratorOf(req.user, req.body.orgName)) {
+        res.send(403);
+        return;
+    }      
     mongo_data.addOrgClassification(req.body, function() {
         res.send();
     });
