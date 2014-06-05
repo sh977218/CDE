@@ -6,16 +6,22 @@
     </dd>    
     <dt>Steward: </dt><dd>{{cde.stewardOrg.name}}</dd>
     <dt>Definition: </dt><dd id="dd_def">   
-        {{cde.naming[0].definition}}
+        {{cde.naming[0].definition | placeholdEmpty}}
     </dd>
-    <dt>Used By: </dt><dd id="dd_usedBy"><span ng-repeat="cl in cde.classification">{{cl.stewardOrg.name}} </span></dd>
+    <dt>Used By: </dt><dd id="dd_usedBy">
+        <span ng-switch="cde.classification.length > 0">
+            <span ng-switch-when="false">None</span>
+            <span ng-switch-default>
+                <span ng-repeat="cl in cde.classification">{{cl.stewardOrg.name}} </span>
+            </span>
+        </span>
+        </dd>
     <dt>Unit of Measure: </dt>
     <dd id="dd_uom">
-        {{cde.valueDomain.uom}}</dd>   
+        {{cde.valueDomain.uom | placeholdEmpty}}</dd>   
     <dt>Id: </dt><dd>{{cde.uuid}}</dd>
-    <dt>Version: </dt><dd>{{cde.version}}</dd>
+    <dt>Version: </dt><dd>{{cde.version | placeholdEmpty}}</dd>
     <dt ng-show="cde.origin">Origin: </dt><dd>{{cde.origin}}</dd>
-    <dt>Status: </dt><dd id="dd_status">{{cde.registrationState.registrationStatus}}</dd>
-    <dt ng-show="cde.formUsageCounter">Form Usage: </dt><dd>{{cde.formUsageCounter}}</dd>
+    <dt id="dt_status">Status: </dt><dd id="dd_status">{{cde.registrationState.registrationStatus}}</dd>
     <dt ng-show="cde.views">Views: </dt><dd id="dd_views">{{cde.views}}</dd>
 </dl>
