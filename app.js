@@ -720,6 +720,7 @@ app.post('/addAttachmentToCde', function(req, res) {
 });
 
 app.isCuratorOf = function(user, orgName){
+    if (!user) return false;
     return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
 };
 
