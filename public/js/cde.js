@@ -19,8 +19,8 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
         when('/inbox', {controller: InboxCtrl, templateUrl: '/mail/template/inbox'}).
         when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
         otherwise({redirectTo:'/'});
-    }).
-    directive('inlineEdit', function() {
+    })
+    .directive('inlineEdit', function() {
     return {
         template: '<span>' + 
                         '<span ng-hide="editMode">' + 

@@ -8,6 +8,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     $scope.comment = {};
     $scope.pVTypeheadVsacNameList = [];
     $scope.pVTypeaheadCodeSystemNameList = [];
+    $scope.pvLimit = 30;
     
     $scope.showValidationIcons = false;
     
