@@ -102,6 +102,11 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("added to pv"));
+        findElement(By.linkText("History")).click();
+        hangon(1);
+        findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
+        Assert.assertTrue(textPresent("Permissible Values:"));
+        Assert.assertTrue(textPresent("Modified"));
     }
     
     @Test
