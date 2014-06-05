@@ -14,18 +14,18 @@
          </tr>
      </thead>
      <tbody>
-         <tr id="pv-{{$index}}" ng-repeat="pv in cde.valueDomain.permissibleValues">
+         <tr id="pv-{{$index}}" ng-repeat="pv in cde.valueDomain.permissibleValues | limitTo:pvLimit">
             <td headers="name" id="pv-{{$index}}">
                 <div inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde);"> </div>
             </td>
              <td headers="codeName" id="pvName-{{$index}}">
-                <div inline-edit model="pv.valueMeaningName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeheadVsacNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
+                <div inline-edit-typeahead model="pv.valueMeaningName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeheadVsacNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
              </td>
              <td headers="code" id="pvCode-{{$index}}">
                 <div inline-edit model="pv.valueMeaningCode" is-allowed="isAllowed(cde)" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
              </td>
              <td headers="codeSystem" id="pvCodeSystem-{{$index}}">
-                <div inline-edit model="pv.codeSystemName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeaheadCodeSystemNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
+                <div inline-edit-typeahead model="pv.codeSystemName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeaheadCodeSystemNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
              </td>
              <td headers="validation" ng-show="showValidationIcons || compareView">
                  <span ng-switch="pv.isValid">
@@ -39,8 +39,10 @@
                  <a id="pvRemove-{{$index}}" class="btn-mini fa fa-trash-o" ng-click="removePv($index)" title="Remove" href=""></a>
              </td>
          </tr>
-         <tr ng-show="cde.valueDomain.permissibleValues.length == 10">
-             <td colspan="6">See full list in Detailed View</td>
+         <tr ng-show="cde.valueDomain.permissibleValues.length > pvLimit">
+             <td colspan="6">Showing {{pvLimit}} values. 
+                 <a class="btn btn-small btn-default fa fa-plus" ng-click="pvLimit = cde.valueDomain.permissibleValues.length" id="showAllPvs"> Show All</a>
+             </td>
          </tr>
      </tbody>
  </table>

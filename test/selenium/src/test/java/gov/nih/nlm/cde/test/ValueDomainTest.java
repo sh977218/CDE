@@ -237,5 +237,15 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Other Race Category"));
         Assert.assertTrue(textPresent("2131-1.1"));
         Assert.assertTrue(textPresent("CDCREC.1"));
-    }     
+    }    
+    
+    @Test
+    public void longPvList() {
+        goToCdeByName("Common Toxicity Criteria Adverse Event Short Name Type");
+        findElement(By.linkText("Permissible Values")).click();         
+        Assert.assertTrue(textPresent("Hemoglobinuria"));
+        Assert.assertTrue(textNotPresent("Hypermagnesemia"));
+        findElement(By.id("showAllPvs"));
+        Assert.assertTrue(textPresent("Hypermagnesemia"));
+    }
 }

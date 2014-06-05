@@ -366,10 +366,6 @@ app.get('/classificationmanagement', function(req, res) {
     res.render('classificationManagement');
 });
 
-app.get('/formview', function(req, res) {
-    res.render('formview', { user: req.user });
-});
-
 app.get('/deview', function(req, res) {
     res.render("deview");
 });
