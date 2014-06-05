@@ -5,10 +5,10 @@
     <div class="modal-body" id="addClassificationModalBody">
         <div ng-click="wipeRest(0)"><span class="fake-link">{{org.name}}</span></div>        
         <div ng-repeat="cat in newClassification.categories" ng-click="wipeRest($index+1)" style="margin-left: {{10+10*$index}}px"><span class="fake-link">{{cat}}</span></div>
-        <div ng-repeat="cat in getCategories(newClassification.categories.length)" ng-click="newClassification.categories.push(cat.name)" style="margin-left: {{10+10*newClassification.categories.length}}px">> <span class="fake-link">{{cat.name}}</span></div>
+        <div ng-repeat="cat in getCategories(newClassification.categories.length)" ng-click="newClassification.categories.push(cat.name)" style="margin-left: {{10+10*newClassification.categories.length}}px" id="addClassification-{{cat.name}}">> <span class="fake-link">{{cat.name}}</span></div>
         <span class="input-group input-group-sm" id="addNewClassifToOrgName" style="margin-left: {{10+10*newClassification.categories.length}}px;">
             <input ng-model="parentScope.newClassifName" id="addNewCatName" class="form-control">
-            <span ng-click="addClassification()" class="input-group-addon"><i class="fa-times"></i> Add</span>
+            <span ng-click="addClassification()" class="input-group-addon" id="addClassificationButton"><i class="fa-times"></i> Add</span>
         </span>        
     </div>
     <div class="modal-footer" id="addClassificationModalFooter">

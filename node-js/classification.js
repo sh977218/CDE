@@ -63,6 +63,7 @@ exports.fetchLastLevel = function(tree, fields, cb) {
     this.findCategory = function(subTree, catname) {
         for (var i = 0; i<subTree.length; i++) {
             if (subTree[i].name === catname) {
+                if (!subTree[i].elements) subTree[i].elements = [];
                 return subTree[i].elements;
             }
         }
@@ -78,9 +79,11 @@ exports.deleteCategory = function(tree, fields, cb) {
     var classification = this;
     var lastLevel = classification.fetchLastLevel(tree, fields);
     for (var i = 0; i < lastLevel.length; i++) {
-        if (lastLevel[i].name === fields[fields.length-1]) break;
-    }
-    lastLevel.splice(i,1);
+        if (lastLevel[i].name === fields[fields.length-1]) {
+            lastLevel.splice(i,1);
+            break;
+        }
+    }    
     if (cb) cb();
 };
 

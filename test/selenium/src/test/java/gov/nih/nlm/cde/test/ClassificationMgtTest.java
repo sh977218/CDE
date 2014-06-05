@@ -42,7 +42,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     
     private void searchNestedClassifiedCdes() {
         goToSearch();
-        findElement(By.name("ftsearch")).sendKeys("classification.elements.elements.elements.name=\"Concussion/Mild TBI\"");
+        findElement(By.name("ftsearch")).sendKeys("classification.elements.elements.name:Epilepsy");
         findElement(By.id("search.submit")).click();    
     }
     
@@ -52,40 +52,59 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     }
     
     private void checkNestedClassifs() {
-        // replace tbi with "Laboratory Tests and Biospecimens/Biomarkers;Participant/Subject History and Family History"
-        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI'] .name")).getText().equals("Concussion/Mild TBI"));
-        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Disease/Injury Related Events,History of Disease/Injury Event'] .name")).getText().equals("History of Disease/Injury Event"));
-        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Amyotrophic Lateral Sclerosis,Assessments and Examinations,Physical/Neurological Examination'] .name")).getText().equals("Physical/Neurological Examination"));
-        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Outcomes and End Points,Post-concussive/TBI-Related Symptoms'] .name")).getText().equals("Post-concussive/TBI-Related Symptoms"));    
-        
-        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification']"));
-        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification,Basic']"));
-        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification,Core']"));
-        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification,Supplemental']"));
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] .name")).getText().equals("Epilepsy"));
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy,Assessments and Examinations'] .name")).getText().equals("Assessments and Examinations"));
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy,Assessments and Examinations,Imaging Diagnostics'] .name")).getText().equals("Imaging Diagnostics"));    
     }
     
     private void deleteNestedClassifTree() {
-        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI'] [title=\"Remove\"]")).click();    
-        driver.findElement(By.cssSelector("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI'] [title=\"OK\"]")).click();         
+        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"Remove\"]")).click();    
+        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"OK\"]")).click();         
         Assert.assertTrue(textPresent("Classification Deleted"));
-        Assert.assertTrue(textNotPresent("Concussion/Mild TBI"));
-        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification']");
-        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification,Basic']");
-        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification,Core']");
-        checkElementDoesNotExistByCSS("[id='classification-Disease,Traumatic Brain Injury,Concussion/Mild TBI,Classification,Supplemental']");
+        Assert.assertTrue(textNotPresent("Epilepsy"));
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy']");
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations,Imaging Diagnostics']");
     }
     
     @Test
     public void removeClassificationMgt() {
         mustBeLoggedInAs("ninds", "pass");
         searchNestedClassifiedCdes();
-        Assert.assertTrue(textPresent("NINDS (24)"));
+        Assert.assertTrue(textPresent("NINDS (7)"));
         gotoClassifMgt();
         
         checkNestedClassifs();
         deleteNestedClassifTree();  
         searchNestedClassifiedCdes();
         hangon(3);
-        Assert.assertTrue(textNotPresent("NINDS (24)"));
+        Assert.assertTrue(textNotPresent("NINDS (7)"));
+    }    
+    
+    private void createClassificationName(String[] categories) {
+        findElement(By.id("addClassification")).click(); 
+        modalHere();
+        for (int i=0; i<categories.length-1; i++) {
+            findElement(By.id("addClassification-"+categories[i])).click();       
+        }
+        findElement(By.id("addNewCatName")).sendKeys(categories[categories.length-1]);   
+        findElement(By.id("addClassificationButton")).click(); 
+        Assert.assertTrue(textPresent("Classification Added"));
+        String selector = "";
+        for (int i=0; i<categories.length; i++) {
+            selector += categories[i];
+            if (i<categories.length-1) selector += ",";
+        }
+        System.out.println(selector);
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1]));    
+    }
+    
+    @Test
+    public void addNestedClassification() {
+        mustBeLoggedInAs("ninds", "pass");
+        gotoClassifMgt();
+        createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI"});
+        createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI","Contrast T1"});
+        //TODO: Classify CDE as this one
     }
 }

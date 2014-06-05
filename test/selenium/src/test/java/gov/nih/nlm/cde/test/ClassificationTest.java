@@ -66,7 +66,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().contains(toRemove));
     }
     
-    @Test
+    @Test // TODO - test link on nested classifications
     public void classificationLink() {
         goToCdeByName("Cigarette Average");
         findElement(By.linkText("Classification")).click();

@@ -64,10 +64,7 @@ exports.org_autocomplete = function(name, callback) {
 };
 
 exports.removeOrgClassification = function(request, callback) {
-    Org.findOne({"name": request.orgName}).exec(function (err, stewardOrg) {
-        /*classification.fetchLastLevel(stewardOrg.classifications, request.categories, function(lastCategory) {
-            delete lastCategory[request.categories[request.categories.length-1]];
-        });*/       
+    Org.findOne({"name": request.orgName}).exec(function (err, stewardOrg) {     
         classification.deleteCategory(stewardOrg.classifications, request.categories);
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
@@ -81,10 +78,7 @@ exports.removeOrgClassification = function(request, callback) {
             DataElement.find(query).exec(function(err, result) {
                 for (var i = 0; i < result.length; i++) {
                     var cde = result[i];
-                    var steward = classification.findSteward(cde, request.orgName);
-                    /*classification.fetchLastLevel(steward.object.elements, request.categories, function(lastCategory) {
-                        delete lastCategory[request.categories[request.categories.length-1]];
-                    });*/     
+                    var steward = classification.findSteward(cde, request.orgName);   
                     classification.deleteCategory(steward.object.elements, request.categories);
                     cde.markModified("classification");
                     cde.save(function(err) {
