@@ -456,34 +456,25 @@ app.post('/addOrg', function(req, res) {
     }
 });
 
-app.post('/removeClassificationFromOrg', function(req, res) {
-    if (!req.user 
-        || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0)
-          && (!req.user.orgCurator || req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0)
-        ) {
-        res.send({message: "You are not authorized to do this."});
-    } else {
-        mongo_data.removeClassificationFromOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err, org) {
-            if (err) res.send({message: "error: " + err});
-            else res.send({message: "Classification Removed", org: org});
-        });
-    }
+app.delete('/classification/org', function(req, res) {
+    if (!app.isCuratorOf(req.user, req.query.orgName)) {
+        res.send(403);
+        return;
+    }  
+    mongo_data.removeOrgClassification(req.query, function() {
+        res.send();
+    });
 });
 
-app.post('/addClassificationToOrg', function(req, res) {
-    if (!req.user 
-        || (!req.user.orgAdmin || req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0)
-          && (!req.user.orgCurator || req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0)
-        ) {
-        res.send({message: "You are not authorized to do this."});
-    } else {
-        mongo_data.addClassificationToOrg(req.body.stewardOrg.name, req.body.conceptSystem, req.body.concept, function(err, org) {
-            if (err) res.send({message: "error: " + err});
-            else res.send({message: "Classification Added", org: org});
-        });
-    }
+app.post('/classification/org', function(req, res) {
+    if (!app.isCuratorOf(req.user, req.body.orgName)) {
+        res.send(403);
+        return;
+    }      
+    mongo_data.addOrgClassification(req.body, function() {
+        res.send();
+    });
 });
-
 
 app.post('/addComment', function(req, res) {
     if (req.isAuthenticated()) {
@@ -729,16 +720,11 @@ app.post('/addAttachmentToCde', function(req, res) {
 });
 
 app.isCuratorOf = function(user, orgName){
+    if (!user) return false;
     return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
 };
 
-app.post('/addClassification', function(req, res) {
-    if (app.isCuratorOf(req.user,req.body.classification.orgName)) {
-        classification.addClassificationToCde(req.body, res);
-    } else {
-        res.send(403);
-    }
-});
+
 
 app.post('/addClassificationGroup', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
@@ -758,12 +744,19 @@ app.post('/addClassificationGroup', function(req, res) {
     });
 });
 
+app.post('/addClassification', function(req, res) {
+    if (app.isCuratorOf(req.user,req.body.classification.orgName)) {
+        classification.addClassificationToCde(req.body, res);
+    } else {
+        res.send(403);
+    }
+});
+
 app.post('/removeClassification', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) return res.send(err);
-        var steward = classification.findSteward(de, req.body.orgName);
-        classification.removeClassificationFromTree(steward.object.elements, req.body.elements);
-        // this looks like a bug in mongoose. If too deeply nested, it won't update unless you explicitely say.
+        var steward = classification.findSteward(de, req.body.orgName);          
+        classification.deleteCategory(steward.object.elements, req.body.elements);
         de.markModified("classification");
         return de.save(function(err) {
             if (err) {
