@@ -25,7 +25,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Qualified (1"));
     }
 
-    @Test(groups = { "deepFacets" })
+    @Test
     public void deepFacets() {
         goToSearch();
         findElement(By.id("li-blank-NINDS")).click();

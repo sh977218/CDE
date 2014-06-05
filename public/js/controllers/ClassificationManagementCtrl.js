@@ -44,7 +44,10 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, Classificat
             resolve: {
                 org: function() {
                     return $scope.org;
-                }           
+                }   
+                , mode: function() {
+                    return "org";
+                }                 
             }
         });
 

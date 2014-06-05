@@ -22,24 +22,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         Assert.assertTrue(textNotPresent("gov.nih.nci.cananolab.domain.characterization.invitro"));        
     }
 
-    /*@Test
-    public void createClassificationsMgt() {
-        mustBeLoggedInAs("classificationMgtUser", "pass");
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Classifications")).click();
-        hangon(1);
-        new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
-        findElement(By.id("addClassification")).click();
-        modalHere();
-        findElement(By.name("conceptSystem")).sendKeys("DISE");
-        findElement(By.xpath("//div[@class='form-group']/ul/li[2]")).click();
-        findElement(By.name("concept")).sendKeys("Made up disease");
-        findElement(By.id("saveClassification")).click();
-        Assert.assertTrue(textPresent("Classification Added"));
-        hangon(1);
-        Assert.assertTrue(textPresent("Made up disease"));
-    }*/
-    
+
     private void searchNestedClassifiedCdes() {
         goToSearch();
         findElement(By.name("ftsearch")).sendKeys("classification.elements.elements.name:Epilepsy");
@@ -95,7 +78,6 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
             selector += categories[i];
             if (i<categories.length-1) selector += ",";
         }
-        System.out.println(selector);
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1]));    
     }
     
