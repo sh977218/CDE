@@ -111,7 +111,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         goToSearch();
         findElement(By.name("ftsearch")).sendKeys("ISO2109");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("No Results"));
+        Assert.assertTrue(textPresent("No results were found."));
         
         goToSearch();
         findElement(By.name("ftsearch")).sendKeys("ISO2109*");

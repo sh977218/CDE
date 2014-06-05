@@ -1,3 +1,55 @@
-function HomeCtrl($scope) {
-    $scope.setActiveMenu('HOME');    
+function HomeCtrl($scope, $http, $location) {
+    $scope.setActiveMenu('HOME');
+    
+    // Declare variables that will be used. Not needed but makes the code clear to understand.
+    $scope.ALLORGS = 'All Organizations';
+    $scope.orgList = [];
+    $scope.selectedOrg = '';
+    $scope.ftsearch = '';
+    
+    $scope.getOrgList = function() {
+        $http.get('/listOrgsFromDEClassification').then(function(response) {
+            $scope.orgList = response.data;
+        });
+    };
+
+    $scope.resetSelectedOrg = function() {
+        $scope.selectedOrg = '';
+    };
+    
+    $scope.updateSelectedOrg = function( neworg ) {
+        $scope.selectedOrg = neworg;
+    };
+    
+    $scope.clearSearch = function() {
+        delete $scope.ftsearch;
+        $scope.resetSelectedOrg();
+    };
+
+    $scope.gotoSearch = function() {
+        $scope.initCache();
+        
+        if( $scope.selectedOrg !== '' ) {
+            $scope.cache.put( 'selectedOrg', $scope.selectedOrg );
+        }
+        $scope.cache.put( 'ftsearch', $scope.ftsearch );
+
+        $location.url( 'search' );
+    };
+    
+    $scope.submitForm = function( isValid ) {
+        if( isValid ) {
+            $scope.gotoSearch();
+        } else {
+            alert( 'Please correct form error(s) and resubmit.' );
+        }
+    };
+    
+    // Initialize the selectedOrg
+    $scope.resetSelectedOrg();
+
+    // Retrieves list of organizations from backend
+    $scope.getOrgList();
+    
+
 }

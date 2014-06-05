@@ -100,7 +100,7 @@ public class NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-search")).click();
         Assert.assertTrue(textPresent(name));
         findElement(By.id("acc_link_0")).click();
-        hangon(0.5);
+        hangon(1);
     }
     
     protected void goToFormByName(String name) {
@@ -157,6 +157,12 @@ public class NlmCdeBaseTest {
     
     public boolean textNotPresent(String text){
         return !driver.findElement(By.cssSelector("BODY")).getText().contains(text);
+    }
+    
+    protected void goHome() {
+        driver.get(baseUrl + "/gonowhere");
+        driver.get(baseUrl + "/");
+        findElement(By.id("selectOrgDropdown"));
     }
     
     protected void goToSearch() {

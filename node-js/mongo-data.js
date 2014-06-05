@@ -324,9 +324,14 @@ exports.cdesByUuidList = function(idList, callback) {
     });
 };
 
-
 exports.listOrgs = function(callback) {
-    DataElement.find().distinct('stewardOrg.name', function(error, orgs) {
+    Org.distinct('name', function(error, orgs) {
+        callback("", orgs.sort());
+    });
+};
+
+exports.listOrgsFromDEClassification = function(callback) {
+    DataElement.distinct('classification.stewardOrg.name', function(error, orgs) {
         callback("", orgs.sort());
     });
 };
