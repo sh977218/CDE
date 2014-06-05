@@ -100,7 +100,7 @@ public class NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-search")).click();
         Assert.assertTrue(textPresent(name));
         findElement(By.id("acc_link_0")).click();
-        hangon(0.5);
+        hangon(1);
     }
     
     protected void goToFormByName(String name) {
