@@ -22,46 +22,71 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         Assert.assertTrue(textNotPresent("gov.nih.nci.cananolab.domain.characterization.invitro"));        
     }
 
-    @Test
-    public void createClassificationsMgt() {
-        mustBeLoggedInAs("classificationMgtUser", "pass");
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Classifications")).click();
-        hangon(1);
-        new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
-        findElement(By.id("addClassification")).click();
-        modalHere();
-        findElement(By.name("conceptSystem")).sendKeys("DISE");
-        findElement(By.xpath("//div[@class='form-group']/ul/li[2]")).click();
-        findElement(By.name("concept")).sendKeys("Made up disease");
-        findElement(By.id("saveClassification")).click();
-        Assert.assertTrue(textPresent("Classification Added"));
-        hangon(1);
-        Assert.assertTrue(textPresent("Made up disease"));
-    }
 
+    private void searchNestedClassifiedCdes() {
+        goToSearch();
+        findElement(By.name("ftsearch")).sendKeys("classification.elements.elements.name:Epilepsy");
+        findElement(By.id("search.submit")).click();    
+    }
+    
+    private void gotoClassifMgt() {
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Classifications")).click();          
+    }
+    
+    private void checkNestedClassifs() {
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] .name")).getText().equals("Epilepsy"));
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy,Assessments and Examinations'] .name")).getText().equals("Assessments and Examinations"));
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy,Assessments and Examinations,Imaging Diagnostics'] .name")).getText().equals("Imaging Diagnostics"));    
+    }
+    
+    private void deleteNestedClassifTree() {
+        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"Remove\"]")).click();    
+        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"OK\"]")).click();         
+        Assert.assertTrue(textPresent("Classification Deleted"));
+        Assert.assertTrue(textNotPresent("Epilepsy"));
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy']");
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations,Imaging Diagnostics']");
+    }
+    
     @Test
     public void removeClassificationMgt() {
-        mustBeLoggedInAs("classificationMgtUser", "pass");
-        goToCdeByName("Person Birth Date");
-        findElement(By.linkText("Classification")).click();
-        Assert.assertTrue(textPresent("NonHodgkins Lymphoma"));
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Classifications")).click();
-        hangon(1);
-        new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
-
-        findElement(By.xpath("//div[span[contains(., 'NonHodgkins Lymphoma')]]/a")).click();
-        findElement(By.xpath("//div[span[contains(., 'NonHodgkins Lymphoma')]]//a[@title='OK']")).click();
-        Assert.assertTrue(textPresent("Classification Removed"));
-
-        hangon(1);
-        Assert.assertTrue(textNotPresent("NonHodgkins Lymphoma"));
-        goToCdeByName("Person Birth Date");
-        findElement(By.linkText("Classification"));
-        Assert.assertTrue(textNotPresent("NonHodgkins Lymphoma"));
-
+        mustBeLoggedInAs("ninds", "pass");
+        searchNestedClassifiedCdes();
+        Assert.assertTrue(textPresent("NINDS (7)"));
+        gotoClassifMgt();
+        
+        checkNestedClassifs();
+        deleteNestedClassifTree();  
+        searchNestedClassifiedCdes();
+        hangon(3);
+        Assert.assertTrue(textNotPresent("NINDS (7)"));
+    }    
+    
+    private void createClassificationName(String[] categories) {
+        findElement(By.id("addClassification")).click(); 
+        modalHere();
+        for (int i=0; i<categories.length-1; i++) {
+            findElement(By.id("addClassification-"+categories[i])).click();       
+        }
+        findElement(By.id("addNewCatName")).sendKeys(categories[categories.length-1]);   
+        findElement(By.id("addClassificationButton")).click(); 
+        Assert.assertTrue(textPresent("Classification Added"));
+        String selector = "";
+        for (int i=0; i<categories.length; i++) {
+            selector += categories[i];
+            if (i<categories.length-1) selector += ",";
+        }
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1]));    
     }
     
-    
+    @Test
+    public void addNestedClassification() {
+        mustBeLoggedInAs("ninds", "pass");
+        gotoClassifMgt();
+        createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI"});
+        createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI","Contrast T1"});
+        //TODO: Classify CDE as this one
+    }
 }
