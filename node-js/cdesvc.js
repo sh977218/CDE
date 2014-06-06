@@ -317,7 +317,7 @@ exports.diff = function(req, res) {
     }
 };
 
-exports.addClassificationToCde = function(de, orgName, conceptSystemName, conceptName) {
+/*exports.addClassificationToCde = function(de, orgName, conceptSystemName, conceptName) {
     var steward = classification.findSteward(de, orgName);
     if (!steward) {
         var newSteward = {
@@ -339,4 +339,4 @@ exports.addClassificationToCde = function(de, orgName, conceptSystemName, concep
     if (!concept) {
         concept = classification.addElement(conceptSystem.object, conceptName);
     } 
-};
+};*/

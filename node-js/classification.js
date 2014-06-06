@@ -40,7 +40,7 @@ exports.removeClassificationFromTree = function(sourceElements, pathElements) {
     }
 };
 
-exports.addClassificationToCde = function (dat, res) {
+/*exports.addClassificationToCde = function (dat, res) {
     mongo_data.cdeById(dat.deId, function(err, de) {
         if (err) {
             res.statusCode = 404;
@@ -55,7 +55,7 @@ exports.addClassificationToCde = function (dat, res) {
             }
         });        
     });    
-};
+};*/
 
 exports.fetchLastLevel = function(tree, fields, cb) {
     var classifications = this;

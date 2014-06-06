@@ -1,4 +1,5 @@
-angular.module('resources').factory('MergeCdes', function(DataElement, Classification, CDE) {
+angular.module('resources')
+.factory('MergeCdes', function(DataElement, CDE) {
     var service = this;
     service.approveMergeMessage = function(message) { 
         service.approveMerge(message.typeMergeRequest.source.object, message.typeMergeRequest.destination.object, message.typeMergeRequest.fields, function() {
@@ -51,10 +52,10 @@ angular.module('resources').factory('MergeCdes', function(DataElement, Classific
                 });
             });
         });
-        Classification.addListToCde({
+        /*TO-DO: Classification.addListToCde({
             classifications: classifications
             , deId: target._id
-        }, callback);
+        }, callback);*/
     };
     service.retireSource = function(source, destination, cb) {
         CDE.retire(source, function() {
@@ -62,4 +63,33 @@ angular.module('resources').factory('MergeCdes', function(DataElement, Classific
         });
     }; 
     return service;
-});
+})   
+    .factory('MergeRequest', function(Mail) {
+        return {
+          create: function(dat, success, error) {              
+              var message = {
+                  recipient: {recipientType: "stewardOrg", name: dat.recipient},
+                  author: {authorType: "user", name: dat.author},
+                  date: new Date(),
+                  type: "Merge Request",
+                  typeMergeRequest: dat.mergeRequest
+              };
+              Mail.sendMessage(message, success);
+          }
+        };
+    })   
+    .factory('Mail', function($http) {
+        return {
+            sendMessage: function(dat, success, error) {              
+                $http.post('/mail/messages/new', dat).success(success).error(error);
+            },
+            getMail: function(type, query, cb) {              
+                $http.post("/mail/messages/"+type, query).then(function(response) {
+                    cb(response.data);
+                });
+            },
+            updateMessage: function(msg, success, error) {
+                $http.post('/mail/messages/update', msg).success(success).error(error);
+            }
+        };        
+    }) ;

@@ -722,7 +722,7 @@ app.isCuratorOf = function(user, orgName){
 
 
 
-app.post('/addClassificationGroup', function(req, res) {
+/*app.post('/addClassificationGroup', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) {
             return res.send(err);
@@ -738,17 +738,17 @@ app.post('/addClassificationGroup', function(req, res) {
             }
         });
     });
-});
+});*/
 
-app.post('/addClassification', function(req, res) {
+/*app.post('/addClassification', function(req, res) {
     if (app.isCuratorOf(req.user,req.body.classification.orgName)) {
         classification.addClassificationToCde(req.body, res);
     } else {
         res.send(403);
     }
-});
+});*/
 
-app.post('/removeClassification', function(req, res) {
+/*app.post('/removeClassification', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) return res.send(err);
         var steward = classification.findSteward(de, req.body.orgName);          
@@ -762,7 +762,7 @@ app.post('/removeClassification', function(req, res) {
             }
         });
     });
-});
+});*/
 
 app.post('/addProperty', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
