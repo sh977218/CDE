@@ -176,7 +176,6 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
                 {
                     query_string: {
                         query: searchQ
-                        , auto_generate_phrase_queries: true
                     }
                 };
             queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
