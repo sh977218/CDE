@@ -166,7 +166,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
        queryStuff.query.bool.must.push({
           dis_max: {
               queries: [
-                  {function_score: {boost_mode: "replace", script_score: {script: script}}}
+                  {function_score: {script_score: {script: script}}}
               ]
           } 
        });
@@ -176,9 +176,10 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
                 {
                     query_string: {
                         query: searchQ
+                        , auto_generate_phrase_queries: true
                     }
                 };
-            queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {boost_mode: "replace", script_score: {script: script}}});
+            queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query = 
             {
                 query_string: {
@@ -187,15 +188,17 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
                 }
             };
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2.5";
-            queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {boost_mode: "replace", script_score: {script: script}}});
-            queryStuff.query.bool.must[0].dis_max.queries[2].function_score.query = 
-            {
-                query_string: {
-                    fields: ["naming.designation^5", "naming.definition^2"]
-                    , query: "\"" + searchQ + "\""
-                }
-            };
-            queryStuff.query.bool.must[0].dis_max.queries[2].function_score.boost = "4";
+            if (searchQ.indexOf("\"") < 0) {
+                queryStuff.query.bool.must[0].dis_max.queries.push({function_score: { script_score: {script: script}}});
+                queryStuff.query.bool.must[0].dis_max.queries[2].function_score.query = 
+                {
+                    query_string: {
+                        fields: ["naming.designation^5", "naming.definition^2"]
+                        , query: "\"" + searchQ + "\"~4"
+                    }
+                };
+                queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
+            }
         }
                
         if ($scope.selectedOrg !== undefined) {
