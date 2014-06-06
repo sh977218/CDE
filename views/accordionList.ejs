@@ -2,7 +2,7 @@
     <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
         <div accordion-heading>
             <div>
-            <span id="acc_link_{{$index}}" class="hand-cursor">{{cde.naming[0].designation}} -- {{cde.score}}</span>   
+            <span id="acc_link_{{$index}}" class="hand-cursor">{{cde.naming[0].designation}}</span>   
             <i class="fa fa-eye hand-cursor" ng-click="cdeIconAction(cde,'view',$event)" title="View"></i>
             <% if (ejsPage!="board") { %>
                 <i ng-show="user._id" class="fa fa-thumb-tack hand-cursor" ng-click="cdeIconAction(cde,'openPinModal',$event)" title="Pin"> </i>
