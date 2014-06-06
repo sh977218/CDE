@@ -3,7 +3,7 @@ function CompareCtrl($scope, DataElement) {
     
     $scope.compareView = true;
     $scope.cdes = [];
-    $scope.pvLimit = 20;
+    $scope.pvLimit = 30;
     
     $scope.isAllowed = function(cde) {
         return false;
