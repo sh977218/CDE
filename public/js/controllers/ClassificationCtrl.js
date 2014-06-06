@@ -12,6 +12,9 @@
               , cde: function() {
                   return $scope.cde;
               }
+              , addAlert: function() {
+                  return $scope.addAlert;
+              }
           }          
         });
 

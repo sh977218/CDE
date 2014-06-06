@@ -1,4 +1,4 @@
- function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, Organization, CdeClassification, myOrgs, cde) {
+ function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, Organization, CdeClassification, myOrgs, cde, addAlert) {
     $scope.classificationType = "cde";
     $scope.myOrgs = myOrgs; 
     $scope.newClassification = { orgName: myOrgs[0], categories: [], cde: cde };
@@ -17,9 +17,13 @@
         $modalInstance.close();
     };
     
-    $scope.addClassification = function (lastLeafName) {
+    $scope.addClassification = function (lastLeafName, event) {
         $scope.newClassification.categories.push(lastLeafName);
-        CdeClassification.save($scope.newClassification);
+        CdeClassification.save($scope.newClassification, function() {
+            addAlert("success", "Classification Added");
+            $scope.newClassification.categories.pop();
+        });
+        
         //$scope.classTree.
         //$modalInstance.close($scope.newClassification);
     };    

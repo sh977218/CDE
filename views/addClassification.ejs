@@ -8,8 +8,8 @@
         <div ng-repeat="cat in newClassification.categories" ng-click="classTree.wipeRest(newClassification, $index+1)" style="margin-left: {{10+10*$index}}px">
             <span class="fake-link">{{cat}}</span>
         </div>
-        <div ng-repeat="cat in classTree.getCategories(org, newClassification, newClassification.categories.length)" ng-click="newClassification.categories.push(cat.name)" style="margin-left: {{10+10*newClassification.categories.length}}px" id="addClassification-{{cat.name}}">
-            > <span class="fake-link">{{cat.name}}</span>
+        <div ng-repeat="cat in classTree.getCategories(org, newClassification, newClassification.categories.length)" style="margin-left: {{10+10*newClassification.categories.length}}px" id="addClassification-{{cat.name}}">
+            > <span ng-click="newClassification.categories.push(cat.name)" class="fake-link">{{cat.name}}</span>
             <span ng-if="classificationType=='cde'" ng-include="'classify.html'" ng-init="lastLeafName = cat.name"></span>
         </div> 
         <div  ng-if="classificationType=='org'" ng-include="'newClassifName.html'"></div>
