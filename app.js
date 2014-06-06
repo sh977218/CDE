@@ -487,8 +487,14 @@ app.post('/classification/cde', function(req, res) {
         res.send(403);
         return;
     }      
-    mongo_data.addCdeClassification(req.body, function() {
-        res.send();
+    mongo_data.addCdeClassification(req.body, function(code) {
+        if (code === 200) { 
+            res.send(); 
+        } else {
+            res.status(409);
+            res.send();
+        }
+        
     });
 });
 

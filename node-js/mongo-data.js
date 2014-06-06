@@ -118,11 +118,15 @@ exports.addCdeClassification = function(body, cb) {
             });
             steward = classification.findSteward(cde, body.orgName);
         }        
-        classification.addCategory(steward.object.elements, body.categories, function() {           
-        });
-        cde.markModified('classification');
-        cde.save(function() {
-            if (cb) cb();
+        classification.addCategory(steward.object.elements, body.categories, function(code) {   
+            if (code !== 200) {
+                if (cb) cb(code);
+                return;
+            }
+            cde.markModified('classification');
+            cde.save(function() {
+                if (cb) cb(code);
+            });            
         });
     });    
 };
