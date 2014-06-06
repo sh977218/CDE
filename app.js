@@ -472,6 +472,26 @@ app.post('/classification/org', function(req, res) {
     });
 });
 
+app.delete('/classification/cde', function(req, res) {
+    if (!app.isCuratorOf(req.user, req.query.orgName)) {
+        res.send(403);
+        return;
+    }  
+    mongo_data.removeCdeClassification(req.query, function() {
+        res.send();
+    });
+});
+
+app.post('/classification/cde', function(req, res) {
+    if (!app.isCuratorOf(req.user, req.body.orgName)) {
+        res.send(403);
+        return;
+    }      
+    mongo_data.addCdeClassification(req.body, function() {
+        res.send();
+    });
+});
+
 app.post('/addComment', function(req, res) {
     if (req.isAuthenticated()) {
         mongo_data.addComment(req.body.deId, req.body.comment, req.user._id, function (err, de) {

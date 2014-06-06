@@ -21,7 +21,7 @@ db.users.insert({username: 'testuser', password: 'Test123', quota: 1073741824, v
 db.users.insert({username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'historyuser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'appScan', password: 'I@mA88Scan', quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'classificationMgtUser', password: 'pass', orgCurator: ["CTEP"], orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'classificationMgtUser', password: 'pass', orgCurator: ["CTEP","NINDS"], orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'phri', password: 'pass', orgCurator: ["PHRI"], orgAdmin: ["PHRI"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'ninds', password: 'pass', orgCurator: [], orgAdmin: ["NINDS"], quota: 1073741824, viewHistory: []});
 

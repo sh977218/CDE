@@ -1,7 +1,33 @@
- function ClassificationCtrl($scope, $modal, Classification) {
+ function ClassificationCtrl($scope, $modal, $route) {
     $scope.initCache(); 
+    
+    $scope.openAddClassificationModal = function () {
+        var modalInstance = $modal.open({
+          templateUrl: 'addClassificationModalContent.html',
+          controller: AddClassificationModalCtrl,
+          resolve: {
+              myOrgs: function() {
+                  return $scope.myOrgs;
+              }
+              , cde: function() {
+                  return $scope.cde;
+              }
+          }          
+        });
+
+        modalInstance.result.then(function () {
+            $route.reload();
+            /*Classification.add({
+                classification: newClassification
+                , deId: $scope.cde._id
+            }, function (res) {
+                $scope.addAlert("success", "Classification Added");
+                $scope.cde = res;
+            });*/
+        });
+    };    
      
-    $scope.removeClassification = function(orgName, elts) {
+    /*$scope.removeClassification = function(orgName, elts) {
         Classification.remove({
             orgName: orgName
             , elements: elts
@@ -39,7 +65,7 @@
         $scope.cache.removeAll();
         $scope.cacheOrgFilter(orgName);
         $scope.cache.put("selectedElements", elts);
-    };
+    };*/
     
  }
  

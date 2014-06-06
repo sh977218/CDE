@@ -101,6 +101,32 @@ exports.addOrgClassification = function(body, cb) {
     });
 };
 
+exports.removeCdeClassification = function(body, cb) {
+    console.log(body);
+    if (cb) cb();
+};
+
+exports.addCdeClassification = function(body, cb) {
+    DataElement.findOne({'uuid': body.cde.uuid, "version": body.cde.version}).exec(function (err, cde) {
+        var steward = classification.findSteward(cde, body.orgName);
+        if (!steward) {
+            cde.classification.push({
+                stewardOrg: {
+                    name: body.orgName
+                }
+                , elements: []
+            });
+            steward = classification.findSteward(cde, body.orgName);
+        }        
+        classification.addCategory(steward.object.elements, body.categories, function() {           
+        });
+        cde.markModified('classification');
+        cde.save(function() {
+            if (cb) cb();
+        });
+    });    
+};
+
 exports.getFile = function(callback, res, id) {
     res.writeHead(200, { "Content-Type" : "image/png"});
     gfs.createReadStream({ _id: id }).pipe(res);

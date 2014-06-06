@@ -1,21 +1,26 @@
- function AddClassificationModalCtrl($scope, $modalInstance, $http, myOrgs) {
-    $scope.classificationType = "cdeClass";
-    $scope.newClassification = {};
-    $scope.newClassification.orgName = myOrgs[0];
-    $scope.myOrgs = myOrgs;  
-    $scope.orgClassSystems = [];
-    $scope.getOrgClassSystems = function () {
-        $http.get("/autocomplete/classification/all").then(function(response) { 
-            $scope.orgClassSystems = response.data;
-        });
+ function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, Organization, CdeClassification, myOrgs, cde) {
+    $scope.classificationType = "cde";
+    $scope.myOrgs = myOrgs; 
+    $scope.newClassification = { orgName: myOrgs[0], categories: [], cde: cde };
+    $scope.classTree = ClassificationTree;
+    
+    $scope.selectOrg = function(name) {
+        ClassificationTree.wipeRest($scope.newClassification, 0);
+        Organization.getByName(name, function(result) {
+             $scope.org = result.data;
+        });          
     };
-    $scope.getOrgClassSystems();     
+    $scope.selectOrg($scope.newClassification.orgName);
+    $scope.$watch('newClassification.orgName', function() {$scope.selectOrg($scope.newClassification.orgName);}, true);
      
-    $scope.okCreate = function (classification) {
-      $modalInstance.close(classification);
+    $scope.close = function () {
+        $modalInstance.close();
     };
-
-    $scope.cancelCreate = function () {
-      $modalInstance.dismiss('cancel');
-    };
+    
+    $scope.addClassification = function (lastLeafName) {
+        $scope.newClassification.categories.push(lastLeafName);
+        CdeClassification.save($scope.newClassification);
+        //$scope.classTree.
+        //$modalInstance.close($scope.newClassification);
+    };    
 }

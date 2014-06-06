@@ -57,7 +57,7 @@ exports.removeClassificationFromTree = function(sourceElements, pathElements) {
     });    
 };*/
 
-exports.fetchLastLevel = function(tree, fields, cb) {
+exports.fetchLastLevel = function(tree, fields, mode) {
     var classifications = this;
     var subTree = tree;
     this.findCategory = function(subTree, catname) {
@@ -66,6 +66,10 @@ exports.fetchLastLevel = function(tree, fields, cb) {
                 if (!subTree[i].elements) subTree[i].elements = [];
                 return subTree[i].elements;
             }
+        }
+        if (mode === "create") {
+            subTree.push({name: catname, elements: []});
+            return subTree[subTree.length-1].elements;
         }
         return null;
     };
@@ -89,7 +93,7 @@ exports.deleteCategory = function(tree, fields, cb) {
 
 exports.addCategory = function(tree, fields, cb) {
     var classification = this;
-    var lastLevel = classification.fetchLastLevel(tree, fields);
+    var lastLevel = classification.fetchLastLevel(tree, fields, "create");
     if (lastLevel) lastLevel.push({name: fields[fields.length-1], elements:[]});
     if (cb) cb();
 };
