@@ -184,6 +184,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
                 query_string: {
                     fields: ["naming.designation^5", "naming.definition^2"]
                     , query: searchQ
+                    , auto_generate_phrase_queries: true
                 }
             };
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2.5";
