@@ -68,7 +68,8 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         findElement(By.id("addClassification")).click(); 
         modalHere();
         for (int i=0; i<categories.length-1; i++) {
-            findElement(By.id("addClassification-"+categories[i])).click();       
+            //findElement(By.id("addClassification-"+categories[i])).click();       
+            findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();       
         }
         findElement(By.id("addNewCatName")).sendKeys(categories[categories.length-1]);   
         findElement(By.id("addClassificationButton")).click(); 
