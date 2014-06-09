@@ -40,23 +40,6 @@ exports.removeClassificationFromTree = function(sourceElements, pathElements) {
     }
 };
 
-/*exports.addClassificationToCde = function (dat, res) {
-    mongo_data.cdeById(dat.deId, function(err, de) {
-        if (err) {
-            res.statusCode = 404;
-            return res.send(err);
-        }
-        cdesvc.addClassificationToCde(de, dat.classification.orgName, dat.classification.conceptSystem, dat.classification.concept);
-        return de.save(function(err) {
-            if (err) {
-                res.send("error: " + err);
-            } else {
-                res.send(de);
-            }
-        });        
-    });    
-};*/
-
 exports.fetchLastLevel = function(tree, fields, mode) {
     var classifications = this;
     var subTree = tree;

@@ -771,30 +771,6 @@ app.isCuratorOf = function(user, orgName){
     });
 });*/
 
-/*app.post('/addClassification', function(req, res) {
-    if (app.isCuratorOf(req.user,req.body.classification.orgName)) {
-        classification.addClassificationToCde(req.body, res);
-    } else {
-        res.send(403);
-    }
-});*/
-
-/*app.post('/removeClassification', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err, de) {
-        if (err) return res.send(err);
-        var steward = classification.findSteward(de, req.body.orgName);          
-        classification.deleteCategory(steward.object.elements, req.body.elements);
-        de.markModified("classification");
-        return de.save(function(err) {
-            if (err) {
-                res.send("error: " + err);
-            } else {
-                res.send(de);
-            }
-        });
-    });
-});*/
-
 app.post('/addProperty', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) return res.send({error: err});  

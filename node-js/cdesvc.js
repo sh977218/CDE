@@ -316,27 +316,3 @@ exports.diff = function(req, res) {
         });
     }
 };
-
-/*exports.addClassificationToCde = function(de, orgName, conceptSystemName, conceptName) {
-    var steward = classification.findSteward(de, orgName);
-    if (!steward) {
-        var newSteward = {
-            stewardOrg : {
-                name: orgName
-            },
-            elements: []
-        };
-        de.classification.push(newSteward);  
-        var i = de.classification.length - 1;
-        steward = {index: i, object: de.classification[i]};
-    }  
-    var conceptSystem = classification.findElement(steward.object, conceptSystemName);  
-
-    if (!conceptSystem) {
-        conceptSystem = classification.addElement(steward.object, conceptSystemName);
-    }
-    var concept = classification.findElement(conceptSystem.object, conceptName);      
-    if (!concept) {
-        concept = classification.addElement(conceptSystem.object, conceptName);
-    } 
-};*/

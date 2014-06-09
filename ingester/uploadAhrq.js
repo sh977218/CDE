@@ -36,9 +36,9 @@ var globals = {
 };
 
 // Adds classifications to 'orgs' collection.
-/*var addClassification = function (orgName, system, concept) {
+var addClassification = function (orgName, system, concept) {
 	mongodata.addClassificationToOrg( orgName, system, concept );
-};*/
+};
 
 // TODO - Make this iterate over files. Otherwise, open connection is way too slow.
 fs.readFile(process.argv[2], function(err, result) {

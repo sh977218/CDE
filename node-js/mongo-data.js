@@ -101,56 +101,6 @@ exports.addOrgClassification = function(body, cb) {
     });
 };
 
-/*exports.removeCdeClassification = function(body, cb) {
-    DataElement.findById(body.cdeId).exec(function (err, cde) {
-        var steward = classification.findSteward(cde, body.orgName);
-        if (!steward) {
-            cde.classification.push({
-                stewardOrg: {
-                    name: body.orgName
-                }
-                , elements: []
-            });
-            steward = classification.findSteward(cde, body.orgName);
-        }        
-        classification.deleteCategory(steward.object.elements, body.categories, function(err) {   
-            if (err) {
-                if (cb) cb(err);
-                return;
-            }
-            cde.markModified('classification');
-            cde.save(function() {
-                if (cb) cb(err);
-            });            
-        });
-    });
-};
-
-exports.addCdeClassification = function(body, cb) {
-    DataElement.findOne({'uuid': body.cde.uuid, "version": body.cde.version}).exec(function (err, cde) {
-        var steward = classification.findSteward(cde, body.orgName);
-        if (!steward) {
-            cde.classification.push({
-                stewardOrg: {
-                    name: body.orgName
-                }
-                , elements: []
-            });
-            steward = classification.findSteward(cde, body.orgName);
-        }        
-        classification.addCategory(steward.object.elements, body.categories, function(code) {   
-            if (code !== 200) {
-                if (cb) cb(code);
-                return;
-            }
-            cde.markModified('classification');
-            cde.save(function() {
-                if (cb) cb(code);
-            });            
-        });
-    });    
-};*/
-
 exports.cdeClassification = function(body, action, cb) {
     var cdeClassif = this;
     this.saveCde = function(err, cde) {   
