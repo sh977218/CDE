@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.Select;
 
 public class ClassificationTest extends NlmCdeBaseTest {
     
-    private void addClassif() {
+    /*private void addClassif() {
         findElement(By.linkText("Classification")).click();
         findElement(By.id("addClassification")).click();
         modalHere();
@@ -91,5 +91,34 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Supplemental"));
         Assert.assertTrue(textPresent("Outcomes and End Points"));
         Assert.assertTrue(textPresent("Other Non-Motor"));
+    }*/
+    
+    private void addClassificationMethod(String[] categories){
+        findElement(By.linkText("Classification")).click();
+        findElement(By.id("addClassification")).click(); 
+        modalHere();      
+        new Select(findElement(By.cssSelector("[ng-model=\"newClassification.orgName\"]"))).selectByVisibleText(categories[0]);        
+        for (int i=1; i<categories.length-1; i++) {
+            findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();       
+        } 
+        findElement(By.cssSelector("[id='addClassification-"+categories[categories.length-1]+"'] button")).click(); 
+        findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
+        hangon(1);
+        findElement(By.linkText("Classification")).click();
+        String selector = "";        
+        for (int i=1; i<categories.length; i++) {
+            selector += categories[i];
+            if (i<categories.length-1) selector += ",";
+        }
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1]));      
+    }
+    
+    @Test
+    public void addClassification() {
+        mustBeLoggedInAs("classificationMgtUser", "pass");
+        goToCdeByName("Surgical Procedure Other Anatomic Site Performed Indicator");
+        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
+        addClassificationMethod(new String[]{"caBIG","Clinical Trial Mgmt Systems","Arizona Cancer Center"});
+        addClassificationMethod(new String[]{"NINDS","Disease","Duchenne Muscular Dystrophy/Becker Muscular Dystrophy","Treatment/Intervention Data","Therapies"});
     }
 }
