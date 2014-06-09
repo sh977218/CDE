@@ -96,8 +96,8 @@ public class ClassificationTest extends NlmCdeBaseTest {
     private void addClassificationMethod(String[] categories){
         findElement(By.linkText("Classification")).click();
         findElement(By.id("addClassification")).click(); 
-        modalHere();      
-        new Select(findElement(By.cssSelector("[ng-model=\"newClassification.orgName\"]"))).selectByVisibleText(categories[0]);        
+        modalHere();              
+        findElement(By.id("classifySlectOrg-"+categories[0])).click();       
         for (int i=1; i<categories.length-1; i++) {
             findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();       
         } 

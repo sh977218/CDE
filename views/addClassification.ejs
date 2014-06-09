@@ -1,4 +1,4 @@
-<div class="modal-header" id="addClassificationModalHeader">
+<!--div class="modal-header" id="addClassificationModalHeader">
     <h4>Add Classification</h4>
 </div>
 <form name="form" role="form">
@@ -32,4 +32,42 @@
 
 <script type="text/ng-template" id="classify.html">
     <button ng-click="addClassification(lastLeafName)" type="button" class="btn btn-info btn-xs"><i class="fa fa-plus"></i> Add</button>
+</script-->
+
+<div class="modal-header" id="addClassificationModalHeader">
+    <h4>Add Classification</h4>
+</div>
+<form name="form" role="form">
+    <div ng-if="org" class="modal-body" id="addClassificationModalBody">
+        <div ng-if="classificationType=='cde'" ng-include="'selectOrg.html'"></div>
+        <div ng-if="classificationType=='org'" ng-click="classTree.wipeRest(newClassification,0)"><span class="fake-link">{{org.name}}</span></div>        
+        <div ng-repeat="cat in newClassification.categories" ng-click="classTree.wipeRest(newClassification, $index+1)" style="margin-left: {{10+10*$index}}px">
+            <span class="fake-link">{{cat}}</span>
+        </div>
+        <div ng-repeat="cat in classTree.getCategories(org, newClassification, newClassification.categories.length)" style="margin-left: {{10+10*newClassification.categories.length}}px" id="addClassification-{{cat.name}}">
+            > <span ng-click="newClassification.categories.push(cat.name)" class="fake-link">{{cat.name}}</span>
+            <span ng-if="classificationType=='cde'" ng-include="'classify.html'" ng-init="lastLeafName = cat.name"></span>
+        </div> 
+        <div  ng-if="classificationType=='org'" ng-include="'newClassifName.html'"></div>
+    </div>
+    <div class="modal-footer" id="addClassificationModalFooter">
+        <button class="btn done" ng-click="close()">Done</button>
+    </div>
+</form>
+
+<script type="text/ng-template" id="newClassifName.html">
+    <span class="input-group input-group-sm" id="addNewClassifToOrgName" style="margin-left: {{10+10*newClassification.categories.length}}px;">
+        <form ng-submit="addClassification()"><input ng-model="parentScope.newClassifName" id="addNewCatName" class="form-control"></form>
+        <span ng-click="addClassification()" class="input-group-addon hand-cursor" id="addClassificationButton"><i class="fa fa-plus"></i> Add</span>
+    </span> 
+</script>
+
+<script type="text/ng-template" id="selectOrg.html">
+    <div class="btn-group" id="classifyCdeSelectOrg">
+        <label ng-repeat="o in myOrgs" class="btn btn-default btn-sm" ng-model="newClassification.orgName" btn-radio="o" id="classifySlectOrg-{{o}}">{{o}}</label>
+    </div>
+</script>
+
+<script type="text/ng-template" id="classify.html">
+    <button ng-click="addClassification(lastLeafName)" type="button" class="btn btn-default btn-xs"><i class="fa fa-plus"></i> Add</button>
 </script>

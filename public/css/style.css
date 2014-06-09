@@ -101,3 +101,7 @@ body {
 #addNewClassifToOrgName {
     width: 200px;
 }
+
+#classifyCdeSelectOrg {
+    padding-bottom: 10px;
+}
