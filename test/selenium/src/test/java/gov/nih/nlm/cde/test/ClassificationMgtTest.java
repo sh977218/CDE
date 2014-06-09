@@ -68,7 +68,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         findElement(By.id("addClassification")).click(); 
         modalHere();
         for (int i=0; i<categories.length-1; i++) {
-            findElement(By.id("addClassification-"+categories[i])).click();       
+            findElement(By.id("addClassification-" + categories[i])).click();       
         }
         findElement(By.id("addNewCatName")).sendKeys(categories[categories.length-1]);   
         findElement(By.id("addClassificationButton")).click(); 
@@ -85,6 +85,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     public void addNestedClassification() {
         mustBeLoggedInAs("ninds", "pass");
         gotoClassifMgt();
+        Assert.assertTrue(textPresent("Headache"));
         createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI"});
         createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI","Contrast T1"});
         //TODO: Classify CDE as this one
