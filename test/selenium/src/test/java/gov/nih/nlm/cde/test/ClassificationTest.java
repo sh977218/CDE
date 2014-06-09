@@ -8,38 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.openqa.selenium.support.ui.Select;
 
-public class ClassificationTest extends NlmCdeBaseTest {
-    
-    /*
-    
-    @Test
-    public void removeClassification() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName("Cigarette");
-        findElement(By.linkText("Classification")).click();
-        String toRemove = findElement(By.cssSelector("[data-id=classification-3-0]")).getText();
-        findElement(By.id("removeClassification-3-0")).click();
-        findElement(By.id("confirmRemoveClassification-3-0")).click();
-        Assert.assertTrue(textPresent("Classification Removed"));
-        findElement(By.linkText("Classification")).click();
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().contains(toRemove));
-    }
-    
-    @Test // TODO - test link on nested classifications
-    public void classificationLink() {
-        goToCdeByName("Cigarette Average");
-        findElement(By.linkText("Classification")).click();
-        findElement(By.linkText("Iloprost 12079")).click();
-        Assert.assertTrue(textPresent("Iloprost 12079"));
-        Assert.assertTrue(textPresent("Iloprost Trial"));  
-        Assert.assertTrue(textPresent("Patient Gender Category"));
-        Assert.assertTrue(textPresent("Patient Ethnic Group Category"));
-        Assert.assertTrue(textPresent("Cigarette Average Daily Pack Use Count"));
-        List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 3);
-    }    
-*/
-    
+public class ClassificationTest extends NlmCdeBaseTest {  
     private void addClassificationMethod(String[] categories){
         findElement(By.linkText("Classification")).click();
         findElement(By.id("addClassification")).click(); 
@@ -60,7 +29,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1]));      
     }
     
-    //@Test
+    @Test
     public void addClassification() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         goToCdeByName("Surgical Procedure Other Anatomic Site Performed Indicator");
@@ -101,4 +70,17 @@ public class ClassificationTest extends NlmCdeBaseTest {
         linkList = driver.findElements(By.cssSelector("[id$='Assessments and Examinations']"));
         Assert.assertTrue(linkList.size() == 2);        
     }    
+    
+    @Test
+    public void classificationLink() {
+        mustBeLoggedInAs("classificationMgtUser", "pass");
+        goToCdeByName("Spectroscopy geometry location not applicable indicator");
+        findElement(By.linkText("Classification")).click();
+        findElement(By.cssSelector("[id='classification-Disease,Spinal Muscular Atrophy,Assessments and Examinations,Imaging Diagnostics'] .name")).click();
+        hangon(1);
+        Assert.assertTrue(textPresent("Organizations"));
+        Assert.assertTrue(textPresent("NINDS (7)"));
+        Assert.assertTrue(textPresent("Imaging Diagnostics (7)"));
+        Assert.assertTrue(textPresent("Spinal Muscular Atrophy (7)"));
+    }
 }
