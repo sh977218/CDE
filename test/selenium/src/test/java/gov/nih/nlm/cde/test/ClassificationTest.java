@@ -92,7 +92,13 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(linkList.size() == 3);        
         removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
         linkList = driver.findElements(By.cssSelector("[id$='Imaging Diagnostics']"));
-        Assert.assertTrue(linkList.size() == 2);  
+        Assert.assertTrue(linkList.size() == 2);
+        linkList = driver.findElements(By.cssSelector("[id$='Assessments and Examinations']"));
+        Assert.assertTrue(linkList.size() == 3);
         
+        removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis"});
+        Assert.assertTrue(textNotPresent("Myasthenia Gravis"));
+        linkList = driver.findElements(By.cssSelector("[id$='Assessments and Examinations']"));
+        Assert.assertTrue(linkList.size() == 2);        
     }    
 }
