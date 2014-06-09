@@ -14,7 +14,7 @@ angular.module('resources')
                 service.transferFields(service.source, service.destination, field);
             }
         });
-        var classif = function(cde) {
+        /*var classif = function(cde) {
                 service.transferClassifications(cde, function() {
                     service.retireSource(service.source, service.destination, function() {
                         if (callback) callback(cde);
@@ -22,7 +22,12 @@ angular.module('resources')
                 });
             };
         if (fields.ids || fields.properties || fields.naming) DataElement.save(service.destination, classif);
-        else classif(service.destination);
+        else classif(service.destination);*/
+        DataElement.save(service.destination, function (cde) {
+            service.retireSource(service.source, service.destination, function() {
+                if (callback) callback(cde);
+            });             
+        });
     };
     service.transferFields = function(source, destination, type) {
         if (!source[type]) return;
@@ -36,7 +41,7 @@ angular.module('resources')
             destination[type].push(obj);
         });
     };
-    service.transferClassifications = function (target, callback) {
+    /*service.transferClassifications = function (target, callback) {
         var classifications = [];
         service.source.classification.forEach(function(stewardOrgClassifications) {
             var orgName = stewardOrgClassifications.stewardOrg.name;
@@ -52,10 +57,13 @@ angular.module('resources')
                 });
             });
         });
-        /*TO-DO: Classification.addListToCde({
+        Classification.addListToCde({
             classifications: classifications
             , deId: target._id
-        }, callback);*/
+        }, callback);
+    };*/
+    service.transferClassifications = function () {
+        
     };
     service.retireSource = function(source, destination, cb) {
         CDE.retire(source, function() {
