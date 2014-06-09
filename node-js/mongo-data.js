@@ -102,8 +102,28 @@ exports.addOrgClassification = function(body, cb) {
 };
 
 exports.removeCdeClassification = function(body, cb) {
-    console.log(body);
-    if (cb) cb();
+    DataElement.findById(body.cdeId).exec(function (err, cde) {
+        var steward = classification.findSteward(cde, body.orgName);
+        if (!steward) {
+            cde.classification.push({
+                stewardOrg: {
+                    name: body.orgName
+                }
+                , elements: []
+            });
+            steward = classification.findSteward(cde, body.orgName);
+        }        
+        classification.deleteCategory(steward.object.elements, body.categories, function(err) {   
+            if (err) {
+                if (cb) cb(err);
+                return;
+            }
+            cde.markModified('classification');
+            cde.save(function() {
+                if (cb) cb(err);
+            });            
+        });
+    });
 };
 
 exports.addCdeClassification = function(body, cb) {

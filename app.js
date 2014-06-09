@@ -477,8 +477,13 @@ app.delete('/classification/cde', function(req, res) {
         res.send(403);
         return;
     }  
-    mongo_data.removeCdeClassification(req.query, function() {
-        res.send();
+    mongo_data.removeCdeClassification(req.query, function(err) {
+        if (!err) { 
+            res.send(); 
+        } else {
+            res.status(409);
+            res.send();
+        }
     });
 });
 
