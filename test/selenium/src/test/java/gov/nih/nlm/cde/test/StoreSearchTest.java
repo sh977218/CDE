@@ -88,6 +88,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
 
         findElement(By.id("resetSearch")).click();
         findElement(By.id("li-blank-Standard"));
+        Assert.assertTrue(textPresent("10"));
         linkList = driver.findElements(By.cssSelector("div.panel-default"));        
         Assert.assertTrue(linkList.size() > 10);
     }

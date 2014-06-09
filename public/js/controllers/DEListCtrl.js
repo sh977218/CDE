@@ -271,6 +271,9 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
         delete $scope.ftsearch;
         delete $scope.selectedOrg;
         $scope.selectedElements = [];
+        for (var i in $scope.registrationStatuses) {
+            $scope.registrationStatuses[i].selected = false;
+        }
         $scope.cache.removeAll();
         $scope.reload();
     };
