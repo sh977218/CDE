@@ -10,48 +10,7 @@ import org.openqa.selenium.support.ui.Select;
 
 public class ClassificationTest extends NlmCdeBaseTest {
     
-    /*private void addClassif() {
-        findElement(By.linkText("Classification")).click();
-        findElement(By.id("addClassification")).click();
-        modalHere();
-        findElement(By.name("conceptSystem")).sendKeys("TCGA");
-        // Test autocomplete
-        Assert.assertTrue(textPresent("2.6 by Namespace"));
-        findElement(By.name("conceptSystem")).clear();
-        findElement(By.name("conceptSystem")).sendKeys("MyCategory");
-        findElement(By.name("concept")).sendKeys("MyClassification");
-        findElement(By.id("saveClassification")).click();
-        Assert.assertTrue(textPresent("Classification Added"));
-    }
-    
-    @Test
-    public void addClassification() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName("Pills Quantity");
-        addClassif();        
-        goToCdeByName("Pills Quantity");
-        findElement(By.linkText("Classification")).click();
-        Assert.assertTrue(textPresent("MyCategory"));
-        Assert.assertTrue(textPresent("MyClassification"));
-    }
-    
-    @Test
-    public void classifyAs() {
-        mustBeLoggedInAs("classificationMgtUser", "pass");
-        goToCdeByName("Noncompliant Reason Text");
-        addClassif();     
-        findElement(By.id("addClassification")).click();
-        modalHere();
-        new Select(findElement(By.cssSelector("select[name='orgName']"))).selectByIndex(1);        
-        findElement(By.name("conceptSystem")).sendKeys("CATEGORY");
-        findElement(By.name("concept")).sendKeys("AdEERS");        
-        findElement(By.id("saveClassification")).click();
-        Assert.assertTrue(textPresent("Classification Added"));        
-        goToCdeByName("Noncompliant Reason Text");
-        findElement(By.linkText("Classification")).click();        
-        Assert.assertTrue(driver.findElement(By.cssSelector("#conceptSystem-caBIG-MyCategory [data-id='classification-2-0']")).getText().equals("MyClassification"));
-        Assert.assertTrue(driver.findElement(By.cssSelector("#conceptSystem-CTEP-CATEGORY [data-id='classification-0-0']")).getText().equals("AdEERS"));
-    }
+    /*
     
     @Test
     public void removeClassification() {
@@ -79,19 +38,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 3);
     }    
-    
-    @Test
-    public void deepClassifications() {
-        goToCdeByName("snore frequency");
-        findElement(By.linkText("Classification")).click();
-     
-        Assert.assertTrue(textPresent("Adult"));
-        Assert.assertTrue(textPresent("Parkinson's Disease"));
-        Assert.assertTrue(textPresent("Classification"));
-        Assert.assertTrue(textPresent("Supplemental"));
-        Assert.assertTrue(textPresent("Outcomes and End Points"));
-        Assert.assertTrue(textPresent("Other Non-Motor"));
-    }*/
+*/
     
     private void addClassificationMethod(String[] categories){
         findElement(By.linkText("Classification")).click();
@@ -113,7 +60,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1]));      
     }
     
-    @Test
+    //@Test
     public void addClassification() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         goToCdeByName("Surgical Procedure Other Anatomic Site Performed Indicator");
@@ -121,4 +68,31 @@ public class ClassificationTest extends NlmCdeBaseTest {
         addClassificationMethod(new String[]{"caBIG","Clinical Trial Mgmt Systems","Arizona Cancer Center"});
         addClassificationMethod(new String[]{"NINDS","Disease","Duchenne Muscular Dystrophy/Becker Muscular Dystrophy","Treatment/Intervention Data","Therapies"});
     }
+    
+    private void removeClassificationMethod(String[] categories) {
+        findElement(By.linkText("Classification")).click();
+        String selector = "";        
+        for (int i=0; i<categories.length; i++) {
+            selector += categories[i];
+            if (i<categories.length-1) selector += ",";
+        }
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1])); 
+        findElement(By.cssSelector("[id='classification-"+selector+"'] [title='Remove']")).click(); 
+        findElement(By.cssSelector("[id='classification-"+selector+"'] .fa-check")).click(); 
+        driver.navigate().refresh();
+        findElement(By.linkText("Classification")).click();
+        Assert.assertTrue(checkElementDoesNotExistByCSS("[id='classification-"+selector+"'] .name"));
+    }
+    
+    @Test
+    public void deleteClassification() {
+        mustBeLoggedInAs("classificationMgtUser", "pass");
+        goToCdeByName("Spectroscopy geometry location not applicable indicator");
+        List<WebElement> linkList = driver.findElements(By.cssSelector("[id$='Imaging Diagnostics']"));
+        Assert.assertTrue(linkList.size() == 3);        
+        removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
+        linkList = driver.findElements(By.cssSelector("[id$='Imaging Diagnostics']"));
+        Assert.assertTrue(linkList.size() == 2);  
+        
+    }    
 }

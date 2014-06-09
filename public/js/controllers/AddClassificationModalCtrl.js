@@ -23,8 +23,5 @@
             addAlert("success", "Classification Added");
             $scope.newClassification.categories.pop();
         });
-        
-        //$scope.classTree.
-        //$modalInstance.close($scope.newClassification);
     };    
 }
