@@ -10,7 +10,7 @@ var express = require('express')
   , crypto = require('crypto')
   , LocalStrategy = require('passport-local').Strategy
   , mongo_data = require('./node-js/mongo-data')
-  , classification = require('./node-js/classification')
+  , classification = require('./shared/classification')
   , util = require('util')
   , xml2js = require('xml2js')
   , vsac = require('./node-js/vsac-io')
@@ -174,6 +174,7 @@ app.use(passport.session());
 app.use(express.logger({stream:winstonStream}));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+app.use("/shared", express.static("shared", path.join(__dirname, 'shared')));
 
 app.use(function(err, req, res, next){
   expressErrorLogger.error(err.stack);

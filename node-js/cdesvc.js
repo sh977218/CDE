@@ -3,7 +3,6 @@ var express = require('express')
   , util = require('util')
   , mongo_data = require('./mongo-data')
   , envconfig = require('../envconfig.js')
-  , classification = require('./classification')
 ;
 
 var elasticUri = process.env.ELASTIC_URI || envconfig.elasticUri || 'http://localhost:9200/nlmcde/';

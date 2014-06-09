@@ -1,4 +1,4 @@
-if (!exports) exports = {};
+if (typeof(exports)==="undefined") exports = {};
 
 exports.findSteward = function(de, orgName) {
     for (var i = 0; i < de.classification.length; i++) {
