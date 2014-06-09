@@ -1,5 +1,4 @@
-var mongo_data = require('./mongo-data')
-    , cdesvc = require('./cdesvc');
+if (!exports) exports = {};
 
 exports.findSteward = function(de, orgName) {
     for (var i = 0; i < de.classification.length; i++) {
@@ -23,21 +22,6 @@ exports.addElement = function (conceptSystem, concept) {
     if(!conceptSystem.elements) conceptSystem.elements = [];
     conceptSystem.elements.push(newConcept);                    
     return {index:0, object: conceptSystem.elements[conceptSystem.elements.length-1]};
-};
-
-exports.removeClassificationFromTree = function(sourceElements, pathElements) {
-    if (pathElements.length > 0) {
-        for (var i = 0; i < sourceElements.length; i++) {
-           if (sourceElements[i].name === pathElements[0]) {
-               if (pathElements.length > 1) {
-                   pathElements.splice(0, 1);
-                   this.removeClassificationFromTree(sourceElements[i].elements, pathElements);
-               } else {
-                   sourceElements.splice(i, 1);
-               }
-           }             
-        }
-    }
 };
 
 exports.fetchLastLevel = function(tree, fields, mode) {

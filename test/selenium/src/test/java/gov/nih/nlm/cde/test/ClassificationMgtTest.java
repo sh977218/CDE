@@ -72,7 +72,6 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         }
         findElement(By.id("addNewCatName")).sendKeys(categories[categories.length-1]);   
         findElement(By.id("addClassificationButton")).click(); 
-        Assert.assertTrue(textPresent("Classification Added"));
         String selector = "";
         for (int i=0; i<categories.length; i++) {
             selector += categories[i];

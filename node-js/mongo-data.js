@@ -103,7 +103,7 @@ exports.addOrgClassification = function(body, cb) {
 
 exports.cdeClassification = function(body, action, cb) {
     var cdeClassif = this;
-    this.saveCde = function(err, cde) {   
+    this.saveCdeClassif = function(err, cde) {   
         if (err) {
             if (cb) cb(err);
             return;
@@ -125,8 +125,8 @@ exports.cdeClassification = function(body, action, cb) {
             });
             steward = classification.findSteward(cde, body.orgName);
         }        
-        if (action === "add") classification.addCategory(steward.object.elements, body.categories, cdeClassif.saveCde);
-        if (action === "remove") classification.deleteCategory(steward.object.elements, body.categories, cdeClassif.saveCde);
+        if (action === "add") classification.addCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
+        if (action === "remove") classification.deleteCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
     });     
 };
 
