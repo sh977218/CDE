@@ -101,7 +101,7 @@ exports.addOrgClassification = function(body, cb) {
     });
 };
 
-exports.removeCdeClassification = function(body, cb) {
+/*exports.removeCdeClassification = function(body, cb) {
     DataElement.findById(body.cdeId).exec(function (err, cde) {
         var steward = classification.findSteward(cde, body.orgName);
         if (!steward) {
@@ -149,6 +149,35 @@ exports.addCdeClassification = function(body, cb) {
             });            
         });
     });    
+};*/
+
+exports.cdeClassification = function(body, action, cb) {
+    var cdeClassif = this;
+    this.saveCde = function(err, cde) {   
+        if (err) {
+            if (cb) cb(err);
+            return;
+        }
+        cdeClassif.cde.markModified('classification');
+        cdeClassif.cde.save(function() {
+            if (cb) cb(err);
+        });            
+    };
+    DataElement.findOne({'_id': body.cdeId}).exec(function (err, cde) {
+        cdeClassif.cde = cde;
+        var steward = classification.findSteward(cde, body.orgName);
+        if (!steward) {
+            cde.classification.push({
+                stewardOrg: {
+                    name: body.orgName
+                }
+                , elements: []
+            });
+            steward = classification.findSteward(cde, body.orgName);
+        }        
+        if (action === "add") classification.addCategory(steward.object.elements, body.categories, cdeClassif.saveCde);
+        if (action === "remove") classification.deleteCategory(steward.object.elements, body.categories, cdeClassif.saveCde);
+    });     
 };
 
 exports.getFile = function(callback, res, id) {

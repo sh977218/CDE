@@ -477,7 +477,7 @@ app.delete('/classification/cde', function(req, res) {
         res.send(403);
         return;
     }  
-    mongo_data.removeCdeClassification(req.query, function(err) {
+    mongo_data.cdeClassification(req.query, "remove", function(err) {
         if (!err) { 
             res.send(); 
         } else {
@@ -492,8 +492,8 @@ app.post('/classification/cde', function(req, res) {
         res.send(403);
         return;
     }      
-    mongo_data.addCdeClassification(req.body, function(code) {
-        if (code === 200) { 
+    mongo_data.cdeClassification(req.body, "add", function(err) {
+        if (!err) { 
             res.send(); 
         } else {
             res.status(409);

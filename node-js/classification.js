@@ -96,9 +96,9 @@ exports.addCategory = function(tree, fields, cb) {
     var lastLevel = classification.fetchLastLevel(tree, fields, "create");
     for (var i=0; i<lastLevel.length; i++) {
         if (lastLevel[i].name === fields[fields.length-1]) { 
-            if (cb) return cb(409);
+            if (cb) return cb("Cannot Delete");
         }
     }
     if (lastLevel) lastLevel.push({name: fields[fields.length-1], elements:[]});
-    if (cb) cb(200);
+    if (cb) cb();
 };
