@@ -3,6 +3,7 @@ function CompareCtrl($scope, DataElement) {
     
     $scope.compareView = true;
     $scope.cdes = [];
+    $scope.pvLimit = 30;
     
     $scope.initCache();
     $scope.openAllCompareModel = $scope.cache.get("openAllCompare");

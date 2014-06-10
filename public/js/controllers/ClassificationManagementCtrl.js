@@ -1,4 +1,4 @@
-function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
+function ClassificationManagementCtrl($scope, $http, $modal, $route, Classification, OrgClassification) {
     if ($scope.myOrgs.length > 0) {
         $scope.orgToManage = $scope.myOrgs[0];
     }
@@ -20,13 +20,15 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
          return $scope.org.classifications;
     };
     
-    $scope.removeClassification = function(orgName, conceptSystem, concept) {
-        var classToDel = {stewardOrg:{name:orgName}, conceptSystem:conceptSystem, concept:concept};
-        $http.post("/removeClassificationFromOrg", classToDel).then(function(response) {
-            $scope.addAlert("success", response.data.message);
-            $scope.org = response.data.org;
+    $scope.removeClassification = function(orgName, elts) {
+        OrgClassification.remove({
+            orgName: orgName
+            , categories: elts
+        }, function (res) {
+            $route.reload();
+            $scope.addAlert("success", "Classification Deleted");
         });
-    };
+    };    
     
     $scope.isInConceptSystem = function(system) {
         return function(classi) {
@@ -37,20 +39,23 @@ function ClassificationManagementCtrl($scope, $http, $modal, Classification) {
     
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
-          templateUrl: 'addClassificationModalContent.html',
-          controller: AddClassificationToOrgModalCtrl,
-          resolve: {
-            org: function() {
-                return $scope.orgToManage;
-            }           
-          }
+            templateUrl: 'addClassificationModalContent.html',
+            controller: AddClassificationToOrgModalCtrl,
+            resolve: {
+                org: function() {
+                    return $scope.org;
+                }   
+                , mode: function() {
+                    return "org";
+                }                 
+            }
         });
 
         modalInstance.result.then(function (newClassification) {
-            newClassification.stewardOrg = {name: $scope.orgToManage};
-            Classification.addToOrg(newClassification, function (res) {
-                $scope.addAlert("success", "Classification Added");
-                $scope.updateOrg();
+            newClassification.orgName = $scope.orgToManage;
+            OrgClassification.save(newClassification, function() {
+                $route.reload();
+                $scope.addAlert("success", "Classification Added");                
             });
         });
     };

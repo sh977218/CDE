@@ -102,6 +102,11 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("added to pv"));
+        findElement(By.linkText("History")).click();
+        hangon(1);
+        findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
+        Assert.assertTrue(textPresent("Permissible Values:"));
+        Assert.assertTrue(textPresent("Modified"));
     }
     
     @Test
@@ -232,5 +237,15 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Other Race Category"));
         Assert.assertTrue(textPresent("2131-1.1"));
         Assert.assertTrue(textPresent("CDCREC.1"));
-    }     
+    }    
+    
+    @Test
+    public void longPvList() {
+        goToCdeByName("Common Toxicity Criteria Adverse Event Short Name Type");
+        findElement(By.linkText("Permissible Values")).click();         
+        Assert.assertTrue(textPresent("Hemoglobinuria"));
+        Assert.assertTrue(textNotPresent("Hypermagnesemia"));
+        findElement(By.id("showMorePvs")).click();
+        Assert.assertTrue(textPresent("Hypermagnesemia"));
+    }
 }

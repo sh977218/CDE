@@ -20,8 +20,8 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
         when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
         when('/quickBoard', {controller: QuickBoardCtrl, templateUrl: '/quickBoard'}).
         otherwise({redirectTo:'/'});
-    }).
-    directive('inlineEdit', function() {
+    })
+    .directive('inlineEdit', function() {
     return {
         template: '<span>' + 
                         '<span ng-hide="editMode">' + 

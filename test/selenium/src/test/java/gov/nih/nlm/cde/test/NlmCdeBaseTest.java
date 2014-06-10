@@ -15,6 +15,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.*;
+import org.openqa.selenium.NoSuchElementException;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -100,7 +101,7 @@ public class NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-search")).click();
         Assert.assertTrue(textPresent(name));
         findElement(By.id("acc_link_0")).click();
-        hangon(0.5);
+        hangon(1);
     }
     
     protected void goToFormByName(String name) {
@@ -237,6 +238,19 @@ public class NlmCdeBaseTest {
     
     public void scrollToTop() {
         scrollTo( "0" );
+    }
+    
+    protected boolean checkElementDoesNotExistByCSS(String selector) {
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+        boolean elementVisible;
+        try {
+            driver.findElement(By.cssSelector(selector));
+            elementVisible = false;
+        } catch(NoSuchElementException e) {
+            elementVisible = true;
+        }
+        driver.manage().timeouts().implicitlyWait(8, TimeUnit.SECONDS);
+        return elementVisible;
     }
     
     public void scrollTo( String y ) {

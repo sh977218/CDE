@@ -247,6 +247,18 @@ exports.name_autocomplete_form = function(req, res) {
     }
 };
 
+function arrayEquals(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+    for (var i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
 exports.diff = function(req, res) {
     if (req.params.deId == "undefined") {
         res.send("Please specify an identifier as input.");
@@ -288,7 +300,7 @@ exports.diff = function(req, res) {
                                diff.after.datatype = dataElement.valueDomain.datatype;
                                if (!diff.after.datatype) {diff.after.datatype = "None Specified";}
                            }
-                           if (dataElement.valueDomain.permissibleValues !== priorDe.valueDomain.permissibleValues) {
+                           if (!arrayEquals(dataElement.valueDomain.permissibleValues, priorDe.valueDomain.permissibleValues)) {
                                diff.before.permissibleValues = priorDe.valueDomain.permissibleValues;
                                diff.after.permissibleValues = dataElement.valueDomain.permissibleValues;                              
                            }

@@ -82,7 +82,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("3")));
         scrollToTop();
         findElement(By.id("li-checked-caBIG")).click();
-        Assert.assertTrue(textPresent("Patient Ethnic Group"));
+        Assert.assertTrue(textPresent("Electrophysiology study type"));
     }
     
     @Test
