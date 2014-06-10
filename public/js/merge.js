@@ -14,18 +14,7 @@ angular.module('resources')
                 service.transferFields(service.source, service.destination, field);
             }
         });
-        /*var classif = function(cde) {
-                service.transferClassifications(cde, function() {
-                    service.retireSource(service.source, service.destination, function() {
-                        if (callback) callback(cde);
-                    });                     
-                });
-            };
-        if (fields.ids || fields.properties || fields.naming) DataElement.save(service.destination, classif);
-        else classif(service.destination);*/
-        
-        //TODO: if classifications only, don't do saveCde, but do a service for transfering classifications ONLY
-        
+       
         if (fields.ids || fields.properties || fields.naming) {
             service.transferClassifications(service.source, service.destination, "direct");
             DataElement.save(service.destination, function (cde) {
@@ -38,7 +27,6 @@ angular.module('resources')
             service.transferClassifications(service.source, service.destination, "api", function(path) {
                 classifications.push(path);
             });
-            //console.log(request);
             CdeClassificationList.addList(service.destination, classifications, callback);
         }
     };
@@ -54,27 +42,6 @@ angular.module('resources')
             destination[type].push(obj);
         });
     };
-    /*service.transferClassifications = function (target, callback) {
-        var classifications = [];
-        service.source.classification.forEach(function(stewardOrgClassifications) {
-            var orgName = stewardOrgClassifications.stewardOrg.name;
-            stewardOrgClassifications.elements.forEach(function(conceptSystem) {
-                var conceptSystemName = conceptSystem.name;
-                conceptSystem.elements.forEach(function(concept) {
-                    var conceptName = concept.name;
-                    classifications.push({
-                        orgName: orgName
-                        , conceptSystem: conceptSystemName                      
-                        , concept: conceptName                                
-                    });   
-                });
-            });
-        });
-        Classification.addListToCde({
-            classifications: classifications
-            , deId: target._id
-        }, callback);
-    };*/
     service.treeChildren = function(tree, path, cb) {
         tree.elements.forEach(function(element) {
             var newpath = path.slice(0);
@@ -101,16 +68,11 @@ angular.module('resources')
                     exports.addCategory(stewardOrgDestination.elements, path);
                 }
                 if (type==='api'){
-                    //exports.addCategory(stewardOrgDestination.elements, path);
                     path.unshift(stewardOrgSource.stewardOrg.name);
                     cb(path);
                 }                
                 
             });
-            /*service.treeChildren(stewardOrgSource, [], function(path) {
-                exports.addCategory(stewardOrgDestination.elements, path, function() {                    
-                });
-            });*/
         });
     };
     service.retireSource = function(source, destination, cb) {
