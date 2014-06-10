@@ -23,6 +23,7 @@ angular.module('resources')
             };
         if (fields.ids || fields.properties || fields.naming) DataElement.save(service.destination, classif);
         else classif(service.destination);*/
+        service.transferClassifications(service.source, service.destination);
         DataElement.save(service.destination, function (cde) {
             service.retireSource(service.source, service.destination, function() {
                 if (callback) callback(cde);
@@ -62,8 +63,34 @@ angular.module('resources')
             , deId: target._id
         }, callback);
     };*/
-    service.transferClassifications = function () {
-        
+    service.treeChildren = function(tree, path, cb) {
+        tree.elements.forEach(function(element) {
+            var newpath = path.slice(0);
+            newpath.push(element.name);
+            if (element.elements.length>0) {
+                service.treeChildren(element, newpath, cb);
+            } else {
+                cb(newpath);
+            }
+        });
+    };
+    service.transferClassifications = function (source, destination) {
+        //TO-DO: go through tree of classifications and call export.addCategory
+        source.classification.forEach(function(stewardOrgSource){
+            var st = exports.findSteward(destination, stewardOrgSource.stewardOrg.name);
+            if (st) {
+                var stewardOrgDestination = st.object;
+            } else {
+                destination.classification.push({stewardOrg: {name: stewardOrgSource.stewardOrg.name}, elements: []});
+                var stewardOrgDestination = destination.classification[destination.classification.length-1];
+            }
+            stewardOrgDestination.name = stewardOrgDestination.stewardOrg.name;
+            service.treeChildren(stewardOrgSource, [], function(path) {
+                exports.addCategory(stewardOrgDestination.elements, path, function() {
+                    console.log(destination);
+                });
+            });
+        });
     };
     service.retireSource = function(source, destination, cb) {
         CDE.retire(source, function() {
