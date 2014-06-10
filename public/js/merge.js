@@ -1,5 +1,5 @@
 angular.module('resources')
-.factory('MergeCdes', function(DataElement, CDE) {
+.factory('MergeCdes', function(DataElement, CDE, CdeClassificationList) {
     var service = this;
     service.approveMergeMessage = function(message) { 
         service.approveMerge(message.typeMergeRequest.source.object, message.typeMergeRequest.destination.object, message.typeMergeRequest.fields, function() {
@@ -27,14 +27,19 @@ angular.module('resources')
         //TODO: if classifications only, don't do saveCde, but do a service for transfering classifications ONLY
         
         if (fields.ids || fields.properties || fields.naming) {
-            service.transferClassifications(service.source, service.destination);
+            service.transferClassifications(service.source, service.destination, "direct");
             DataElement.save(service.destination, function (cde) {
                 service.retireSource(service.source, service.destination, function() {
                     if (callback) callback(cde);
                 });             
             });
         } else {
-            
+            var classifications = [];
+            service.transferClassifications(service.source, service.destination, "api", function(path) {
+                classifications.push(path);
+            });
+            //console.log(request);
+            CdeClassificationList.addList(service.destination, classifications, callback);
         }
     };
     service.transferFields = function(source, destination, type) {
@@ -81,7 +86,7 @@ angular.module('resources')
             }
         });
     };
-    service.transferClassifications = function (source, destination) {
+    service.transferClassifications = function (source, destination, type, cb) {
         source.classification.forEach(function(stewardOrgSource){
             var st = exports.findSteward(destination, stewardOrgSource.stewardOrg.name);
             if (st) {
@@ -91,10 +96,21 @@ angular.module('resources')
                 var stewardOrgDestination = destination.classification[destination.classification.length-1];
             }
             stewardOrgDestination.name = stewardOrgDestination.stewardOrg.name;
-            service.treeChildren(stewardOrgSource, [], function(path) {
+            service.treeChildren(stewardOrgSource, [], function(path){
+                if (type==='direct'){
+                    exports.addCategory(stewardOrgDestination.elements, path);
+                }
+                if (type==='api'){
+                    //exports.addCategory(stewardOrgDestination.elements, path);
+                    path.unshift(stewardOrgSource.stewardOrg.name);
+                    cb(path);
+                }                
+                
+            });
+            /*service.treeChildren(stewardOrgSource, [], function(path) {
                 exports.addCategory(stewardOrgDestination.elements, path, function() {                    
                 });
-            });
+            });*/
         });
     };
     service.retireSource = function(source, destination, cb) {

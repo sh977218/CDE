@@ -752,7 +752,11 @@ app.isCuratorOf = function(user, orgName){
     return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
 };
 
-
+app.post('/classification/cde/addlist', function(req, res) {
+    classification.addList(req.body, function(err) {
+       if(!err) res.send();
+    });
+});
 
 /*app.post('/addClassificationGroup', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {

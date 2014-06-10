@@ -41,23 +41,6 @@ angular.module('resources', ['ngResource'])
           }
         };
     })
-    /*.factory("Classification", function($http) {
-        return {
-          remove: function(dat, success, error) {
-              $http.post('/removeClassification', dat).success(success).error(error);
-          }
-          , add :function(dat, success, error) {
-              $http.post('/addClassification', dat).success(success).error(error);
-          }
-          , addToOrg: function(dat, success, error) {
-              $http.post('/addClassificationToOrg', dat).success(success).error(error);              
-          }
-          , addListToCde: function(dat, success, error) {
-              $http.post('/addClassificationGroup', dat).success(success).error(error);
-          }
-        };
-    })*/
-   
     .factory("UsedBy", function($http) {
         return {
           remove: function(dat, success, error) {
