@@ -17,6 +17,7 @@ var express = require('express')
   , winston = require('winston')
   , envconfig = require('./envconfig.js')
   , config = require('./config.js')
+  , dbLogger = require('./node-js/dbLogger.js')
   , MongoStore = require('./node-js/assets/connect-mongo.js')(express)
   ;
 
@@ -111,6 +112,22 @@ passport.use(new LocalStrategy({passReqToCallback: true},
 
 var app = express();
 
+var MongoLogger = winston.transports.MongoLogger = function (options) {
+    this.name = 'mongoLogger';
+
+    this.level = options.level || 'info';
+
+  };
+
+  util.inherits(MongoLogger, winston.Transport);
+
+  MongoLogger.prototype.log = function (level, msg, meta, callback) {
+    dbLogger.log({level: level, msg: msg, meta: meta}, function (err) {
+        if (err) console.log("ERROR: " + err);
+        callback(null, true);    
+    });
+  };
+
 var expressLogger = new (winston.Logger)({
   transports: [
     new winston.transports.File({
@@ -126,9 +143,10 @@ var expressLogger = new (winston.Logger)({
             level: 'verbose',
             colorize: true,
             timestamp: true
-        })          
+        }) 
   ]
 });
+
 var expressErrorLogger = new (winston.Logger)({
   transports: [
     new winston.transports.File({
@@ -138,6 +156,9 @@ var expressErrorLogger = new (winston.Logger)({
       , filename: GLOBALS.logdir + "/expressErrorLog.log"
       , maxsize: 10000000
       , maxFiles: 10
+    })
+    , new winston.transports.MongoLogger({
+        json: true
     })
   ]
 });
