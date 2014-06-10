@@ -70,28 +70,3 @@ exports.addCategory = function(tree, fields, cb) {
     if (cb) cb();
 };
 
- exports.addList = function(request, cb) {
-    var classification = this;
-    var mongo_data = require('../node-js/mongo-data');
-    mongo_data.cdeById(request.cde._id, function(err, cde) {
-        request.classifications.forEach(function(c) {
-            var steward = classification.findSteward(cde, c[0]);
-            if (!steward) {
-                cde.classification.push({
-                    stewardOrg: {
-                        name: c[0]
-                    }
-                    , elements: []
-                });
-                steward = classification.findSteward(cde, c[0]);
-            }        
-            classification.addCategory(steward.object.elements, c.slice(1), function(err) {   
-            });             
-        });
-        cde.markModified('classification');
-        cde.save(function() {
-            if (cb) cb(err);
-        });         
-        console.log(cde);
-    });
- };

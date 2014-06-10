@@ -10,7 +10,6 @@ var express = require('express')
   , crypto = require('crypto')
   , LocalStrategy = require('passport-local').Strategy
   , mongo_data = require('./node-js/mongo-data')
-  , classification = require('./shared/classification')
   , classificationNode = require('./node-js/classification')
   , util = require('util')
   , xml2js = require('xml2js')
@@ -754,7 +753,7 @@ app.isCuratorOf = function(user, orgName){
 };
 
 app.post('/classification/cde/addlist', function(req, res) {
-    classification.addList(req.body, function(err) {
+    classificationNode.addList(req.body, function(err) {
        if(!err) res.send();
     });
 });

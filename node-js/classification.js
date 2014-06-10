@@ -1,10 +1,9 @@
 var mongo_data = require('../node-js/mongo-data')
-, classification = require('../shared/classification');
+, classificationShared = require('../shared/classification');
 
-exports.removeOrgClassification = function(request, callback) {
-    //Org.findOne({"name": request.orgName}).exec(function (err, stewardOrg) {     
+exports.removeOrgClassification = function(request, callback) {   
     mongo_data.orgByName(request.orgName, function(stewardOrg) {
-        classification.deleteCategory(stewardOrg.classifications, request.categories);
+        classificationShared.deleteCategory(stewardOrg.classifications, request.categories);
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             var query = {"classification.stewardOrg.name": request.orgName};
@@ -17,8 +16,8 @@ exports.removeOrgClassification = function(request, callback) {
             mongo_data.DataElement.find(query).exec(function(err, result) {
                 for (var i = 0; i < result.length; i++) {
                     var cde = result[i];
-                    var steward = classification.findSteward(cde, request.orgName);   
-                    classification.deleteCategory(steward.object.elements, request.categories);
+                    var steward = classificationShared.findSteward(cde, request.orgName);   
+                    classificationShared.deleteCategory(steward.object.elements, request.categories);
                     cde.markModified("classification");
                     cde.save(function(err) {
                     });
@@ -31,9 +30,8 @@ exports.removeOrgClassification = function(request, callback) {
 
 exports.addOrgClassification = function(body, cb) {
     var categories = body.categories;
-    //Org.findOne({"name": body.orgName}).exec(function(err, stewardOrg) {
     mongo_data.orgByName(body.orgName, function(stewardOrg) {
-        classification.addCategory(stewardOrg.classifications, categories);
+        classificationShared.addCategory(stewardOrg.classifications, categories);
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             if(cb) cb(err, stewardOrg);
@@ -53,10 +51,9 @@ exports.cdeClassification = function(body, action, cb) {
             if (cb) cb(err);
         });            
     };
-    //DataElement.findOne({'_id': body.cdeId}).exec(function (err, cde) {
     mongo_data.cdeById(body.cdeId, function(err, cde) {
         cdeClassif.cde = cde;
-        var steward = classification.findSteward(cde, body.orgName);
+        var steward = classificationShared.findSteward(cde, body.orgName);
         if (!steward) {
             cde.classification.push({
                 stewardOrg: {
@@ -64,9 +61,33 @@ exports.cdeClassification = function(body, action, cb) {
                 }
                 , elements: []
             });
-            steward = classification.findSteward(cde, body.orgName);
+            steward = classificationShared.findSteward(cde, body.orgName);
         }        
-        if (action === "add") classification.addCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
-        if (action === "remove") classification.deleteCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
+        if (action === "add") classificationShared.addCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
+        if (action === "remove") classificationShared.deleteCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
     });     
 };
+
+ exports.addList = function(request, cb) {
+    var mongo_data = require('../node-js/mongo-data');
+    mongo_data.cdeById(request.cde._id, function(err, cde) {
+        request.classifications.forEach(function(c) {
+            var steward = classificationShared.findSteward(cde, c[0]);
+            if (!steward) {
+                cde.classification.push({
+                    stewardOrg: {
+                        name: c[0]
+                    }
+                    , elements: []
+                });
+                steward = classificationShared.findSteward(cde, c[0]);
+            }        
+            classificationShared.addCategory(steward.object.elements, c.slice(1), function(err) {   
+            });             
+        });
+        cde.markModified('classification');
+        cde.save(function() {
+            if (cb) cb(err);
+        });         
+    });
+ };
