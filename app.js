@@ -758,24 +758,6 @@ app.post('/classification/cde/addlist', function(req, res) {
     });
 });
 
-/*app.post('/addClassificationGroup', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err, de) {
-        if (err) {
-            return res.send(err);
-        }
-        req.body.classifications.forEach(function(c) {
-            cdesvc.addClassificationToCde(de, c.orgName, c.conceptSystem, c.concept);
-        });        
-        return de.save(function(err) {
-            if (err) {
-                res.send("error: " + err);
-            } else {
-                res.send(de);
-            }
-        });
-    });
-});*/
-
 app.post('/addProperty', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) return res.send({error: err});  
