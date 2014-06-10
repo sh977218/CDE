@@ -8,7 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CdeEditTest extends NlmCdeBaseTest {
-        
+    
     @Test
     public void createCde() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
@@ -22,6 +22,23 @@ public class CdeEditTest extends NlmCdeBaseTest {
         hangon(1);
         goToCdeByName("Abracadabra");
         Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
+    }
+    
+    @Test
+    public void testAlignmentForMissingFields() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        findElement(By.linkText("Create")).click();
+        findElement(By.linkText("CDE")).click();
+        findElement(By.name("cde.designation")).sendKeys("AlignmentCDE");
+        findElement(By.name("cde.definition")).sendKeys("Definition for alignment cde");
+        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
+        findElement(By.id("cde.submit")).click();
+        hangon(1);
+        goToSearch();
+        openCdeInList("AlignmentCDE");
+        Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
+        findElement(By.linkText("View Full Detail")).click();
+        Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
     }
 
     @Test
@@ -72,7 +89,9 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
         Assert.assertTrue(textPresent(cdeName + "[name change number 1]"));
         Assert.assertTrue(textPresent("the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]"));
-
+        Assert.assertTrue(textNotPresent("Permissible Values:"));
+        Assert.assertTrue(textNotPresent("Modified"));
+        
         // View Prior Version
         findElement(By.linkText("History")).click();
         findElement(By.id("prior-0")).click();

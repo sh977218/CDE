@@ -32,9 +32,6 @@ exports.removeClassificationFromTree = function(sourceElements, pathElements) {
                if (pathElements.length > 1) {
                    pathElements.splice(0, 1);
                    this.removeClassificationFromTree(sourceElements[i].elements, pathElements);
-                   if (sourceElements[i].elements.length === 0) {
-                       sourceElements.splice(i, 1);
-                   }
                } else {
                    sourceElements.splice(i, 1);
                }
@@ -58,4 +55,41 @@ exports.addClassificationToCde = function (dat, res) {
             }
         });        
     });    
+};
+
+exports.fetchLastLevel = function(tree, fields, cb) {
+    var classifications = this;
+    var subTree = tree;
+    this.findCategory = function(subTree, catname) {
+        for (var i = 0; i<subTree.length; i++) {
+            if (subTree[i].name === catname) {
+                if (!subTree[i].elements) subTree[i].elements = [];
+                return subTree[i].elements;
+            }
+        }
+        return null;
+    };
+    for (var j = 0; j<fields.length-1; j++) {
+        if (subTree) subTree = classifications.findCategory(subTree, fields[j]);
+    }
+    return subTree;
+};
+
+exports.deleteCategory = function(tree, fields, cb) {
+    var classification = this;
+    var lastLevel = classification.fetchLastLevel(tree, fields);
+    for (var i = 0; i < lastLevel.length; i++) {
+        if (lastLevel[i].name === fields[fields.length-1]) {
+            lastLevel.splice(i,1);
+            break;
+        }
+    }    
+    if (cb) cb();
+};
+
+exports.addCategory = function(tree, fields, cb) {
+    var classification = this;
+    var lastLevel = classification.fetchLastLevel(tree, fields);
+    if (lastLevel) lastLevel.push({name: fields[fields.length-1], elements:[]});
+    if (cb) cb();
 };

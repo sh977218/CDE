@@ -14,7 +14,7 @@
          </tr>
      </thead>
      <tbody>
-         <tr id="pv-{{$index}}" ng-repeat="pv in cde.valueDomain.permissibleValues">
+         <tr id="pv-{{$index}}" ng-repeat="pv in cde.valueDomain.permissibleValues | limitTo:pvLimit">
             <td headers="name" id="pv-{{$index}}">
                 <div inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde);"> </div>
             </td>
@@ -39,8 +39,10 @@
                  <a id="pvRemove-{{$index}}" class="btn-mini fa fa-trash-o" ng-click="removePv($index)" title="Remove" href=""></a>
              </td>
          </tr>
-         <tr ng-show="cde.valueDomain.permissibleValues.length == 10">
-             <td colspan="6">See full list in Detailed View</td>
+         <tr ng-show="cde.valueDomain.permissibleValues.length > pvLimit">
+             <td colspan="6">Showing {{pvLimit}} values. 
+                 <a class="btn btn-small btn-default fa fa-plus" ng-click="pvLimit = pvLimit + 50" id="showMorePvs"> Show more</a>
+             </td>
          </tr>
      </tbody>
  </table>

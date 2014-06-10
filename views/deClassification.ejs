@@ -2,27 +2,7 @@
 <h4>Classification</h4>
 <button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification" ng-show="myOrgs.length>0"><i class="fa fa-plus"> </i> Add Classification</button>
 
-<script type="text/ng-template"  id="classif-sub-elements.html">
-    <ul class="fa-ul">
-        <li ng-repeat="elt in elt.elements | orderBy:'name'" style="margin-right: -20px" ng-init="pathArray = pathArray.slice(0); pathArray.push(elt.name)">
-            <span ng-show="isAllowedNonCuration(cde)">
-                <span ng-show="showDelete">
-                    Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeClassification(stewardClassifications.stewardOrg.name, pathArray)" 
-                                      id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
-                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
-                </span>
-                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeClassification-{{$parent.$index}}-{{$index}}" title="Remove" href=""></a>
-            </span>
-
-            <a href="/#/search">
-                <span ng-click="searchByClassification(stewardClassifications.stewardOrg.name, pathArray)" data-id="classification-{{$parent.$index}}-{{$index}}" class="hand-cursor">
-                    {{elt.name}}  
-                </span>
-            </a> 
-            <div ng-include="'classif-sub-elements.html'"></div>
-        </li>
-    </ul>
-</script>
+<%- include classif-sub-elements.ejs %>
 
 <div id="repeatCs" class="container">
     <div ng-repeat="stewardClassifications in classificationToFilter()" class="col-md-5 container" id="stewardClassificationGroup-{{stewardClassifications.stewardOrg.name}}">
@@ -30,13 +10,13 @@
         <hr/>
         <div ng-repeat="elt in stewardClassifications.elements" class="col-md-6" ng-init='pathArray = [elt.name]' id="conceptSystem-{{stewardClassifications.stewardOrg.name}}-{{elt.name}}">
             <h6>{{elt.name}}</h6>
-            <div ng-include="'classif-sub-elements.html'"></div>
+            <div ng-include="'classif-sub-elements.html'" ng-init="myOrg = myOrgs.indexOf(stewardClassifications.stewardOrg.name)>=0; orgName = stewardClassifications.stewardOrg.name;"></div>
         </div>
     </div>
 </div>
 
 <script type="text/ng-template" id="addClassificationModalContent.html">
-    <%- include addClassification.ejs %>
+    <%- include addClassificationCde.ejs %>
 </script>
 
 </div>
