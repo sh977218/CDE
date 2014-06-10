@@ -156,6 +156,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Axillary Surgery");
         findElement(By.linkText("Permissible Values")).click();
+        hangon(3);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));
         findElement(By.id("editDatatype")).click();
         findElement(By.name("datatypeFreeText")).clear();
