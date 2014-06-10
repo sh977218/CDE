@@ -211,4 +211,10 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     $scope.isAllowed = function (cde) {
         return isAllowedModel.isAllowed($scope, cde);  
     };
+    
+    $scope.searchByClassification = function(orgName, elts) {
+        $scope.cache.removeAll();
+        $scope.cacheOrgFilter(orgName);
+        $scope.cache.put("selectedElements", elts);
+    };    
 }

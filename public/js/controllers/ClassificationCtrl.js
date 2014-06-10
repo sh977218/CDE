@@ -23,11 +23,11 @@
         });
     };    
     
-    $scope.searchByClassification = function(orgName, elts) {
+    /*$scope.searchByClassification = function(orgName, elts) {
         $scope.cache.removeAll();
         $scope.cacheOrgFilter(orgName);
         $scope.cache.put("selectedElements", elts);
-    };    
+    };*/    
      
     $scope.removeClassification = function(orgName, elts) {
         CdeClassification.remove({
