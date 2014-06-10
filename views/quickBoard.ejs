@@ -1,0 +1,52 @@
+<div class="container-fluid">
+    <h1 class="page-header">Quick Board</h1>
+
+    <div ng-if="cdes.length <= 0" >
+        <div class="container">
+            <h3>The quick board is empty.</h3>
+            <p>Note: Click on <i class="fa fa-plus"></i> to add a CDE to the quick board. <a href="#/search">Go to the search page and get started.</a></p>
+        </div>
+    </div>
+    <div ng-if="cdes.length > 0" >
+        <form class="form-inline">
+            <button id="qb.accordion" ng-hide="isAccordionView" value="Accordion View" ng-click="showAccordionView()" class="btn btn-default">
+                <i class="fa fa-table"></i>
+                Accordion View
+            </button>
+            
+            <button id="qb.gridview" ng-show="isAccordionView" value="Grid View" ng-click="showGridView()" class="btn btn-default">
+                <i class="fa fa-table"></i>
+                Grid View
+            </button>
+
+            <button id="qb.compare" ng-disabled="cdes.length != 2" value="Side by Side Compare" ng-click="gotoCompare()" class="btn btn-default">
+                <i class="fa fa-search"></i>
+                Side by Side Compare
+            </button>
+
+            <button ng-show="isAccordionView" ng-click="openCloseAll()" class="btn btn-default btn-checkbox" id="openAllCb">
+                <span ng-hide="openAllModel"><i class="fa fa-expand"></i> Expand All</span>
+                <span ng-show="openAllModel"><i class="fa fa-compress"></i> Collapse All</span>
+            </button>
+        
+        </form>
+        <br/>
+
+        <div ng-show="isAccordionView">
+            <% var ejsPage = "quickboard"; %>
+            <%- include accordionList.ejs %>
+        </div>
+
+        <div ng-hide="isAccordionView">
+            <style>
+            .gridStyle {
+                border: 1px solid rgb(212,212,212);
+                width: auto; 
+                height: 600px;
+            }
+            </style>
+            <div class="gridStyle" ng-grid="gridOptions"></div>
+        </div>
+
+    </div>
+</div>

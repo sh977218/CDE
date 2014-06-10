@@ -4,11 +4,26 @@ function CompareCtrl($scope, DataElement) {
     $scope.compareView = true;
     $scope.cdes = [];
     
+    $scope.initCache();
+    $scope.openAllCompareModel = $scope.cache.get("openAllCompare");
+    //console.debug( "$scope.openAllCompareModel right after cache.get: "+$scope.openAllCompareModel );
+    
+    $scope.openAllCompare = function( newValue ) {
+        $scope.openAllCompareModel = newValue;
+
+        //console.debug( "$scope.openAllCompareModel: "+$scope.openAllCompareModel );
+
+        for (var i = 0; i < $scope.cdes.length; i++) {
+            $scope.cdes[i].isOpen = $scope.openAllCompareModel;
+        }
+        $scope.cache.put("openAllCompare", $scope.openAllCompareModel);
+    };
+    
     $scope.isAllowed = function(cde) {
         return false;
     };
     
-    if ($scope.compareCart.length === 2) {
+    if ($scope.compareCart.length >= 2) {
         for (var i = 0; i < $scope.compareCart.length; i++) {
             DataElement.get({deId: $scope.compareCart[i]}, function (de) {
                 $scope.cdes.push(de);
@@ -17,7 +32,7 @@ function CompareCtrl($scope, DataElement) {
                     $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
                 }
             });
-        } 
+        }
     }
         
     function lowerCompare(item1, item2) {

@@ -18,6 +18,7 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
         when('/cdeSearchExport', {controller: DEListCtrl, templateUrl: '/exportCdeSearch'}).
         when('/inbox', {controller: InboxCtrl, templateUrl: '/mail/template/inbox'}).
         when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
+        when('/quickBoard', {controller: QuickBoardCtrl, templateUrl: '/quickBoard'}).
         otherwise({redirectTo:'/'});
     }).
     directive('inlineEdit', function() {

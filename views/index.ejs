@@ -72,10 +72,10 @@
                             <li class="{{menuBoardList}}"><a href="#/boardList">Boards</a></li>
                             <li class="{{menuMyBoards}}" ng-show="user._id"><a href="#/myboards">My Boards</a></li>
                             <li class="{{menuCompare}}">
-                                <p class="navbar-text"><a class="navbar-link" href="#/deCompare" style="text-decoration:none;">Compare (
+                                <p class="navbar-text"><a class="navbar-link" href="#/quickBoard" style="text-decoration:none;">Quick Board (
                                     <span ng-switch="compareCart.length">
                                         <span ng-switch-when="0">empty</span>
-                                        <span ng-switch-when="2">full</span>
+                                        <span ng-switch-when="10">full</span>
                                         <span ng-switch-default>{{compareCart.length}}</span>
                                     </span>)
                                     </a>
@@ -115,7 +115,7 @@
 
             <footer>
                 <div class="container">
-                    <div class="row">
+                    <div class="row top20">
                       <div class="col-md-5">
                         <p>
                             <a href="http://www.nlm.nih.gov/copyright.html"><small>Copyright</small></a>,
@@ -132,7 +132,6 @@
                         </p>
                       </div>
                       <div class="col-md-2">
-                          <br/>
                           <center><a href="http://www.usa.gov"><img src="assets/img/usagov_logo.gif" /></a></center>
                       </div>
                       <div class="col-md-5">

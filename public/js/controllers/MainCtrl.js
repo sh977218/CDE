@@ -80,7 +80,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     
     $scope.compareCart = [];
     $scope.addToCompareCart = function(cdeId) {
-        if ($scope.compareCart.length < 2) {
+        if ($scope.compareCart.length < 10) {
             $scope.compareCart.push(cdeId._id);
         }
     };
@@ -136,7 +136,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };    
 
     $scope.showCompareButton = function(cde) {
-        return $scope.compareCart.length < 2 && cde !== undefined &&
+        return $scope.compareCart.length < 10 && cde !== undefined &&
                 $scope.compareCart.indexOf(cde._id) < 0;
     };
     
@@ -155,6 +155,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         $scope.menuMyBoards = '';
         $scope.menuBoardList = '';
         $scope.menuCompare = '';
+        $scope.menuQuickBoard = '';
         
         if (key === 'HOME') {
             $scope.menuHome = 'active';
@@ -180,6 +181,8 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             $scope.menuBoardList = 'active';
         } else if (key === 'COMPARE') {
             $scope.menuCompare = 'active';
+        } else if (key === 'QUICKBOARD') {
+            $scope.menuQuickBoard = 'active';
         }
     };
 
