@@ -23,12 +23,19 @@ angular.module('resources')
             };
         if (fields.ids || fields.properties || fields.naming) DataElement.save(service.destination, classif);
         else classif(service.destination);*/
-        service.transferClassifications(service.source, service.destination);
-        DataElement.save(service.destination, function (cde) {
-            service.retireSource(service.source, service.destination, function() {
-                if (callback) callback(cde);
-            });             
-        });
+        
+        //TODO: if classifications only, don't do saveCde, but do a service for transfering classifications ONLY
+        
+        if (fields.ids || fields.properties || fields.naming) {
+            service.transferClassifications(service.source, service.destination);
+            DataElement.save(service.destination, function (cde) {
+                service.retireSource(service.source, service.destination, function() {
+                    if (callback) callback(cde);
+                });             
+            });
+        } else {
+            
+        }
     };
     service.transferFields = function(source, destination, type) {
         if (!source[type]) return;
