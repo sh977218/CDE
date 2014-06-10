@@ -75,7 +75,6 @@ angular.module('resources')
         });
     };
     service.transferClassifications = function (source, destination) {
-        //TO-DO: go through tree of classifications and call export.addCategory
         source.classification.forEach(function(stewardOrgSource){
             var st = exports.findSteward(destination, stewardOrgSource.stewardOrg.name);
             if (st) {
@@ -86,8 +85,7 @@ angular.module('resources')
             }
             stewardOrgDestination.name = stewardOrgDestination.stewardOrg.name;
             service.treeChildren(stewardOrgSource, [], function(path) {
-                exports.addCategory(stewardOrgDestination.elements, path, function() {
-                    console.log(destination);
+                exports.addCategory(stewardOrgDestination.elements, path, function() {                    
                 });
             });
         });
