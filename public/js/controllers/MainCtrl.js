@@ -136,8 +136,9 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };    
 
     $scope.showCompareButton = function(cde) {
-        return $scope.compareCart.length < 10 && cde !== undefined &&
-                $scope.compareCart.indexOf(cde._id) < 0;
+        return $scope.compareCart.length < 10 &&
+               cde !== undefined &&
+               $scope.compareCart.indexOf(cde._id) < 0;
     };
     
     // @TODO

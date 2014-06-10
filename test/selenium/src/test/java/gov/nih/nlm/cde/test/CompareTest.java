@@ -10,8 +10,8 @@ public class CompareTest extends NlmCdeBaseTest{
     @Test
     public void noElementCompareList() {
         goToSearch();
-        findElement(By.linkText("Compare ( empty )")).click();
-        Assert.assertTrue(textPresent("Search for data elements and hit the compare button"));
+        findElement(By.linkText("Quick Board ( empty )")).click();
+        Assert.assertTrue(textPresent("The quick board is empty."));
     }
     
     @Test
@@ -20,16 +20,16 @@ public class CompareTest extends NlmCdeBaseTest{
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
         openCdeInList("Prognostic");
         findElement(By.id("compare_0")).click();
-        Assert.assertTrue(textPresent("Compare ( 1 )"));
+        Assert.assertTrue(textPresent("Quick Board ( 1 )"));
         findElement(By.id("emptyCart")).click();
-        Assert.assertTrue(textPresent("Compare ( empty )"));        
+        Assert.assertTrue(textPresent("Quick Board ( empty )"));        
     }
     
   
     
     @Test
     public void Compare2Elements() {
-        addToCompare("Person Gender Text Type", "Patient Gender Category");
+        addToCompare("Person Gender Text Type", "Patient Gender Category");        
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
         Assert.assertTrue(textNotPresent("VSAC Value Set"));
@@ -46,7 +46,8 @@ public class CompareTest extends NlmCdeBaseTest{
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
         findElement(By.id("compare_0")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
-        findElement(By.linkText("Compare ( full )")).click();
+        findElement(By.linkText("Quick Board ( 2 )")).click();
+        findElement(By.id("qb.compare")).click();
         Assert.assertTrue(textPresent("in CTC category Blood/Bone Marrow"));
         Assert.assertTrue(textPresent("in CTC category Pulmonary/Upper Respiratory"));
     }
