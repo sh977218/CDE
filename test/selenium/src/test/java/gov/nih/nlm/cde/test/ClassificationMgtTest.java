@@ -89,4 +89,12 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         hangon(1);
         createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI","Contrast T1"});
     }
+    
+    @Test
+    public void link() {
+        mustBeLoggedInAs("ninds", "pass");
+        gotoClassifMgt();
+        Assert.assertTrue(textPresent("Headache"));
+
+    }    
 }
