@@ -33,6 +33,8 @@ var gfs = Grid(db.db, mongoose.mongo);
 
 exports.pVCodeSystemList = [];
 
+exports.DataElement = DataElement;
+
 exports.boardsByUserId = function(userId, callback) {
     PinningBoard.find({"owner.userId": userId}).exec(function (err, result) {
         callback(result); 
@@ -63,7 +65,7 @@ exports.org_autocomplete = function(name, callback) {
     }); 
 };
 
-exports.removeOrgClassification = function(request, callback) {
+/*exports.removeOrgClassification = function(request, callback) {
     Org.findOne({"name": request.orgName}).exec(function (err, stewardOrg) {     
         classification.deleteCategory(stewardOrg.classifications, request.categories);
         stewardOrg.markModified("classifications");
@@ -128,7 +130,7 @@ exports.cdeClassification = function(body, action, cb) {
         if (action === "add") classification.addCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
         if (action === "remove") classification.deleteCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
     });     
-};
+};*/
 
 exports.getFile = function(callback, res, id) {
     res.writeHead(200, { "Content-Type" : "image/png"});

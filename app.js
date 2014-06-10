@@ -11,6 +11,7 @@ var express = require('express')
   , LocalStrategy = require('passport-local').Strategy
   , mongo_data = require('./node-js/mongo-data')
   , classification = require('./shared/classification')
+  , classificationNode = require('./node-js/classification')
   , util = require('util')
   , xml2js = require('xml2js')
   , vsac = require('./node-js/vsac-io')
@@ -458,7 +459,7 @@ app.delete('/classification/org', function(req, res) {
         res.send(403);
         return;
     }  
-    mongo_data.removeOrgClassification(req.query, function() {
+    classificationNode.removeOrgClassification(req.query, function() {
         res.send();
     });
 });
@@ -468,7 +469,7 @@ app.post('/classification/org', function(req, res) {
         res.send(403);
         return;
     }      
-    mongo_data.addOrgClassification(req.body, function() {
+    classificationNode.addOrgClassification(req.body, function() {
         res.send();
     });
 });
@@ -478,7 +479,7 @@ app.delete('/classification/cde', function(req, res) {
         res.send(403);
         return;
     }  
-    mongo_data.cdeClassification(req.query, "remove", function(err) {
+    classificationNode.cdeClassification(req.query, "remove", function(err) {
         if (!err) { 
             res.send(); 
         } else {
@@ -493,7 +494,7 @@ app.post('/classification/cde', function(req, res) {
         res.send(403);
         return;
     }      
-    mongo_data.cdeClassification(req.body, "add", function(err) {
+    classificationNode.cdeClassification(req.body, "add", function(err) {
         if (!err) { 
             res.send(); 
         } else {
