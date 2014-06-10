@@ -67,8 +67,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     private void createClassificationName(String[] categories) {
         findElement(By.id("addClassification")).click(); 
         modalHere();
-        for (int i=0; i<categories.length-1; i++) {   
-            findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();       
+            findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();
         }
         findElement(By.id("addNewCatName")).sendKeys(categories[categories.length-1]);   
         findElement(By.id("addClassificationButton")).click(); 
@@ -84,6 +83,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     public void addNestedClassification() {
         mustBeLoggedInAs("ninds", "pass");
         gotoClassifMgt();
+        Assert.assertTrue(textPresent("Headache"));
         createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI"});
         hangon(1);
         createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI","Contrast T1"});
