@@ -7,12 +7,9 @@ function CompareCtrl($scope, DataElement) {
     
     $scope.initCache();
     $scope.openAllCompareModel = $scope.cache.get("openAllCompare");
-    //console.debug( "$scope.openAllCompareModel right after cache.get: "+$scope.openAllCompareModel );
     
     $scope.openAllCompare = function( newValue ) {
         $scope.openAllCompareModel = newValue;
-
-        //console.debug( "$scope.openAllCompareModel: "+$scope.openAllCompareModel );
 
         for (var i = 0; i < $scope.cdes.length; i++) {
             $scope.cdes[i].isOpen = $scope.openAllCompareModel;

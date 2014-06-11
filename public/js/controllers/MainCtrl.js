@@ -84,6 +84,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             $scope.quickBoard.push(cdeId._id);
         }
     };
+    
     $scope.emptyQuickBoard = function() {
         $scope.quickBoard = [];
     };

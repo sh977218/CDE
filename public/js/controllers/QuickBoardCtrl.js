@@ -18,7 +18,7 @@ function QuickBoardCtrl($scope, $location, DataElement) {
     
     $scope.openCloseAll = function() {
         $scope.isAllOpen = !$scope.isAllOpen;
-        
+
         for (var i = 0; i < $scope.cdes.length; i++) {
             $scope.cdes[i].isOpen = $scope.isAllOpen;
         }
@@ -26,7 +26,7 @@ function QuickBoardCtrl($scope, $location, DataElement) {
     
     $scope.gotoCompare = function() {
         if ($scope.cdes.length !== 2) {
-            $scope.addAlert("danger", "You can only compare 2 CDEs.");
+            $scope.addAlert("danger", "You may only compare 2 CDEs side by side.");
         } else {
             $location.url( 'deCompare' );
         }
@@ -36,6 +36,12 @@ function QuickBoardCtrl($scope, $location, DataElement) {
         $scope.cdes.splice(index, 1);
         $scope.quickBoard.splice(index, 1);
     };
+    
+    $scope.emptyQuickBoardAndScreen = function() {
+        $scope.emptyQuickBoard();
+        $scope.cdes = [];
+        $scope.gridCdes = [];
+    }
     
     if ($scope.quickBoard.length >= 1) {
         for (var i = 0; i < $scope.quickBoard.length; i++) {
