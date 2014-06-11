@@ -753,6 +753,7 @@ app.isCuratorOf = function(user, orgName){
 };
 
 app.post('/classification/cde/addlist', function(req, res) {
+    if (!req.user.orgAdmin.concat(req.user.orgCurator).length>0) res.send(403);
     classificationNode.addList(req.body, function(err) {
        if(!err) res.send();
     });
