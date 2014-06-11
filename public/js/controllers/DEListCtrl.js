@@ -73,7 +73,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
             Elastic.generalSearchQuery(query, function(result) {
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
-                //$scope.openCloseAll($scope.cdes);
+                $scope.openCloseAll($scope.cdes, "list");
                 $scope.totalItems = result.totalNumber;
                 $scope.cache.put("totalItems", $scope.totalItems);
                 $scope.facets = result.facets;

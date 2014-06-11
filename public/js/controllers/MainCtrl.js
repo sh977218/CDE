@@ -218,15 +218,22 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };
     
     $scope.initCache(); 
-    $scope.openCloseAllModel = $scope.cache.get("openCloseAll");
+    $scope.openCloseAllModel = {};
+    $scope.openCloseAllModel["list"] = $scope.cache.get("openCloseAlllist");
+    $scope.openCloseAllModel["quickboard"] = $scope.cache.get("openCloseAllquickboard");
     
-    $scope.openCloseAll = function(cdes) {
-        $scope.openCloseAllModel = !$scope.openCloseAllModel;
+    $scope.openCloseAllSwitch = function(type) {
+        $scope.openCloseAllModel[type] = !$scope.openCloseAllModel[type];
+    };
+    
+    $scope.openCloseAll = function(cdes, type) {
+        
+        
 
         for (var i = 0; i < cdes.length; i++) {
-            cdes[i].isOpen = $scope.openCloseAllModel;
+            cdes[i].isOpen = $scope.openCloseAllModel[type];
         }
         
-        $scope.cache.put("openCloseAllModel", $scope.openCloseAllModel);
+        $scope.cache.put("openCloseAllModel"+type, $scope.openCloseAllModel[type]);
     };    
 }
