@@ -93,8 +93,7 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(textPresent("More Like This"));
         Assert.assertTrue(textPresent(name));
     }
-        
-    
+
     protected void openCdeInList(String name) {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
@@ -228,6 +227,16 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Quick Board ( 2 )"));
         findElement(By.linkText("Quick Board ( 2 )")).click();
     }
+
+    public void addToQuickBoard(String cdeName) {
+        findElement(By.name("ftsearch")).sendKeys("\""+cdeName+"\"");
+        findElement(By.id("search.submit")).click();
+        Assert.assertTrue(textPresent("1 hits"));
+        findElement(By.linkText(cdeName)).click();
+        hangon(1);
+        findElement(By.id("compare_0")).click();
+        findElement(By.name("ftsearch")).clear();
+    }
     
     public void addToCompare(String cdeName1, String cdeName2) {
         addToQuickBoard( cdeName1, cdeName2 );
@@ -235,7 +244,7 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(textPresent(cdeName2));
         findElement(By.id("qb.compare")).click();
     }
-    
+        
     public void scrollToTop() {
         scrollTo( "0" );
     }
