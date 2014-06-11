@@ -24,9 +24,9 @@ function CompareCtrl($scope, DataElement) {
         return false;
     };
     
-    if ($scope.compareCart.length >= 2) {
-        for (var i = 0; i < $scope.compareCart.length; i++) {
-            DataElement.get({deId: $scope.compareCart[i]}, function (de) {
+    if ($scope.quickBoard.length >= 2) {
+        for (var i = 0; i < $scope.quickBoard.length; i++) {
+            DataElement.get({deId: $scope.quickBoard[i]}, function (de) {
                 $scope.cdes.push(de);
                 if ($scope.cdes.length === 2) {
                     $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);

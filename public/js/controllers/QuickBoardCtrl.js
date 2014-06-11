@@ -26,7 +26,7 @@ function QuickBoardCtrl($scope, $location, DataElement) {
     
     $scope.gotoCompare = function() {
         if ($scope.cdes.length !== 2) {
-            $scope.addAlert("danger", "You can only compare 2 CDEs.")
+            $scope.addAlert("danger", "You can only compare 2 CDEs.");
         } else {
             $location.url( 'deCompare' );
         }
@@ -34,28 +34,16 @@ function QuickBoardCtrl($scope, $location, DataElement) {
     
     $scope.removeDE = function( index ) {
         $scope.cdes.splice(index, 1);
-        $scope.compareCart.splice(index, 1);
+        $scope.quickBoard.splice(index, 1);
     };
     
-    if ($scope.compareCart.length >= 1) {
-        for (var i = 0; i < $scope.compareCart.length; i++) {
-            DataElement.get({deId: $scope.compareCart[i]}, function (de) {
+    if ($scope.quickBoard.length >= 1) {
+        for (var i = 0; i < $scope.quickBoard.length; i++) {
+            DataElement.get({deId: $scope.quickBoard[i]}, function (de) {
                 $scope.cdes.push(de);
-                if ($scope.cdes.length === 2) {
-                    $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);
-                    $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
-                }
             });
         }
     }
-
-    $scope.comparePvs = function(list1, list2) {
-        for (var i = 0; i < list1.length; i++) {
-           $scope.isPvInList(list1[i], list2, function(wellIsIt) {
-                list1[i].isValid = wellIsIt;
-           });
-        }
-    };
     
     $scope.showAccordionView = function() {
         $scope.isAccordionView = !$scope.isAccordionView;

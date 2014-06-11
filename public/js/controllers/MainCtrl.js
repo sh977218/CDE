@@ -78,14 +78,14 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         }
     };
     
-    $scope.compareCart = [];
-    $scope.addToCompareCart = function(cdeId) {
-        if ($scope.compareCart.length < 10) {
-            $scope.compareCart.push(cdeId._id);
+    $scope.quickBoard = [];
+    $scope.addToQuickBoard = function(cdeId) {
+        if ($scope.quickBoard.length < 10) {
+            $scope.quickBoard.push(cdeId._id);
         }
     };
-    $scope.emptyCart = function() {
-        $scope.compareCart = [];
+    $scope.emptyQuickBoard = function() {
+        $scope.quickBoard = [];
     };
     
     $scope.cdeIconAction = function (cde, action, event) {
@@ -100,8 +100,8 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             case "openPinModal":
                 $scope.openPinModal(cde);
             break;
-            case "addToCompareCart":
-                $scope.addToCompareCart(cde);
+            case "addToQuickBoard":
+                $scope.addToQuickBoard(cde);
             break;
         }        
     };
@@ -136,9 +136,9 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };    
 
     $scope.showCompareButton = function(cde) {
-        return $scope.compareCart.length < 10 &&
+        return $scope.quickBoard.length < 10 &&
                cde !== undefined &&
-               $scope.compareCart.indexOf(cde._id) < 0;
+               $scope.quickBoard.indexOf(cde._id) < 0;
     };
     
     // @TODO
@@ -148,7 +148,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         $scope.menuSearch = '';
         $scope.menuForm = '';
         $scope.menuLogin = '';
-        $scope.menuCart = '';
+        $scope.menuQuickBoard = '';
         $scope.menuIntRev = '';
         $scope.menuNlmRev = '';
         $scope.menuAccount = '';
@@ -166,8 +166,8 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             $scope.menuLogin = 'active';
         } else if (key === 'LISTFORMS') {
             $scope.menuForm = 'active';
-        } else if (key === 'CART') {
-            $scope.menuCart = 'active';
+        } else if (key === 'QUICKBOARD') {
+            $scope.menuQuickBoard = 'active';
         } else if (key === 'INTREV') {
             $scope.menuIntRev = 'active';
         } else if (key === 'NLMREV') {

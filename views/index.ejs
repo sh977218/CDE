@@ -73,13 +73,13 @@
                             <li class="{{menuMyBoards}}" ng-show="user._id"><a href="#/myboards">My Boards</a></li>
                             <li class="{{menuCompare}}">
                                 <p class="navbar-text"><a class="navbar-link" href="#/quickBoard" style="text-decoration:none;">Quick Board (
-                                    <span ng-switch="compareCart.length">
+                                    <span ng-switch="quickBoard.length">
                                         <span ng-switch-when="0">empty</span>
                                         <span ng-switch-when="10">full</span>
-                                        <span ng-switch-default>{{compareCart.length}}</span>
+                                        <span ng-switch-default>{{quickBoard.length}}</span>
                                     </span>)
                                     </a>
-                                    <a class="fa fa-trash-o navbar-link" style="text-decoration:none;" ng-show="compareCart.length > 0" ng-click="emptyCart()" title="Empty cart" id="emptyCart"></a>
+                                    <a class="fa fa-trash-o navbar-link" style="text-decoration:none;" ng-show="quickBoard.length > 0" ng-click="emptyQuickBoard()" title="Empty Quick Board" id="emptyQuickBoard"></a>
                                 </p>
                             </li>
                         </ul>
