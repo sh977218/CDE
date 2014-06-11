@@ -1,4 +1,4 @@
- function ClassificationCtrl($scope, $modal, $route, CdeClassification) {
+ function ClassificationCtrl($scope, $modal, $route, $routeParams, CdeClassification) {
     $scope.initCache(); 
     
     $scope.openAddClassificationModal = function () {
@@ -19,7 +19,7 @@
         });
 
         modalInstance.result.then(function () {
-            $route.reload();
+            $scope.reload($routeParams);
         });
     };    
      
@@ -29,7 +29,7 @@
             , orgName: orgName
             , categories: elts
         }, function (res) {
-            $route.reload();
+            $scope.reload($routeParams);
             $scope.addAlert("success", "Classification Deleted");
         });
     };     

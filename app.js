@@ -475,14 +475,14 @@ app.post('/classification/org', function(req, res) {
 
 app.delete('/classification/cde', function(req, res) {
     if (!app.isCuratorOf(req.user, req.query.orgName)) {
-        res.send(403);
+        res.send(202, {error: {message: "User is not admin/curator of the org."}});
         return;
     }  
     classificationNode.cdeClassification(req.query, "remove", function(err) {
         if (!err) { 
             res.send(); 
         } else {
-            res.status(409);
+            res.send(202, {error: {message: "Classification does not exists."}});
             res.send();
         }
     });
@@ -490,14 +490,14 @@ app.delete('/classification/cde', function(req, res) {
 
 app.post('/classification/cde', function(req, res) {
     if (!app.isCuratorOf(req.user, req.body.orgName)) {
-        res.send(403);
+        res.send(202, {error: {message: "User is not admin/curator of the org."}});
         return;
     }      
     classificationNode.cdeClassification(req.body, "add", function(err) {
         if (!err) { 
             res.send(); 
         } else {
-            res.status(409);
+            res.send(202, {error: {message: "Classification already exists."}});
             res.send();
         }
         
