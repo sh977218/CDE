@@ -17,7 +17,6 @@ function QuickBoardCtrl($scope, $location, DataElement) {
     $scope.isAccordionView = true;
     
     $scope.openCloseAll = function() {
-//        console.debug( "isAllOpen: "+$scope.isAllOpen );
         $scope.isAllOpen = !$scope.isAllOpen;
         
         for (var i = 0; i < $scope.cdes.length; i++) {
@@ -26,19 +25,15 @@ function QuickBoardCtrl($scope, $location, DataElement) {
     };
     
     $scope.gotoCompare = function() {
-/*        $scope.initCache();
-        
-        if( $scope.selectedOrg !== '' ) {
-            $scope.cache.put( 'selectedOrg', $scope.selectedOrg );
+        if ($scope.cdes.length !== 2) {
+            $scope.addAlert("danger", "You can only compare 2 CDEs.")
+        } else {
+            $location.url( 'deCompare' );
         }
-        $scope.cache.put( 'ftsearch', $scope.ftsearch );*/
-
-        $location.url( 'deCompare' );
     };
     
     $scope.removeDE = function( index ) {
         $scope.cdes.splice(index, 1);
-        //$scope.cdes.unsaved = true;
         $scope.compareCart.splice(index, 1);
     };
     
@@ -53,29 +48,7 @@ function QuickBoardCtrl($scope, $location, DataElement) {
             });
         }
     }
-        
-    /*function lowerCompare(item1, item2) {
-        if (item1 === undefined && item2 === undefined) {
-            return true;
-        } else if (item1 === undefined || item2 === undefined) {
-            return false;
-        } else {
-            return item1.toLowerCase() === item2.toLowerCase();
-        }
-    }    
-        
-    $scope.isPvInList = function(pv, list, callback) {
-        for (var i = 0; i < list.length; i++) {
-            if (lowerCompare(pv.permissibleValue, list[i].permissibleValue) &&
-                pv.valueMeaningCode === list[i].valueMeaningCode && 
-                pv.codeSystemName === list[i].codeSystemName &&
-                lowerCompare(pv.valueMeaningName, list[i].valueMeaningName)) {
-                    return callback(true);
-            }
-        }
-        return callback(false);
-    };*/
-    
+
     $scope.comparePvs = function(list1, list2) {
         for (var i = 0; i < list1.length; i++) {
            $scope.isPvInList(list1[i], list2, function(wellIsIt) {
@@ -104,7 +77,7 @@ function QuickBoardCtrl($scope, $location, DataElement) {
                 , "OriginId": cde.originId 
                 , Origin: cde.origin
                 , "RegistrationStatus": cde.registrationState.registrationStatus
-           }
+           };
            var otherNames = "";
            for (var j = 1; j < cde.naming.length; j++) {
                otherNames = otherNames.concat(" " + cde.naming[j].designation);
