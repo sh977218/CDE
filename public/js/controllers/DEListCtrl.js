@@ -1,9 +1,9 @@
 function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
     $scope.setActiveMenu('LISTCDE');
 
-    $scope.initCache(); 
+    /*$scope.initCache();*/
     
-    $scope.openAllModel = $scope.cache.get("openAll");
+    /*$scope.openAllModel = $scope.cache.get("openAll");*/
     
     $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
     if ($scope.registrationStatuses === undefined) {
@@ -73,7 +73,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
             Elastic.generalSearchQuery(query, function(result) {
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
-                $scope.openAll();
+                //$scope.openCloseAll($scope.cdes);
                 $scope.totalItems = result.totalNumber;
                 $scope.cache.put("totalItems", $scope.totalItems);
                 $scope.facets = result.facets;
@@ -303,12 +303,12 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
       return item.isDefault;  
     };
     
-    $scope.openAll = function() {
+    /*$scope.openAll = function() {
         for (var i = 0; i < $scope.cdes.length; i++) {
             $scope.cdes[i].isOpen = $scope.openAllModel;
         }
         $scope.cache.put("openAll", $scope.openAllModel);
-    };
+    };*/
     
     $scope.addOrgFilter = function(t) {               
         if ($scope.selectedOrg === undefined) {

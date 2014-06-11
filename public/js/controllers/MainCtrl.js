@@ -216,4 +216,17 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     $scope.isAllowed = function (cde) {
         return isAllowedModel.isAllowed($scope, cde);  
     };
+    
+    $scope.initCache(); 
+    $scope.openCloseAllModel = $scope.cache.get("openCloseAll");
+    
+    $scope.openCloseAll = function(cdes) {
+        $scope.openCloseAllModel = !$scope.openCloseAllModel;
+
+        for (var i = 0; i < cdes.length; i++) {
+            cdes[i].isOpen = $scope.openCloseAllModel;
+        }
+        
+        $scope.cache.put("openCloseAllModel", $scope.openCloseAllModel);
+    };    
 }

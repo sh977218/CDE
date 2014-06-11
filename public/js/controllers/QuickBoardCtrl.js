@@ -2,6 +2,7 @@ function QuickBoardCtrl($scope, $location, DataElement) {
     $scope.setActiveMenu('QUICKBOARD');
     
     $scope.quickBoardView = true;
+
     $scope.cdes = [];
     
     $scope.gridCdes = [];
@@ -16,13 +17,13 @@ function QuickBoardCtrl($scope, $location, DataElement) {
     
     $scope.isAccordionView = true;
     
-    $scope.openCloseAll = function() {
+    /*$scope.openCloseAll = function() {
         $scope.isAllOpen = !$scope.isAllOpen;
 
         for (var i = 0; i < $scope.cdes.length; i++) {
             $scope.cdes[i].isOpen = $scope.isAllOpen;
         }
-    };
+    };*/
     
     $scope.gotoCompare = function() {
         if ($scope.cdes.length !== 2) {
