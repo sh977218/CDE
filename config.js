@@ -1,22 +1,44 @@
-var config = {};
-config.vsac = {
-    host: 'vsac.nlm.nih.gov'
-    , port: '443'
-    , ticket: {
-        path: '/vsac/ws/Ticket'
+var config = {
+    umls: {
+        licenseCode: "NLM-4110134256"
     }
-    , valueSet: {
-        path: '/vsac/ws/RetrieveValueSet'
+    , internalIP: "130.14."
+    , vsac: {
+        username: 'ludetc'
+        , password: 'Aa!!!000'
+        , host: 'vsac-qa.nlm.nih.gov'
+        , ticket: {
+            path: '/vsac/ws/Ticket'
+        }
+        , valueSet: {
+            path: '/vsac/ws/RetrieveValueSet'
+        }
+        , port: 4000
+    }
+    , logdir: ''
+    , port: 3001
+    , elastic: {
+        uri: "http://localhost:9200"
+        , index: {name: "cdetest"}
+        , river: {name: "cdetest"}
+    }
+    , database: {
+        servers: [
+            { host: "localhost", port: 27017 }
+        ]
+        , dbname: "nlmcde"
     }
 };
-
-config.umls = {
-    licenseCode: "NLM-4110134256"
-};
-
-config.internalIP = "130.14.";
 
 module.exports = config;
+module.exports.elasticUri = config.elastic.uri + "/" + config.elastic.index.name + "/" ;
+module.exports.elasticRiverUri = config.elastic.uri + "/_river/" + config.elastic.index.name + "/_meta" ;
+module.exports.mongoUri = config.database.servers.map(function(srv) {
+    return "mongodb://" + srv.host + ":" + srv.port + "/" + config.database.dbname;
+});
+
+
+
 
 
 

@@ -5,10 +5,10 @@ var mongoose = require('mongoose')
     , uuid = require('node-uuid')
     , Grid = require('gridfs-stream')
     , fs = require('fs')
-    , envconfig = require('../envconfig')
+    , config = require('../config')
     ;
 
-var mongoUri = process.env.MONGO_URI || envconfig.mongo_uri || 'mongodb://localhost/nlmcde';
+var mongoUri = config.mongoUri;
 
 mongoose.connect(mongoUri);
 var db = mongoose.connection;

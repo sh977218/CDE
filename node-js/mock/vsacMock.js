@@ -3,12 +3,13 @@ var express = require('express')
   , util = require('util')
   , crypto = require('crypto')
   , fs = require('fs')
+  , config = require('../../config.js')
 ;
 
 var app = express();
 
 // all environments
-app.set('port', process.env.VSAC_PORT || 4000);
+app.set('port', config.vsac.port || 4000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(express.favicon());

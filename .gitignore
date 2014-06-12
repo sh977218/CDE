@@ -6,7 +6,7 @@ test/selenium/*.png
 test-console.out
 
 ## Secret Config Files
-envconfig.js
+config.js
 
 ## Local Files
 seed

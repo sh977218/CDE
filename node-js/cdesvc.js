@@ -2,10 +2,10 @@ var express = require('express')
   , request = require('request')
   , util = require('util')
   , mongo_data = require('./mongo-data')
-  , envconfig = require('../envconfig.js')
+  , config = require('../config.js')
 ;
 
-var elasticUri = process.env.ELASTIC_URI || envconfig.elasticUri || 'http://localhost:9200/nlmcde/';
+var elasticUri = config.elasticUri;
 
 var mltConf = {
     "mlt_fields" : [

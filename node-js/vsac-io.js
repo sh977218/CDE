@@ -6,28 +6,17 @@ var https = require('https')
     , request = require('request')
 ;
 
-var envconfig = {};
-
-if (fs.existsSync('./envconfig.js')) {
-    envconfig = require('../envconfig');
-} else {
-    if (!process.env.VSAC_USERNAME || !process.env.VSAC_PASSWORD || !process.env.VSAC_HOST || !process.env.VSAC_PORT) {
-        console.log("No envconfig file exists. Expecting ENV Variables: VSAC_USERNAME, VSAC_PASSWORD, VSAC_HOST, VSAC_PORT ");
-        exit(1);
-    }
-}
-
 var authData = querystring.stringify( {
-    username: process.env.VSAC_USERNAME || envconfig.vsac.username
-    , password: process.env.VSAC_PASSWORD || envconfig.vsac.password
+    username: config.vsac.username
+    , password: config.vsac.password
 });
 
 var ticketData = querystring.stringify({
     service: 'http://umlsks.nlm.nih.gov'
 });
 
-var vsacHost = process.env.VSAC_HOST || envconfig.vsac.host || config.vsac.host;
-var vsacPort = process.env.VSAC_PORT || envconfig.vsac.port || config.vsac.port;
+var vsacHost = config.vsac.host;
+var vsacPort = config.vsac.port;
 
 var tgtOptions = {
     host: vsacHost,

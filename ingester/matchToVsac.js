@@ -1,8 +1,9 @@
 var util = require('util')
     , mongoose = require('mongoose')
+    , config = require('../config')
 ;
 
-var mongoUri = process.env.MONGO_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/nlmcde';
+var mongoUri = config.mongo_uri;
 console.log("connecting to " + mongoUri);
 mongoose.connect(mongoUri);
 

@@ -15,14 +15,13 @@ var express = require('express')
   , xml2js = require('xml2js')
   , vsac = require('./node-js/vsac-io')
   , winston = require('winston')
-  , envconfig = require('./envconfig.js')
   , config = require('./config.js')
   , MongoStore = require('./node-js/assets/connect-mongo.js')(express)
   ;
 
 // Global variables
 var GLOBALS = {
-    logdir : process.env.LOGDIR || envconfig.logdir || __dirname
+    logdir : config.logdir || __dirname
 };
 
 function findById(id, fn) {
@@ -153,7 +152,7 @@ var winstonStream = {
 };
 
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', config.port || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(express.favicon());
@@ -162,7 +161,8 @@ app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 
 // Creates session store
-var mongoHost = process.env.MONGO_HOST || envconfig.mongo_host || '127.0.0.1';
+//var mongoHost = config.mongo_host;
+
 var sessionStore = new MongoStore({
     mongoose_connection: mongo_data.mongoose_connection  
 });

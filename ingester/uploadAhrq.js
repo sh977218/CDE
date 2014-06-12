@@ -8,7 +8,7 @@ var fs = require('fs')
 
 var parser = new xml2js.Parser();
 
-var mongoUri = process.env.MONGO_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/nlmcde';
+var mongoUri = config.mongo_uri;
 console.log("connecting to " + mongoUri);
 
 if( !mongoose.connection ) {
