@@ -6,17 +6,29 @@ var exec = require('child_process').exec;
 //var exec = require('exec-sync');
 //var exec = require('exec');
 
-//var asyncblock = require('asyncblock');
+var asyncblock = require('asyncblock');
 
 console.log('\nNLM CDE Deployment');
 
-var execCallback = function (error, stdout, stderr) {
+/*var execCallback = function (error, stdout, stderr) {
     console.log('stdout: ' + stdout);
     console.log('stderr: ' + stderr);
     if (error !== null) {
         console.log('exec error: ' + error);
     }
+};*/
+
+var execCallback = function(flowCb) {        
+    return function (error, stdout, stderr) {
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+        if (error !== null) {
+            console.log('exec error: ' + error);
+        }
+        flowCb();
+    };
 };
+
 
 var commandSettings = function(command, approvalNecessary) {
     this.command = command;
@@ -36,7 +48,7 @@ var commandService = function(flow, commandSettings, execCallback) {
         console.log(commandSettings.approval.question);
     }
     console.log(commandSettings.messages.executing);
-    exec(commandSettings.command, flow.add()/*execCallback*/);
+    exec(commandSettings.command, new execCallback(flow.add()));
     flow.wait();
     console.log(commandSettings.messages.success);
 };
