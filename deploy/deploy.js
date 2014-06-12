@@ -31,12 +31,13 @@ var commandSettings = function(command, approvalNecessary) {
 };
 
 
-var commandService = function(commandSettings, execCallback) {
+var commandService = function(flow, commandSettings, execCallback) {
     if (commandSettings.approval.necessary) {
         console.log(commandSettings.approval.question);
     }
     console.log(commandSettings.messages.executing);
-    exec(commandSettings.command, execCallback);
+    exec(commandSettings.command, flow.add()/*execCallback*/);
+    flow.wait();
     console.log(commandSettings.messages.success);
 };
 
@@ -44,5 +45,6 @@ var commandService = function(commandSettings, execCallback) {
 
 asyncblock(function(flow) {
     commandService(flow, new commandSettings("git pull origin master", true), execCallback);
+    flow.wait();
     console.log("next command");    
 });
