@@ -13,8 +13,8 @@
             Reset
         </button> 
         <button  ng-click="openCloseAllSwitch('list');openCloseAll(cdes,'list')" class="btn btn-default btn-checkbox" id="openAllCb">
-            <span ng-hide="openAllModel"><i class="fa fa-arrows-v"></i> Expand All</span>
-            <span ng-show="openAllModel"><i class="fa fa-compress"></i> Collapse All</span>
+            <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
+            <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
         </button>
         <small ng-show="cdes.length > 0" class="pull-right">
             {{totalItems}} hits

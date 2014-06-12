@@ -1,4 +1,4 @@
-function QuickBoardCtrl($scope, $location, DataElement) {
+function QuickBoardCtrl($scope, $location, CdeList) {
     $scope.setActiveMenu('QUICKBOARD');
     
     $scope.quickBoardView = true;
@@ -25,9 +25,6 @@ function QuickBoardCtrl($scope, $location, DataElement) {
         }
     };*/
     
-    
-        
-    
     $scope.gotoCompare = function() {
         if ($scope.cdes.length !== 2) {
             $scope.addAlert("danger", "You may only compare 2 CDEs side by side.");
@@ -48,12 +45,12 @@ function QuickBoardCtrl($scope, $location, DataElement) {
     }
     
     if ($scope.quickBoard.length >= 1) {
-        for (var i = 0; i < $scope.quickBoard.length; i++) {
-            DataElement.get({deId: $scope.quickBoard[i]}, function (de) {
-                $scope.cdes.push(de);
-                $scope.openCloseAll($scope.cdes, "quickboard");
-            });
-        }
+        CdeList.byUuidList( $scope.quickBoard, function( result ) {
+           if( result ) {
+               $scope.cdes = result;
+               $scope.openCloseAll($scope.cdes, "quickboard");
+           }
+        });
     }
     
     $scope.showAccordionView = function() {

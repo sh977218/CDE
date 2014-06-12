@@ -1,10 +1,6 @@
 function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
     $scope.setActiveMenu('LISTCDE');
 
-    /*$scope.initCache();*/
-    
-    /*$scope.openAllModel = $scope.cache.get("openAll");*/
-    
     $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
     if ($scope.registrationStatuses === undefined) {
         $scope.registrationStatuses = [

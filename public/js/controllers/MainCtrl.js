@@ -81,7 +81,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     $scope.quickBoard = [];
     $scope.addToQuickBoard = function(cdeId) {
         if ($scope.quickBoard.length < 10) {
-            $scope.quickBoard.push(cdeId._id);
+            $scope.quickBoard.push(cdeId.uuid);
         }
     };
     
@@ -139,7 +139,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     $scope.showCompareButton = function(cde) {
         return $scope.quickBoard.length < 10 &&
                cde !== undefined &&
-               $scope.quickBoard.indexOf(cde._id) < 0;
+               $scope.quickBoard.indexOf(cde.uuid) < 0;
     };
     
     // @TODO
@@ -202,8 +202,8 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         } else {
             $scope.cache = $cacheFactory.get("deListCache");
         }        
-    };   
-    
+    };
+
     $scope.cacheOrgFilter = function(t) {
         $scope.cache.put("selectedOrg", t);       
     };
@@ -227,9 +227,6 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };
     
     $scope.openCloseAll = function(cdes, type) {
-        
-        
-
         for (var i = 0; i < cdes.length; i++) {
             cdes[i].isOpen = $scope.openCloseAllModel[type];
         }

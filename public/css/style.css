@@ -101,3 +101,9 @@ body {
 #addNewClassifToOrgName {
     width: 200px;
 }
+
+#quickBoardGridView {
+    border: 1px solid rgb(212,212,212);
+    width: auto; 
+    height: 600px;
+}

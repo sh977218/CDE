@@ -25,8 +25,8 @@
             </button>
 
             <button ng-show="isAccordionView" ng-click="openCloseAllSwitch('quickboard');openCloseAll(cdes,'quickboard')" class="btn btn-default btn-checkbox" id="openAllCb">
-                <span ng-hide="openAllModel"><i class="fa fa-expand"></i> Expand All</span>
-                <span ng-show="openAllModel"><i class="fa fa-compress"></i> Collapse All</span>
+                <span ng-hide="openCloseAllModel.quickboard"><i class="fa fa-expand"></i> Expand All</span>
+                <span ng-show="openCloseAllModel.quickboard"><i class="fa fa-compress"></i> Collapse All</span>
             </button>
 
             <button id="" value="Empty Quick Board" ng-click="emptyQuickBoardAndScreen()" class="btn btn-default">
@@ -43,14 +43,7 @@
         </div>
 
         <div ng-hide="isAccordionView">
-            <style>
-            .gridStyle {
-                border: 1px solid rgb(212,212,212);
-                width: auto; 
-                height: 600px;
-            }
-            </style>
-            <div class="gridStyle" ng-grid="gridOptions"></div>
+            <div id="quickBoardGridView" class="gridStyle" ng-grid="gridOptions"></div>
         </div>
 
     </div>
