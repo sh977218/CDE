@@ -26,7 +26,7 @@ var config = {
         servers: [
             { host: "localhost", port: 27017 }
         ]
-        , dbname: "nlmcde"
+        , dbname: "test"
     }
 };
 

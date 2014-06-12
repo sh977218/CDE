@@ -1,23 +1,26 @@
 var sys = require('sys')
 , exec = require('child_process').exec
 , asyncblock = require('asyncblock')
-, readline1 = require('readline-sync');
+, readline1 = require('readline-sync')
+, config = require('../config.js')
+, elastic = require('./elasticSearchInit.js')
+, print = function(msg) { console.log("\n"+msg); };
 
 //var exec = require('execSync');
 //var exec = require('sync-exec');
 //var exec = require('exec-sync');
 //var exec = require('exec');
 
-console.log('\nNLM CDE Deployment');
+print('\nNLM CDE Deployment');
 
 var execCallback = function(flowCb) {        
-    return function (error, stdout, stderr) {
-        console.log('stdout: ' + stdout);
-        console.log('stderr: ' + stderr);
+    return function (error, stdout, stderr) {      
+        print('stdout: ' + stdout);
+        //print('stderr: ' + stderr);
         if (error !== null) {
-            console.log('exec error: ' + error);
+            print('exec error: ' + error);
         }
-        flowCb();
+        flowCb();          
     };
 };
 
@@ -30,21 +33,21 @@ var commandSettings = function(command, approvalNecessary) {
     };
     this.approval = {
         necessary: approvalNecessary,
-        question: "Do you want to execute '" + this.command + "' ?" 
+        question: "\nDo you want to execute '" + this.command + "' ?" 
     };
 };
 
 var commandService = function(flow, commandSettings, execCallback) {
     if (commandSettings.approval.necessary) {
         if (!readLineService(commandSettings.approval.question)) {
-            console.log(commandSettings.messages.notexecuting);
+            print(commandSettings.messages.notexecuting);
             return;
         }
     }
-    console.log(commandSettings.messages.executing);
+    print(commandSettings.messages.executing);
     exec(commandSettings.command, new execCallback(flow.add()));
     flow.wait();
-    console.log(commandSettings.messages.success);
+    print(commandSettings.messages.success);
 };
 
 var readLineService = function(question) {
@@ -63,7 +66,7 @@ var readLineService = function(question) {
             return false;
             break;                
         default:
-            console.log('Answer not recognized. Treated as no.');
+            print('Answer not recognized. Treated as no.');
             return false;
             break;
     }
@@ -71,6 +74,31 @@ var readLineService = function(question) {
 
 asyncblock(function(flow) {
     commandService(flow, new commandSettings("git pull origin master", true), execCallback);
-    flow.wait();   
+    flow.wait(); 
+    //commandService(flow, new commandSettings("curl -XDELETE " + config.elasticUri, true), execCallback);
+    //flow.wait();    
+    //commandService(flow, new commandSettings("curl -XPOST " + config.elasticUri + " -d '" + JSON.stringify(elastic.creadeIndexJson) + "'", true), execCallback);
+    //flow.wait();
+    //commandService(flow, new commandSettings("git pull origin master", true), execCallback);
+    //flow.wait();
 
+
+    // jiu jitsu
+    /*var http = require('http');
+    http.post = require('http-post');
+    
+    http.post(config.elasticUri, elastic.creadeIndexJson, function(res){
+        res.on('data', function(chunk) {
+            console.log(chunk);
+        });
+    }); */
+    
+    var rest = require('rest-js');
+
+    var elastic = new rest.Rest(config.elastic.uri, {crossDomain: true});
+    
+    elastic.remove(config.elastic.index.name/*, null, flow.add()*/);
+    flow.wait();
+    console.log("done");
+  
 });
