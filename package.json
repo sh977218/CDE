@@ -9,21 +9,26 @@
     "npm": "1.2.x"
   },
   "dependencies": {
-    "express": "3.x",
-    "ejs": "*",
-    "mongoose": "*",
-    "xml2js": "*",
-    "node-restful": "*",
-    "util": "*",
-    "passport": ">= 0.0.0",
-    "passport-local": ">= 0.0.0",
-    "connect-flash": "~0.1.0",
-    "mongodb": "*"
+    "express": "3.x"
+    , "ejs": "*"
+    , "url": "*"
+    , "mongoose": "*"
+    , "xml2js": "*"
+    , "node-restful": "*"
+    , "util": "*"
+    , "passport": ">= 0.0.0"
+    , "passport-local": ">= 0.0.0"
+    , "connect-flash": "~0.1.0"
+    , "mongodb": "*"
     , "node-uuid": "*"
     , "request": "*"
     , "winston": "*"
     , "express-winston": "*"
     , "gridfs-stream": "*"
     , "crypto": "*"
+    , "request": "*"
+    , "https": "*"
+    , "fs": "*"
+    , "querystring": "*"
   }
 }
