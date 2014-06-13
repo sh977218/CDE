@@ -17,14 +17,6 @@ function QuickBoardCtrl($scope, $location, CdeList) {
     
     $scope.isAccordionView = true;
     
-    /*$scope.openCloseAll = function() {
-        $scope.isAllOpen = !$scope.isAllOpen;
-
-        for (var i = 0; i < $scope.cdes.length; i++) {
-            $scope.cdes[i].isOpen = $scope.isAllOpen;
-        }
-    };*/
-    
     $scope.gotoCompare = function() {
         if ($scope.cdes.length !== 2) {
             $scope.addAlert("danger", "You may only compare 2 CDEs side by side.");
