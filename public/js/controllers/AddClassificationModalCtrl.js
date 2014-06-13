@@ -19,12 +19,16 @@
     
     $scope.addClassification = function (lastLeafName, event) {
         $scope.newClassification.categories.push(lastLeafName);
-        CdeClassification.save($scope.newClassification, function() {
-            addAlert("success", "Classification Added"); 
-            $scope.newClassification.categories.pop();
-        }, function() {
-            $scope.newClassification.categories.pop();
-        });
-        
+        CdeClassification.save($scope.newClassification, function(res,x) {
+
+        }).$promise.then(
+            function(res) {
+                $scope.newClassification.categories.pop();            
+                addAlert("success", "Classification Added");                 
+            },
+            function(res){
+                $scope.newClassification.categories.pop();            
+                addAlert("warning", res.data); 
+        });     
     };    
 }
