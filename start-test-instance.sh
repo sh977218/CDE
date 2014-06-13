@@ -12,7 +12,7 @@ mongo test test/dbInit.js
 
 groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml --testMode
 groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx --testMode
-groovy -cp ./groovy/ groovy/grdr test/data/grdr.xlsx 
+groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx 
 
 sleep 3;
 
