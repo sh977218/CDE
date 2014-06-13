@@ -1,3 +1,7 @@
+var config = require('./config.js')
+    , elastic = require('./deploy/elasticSearchInit.js');
+
+
 module.exports = function(grunt) {
 
     grunt.initConfig({
@@ -9,9 +13,18 @@ module.exports = function(grunt) {
                 }
             }
         }
+        , http: {
+            elasticIndex: {
+                options: {
+                    url: config.elasticUri
+                    , method: 'POST'
+                }
+            }   
+        }        
     });
 
     grunt.loadNpmTasks('grunt-git');
-    grunt.registerTask('default', ['gitpull']);
+    grunt.loadNpmTasks('grunt-http');
+    grunt.registerTask('default', ['gitpull','http']);
 
 };
