@@ -48,7 +48,7 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
         return {
             template: '<div>' + 
                             '<div ng-hide="editMode" ng-switch="defFormat">' + 
-                            '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>&nbsp;' +
+                            '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>' +
                             '   <span ng-switch-default><span ng-bind="model"></span></span>' +
                             '   <span ng-switch-when="html"><span ng-bind-html="model"></span></span>' +
                             '</div>' + 
