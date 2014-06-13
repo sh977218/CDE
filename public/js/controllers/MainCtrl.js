@@ -29,13 +29,13 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     $scope.addAlert = function(type, msg) {
         var id = (new Date()).getTime();
         $scope.alerts.push({type: type, msg: msg, id: id});
-        $timeout(function() {
+        /*$timeout(function() {
             for (var i = 0; i < $scope.alerts.length; i++) {
                 if ($scope.alerts[i].id === id) {
                     $scope.alerts.splice(i, 1);
                 }
             }
-        }, 5000);
+        }, 5000);*/
     };
     
     $scope.boards = [];
