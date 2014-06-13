@@ -4,8 +4,8 @@ var config = {
     }
     , internalIP: "130.14."
     , vsac: {
-        username: 'ludetc'
-        , password: 'Aa!!!000'
+        username: 'user'
+        , password: 'pass'
         , host: 'vsac-qa.nlm.nih.gov'
         , ticket: {
             path: '/vsac/ws/Ticket'
