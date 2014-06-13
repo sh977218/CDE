@@ -144,7 +144,9 @@ var expressLogger = new (winston.Logger)({
             colorize: true,
             timestamp: true
         }) 
-  ]
+    , new winston.transports.MongoLogger({
+        json: true
+    })  ]
 });
 
 var expressErrorLogger = new (winston.Logger)({

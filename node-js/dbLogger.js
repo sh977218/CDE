@@ -5,20 +5,20 @@ var mongoose = require('mongoose')
     
 var mongoLogUri = process.env.MONGO_LOG_URI || envconfig.mongo_log_uri || 'mongodb://localhost/cde-logs';
     
-mongoose.connect(mongoLogUri);
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback () {
+var logConn = mongoose.createConnection(mongoLogUri);
+logConn.on('error', console.error.bind(console, 'connection error:'));
+logConn.once('open', function callback () {
 	console.log('logger connection open');
     });    
     
-var LogModel = mongoose.model('DbLogger', mongoose.Schema({any: {}}, { strict: false }));
+var LogModel = logConn.model('DbLogger', mongoose.Schema({any: {}}, { strict: false }));
 
 exports.log = function(message, callback) {
-    console.log("LOGGING---");
+    console.log("LOGGING---" + message);
     var logEvent = new LogModel(message);
     logEvent.save(function(err) {
-        callback(err);
+        if (err) console.log ("ERROR: " + err);
+        callback(err); 
     });
 };
 
