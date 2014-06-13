@@ -20,7 +20,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
         findElement(By.id("cde.submit")).click();
         hangon(1);
-        goToCdeByName("Abracadabra");
         Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
     }
     

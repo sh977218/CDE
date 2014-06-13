@@ -393,7 +393,7 @@ XSSFSheet[] sheets = book.sheets;
 XSSFSheet sheet = book.getSheet("Sheet1");
 int max = sheet.getLastRowNum();
 for (int i = 1; i < max + 1; i++) {
-    println (i + " / " + max);
+//    println (i + " / " + max);
     BasicDBObject newDE1 = ParseRow(sheet.getRow(i), xlsMap);
     if (newDE1!=null) {
         deColl.insert(newDE1);
