@@ -21,7 +21,7 @@
         $scope.newClassification.categories.push(lastLeafName);
         CdeClassification.save($scope.newClassification, function(res) {
             $scope.newClassification.categories.pop();    
-                addAlert("success", res.msg);                                
+            addAlert("success", res.msg);                                
         });        
     };    
 }
