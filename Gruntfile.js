@@ -1,20 +1,29 @@
-module.exports = function(grunt) {
+var config = require('./config.js')
+    /*, elastic = require('./deploy/elasticSearchInit.js')*/;
 
+module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json')
         , gitpull: {
             origin: {
                 options: {
-                  // Target-specific options go here.
-                },
-                files: {
-                    // Specify the files you want to commit
+                    branch: 'master'
                 }
             }
         }
+        /*, http: {
+            createIndex: {
+                options: {
+                    url: config.elasticUri
+                    , method: 'POST'
+                    , body: function() {
+                        return JSON.stringify(elastic.creadeIndexJson);
+                    }
+                }
+            }
+        }*/
     });
-
-    grunt.loadNpmTasks('grunt-git');
-    grunt.registerTask('default', ['grunt-git']);
-
+    grunt.loadNpmTasks(['grunt-git'/*, 'grunt-http'*/]);
+    grunt.registerTask('default', ['gitpull'/*, 'http'*/]);
+    //grunt.registerTask('elastic', ['http']);
 };

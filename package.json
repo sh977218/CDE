@@ -27,8 +27,11 @@
     , "gridfs-stream": "*"
     , "crypto": "*"
     , "request": "*"
-    , "https": "*"
+    , "http": "*"
     , "fs": "*"
     , "querystring": "*"
+    , "grunt": "*"
+    , "grunt-git": "*"
+    , "grunt-http": "*"
   }
 }
