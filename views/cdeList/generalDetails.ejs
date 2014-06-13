@@ -5,9 +5,7 @@
         {{cde.naming[0].designation}}
     </dd>    
     <dt>Steward: </dt><dd>{{cde.stewardOrg.name}}</dd>
-    <dt>Definition: </dt><dd id="dd_def">   
-        {{cde.naming[0].definition | placeholdEmpty}}
-    </dd>
+    <dt>Definition: </dt><dd id="dd_def">{{cde.naming[0].definition | placeholdEmpty}}</dd>
     <dt>Used By: </dt><dd id="dd_usedBy">
         <span ng-switch="cde.classification.length > 0">
             <span ng-switch-when="false">None</span>
