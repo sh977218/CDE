@@ -14,7 +14,6 @@ logConn.once('open', function callback () {
 var LogModel = logConn.model('DbLogger', mongoose.Schema({any: {}}, { strict: false }));
 
 exports.log = function(message, callback) {
-    console.log("LOGGING---" + message);
     var logEvent = new LogModel(message);
     logEvent.save(function(err) {
         if (err) console.log ("ERROR: " + err);

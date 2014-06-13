@@ -114,16 +114,15 @@ var app = express();
 
 var MongoLogger = winston.transports.MongoLogger = function (options) {
     this.name = 'mongoLogger';
-
+    this.json = true;
     this.level = options.level || 'info';
-
   };
 
   util.inherits(MongoLogger, winston.Transport);
 
   MongoLogger.prototype.log = function (level, msg, meta, callback) {
-    dbLogger.log({level: level, msg: msg, meta: meta}, function (err) {
-        if (err) console.log("ERROR: " + err);
+    dbLogger.log({level: level, msg: JSON.parse(msg)}, function (err) {
+        if (err) console.log("CANNOT LOG: " + err);
         callback(null, true);    
     });
   };
@@ -194,12 +193,17 @@ app.use(express.session({ secret: "omgnodeworks", store:sessionStore }));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.logger({stream:winstonStream}));
+
+var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", httpStatus: ":status",date: ":date"};
+
+app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream}));
+
+//app.use(express.logger({format: "{remoteAddr: \":remote-addr\"}", stream: winstonStream}));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function(err, req, res, next){
-  expressErrorLogger.error(err.stack);
+  expressErrorLogger.error(JSON.stringify({msg: err.stack}));
   console.log(err.stack);
   res.send(500, 'Something broke!');
 });
