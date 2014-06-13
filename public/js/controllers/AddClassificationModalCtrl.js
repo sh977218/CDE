@@ -19,21 +19,9 @@
     
     $scope.addClassification = function (lastLeafName, event) {
         $scope.newClassification.categories.push(lastLeafName);
-        /*CdeClassification.save($scope.newClassification).$promise.then(
-            function(res) {
-                $scope.newClassification.categories.pop();            
-                addAlert("success", res.message);
-                addAlert("danger", res.error);
-            },
-            function(res){
-                $scope.newClassification.categories.pop();            
-                addAlert("warning", res.data); 
-        });*/  
         CdeClassification.save($scope.newClassification, function(res) {
-            console.log(res);
             $scope.newClassification.categories.pop();    
-                addAlert("success", res.msg);                 
-                //addAlert("warning", res.msg);                 
+                addAlert("success", res.msg);                                
         });        
     };    
 }
