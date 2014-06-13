@@ -490,15 +490,14 @@ app.delete('/classification/cde', function(req, res) {
 
 app.post('/classification/cde', function(req, res) {
     if (!app.isCuratorOf(req.user, req.body.orgName)) {
-        res.send(200, {error: {message: "User is not admin/curator of the org."}});
+        res.send(403, "Not Authorized");
         return;
     }      
     classificationNode.cdeClassification(req.body, "add", function(err) {
         if (!err) { 
-            res.send(); 
+            res.send({ code: 200, msg: "Classification Added"}); 
         } else {
-            //res.status = 202;
-            res.send(403, "Classification Exists");
+            res.send({ code: 403, msg: "Classification Already Exists"}); 
         }
         
     });
