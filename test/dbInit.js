@@ -24,6 +24,7 @@ db.users.insert({username: 'appScan', password: 'I@mA88Scan', quota: 1073741824,
 db.users.insert({username: 'classificationMgtUser', password: 'pass', orgCurator: ["CTEP","NINDS"], orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'phri', password: 'pass', orgCurator: ["PHRI"], orgAdmin: ["PHRI"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'ninds', password: 'pass', orgCurator: [], orgAdmin: ["NINDS"], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'grdr', password: 'pass', orgCurator: [], orgAdmin: ["GRDR"], quota: 1073741824, viewHistory: []});
 
 db.orgs.insert({name: "NHLBI"});
 db.orgs.insert({name: "caCORE"});
@@ -55,5 +56,6 @@ db.orgs.insert({name: "NIDA"});
 db.orgs.insert({name: "PhenX"});
 db.orgs.insert({name: "AHRQ"});
 db.orgs.insert({name: "PHRI"});
+db.orgs.insert({name: "GRDR"});
 
 
