@@ -24,7 +24,8 @@
         }).$promise.then(
             function(res) {
                 $scope.newClassification.categories.pop();            
-                addAlert("success", "Classification Added");                 
+                addAlert("success", res.message);
+                addAlert("danger", res.error);
             },
             function(res){
                 $scope.newClassification.categories.pop();            
