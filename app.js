@@ -475,7 +475,7 @@ app.post('/classification/org', function(req, res) {
 
 app.delete('/classification/cde', function(req, res) {
     if (!app.isCuratorOf(req.user, req.query.orgName)) {
-        res.send(202, {error: {message: "User is not admin/curator of the org."}});
+        res.send(403, "Not Authorized");
         return;
     }  
     classificationNode.cdeClassification(req.query, "remove", function(err) {
