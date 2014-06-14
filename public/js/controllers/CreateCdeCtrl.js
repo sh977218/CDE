@@ -1,4 +1,4 @@
-function CreateCdeCtrl($scope, $location, $timeout, DataElement, Elastic) {
+function CreateCdeCtrl($scope, $window, $timeout, DataElement, Elastic) {
     $scope.setActiveMenu('CREATECDE');
 
     $scope.save = function() {
@@ -16,7 +16,7 @@ function CreateCdeCtrl($scope, $location, $timeout, DataElement, Elastic) {
         delete $scope.cde.definition;
         
         DataElement.save($scope.cde, function(cde) {
-            $location.path('#/');        
+            $window.location.href = "/#/deview?cdeId=" + cde._id;        
         });
     };
     

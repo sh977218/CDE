@@ -68,7 +68,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
     @Test
     public void resetSearchStatus() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName("Surgical Procedure Hand Laparoscopic Port Anatomic Site");
+        goToCdeByName("Administration, Management Performed Study Activity Variance Reason ISO21090.ST.v1.0");
         findElement(By.id("editStatus")).click();
         modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
