@@ -24,16 +24,15 @@
                 Side by Side Compare
             </button>
 
-            <button ng-show="isAccordionView" ng-click="openCloseAllSwitch('quickboard');openCloseAll(cdes,'quickboard')" class="btn btn-default btn-checkbox" id="openAllCb">
+            <button id="qb.openCloseAll" ng-show="isAccordionView" ng-click="openCloseAllSwitch('quickboard');openCloseAll(cdes,'quickboard')" class="btn btn-default btn-checkbox">
                 <span ng-hide="openCloseAllModel.quickboard"><i class="fa fa-expand"></i> Expand All</span>
                 <span ng-show="openCloseAllModel.quickboard"><i class="fa fa-compress"></i> Collapse All</span>
             </button>
 
-            <button id="" value="Empty Quick Board" ng-click="emptyQuickBoardAndScreen()" class="btn btn-default">
+            <button id="qb.empty" value="Empty Quick Board" ng-click="emptyQuickBoardAndScreen()" class="btn btn-default">
                 <i class="fa fa-trash-o"></i>
                 Empty Quick Board
             </button>
-
         </form>
         <br/>
 

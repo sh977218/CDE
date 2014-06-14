@@ -145,7 +145,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         for (int i = 0; i < 19; i++) {
             wait.until(ExpectedConditions.elementToBeClickable(By.id("acc_link_" + i)));
         }
-        findElement(By.id("openAllCb")).click();
+        findElement(By.id("qb.openCloseAll")).click();
         for (int i = 0; i < 19; i++) {
             wait.until(ExpectedConditions.elementToBeClickable(By.id("acc_link_" + i)));
         }

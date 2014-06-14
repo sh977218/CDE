@@ -23,14 +23,6 @@ function CompareCtrl($scope, CdeList) {
     
     if ($scope.quickBoard.length >= 2) {
         for (var i = 0; i < $scope.quickBoard.length; i++) {
-            /*DataElement.get({deId: $scope.quickBoard[i]}, function (de) {
-                $scope.cdes.push(de);
-                if ($scope.cdes.length === 2) {
-                    $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);
-                    $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
-                }
-            });*/
-            
             CdeList.byUuidList( $scope.quickBoard, function( result ) {
                 if( result ) {
                     
