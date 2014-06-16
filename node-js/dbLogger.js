@@ -35,12 +35,20 @@ logSchema.index({referrer: 1});
 // w = 0 means write very fast. It's ok if it fails.     
 var LogModel = logConn.model('DbLogger', logSchema);
 
-exports.log = function(message, callback) {
-    var logEvent = new LogModel(message);
-    logEvent.save(function(err) {
-        if (err) console.log ("ERROR: " + err);
-        callback(err); 
-    });
+exports.log = function(message, callback) {    
+    if (message.msg.httpStatus !== "304") {
+        var logEvent = new LogModel(message);
+        logEvent.save(function(err) {
+            if (err) console.log ("ERROR: " + err);
+            callback(err); 
+        });
+    }
+};
+
+exports.getLogs = function(query, callback) {
+  LogModel.find(query, function (err, logs) {
+    callback(err, logs);  
+  });
 };
 
     

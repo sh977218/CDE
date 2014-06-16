@@ -1036,6 +1036,20 @@ app.post('/retireCde', function (req, res) {
     });
 });
 
+app.post('/logs', function (req, res) {
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        dbLogger.getLogs(req.body.query, function(err, result) {
+            if (err) {
+                res.send(403, err);
+            } else {
+                res.send(result);
+            }
+        });
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
+});
+
 var systemAlert = "";
 app.get("/systemAlert", function(req, res) {
     res.send(systemAlert);

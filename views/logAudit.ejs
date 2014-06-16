@@ -1,0 +1,14 @@
+<div ng-controller="LogCtrl">
+    <form class="form-search">
+        <input name="ip" type="text" ng-model="search.ip" class="search-query" placeholder="IP Address"/>  
+        <div class="form-group">
+            <label for="effectiveDate">Effective Date</label>
+            <input class="form-control input-small" name="effectiveDate" type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="cde.registrationState.effectiveDate" />
+        </div>
+        <input id="search.submit" type="submit" value="Search" ng-click="searchLogs()" class="btn"/>
+    </form>
+    
+    <div id="logGridView" class="gridStyle" ng-grid="gridOptions"></div>
+
+    
+</div>
