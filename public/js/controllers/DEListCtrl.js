@@ -299,13 +299,6 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
       return item.isDefault;  
     };
     
-    /*$scope.openAll = function() {
-        for (var i = 0; i < $scope.cdes.length; i++) {
-            $scope.cdes[i].isOpen = $scope.openAllModel;
-        }
-        $scope.cache.put("openAll", $scope.openAllModel);
-    };*/
-    
     $scope.addOrgFilter = function(t) {               
         if ($scope.selectedOrg === undefined) {
             $scope.cacheOrgFilter(t.term);

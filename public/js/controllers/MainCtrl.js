@@ -1,4 +1,9 @@
 function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, isAllowedModel) {
+    // Global variables
+    var GLOBALS = {
+        max_quickboard_cdes : 10
+    };
+    
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u;
@@ -80,7 +85,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     
     $scope.quickBoard = [];
     $scope.addToQuickBoard = function(cdeId) {
-        if ($scope.quickBoard.length < 10) {
+        if( $scope.quickBoard.length < GLOBALS.max_quickboard_cdes ) {
             $scope.quickBoard.push(cdeId.uuid);
         }
     };
@@ -137,7 +142,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };    
 
     $scope.showCompareButton = function(cde) {
-        return $scope.quickBoard.length < 10 &&
+        return $scope.quickBoard.length < GLOBALS.max_quickboard_cdes &&
                cde !== undefined &&
                $scope.quickBoard.indexOf(cde.uuid) < 0;
     };

@@ -1,12 +1,11 @@
 <div class="container-fluid">
     <h1 class="page-header">Quick Board</h1>
 
-    <div ng-if="cdes.length <= 0" >
-        <div class="container">
-            <h3>The quick board is empty.</h3>
-            <p>Note: Click on <i class="fa fa-plus"></i> to add a CDE to the quick board. <a href="#/search">Go to the search page and get started.</a></p>
-        </div>
+    <div ng-show="cdes.length < 1" class="container">
+        <h3>The quick board is empty.</h3>
+        <p>Note: Click on <i class="fa fa-plus"></i> to add a CDE to the quick board. <a href="#/search">Go to the search page and get started.</a></p>
     </div>
+
     <div ng-if="cdes.length > 0" >
         <form class="form-inline">
             <button id="qb.accordion" ng-hide="isAccordionView" value="Accordion View" ng-click="showAccordionView()" class="btn btn-default">

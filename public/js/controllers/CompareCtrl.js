@@ -21,19 +21,16 @@ function CompareCtrl($scope, CdeList) {
         return false;
     };
     
-    if ($scope.quickBoard.length >= 2) {
-        for (var i = 0; i < $scope.quickBoard.length; i++) {
-            CdeList.byUuidList( $scope.quickBoard, function( result ) {
-                if( result ) {
-                    
-                    $scope.cdes = result;
-                    if ($scope.cdes.length === 2) {
-                        $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);
-                        $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
-                    }
+    if ($scope.quickBoard.length === 2) {
+        CdeList.byUuidList( $scope.quickBoard, function( result ) {
+            if( result ) {
+                $scope.cdes = result;
+                if ($scope.cdes.length === 2) {
+                    $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);
+                    $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
                 }
-            });
-        }
+            }
+        });
     }
         
     function lowerCompare(item1, item2) {
