@@ -154,7 +154,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     @Test
     public void randomDatatype() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName("Axillary Surgery");
+        String cdeName = "CTC Adverse Event Apnea Grade";
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));
         findElement(By.id("editDatatype")).click();
@@ -165,7 +166,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(".1");
         modalHere();
         saveCde();
-        goToCdeByName("Axillary Surgery");
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();        
         Assert.assertTrue(textPresent("java.lang.Date"));
     }

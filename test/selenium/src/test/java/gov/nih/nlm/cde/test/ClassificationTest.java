@@ -6,7 +6,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.openqa.selenium.support.ui.Select;
 
 public class ClassificationTest extends NlmCdeBaseTest {  
     private void addClassificationMethod(String[] categories){
