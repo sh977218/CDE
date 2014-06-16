@@ -1,5 +1,5 @@
 var mongo_data = require('../node-js/mongo-data')
-, classificationShared = require('../shared/classification');
+, classificationShared = require('../shared/classificationShared');
 
 exports.removeOrgClassification = function(request, callback) {   
     mongo_data.orgByName(request.orgName, function(stewardOrg) {
