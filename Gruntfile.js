@@ -23,14 +23,37 @@ module.exports = function(grunt) {
                     url: config.elasticUri
                     , method: 'POST'
                     , body: function() {
-                        return JSON.stringify(elastic.creadeIndexJson);
+                        return JSON.stringify(elastic.createIndexJson);
                     }
                 }
-            }   
-        }        
+            } 
+            , elasticDeleteRiver: {
+                options: {
+                    url: config.elasticRiverUri
+                    , method: 'DELETE'
+                }
+            }
+            , elasticCreateRiver: {
+                options: {
+                    url: config.elasticRiverUri
+                    , method: 'POST'
+                    , body: function() {
+                        return JSON.stringify(elastic.createRiverJson);                       
+                    }                    
+                }
+            }             
+        }   
+        
+        ,'node-inspector': {
+            dev: {}
+        }
     });
+    grunt.loadNpmTasks('grunt-node-inspector');
+    
     grunt.loadNpmTasks('grunt-git');
     grunt.loadNpmTasks('grunt-http');
-    grunt.registerTask('elastic', ['http:elasticDeleteIndex', 'http:elasticCreateIndex']);
-    grunt.registerTask('default', ['gitpull','elastic']);
+    grunt.registerTask('git', ['gitpull']);
+    grunt.registerTask('elastic', ['http']);
+    grunt.registerTask('default', ['git','elastic']);
+    
 };
