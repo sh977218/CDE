@@ -12,7 +12,8 @@ logConn.once('open', function callback () {
     });    
     
     
-// w = 0 means write very fast. It's ok if it fails.     
+// w = 0 means write very fast. It's ok if it fails.   
+// capped means no more than 5 gb for that collection.
 var logSchema = new mongoose.Schema(
 {
     level: String
@@ -24,7 +25,7 @@ var logSchema = new mongoose.Schema(
         , date: Date
         , referrer: String
     }    
-}, { safe: {w: 0}});
+}, { safe: {w: 0}, capped: 5368709120});
 logSchema.index({remoteAddr: 1});
 logSchema.index({url: 1});
 logSchema.index({httpStatus: 1});

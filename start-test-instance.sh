@@ -2,6 +2,7 @@
 
 export PORT=3001
 export MONGO_URI=mongodb://localhost/test
+export MONGO_LOG_URI=mongodb://localhost/cde-logs-test
 export MONGO_HOST=localhost
 export MONGO_DB=test
 export VSAC_HOST=localhost
@@ -9,6 +10,8 @@ export VSAC_PORT=4000
 export ELASTIC_URI=http://localhost:9200/cdetest/
 
 mongo test test/dbInit.js
+mongo cde-logs-test test/logInit.js
+
 
 groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml --testMode
 groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx --testMode
