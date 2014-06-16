@@ -59,6 +59,7 @@ public class UserTest extends NlmCdeBaseTest {
     public void viewingHistory() {
         mustBeLoggedInAs(history_username, history_password);
         goToCdeByName("Patient Eligibility Ind-2");
+        hangon(1);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         Assert.assertTrue(textPresent("Patient Eligibility Ind-2"));
@@ -74,6 +75,7 @@ public class UserTest extends NlmCdeBaseTest {
         goToCdeByName("Treatment Text Other Text");
         goToCdeByName("Specimen Block Received Count");
         goToCdeByName("Malignant Neoplasm Metastatic Involvement Anatomic");
+        hangon(1);
         
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();

@@ -1,17 +1,18 @@
 <div accordion close-others="false">
     <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
         <div accordion-heading>
-            <div>
             <span id="acc_link_{{$index}}" class="hand-cursor">{{cde.naming[0].designation}}</span>   
             <i class="fa fa-eye hand-cursor" ng-click="cdeIconAction(cde,'view',$event)" title="View"></i>
             <% if (ejsPage!="board") { %>
                 <i ng-show="user._id" class="fa fa-thumb-tack hand-cursor" ng-click="cdeIconAction(cde,'openPinModal',$event)" title="Pin"> </i>
             <% } else { %>
                 <i ng-show="user._id" class="fa fa-thumb-tack fa-rotate-90 hand-cursor" ng-click="unpin(board.pins[$index])" title="unPin" id="unpin_{{$index}}"> </i>
-            <% } %>
-            <i ng-show="showCompareButton(cde)" class="fa fa-plus hand-cursor" ng-click="cdeIconAction(cde,'addToCompareCart',$event)" title="Compare"></i>
+            <% } %>            
+            <i ng-show="showCompareButton(cde)" class="fa fa-plus hand-cursor" ng-click="cdeIconAction(cde,'addToQuickBoard',$event)" title="Add to Quick Board"></i>
             <!--<span class="pull-right">{{cde.score}}</span>-->
-            </div>
+
+            <!-- TODO: remove all EJS references -->
+            <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-hide="<%= ejsPage!='quickboard' %>" ng-click="removeDE($index)" title="remove" id="remove_{{$index}}"></i>
         </div>
         <div class="row">
             <div class="col-md-6">
@@ -31,7 +32,7 @@
             <% } else { %>
                 <a ng-show="user._id" class="btn btn-small btn-default" ng-click="unpin(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack fa-rotate-90" title="unPin"></i> Remove from Board</a>
             <% } %>
-            <a ng-show="showCompareButton(cde)" class="btn btn-small btn-default" ng-click="addToCompareCart(cde)" title="Add to Compare List" id="compare_{{$index}}"><i class="fa fa-plus"></i> Compare</a>
+            <a ng-show="showCompareButton(cde)" class="btn btn-small btn-default" ng-click="addToQuickBoard(cde)" title="Add to Quick Board" id="compare_{{$index}}"><i class="fa fa-plus"></i> Add to Quick Board</a>
        </div>
     </div>
 </div>
