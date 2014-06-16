@@ -6,7 +6,6 @@ var mongoose = require('mongoose')
     , Grid = require('gridfs-stream')
     , fs = require('fs')
     , envconfig = require('../envconfig')
-    , classification = require('./classification')
     ;
 
 var mongoUri = process.env.MONGO_URI || envconfig.mongo_uri || 'mongodb://localhost/nlmcde';
@@ -31,6 +30,8 @@ var Message = conn.model('Message', schemas.message);
 var gfs = Grid(conn.db, mongoose.mongo);
 
 exports.pVCodeSystemList = [];
+
+exports.DataElement = DataElement;
 
 exports.boardsByUserId = function(userId, callback) {
     PinningBoard.find({"owner.userId": userId}).exec(function (err, result) {
@@ -60,44 +61,6 @@ exports.org_autocomplete = function(name, callback) {
     Org.find({"name": new RegExp(name, 'i')}, function(err, orgs) {
         callback(orgs);
     }); 
-};
-
-exports.removeOrgClassification = function(request, callback) {
-    Org.findOne({"name": request.orgName}).exec(function (err, stewardOrg) {     
-        classification.deleteCategory(stewardOrg.classifications, request.categories);
-        stewardOrg.markModified("classifications");
-        stewardOrg.save(function (err) {
-            var query = {"classification.stewardOrg.name": request.orgName};
-            for (var i = 0; i<request.categories.length; i++) {
-                var key = "classification";
-                for (var j = 0; j<=i; j++) key += ".elements";
-                key += ".name";
-                query[key] = request.categories[i];
-            }            
-            DataElement.find(query).exec(function(err, result) {
-                for (var i = 0; i < result.length; i++) {
-                    var cde = result[i];
-                    var steward = classification.findSteward(cde, request.orgName);   
-                    classification.deleteCategory(steward.object.elements, request.categories);
-                    cde.markModified("classification");
-                    cde.save(function(err) {
-                    });
-                };
-            });            
-            if(callback) callback(err, stewardOrg);
-        });
-    });    
-};
-
-exports.addOrgClassification = function(body, cb) {
-    var categories = body.categories;
-    Org.findOne({"name": body.orgName}).exec(function(err, stewardOrg) {
-        classification.addCategory(stewardOrg.classifications, categories);
-        stewardOrg.markModified("classifications");
-        stewardOrg.save(function (err) {
-            if(cb) cb(err, stewardOrg);
-        });
-    });
 };
 
 exports.getFile = function(callback, res, id) {
@@ -278,7 +241,7 @@ exports.cdesByUuidList = function(idList, callback) {
             .in(idList)
             .slice('valueDomain.permissibleValues', 10)
             .exec(function(err, cdes) {
-       callback("", cdes); 
+        callback("", cdes); 
     });
 };
 
@@ -412,6 +375,7 @@ exports.saveCde = function(req, callback) {
             newDe.valueDomain = req.body.valueDomain;
             newDe.attachments = req.body.attachments;
             newDe.ids = req.body.ids;
+            newDe.classification = req.body.classification;
             dataElement.archived = true;
             
             if (newDe.naming.length < 1) {

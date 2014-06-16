@@ -40,12 +40,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
          } 
     };
 
-    $scope.isInConceptSystem = function(system) {
-        return function(classi) {
-            return classi.conceptSystem === system;
-        };
-    };
-
     $scope.isAllowedNonCuration = function (cde) {
         if ($scope.initialized && cde.archived) {
             return false;

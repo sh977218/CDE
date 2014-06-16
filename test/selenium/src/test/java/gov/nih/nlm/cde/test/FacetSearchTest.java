@@ -13,7 +13,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void stewardFacets() {
         goToSearch();
-        Assert.assertTrue(textPresent("CCR (49)"));
+        Assert.assertTrue(textPresent("GRDR (75)"));
     }
 
     @Test
