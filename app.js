@@ -454,7 +454,7 @@ app.post('/addOrg', function(req, res) {
 });
 
 app.delete('/classification/org', function(req, res) {
-    if (!app.isCuratorOf(req.user, req.query.orgName)) {
+    if (!usersvc.isCuratorOf(req.user, req.query.orgName)) {
         res.send(403);
         return;
     }  
@@ -464,7 +464,7 @@ app.delete('/classification/org', function(req, res) {
 });
 
 app.post('/classification/org', function(req, res) {
-    if (!app.isCuratorOf(req.user, req.body.orgName)) {
+    if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
         res.send(403);
         return;
     }      
@@ -474,7 +474,7 @@ app.post('/classification/org', function(req, res) {
 });
 
 app.delete('/classification/cde', function(req, res) {
-    if (!app.isCuratorOf(req.user, req.query.orgName)) {
+    if (!usersvc.isCuratorOf(req.user, req.query.orgName)) {
         res.send(403, "Not Authorized");
         return;
     }  
@@ -489,7 +489,7 @@ app.delete('/classification/cde', function(req, res) {
 });
 
 app.post('/classification/cde', function(req, res) {
-    if (!app.isCuratorOf(req.user, req.body.orgName)) {
+    if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
         res.send(403, "Not Authorized");
         return;
     }      
@@ -745,11 +745,6 @@ app.post('/addAttachmentToCde', function(req, res) {
         });
     });
 });
-
-app.isCuratorOf = function(user, orgName){
-    if (!user) return false;
-    return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
-};
 
 app.post('/classification/cde/moveclassif', function(req, res) {
     classificationNode.moveClassifications(req, function(err, cde) {
