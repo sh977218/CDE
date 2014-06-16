@@ -1,5 +1,6 @@
 var mongo_data = require('../node-js/mongo-data')
-, classificationShared = require('../shared/classification');
+, usersvc = require('./usersvc')
+, classificationShared = require('../shared/classificationShared');
 
 exports.removeOrgClassification = function(request, callback) {   
     mongo_data.orgByName(request.orgName, function(stewardOrg) {
@@ -68,26 +69,24 @@ exports.cdeClassification = function(body, action, cb) {
     });     
 };
 
- exports.addList = function(request, cb) {
+exports.moveClassifications = function(request, cb) {
     var mongo_data = require('../node-js/mongo-data');
-    mongo_data.cdeById(request.cde._id, function(err, cde) {
-        request.classifications.forEach(function(c) {
-            var steward = classificationShared.findSteward(cde, c[0]);
-            if (!steward) {
-                cde.classification.push({
-                    stewardOrg: {
-                        name: c[0]
-                    }
-                    , elements: []
-                });
-                steward = classificationShared.findSteward(cde, c[0]);
-            }        
-            classificationShared.addCategory(steward.object.elements, c.slice(1), function(err) {   
-            });             
-        });
-        cde.markModified('classification');
-        cde.save(function() {
-            if (cb) cb(err);
-        });         
+    mongo_data.cdesByUuidList([request.body.cdeSource.uuid, request.body.cdeTarget.uuid], function(err, cde) {
+        var source = null;
+        var destination = null;
+        if (cde[0].uuid === request.body.cdeSource.uuid) {
+            source = cde[0];
+            destination = cde[1];
+        } else {
+            source = cde[1];
+            destination = cde[0];            
+        }
+        if (!usersvc.isCuratorOf(request.user, source.stewardOrg.name)) {
+            res.send(403);
+            return;
+        }              
+        classificationShared.transferClassifications(source, destination);
+        source.markModified('classification');
+        source.save(cb);
     });
  };

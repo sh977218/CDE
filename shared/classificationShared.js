@@ -70,3 +70,31 @@ exports.addCategory = function(tree, fields, cb) {
     if (cb) cb();
 };
 
+exports.treeChildren = function(tree, path, cb) {
+    var classification = this;
+    tree.elements.forEach(function(element) {
+        var newpath = path.slice(0);
+        newpath.push(element.name);
+        if (element.elements.length>0) {
+            classification.treeChildren(element, newpath, cb);
+        } else {
+            cb(newpath);
+        }
+    });
+};
+exports.transferClassifications = function (source, destination) {
+    var classification = this;
+    source.classification.forEach(function(stewardOrgSource){
+        var st = exports.findSteward(destination, stewardOrgSource.stewardOrg.name);
+        if (st) {
+            var stewardOrgDestination = st.object;
+        } else {
+            destination.classification.push({stewardOrg: {name: stewardOrgSource.stewardOrg.name}, elements: []});
+            var stewardOrgDestination = destination.classification[destination.classification.length-1];
+        }
+        stewardOrgDestination.name = stewardOrgDestination.stewardOrg.name;
+        classification.treeChildren(stewardOrgSource, [], function(path){
+            classification.addCategory(stewardOrgDestination.elements, path, function(){});
+        });
+    });
+};

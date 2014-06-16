@@ -30,17 +30,16 @@ angular.module('resources')
         }
     };
 })
-.factory('CdeClassificationList', function($http) {
+.factory('CdeClassificationTransfer', function($http) {
     return {
-        addList: function(cde, classifications, cb) {
+        byUuids: function(uuidSource, uuidTarget, cb) {
             var request = {
-                cde: {_id: cde._id},
-                classifications: classifications
+                cdeSource: {uuid: uuidSource},
+                cdeTarget: {uuid: uuidTarget}
             };
-            $http.post('/classification/cde/addlist', request).success(function() {
-                cb(cde);
-            }).error(cb);
+            $http.post('/classification/cde/moveclassif', request).success(cb).error(cb);
         }
     };
 })
+
 ;

@@ -10,7 +10,7 @@ var express = require('express')
   , crypto = require('crypto')
   , LocalStrategy = require('passport-local').Strategy
   , mongo_data = require('./node-js/mongo-data')
-  , classificationNode = require('./node-js/classification')
+  , classificationNode = require('./node-js/classificationNode')
   , util = require('util')
   , xml2js = require('xml2js')
   , vsac = require('./node-js/vsac-io')
@@ -454,7 +454,7 @@ app.post('/addOrg', function(req, res) {
 });
 
 app.delete('/classification/org', function(req, res) {
-    if (!app.isCuratorOf(req.user, req.query.orgName)) {
+    if (!usersvc.isCuratorOf(req.user, req.query.orgName)) {
         res.send(403);
         return;
     }  
@@ -464,7 +464,7 @@ app.delete('/classification/org', function(req, res) {
 });
 
 app.post('/classification/org', function(req, res) {
-    if (!app.isCuratorOf(req.user, req.body.orgName)) {
+    if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
         res.send(403);
         return;
     }      
@@ -474,8 +474,8 @@ app.post('/classification/org', function(req, res) {
 });
 
 app.delete('/classification/cde', function(req, res) {
-    if (!app.isCuratorOf(req.user, req.query.orgName)) {
-        res.send(202, {error: {message: "User is not admin/curator of the org."}});
+    if (!usersvc.isCuratorOf(req.user, req.query.orgName)) {
+        res.send(403, "Not Authorized");
         return;
     }  
     classificationNode.cdeClassification(req.query, "remove", function(err) {
@@ -489,16 +489,15 @@ app.delete('/classification/cde', function(req, res) {
 });
 
 app.post('/classification/cde', function(req, res) {
-    if (!app.isCuratorOf(req.user, req.body.orgName)) {
-        res.send(202, {error: {message: "User is not admin/curator of the org."}});
+    if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
+        res.send(403, "Not Authorized");
         return;
     }      
     classificationNode.cdeClassification(req.body, "add", function(err) {
         if (!err) { 
-            res.send(); 
+            res.send({ code: 200, msg: "Classification Added"}); 
         } else {
-            res.send(202, {error: {message: "Classification already exists."}});
-            res.send();
+            res.send({ code: 403, msg: "Classification Already Exists"}); 
         }
         
     });
@@ -747,15 +746,9 @@ app.post('/addAttachmentToCde', function(req, res) {
     });
 });
 
-app.isCuratorOf = function(user, orgName){
-    if (!user) return false;
-    return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
-};
-
-app.post('/classification/cde/addlist', function(req, res) {
-    if (!req.user.orgAdmin.concat(req.user.orgCurator).length>0) res.send(403);
-    classificationNode.addList(req.body, function(err) {
-       if(!err) res.send();
+app.post('/classification/cde/moveclassif', function(req, res) {
+    classificationNode.moveClassifications(req, function(err, cde) {
+       if(!err) res.send(cde);
     });
 });
 

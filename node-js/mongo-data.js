@@ -242,7 +242,7 @@ exports.cdesByUuidList = function(idList, callback) {
             .in(idList)
             .slice('valueDomain.permissibleValues', 10)
             .exec(function(err, cdes) {
-       callback("", cdes); 
+        callback("", cdes); 
     });
 };
 
