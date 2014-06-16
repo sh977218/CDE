@@ -194,11 +194,10 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", httpStatus: ":status",date: ":date"};
+var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
 
 app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream}));
 
-//app.use(express.logger({format: "{remoteAddr: \":remote-addr\"}", stream: winstonStream}));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/shared", express.static("shared", path.join(__dirname, 'shared')));

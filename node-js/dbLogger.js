@@ -11,7 +11,28 @@ logConn.once('open', function callback () {
 	console.log('logger connection open');
     });    
     
-var LogModel = logConn.model('DbLogger', mongoose.Schema({any: {}}, { strict: false }));
+    
+// w = 0 means write very fast. It's ok if it fails.     
+var logSchema = new mongoose.Schema(
+{
+    level: String
+    , msg: {
+        remoteAddr: String
+        , url: String
+        , method: String
+        , httpStatus: Number
+        , date: Date
+        , referrer: String
+    }    
+}, { safe: {w: 0}});
+logSchema.index({remoteAddr: 1});
+logSchema.index({url: 1});
+logSchema.index({httpStatus: 1});
+logSchema.index({date: 1});
+logSchema.index({referrer: 1});
+
+// w = 0 means write very fast. It's ok if it fails.     
+var LogModel = logConn.model('DbLogger', logSchema);
 
 exports.log = function(message, callback) {
     var logEvent = new LogModel(message);
