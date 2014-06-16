@@ -67,12 +67,11 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     private void createClassificationName(String[] categories) {
         findElement(By.id("addClassification")).click(); 
         modalHere();
-        for (int i=0; i<categories.length-1; i++) {
-            findElement(By.id("addClassification-" + categories[i])).click();       
+        for (int i=0; i<categories.length-1; i++) {   
+            findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();       
         }
         findElement(By.id("addNewCatName")).sendKeys(categories[categories.length-1]);   
         findElement(By.id("addClassificationButton")).click(); 
-        Assert.assertTrue(textPresent("Classification Added"));
         String selector = "";
         for (int i=0; i<categories.length; i++) {
             selector += categories[i];
@@ -87,7 +86,15 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         gotoClassifMgt();
         Assert.assertTrue(textPresent("Headache"));
         createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI"});
+        hangon(1);
         createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI","Contrast T1"});
-        //TODO: Classify CDE as this one
     }
+    
+    @Test
+    public void link() {
+        mustBeLoggedInAs("ninds", "pass");
+        gotoClassifMgt();
+        Assert.assertTrue(textPresent("Headache"));
+
+    }    
 }

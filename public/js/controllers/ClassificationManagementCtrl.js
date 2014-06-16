@@ -1,4 +1,4 @@
-function ClassificationManagementCtrl($scope, $http, $modal, $route, Classification, OrgClassification) {
+function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassification) {
     if ($scope.myOrgs.length > 0) {
         $scope.orgToManage = $scope.myOrgs[0];
     }
@@ -29,13 +29,6 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, Classificat
             $scope.addAlert("success", "Classification Deleted");
         });
     };    
-    
-    $scope.isInConceptSystem = function(system) {
-        return function(classi) {
-            return classi.conceptSystem === system;
-        };
-    };
-
     
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({

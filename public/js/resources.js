@@ -41,25 +41,6 @@ angular.module('resources', ['ngResource'])
           }
         };
     })
-    .factory("Classification", function($http) {
-        return {
-          remove: function(dat, success, error) {
-              $http.post('/removeClassification', dat).success(success).error(error);
-          }
-          , add :function(dat, success, error) {
-              $http.post('/addClassification', dat).success(success).error(error);
-          }
-          , addToOrg: function(dat, success, error) {
-              $http.post('/addClassificationToOrg', dat).success(success).error(error);              
-          }
-          , addListToCde: function(dat, success, error) {
-              $http.post('/addClassificationGroup', dat).success(success).error(error);
-          }
-        };
-    })
-    .factory('OrgClassification', function($resource) {
-        return $resource('/classification/org');
-    })    
     .factory("UsedBy", function($http) {
         return {
           remove: function(dat, success, error) {
@@ -129,35 +110,7 @@ angular.module('resources', ['ngResource'])
         return $resource('/board/:id/:start', {id: '@id', start: '@start'}, 
             {'getCdes': {method: 'GET', isArray: true}});
     })
-    .factory('MergeRequest', function(Mail) {
-        return {
-          create: function(dat, success, error) {              
-              var message = {
-                  recipient: {recipientType: "stewardOrg", name: dat.recipient},
-                  author: {authorType: "user", name: dat.author},
-                  date: new Date(),
-                  type: "Merge Request",
-                  typeMergeRequest: dat.mergeRequest
-              };
-              Mail.sendMessage(message, success);
-          }
-        };
-    })   
-    .factory('Mail', function($http) {
-        return {
-            sendMessage: function(dat, success, error) {              
-                $http.post('/mail/messages/new', dat).success(success).error(error);
-            },
-            getMail: function(type, query, cb) {              
-                $http.post("/mail/messages/"+type, query).then(function(response) {
-                    cb(response.data);
-                });
-            },
-            updateMessage: function(msg, success, error) {
-                $http.post('/mail/messages/update', msg).success(success).error(error);
-            }
-        };        
-    }) 
+
     .factory('CdeList', function($http) {
         return {
             byUuidList: function(ids, cb) {              
@@ -184,5 +137,13 @@ angular.module('resources', ['ngResource'])
                 });
             }
         };
-    })      
-    ;
+    }) 
+    .factory("Organization", function($http) {
+        return {
+            getByName: function(orgName, cb) {
+                $http.get("/org/" + orgName).then(function(response) {
+                   if (cb) cb(response);
+                });
+            }
+        };
+    });

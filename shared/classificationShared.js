@@ -1,5 +1,4 @@
-var mongo_data = require('./mongo-data')
-    , cdesvc = require('./cdesvc');
+if (typeof(exports)==="undefined") exports = {};
 
 exports.findSteward = function(de, orgName) {
     for (var i = 0; i < de.classification.length; i++) {
@@ -25,39 +24,7 @@ exports.addElement = function (conceptSystem, concept) {
     return {index:0, object: conceptSystem.elements[conceptSystem.elements.length-1]};
 };
 
-exports.removeClassificationFromTree = function(sourceElements, pathElements) {
-    if (pathElements.length > 0) {
-        for (var i = 0; i < sourceElements.length; i++) {
-           if (sourceElements[i].name === pathElements[0]) {
-               if (pathElements.length > 1) {
-                   pathElements.splice(0, 1);
-                   this.removeClassificationFromTree(sourceElements[i].elements, pathElements);
-               } else {
-                   sourceElements.splice(i, 1);
-               }
-           }             
-        }
-    }
-};
-
-exports.addClassificationToCde = function (dat, res) {
-    mongo_data.cdeById(dat.deId, function(err, de) {
-        if (err) {
-            res.statusCode = 404;
-            return res.send(err);
-        }
-        cdesvc.addClassificationToCde(de, dat.classification.orgName, dat.classification.conceptSystem, dat.classification.concept);
-        return de.save(function(err) {
-            if (err) {
-                res.send("error: " + err);
-            } else {
-                res.send(de);
-            }
-        });        
-    });    
-};
-
-exports.fetchLastLevel = function(tree, fields, cb) {
+exports.fetchLastLevel = function(tree, fields, mode) {
     var classifications = this;
     var subTree = tree;
     this.findCategory = function(subTree, catname) {
@@ -66,6 +33,10 @@ exports.fetchLastLevel = function(tree, fields, cb) {
                 if (!subTree[i].elements) subTree[i].elements = [];
                 return subTree[i].elements;
             }
+        }
+        if (mode === "create") {
+            subTree.push({name: catname, elements: []});
+            return subTree[subTree.length-1].elements;
         }
         return null;
     };
@@ -89,7 +60,41 @@ exports.deleteCategory = function(tree, fields, cb) {
 
 exports.addCategory = function(tree, fields, cb) {
     var classification = this;
-    var lastLevel = classification.fetchLastLevel(tree, fields);
+    var lastLevel = classification.fetchLastLevel(tree, fields, "create");
+    for (var i=0; i<lastLevel.length; i++) {
+        if (lastLevel[i].name === fields[fields.length-1]) { 
+            if (cb) return cb("Cannot Delete");
+        }
+    }
     if (lastLevel) lastLevel.push({name: fields[fields.length-1], elements:[]});
     if (cb) cb();
+};
+
+exports.treeChildren = function(tree, path, cb) {
+    var classification = this;
+    tree.elements.forEach(function(element) {
+        var newpath = path.slice(0);
+        newpath.push(element.name);
+        if (element.elements.length>0) {
+            classification.treeChildren(element, newpath, cb);
+        } else {
+            cb(newpath);
+        }
+    });
+};
+exports.transferClassifications = function (source, destination) {
+    var classification = this;
+    source.classification.forEach(function(stewardOrgSource){
+        var st = exports.findSteward(destination, stewardOrgSource.stewardOrg.name);
+        if (st) {
+            var stewardOrgDestination = st.object;
+        } else {
+            destination.classification.push({stewardOrg: {name: stewardOrgSource.stewardOrg.name}, elements: []});
+            var stewardOrgDestination = destination.classification[destination.classification.length-1];
+        }
+        stewardOrgDestination.name = stewardOrgDestination.stewardOrg.name;
+        classification.treeChildren(stewardOrgSource, [], function(path){
+            classification.addCategory(stewardOrgDestination.elements, path, function(){});
+        });
+    });
 };
