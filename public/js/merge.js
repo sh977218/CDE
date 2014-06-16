@@ -1,4 +1,5 @@
-angular.module('resources').factory('MergeCdes', function(DataElement, Classification, CDE) {
+angular.module('resources')
+.factory('MergeCdes', function(DataElement, CDE, CdeClassificationTransfer) {
     var service = this;
     service.approveMergeMessage = function(message) { 
         service.approveMerge(message.typeMergeRequest.source.object, message.typeMergeRequest.destination.object, message.typeMergeRequest.fields, function() {
@@ -13,15 +14,17 @@ angular.module('resources').factory('MergeCdes', function(DataElement, Classific
                 service.transferFields(service.source, service.destination, field);
             }
         });
-        var classif = function(cde) {
-                service.transferClassifications(cde, function() {
-                    service.retireSource(service.source, service.destination, function() {
-                        if (callback) callback(cde);
-                    });                     
-                });
-            };
-        if (fields.ids || fields.properties || fields.naming) DataElement.save(service.destination, classif);
-        else classif(service.destination);
+       
+        if (fields.ids || fields.properties || fields.naming) {
+            exports.transferClassifications(service.source, service.destination);
+            DataElement.save(service.destination, function (cde) {
+                service.retireSource(service.source, service.destination, function() {
+                    if (callback) callback(cde);
+                });             
+            });
+        } else {
+            CdeClassificationTransfer.byUuids(service.source.uuid, service.destination.uuid, callback);
+        }
     };
     service.transferFields = function(source, destination, type) {
         if (!source[type]) return;
@@ -35,31 +38,40 @@ angular.module('resources').factory('MergeCdes', function(DataElement, Classific
             destination[type].push(obj);
         });
     };
-    service.transferClassifications = function (target, callback) {
-        var classifications = [];
-        service.source.classification.forEach(function(stewardOrgClassifications) {
-            var orgName = stewardOrgClassifications.stewardOrg.name;
-            stewardOrgClassifications.elements.forEach(function(conceptSystem) {
-                var conceptSystemName = conceptSystem.name;
-                conceptSystem.elements.forEach(function(concept) {
-                    var conceptName = concept.name;
-                    classifications.push({
-                        orgName: orgName
-                        , conceptSystem: conceptSystemName                      
-                        , concept: conceptName                                
-                    });   
-                });
-            });
-        });
-        Classification.addListToCde({
-            classifications: classifications
-            , deId: target._id
-        }, callback);
-    };
+
     service.retireSource = function(source, destination, cb) {
         CDE.retire(source, function() {
             if (cb) cb();
         });
     }; 
     return service;
-});
+})   
+.factory('MergeRequest', function(Mail) {
+    return {
+        create: function(dat, success, error) {              
+            var message = {
+                recipient: {recipientType: "stewardOrg", name: dat.recipient},
+                author: {authorType: "user", name: dat.author},
+                date: new Date(),
+                type: "Merge Request",
+                typeMergeRequest: dat.mergeRequest
+            };
+            Mail.sendMessage(message, success);
+        }
+    };
+})   
+.factory('Mail', function($http) {
+    return {
+        sendMessage: function(dat, success, error) {              
+            $http.post('/mail/messages/new', dat).success(success).error(error);
+        },
+        getMail: function(type, query, cb) {              
+            $http.post("/mail/messages/"+type, query).then(function(response) {
+                cb(response.data);
+            });
+        },
+        updateMessage: function(msg, success, error) {
+            $http.post('/mail/messages/update', msg).success(success).error(error);
+        }
+    };        
+}) ;
