@@ -37,10 +37,10 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="100" placeholder="Type search terms here">
+                                <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="1000" placeholder="Type search terms here">
                             </div>
                             <!-- Error display area -->
-                            <p class="error-block" ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><small>Query must be 100 characters or less.</small></p>
+                            <p class="error-block" ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><small>Query must be 1000 characters or less.</small></p>
                         </div>
                         <div class="col-md-4">
                             <!-- Search and reset buttons -->

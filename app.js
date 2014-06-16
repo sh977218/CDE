@@ -207,6 +207,10 @@ app.get('/home', function(req, res) {
   res.render('home');
 });
 
+app.get('/quickBoard', function(req, res) {
+  res.render('quickBoard');
+});
+
 app.get('/exportCdeSearch', function(req, res) {
   res.render('cdeExport');
 });

@@ -1,23 +1,35 @@
-function CompareCtrl($scope, DataElement) {
+function CompareCtrl($scope, CdeList) {
     $scope.setActiveMenu('COMPARE');
     $scope.compareView = true;
     $scope.cdes = [];
     $scope.pvLimit = 30;
     
+    $scope.initCache();
+    $scope.openAllCompareModel = $scope.cache.get("openAllCompare");
+    
+    $scope.openAllCompare = function( newValue ) {
+        $scope.openAllCompareModel = newValue;
+
+        for (var i = 0; i < $scope.cdes.length; i++) {
+            $scope.cdes[i].isOpen = $scope.openAllCompareModel;
+        }
+        $scope.cache.put("openAllCompare", $scope.openAllCompareModel);
+    };
+    
     $scope.isAllowed = function(cde) {
         return false;
     };
     
-    if ($scope.compareCart.length === 2) {
-        for (var i = 0; i < $scope.compareCart.length; i++) {
-            DataElement.get({deId: $scope.compareCart[i]}, function (de) {
-                $scope.cdes.push(de);
+    if ($scope.quickBoard.length === 2) {
+        CdeList.byUuidList( $scope.quickBoard, function( result ) {
+            if( result ) {
+                $scope.cdes = result;
                 if ($scope.cdes.length === 2) {
                     $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);
                     $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
                 }
-            });
-        } 
+            }
+        });
     }
         
     function lowerCompare(item1, item2) {

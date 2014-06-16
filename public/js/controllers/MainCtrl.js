@@ -1,4 +1,9 @@
 function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, isAllowedModel) {
+    // Global variables
+    var GLOBALS = {
+        max_quickboard_cdes : 10
+    };
+    
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u;
@@ -78,14 +83,15 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         }
     };
     
-    $scope.compareCart = [];
-    $scope.addToCompareCart = function(cdeId) {
-        if ($scope.compareCart.length < 2) {
-            $scope.compareCart.push(cdeId._id);
+    $scope.quickBoard = [];
+    $scope.addToQuickBoard = function(cdeId) {
+        if( $scope.quickBoard.length < GLOBALS.max_quickboard_cdes ) {
+            $scope.quickBoard.push(cdeId.uuid);
         }
     };
-    $scope.emptyCart = function() {
-        $scope.compareCart = [];
+    
+    $scope.emptyQuickBoard = function() {
+        $scope.quickBoard = [];
     };
     
     $scope.cdeIconAction = function (cde, action, event) {
@@ -100,8 +106,8 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             case "openPinModal":
                 $scope.openPinModal(cde);
             break;
-            case "addToCompareCart":
-                $scope.addToCompareCart(cde);
+            case "addToQuickBoard":
+                $scope.addToQuickBoard(cde);
             break;
         }        
     };
@@ -136,8 +142,9 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };    
 
     $scope.showCompareButton = function(cde) {
-        return $scope.compareCart.length < 2 && cde !== undefined &&
-                $scope.compareCart.indexOf(cde._id) < 0;
+        return $scope.quickBoard.length < GLOBALS.max_quickboard_cdes &&
+               cde !== undefined &&
+               $scope.quickBoard.indexOf(cde.uuid) < 0;
     };
     
     // @TODO
@@ -147,7 +154,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         $scope.menuSearch = '';
         $scope.menuForm = '';
         $scope.menuLogin = '';
-        $scope.menuCart = '';
+        $scope.menuQuickBoard = '';
         $scope.menuIntRev = '';
         $scope.menuNlmRev = '';
         $scope.menuAccount = '';
@@ -155,6 +162,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         $scope.menuMyBoards = '';
         $scope.menuBoardList = '';
         $scope.menuCompare = '';
+        $scope.menuQuickBoard = '';
         
         if (key === 'HOME') {
             $scope.menuHome = 'active';
@@ -164,8 +172,8 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             $scope.menuLogin = 'active';
         } else if (key === 'LISTFORMS') {
             $scope.menuForm = 'active';
-        } else if (key === 'CART') {
-            $scope.menuCart = 'active';
+        } else if (key === 'QUICKBOARD') {
+            $scope.menuQuickBoard = 'active';
         } else if (key === 'INTREV') {
             $scope.menuIntRev = 'active';
         } else if (key === 'NLMREV') {
@@ -180,6 +188,8 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             $scope.menuBoardList = 'active';
         } else if (key === 'COMPARE') {
             $scope.menuCompare = 'active';
+        } else if (key === 'QUICKBOARD') {
+            $scope.menuQuickBoard = 'active';
         }
     };
 
@@ -197,8 +207,8 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         } else {
             $scope.cache = $cacheFactory.get("deListCache");
         }        
-    };   
-    
+    };
+
     $scope.cacheOrgFilter = function(t) {
         $scope.cache.put("selectedOrg", t);       
     };
@@ -212,6 +222,23 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         return isAllowedModel.isAllowed($scope, cde);  
     };
     
+    $scope.initCache(); 
+    $scope.openCloseAllModel = {};
+    $scope.openCloseAllModel["list"] = $scope.cache.get("openCloseAlllist");
+    $scope.openCloseAllModel["quickboard"] = $scope.cache.get("openCloseAllquickboard");
+    
+    $scope.openCloseAllSwitch = function(type) {
+        $scope.openCloseAllModel[type] = !$scope.openCloseAllModel[type];
+    };
+    
+    $scope.openCloseAll = function(cdes, type) {
+        for (var i = 0; i < cdes.length; i++) {
+            cdes[i].isOpen = $scope.openCloseAllModel[type];
+        }
+        
+        $scope.cache.put("openCloseAllModel"+type, $scope.openCloseAllModel[type]);
+    };
+
     $scope.searchByClassification = function(orgName, elts) {
         $scope.cache.removeAll();
         $scope.cacheOrgFilter(orgName);
