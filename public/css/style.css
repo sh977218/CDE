@@ -107,3 +107,11 @@ body {
     width: auto; 
     height: 600px;
 }
+
+#classifyCdeSelectOrg {
+    padding-bottom: 10px;
+}
+
+.navbar-fixed-bottom {
+    z-index: 10000!important;
+}

@@ -237,5 +237,11 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         }
         
         $scope.cache.put("openCloseAllModel"+type, $scope.openCloseAllModel[type]);
+    };
+
+    $scope.searchByClassification = function(orgName, elts) {
+        $scope.cache.removeAll();
+        $scope.cacheOrgFilter(orgName);
+        $scope.cache.put("selectedElements", elts);
     };    
 }

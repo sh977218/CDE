@@ -239,3 +239,8 @@ exports.removePinFromBoard = function(req, res) {
         }
     });
 };
+
+exports.isCuratorOf = function(user, orgName){
+    if (!user) return false;
+    return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
+};

@@ -1,17 +1,5 @@
- function ClassificationCtrl($scope, $modal, Classification) {
+ function ClassificationCtrl($scope, $modal, $route, $routeParams, CdeClassification) {
     $scope.initCache(); 
-     
-    $scope.removeClassification = function(orgName, elts) {
-        Classification.remove({
-            orgName: orgName
-            , elements: elts
-            , deId: $scope.cde._id 
-        }, 
-        function (res) {
-            $scope.cde = res;
-            $scope.addAlert("success", "Classification Removed");
-        });
-    };     
     
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
@@ -20,26 +8,31 @@
           resolve: {
               myOrgs: function() {
                   return $scope.myOrgs;
-              }   
+              }
+              , cde: function() {
+                  return $scope.cde;
+              }
+              , addAlert: function() {
+                  return $scope.addAlert;
+              }
           }          
         });
 
-        modalInstance.result.then(function (newClassification) {
-            Classification.add({
-                classification: newClassification
-                , deId: $scope.cde._id
-            }, function (res) {
-                $scope.addAlert("success", "Classification Added");
-                $scope.cde = res;
-            });
+        modalInstance.result.then(function () {
+            $scope.reload($routeParams);
         });
-    };
-    
-    $scope.searchByClassification = function(orgName, elts) {
-        $scope.cache.removeAll();
-        $scope.cacheOrgFilter(orgName);
-        $scope.cache.put("selectedElements", elts);
-    };
-    
+    };    
+     
+    $scope.removeClassification = function(orgName, elts) {
+        CdeClassification.remove({
+            cdeId: $scope.cde._id
+            , orgName: orgName
+            , categories: elts
+        }, function (res) {
+            $scope.reload($routeParams);
+            $scope.addAlert("success", "Classification Deleted");
+        });
+    };     
+  
  }
  

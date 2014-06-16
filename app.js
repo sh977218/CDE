@@ -10,7 +10,7 @@ var express = require('express')
   , crypto = require('crypto')
   , LocalStrategy = require('passport-local').Strategy
   , mongo_data = require('./node-js/mongo-data')
-  , classification = require('./node-js/classification')
+  , classificationNode = require('./node-js/classificationNode')
   , util = require('util')
   , xml2js = require('xml2js')
   , vsac = require('./node-js/vsac-io')
@@ -174,6 +174,7 @@ app.use(passport.session());
 app.use(express.logger({stream:winstonStream}));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+app.use("/shared", express.static("shared", path.join(__dirname, 'shared')));
 
 app.use(function(err, req, res, next){
   expressErrorLogger.error(err.stack);
@@ -457,22 +458,52 @@ app.post('/addOrg', function(req, res) {
 });
 
 app.delete('/classification/org', function(req, res) {
-    if (!app.isCuratorOf(req.user, req.query.orgName)) {
+    if (!usersvc.isCuratorOf(req.user, req.query.orgName)) {
         res.send(403);
         return;
     }  
-    mongo_data.removeOrgClassification(req.query, function() {
+    classificationNode.removeOrgClassification(req.query, function() {
         res.send();
     });
 });
 
 app.post('/classification/org', function(req, res) {
-    if (!app.isCuratorOf(req.user, req.body.orgName)) {
+    if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
         res.send(403);
         return;
     }      
-    mongo_data.addOrgClassification(req.body, function() {
+    classificationNode.addOrgClassification(req.body, function() {
         res.send();
+    });
+});
+
+app.delete('/classification/cde', function(req, res) {
+    if (!usersvc.isCuratorOf(req.user, req.query.orgName)) {
+        res.send(403, "Not Authorized");
+        return;
+    }  
+    classificationNode.cdeClassification(req.query, "remove", function(err) {
+        if (!err) { 
+            res.send(); 
+        } else {
+            res.send(202, {error: {message: "Classification does not exists."}});
+            res.send();
+        }
+    });
+});
+
+app.post('/classification/cde', function(req, res) {
+    if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
+        res.send(403, "Not Authorized");
+        return;
+    }      
+    classificationNode.cdeClassification(req.body, "add", function(err) {
+        if (!err) { 
+            res.send({ code: 200, msg: "Classification Added"}); 
+        } else {
+            res.send({ code: 403, msg: "Classification Already Exists"}); 
+        }
+        
     });
 });
 
@@ -719,52 +750,9 @@ app.post('/addAttachmentToCde', function(req, res) {
     });
 });
 
-app.isCuratorOf = function(user, orgName){
-    if (!user) return false;
-    return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
-};
-
-
-
-app.post('/addClassificationGroup', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err, de) {
-        if (err) {
-            return res.send(err);
-        }
-        req.body.classifications.forEach(function(c) {
-            cdesvc.addClassificationToCde(de, c.orgName, c.conceptSystem, c.concept);
-        });        
-        return de.save(function(err) {
-            if (err) {
-                res.send("error: " + err);
-            } else {
-                res.send(de);
-            }
-        });
-    });
-});
-
-app.post('/addClassification', function(req, res) {
-    if (app.isCuratorOf(req.user,req.body.classification.orgName)) {
-        classification.addClassificationToCde(req.body, res);
-    } else {
-        res.send(403);
-    }
-});
-
-app.post('/removeClassification', function(req, res) {
-    checkCdeOwnership(req.body.deId, req, function(err, de) {
-        if (err) return res.send(err);
-        var steward = classification.findSteward(de, req.body.orgName);          
-        classification.deleteCategory(steward.object.elements, req.body.elements);
-        de.markModified("classification");
-        return de.save(function(err) {
-            if (err) {
-                res.send("error: " + err);
-            } else {
-                res.send(de);
-            }
-        });
+app.post('/classification/cde/moveclassif', function(req, res) {
+    classificationNode.moveClassifications(req, function(err, cde) {
+       if(!err) res.send(cde);
     });
 });
 
