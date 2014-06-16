@@ -1,4 +1,5 @@
 var mongo_data = require('../node-js/mongo-data')
+, app = require("../app")
 , classificationShared = require('../shared/classificationShared');
 
 exports.removeOrgClassification = function(request, callback) {   
@@ -70,9 +71,13 @@ exports.cdeClassification = function(body, action, cb) {
 
 exports.moveClassifications = function(request, cb) {
     var mongo_data = require('../node-js/mongo-data');
-    mongo_data.cdesByUuidList([request.cdeSource.uuid, request.cdeTarget.uuid], function(err, cde) {
-         classificationShared.transferClassifications(cde[0], cde[1]);
-         cde[1].markModified('classification');
-         cde[1].save(cb);
+    mongo_data.cdesByUuidList([request.body.cdeSource.uuid, request.body.cdeTarget.uuid], function(err, cde) {
+        if (!app.isCuratorOf(request.user, cde[0].stewardOrg.name)) {
+            res.send(403);
+            return;
+        }              
+        classificationShared.transferClassifications(cde[0], cde[1]);
+        cde[1].markModified('classification');
+        cde[1].save(cb);
     });
  };

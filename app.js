@@ -752,7 +752,7 @@ app.isCuratorOf = function(user, orgName){
 };
 
 app.post('/classification/cde/moveclassif', function(req, res) {
-    classificationNode.moveClassifications(req.body, function(err, cde) {
+    classificationNode.moveClassifications(req, function(err, cde) {
        if(!err) res.send(cde);
     });
 });
