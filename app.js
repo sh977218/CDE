@@ -751,9 +751,9 @@ app.isCuratorOf = function(user, orgName){
     return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
 };
 
-app.post('/classification/cde/addlist', function(req, res) {
-    classificationNode.addList(req.body, function(err) {
-       if(!err) res.send();
+app.post('/classification/cde/moveclassif', function(req, res) {
+    classificationNode.moveClassifications(req.body, function(err, cde) {
+       if(!err) res.send(cde);
     });
 });
 

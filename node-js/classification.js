@@ -68,26 +68,11 @@ exports.cdeClassification = function(body, action, cb) {
     });     
 };
 
- exports.addList = function(request, cb) {
+exports.moveClassifications = function(request, cb) {
     var mongo_data = require('../node-js/mongo-data');
-    mongo_data.cdeById(request.cde._id, function(err, cde) {
-        request.classifications.forEach(function(c) {
-            var steward = classificationShared.findSteward(cde, c[0]);
-            if (!steward) {
-                cde.classification.push({
-                    stewardOrg: {
-                        name: c[0]
-                    }
-                    , elements: []
-                });
-                steward = classificationShared.findSteward(cde, c[0]);
-            }        
-            classificationShared.addCategory(steward.object.elements, c.slice(1), function(err) {   
-            });             
-        });
-        cde.markModified('classification');
-        cde.save(function() {
-            if (cb) cb(err);
-        });         
+    mongo_data.cdesByUuidList([request.cdeSource.uuid, request.cdeTarget.uuid], function(err, cde) {
+         classificationShared.transferClassifications(cde[0], cde[1]);
+         cde[1].markModified('classification');
+         cde[1].save(cb);
     });
  };
