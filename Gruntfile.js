@@ -11,7 +11,7 @@ module.exports = function(grunt) {
                 }
             }
         }
-        /*, http: {
+        , http: {
             elasticDeleteIndex: {
                 options: {
                     uri: config.elasticUri
@@ -47,7 +47,7 @@ module.exports = function(grunt) {
                 }
             }             
         }
-        , curl: {
+        /*, curl: {
             'createIndex': {
                 src: {
                     url: config.elasticUri,
@@ -82,7 +82,7 @@ module.exports = function(grunt) {
             }
         }*/        
 
-        , elastic: {
+        /*, elastic: {
             deleteIndex: {
                 url: config.elasticUri
                 , method: "DELETE"
@@ -103,15 +103,15 @@ module.exports = function(grunt) {
                 , method: "POST"
                 , json: elastic.createRiverJson
             }
-        }
+        }*/
 
-        ,'node-inspector': {
+        , 'node-inspector': {
             dev: {}
         }
     });
     
     grunt.registerMultiTask('elastic', 'Elastic Service', function() {        
-        console.log("URL: " + this.data.url);
+        /*console.log("URL: " + this.data.url);
         console.log("METHOD: " + this.data.method);
         if (this.data.json) console.log("CONTENT: " + JSON.stringify(this.data.json));
         var headers = {
@@ -128,20 +128,28 @@ module.exports = function(grunt) {
         console.log("cb");
         });
         req.write(JSON.stringify(this.data.json), function() {console.log("cb2");});
-        req.end(); 
+        req.end(); */
         
         /*var request = require('request');
-        request.post(
-            this.data.url,
-            { form: this.data.json}, function (error, response, body) {
-                console.log("end");
-        }*/        
+
+        var options = {
+            uri: this.data.url
+            , method: this.data.method
+            , json: this.data.json
+        };
+
+        request(options, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                console.log(response); // Print the shortened url.
+            }
+        });*/        
     });    
     
     grunt.loadNpmTasks('grunt-node-inspector');    
     grunt.loadNpmTasks('grunt-debug-task');
     
     grunt.loadNpmTasks('grunt-git');
-    grunt.registerTask('default', ['gitpull','elastic']);
+    grunt.loadNpmTasks('grunt-http');
+    //grunt.registerTask('default', ['gitpull','http']);
     
 };
