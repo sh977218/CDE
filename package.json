@@ -34,6 +34,8 @@
     "grunt-http": "*"
   },
   "devDependencies": {
-    "grunt-node-inspector": "^0.1.5"
+    "grunt-node-inspector": "^0.1.5",
+    "grunt-nodemon": "^0.2.1",
+    "grunt-contrib-copy": "^0.5.0"
   }
 }

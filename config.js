@@ -28,6 +28,13 @@ var config = {
         ]
         , dbname: "test"
     }
+    , node: {
+        scripts: {
+            stop: ""
+            , start: "node ../run/node-js/app &"            
+        }
+        , rundir: "../run"
+    }
 };
 
 module.exports = config;

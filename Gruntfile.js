@@ -37,54 +37,46 @@ module.exports = function(grunt) {
                     , method: 'POST'
                     , json: elastic.createRiverJson                   
                 }
-            }             
+            }   
         }
-        
-        , 'node-inspector': {
-            dev: {}
-        }
+        , shell: {
+            stop: {
+                command: config.node.scripts.stop
+            }
+            , start: {
+                command: config.node.scripts.start
+            }
+        }    
+        , copy: {
+            main: {
+                files: [
+                    {
+                        expand: true
+                        , cwd: '.'
+                        , src: [
+                            'node-js/**'
+                            , 'public/**'
+                            , 'shared/**'
+                            , 'views/**'
+                            ,'config.js'
+                            ,'node_modules/**'
+                        ]
+                        , dest: config.node.rundir
+                    }
+                ]
+            }
+        }        
+        //, 'node-inspector': { dev: {} }
     });
     
-    grunt.registerMultiTask('elastic', 'Elastic Service', function() {        
-        /*console.log("URL: " + this.data.url);
-        console.log("METHOD: " + this.data.method);
-        if (this.data.json) console.log("CONTENT: " + JSON.stringify(this.data.json));
-        var headers = {
-            'Content-Type': 'application/json'
-            , 'Content-Length': this.data.json?this.data.json.length:0
-        };
-        var options = {
-            host: this.data.url
-            , method: this.data.method
-            , headers: headers
-        };        
-        var http = require('http');
-        var req = http.request(options, function(res1,res2,res3) {
-        console.log("cb");
-        });
-        req.write(JSON.stringify(this.data.json), function() {console.log("cb2");});
-        req.end(); */
-        
-        /*var request = require('request');
-
-        var options = {
-            uri: this.data.url
-            , method: this.data.method
-            , json: this.data.json
-        };
-
-        request(options, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                console.log(response); // Print the shortened url.
-            }
-        });*/        
-    });    
-    
-    grunt.loadNpmTasks('grunt-node-inspector');    
-    grunt.loadNpmTasks('grunt-debug-task');
+    //grunt.loadNpmTasks('grunt-node-inspector');    
+    //grunt.loadNpmTasks('grunt-debug-task');    
     
     grunt.loadNpmTasks('grunt-git');
     grunt.loadNpmTasks('grunt-http');
-    //grunt.registerTask('default', ['gitpull','http']);
-    
+    grunt.loadNpmTasks('grunt-shell');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.registerTask('git', ['gitpull']);
+    grunt.registerTask('elastic', ['http']);
+    grunt.registerTask('node', ['shell']);
 };
