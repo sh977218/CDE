@@ -147,15 +147,19 @@ module.exports = function(grunt) {
     
     grunt.registerTask('do-elastic', function() {
         if (grunt.config('elastic.index.delete')) {
+            grunt.log.writeln('\n\nDeleting Elastic Search Index!');
             grunt.task.run('http:elasticDeleteIndex');
         }
         if (grunt.config('elastic.index.create')) {
+            grunt.log.writeln('\n\nCreating Elastic Search Index!');
             grunt.task.run('http:elasticCreateIndex');
         }
         if (grunt.config('elastic.river.delete')) {
+            grunt.log.writeln('\n\nDeleting Elastic Search River!');
             grunt.task.run('http:elasticDeleteRiver');
         }
         if (grunt.config('elastic.river.create')) {
+            grunt.log.writeln('\n\nCreating Elastic Search River!');
             grunt.task.run('http:elasticCreateRiver');
         }        
     });       
