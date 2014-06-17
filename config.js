@@ -33,7 +33,7 @@ var config = {
             stop: ""
             , start: "node ../run/node-js/app &"            
         }
-        , rundir: "../run"
+        , buildDir: "../build"
     }
 };
 

@@ -31,11 +31,16 @@
     "querystring": "*",
     "grunt": "*",
     "grunt-git": "*",
-    "grunt-http": "*"
+    "grunt-http": "*",
+    "grunt-shell": "*",
+    "grunt-contrib-copy": "*",
+    "available-tasks": "*"
   },
   "devDependencies": {
     "grunt-node-inspector": "^0.1.5",
     "grunt-nodemon": "^0.2.1",
-    "grunt-contrib-copy": "^0.5.0"
+    "grunt-contrib-copy": "^0.5.0",
+    "grunt-available-tasks": "^0.5.0",
+    "grunt-prompt": "^1.1.0"
   }
 }
