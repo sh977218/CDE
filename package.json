@@ -34,7 +34,8 @@
     "grunt-http": "*",
     "grunt-shell": "*",
     "grunt-contrib-copy": "*",
-    "available-tasks": "*"
+    "grunt-prompt": "*",
+    "grunt-npm-install": "*"
   },
   "devDependencies": {
     "grunt-node-inspector": "^0.1.5",

@@ -65,15 +65,62 @@ module.exports = function(grunt) {
                     }
                 ]
             }
-        }
-        , availabletasks: {
-            help: {
-                options: {
-                    filter: 'include',
-                    tasks: ['git', 'elastic', 'build', 'node']
-                }                
-            }
         }        
+        , prompt: {
+            git: {
+                options: {
+                    questions: [
+                        {
+                            config: 'git.pull'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'pull'.green  + ' the latest source-code from the ' + 'master'.green + ' branch?'
+                        }                        
+                    ]
+                }
+            }              
+            , elastic: {
+                options: {
+                    questions: [
+                        {
+                            config: 'elastic.index.delete'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'index?'.yellow
+                        }
+                        , {
+                            config: 'elastic.index.create'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'index?'.yellow
+                        }
+                        , {
+                            config: 'elastic.river.delete'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'river?'.yellow
+                        } 
+                        , {
+                            config: 'elastic.river.create'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'river?'.yellow
+                        }                           
+                    ]
+                }
+            }  
+            , node: {
+                options: {
+                    questions: [
+                        {
+                            config: 'node.scripts.stop'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'stop'.red  + ' NodeJS?' + ' Command: (see config.js): \'' + config.node.scripts.stop + '\''
+                        }
+                        , {
+                            config: 'node.scripts.start'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'start'.green  + ' NodeJS?'  + ' Command (see config.js): \'' + config.node.scripts.start + '\''
+                        }                          
+                    ]
+                }
+            }             
+        }
     });  
     
     grunt.loadNpmTasks('grunt-git');
@@ -81,10 +128,50 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-npm-install');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-available-tasks');    
-    grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['gitpull']);
-    grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['http']);
-    grunt.registerTask('node', 'Restart NodeJS server.', ['shell']);
-    grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', ['npm-install', 'copy']);
-    grunt.registerTask('help', ['availabletasks']);
+    grunt.loadNpmTasks('grunt-prompt');
+    
+    grunt.registerTask('do-git', 'Restart NodeJS server.', function() {
+        if (grunt.config('git.pull')) {
+            grunt.task.run('gitpull');
+        }     
+    });     
+    
+    grunt.registerTask('doElastic', function() {
+        if (grunt.config('elastic.index.delete')) {
+            grunt.task.run('http:elasticDeleteIndex');
+        }
+        if (grunt.config('elastic.index.create')) {
+            grunt.task.run('http:elasticCreateIndex');
+        }
+        if (grunt.config('elastic.river.delete')) {
+            grunt.task.run('http:elasticDeleteRiver');
+        }
+        if (grunt.config('elastic.river.create')) {
+            grunt.task.run('http:elasticCreateRiver');
+        }        
+    });   
+    
+    grunt.registerTask('do-elastic', function() {
+        if (grunt.config('node.scripts.start')) {
+            grunt.task.run('http:elasticDeleteIndex');
+        }
+        if (grunt.config('node.scripts.start')) {
+            grunt.task.run('http:elasticCreateIndex');
+        }       
+    });    
+    
+    grunt.registerTask('do-node', function() {
+        if (grunt.config('elastic.index.delete')) {
+            grunt.task.run('shell:stop');
+        }
+        if (grunt.config('elastic.index.create')) {
+            grunt.task.run('shell:start');
+        }      
+    });      
+    
+    grunt.registerTask('git', ['prompt:git', 'do-git']);
+    grunt.registerTask('elastic', ['prompt:elastic', 'do-elastic']);
+    grunt.registerTask('node', ['prompt:node', 'do-node']);
+    grunt.registerTask('build', ['npm-install', 'copy']);
+    grunt.registerTask('default', ['git', 'elastic', 'build', 'node']);
 };
