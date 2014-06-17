@@ -56,7 +56,7 @@ module.exports = function(grunt) {
                     json: elastic.createRiverJson                         
                 }
             }
-        }*/
+        }
 
         , shell: {                               
             elasticDeleteIndex: {                     
@@ -80,24 +80,68 @@ module.exports = function(grunt) {
                     return command;
                 }
             }
-        }        
+        }*/        
 
+        , elastic: {
+            deleteIndex: {
+                url: config.elasticUri
+                , method: "DELETE"
+                , json: null
+            }            
+            , createIndex: {
+                url: config.elasticUri
+                , method: "POST"
+                , json: elastic.createIndexJson
+            }            
+            , deleteRiver: {
+                url: config.elasticRiverUri
+                , method: "DELETE"
+                , json: null
+            }            
+            , createRiver: {
+                url: config.elasticRiverUri
+                , method: "POST"
+                , json: elastic.createRiverJson
+            }
+        }
 
         ,'node-inspector': {
             dev: {}
         }
     });
-    console.log('curl -XPOST ' + config.elasticRiverUri + ' -d\'' + JSON.stringify(elastic.createRiverJson) + '\'');
     
-    grunt.loadNpmTasks('grunt-node-inspector');
+    grunt.registerMultiTask('elastic', 'Elastic Service', function() {        
+        console.log("URL: " + this.data.url);
+        console.log("METHOD: " + this.data.method);
+        if (this.data.json) console.log("CONTENT: " + JSON.stringify(this.data.json));
+        var headers = {
+            'Content-Type': 'application/json'
+            , 'Content-Length': this.data.json?this.data.json.length:0
+        };
+        var options = {
+            host: this.data.url
+            , method: this.data.method
+            , headers: headers
+        };        
+        var http = require('http');
+        var req = http.request(options, function(res1,res2,res3) {
+        console.log("cb");
+        });
+        req.write(JSON.stringify(this.data.json), function() {console.log("cb2");});
+        req.end(); 
+        
+        /*var request = require('request');
+        request.post(
+            this.data.url,
+            { form: this.data.json}, function (error, response, body) {
+                console.log("end");
+        }*/        
+    });    
+    
+    grunt.loadNpmTasks('grunt-node-inspector');    
+    grunt.loadNpmTasks('grunt-debug-task');
     
     grunt.loadNpmTasks('grunt-git');
-    grunt.loadNpmTasks('grunt-shell');
-    grunt.loadNpmTasks('grunt-exec');
-    //grunt.loadNpmTasks('grunt-http');
-    //grunt.loadNpmTasks('grunt-curl');
-    grunt.registerTask('git', ['gitpull']);
-    //grunt.registerTask('elastic', ['http']);
-    grunt.registerTask('default', [/*'git','elastic'*/'curl']);
+    grunt.registerTask('default', ['gitpull','elastic']);
     
 };
