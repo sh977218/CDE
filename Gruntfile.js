@@ -136,7 +136,7 @@ module.exports = function(grunt) {
         }     
     });     
     
-    grunt.registerTask('doElastic', function() {
+    grunt.registerTask('do-elastic', function() {
         if (grunt.config('elastic.index.delete')) {
             grunt.task.run('http:elasticDeleteIndex');
         }
@@ -149,16 +149,7 @@ module.exports = function(grunt) {
         if (grunt.config('elastic.river.create')) {
             grunt.task.run('http:elasticCreateRiver');
         }        
-    });   
-    
-    grunt.registerTask('do-elastic', function() {
-        if (grunt.config('node.scripts.start')) {
-            grunt.task.run('http:elasticDeleteIndex');
-        }
-        if (grunt.config('node.scripts.start')) {
-            grunt.task.run('http:elasticCreateIndex');
-        }       
-    });    
+    });       
     
     grunt.registerTask('do-node', function() {
         if (grunt.config('elastic.index.delete')) {
