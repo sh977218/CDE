@@ -22,12 +22,7 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticUri
                     , method: 'POST'
-                    , form: elastic.createIndexJson
-                    , 'content-type': 'application/json'
-                    , json: elastic.createIndexJson
-                    , body: function() {
-                        return JSON.stringify(elastic.createIndexJson);
-                    }                
+                    , json: elastic.createIndexJson             
                 }
             } 
             , elasticDeleteRiver: {
@@ -40,71 +35,11 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticRiverUri
                     , method: 'POST'
-                    , json: elastic.createRiverJson
-                    , headers: {'Content-type': 'application/json', 'Content-Length': JSON.stringify(elastic.createRiverJson).length}
-                    , body: JSON.stringify(elastic.createRiverJson)
-                    , form: elastic.createRiverJson                  
+                    , json: elastic.createRiverJson                   
                 }
-            }             
-        }
-        /*, curl: {
-            'createIndex': {
-                src: {
-                    url: config.elasticUri,
-                    method: 'POST',
-                    body: JSON.stringify(elastic.createRiverJson),
-                    json: elastic.createRiverJson                         
-                }
-            }
-        }
-
-        , shell: {                               
-            elasticDeleteIndex: {                     
-                command: 'curl -XDELETE ' + config.elasticUri
-            }
-            , elasticCreateIndex: {                        
-                command: 'curl -XPOST ' + config.elasticUri + ' -d\'' + JSON.stringify(elastic.createIndexJson) + '\''
-            }   
-            , elasticDeleteRiver: {                        
-                command: 'curl -XDELETE ' + config.elasticRiverUri
-            }
-            , elasticCreateRiver: {                        
-                command: 'curl -XPOST ' + config.elasticRiverUri + ' -d\'' + JSON.stringify(elastic.createRiverJson) + '\''
             }             
         }
         
-        , exec: {
-            elasticCreateRiver: {
-                cmd: function() {
-                    var command = 'curl -XPOST ' + config.elasticRiverUri + ' -d\'' + JSON.stringify(elastic.createRiverJson) + '\'';
-                    return command;
-                }
-            }
-        }*/        
-
-        /*, elastic: {
-            deleteIndex: {
-                url: config.elasticUri
-                , method: "DELETE"
-                , json: null
-            }            
-            , createIndex: {
-                url: config.elasticUri
-                , method: "POST"
-                , json: elastic.createIndexJson
-            }            
-            , deleteRiver: {
-                url: config.elasticRiverUri
-                , method: "DELETE"
-                , json: null
-            }            
-            , createRiver: {
-                url: config.elasticRiverUri
-                , method: "POST"
-                , json: elastic.createRiverJson
-            }
-        }*/
-
         , 'node-inspector': {
             dev: {}
         }
