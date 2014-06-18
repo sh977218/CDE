@@ -1,12 +1,7 @@
 #!/bin/sh
 
-export PORT=3001
-export MONGO_URI=mongodb://localhost/test
 export MONGO_HOST=localhost
 export MONGO_DB=test
-export VSAC_HOST=localhost
-export VSAC_PORT=4000
-export ELASTIC_URI=http://localhost:9200/cdetest/
 
 mongo test deploy/dbInit.js
 
