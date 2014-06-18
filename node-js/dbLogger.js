@@ -11,20 +11,17 @@ logConn.once('open', function callback () {
 	console.log('logger connection open');
     });    
     
-    
 // w = 0 means write very fast. It's ok if it fails.   
 // capped means no more than 5 gb for that collection.
 var logSchema = new mongoose.Schema(
 {
     level: String
-    , msg: {
-        remoteAddr: String
-        , url: String
-        , method: String
-        , httpStatus: Number
-        , date: Date
-        , referrer: String
-    }    
+    , remoteAddr: String
+    , url: String
+    , method: String
+    , httpStatus: Number
+    , date: Date
+    , referrer: String
 }, { safe: {w: 0}, capped: 5368709120});
 logSchema.index({remoteAddr: 1});
 logSchema.index({url: 1});
@@ -36,7 +33,7 @@ logSchema.index({referrer: 1});
 var LogModel = logConn.model('DbLogger', logSchema);
 
 exports.log = function(message, callback) {    
-    if (message.msg.httpStatus !== "304") {
+    if (message.httpStatus !== "304") {
         var logEvent = new LogModel(message);
         logEvent.save(function(err) {
             if (err) console.log ("ERROR: " + err);
@@ -45,10 +42,26 @@ exports.log = function(message, callback) {
     }
 };
 
-exports.getLogs = function(query, callback) {
-  LogModel.find(query, function (err, logs) {
-    callback(err, logs);  
-  });
+exports.getLogs = function(inQuery, callback) {
+    var fromDate = inQuery.fromDate;
+    delete inQuery.fromDate;
+    var toDate = inQuery.toDate;
+    delete inQuery.toDate;
+    var query = LogModel.find(query);
+    if (fromDate !== undefined) {
+        query.where("date").gte(fromDate);
+    }
+    if (toDate !== undefined) {
+        query.where("date").lte(toDate);
+    }
+    
+    query.limit(10000).exec(function(err, logs) {
+        if (logs.length === 10000) {
+            callback("Query exceeds limit of 10,000 records");
+        } else {
+            callback(err, logs);  
+        }
+    });
 };
 
     

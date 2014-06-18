@@ -121,7 +121,9 @@ var MongoLogger = winston.transports.MongoLogger = function (options) {
   util.inherits(MongoLogger, winston.Transport);
 
   MongoLogger.prototype.log = function (level, msg, meta, callback) {
-    dbLogger.log({level: level, msg: JSON.parse(msg)}, function (err) {
+    var logEvent = JSON.parse(msg);
+    logEvent.level = level;
+    dbLogger.log(logEvent, function (err) {
         if (err) console.log("CANNOT LOG: " + err);
         callback(null, true);    
     });
@@ -1040,7 +1042,7 @@ app.post('/logs', function (req, res) {
     if (req.isAuthenticated() && req.user.siteAdmin) {
         dbLogger.getLogs(req.body.query, function(err, result) {
             if (err) {
-                res.send(403, err);
+                res.send({error: err});
             } else {
                 res.send(result);
             }

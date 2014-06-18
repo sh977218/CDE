@@ -1,4 +1,4 @@
-function LogCtrl($scope, $http) {
+function LogCtrl($scope, $http, CsvDownload) {
         
     $scope.gridLogEvents = [];
     $scope.gridOptions = {
@@ -8,20 +8,40 @@ function LogCtrl($scope, $http) {
         , enableCellSelection: true
     };
     
+    $scope.reset = function() {
+       $scope.search = {}; 
+    };
+    
+    $scope.downloadCsv = function() {
+       CsvDownload.export($scope.gridLogEvents); 
+    };
+    
     $scope.searchLogs = function () {
-        gridLogEvents = [];
+        $scope.gridLogEvents = [];
         var query = {};
-        query.remoteAddress = $scope.search.ip;
+        if ($scope.search.ip !== undefined) {
+            query.remoteAddr = $scope.search.ip;        
+        }
+        if ($scope.search.fromDate !== undefined) {
+            query.fromDate = $scope.search.fromDate;
+        };
+        if ($scope.search.toDate !== undefined) {
+            query.toDate = $scope.search.toDate;
+        };
+        
         $http.post("/logs", {query: query}).then(function (res) {
+            if (res.data.error !== undefined) {
+                $scope.addAlert("danger", res.data.error);
+            }
             for (var i in res.data) {
                 var elt = res.data[i];
-                if (elt !== undefined && elt.msg !== undefined) {
+                if (elt !== undefined) {
                     $scope.gridLogEvents.push({
-                      date: elt.msg.date
-                      , ip: elt.msg.remoteAddr
-                      , url: elt.msg.url
-                      , method: elt.msg.method
-                      , status: elt.msg.httpStatus
+                      date: new Date(elt.date).toLocaleString()
+                      , ip: elt.remoteAddr
+                      , url: elt.url
+                      , method: elt.method
+                      , status: elt.httpStatus
                     });
                 }
             }
