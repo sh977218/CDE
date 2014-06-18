@@ -121,7 +121,7 @@ static def String getCellValue(Cell cell) {
 ];
 
 def void addDomain(de, type, subtype, value) { 
-    if (!value.equals("")) {
+    if (!value.equals("") && !value.equals("N/A.N/A")) {
         for (semiColonSplit in value.split(";")) {
             def cls = new ArrayList<String>();
             cls.add(type);
