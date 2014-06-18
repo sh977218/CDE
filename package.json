@@ -37,6 +37,7 @@
     "grunt-prompt": "*",
     "grunt-npm-install": "*",
     "grunt-attention": "*",
+    "grunt-available-tasks": "*",
     "chalk": "*"
   }
 }

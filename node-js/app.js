@@ -160,9 +160,6 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 
-// Creates session store
-//var mongoHost = config.mongo_host;
-
 var sessionStore = new MongoStore({
     mongoose_connection: mongo_data.mongoose_connection  
 });
