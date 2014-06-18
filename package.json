@@ -27,7 +27,6 @@
     "gridfs-stream": "*",
     "crypto": "*",
     "http": "*",
-    "fs": "*",
     "querystring": "*",
     "grunt": "*",
     "grunt-git": "*",
