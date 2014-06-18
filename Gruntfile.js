@@ -52,6 +52,16 @@ module.exports = function(grunt) {
             , start: {
                 command: config.node.scripts.start
             }
+            , version: {
+                command: 'git rev-parse HEAD'
+                , options: {
+                    callback: function(err, stdout, stderr, cb){
+                        grunt.config('version',stdout);
+                        cb();
+                        return;
+                    }
+                }               
+            }            
         }    
         , copy: {
             main: {
@@ -186,6 +196,7 @@ module.exports = function(grunt) {
     grunt.registerTask('do-git', 'Restart NodeJS server.', function() {
         if (grunt.config('git.pull')) {
             grunt.task.run('gitpull');
+            grunt.task.run('buildVersion');
         }     
     });     
     
@@ -226,11 +237,15 @@ module.exports = function(grunt) {
             grunt.task.run('attention:help');
         }    
     });    
+    
+    grunt.registerTask('persistVersion', function() {
+        fs.writeFileSync("./views/version.ejs", grunt.config.get("version"));         
+    });    
 
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['prompt:elastic', 'do-elastic']);
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
-    //grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', ['npm-install', 'copy']);
+    grunt.registerTask('buildVersion',['shell:version','persistVersion']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
         grunt.task.run('npm-install');
         if (config.node.buildDir) grunt.task.run('copy');
