@@ -3,7 +3,8 @@ var config = require('./config.js')
     , chalk = require('chalk')
     , fs = require('fs');
     
-var helpMessage = fs.readFileSync("./deploy/help/welcome.txt");
+var welcomeMessage = fs.readFileSync("./deploy/doc/welcome.txt");
+var helpMessage = fs.readFileSync("./deploy/doc/help.txt");
 var divider = "\n\n";
 
 module.exports = function(grunt) {
@@ -124,7 +125,21 @@ module.exports = function(grunt) {
                         }                          
                     ]
                 }
-            }             
+            }            
+            , help: {
+                options: {
+                    questions: [
+                        {
+                            config: 'showHelp'
+                            type: 'list'
+                            message: 'Main Menu',
+                            default: 'Go!'
+                            choices: ['Go!', 'Help!']
+                        }
+                    ]
+                  }
+              }            
+            
         }
         , availabletasks: {
             help: {
@@ -137,14 +152,18 @@ module.exports = function(grunt) {
         , attention: {
             welcome: {
                 options: {
-                message: chalk.green.bold('NLM CDE')
-                         + chalk.green(' Deployment')
-                         + "\n\n"
-                         + chalk.yellow(helpMessage)
-                , border: 'double'
-                , borderColor: 'bgGreen'      
+                    message: chalk.yellow(welcomeMessage)
+                    , border: 'double'
+                    , borderColor: 'bgGreen'      
                 }
             }
+            , help: {
+                options: {
+                    message: chalk.yellow(helpMessage)
+                    , border: 'double'
+                    , borderColor: 'bgGreen'      
+                }
+            }            
         }        
     });  
     
@@ -195,11 +214,18 @@ module.exports = function(grunt) {
         console.log("\n\n");
     });     
     
+    grunt.registerTask('do-help', function() {
+        if (grunt.config('showHelp')) {
+            grunt.task.run('attention:help');
+        }    
+    });    
+
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['prompt:elastic', 'do-elastic']);
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', ['npm-install', 'copy']);
-    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','clear','git','clear', 'elastic','clear', 'build','clear', 'node']);
+    grunt.registerTask('help', ['prompt:help', 'do-help']);
+    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','clear','help','clear','git','clear', 'elastic','clear', 'build','clear', 'node']);
     grunt.registerTask('help', ['availabletasks']);
     
 
