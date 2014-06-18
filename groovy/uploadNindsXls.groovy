@@ -122,13 +122,15 @@ static def String getCellValue(Cell cell) {
 
 def void addDomain(de, type, subtype, value) { 
     if (!value.equals("")) {
-        def cls = new ArrayList<String>();
-        cls.add(type);
-        cls.add(subtype)
-        cls.addAll(value.split("\\."));
-        def classifToAdd = classifications.buildMultiLevelClassif("NINDS", cls.toArray(new String[cls.size()]));
-        classifications.addClassifToDe(classifToAdd, de);
-        classifications.addClassifToOrg(classifToAdd);
+        for (semiColonSplit in value.split(";")) {
+            def cls = new ArrayList<String>();
+            cls.add(type);
+            cls.add(subtype)
+            cls.addAll(semiColonSplit.split("\\."));
+            def classifToAdd = classifications.buildMultiLevelClassif("NINDS", cls.toArray(new String[cls.size()]));
+            classifications.addClassifToDe(classifToAdd, de);
+            classifications.addClassifToOrg(classifToAdd);
+        }
     }
 }
 
