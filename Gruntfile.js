@@ -1,5 +1,10 @@
 var config = require('./config.js')
-    , elastic = require('./deploy/elasticSearchInit.js');
+    , elastic = require('./deploy/elasticSearchInit.js')
+    , chalk = require('chalk')
+    , fs = require('fs');
+    
+var helpMessage = fs.readFileSync("./deploy/help/welcome.txt");
+var divider = "\n\n";
 
 module.exports = function(grunt) {
     grunt.initConfig({
@@ -129,15 +134,18 @@ module.exports = function(grunt) {
                 }                
             }
          }  
-        , watch: {
-            npminstall: {
-                files: ['package.json']
-                , tasks: ['npm-install']
-                , options: {
-                    spawn: false
+        , attention: {
+            welcome: {
+                options: {
+                message: chalk.green.bold('NLM CDE')
+                         + chalk.green(' Deployment')
+                         + "\n\n"
+                         + chalk.yellow(helpMessage)
+                , border: 'double'
+                , borderColor: 'bgGreen'      
                 }
             }
-        }         
+        }        
     });  
     
     grunt.loadNpmTasks('grunt-git');
@@ -147,7 +155,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-prompt');
     grunt.loadNpmTasks('grunt-available-tasks');
-    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-attention');
     
     grunt.registerTask('do-git', 'Restart NodeJS server.', function() {
         if (grunt.config('git.pull')) {
@@ -181,12 +189,18 @@ module.exports = function(grunt) {
         if (grunt.config('elastic.index.create')) {
             grunt.task.run('shell:start');
         }      
-    });      
+    });  
+    
+    grunt.registerTask('clear', function() {
+        console.log("\n\n");
+    });     
     
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['prompt:elastic', 'do-elastic']);
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
-    grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', ['watch:npminstall', 'copy']);
-    grunt.registerTask('default', 'The entire deployment process.', ['git', 'elastic', 'build', 'node']);
+    grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', ['npm-install', 'copy']);
+    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','clear','git','clear', 'elastic','clear', 'build','clear', 'node']);
     grunt.registerTask('help', ['availabletasks']);
+    
+
 };

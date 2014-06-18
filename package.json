@@ -35,13 +35,8 @@
     "grunt-shell": "*",
     "grunt-contrib-copy": "*",
     "grunt-prompt": "*",
-    "grunt-npm-install": "*"
-  },
-  "devDependencies": {
-    "grunt-node-inspector": "^0.1.5",
-    "grunt-nodemon": "^0.2.1",
-    "grunt-contrib-copy": "^0.5.0",
-    "grunt-available-tasks": "^0.5.0",
-    "grunt-prompt": "^1.1.0"
+    "grunt-npm-install": "*",
+    "grunt-attention": "*",
+    "chalk": "*"
   }
-} 
+}
