@@ -131,10 +131,17 @@ module.exports = function(grunt) {
                     questions: [
                         {
                             config: 'showHelp'
-                            type: 'list'
-                            message: 'Main Menu',
-                            default: 'Go!'
-                            choices: ['Go!', 'Help!']
+                            , type: 'list'
+                            , message: 'Please select ...'
+                            , default: false
+                            , choices: [{
+                                value: false
+                                , name: 'Run deployment!'
+                            }
+                            , {
+                                value: true
+                                , name: 'Show help screen!'
+                            }]
                         }
                     ]
                   }
@@ -224,8 +231,8 @@ module.exports = function(grunt) {
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['prompt:elastic', 'do-elastic']);
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', ['npm-install', 'copy']);
-    grunt.registerTask('help', ['prompt:help', 'do-help']);
-    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','clear','help','clear','git','clear', 'elastic','clear', 'build','clear', 'node']);
+    grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
+    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','clear','guihelp','clear','git','clear', 'elastic','clear', 'build','clear', 'node']);
     grunt.registerTask('help', ['availabletasks']);
     
 
