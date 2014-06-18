@@ -1,6 +1,6 @@
 var https = require('https')
     , querystring = require('querystring')
-    , config = require('../config')
+    , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
     , fs = require('fs')
     , util = require('util')
     , request = require('request')

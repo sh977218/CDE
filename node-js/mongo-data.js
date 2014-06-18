@@ -5,7 +5,7 @@ var mongoose = require('mongoose')
     , uuid = require('node-uuid')
     , Grid = require('gridfs-stream')
     , fs = require('fs')
-    , config = require('../config')
+    , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
     ;
 
 var mongoUri = config.mongoUri;

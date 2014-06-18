@@ -2,7 +2,7 @@ var express = require('express')
   , request = require('request')
   , util = require('util')
   , mongo_data = require('./mongo-data')
-  , config = require('../config.js')
+  , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
 ;
 
 var elasticUri = config.elasticUri;

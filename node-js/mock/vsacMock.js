@@ -3,7 +3,7 @@ var express = require('express')
   , util = require('util')
   , crypto = require('crypto')
   , fs = require('fs')
-  , config = require('../../config.js')
+  , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
 ;
 
 var app = express();

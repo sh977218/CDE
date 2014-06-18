@@ -15,7 +15,7 @@ var express = require('express')
   , xml2js = require('xml2js')
   , vsac = require('../node-js/vsac-io')
   , winston = require('winston')
-  , config = require('../config.js')
+  , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
   , MongoStore = require('../node-js/assets/connect-mongo.js')(express)
   ;
 
