@@ -230,7 +230,11 @@ module.exports = function(grunt) {
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['prompt:elastic', 'do-elastic']);
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
-    grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', ['npm-install', 'copy']);
+    //grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', ['npm-install', 'copy']);
+    grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
+        grunt.task.run('npm-install');
+        if (config.node.buildDir) grunt.task.run('copy');
+    });
     grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
     grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','clear','guihelp','clear','git','clear', 'elastic','clear', 'build','clear', 'node']);
     grunt.registerTask('help', ['availabletasks']);
