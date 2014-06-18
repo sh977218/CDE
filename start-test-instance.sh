@@ -8,7 +8,7 @@ export VSAC_HOST=localhost
 export VSAC_PORT=4000
 export ELASTIC_URI=http://localhost:9200/cdetest/
 
-mongo test test/dbInit.js
+mongo test deploy/dbInit.js
 
 groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml --testMode
 groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx --testMode
@@ -23,7 +23,7 @@ if [ "$curl_res" == "$target" ]
 then
     gradle -b test/selenium/build.gradle clean test & 
     #gradle -b test/selenium/build.gradle -Dtest.single=ClassificationTest test & 
-    node app config.test.js > test-console.out
+    node node-js/app config.test.js > test-console.out
 else
     echo "Not all documents indexed. Aborting"
     echo $curl_res
