@@ -9,7 +9,7 @@
     "npm": "1.2.x"
   },
   "dependencies": {
-    "express": "3.x",
+    "express": "3.*.*",
     "ejs": "*",
     "url": "*",
     "mongoose": "*",
@@ -23,7 +23,7 @@
     "node-uuid": "*",
     "request": "*",
     "winston": "*",
-    "express-winston": "*",
+
     "gridfs-stream": "*",
     "crypto": "*",
     "http": "*",
