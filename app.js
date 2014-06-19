@@ -19,6 +19,7 @@ var express = require('express')
   , config = require('./config.js')
   , dbLogger = require('./node-js/dbLogger.js')
   , MongoStore = require('./node-js/assets/connect-mongo.js')(express)
+  , favicon = require('serve-favicon')
   ;
 
 // Global variables
@@ -180,7 +181,7 @@ var winstonStream = {
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-app.use(express.favicon());
+app.use(favicon(__dirname + '/public/assets/img/favicon.ico'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));

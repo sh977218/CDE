@@ -11,7 +11,7 @@
   "dependencies": {
     "express": "3.x",
     "ejs": "*",
-    "mongoose": "3.8.12",
+    "mongoose": "3.8.x",
     "xml2js": "*",
     "node-restful": "*",
     "util": "*",
@@ -25,5 +25,6 @@
     , "express-winston": "*"
     , "gridfs-stream": "*"
     , "crypto": "*"
+    , "serve-favicon": "2.x"
   }
 }
