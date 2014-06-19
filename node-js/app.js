@@ -462,7 +462,7 @@ app.post('/cdesByUuidList', function(req, res) {
 
 app.get('/cdesforapproval', function(req, res) {
     mongo_data.cdesforapproval(req.user.orgAdmin, function(err, cdes) {
-        res.send(cdes);
+        res.send(cdesvc.hideProprietaryPvs(cdes));
     });
 });
 
@@ -603,7 +603,7 @@ app.get('/dataelement/:id/:type?', function(req, res) {
 
 app.get('/debyuuid/:uuid/:version', function(req, res) {
     mongo_data.deByUuidAndVersion(req.params.uuid, req.params.version, function(err, de) {
-        res.send(de);
+        res.send(cdesvc.hideProprietaryPvs(de));
     });
 });
 
@@ -631,7 +631,7 @@ app.get('/viewingHistory/:start', function(req, res) {
             idList.push(splicedArray[i]);
         }
         mongo_data.cdesByIdList(idList, function(err, cdes) {
-            res.send(cdes);
+            res.send(cdesvc.hideProprietaryPvs(cdes));
         });
     }
 });
@@ -667,7 +667,7 @@ app.get('/board/:boardId/:start', function(req, res) {
             idList.push(pins[i].deUuid);
         }
         mongo_data.cdesByUuidList(idList, function(err, cdes) {
-            res.send({board: board, cdes: cdes, totalItems: totalItems});
+            res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes), totalItems: totalItems});
         });
     });
 });
@@ -963,13 +963,13 @@ app.get('/data/:imgtag', function(req, res) {
 
 app.get('/moreLikeCde/:cdeId', function(req, res) {
     cdesvc.morelike(req.params.cdeId, function(result) {
-        res.send(result);
+        res.send(cdesvc.hideProprietaryPvs(result));
     });
 });
 
 app.post('/desByConcept', function(req, res) {
    mongo_data.desByConcept(req.body, function(result) {
-       res.send(result);
+       res.send(cdesvc.hideProprietaryPvs(result));
    }); 
 });
 

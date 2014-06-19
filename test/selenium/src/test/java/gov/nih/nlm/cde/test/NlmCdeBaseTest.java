@@ -221,7 +221,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         hangon(2);
         findElement(By.linkText(cdeName2)).click();
-        hangon(1);
+        hangon(2);
         findElement(By.id("compare_0")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         Assert.assertTrue(textPresent("Quick Board ( 2 )"));

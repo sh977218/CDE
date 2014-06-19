@@ -23,7 +23,8 @@ var mltConf = {
 };
     
 exports.elasticsearch = function (query, res) {
-   request.post(elasticUri + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
+    var cdesvc = this;
+    request.post(elasticUri + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
        if (!error && response.statusCode === 200) {
         var resp = JSON.parse(body);
         var result = {cdes: []
@@ -37,7 +38,7 @@ exports.elasticsearch = function (query, res) {
             result.cdes.push(thisCde);
         }
         result.facets = resp.facets;
-        res.send(result);
+        res.send(cdesvc.hideProprietaryPvs(result));
      } else {
          console.log("es error: " + error + " response: " + response.statusCode);
      } 
@@ -144,6 +145,7 @@ exports.priorCdes = function(req, res) {
 };
 
 exports.show = function(req, res) {
+    var cdesvc = this;
     var cdeId = req.params.id;
     var type = req.params.type;
     if (!cdeId) {
@@ -158,11 +160,11 @@ exports.show = function(req, res) {
             if (req.isAuthenticated()) {
                mongo_data.addToViewHistory(cde, req.user);
             };
-            res.send(cde); 
+            res.send(cdesvc.hideProprietaryPvs(cde)); 
         }); 
     } else {
         mongo_data.cdesByUuidList([cdeId], function(err, cdes) {
-            res.send(cdes[0]);
+            res.send(cdesvc.hideProprietaryPvs(cdes[0]));
         });    
     }    
 };
@@ -314,4 +316,8 @@ exports.diff = function(req, res) {
            }
         });
     }
+};
+
+exports.hideProprietaryPvs = function(user, cdes) {    
+    return cdes;
 };
