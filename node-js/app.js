@@ -166,8 +166,21 @@ var expressErrorLogger = new (winston.Logger)({
   ]
 });
 
+var processLogger = new (winston.Logger)({
+  transports: [
+    new winston.transports.File({
+      json: true,
+      colorize: true
+      , level: 'error'
+      , filename: GLOBALS.logdir + "/nodeErrorLog.log"
+      , maxsize: 10000000
+      , maxFiles: 10
+    })
+  ]
+});
+
 process.on('uncaughtException', function (err) {
-  expressErrorLogger.error('Caught exception: ' + err.stack);
+  processLogger.error('Caught exception: ' + err.stack);
 });
 
 var winstonStream = {
