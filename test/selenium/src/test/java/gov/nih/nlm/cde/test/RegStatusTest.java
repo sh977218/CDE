@@ -44,6 +44,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Qualified"));
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
+        Assert.assertTrue(textPresent("Recorded CDEs are visible to the public"));
         findElement(By.name("effectiveDate")).sendKeys("9/15/2013");
         findElement(By.name("untilDate")).sendKeys("10/31/2014");
         findElement(By.name("administrativeNote")).sendKeys("Admin Note 1");
@@ -68,6 +69,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.id("editStatus")).click();
         modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
+        Assert.assertTrue(textPresent("Standard CDEs cannot be edited by their stewards"));
         modalHere();
         findElement(By.id("saveRegStatus")).click();
         hangon(2);
@@ -84,6 +86,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.id("editStatus")).click();
         modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
+        Assert.assertTrue(textPresent("Retired Data Elements are not returned in searches"));
         findElement(By.id("saveRegStatus")).click();
         hangon(2);
         goToSearch();
