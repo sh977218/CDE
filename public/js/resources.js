@@ -146,4 +146,21 @@ angular.module('resources', ['ngResource'])
                 });
             }
         };
-    });
+    })
+    .factory("CsvDownload", function($window) {
+        return {
+            export: function(elts) {
+                var str = '';
+                for (var i = 0; i < elts.length; i++) {
+                    var line = '';
+                    for (var index in elts[i]) {
+                        line += '"' + elts[i][index] + '",';
+                    }
+                    line.slice(0, line.Length - 1);
+                    str += line + '\r\n';
+                }
+                $window.open("data:text/csv;charset=utf-8," + escape(str));
+            }
+        };
+    })
+    ;

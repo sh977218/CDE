@@ -17,6 +17,7 @@ var express = require('express')
   , winston = require('winston')
   , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
   , MongoStore = require('../node-js/assets/connect-mongo.js')(express)
+  , dbLogger = require('../node-js/dbLogger.js')
   , favicon = require('serve-favicon')
 ;
 
@@ -111,6 +112,23 @@ passport.use(new LocalStrategy({passReqToCallback: true},
 
 var app = express();
 
+var MongoLogger = winston.transports.MongoLogger = function (options) {
+    this.name = 'mongoLogger';
+    this.json = true;
+    this.level = options.level || 'info';
+  };
+
+  util.inherits(MongoLogger, winston.Transport);
+
+  MongoLogger.prototype.log = function (level, msg, meta, callback) {
+    var logEvent = JSON.parse(msg);
+    logEvent.level = level;
+    dbLogger.log(logEvent, function (err) {
+        if (err) console.log("CANNOT LOG: " + err);
+        callback(null, true);    
+    });
+  };
+
 var expressLogger = new (winston.Logger)({
   transports: [
     new winston.transports.File({
@@ -126,9 +144,12 @@ var expressLogger = new (winston.Logger)({
             level: 'verbose',
             colorize: true,
             timestamp: true
-        })          
-  ]
+        }) 
+    , new winston.transports.MongoLogger({
+        json: true
+    })  ]
 });
+
 var expressErrorLogger = new (winston.Logger)({
   transports: [
     new winston.transports.File({
@@ -138,6 +159,9 @@ var expressErrorLogger = new (winston.Logger)({
       , filename: GLOBALS.logdir + "/expressErrorLog.log"
       , maxsize: 10000000
       , maxFiles: 10
+    })
+    , new winston.transports.MongoLogger({
+        json: true
     })
   ]
 });
@@ -170,13 +194,17 @@ app.use(express.session({ secret: "omgnodeworks", store:sessionStore }));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.logger({stream:winstonStream}));
+
+var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
+
+app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream}));
+
 app.use(app.router);
 app.use(express.static(path.join(__dirname, '../public')));
 app.use("/shared", express.static("shared", path.join(__dirname, '../shared')));
 
 app.use(function(err, req, res, next){
-  expressErrorLogger.error(err.stack);
+  expressErrorLogger.error(JSON.stringify({msg: err.stack}));
   console.log(err.stack);
   res.send(500, 'Something broke!');
 });
@@ -1007,6 +1035,20 @@ app.post('/retireCde', function (req, res) {
             res.send();
         });        
     });
+});
+
+app.post('/logs', function (req, res) {
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        dbLogger.getLogs(req.body.query, function(err, result) {
+            if (err) {
+                res.send({error: err});
+            } else {
+                res.send(result);
+            }
+        });
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
 });
 
 var systemAlert = "";

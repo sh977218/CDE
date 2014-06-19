@@ -1,9 +1,12 @@
 #!/bin/sh
 
+export MONGO_LOG_URI=
+
 export MONGO_HOST=localhost
 export MONGO_DB=test
 
 mongo test deploy/dbInit.js
+mongo cde-logs-test deploy/logInit.js
 
 groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml --testMode
 groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx --testMode

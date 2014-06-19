@@ -13,6 +13,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     private void makePublic(String boardName) {
         findElement(By.linkText("My Boards")).click();
+        Assert.assertTrue(textPresent(boardName));
         int length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
@@ -24,6 +25,7 @@ public class BoardTest extends NlmCdeBaseTest {
                 return;
             } 
         }
+        Assert.assertTrue(false);
     }
     
     @Test
@@ -320,10 +322,9 @@ public class BoardTest extends NlmCdeBaseTest {
 
         makePublic(board2);
 
+        hangon(2);
         goToCdeByName("Biomarker Outcome");
         findElement(By.xpath("//li[@heading='Boards']/a")).click();
-        
-        hangon(4);
         
         Assert.assertTrue(textPresent(board1));
         Assert.assertTrue(textPresent(board2));

@@ -10,25 +10,24 @@ var mongoose = require('mongoose')
 
 var mongoUri = config.mongoUri;
 
-mongoose.connect(mongoUri);
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback () {
+var conn = mongoose.createConnection(mongoUri);
+conn.on('error', console.error.bind(console, 'connection error:'));
+conn.once('open', function callback () {
 	console.log('mongodb connection open');
     });    
-exports.mongoose_connection = db;
+exports.mongoose_connection = conn;
 
 var xmlParser = new xml2js.Parser();
 
 var schemas = require('./schemas');
 
-var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
-var User = mongoose.model('User', schemas.userSchema);
-var Org = mongoose.model('Org', schemas.orgSchema);
-var PinningBoard = mongoose.model('PinningBoard', schemas.pinningBoardSchema);
-var Message = mongoose.model('Message', schemas.message);
+var DataElement = conn.model('DataElement', schemas.dataElementSchema);
+var User = conn.model('User', schemas.userSchema);
+var Org = conn.model('Org', schemas.orgSchema);
+var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
+var Message = conn.model('Message', schemas.message);
 
-var gfs = Grid(db.db, mongoose.mongo);
+var gfs = Grid(conn.db, mongoose.mongo);
 
 exports.pVCodeSystemList = [];
 

@@ -11,8 +11,7 @@
   "dependencies": {
     "express": "3.*.*",
     "ejs": "*",
-    "url": "*",
-    "mongoose": "*",
+    "mongoose": "3.8.x",
     "xml2js": "*",
     "node-restful": "*",
     "util": "*",
