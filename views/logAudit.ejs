@@ -1,0 +1,29 @@
+<div ng-controller="LogCtrl" class="container-fluid">
+    <div class="row">
+        <form class="form-search">
+            <div class="form-group col-md-3">
+                <label for="ip">Remote Address</label>
+                <input name="ip" type="text" ng-model="search.ip" class="search-query form-control" placeholder="IP Address"/>  
+            </div>
+
+            <div class="form-group col-md-3" >
+                <label for="fromDate">From Date</label>
+                <input class="form-control input-small" name="fromDate" type="text" datepicker-popup="MM/dd/yyyy hh:mm:ss" ng-model="search.fromDate" />
+            </div>
+            <div class="form-group col-md-3" >
+                <label for="toDate">Until Date</label>
+                <input class="form-control input-small" name="toDate" type="text" datepicker-popup="MM/dd/yyyy hh:mm:ss" ng-model="search.toDate" />
+            </div>
+            <div class="form-group col-md-3" >
+                <button id="search.submit" type="submit" ng-click="searchLogs()" class="btn btn-default">Search</button>
+                <br><button id="search.reset" type="submit" ng-click="reset()" class="btn btn-default">Reset</button>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div id="logGridView" class="gridStyle" ng-grid="gridOptions"></div>
+        <a class="btn btn-mini fa fa-external-link" ng-click="downloadCsv()" id="exportLink"> Export</a>    
+    </div>
+
+    
+</div>
