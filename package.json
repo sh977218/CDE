@@ -9,7 +9,7 @@
     "npm": "1.2.x"
   },
   "dependencies": {
-    "express": "3.x",
+    "express": "3.*.*",
     "ejs": "*",
     "mongoose": "3.8.x",
     "xml2js": "*",
@@ -18,13 +18,25 @@
     "passport": ">= 0.0.0",
     "passport-local": ">= 0.0.0",
     "connect-flash": "~0.1.0",
-    "mongodb": "*"
-    , "node-uuid": "*"
-    , "request": "*"
-    , "winston": "*"
-    , "express-winston": "*"
-    , "gridfs-stream": "*"
-    , "crypto": "*"
-    , "serve-favicon": "2.x"
+    "mongodb": "*",
+    "node-uuid": "*",
+    "request": "*",
+    "winston": "*",
+
+    "gridfs-stream": "*",
+    "crypto": "*",
+    "http": "*",
+    "querystring": "*",
+    "grunt": "*",
+    "grunt-git": "*",
+    "grunt-http": "*",
+    "grunt-shell": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-prompt": "*",
+    "grunt-npm-install": "*",
+    "grunt-attention": "*",
+    "grunt-available-tasks": "*",
+    "chalk": "*",
+    "serve-favicon": "2.x"
   }
 }

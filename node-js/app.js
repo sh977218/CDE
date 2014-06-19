@@ -1,30 +1,29 @@
 var express = require('express')
   , http = require('http')
   , path = require('path')
-  , cdesvc = require('./node-js/cdesvc')
-  , boardsvc = require('./node-js/boardsvc')
-  , usersvc = require('./node-js/usersvc')
-  , orgsvc = require('./node-js/orgsvc')
+  , cdesvc = require('../node-js/cdesvc')
+  , boardsvc = require('../node-js/boardsvc')
+  , usersvc = require('../node-js/usersvc')
+  , orgsvc = require('../node-js/orgsvc')
   , flash = require('connect-flash')
   , passport = require('passport')
   , crypto = require('crypto')
   , LocalStrategy = require('passport-local').Strategy
-  , mongo_data = require('./node-js/mongo-data')
-  , classificationNode = require('./node-js/classificationNode')
+  , mongo_data = require('../node-js/mongo-data')
+  , classificationNode = require('../node-js/classificationNode')
   , util = require('util')
   , xml2js = require('xml2js')
-  , vsac = require('./node-js/vsac-io')
+  , vsac = require('../node-js/vsac-io')
   , winston = require('winston')
-  , envconfig = require('./envconfig.js')
-  , config = require('./config.js')
-  , dbLogger = require('./node-js/dbLogger.js')
-  , MongoStore = require('./node-js/assets/connect-mongo.js')(express)
+  , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+  , MongoStore = require('../node-js/assets/connect-mongo.js')(express)
+  , dbLogger = require('../node-js/dbLogger.js')
   , favicon = require('serve-favicon')
-  ;
+;
 
 // Global variables
 var GLOBALS = {
-    logdir : process.env.LOGDIR || envconfig.logdir || __dirname
+    logdir : config.logdir || __dirname
 };
 
 function findById(id, fn) {
@@ -167,8 +166,21 @@ var expressErrorLogger = new (winston.Logger)({
   ]
 });
 
+var processLogger = new (winston.Logger)({
+  transports: [
+    new winston.transports.File({
+      json: true,
+      colorize: true
+      , level: 'error'
+      , filename: GLOBALS.logdir + "/nodeErrorLog.log"
+      , maxsize: 10000000
+      , maxFiles: 10
+    })
+  ]
+});
+
 process.on('uncaughtException', function (err) {
-  expressErrorLogger.error('Caught exception: ' + err.stack);
+  processLogger.error('Caught exception: ' + err.stack);
 });
 
 var winstonStream = {
@@ -178,16 +190,15 @@ var winstonStream = {
 };
 
 // all environments
-app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
+app.set('port', config.port || 3000);
+app.set('views', __dirname + '/../views');
 app.set('view engine', 'ejs');
-app.use(favicon(__dirname + '/public/assets/img/favicon.ico'));
+
+app.use(favicon(__dirname + '/../public/assets/img/favicon.ico'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 
-// Creates session store
-var mongoHost = process.env.MONGO_HOST || envconfig.mongo_host || '127.0.0.1';
 var sessionStore = new MongoStore({
     mongoose_connection: mongo_data.mongoose_connection  
 });
@@ -202,8 +213,8 @@ var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", htt
 app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream}));
 
 app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
-app.use("/shared", express.static("shared", path.join(__dirname, 'shared')));
+app.use(express.static(path.join(__dirname, '../public')));
+app.use("/shared", express.static("shared", path.join(__dirname, '../shared')));
 
 app.use(function(err, req, res, next){
   expressErrorLogger.error(JSON.stringify({msg: err.stack}));

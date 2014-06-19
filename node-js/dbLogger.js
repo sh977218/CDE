@@ -1,9 +1,9 @@
 var mongoose = require('mongoose')
-    , envconfig = require('../envconfig')
+    , config = require('../config')
     ;
     
     
-var mongoLogUri = process.env.MONGO_LOG_URI || envconfig.mongo_log_uri || 'mongodb://localhost/cde-logs';
+var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
     
 var logConn = mongoose.createConnection(mongoLogUri);
 logConn.on('error', console.error.bind(console, 'connection error:'));
