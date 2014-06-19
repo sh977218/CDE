@@ -318,6 +318,6 @@ exports.diff = function(req, res) {
     }
 };
 
-exports.hideProprietaryPvs = function(user, cdes) {    
+exports.hideProprietaryPvs = function(cdes, user) {    
     return cdes;
 };
