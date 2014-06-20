@@ -346,8 +346,9 @@ exports.hideProprietaryPvs = function(cdes, user) {
     if (!Array.isArray(cdes)) {
         return this.checkCde(cdes);
     }
+    var self = this;
     cdes.forEach(function(cde) {
-        this.checkCde(cde);
+        self.checkCde(cde);
     }); 
     return cdes;
 };
