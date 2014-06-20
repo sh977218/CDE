@@ -87,7 +87,6 @@ public class NlmCdeBaseTest {
     }
         
     protected void goToCdeByName(String name) {
-        goToSearch();
         openCdeInList(name);
         findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("More Like This"));
@@ -95,6 +94,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void openCdeInList(String name) {
+        goToSearch();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
