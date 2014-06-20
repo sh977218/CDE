@@ -1,16 +1,16 @@
 <dl class="dl-horizontal">
   <dt>Multiple Values:</dt>
   <dd>
-    <input type="checkbox" ng-model="cde.valueDomain.datatypeValueList.multi" ng-change="stageCde(cde)" id="multipleValues_input" boolean/>
+    <input ng-disabled="!isAllowed(cde)" type="checkbox" ng-model="cde.valueDomain.datatypeValueList.multi" ng-change="stageCde(cde)" id="multipleValues_input" boolean/>
   </dd>
     <dt>Other (Please Specify):</dt>
     <dd>
-      <input type="checkbox" ng-model="cde.valueDomain.datatypeValueList.otherPleaseSpecify" ng-change="changeOtherPleaseSpecify()" id="otherPleaseSpecify_input" boolean/>
+      <input type="checkbox" ng-disabled="!isAllowed(cde)" ng-model="cde.valueDomain.datatypeValueList.otherPleaseSpecify" ng-change="changeOtherPleaseSpecify()" id="otherPleaseSpecify_input" boolean/>
     </dd>
   <span ng-show="cde.valueDomain.datatypeValueList.otherPleaseSpecify === true">
     <dt>Please Specify Text:</dt>
     <dd>
-      <input ng-model="cde.valueDomain.datatypeValueList.otherPleaseSpecifyText" ng-change="stageCde(cde)" ng-default="Other (Please specify)" id="otherPleaseSpecifyText_input"/>
+      <div inline-edit model="cde.valueDomain.datatypeValueList.otherPleaseSpecifyText" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)" id="otherPleaseSpecifyText_input"> </div>
     </dd>      
   </span>
 </dl>

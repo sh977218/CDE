@@ -298,7 +298,10 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(findElement(By.id("otherPleaseSpecify_input")).isSelected());
         Assert.assertTrue(textPresent("Please Specify Text"));
-        findElement(By.id("otherPleaseSpecifyText_input")).sendKeys("Other Answer");
+        findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//i")).click();
+        findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//input")).clear();
+        findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//input")).sendKeys("Other Answer");
+        findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//button[@class='fa fa-check']")).click();
 
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
