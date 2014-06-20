@@ -249,4 +249,66 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.id("showMorePvs")).click();
         Assert.assertTrue(textPresent("Hypermagnesemia"));
     }
+    
+    @Test
+    public void multiValue() {
+        String cdeName = "Cambridge-Hopkins Restless Legs Syndrome Diagnostic Questionnaire (CH-RLSQ) - feeling most occur time";
+        openCdeInList(cdeName);
+        Assert.assertTrue(textPresent("Multiple Values:"));
+        mustBeLoggedInAs("ninds", "pass");
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(findElement(By.id("multipleValues_input")).isSelected());
+
+        cdeName = "Imaging perfusion computed tomography based identification core method type";
+        
+        openCdeInList(cdeName);
+        Assert.assertTrue(textNotPresent("Multiple Values:"));
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertFalse(findElement(By.id("multipleValues_input")).isSelected());
+        findElement(By.id("multipleValues_input")).click();
+        
+        findElement(By.id("openSave")).click();
+        findElement(By.name("version")).sendKeys(".1");
+        modalHere();
+        saveCde();
+
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Permissible Values"));
+        Assert.assertTrue(findElement(By.id("multipleValues_input")).isSelected());
+    }
+    
+    @Test
+    public void otherPleaseSpecify() {
+        String cdeName = "Structured Clinical Interview for Pathological Gambling (SCI-PG) - withdrawal value";
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertFalse(findElement(By.id("otherPleaseSpecify_input")).isSelected());
+        Assert.assertTrue(textNotPresent("Please Specify Text"));
+        findElement(By.id("otherPleaseSpecify_input")).click();
+        Assert.assertTrue(findElement(By.id("otherPleaseSpecify_input")).isSelected());
+        
+        findElement(By.id("openSave")).click();
+        findElement(By.name("version")).sendKeys(".1");
+        modalHere();
+        saveCde();
+
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(findElement(By.id("otherPleaseSpecify_input")).isSelected());
+        Assert.assertTrue(textPresent("Please Specify Text"));
+        findElement(By.id("otherPleaseSpecifyText_input")).sendKeys("Other Answer");
+
+        findElement(By.id("openSave")).click();
+        findElement(By.name("version")).sendKeys(".1");
+        modalHere();
+        saveCde();
+        
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(textPresent("Other Answer"));
+        
+    }
+    
 }
