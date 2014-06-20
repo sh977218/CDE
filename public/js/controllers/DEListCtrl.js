@@ -80,7 +80,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
                 if ($scope.facets.statuses !== undefined) {
                     for (var i = 0; i < $scope.facets.statuses.terms.length; i++) {
                         for (var j = 0; j < $scope.registrationStatuses.length; j++) {
-                            if ($scope.facets.statuses.terms[i].term === $scope.registrationStatuses[j].name.toLowerCase()) {
+                            if ($scope.facets.statuses.terms[i].term === $scope.registrationStatuses[j].name) {
                                 $scope.registrationStatuses[j].count = $scope.facets.statuses.terms[i].count;
                             }
                         }
@@ -119,7 +119,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
         for (var i = 0; i < $scope.registrationStatuses.length; i++) {
             var t = $scope.registrationStatuses[i];
             if (t.selected === true) {
-                regStatusOr.push({term: {"registrationState.registrationStatus": t.name.toLowerCase()}});
+                regStatusOr.push({term: {"registrationState.registrationStatus": t.name}});
             }
         }
         if (regStatusOr.length > 0) {
