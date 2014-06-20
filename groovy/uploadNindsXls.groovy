@@ -253,6 +253,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
         listDatatype.put("datatype", datatype);
         listDatatype.put("multi", true);        
         datatype = "Value List";
+        vd.put("datatypeValueList", listDatatype);
     }
 
     def permValues = [];
