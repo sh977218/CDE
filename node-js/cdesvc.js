@@ -22,8 +22,7 @@ var mltConf = {
     "min_word_length" : 2
 };
     
-exports.elasticsearch = function (query, res) {
-    var cdesvc = this;
+exports.elasticsearch = function (query, cb) {
     request.post(elasticUri + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
        if (!error && response.statusCode === 200) {
         var resp = JSON.parse(body);
@@ -38,7 +37,7 @@ exports.elasticsearch = function (query, res) {
             result.cdes.push(thisCde);
         }
         result.facets = resp.facets;
-        res.send(cdesvc.hideProprietaryPvs(result));
+        cb(result);
      } else {
          console.log("es error: " + error + " response: " + response.statusCode);
      } 
@@ -144,7 +143,7 @@ exports.priorCdes = function(req, res) {
     });
 };
 
-exports.show = function(req, res) {
+exports.show = function(req, cb) {
     var cdesvc = this;
     var cdeId = req.params.id;
     var type = req.params.type;
@@ -160,11 +159,11 @@ exports.show = function(req, res) {
             if (req.isAuthenticated()) {
                mongo_data.addToViewHistory(cde, req.user);
             };
-            res.send(cdesvc.hideProprietaryPvs(cde)); 
+            cb(cde);
         }); 
     } else {
         mongo_data.cdesByUuidList([cdeId], function(err, cdes) {
-            res.send(cdesvc.hideProprietaryPvs(cdes[0]));
+            cb(cdes[0]);
         });    
     }    
 };
@@ -318,6 +317,37 @@ exports.diff = function(req, res) {
     }
 };
 
-exports.hideProprietaryPvs = function(cdes, user) {    
+exports.hideProprietaryPvs = function(cdes, user) {  
+    this.hiddenFieldMessage = 'Login to see the value.';
+    this.systemWhitelist = ['HL7'];
+    this.censorPv = function(pvSet) {
+        var toBeCensored = true;
+        this.systemWhitelist.forEach(function(system) {
+            if (!pvSet.codeSystemName) toBeCensored = false;            
+            else if (pvSet.codeSystemName.indexOf(system)>=0) toBeCensored = false;            
+        });
+        if (toBeCensored) {
+            pvSet.valueMeaningName = this.hiddenFieldMessage;
+            pvSet.valueMeaningCode = this.hiddenFieldMessage;
+            pvSet.codeSystemName = this.hiddenFieldMessage;
+            pvSet.codeSystemVersion = this.hiddenFieldMessage;
+        }
+    };
+    this.checkCde = function(cde) {
+        if (cde.valueDomain.datatype !== "Value List") return cde;
+        var self = this;
+        cde.valueDomain.permissibleValues.forEach(function(pvSet) {
+            self.censorPv(pvSet);
+        });
+        return cde;
+    };
+    if (!cdes) return cdes;
+    if (user) return cdes;   
+    if (!Array.isArray(cdes)) {
+        return this.checkCde(cdes);
+    }
+    cdes.forEach(function(cde) {
+        this.checkCde(cde);
+    }); 
     return cdes;
 };
