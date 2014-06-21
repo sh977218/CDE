@@ -12,7 +12,8 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.linkText("Classification")).click();
         findElement(By.id("addClassification")).click(); 
         modalHere();              
-        findElement(By.id("classifySlectOrg-"+categories[0])).click();       
+        findElement(By.id("classifySlectOrg-"+categories[0])).click(); 
+        hangon(.5);
         for (int i=1; i<categories.length-1; i++) {
             findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();       
         } 
@@ -58,7 +59,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         goToCdeByName("Spectroscopy geometry location not applicable indicator");
         List<WebElement> linkList = driver.findElements(By.cssSelector("[id$='Imaging Diagnostics']"));
-        Assert.assertTrue(linkList.size() == 3);        
+        Assert.assertTrue(linkList.size() == 3);
         removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
         linkList = driver.findElements(By.cssSelector("[id$='Imaging Diagnostics']"));
         Assert.assertTrue(linkList.size() == 2);
@@ -68,7 +69,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis"});
         Assert.assertTrue(textNotPresent("Myasthenia Gravis"));
         linkList = driver.findElements(By.cssSelector("[id$='Assessments and Examinations']"));
-        Assert.assertTrue(linkList.size() == 2);        
+        Assert.assertTrue(linkList.size() == 2);
     }    
     
     @Test

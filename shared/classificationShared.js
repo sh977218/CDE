@@ -55,15 +55,10 @@ exports.fetchLastLevel = function(tree, fields, mode) {
 exports.deleteCategory = function(tree, fields, cb) {
     var classification = this;
     var lastLevel = classification.fetchLastLevel(tree, fields);
-    var rtn = false;
-    
+
     for (var i = 0; i < lastLevel.length; i++) {
         if (lastLevel[i].name === fields[fields.length-1]) {
             lastLevel.splice(i,1);
-            
-            // Returns true if no more elements in clasification
-            if( lastLevel.length === 0 ) rtn = true;
-            
             break;
         }
     }    
