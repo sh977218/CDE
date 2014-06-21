@@ -1,9 +1,10 @@
+<!-- TODO: Fix how IDs are created. Right now, it can only handle two levels. -->
 <script type="text/ng-template" id="classif-sub-elements.html">
-    <a href="/#/search">
+    > <a href="/#/search">
         <span ng-click="searchByClassification(orgName, pathArray)"
               data-id="classification-{{$parent.$index}}-{{$index}}"
               class="name hand-cursor"
-              >
+              ng:class="($parent.$parent.$parent.$index===undefined) ? 'first-level-classification' : ''">
             {{elt.name}}
         </span>
     </a> 

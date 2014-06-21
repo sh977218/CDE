@@ -60,8 +60,7 @@ body {
 
 #repeatCs ul {
     font-size: 12px;
-    list-style: disc;
-    padding-left: 10px;
+    list-style: none;
 }
 
 #repeatCs > .pull-left {
@@ -117,6 +116,8 @@ body {
     z-index: 10000!important;
 }
 
-.font-weight-bold {
+.first-level-classification {
     font-weight: bold;
+    font-size: 16px;
+    line-height: 30px;
 }
