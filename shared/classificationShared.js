@@ -7,6 +7,7 @@ exports.findSteward = function(de, orgName) {
         }
     }
 };
+
 exports.findElement = function(element, name) {
     for (var i = 0; i < element.elements.length; i++) {
         if (element.elements[i].name === name) {
@@ -31,6 +32,9 @@ exports.fetchLastLevel = function(tree, fields, mode) {
         for (var i = 0; i<subTree.length; i++) {
             if (subTree[i].name === catname) {
                 if (!subTree[i].elements) subTree[i].elements = [];
+                if ( subTree[i].elements.length == 0) {
+                    return subTree[i];
+                }
                 return subTree[i].elements;
             }
         }
@@ -40,22 +44,34 @@ exports.fetchLastLevel = function(tree, fields, mode) {
         }
         return null;
     };
+
     for (var j = 0; j<fields.length-1; j++) {
         if (subTree) subTree = classifications.findCategory(subTree, fields[j]);
     }
+
     return subTree;
 };
 
 exports.deleteCategory = function(tree, fields, cb) {
     var classification = this;
     var lastLevel = classification.fetchLastLevel(tree, fields);
+    var rtn = false;
+    
     for (var i = 0; i < lastLevel.length; i++) {
         if (lastLevel[i].name === fields[fields.length-1]) {
             lastLevel.splice(i,1);
+            
+            // Returns true if no more elements in clasification
+            if( lastLevel.length === 0 ) rtn = true;
+            
             break;
         }
     }    
-    if (cb) cb();
+    if (cb) {
+        cb();
+    }
+    
+    return rtn;
 };
 
 exports.addCategory = function(tree, fields, cb) {
@@ -97,4 +113,20 @@ exports.transferClassifications = function (source, destination) {
             classification.addCategory(stewardOrgDestination.elements, path, function(){});
         });
     });
+};
+
+/**
+ * Delete data element classification given an organization name.
+ * 
+ * @param {type} de - data element
+ * @param {type} orgName - organization name
+ * @returns none
+ */
+exports.removeClassification = function(de, orgName) {
+    for( var i = 0; i < de.classification.length; i++ ) {
+        if( de.classification[i].stewardOrg.name === orgName ) {
+            de.classification.splice( i,1 );
+            break;
+        }
+    }
 };

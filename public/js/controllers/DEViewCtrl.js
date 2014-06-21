@@ -32,9 +32,9 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     
     $scope.reload($routeParams);
 
-    var indexedConceptSystemClassifications = [];
+//    var indexedConceptSystemClassifications = [];
     $scope.classificationToFilter = function() {
-         indexedConceptSystemClassifications = [];
+//         indexedConceptSystemClassifications = [];
          if ($scope.cde != null) {
              return $scope.cde.classification;
          } 

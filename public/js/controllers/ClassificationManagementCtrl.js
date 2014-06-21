@@ -16,7 +16,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
     $scope.updateOrg();
     
     $scope.classificationToFilter = function() {
-         indexedConceptSystemClassifications = [];
+//         indexedConceptSystemClassifications = [];
          return $scope.org.classifications;
     };
     

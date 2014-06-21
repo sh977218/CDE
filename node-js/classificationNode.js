@@ -2,7 +2,7 @@ var mongo_data = require('../node-js/mongo-data')
 , usersvc = require('./usersvc')
 , classificationShared = require('../shared/classificationShared');
 
-exports.removeOrgClassification = function(request, callback) {   
+exports.removeOrgClassification = function(request, callback) { 
     mongo_data.orgByName(request.orgName, function(stewardOrg) {
         classificationShared.deleteCategory(stewardOrg.classifications, request.categories);
         stewardOrg.markModified("classifications");
@@ -63,9 +63,17 @@ exports.cdeClassification = function(body, action, cb) {
                 , elements: []
             });
             steward = classificationShared.findSteward(cde, body.orgName);
-        }        
+        }
+        
+        if( !(body.categories instanceof Array) )
+            body.categories = [body.categories];        
+        
         if (action === "add") classificationShared.addCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
-        if (action === "remove") classificationShared.deleteCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
+        if (action === "remove") {
+            if( classificationShared.deleteCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif) ) {
+                classificationShared.removeClassification( cde, body.orgName );
+            }
+        }
     });     
 };
 
