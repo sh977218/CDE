@@ -1,24 +1,25 @@
 var express = require('express')
   , http = require('http')
   , path = require('path')
-  , cdesvc = require('../node-js/cdesvc')
-  , boardsvc = require('../node-js/boardsvc')
-  , usersvc = require('../node-js/usersvc')
-  , orgsvc = require('../node-js/orgsvc')
+  , cdesvc = require('./cdesvc')
+  , boardsvc = require('./boardsvc')
+  , usersvc = require('./usersvc')
+  , orgsvc = require('./orgsvc')
   , flash = require('connect-flash')
   , passport = require('passport')
   , crypto = require('crypto')
   , LocalStrategy = require('passport-local').Strategy
-  , mongo_data = require('../node-js/mongo-data')
-  , classificationNode = require('../node-js/classificationNode')
+  , mongo_data = require('./mongo-data')
+  , classificationNode = require('./classificationNode')
   , util = require('util')
   , xml2js = require('xml2js')
-  , vsac = require('../node-js/vsac-io')
+  , vsac = require('./vsac-io')
   , winston = require('winston')
   , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
-  , MongoStore = require('../node-js/assets/connect-mongo.js')(express)
-  , dbLogger = require('../node-js/dbLogger.js')
+  , MongoStore = require('./assets/connect-mongo.js')(express)
+  , dbLogger = require('./dbLogger.js')
   , favicon = require('serve-favicon')
+  , elastic = require('./elastic')
 ;
 
 // Global variables
@@ -761,12 +762,6 @@ app.get('/cdediff/:deId', function(req, res) {
    return cdesvc.diff(req, res); 
 });
 
-app.get('/classificationSystems', function(req, res) {
-   return mongo_data.classificationSystems(function (result) {
-       res.send(result);
-   }); 
-});
-
 app.get('/org/:name', function(req, res) {
    return mongo_data.orgByName(req.params.name, function (result) {
        res.send(result);
@@ -774,7 +769,7 @@ app.get('/org/:name', function(req, res) {
 });
 
 app.post('/elasticSearch', function(req, res) {
-   return cdesvc.elasticsearch(req.body.query, function(result) {
+   return elastic.elasticsearch(req.body.query, function(result) {
        result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
        res.send(result);
    }); 
@@ -967,7 +962,7 @@ app.get('/data/:imgtag', function(req, res) {
 });
 
 app.get('/moreLikeCde/:cdeId', function(req, res) {
-    cdesvc.morelike(req.params.cdeId, function(result) {
+    elastic.morelike(req.params.cdeId, function(result) {
         result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
         res.send(result);
     });

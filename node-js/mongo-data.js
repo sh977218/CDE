@@ -175,12 +175,6 @@ exports.addComment = function(deId, comment, userId, callback) {
     });
 };
 
-exports.classificationSystems = function(callback) {
-      DataElement.find().distinct('classification.conceptSystem', function(error, classifs) {
-          callback(classifs);
-      });
-};
-
 exports.orgByName = function(orgName,callback) {
     Org.findOne({"name": orgName}).exec(function(error, org) {
         callback(org);
@@ -249,6 +243,12 @@ exports.listOrgs = function(callback) {
         callback("", orgs.sort());
     });
 };
+
+/*exports.listOrgsFromDEClassification = function(callback) {
+    DataElement.distinct('classification.stewardOrg.name', function(error, orgs) {
+        callback("", orgs.sort());
+    });
+};*/
 
 exports.listOrgsFromDEClassification = function(callback) {
     DataElement.distinct('classification.stewardOrg.name', function(error, orgs) {
