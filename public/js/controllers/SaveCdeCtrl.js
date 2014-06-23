@@ -77,12 +77,21 @@ function SaveCdeCtrl($scope, $modal, $http) {
         };        
         return mongoPv;
     };
-    
+
+    $scope.changeOtherPleaseSpecify = function() {
+        var cde = $scope.cde;
+        if (cde.valueDomain.datatypeValueList.otherPleaseSpecify === true) {
+            cde.valueDomain.datatypeValueList.otherPleaseSpecifyText = "Other (Please specify)";
+        } else {
+            delete cde.valueDomain.datatypeValueList.otherPleaseSpecifyText;
+        }
+        $scope.stageCde(cde);
+    };
 
     $scope.stageCde = function(cde) {
         cde.unsaved = true;
     };
-        
+    
     $scope.openRegStatusUpdate = function () {
         var modalInstance = $modal.open({
           templateUrl: 'regStatusUpdate.html',

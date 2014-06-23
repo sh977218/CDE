@@ -7,11 +7,13 @@ test-console.out
 
 ## Secret Config Files
 config.js
+config.test.js
 views/version.ejs
 
 ## Local Files
 seed
 scripts/elasticsearch/my*
+my-*
 
 ## Logs
 expressLog*

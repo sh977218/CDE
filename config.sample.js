@@ -27,6 +27,9 @@ var config = {
             { host: "localhost", port: 27017 }
         ]
         , dbname: "test"
+        , log: {
+            uri: "mongodb://localhost/cde-logs-test"
+        }
     }
     , node: {
         scripts: {

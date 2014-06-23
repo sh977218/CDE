@@ -14,6 +14,7 @@ exports.createIndexJson = {
                 , "classification.elements.elements.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
                 , "classification.elements.elements.elements.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
                 , "classification.stewardOrg.name": { "type" : "string", "index" : "not_analyzed" }
+                , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
                 , "origin" : { "type" : "string", "index" : "not_analyzed" }
             }
         }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -147,5 +148,23 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 9);
     }
+    
+    @Test
+    public void preferredStandardFacet() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        goToCdeByName("Noncompliant Reason Text");
+        findElement(By.id("editStatus")).click();
+        modalHere();
+        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
+        Assert.assertTrue(textPresent("Standard CDEs cannot be edited by their stewards"));
+        modalHere();
+        findElement(By.id("saveRegStatus")).click();
+        hangon(1);
+        goToSearch();          
+        findElement(By.id("li-blank-Preferred Standard")).click();
+        hangon(2);
+        Assert.assertTrue(textPresent("Noncompliant Reason Text"));
+    }
+    
     
 }

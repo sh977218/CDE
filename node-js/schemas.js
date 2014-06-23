@@ -116,6 +116,8 @@ var deJsonSchema = {
         , datatypeValueList: {
             datatype: String
             , multi: Boolean
+            , otherPleaseSpecify: Boolean
+            , otherPleaseSpecifyText: String
         }
         , permissibleValues: [permissibleValueSchema]
     }
