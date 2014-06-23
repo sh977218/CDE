@@ -1,0 +1,22 @@
+<div class="modal-header" id="selectDefaultClassificationModalHeader">
+    <h4>Select Default Classification</h4>
+</div>
+<form name="form" role="form">
+    <div ng-if="org" class="modal-body" id="selectDefaultClassificationModalBody">
+        <div ng-click="classTree.wipeRest(defaultClassification,0)"><span class="fake-link">{{org.name}}</span></div>        
+        <div ng-repeat="cat in defaultClassification.categories" ng-click="classTree.wipeRest(defaultClassification, $index+1)" 
+             style="margin-left: {{10+10*$index}}px">
+            <span class="fake-link">{{cat}}</span>
+        </div>
+        <div ng-repeat="cat in classTree.getCategories(org, defaultClassification, defaultClassification.categories.length)" 
+             style="margin-left: {{10+10*defaultClassification.categories.length}}px" id="selectDefaultClassification-{{cat.name}}">
+            > 
+            <span ng-click="defaultClassification.categories.push(cat.name)" class="fake-link">{{cat.name}} 
+                <button class="fa fa-share-square btn btn-default btn-mini" ng-click="selectClassification(cat)"> Select</button></span>
+            
+        </div> 
+    </div>
+    <div class="modal-footer" id="addClassificationModalFooter">
+        <button class="btn done" ng-click="close()">Done</button>
+    </div>
+</form>
