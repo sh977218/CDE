@@ -131,7 +131,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
             bool: {
                 must_not: [{
                     term: {
-                        "registrationState.registrationStatus": "retired"
+                        "registrationState.registrationStatus": "Retired"
                     }
                 },{
                     term: {
