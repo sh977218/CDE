@@ -174,7 +174,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     };
     
     $scope.vsacMappingExists = function() {
-        return $scope.cde.dataElementConcept.conceptualDomain.vsac;
+        return typeof($scope.cde.dataElementConcept.conceptualDomain) !== "undefined" 
+            && typeof($scope.cde.dataElementConcept.conceptualDomain.vsac) !== "undefined";
     };
     
     $scope.loadValueSet = function() {

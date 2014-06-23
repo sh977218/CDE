@@ -97,7 +97,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         newPv.put("valueMeaningName", cadsrDE.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM[pvi].VALUEMEANING[0].text());
         newPv.put("valueMeaningCode", cadsrDE.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM[pvi].MEANINGCONCEPTS[0].text());
         if (cadsrDE.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM[pvi].MEANINGCONCEPTS[0] != null)
-        newPv.put("valueMeaningCodeSystem", "NCI Thesaurus");
+            newPv.put("valueMeaningCodeSystem", "NCI Thesaurus");
         permissibleValues.add(newPv);
     }
     
