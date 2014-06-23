@@ -9,7 +9,6 @@ function SelectDefaultClassificationModalCtrl($scope, $modalInstance, Classifica
 
     $scope.selectClassification = function (cat) {
         $scope.defaultClassification.categories.push(cat.name);
-        console.log("selecting: " + JSON.stringify($scope.defaultClassification));
         $modalInstance.close($scope.defaultClassification.categories);
     };   
 

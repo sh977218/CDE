@@ -66,12 +66,9 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
 
         modalInstance.result.then(function (defaultClassification) {
             $scope.org.defaultClassification = defaultClassification;
-//            defaultClassification.orgName = $scope.orgToManage;
-//            OrgClassification.save(newClassification, function() {
-//                $route.reload();
-//                $scope.addAlert("success", "Classification Added");                
-//            });
+            $http.post("/org/defaultClassification", {orgName: $scope.org.name, default: defaultClassification}).then(function(result) {
+                $scope.addAlert("success", "Saved");
+            });            
         });
     };
-    
 }
