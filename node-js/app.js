@@ -775,6 +775,7 @@ app.get('/org/:name', function(req, res) {
 
 app.post('/elasticSearch', function(req, res) {
    return cdesvc.elasticsearch(req.body.query, function(result) {
+       result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
        res.send(result);
    }); 
 });
