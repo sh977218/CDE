@@ -3,7 +3,8 @@ var fs = require('fs')
     , xml2js = require('xml2js')
     , mongoose = require('mongoose')
     , uuid = require('node-uuid')
-	, mongodata = require('../node-js/mongo-data')
+    , mongodata = require('../node-js/mongo-data')
+    , config = require('../config.js')
 ;
 
 var parser = new xml2js.Parser();

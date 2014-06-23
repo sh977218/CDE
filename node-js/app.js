@@ -462,7 +462,7 @@ app.post('/cdesByUuidList', function(req, res) {
 
 app.get('/cdesforapproval', function(req, res) {
     mongo_data.cdesforapproval(req.user.orgAdmin, function(err, cdes) {
-        res.send(cdes);
+        res.send(cdesvc.hideProprietaryPvs(cdes, req.user));
     });
 });
 
@@ -598,12 +598,14 @@ app.get('/priorcdes/:id', function(req, res) {
 });
 
 app.get('/dataelement/:id/:type?', function(req, res) {
-    cdesvc.show(req, res);
+    cdesvc.show(req, function(result) {
+        res.send(cdesvc.hideProprietaryPvs(result, req.user));
+    });
 });
 
 app.get('/debyuuid/:uuid/:version', function(req, res) {
     mongo_data.deByUuidAndVersion(req.params.uuid, req.params.version, function(err, de) {
-        res.send(de);
+        res.send(cdesvc.hideProprietaryPvs(de, req.user));
     });
 });
 
@@ -631,7 +633,7 @@ app.get('/viewingHistory/:start', function(req, res) {
             idList.push(splicedArray[i]);
         }
         mongo_data.cdesByIdList(idList, function(err, cdes) {
-            res.send(cdes);
+            res.send(cdesvc.hideProprietaryPvs(cdes, req.user));
         });
     }
 });
@@ -667,7 +669,7 @@ app.get('/board/:boardId/:start', function(req, res) {
             idList.push(pins[i].deUuid);
         }
         mongo_data.cdesByUuidList(idList, function(err, cdes) {
-            res.send({board: board, cdes: cdes, totalItems: totalItems});
+            res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes), totalItems: totalItems});
         });
     });
 });
@@ -772,7 +774,9 @@ app.get('/org/:name', function(req, res) {
 });
 
 app.post('/elasticSearch', function(req, res) {
-   return cdesvc.elasticsearch(req.body.query, res); 
+   return cdesvc.elasticsearch(req.body.query, function(result) {
+       res.send(result);
+   }); 
 });
 
 app.post('/addAttachmentToCde', function(req, res) {
@@ -963,13 +967,14 @@ app.get('/data/:imgtag', function(req, res) {
 
 app.get('/moreLikeCde/:cdeId', function(req, res) {
     cdesvc.morelike(req.params.cdeId, function(result) {
+        result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
         res.send(result);
     });
 });
 
 app.post('/desByConcept', function(req, res) {
    mongo_data.desByConcept(req.body, function(result) {
-       res.send(result);
+       res.send(cdesvc.hideProprietaryPvs(result, req.user));
    }); 
 });
 
@@ -993,16 +998,19 @@ setInterval(fetchRemoteData, 1000 * 60 * 60 * 1);
 
 var parser = new xml2js.Parser();
 app.get('/vsacBridge/:vsacId', function(req, res) {
-   vsac.getValueSet(req.params.vsacId, function(result) {       
-       if (result === 404 || result === 400) {
-           res.status(result);
-           res.end();
-       } else {
-           parser.parseString(result, function (err, jsonResult) {
-            res.send(jsonResult);
-           });
-       }
-   }) ;
+    if (!req.user) { 
+        res.send(202, {error: {message: "Please login to see VSAC mapping."}});
+    }
+    vsac.getValueSet(req.params.vsacId, function(result) {       
+        if (result === 404 || result === 400) {
+            res.status(result);
+            res.end();
+        } else {
+            parser.parseString(result, function (err, jsonResult) {
+             res.send(jsonResult);
+            });
+        }
+    }) ;
 });
 
 app.get('/permissibleValueCodeSystemList', function(req, res) {

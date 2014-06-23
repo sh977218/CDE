@@ -4,6 +4,10 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         max_quickboard_cdes : 10
     };
     
+    $scope.isLoggedIn = function() {
+        return typeof($scope.user._id)!=="undefined";
+    };
+    
     $scope.loadUser = function(callback) {
         Myself.get(function(u) {
             $scope.user = u;

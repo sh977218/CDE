@@ -252,7 +252,6 @@ module.exports = function(grunt) {
     });
     grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
     grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','clear','guihelp','clear','git','clear', 'elastic','clear', 'build','clear', 'node']);
-    grunt.registerTask('help', ['availabletasks']);
-    
+    grunt.registerTask('help', ['availabletasks']);    
 
 };

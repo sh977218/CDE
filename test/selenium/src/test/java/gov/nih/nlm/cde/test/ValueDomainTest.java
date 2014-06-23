@@ -251,7 +251,31 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     }
     
     @Test
-    public void multiValue() {
+    public void hideProprietaryPv() {
+        mustBeLoggedInAs("ninds", "pass");        
+        goToCdeByName("Post traumatic amnesia duration range");
+        findElement(By.linkText("Permissible Values")).click();         
+        findElement(By.cssSelector("#pvCodeSystem-0 .fa-edit")).click();
+        findElement(By.cssSelector("#pvCodeSystem-0 input")).sendKeys("SNOMEDCT");
+        findElement(By.cssSelector("#pvCodeSystem-0 .fa-check")).click();
+        findElement(By.id("openSave")).click();
+        findElement(By.name("version")).sendKeys(".1");
+        saveCde();
+        
+        mustBeLoggedInAs("ninds", "pass"); 
+        goToCdeByName("Post traumatic amnesia duration range");
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(textPresent("SNOMEDCT"));
+       
+        logout();
+        goToCdeByName("Post traumatic amnesia duration range");
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(textNotPresent("SNOMEDCT"));
+        Assert.assertTrue(textPresent("Login to see the value."));        
+    }    
+    
+    @Test
+    public void multiValue() {              
         String cdeName = "Cambridge-Hopkins Restless Legs Syndrome Diagnostic Questionnaire (CH-RLSQ) - feeling most occur time";
         openCdeInList(cdeName);
         Assert.assertTrue(textPresent("Multiple Values:"));
@@ -281,6 +305,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     
     @Test
     public void otherPleaseSpecify() {
+        mustBeLoggedInAs("ninds", "pass");        
         String cdeName = "Structured Clinical Interview for Pathological Gambling (SCI-PG) - withdrawal value";
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
