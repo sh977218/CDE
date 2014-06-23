@@ -327,7 +327,8 @@ exports.hideProprietaryPvs = function(cdes, user) {
         , "SOP"
         , "AHRQ"
         , "HL7"
-        , "CDC Race and Ethnicity"    
+        , "CDC Race and Ethnicity"  
+        , "NCI"
     ];
     this.censorPv = function(pvSet) {
         var toBeCensored = true;

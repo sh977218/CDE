@@ -251,7 +251,6 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     }
     
     @Test
-    @AfterClass
     public void hideProprietaryPv() {
         mustBeLoggedInAs("ninds", "pass");        
         goToCdeByName("Post traumatic amnesia duration range");
@@ -275,7 +274,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Login to see the value."));        
     }    
     
-    public void multiValue() {
+    @Test
+    public void multiValue() {              
         String cdeName = "Cambridge-Hopkins Restless Legs Syndrome Diagnostic Questionnaire (CH-RLSQ) - feeling most occur time";
         openCdeInList(cdeName);
         Assert.assertTrue(textPresent("Multiple Values:"));
@@ -305,6 +305,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     
     @Test
     public void otherPleaseSpecify() {
+        mustBeLoggedInAs("ninds", "pass");        
         String cdeName = "Structured Clinical Interview for Pathological Gambling (SCI-PG) - withdrawal value";
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
