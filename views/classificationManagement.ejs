@@ -7,6 +7,15 @@
     </div>
 
     <dl id="repeatCs">
+        <div class="row">
+            <div class="col-md-6">Default Classification:
+                <ol ng-show="org.defaultClassification" class="breadcrumb">
+                    <li ng-repeat="cat in org.defaultClassification">{{cat}}</li>
+                </ol>
+                <span ng-hide="org.defaultClassification">No default, select one before creating CDEs</span>
+            </div>
+            <div class="col-md-3"><button class="btn btn-default btn-small" ng-click="openSelectDefaultClassificationModal()" id="selectDefault">Select</button></div>
+        </div>
         <button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification"><i class="fa fa-plus"> </i> Add Classification</button>
         <div id="repeatCs" class="container">
             <div  class="col-md-12 container">
@@ -20,5 +29,8 @@
     </dl>
     <script type="text/ng-template" id="addClassificationModalContent.html">
         <%- include addClassification.ejs %>
+    </script>
+    <script type="text/ng-template" id="selectDefaultClassificationModalContent.html">
+        <%- include selectDefaultClassificationModal.ejs %>
     </script>
 </div>
