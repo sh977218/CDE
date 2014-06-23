@@ -1,6 +1,6 @@
 #!/bin/sh
 
-mongo nlmcde test/dbInit.js
+mongo nlmcde deploy/dbInit.js
 
 find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec groovy -cp ./groovy/ groovy/UploadCadsr {} \;
 

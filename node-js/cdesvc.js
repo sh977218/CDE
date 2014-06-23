@@ -319,7 +319,16 @@ exports.diff = function(req, res) {
 
 exports.hideProprietaryPvs = function(cdes, user) {  
     this.hiddenFieldMessage = 'Login to see the value.';
-    this.systemWhitelist = ['HL7'];
+    this.systemWhitelist = [
+        "LOINC"
+        , "RXNORM"
+        , "HSLOC"
+        , "CDCREC"
+        , "SOP"
+        , "AHRQ"
+        , "HL7"
+        , "CDC Race and Ethnicity"    
+    ];
     this.censorPv = function(pvSet) {
         var toBeCensored = true;
         this.systemWhitelist.forEach(function(system) {

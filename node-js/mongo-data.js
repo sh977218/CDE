@@ -1,6 +1,5 @@
 var mongoose = require('mongoose')
     , util = require('util')
-    , vsac_io = require('./vsac-io')
     , xml2js = require('xml2js')
     , uuid = require('node-uuid')
     , Grid = require('gridfs-stream')

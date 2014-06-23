@@ -173,6 +173,10 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         return allVsacMatch;
     };
     
+    $scope.vsacMappingExists = function() {
+        return $scope.cde.dataElementConcept.conceptualDomain.vsac;
+    };
+    
     $scope.loadValueSet = function() {
         var dec = $scope.cde.dataElementConcept;
         if (dec != null && dec.conceptualDomain != null && dec.conceptualDomain.vsac !=  null) {
@@ -188,7 +192,10 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
                 }
              }).
              success(function(data, status) {
-                if (data === "") {
+                if (data.error) {
+
+                }
+                 else if (data === "") {
                 } else {
                     $scope.cde.dataElementConcept.conceptualDomain.vsac.name = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
                     $scope.cde.dataElementConcept.conceptualDomain.vsac.version = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].version;
