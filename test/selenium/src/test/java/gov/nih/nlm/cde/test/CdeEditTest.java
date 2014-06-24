@@ -18,9 +18,28 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("cde.definition")).sendKeys("Definition for testUser CDE 1");
         findElement(By.name("cde.version")).sendKeys("1.0alpha1");
         new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
+        findElement(By.id("selectDefault")).click();
+        modalHere();        
+        findElement(By.xpath("//span[contains(text(), 'Submission and Reporting')]")).click();
+        findElement(By.xpath("//span[contains(text(),'Breast Cancer Data Mart')]/button")).click();
+        modalGone();
+        Assert.assertTrue(textPresent("Submission and Reporting"));
+        Assert.assertTrue(textPresent("Breast Cancer Data Mart"));
+        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
+        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("Select One");
+        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
+        Assert.assertTrue(textPresent("You must select a default classification"));
+        findElement(By.id("selectDefault")).click();
+        modalHere();        
+        findElement(By.xpath("//span[contains(text(), 'CATEGORY')]")).click();
+        findElement(By.xpath("//span[contains(text(),'Adverse Events')]/button")).click();
+        modalGone();
         findElement(By.id("cde.submit")).click();
         hangon(1);
         Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
+        findElement(By.linkText("Classification")).click();
+        Assert.assertTrue(textPresent("CATEGORY"));
+        Assert.assertTrue(textPresent("Adverse Events"));        
     }
     
     @Test
@@ -31,6 +50,11 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("cde.designation")).sendKeys("AlignmentCDE");
         findElement(By.name("cde.definition")).sendKeys("Definition for alignment cde");
         new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
+        findElement(By.id("selectDefault")).click();
+        modalHere();        
+        findElement(By.xpath("//span[contains(text(), 'USAGE')]")).click();
+        findElement(By.xpath("//span[contains(text(),'CLINICAL CARE')]/button")).click();
+        modalGone();
         findElement(By.id("cde.submit")).click();
         hangon(1);
         goToSearch();
