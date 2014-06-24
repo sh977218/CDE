@@ -47,7 +47,7 @@ exports.listOrgs = function(req, res) {
     });
 };
 
-exports.listOrgsFromDEClassification = function(req, res) {
+/*exports.listOrgsFromDEClassification = function(req, res) {
     mongo_data.listOrgsFromDEClassification(function(err, orgs) {
        if (err) {
            res.send("ERROR");
@@ -55,7 +55,7 @@ exports.listOrgsFromDEClassification = function(req, res) {
            res.send(orgs);
        }   
     });
-};
+};*/
 
 exports.priorCdes = function(req, res) {
     var cdeId = req.params.id;

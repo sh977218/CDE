@@ -244,18 +244,6 @@ exports.listOrgs = function(callback) {
     });
 };
 
-/*exports.listOrgsFromDEClassification = function(callback) {
-    DataElement.distinct('classification.stewardOrg.name', function(error, orgs) {
-        callback("", orgs.sort());
-    });
-};*/
-
-exports.listOrgsFromDEClassification = function(callback) {
-    DataElement.distinct('classification.stewardOrg.name', function(error, orgs) {
-        callback("", orgs.sort());
-    });
-};
-
 exports.managedOrgs = function(callback) {
     Org.find().exec(function(err, orgs) {
         callback(orgs);

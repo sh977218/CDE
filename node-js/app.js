@@ -483,7 +483,9 @@ app.get('/listOrgs', function(req, res) {
 });
 
 app.get('/listOrgsFromDEClassification', function(req, res) {
-    cdesvc.listOrgsFromDEClassification(req, res);
+    elastic.listOrgsFromDEClassification(function(result) {
+        res.send(result);
+    });
 });
 
 app.get('/managedOrgs', function(req, res) {
