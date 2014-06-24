@@ -16,7 +16,6 @@ import org.testng.annotations.Test;
  * @author ludetc
  */
 public class ValueDomainTest extends NlmCdeBaseTest {
-
     @Test
     public void assignVsacId() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
@@ -121,6 +120,10 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.xpath("//td[@id='pv-10']//input")).clear();
         findElement(By.xpath("//td[@id='pv-10']//input")).sendKeys("New PV");
         findElement(By.cssSelector("#pv-10 .fa-check")).click();
+        
+        findElement(By.cssSelector("#pv-10 [typeahead-source=\"pVTypeaheadCodeSystemNameList\"] .fa-edit")).click();
+        findElement(By.cssSelector("#pvCodeSystem-10 input[ng-show=\"typeaheadSource.length>0\"]")).sendKeys("N");        
+        Assert.assertTrue(textPresent("NCI Thesaurus"));
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Changed PV");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
@@ -337,6 +340,5 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("Other Answer"));
         
-    }
-    
+    }    
 }
