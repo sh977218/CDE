@@ -28,8 +28,6 @@ var Message = conn.model('Message', schemas.message);
 
 var gfs = Grid(conn.db, mongoose.mongo);
 
-exports.pVCodeSystemList = [];
-
 exports.DataElement = DataElement;
 
 exports.boardsByUserId = function(userId, callback) {

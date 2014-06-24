@@ -992,7 +992,7 @@ var fetchRemoteData = function() {
 
 // run every 1 hours
 fetchRemoteData();
-setInterval(fetchRemoteData, 1000 * 60 * 60 * 1);
+setInterval(fetchRemoteData, 1000 * 60 /** 60*/ * 1);
 
 var parser = new xml2js.Parser();
 app.get('/vsacBridge/:vsacId', function(req, res) {
@@ -1012,7 +1012,7 @@ app.get('/vsacBridge/:vsacId', function(req, res) {
 });
 
 app.get('/permissibleValueCodeSystemList', function(req, res) {
-    res.send(mongo_data.pVCodeSystemList);
+    res.send(elastic.pVCodeSystemList);
 });
 
 app.post('/mail/messages/new', function(req, res) {
