@@ -1,5 +1,8 @@
-function SelectDefaultClassificationModalCtrl($scope, $modalInstance, ClassificationTree, org) {
-    $scope.org = org;
+function SelectDefaultClassificationModalCtrl($scope, $modalInstance, ClassificationTree, $http, orgName) {    
+    $http.get("/org/" + orgName).then(function(result) {
+       $scope.org = result.data; 
+    });
+    
     $scope.defaultClassification = { categories: [] };
     $scope.classTree = ClassificationTree;
      

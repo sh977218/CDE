@@ -1,6 +1,11 @@
-function CreateCdeCtrl($scope, $window, $timeout, DataElement, Elastic) {
+function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) {
     $scope.setActiveMenu('CREATECDE');
-
+    
+    $scope.defaultClassification = $scope.cache.get("defaultClassification");
+    if (!$scope.defaultClassification) {
+        $scope.defaultClassification = [];
+    }
+    
     $scope.save = function() {
         // !TODO probably not the best way to do this
         $scope.cde.naming = [];
@@ -15,6 +20,13 @@ function CreateCdeCtrl($scope, $window, $timeout, DataElement, Elastic) {
         delete $scope.cde.designation;
         delete $scope.cde.definition;
         
+        $scope.cde.classification = [{stewardOrg: {name: $scope.cde.stewardOrg.name}}];
+        var current = $scope.cde.classification[0];
+        for (var i in $scope.defaultClassification) {
+            current.elements = [{name: $scope.defaultClassification[i]}];
+            current = current.elements[0];
+        }
+                
         DataElement.save($scope.cde, function(cde) {
             $window.location.href = "/#/deview?cdeId=" + cde._id;        
         });
@@ -56,4 +68,22 @@ function CreateCdeCtrl($scope, $window, $timeout, DataElement, Elastic) {
             });
         }, 1000);
     };
+
+    $scope.openSelectDefaultClassificationModal = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'selectDefaultClassificationModalContent.html',
+            controller: SelectDefaultClassificationModalCtrl,
+            resolve: {
+                orgName: function() {
+                    return $scope.cde.stewardOrg.name;
+                }                   
+            }
+        });
+
+        modalInstance.result.then(function (defaultClassification) {
+            $scope.defaultClassification = defaultClassification;
+            $scope.cache.put("defaultClassification", $scope.defaultClassification);
+        });
+    };
+    
 }

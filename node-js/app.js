@@ -771,28 +771,6 @@ app.get('/org/:name', function(req, res) {
    }); 
 });
 
-app.post('/org/defaultClassification', function(req, res) {
-    if (req.user.orgAdmin.indexOf(req.body.orgName) < 0) {
-        res.send(403, "Not Authorized");
-    } else {
-        mongo_data.orgByName(req.body.orgName, function(org) {
-            if (!org) {
-                res.send(403, "Not Authorized");         
-            } else {
-                org.defaultClassification = req.body.default;
-                org.save(function(err) {
-                    if (err) {
-                        expressErrorLog(err);
-                        res.send(500, "Failed to save")
-                    } else {
-                        res.send("OK");                    
-                    }
-                });
-            }
-        });
-    }
-});
-
 app.post('/elasticSearch', function(req, res) {
    return cdesvc.elasticsearch(req.body.query, res); 
 });

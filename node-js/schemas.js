@@ -187,7 +187,6 @@ schemas.userSchema = mongoose.Schema ({
 
 schemas.orgSchema = mongoose.Schema ({
     name: String
-    , defaultClassification: [String]
     , classifications: [csEltSchema]
 });
 

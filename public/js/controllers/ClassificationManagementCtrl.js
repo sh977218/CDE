@@ -52,23 +52,4 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
             });
         });
     };
-    
-    $scope.openSelectDefaultClassificationModal = function () {
-        var modalInstance = $modal.open({
-            templateUrl: 'selectDefaultClassificationModalContent.html',
-            controller: SelectDefaultClassificationModalCtrl,
-            resolve: {
-                org: function() {
-                    return $scope.org;
-                }                   
-            }
-        });
-
-        modalInstance.result.then(function (defaultClassification) {
-            $scope.org.defaultClassification = defaultClassification;
-            $http.post("/org/defaultClassification", {orgName: $scope.org.name, default: defaultClassification}).then(function(result) {
-                $scope.addAlert("success", "Saved");
-            });            
-        });
-    };
 }
