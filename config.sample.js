@@ -38,6 +38,7 @@ var config = {
         }
         , buildDir: "../build"
     }
+    , cookieName: 
 };
 
 module.exports = config;
