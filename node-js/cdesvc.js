@@ -144,7 +144,6 @@ exports.priorCdes = function(req, res) {
 };
 
 exports.show = function(req, cb) {
-    var cdesvc = this;
     var cdeId = req.params.id;
     var type = req.params.type;
     if (!cdeId) {
