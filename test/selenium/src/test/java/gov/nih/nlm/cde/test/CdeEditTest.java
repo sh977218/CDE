@@ -9,30 +9,30 @@ import org.testng.annotations.Test;
 
 public class CdeEditTest extends NlmCdeBaseTest {
     
+    public void createCde(String name, String definition, String version, String org) {
+        findElement(By.linkText("Create")).click();
+        findElement(By.linkText("CDE")).click();
+        findElement(By.name("cde.designation")).sendKeys(name);
+        findElement(By.name("cde.definition")).sendKeys(definition);
+        if (version != null) {
+            findElement(By.name("cde.version")).sendKeys(version);
+        }
+        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText(org);
+        findElement(By.id("cde.submit")).click();
+        hangon(1);
+        Assert.assertTrue(textPresent(definition));        
+    }
+    
     @Test
     public void createCde() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        findElement(By.linkText("Create")).click();
-        findElement(By.linkText("CDE")).click();
-        findElement(By.name("cde.designation")).sendKeys("Abracadabra");
-        findElement(By.name("cde.definition")).sendKeys("Definition for testUser CDE 1");
-        findElement(By.name("cde.version")).sendKeys("1.0alpha1");
-        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
-        findElement(By.id("cde.submit")).click();
-        hangon(1);
-        Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
+        createCde("Abracadabra", "Definition for testUser CDE 1", "1.0alpha1", "CTEP");
     }
     
     @Test
     public void testAlignmentForMissingFields() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        findElement(By.linkText("Create")).click();
-        findElement(By.linkText("CDE")).click();
-        findElement(By.name("cde.designation")).sendKeys("AlignmentCDE");
-        findElement(By.name("cde.definition")).sendKeys("Definition for alignment cde");
-        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
-        findElement(By.id("cde.submit")).click();
-        hangon(1);
+        createCde("AlignmentCDE", "Definition for alignment cde", null, "CTEP");
         goToSearch();
         openCdeInList("AlignmentCDE");
         Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
