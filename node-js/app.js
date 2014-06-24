@@ -206,7 +206,7 @@ app.use(express.session({ secret: "omgnodeworks", proxy: true, store:sessionStor
 
 
 app.use(function(req, res, next){
-  expressLogger.info('%s %s', JSON.stringify(req.cookies['connect.sid']), req.url);
+  expressLogger.info(JSON.stringify(req.cookies['connect.sid']));
   next();
 });
 app.use(flash());
