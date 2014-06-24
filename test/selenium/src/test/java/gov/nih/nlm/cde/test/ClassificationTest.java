@@ -78,7 +78,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.linkText("Classification")).click();
         findElement(By.cssSelector("[id='classification-Disease,Spinal Muscular Atrophy,Assessments and Examinations,Imaging Diagnostics'] .name")).click();
         hangon(1);
-        Assert.assertTrue(textPresent("Organizations"));
+        Assert.assertTrue(textPresent("Classifications"));
         Assert.assertTrue(textPresent("NINDS (7)"));
         Assert.assertTrue(textPresent("Imaging Diagnostics (7)"));
         Assert.assertTrue(textPresent("Spinal Muscular Atrophy (7)"));

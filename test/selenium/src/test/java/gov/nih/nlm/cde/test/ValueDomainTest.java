@@ -227,7 +227,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#pvCode-4 .fa-check")).click();  
         
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-edit")).click(); 
-        findElement(By.cssSelector("#pvCodeSystem-4 input")).sendKeys(".1");
+        findElement(By.cssSelector("#pvCodeSystem-4 input[ng-show=\"typeaheadSource.length>0\"]")).sendKeys(".1");
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-check")).click();        
         
         findElement(By.cssSelector("button.btn.btn-primary")).click();
@@ -259,7 +259,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Post traumatic amnesia duration range");
         findElement(By.linkText("Permissible Values")).click();         
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-edit")).click();
-        findElement(By.cssSelector("#pvCodeSystem-0 input")).sendKeys("SNOMEDCT");
+        findElement(By.cssSelector("#pvCodeSystem-0 input[ng-show=\"typeaheadSource.length>0\"]")).sendKeys("SNOMEDCT");
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-check")).click();
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
