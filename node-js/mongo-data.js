@@ -398,13 +398,6 @@ exports.saveCde = function(req, callback) {
     }
 };
 
-exports.fetchPVCodeSystemList = function() {
-    var mongo_data = this;
-    DataElement.distinct("valueDomain.permissibleValues.codeSystemName").exec(function(err, codeSystemNames) {
-        mongo_data.pVCodeSystemList = codeSystemNames;
-    });
-};
-
 exports.createMessage = function(msg, cb) {
     var message = new Message(msg);
     message.save(function() {

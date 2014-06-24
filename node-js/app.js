@@ -483,7 +483,7 @@ app.get('/listOrgs', function(req, res) {
 });
 
 app.get('/listOrgsFromDEClassification', function(req, res) {
-    elastic.listOrgsFromDEClassification(function(result) {
+    elastic.DataElementDistinct("classification.stewardOrg.name", function(result) {
         res.send(result);
     });
 });
@@ -987,7 +987,7 @@ var fetchRemoteData = function() {
     vsac.getTGT(function(tgt) {
         console.log("Got TGT");
     });
-    mongo_data.fetchPVCodeSystemList();   
+    elastic.fetchPVCodeSystemList();   
 };
 
 // run every 1 hours
