@@ -41,7 +41,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     }
     
     private void deleteNestedClassifTree() {
-        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"Remove\"]")).click();    
+        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"Remove\"]")).click();
         driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"OK\"]")).click();         
         Assert.assertTrue(textPresent("Classification Deleted"));
         Assert.assertTrue(textNotPresent("Epilepsy"));
@@ -62,12 +62,12 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         searchNestedClassifiedCdes();
         hangon(3);
         Assert.assertTrue(textNotPresent("NINDS (7)"));
-    }    
+    }
     
     private void createClassificationName(String[] categories) {
         findElement(By.id("addClassification")).click(); 
         modalHere();
-        for (int i=0; i<categories.length-1; i++) {   
+        for (int i=0; i<categories.length-1; i++) {
             findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();       
         }
         findElement(By.id("addNewCatName")).sendKeys(categories[categories.length-1]);   
@@ -96,5 +96,5 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         gotoClassifMgt();
         Assert.assertTrue(textPresent("Headache"));
 
-    }    
+    }
 }

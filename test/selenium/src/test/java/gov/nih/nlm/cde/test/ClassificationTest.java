@@ -2,21 +2,24 @@ package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ClassificationTest extends NlmCdeBaseTest {  
-    private void addClassificationMethod(String[] categories){
+     private void addClassificationMethod(String[] categories){
         findElement(By.linkText("Classification")).click();
         findElement(By.id("addClassification")).click(); 
         modalHere();              
-        findElement(By.id("classifySlectOrg-"+categories[0])).click(); 
+        findElement(By.id("classifySlectOrg-"+categories[0])).click();
         hangon(.5);
         for (int i=1; i<categories.length-1; i++) {
             findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();       
-        } 
+        }
         findElement(By.cssSelector("[id='addClassification-"+categories[categories.length-1]+"'] button")).click();         
         findElement(By.cssSelector(".alert .close")).click();
         findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
@@ -46,12 +49,13 @@ public class ClassificationTest extends NlmCdeBaseTest {
             selector += categories[i];
             if (i<categories.length-1) selector += ",";
         }
-        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1])); 
+        
+        //Assert.assertTrue(driver.findElement(By.id("classification-"+selector)).getText().equals("> "+categories[categories.length-1])); 
         findElement(By.cssSelector("[id='classification-"+selector+"'] [title='Remove']")).click(); 
         findElement(By.cssSelector("[id='classification-"+selector+"'] .fa-check")).click(); 
         driver.navigate().refresh();
         findElement(By.linkText("Classification")).click();
-        Assert.assertTrue(checkElementDoesNotExistByCSS("[id='classification-"+selector+"'] .name"));
+        Assert.assertTrue(checkElementDoesNotExistByCSS("[id='classification-"+selector+"']"));
     }
     
     @Test
@@ -84,4 +88,18 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Imaging Diagnostics (7)"));
         Assert.assertTrue(textPresent("Spinal Muscular Atrophy (7)"));
     }
+    
+    @Test
+    public void removeTopLevelClassification() {
+        mustBeLoggedInAs(ninds_username, ninds_password);
+        goToCdeByName("Lymph Node Procedure Negative Ind-2");
+        findElement(By.linkText("Classification")).click();
+        Assert.assertTrue( findElement( By.id( "CCR" ) ).getText().equals( "CCR" ) );
+        Assert.assertTrue( checkElementDoesNotExistById( "NINDS" ) );
+        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
+        Assert.assertFalse( checkElementDoesNotExistById( "NINDS" ) );
+        removeClassificationMethod(new String[]{"Disease"});
+        Assert.assertTrue( checkElementDoesNotExistById( "NINDS" ) );
+    }
+
 }

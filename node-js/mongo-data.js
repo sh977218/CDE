@@ -178,9 +178,9 @@ exports.addComment = function(deId, comment, userId, callback) {
 };
 
 exports.classificationSystems = function(callback) {
-      DataElement.find().distinct('classification.conceptSystem', function(error, classifs) {
-          callback(classifs);
-      });
+    DataElement.find().distinct('classification.conceptSystem', function(error, classifs) {
+        callback(classifs);
+    });
 };
 
 exports.orgByName = function(orgName,callback) {

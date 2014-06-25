@@ -2,9 +2,13 @@ var mongo_data = require('../node-js/mongo-data')
 , usersvc = require('./usersvc')
 , classificationShared = require('../shared/classificationShared');
 
-exports.removeOrgClassification = function(request, callback) { 
+exports.removeOrgClassification = function(request, callback) {
+    // Make sure body.categories is an array    
+    if( !(request.categories instanceof Array) )
+        request.categories = [request.categories];    
+    
     mongo_data.orgByName(request.orgName, function(stewardOrg) {
-        classificationShared.deleteCategory(stewardOrg.classifications, request.categories);
+        classificationShared.deleteOrgCategory(stewardOrg.classifications, request.categories);
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             var query = {"classification.stewardOrg.name": request.orgName};
@@ -30,9 +34,12 @@ exports.removeOrgClassification = function(request, callback) {
 };
 
 exports.addOrgClassification = function(body, cb) {
-    var categories = body.categories;
+    // Make sure body.categories is an array    
+    if( !(body.categories instanceof Array) )
+        body.categories = [body.categories];
+        
     mongo_data.orgByName(body.orgName, function(stewardOrg) {
-        classificationShared.addCategory(stewardOrg.classifications, categories);
+        classificationShared.addOrgCategory(stewardOrg.classifications, body.categories);
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             if(cb) cb(err, stewardOrg);
@@ -66,7 +73,7 @@ exports.cdeClassification = function(body, action, cb) {
         }
         
         if( !(body.categories instanceof Array) )
-            body.categories = [body.categories];        
+            body.categories = [body.categories];
         
         if (action === "add") classificationShared.addCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
         if (action === "remove") {

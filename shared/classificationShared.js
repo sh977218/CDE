@@ -65,8 +65,7 @@ exports.deleteCategory = function(tree, fields, cb) {
     if (cb) {
         cb();
     }
-    
-    return rtn;
+
 };
 
 exports.addCategory = function(tree, fields, cb) {
@@ -78,6 +77,81 @@ exports.addCategory = function(tree, fields, cb) {
         }
     }
     if (lastLevel) lastLevel.push({name: fields[fields.length-1], elements:[]});
+    if (cb) cb();
+};
+
+exports.fetchLevel = function(tree, fields) {
+    var classifications = this;
+    var tempTree = tree;
+    
+    this.findCategory = function( subTree, name ) {
+        for( var i = 0; i<subTree.length; i++ ) {
+            if( subTree[i].name === name ) {
+                if( !subTree[i].elements ) subTree[i].elements = [];
+
+                return subTree[i].elements;
+            }
+        }
+
+        return null;
+    };
+    
+    for( var j=0; j<fields.length-1; j++ )
+        if( tempTree )
+            tempTree = classifications.findCategory( tempTree, fields[j] );
+
+    return tempTree;
+};
+
+exports.deleteOrgCategory = function(tree, fields, cb) {
+    var classification = this;
+    var lastLevel = classification.fetchLevel(tree, fields);
+    //console.log( "++++++++lastLevel: "+lastLevel );
+    
+    /*if( !(lastLevel instanceof Array) ) {
+        var tempLastLevel = lastLevel;
+        //tempLastLevel.elements.push( {name: fields[fields.length-1], elements:[]} ); 
+        lastLevel = [{name: tempLastLevel.name, elements:tempLastLevel.elements}];
+        //lastLevel.push({name: tempLastLevel.name, elements:tempLastLevel.elements});
+
+        console.log( "++++++++lastLevel: "+lastLevel );
+    }*/
+
+    for( var i = 0; i<lastLevel.length; i++ ) {
+        if( lastLevel[i].name === fields[fields.length-1]) {
+            //console.log( "~~~~~~~ about to delete some stuff" );
+            lastLevel.splice(i,1);
+            break;
+        }
+    }    
+    if (cb) {
+        cb();
+    }
+};
+
+exports.addOrgCategory = function(tree, fields, cb) {
+    var classification = this;
+    //console.log( "==========tree: "+tree );
+    //console.log( "==========fields: "+fields );
+
+    if( fields.length > 1 ) {
+        var lastLevel = classification.fetchLevel( tree, fields );
+
+//        console.log( "==========lastLevel: "+lastLevel );
+
+        if( classification.isDuplicate( lastLevel, fields[fields.length-1] ) ) {
+            // TODO - need to show this in the front-end dialog
+            if( cb ) return cb("Classificatoin Already Exists");
+        } else    
+            lastLevel.push( {name: fields[fields.length-1], elements:[]} );
+    } else { // Handles root level adds
+        if( classification.isDuplicate( tree, fields[0] ) ) {
+            // TODO - need to show this in the front-end dialog
+            if( cb ) return cb("Classificatoin Already Exists");
+        } else
+            tree.push( {name: fields, elements:[]} );
+    }
+    
     if (cb) cb();
 };
 
@@ -124,4 +198,18 @@ exports.removeClassification = function(de, orgName) {
             break;
         }
     }
+};
+
+/**
+ * Traverse array for duplicates.
+ * @param {type} eles - Array of elements to traverse.
+ * @param {type} name - Name of duplicate.
+ * @returns {Boolean} - True if duplicate found, false otherwise.
+ */
+exports.isDuplicate = function( eles, name ) {
+    for( var i=0; i<eles.length; i++)
+        if( eles[i].name === name ) 
+            return true;
+    
+    return false;
 };
