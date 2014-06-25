@@ -116,3 +116,7 @@ body {
 .navbar-fixed-bottom {
     z-index: 10000!important;
 }
+
+.cdeAttachmentThumbnail {
+    max-width: 160px;
+}

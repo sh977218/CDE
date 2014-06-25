@@ -16,6 +16,7 @@ exports.createIndexJson = {
                 , "classification.stewardOrg.name": { "type" : "string", "index" : "not_analyzed" }
                 , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
                 , "origin" : { "type" : "string", "index" : "not_analyzed" }
+                , "valueDomain.permissibleValues.valueMeaningCodeSystem": { "type" : "string", "index" : "not_analyzed" }
             }
         }
     }

@@ -22,7 +22,7 @@
                 <%- include cdeList/valueDomain.ejs %>
             </div>
             <div class="col-md-2">
-                <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" ng-src="/data/{{attachment.fileid}}"/> 
+                <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" ng-src="/data/{{attachment.fileid}}"  class='cdeAttachmentThumbnail' /> 
             </div>
         </div>
        <div class="row" >

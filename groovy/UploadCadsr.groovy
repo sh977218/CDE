@@ -54,6 +54,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     newDE.put("origin", 'caDSR'); 
 
     newDE.put("version", cadsrDE.VERSION.text());
+    
     newDE.put("valueDomain", new BasicDBObject("datatype": cadsrDE.VALUEDOMAIN[0].Datatype.text()));
     newDE.put("registrationState", new BasicDBObject("registrationStatus": workflowStatus));
     newDE.put("stewardOrg", new BasicDBObject("name", cadsrDE.CONTEXTNAME.text()));
@@ -95,6 +96,8 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         newPv.put("permissibleValue", cadsrDE.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM[pvi].VALIDVALUE[0].text());
         newPv.put("valueMeaningName", cadsrDE.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM[pvi].VALUEMEANING[0].text());
         newPv.put("valueMeaningCode", cadsrDE.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM[pvi].MEANINGCONCEPTS[0].text());
+        if (cadsrDE.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM[pvi].MEANINGCONCEPTS[0] != null)
+            newPv.put("valueMeaningCodeSystem", "NCI Thesaurus");
         permissibleValues.add(newPv);
     }
     

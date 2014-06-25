@@ -1,6 +1,5 @@
 var mongoose = require('mongoose')
     , util = require('util')
-    , vsac_io = require('./vsac-io')
     , xml2js = require('xml2js')
     , uuid = require('node-uuid')
     , Grid = require('gridfs-stream')
@@ -28,8 +27,6 @@ var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
 var Message = conn.model('Message', schemas.message);
 
 var gfs = Grid(conn.db, mongoose.mongo);
-
-exports.pVCodeSystemList = [];
 
 exports.DataElement = DataElement;
 
@@ -176,12 +173,6 @@ exports.addComment = function(deId, comment, userId, callback) {
     });
 };
 
-exports.classificationSystems = function(callback) {
-      DataElement.find().distinct('classification.conceptSystem', function(error, classifs) {
-          callback(classifs);
-      });
-};
-
 exports.orgByName = function(orgName,callback) {
     Org.findOne({"name": orgName}).exec(function(error, org) {
         callback(org);
@@ -247,12 +238,6 @@ exports.cdesByUuidList = function(idList, callback) {
 
 exports.listOrgs = function(callback) {
     Org.distinct('name', function(error, orgs) {
-        callback("", orgs.sort());
-    });
-};
-
-exports.listOrgsFromDEClassification = function(callback) {
-    DataElement.distinct('classification.stewardOrg.name', function(error, orgs) {
         callback("", orgs.sort());
     });
 };
@@ -409,13 +394,6 @@ exports.saveCde = function(req, callback) {
             callback(err, newDe);
         });
     }
-};
-
-exports.fetchPVCodeSystemList = function() {
-    var mongo_data = this;
-    DataElement.distinct("valueDomain.permissibleValues.codeSystemName").exec(function(err, codeSystemNames) {
-        mongo_data.pVCodeSystemList = codeSystemNames;
-    });
 };
 
 exports.createMessage = function(msg, cb) {
