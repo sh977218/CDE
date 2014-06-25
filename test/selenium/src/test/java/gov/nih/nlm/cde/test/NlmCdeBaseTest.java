@@ -89,7 +89,6 @@ public class NlmCdeBaseTest {
     }
         
     protected void goToCdeByName(String name) {
-        goToSearch();
         openCdeInList(name);
         findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("More Like This"));
@@ -97,6 +96,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void openCdeInList(String name) {
+        goToSearch();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
@@ -223,7 +223,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         hangon(2);
         findElement(By.linkText(cdeName2)).click();
-        hangon(1);
+        hangon(2);
         findElement(By.id("compare_0")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         Assert.assertTrue(textPresent("Quick Board ( 2 )"));

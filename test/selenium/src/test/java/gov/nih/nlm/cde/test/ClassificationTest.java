@@ -11,7 +11,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ClassificationTest extends NlmCdeBaseTest {  
-     private void addClassificationMethod(String[] categories){
+    private void addClassificationMethod(String[] categories){
         findElement(By.linkText("Classification")).click();
         findElement(By.id("addClassification")).click(); 
         modalHere();              
@@ -49,12 +49,12 @@ public class ClassificationTest extends NlmCdeBaseTest {
             selector += categories[i];
             if (i<categories.length-1) selector += ",";
         }
-        
-        //Assert.assertTrue(driver.findElement(By.id("classification-"+selector)).getText().equals("> "+categories[categories.length-1])); 
+        Assert.assertTrue(driver.findElement(By.id("classification-"+selector)).getText().contains("> "+categories[categories.length-1])); 
         findElement(By.cssSelector("[id='classification-"+selector+"'] [title='Remove']")).click(); 
-        findElement(By.cssSelector("[id='classification-"+selector+"'] .fa-check")).click(); 
+        findElement(By.cssSelector("[id='classification-"+selector+"'] .fa-check")).click();
         driver.navigate().refresh();
         findElement(By.linkText("Classification")).click();
+        hangon(1);
         Assert.assertTrue(checkElementDoesNotExistByCSS("[id='classification-"+selector+"']"));
     }
     
@@ -83,7 +83,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.linkText("Classification")).click();
         findElement(By.cssSelector("[id='classification-Disease,Spinal Muscular Atrophy,Assessments and Examinations,Imaging Diagnostics'] .name")).click();
         hangon(1);
-        Assert.assertTrue(textPresent("Organizations"));
+        Assert.assertTrue(textPresent("Classifications"));
         Assert.assertTrue(textPresent("NINDS (7)"));
         Assert.assertTrue(textPresent("Imaging Diagnostics (7)"));
         Assert.assertTrue(textPresent("Spinal Muscular Atrophy (7)"));

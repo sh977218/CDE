@@ -16,7 +16,6 @@ import org.testng.annotations.Test;
  * @author ludetc
  */
 public class ValueDomainTest extends NlmCdeBaseTest {
-
     @Test
     public void assignVsacId() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
@@ -121,6 +120,10 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.xpath("//td[@id='pv-10']//input")).clear();
         findElement(By.xpath("//td[@id='pv-10']//input")).sendKeys("New PV");
         findElement(By.cssSelector("#pv-10 .fa-check")).click();
+        
+        findElement(By.cssSelector("#pv-10 [typeahead-source=\"pVTypeaheadCodeSystemNameList\"] .fa-edit")).click();
+        findElement(By.cssSelector("#pvCodeSystem-10 input[ng-show=\"typeaheadSource.length>0\"]")).sendKeys("N");        
+        Assert.assertTrue(textPresent("NCI Thesaurus"));
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Changed PV");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
@@ -224,7 +227,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#pvCode-4 .fa-check")).click();  
         
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-edit")).click(); 
-        findElement(By.cssSelector("#pvCodeSystem-4 input")).sendKeys(".1");
+        findElement(By.cssSelector("#pvCodeSystem-4 input[ng-show=\"typeaheadSource.length>0\"]")).sendKeys(".1");
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-check")).click();        
         
         findElement(By.cssSelector("button.btn.btn-primary")).click();
@@ -249,4 +252,93 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.id("showMorePvs")).click();
         Assert.assertTrue(textPresent("Hypermagnesemia"));
     }
+    
+    @Test
+    public void hideProprietaryPv() {
+        mustBeLoggedInAs("ninds", "pass");        
+        goToCdeByName("Post traumatic amnesia duration range");
+        findElement(By.linkText("Permissible Values")).click();         
+        findElement(By.cssSelector("#pvCodeSystem-0 .fa-edit")).click();
+        findElement(By.cssSelector("#pvCodeSystem-0 input[ng-show=\"typeaheadSource.length>0\"]")).sendKeys("SNOMEDCT");
+        findElement(By.cssSelector("#pvCodeSystem-0 .fa-check")).click();
+        findElement(By.id("openSave")).click();
+        findElement(By.name("version")).sendKeys(".1");
+        saveCde();
+        
+        mustBeLoggedInAs("ninds", "pass"); 
+        goToCdeByName("Post traumatic amnesia duration range");
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(textPresent("SNOMEDCT"));
+       
+        logout();
+        goToCdeByName("Post traumatic amnesia duration range");
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(textNotPresent("SNOMEDCT"));
+        Assert.assertTrue(textPresent("Login to see the value."));        
+    }    
+    
+    @Test
+    public void multiValue() {              
+        String cdeName = "Cambridge-Hopkins Restless Legs Syndrome Diagnostic Questionnaire (CH-RLSQ) - feeling most occur time";
+        openCdeInList(cdeName);
+        Assert.assertTrue(textPresent("Multiple Values:"));
+        mustBeLoggedInAs("ninds", "pass");
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(findElement(By.id("multipleValues_input")).isSelected());
+
+        cdeName = "Imaging perfusion computed tomography based identification core method type";
+        
+        openCdeInList(cdeName);
+        Assert.assertTrue(textNotPresent("Multiple Values:"));
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertFalse(findElement(By.id("multipleValues_input")).isSelected());
+        findElement(By.id("multipleValues_input")).click();
+        
+        findElement(By.id("openSave")).click();
+        findElement(By.name("version")).sendKeys(".1");
+        modalHere();
+        saveCde();
+
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Permissible Values"));
+        Assert.assertTrue(findElement(By.id("multipleValues_input")).isSelected());
+    }
+    
+    @Test
+    public void otherPleaseSpecify() {
+        mustBeLoggedInAs("ninds", "pass");        
+        String cdeName = "Structured Clinical Interview for Pathological Gambling (SCI-PG) - withdrawal value";
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertFalse(findElement(By.id("otherPleaseSpecify_input")).isSelected());
+        Assert.assertTrue(textNotPresent("Please Specify Text"));
+        findElement(By.id("otherPleaseSpecify_input")).click();
+        Assert.assertTrue(findElement(By.id("otherPleaseSpecify_input")).isSelected());
+        
+        findElement(By.id("openSave")).click();
+        findElement(By.name("version")).sendKeys(".1");
+        modalHere();
+        saveCde();
+
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(findElement(By.id("otherPleaseSpecify_input")).isSelected());
+        Assert.assertTrue(textPresent("Please Specify Text"));
+        findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//i")).click();
+        findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//input")).clear();
+        findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//input")).sendKeys("Other Answer");
+        findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//button[@class='fa fa-check']")).click();
+
+        findElement(By.id("openSave")).click();
+        findElement(By.name("version")).sendKeys(".1");
+        modalHere();
+        saveCde();
+        
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(textPresent("Other Answer"));
+        
+    }    
 }

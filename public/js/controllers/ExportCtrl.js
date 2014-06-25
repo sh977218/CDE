@@ -1,4 +1,4 @@
-function ExportCtrl($scope, Elastic, $window) {  
+function ExportCtrl($scope, Elastic, CsvDownload) {  
     $scope.gridCdes = [];
     $scope.gridOptions = {
         data: 'gridCdes'
@@ -8,17 +8,8 @@ function ExportCtrl($scope, Elastic, $window) {
     };
     
     $scope.downloadCsv = function() {
-        var str = '';
-        for (var i = 0; i < $scope.gridCdes.length; i++) {
-            var line = '';
-            for (var index in $scope.gridCdes[i]) {
-                line += '"' + $scope.gridCdes[i][index] + '",';
-            }
-            line.slice(0, line.Length - 1);
-            str += line + '\r\n';
-        }
-        $window.open("data:text/csv;charset=utf-8," + escape(str))
-    }
+        CsvDownload.export($scope.gridCdes);
+    };
     
     $scope.buildElasticQuery(function(query) {
         query.query.size = 1000;

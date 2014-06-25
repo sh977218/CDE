@@ -6,11 +6,14 @@ test/selenium/*.png
 test-console.out
 
 ## Secret Config Files
-envconfig.js
+config.js
+config.test.js
+views/version.ejs
 
 ## Local Files
 seed
 scripts/elasticsearch/my*
+my-*
 
 ## Logs
 expressLog*
@@ -37,3 +40,6 @@ Thumbs.db
 .nide
 /test/selenium/.nb-gradle/private/
 
+test/selenium/yi-build.gradle
+envconfig.js
+yi-start-test-instance.sh

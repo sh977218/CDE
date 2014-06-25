@@ -3,12 +3,13 @@ var fs = require('fs')
     , xml2js = require('xml2js')
     , mongoose = require('mongoose')
     , uuid = require('node-uuid')
-	, mongodata = require('../node-js/mongo-data')
+    , mongodata = require('../node-js/mongo-data')
+    , config = require('../config.js')
 ;
 
 var parser = new xml2js.Parser();
 
-var mongoUri = process.env.MONGO_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/nlmcde';
+var mongoUri = config.mongo_uri;
 console.log("connecting to " + mongoUri);
 
 if( !mongoose.connection ) {

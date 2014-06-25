@@ -1,28 +1,30 @@
 var express = require('express')
   , http = require('http')
   , path = require('path')
-  , cdesvc = require('./node-js/cdesvc')
-  , boardsvc = require('./node-js/boardsvc')
-  , usersvc = require('./node-js/usersvc')
-  , orgsvc = require('./node-js/orgsvc')
+  , cdesvc = require('./cdesvc')
+  , boardsvc = require('./boardsvc')
+  , usersvc = require('./usersvc')
+  , orgsvc = require('./orgsvc')
   , flash = require('connect-flash')
   , passport = require('passport')
   , crypto = require('crypto')
   , LocalStrategy = require('passport-local').Strategy
-  , mongo_data = require('./node-js/mongo-data')
-  , classificationNode = require('./node-js/classificationNode')
+  , mongo_data = require('./mongo-data')
+  , classificationNode = require('./classificationNode')
   , util = require('util')
   , xml2js = require('xml2js')
-  , vsac = require('./node-js/vsac-io')
+  , vsac = require('./vsac-io')
   , winston = require('winston')
-  , envconfig = require('./envconfig.js')
-  , config = require('./config.js')
-  , MongoStore = require('./node-js/assets/connect-mongo.js')(express)
-  ;
+  , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+  , MongoStore = require('./assets/connect-mongo.js')(express)
+  , dbLogger = require('./dbLogger.js')
+  , favicon = require('serve-favicon')
+  , elastic = require('./elastic')
+;
 
 // Global variables
 var GLOBALS = {
-    logdir : process.env.LOGDIR || envconfig.logdir || __dirname
+    logdir : config.logdir || __dirname
 };
 
 function findById(id, fn) {
@@ -111,6 +113,23 @@ passport.use(new LocalStrategy({passReqToCallback: true},
 
 var app = express();
 
+var MongoLogger = winston.transports.MongoLogger = function (options) {
+    this.name = 'mongoLogger';
+    this.json = true;
+    this.level = options.level || 'info';
+  };
+
+  util.inherits(MongoLogger, winston.Transport);
+
+  MongoLogger.prototype.log = function (level, msg, meta, callback) {
+    var logEvent = JSON.parse(msg);
+    logEvent.level = level;
+    dbLogger.log(logEvent, function (err) {
+        if (err) console.log("CANNOT LOG: " + err);
+        callback(null, true);    
+    });
+  };
+
 var expressLogger = new (winston.Logger)({
   transports: [
     new winston.transports.File({
@@ -126,9 +145,12 @@ var expressLogger = new (winston.Logger)({
             level: 'verbose',
             colorize: true,
             timestamp: true
-        })          
-  ]
+        }) 
+    , new winston.transports.MongoLogger({
+        json: true
+    })  ]
 });
+
 var expressErrorLogger = new (winston.Logger)({
   transports: [
     new winston.transports.File({
@@ -139,11 +161,27 @@ var expressErrorLogger = new (winston.Logger)({
       , maxsize: 10000000
       , maxFiles: 10
     })
+    , new winston.transports.MongoLogger({
+        json: true
+    })
+  ]
+});
+
+var processLogger = new (winston.Logger)({
+  transports: [
+    new winston.transports.File({
+      json: true,
+      colorize: true
+      , level: 'error'
+      , filename: GLOBALS.logdir + "/nodeErrorLog.log"
+      , maxsize: 10000000
+      , maxFiles: 10
+    })
   ]
 });
 
 process.on('uncaughtException', function (err) {
-  expressErrorLogger.error('Caught exception: ' + err.stack);
+  processLogger.error('Caught exception: ' + err.stack);
 });
 
 var winstonStream = {
@@ -153,16 +191,15 @@ var winstonStream = {
 };
 
 // all environments
-app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
+app.set('port', config.port || 3000);
+app.set('views', __dirname + '/../views');
 app.set('view engine', 'ejs');
-app.use(express.favicon());
+
+app.use(favicon(__dirname + '/../public/assets/img/favicon.ico'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 
-// Creates session store
-var mongoHost = process.env.MONGO_HOST || envconfig.mongo_host || '127.0.0.1';
 var sessionStore = new MongoStore({
     mongoose_connection: mongo_data.mongoose_connection  
 });
@@ -171,13 +208,17 @@ app.use(express.session({ secret: "omgnodeworks", store:sessionStore }));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.logger({stream:winstonStream}));
+
+var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
+
+app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream}));
+
 app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
-app.use("/shared", express.static("shared", path.join(__dirname, 'shared')));
+app.use(express.static(path.join(__dirname, '../public')));
+app.use("/shared", express.static("shared", path.join(__dirname, '../shared')));
 
 app.use(function(err, req, res, next){
-  expressErrorLogger.error(err.stack);
+  expressErrorLogger.error(JSON.stringify({msg: err.stack}));
   console.log(err.stack);
   res.send(500, 'Something broke!');
 });
@@ -422,7 +463,7 @@ app.post('/cdesByUuidList', function(req, res) {
 
 app.get('/cdesforapproval', function(req, res) {
     mongo_data.cdesforapproval(req.user.orgAdmin, function(err, cdes) {
-        res.send(cdes);
+        res.send(cdesvc.hideProprietaryPvs(cdes, req.user));
     });
 });
 
@@ -442,7 +483,9 @@ app.get('/listOrgs', function(req, res) {
 });
 
 app.get('/listOrgsFromDEClassification', function(req, res) {
-    cdesvc.listOrgsFromDEClassification(req, res);
+    elastic.DataElementDistinct("classification.stewardOrg.name", function(result) {
+        res.send(result);
+    });
 });
 
 app.get('/managedOrgs', function(req, res) {
@@ -558,12 +601,14 @@ app.get('/priorcdes/:id', function(req, res) {
 });
 
 app.get('/dataelement/:id/:type?', function(req, res) {
-    cdesvc.show(req, res);
+    cdesvc.show(req, function(result) {
+        res.send(cdesvc.hideProprietaryPvs(result, req.user));
+    });
 });
 
 app.get('/debyuuid/:uuid/:version', function(req, res) {
     mongo_data.deByUuidAndVersion(req.params.uuid, req.params.version, function(err, de) {
-        res.send(de);
+        res.send(cdesvc.hideProprietaryPvs(de, req.user));
     });
 });
 
@@ -591,7 +636,7 @@ app.get('/viewingHistory/:start', function(req, res) {
             idList.push(splicedArray[i]);
         }
         mongo_data.cdesByIdList(idList, function(err, cdes) {
-            res.send(cdes);
+            res.send(cdesvc.hideProprietaryPvs(cdes, req.user));
         });
     }
 });
@@ -627,7 +672,7 @@ app.get('/board/:boardId/:start', function(req, res) {
             idList.push(pins[i].deUuid);
         }
         mongo_data.cdesByUuidList(idList, function(err, cdes) {
-            res.send({board: board, cdes: cdes, totalItems: totalItems});
+            res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes), totalItems: totalItems});
         });
     });
 });
@@ -719,12 +764,6 @@ app.get('/cdediff/:deId', function(req, res) {
    return cdesvc.diff(req, res); 
 });
 
-app.get('/classificationSystems', function(req, res) {
-   return mongo_data.classificationSystems(function (result) {
-       res.send(result);
-   }); 
-});
-
 app.get('/org/:name', function(req, res) {
    return mongo_data.orgByName(req.params.name, function (result) {
        res.send(result);
@@ -732,7 +771,10 @@ app.get('/org/:name', function(req, res) {
 });
 
 app.post('/elasticSearch', function(req, res) {
-   return cdesvc.elasticsearch(req.body.query, res); 
+   return elastic.elasticsearch(req.body.query, function(result) {
+       result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
+       res.send(result);
+   }); 
 });
 
 app.post('/addAttachmentToCde', function(req, res) {
@@ -922,14 +964,15 @@ app.get('/data/:imgtag', function(req, res) {
 });
 
 app.get('/moreLikeCde/:cdeId', function(req, res) {
-    cdesvc.morelike(req.params.cdeId, function(result) {
+    elastic.morelike(req.params.cdeId, function(result) {
+        result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
         res.send(result);
     });
 });
 
 app.post('/desByConcept', function(req, res) {
    mongo_data.desByConcept(req.body, function(result) {
-       res.send(result);
+       res.send(cdesvc.hideProprietaryPvs(result, req.user));
    }); 
 });
 
@@ -944,7 +987,7 @@ var fetchRemoteData = function() {
     vsac.getTGT(function(tgt) {
         console.log("Got TGT");
     });
-    mongo_data.fetchPVCodeSystemList();   
+    elastic.fetchPVCodeSystemList();   
 };
 
 // run every 1 hours
@@ -953,20 +996,23 @@ setInterval(fetchRemoteData, 1000 * 60 * 60 * 1);
 
 var parser = new xml2js.Parser();
 app.get('/vsacBridge/:vsacId', function(req, res) {
-   vsac.getValueSet(req.params.vsacId, function(result) {       
-       if (result === 404 || result === 400) {
-           res.status(result);
-           res.end();
-       } else {
-           parser.parseString(result, function (err, jsonResult) {
-            res.send(jsonResult);
-           });
-       }
-   }) ;
+    if (!req.user) { 
+        res.send(202, {error: {message: "Please login to see VSAC mapping."}});
+    }
+    vsac.getValueSet(req.params.vsacId, function(result) {       
+        if (result === 404 || result === 400) {
+            res.status(result);
+            res.end();
+        } else {
+            parser.parseString(result, function (err, jsonResult) {
+             res.send(jsonResult);
+            });
+        }
+    }) ;
 });
 
 app.get('/permissibleValueCodeSystemList', function(req, res) {
-    res.send(mongo_data.pVCodeSystemList);
+    res.send(elastic.pVCodeSystemList);
 });
 
 app.post('/mail/messages/new', function(req, res) {
@@ -1008,6 +1054,20 @@ app.post('/retireCde', function (req, res) {
             res.send();
         });        
     });
+});
+
+app.post('/logs', function (req, res) {
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        dbLogger.getLogs(req.body.query, function(err, result) {
+            if (err) {
+                res.send({error: err});
+            } else {
+                res.send(result);
+            }
+        });
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
 });
 
 var systemAlert = "";

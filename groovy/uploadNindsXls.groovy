@@ -121,14 +121,16 @@ static def String getCellValue(Cell cell) {
 ];
 
 def void addDomain(de, type, subtype, value) { 
-    if (!value.equals("")) {
-        def cls = new ArrayList<String>();
-        cls.add(type);
-        cls.add(subtype)
-        cls.addAll(value.split("\\."));
-        def classifToAdd = classifications.buildMultiLevelClassif("NINDS", cls.toArray(new String[cls.size()]));
-        classifications.addClassifToDe(classifToAdd, de);
-        classifications.addClassifToOrg(classifToAdd);
+    if (!value.equals("") && !value.equals("N/A.N/A")) {
+        for (semiColonSplit in value.split(";")) {
+            def cls = new ArrayList<String>();
+            cls.add(type);
+            cls.add(subtype)
+            cls.addAll(semiColonSplit.split("\\."));
+            def classifToAdd = classifications.buildMultiLevelClassif("NINDS", cls.toArray(new String[cls.size()]));
+            classifications.addClassifToDe(classifToAdd, de);
+            classifications.addClassifToOrg(classifToAdd);
+        }
     }
 }
 
@@ -251,6 +253,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
         listDatatype.put("datatype", datatype);
         listDatatype.put("multi", true);        
         datatype = "Value List";
+        vd.put("datatypeValueList", listDatatype);
     }
 
     def permValues = [];

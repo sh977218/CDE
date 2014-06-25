@@ -1,3 +1,15 @@
+<dl class="dl-horizontal">
+    <span ng-if="cde.valueDomain.datatypeValueList.multi === true">
+        <dt>Multiple Values:</dt>
+        <dd>Yes</dd>
+    </span>
+    <span ng-if="cde.valueDomain.datatypeValueList.otherPleaseSpecify === true">
+        <dt>Other (Please Specify):</dt>
+        <dd>Yes</dd>        
+        <dt>Please Specify Text:</dt>
+        <dd>{{cde.valueDomain.datatypeValueList.otherPleaseSpecifyText | placeholdEmpty}}</dd>      
+    </span>
+</dl>
 <hr/>
 <h4>Permissible Values</h4>
 <div ng-show="cde.valueDomain.permissibleValues.length == 0">No Permissible Values</div>
