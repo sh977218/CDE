@@ -34,6 +34,9 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
         $scope.reload();
     });
 
+    $scope.$watch('initialized', function() {
+        $scope.reload();        
+    });
 
     
     $scope.addStatusFilter = function(t) {
@@ -65,6 +68,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
     };
     
     $scope.reload = function() {
+        if (!$scope.initialized) return;
         $scope.buildElasticQuery(function(query) {
             Elastic.generalSearchQuery(query, function(result) {
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 

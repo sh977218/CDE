@@ -209,9 +209,11 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToSearch();
+        findElement(By.id("ftsearch-input")).sendKeys(cdeName);
+        findElement(By.cssSelector("i.fa-search")).click();
+        hangon(1);
         findElement(By.id("li-blank-Candidate")).click();
         Assert.assertTrue(textPresent(cdeName));
-        
         
     }
     
