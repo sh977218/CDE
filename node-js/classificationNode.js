@@ -3,9 +3,9 @@ var mongo_data = require('../node-js/mongo-data')
 , classificationShared = require('../shared/classificationShared');
 
 exports.removeOrgClassification = function(request, callback) {
-    // Make sure body.categories is an array    
-    if( !(request.categories instanceof Array) )
+    if( !(request.categories instanceof Array) ) {
         request.categories = [request.categories];    
+    }
     
     mongo_data.orgByName(request.orgName, function(stewardOrg) {
         classificationShared.deleteOrgCategory(stewardOrg.classifications, request.categories);
@@ -34,10 +34,10 @@ exports.removeOrgClassification = function(request, callback) {
 };
 
 exports.addOrgClassification = function(body, cb) {
-    // Make sure body.categories is an array    
-    if( !(body.categories instanceof Array) )
+    if( !(body.categories instanceof Array) ) {
         body.categories = [body.categories];
-        
+    }
+    
     mongo_data.orgByName(body.orgName, function(stewardOrg) {
         classificationShared.addOrgCategory(stewardOrg.classifications, body.categories);
         stewardOrg.markModified("classifications");
@@ -72,16 +72,17 @@ exports.cdeClassification = function(body, action, cb) {
             steward = classificationShared.findSteward(cde, body.orgName);
         }
         
-        if( !(body.categories instanceof Array) )
+        if( !(body.categories instanceof Array) ) {
             body.categories = [body.categories];
+        }
         
         if (action === "add") classificationShared.addCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
         if (action === "remove") {
             classificationShared.deleteCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
             
-            // Delete the organization from classificaiton if organization doesn't have any descendant elements.
-            if( steward.object.elements.length === 0 )
+            if( steward.object.elements.length === 0 ) {
                 classificationShared.removeClassification( cde, body.orgName );
+            }
         }
     });     
 };
