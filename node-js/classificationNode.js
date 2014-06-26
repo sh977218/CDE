@@ -39,7 +39,8 @@ exports.addOrgClassification = function(body, cb) {
     }
     
     mongo_data.orgByName(body.orgName, function(stewardOrg) {
-        classificationShared.addCategory(stewardOrg.classifications, body.categories, null, "org");
+        var fakeTree = {elements: stewardOrg.classifications};
+        classificationShared.addCategory(fakeTree, body.categories, null, "org");
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             if(cb) cb(err, stewardOrg);

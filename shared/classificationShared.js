@@ -73,11 +73,11 @@ exports.addCategory = function(tree, fields, cb, mode) {
     var classification = this;
     if( fields.length > 1 ) {
         var lastLevel;
-        if (mode === "org") lastLevel = classification.fetchLastLevel( tree, fields );
-        else lastLevel = classification.fetchLastLevel( tree, fields );
-        if( classification.isDuplicate( lastLevel, fields[fields.length-1] ) ) {
+        if (mode === "org") lastLevel = classification.fetchLevel( tree, fields );
+        else lastLevel = classification.fetchLevel( tree, fields );
+        /*if( classification.isDuplicate( lastLevel, fields[fields.length-1] ) ) {
             if( cb ) return cb("Classification Already Exists");
-        } else    
+        } else */   
             lastLevel.elements.push( {name: fields[fields.length-1], elements:[]} );
     } else { 
         if( classification.isDuplicate( tree, fields[0] ) ) {           
@@ -90,26 +90,21 @@ exports.addCategory = function(tree, fields, cb, mode) {
 
 exports.fetchLevel = function(tree, fields) {
     var classifications = this;
-    var tempTree = tree;
-    
+    var tempTree = tree;    
     this.findCategory = function( subTree, name ) {
-        for( var i = 0; i<subTree.length; i++ ) {
-            if( subTree[i].name === name ) {
-                if( !subTree[i].elements ) subTree[i].elements = [];
-
-                return subTree[i].elements;
+        for( var i = 0; i<subTree.elements.length; i++ ) {
+            if( subTree.elements[i].name === name ) {
+                if( !subTree.elements[i].elements) subTree.elements[i].elements = [];
+                return subTree.elements[i];
             }
         }
-
         return null;
-    };
-    
+    };    
     for( var j=0; j<fields.length-1; j++ ) {
         if( tempTree ) {
             tempTree = classifications.findCategory( tempTree, fields[j] );
         }
     }
-
     return tempTree;
 };
 
