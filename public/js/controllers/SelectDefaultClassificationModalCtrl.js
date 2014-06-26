@@ -5,7 +5,6 @@ function SelectDefaultClassificationModalCtrl($scope, $modalInstance, Classifica
     
 //    $scope.lastUsedClassifications = $scope.cache.get("lastUsedClassification");
 //    if (!$scope.defaultClassification) {
-        $scope.defaultClassification = [];
 //    }
     
     
@@ -19,7 +18,7 @@ function SelectDefaultClassificationModalCtrl($scope, $modalInstance, Classifica
 
     $scope.selectClassification = function (cat) {
         $scope.defaultClassification.categories.push(cat.name);
-        defaultClassifications.push($scope.defaultClassification);
+        defaultClassifications.push($scope.defaultClassification.categories.slice(0));
     };   
 
 }

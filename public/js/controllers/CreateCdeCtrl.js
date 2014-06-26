@@ -17,12 +17,14 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
         delete $scope.cde.definition;
         
         $scope.cde.classification = [{stewardOrg: {name: $scope.cde.stewardOrg.name}}];
-        var current = $scope.cde.classification[0];
-        for (var i in $scope.defaultClassification) {
-            current.elements = [{name: $scope.defaultClassification[i]}];
-            current = current.elements[0];
-        }
-                
+        for (var j in $scope.defaultClassifications) {
+            var defaultClassification = $scope.defaultClassifications[j];
+            var current = $scope.cde.classification[0];
+            for (var i in defaultClassification) {
+                current.elements = [{name: $scope.defaultClassification[i]}];
+                current = current.elements[0];
+            }
+        }                
         DataElement.save($scope.cde, function(cde) {
             $window.location.href = "/#/deview?cdeId=" + cde._id;        
         });
