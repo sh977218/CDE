@@ -56,10 +56,10 @@ exports.deleteCategory = function(tree, fields, cb, mode) {
     var classification = this;
     var lastLevel;
     if (mode === "org") lastLevel = classification.fetchLevel(tree, fields);
-    else lastLevel = classification.fetchLastLevel(tree, fields);
-    for (var i = 0; i < lastLevel.length; i++) {
-        if (lastLevel[i].name === fields[fields.length-1]) {
-            lastLevel.splice(i,1);
+    else lastLevel = classification.fetchLevel(tree, fields);
+    for (var i = 0; i < lastLevel.elements.length; i++) {
+        if (lastLevel.elements[i].name === fields[fields.length-1]) {
+            lastLevel.elements.splice(i,1);
             break;
         }
     }
@@ -98,7 +98,8 @@ exports.fetchLevel = function(tree, fields) {
                 return subTree.elements[i];
             }
         }
-        return null;
+        subTree.elements.push({name: name, elements: []});
+        return subTree.elements[subTree.elements.length-1];
     };    
     for( var j=0; j<fields.length-1; j++ ) {
         if( tempTree ) {

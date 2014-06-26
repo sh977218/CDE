@@ -8,7 +8,8 @@ exports.removeOrgClassification = function(request, callback) {
     }
     
     mongo_data.orgByName(request.orgName, function(stewardOrg) {
-        classificationShared.deleteCategory(stewardOrg.classifications, request.categories, null, "org");
+        var fakeTree = {elements: stewardOrg.classifications};
+        classificationShared.deleteCategory(fakeTree, request.categories, null, "org");
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             var query = {"classification.stewardOrg.name": request.orgName};
@@ -22,7 +23,7 @@ exports.removeOrgClassification = function(request, callback) {
                 for (var i = 0; i < result.length; i++) {
                     var cde = result[i];
                     var steward = classificationShared.findSteward(cde, request.orgName);   
-                    classificationShared.deleteCategory(steward.object.elements, request.categories);
+                    classificationShared.deleteCategory(steward.object, request.categories);
                     cde.markModified("classification");
                     cde.save(function(err) {
                     });
@@ -77,7 +78,7 @@ exports.cdeClassification = function(body, action, cb) {
             body.categories = [body.categories];
         }
         
-        if (action === "add") classificationShared.addCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
+        if (action === "add") classificationShared.addCategory(steward.object, body.categories, cdeClassif.saveCdeClassif);
         if (action === "remove") {
             classificationShared.deleteCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
             
