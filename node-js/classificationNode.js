@@ -72,16 +72,18 @@ exports.cdeClassification = function(body, action, cb) {
             steward = classificationShared.findSteward(cde, body.orgName);
         }
         
-        if( !(body.categories instanceof Array) )
+        if( !(body.categories instanceof Array) ) {
             body.categories = [body.categories];
+        }
         
         if (action === "add") classificationShared.addCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
         if (action === "remove") {
             classificationShared.deleteCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
             
             // Delete the organization from classificaiton if organization doesn't have any descendant elements.
-            if( steward.object.elements.length === 0 )
+            if( steward.object.elements.length === 0 ) {
                 classificationShared.removeClassification( cde, body.orgName );
+            }
         }
     });     
 };

@@ -39,7 +39,3 @@ Thumbs.db
 /test/selenium/.nb-gradle/profiles/private/
 .nide
 /test/selenium/.nb-gradle/private/
-
-test/selenium/yi-build.gradle
-envconfig.js
-yi-start-test-instance.sh

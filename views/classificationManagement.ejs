@@ -11,25 +11,6 @@
     <dl id="repeatCs">
         <button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification"><i class="fa fa-plus"> </i> Add Classification</button>
         
-        <!--div id="repeatCs" class="container-fluid">
-            <div ng-repeat="stewardClassifications in classificationToFilter()" class="pull-left" id="stewardClassificationGroup-{{stewardClassifications.stewardOrg.name}}">
-                <h4 id="{{stewardClassifications.stewardOrg.name}}">{{stewardClassifications.stewardOrg.name}}</h4>
-                <hr/>
-                <div class="pull-left" 
-                     ng-repeat="elt in stewardClassifications.elements" 
-                     ng-init='pathArray = [elt.name]' 
-                     id="conceptSystem-{{stewardClassifications.stewardOrg.name}}-{{elt.name}}">
-
-                    <ul class="fa-ul">
-                        <li ng-include="'classif-sub-elements.html'" 
-                            ng-init="myOrg = myOrgs.indexOf(stewardClassifications.stewardOrg.name) >= 0; orgName = stewardClassifications.stewardOrg.name; pathArray = pathArray.slice(0)"
-                            id="classification-{{pathArray.join()}}">
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div-->
-        
         <div id="repeatCs" class="container-fluid">
             <div id="repeatCm" class="container-fluid">
                 <div ng-repeat="elt in classificationToFilter()" class="pull-left" ng-init='pathArray = [elt.name]; myOrg = true;'>

@@ -61,7 +61,7 @@ exports.deleteCategory = function(tree, fields, cb) {
             lastLevel.splice(i,1);
             break;
         }
-    }    
+    }
     if (cb) {
         cb();
     }
@@ -76,8 +76,13 @@ exports.addCategory = function(tree, fields, cb) {
             if (cb) return cb("Cannot Delete");
         }
     }
-    if (lastLevel) lastLevel.push({name: fields[fields.length-1], elements:[]});
-    if (cb) cb();
+    if (lastLevel) {
+        lastLevel.push({name: fields[fields.length-1], elements:[]});
+    }
+    
+    if (cb) {
+        cb();
+    }
 };
 
 exports.fetchLevel = function(tree, fields) {
@@ -96,9 +101,11 @@ exports.fetchLevel = function(tree, fields) {
         return null;
     };
     
-    for( var j=0; j<fields.length-1; j++ )
-        if( tempTree )
+    for( var j=0; j<fields.length-1; j++ ) {
+        if( tempTree ) {
             tempTree = classifications.findCategory( tempTree, fields[j] );
+        }
+    }
 
     return tempTree;
 };
@@ -106,20 +113,9 @@ exports.fetchLevel = function(tree, fields) {
 exports.deleteOrgCategory = function(tree, fields, cb) {
     var classification = this;
     var lastLevel = classification.fetchLevel(tree, fields);
-    //console.log( "++++++++lastLevel: "+lastLevel );
     
-    /*if( !(lastLevel instanceof Array) ) {
-        var tempLastLevel = lastLevel;
-        //tempLastLevel.elements.push( {name: fields[fields.length-1], elements:[]} ); 
-        lastLevel = [{name: tempLastLevel.name, elements:tempLastLevel.elements}];
-        //lastLevel.push({name: tempLastLevel.name, elements:tempLastLevel.elements});
-
-        console.log( "++++++++lastLevel: "+lastLevel );
-    }*/
-
     for( var i = 0; i<lastLevel.length; i++ ) {
-        if( lastLevel[i].name === fields[fields.length-1]) {
-            //console.log( "~~~~~~~ about to delete some stuff" );
+        if( lastLevel[i].name === fields[fields.length-1]) {;
             lastLevel.splice(i,1);
             break;
         }
@@ -131,13 +127,9 @@ exports.deleteOrgCategory = function(tree, fields, cb) {
 
 exports.addOrgCategory = function(tree, fields, cb) {
     var classification = this;
-    //console.log( "==========tree: "+tree );
-    //console.log( "==========fields: "+fields );
 
     if( fields.length > 1 ) {
         var lastLevel = classification.fetchLevel( tree, fields );
-
-//        console.log( "==========lastLevel: "+lastLevel );
 
         if( classification.isDuplicate( lastLevel, fields[fields.length-1] ) ) {
             // TODO - need to show this in the front-end dialog
