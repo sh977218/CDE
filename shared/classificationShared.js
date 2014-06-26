@@ -52,10 +52,26 @@ exports.fetchLastLevel = function(tree, fields, mode) {
     return subTree;
 };
 
-exports.deleteCategory = function(tree, fields, cb) {
+/*exports.deleteOrgCategory = function(tree, fields, cb) {
     var classification = this;
-    var lastLevel = classification.fetchLastLevel(tree, fields);
+    var lastLevel = classification.fetchLevel(tree, fields);
 
+    for( var i = 0; i<lastLevel.length; i++ ) {
+        if( lastLevel[i].name === fields[fields.length-1]) {
+            lastLevel.splice(i,1);
+            break;
+        }
+    }    
+    if (cb) {
+        cb();
+    }
+};*/
+
+exports.deleteCategory = function(tree, fields, cb, mode) {
+    var classification = this;
+    var lastLevel;
+    if (mode === "org") lastLevel = classification.fetchLevel(tree, fields);
+    else lastLevel = classification.fetchLastLevel(tree, fields);
     for (var i = 0; i < lastLevel.length; i++) {
         if (lastLevel[i].name === fields[fields.length-1]) {
             lastLevel.splice(i,1);
@@ -65,7 +81,6 @@ exports.deleteCategory = function(tree, fields, cb) {
     if (cb) {
         cb();
     }
-
 };
 
 exports.addCategory = function(tree, fields, cb) {
@@ -108,21 +123,6 @@ exports.fetchLevel = function(tree, fields) {
     }
 
     return tempTree;
-};
-
-exports.deleteOrgCategory = function(tree, fields, cb) {
-    var classification = this;
-    var lastLevel = classification.fetchLevel(tree, fields);
-
-    for( var i = 0; i<lastLevel.length; i++ ) {
-        if( lastLevel[i].name === fields[fields.length-1]) {
-            lastLevel.splice(i,1);
-            break;
-        }
-    }    
-    if (cb) {
-        cb();
-    }
 };
 
 exports.addOrgCategory = function(tree, fields, cb) {

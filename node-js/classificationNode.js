@@ -8,7 +8,8 @@ exports.removeOrgClassification = function(request, callback) {
     }
     
     mongo_data.orgByName(request.orgName, function(stewardOrg) {
-        classificationShared.deleteOrgCategory(stewardOrg.classifications, request.categories);
+        //classificationShared.deleteOrgCategory(stewardOrg.classifications, request.categories);
+        classificationShared.deleteCategory(stewardOrg.classifications, request.categories, null, "org");
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             var query = {"classification.stewardOrg.name": request.orgName};
