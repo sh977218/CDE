@@ -52,21 +52,6 @@ exports.fetchLastLevel = function(tree, fields, mode) {
     return subTree;
 };
 
-/*exports.deleteOrgCategory = function(tree, fields, cb) {
-    var classification = this;
-    var lastLevel = classification.fetchLevel(tree, fields);
-
-    for( var i = 0; i<lastLevel.length; i++ ) {
-        if( lastLevel[i].name === fields[fields.length-1]) {
-            lastLevel.splice(i,1);
-            break;
-        }
-    }    
-    if (cb) {
-        cb();
-    }
-};*/
-
 exports.deleteCategory = function(tree, fields, cb, mode) {
     var classification = this;
     var lastLevel;
@@ -83,7 +68,7 @@ exports.deleteCategory = function(tree, fields, cb, mode) {
     }
 };
 
-exports.addCategory = function(tree, fields, cb) {
+/*exports.addCategory = function(tree, fields, cb) {
     var classification = this;
     var lastLevel = classification.fetchLastLevel(tree, fields, "create");
     for (var i=0; i<lastLevel.length; i++) {
@@ -98,6 +83,25 @@ exports.addCategory = function(tree, fields, cb) {
     if (cb) {
         cb();
     }
+};*/
+
+exports.addOrgCategory = function(tree, fields, cb, mode) {
+    var classification = this;
+    if( fields.length > 1 ) {
+        var lastLevel
+        if (mode === "org") lastLevel = classification.fetchLevel( tree, fields );
+        else lastLevel = classification.fetchLastLevel( tree, fields );
+        if( classification.isDuplicate( lastLevel, fields[fields.length-1] ) ) {
+            if( cb ) return cb("Classification Already Exists");
+        } else    
+            lastLevel.push( {name: fields[fields.length-1], elements:[]} );
+    } else { 
+        if( classification.isDuplicate( tree, fields[0] ) ) {           
+            if( cb ) return cb("Classificatoin Already Exists");
+        } else
+            tree.push( {name: fields, elements:[]} );
+    }    
+    if (cb) cb();
 };
 
 exports.fetchLevel = function(tree, fields) {
@@ -123,28 +127,6 @@ exports.fetchLevel = function(tree, fields) {
     }
 
     return tempTree;
-};
-
-exports.addOrgCategory = function(tree, fields, cb) {
-    var classification = this;
-
-    if( fields.length > 1 ) {
-        var lastLevel = classification.fetchLevel( tree, fields );
-
-        if( classification.isDuplicate( lastLevel, fields[fields.length-1] ) ) {
-            // TODO - need to show this in the front-end dialog
-            if( cb ) return cb("Classification Already Exists");
-        } else    
-            lastLevel.push( {name: fields[fields.length-1], elements:[]} );
-    } else { // Handles root level adds
-        if( classification.isDuplicate( tree, fields[0] ) ) {
-            // TODO - need to show this in the front-end dialog
-            if( cb ) return cb("Classificatoin Already Exists");
-        } else
-            tree.push( {name: fields, elements:[]} );
-    }
-    
-    if (cb) cb();
 };
 
 exports.treeChildren = function(tree, path, cb) {

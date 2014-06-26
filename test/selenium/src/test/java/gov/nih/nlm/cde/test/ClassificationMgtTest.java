@@ -86,8 +86,9 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         gotoClassifMgt();
         Assert.assertTrue(textPresent("Headache"));
         createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI"});
-        hangon(1);
+        modalGone();
         createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI","Contrast T1"});
+        modalGone();
     }
     
     @Test

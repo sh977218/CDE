@@ -8,7 +8,6 @@ exports.removeOrgClassification = function(request, callback) {
     }
     
     mongo_data.orgByName(request.orgName, function(stewardOrg) {
-        //classificationShared.deleteOrgCategory(stewardOrg.classifications, request.categories);
         classificationShared.deleteCategory(stewardOrg.classifications, request.categories, null, "org");
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
@@ -40,7 +39,8 @@ exports.addOrgClassification = function(body, cb) {
     }
     
     mongo_data.orgByName(body.orgName, function(stewardOrg) {
-        classificationShared.addOrgCategory(stewardOrg.classifications, body.categories);
+        //classificationShared.addOrgCategory(stewardOrg.classifications, body.categories);
+        classificationShared.addOrgCategory(stewardOrg.classifications, body.categories, null, "org");
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             if(cb) cb(err, stewardOrg);
