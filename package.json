@@ -22,7 +22,6 @@
     "node-uuid": "*",
     "request": "*",
     "winston": "*",
-
     "gridfs-stream": "*",
     "crypto": "*",
     "http": "*",
@@ -37,6 +36,7 @@
     "grunt-attention": "*",
     "grunt-available-tasks": "*",
     "chalk": "*",
-    "serve-favicon": "2.x"
+    "serve-favicon": "2.x",
+    "grunt-mongoimport": "*"
   }
 }

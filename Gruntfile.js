@@ -61,6 +61,15 @@ module.exports = function(grunt) {
                         return;
                     }
                 }               
+            } 
+            , ingestTests: {
+                command: [
+                    "mongo test deploy/dbInit.js"
+                    , "mongo cde-logs-test deploy/logInit.js"
+                    , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
+                    , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
+                    , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
+                ].join("&&")
             }            
         }    
         , copy: {
@@ -181,7 +190,7 @@ module.exports = function(grunt) {
                     , borderColor: 'bgGreen'      
                 }
             }            
-        }        
+        }
     });  
     
     grunt.loadNpmTasks('grunt-git');
