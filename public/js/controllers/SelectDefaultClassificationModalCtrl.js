@@ -1,12 +1,14 @@
-function SelectDefaultClassificationModalCtrl($scope, $modalInstance, ClassificationTree, $http, orgName) {    
+function SelectDefaultClassificationModalCtrl($scope, $modalInstance, ClassificationTree, $http, orgName, defaultClassifications) {    
     $http.get("/org/" + orgName).then(function(result) {
        $scope.org = result.data; 
     });
     
-    $scope.lastUsedClassifications = $scope.cache.get("lastUsedClassification");
-    if (!$scope.defaultClassification) {
+//    $scope.lastUsedClassifications = $scope.cache.get("lastUsedClassification");
+//    if (!$scope.defaultClassification) {
         $scope.defaultClassification = [];
-    }
+//    }
+    
+    
     
     $scope.defaultClassification = { categories: [] };
     $scope.classTree = ClassificationTree;
@@ -17,7 +19,7 @@ function SelectDefaultClassificationModalCtrl($scope, $modalInstance, Classifica
 
     $scope.selectClassification = function (cat) {
         $scope.defaultClassification.categories.push(cat.name);
-        $modalInstance.close($scope.defaultClassification.categories);
+        defaultClassifications.push($scope.defaultClassification);
     };   
 
 }

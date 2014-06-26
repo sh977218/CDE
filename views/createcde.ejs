@@ -24,20 +24,22 @@
 
             <div class="form-group">
                 <label for="cde.stewardOrg.name">Steward Organization</label>
-                <select class="form-control" ng-model="cde.stewardOrg.name" id="cde.stewardOrg.name" ng-change="defaultClassification = []" required>
+                <select class="form-control" ng-model="cde.stewardOrg.name" id="cde.stewardOrg.name" ng-change="defaultClassifications = []" required>
                     <option value="">Select One</option>
                     <option ng-repeat="o in myOrgs" ng-value="o">{{o}}</option>
                 </select>
             </div>
 
             <div class="form-group" ng-show="cde.stewardOrg.name">
-                <label for="selectDefault">Default Classification</label>
-                <div ng-show="defaultClassification.length === 0">
+                <label for="selectDefault">Default Classifications</label>
+                <div ng-show="defaultClassifications.length === 0">
                     <i class="fa fa-warning"></i> You must select a default classification.
                 </div>
-                <ol ng-show="defaultClassification" class="breadcrumb">
-                    <li ng-repeat="cat in defaultClassification">{{cat}}</li>
-                </ol>
+                <div ng-repeat="defaultClassification in defaultClassifications">
+                    <ol ng-show="defaultClassification" class="breadcrumb">
+                        <li ng-repeat="cat in defaultClassification">{{cat}}</li>
+                    </ol>
+                </div>
                 <button class="btn btn-default btn-small" ng-click="openSelectDefaultClassificationModal()" id="selectDefault">Select</button>
             </div>
             <script type="text/ng-template" id="selectDefaultClassificationModalContent.html">

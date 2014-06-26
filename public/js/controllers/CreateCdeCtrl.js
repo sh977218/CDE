@@ -1,13 +1,9 @@
 function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) {
     $scope.setActiveMenu('CREATECDE');
     
-    $scope.defaultClassification = $scope.cache.get("defaultClassification");
-    if (!$scope.defaultClassification) {
-        $scope.defaultClassification = [];
-    }
+    $scope.defaultClassifications = [];
     
     $scope.save = function() {
-        // !TODO probably not the best way to do this
         $scope.cde.naming = [];
         $scope.cde.naming.push({
            designation: $scope.cde.designation
@@ -76,13 +72,16 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
             resolve: {
                 orgName: function() {
                     return $scope.cde.stewardOrg.name;
-                }                   
+                }
+                , defaultClassifications: function() {
+                    return $scope.defaultClassifications;
+                }
             }
         });
-
+        
         modalInstance.result.then(function (defaultClassification) {
-            $scope.defaultClassification = defaultClassification;
-            $scope.cache.put("defaultClassification", $scope.defaultClassification);
+//            $scope.defaultClassification = defaultClassification;
+//            $scope.cache.put("defaultClassification", $scope.defaultClassification);
         });
     };
     
