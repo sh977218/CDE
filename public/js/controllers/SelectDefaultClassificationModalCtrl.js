@@ -3,6 +3,11 @@ function SelectDefaultClassificationModalCtrl($scope, $modalInstance, Classifica
        $scope.org = result.data; 
     });
     
+    $scope.lastUsedClassifications = $scope.cache.get("lastUsedClassification");
+    if (!$scope.defaultClassification) {
+        $scope.defaultClassification = [];
+    }
+    
     $scope.defaultClassification = { categories: [] };
     $scope.classTree = ClassificationTree;
      
