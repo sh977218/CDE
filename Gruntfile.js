@@ -193,6 +193,10 @@ module.exports = function(grunt) {
         }
     });  
     
+    grunt.config();
+    
+    
+    
     grunt.loadNpmTasks('grunt-git');
     grunt.loadNpmTasks('grunt-http');
     grunt.loadNpmTasks('grunt-shell');
