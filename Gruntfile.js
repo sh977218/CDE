@@ -1,5 +1,4 @@
-var config = require('./config.js')
-    , elastic = require('./deploy/elasticSearchInit.js')
+var elastic = require('./deploy/elasticSearchInit.js')
     , chalk = require('chalk')
     , fs = require('fs');
     
@@ -20,26 +19,30 @@ module.exports = function(grunt) {
         , http: {
             elasticDeleteIndex: {
                 options: {
-                    uri: config.elasticUri
+                    //uri: config.elasticUri
+                    uri: grunt.config('config.elasticUri');
                     , method: 'DELETE'
                 }
             }               
             , elasticCreateIndex: {
                 options: {
-                    uri: config.elasticUri
+                    //uri: config.elasticUri
+                    uri: grunt.config('config.elasticUri');
                     , method: 'POST'
                     , json: elastic.createIndexJson             
                 }
             } 
             , elasticDeleteRiver: {
                 options: {
-                    uri: config.elasticRiverUri
+                    //uri: config.elasticRiverUri
+                    uri: grunt.config('config.elasticRiverUri');
                     , method: 'DELETE'
                 }
             }
             , elasticCreateRiver: {
                 options: {
-                    uri: config.elasticRiverUri
+                    //uri: config.elasticRiverUri
+                    uri: grunt.config('config.elasticRiverUri');
                     , method: 'POST'
                     , json: elastic.createRiverJson                   
                 }
@@ -47,10 +50,12 @@ module.exports = function(grunt) {
         }
         , shell: {
             stop: {
-                command: config.node.scripts.stop
+                //command: config.node.scripts.stop
+                command: grunt.config('config.node.scripts.stop');
             }
             , start: {
-                command: config.node.scripts.start
+                //command: config.node.scripts.start
+                command: grunt.config('config.node.scripts.start');
             }
             , version: {
                 command: 'git rev-parse HEAD'
@@ -66,9 +71,12 @@ module.exports = function(grunt) {
                 command: [
                     "mongo test deploy/dbInit.js"
                     , "mongo cde-logs-test deploy/logInit.js"
+                    //, "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
+                    //, "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
+                    //, "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
                     , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
                     , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
-                    , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
+                    , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname                    
                 ].join("&&")
             }            
         }    
@@ -193,8 +201,9 @@ module.exports = function(grunt) {
         }
     });  
     
-    grunt.config();
     
+    var config = require('./config.js');
+    grunt.config();
     
     
     grunt.loadNpmTasks('grunt-git');
