@@ -52,9 +52,9 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(driver.findElement(By.id("classification-"+selector)).getText().contains("> "+categories[categories.length-1])); 
         findElement(By.cssSelector("[id='classification-"+selector+"'] [title='Remove']")).click(); 
         findElement(By.cssSelector("[id='classification-"+selector+"'] .fa-check")).click();
+        Assert.assertTrue(textPresent("Classification Deleted"));
         driver.navigate().refresh();
         findElement(By.linkText("Classification")).click();
-        hangon(1);
         Assert.assertTrue(checkElementDoesNotExistByCSS("[id='classification-"+selector+"']"));
     }
     

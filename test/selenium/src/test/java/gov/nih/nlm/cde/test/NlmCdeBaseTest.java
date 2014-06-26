@@ -231,6 +231,7 @@ public class NlmCdeBaseTest {
     }
 
     public void addToQuickBoard(String cdeName) {
+        scrollToTop();
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName+"\"");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("1 hits"));
