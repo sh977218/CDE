@@ -74,9 +74,9 @@ module.exports = function(grunt) {
                     //, "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
                     //, "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
                     //, "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
-                    , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
-                    , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
-                    , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname                    
+                    , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + grunt.config('config.database.servers[0].host') + " " + grunt.config('config.database.dbname') + " --testMode"
+                    , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + grunt.config('config.database.servers[0].host') + " " + grunt.config('config.database.dbname') + " --testMode"
+                    , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + grunt.config('config.database.servers[0].host') + " " + grunt.config('config.database.dbname')
                 ].join("&&")
             }            
         }    
@@ -94,7 +94,8 @@ module.exports = function(grunt) {
                             , 'config.js'
                             , 'node_modules/**'
                         ]
-                        , dest: config.node.buildDir
+                        //, dest: config.node.buildDir
+                        , dest: grunt.config('config.node.buildDir')
                     }
                 ]
             }
@@ -143,12 +144,14 @@ module.exports = function(grunt) {
                         {
                             config: 'node.scripts.stop'
                             , type: 'confirm'
-                            , message: 'Do you want to ' + 'stop'.red  + ' NodeJS?' + ' Command: (see config.js): \'' + config.node.scripts.stop + '\''
+                            //, message: 'Do you want to ' + 'stop'.red  + ' NodeJS?' + ' Command: (see config.js): \'' + config.node.scripts.stop + '\''
+                            , message: 'Do you want to ' + 'stop'.red  + ' NodeJS?' + ' Command: (see config.js): \'' + grunt.config('config.node.scripts.stop') + '\''                            
                         }
                         , {
                             config: 'node.scripts.start'
                             , type: 'confirm'
-                            , message: 'Do you want to ' + 'start'.green  + ' NodeJS?'  + ' Command (see config.js): \'' + config.node.scripts.start + '\''
+                            //, message: 'Do you want to ' + 'start'.green  + ' NodeJS?'  + ' Command (see config.js): \'' + config.node.scripts.start + '\''
+                            , message: 'Do you want to ' + 'start'.green  + ' NodeJS?'  + ' Command (see config.js): \'' + grunt.config('config.node.scripts.start') + '\''
                         }                          
                     ]
                 }
@@ -203,7 +206,13 @@ module.exports = function(grunt) {
     
     
     var config = require('./config.js');
-    grunt.config();
+    grunt.config('config.elasticUri',config.elasticUri);
+    grunt.config('config.elasticRiverUri',config.elasticUri);
+    grunt.config('config.node.scripts.stop',config.elasticUri);
+    grunt.config('config.node.scripts.start',config.elasticUri);
+    grunt.config('config.database.servers[0].host',config.database.servers[0].host);
+    grunt.config('config.database.dbname',config.database.dbname);
+    grunt.config('config.elasticUri',config.elasticUri);
     
     
     grunt.loadNpmTasks('grunt-git');
