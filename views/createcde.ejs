@@ -35,10 +35,11 @@
                 <div ng-show="defaultClassifications.length === 0">
                     <i class="fa fa-warning"></i> You must select a default classification.
                 </div>
-                <div ng-repeat="defaultClassification in defaultClassifications">
-                    <ol ng-show="defaultClassification" class="breadcrumb">
+                <div ng-repeat="defaultClassification in defaultClassifications" class="row">
+                    <ol ng-show="defaultClassification" class="breadcrumb col-md-10 col-md-offset-1" >
                         <li ng-repeat="cat in defaultClassification">{{cat}}</li>
                     </ol>
+                    <i class="fa fa-trash-o col-md-1" title="Remove" ng-click="removeDefaultClassification($index)"> </i>
                 </div>
                 <button class="btn btn-default btn-small" ng-click="openSelectDefaultClassificationModal()" id="selectDefault">Select</button>
             </div>

@@ -3,6 +3,10 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
     
     $scope.defaultClassifications = [];
     
+    $scope.removeDefaultClassification = function(index) {
+        $scope.defaultClassifications.splice(index, 1);
+    };
+    
     $scope.save = function() {
         $scope.cde.naming = [];
         $scope.cde.naming.push({
@@ -15,15 +19,20 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
         });
         delete $scope.cde.designation;
         delete $scope.cde.definition;
-        
-        $scope.cde.classification = [{stewardOrg: {name: $scope.cde.stewardOrg.name}}];
-        for (var j in $scope.defaultClassifications) {
-            var defaultClassification = $scope.defaultClassifications[j];
-            var current = $scope.cde.classification[0];
-            for (var i in defaultClassification) {
-                current.elements = [{name: $scope.defaultClassification[i]}];
+
+        var newClassifTree = function(defaultClassification) {
+            var result = {};
+            var current = result;
+            for (var i=0; i < defaultClassification.length; i++) {
+                current.elements = [{name: defaultClassification[i]}];
                 current = current.elements[0];
             }
+            return result;
+        };
+        
+        $scope.cde.classification = [{stewardOrg: {name: $scope.cde.stewardOrg.name}, elements: []}];
+        for (var j = 0; j < $scope.defaultClassifications.length; j++) {
+            $scope.cde.classification[0].elements.push(newClassifTree($scope.defaultClassifications[j]));
         }                
         DataElement.save($scope.cde, function(cde) {
             $window.location.href = "/#/deview?cdeId=" + cde._id;        
@@ -78,12 +87,13 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
                 , defaultClassifications: function() {
                     return $scope.defaultClassifications;
                 }
+                , addAlert: function() {
+                    return $scope.addAlert;
+                }
             }
         });
         
-        modalInstance.result.then(function (defaultClassification) {
-//            $scope.defaultClassification = defaultClassification;
-//            $scope.cache.put("defaultClassification", $scope.defaultClassification);
+        modalInstance.result.then(function () {
         });
     };
     
