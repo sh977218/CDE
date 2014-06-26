@@ -68,33 +68,17 @@ exports.deleteCategory = function(tree, fields, cb, mode) {
     }
 };
 
-/*exports.addCategory = function(tree, fields, cb) {
-    var classification = this;
-    var lastLevel = classification.fetchLastLevel(tree, fields, "create");
-    for (var i=0; i<lastLevel.length; i++) {
-        if (lastLevel[i].name === fields[fields.length-1]) { 
-            if (cb) return cb("Cannot Delete");
-        }
-    }
-    if (lastLevel) {
-        lastLevel.push({name: fields[fields.length-1], elements:[]});
-    }
-    
-    if (cb) {
-        cb();
-    }
-};*/
 
-exports.addOrgCategory = function(tree, fields, cb, mode) {
+exports.addCategory = function(tree, fields, cb, mode) {
     var classification = this;
     if( fields.length > 1 ) {
-        var lastLevel
-        if (mode === "org") lastLevel = classification.fetchLevel( tree, fields );
+        var lastLevel;
+        if (mode === "org") lastLevel = classification.fetchLastLevel( tree, fields );
         else lastLevel = classification.fetchLastLevel( tree, fields );
         if( classification.isDuplicate( lastLevel, fields[fields.length-1] ) ) {
             if( cb ) return cb("Classification Already Exists");
         } else    
-            lastLevel.push( {name: fields[fields.length-1], elements:[]} );
+            lastLevel.elements.push( {name: fields[fields.length-1], elements:[]} );
     } else { 
         if( classification.isDuplicate( tree, fields[0] ) ) {           
             if( cb ) return cb("Classificatoin Already Exists");
