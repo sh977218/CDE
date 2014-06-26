@@ -229,10 +229,10 @@ module.exports = function(grunt) {
     });       
     
     grunt.registerTask('do-node', function() {
-        if (grunt.config('elastic.index.delete')) {
+        if (grunt.config('node.scripts.stop')) {
             grunt.task.run('shell:stop');
         }
-        if (grunt.config('elastic.index.create')) {
+        if (grunt.config('node.scripts.start')) {
             grunt.task.run('shell:start');
         }      
     });  
