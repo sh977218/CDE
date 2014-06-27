@@ -58,6 +58,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
     public void deleteClassification() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         goToCdeByName("Spectroscopy geometry location not applicable indicator");
+        findElement(By.linkText("Classification")).click();
         List<WebElement> linkList = driver.findElements(By.cssSelector("[id$='Imaging Diagnostics']"));
         Assert.assertTrue(linkList.size() == 3);
         removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
