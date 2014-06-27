@@ -107,9 +107,15 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
   
         createClassificationName(new String[]{"_a"});
         Assert.assertTrue(textPresent("Classification Added"));
+        
+        createClassificationName(new String[]{"_a"});
+        Assert.assertTrue(textPresent("Classification Already Exists"));        
 
         createClassificationName(new String[]{"_a","_a_a"});
         Assert.assertTrue(textPresent("Classification Added"));
+        
+        createClassificationName(new String[]{"_a","_a_a"});
+        Assert.assertTrue(textPresent("Classification Already Exists"));
         
         createClassificationName(new String[]{"_a","_a_a","_a_a_a"});
         Assert.assertTrue(textPresent("Classification Added"));
@@ -140,40 +146,5 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Classification Added"));
     }
     
-    /*@Test
-    public void checkDuplicatesClassificationMgt() {
-        mustBeLoggedInAs("ninds", "pass");
-        gotoClassifMgt();
-
-        createClassificationName(new String[]{"_aa"});
-        Assert.assertTrue(textPresent("Classification Added"));
-        createClassificationName(new String[]{"_aa"});
-        Assert.assertTrue(textPresent("Classification Already Exists"));
-        
-        createClassificationName(new String[]{"_aa","_aa_aa","_aa_aa_aa"});
-        Assert.assertTrue(textPresent("Classification Added"));
-        createClassificationName(new String[]{"_aa","_aa_aa","_aa_aa_aa"});
-        Assert.assertTrue(textPresent("Classification Already Exists"));
-
-        createClassificationName(new String[]{"_aa","_aa_bb"});
-        Assert.assertTrue(textPresent("Classification Added"));
-        createClassificationName(new String[]{"_aa","_aa_bb"});
-        Assert.assertTrue(textPresent("Classification Already Exists"));
-
-        createClassificationName(new String[]{"_bb"});
-        Assert.assertTrue(textPresent("Classification Added"));
-        createClassificationName(new String[]{"_bb"});
-        Assert.assertTrue(textPresent("Classification Already Exists"));
-        
-        createClassificationName(new String[]{"_cc"});
-        Assert.assertTrue(textPresent("Classification Added"));
-        createClassificationName(new String[]{"_cc"});
-        Assert.assertTrue(textPresent("Classification Already Exists"));
-        
-        createClassificationName(new String[]{"_cc","_CC_AA"});
-        Assert.assertTrue(textPresent("Classification Added"));
-        createClassificationName(new String[]{"_aa","_CC_AA"});
-        Assert.assertTrue(textPresent("Classification Already Exists"));
-    }*/
 
 }

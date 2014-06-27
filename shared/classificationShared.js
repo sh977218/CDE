@@ -44,7 +44,7 @@ exports.addCategory = function(tree, fields, cb) {
     var classification = this;
     var lastLevel = classification.fetchLevel( tree, fields );
     if( classification.isDuplicate( lastLevel.elements, fields[fields.length-1] ) ) {
-        if( cb ) return cb({error: {message: "Classification does not exists."}});
+        if( cb ) return cb({error: {message: "Classification Already Exists"}});
     } else {    
         lastLevel.elements.push( {name: fields[fields.length-1], elements:[]} );
     }
