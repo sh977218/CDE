@@ -25,38 +25,9 @@ exports.addElement = function (conceptSystem, concept) {
     return {index:0, object: conceptSystem.elements[conceptSystem.elements.length-1]};
 };
 
-exports.fetchLastLevel = function(tree, fields, mode) {
-    var classifications = this;
-    var subTree = tree;
-    this.findCategory = function(subTree, catname) {
-        for (var i = 0; i<subTree.length; i++) {
-            if (subTree[i].name === catname) {
-                if (!subTree[i].elements) subTree[i].elements = [];
-                if ( subTree[i].elements.length === 0) {
-                    return subTree[i];
-                }
-                return subTree[i].elements;
-            }
-        }
-        if (mode === "create") {
-            subTree.push({name: catname, elements: []});
-            return subTree[subTree.length-1].elements;
-        }
-        return null;
-    };
-
-    for (var j = 0; j<fields.length-1; j++) {
-        if (subTree) subTree = classifications.findCategory(subTree, fields[j]);
-    }
-
-    return subTree;
-};
-
-exports.deleteCategory = function(tree, fields, cb, mode) {
+exports.deleteCategory = function(tree, fields, cb) {
     var classification = this;
-    var lastLevel;
-    if (mode === "org") lastLevel = classification.fetchLevel(tree, fields);
-    else lastLevel = classification.fetchLevel(tree, fields);
+    var lastLevel = classification.fetchLevel(tree, fields);
     for (var i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i].name === fields[fields.length-1]) {
             lastLevel.elements.splice(i,1);
@@ -69,15 +40,13 @@ exports.deleteCategory = function(tree, fields, cb, mode) {
 };
 
 
-exports.addCategory = function(tree, fields, cb, mode) {
+exports.addCategory = function(tree, fields, cb) {
     var classification = this;
     if( fields.length > 1 ) {
-        var lastLevel;
-        if (mode === "org") lastLevel = classification.fetchLevel( tree, fields );
-        else lastLevel = classification.fetchLevel( tree, fields );
-        /*if( classification.isDuplicate( lastLevel, fields[fields.length-1] ) ) {
+        var lastLevel = classification.fetchLevel( tree, fields );
+        if( classification.isDuplicate( lastLevel, fields[fields.length-1] ) ) {
             if( cb ) return cb("Classification Already Exists");
-        } else */   
+        } else    
             lastLevel.elements.push( {name: fields[fields.length-1], elements:[]} );
     } else { 
         if( classification.isDuplicate( tree, fields[0] ) ) {           
