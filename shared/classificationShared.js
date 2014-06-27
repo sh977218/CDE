@@ -42,18 +42,12 @@ exports.deleteCategory = function(tree, fields, cb) {
 
 exports.addCategory = function(tree, fields, cb) {
     var classification = this;
-    if( fields.length > 1 ) {
-        var lastLevel = classification.fetchLevel( tree, fields );
-        if( classification.isDuplicate( lastLevel, fields[fields.length-1] ) ) {
-            if( cb ) return cb("Classification Already Exists");
-        } else    
-            lastLevel.elements.push( {name: fields[fields.length-1], elements:[]} );
-    } else { 
-        if( classification.isDuplicate( tree, fields[0] ) ) {           
-            if( cb ) return cb("Classificatoin Already Exists");
-        } else
-            tree.push( {name: fields, elements:[]} );
-    }    
+    var lastLevel = classification.fetchLevel( tree, fields );
+    if( classification.isDuplicate( lastLevel.elements, fields[fields.length-1] ) ) {
+        if( cb ) return cb("Classification Already Exists");
+    } else {    
+        lastLevel.elements.push( {name: fields[fields.length-1], elements:[]} );
+    }
     if (cb) cb();
 };
 
