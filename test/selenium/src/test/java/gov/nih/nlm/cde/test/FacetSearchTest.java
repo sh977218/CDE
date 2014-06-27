@@ -166,5 +166,56 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Noncompliant Reason Text"));
     }
     
+    @Test
+    public void ownerAndAdminCanSeeLowStatus() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        String cdeName = "Low Status Cde";
+        new CdeEditTest().createCde(cdeName, "Low Stat Definition", "0.1", "CTEP");
+        goToSearch();
+        findElement(By.id("li-blank-Incomplete")).click();
+        Assert.assertTrue(textPresent(cdeName));
+        
+        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        goToSearch();
+        hangon(1);
+        if (!textNotPresent("Incomplete (")) {
+            findElement(By.id("li-blank-Incomplete")).click();
+            Assert.assertTrue(textNotPresent(cdeName));
+        }
+        
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        goToSearch();
+        findElement(By.id("li-blank-Incomplete")).click();
+        Assert.assertTrue(textPresent(cdeName));
+
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        goToCdeByName(cdeName);
+        findElement(By.id("editStatus")).click();
+        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Candidate");
+        findElement(By.id("saveRegStatus")).click();
+        hangon(2);
+
+        goToSearch();
+        findElement(By.id("li-blank-Candidate")).click();
+        Assert.assertTrue(textPresent(cdeName));
+        
+        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        goToSearch();
+        hangon(1);
+        if (!textNotPresent("Incomplete (")) {
+            findElement(By.id("li-blank-Candidate")).click();
+            Assert.assertTrue(textNotPresent(cdeName));
+        }
+        
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        goToSearch();
+        findElement(By.id("ftsearch-input")).sendKeys(cdeName);
+        findElement(By.cssSelector("i.fa-search")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Candidate")).click();
+        Assert.assertTrue(textPresent(cdeName));
+        
+    }
+    
     
 }
