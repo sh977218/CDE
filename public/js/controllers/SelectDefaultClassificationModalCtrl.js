@@ -3,23 +3,29 @@ function SelectDefaultClassificationModalCtrl($scope, $modalInstance, Classifica
        $scope.org = result.data; 
     });
     
-    var strStore = JSON.stringify(localStorageService.get("defaultClassifications-" + orgName));
+    var strStore = localStorageService.get("defaultClassifications-" + orgName);
     if (strStore === null) {
         $scope.defaultClassificationsHistory = [];
     } else {
-        console.log(strStore);
         try {
-            $scope.defaultClassificationsHistory = JSON.parse(strStore);
+            $scope.defaultClassificationsHistory = strStore;
         } catch (e) {
             $scope.defaultClassificationsHistory = [];
             localStorageService.remove("defaultClassifications-" + orgName);
         } 
     }
 
-//    $scope.$watch('defaultClassificationsHistory', function() {
-//        localStorageService.set("defaultClassifications-" + orgName, JSON.stringify($scope.defaultClassificationsHistory));   
-//    });
-//    
+    var insertToClassificationHistory = function(classification) {
+        if (classificationListContains($scope.defaultClassificationsHistory, classification)) {
+            return;
+        }
+        $scope.defaultClassificationsHistory.unshift(classification);
+        if ($scope.defaultClassificationsHistory.length > 5) {
+            $scope.defaultClassificationsHistory.length = 5;
+        }
+        localStorageService.set("defaultClassifications-" + orgName, $scope.defaultClassificationsHistory);        
+    };
+
     $scope.defaultClassification = { categories: [] };
     $scope.classTree = ClassificationTree;
      
@@ -27,26 +33,32 @@ function SelectDefaultClassificationModalCtrl($scope, $modalInstance, Classifica
         $modalInstance.close();
     };
 
-    var defaultClassificationsContains = function(param) {
-        for (var i = 0; i < defaultClassifications.length; i++) {
-            if (defaultClassifications[i].toString() === param.toString()) {
+    var classificationListContains = function(classificationList, classification) {
+        for (var i = 0; i < classificationList.length; i++) {
+            if (classificationList[i].toString() === classification.toString()) {
                 return true;
             }
         }
         return false;
     };
 
-    $scope.selectClassification = function (cat) {
-        $scope.defaultClassification.categories.push(cat.name);
-        if (defaultClassificationsContains($scope.defaultClassification.categories)) {
+    var insertClassification = function() {
+        if (classificationListContains(defaultClassifications, $scope.defaultClassification.categories)) {
             addAlert("warning", "Already added");
         } else {
+            insertToClassificationHistory($scope.defaultClassification.categories.slice(0));
             defaultClassifications.push($scope.defaultClassification.categories.slice(0));
-            $scope.defaultClassificationsHistory.push($scope.defaultClassification.categories.slice(0));
-            console.log("before:" + JSON.stringify($scope.defaultClassificationsHistory));
-            localStorageService.set("defaultClassifications-" + orgName, JSON.stringify($scope.defaultClassificationsHistory));
-            console.log("after: " + JSON.stringify(localStorageService.get("defaultClassifications-" + orgName)));
-        }
+        }        
+    };
+
+    $scope.selectPriorClassification = function(classif) {
+        $scope.defaultClassification.categories = classif;
+        insertClassification();
+    };
+
+    $scope.selectClassification = function (cat) {
+        $scope.defaultClassification.categories.push(cat.name);
+        insertClassification();
     };   
 
 }

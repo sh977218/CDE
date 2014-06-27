@@ -7,7 +7,7 @@
         <ol ng-show="defaultClassification" class="breadcrumb col-md-8 col-md-offset-1" >
             <li ng-repeat="cat in defaultClassification">{{cat}}</li>
         </ol>
-        <button class="fa fa-share-square btn btn-default btn-mini col-md-2" ng-click="selectClassification(cat)"> Select</button></span>
+        <button class="fa fa-share-square btn btn-default btn-mini col-md-2" ng-click="selectPriorClassification(defaultClassification)"> Select</button></span>
     </div>
 </div>
 <form name="form" role="form">
