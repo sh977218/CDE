@@ -2,11 +2,8 @@
 <script type="text/ng-template" id="classif-sub-elements.html">
     > <a href="/#/search">
 
-            <span ng-click="searchByClassification(orgName, pathArray)"
-                  data-id="classification-{{elt.name}}"
-                  class="name hand-cursor"
-                  ng:class="($parent.$parent.$parent.$index===undefined) ? 'first-level-classification' : ''">
-                {{elt.name}}
+            <span ng-click="searchByClassification(orgName, pathArray)" data-id="classification-{{elt.name}}" id="classification-{{elt.name}}" class="name hand-cursor" ng:class="($parent.$parent.$parent.$index===undefined) ? 'first-level-classification' : ''">
+                <span class="name">{{elt.name}}</span>
             </span>
 
     </a> 

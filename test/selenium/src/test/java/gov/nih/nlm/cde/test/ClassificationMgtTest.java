@@ -138,19 +138,6 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         
         createClassificationName(new String[]{"_b"});
         Assert.assertTrue(textPresent("Classification Added"));
-        
-        createClassificationName(new String[]{"_c"});
-        Assert.assertTrue(textPresent("Classification Added"));
-        createClassificationName(new String[]{"_c","_c_a"});
-        Assert.assertTrue(textPresent("Classification Added"));
-        createClassificationName(new String[]{"_c","_c_b"});
-        Assert.assertTrue(textPresent("Classification Added"));
-
-        driver.findElement(By.cssSelector("[id='classification-_a'] [title=\"Remove\"]")).click();
-        driver.findElement(By.cssSelector("[id='classification-_a'] [title=\"OK\"]")).click();         
-        Assert.assertTrue(textPresent("Classification Deleted"));
-        checkElementDoesNotExistByCSS("[id='classification-_a']");
-
     }
     
     /*@Test
