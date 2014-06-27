@@ -1,6 +1,15 @@
 <div class="modal-header" id="selectDefaultClassificationModalHeader">
     <h4>Select Default Classification</h4>
 </div>
+<div>
+    <h5 style="margin-left: 10px">Last Selected:</h5>
+    <div ng-repeat="defaultClassification in defaultClassificationsHistory" class="row">
+        <ol ng-show="defaultClassification" class="breadcrumb col-md-8 col-md-offset-1" >
+            <li ng-repeat="cat in defaultClassification">{{cat}}</li>
+        </ol>
+        <button class="fa fa-share-square btn btn-default btn-mini col-md-2" ng-click="selectClassification(cat)"> Select</button></span>
+    </div>
+</div>
 <form name="form" role="form">
     <div ng-if="org" class="modal-body" id="selectDefaultClassificationModalBody">
         <div ng-click="classTree.wipeRest(defaultClassification,0)"><span class="fake-link">{{org.name}}</span></div>        

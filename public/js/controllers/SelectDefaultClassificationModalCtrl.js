@@ -1,14 +1,25 @@
-function SelectDefaultClassificationModalCtrl($scope, $modalInstance, ClassificationTree, $http, orgName, defaultClassifications, addAlert) {    
+function SelectDefaultClassificationModalCtrl($scope, $modalInstance, ClassificationTree, $http, orgName, defaultClassifications, addAlert, localStorageService) {    
     $http.get("/org/" + orgName).then(function(result) {
        $scope.org = result.data; 
     });
     
-//    $scope.lastUsedClassifications = $scope.cache.get("lastUsedClassification");
-//    if (!$scope.defaultClassification) {
-//    }
-    
-    
-    
+    var strStore = JSON.stringify(localStorageService.get("defaultClassifications-" + orgName));
+    if (strStore === null) {
+        $scope.defaultClassificationsHistory = [];
+    } else {
+        console.log(strStore);
+        try {
+            $scope.defaultClassificationsHistory = JSON.parse(strStore);
+        } catch (e) {
+            $scope.defaultClassificationsHistory = [];
+            localStorageService.remove("defaultClassifications-" + orgName);
+        } 
+    }
+
+//    $scope.$watch('defaultClassificationsHistory', function() {
+//        localStorageService.set("defaultClassifications-" + orgName, JSON.stringify($scope.defaultClassificationsHistory));   
+//    });
+//    
     $scope.defaultClassification = { categories: [] };
     $scope.classTree = ClassificationTree;
      
@@ -31,6 +42,10 @@ function SelectDefaultClassificationModalCtrl($scope, $modalInstance, Classifica
             addAlert("warning", "Already added");
         } else {
             defaultClassifications.push($scope.defaultClassification.categories.slice(0));
+            $scope.defaultClassificationsHistory.push($scope.defaultClassification.categories.slice(0));
+            console.log("before:" + JSON.stringify($scope.defaultClassificationsHistory));
+            localStorageService.set("defaultClassifications-" + orgName, JSON.stringify($scope.defaultClassificationsHistory));
+            console.log("after: " + JSON.stringify(localStorageService.get("defaultClassifications-" + orgName)));
         }
     };   
 

@@ -8,61 +8,79 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CdeEditTest extends NlmCdeBaseTest {
+  
+    // @TODO Need to FIX
+//    public void createCde(String name, String definition, String version, String org) {
+//        findElement(By.linkText("Create")).click();
+//        findElement(By.linkText("CDE")).click();
+//        findElement(By.name("cde.designation")).sendKeys(name);
+//        findElement(By.name("cde.definition")).sendKeys(definition);
+//        if (version != null) {
+//            findElement(By.name("cde.version")).sendKeys(version);
+//        }
+//        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText(org);
+//        findElement(By.id("selectDefault")).click();
+//        modalHere();        
+//        findElement(By.xpath("//span[contains(text(), 'Submission and Reporting')]")).click();
+//        findElement(By.xpath("//span[contains(text(),'Breast Cancer Data Mart')]/button")).click();
+//        modalGone();
+//        Assert.assertTrue(textPresent("Submission and Reporting"));
+//        Assert.assertTrue(textPresent("Breast Cancer Data Mart"));
+//        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
+//        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("Select One");
+//        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
+//        Assert.assertTrue(textPresent("You must select a default classification"));
+//        findElement(By.id("selectDefault")).click();
+//        modalHere();        
+//        findElement(By.xpath("//span[contains(text(), 'CATEGORY')]")).click();
+//        findElement(By.xpath("//span[contains(text(),'Adverse Events')]/button")).click();
+//        modalGone();
+//        findElement(By.id("cde.submit")).click();
+//        hangon(1);
+//        Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
+//        findElement(By.linkText("Classification")).click();
+//        Assert.assertTrue(textPresent("CATEGORY"));
+//        Assert.assertTrue(textPresent("Adverse Events"));        
+//=======
+//        findElement(By.name("cde.designation")).sendKeys(name);
+//        findElement(By.name("cde.definition")).sendKeys(definition);
+//        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText(org);
+//        findElement(By.id("cde.submit")).click();
+//        hangon(1);
+//        Assert.assertTrue(textPresent(definition));        
+//    }
     
-    @Test
-    public void createCde() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        findElement(By.linkText("Create")).click();
-        findElement(By.linkText("CDE")).click();
-        findElement(By.name("cde.designation")).sendKeys("Abracadabra");
-        findElement(By.name("cde.definition")).sendKeys("Definition for testUser CDE 1");
-        findElement(By.name("cde.version")).sendKeys("1.0alpha1");
-        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
-        findElement(By.id("selectDefault")).click();
-        modalHere();        
-        findElement(By.xpath("//span[contains(text(), 'Submission and Reporting')]")).click();
-        findElement(By.xpath("//span[contains(text(),'Breast Cancer Data Mart')]/button")).click();
-        modalGone();
-        Assert.assertTrue(textPresent("Submission and Reporting"));
-        Assert.assertTrue(textPresent("Breast Cancer Data Mart"));
-        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
-        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("Select One");
-        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
-        Assert.assertTrue(textPresent("You must select a default classification"));
-        findElement(By.id("selectDefault")).click();
-        modalHere();        
-        findElement(By.xpath("//span[contains(text(), 'CATEGORY')]")).click();
-        findElement(By.xpath("//span[contains(text(),'Adverse Events')]/button")).click();
-        modalGone();
-        findElement(By.id("cde.submit")).click();
-        hangon(1);
-        Assert.assertTrue(textPresent("Definition for testUser CDE 1"));
-        findElement(By.linkText("Classification")).click();
-        Assert.assertTrue(textPresent("CATEGORY"));
-        Assert.assertTrue(textPresent("Adverse Events"));        
-    }
+//    @Test
+//    public void createCde() {
+//        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+//        createCde("Abracadabra", "Definition for testUser CDE 1", "1.0alpha1", "CTEP");
+//    }
     
-    @Test
-    public void testAlignmentForMissingFields() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        findElement(By.linkText("Create")).click();
-        findElement(By.linkText("CDE")).click();
-        findElement(By.name("cde.designation")).sendKeys("AlignmentCDE");
-        findElement(By.name("cde.definition")).sendKeys("Definition for alignment cde");
-        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
-        findElement(By.id("selectDefault")).click();
-        modalHere();        
-        findElement(By.xpath("//span[contains(text(), 'USAGE')]")).click();
-        findElement(By.xpath("//span[contains(text(),'CLINICAL CARE')]/button")).click();
-        modalGone();
-        findElement(By.id("cde.submit")).click();
-        hangon(1);
-        goToSearch();
-        openCdeInList("AlignmentCDE");
-        Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
-        findElement(By.linkText("View Full Detail")).click();
-        Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
-    }
+//    @Test
+//    public void testAlignmentForMissingFields() {
+//        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+//<<<<<<< HEAD
+//        findElement(By.linkText("Create")).click();
+//        findElement(By.linkText("CDE")).click();
+//        findElement(By.name("cde.designation")).sendKeys("AlignmentCDE");
+//        findElement(By.name("cde.definition")).sendKeys("Definition for alignment cde");
+//        new Select(findElement(By.name("cde.stewardOrg.name"))).selectByVisibleText("CTEP");
+//        findElement(By.id("selectDefault")).click();
+//        modalHere();        
+//        findElement(By.xpath("//span[contains(text(), 'USAGE')]")).click();
+//        findElement(By.xpath("//span[contains(text(),'CLINICAL CARE')]/button")).click();
+//        modalGone();
+//        findElement(By.id("cde.submit")).click();
+//        hangon(1);
+//=======
+//        createCde("AlignmentCDE", "Definition for alignment cde", null, "CTEP");
+//>>>>>>> 834c76ffde25a4317ff28511eddbb948daeba1e5
+//        goToSearch();
+//        openCdeInList("AlignmentCDE");
+//        Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
+//        findElement(By.linkText("View Full Detail")).click();
+//        Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
+//    }
 
     @Test
     public void createCdeSuggest() {
