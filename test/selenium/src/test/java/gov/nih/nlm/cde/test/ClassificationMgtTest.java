@@ -77,6 +77,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
             selector += categories[i];
             if (i<categories.length-1) selector += ",";
         }
+        
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1]));    
     }
     
@@ -98,4 +99,94 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Headache"));
 
     }
+    
+    @Test
+    public void addDeleteClassificationMgt() {
+        mustBeLoggedInAs("ninds", "pass");
+        gotoClassifMgt();
+  
+        createClassificationName(new String[]{"_a"});
+        Assert.assertTrue(textPresent("Classification Added"));
+
+        createClassificationName(new String[]{"_a","_a_a"});
+        Assert.assertTrue(textPresent("Classification Added"));
+        
+        createClassificationName(new String[]{"_a","_a_a","_a_a_a"});
+        Assert.assertTrue(textPresent("Classification Added"));
+
+        createClassificationName(new String[]{"_a","_a_b"});
+        Assert.assertTrue(textPresent("Classification Added"));
+        createClassificationName(new String[]{"_a","_a_c"});
+        Assert.assertTrue(textPresent("Classification Added"));
+        
+        driver.findElement(By.cssSelector("[id='classification-_a,_a_a'] [title=\"Remove\"]")).click();
+        driver.findElement(By.cssSelector("[id='classification-_a,_a_a'] [title=\"OK\"]")).click();
+        
+        Assert.assertTrue(textPresent("Classification Deleted"));
+        checkElementDoesNotExistByCSS("[id='removeClassification-_a,_a_a']");
+
+        createClassificationName(new String[]{"_a","_a_a"});
+        Assert.assertTrue(textPresent("Classification Added"));        
+
+        createClassificationName(new String[]{"_a","_a_a","_a_a_a"});
+        Assert.assertTrue(textPresent("Classification Added"));        
+
+        createClassificationName(new String[]{"_a","_a_a","_a_a_a","_a_a_a_a"});
+        Assert.assertTrue(textPresent("Classification Added"));        
+        createClassificationName(new String[]{"_a","_a_a","_a_a_a","_a_a_a_b"});
+        Assert.assertTrue(textPresent("Classification Added"));
+        
+        createClassificationName(new String[]{"_b"});
+        Assert.assertTrue(textPresent("Classification Added"));
+        
+        createClassificationName(new String[]{"_c"});
+        Assert.assertTrue(textPresent("Classification Added"));
+        createClassificationName(new String[]{"_c","_c_a"});
+        Assert.assertTrue(textPresent("Classification Added"));
+        createClassificationName(new String[]{"_c","_c_b"});
+        Assert.assertTrue(textPresent("Classification Added"));
+
+        driver.findElement(By.cssSelector("[id='classification-_a'] [title=\"Remove\"]")).click();
+        driver.findElement(By.cssSelector("[id='classification-_a'] [title=\"OK\"]")).click();         
+        Assert.assertTrue(textPresent("Classification Deleted"));
+        checkElementDoesNotExistByCSS("[id='classification-_a']");
+
+    }
+    
+    /*@Test
+    public void checkDuplicatesClassificationMgt() {
+        mustBeLoggedInAs("ninds", "pass");
+        gotoClassifMgt();
+
+        createClassificationName(new String[]{"_aa"});
+        Assert.assertTrue(textPresent("Classification Added"));
+        createClassificationName(new String[]{"_aa"});
+        Assert.assertTrue(textPresent("Classification Already Exists"));
+        
+        createClassificationName(new String[]{"_aa","_aa_aa","_aa_aa_aa"});
+        Assert.assertTrue(textPresent("Classification Added"));
+        createClassificationName(new String[]{"_aa","_aa_aa","_aa_aa_aa"});
+        Assert.assertTrue(textPresent("Classification Already Exists"));
+
+        createClassificationName(new String[]{"_aa","_aa_bb"});
+        Assert.assertTrue(textPresent("Classification Added"));
+        createClassificationName(new String[]{"_aa","_aa_bb"});
+        Assert.assertTrue(textPresent("Classification Already Exists"));
+
+        createClassificationName(new String[]{"_bb"});
+        Assert.assertTrue(textPresent("Classification Added"));
+        createClassificationName(new String[]{"_bb"});
+        Assert.assertTrue(textPresent("Classification Already Exists"));
+        
+        createClassificationName(new String[]{"_cc"});
+        Assert.assertTrue(textPresent("Classification Added"));
+        createClassificationName(new String[]{"_cc"});
+        Assert.assertTrue(textPresent("Classification Already Exists"));
+        
+        createClassificationName(new String[]{"_cc","_CC_AA"});
+        Assert.assertTrue(textPresent("Classification Added"));
+        createClassificationName(new String[]{"_aa","_CC_AA"});
+        Assert.assertTrue(textPresent("Classification Already Exists"));
+    }*/
+
 }

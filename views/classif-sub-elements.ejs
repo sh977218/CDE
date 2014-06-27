@@ -1,36 +1,40 @@
 <!-- TODO: Fix how IDs are created. Right now, it can only handle two levels. -->
 <script type="text/ng-template" id="classif-sub-elements.html">
-    > <a href="/#/search">
-        <span ng-click="searchByClassification(orgName, pathArray)"
-              data-id="classification-{{$parent.$index}}-{{$index}}"
-              class="name hand-cursor"
-              ng:class="($parent.$parent.$parent.$index===undefined) ? 'first-level-classification' : ''">
-            {{elt.name}}
-        </span>
-    </a> 
-    <span ng-show="myOrg">
-        <span ng-show="showDelete">
-            Confirm
-            <a class="fa fa-check" ng-click="showDelete=false; removeClassification(orgName, pathArray)" 
-               id="confirmRemoveClassification-{{$parent.$index}}-{{$index}}" title="OK" href=""></a>
-            <a class="fa fa-times" ng-click="showDelete=false" title="Cancel" href=""></a>
-        </span>
-        <a ng-init="showDelete=false" 
-           ng-click="showDelete=true" 
-           ng-hide="showDelete" 
-           class="fa fa-trash-o" 
-           id="removeClassification-{{$parent.$index}}-{{$index}}" 
-           title="Remove" 
-           href="">
-        </a>
-    </span>
+    <span id="classification-{{elt.name}}">
+        > <a href="/#/search">
 
-    <ul class="fa-ul">
-        <li ng-repeat="elt in elt.elements | orderBy:'name'"
-            ng-include="'classif-sub-elements.html'"
-            ng-init="pathArray=pathArray.slice(0); pathArray.push(elt.name)"
-            id="classification-{{pathArray.join()}}">
-        </li>
-    </ul>
+                <span ng-click="searchByClassification(orgName, pathArray)"
+                      data-id="classification-{{elt.name}}"
+                      class="name hand-cursor"
+                      ng:class="($parent.$parent.$parent.$index===undefined) ? 'first-level-classification' : ''">
+                    {{elt.name}}
+                </span>
+
+        </a> 
+        <span ng-show="myOrg">
+            <span ng-show="showDelete">
+                Confirm
+                <a class="fa fa-check" ng-click="showDelete=false; removeClassification(orgName, pathArray)" 
+                   id="confirmRemoveClassification-{{elt.name}}" title="OK" href=""></a>
+                <a class="fa fa-times" ng-click="showDelete=false" title="Cancel" href=""></a>
+            </span>
+            <a ng-init="showDelete=false" 
+               ng-click="showDelete=true" 
+               ng-hide="showDelete" 
+               class="fa fa-trash-o" 
+               id="removeClassification-{{elt.name}}" 
+               title="Remove" 
+               href="">
+            </a>
+        </span>
+
+        <ul class="fa-ul">
+            <li ng-repeat="elt in elt.elements | orderBy:'name'"
+                ng-include="'classif-sub-elements.html'"
+                ng-init="pathArray=pathArray.slice(0); pathArray.push(elt.name)"
+                id="classification-{{pathArray.join()}}">
+            </li>
+        </ul>
+    </span>
 
 </script>

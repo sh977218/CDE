@@ -52,7 +52,7 @@ exports.addCategory = function(tree, fields, cb) {
         if( classification.isDuplicate( tree, fields[0] ) ) {           
             if( cb ) return cb("Classificatoin Already Exists");
         } else
-            tree.push( {name: fields, elements:[]} );
+            tree.elements.push( {name: fields, elements:[]} );
     }    
     if (cb) cb();
 };
