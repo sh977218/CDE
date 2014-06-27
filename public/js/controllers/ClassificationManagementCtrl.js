@@ -46,9 +46,14 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
 
         modalInstance.result.then(function (newClassification) {
             newClassification.orgName = $scope.orgToManage;
-            OrgClassification.save(newClassification, function() {
-                $route.reload();
-                $scope.addAlert("success", "Classification Added");                
+            OrgClassification.save(newClassification, function(response) {
+                if (response.error) {
+                    $scope.addAlert("danger", response.error.message);        
+                }
+                else {
+                    $route.reload();
+                    $scope.addAlert("success", "Classification Added");                      
+                }              
             });
         });
     };
