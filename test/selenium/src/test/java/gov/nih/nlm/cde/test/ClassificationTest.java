@@ -99,7 +99,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue( checkElementDoesNotExistById( "NINDS" ) );
     }
     
-    /*@Test
+    @Test
     public void addRemoveClassifications() {
         mustBeLoggedInAs(ninds_username, ninds_password);
         goToCdeByName("Lymph Node Procedure Negative Ind-2");
@@ -113,20 +113,15 @@ public class ClassificationTest extends NlmCdeBaseTest {
         
         addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations"});
         addClassificationMethod(new String[]{"NINDS","Disease","Stroke"});
-        addClassificationMethod(new String[]{"NINDS","Disease","Epilepsy"});
         addClassificationMethod(new String[]{"NINDS","Disease","Multiple Sclerosis"});
         addClassificationMethod(new String[]{"NINDS","Population","Adult"});
         addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
-        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Non-Imaging Diagnostics "});
-        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Laboratory Tests and Biospecimens/Biomarkers"});
+        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Non-Imaging Diagnostics"});
 
-        removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis","Assessments and Examinations","Laboratory Tests and Biospecimens/Biomarkers"});
         removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis","Assessments and Examinations"});
-        removeClassificationMethod(new String[]{"Disease","Epilepsy"});
         removeClassificationMethod(new String[]{"Disease"});
         
-        addClassificationMethod(new String[]{"NINDS","Disease",""});
-        Assert.assertTrue( textPresent( "Epilepsy" ) );
+        addClassificationMethod(new String[]{"NINDS","Disease"});
         
         removeClassificationMethod(new String[]{"Population"});
         Assert.assertFalse( checkElementDoesNotExistById( "NINDS" ) );
@@ -138,23 +133,12 @@ public class ClassificationTest extends NlmCdeBaseTest {
     public void checkDuplicatesClassification() {
         mustBeLoggedInAs(ninds_username, ninds_password);
         goToCdeByName("Product Problem Discover Performed Observation Outcome Identifier ISO21090.II.v1.0");
+        Assert.assertTrue( textNotPresent( "Disease" ) );
         addClassificationMethod(new String[]{"NINDS","Disease"});
-        Assert.assertTrue( textPresent( "Classification Added" ) );
+        Assert.assertTrue( textPresent( "Disease" ) );
         addClassificationMethod(new String[]{"NINDS","Disease"});
-        Assert.assertTrue( textPresent( "Classification Already Exists" ) );
-        addClassificationMethod(new String[]{"NINDS","Disease","Stroke"});
-        Assert.assertTrue( textPresent( "Classification Added" ) );
-        addClassificationMethod(new String[]{"NINDS","Disease","Stroke"});
-        Assert.assertTrue( textPresent( "Classification Already Exists" ) );
-        removeClassificationMethod(new String[]{"Disease","Disease","Stroke"});
-        Assert.assertTrue( textPresent( "Classification Deleted" ) );
-        addClassificationMethod(new String[]{"NINDS","Disease","Stroke"});
-        Assert.assertTrue( textPresent( "Classification Added" ) );
-
-        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Laboratory Tests and Biospecimens/Biomarkers"});
-        Assert.assertTrue( textPresent( "Classification Added" ) );
-        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Laboratory Tests and Biospecimens/Biomarkers"});
-        Assert.assertTrue( textPresent( "Classification Already Exists" ) );
-    }*/
+        List<WebElement> linkList = driver.findElements(By.cssSelector("li[id$='Disease']"));
+        Assert.assertTrue(linkList.size() == 1);
+    }
 
 }
