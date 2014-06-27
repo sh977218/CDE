@@ -133,7 +133,7 @@ exports.transferClassifications = function (source, destination) {
         }
         stewardOrgDestination.name = stewardOrgDestination.stewardOrg.name;
         classification.treeChildren(stewardOrgSource, [], function(path){
-            classification.addCategory(stewardOrgDestination.elements, path, function(){});
+            classification.addCategory(stewardOrgDestination, path, function(){});
         });
     });
 };
