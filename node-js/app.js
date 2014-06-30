@@ -520,8 +520,8 @@ app.post('/classification/org', function(req, res) {
         res.send(403);
         return;
     }      
-    classificationNode.addOrgClassification(req.body, function() {
-        res.send();
+    classificationNode.addOrgClassification(req.body, function(result) {
+        res.send(result);
     });
 });
 
