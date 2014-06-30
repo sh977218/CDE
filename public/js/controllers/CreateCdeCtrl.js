@@ -25,8 +25,7 @@ function CreateCdeCtrl($scope, $window, $timeout, DataElement, Elastic) {
         if (suggestionPromise !== 0) {
             $timeout.cancel(suggestionPromise);
         }
-        suggestionPromise = $timeout(function () {
-            // @TODO Reuse this bit.
+        /*suggestionPromise = $timeout(function () {
             var queryStuff = {query: 
                 {   
                     bool: {
@@ -54,6 +53,17 @@ function CreateCdeCtrl($scope, $window, $timeout, DataElement, Elastic) {
             Elastic.generalSearchQuery({query: queryStuff}, function(result) {
                 $scope.cdes = result.cdes;
             });
-        }, 1000);
+        }, 1000);*/
+        
+        suggestionPromise = $timeout(function () {            
+            Elastic.buildElasticQueryPre($scope);
+            var settings = Elastic.buildElasticQuerySettings($scope);
+            settings.searchTerm = $scope.cde.designation;
+            Elastic.buildElasticQuery(settings, function(query) {
+                Elastic.generalSearchQuery(query, function(result) {     
+                    $scope.cdes = result.cdes;
+                });
+            });
+        }, 1000);        
     };
 }

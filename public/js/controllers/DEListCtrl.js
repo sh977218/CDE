@@ -69,7 +69,9 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
     
     $scope.reload = function() {
         if (!$scope.initialized) return;
-        Elastic.buildElasticQuery($scope, function(query) {
+        Elastic.buildElasticQueryPre($scope);
+        var settings = Elastic.buildElasticQuerySettings($scope);
+        Elastic.buildElasticQuery(settings, function(query) {
             Elastic.generalSearchQuery(query, function(result) {
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;

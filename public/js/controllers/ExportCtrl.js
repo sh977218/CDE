@@ -10,8 +10,9 @@ function ExportCtrl($scope, Elastic, CsvDownload) {
     $scope.downloadCsv = function() {
         CsvDownload.export($scope.gridCdes);
     };
-    
-    $scope.buildElasticQuery($scope, function(query) {
+    Elastic.buildElasticQueryPre($scope);
+    var settings = Elastic.buildElasticQuerySettings($scope);
+    Elastic.buildElasticQuery(settings, function(query) {
         query.query.size = 1000;
         delete query.query.facets;
         delete query.query.from;
