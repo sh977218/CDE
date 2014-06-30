@@ -13,8 +13,10 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.id("addClassification")).click(); 
         modalHere();              
         findElement(By.id("classifySlectOrg-"+categories[0])).click();
+        hangon(0.5);        
         for (int i=1; i<categories.length-1; i++) {            
-            findElement(By.xpath("//span[text() ='" + categories[i]+"']")).click();       
+            //findElement(By.xpath("//span[text() ='" + categories[i]+"']")).click();       
+            findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();
         }
         findElement(By.cssSelector("[id='addClassification-"+categories[categories.length-1]+"'] button")).click();         
         findElement(By.cssSelector(".alert .close")).click();
@@ -34,7 +36,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         goToCdeByName("Surgical Procedure Other Anatomic Site Performed Indicator");
         addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
-        addClassificationMethod(new String[]{"caBIG","Clinical Trial Mgmt Systems","Arizona Cancer Center"});
+        hangon(1);
         addClassificationMethod(new String[]{"NINDS","Disease","Duchenne Muscular Dystrophy/Becker Muscular Dystrophy","Treatment/Intervention Data","Therapies"});
     }
     
@@ -59,17 +61,17 @@ public class ClassificationTest extends NlmCdeBaseTest {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         goToCdeByName("Spectroscopy geometry location not applicable indicator");
         findElement(By.linkText("Classification")).click();
-        List<WebElement> linkList = driver.findElements(By.cssSelector("[id$='Imaging Diagnostics']"));
+        List<WebElement> linkList = driver.findElements(By.cssSelector("li[id$='Imaging Diagnostics']"));
         Assert.assertTrue(linkList.size() == 3);
         removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
-        linkList = driver.findElements(By.cssSelector("[id$='Imaging Diagnostics']"));
+        linkList = driver.findElements(By.cssSelector("li[id$='Imaging Diagnostics']"));
         Assert.assertTrue(linkList.size() == 2);
-        linkList = driver.findElements(By.cssSelector("[id$='Assessments and Examinations']"));
+        linkList = driver.findElements(By.cssSelector("li[id$='Assessments and Examinations']"));
         Assert.assertTrue(linkList.size() == 3);
         
         removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis"});
         Assert.assertTrue(textNotPresent("Myasthenia Gravis"));
-        linkList = driver.findElements(By.cssSelector("[id$='Assessments and Examinations']"));
+        linkList = driver.findElements(By.cssSelector("li[id$='Assessments and Examinations']"));
         Assert.assertTrue(linkList.size() == 2);
     }    
     
