@@ -69,7 +69,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
     
     $scope.reload = function() {
         if (!$scope.initialized) return;
-        $scope.buildElasticQuery(function(query) {
+        Elastic.buildElasticQuery($scope, function(query) {
             Elastic.generalSearchQuery(query, function(result) {
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
@@ -107,7 +107,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
         });  
     };
 
-    $scope.buildElasticQuery = function (callback) {
+    /*$scope.buildElasticQuery = function (callback) {
         //TODO - 1) Move to a service. 2) Refactor into smaller functions.
         this.countFacetsDepthString = function (depth) {
             var fd = "classification";
@@ -273,7 +273,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
         var from = ($scope.currentPage - 1) * $scope.resultPerPage;
         queryStuff.from = from;
         return callback({query: queryStuff});
-    };
+    };*/
 
     $scope.resetSearch = function() {
         delete $scope.facets;
