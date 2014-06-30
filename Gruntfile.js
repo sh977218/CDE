@@ -1,4 +1,4 @@
-var config = require('./config.test.js')
+var config = require('./config.js')
     , elastic = require('./deploy/elasticSearchInit.js')
     , chalk = require('chalk')
     , fs = require('fs');

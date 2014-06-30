@@ -1,4 +1,4 @@
-var config = require("../config.test.js");
+var config = require("../config.js");
 
 exports.createIndexJson = {
     "settings" : {
