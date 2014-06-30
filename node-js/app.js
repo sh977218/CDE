@@ -205,11 +205,6 @@ var sessionStore = new MongoStore({
 });
 app.use(express.session({ secret: "omgnodeworks", proxy: true, store:sessionStore }));
 
-
-app.use(function(req, res, next){
-  console.log('%s %s', JSON.stringify(req.cookies['connect.sid']), req.url);
-  next();
-});
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
