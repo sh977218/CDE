@@ -9,9 +9,6 @@
                 <i ng-show="user._id" class="fa fa-thumb-tack fa-rotate-90 hand-cursor" ng-click="unpin(board.pins[$index])" title="unPin" id="unpin_{{$index}}"> </i>
             <% } %>            
             <i ng-show="showCompareButton(cde)" class="fa fa-plus hand-cursor" ng-click="cdeIconAction(cde,'addToQuickBoard',$event)" title="Add to Quick Board"></i>
-            <!--<span class="pull-right">{{cde.score}}</span>-->
-
-            <!-- TODO: remove all EJS references -->
             <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-hide="<%= ejsPage!='quickboard' %>" ng-click="removeDE($index)" title="remove" id="remove_{{$index}}"></i>
         </div>
         <div class="row">

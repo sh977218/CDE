@@ -25,36 +25,6 @@ function CreateCdeCtrl($scope, $window, $timeout, DataElement, Elastic) {
         if (suggestionPromise !== 0) {
             $timeout.cancel(suggestionPromise);
         }
-        /*suggestionPromise = $timeout(function () {
-            var queryStuff = {query: 
-                {   
-                    bool: {
-                        should: {
-                        function_score: {
-                            boost_mode: "replace"
-                            , script_score: {
-                                script: "_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)"
-                            }
-                            , query: {
-                                query_string: {
-                                    fields: ["_all", "naming.designation^3"]
-                                    , query: $scope.cde.designation
-                                }
-                            }
-                        }
-                        }
-                        , must_not: {
-                            term: {
-                                "registrationState.registrationStatus": "retired"
-                            }
-                        }
-                    }
-               }};            
-            Elastic.generalSearchQuery({query: queryStuff}, function(result) {
-                $scope.cdes = result.cdes;
-            });
-        }, 1000);*/
-        
         suggestionPromise = $timeout(function () {            
             Elastic.buildElasticQueryPre($scope);
             var settings = Elastic.buildElasticQuerySettings($scope);
