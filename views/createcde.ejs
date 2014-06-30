@@ -41,7 +41,7 @@
         <div class="col-md-7" ng-show="cdes">
             <h4>Possible Matches</h4>
             <div class="panel-group" id="accordion">
-                <div class="panel panel-default" ng-repeat="cde in cdes" >
+                <!--div class="panel panel-default" ng-repeat="cde in cdes" >
                     <div class="panel-heading">
                       <h3 class="panel-title">
                         <a data-toggle="collapse" data-parent="#accordion" id="acc_link_{{$index}}" data-target="#acc_body_{{$index}}" href="">
@@ -65,7 +65,8 @@
                              </div>
                       </div>
                     </div>
-                </div>
+                </div-->
+                <div ng-include="'accordionList.html'" ng-init="ejsPage = 'createcde';"></div>
             </div>
         </div>
     </div>
