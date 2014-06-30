@@ -8,23 +8,6 @@ exports.findSteward = function(de, orgName) {
     }
 };
 
-exports.findElement = function(element, name) {
-    for (var i = 0; i < element.elements.length; i++) {
-        if (element.elements[i].name === name) {
-            return {index:i, object: element.elements[i]};
-        }
-    }
-};
-exports.addElement = function (conceptSystem, concept) {
-    var newConcept = {
-        name: concept,
-        elements: []
-    };
-    if(!conceptSystem.elements) conceptSystem.elements = [];
-    conceptSystem.elements.push(newConcept);                    
-    return {index:0, object: conceptSystem.elements[conceptSystem.elements.length-1]};
-};
-
 exports.deleteCategory = function(tree, fields, cb) {
     var classification = this;
     var lastLevel = classification.fetchLevel(tree, fields);
