@@ -1,25 +1,30 @@
 <!-- jumbotron -->
 <div class="jumbotron">
     <div class="container">
-        <img class="pull-left drop-cap-img" src="assets/img/nlmlogo-small.gif" />
-        <p>
-            <strong>Welcome to the NLM Common Data Elements Repository.</strong> 
+        <img class="img-center-responsive" src="assets/img/nih-nlm-logo.png" />
+
+        <div class="top40">
+            <p>
+                <strong>Welcome to the NLM Common Data Elements Repository.</strong>
+            </p>
             
-                <p><small>The NLM Common Data Elements (CDE) Repository is a prototype. 
+            <p>
+                <small>The NLM Common Data Elements (CDE) Repository is a prototype. 
                 It has been designed to provide access to structured human and machine-readable definitions of data elements 
                 that have been recommended or required by NIH Institutes and Centers and other organizations for use in research 
                 and for other purposes, including those required for 'Meaningful Use' of electronic health records,
-                as established under the HITECH law.</small></p>
-                <p><small>
-                    The Repository is a platform for identifying related data elements in use across 
-                    diverse areas, for harmonizing data elements, 
-                    and for linking CDEs to other existing standards and terminologies, including the value sets in the 
-                    Value Set Authority Center (VSAC). <br/>
-                    </small></p>
-            </small>
-        </p>
-        
-        <p class="top40"><strong>Quick CDE Search:</strong>
+                as established under the HITECH law.</small>
+            </p>
+
+            <p>
+                <small>The Repository is a platform for identifying related data elements in use across 
+                diverse areas, for harmonizing data elements, 
+                and for linking CDEs to other existing standards and terminologies, including the value sets in the 
+                Value Set Authority Center (VSAC).</small>
+            </p>
+        </div>
+        <div class="top40">
+            <p><strong>Quick CDE Search:</strong></p>
             <div class="container-fluid">
                 <form name="quickSearchForm" id="quickSearchForm" class="form-inline" ng-submit="submitForm( quickSearchForm.$valid )" novalidate>
                     <div class="row">
@@ -50,7 +55,7 @@
                     </div>
                 </form>
             </div>
-        </p>
+        </div>
     </div>
 </div>
 
