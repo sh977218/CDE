@@ -20,6 +20,7 @@ public class CommentTest extends NlmCdeBaseTest {
         findElement(By.name("comment")).sendKeys("another comment");
         findElement(By.name("postComment")).click();
         Assert.assertTrue(textPresent("Comment added"));
+        scrollTo( "2000" );
         findElement(By.id("removeComment-1")).click();
         Assert.assertTrue(textPresent("Comment removed"));
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("another comment") < 0);

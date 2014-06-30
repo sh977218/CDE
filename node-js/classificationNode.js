@@ -2,9 +2,14 @@ var mongo_data = require('../node-js/mongo-data')
 , usersvc = require('./usersvc')
 , classificationShared = require('../shared/classificationShared');
 
-exports.removeOrgClassification = function(request, callback) {   
+exports.removeOrgClassification = function(request, callback) {
+    if( !(request.categories instanceof Array) ) {
+        request.categories = [request.categories];    
+    }
+    
     mongo_data.orgByName(request.orgName, function(stewardOrg) {
-        classificationShared.deleteCategory(stewardOrg.classifications, request.categories);
+        var fakeTree = {elements: stewardOrg.classifications};
+        classificationShared.deleteCategory(fakeTree, request.categories);
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             var query = {"classification.stewardOrg.name": request.orgName};
@@ -18,7 +23,7 @@ exports.removeOrgClassification = function(request, callback) {
                 for (var i = 0; i < result.length; i++) {
                     var cde = result[i];
                     var steward = classificationShared.findSteward(cde, request.orgName);   
-                    classificationShared.deleteCategory(steward.object.elements, request.categories);
+                    classificationShared.deleteCategory(steward.object, request.categories);
                     cde.markModified("classification");
                     cde.save(function(err) {
                     });
@@ -30,9 +35,13 @@ exports.removeOrgClassification = function(request, callback) {
 };
 
 exports.addOrgClassification = function(body, cb) {
-    var categories = body.categories;
+    if( !(body.categories instanceof Array) ) {
+        body.categories = [body.categories];
+    }
+    
     mongo_data.orgByName(body.orgName, function(stewardOrg) {
-        classificationShared.addCategory(stewardOrg.classifications, categories);
+        var fakeTree = {elements: stewardOrg.classifications};
+        classificationShared.addCategory(fakeTree, body.categories, cb);
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             if(cb) cb(err, stewardOrg);
@@ -63,9 +72,21 @@ exports.cdeClassification = function(body, action, cb) {
                 , elements: []
             });
             steward = classificationShared.findSteward(cde, body.orgName);
-        }        
-        if (action === "add") classificationShared.addCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
-        if (action === "remove") classificationShared.deleteCategory(steward.object.elements, body.categories, cdeClassif.saveCdeClassif);
+        }
+        
+        if( !(body.categories instanceof Array) ) {
+            body.categories = [body.categories];
+        }
+        
+        if (action === "add") classificationShared.addCategory(steward.object, body.categories, cdeClassif.saveCdeClassif);
+        if (action === "remove") {
+            classificationShared.deleteCategory(steward.object, body.categories, cdeClassif.saveCdeClassif);
+            
+            // Delete the organization from classificaiton if organization doesn't have any descendant elements.
+            if( steward.object.elements.length === 0 ) {
+                classificationShared.removeClassification( cde, body.orgName );
+            }
+        }
     });     
 };
 

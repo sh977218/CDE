@@ -15,7 +15,7 @@
             
             <span ng-if="classificationType=='cde'" ng-include="'classify.html'" ng-init="lastLeafName = cat.name"></span>
         </div> 
-        <div  ng-if="classificationType=='org'" ng-include="'newClassifName.html'"></div>
+        <div ng-if="classificationType=='org'" ng-include="'newClassifName.html'"></div>
     </div>
     <div class="modal-footer" id="addClassificationModalFooter">
         <button class="btn done" ng-click="close()">Done</button>
