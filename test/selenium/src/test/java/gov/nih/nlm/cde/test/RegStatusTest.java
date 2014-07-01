@@ -135,11 +135,6 @@ public class RegStatusTest extends NlmCdeBaseTest {
         // Can edit classifications
         findElement(By.linkText("Classification")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addClassification")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("removeClassification-0-0")));
-
-//        // Can edit Usage
-//        findElement(By.linkText("Usage")).click();
-//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addUsedBy")));
         
         // Can't edit Concepts
         findElement(By.linkText("Concepts")).click();

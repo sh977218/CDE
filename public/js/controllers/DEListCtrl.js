@@ -34,6 +34,9 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
         $scope.reload();
     });
 
+    $scope.$watch('initialized', function() {
+        $scope.reload();        
+    });
 
     
     $scope.addStatusFilter = function(t) {
@@ -65,6 +68,7 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
     };
     
     $scope.reload = function() {
+        if (!$scope.initialized) return;
         $scope.buildElasticQuery(function(query) {
             Elastic.generalSearchQuery(query, function(result) {
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
@@ -146,15 +150,17 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
             }
        };
        
-       var lowRegStatusOrCuratorFilter = [];
-       lowRegStatusOrCuratorFilter.push({range: {"registrationState.registrationStatusSortOrder": {lte: 3}}});
-       if ($scope.myOrgs !== undefined) {
-            for (var i = 0; i < $scope.myOrgs.length; i++) {
-                lowRegStatusOrCuratorFilter.push({term: {"stewardOrg.name": $scope.myOrgs[i]}});
+        if (!$scope.isSiteAdmin()) {
+            var lowRegStatusOrCuratorFilter = [];
+            lowRegStatusOrCuratorFilter.push({range: {"registrationState.registrationStatusSortOrder": {lte: 3}}});
+            if ($scope.myOrgs !== undefined) {
+                 for (var i = 0; i < $scope.myOrgs.length; i++) {
+                     lowRegStatusOrCuratorFilter.push({term: {"stewardOrg.name": $scope.myOrgs[i]}});
+                 }
             }
-       }
-       $scope.filter.and.push({or: lowRegStatusOrCuratorFilter});
-       
+            $scope.filter.and.push({or: lowRegStatusOrCuratorFilter});
+        }
+        
        queryStuff.query.bool.must = [];
        
        var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
@@ -210,24 +216,32 @@ function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
 
 
         queryStuff.facets = {
-            orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}, facet_filter: {or: lowRegStatusOrCuratorFilter}}
-            , statuses: {terms: {field: "registrationState.registrationStatus"}, facet_filter: {or: lowRegStatusOrCuratorFilter}}
-        };    
+            orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}}
+            , statuses: {terms: {field: "registrationState.registrationStatus"}}
+        };
+        if (!$scope.isSiteAdmin()) {
+           queryStuff.facets.orgs.facet_filter = {or: lowRegStatusOrCuratorFilter};
+           queryStuff.facets.statuses.facet_filter = {or: lowRegStatusOrCuratorFilter};
+        }
         
         if ($scope.selectedOrg !== undefined) {
             queryStuff.facets.elements = {
                 terms: {field: "classification.elements.name", size: 500}
-                , facet_filter: {and: [{term: {"classification.stewardOrg.name": $scope.selectedOrg}}, {or: lowRegStatusOrCuratorFilter}]}
+                , facet_filter: {and: [{term: {"classification.stewardOrg.name": $scope.selectedOrg}}]}
             };
+            if (!$scope.isSiteAdmin()) {
+                queryStuff.facets.elements.facet_filter.and.push({or: lowRegStatusOrCuratorFilter});
+            }
             
             for (var i=2; i<=$scope.selectedElements.length+1; i++) {   
                 var fd = queryBuilder.countFacetsDepthString(i);
                 queryStuff.facets["elements"+i] = {
                     terms: {field: fd, size: 500}
-                    , facet_filter: {and: [
-                            {term: {"classification.stewardOrg.name": $scope.selectedOrg}}
-                            , {or: lowRegStatusOrCuratorFilter}]}
+                    , facet_filter: {and: [{term: {"classification.stewardOrg.name": $scope.selectedOrg}}]}
                 };
+                if (!$scope.isSiteAdmin()) {
+                    queryStuff.facets["elements" + i].facet_filter.and.push({or: lowRegStatusOrCuratorFilter});
+                }
                 for (var j=0; j<$scope.selectedElements.length; j++) {
                     fd = queryBuilder.countFacetsDepthString(j+1);
                     var f = {term: {}};

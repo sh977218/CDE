@@ -68,7 +68,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };
     
     $scope.isSiteAdmin = function() {
-        return $scope.user.siteAdmin;
+        return $scope.user !== undefined && $scope.user.siteAdmin;
     };
     
     $scope.registrationStatuses = ['Retired', 'Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard'];
