@@ -4,10 +4,11 @@ var mongoose = require('mongoose')
     , uuid = require('node-uuid')
     , Grid = require('gridfs-stream')
     , fs = require('fs')
-    , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+    //, config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+    , config = require('config')
     ;
 
-var mongoUri = config.mongoUri;
+var mongoUri = config.get('mongoUri');
 
 var conn = mongoose.createConnection(mongoUri);
 conn.on('error', console.error.bind(console, 'connection error:'));

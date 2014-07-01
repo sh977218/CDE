@@ -20,14 +20,14 @@ module.exports = function(grunt) {
             elasticDeleteIndex: {
                 options: {
                     //uri: config.elasticUri
-                    uri: grunt.config('config.elasticUri');
+                    uri: grunt.config('config.elasticUri')
                     , method: 'DELETE'
                 }
             }               
             , elasticCreateIndex: {
                 options: {
                     //uri: config.elasticUri
-                    uri: grunt.config('config.elasticUri');
+                    uri: grunt.config('config.elasticUri')
                     , method: 'POST'
                     , json: elastic.createIndexJson             
                 }
@@ -35,14 +35,14 @@ module.exports = function(grunt) {
             , elasticDeleteRiver: {
                 options: {
                     //uri: config.elasticRiverUri
-                    uri: grunt.config('config.elasticRiverUri');
+                    uri: grunt.config('config.elasticRiverUri')
                     , method: 'DELETE'
                 }
             }
             , elasticCreateRiver: {
                 options: {
                     //uri: config.elasticRiverUri
-                    uri: grunt.config('config.elasticRiverUri');
+                    uri: grunt.config('config.elasticRiverUri')
                     , method: 'POST'
                     , json: elastic.createRiverJson                   
                 }
@@ -51,11 +51,11 @@ module.exports = function(grunt) {
         , shell: {
             stop: {
                 //command: config.node.scripts.stop
-                command: grunt.config('config.node.scripts.stop');
+                command: grunt.config('config.node.scripts.stop')
             }
             , start: {
                 //command: config.node.scripts.start
-                command: grunt.config('config.node.scripts.start');
+                command: grunt.config('config.node.scripts.start')
             }
             , version: {
                 command: 'git rev-parse HEAD'
@@ -101,7 +101,27 @@ module.exports = function(grunt) {
             }
         }        
         , prompt: {
-            git: {
+            environment: {
+                options: {
+                    questions: [
+                        {
+                            config: 'environment'
+                            , type: 'list'
+                            , message: 'Which configuration environment do you want to use?'
+                            , default: false
+                            , choices: [{
+                                value: 'config.test.js'
+                                , name: 'Test Environment: config.test.js'
+                            }
+                            , {
+                                value: 'config.js'
+                                , name: 'Production Environment: config.js'
+                            }]
+                        }
+                    ]
+                }
+            }              
+            , git: {
                 options: {
                     questions: [
                         {
@@ -174,8 +194,8 @@ module.exports = function(grunt) {
                             }]
                         }
                     ]
-                  }
-              }            
+                }
+            }            
             
         }
         , availabletasks: {
@@ -205,7 +225,7 @@ module.exports = function(grunt) {
     });  
     
     
-    var config = require('./config.js');
+    var config = require('./'+grunt.config('environment'));
     grunt.config('config.elasticUri',config.elasticUri);
     grunt.config('config.elasticRiverUri',config.elasticUri);
     grunt.config('config.node.scripts.stop',config.elasticUri);
@@ -282,7 +302,7 @@ module.exports = function(grunt) {
         if (config.node.buildDir) grunt.task.run('copy');
     });
     grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
-    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','clear','guihelp','clear','git','clear', 'elastic','clear', 'build','clear', 'node']);
+    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','prompt:environment','clear','guihelp','clear','git','clear', 'elastic','clear', 'build','clear', 'node']);
     grunt.registerTask('help', ['availabletasks']);    
 
 };

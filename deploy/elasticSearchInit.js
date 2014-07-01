@@ -1,4 +1,5 @@
-var config = require("../config.js");
+var //config = require("../config.js");
+    config = require('config');
 
 exports.createIndexJson = {
     "settings" : {
@@ -34,13 +35,13 @@ var riverFunction =
 exports.createRiverJson = { 
     "type": "mongodb",
     "mongodb": {
-        "servers": config.database.servers,
-        "db": config.database.dbname, 
+        "servers": config.get('database.servers'),
+        "db": config.get('database.dbname'), 
         "collection": "dataelements",
         "script": riverFunction
     },
     "index": {
-        "name": config.elastic.index.name, 
+        "name": config.get('elastic.index.name'), 
         "type": "dataelement"                  
     }        
 };

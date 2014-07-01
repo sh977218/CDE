@@ -3,13 +3,14 @@ var express = require('express')
   , util = require('util')
   , crypto = require('crypto')
   , fs = require('fs')
-  , config = require(process.argv[2]?('../../'+process.argv[2]):'../../config.js')
+  //, config = require(process.argv[2]?('../../'+process.argv[2]):'../../config.js')
+  , config = require('config')
 ;
 
 var app = express();
 
 // all environments
-app.set('port', config.vsac.port || 4000);
+app.set('port', config.get('vsac.port') || 4000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(express.favicon());

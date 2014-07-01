@@ -1,8 +1,9 @@
-var config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+var //config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+    config = require('config')
     , request = require('request')
 ;
 
-var elasticUri = config.elasticUri;
+var elasticUri = config.get('elasticUri');
 
 exports.elasticsearch = function (query, cb) {
     request.post(elasticUri + "_search", {body: JSON.stringify(query)}, function (error, response, body) {

@@ -1,9 +1,10 @@
 var mongoose = require('mongoose')
-    , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+    //, config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+    , config = require('config')
     ;
     
     
-var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
+var mongoLogUri = config.get('database.log.uri') || 'mongodb://localhost/cde-logs';
     
 var logConn = mongoose.createConnection(mongoLogUri);
 logConn.on('error', console.error.bind(console, 'connection error:'));

@@ -15,7 +15,8 @@ var express = require('express')
   , xml2js = require('xml2js')
   , vsac = require('./vsac-io')
   , winston = require('winston')
-  , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+  //, config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+  , config = require('config')
   , MongoStore = require('./assets/connect-mongo.js')(express)
   , dbLogger = require('./dbLogger.js')
   , favicon = require('serve-favicon')
@@ -24,7 +25,7 @@ var express = require('express')
 
 // Global variables
 var GLOBALS = {
-    logdir : config.logdir || __dirname
+    logdir : config.get('logdir') || __dirname
 };
 
 function findById(id, fn) {
@@ -191,7 +192,7 @@ var winstonStream = {
 };
 
 // all environments
-app.set('port', config.port || 3000);
+app.set('port', config.get('port') || 3000);
 app.set('views', __dirname + '/../views');
 app.set('view engine', 'ejs');
 
@@ -203,7 +204,7 @@ app.use(express.cookieParser('your secret here'));
 var sessionStore = new MongoStore({
     mongoose_connection: mongo_data.mongoose_connection  
 });
-app.use(express.session({ secret: "omgnodeworks", store:sessionStore }));
+app.use(express.session({ secret: "omgnodeworks", proxy: true, store:sessionStore }));
 
 app.use(flash());
 app.use(passport.initialize());
@@ -373,7 +374,7 @@ app.get('/cdereview', function(req, res) {
 
 app.get('/siteaccountmanagement', function(req, res) {
     var ip = req.ip;
-    if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
+    if (ip.indexOf("127.0") === 0 || ip.indexOf(config.get('internalIP')) === 0) {
         res.render('siteaccountmanagement');
     } else {
         res.send(403, "Not Authorized");
@@ -381,7 +382,7 @@ app.get('/siteaccountmanagement', function(req, res) {
 });
 
 app.isLocalIp = function (ip) {
-    return ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0;
+    return ip.indexOf("127.0") === 0 || ip.indexOf(config.get('internalIP')) === 0;
 };
 
 app.get('/siteaudit', function(req, res) {
@@ -469,7 +470,7 @@ app.get('/cdesforapproval', function(req, res) {
 
 app.get('/siteadmins', function(req, res) {
     var ip = req.ip;
-    if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
+    if (ip.indexOf("127.0") === 0 || ip.indexOf(config.get('internalIP')) === 0) {
         mongo_data.siteadmins(function(err, users) {
             res.send(users);
         });
