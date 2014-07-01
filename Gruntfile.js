@@ -62,7 +62,7 @@ module.exports = function(grunt) {
                     }
                 }               
             } 
-            , ingestTests: {
+            , ingestTest: {
                 command: [
                     "mongo test deploy/dbInit.js"
                     , "mongo cde-logs-test deploy/logInit.js"
@@ -70,7 +70,16 @@ module.exports = function(grunt) {
                     , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
                     , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
                 ].join("&&")
-            }            
+            } 
+            , ingestProd: {
+                command: [
+                    "mongo test deploy/dbInit.js"
+                    , "mongo cde-logs-test deploy/logInit.js"
+                    , "find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec groovy -cp ./groovy/ {} " + config.database.servers[0].host + " " + config.database.dbname + " \;"
+                    , "groovy -cp ./groovy/ groovy/uploadNindsXls \"../nlm-seed/ExternalCDEs/ninds/Data Element Import_20140523.xlsx\" " + config.database.servers[0].host + " " + config.database.dbname 
+                    , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
+                ].join("&&")
+            }             
         }    
         , copy: {
             main: {
@@ -92,27 +101,7 @@ module.exports = function(grunt) {
             }
         }        
         , prompt: {
-            environment: {
-                options: {
-                    questions: [
-                        {
-                            config: 'environment'
-                            , type: 'list'
-                            , message: 'Which configuration environment do you want to use?'
-                            , default: false
-                            , choices: [{
-                                value: 'config.test.js'
-                                , name: 'Test Environment: config.test.js'
-                            }
-                            , {
-                                value: 'config.js'
-                                , name: 'Production Environment: config.js'
-                            }]
-                        }
-                    ]
-                }
-            }              
-            , git: {
+            git: {
                 options: {
                     questions: [
                         {
@@ -172,19 +161,46 @@ module.exports = function(grunt) {
                             config: 'showHelp'
                             , type: 'list'
                             , message: 'Please select ...'
-                            , default: false
+                            , default: "run"
                             , choices: [{
-                                value: false
+                                value: "run"
                                 , name: 'Run deployment!'
                             }
                             , {
-                                value: true
+                                value: "help"
                                 , name: 'Show help screen!'
+                            }, {
+                                value: "ingest"
+                                , name: 'Erase Database & Reingest Data.'
                             }]
                         }
                     ]
                 }
-            }            
+            }
+            , ingest: {
+                options: {
+                    questions: [
+                        {
+                            config: 'ingest'
+                            , type: 'list'
+                            , message: 'Do you want to '+ 'empty database'.red + ' and re-ingest data?'
+                            , default: false
+                            , choices: [{
+                                value: false
+                                , name: 'Keep Existing Data.'.green
+                            }
+                            , {
+                                value: "test"
+                                , name: 'Delete'.red + ' \'' + config.name + '\' & Reingest ' + 'small'.yellow + ' collection!'
+                            }
+                            , {
+                                value: "production"
+                                , name: 'Delete'.red + ' \'' + config.name + '\' & Reingest ' + 'large'.yellow + ' collection!'
+                            }]
+                        }
+                    ]
+                  }
+              }              
             
         }
         , availabletasks: {
@@ -257,14 +273,26 @@ module.exports = function(grunt) {
         }      
     });  
     
+    grunt.registerTask('do-ingest', function() {
+        if (grunt.config('ingest')==="test") {
+            grunt.task.run('shell:ingestTest');
+        }
+        if (grunt.config('ingest')==="production") {
+            grunt.task.run('shell:ingestProd');
+        }      
+    });      
+    
     grunt.registerTask('clear', function() {
         console.log("\n\n");
     });     
     
     grunt.registerTask('do-help', function() {
-        if (grunt.config('showHelp')) {
+        if (grunt.config('showHelp')=="help") {
             grunt.task.run('attention:help');
-        }    
+        }   
+        if (grunt.config('showHelp')=="ingest") {
+            grunt.task.run('ingest');
+        }           
     });    
     
     grunt.registerTask('persistVersion', function() {
@@ -275,12 +303,13 @@ module.exports = function(grunt) {
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['prompt:elastic', 'do-elastic']);
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
     grunt.registerTask('buildVersion',['shell:version','persistVersion']);
+    grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
         grunt.task.run('npm-install');
         if (config.node.buildDir) grunt.task.run('copy');
     });
     grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
-    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome'/*,'prompt:environment'*/,'clear','guihelp','clear','git','clear', 'elastic','clear', 'build','clear', 'node']);
+    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','clear','guihelp','clear','git','clear', 'elastic','clear', 'build','clear', 'node']);
     grunt.registerTask('help', ['availabletasks']);    
 
 };
