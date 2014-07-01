@@ -1,6 +1,5 @@
 var https = require('https')
     , querystring = require('querystring')
-    //, config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
     , config = require('config')
     , fs = require('fs')
     , util = require('util')
@@ -8,22 +7,22 @@ var https = require('https')
 ;
 
 var authData = querystring.stringify( {
-    username: config.get('vsac.username')
-    , password: config.get('vsac.password')
+    username: config.vsac.username
+    , password: config.vsac.password
 });
 
 var ticketData = querystring.stringify({
     service: 'http://umlsks.nlm.nih.gov'
 });
 
-var vsacHost = config.get('vsac.host');
-var vsacPort = config.get('vsac.port');
+var vsacHost = config.vsac.host;
+var vsacPort = config.vsac.port;
 
 var tgtOptions = {
     host: vsacHost,
     hostname: vsacHost,
     port: vsacPort,
-    path: config.get('vsac.ticket.path'),
+    path: config.vsac.ticket.path,
     method: 'POST',
     agent: false,
     requestCert: true,
@@ -39,7 +38,7 @@ var ticketOptions = {
     host: vsacHost,
     hostname: vsacHost,
     port: vsacPort,
-    path: config.get('vsac.ticket.path'),
+    path: config.vsac.ticket.path,
     method: 'POST',
     requestCert: true,
     agent: false,
@@ -53,7 +52,7 @@ var ticketOptions = {
 var valueSetOptions = {
     host: vsacHost,
     port: vsacPort,
-    path: config.get('vsac.valueSet.path'),
+    path: config.vsac.valueSet.path,
     method: 'GET',
     agent: false,
     requestCert: true,
@@ -66,7 +65,7 @@ exports.umlsAuth = function(user, password, cb) {
     request.post(
         'https://uts-ws.nlm.nih.gov/restful/isValidUMLSUser',
         { form: {
-        licenseCode:  config.get('umls.licenseCode')
+        licenseCode:  config.umls.licenseCode
         , user: user
         , password: password
         }}, function (error, response, body) {
@@ -86,7 +85,7 @@ exports.getTGT = function (cb) {
         });
         res.on('end', function() {
             vsacTGT = output;
-            ticketOptions.path = config.get('vsac.ticket.path') + '/' + vsacTGT;
+            ticketOptions.path = config.vsac.ticket.path + '/' + vsacTGT;
             cb(vsacTGT);
         });
     });
@@ -122,7 +121,7 @@ exports.getTicket = function(cb) {
 
 exports.getValueSet = function(vs_id, cb) {
     this.getTicket(function(vsacTicket) {
-        valueSetOptions.path = config.get('vsac.valueSet.path') + '?id=' + vs_id + "&ticket=" + vsacTicket;
+        valueSetOptions.path = config.vsac.valueSet.path + '?id=' + vs_id + "&ticket=" + vsacTicket;
         var req = https.request(valueSetOptions, function(res) {
             var output = '';
             res.setEncoding('utf8');
