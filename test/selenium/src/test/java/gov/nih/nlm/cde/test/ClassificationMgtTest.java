@@ -44,7 +44,8 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     
     private void deleteNestedClassifTree() {
         driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"Remove\"]")).click();
-        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"OK\"]")).click();         
+        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"OK\"]")).click(); 
+        hangon(0.3);
         Assert.assertTrue(textNotPresent("Epilepsy"));
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
