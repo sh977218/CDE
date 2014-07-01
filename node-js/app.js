@@ -203,7 +203,7 @@ app.use(express.cookieParser('your secret here'));
 var sessionStore = new MongoStore({
     mongoose_connection: mongo_data.mongoose_connection  
 });
-app.use(express.session({ secret: "omgnodeworks", store:sessionStore }));
+app.use(express.session({ secret: "omgnodeworks", proxy: true, store:sessionStore }));
 
 app.use(flash());
 app.use(passport.initialize());
