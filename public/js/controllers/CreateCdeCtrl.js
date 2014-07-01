@@ -1,4 +1,11 @@
 function CreateCdeCtrl($scope, $window, $timeout, DataElement, Elastic) {
+    $scope.currentPage = 1;
+    $scope.totalItems = 0;
+    $scope.resultPerPage = 20;
+    $scope.$watch('currentPage', function() {
+        $scope.showSuggestions();
+    }); 
+
     $scope.setActiveMenu('CREATECDE');
 
     $scope.save = function() {
@@ -32,8 +39,9 @@ function CreateCdeCtrl($scope, $window, $timeout, DataElement, Elastic) {
             Elastic.buildElasticQuery(settings, function(query) {
                 Elastic.generalSearchQuery(query, function(result) {     
                     $scope.cdes = result.cdes;
+                    $scope.totalItems = result.totalNumber;
                 });
             });
         }, 1000);        
-    };
+    };       
 }

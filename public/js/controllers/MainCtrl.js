@@ -1,4 +1,4 @@
-function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, isAllowedModel) {
+function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, isAllowedModel, $window) {
     // Global variables
     var GLOBALS = {
         max_quickboard_cdes : 10
@@ -113,6 +113,9 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
             case "addToQuickBoard":
                 $scope.addToQuickBoard(cde);
             break;
+            case "viewNewTab":
+                $scope.viewNewTab(cde);
+            break;    
         }        
     };
     
@@ -144,6 +147,10 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     $scope.view = function(cde) {       
         $location.url("deview?cdeId=" + cde._id);
     };    
+    
+    $scope.viewNewTab = function(cde) {       
+        $window.open("#/deview?cdeId=" + cde._id);
+    };            
 
     $scope.showCompareButton = function(cde) {
         return $scope.quickBoard.length < GLOBALS.max_quickboard_cdes &&

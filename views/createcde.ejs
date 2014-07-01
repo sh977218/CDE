@@ -41,32 +41,8 @@
         <div class="col-md-7" ng-show="cdes">
             <h4>Possible Matches</h4>
             <div class="panel-group" id="accordion">
-                <!--div class="panel panel-default" ng-repeat="cde in cdes" >
-                    <div class="panel-heading">
-                      <h3 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion" id="acc_link_{{$index}}" data-target="#acc_body_{{$index}}" href="">
-                            {{cde.naming[0].designation}}                    
-                        </a>
-                        <i class="fa fa-eye" ng-click="view(cde)" title="View"></i> 
-                      </h3>
-                    </div>
-                    <div id="acc_body_{{$index}}" class="panel-collapse collapse">
-                      <div class="panel-body">
-                            <div class="row">
-                               <div class="col-md-6">
-                                   <%- include cdegeneraldetails.ejs %>
-                               </div>
-                               <div class="col-md-6">
-                                   <%- include valueDomainView.ejs %>  
-                               </div>
-                             </div>
-                             <div class="row" >
-                               <a class='btn btn-default' ng-href="#/deview/?cdeId={{cde._id}}"><i class="fa fa-eye"></i> View Full Detail</a>
-                             </div>
-                      </div>
-                    </div>
-                </div-->
-                <div ng-include="'accordionList.html'" ng-init="ejsPage = 'createcde';"></div>
+                <div ng-include="'accordionList.html'" ng-init="ejsPage = 'createcde';"></div>                
+                <pagination ng-show="cdes.length > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="currentPage"></pagination>
             </div>
         </div>
     </div>
