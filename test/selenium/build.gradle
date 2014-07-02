@@ -23,12 +23,10 @@ tasks.withType(Test) {
     systemProperty 'testUrl', System.getProperty('testUrl', 'localhost:3001') 
 }
 
-System.setProperty("testUrl", "localhost:3001");
-
 test {    
     useTestNG()
     beforeTest { descriptor ->
         logger.lifecycle("Running test: " + descriptor)
     }    
-    maxParallelForks = 16
+    maxParallelForks = 1
 }

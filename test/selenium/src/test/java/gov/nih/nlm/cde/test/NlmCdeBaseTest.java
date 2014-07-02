@@ -20,9 +20,6 @@ import java.lang.System;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
-    
-    //protected static String baseUrl = "http://localhost:3001";
-    
     protected static String baseUrl = System.getProperty("testUrl");
     protected static WebDriver driver;    
     protected static String nlm_username = "nlm";
@@ -45,8 +42,7 @@ public class NlmCdeBaseTest {
 
     @BeforeTest
     public void setBaseUrl() {
-        //System.setProperty("testUrl","localhost:3001");
-        baseUrl = System.getProperty("testUrl");
+        //baseUrl = System.getProperty("testUrl");
         if (isWindows()){
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
