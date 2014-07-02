@@ -67,7 +67,7 @@ module.exports = function(grunt) {
             , ingestTest: {
                 command: function () {
                             return [
-                                "mongo " + config.database.dbname + " deploy/dbInit.js"
+                                "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " deploy/dbInit.js"
                                 , "mongo cde-logs-test deploy/logInit.js"
                                 , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
                                 , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
@@ -78,7 +78,7 @@ module.exports = function(grunt) {
             , ingestProd: {
                 command: function () {
                             return [
-                                "mongo " + config.database.dbname + " deploy/dbInit.js"
+                                "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " deploy/dbInit.js"
                                 , "mongo cde-logs-test deploy/logInit.js"
                                 , "find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec groovy -cp ./groovy/ groovy/UploadCadsr {} " + config.database.servers[0].host + " " + config.database.dbname + " \;"
                                 //, "groovy -cp ./groovy/ groovy/uploadNindsXls \"../nlm-seed/ExternalCDEs/ninds/Data Element Import_20140523.xlsx\" " + config.database.servers[0].host + " " + config.database.dbname 
