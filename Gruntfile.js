@@ -62,6 +62,15 @@ module.exports = function(grunt) {
                     }
                 }               
             } 
+            /*, ingestTest: {
+                command: [
+                    "mongo test deploy/dbInit.js"
+                    , "mongo cde-logs-test deploy/logInit.js"
+                    , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
+                    , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
+                    , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
+                ].join("&&")
+            }*/ 
             , ingestTest: {
                 command: [
                     "mongo test deploy/dbInit.js"
@@ -70,7 +79,7 @@ module.exports = function(grunt) {
                     , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
                     , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
                 ].join("&&")
-            } 
+            }
             , ingestProd: {
                 command: [
                     "mongo test deploy/dbInit.js"
@@ -305,17 +314,12 @@ module.exports = function(grunt) {
     
     grunt.registerTask('do-ingest', function() {
         if (grunt.config('ingest')==="test") {
-            grunt.task.run('shell:ingestTest');
+            grunt.task.run('shell:ingestTest');console.log("tst");
         }
         if (grunt.config('ingest')==="production") {
             grunt.task.run('shell:ingestProd');
         }   
-        grunt.task.clearQueue();
     });  
-    
-    grunt.registerTask('clearQueue', function() {
-        grunt.task.clearQueue()
-    });     
         
     grunt.registerTask('clear', function() {
         console.log("\n\n");
