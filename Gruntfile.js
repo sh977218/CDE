@@ -62,37 +62,30 @@ module.exports = function(grunt) {
                     }
                 }               
             } 
-            /*, ingestTest: {
-                command: [
-                    "mongo test deploy/dbInit.js"
-                    , "mongo cde-logs-test deploy/logInit.js"
-                    , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
-                    , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
-                    , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
-                ].join("&&")
-            }*/ 
             , ingestTest: {
                 command: function () {
                             return [
-                        "mongo test deploy/dbInit.js"
-                        , "mongo cde-logs-test deploy/logInit.js"
-                        , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
-                        , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
-                        , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
-                    ].join("&&")
+                                "mongo test deploy/dbInit.js"
+                                , "mongo cde-logs-test deploy/logInit.js"
+                                , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
+                                , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
+                                , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
+                            ].join("&&")
                 }
             }
             , ingestProd: {
-                command: [
-                    "mongo test deploy/dbInit.js"
-                    , "mongo cde-logs-test deploy/logInit.js"
-                    , "find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec groovy -cp ./groovy/ groovy/UploadCadsr {} " + config.database.servers[0].host + " " + config.database.dbname + " \;"
-                    //, "groovy -cp ./groovy/ groovy/uploadNindsXls \"../nlm-seed/ExternalCDEs/ninds/Data Element Import_20140523.xlsx\" " + config.database.servers[0].host + " " + config.database.dbname 
-                    //, "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
-                ].join("&&")
+                command: function () {
+                            return [
+                                "mongo test deploy/dbInit.js"
+                                , "mongo cde-logs-test deploy/logInit.js"
+                                , "find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec groovy -cp ./groovy/ groovy/UploadCadsr {} " + config.database.servers[0].host + " " + config.database.dbname + " \;"
+                                //, "groovy -cp ./groovy/ groovy/uploadNindsXls \"../nlm-seed/ExternalCDEs/ninds/Data Element Import_20140523.xlsx\" " + config.database.servers[0].host + " " + config.database.dbname 
+                                //, "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
+                            ].join("&&")
+                }
             }  
             , runTests: {
-                command: function() {return "gradle -b test/selenium/build.gradle -PtestUrl=" + grunt.config('testUrl') + " clean test &";}
+                command: function() { return "gradle -b test/selenium/build.gradle -PtestUrl=" + grunt.config('testUrl') + " clean test &";}
             }
         }    
         , copy: {
