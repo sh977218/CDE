@@ -72,13 +72,15 @@ module.exports = function(grunt) {
                 ].join("&&")
             }*/ 
             , ingestTest: {
-                command: [
-                    "mongo test deploy/dbInit.js"
-                    , "mongo cde-logs-test deploy/logInit.js"
-                    , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
-                    , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
-                    , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
-                ].join("&&")
+                command: function () {
+                            return [
+                        "mongo test deploy/dbInit.js"
+                        , "mongo cde-logs-test deploy/logInit.js"
+                        , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
+                        , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
+                        , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
+                    ].join("&&")
+                }
             }
             , ingestProd: {
                 command: [
@@ -314,7 +316,7 @@ module.exports = function(grunt) {
     
     grunt.registerTask('do-ingest', function() {
         if (grunt.config('ingest')==="test") {
-            grunt.task.run('shell:ingestTest');console.log("tst");
+            grunt.task.run('shell:ingestTest');
         }
         if (grunt.config('ingest')==="production") {
             grunt.task.run('shell:ingestProd');
@@ -335,7 +337,22 @@ module.exports = function(grunt) {
         if (grunt.config('showHelp')=="tests") {
             grunt.task.run('tests');
         }         
-    });    
+    }); 
+    
+    grunt.registerTask('do-test', function() {
+        if (grunt.config('testUrl')==="localhost:3001") {
+            grunt.task.run('shell:ingestTest');
+            grunt.util.spawn({
+                cmd: 'node'
+                , args: ['node-js/app.js']
+            });
+        }
+        grunt.task.run('shell:runTests');
+    });
+    
+    grunt.registerTask('clearQueue', function() {
+        grunt.task.clearQueue();
+    });     
     
     grunt.registerTask('persistVersion', function() {
         fs.writeFileSync("./views/version.ejs", grunt.config.get("version"));         
@@ -346,7 +363,7 @@ module.exports = function(grunt) {
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
     grunt.registerTask('buildVersion',['shell:version','persistVersion']);
     grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
-    grunt.registerTask('tests',['prompt:testsLocation','shell:runTests','clearQueue']);
+    grunt.registerTask('tests',['prompt:testsLocation','do-test','clearQueue']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
         grunt.task.run('npm-install');
         if (config.node.buildDir) grunt.task.run('copy');
