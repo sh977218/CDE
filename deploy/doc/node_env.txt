@@ -1,7 +1,0 @@
-Please specify application environment first.
-
-1) Create file config/<environment_name>.js,
-   e.g.  cp config.sample.js my-test-environment.js
-
-2) Set environment variable NODE_ENV to the name of your environment,
-   e.g.  export NODE_ENV=my-test-environment 
