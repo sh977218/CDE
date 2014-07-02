@@ -127,22 +127,22 @@ module.exports = function(grunt) {
                         {
                             config: 'elastic.index.delete'
                             , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'index?'.yellow
+                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'index for ' + config.name + ' configuration?'
                         }
                         , {
                             config: 'elastic.index.create'
                             , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'index?'.yellow
+                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'index for ' + config.name + ' configuration?'
                         }
                         , {
                             config: 'elastic.river.delete'
                             , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'river?'.yellow
+                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'river for ' + config.name + ' configuration?'
                         } 
                         , {
                             config: 'elastic.river.create'
                             , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'river?'.yellow
+                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'river for ' + config.name + ' configuration?'
                         }                           
                     ]
                 }
