@@ -984,15 +984,18 @@ app.get('/deCount', function(req, res) {
 });
 
 var fetchRemoteData = function() {
-    vsac.getTGT(function(tgt) {
-        console.log("Got TGT");
-    });
+    // TESTING
+    /*vsac.getTGT(function(tgt) {
+        console.log("Got TGT: "+tgt);
+    });*/
+    
     elastic.fetchPVCodeSystemList();   
 };
 
 // run every 1 hours
 fetchRemoteData();
-setInterval(fetchRemoteData, 1000 * 60 * 60 * 1);
+//setInterval(fetchRemoteData, 1000 * 60 * 60 * 1);
+setInterval(fetchRemoteData, 20 * 1000);
 
 var parser = new xml2js.Parser();
 app.get('/vsacBridge/:vsacId', function(req, res) {
@@ -1089,3 +1092,21 @@ http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
+// TESTING
+var getTGTapp = function() {
+    vsac.getTGT(function(tgt) {
+        console.log("Got TGT: "+tgt);
+    });
+};
+
+getTGTapp();
+setInterval(getTGTapp, 20 * 1000);
+
+var getTKTapp = function() {
+    vsac.getTicket(function(tkt) {
+        console.log("Got Ticket: "+tkt);
+    });
+};
+
+getTKTapp();
+setInterval(getTKTapp, 25 * 1000);

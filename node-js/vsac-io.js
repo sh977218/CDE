@@ -69,11 +69,11 @@ exports.umlsAuth = function(user, password, cb) {
         , user: user
         , password: password
         }}, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            cb(body);
+            if (!error && response.statusCode == 200) {
+                cb(body);
+            }
         }
-    }
-);
+    );
 };
 
 exports.getTGT = function (cb) {
@@ -91,7 +91,7 @@ exports.getTGT = function (cb) {
     });
     
     req.on('error', function (e) {
-        console.log('getTgt: ERROR with request ' + e);
+        console.log('getTgt: ERROR with request: ' + e);
     });
     
     req.write(authData);
@@ -139,7 +139,7 @@ exports.getValueSet = function(vs_id, cb) {
         });
 
         req.on('error', function (e) {
-            console.log('getValueSet: ERROR with request ' + e);
+            console.log('getValueSet: ERROR with request: ' + e);
             cb(400);
         });
 

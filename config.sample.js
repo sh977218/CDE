@@ -15,6 +15,14 @@ var config = {
         }
         , port: 4000
     }
+    , validationServer: {
+        ticketValidation: {
+            host: 'utslogin.nlm.nih.gov'
+            , path: '/cas/serviceValidate'
+            , service: 'cde-qa.nlm.nih.gov' // Identifier of the service for which the ticket was issued.
+            , port: 443
+        }
+    }
     , logdir: ''
     , port: 3001
     , elastic: {
