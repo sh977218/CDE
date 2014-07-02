@@ -1,3 +1,5 @@
+require('../deploy/configTest.js');
+
 var express = require('express')
   , http = require('http')
   , path = require('path')
