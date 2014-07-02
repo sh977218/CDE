@@ -20,7 +20,7 @@ dependencies {
 }
 
 tasks.withType(Test) { 
-    systemProperty 'testUrl', System.getProperty('testUrl', 'localhost:3001') 
+    systemProperty 'testUrl', System.getProperty('testUrl', testUrl) 
 }
 
 test {    

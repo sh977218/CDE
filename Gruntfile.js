@@ -79,7 +79,10 @@ module.exports = function(grunt) {
                     //, "groovy -cp ./groovy/ groovy/uploadNindsXls \"../nlm-seed/ExternalCDEs/ninds/Data Element Import_20140523.xlsx\" " + config.database.servers[0].host + " " + config.database.dbname 
                     //, "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
                 ].join("&&")
-            }             
+            }  
+            , runTests: {
+                command: function() {return "gradle -b test/selenium/build.gradle -PtestUrl=" + grunt.config('testUrl') + " clean test &";}
+            }
         }    
         , copy: {
             main: {
@@ -164,14 +167,17 @@ module.exports = function(grunt) {
                             , default: "run"
                             , choices: [{
                                 value: "run"
-                                , name: 'Run deployment!'
+                                , name: 'Run Deployment'
                             }
                             , {
                                 value: "help"
-                                , name: 'Show help screen!'
+                                , name: 'Show Help Screen'
+                            }, {
+                                value: "tests"
+                                , name: 'Run Tests'
                             }, {
                                 value: "ingest"
-                                , name: 'Erase Database & Reingest Data.'
+                                , name: 'Erase Database & Reingest Data'
                             }]
                         }
                     ]
@@ -200,7 +206,31 @@ module.exports = function(grunt) {
                         }
                     ]
                   }
-              }              
+            }
+            , testsLocation: {
+                options: {
+                    questions: [
+                        {
+                            config: 'testUrl'
+                            , type: 'list'
+                            , message: 'What is the test ' + 'destination'.green + '?'
+                            , default: "localhost:3001"
+                            , choices: [{
+                                value: "localhost:3001"
+                                , name: 'Localhost '+'localhost:3001'.green
+                            }
+                            , {
+                                value: "cde-dev.nlm.nih.gov:3001"
+                                , name: 'Dev '+'cde-dev.nlm.nih.gov:3001'.red
+                            }
+                            , {
+                                value: "cde-qa.nlm.nih.gov:3001"
+                                , name: 'QA '+'cde-qa.nlm.nih.gov:3001'.red
+                            }]
+                        }
+                    ]                    
+                }
+            }
             
         }
         , availabletasks: {
@@ -279,9 +309,14 @@ module.exports = function(grunt) {
         }
         if (grunt.config('ingest')==="production") {
             grunt.task.run('shell:ingestProd');
-        }      
-    });      
+        }   
+        grunt.task.clearQueue();
+    });  
     
+    grunt.registerTask('clearQueue', function() {
+        grunt.task.clearQueue()
+    });     
+        
     grunt.registerTask('clear', function() {
         console.log("\n\n");
     });     
@@ -292,7 +327,10 @@ module.exports = function(grunt) {
         }   
         if (grunt.config('showHelp')=="ingest") {
             grunt.task.run('ingest');
-        }           
+        }  
+        if (grunt.config('showHelp')=="tests") {
+            grunt.task.run('tests');
+        }         
     });    
     
     grunt.registerTask('persistVersion', function() {
@@ -304,6 +342,7 @@ module.exports = function(grunt) {
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
     grunt.registerTask('buildVersion',['shell:version','persistVersion']);
     grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
+    grunt.registerTask('tests',['prompt:testsLocation','shell:runTests','clearQueue']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
         grunt.task.run('npm-install');
         if (config.node.buildDir) grunt.task.run('copy');
