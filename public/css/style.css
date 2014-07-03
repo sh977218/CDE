@@ -8,10 +8,6 @@ body {
     background-color: #a8c4e1;
 }
 
-.drop-cap-img {
-    padding-right: 10px;
-}
-
 .top20 { margin-top:20px; }
 .top40 { margin-top:40px; }
 .top60 { margin-top:60px; }
@@ -133,3 +129,19 @@ body {
     max-width: 160px;
 }
 
+.img-center-responsive {
+    display: block;
+    height: auto;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Disable modal slide down effect.  Useful during testing. */
+/*.modal.fade .modal-dialog 
+{
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+    -webkit-transform: none !important;
+    transform: none !important;
+}*/
