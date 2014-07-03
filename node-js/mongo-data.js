@@ -29,10 +29,6 @@ var Message = conn.model('Message', schemas.message);
 var gfs = Grid(conn.db, mongoose.mongo);
 
 exports.DataElement = DataElement;
-exports.User = User;
-exports.Org = Org;
-exports.PinningBoard = PinningBoard;
-exports.Message = Message;
 
 exports.boardsByUserId = function(userId, callback) {
     PinningBoard.find({"owner.userId": userId}).exec(function (err, result) {
