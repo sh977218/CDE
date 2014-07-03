@@ -78,9 +78,10 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
 
     $scope.openSelectDefaultClassificationModal = function () {
         var modalInstance = $modal.open({
-            templateUrl: 'selectDefaultClassificationModalContent.html',
-            controller: SelectDefaultClassificationModalCtrl,
-            resolve: {
+            //templateUrl: 'selectDefaultClassificationModalContent.html',
+            templateUrl: 'addClassificationModalContent.html',
+            controller: AddClassificationModalCtrl,
+            /*resolve: {
                 orgName: function() {
                     return $scope.cde.stewardOrg.name;
                 }
@@ -90,7 +91,18 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
                 , addAlert: function() {
                     return $scope.addAlert;
                 }
-            }
+            }*/
+            resolve: {
+                myOrgs: function() {
+                    return $scope.myOrgs;
+                }
+                , cde: function() {
+                    return $scope.cde;
+                }
+                , addAlert: function() {
+                    return $scope.addAlert;
+                }
+            }            
         });
         
         modalInstance.result.then(function () {
