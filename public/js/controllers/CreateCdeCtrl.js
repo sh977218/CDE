@@ -3,10 +3,10 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
     
     $scope.defaultClassifications = [];
     
+    $scope.cde = { classification: []}; 
     $scope.removeDefaultClassification = function(index) {
         $scope.defaultClassifications.splice(index, 1);
     };
-    
     $scope.save = function() {
         $scope.cde.naming = [];
         $scope.cde.naming.push({
@@ -20,7 +20,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
         delete $scope.cde.designation;
         delete $scope.cde.definition;
 
-        var newClassifTree = function(defaultClassification) {
+        /*var newClassifTree = function(defaultClassification) {
             var result = {};
             var current = result;
             for (var i=0; i < defaultClassification.length; i++) {
@@ -33,7 +33,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
         $scope.cde.classification = [{stewardOrg: {name: $scope.cde.stewardOrg.name}, elements: []}];
         for (var j = 0; j < $scope.defaultClassifications.length; j++) {
             $scope.cde.classification[0].elements.push(newClassifTree($scope.defaultClassifications[j]));
-        }                
+        }        */        
         DataElement.save($scope.cde, function(cde) {
             $window.location.href = "/#/deview?cdeId=" + cde._id;        
         });
@@ -102,6 +102,25 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
                 , addAlert: function() {
                     return $scope.addAlert;
                 }
+                , addClassification: function() {
+                    return {
+                        addClassification: function(newClassification) {
+                            var steward = exports.findSteward($scope.cde, newClassification.orgName);
+                            if (!steward) {
+                                $scope.cde.classification.push({
+                                    stewardOrg: {
+                                        name: newClassification.orgName
+                                    }
+                                    , elements: []
+                                });
+                                steward = exports.findSteward($scope.cde, newClassification.orgName);
+                            }  
+                            for (var i=1; i<=newClassification.categories.length; i++){
+                                exports.addCategory(steward.object, newClassification.categories.slice(0,i));
+                            }
+                        }
+                    };
+                }                
             }            
         });
         
