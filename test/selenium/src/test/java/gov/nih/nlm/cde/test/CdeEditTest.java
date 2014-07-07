@@ -61,14 +61,17 @@ public class CdeEditTest extends NlmCdeBaseTest {
         hangon(1);
 
         Assert.assertTrue(textPresent(definition));
-        Assert.assertTrue(textPresent(version));
+
         findElement(By.linkText("Classification")).click();
         
         Assert.assertTrue(textPresent("Submission and Reporting"));
         Assert.assertTrue(textPresent("Breast Cancer Data Mart"));        
         
         Assert.assertTrue(textPresent("Disease"));
-        Assert.assertTrue(textPresent("Headache"));           
+        Assert.assertTrue(textPresent("Headache"));   
+
+        findElement(By.linkText("Identifiers")).click();
+        Assert.assertEquals(version, findElement(By.id("dd_version_nlm")).getText());        
     }
     
     @Test
