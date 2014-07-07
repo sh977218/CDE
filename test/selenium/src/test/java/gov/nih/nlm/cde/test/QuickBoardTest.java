@@ -107,7 +107,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         findElement(By.id("addToCompare_0")).click();
         findElement(By.id("addToCompare_1")).click();
         findElement(By.id("addToCompare_2")).click();
-        String toRemove = findElement(By.id("acc_link_0")).getText();
+        String toRemove = findElement(By.id("acc_link_2")).getText();
         findElement(By.id("addToCompare_3")).click();
         hangon(.5);
         findElement(By.linkText("Quick Board ( 4 )")).click();
