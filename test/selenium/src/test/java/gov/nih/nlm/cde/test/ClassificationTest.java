@@ -92,49 +92,6 @@ public class ClassificationTest extends NlmCdeBaseTest {
     }
     
     @Test
-    public void removeTopLevelClassification() {
-        mustBeLoggedInAs(ninds_username, ninds_password);
-        goToCdeByName("Lymph Node Procedure Negative Ind-2");
-        findElement(By.linkText("Classification")).click();
-        Assert.assertTrue( findElement( By.id( "CCR" ) ).getText().equals( "CCR" ) );
-        Assert.assertTrue( checkElementDoesNotExistById( "NINDS" ) );
-        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
-        Assert.assertFalse( checkElementDoesNotExistById( "NINDS" ) );
-        removeClassificationMethod(new String[]{"Disease"});
-        Assert.assertTrue( checkElementDoesNotExistById( "NINDS" ) );
-    }
-    
-    @Test
-    public void addRemoveClassifications() {
-        mustBeLoggedInAs(ninds_username, ninds_password);
-        goToCdeByName("Lymph Node Procedure Negative Ind-2");
-        findElement(By.linkText("Classification")).click();
-        Assert.assertTrue( findElement( By.id( "CCR" ) ).getText().equals( "CCR" ) );
-        Assert.assertTrue( checkElementDoesNotExistById( "NINDS" ) );
-        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
-        Assert.assertFalse( checkElementDoesNotExistById( "NINDS" ) );
-        removeClassificationMethod(new String[]{"Disease"});
-        Assert.assertTrue( checkElementDoesNotExistById( "NINDS" ) );
-        
-        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations"});
-        addClassificationMethod(new String[]{"NINDS","Disease","Stroke"});
-        addClassificationMethod(new String[]{"NINDS","Disease","Multiple Sclerosis"});
-        addClassificationMethod(new String[]{"NINDS","Population","Adult"});
-        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
-        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Non-Imaging Diagnostics"});
-
-        removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis","Assessments and Examinations"});
-        removeClassificationMethod(new String[]{"Disease"});
-        
-        addClassificationMethod(new String[]{"NINDS","Disease"});
-        
-        removeClassificationMethod(new String[]{"Population"});
-        Assert.assertFalse( checkElementDoesNotExistById( "NINDS" ) );
-        removeClassificationMethod(new String[]{"Disease"});
-        Assert.assertTrue( checkElementDoesNotExistById( "NINDS" ) );
-    }
-    
-    @Test
     public void checkDuplicatesClassification() {
         mustBeLoggedInAs(ninds_username, ninds_password);
         goToCdeByName("Product Problem Discover Performed Observation Outcome Identifier ISO21090.II.v1.0");

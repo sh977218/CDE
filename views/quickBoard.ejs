@@ -36,8 +36,7 @@
         <br/>
 
         <div ng-show="isAccordionView">
-            <% var ejsPage = "quickboard"; %>
-            <%- include accordionList.ejs %>
+            <div ng-include="'accordionList.html'" ng-init="ejsPage = 'quickboard';"></div>
         </div>
 
         <div ng-hide="isAccordionView">

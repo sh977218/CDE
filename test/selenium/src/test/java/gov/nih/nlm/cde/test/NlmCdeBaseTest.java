@@ -130,6 +130,7 @@ public class NlmCdeBaseTest {
                 return webDriver.findElement(By.cssSelector("div.modal")).getCssValue("opacity").equals("1");
             }
         });
+        hangon(0.2);
     }
     
     /*

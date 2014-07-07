@@ -129,15 +129,6 @@ angular.module('resources', ['ngResource'])
             }
         }; 
     })    
-    .factory('Elastic', function($http) {
-        return {
-            generalSearchQuery: function(query, cb) {              
-                $http.post("/elasticSearch", query).then(function (response) {
-                   cb(response.data);
-                });
-            }
-        };
-    }) 
     .factory("Organization", function($http) {
         return {
             getByName: function(orgName, cb) {
