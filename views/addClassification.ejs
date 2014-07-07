@@ -9,7 +9,8 @@
             <li>{{defaultClassification.orgName}}</li>
             <li ng-repeat="cat in defaultClassification.categories">{{cat}}</li>
         </ol>
-        <button class="fa fa-share-square btn btn-default btn-mini col-md-2" ng-click="selectPriorClassification(defaultClassification)"> Select</button></span>
+        <!--button class="fa fa-share-square btn btn-default btn-mini col-md-2" ng-click="selectPriorClassification(defaultClassification)"> Add</button></span-->
+        <button ng-click="selectPriorClassification(defaultClassification)" type="button" class="btn btn-default btn-xs"><i class="fa fa-plus"></i> Add</button>
     </div>
 </div>
 

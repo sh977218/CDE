@@ -17,7 +17,7 @@
         $modalInstance.close();
     };
     
-    $scope.addClassification = function (lastLeafName, event) {
+    $scope.addClassification = function (lastLeafName) {
         $scope.newClassification.categories.push(lastLeafName);
         var deepCopy = {
             orgName: $scope.newClassification.orgName
@@ -27,7 +27,9 @@
         $scope.insertToClassificationHistory(deepCopy);
     };    
     
-    
+    $scope.selectPriorClassification = function (classif) {
+        addClassification.addClassification(classif);
+    };
     
     
     var strStore = localStorageService.get("classificationHistory");
