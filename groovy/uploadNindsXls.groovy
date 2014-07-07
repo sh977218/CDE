@@ -13,11 +13,14 @@ import groovy.transform.Field;
 import java.util.Iterator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 
-@Field def mongoHost = System.getenv()['MONGO_HOST'];
-if(mongoHost == null) mongoHost = "localhost";
-
-@Field def mongoDb = System.getenv()['MONGO_DB'];
-if(mongoDb == null) mongoDb = "nlmcde";
+def mongoHost = args[1];
+def mongoDb = args[2];
+if(mongoHost == null || mongoDb == null)  {
+    println "Please specify mongodb host and dbname: 'groovy UploadCadsr.groovy [filename] [mongodb-host] [dbname]'";
+    System.exit(0);
+} else {
+    println "MongoDB host: " + mongoHost + ", db: " + mongoDb
+}
 
 @Field MongoClient mongoClient 
 mongoClient = new MongoClient( mongoHost );

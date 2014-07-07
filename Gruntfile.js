@@ -1,4 +1,6 @@
-var config = require('./config.js')
+require('./deploy/configTest.js');
+
+var config = require('config')
     , elastic = require('./deploy/elasticSearchInit.js')
     , chalk = require('chalk')
     , fs = require('fs');
@@ -33,7 +35,7 @@ module.exports = function(grunt) {
             } 
             , elasticDeleteRiver: {
                 options: {
-                    uri: config.elasticRiverUri
+                    uri: config.elastic.uri + "/_river/"
                     , method: 'DELETE'
                 }
             }
@@ -61,7 +63,32 @@ module.exports = function(grunt) {
                         return;
                     }
                 }               
-            }            
+            } 
+            , ingestTest: {
+                command: function () {
+                            return [
+                                "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " deploy/dbInit.js"
+                                , "mongo cde-logs-test deploy/logInit.js"
+                                , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
+                                , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
+                                , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
+                            ].join("&&")
+                }
+            }
+            , ingestProd: {
+                command: function () {
+                            return [
+                                "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " deploy/dbInit.js"
+                                , "mongo cde-logs-test deploy/logInit.js"
+                                , "find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec groovy -cp ./groovy/ groovy/UploadCadsr {} " + config.database.servers[0].host + " " + config.database.dbname + " \;"
+                                //, "groovy -cp ./groovy/ groovy/uploadNindsXls \"../nlm-seed/ExternalCDEs/ninds/Data Element Import_20140523.xlsx\" " + config.database.servers[0].host + " " + config.database.dbname 
+                                //, "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
+                            ].join("&&")
+                }
+            }  
+            , runTests: {
+                command: function() { return "gradle -b test/selenium/build.gradle -PtestUrl=" + grunt.config('testUrl') + " clean test &";}
+            }
         }    
         , copy: {
             main: {
@@ -100,22 +127,22 @@ module.exports = function(grunt) {
                         {
                             config: 'elastic.index.delete'
                             , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'index?'.yellow
+                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'index for ' + config.name + ' configuration?'
                         }
                         , {
                             config: 'elastic.index.create'
                             , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'index?'.yellow
+                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'index for ' + config.name + ' configuration?'
                         }
                         , {
                             config: 'elastic.river.delete'
                             , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'river?'.yellow
+                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'river for ' + config.name + ' configuration?'
                         } 
                         , {
                             config: 'elastic.river.create'
                             , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'river?'.yellow
+                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'river for ' + config.name + ' configuration?'
                         }                           
                     ]
                 }
@@ -143,19 +170,73 @@ module.exports = function(grunt) {
                             config: 'showHelp'
                             , type: 'list'
                             , message: 'Please select ...'
+                            , default: "run"
+                            , choices: [{
+                                value: "run"
+                                , name: 'Run Deployment'
+                            }
+                            , {
+                                value: "help"
+                                , name: 'Show Help Screen'
+                            }, {
+                                value: "tests"
+                                , name: 'Run Tests'
+                            }, {
+                                value: "ingest"
+                                , name: 'Erase Database & Reingest Data'
+                            }]
+                        }
+                    ]
+                }
+            }
+            , ingest: {
+                options: {
+                    questions: [
+                        {
+                            config: 'ingest'
+                            , type: 'list'
+                            , message: 'Do you want to '+ 'empty database'.red + ' and re-ingest data?'
                             , default: false
                             , choices: [{
                                 value: false
-                                , name: 'Run deployment!'
+                                , name: 'Keep Existing Data.'.green
                             }
                             , {
-                                value: true
-                                , name: 'Show help screen!'
+                                value: "test"
+                                , name: 'Delete'.red + ' \'' + config.name + '\' & Reingest ' + 'small'.yellow + ' collection!'
+                            }
+                            , {
+                                value: "production"
+                                , name: 'Delete'.red + ' \'' + config.name + '\' & Reingest ' + 'large'.yellow + ' collection!'
                             }]
                         }
                     ]
                   }
-              }            
+            }
+            , testsLocation: {
+                options: {
+                    questions: [
+                        {
+                            config: 'testUrl'
+                            , type: 'list'
+                            , message: 'What is the test ' + 'destination'.green + '?'
+                            , default: "localhost:3001"
+                            , choices: [{
+                                value: "localhost:3001"
+                                , name: 'Localhost '+'localhost:3001'.green
+                            }
+                            , {
+                                value: "cde-dev.nlm.nih.gov:3001"
+                                , name: 'Dev '+'cde-dev.nlm.nih.gov:3001'.red
+                            }
+                            , {
+                                value: "cde-qa.nlm.nih.gov:3001"
+                                , name: 'QA '+'cde-qa.nlm.nih.gov:3001'.red
+                            }]
+                        }
+                    ]                    
+                }
+            }
             
         }
         , availabletasks: {
@@ -181,7 +262,7 @@ module.exports = function(grunt) {
                     , borderColor: 'bgGreen'      
                 }
             }            
-        }        
+        }
     });  
     
     grunt.loadNpmTasks('grunt-git');
@@ -201,6 +282,10 @@ module.exports = function(grunt) {
     });     
     
     grunt.registerTask('do-elastic', function() {
+        if (grunt.config('elastic.river.delete')) {
+            grunt.log.writeln('\n\nDeleting Elastic Search River!');
+            grunt.task.run('http:elasticDeleteRiver');
+        }        
         if (grunt.config('elastic.index.delete')) {
             grunt.log.writeln('\n\nDeleting Elastic Search Index!');
             grunt.task.run('http:elasticDeleteIndex');
@@ -209,10 +294,6 @@ module.exports = function(grunt) {
             grunt.log.writeln('\n\nCreating Elastic Search Index!');
             grunt.task.run('http:elasticCreateIndex');
         }
-        if (grunt.config('elastic.river.delete')) {
-            grunt.log.writeln('\n\nDeleting Elastic Search River!');
-            grunt.task.run('http:elasticDeleteRiver');
-        }
         if (grunt.config('elastic.river.create')) {
             grunt.log.writeln('\n\nCreating Elastic Search River!');
             grunt.task.run('http:elasticCreateRiver');
@@ -220,23 +301,54 @@ module.exports = function(grunt) {
     });       
     
     grunt.registerTask('do-node', function() {
-        if (grunt.config('elastic.index.delete')) {
+        if (grunt.config('node.scripts.stop')) {
             grunt.task.run('shell:stop');
         }
-        if (grunt.config('elastic.index.create')) {
+        if (grunt.config('node.scripts.start')) {
             grunt.task.run('shell:start');
         }      
     });  
     
+    grunt.registerTask('do-ingest', function() {
+        if (grunt.config('ingest')==="test") {
+            grunt.task.run('shell:ingestTest');
+        }
+        if (grunt.config('ingest')==="production") {
+            grunt.task.run('shell:ingestProd');
+        }   
+        grunt.task.run('clearQueue');
+    });  
+        
     grunt.registerTask('clear', function() {
         console.log("\n\n");
     });     
     
     grunt.registerTask('do-help', function() {
-        if (grunt.config('showHelp')) {
+        if (grunt.config('showHelp')=="help") {
             grunt.task.run('attention:help');
-        }    
-    });    
+        }   
+        if (grunt.config('showHelp')=="ingest") {
+            grunt.task.run('ingest');
+        }  
+        if (grunt.config('showHelp')=="tests") {
+            grunt.task.run('tests');
+        }         
+    }); 
+    
+    grunt.registerTask('do-test', function() {
+        if (grunt.config('testUrl')==="localhost:3001") {
+            grunt.task.run('shell:ingestTest');
+            grunt.util.spawn({
+                cmd: 'node'
+                , args: ['node-js/app.js']
+            });
+        }
+        grunt.task.run('shell:runTests');
+    });
+    
+    grunt.registerTask('clearQueue', function() {
+        grunt.task.clearQueue();
+    });     
     
     grunt.registerTask('persistVersion', function() {
         fs.writeFileSync("./views/version.ejs", grunt.config.get("version"));         
@@ -246,6 +358,8 @@ module.exports = function(grunt) {
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['prompt:elastic', 'do-elastic']);
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
     grunt.registerTask('buildVersion',['shell:version','persistVersion']);
+    grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
+    grunt.registerTask('tests',['prompt:testsLocation','do-test','clearQueue']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
         grunt.task.run('npm-install');
         if (config.node.buildDir) grunt.task.run('copy');

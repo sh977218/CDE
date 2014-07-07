@@ -13,7 +13,10 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.id("addClassification")).click(); 
         modalHere();              
         findElement(By.id("classifySlectOrg-"+categories[0])).click();
-        hangon(0.5);        
+        
+        // Ensures that tree of classifications have finished loading.
+        Assert.assertTrue(textPresent(categories[1]));
+        
         for (int i=1; i<categories.length-1; i++) {            
             //findElement(By.xpath("//span[text() ='" + categories[i]+"']")).click();       
             findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();
