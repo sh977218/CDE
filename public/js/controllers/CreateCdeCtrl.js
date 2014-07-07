@@ -30,6 +30,11 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
          } 
     };    
     
+    $scope.removeClassification = function(orgName, elts) {
+        var steward = exports.findSteward($scope.cde, orgName);
+        exports.deleteCategory(steward.object, elts);
+    };     
+    
     var suggestionPromise = 0;
     $scope.showSuggestions = function () {
         if (suggestionPromise !== 0) {
