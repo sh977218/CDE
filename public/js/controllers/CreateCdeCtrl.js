@@ -18,26 +18,17 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
            }
         });
         delete $scope.cde.designation;
-        delete $scope.cde.definition;
-
-        /*var newClassifTree = function(defaultClassification) {
-            var result = {};
-            var current = result;
-            for (var i=0; i < defaultClassification.length; i++) {
-                current.elements = [{name: defaultClassification[i]}];
-                current = current.elements[0];
-            }
-            return result;
-        };
-        
-        $scope.cde.classification = [{stewardOrg: {name: $scope.cde.stewardOrg.name}, elements: []}];
-        for (var j = 0; j < $scope.defaultClassifications.length; j++) {
-            $scope.cde.classification[0].elements.push(newClassifTree($scope.defaultClassifications[j]));
-        }        */        
+        delete $scope.cde.definition;      
         DataElement.save($scope.cde, function(cde) {
             $window.location.href = "/#/deview?cdeId=" + cde._id;        
         });
     };
+    
+    $scope.classificationToFilter = function() {
+         if ($scope.cde != null) {
+             return $scope.cde.classification;
+         } 
+    };    
     
     var suggestionPromise = 0;
     $scope.showSuggestions = function () {
@@ -78,20 +69,8 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
 
     $scope.openSelectDefaultClassificationModal = function () {
         var modalInstance = $modal.open({
-            //templateUrl: 'selectDefaultClassificationModalContent.html',
             templateUrl: 'addClassificationModalContent.html',
             controller: AddClassificationModalCtrl,
-            /*resolve: {
-                orgName: function() {
-                    return $scope.cde.stewardOrg.name;
-                }
-                , defaultClassifications: function() {
-                    return $scope.defaultClassifications;
-                }
-                , addAlert: function() {
-                    return $scope.addAlert;
-                }
-            }*/
             resolve: {
                 myOrgs: function() {
                     return $scope.myOrgs;
