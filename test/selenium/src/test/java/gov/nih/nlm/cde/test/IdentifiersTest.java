@@ -28,7 +28,7 @@ public class IdentifiersTest extends NlmCdeBaseTest {
         findElement(By.name("id")).sendKeys("MyId2");
         findElement(By.id("createId")).click();
         Assert.assertTrue(textPresent("Identifier Added"));
-        modalGone();
+        hangon(2.5);
         findElement(By.id("addId")).click();
         modalHere();
         findElement(By.name("origin")).sendKeys("MyOrigin3");
