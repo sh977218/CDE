@@ -118,7 +118,12 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
                             for (var i=1; i<=newClassification.categories.length; i++){
                                 exports.addCategory(steward.object, newClassification.categories.slice(0,i));
                             }
-                            $scope.defaultClassifications.push(newClassification);
+                            var deepCopy = {
+                                orgName: newClassification.orgName
+                                , categories: []
+                            };
+                            deepCopy.categories = newClassification.categories.map(function(cat){return cat});
+                            $scope.defaultClassifications.push(deepCopy);
                             newClassification.categories.pop();    
                             
                         }
