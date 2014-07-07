@@ -1,12 +1,7 @@
 function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) {
     $scope.setActiveMenu('CREATECDE');
     
-    $scope.defaultClassifications = [];
-    
     $scope.cde = { classification: []}; 
-    $scope.removeDefaultClassification = function(index) {
-        $scope.defaultClassifications.splice(index, 1);
-    };
     $scope.save = function() {
         $scope.cde.naming = [];
         $scope.cde.naming.push({
@@ -33,12 +28,10 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
     $scope.removeClassification = function(orgName, elts) {
         var steward = exports.findSteward($scope.cde, orgName);
         exports.deleteCategory(steward.object, elts);
-        if (steward.object.elements.length==0) {
+        if (steward.object.elements.length === 0) {
             for (var i=0; i<$scope.cde.classification.length; i++) {
                 if ($scope.cde.classification[i].stewardOrg.name === orgName) $scope.cde.classification.splice(i,1);
             }
-            console.log($scope.cde.classification);
-            console.log("yeah");
         }
     };     
     
@@ -113,8 +106,6 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
                                 orgName: newClassification.orgName
                                 , categories: []
                             };
-                            deepCopy.categories = newClassification.categories.map(function(cat){return cat});
-                            $scope.defaultClassifications.push(deepCopy);
                             newClassification.categories.pop();    
                             
                         }
