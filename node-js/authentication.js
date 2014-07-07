@@ -1,69 +1,59 @@
 var https = require('https')
-    , querystring = require('querystring')
-    , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
-    , fs = require('fs')
-    , util = require('util')
-    , request = require('request')
+  , xml2js = require('xml2js')
+  , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
 ;
 
 var ticketValidationOptions = {
-    hostname: config.ticketValidation.host,
-    port: config.ticketValidation.port,
-    path: config.ticketValidation.path,
-    method: 'GET'
+    host: config.uts.ticketValidation.host
+    , hostname: config.uts.ticketValidation.host
+    , port: config.uts.ticketValidation.port
+    , path: config.uts.ticketValidation.path
+    , method: 'GET'
+    , agent: false
+    , requestCert: true
+    , rejectUnauthorized: false
+
 };
+
+var parser = new xml2js.Parser();
 
 /**
  * Checks the validity of a ticket via a POST API call to validation server.
  * 
- * @param {type} cb
- * @returns {undefined}
+ * @param tkt - ticket to valadate
+ * @returns 
  */
-exports.serviceValidate = function(cb) {
-    var req = https.request(ticketValidationOptions, function(res) {
+exports.ticketValidate = function( tkt, cb ) {
+    ticketValidationOptions.path = config.uts.ticketValidation.path + '?service=' + config.uts.service + '&ticket=' + tkt;
+    
+    var req = https.request( ticketValidationOptions, function( res ) {
         var output = '';
-        res.setEncoding('utf8');
-        res.on('data', function (chunk) {
+        res.setEncoding( 'utf8' );
+        res.on( 'data', function( chunk ) {
             output += chunk;
         });
-        res.on('end', function() {
-            var ticket = output;
-            cb(ticket);
+        res.on( 'end', function() {
+            // Parse xml result from ticket validation
+            parser.parseString( output, function( err, jsonResult ) {
+                if( err ) {
+                    return cb( 'ticketValidate Error: ' + err );
+                } else if( jsonResult['cas:serviceResponse']['cas:authenticationFailure'] ) {
+                    // This gets the error message
+                    //jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0]['_'];
+                    return cb( jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0]['$']['code'] );
+                } else if( jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] ) {
+                    // Returns the username
+                    return cb( null, jsonResult['cas:serviceResponse']['cas:authenticationSuccess'][0]['cas:user'][0] );
+                }
+                
+                return cb( 'ticketValidate Error: invalid XML response!' );
+            });
         });
     });
     
     req.on('error', function (e) {
-        console.log('getTicket: ERROR with request ' + e);
+        console.log('serviceValidate: ERROR with request: ' + e);
     });
-    
-    req.write(ticketData);
-    req.end();
-};
 
-exports.getValueSet = function(vs_id, cb) {
-    this.getTicket(function(vsacTicket) {
-        valueSetOptions.path = config.vsac.valueSet.path + '?id=' + vs_id + "&ticket=" + vsacTicket;
-        var req = https.request(valueSetOptions, function(res) {
-            var output = '';
-            res.setEncoding('utf8');
-            res.on('data', function (chunk) {
-                output += chunk;
-            });
-            res.on('end', function() {
-                if (res.statusCode === 404) {
-                    cb(404);
-                }
-                if (output.length > 0) {
-                    cb(output);
-                }
-            });
-        });
-
-        req.on('error', function (e) {
-            console.log('getValueSet: ERROR with request: ' + e);
-            cb(400);
-        });
-
-        req.end();
-    });
+    req.end( 'ticketValidate' );
 };

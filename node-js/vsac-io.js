@@ -12,7 +12,7 @@ var authData = querystring.stringify( {
 });
 
 var ticketData = querystring.stringify({
-    service: 'http://umlsks.nlm.nih.gov'
+    service: config.uts.service
 });
 
 var vsacHost = config.vsac.host;

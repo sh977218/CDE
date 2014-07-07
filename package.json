@@ -37,6 +37,8 @@
     "grunt-attention": "*",
     "grunt-available-tasks": "*",
     "chalk": "*",
-    "serve-favicon": "2.x"
+    "serve-favicon": "2.x",
+    "passport-http-bearer": "1.x"
+    
   }
 }

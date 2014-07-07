@@ -20,6 +20,8 @@ var express = require('express')
   , dbLogger = require('./dbLogger.js')
   , favicon = require('serve-favicon')
   , elastic = require('./elastic')
+  , auth = require( './authentication' )
+  , BearerStrategy = require('passport-http-bearer').Strategy
 ;
 
 // Global variables
@@ -110,6 +112,49 @@ passport.use(new LocalStrategy({passReqToCallback: true},
     });
   }
 ));
+
+// BearerStrategy is used for API authentication
+passport.use(new BearerStrategy({passReqToCallback: true}, function(req, token, done) {
+    // asynchronous validation, for effect...
+    process.nextTick(function () {
+        //return done('err');
+        //return done(null,'no err');
+        
+        auth.ticketValidate(token, function( err, username ) {
+            if( err ) {
+                return done(err);
+            } else {
+                return done(null,'no err');
+                this.updateUserOnTicketUse = function(req, user) {
+                    if( !user.knowIPs ) {
+                        user.knownIPs = [];
+                    }
+                    if( user.knownIPs.length > 100 ) {
+                        user.knownIPs.pop();
+                    }
+                    if( user.knownIPs.indexOf(req.ip) < 0 ) {
+                        user.knownIPs.unshift(req.ip);
+                    }
+                };
+                
+                findByUsername(username, function(error, user) {
+                    if( error ) { done(error); }
+                    // Username password combo is good, but user is not here, so register him.
+                    if (!user) {
+                        mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
+                            return done(null, newUser);
+                        });
+                    } else { // User already exists, so update user info.
+                        this.updateUserOnTicketUse( req, user );
+                        return mongo_data.save(user, function(err, user) {
+                            return done(null, user);
+                        });
+                    }
+                });
+            }
+        });
+    });
+}));
 
 var app = express();
 
@@ -236,15 +281,35 @@ function ensureAuthenticated(req, res, next) {
 };
 
 app.get('/gonowhere', function(req, res) {
-   res.send("<html><body>Nothing here</body></html>"); 
+   res.send("<html><body>Nothing here</body></html>");
+});
+
+// TESTING
+app.get('/bearer', function(req, res) {
+    if( req.isAuthenticated() ) {
+        res.send("<html><body>Already Authenticated</body></html>");
+    } else {
+        passport.authenticate('bearer', { session: false }, function(err, user, info) {
+            if (err) { 
+                res.send("<html><body>Invalid ticket</body></html>"); 
+            } else if (!user) {
+                res.send("<html><body>Ticket not provided</body></html>");
+            } else {
+                // Manually authenticate the user
+                req.user = user;
+                res.send("<html><body>Ticket validated</body></html>");
+            }
+        })(req, res);
+    }
+    
 });
 
 app.get('/', function(req, res) {
-  res.render('index');
+    res.render('index');
 });
 
 app.get('/home', function(req, res) {
-  res.render('home');
+    res.render('home');
 });
 
 app.get('/quickBoard', function(req, res) {
@@ -429,6 +494,7 @@ app.get('/myboards', function(req, res) {
 });
 
 app.post('/login', function(req, res, next) {
+  // Regenerate is used so appscan won't complain
   req.session.regenerate(function(err) {  
     passport.authenticate('local', function(err, user, info) {
       if (err) { return next(err); }
@@ -449,10 +515,6 @@ app.get('/logout', function(req, res) {
       req.logout();
       res.redirect('/');
   });
-});
-
-app.get('/listcde', function(req, res) {
-    cdesvc.listcde(req, res);
 });
 
 app.post('/cdesByUuidList', function(req, res) {
@@ -767,7 +829,7 @@ app.get('/cdediff/:deId', function(req, res) {
 app.get('/org/:name', function(req, res) {
    return mongo_data.orgByName(req.params.name, function (result) {
        res.send(result);
-   }); 
+   });
 });
 
 app.post('/elasticSearch', function(req, res) {
@@ -1095,18 +1157,34 @@ http.createServer(app).listen(app.get('port'), function(){
 // TESTING
 var getTGTapp = function() {
     vsac.getTGT(function(tgt) {
-        console.log("Got TGT: "+tgt);
+        console.log('Got TGT: '+tgt);
     });
 };
 
 getTGTapp();
-setInterval(getTGTapp, 20 * 1000);
+//setInterval(getTGTapp, 60 * 1000);
 
+var ticket = 'abc';
 var getTKTapp = function() {
     vsac.getTicket(function(tkt) {
-        console.log("Got Ticket: "+tkt);
+        ticket = tkt;
+        console.log('Got Ticket: '+tkt);
     });
 };
 
 getTKTapp();
-setInterval(getTKTapp, 25 * 1000);
+setInterval(getTKTapp, 15 * 1000);
+
+
+var ticketValidateApp = function() {
+    auth.ticketValidate( ticket, function( err, username ) {
+        if( err ) {
+            console.log( "Validation error: " + err );
+        } else {
+            console.log( "Username: " + username );
+        }
+    });
+};
+
+//ticketValidateApp();
+//setInterval(ticketValidateApp, 5 * 1000);

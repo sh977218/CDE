@@ -15,11 +15,11 @@ var config = {
         }
         , port: 4000
     }
-    , validationServer: {
-        ticketValidation: {
+    , uts: {
+        service: 'http://umlsks.nlm.nih.gov' // Identifier of the service for which the ticket was issued.
+        , ticketValidation: {
             host: 'utslogin.nlm.nih.gov'
             , path: '/cas/serviceValidate'
-            , service: 'cde-qa.nlm.nih.gov' // Identifier of the service for which the ticket was issued.
             , port: 443
         }
     }
