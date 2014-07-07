@@ -22,13 +22,15 @@ public class IdentifiersTest extends NlmCdeBaseTest {
         findElement(By.id("createId")).click();
         Assert.assertTrue(textPresent("Identifier Added"));
         modalGone();
+        scrollTo( "2000" );
         findElement(By.id("addId")).click();
         modalHere();
         findElement(By.name("origin")).sendKeys("MyOrigin2");
         findElement(By.name("id")).sendKeys("MyId2");
         findElement(By.id("createId")).click();
         Assert.assertTrue(textPresent("Identifier Added"));
-        hangon(2.5);
+        modalGone();
+        scrollTo( "2000" );
         findElement(By.id("addId")).click();
         modalHere();
         findElement(By.name("origin")).sendKeys("MyOrigin3");

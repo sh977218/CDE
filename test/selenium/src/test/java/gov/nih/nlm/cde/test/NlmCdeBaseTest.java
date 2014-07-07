@@ -33,6 +33,8 @@ public class NlmCdeBaseTest {
     protected static String test_password = "Test123";
     protected static String history_username = "historyuser";
     protected static String history_password = "pass";
+    protected static String ninds_username = "ninds";
+    protected static String ninds_password = "pass";
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";    
     protected static String macosx_detected_message = "Max OS X Detected\nStarting ./chromedriver";     
     
@@ -229,6 +231,7 @@ public class NlmCdeBaseTest {
     }
 
     public void addToQuickBoard(String cdeName) {
+        scrollToTop();
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName+"\"");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("1 hits"));
@@ -261,8 +264,23 @@ public class NlmCdeBaseTest {
         driver.manage().timeouts().implicitlyWait(8, TimeUnit.SECONDS);
         return elementVisible;
     }
-    
+
+    protected boolean checkElementDoesNotExistById( String id ) {
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+        boolean elementVisible;
+        try {
+            driver.findElement(By.id(id));
+            elementVisible = false;
+        } catch(NoSuchElementException e) {
+            elementVisible = true;
+        }
+        driver.manage().timeouts().implicitlyWait(8, TimeUnit.SECONDS);
+        return elementVisible;
+    }
+
     public void scrollTo( String y ) {
         ((JavascriptExecutor)driver).executeScript("scroll(0," + y + ");");
     }
+    
+
 }

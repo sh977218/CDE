@@ -8,10 +8,6 @@ body {
     background-color: #a8c4e1;
 }
 
-.drop-cap-img {
-    padding-right: 10px;
-}
-
 .top20 { margin-top:20px; }
 .top40 { margin-top:40px; }
 .top60 { margin-top:60px; }
@@ -43,28 +39,38 @@ body {
 #taTextElement {
     height: auto;
 }
+
 #repeatCs hr {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
 #repeatCs h5 {
     font-size: 19px;
 }
+
 #repeatCs h6 {
     font-size: 15px;
     font-weight: bold;
 }
+
 #repeatCs ul {
     font-size: 12px;
-    list-style-type: none;
-    padding-left: 10px;
+    list-style: none;
 }
-#repeatCs > .col-md-5 {
+
+#repeatCs > .pull-left {
     border: 1px solid rgb(220,220,220);
     border-radius: 5px;
+    margin: 5px;
+    padding: 10px;
+    word-wrap: break-word;
 }
-#repeatCs > .col-md-5 {
-    margin: 10px;
+
+#repeatCm > .pull-left {
+    margin: 5px;
+    padding: 10px;
+    word-wrap: break-word;
 }
 
 .disabled {
@@ -74,10 +80,6 @@ body {
 
 .btn {
     margin-left: 10px;
-}
-
-#repeatCs .container {
-    word-wrap: break-word;
 }
 
 .fake-link {
@@ -117,6 +119,29 @@ body {
     z-index: 10000!important;
 }
 
+.first-level-classification {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 30px;
+}
+
 .cdeAttachmentThumbnail {
     max-width: 160px;
 }
+
+.img-center-responsive {
+    display: block;
+    height: auto;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Disable modal slide down effect.  Useful during testing. */
+/*.modal.fade .modal-dialog 
+{
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+    -webkit-transform: none !important;
+    transform: none !important;
+}*/
