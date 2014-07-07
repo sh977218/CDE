@@ -49,6 +49,10 @@ function QuickBoardCtrl($scope, $location, CdeList) {
         $scope.isAccordionView = !$scope.isAccordionView;
     };
     
+    $scope.showCompareButton = function(cde) {
+        return false;
+    };
+    
     $scope.showGridView = function() {
         $scope.isAccordionView = !$scope.isAccordionView;
         
