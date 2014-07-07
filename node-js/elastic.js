@@ -1,4 +1,4 @@
-var config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+var config = require('config')
     , request = require('request')
 ;
 

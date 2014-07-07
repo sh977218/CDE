@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-    , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+    , config = require('config')
     ;
     
     

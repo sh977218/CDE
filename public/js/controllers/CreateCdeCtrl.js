@@ -1,4 +1,10 @@
 function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) {
+    $scope.currentPage = 1;
+    $scope.totalItems = 0;
+    $scope.resultPerPage = 20;
+    $scope.$watch('currentPage', function() {
+        $scope.showSuggestions();
+    }); 
     $scope.setActiveMenu('CREATECDE');
     
     $scope.cde = { classification: []}; 
@@ -40,34 +46,15 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
         if (suggestionPromise !== 0) {
             $timeout.cancel(suggestionPromise);
         }
-        suggestionPromise = $timeout(function () {
-            // @TODO Reuse this bit.
-            var queryStuff = {query: 
-                {   
-                    bool: {
-                        should: {
-                        function_score: {
-                            boost_mode: "replace"
-                            , script_score: {
-                                script: "_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)"
-                            }
-                            , query: {
-                                query_string: {
-                                    fields: ["_all", "naming.designation^3"]
-                                    , query: $scope.cde.designation
-                                }
-                            }
-                        }
-                        }
-                        , must_not: {
-                            term: {
-                                "registrationState.registrationStatus": "retired"
-                            }
-                        }
-                    }
-               }};            
-            Elastic.generalSearchQuery({query: queryStuff}, function(result) {
-                $scope.cdes = result.cdes;
+        suggestionPromise = $timeout(function () {            
+            Elastic.buildElasticQueryPre($scope);
+            var settings = Elastic.buildElasticQuerySettings($scope);
+            settings.searchTerm = $scope.cde.designation;
+            Elastic.buildElasticQuery(settings, function(query) {
+                Elastic.generalSearchQuery(query, function(result) {     
+                    $scope.cdes = result.cdes;
+                    $scope.totalItems = result.totalNumber;
+                });
             });
         }, 1000);
     };
