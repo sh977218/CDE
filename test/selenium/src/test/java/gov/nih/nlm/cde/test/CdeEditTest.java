@@ -37,7 +37,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
     public void createBasicCde(String name, String definition, String version, String org, String classification, String subclassification) {
         goToSearch();
         fillOutBasicCreateFields(name, definition, version, org, classification, subclassification);
-        findElement(By.id("cde.submit")).click();
+        findElement(By.id("submit")).click();
         hangon(1);
     }
     
@@ -89,7 +89,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
         // wait for page to load
-        findElement(By.id("cde.submit"));
+        findElement(By.id("submit"));
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("Possible Matches"));
         findElement(By.name("cde.designation")).sendKeys("Patient Name");
         Assert.assertTrue(textPresent("Possible Matches"));
