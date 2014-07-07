@@ -22,6 +22,7 @@ public class IdentifiersTest extends NlmCdeBaseTest {
         findElement(By.id("createId")).click();
         Assert.assertTrue(textPresent("Identifier Added"));
         modalGone();
+        scrollTo( "2000" );
         findElement(By.id("addId")).click();
         modalHere();
         findElement(By.name("origin")).sendKeys("MyOrigin2");
@@ -29,6 +30,7 @@ public class IdentifiersTest extends NlmCdeBaseTest {
         findElement(By.id("createId")).click();
         Assert.assertTrue(textPresent("Identifier Added"));
         modalGone();
+        scrollTo( "2000" );
         findElement(By.id("addId")).click();
         modalHere();
         findElement(By.name("origin")).sendKeys("MyOrigin3");

@@ -1,22 +1,32 @@
 <div ng-controller="ClassificationCtrl" >
-<h4>Classification</h4>
-<button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification" ng-show="myOrgs.length>0"><i class="fa fa-plus"> </i> Add Classification</button>
+    <h2>
+        Classification
+        <button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification" ng-show="myOrgs.length>0"><i class="fa fa-plus"> </i> Add Classification</button>
+    </h2>
 
-<%- include classif-sub-elements.ejs %>
+    <%- include classif-sub-elements.ejs %>
 
-<div id="repeatCs" class="container">
-    <div ng-repeat="stewardClassifications in classificationToFilter()" class="col-md-5 container" id="stewardClassificationGroup-{{stewardClassifications.stewardOrg.name}}">
-        <h5>{{stewardClassifications.stewardOrg.name}}</h5>
-        <hr/>
-        <div ng-repeat="elt in stewardClassifications.elements" class="col-md-6" ng-init='pathArray = [elt.name]' id="conceptSystem-{{stewardClassifications.stewardOrg.name}}-{{elt.name}}">
-            <h6>{{elt.name}}</h6>
-            <div ng-include="'classif-sub-elements.html'" ng-init="myOrg = myOrgs.indexOf(stewardClassifications.stewardOrg.name)>=0; orgName = stewardClassifications.stewardOrg.name;"></div>
+    <div id="repeatCs" class="container-fluid">
+        <div ng-repeat="stewardClassifications in classificationToFilter()" class="pull-left" id="stewardClassificationGroup-{{stewardClassifications.stewardOrg.name}}">
+            <h4 id="{{stewardClassifications.stewardOrg.name}}">{{stewardClassifications.stewardOrg.name}}</h4>
+            <hr/>
+            <div class="pull-left" 
+                 ng-repeat="elt in stewardClassifications.elements" 
+                 ng-init='pathArray = [elt.name]' 
+                 id="conceptSystem-{{stewardClassifications.stewardOrg.name}}-{{elt.name}}">
+                
+                <ul class="fa-ul">
+                    <li ng-include="'classif-sub-elements.html'" 
+                        ng-init="myOrg = myOrgs.indexOf(stewardClassifications.stewardOrg.name) >= 0; orgName = stewardClassifications.stewardOrg.name; pathArray = pathArray.slice(0)"
+                        id="classification-{{pathArray.join()}}">
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 
-<script type="text/ng-template" id="addClassificationModalContent.html">
-    <%- include addClassification.ejs %>
-</script>
+    <script type="text/ng-template" id="addClassificationModalContent.html">
+        <%- include addClassification.ejs %>
+    </script>
 
 </div>
