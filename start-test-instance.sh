@@ -1,16 +1,11 @@
 #!/bin/sh
 
-export MONGO_LOG_URI=
-
-export MONGO_HOST=localhost
-export MONGO_DB=test
-
 mongo test deploy/dbInit.js
 mongo cde-logs-test deploy/logInit.js
 
-groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml --testMode
-groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx --testMode
-groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx 
+groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml localhost test --testMode
+groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx localhost test --testMode
+groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx localhost test 
 
 sleep 3;
 
@@ -19,9 +14,10 @@ export curl_res=$(curl http://localhost:9200/cdetest/_count)
 
 if [ "$curl_res" == "$target" ] 
 then
-    gradle -b test/selenium/build.gradle clean test & 
-    #gradle -b test/selenium/build.gradle -Dtest.single=ClassificationTest test & 
-    node node-js/app config.test.js > test-console.out
+    gradle -b test/selenium/build.gradle -PtestUrl=localhost:3001 clean test & 
+    #gradle -b test/selenium/build.gradle -Dtest.single=ClassificationTest -PtestUrl=localhost:3001 test & 
+    export NODE_ENV=test
+    node node-js/app > test-console.out
 else
     echo "Not all documents indexed. Aborting"
     echo $curl_res

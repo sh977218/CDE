@@ -12,21 +12,21 @@ repositories {
 }
 
 dependencies {
-//    def seleniumVersion = "2.33.0"
     def seleniumVersion = "2.+"
-
     testCompile group: 'org.testng', name: 'testng', version: '6.8'
     testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
 }
 
-test {
-    useTestNG()
+tasks.withType(Test) { 
+    systemProperty 'testUrl', System.getProperty('testUrl', testUrl) 
+}
 
-     beforeTest { descriptor ->
-         logger.lifecycle("Running test: " + descriptor)
-     }
-    
-    maxParallelForks = 15
+test {    
+    useTestNG()
+    beforeTest { descriptor ->
+        logger.lifecycle("Running test: " + descriptor)
+    }    
+    maxParallelForks = 16
 }

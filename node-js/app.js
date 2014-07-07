@@ -1,3 +1,5 @@
+require('../deploy/configTest.js');
+
 var express = require('express')
   , http = require('http')
   , path = require('path')
@@ -15,7 +17,7 @@ var express = require('express')
   , xml2js = require('xml2js')
   , vsac = require('./vsac-io')
   , winston = require('winston')
-  , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+  , config = require('config')
   , MongoStore = require('./assets/connect-mongo.js')(express)
   , dbLogger = require('./dbLogger.js')
   , favicon = require('serve-favicon')

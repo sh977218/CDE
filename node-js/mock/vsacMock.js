@@ -1,9 +1,11 @@
+require('../../deploy/configTest.js');
+
 var express = require('express')
   , https = require('https')
   , util = require('util')
   , crypto = require('crypto')
   , fs = require('fs')
-  , config = require(process.argv[2]?('../../'+process.argv[2]):'../../config.js')
+  , config = require('config')
 ;
 
 var app = express();
