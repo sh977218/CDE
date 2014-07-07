@@ -316,6 +316,7 @@ module.exports = function(grunt) {
         if (grunt.config('ingest')==="production") {
             grunt.task.run('shell:ingestProd');
         }   
+        grunt.task.run('clearQueue');
     });  
         
     grunt.registerTask('clear', function() {
