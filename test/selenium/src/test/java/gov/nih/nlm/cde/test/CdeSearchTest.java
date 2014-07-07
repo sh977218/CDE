@@ -46,6 +46,8 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         
         findElement(By.linkText("Identifiers")).click();
         Assert.assertTrue(textPresent("3157849"));
+        Assert.assertEquals("1", findElement(By.id("dd_version_nlm")).getText());                
+        
     } 
     
     @Test
