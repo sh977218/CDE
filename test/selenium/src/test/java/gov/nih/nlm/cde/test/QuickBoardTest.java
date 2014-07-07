@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -96,6 +97,32 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         findElement(By.linkText("Quick Board ( 2 )")).click();
         findElement(By.id("qb.empty")).click();
         Assert.assertTrue( textPresent( "Quick Board ( empty )" ) );
+    }
+    
+    @Test
+    public void removeOne() {
+        goToSearch();
+        findElement(By.id("li-blank-OHSU Knight")).click();
+        Assert.assertTrue(textPresent("4 hits"));
+        findElement(By.id("addToCompare_0")).click();
+        findElement(By.id("addToCompare_1")).click();
+        findElement(By.id("addToCompare_2")).click();
+        String toRemove = findElement(By.id("acc_link_0")).getText();
+        findElement(By.id("addToCompare_3")).click();
+        hangon(.5);
+        findElement(By.linkText("Quick Board ( 4 )")).click();
+        Assert.assertTrue(textPresent(toRemove));
+        List<WebElement> pluses = driver.findElements(By.cssSelector("i.fa-plus"));
+        for (WebElement plus : pluses) {
+            Assert.assertFalse(plus.isDisplayed());
+        }
+        findElement(By.id("remove_2")).click();
+        hangon(.5);
+        pluses = driver.findElements(By.cssSelector("i.fa-plus"));
+        for (WebElement plus : pluses) {
+            Assert.assertFalse(plus.isDisplayed());
+        }
+        Assert.assertTrue(textNotPresent(toRemove));
     }
     
 }
