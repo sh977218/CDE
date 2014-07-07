@@ -8,6 +8,17 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CdeEditTest extends NlmCdeBaseTest {
+    
+    private void classify(String org, String classification, String subClassification) {
+        findElement(By.id("selectDefault")).click();
+        modalHere();        
+        findElement(By.id("classifySlectOrg-"+org)).click();
+        hangon(0.5);   
+        findElement(By.cssSelector("[id='addClassification-"+classification+"'] span.fake-link")).click();
+        findElement(By.cssSelector("[id='addClassification-"+subClassification+"'] button")).click();
+        findElement(By.cssSelector(".modal-dialog .done")).click();
+        modalGone();    
+    }
 
     private void fillOutBasicCreateFields(String name, String definition, String version, String org, String classification, String subClassification) {
         findElement(By.linkText("Create")).click();
@@ -18,12 +29,9 @@ public class CdeEditTest extends NlmCdeBaseTest {
             findElement(By.name("cde.version")).sendKeys(version);
         }
         new Select(findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText(org);
-        findElement(By.id("selectDefault")).click();
-        modalHere();        
-        findElement(By.xpath("//span[contains(text(), '" + classification + "')]")).click();
-        findElement(By.xpath("//span[contains(text(),'" + subClassification + "')]/button")).click();
-        findElement(By.id("done")).click();
-        modalGone();
+        
+        classify(org, classification, subClassification);
+        
     }
     
     public void createBasicCde(String name, String definition, String version, String org, String classification, String subclassification) {
@@ -46,49 +54,21 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
         new Select(findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText("Select One");
         new Select(findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText("NINDS");
-        Assert.assertTrue(textPresent("You must select a default classification"));
-        findElement(By.id("selectDefault")).click();
-        modalHere();        
-        findElement(By.xpath("//span[contains(text(), 'Disease')]")).click();
-        findElement(By.xpath("//span[contains(text(), 'Headache')]")).click();
-        findElement(By.xpath("//span[contains(text(), 'Classification')]")).click();
-        findElement(By.xpath("//span[contains(text(),'Core')]/button")).click();
-
-        findElement(By.xpath("//span[contains(text(), 'NINDS')]")).click();
-        findElement(By.xpath("//span[contains(text(), 'Population')]")).click();
-        findElement(By.xpath("//span[contains(text(),'Adult')]/button")).click();
-
-        findElement(By.xpath("//span[contains(text(), 'Population')]")).click();
-        findElement(By.xpath("//span[contains(text(),'Adult')]/button")).click();
-        Assert.assertTrue(textPresent("Already added"));
-        // enough for the alert to disappear;
-        hangon(2.5);
+        classify("NINDS", "Disease", "Headache");
         
-        findElement(By.id("done")).click();
-        modalGone();
-        
-        Assert.assertTrue(textPresent("Disease"));
-        Assert.assertTrue(textPresent("Headache"));
-        Assert.assertTrue(textPresent("Classification"));
-        Assert.assertTrue(textPresent("Core"));
-        
-        Assert.assertTrue(textPresent("Population"));
-        Assert.assertTrue(textPresent("Adult"));
-        
-        findElement(By.id("cde.submit")).click();
+   
+        findElement(By.id("submit")).click();
         hangon(1);
 
         Assert.assertTrue(textPresent(definition));
         Assert.assertTrue(textPresent(version));
         findElement(By.linkText("Classification")).click();
         
-        Assert.assertTrue(textPresent("Disease"));
-        Assert.assertTrue(textPresent("Headache"));
-        Assert.assertTrue(textPresent("Classification"));
-        Assert.assertTrue(textPresent("Core"));
+        Assert.assertTrue(textPresent("Submission and Reporting"));
+        Assert.assertTrue(textPresent("Breast Cancer Data Mart"));        
         
-        Assert.assertTrue(textPresent("Population"));
-        Assert.assertTrue(textPresent("Adult"));     
+        Assert.assertTrue(textPresent("Disease"));
+        Assert.assertTrue(textPresent("Headache"));           
     }
     
     @Test

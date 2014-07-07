@@ -35,29 +35,18 @@
                 <div ng-show="cde.classification.length === 0">
                     <i class="fa fa-warning"></i> You must select a default classification.
                 </div>
-                <!--div ng-repeat="defaultClassification in defaultClassifications track by $index" class="row">
-                    <ol ng-show="defaultClassification" class="breadcrumb col-md-10 col-md-offset-1" >
-                        <li>{{defaultClassification.orgName}}</li>
-                        <li ng-repeat="cat in defaultClassification.categories">{{cat}}</li>
-                    </ol>
-                    <i class="fa fa-trash-o col-md-1" title="Remove" ng-click="removeDefaultClassification($index)"> </i>
-                </div-->
                 <%- include classif-sub-elements.ejs %>
-
                 <div ng-include="'classificationBody.html'">
                 </div>
                 <button class="btn btn-default btn-small" ng-click="openSelectDefaultClassificationModal()" id="selectDefault">Select</button>
             </div>
-            <script type="text/ng-template" id="selectDefaultClassificationModalContent.html">
-                <%- include selectDefaultClassificationModal.ejs %>
-            </script>
             <script type="text/ng-template" id="addClassificationModalContent.html">
                 <%- include addClassification.ejs %>
             </script>            
             <br />
 
             <a href="#/" class="btn btn-warning">Cancel</a>
-            <input id="cde.submit" type="submit" ng-click="save()" class="btn btn-success" 
+            <input id="submit" type="submit" ng-click="save()" class="btn btn-success" 
                 value="Save" ng-disabled="isClean() || createCde.$invalid || cde.classification.length === 0">                     
             </input>
         </fieldset>
