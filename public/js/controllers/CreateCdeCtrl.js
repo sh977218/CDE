@@ -107,7 +107,6 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
                                 , categories: []
                             };
                             newClassification.categories.pop();    
-                            
                         }
                     };
                 }                

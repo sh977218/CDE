@@ -1,6 +1,18 @@
 <div class="modal-header" id="addClassificationModalHeader">
     <h4>Add Classification</h4>
 </div>
+
+<div>
+    <h5 style="margin-left: 10px">Last Selected:</h5>
+    <div ng-repeat="defaultClassification in defaultClassificationsHistory" class="row">
+        <ol ng-show="defaultClassification" class="breadcrumb col-md-8 col-md-offset-1" >
+            <li>{{defaultClassification.orgName}}</li>
+            <li ng-repeat="cat in defaultClassification.categories">{{cat}}</li>
+        </ol>
+        <button class="fa fa-share-square btn btn-default btn-mini col-md-2" ng-click="selectPriorClassification(defaultClassification)"> Select</button></span>
+    </div>
+</div>
+
 <form name="form" role="form">
     <div ng-if="org" class="modal-body" id="addClassificationModalBody">
         <div ng-if="classificationType=='cde'" ng-include="'selectOrg.html'"></div>
