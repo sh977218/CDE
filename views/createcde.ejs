@@ -35,7 +35,7 @@
                 <div ng-show="defaultClassifications.length === 0">
                     <i class="fa fa-warning"></i> You must select a default classification.
                 </div>
-                <div ng-repeat="defaultClassification in defaultClassifications" class="row">
+                <div ng-repeat="defaultClassification in defaultClassifications track by $index" class="row">
                     <ol ng-show="defaultClassification" class="breadcrumb col-md-10 col-md-offset-1" >
                         <li ng-repeat="cat in defaultClassification">{{cat}}</li>
                     </ol>
