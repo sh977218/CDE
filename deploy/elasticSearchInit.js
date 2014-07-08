@@ -23,7 +23,7 @@ exports.createIndexJson = {
 };
 
 var riverFunction = 
-    "ctx.document.class=ctx.document.classification;\
+    "ctx.document.classificationCopy=ctx.document.classification;\
     var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0}; \
     ctx.document.registrationState.registrationStatusSortOrder = regStatusSortMap[ctx.document.registrationState.registrationStatus]; \
     if (ctx.document.classification) { \

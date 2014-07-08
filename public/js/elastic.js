@@ -192,7 +192,7 @@ angular.module('resources')
                     "*" : {
                         "pre_tags" : ["<strong>"]
                         , "post_tags" : ["</strong>"]
-                        , "content": {"fragment_size" : 500}
+                        , "content": {"fragment_size" : 1000}
                     }
                 }
             };
@@ -213,39 +213,36 @@ angular.module('resources')
             });
         }        
         , highlightCde: function(cde) {
-            if (!cde.highlight) {
-                //if () cde.highlight = {matchedBy: "Matched by: <strong>Classification</strong>"};
-                return;
-            };
-            this.highlight = function(field, cde) {
-                if (cde.highlight["naming."+field]) {
-                    cde.highlight["naming."+field].forEach(function(nameHighlight) {
-                        cde.naming.forEach(function(nameCde){
-                            if (nameCde[field] === nameHighlight.replace(/<[^>]+>/gm, '')) nameCde[field] = nameHighlight;
+            if (!cde.highlight) return;
+            this.highlight = function(field1,field2, cde) {
+                if (cde.highlight[field1+"."+field2]) {
+                    cde.highlight[field1+"."+field2].forEach(function(nameHighlight) {
+                        if (field1.indexOf(".")<0) var it = cde[field1];
+                        else var it = cde[field1.replace(/\..+$/,"")][field1.replace(/^.+\./,"")];
+                        it.forEach(function(nameCde){
+                            if (nameCde[field2] === nameHighlight.replace(/<[^>]+>/gm, '')) nameCde[field2] = nameHighlight;
                         });
                     });
                 }
             };
-            this.highlight("designation", cde);
-            this.highlight("definition", cde);
-            this.setMatchedByMessage(cde);
+            this.highlight("naming","designation", cde);
+            this.highlight("naming","definition", cde);
+            this.highlight("valueDomain.permissibleValues","valueMeaningName", cde);
+            this.highlight("valueDomain.permissibleValues","permissibleValue", cde);
+            this.highlight("valueDomain.permissibleValues","valueMeaningCode", cde);
+
+            this.setMatchedBy(cde);
             
         }
-        , setMatchedByMessage: function(cde) {
+        , setMatchedBy: function(cde) {
             if (!cde.highlight["naming.designation"]) {
                 var field = null;
                 var matched = Object.keys(cde.highlight)[0];
                 if (matched === "naming.definition") field = "Definition";
-                //if (matched.substr(0, 14) === "classification") field = "Classification";
-                if (matched.indexOf("class")>-1) field = "Classification";
+                if (matched.indexOf("classificationCopy.")>-1) field = "Classification";
                 if (matched.indexOf(".concepts.")>-1) field = "Concepts";
-                if (matched.indexOf("valueDomain")>-1) field = "Permissible Values";
-                
-                
-                        
-                //if (!field) field = "Classification";
-                //
-                cde.highlight.matchedBy = "Matched by: <strong>" + field + "</strong>";
+                if (matched.indexOf("valueDomain.")>-1) field = "Permissible Values";
+                cde.highlight.matchedBy = field;
             }
         }
     };
