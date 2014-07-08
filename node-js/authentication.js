@@ -3,6 +3,11 @@ var https = require('https')
   , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
 ;
 
+// Global variables
+var GLOBALS = {
+    REQ_TIMEOUT : 2000
+};
+
 var ticketValidationOptions = {
     host: config.uts.ticketValidation.host
     , hostname: config.uts.ticketValidation.host
@@ -24,11 +29,12 @@ var parser = new xml2js.Parser();
  * @returns 
  */
 exports.ticketValidate = function( tkt, cb ) {
-    ticketValidationOptions.path = config.uts.ticketValidation.path + '?service=' + config.uts.service + '&ticket=' + tkt;
+    ticketValidationOptions.path = config.uts.ticketValidation.path + 'sasdf?service=' + config.uts.service + '&ticket=' + tkt;
     
     var req = https.request( ticketValidationOptions, function( res ) {
         var output = '';
         res.setEncoding( 'utf8' );
+
         res.on( 'data', function( chunk ) {
             output += chunk;
         });
@@ -50,9 +56,20 @@ exports.ticketValidate = function( tkt, cb ) {
             });
         });
     });
-    
+
+    // Emit timeout event if no response in GLOBALS.REQ_TIMEOUT seconds
+    setTimeout(function() {
+        req.emit("timeout");
+    }, GLOBALS.REQ_TIMEOUT);
+
     req.on('error', function (e) {
         console.log('serviceValidate: ERROR with request: ' + e);
+    });
+    
+    req.on("timeout", function() { 
+        console.log('serviceValidate: Request timeout!');
+        req.abort();
+        return cb( 'serviceValidate: Request timeout!' );
     });
 
     req.end( 'ticketValidate' );

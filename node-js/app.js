@@ -21,7 +21,6 @@ var express = require('express')
   , favicon = require('serve-favicon')
   , elastic = require('./elastic')
   , auth = require( './authentication' )
-  , BearerStrategy = require('passport-http-bearer').Strategy
 ;
 
 // Global variables
@@ -112,49 +111,6 @@ passport.use(new LocalStrategy({passReqToCallback: true},
     });
   }
 ));
-
-// BearerStrategy is used for API authentication
-passport.use(new BearerStrategy({passReqToCallback: true}, function(req, token, done) {
-    // asynchronous validation, for effect...
-    process.nextTick(function () {
-        //return done('err');
-        //return done(null,'no err');
-        
-        auth.ticketValidate(token, function( err, username ) {
-            if( err ) {
-                return done(err);
-            } else {
-                return done(null,'no err');
-                this.updateUserOnTicketUse = function(req, user) {
-                    if( !user.knowIPs ) {
-                        user.knownIPs = [];
-                    }
-                    if( user.knownIPs.length > 100 ) {
-                        user.knownIPs.pop();
-                    }
-                    if( user.knownIPs.indexOf(req.ip) < 0 ) {
-                        user.knownIPs.unshift(req.ip);
-                    }
-                };
-                
-                findByUsername(username, function(error, user) {
-                    if( error ) { done(error); }
-                    // Username password combo is good, but user is not here, so register him.
-                    if (!user) {
-                        mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
-                            return done(null, newUser);
-                        });
-                    } else { // User already exists, so update user info.
-                        this.updateUserOnTicketUse( req, user );
-                        return mongo_data.save(user, function(err, user) {
-                            return done(null, user);
-                        });
-                    }
-                });
-            }
-        });
-    });
-}));
 
 var app = express();
 
@@ -258,6 +214,50 @@ var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", htt
 
 app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream}));
 
+// Middleware that runs before each request and authenticates user using tickets.
+app.use(function(req, res, next){
+    // If no url param named 'ticket'
+    if( !req.query.ticket || req.query.ticket.length<=0 ) {
+        console.log('Ticket autentication failed: invalid ticket.');
+        next();
+    } else { // Validate 'ticket'
+        auth.ticketValidate(req.query.ticket, function( err, username ) {
+            if( err ) {
+                next();
+            } else {
+                this.updateUserOnTicketUse = function(req, user) {
+                    if( !user.knowIPs ) {
+                        user.knownIPs = [];
+                    }
+                    if( user.knownIPs.length > 100 ) {
+                        user.knownIPs.pop();
+                    }
+                    if( user.knownIPs.indexOf(req.ip) < 0 ) {
+                        user.knownIPs.unshift(req.ip);
+                    }
+                };
+
+                findByUsername(username, function(error, user) {
+                    if( error ) { // note: findByUsername always returns error=null
+                        next(); 
+                    } else if( !user ) { // User has been authenticated but user is not in local db, so register him.
+                        mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
+                            req.user = newUser;
+                            next();
+                        });
+                    } else { // User already exists, so update user info.
+                        this.updateUserOnTicketUse( req, user );
+                        return mongo_data.save(user, function(err, user) {
+                            req.user = user;
+                            next();
+                        });
+                    }
+                });
+            }
+        });
+    }
+});
+
 app.use(app.router);
 app.use(express.static(path.join(__dirname, '../public')));
 app.use("/shared", express.static("shared", path.join(__dirname, '../shared')));
@@ -267,6 +267,8 @@ app.use(function(err, req, res, next){
   console.log(err.stack);
   res.send(500, 'Something broke!');
 });
+
+
 
 // development only
 if ('development' == app.get('env')) {
@@ -282,26 +284,6 @@ function ensureAuthenticated(req, res, next) {
 
 app.get('/gonowhere', function(req, res) {
    res.send("<html><body>Nothing here</body></html>");
-});
-
-// TESTING
-app.get('/bearer', function(req, res) {
-    if( req.isAuthenticated() ) {
-        res.send("<html><body>Already Authenticated</body></html>");
-    } else {
-        passport.authenticate('bearer', { session: false }, function(err, user, info) {
-            if (err) { 
-                res.send("<html><body>Invalid ticket</body></html>"); 
-            } else if (!user) {
-                res.send("<html><body>Ticket not provided</body></html>");
-            } else {
-                // Manually authenticate the user
-                req.user = user;
-                res.send("<html><body>Ticket validated</body></html>");
-            }
-        })(req, res);
-    }
-    
 });
 
 app.get('/', function(req, res) {
@@ -1046,10 +1028,9 @@ app.get('/deCount', function(req, res) {
 });
 
 var fetchRemoteData = function() {
-    // TESTING
-    /*vsac.getTGT(function(tgt) {
+    vsac.getTGT(function(tgt) {
         console.log("Got TGT: "+tgt);
-    });*/
+    });
     
     elastic.fetchPVCodeSystemList();   
 };
@@ -1154,15 +1135,15 @@ http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-// TESTING
-var getTGTapp = function() {
+// For testing
+/*var getTGTapp = function() {
     vsac.getTGT(function(tgt) {
         console.log('Got TGT: '+tgt);
     });
 };
 
 getTGTapp();
-//setInterval(getTGTapp, 60 * 1000);
+setInterval(getTGTapp, 60 * 1000);
 
 var ticket = 'abc';
 var getTKTapp = function() {
@@ -1186,5 +1167,6 @@ var ticketValidateApp = function() {
     });
 };
 
-//ticketValidateApp();
-//setInterval(ticketValidateApp, 5 * 1000);
+ticketValidateApp();
+setInterval(ticketValidateApp, 5 * 1000);
+*/
