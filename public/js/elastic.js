@@ -198,6 +198,9 @@ angular.module('resources')
             $http.post("/elasticSearch", query).then(function (response) {
                cb(response.data);
             });
-        }        
+        } 
+        , highlightResults: function(cde) {
+            
+        }
     };
 });
