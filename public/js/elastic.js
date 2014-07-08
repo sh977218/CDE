@@ -241,7 +241,8 @@ angular.module('resources')
                 if (matched === "naming.definition") field = "Definition";
                 if (matched.indexOf("classificationCopy.")>-1) field = "Classification";
                 if (matched.indexOf(".concepts.")>-1) field = "Concepts";
-                if (matched.indexOf("valueDomain.")>-1) field = "Permissible Values";
+                if (matched.substr(0,11) === "valueDomain") field = "Permissible Values";
+                if (matched.substr(0,10) === "properties") field = "Properties";
                 cde.highlight.matchedBy = field;
             }
         }
