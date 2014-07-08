@@ -187,20 +187,65 @@ angular.module('resources')
             queryStuff.from = from;
             
             queryStuff.highlight = {
-                "fields" : {
-                    "*" : {}
+                "order" : "score"
+                , "fields" : {
+                    "*" : {
+                        "pre_tags" : ["<strong>"]
+                        , "post_tags" : ["</strong>"]
+                        , "content": {"fragment_size" : 500}
+                    }
                 }
             };
             
             return callback({query: queryStuff});
         }              
-        , generalSearchQuery: function(query, cb) {              
+        , generalSearchQuery: function(query, cb) {          
+            var elastic = this; 
             $http.post("/elasticSearch", query).then(function (response) {
-               cb(response.data);
+                elastic.highlightResults(response.data.cdes);
+                cb(response.data);
             });
         } 
-        , highlightResults: function(cde) {
+        , highlightResults: function(cdes) {
+            var elastic = this;
+            cdes.forEach(function(cde) {
+                elastic.highlightCde(cde);
+            });
+        }        
+        , highlightCde: function(cde) {
+            if (!cde.highlight) {
+                //if () cde.highlight = {matchedBy: "Matched by: <strong>Classification</strong>"};
+                return;
+            };
+            this.highlight = function(field, cde) {
+                if (cde.highlight["naming."+field]) {
+                    cde.highlight["naming."+field].forEach(function(nameHighlight) {
+                        cde.naming.forEach(function(nameCde){
+                            if (nameCde[field] === nameHighlight.replace(/<[^>]+>/gm, '')) nameCde[field] = nameHighlight;
+                        });
+                    });
+                }
+            };
+            this.highlight("designation", cde);
+            this.highlight("definition", cde);
+            this.setMatchedByMessage(cde);
             
+        }
+        , setMatchedByMessage: function(cde) {
+            if (!cde.highlight["naming.designation"]) {
+                var field = null;
+                var matched = Object.keys(cde.highlight)[0];
+                if (matched === "naming.definition") field = "Definition";
+                if (matched.substr(0, 14) === "classification") field = "Classification";
+                if (matched.indexOf(".concepts.")>-1) field = "Concepts";
+                if (matched.indexOf("valueDomain")>-1) field = "Permissible Values";
+                
+                
+                        
+                //if (!field) field = "Classification";
+                //
+                cde.highlight.matchedBy = "Matched by: <strong>" + field + "</strong>";
+            }
         }
     };
 });
