@@ -44,8 +44,8 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     
     private void deleteNestedClassifTree() {
         driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"Remove\"]")).click();
-        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"OK\"]")).click();         
-        Assert.assertTrue(textPresent("Classification Deleted"));
+        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"OK\"]")).click(); 
+        hangon(0.3);
         Assert.assertTrue(textNotPresent("Epilepsy"));
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
@@ -103,7 +103,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
 
     }
     
-    @Test
+    //@Test
     public void addDeleteClassificationMgt() {
         mustBeLoggedInAs("ninds", "pass");
         gotoClassifMgt();  
@@ -121,11 +121,6 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         driver.findElement(By.cssSelector("[id='classification-_a,_a_a'] [title=\"Remove\"]")).click();
         driver.findElement(By.cssSelector("[id='classification-_a,_a_a'] [title=\"OK\"]")).click();        
         checkElementDoesNotExistByCSS("[id='removeClassification-_a,_a_a']");
-        createClassificationName(new String[]{"_a","_a_a"});
-        createClassificationName(new String[]{"_a","_a_a","_a_a_a"});
-        createClassificationName(new String[]{"_a","_a_a","_a_a_a","_a_a_a_a"});       
-        createClassificationName(new String[]{"_a","_a_a","_a_a_a","_a_a_a_b"});
-        createClassificationName(new String[]{"_b"});
     }
     
 

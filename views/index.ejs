@@ -8,6 +8,7 @@
         <script src="assets/js/angular-resource.min.js"></script>
         <script src="assets/js/angular-sanitize.min.js"></script>
         <script src="assets/js/textAngular-1.2.0.min.js"></script>  
+        <script src="assets/js/angular-local-storage.js"></script>  
         <%- include includeFrontEndJS.ejs %>
         <script src="assets/js/ui-bootstrap-tpls-0.10.0.min.js"></script>
         <link rel="stylesheet" href="assets/bootstrap-3.1.1/css/bootstrap.min.css">
@@ -44,6 +45,8 @@
 
     </head>
     <body>
+        <%- include accordionList.ejs %> 
+        <%- include selectBoardModal.ejs %> 
         <div ng-controller="MainCtrl">
             <!--
             *** navagation bar ***

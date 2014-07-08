@@ -1,5 +1,6 @@
 var config = {
-    umls: {
+	name: "Sample Localhost Configuration"
+    , umls: {
         licenseCode: "NLM-4110134256"
     }
     , internalIP: "130.14."

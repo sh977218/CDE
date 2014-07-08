@@ -52,30 +52,23 @@ $> bin/plugin -install elasticsearch/elasticsearch-mapper-attachments/1.6.0
 
 **Note:** Get the latest version of the plugins at: http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/modules-plugins.html
 
-## Configure
+## Create & Configure Application Environment
+The NLM CDE application can run on a single computer in different configurations. 
 
-Set these environment variables:
+First of all create and setup a configuration file for your local instance:
 
 ```sh
-VSAC_USERNAME=
-VSAC_PASSWORD=
-LOGDIR=
-ELASTIC_URI=
+$> cp ./configure/config.sample.js ./configure/my-env.js
 ```
 
-It's also possible to create a file called envconfig.js in your cde project root directory.
+Secondly, specify the desired configuration by setting up NODE_ENV environment variable:
 
-```javascript
-var envconfig = {
-    vsac: {
-        username: 'abc'
-        , password: '123'
-        , host: 'vsac-qa.nlm.nih.gov'
-    }
-    , logdir: /var/log
-    , elasticUri: http://localhost:9200/nlmcde/
-};
+```sh
+$> export NODE_ENV=my_env
 ```
+
+The application will automaticaly use the settings from the ./configure/my-env.js file whenever running node node-js/app.js, grunt or node node-js/mock/vsacMock.js.
+
 
 ### Configure Elastic Search
 
@@ -91,43 +84,8 @@ Initiate MongoDB replica set:
 rs.initiate()
 ```
 
-With **ElasticSearch** running, execute the following to create an index:
+With **ElasticSearch** running, run grunt and rebuild ElasticSearch indices.
 
-```sh
-$> ./scripts/elasticsearch/createIndex.sh
-```
-
-
-Next, create a **river** for data to flow from **MongoDB** to **ElasticSearch**. 
-You may need to edit the content of the file to point to the proper DB, in which case, you can make a local copy of this file.
-
-```sh
-$> ./scripts/elasticsearch/createRiver.sh
-```
-
-Finally, create an **alias** for the index. Alternatively, you can name the index nlmcde and not use aliases. The script removes a previous alias and adds a new one, 
-this will fail if the alias does not already exist. Edit a local copy as needed.  
-
-```sh
-$> ./scripts/elasticsearch/aliasUpdate.sh 
-```
-
-Create an **alias** with the following:
-
-```sh
-POST to _aliases
-curl -XPOST "localhost:9200/_aliases" -d'
-{
-    "actions": [
-        { "add": {
-            "alias": "nlmcde",
-            "index": "nlmcde_mongo_v1"
-        }}
-    ]
-}'
-```
-
-This will create an alias so that, when needed, a new index can be created in parallel, and the alias can be modified after indexing is complete. 
 
 ## Run Node from the cde project directory
 
@@ -164,6 +122,23 @@ To run the test suite
 ```sh
 $> ./start-test-instance.sh
 ```
+
+## Remote Testing
+
+SSH to the desired server and do the following.
+
+```sh
+$> export NODE_ENV=test
+$> node node-js/mock/vsackMock.js
+```
+
+Run grunt and re-ingest the test collection.
+
+```sh
+$> node node-js/app.js
+```
+
+On your local computer, run grunt and select remote testing.
 
 ### Seed
 

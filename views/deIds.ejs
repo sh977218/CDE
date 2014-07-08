@@ -1,5 +1,19 @@
 <div ng-controller="IdsCtrl">
 
+<div class="row">
+    <div class="col-md-11">
+        <dl class="dl-horizontal">
+            <dt>Origin: </dt> 
+            <dd id="dd_origin_nlm">NLM</dd>
+            <dt>Id: </dt>
+            <dd id="dd_id_nlm">{{cde.uuid}}</dd>
+            <dt>Version: </dt>
+            <dd id="dd_version_nlm">{{cde.version}}</dd>
+        </dl>
+    </div>
+</div>
+<hr/>
+
 <div ng-repeat="id in cde.ids">
     <div class="row">
         <div class="col-md-1 text-right" ng-show="isAllowed(cde) && cde.ids.length > 0">
@@ -14,11 +28,11 @@
         <div class="col-md-11">
             <dl class="dl-horizontal">
                 <dt>Origin: </dt> 
-                <dd id="dd_name_{{$index}}">{{id.origin}}</dd>
+                <dd id="dd_id_origin_{{$index}}">{{id.origin}}</dd>
                 <dt>Id: </dt>
-                <dd id="dd_def_{{$index}}">{{id.id}}</dd>
+                <dd id="dd_id_id_{{$index}}">{{id.id}}</dd>
                 <dt>Version: </dt>
-                <dd id="dd_def_{{$index}}">{{id.version}}</dd>
+                <dd id="dd_id_version_{{$index}}">{{id.version}}</dd>
             </dl>
         </div>
     </div>

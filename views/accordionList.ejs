@@ -1,41 +1,33 @@
-<div accordion close-others="false">
-    <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
-        <div accordion-heading>
-            <span id="acc_link_{{$index}}" class="hand-cursor">{{cde.naming[0].designation}}</span>   
-            <i class="fa fa-eye hand-cursor" ng-click="cdeIconAction(cde,'view',$event)" title="View"></i>
-            <% if (ejsPage!="board") { %>
-                <i ng-show="user._id" class="fa fa-thumb-tack hand-cursor" ng-click="cdeIconAction(cde,'openPinModal',$event)" title="Pin"> </i>
-            <% } else { %>
-                <i ng-show="user._id" class="fa fa-thumb-tack fa-rotate-90 hand-cursor" ng-click="unpin(board.pins[$index])" title="unPin" id="unpin_{{$index}}"> </i>
-            <% } %>            
-            <i ng-show="showCompareButton(cde)" class="fa fa-plus hand-cursor" ng-click="cdeIconAction(cde,'addToQuickBoard',$event)" title="Add to Quick Board"></i>
-            <!--<span class="pull-right">{{cde.score}}</span>-->
-
-            <!-- TODO: remove all EJS references -->
-            <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-hide="<%= ejsPage!='quickboard' %>" ng-click="removeDE($index)" title="remove" id="remove_{{$index}}"></i>
+<script type="text/ng-template" id="accordionList.html">
+    <div accordion close-others="false">
+        <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
+            <div accordion-heading>
+                <span id="acc_link_{{$index}}" class="hand-cursor">{{cde.naming[0].designation}}</span>   
+                <i ng-show="ejsPage!='createcde'" class="fa fa-eye hand-cursor" ng-click="cdeIconAction(cde,'view',$event)" title="View"></i>
+                <i ng-show="ejsPage=='createcde'" class="fa fa-eye hand-cursor" ng-click="cdeIconAction(cde,'viewNewTab',$event)" title="View"></i>
+                <i ng-show="user._id && ejsPage!='board'" class="fa fa-thumb-tack hand-cursor" ng-click="cdeIconAction(cde,'openPinModal',$event)" title="Pin"> </i>
+                <i ng-show="user._id && ejsPage=='board'" class="fa fa-thumb-tack fa-rotate-90 hand-cursor" ng-click="unpin(board.pins[$index])" title="unPin" id="unpin_{{$index}}"> </i>          
+                <i ng-show="showCompareButton(cde)" class="fa fa-plus hand-cursor" ng-click="cdeIconAction(cde,'addToQuickBoard',$event)" title="Add to Quick Board" id="addToCompare_{{$index}}"></i>
+                <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-hide="ejsPage!='quickboard'" ng-click="removeDE($index)" title="remove" id="remove_{{$index}}"></i>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <%- include cdeList/generalDetails.ejs %>
+                </div>
+                <div class="col-md-4">
+                    <%- include cdeList/valueDomain.ejs %>
+                </div>
+                <div class="col-md-2">
+                    <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" ng-src="/data/{{attachment.fileid}}"  class='cdeAttachmentThumbnail' /> 
+                </div>
+            </div>
+           <div class="row" >
+                <a ng-show="ejsPage!='createcde'" class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
+                <a ng-show="ejsPage=='createcde'" target="_blank" class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
+                <a ng-show="user._id && ejsPage!='board'" class="btn btn-small btn-default" ng-click="openPinModal(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack" title="Pin"></i> Attach to Board</a>
+                <a ng-show="user._id && ejsPage=='board'" class="btn btn-small btn-default" ng-click="unpin(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack fa-rotate-90" title="unPin"></i> Remove from Board</a>
+                <a ng-show="showCompareButton(cde)" class="btn btn-small btn-default" ng-click="addToQuickBoard(cde)" title="Add to Quick Board" id="compare_{{$index}}"><i class="fa fa-plus"></i> Add to Quick Board</a>
+           </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <%- include cdeList/generalDetails.ejs %>
-            </div>
-            <div class="col-md-4">
-                <%- include cdeList/valueDomain.ejs %>
-            </div>
-            <div class="col-md-2">
-                <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" ng-src="/data/{{attachment.fileid}}"  class='cdeAttachmentThumbnail' /> 
-            </div>
-        </div>
-       <div class="row" >
-            <a class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
-            <% if (ejsPage!="board") { %>
-                <a ng-show="user._id" class="btn btn-small btn-default" ng-click="openPinModal(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack" title="Pin"></i> Attach to Board</a>
-            <% } else { %>
-                <a ng-show="user._id" class="btn btn-small btn-default" ng-click="unpin(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack fa-rotate-90" title="unPin"></i> Remove from Board</a>
-            <% } %>
-            <a ng-show="showCompareButton(cde)" class="btn btn-small btn-default" ng-click="addToQuickBoard(cde)" title="Add to Quick Board" id="compare_{{$index}}"><i class="fa fa-plus"></i> Add to Quick Board</a>
-       </div>
     </div>
-</div>
-<script type="text/ng-template" id="selectBoardModalContent.html">
-    <%- include selectBoardModal.ejs %>
 </script>

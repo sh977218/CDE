@@ -1,3 +1,5 @@
+require('../deploy/configTest.js');
+
 var express = require('express')
   , http = require('http')
   , path = require('path')
@@ -15,7 +17,7 @@ var express = require('express')
   , xml2js = require('xml2js')
   , vsac = require('./vsac-io')
   , winston = require('winston')
-  , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+  , config = require('config')
   , MongoStore = require('./assets/connect-mongo.js')(express)
   , dbLogger = require('./dbLogger.js')
   , favicon = require('serve-favicon')
@@ -204,7 +206,7 @@ app.use(express.cookieParser('your secret here'));
 var sessionStore = new MongoStore({
     mongoose_connection: mongo_data.mongoose_connection  
 });
-app.use(express.session({ secret: "omgnodeworks", store:sessionStore }));
+app.use(express.session({ secret: "omgnodeworks", proxy: true, store:sessionStore }));
 
 app.use(flash());
 app.use(passport.initialize());

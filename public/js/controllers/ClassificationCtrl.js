@@ -1,4 +1,4 @@
- function ClassificationCtrl($scope, $modal, $route, $routeParams, CdeClassification) {
+ function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification) {
     $scope.initCache(); 
     
     $scope.openAddClassificationModal = function () {
@@ -6,16 +6,23 @@
           templateUrl: 'addClassificationModalContent.html',
           controller: AddClassificationModalCtrl,
           resolve: {
-              myOrgs: function() {
-                  return $scope.myOrgs;
-              }
-              , cde: function() {
-                  return $scope.cde;
-              }
-              , addAlert: function() {
-                  return $scope.addAlert;
-              }
-          }          
+                myOrgs: function() {
+                    return $scope.myOrgs;
+                }
+                , cde: function() {
+                    return $scope.cde;
+                }
+                , addClassification: function() {
+                    return {
+                        addClassification: function(newClassification) {
+                            CdeClassification.save(newClassification, function(res) {
+                                newClassification.categories.pop();    
+                                $scope.addAlert("success", res.msg);                                
+                            });                   
+                        }
+                    };
+                }
+            }          
         });
 
         modalInstance.result.then(function () {
