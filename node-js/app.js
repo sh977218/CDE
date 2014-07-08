@@ -217,7 +217,7 @@ var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", htt
 app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream}));
 
 // Middleware that runs before each request and authenticates user using tickets.
-app.use(function(req, res, next){
+/*app.use(function(req, res, next){
     // If no url param named 'ticket'
     if( !req.query.ticket || req.query.ticket.length<=0 ) {
         console.log('Ticket autentication failed: invalid ticket.');
@@ -258,7 +258,7 @@ app.use(function(req, res, next){
             }
         });
     }
-});
+});*/
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, '../public')));
@@ -269,8 +269,6 @@ app.use(function(err, req, res, next){
   console.log(err.stack);
   res.send(500, 'Something broke!');
 });
-
-
 
 // development only
 if ('development' == app.get('env')) {
@@ -1039,8 +1037,7 @@ var fetchRemoteData = function() {
 
 // run every 1 hours
 fetchRemoteData();
-//setInterval(fetchRemoteData, 1000 * 60 * 60 * 1);
-setInterval(fetchRemoteData, 20 * 1000);
+setInterval(fetchRemoteData, 1000 * 60 * 60 * 1);
 
 var parser = new xml2js.Parser();
 app.get('/vsacBridge/:vsacId', function(req, res) {

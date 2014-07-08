@@ -1,1 +1,1 @@
-db.dbLoggers.remove();
+db.dbLoggers.remove({});
