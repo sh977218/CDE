@@ -1,4 +1,4 @@
-function DEListCtrl($scope, $http, $modal, $cacheFactory, Elastic) {
+function DEListCtrl($scope, $http, $modal, Elastic) {
     $scope.setActiveMenu('LISTCDE');
 
     $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
