@@ -7,9 +7,14 @@
                 <i ng-show="ejsPage=='createcde'" class="fa fa-eye hand-cursor" ng-click="cdeIconAction(cde,'viewNewTab',$event)" title="View"></i>
                 <i ng-show="user._id && ejsPage!='board'" class="fa fa-thumb-tack hand-cursor" ng-click="cdeIconAction(cde,'openPinModal',$event)" title="Pin"> </i>
                 <i ng-show="user._id && ejsPage=='board'" class="fa fa-thumb-tack fa-rotate-90 hand-cursor" ng-click="unpin(board.pins[$index])" title="unPin" id="unpin_{{$index}}"> </i>          
+<!--<<<<<< HEAD-->
                 <i ng-show="showCompareButton(cde)" class="fa fa-plus hand-cursor" ng-click="cdeIconAction(cde,'addToQuickBoard',$event)" title="Add to Quick Board"></i>
                 <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-hide="ejsPage!='quickboard'" ng-click="removeDE($index)" title="remove" id="remove_{{$index}}"></i>                
                 <span ng-bind-html="cde.highlight.matchedBy"></span>
+<!--=======
+                <i ng-show="showCompareButton(cde)" class="fa fa-plus hand-cursor" ng-click="cdeIconAction(cde,'addToQuickBoard',$event)" title="Add to Quick Board" id="addToCompare_{{$index}}"></i>
+                <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-hide="ejsPage!='quickboard'" ng-click="removeDE($index)" title="remove" id="remove_{{$index}}"></i>
+>>>>>>> d4af139c29ccbd13c89c6c8ade7af2d6e64acc89-->
             </div>
             <div class="row">
                 <div class="col-md-6">

@@ -8,11 +8,11 @@ exports.createIndexJson = {
         "dataelement" : {
             "properties" : {
                 "stewardOrg.name" : { "type" : "string", "index" : "not_analyzed" }
-                /*, "classification.elements.name": { "type" : "string", "index" : "not_analyzed" }
+                , "classification.elements.name": { "type" : "string", "index" : "not_analyzed" }
                 , "classification.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
                 , "classification.elements.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
                 , "classification.elements.elements.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
-                , "classification.elements.elements.elements.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }*/
+                , "classification.elements.elements.elements.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
                 , "classification.stewardOrg.name": { "type" : "string", "index" : "not_analyzed" }
                 , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
                 , "origin" : { "type" : "string", "index" : "not_analyzed" }
@@ -23,7 +23,8 @@ exports.createIndexJson = {
 };
 
 var riverFunction = 
-    "var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0}; \
+    "ctx.document.class=ctx.document.classification;\
+    var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0}; \
     ctx.document.registrationState.registrationStatusSortOrder = regStatusSortMap[ctx.document.registrationState.registrationStatus]; \
     if (ctx.document.classification) { \
         var size = ctx.document.classification.length; \
