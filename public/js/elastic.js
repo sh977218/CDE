@@ -185,6 +185,13 @@ angular.module('resources')
 
             var from = (settings.currentPage - 1) * settings.resultPerPage;
             queryStuff.from = from;
+            
+            queryStuff.highlight = {
+                "fields" : {
+                    "*" : {}
+                }
+            };
+            
             return callback({query: queryStuff});
         }              
         , generalSearchQuery: function(query, cb) {              
