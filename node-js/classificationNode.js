@@ -120,28 +120,34 @@ exports.moveClassifications = function(request, cb) {
             if (element.name === request.categories[request.categories.length-1]) {
                 element.name = request.newname;
             }
-            stewardOrg.markModified("classifications");
-            stewardOrg.save(function (err) {
-                /*var query = {"classification.stewardOrg.name": request.orgName};
-                for (var i = 0; i<request.categories.length; i++) {
-                    var key = "classification";
-                    for (var j = 0; j<=i; j++) key += ".elements";
-                    key += ".name";
-                    query[key] = request.categories[i];
-                }            
-                mongo_data.DataElement.find(query).exec(function(err, result) {
-                    for (var i = 0; i < result.length; i++) {
-                        var cde = result[i];
-                        var steward = classificationShared.findSteward(cde, request.orgName);   
-                        classificationShared.deleteCategory(steward.object, request.categories);
-                        cde.markModified("classification");
-                        cde.save(function(err) {
-                        });
-                    };
-                });        */    
-                if(callback) callback(err, stewardOrg);
-            });            
         });
+        stewardOrg.markModified("classifications");
+        stewardOrg.save(function (err) {
+            var query = {"classification.stewardOrg.name": request.orgName};
+            for (var i = 0; i<request.categories.length; i++) {
+                var key = "classification";
+                for (var j = 0; j<=i; j++) key += ".elements";
+                key += ".name";
+                query[key] = request.categories[i];
+            }            
+            mongo_data.DataElement.find(query).exec(function(err, result) {
+                for (var i = 0; i < result.length; i++) {
+                    var cde = result[i];
+                    var steward = classificationShared.findSteward(cde, request.orgName);   
+                    var fakeTree = {elements: steward.object.elements};
+                    var lastLevel = classificationShared.fetchLevel(fakeTree, request.categories);
+                    lastLevel.elements.forEach(function(element) {
+                        if (element.name === request.categories[request.categories.length-1]) {
+                            element.name = request.newname;
+                        }
+                    });
+                    cde.markModified("classification");
+                    cde.save(function(err) {
+                    });
+                };
+            });            
+            if(callback) callback(err, stewardOrg);
+        });            
         console.log(request.newname);
         if (cb) cb();
      });
