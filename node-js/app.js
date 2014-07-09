@@ -537,6 +537,12 @@ app.delete('/classification/cde', function(req, res) {
     });
 });
 
+app.post('/classification/rename', function(req, res) {
+    classificationNode.rename(req.body, function(err, org) {
+        if (!err) res.send(org);
+    });
+});
+
 app.post('/classification/cde', function(req, res) {
     if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
         res.send(403, "Not Authorized");

@@ -20,7 +20,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
     };
     
     $scope.removeClassification = function(orgName, elts) {
-        OrgClassification.remove({
+        OrgClassification.resource.remove({
             orgName: orgName
             , categories: elts
         }, function (res) {
@@ -45,7 +45,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
 
         modalInstance.result.then(function (newClassification) {
             newClassification.orgName = $scope.orgToManage;
-            OrgClassification.save(newClassification, function(response) {
+            OrgClassification.resource.save(newClassification, function(response) {
                 if (response.error) {
                     $scope.addAlert("danger", response.error.message);        
                 }
@@ -68,9 +68,11 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
             }
         });
 
-        modalInstance.result.then(function (newname) {
-            console.log("oldName"+pathArray[pathArray.length-1]);
-            if (newname) console.log("newName"+newname);
+        modalInstance.result.then(function (newname) {           
+            OrgClassification.rename(orgName, pathArray, newname, function(response) {
+                $scope.org = response.data;
+            });
+            
             /*newClassification.orgName = $scope.orgToManage;
             OrgClassification.save(newClassification, function(response) {
                 if (response.error) {
