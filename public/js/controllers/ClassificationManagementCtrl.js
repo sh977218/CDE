@@ -56,4 +56,38 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
             });
         });
     };
+    
+    $scope.showRenameDialog = function(orgName, pathArray) {
+        var modalInstance = $modal.open({
+            templateUrl: 'renameClassificationModal.html',
+            controller: RenameClassificationModalCtrl,
+            resolve: {
+                classifName: function() {
+                    return pathArray[pathArray.length-1];
+                }           
+            }
+        });
+
+        modalInstance.result.then(function (newname) {
+            console.log("oldName"+pathArray[pathArray.length-1]);
+            if (newname) console.log("newName"+newname);
+            /*newClassification.orgName = $scope.orgToManage;
+            OrgClassification.save(newClassification, function(response) {
+                if (response.error) {
+                    $scope.addAlert("danger", response.error.message);        
+                }
+                else {
+                    $route.reload();
+                    $scope.addAlert("success", "Classification Added");                      
+                }              
+            });*/
+        });        
+    };
+}
+
+function RenameClassificationModalCtrl($scope, $modalInstance, classifName) {
+    $scope.classifName = classifName;
+    $scope.close = function(newname) {
+        $modalInstance.close(newname);
+    };  
 }

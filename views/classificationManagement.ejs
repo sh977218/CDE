@@ -14,7 +14,7 @@
         <div id="repeatCs" class="container-fluid">
             <div id="repeatCm" class="container-fluid">
                 <div ng-repeat="elt in classificationToFilter()" class="pull-left" ng-init='pathArray = [elt.name]; myOrg = true;'>
-                    <div ng-include="'classif-sub-elements.html'" ng-init="orgName = orgToManage;"></div>
+                    <div ng-include="'classif-sub-elements.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
                 </div>
             </div>
         </div>
@@ -24,3 +24,16 @@
         <%- include addClassification.ejs %>
     </script>
 </div>
+
+<script type="text/ng-template" id="renameClassificationModal.html">
+    <div class="modal-header">
+        <h4>Rename Classification</h4>
+    </div>
+    <form name="form" role="form">
+        <input class="form-control" ng-model="classifName" placeholder="xxx">
+    </form>
+    <div class="modal-footer" id="addClassificationModalFooter">
+        <button class="btn done" ng-click="close()">Cancel</button>    
+        <button class="btn done" ng-click="close(classifName)" ng-disabled="!classifName" >Save</button>
+    </div>    
+</script>   
