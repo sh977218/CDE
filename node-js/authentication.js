@@ -13,7 +13,7 @@ var ticketValidationOptions = {
     , hostname: config.uts.ticketValidation.host
     , port: config.uts.ticketValidation.port
     , path: config.uts.ticketValidation.path
-    , method: 'GET'
+    , method: 'POST'
     , agent: false
     , requestCert: true
     , rejectUnauthorized: false
@@ -29,48 +29,50 @@ var parser = new xml2js.Parser();
  * @returns 
  */
 exports.ticketValidate = function( tkt, cb ) {
-    ticketValidationOptions.path = config.uts.ticketValidation.path + 'sasdf?service=' + config.uts.service + '&ticket=' + tkt;
-    
-    var req = https.request( ticketValidationOptions, function( res ) {
+    ticketValidationOptions.path = config.uts.ticketValidation.path + '?service=' + config.uts.service + '&ticket=' + tkt;
+    var req = https.request(ticketValidationOptions, function(res) {
         var output = '';
-        res.setEncoding( 'utf8' );
-
-        res.on( 'data', function( chunk ) {
+        res.setEncoding('utf8');
+        
+        res.on('data', function (chunk) {
             output += chunk;
         });
-        res.on( 'end', function() {
+        
+        res.on('end', function() {
             // Parse xml result from ticket validation
             parser.parseString( output, function( err, jsonResult ) {
                 if( err ) {
-                    return cb( 'ticketValidate Error: ' + err );
-                } else if( jsonResult['cas:serviceResponse']['cas:authenticationFailure'] ) {
-                    // This gets the error message
+                    return cb( 'ticketValidate: ' + err );
+                } else if( jsonResult['cas:serviceResponse'] && 
+                           jsonResult['cas:serviceResponse']['cas:authenticationFailure'] ) {
+                    // This statement gets the error message
                     //jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0]['_'];
                     return cb( jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0]['$']['code'] );
-                } else if( jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] ) {
+                } else if( jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] &&
+                           jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] ) {
                     // Returns the username
                     return cb( null, jsonResult['cas:serviceResponse']['cas:authenticationSuccess'][0]['cas:user'][0] );
                 }
                 
-                return cb( 'ticketValidate Error: invalid XML response!' );
+                return cb( 'ticketValidate: invalid XML response!' );
             });
+            
         });
     });
-
-    // Emit timeout event if no response in GLOBALS.REQ_TIMEOUT seconds
+    
+    req.on('error', function (e) {
+        console.log('getTgt: ERROR with request: ' + e);
+    });
+    
+    req.on("timeout", function() { 
+        req.abort();
+        return cb( 'ticketValidate: Request timeout. Abort if not done!' );
+    });
+    
+    // Emit timeout event if no response within GLOBALS.REQ_TIMEOUT seconds
     setTimeout(function() {
         req.emit("timeout");
     }, GLOBALS.REQ_TIMEOUT);
 
-    req.on('error', function (e) {
-        console.log('serviceValidate: ERROR with request: ' + e);
-    });
-    
-    req.on("timeout", function() { 
-        console.log('serviceValidate: Request timeout!');
-        req.abort();
-        return cb( 'serviceValidate: Request timeout!' );
-    });
-
-    req.end( 'ticketValidate' );
+    req.end();
 };

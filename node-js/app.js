@@ -217,13 +217,13 @@ var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", htt
 app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream}));
 
 // Middleware that runs before each request and authenticates user using tickets.
-/*app.use(function(req, res, next){
+app.use(function(req, res, next){
     // If no url param named 'ticket'
     if( !req.query.ticket || req.query.ticket.length<=0 ) {
         console.log('Ticket autentication failed: invalid ticket.');
         next();
     } else { // Validate 'ticket'
-        auth.ticketValidate(req.query.ticket, function( err, username ) {
+        auth.ticketValidate( req.query.ticket, function( err, username ) {
             if( err ) {
                 next();
             } else {
@@ -258,7 +258,7 @@ app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream
             }
         });
     }
-});*/
+});
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, '../public')));
@@ -1133,39 +1133,3 @@ app.post("/systemAlert", function(req, res) {
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
-
-// For testing
-/*var getTGTapp = function() {
-    vsac.getTGT(function(tgt) {
-        console.log('Got TGT: '+tgt);
-    });
-};
-
-getTGTapp();
-setInterval(getTGTapp, 60 * 1000);
-
-var ticket = 'abc';
-var getTKTapp = function() {
-    vsac.getTicket(function(tkt) {
-        ticket = tkt;
-        console.log('Got Ticket: '+tkt);
-    });
-};
-
-getTKTapp();
-setInterval(getTKTapp, 15 * 1000);
-
-
-var ticketValidateApp = function() {
-    auth.ticketValidate( ticket, function( err, username ) {
-        if( err ) {
-            console.log( "Validation error: " + err );
-        } else {
-            console.log( "Username: " + username );
-        }
-    });
-};
-
-ticketValidateApp();
-setInterval(ticketValidateApp, 5 * 1000);
-*/
