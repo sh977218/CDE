@@ -4,27 +4,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.openqa.selenium.Keys;
 import java.util.List;
 import org.openqa.selenium.WebElement;
 
 public class ClassificationMgtTest extends NlmCdeBaseTest {
-/*
-    @Test
-    public void viewOrgClassifications() {
-        mustBeLoggedInAs("classificationMgtUser", "pass");
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Classifications")).click();
-        hangon(1);
-        new Select(findElement(By.cssSelector("select"))).selectByValue("caBIG");
-        Assert.assertTrue(textPresent("gov.nih.nci.cananolab.domain.characterization.invitro"));
-        Assert.assertTrue(textNotPresent("Common Terminology Criteria for Adverse Events v3.0"));
-        hangon(1);
-        new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
-        Assert.assertTrue(textPresent("Common Terminology Criteria for Adverse Events v3.0"));
-        Assert.assertTrue(textNotPresent("gov.nih.nci.cananolab.domain.characterization.invitro"));        
-    }
-
-
     private void searchNestedClassifiedCdes() {
         goToSearch();
         findElement(By.name("ftsearch")).sendKeys("classification.elements.elements.name:Epilepsy");
@@ -50,6 +34,22 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations,Imaging Diagnostics']");
+    }    
+    
+
+    @Test
+    public void viewOrgClassifications() {
+        mustBeLoggedInAs("classificationMgtUser", "pass");
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Classifications")).click();
+        hangon(1);
+        new Select(findElement(By.cssSelector("select"))).selectByValue("caBIG");
+        Assert.assertTrue(textPresent("gov.nih.nci.cananolab.domain.characterization.invitro"));
+        Assert.assertTrue(textNotPresent("Common Terminology Criteria for Adverse Events v3.0"));
+        hangon(1);
+        new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
+        Assert.assertTrue(textPresent("Common Terminology Criteria for Adverse Events v3.0"));
+        Assert.assertTrue(textNotPresent("gov.nih.nci.cananolab.domain.characterization.invitro"));        
     }
     
     @Test
@@ -122,7 +122,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         driver.findElement(By.cssSelector("[id='classification-_a,_a_a'] [title=\"OK\"]")).click();        
         checkElementDoesNotExistByCSS("[id='removeClassification-_a,_a_a']");
     }
-    */
+    
     @Test
     public void renameClassification() {
         mustBeLoggedInAs("ninds", "pass");
@@ -132,11 +132,12 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
         findElement(By.id("renameClassifInput")).sendKeys("ia");
         findElement(By.xpath("//button[text()='Save']")).click();
-        hangon(2);
-        
-         //Spinal Muscular Atrophy 
-        
-        
-        
+        modalGone();
+        findElement(By.id("classification-Disease,Spinal Muscular Atrophia,Assessments and Examinations"));
+        findElement(By.id("classification-Disease,Spinal Muscular Atrophia,Assessments and Examinations,Imaging Diagnostics"));
+        findElement(By.id("classification-Disease,Spinal Muscular Atrophia,Participant/Subject History and Family History,General Health History"));        
+        findElement(By.xpath("//li[@id='classification-Disease,Spinal Muscular Atrophia,Assessments and Examinations']/a/span")).click();      
+        hangon(1);
+        Assert.assertTrue(textPresent("Spinal Muscular Atrophia (14)"));
     }
 }
