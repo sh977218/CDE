@@ -48,7 +48,7 @@ exports.cdeClassification = function(body, action, cb) {
         
         if (action === "add") classificationShared.addCategory(steward.object, body.categories, cdeClassif.saveCdeClassif);
         if (action === "remove") {
-            classificationShared.modifyCategory(steward.object, body.categories, "delete", cdeClassif.saveCdeClassif);
+            classificationShared.modifyCategory(steward.object, body.categories, {type:"delete"}, cdeClassif.saveCdeClassif);
             
             // Delete the organization from classificaiton if organization doesn't have any descendant elements.
             if( steward.object.elements.length === 0 ) {
@@ -86,7 +86,7 @@ exports.modifyOrgClassification = function(request, action, callback) {
     }    
     mongo_data.orgByName(request.orgName, function(stewardOrg) {
         var fakeTree = {elements: stewardOrg.classifications};
-        classificationShared.modifyCategory(fakeTree, request.categories, action);
+        classificationShared.modifyCategory(fakeTree, request.categories, {type: action, newname: request.newname});
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
             var query = {"classification.stewardOrg.name": request.orgName};
@@ -100,7 +100,7 @@ exports.modifyOrgClassification = function(request, action, callback) {
                 for (var i = 0; i < result.length; i++) {
                     var cde = result[i];
                     var steward = classificationShared.findSteward(cde, request.orgName);   
-                    classificationShared.modifyCategory(steward.object, request.categories, action);
+                    classificationShared.modifyCategory(steward.object, request.categories, {type: action, newname: request.newname});
                     cde.markModified("classification");
                     cde.save(function(err) {
                     });

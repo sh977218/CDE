@@ -507,7 +507,7 @@ app.delete('/classification/org', function(req, res) {
         res.send(403);
         return;
     }  
-    classificationNode.modifyOrgClassification(req.query, "delete", function() {
+    classificationNode.modifyOrgClassification(req.query, "remove", function() {
         res.send();
     });
 });

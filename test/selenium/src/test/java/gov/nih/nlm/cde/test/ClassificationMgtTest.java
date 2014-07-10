@@ -8,7 +8,7 @@ import java.util.List;
 import org.openqa.selenium.WebElement;
 
 public class ClassificationMgtTest extends NlmCdeBaseTest {
-
+/*
     @Test
     public void viewOrgClassifications() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
@@ -122,12 +122,21 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         driver.findElement(By.cssSelector("[id='classification-_a,_a_a'] [title=\"OK\"]")).click();        
         checkElementDoesNotExistByCSS("[id='removeClassification-_a,_a_a']");
     }
-    
+    */
     @Test
     public void renameClassification() {
         mustBeLoggedInAs("ninds", "pass");
         gotoClassifMgt(); 
+        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Muscular Atrophy'][//span[text()=\"Spinal Muscular Atrophy\"]]/span/a")).click();
+        modalHere();
+        findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.id("renameClassifInput")).sendKeys("ia");
+        findElement(By.xpath("//button[text()='Save']")).click();
+        hangon(2);
         
          //Spinal Muscular Atrophy 
+        
+        
+        
     }
 }
