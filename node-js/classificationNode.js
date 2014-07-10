@@ -2,38 +2,6 @@ var mongo_data = require('../node-js/mongo-data')
 , usersvc = require('./usersvc')
 , classificationShared = require('../shared/classificationShared');
 
-exports.removeOrgClassification = function(request, callback) {
-    if( !(request.categories instanceof Array) ) {
-        request.categories = [request.categories];    
-    }
-    
-    mongo_data.orgByName(request.orgName, function(stewardOrg) {
-        var fakeTree = {elements: stewardOrg.classifications};
-        classificationShared.deleteCategory(fakeTree, request.categories);
-        stewardOrg.markModified("classifications");
-        stewardOrg.save(function (err) {
-            var query = {"classification.stewardOrg.name": request.orgName};
-            for (var i = 0; i<request.categories.length; i++) {
-                var key = "classification";
-                for (var j = 0; j<=i; j++) key += ".elements";
-                key += ".name";
-                query[key] = request.categories[i];
-            }            
-            mongo_data.DataElement.find(query).exec(function(err, result) {
-                for (var i = 0; i < result.length; i++) {
-                    var cde = result[i];
-                    var steward = classificationShared.findSteward(cde, request.orgName);   
-                    classificationShared.deleteCategory(steward.object, request.categories);
-                    cde.markModified("classification");
-                    cde.save(function(err) {
-                    });
-                };
-            });            
-            if(callback) callback(err, stewardOrg);
-        });
-    });    
-};
-
 exports.addOrgClassification = function(body, cb) {
     if( !(body.categories instanceof Array) ) {
         body.categories = [body.categories];
@@ -80,7 +48,7 @@ exports.cdeClassification = function(body, action, cb) {
         
         if (action === "add") classificationShared.addCategory(steward.object, body.categories, cdeClassif.saveCdeClassif);
         if (action === "remove") {
-            classificationShared.deleteCategory(steward.object, body.categories, cdeClassif.saveCdeClassif);
+            classificationShared.modifyCategory(steward.object, body.categories, "delete", cdeClassif.saveCdeClassif);
             
             // Delete the organization from classificaiton if organization doesn't have any descendant elements.
             if( steward.object.elements.length === 0 ) {
@@ -111,6 +79,38 @@ exports.moveClassifications = function(request, cb) {
         source.save(cb);
     });
  };
+ 
+ /*exports.removeOrgClassification = function(request, callback) {
+    if( !(request.categories instanceof Array) ) {
+        request.categories = [request.categories];    
+    }
+    
+    mongo_data.orgByName(request.orgName, function(stewardOrg) {
+        var fakeTree = {elements: stewardOrg.classifications};
+        classificationShared.deleteCategory(fakeTree, request.categories);
+        stewardOrg.markModified("classifications");
+        stewardOrg.save(function (err) {
+            var query = {"classification.stewardOrg.name": request.orgName};
+            for (var i = 0; i<request.categories.length; i++) {
+                var key = "classification";
+                for (var j = 0; j<=i; j++) key += ".elements";
+                key += ".name";
+                query[key] = request.categories[i];
+            }            
+            mongo_data.DataElement.find(query).exec(function(err, result) {
+                for (var i = 0; i < result.length; i++) {
+                    var cde = result[i];
+                    var steward = classificationShared.findSteward(cde, request.orgName);   
+                    classificationShared.deleteCategory(steward.object, request.categories);
+                    cde.markModified("classification");
+                    cde.save(function(err) {
+                    });
+                };
+            });            
+            if(callback) callback(err, stewardOrg);
+        });
+    });    
+};
  
  exports.rename = function(request, callback) {
      mongo_data.orgByName(request.orgName, function(stewardOrg) {
@@ -151,7 +151,47 @@ exports.moveClassifications = function(request, cb) {
         console.log(request.newname);
         if (cb) cb();
      });
- };
+ };*/
+
+exports.removeOrgClassification = function(request, callback) {
+    this.modifyOrgClassification(request, "delete", callback);
+};
+
+exports.rename = function(request, callback) {
+    this.modifyOrgClassification(request, "rename", callback);
+};
+ 
+exports.modifyOrgClassification = function(request, action, callback) {
+    if( !(request.categories instanceof Array) ) {
+        request.categories = [request.categories];    
+    }
+    
+    mongo_data.orgByName(request.orgName, function(stewardOrg) {
+        var fakeTree = {elements: stewardOrg.classifications};
+        classificationShared.modifyCategory(fakeTree, request.categories, action);
+        stewardOrg.markModified("classifications");
+        stewardOrg.save(function (err) {
+            var query = {"classification.stewardOrg.name": request.orgName};
+            for (var i = 0; i<request.categories.length; i++) {
+                var key = "classification";
+                for (var j = 0; j<=i; j++) key += ".elements";
+                key += ".name";
+                query[key] = request.categories[i];
+            }            
+            mongo_data.DataElement.find(query).exec(function(err, result) {
+                for (var i = 0; i < result.length; i++) {
+                    var cde = result[i];
+                    var steward = classificationShared.findSteward(cde, request.orgName);   
+                    classificationShared.modifyCategory(steward.object, request.categories, action);
+                    cde.markModified("classification");
+                    cde.save(function(err) {
+                    });
+                };
+            });            
+            if(callback) callback(err, stewardOrg);
+        });   
+    });
+};
  
  /*    console.log(req.body.orgName);
     console.log(req.body.newname);*/
