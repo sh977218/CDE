@@ -217,12 +217,21 @@ angular.module('resources')
             this.highlight = function(field1,field2, cde) {
                 if (cde.highlight[field1+"."+field2]) {
                     cde.highlight[field1+"."+field2].forEach(function(nameHighlight) {
-                        if (field1.indexOf(".")<0) var it = cde[field1];
-                        else var it = cde[field1.replace(/\..+$/,"")][field1.replace(/^.+\./,"")];
-                        it.forEach(function(nameCde){
-                            if (nameCde[field2] === nameHighlight.replace(/<[^>]+>/gm, '')) nameCde[field2] = nameHighlight;
+                        if (field1.indexOf(".")<0) var elements = cde[field1];
+                        else var elements = cde[field1.replace(/\..+$/,"")][field1.replace(/^.+\./,"")];
+                        elements.forEach(function(nameCde, i){
+                            if (nameCde[field2] === nameHighlight.replace(/<[^>]+>/gm, '')) {
+                                nameCde[field2] = nameHighlight;
+                                if (field2 === "designation" && i === 0) cde.highlight.primaryName = true;
+                            }
                         });
+                        
                     });
+                }
+            };
+            this.highlightStewardOrg = function(cde) {
+                if (cde.highlight["stewardOrgCopy.name"]) {
+                    cde.stewardOrg.name = cde.highlight["stewardOrgCopy.name"][0];
                 }
             };
             this.highlight("naming","designation", cde);
@@ -230,21 +239,26 @@ angular.module('resources')
             this.highlight("valueDomain.permissibleValues","valueMeaningName", cde);
             this.highlight("valueDomain.permissibleValues","permissibleValue", cde);
             this.highlight("valueDomain.permissibleValues","valueMeaningCode", cde);
+            this.highlightStewardOrg(cde);
+            //this.highlightSingle("usedByOrgsCopy", cde);
+            //this.highlightSingle("stewardOrgCopy", cde);
 
             this.setMatchedBy(cde);
             
         }
         , setMatchedBy: function(cde) {
-            if (!cde.highlight["naming.designation"]) {
-                var field = null;
-                var matched = Object.keys(cde.highlight)[0];
-                if (matched === "naming.definition") field = "Definition";
-                if (matched.indexOf("classificationCopy.")>-1) field = "Classification";
-                if (matched.indexOf(".concepts.")>-1) field = "Concepts";
-                if (matched.substr(0,11) === "valueDomain") field = "Permissible Values";
-                if (matched.substr(0,10) === "properties") field = "Properties";
-                cde.highlight.matchedBy = field;
-            }
+            if (cde.highlight.primaryName) return;
+            var field = null;
+            var matched = Object.keys(cde.highlight)[0];
+            if (matched === "naming.definition") field = "Definition";
+            if (matched.indexOf("classificationCopy.")>-1) field = "Classification";
+            if (matched.indexOf(".concepts.")>-1) field = "Concepts";
+            if (matched.substr(0,11) === "valueDomain") field = "Permissible Values";
+            if (matched.substr(0,10) === "properties") field = "Properties";
+            if (matched === "naming.designation") field = "Alternative Name";
+            if (matched  === "stewardOrgCopy.name") field = "Steward";
+            if (matched  === "usedByOrgsCopy") field = "Steward";
+            cde.highlight.matchedBy = field;
         }
     };
 });
