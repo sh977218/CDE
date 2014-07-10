@@ -2,24 +2,24 @@
     <br/><br/>
     
     <center>
-        <form class="form-inline">
-            <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="form-control search-query" placeholder="Search" ng-change="">  
-            <button id="search.submit" type="submit" value="Search" ng-click="search()" class="btn btn-default">
-                <i class="fa fa-search"></i>
-                Search
-            </button>
-            <button id="resetSearch" ng-click="resetSearch()" class="btn btn-default">
-                <i class="fa fa-trash-o"></i>
-                Reset
-            </button> 
-            <button  ng-click="openCloseAllSwitch('list');openCloseAll(cdes,'list')" class="btn btn-default btn-checkbox" id="openAllCb">
-                <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
-                <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
-            </button>
-            <small ng-show="cdes.length > 0" class="pull-right">
-                {{totalItems}} hits
-            </small>
-        </form>
+    <form class="form-inline">
+        <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="form-control search-query" placeholder="Search" ng-change="">  
+        <button id="search.submit" type="submit" value="Search" ng-click="search()" class="btn btn-default">
+            <i class="fa fa-search"></i>
+            Search
+        </button>
+        <button id="resetSearch" ng-click="resetSearch()" class="btn btn-default">
+            <i class="fa fa-trash-o"></i>
+            Reset
+        </button> 
+        <button  ng-click="openCloseAllSwitch('list');openCloseAll(cdes,'list')" class="btn btn-default btn-checkbox" id="openAllCb">
+            <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
+            <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
+        </button>
+        <small ng-show="cdes.length > 0" class="pull-right">
+            {{totalItems}} hits
+        </small>
+    </form>
     </center>
     
     <br/><br/>

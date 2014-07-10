@@ -1,9 +1,12 @@
 var https = require('https')
   , xml2js = require('xml2js')
-  , helpers = require('./helpers.js')
-//  , logging = require('./logging.js')
   , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
 ;
+
+// Global variables
+var GLOBALS = {
+    REQ_TIMEOUT : 2000
+};
 
 var ticketValidationOptions = {
     host: config.uts.ticketValidation.host
@@ -23,6 +26,7 @@ var parser = new xml2js.Parser();
  * Checks the validity of a ticket via a POST API call to validation server.
  * 
  * @param tkt - ticket to valadate
+ * @returns 
  */
 exports.ticketValidate = function( tkt, cb ) {
     ticketValidationOptions.path = config.uts.ticketValidation.path + '?service=' + config.uts.service + '&ticket=' + tkt;
@@ -57,7 +61,7 @@ exports.ticketValidate = function( tkt, cb ) {
     });
     
     req.on('error', function (e) {
-        //logging.expressErrorLogger.info('getTgt: ERROR with request: ' + e);
+        console.log('getTgt: ERROR with request: ' + e);
     });
     
     req.on("timeout", function() { 
@@ -68,8 +72,7 @@ exports.ticketValidate = function( tkt, cb ) {
     // Emit timeout event if no response within GLOBALS.REQ_TIMEOUT seconds
     setTimeout(function() {
         req.emit("timeout");
-    }, helpers.GLOBALS.REQ_TIMEOUT);
-    
+    }, GLOBALS.REQ_TIMEOUT);
 
     req.end();
 };
