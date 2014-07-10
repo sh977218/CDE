@@ -12,6 +12,22 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     
     $scope.showValidationIcons = false;
     
+    $scope.tabs = [
+        {heading: "General Details"},
+        {heading: "Permissible Values"},
+        {heading: "Naming"},
+        {heading: "Classification"},
+        {heading: "Concepts"},
+        {heading: "Status"},
+        {heading: "Properties"},
+        {heading: "Identifiers"},
+        {heading: "Discussions"},
+        {heading: "Boards"},
+        {heading: "Attachments"},
+        {heading: "More Like This"},
+        {heading: "History"}
+    ];
+    
     $scope.reload = function(route, cb) {
         if (route.cdeId) var query = {deId: route.cdeId, type: '_id'};
         if (route.uuid) var query = {deId: route.uuid, type: 'uuid'};
@@ -27,7 +43,10 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             PriorCdes.getCdes({cdeId: de._id}, function(dataElements) {
                 $scope.priorCdes = dataElements;
             });                
-        });       
+        });
+        if (route.tab) {
+            $scope.tabs[6].active = true;
+        }
     };
     
     $scope.reload($routeParams);

@@ -49,5 +49,19 @@ public class PropertyTest extends NlmCdeBaseTest {
         
     }
     
+    @Test
+    public void richText() {
+        mustBeLoggedInAs(ninds_username, ninds_password);
+        goToCdeByName("Imaging diffusion sixth b value");
+        findElement(By.linkText("Properties")).click();
+        hangon(.5);
+        findElement(By.xpath("//dd[@id='dd_def_1']//i")).click();
+        findElement(By.xpath("//button[@btn-radio=\"'html'\"]")).click();
+        findElement(By.tagName("textarea")).sendKeys(" Hello From Selenium");
+        findElement(By.cssSelector("button.fa-check")).click();
+        hangon(1);
+        Assert.assertTrue(textPresent("Hello From Selenium"));
+    }
+    
     
 }

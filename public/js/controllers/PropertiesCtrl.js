@@ -1,4 +1,4 @@
-var PropertiesCtrl = function ($scope, $modal, $http) {
+var PropertiesCtrl = function ($scope, $modal, $http, $window, $timeout) {
     $scope.openNewProperty = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newPropertyModalContent.html',
@@ -11,24 +11,39 @@ var PropertiesCtrl = function ($scope, $modal, $http) {
         });
         
         modalInstance.result.then(function (newProperty) {
-            $http.post("/addProperty", {deId: $scope.cde._id, property: newProperty}).then(function(result) {
-                if (result.data.error !== undefined) {
-                    $scope.addAlert("danger", result.data.error);
-                } else {
-                    $scope.cde = result.data.de;
-                    $scope.addAlert("success", "Property Added");
+            for (var i = 0; i < $scope.cde.properties.length; i++) {
+                if ($scope.cde.properties[i].key === newProperty.key) {
+                    $scope.addAlert("danger", "This property already exists.");
+                    return;
                 }
+            }
+            $scope.cde.properties.push(newProperty);
+            $scope.cde.$save(function (newcde) {
+                $window.location.href = "/#/deview?tab=6&cdeId=" + newcde._id;
+                $scope.addAlert("success", "Property Added"); 
             });
         });
     };
     
     $scope.removeProperty = function (index) {
-        $http.post("/removeProperty", {deId: $scope.cde._id, index: index}).then(function(result) {
-            $scope.cde = result.data.de;
+        $scope.cde.properties.splice(index, 1);
+        $scope.cde.$save(function (newcde) {
+            $window.location.href = "/#/deview?tab=6&cdeId=" + newcde._id;
             $scope.addAlert("success", "Property Removed"); 
         });
     };
 
+    $scope.canEditProperty = function () {
+        return $scope.isAllowed($scope.cde) && !$scope.cde.unsaved;
+    };
+
+    $scope.saveProperty = function() {
+        $timeout(function() {
+            $scope.cde.$save(function (newcde) {
+                $window.location.href = "/#/deview?tab=6&cdeId=" + newcde._id;
+            });
+        }, 0);
+    };
 
 };
 
