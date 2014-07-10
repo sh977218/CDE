@@ -257,7 +257,7 @@ angular.module('resources')
             if (matched.substr(0,10) === "properties") field = "Properties";
             if (matched === "naming.designation") field = "Alternative Name";
             if (matched  === "stewardOrgCopy.name") field = "Steward";
-            if (matched  === "usedByOrgsCopy") field = "Steward";
+            if (matched  === "ids.id") field = "Identifier";
             cde.highlight.matchedBy = field;
         }
     };
