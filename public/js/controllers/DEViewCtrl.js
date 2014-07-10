@@ -45,7 +45,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             });                
         });
         if (route.tab) {
-            $scope.tabs[6].active = true;
+            $scope.tabs[route.tab].active = true;
         }
     };
     
