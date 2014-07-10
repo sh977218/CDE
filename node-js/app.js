@@ -507,7 +507,7 @@ app.delete('/classification/org', function(req, res) {
         res.send(403);
         return;
     }  
-    classificationNode.removeOrgClassification(req.query, function() {
+    classificationNode.modifyOrgClassification(req.query, "delete", function() {
         res.send();
     });
 });
@@ -538,7 +538,7 @@ app.delete('/classification/cde', function(req, res) {
 });
 
 app.post('/classification/rename', function(req, res) {
-    classificationNode.rename(req.body, function(err, org) {
+    classificationNode.modifyOrgClassification(req.body, "rename", function(err, org) {
         if (!err) res.send(org);
     });
 });

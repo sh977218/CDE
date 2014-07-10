@@ -103,7 +103,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
 
     }
     
-    //@Test
+    @Test
     public void addDeleteClassificationMgt() {
         mustBeLoggedInAs("ninds", "pass");
         gotoClassifMgt();  
@@ -123,5 +123,11 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         checkElementDoesNotExistByCSS("[id='removeClassification-_a,_a_a']");
     }
     
-
+    @Test
+    public void renameClassification() {
+        mustBeLoggedInAs("ninds", "pass");
+        gotoClassifMgt(); 
+        
+         //Spinal Muscular Atrophy 
+    }
 }
