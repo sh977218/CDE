@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 
 public class PropertyTest extends NlmCdeBaseTest {
@@ -54,11 +55,12 @@ public class PropertyTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, ninds_password);
         goToCdeByName("Imaging diffusion sixth b value");
         findElement(By.linkText("Properties")).click();
-        hangon(.5);
-        findElement(By.xpath("//dd[@id='dd_def_1']//i")).click();
-        findElement(By.xpath("//button[@btn-radio=\"'html'\"]")).click();
-        findElement(By.tagName("textarea")).sendKeys(" Hello From Selenium");
-        findElement(By.cssSelector("button.fa-check")).click();
+        hangon(2);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//dd[@id='dd_prop_value_1']//i[@class='fa fa-edit']")));
+        findElement(By.xpath("//dd[@id='dd_prop_value_1']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//dd[@id='dd_prop_value_1']//button[@btn-radio=\"'html'\"]")).click();
+        findElement(By.xpath("//dd[@id='dd_prop_value_1']//div[@id='taTextElement']")).sendKeys(" Hello From Selenium");
+        findElement(By.xpath("//dd[@id='dd_prop_value_1']//button[@class='fa fa-check']")).click();
         hangon(1);
         Assert.assertTrue(textPresent("Hello From Selenium"));
     }
