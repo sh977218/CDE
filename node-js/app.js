@@ -149,9 +149,8 @@ app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream
 
 // Middleware that runs before each request and authenticates user using tickets.
 app.use(function(req, res, next){
-    // If no url param named 'ticket'
+    // Check for presence of url param 'ticket'
     if( !req.query.ticket || req.query.ticket.length<=0 ) {
-        console.log('Ticket autentication failed: invalid ticket.');
         next();
     } else { // Validate 'ticket'
         auth.ticketValidate( req.query.ticket, function( err, username ) {
@@ -960,7 +959,7 @@ app.get('/deCount', function(req, res) {
 
 var fetchRemoteData = function() {
     vsac.getTGT(function(tgt) {
-        console.log("Got TGT: "+tgt);
+        console.log("Got TGT");
     });
     
     elastic.fetchPVCodeSystemList();   
