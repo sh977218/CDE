@@ -9,46 +9,46 @@
 </h1>
 
 <div tabset>
-   <div tab heading="General Details">
+   <div tab heading="{{tabs[0].heading}}">
         <%- include cdegeneraldetails.ejs %>
         <hr/>
         <%- include cdespecificdetails.ejs %>
    </div>
-   <div tab heading="Permissible Values" href="#">
+   <div tab heading="{{tabs[1].heading}}">
         <%- include valueDomainView.ejs %>
     </div>
-    <div tab heading="Naming">
+    <div tab heading="{{tabs[2].heading}}">
         <%- include deNaming.ejs %>
     </div>
-    <div tab heading="Classification">
+    <div tab heading="{{tabs[3].heading}}">
         <%- include deClassification.ejs %>
     </div>
-    <div tab heading="Concepts">
+    <div tab heading="{{tabs[4].heading}}">
         <%- include concepts.ejs %>
     </div>
-    <div tab heading="Status">
+    <div tab heading="{{tabs[5].heading}}">
         <%- include deStatus.ejs %>
     </div>
-    <div tab heading="Properties">
+    <div tab heading="{{tabs[6].heading}}" active='tabs[6].active'>
         <%- include deProperties.ejs %>
     </div>
-    <div tab heading="Identifiers">
+    <div tab heading="{{tabs[7].heading}}">
         <%- include deIds.ejs %>
     </div>
-    <div tab heading="Discussions">
+    <div tab heading="{{tabs[8].heading}}">
         <%- include deDiscussions.ejs %>
     </div>
-    <div tab heading="Boards">
+    <div tab heading="{{tabs[9].heading}}">
         <h4>Boards this Data Element is in</h4>
         <%- include listOfBoards.ejs %>
     </div>
-    <div tab heading="Attachments">
+    <div tab heading="{{tabs[10].heading}}">
         <%- include deAttachments.ejs %>
     </div>
-    <div tab heading="More Like This">
+    <div tab heading="{{tabs[11].heading}}">
         <%- include deMlt.ejs %>
     </div>
-    <div tab heading="History">
+    <div tab heading="{{tabs[12].heading}}">
         <%- include cdeHistory.ejs %>
     </div>
 
