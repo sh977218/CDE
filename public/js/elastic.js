@@ -247,7 +247,7 @@ angular.module('resources')
             if (cde.highlight.primaryName) return;
             var field = null;
             var matched = Object.keys(cde.highlight)[0];
-            if (matched === "naming.definition") field = "Definition";
+            if (matched === "naming.definition" || matched === "primaryDefinitionCopy") field = "Definition";
             if (matched.indexOf("classificationCopy.")>-1) field = "Classification";
             if (matched.indexOf(".concepts.")>-1) field = "Concepts";
             if (matched.substr(0,11) === "valueDomain") field = "Permissible Values";
