@@ -58,19 +58,6 @@ passport.use(new LocalStrategy({passReqToCallback: true},
       // indicate failure and set a flash message. Otherwise, return the
       // authenticated `user`.
         vsac.umlsAuth(username, password, function(result) { 
-            this.updateUserOnLogin = function(req, user) {
-                user.lockCounter = 0;
-                user.lastLogin = Date.now();
-                if (!user.knowIPs) {
-                    user.knownIPs = [];
-                }
-                if (user.knownIPs.length > 100) {
-                    user.knownIPs.pop();
-                }
-                if (user.knownIPs.indexOf(req.ip) < 0) {
-                    user.knownIPs.unshift(req.ip);
-                };
-            };
             if (result.indexOf("true") > 0) {
                 findByUsername(username, function(err, user) {
                     if (err) { return done(err); }
@@ -80,6 +67,8 @@ passport.use(new LocalStrategy({passReqToCallback: true},
                             return done(null, newUser);
                         });
                     } else {
+                        user.lockCounter = 0;
+                        user.lastLogin = Date.now();                        
                         this.updateUserOnLogin(req, user);
                         return mongo_data.save(user, function(err, user) {
                             return done(null, user);
@@ -99,7 +88,7 @@ passport.use(new LocalStrategy({passReqToCallback: true},
                             return done(null, false, { message: 'Invalid password' }); 
                         });
                     }
-                    this.updateUserOnLogin(req, user);
+                    auth.updateUser(req, user);
                     return mongo_data.save(user, function(err, user) {
                         return done(null, user);                    
                     });
@@ -109,8 +98,33 @@ passport.use(new LocalStrategy({passReqToCallback: true},
     });
   }
 ));
-
 var app = express();
+// Middleware that runs before each request and authenticates user using tickets.
+app.use(function(req, res, next){
+    // Check for presence of url param 'ticket'
+    if(!req.query.ticket || req.query.ticket.length<=0 ) next();    
+    auth.ticketValidate( req.query.ticket, function( err, username ) {
+        if(err) next();
+        findByUsername(username, function(error, user) {
+            if( error ) { // note: findByUsername always returns error=null
+                next(); 
+            } else if( !user ) { // User has been authenticated but user is not in local db, so register him.
+                mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
+                    req.user = newUser;
+                    next();
+                });
+            } else { // User already exists, so update user info.
+                auth.updateUser( req, user );
+                return mongo_data.save(user, function(err, user) {
+                    req.user = user;
+                    next();
+                });
+            }
+        });
+    });    
+});
+
+
 
 
 
@@ -146,49 +160,6 @@ app.use(passport.session());
 var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
 
 app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream}));
-
-// Middleware that runs before each request and authenticates user using tickets.
-app.use(function(req, res, next){
-    // Check for presence of url param 'ticket'
-    if( !req.query.ticket || req.query.ticket.length<=0 ) {
-        next();
-    } else { // Validate 'ticket'
-        auth.ticketValidate( req.query.ticket, function( err, username ) {
-            if( err ) {
-                next();
-            } else {
-                this.updateUserOnTicketUse = function(req, user) {
-                    if( !user.knowIPs ) {
-                        user.knownIPs = [];
-                    }
-                    if( user.knownIPs.length > 100 ) {
-                        user.knownIPs.pop();
-                    }
-                    if( user.knownIPs.indexOf(req.ip) < 0 ) {
-                        user.knownIPs.unshift(req.ip);
-                    }
-                };
-
-                findByUsername(username, function(error, user) {
-                    if( error ) { // note: findByUsername always returns error=null
-                        next(); 
-                    } else if( !user ) { // User has been authenticated but user is not in local db, so register him.
-                        mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
-                            req.user = newUser;
-                            next();
-                        });
-                    } else { // User already exists, so update user info.
-                        this.updateUserOnTicketUse( req, user );
-                        return mongo_data.save(user, function(err, user) {
-                            req.user = user;
-                            next();
-                        });
-                    }
-                });
-            }
-        });
-    }
-});
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, '../public')));

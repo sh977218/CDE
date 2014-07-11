@@ -2,7 +2,7 @@ var https = require('https')
   , xml2js = require('xml2js')
   , helper = require('./helper.js')
   , logging = require('./logging.js')
-  , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
+  , config = require('config')
 ;
 
 var ticketValidationOptions = {
@@ -72,4 +72,16 @@ exports.ticketValidate = function( tkt, cb ) {
     }, helper.GLOBALS.REQ_TIMEOUT);
 
     req.end();
+};
+
+exports.updateUser = function(req, user) {
+    if( !user.knowIPs ) {
+        user.knownIPs = [];
+    }
+    if( user.knownIPs.length > 100 ) {
+        user.knownIPs.pop();
+    }
+    if( user.knownIPs.indexOf(req.ip) < 0 ) {
+        user.knownIPs.unshift(req.ip);
+    }
 };
