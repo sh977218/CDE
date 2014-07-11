@@ -235,9 +235,9 @@ angular.module('resources')
                     else cde[field.replace(/\..+$/,"")][field.replace(/^.+\./,"")] = cde.highlight[field][0];            
                 }
             };
-            this.highlight("valueDomain.permissibleValues","valueMeaningName", cde);
-            this.highlight("valueDomain.permissibleValues","permissibleValue", cde);
-            this.highlight("valueDomain.permissibleValues","valueMeaningCode", cde);
+            //this.highlight("valueDomain.permissibleValues","valueMeaningName", cde);
+            //this.highlight("valueDomain.permissibleValues","permissibleValue", cde);
+            //this.highlight("valueDomain.permissibleValues","valueMeaningCode", cde);
             this.highlightOne("stewardOrgCopy.name", cde);
             this.highlightOne("primaryNameCopy", cde);
             this.highlightOne("primaryDefinitionCopy", cde);

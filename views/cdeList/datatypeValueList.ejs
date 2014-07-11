@@ -24,10 +24,10 @@
      </thead>
      <tbody>
          <tr ng-repeat="pv in cde.valueDomain.permissibleValues">
-            <td ng-bind-html="pv.permissibleValue" headers="value"></td>
-             <td ng-bind-html="pv.valueMeaningName" headers="codeName" ></td>
-             <td ng-bind-html="pv.valueMeaningCode" headers="code"></td>
-             <td ng-bind-html="pv.codeSystemName" headers="codeSystem"></td>
+            <td ng-bind="pv.permissibleValue" headers="value"></td>
+             <td ng-bind="pv.valueMeaningName" headers="codeName" ></td>
+             <td ng-bind="pv.valueMeaningCode" headers="code"></td>
+             <td ng-bind="pv.codeSystemName" headers="codeSystem"></td>
          </tr>
          <tr ng-show="cde.valueDomain.permissibleValues.length == 10">
              <td colspan="6">See full list in Detailed View</td>
