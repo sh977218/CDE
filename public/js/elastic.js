@@ -229,22 +229,19 @@ angular.module('resources')
                     });
                 }
             };
-            this.highlightStewardOrg = function(cde) {
-                if (cde.highlight["stewardOrgCopy.name"]) {
-                    cde.stewardOrg.name = cde.highlight["stewardOrgCopy.name"][0];
+            this.highlightOne = function(field, cde) {
+                if (cde.highlight[field]) {
+                    if (field.indexOf(".")<0) cde[field] = cde.highlight[field][0];
+                    else cde[field.replace(/\..+$/,"")][field.replace(/^.+\./,"")] = cde.highlight[field][0];            
                 }
             };
-            this.highlight("naming","designation", cde);
-            this.highlight("naming","definition", cde);
             this.highlight("valueDomain.permissibleValues","valueMeaningName", cde);
             this.highlight("valueDomain.permissibleValues","permissibleValue", cde);
             this.highlight("valueDomain.permissibleValues","valueMeaningCode", cde);
-            this.highlightStewardOrg(cde);
-            //this.highlightSingle("usedByOrgsCopy", cde);
-            //this.highlightSingle("stewardOrgCopy", cde);
-
-            this.setMatchedBy(cde);
-            
+            this.highlightOne("stewardOrgCopy.name", cde);
+            this.highlightOne("primaryNameCopy", cde);
+            this.highlightOne("primaryDefinitionCopy", cde);
+            this.setMatchedBy(cde);            
         }
         , setMatchedBy: function(cde) {
             if (cde.highlight.primaryName) return;
