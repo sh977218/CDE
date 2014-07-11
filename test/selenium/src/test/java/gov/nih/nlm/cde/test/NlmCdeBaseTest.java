@@ -236,9 +236,7 @@ public class NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName+"\"");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("1 hits"));
-        findElement(By.linkText(cdeName)).click();
-        hangon(1);
-        findElement(By.id("compare_0")).click();
+        findElement(By.id("addToCompare_0")).click();
         findElement(By.name("ftsearch")).clear();
     }
     

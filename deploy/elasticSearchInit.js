@@ -28,7 +28,7 @@ var riverFunction =
     ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
     ctx.document.primaryNameCopy = escapeHTML(ctx.document.naming[0].designation);\
     ctx.document.primaryDefinitionCopy = escapeHTML(ctx.document.naming[0].definition);\
-     var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0}; \
+    var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0}; \
     ctx.document.registrationState.registrationStatusSortOrder = regStatusSortMap[ctx.document.registrationState.registrationStatus]; \
     if (ctx.document.classification) { \
         var size = ctx.document.classification.length; \

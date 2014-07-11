@@ -232,6 +232,13 @@ exports.cdesByUuidList = function(idList, callback) {
             .in(idList)
             .slice('valueDomain.permissibleValues', 10)
             .exec(function(err, cdes) {
+                cdes.forEach(function(cde) {
+                    function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}
+                    cde._doc.classificationCopy = cde.classification;
+                    cde._doc.stewardOrgCopy = cde.stewardOrg;
+                    cde._doc.primaryNameCopy = escapeHTML(cde.naming[0].designation);
+                    cde._doc.primaryDefinitionCopy = escapeHTML(cde.naming[0].definition);                    
+                });
         callback("", cdes); 
     });
 };
