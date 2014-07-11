@@ -44,7 +44,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
                     $scope.alerts.splice(i, 1);
                 }
             }
-        }, 5000);
+        }, 105000);
     };
     
     $scope.boards = [];
