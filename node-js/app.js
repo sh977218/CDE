@@ -16,19 +16,15 @@ var express = require('express')
   , util = require('util')
   , xml2js = require('xml2js')
   , vsac = require('./vsac-io')
-  , winston = require('winston')
   , config = require('config')
   , MongoStore = require('./assets/connect-mongo.js')(express)
   , dbLogger = require('./dbLogger.js')
   , favicon = require('serve-favicon')
   , elastic = require('./elastic')
   , auth = require( './authentication' )
+  , helper = require('./helper.js')
+  , logging = require('./logging.js')
 ;
-
-// Global variables
-var GLOBALS = {
-    logdir : config.logdir || __dirname
-};
 
 function findById(id, fn) {
     return mongo_data.userById(id, function(err, user) {
@@ -116,80 +112,15 @@ passport.use(new LocalStrategy({passReqToCallback: true},
 
 var app = express();
 
-var MongoLogger = winston.transports.MongoLogger = function (options) {
-    this.name = 'mongoLogger';
-    this.json = true;
-    this.level = options.level || 'info';
-  };
 
-  util.inherits(MongoLogger, winston.Transport);
-
-  MongoLogger.prototype.log = function (level, msg, meta, callback) {
-    var logEvent = JSON.parse(msg);
-    logEvent.level = level;
-    dbLogger.log(logEvent, function (err) {
-        if (err) console.log("CANNOT LOG: " + err);
-        callback(null, true);    
-    });
-  };
-
-var expressLogger = new (winston.Logger)({
-  transports: [
-    new winston.transports.File({
-      json: true,
-      colorize: true
-      , level: 'verbose'
-      , filename: GLOBALS.logdir + "/expressLog.log"
-      , maxsize: 10000000
-      , maxFiles: 10
-    })
-    , new winston.transports.Console(
-        {
-            level: 'verbose',
-            colorize: true,
-            timestamp: true
-        }) 
-    , new winston.transports.MongoLogger({
-        json: true
-    })  ]
-});
-
-var expressErrorLogger = new (winston.Logger)({
-  transports: [
-    new winston.transports.File({
-      json: true,
-      colorize: true
-      , level: 'warn'
-      , filename: GLOBALS.logdir + "/expressErrorLog.log"
-      , maxsize: 10000000
-      , maxFiles: 10
-    })
-    , new winston.transports.MongoLogger({
-        json: true
-    })
-  ]
-});
-
-var processLogger = new (winston.Logger)({
-  transports: [
-    new winston.transports.File({
-      json: true,
-      colorize: true
-      , level: 'error'
-      , filename: GLOBALS.logdir + "/nodeErrorLog.log"
-      , maxsize: 10000000
-      , maxFiles: 10
-    })
-  ]
-});
 
 process.on('uncaughtException', function (err) {
-  processLogger.error('Caught exception: ' + err.stack);
+  logging.processLogger.error('Caught exception: ' + err.stack);
 });
 
 var winstonStream = {
     write: function(message, encoding){
-        expressLogger.info(message);
+        logging.expressLogger.info(message);
     }
 };
 
@@ -265,7 +196,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use("/shared", express.static("shared", path.join(__dirname, '../shared')));
 
 app.use(function(err, req, res, next){
-  expressErrorLogger.error(JSON.stringify({msg: err.stack}));
+  logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
   console.log(err.stack);
   res.send(500, 'Something broke!');
 });
@@ -975,7 +906,7 @@ app.post('/removeAttachment', function(req, res) {
 app.post('/setAttachmentDefault', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) {
-            expressLogger.info(err);
+            logging.expressLogger.info(err);
             return res.send(err);
         }  
         var state = req.body.state;

@@ -1,12 +1,8 @@
 var https = require('https')
   , xml2js = require('xml2js')
+  , helper = require('./helper.js')
   , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
 ;
-
-// Global variables
-var GLOBALS = {
-    REQ_TIMEOUT : 2000
-};
 
 var ticketValidationOptions = {
     host: config.uts.ticketValidation.host
@@ -72,7 +68,7 @@ exports.ticketValidate = function( tkt, cb ) {
     // Emit timeout event if no response within GLOBALS.REQ_TIMEOUT seconds
     setTimeout(function() {
         req.emit("timeout");
-    }, GLOBALS.REQ_TIMEOUT);
+    }, helper.GLOBALS.REQ_TIMEOUT);
 
     req.end();
 };
