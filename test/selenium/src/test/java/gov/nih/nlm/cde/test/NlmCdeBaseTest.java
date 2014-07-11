@@ -283,5 +283,8 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor)driver).executeScript("scroll(0," + y + ");");
     }
     
+    public void closeAlert() {
+        findElement(By.xpath("//div[@type='alert.type']/button")).click();
+    }
 
 }
