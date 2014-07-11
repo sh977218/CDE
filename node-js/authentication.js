@@ -1,6 +1,7 @@
 var https = require('https')
   , xml2js = require('xml2js')
   , helper = require('./helper.js')
+  , logging = require('./logging.js')
   , config = require(process.argv[2]?('../'+process.argv[2]):'../config.js')
 ;
 
@@ -57,7 +58,7 @@ exports.ticketValidate = function( tkt, cb ) {
     });
     
     req.on('error', function (e) {
-        console.log('getTgt: ERROR with request: ' + e);
+        logging.expressErrorLogger.error('getTgt: ERROR with request: ' + e);
     });
     
     req.on("timeout", function() { 
