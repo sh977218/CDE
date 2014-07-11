@@ -3,6 +3,8 @@ var https = require('https')
   , helper = require('./helper.js')
   , logging = require('./logging.js')
   , config = require('config')
+  , mongo_data = require('./mongo-data') 
+  , vsac = require('./vsac-io')
 ;
 
 var ticketValidationOptions = {
@@ -18,6 +20,12 @@ var ticketValidationOptions = {
 };
 
 var parser = new xml2js.Parser();
+
+function findByUsername(username, fn) {
+    return mongo_data.userByName(username, function(err, user) {
+        return fn(null, user);
+    });
+};
 
 /**
  * Checks the validity of a ticket via a POST API call to validation server.
@@ -85,3 +93,52 @@ exports.updateUser = function(req, user) {
         user.knownIPs.unshift(req.ip);
     }
 };
+var auth = this;
+exports.authAfterVsac =   function(req, username, password, done) {
+    
+    // asynchronous verification, for effect...
+    process.nextTick(function () {
+      // Find the user by username. If there is no user with the given
+      // username, or the password is not correct, set the user to `false` to
+      // indicate failure and set a flash message. Otherwise, return the
+      // authenticated `user`.
+        vsac.umlsAuth(username, password, function(result) { 
+            if (result.indexOf("true") > 0) {
+                findByUsername(username, function(err, user) {
+                    if (err) { return done(err); }
+                    // username password combo is good, but user is not here, so register him.
+                    if (!user) {
+                        mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
+                            return done(null, newUser);
+                        });
+                    } else {
+                        user.lockCounter = 0;
+                        user.lastLogin = Date.now();                        
+                        this.updateUserOnLogin(req, user);
+                        return mongo_data.save(user, function(err, user) {
+                            return done(null, user);
+                        });
+                    }
+                });
+            } else {
+                findByUsername(username, function(err, user) {
+                    if (err) { return done(err); }
+                    if (!user) { return done(null, false, { message: 'Incorrect username or password' }); }
+                    if (user.lockCounter == 3) {
+                        return done(null, false, { message: 'User is locked out' }); 
+                    }
+                    if (user.password != password) {
+                        user.lockCounter = user.lockCounter + 1;
+                        return mongo_data.save(user, function(err, user) {
+                            return done(null, false, { message: 'Invalid password' }); 
+                        });
+                    }
+                    auth.updateUser(req, user);
+                    return mongo_data.save(user, function(err, user) {
+                        return done(null, user);                    
+                    });
+                });                
+            };
+        });
+    });
+  };

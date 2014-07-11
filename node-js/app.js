@@ -50,64 +50,24 @@ passport.deserializeUser(function(id, done) {
 });
 
 passport.use(new LocalStrategy({passReqToCallback: true},
-  function(req, username, password, done) {
-    // asynchronous verification, for effect...
-    process.nextTick(function () {
-      // Find the user by username. If there is no user with the given
-      // username, or the password is not correct, set the user to `false` to
-      // indicate failure and set a flash message. Otherwise, return the
-      // authenticated `user`.
-        vsac.umlsAuth(username, password, function(result) { 
-            if (result.indexOf("true") > 0) {
-                findByUsername(username, function(err, user) {
-                    if (err) { return done(err); }
-                    // username password combo is good, but user is not here, so register him.
-                    if (!user) {
-                        mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
-                            return done(null, newUser);
-                        });
-                    } else {
-                        user.lockCounter = 0;
-                        user.lastLogin = Date.now();                        
-                        this.updateUserOnLogin(req, user);
-                        return mongo_data.save(user, function(err, user) {
-                            return done(null, user);
-                        });
-                    }
-                });
-            } else {
-                findByUsername(username, function(err, user) {
-                    if (err) { return done(err); }
-                    if (!user) { return done(null, false, { message: 'Incorrect username or password' }); }
-                    if (user.lockCounter == 3) {
-                        return done(null, false, { message: 'User is locked out' }); 
-                    }
-                    if (user.password != password) {
-                        user.lockCounter = user.lockCounter + 1;
-                        return mongo_data.save(user, function(err, user) {
-                            return done(null, false, { message: 'Invalid password' }); 
-                        });
-                    }
-                    auth.updateUser(req, user);
-                    return mongo_data.save(user, function(err, user) {
-                        return done(null, user);                    
-                    });
-                });                
-            };
-        });
-    });
-  }
+auth.authAfterVsac
 ));
 var app = express();
 // Middleware that runs before each request and authenticates user using tickets.
 app.use(function(req, res, next){
     // Check for presence of url param 'ticket'
-    if(!req.query.ticket || req.query.ticket.length<=0 ) next();    
-    auth.ticketValidate( req.query.ticket, function( err, username ) {
-        if(err) next();
+    if(!req.query.ticket || req.query.ticket.length<=0 ) {
+        next();
+    }    
+    else auth.ticketValidate( req.query.ticket, function( err, username ) {
+        if(err) {
+            next(); 
+            return; 
+        }
         findByUsername(username, function(error, user) {
             if( error ) { // note: findByUsername always returns error=null
                 next(); 
+                return;
             } else if( !user ) { // User has been authenticated but user is not in local db, so register him.
                 mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
                     req.user = newUser;
