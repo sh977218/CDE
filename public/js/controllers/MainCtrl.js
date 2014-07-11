@@ -29,7 +29,7 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
            }
            $timeout(function() {
                $scope.checkSystemAlert();
-           }, 12000);
+           }, 120000);
         });
     };
     $scope.checkSystemAlert();
