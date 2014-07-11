@@ -68,7 +68,7 @@ module.exports = function(grunt) {
                 command: function () {
                             return [
                                 "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " deploy/dbInit.js"
-                                , "mongo cde-logs-test deploy/logInit.js"
+                                , "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " deploy/logInit.js"
                                 , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
                                 , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
                                 , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
