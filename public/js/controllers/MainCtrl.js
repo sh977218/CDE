@@ -22,11 +22,14 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         $http.get('/systemAlert').then(function (response) {
            if (response.data.length > 0) {
                 var id = (new Date()).getTime();
-                $scope.alerts.push({type: "warning", msg: response.data, id: id});
+                if ($scope.broadcast !== response.data) {
+                    $scope.broadcast = response.data;                
+                    $scope.alerts.push({type: "warning", msg: $scope.broadcast, id: id});
+                }
            }
            $timeout(function() {
                $scope.checkSystemAlert();
-           }, 120000);
+           }, 12000);
         });
     };
     $scope.checkSystemAlert();
