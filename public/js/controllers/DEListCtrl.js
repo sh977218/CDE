@@ -84,10 +84,19 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
                    $scope.registrationStatuses[j].count = 0; 
                 }
                 if ($scope.facets.statuses !== undefined) {
-                    for (var i = 0; i < $scope.facets.statuses.terms.length; i++) {
-                        for (var j = 0; j < $scope.registrationStatuses.length; j++) {
-                            if ($scope.facets.statuses.terms[i].term === $scope.registrationStatuses[j].name) {
-                                $scope.registrationStatuses[j].count = $scope.facets.statuses.terms[i].count;
+                    for (var i = 0; i < $scope.registrationStatuses.length; i++) {
+                        var statusFound = false;
+                        for (var j = 0; j < $scope.facets.statuses.terms.length; j++) {
+                            if ($scope.facets.statuses.terms[j].term === $scope.registrationStatuses[i].name) {
+                                statusFound = true;
+                                $scope.registrationStatuses[i].count = $scope.facets.statuses.terms[j].count;
+                            }
+                        }
+                        if (!statusFound) {
+                            if ($scope.registrationStatuses[i].selected) {
+                                $scope.registrationStatuses[i].selected = false;
+                                $scope.reload();
+                                return;
                             }
                         }
                     }

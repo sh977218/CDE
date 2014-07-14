@@ -141,7 +141,7 @@ var deJsonSchema = {
         ]
     , formUsageCounter: Number
     , properties: [
-        {key: String, value: String}
+        {key: String, value: String, valueFormat: String}
     ]
     , ids: [
         {origin: String, id: String, version: String}
