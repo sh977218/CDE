@@ -158,6 +158,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
         findElement(By.linkText("Search")).click();
+        hangon(1);
         findElement(By.id("li-blank-Preferred Standard")).click();
         Assert.assertTrue(textPresent("1 hits"));
         findElement(By.xpath("//i[@title='View']")).click();
