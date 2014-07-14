@@ -137,9 +137,9 @@ exports.authAfterVsac =   function(req, username, password, done) {
     });
 };
   
-exports.findUser = function(req, res, next) {
-    var auth = this;
-    findByUsername(username, function(error, user) {
+exports.findUser = function(username, req, res, next) {
+    //var auth = this;
+    mongo_data.userByName(username, function(err, user) {
         if( error ) { // note: findByUsername always returns error=null
             next(); 
             return;
@@ -159,7 +159,7 @@ exports.findUser = function(req, res, next) {
 };
   
 exports.ticketAuth = function(req, res, next){
-    var auth = this;
+    //var auth = this;
     // Check for presence of url param 'ticket'
     if(!req.query.ticket || req.query.ticket.length<=0 ) {
         next();
@@ -169,8 +169,8 @@ exports.ticketAuth = function(req, res, next){
             next(); 
             return; 
         }
-        this.findUser(req, res, next);
-        /*findByUsername(username, function(error, user) {
+        //this.findUser(username, req, res, next);
+        findByUsername(username, function(error, user) {
             if( error ) { // note: findByUsername always returns error=null
                 next(); 
                 return;
@@ -186,6 +186,6 @@ exports.ticketAuth = function(req, res, next){
                     next();
                 });
             }
-        });*/
+        });
     });    
 };
