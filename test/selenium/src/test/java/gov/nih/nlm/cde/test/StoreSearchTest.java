@@ -82,6 +82,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(linkList.size() > 10);
         findElement(By.id("li-blank-Standard")).click();
         findElement(By.id("li-checked-Standard"));
+        hangon(2);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));        
         // Expectation, less than 10 standard CDEs when this test runs.
         Assert.assertTrue(linkList.size() < 10);

@@ -16,7 +16,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import org.openqa.selenium.NoSuchElementException;
-import java.lang.System;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -100,6 +99,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
+        Assert.assertTrue(textPresent("1 hits"));
         Assert.assertTrue(textPresent(name));
         findElement(By.id("acc_link_0")).click();
         hangon(1);
@@ -141,6 +141,7 @@ public class NlmCdeBaseTest {
     }
     
     protected void saveCde() {
+        hangon(.5);
         findElement(By.id("confirmSave")).click();
         hangon(2);
     }

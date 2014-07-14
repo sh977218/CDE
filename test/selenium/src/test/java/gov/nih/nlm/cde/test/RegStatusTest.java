@@ -105,6 +105,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         modalHere();
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
+        hangon(1);
         logout();
         
         loginAs(cabigAdmin_username, cabigAdmin_password);
@@ -151,13 +152,14 @@ public class RegStatusTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToSearch();
         findElement(By.id("li-blank-PBTC")).click();
+        Assert.assertTrue(textPresent("4 hits"));
         findElement(By.xpath("//i[@title='View']")).click();
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         modalHere();
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
-        findElement(By.linkText("Search")).click();
+        goToSearch();
         findElement(By.id("li-blank-Preferred Standard")).click();
         Assert.assertTrue(textPresent("1 hits"));
         findElement(By.xpath("//i[@title='View']")).click();
@@ -166,7 +168,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         modalHere();
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
-        findElement(By.linkText("Search")).click();
+        goToSearch();
         Assert.assertTrue(textPresent("4 hits"));
         Assert.assertTrue(textNotPresent("Preferred Standard"));
     }
