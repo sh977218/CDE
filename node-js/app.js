@@ -32,12 +32,6 @@ function findById(id, fn) {
     });
 }
 
-function findByUsername(username, fn) {
-    return mongo_data.userByName(username, function(err, user) {
-        return fn(null, user);
-    });
-};
-
 passport.serializeUser(function(user, done) {
     done(null, user._id);
 });

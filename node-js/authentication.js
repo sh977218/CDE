@@ -20,7 +20,7 @@ var ticketValidationOptions = {
 };
 
 var parser = new xml2js.Parser();
-
+var auth = this;
 /**
  * Checks the validity of a ticket via a POST API call to validation server.
  * 
@@ -45,7 +45,6 @@ exports.ticketValidate = function( tkt, cb ) {
                 } else if( jsonResult['cas:serviceResponse'] && 
                            jsonResult['cas:serviceResponse']['cas:authenticationFailure'] ) {
                     // This statement gets the error message
-                    //jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0]['_'];
                     return cb( jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0]['$']['code'] );
                 } else if( jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] &&
                            jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] ) {
@@ -87,7 +86,7 @@ exports.updateUser = function(req, user) {
         user.knownIPs.unshift(req.ip);
     }
 };
-var auth = this;
+
 exports.authAfterVsac =   function(req, username, password, done) {
     
     // asynchronous verification, for effect...
@@ -98,21 +97,8 @@ exports.authAfterVsac =   function(req, username, password, done) {
       // authenticated `user`.
         vsac.umlsAuth(username, password, function(result) { 
             if (result.indexOf("true") > 0) {
-                mongo_data.userByName(username, function(err, user) {
-                    if (err) { return done(err); }
-                    // username password combo is good, but user is not here, so register him.
-                    if (!user) {
-                        mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
-                            return done(null, newUser);
-                        });
-                    } else {
-                        user.lockCounter = 0;
-                        user.lastLogin = Date.now();                        
-                        auth.updateUser(req, user);
-                        return mongo_data.save(user, function(err, user) {
-                            return done(null, user);
-                        });
-                    }
+                auth.findUser(username, req, function(user) {
+                    done(null, user);
                 });
             } else {
                 mongo_data.userByName(username, function(err, user) {
@@ -136,56 +122,41 @@ exports.authAfterVsac =   function(req, username, password, done) {
         });
     });
 };
+
   
-exports.findUser = function(username, req, res, next) {
-    //var auth = this;
+exports.findUser = function(username, req, next) {
     mongo_data.userByName(username, function(err, user) {
-        if( error ) { // note: findByUsername always returns error=null
+        if( err ) { // note: findByUsername always returns error=null
             next(); 
             return;
-        } else if( !user ) { // User has been authenticated but user is not in local db, so register him.
+        } else if(!user) { // User has been authenticated but user is not in local db, so register him.
             mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
-                req.user = newUser;
-                next();
+                next(user);
             });
         } else { // User already exists, so update user info.
-            auth.updateUser( req, user );
+            auth.updateUser(req, user);
+            user.lockCounter = 0;
+            user.lastLogin = Date.now();               
             return mongo_data.save(user, function(err, user) {
-                req.user = user;
-                next();
+                next(user);
             });
         }
     });      
 };
-  
+
 exports.ticketAuth = function(req, res, next){
-    //var auth = this;
     // Check for presence of url param 'ticket'
-    if(!req.query.ticket || req.query.ticket.length<=0 ) {
+    if(!req.query.ticket || req.query.ticket.length<=0) {
         next();
     }    
-    else auth.ticketValidate( req.query.ticket, function( err, username ) {
+    else auth.ticketValidate(req.query.ticket, function(err, username) {
         if(err) {
             next(); 
             return; 
         }
-        //this.findUser(username, req, res, next);
-        findByUsername(username, function(error, user) {
-            if( error ) { // note: findByUsername always returns error=null
-                next(); 
-                return;
-            } else if( !user ) { // User has been authenticated but user is not in local db, so register him.
-                mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
-                    req.user = newUser;
-                    next();
-                });
-            } else { // User already exists, so update user info.
-                auth.updateUser( req, user );
-                return mongo_data.save(user, function(err, user) {
-                    req.user = user;
-                    next();
-                });
-            }
+        auth.findUser(username, req, function(user) {
+            if (user) req.user = user;
+            next();
         });
     });    
 };
