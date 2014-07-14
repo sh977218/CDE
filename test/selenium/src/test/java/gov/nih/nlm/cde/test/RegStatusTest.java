@@ -153,14 +153,16 @@ public class RegStatusTest extends NlmCdeBaseTest {
         goToSearch();
         findElement(By.id("li-blank-PBTC")).click();
         Assert.assertTrue(textPresent("4 hits"));
-        findElement(By.xpath("//i[@title='View']")).click();
+        String viewing = findElement(By.id("acc_link_0")).getText();
+        findElement(By.xpath("//span[@id='acc_link_0']/../i[@title='View']")).click();
+        Assert.assertTrue(textPresent(viewing));
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         modalHere();
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
-        hangon(1);
         findElement(By.linkText("Search")).click();
+        hangon(1);
         findElement(By.id("li-blank-Preferred Standard")).click();
         Assert.assertTrue(textPresent("1 hits"));
         findElement(By.xpath("//i[@title='View']")).click();
@@ -169,8 +171,8 @@ public class RegStatusTest extends NlmCdeBaseTest {
         modalHere();
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
-        hangon(1);
         findElement(By.linkText("Search")).click();
+        hangon(1);
         Assert.assertTrue(textPresent("4 hits"));
         Assert.assertTrue(textNotPresent("Preferred Standard"));
     }

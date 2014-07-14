@@ -14,6 +14,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
     public void rememberText() {
         goToCdeByName("Smoking Status");
         driver.navigate().back();
+        hangon(1);
         Assert.assertTrue("Smoking Status".equals(findElement(By.id("acc_link_0")).getText()));
     }
     
@@ -89,7 +90,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         scrollToTop();
         findElement(By.id("resetSearch")).click();
         findElement(By.id("li-blank-Standard"));
-        Assert.assertTrue(textPresent("10"));
+        Assert.assertTrue(textPresent("PBTC ("));
         linkList = driver.findElements(By.cssSelector("div.panel-default"));        
         Assert.assertTrue(linkList.size() > 10);
     }
