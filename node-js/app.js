@@ -54,7 +54,7 @@ auth.authAfterVsac
 ));
 var app = express();
 // Middleware that runs before each request and authenticates user using tickets.
-app.use(function(req, res, next){
+/*app.use(function(req, res, next){
     // Check for presence of url param 'ticket'
     if(!req.query.ticket || req.query.ticket.length<=0 ) {
         next();
@@ -82,9 +82,9 @@ app.use(function(req, res, next){
             }
         });
     });    
-});
+});*/
 
-
+app.use(auth.ticketAuth);
 
 
 
