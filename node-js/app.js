@@ -372,7 +372,7 @@ app.delete('/classification/org', function(req, res) {
         res.send(403);
         return;
     }  
-    classificationNode.removeOrgClassification(req.query, function() {
+    classificationNode.modifyOrgClassification(req.query, "remove", function() {
         res.send();
     });
 });
@@ -397,8 +397,18 @@ app.delete('/classification/cde', function(req, res) {
             res.send(); 
         } else {
             res.send(202, {error: {message: "Classification does not exists."}});
-            res.send();
         }
+    });
+});
+
+app.post('/classification/rename', function(req, res) {
+    if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
+        res.send(403, "Not Authorized");
+        return;
+    }      
+    classificationNode.modifyOrgClassification(req.body, "rename", function(err, org) {
+        if (!err) res.send(org);
+        else res.send(202, {error: {message: "Classification does not exists."}});
     });
 });
 
