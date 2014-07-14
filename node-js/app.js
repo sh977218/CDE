@@ -619,18 +619,6 @@ app.get('/autocomplete/:name', function(req, res) {
     return cdesvc.name_autocomplete(req.params.name, res);
 });
 
-app.get('/autocomplete/classification/all', function (req, res) {
-    mongo_data.conceptSystem_autocomplete(function (result) {
-        res.send(result);
-    });
-});
-
-app.get('/autocomplete/classification/org/:orgName', function (req, res) {
-    mongo_data.conceptSystem_org_autocomplete(req.params.orgName, function (result) {
-        res.send(result);
-    });
-});
-
 app.get('/autocomplete/org/:name', function (req, res) {
     mongo_data.org_autocomplete(req.params.name, function (result) {
         res.send(result);

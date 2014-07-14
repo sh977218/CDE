@@ -9,6 +9,8 @@ groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx localhost test
 
 sleep 10;
 
+mongo test test/createLargeBoard.js
+
 export target='{"count":592,"_shards":{"total":1,"successful":1,"failed":0}}'
 export curl_res=$(curl http://localhost:9200/cdetest/_count)
 
