@@ -175,4 +175,16 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(usedBy.contains("CIP"));
     }
     
+     @Test 
+    public void searchHighlight() {
+        goToSearch();
+        findElement(By.name("ftsearch")).sendKeys("patient");
+        findElement(By.id("search.submit")).click();    
+        hangon(0.5);
+        findElement(By.linkText("3")).click();
+        hangon(0.5);
+        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Definition\"]")).size(), 9);
+        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Permissible Values\"]")).size(), 3);
+        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Classification\"]")).size(), 8);
+    }
 }
