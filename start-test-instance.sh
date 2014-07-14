@@ -7,7 +7,7 @@ groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml localhost te
 groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx localhost test --testMode
 groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx localhost test 
 
-sleep 3;
+sleep 10;
 
 export target='{"count":592,"_shards":{"total":1,"successful":1,"failed":0}}'
 export curl_res=$(curl http://localhost:9200/cdetest/_count)

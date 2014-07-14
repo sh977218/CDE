@@ -206,13 +206,13 @@ public class NlmCdeBaseTest {
         return OS.contains("win");
     }
     
-    public void addToQuickBoard(String cdeName1, String cdeName2) {
+    /*public void addToQuickBoard(String cdeName1, String cdeName2) {
         goToSearch();
         Assert.assertTrue(textPresent("Quick Board ( empty )"));
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName1+"\"");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("1 hits"));
-        findElement(By.linkText(cdeName1)).click();
+        findElement(By.id("addToCompare_0")).click();
         hangon(1);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
         findElement(By.id("compare_0")).click();
@@ -223,29 +223,31 @@ public class NlmCdeBaseTest {
         scrollToTop();
         findElement(By.id("search.submit")).click();
         hangon(2);
-        findElement(By.linkText(cdeName2)).click();
+        findElement(By.id("addToCompare_0")).click();
         hangon(2);
         findElement(By.id("compare_0")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         Assert.assertTrue(textPresent("Quick Board ( 2 )"));
         findElement(By.linkText("Quick Board ( 2 )")).click();
-    }
+    }*/
 
     public void addToQuickBoard(String cdeName) {
         scrollToTop();
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName+"\"");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("1 hits"));
-        findElement(By.linkText(cdeName)).click();
-        hangon(1);
-        findElement(By.id("compare_0")).click();
+        findElement(By.id("addToCompare_0")).click();
         findElement(By.name("ftsearch")).clear();
     }
     
     public void addToCompare(String cdeName1, String cdeName2) {
-        addToQuickBoard( cdeName1, cdeName2 );
+        goToSearch();
+        Assert.assertTrue(textPresent("Quick Board ( empty )"));
+        addToQuickBoard(cdeName1);
+        addToQuickBoard(cdeName2);
+        findElement(By.linkText("Quick Board ( 2 )")).click();
         Assert.assertTrue(textPresent(cdeName1));
-        Assert.assertTrue(textPresent(cdeName2));
+        Assert.assertTrue(textPresent(cdeName2));      
         findElement(By.id("qb.compare")).click();
     }
         

@@ -16,6 +16,7 @@ exports.elasticsearch = function (query, cb) {
             if (thisCde.valueDomain.permissibleValues.length > 10) {
                 thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
             } 
+            thisCde.highlight = resp.hits.hits[i].highlight;
             result.cdes.push(thisCde);
         }
         result.facets = resp.facets;
