@@ -21,7 +21,6 @@ app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 app.use(express.session({ secret: 'omgnodeworks' }));
 
-
 app.get('/vsac/ws/Ticket', function(req, res) {
     res.send("MOCKticket.");
 });
@@ -33,8 +32,6 @@ app.post('/vsac/ws/Ticket', function(req, res) {
 app.post('/vsac/ws/Ticket/:ticketId', function(req, res) {
     res.send("MOCKticket.");
 });
-
-
 
 app.get('/vsac/ws/RetrieveValueSet', function(req, res) {
     var key = req.query['id'];
@@ -48,6 +45,41 @@ app.get('/vsac/ws/RetrieveValueSet', function(req, res) {
                 res.send(data);
             }
         });
+    }
+});
+
+// Mocks UTS ticket validation process
+app.post('/cas/serviceValidate', function(req, res) {
+    if( req.query.ticket === 'invalid' ) {
+        res.send("<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>\n\
+	<cas:authenticationFailure code='INVALID_TICKET'>\n\
+		ticket &#039;ST-430048-3Em71CBricwWoL7bd5nc-cas&#039; not recognized\n\
+	</cas:authenticationFailure>\n\
+</cas:serviceResponse>");
+    } else if( req.query.ticket === 'valid' ) {
+        res.send("<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>\n\
+	<cas:authenticationSuccess>\n\
+		<cas:user>ninds</cas:user>\n\
+	</cas:authenticationSuccess>\n\
+</cas:serviceResponse>");
+    } else if( req.query.ticket === 'timeout1' ) {
+        // Return after 1 sec, ticket validation times out after 2 sec, ticket validation passes
+        setTimeout(function() {
+            res.send("<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>\n\
+	<cas:authenticationSuccess>\n\
+		<cas:user>ninds</cas:user>\n\
+	</cas:authenticationSuccess>\n\
+</cas:serviceResponse>");
+        }, 1000);
+    } else if( req.query.ticket === 'timeout4' ) {
+        // Return after 4 sec, ticket validation times out after 2 sec, ticket validation doesn't pass
+        setTimeout(function() {
+            res.send("<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>\n\
+	<cas:authenticationSuccess>\n\
+		<cas:user>ninds</cas:user>\n\
+	</cas:authenticationSuccess>\n\
+</cas:serviceResponse>");
+        }, 4000);
     }
 });
 

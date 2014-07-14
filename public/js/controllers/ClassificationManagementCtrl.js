@@ -20,7 +20,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
     };
     
     $scope.removeClassification = function(orgName, elts) {
-        OrgClassification.remove({
+        OrgClassification.resource.remove({
             orgName: orgName
             , categories: elts
         }, function (res) {
@@ -45,7 +45,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
 
         modalInstance.result.then(function (newClassification) {
             newClassification.orgName = $scope.orgToManage;
-            OrgClassification.save(newClassification, function(response) {
+            OrgClassification.resource.save(newClassification, function(response) {
                 if (response.error) {
                     $scope.addAlert("danger", response.error.message);        
                 }
@@ -56,4 +56,29 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
             });
         });
     };
+    
+    $scope.showRenameDialog = function(orgName, pathArray) {
+        var modalInstance = $modal.open({
+            templateUrl: 'renameClassificationModal.html',
+            controller: RenameClassificationModalCtrl,
+            resolve: {
+                classifName: function() {
+                    return pathArray[pathArray.length-1];
+                }           
+            }
+        });
+
+        modalInstance.result.then(function (newname) {           
+            OrgClassification.rename(orgName, pathArray, newname, function(response) {
+                $scope.org = response;
+            });
+        });        
+    };
+}
+
+function RenameClassificationModalCtrl($scope, $modalInstance, classifName) {
+    $scope.classifName = classifName;
+    $scope.close = function(newname) {
+        $modalInstance.close(newname);
+    };  
 }

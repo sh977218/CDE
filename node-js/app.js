@@ -16,30 +16,21 @@ var express = require('express')
   , util = require('util')
   , xml2js = require('xml2js')
   , vsac = require('./vsac-io')
-  , winston = require('winston')
   , config = require('config')
   , MongoStore = require('./assets/connect-mongo.js')(express)
   , dbLogger = require('./dbLogger.js')
   , favicon = require('serve-favicon')
   , elastic = require('./elastic')
+  , auth = require( './authentication' )
+  , helper = require('./helper.js')
+  , logging = require('./logging.js')
 ;
-
-// Global variables
-var GLOBALS = {
-    logdir : config.logdir || __dirname
-};
 
 function findById(id, fn) {
     return mongo_data.userById(id, function(err, user) {
         return fn(null, user);
     });
 }
-
-function findByUsername(username, fn) {
-    return mongo_data.userByName(username, function(err, user) {
-        return fn(null, user);
-    });
-};
 
 passport.serializeUser(function(user, done) {
     done(null, user._id);
@@ -53,142 +44,19 @@ passport.deserializeUser(function(id, done) {
 });
 
 passport.use(new LocalStrategy({passReqToCallback: true},
-  function(req, username, password, done) {
-    // asynchronous verification, for effect...
-    process.nextTick(function () {
-      // Find the user by username. If there is no user with the given
-      // username, or the password is not correct, set the user to `false` to
-      // indicate failure and set a flash message. Otherwise, return the
-      // authenticated `user`.
-        vsac.umlsAuth(username, password, function(result) { 
-            this.updateUserOnLogin = function(req, user) {
-                user.lockCounter = 0;
-                user.lastLogin = Date.now();
-                if (!user.knowIPs) {
-                    user.knownIPs = [];
-                }
-                if (user.knownIPs.length > 100) {
-                    user.knownIPs.pop();
-                }
-                if (user.knownIPs.indexOf(req.ip) < 0) {
-                    user.knownIPs.unshift(req.ip);
-                };
-            };
-            if (result.indexOf("true") > 0) {
-                findByUsername(username, function(err, user) {
-                    if (err) { return done(err); }
-                    // username password combo is good, but user is not here, so register him.
-                    if (!user) {
-                        mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
-                            return done(null, newUser);
-                        });
-                    } else {
-                        this.updateUserOnLogin(req, user);
-                        return mongo_data.save(user, function(err, user) {
-                            return done(null, user);
-                        });
-                    }
-                });
-            } else {
-                findByUsername(username, function(err, user) {
-                    if (err) { return done(err); }
-                    if (!user) { return done(null, false, { message: 'Incorrect username or password' }); }
-                    if (user.lockCounter == 3) {
-                        return done(null, false, { message: 'User is locked out' }); 
-                    }
-                    if (user.password != password) {
-                        user.lockCounter = user.lockCounter + 1;
-                        return mongo_data.save(user, function(err, user) {
-                            return done(null, false, { message: 'Invalid password' }); 
-                        });
-                    }
-                    this.updateUserOnLogin(req, user);
-                    return mongo_data.save(user, function(err, user) {
-                        return done(null, user);                    
-                    });
-                });                
-            };
-        });
-    });
-  }
+auth.authAfterVsac
 ));
-
 var app = express();
 
-var MongoLogger = winston.transports.MongoLogger = function (options) {
-    this.name = 'mongoLogger';
-    this.json = true;
-    this.level = options.level || 'info';
-  };
-
-  util.inherits(MongoLogger, winston.Transport);
-
-  MongoLogger.prototype.log = function (level, msg, meta, callback) {
-    var logEvent = JSON.parse(msg);
-    logEvent.level = level;
-    dbLogger.log(logEvent, function (err) {
-        if (err) console.log("CANNOT LOG: " + err);
-        callback(null, true);    
-    });
-  };
-
-var expressLogger = new (winston.Logger)({
-  transports: [
-    new winston.transports.File({
-      json: true,
-      colorize: true
-      , level: 'verbose'
-      , filename: GLOBALS.logdir + "/expressLog.log"
-      , maxsize: 10000000
-      , maxFiles: 10
-    })
-    , new winston.transports.Console(
-        {
-            level: 'verbose',
-            colorize: true,
-            timestamp: true
-        }) 
-    , new winston.transports.MongoLogger({
-        json: true
-    })  ]
-});
-
-var expressErrorLogger = new (winston.Logger)({
-  transports: [
-    new winston.transports.File({
-      json: true,
-      colorize: true
-      , level: 'warn'
-      , filename: GLOBALS.logdir + "/expressErrorLog.log"
-      , maxsize: 10000000
-      , maxFiles: 10
-    })
-    , new winston.transports.MongoLogger({
-        json: true
-    })
-  ]
-});
-
-var processLogger = new (winston.Logger)({
-  transports: [
-    new winston.transports.File({
-      json: true,
-      colorize: true
-      , level: 'error'
-      , filename: GLOBALS.logdir + "/nodeErrorLog.log"
-      , maxsize: 10000000
-      , maxFiles: 10
-    })
-  ]
-});
+app.use(auth.ticketAuth);
 
 process.on('uncaughtException', function (err) {
-  processLogger.error('Caught exception: ' + err.stack);
+  logging.processLogger.error('Caught exception: ' + err.stack);
 });
 
 var winstonStream = {
     write: function(message, encoding){
-        expressLogger.info(message);
+        logging.expressLogger.info(message);
     }
 };
 
@@ -220,7 +88,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use("/shared", express.static("shared", path.join(__dirname, '../shared')));
 
 app.use(function(err, req, res, next){
-  expressErrorLogger.error(JSON.stringify({msg: err.stack}));
+  logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
   console.log(err.stack);
   res.send(500, 'Something broke!');
 });
@@ -238,15 +106,15 @@ function ensureAuthenticated(req, res, next) {
 };
 
 app.get('/gonowhere', function(req, res) {
-   res.send("<html><body>Nothing here</body></html>"); 
+   res.send("<html><body>Nothing here</body></html>");
 });
 
 app.get('/', function(req, res) {
-  res.render('index');
+    res.render('index');
 });
 
 app.get('/home', function(req, res) {
-  res.render('home');
+    res.render('home');
 });
 
 app.get('/quickBoard', function(req, res) {
@@ -431,6 +299,7 @@ app.get('/myboards', function(req, res) {
 });
 
 app.post('/login', function(req, res, next) {
+  // Regenerate is used so appscan won't complain
   req.session.regenerate(function(err) {  
     passport.authenticate('local', function(err, user, info) {
       if (err) { return next(err); }
@@ -451,10 +320,6 @@ app.get('/logout', function(req, res) {
       req.logout();
       res.redirect('/');
   });
-});
-
-app.get('/listcde', function(req, res) {
-    cdesvc.listcde(req, res);
 });
 
 app.post('/cdesByUuidList', function(req, res) {
@@ -507,7 +372,7 @@ app.delete('/classification/org', function(req, res) {
         res.send(403);
         return;
     }  
-    classificationNode.removeOrgClassification(req.query, function() {
+    classificationNode.modifyOrgClassification(req.query, "remove", function() {
         res.send();
     });
 });
@@ -532,8 +397,18 @@ app.delete('/classification/cde', function(req, res) {
             res.send(); 
         } else {
             res.send(202, {error: {message: "Classification does not exists."}});
-            res.send();
         }
+    });
+});
+
+app.post('/classification/rename', function(req, res) {
+    if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
+        res.send(403, "Not Authorized");
+        return;
+    }      
+    classificationNode.modifyOrgClassification(req.body, "rename", function(err, org) {
+        if (!err) res.send(org);
+        else res.send(202, {error: {message: "Classification does not exists."}});
     });
 });
 
@@ -769,7 +644,7 @@ app.get('/cdediff/:deId', function(req, res) {
 app.get('/org/:name', function(req, res) {
    return mongo_data.orgByName(req.params.name, function (result) {
        res.send(result);
-   }); 
+   });
 });
 
 app.post('/elasticSearch', function(req, res) {
@@ -858,7 +733,7 @@ app.post('/removeAttachment', function(req, res) {
 app.post('/setAttachmentDefault', function(req, res) {
     checkCdeOwnership(req.body.deId, req, function(err, de) {
         if (err) {
-            expressLogger.info(err);
+            logging.expressLogger.info(err);
             return res.send(err);
         }  
         var state = req.body.state;
@@ -914,6 +789,7 @@ var fetchRemoteData = function() {
     vsac.getTGT(function(tgt) {
         console.log("Got TGT");
     });
+    
     elastic.fetchPVCodeSystemList();   
 };
 
@@ -1015,4 +891,3 @@ app.post("/systemAlert", function(req, res) {
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
-

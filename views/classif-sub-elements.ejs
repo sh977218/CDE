@@ -8,6 +8,7 @@
 
     </a> 
     <span ng-show="myOrg">
+        <a ng-show="page=='management'" ng-click="showRenameDialog(orgName, pathArray)" class="fa fa-pencil" ></a>
         <span ng-show="showDelete">
             Confirm
             <a class="fa fa-check" ng-click="showDelete=false; removeClassification(orgName, pathArray)" 
