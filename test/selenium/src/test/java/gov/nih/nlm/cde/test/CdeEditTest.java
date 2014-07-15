@@ -54,6 +54,17 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
         new Select(findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText("Select One");
         new Select(findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText("NINDS");
+        
+        classify("NINDS", "Disease", "Traumatic Brain Injury");
+        modalGone();
+        Assert.assertTrue(textPresent("Traumatic Brain Injury"));
+        //findElement(By.linkText("Classification")).click();
+        //classification-Disease,Traumatic Brain Injury,Outcomes and End Points
+        findElement(By.xpath("//li[@id='classification-Disease,Traumatic Brain Injury']//a[@class='fa fa-trash-o']")).click();
+        findElement(By.xpath("//li[@id='classification-Disease,Traumatic Brain Injury']//a[@class='fa fa-check']")).click();
+        hangon(0.5);
+        Assert.assertTrue(textNotPresent("Traumatic Brain Injury"));        
+        
         classify("NINDS", "Disease", "Headache");
         
    
