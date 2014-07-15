@@ -138,6 +138,6 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         findElement(By.id("classification-Disease,Spinal Muscular Atrophia,Participant/Subject History and Family History,General Health History"));        
         findElement(By.xpath("//li[@id='classification-Disease,Spinal Muscular Atrophia,Assessments and Examinations']/a/span")).click();      
         hangon(1);
-        Assert.assertTrue(textPresent("Spinal Muscular Atrophia (14)"));
+        Assert.assertTrue(textPresent("Spinal Muscular Atrophia (1"));
     }
 }

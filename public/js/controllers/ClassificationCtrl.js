@@ -31,6 +31,7 @@
     };    
      
     $scope.removeClassification = function(orgName, elts) {
+        console.log(JSON.stringify(elts));
         CdeClassification.remove({
             cdeId: $scope.cde._id
             , orgName: orgName
