@@ -46,8 +46,8 @@ exports.cdeClassification = function(body, action, cb) {
             body.categories = [body.categories];
         }
         
-        if (action === "add") classificationShared.addCategory(steward.object, body.categories, cdeClassif.saveCdeClassif);
-        if (action === "remove") {
+        if (action === classificationShared.actions.create) classificationShared.addCategory(steward.object, body.categories, cdeClassif.saveCdeClassif);
+        if (action === classificationShared.actions.delete) {
             classificationShared.modifyCategory(steward.object, body.categories, {type:"delete"}, cdeClassif.saveCdeClassif);
             
             // Delete the organization from classificaiton if organization doesn't have any descendant elements.
