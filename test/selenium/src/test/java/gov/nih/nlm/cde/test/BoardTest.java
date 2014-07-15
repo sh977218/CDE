@@ -332,4 +332,16 @@ public class BoardTest extends NlmCdeBaseTest {
         removeBoard(board1);
         removeBoard(board2);
     }  
+    
+    @Test
+    public void pagination() {
+        mustBeLoggedInAs(ninds_username, ninds_password);
+        findElement(By.linkText("My Boards")).click();
+        findElement(By.linkText("View Board")).click();
+        findElement(By.linkText("30")).click();
+        Assert.assertTrue(textPresent("Visible Tumor Anterior-Posterior Orientation Size 3 Digit Number"));
+        Assert.assertTrue(textPresent("Volumetric Measurement Left Limb Testing Result"));
+        Assert.assertTrue(textPresent("Walking difficulty age need intermittent support not applicable indicator"));
+        Assert.assertTrue(textPresent("Water reference data acquisition data acquisition time"));
+    }    
 }
