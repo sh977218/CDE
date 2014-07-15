@@ -101,7 +101,8 @@ module.exports = function(grunt) {
                             , 'public/**'
                             , 'shared/**'
                             , 'views/**'
-                            , 'config.js'
+                            , 'config/**'
+                            , 'deploy/configTest.js'
                             , 'node_modules/**'
                         ]
                         , dest: config.node.buildDir
