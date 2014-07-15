@@ -44,9 +44,7 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-passport.use(new LocalStrategy({passReqToCallback: true},
-auth.authAfterVsac
-));
+passport.use(new LocalStrategy({passReqToCallback: true}, auth.authAfterVsac));
 var app = express();
 
 app.use(auth.ticketAuth);
@@ -74,7 +72,20 @@ app.use(express.cookieParser('your secret here'));
 var sessionStore = new MongoStore({
     mongoose_connection: mongo_data.mongoose_connection  
 });
-app.use(express.session({ secret: "omgnodeworks", proxy: true, store:sessionStore }));
+app.use(function(req, res, next) {
+    this.isFile = function(req) {
+        if (req.originalUrl.substr(req.originalUrl.length-3,3) === ".js") return true;
+        if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".css") return true;
+        if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".gif") return true;
+        return false;
+    };
+    if (req.cookies['connect.sid'] || req.originalUrl === "/login" && !this.isFile(req)) {
+        var initExpressSession = express.session({ secret: "omgnodeworks", proxy: true, store:sessionStore });
+        initExpressSession(req, res, next);
+   } else {
+       next();
+   }
+});
 
 app.use(flash());
 app.use(passport.initialize());
