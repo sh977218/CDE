@@ -3,7 +3,7 @@
     <div class="container">
         <img class="img-center-responsive" src="assets/img/nih-nlm-logo.png" />
 
-        <div class="top40">
+        <div class="pt40">
             The NLM Common Data Elements (CDE) Repository is a prototype. 
             It has been designed to provide access to structured human and machine-readable definitions of data elements 
             that have been recommended or required by NIH Institutes and Centers and other organizations for use in research 
@@ -16,7 +16,7 @@
             Value Set Authority Center (VSAC).
             
         </div>
-        <div class="top40">
+        <div class="pt40">
             <p><strong>Quick CDE Search:</strong></p>
             <form name="quickSearchForm" id="quickSearchForm" class="form-inline" ng-submit="submitForm( quickSearchForm.$valid )" novalidate>
                 <!-- Search dropdown and text field -->
@@ -32,7 +32,7 @@
                             </li>
                         </ul>
                     </div>
-                    <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="1000" placeholder="Type search terms here">
+                    <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="1000" placeholder="">
 
                     <!-- Display if screen is large -->
                     <div ng-if="!isSmallScreen" class="input-group-btn">
@@ -52,7 +52,6 @@
                 </center> 
             </form>
         </div>
-        <br/>
     </div>
 </div>
 

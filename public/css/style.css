@@ -5,12 +5,37 @@ body {
 }
 
 .jumbotron {
-    background-color: #a8c4e1;
+    background-color: #95b7da;
 }
 
-.top20 { margin-top:20px; }
-.top40 { margin-top:40px; }
-.top60 { margin-top:60px; }
+.pt8 { padding-top:8px; }
+.pt20 { padding-top:20px; }
+.pt30 { padding-top:30px; }
+.pt40 { padding-top:40px; }
+.pt60 { padding-top:60px; }
+.pb8 { padding-bottom:8px; }
+.pb20 { margin-bottom:20px; }
+.pb30 { padding-bottom:30px; }
+.pb40 { padding-bottom:40px; }
+.pb60 { padding-bottom:60px; }
+
+.ib {
+    display: inline-block;
+}
+
+.searchInfo {
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.searchInfoHr {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.gray {
+    color: #a7a7a7;
+}
 
 .error-block {
     color: brown;
@@ -136,8 +161,8 @@ body {
 }
 
 .navbar-brand {
-    margin-top: -11px;
-    margin-right: 30px;
+    margin-top: -7px;
+    margin-right: 10px;
 }
 
 /* Disable modal slide down effect.  Useful during testing. */

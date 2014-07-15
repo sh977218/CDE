@@ -1,4 +1,4 @@
-function HomeCtrl($scope, $http, $location, matchmedia) {
+function HomeCtrl($scope, $http, $location) {
     $scope.setActiveMenu('HOME');
     
     // Declare variables that will be used. Not needed but makes the code clear to understand.
@@ -6,10 +6,6 @@ function HomeCtrl($scope, $http, $location, matchmedia) {
     $scope.orgList = [];
     $scope.selectedOrg = '';
     $scope.ftsearch = '';
-    
-    matchmedia.onPhone( function(mediaQueryList){
-        $scope.isSmallScreen = mediaQueryList.matches;
-    });
     
     $scope.getOrgList = function() {
         $http.get('/listOrgsFromDEClassification').then(function(response) {

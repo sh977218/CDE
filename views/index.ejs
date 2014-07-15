@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns:ng="http://angularjs.org" ng-app="cde" id="ng-app" lang="en">
     <head>        
-        <title>NLM CDE</title>
+        <title>NLM CDE Repository</title>
         <meta name="site-version" content="<%- include version.ejs %>">
         <script src="assets/js/angular-1.2.15.min.js"></script>
         <script src="assets/js/angular-route.min.js"></script>
@@ -47,9 +47,7 @@
         <%- include accordionList.ejs %> 
         <%- include selectBoardModal.ejs %> 
         <div ng-controller="MainCtrl">
-            <!--
-            *** navagation bar ***
-            -->
+            <!-- Navagation bar -->
             <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
                 <div class="container">
                     <div class="navbar-header">
@@ -67,7 +65,7 @@
                         <ul class="nav navbar-nav">
                             <li class="{{menuSearch}}"><a href="#/search">Search</a></li>
                             <li ng-show='isOrgCurator()' class="dropdown">    
-                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Create <span class="caret"></span></a>
+                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Create<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#/createCde">CDE</a></li>
                                 </ul>
@@ -104,20 +102,23 @@
                 </div>
             </div>
             
+            <!-- Alerts area -->
             <div class="navbar-fixed-bottom">
                 <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
             </div>
             
+            <!-- Main content area -->
             <div ng-view>
             </div>
         </div>
-            
+        
+        <!-- Footer area -->
         <div>
             <hr>
 
             <footer>
                 <div class="container">
-                    <div class="row top20">
+                    <div class="row pt20">
                       <div class="col-md-5">
                         <p>
                             <a href="http://www.nlm.nih.gov/copyright.html"><small>Copyright</small></a>,

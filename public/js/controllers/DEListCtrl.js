@@ -16,12 +16,16 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
     $scope.resultPerPage = 20;
 
     $scope.ftsearch = $scope.cache.get("ftsearch");
+    
+    $scope.currentSearchTerm = $scope.ftsearch;
 
     $scope.selectedOrg = $scope.cache.get("selectedOrg");
+    
     $scope.selectedElements = $scope.cache.get("selectedElements");
     if (!$scope.selectedElements) {
         $scope.selectedElements = [];
-    } 
+    }
+    
     $scope.totalItems = $scope.cache.get("totalItems");
     
     $scope.currentPage = $scope.cache.get("currentPage");
@@ -123,6 +127,7 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
     };
 
     $scope.search = function() {
+        $scope.currentSearchTerm = $scope.ftsearch;
         $scope.cache.put("ftsearch", $scope.ftsearch);
         $scope.reload();
     };
@@ -174,5 +179,22 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
         }
         $scope.cache.put("selectedElements", $scope.selectedElements);
         $scope.reload();
-    };    
+    };
+    
+    // Create string representation of what status filters are selected
+    $scope.getSelectedStatus = function() {
+        var selectedStatus = null;
+        for(var i = 0; i < $scope.registrationStatuses.length; i++) {
+            if($scope.registrationStatuses[i].selected) {
+                if( selectedStatus ) {
+                    selectedStatus += ' : ' + $scope.registrationStatuses[i].name;
+                } else {
+                    selectedStatus = $scope.registrationStatuses[i].name;
+                }
+            }
+        }
+        
+        return selectedStatus;
+    };
+    
 }

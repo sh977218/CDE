@@ -1,4 +1,4 @@
-function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, isAllowedModel, $window) {
+function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, isAllowedModel, $window, matchmedia) {
     // Global variables
     var GLOBALS = {
         max_quickboard_cdes : 10
@@ -254,5 +254,14 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         $scope.cache.removeAll();
         $scope.cacheOrgFilter(orgName);
         $scope.cache.put("selectedElements", elts);
-    };    
+    };
+    
+    matchmedia.onPhone( function(mediaQueryList){
+        $scope.isSmallScreen = mediaQueryList.matches;
+    });
+    
+    matchmedia.onTablet( function(mediaQueryList){
+        $scope.isMediumScreen = mediaQueryList.matches;
+    });
+    
 }
