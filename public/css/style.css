@@ -39,6 +39,8 @@ body {
 
 .error-block {
     color: brown;
+    font-size: 18px !important; 
+    font-weight: bold !important;
 }
 
 .inactive {

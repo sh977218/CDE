@@ -211,7 +211,7 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Quick Board ( empty )"));
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName1+"\"");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("1 hits"));
+        Assert.assertTrue(textPresent("1 results for"));
         findElement(By.linkText(cdeName1)).click();
         hangon(1);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));

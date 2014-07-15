@@ -14,7 +14,7 @@ public class HomeTest extends NlmCdeBaseTest {
     public void testSearchBox() {
         goHome();
         findElement(By.id("selectOrgDropdown")).click();
-        Assert.assertTrue(textPresent("All Organizations"));
+        Assert.assertTrue(textPresent("All Classifications"));
         Assert.assertTrue(textPresent("NINDS"));
         Assert.assertTrue(textPresent("CTEP"));
         findElement(By.linkText("CTEP")).click();
@@ -33,7 +33,7 @@ public class HomeTest extends NlmCdeBaseTest {
         findElement(By.id("searchTerms")).sendKeys("Race Category");
         Assert.assertEquals( findElement(By.id("searchTerms")).getAttribute("value"), "Race Category" );
         findElement(By.id("quickSearchReset")).click();
-        Assert.assertTrue( textPresent("All Organizations") );
+        Assert.assertTrue( textPresent("All Classifications") );
         Assert.assertEquals( findElement(By.id("searchTerms")).getAttribute("value"), "" );
     }
     

@@ -107,6 +107,8 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
                                 $scope.classifications.elements.push(elt);
                             });                            
                         }
+                        
+                        $scope.classifications;
                     });
                 }
              });
@@ -130,6 +132,7 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
         $scope.currentSearchTerm = $scope.ftsearch;
         $scope.cache.put("ftsearch", $scope.ftsearch);
         $scope.reload();
+        
     };
     
     $scope.isAllowed = function (cde) {
@@ -197,4 +200,18 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
         return selectedStatus;
     };
     
+    // Create string representation of what classification filters are selected
+    $scope.getSelectedClassifications = function() {
+        var selectedClassifications = null;
+        
+        if( $scope.selectedOrg ) {
+            selectedClassifications = $scope.selectedOrg;
+            
+            for(var i = 0; i < $scope.selectedElements.length; i++) {
+                selectedClassifications += ' : ' + $scope.selectedElements[i];
+            }
+        }
+        
+        return selectedClassifications;
+    };
 }

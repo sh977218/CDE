@@ -1,8 +1,8 @@
 <div class="container pt40 pb30">
-    <form class="form-inline" ng-submit="submitForm( quickSearchForm.$valid )">
+    <form name="advSearchForm" id="advSearchForm"  class="form-inline" ng-submit="submitForm( quickSearchForm.$valid )" novalidate>
         <!-- Search dropdown and text field -->
         <div class="input-group input-group-lg">
-            <input name="ftsearch" id="ftsearch-input" class="form-control search-query" type="text" ng-model="ftsearch" ng-maxlength="1000" placeholder="" ng-change="">
+            <input name="ftsearch" id="ftsearch-input" class="form-control search-query" type="text" ng-model="ftsearch" ng-maxlength="500" placeholder="" ng-change="">
 
             <!-- Display if screen is large -->
             <div class="input-group-btn">
@@ -12,14 +12,14 @@
         </div>
         
         <!-- Error display area -->
-        <center ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><p class="error-block"><small>Query must be 1000 characters or less.</small></p></center>
+        <center ng-show="advSearchForm.ftsearch.$invalid && !advSearchForm.ftsearch.$pristine"><p class="error-block"><small>Query terms must be 500 characters or less.</small></p></center>
     </form>
 </div>
 <hr class="searchInfoHr"/>
 <div class="container-fluid searchInfo">
-    <span class="pt8 pb8 ib">{{facets}} ... <strong>{{totalItems}}</strong> results for {{selectedOrg?selectedOrg:'All Classifications'}} | {{currentSearchTerm?'"'+currentSearchTerm+'"':'All Terms'}} | {{getSelectedStatuses()?getSelectedStatuses():'All Status'}}</span>
+    <span class="pt8 pb8 ib"><strong>{{totalItems}}</strong> results for {{selectedOrg?getSelectedClassifications():'All Classifications'}} | <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> | {{getSelectedStatuses()?getSelectedStatuses():'All Status'}}</span>
     <a href="#/cdeSearchExport" ng-show="totalItems>0">
-        <button id="gridview" value="Grid View" class="btn btn-default pull-right">
+        <button id="gridView" value="Grid View" class="btn btn-default pull-right">
             <i class="fa fa-table"></i>
             Grid View
         </button>

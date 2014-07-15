@@ -112,7 +112,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("caBIG (1)"));
         
         Assert.assertTrue(textPresent("Biomarker Gene"));
-        Assert.assertTrue(textPresent("1 hits"));
+        Assert.assertTrue(textPresent("1 results for"));
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 1);
     }

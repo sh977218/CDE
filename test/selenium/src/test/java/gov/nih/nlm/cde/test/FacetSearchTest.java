@@ -42,10 +42,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
             }
         }
         findElement(By.id("li-blank-Basic")).click();
-        Assert.assertTrue(textPresent("11 hits"));
+        Assert.assertTrue(textPresent("11 results for"));
         Assert.assertTrue(textPresent("Traffic accident other party role type"));
         findElement(By.id("li-checked-Acute Hospitalized")).click();
-        Assert.assertTrue(textPresent("24 hits"));
+        Assert.assertTrue(textPresent("24 results for"));
         elts = driver.findElements(By.id("li-blank-Assessments and Examinations"));
         for (int i = 0; i < elts.size(); i++) {
             if (elts.get(i).isDisplayed()) {
@@ -53,7 +53,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
                 i = elts.size();
             }
         }
-        Assert.assertTrue(textPresent("8 hits"));
+        Assert.assertTrue(textPresent("8 results for"));
         findElement(By.id("li-checked-Disease")).click();
     }
     

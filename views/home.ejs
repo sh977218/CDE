@@ -32,7 +32,7 @@
                             </li>
                         </ul>
                     </div>
-                    <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="1000" placeholder="">
+                    <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="500" placeholder="">
 
                     <!-- Display if screen is large -->
                     <div ng-if="!isSmallScreen" class="input-group-btn">
@@ -42,7 +42,7 @@
                 </div>
 
                 <!-- Error display area -->
-                <center ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><p class="error-block"><small>Query must be 1000 characters or less.</small></p></center>
+                <center ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><p class="error-block"><small>Query terms must be 500 characters or less.</small></p></center>
 
                 <!-- Display if screen is small -->
                 <center ng-if="isSmallScreen">
