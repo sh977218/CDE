@@ -42,6 +42,25 @@ public class CdeEditTest extends NlmCdeBaseTest {
     }
     
     @Test
+    public void createCdeValidationErrors() {
+        mustBeLoggedInAs("classificationMgtUser", "pass");
+        goHome();
+        findElement(By.linkText("Create")).click();
+        Assert.assertTrue(textPresent("Please enter a name"));
+        findElement(By.name("cde.designation")).sendKeys("abc");
+        Assert.assertTrue(textPresent("Please enter a definition"));
+        findElement(By.name("cde.definition")).sendKeys("abc");
+        Assert.assertTrue(textPresent("Please select a steward"));
+        new Select(findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText("NINDS");
+        Assert.assertTrue(textPresent("Please select at least one classification"));
+        classify("CTEP", "DISEASE", "Gynecologic");
+        Assert.assertTrue(textPresent("Please select at least one classification owned by NINDS"));
+        
+
+
+    }
+    
+    @Test
     public void createCde() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         String name = "Abracadabra";
@@ -92,11 +111,16 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
         // wait for page to load
-        findElement(By.id("submit"));
-        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("Possible Matches"));
-        findElement(By.name("cde.designation")).sendKeys("Patient Name");
+        hangon(3);
+        Assert.assertTrue(textNotPresent("Possible Matches"));
+        findElement(By.name("cde.designation")).sendKeys("10");
+        hangon(3);
+        Assert.assertTrue(textNotPresent("Possible Matches"));
+        findElement(By.name("cde.designation")).clear();
+        findElement(By.name("cde.designation")).sendKeys("ind");
+        hangon(3);
         Assert.assertTrue(textPresent("Possible Matches"));
-        Assert.assertTrue(textPresent("Patient Name"));
+        Assert.assertTrue(textPresent("Smoking History Ind"));
     }
 
     @Test
