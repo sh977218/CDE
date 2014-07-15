@@ -29,11 +29,9 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
     $scope.totalItems = $scope.cache.get("totalItems");
     
     $scope.currentPage = $scope.cache.get("currentPage");
-    if ($scope.currentPage === undefined) {
-        $scope.currentPage = 1;
-    }
     
     $scope.$watch('currentPage', function() {
+        if (!$scope.currentPage) return;
         $scope.cache.put("currentPage", $scope.currentPage);
         $scope.reload();
     });
@@ -88,10 +86,19 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
                    $scope.registrationStatuses[j].count = 0; 
                 }
                 if ($scope.facets.statuses !== undefined) {
-                    for (var i = 0; i < $scope.facets.statuses.terms.length; i++) {
-                        for (var j = 0; j < $scope.registrationStatuses.length; j++) {
-                            if ($scope.facets.statuses.terms[i].term === $scope.registrationStatuses[j].name) {
-                                $scope.registrationStatuses[j].count = $scope.facets.statuses.terms[i].count;
+                    for (var i = 0; i < $scope.registrationStatuses.length; i++) {
+                        var statusFound = false;
+                        for (var j = 0; j < $scope.facets.statuses.terms.length; j++) {
+                            if ($scope.facets.statuses.terms[j].term === $scope.registrationStatuses[i].name) {
+                                statusFound = true;
+                                $scope.registrationStatuses[i].count = $scope.facets.statuses.terms[j].count;
+                            }
+                        }
+                        if (!statusFound) {
+                            if ($scope.registrationStatuses[i].selected) {
+                                $scope.registrationStatuses[i].selected = false;
+                                $scope.reload();
+                                return;
                             }
                         }
                     }
@@ -103,9 +110,7 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
                     $http.get("/org/" + $scope.selectedOrg).then(function(response) {
                         var org = response.data;
                         if (org.classifications) {
-                            $scope.matchFacetsOrgs(org).forEach(function (elt) {
-                                $scope.classifications.elements.push(elt);
-                            });                            
+                            $scope.classifications.elements = $scope.matchFacetsOrgs(org);
                         }
                         
                         $scope.classifications;

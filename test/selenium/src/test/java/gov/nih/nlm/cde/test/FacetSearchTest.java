@@ -115,7 +115,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-caBIG")).click();
         Assert.assertTrue(textPresent("Generic Image"));
 
-        hangon(1);
+        Assert.assertTrue(textPresent("8 hits"));
         List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 8);
 
@@ -125,26 +125,26 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Generic Image")).click();
         Assert.assertTrue(textPresent("genericimage (2)"));
         findElement(By.id("li-blank-gov.nih.nci.ivi.genericimage")).click();
+        Assert.assertTrue(textPresent("2 hits"));
         
-        hangon(1);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);
         
         // Now test unclicking everything
         findElement(By.id("li-checked-Generic Image")).click();
-        hangon(1);
+        Assert.assertTrue(textPresent("8 hits"));
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 8);
         
         Assert.assertTrue(textPresent("Generic Image (2)"));
         findElement(By.id("li-blank-Generic Image")).click();
         
-        hangon(1);
+        Assert.assertTrue(textPresent("2 hits"));
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);
         
         findElement(By.id("li-checked-caBIG")).click();
-        hangon(1);
+        Assert.assertTrue(textPresent("9 hits"));
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 9);
     }

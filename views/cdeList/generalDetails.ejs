@@ -1,11 +1,11 @@
 <h4>General Details</h4>    
 <dl class="dl-horizontal">
     <dt>Name: </dt>
-    <dd id="dd_general_name">    
-        {{cde.naming[0].designation}}
+    <dd id="dd_general_name" ng-bind-html="cde.primaryNameCopy">    
+
     </dd>    
-    <dt>Steward: </dt><dd>{{cde.stewardOrg.name}}</dd>
-    <dt>Definition: </dt><dd id="dd_def">{{cde.naming[0].definition | placeholdEmpty}}</dd>
+        <dt>Steward: </dt><dd ng-bind-html="cde.stewardOrg.name"></dd>        
+    <dt>Definition: </dt><dd id="dd_def" ng-bind-html="cde.primaryDefinitionCopy | placeholdEmpty"></dd>
     <dt>Used By: </dt><dd id="dd_usedBy">
         <span ng-switch="cde.classification.length > 0">
             <span ng-switch-when="false">None</span>

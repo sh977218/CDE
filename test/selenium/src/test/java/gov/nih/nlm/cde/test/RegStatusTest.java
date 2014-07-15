@@ -50,7 +50,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.name("administrativeNote")).sendKeys("Admin Note 1");
         findElement(By.name("unresolvedIssue")).sendKeys("Unresolved Issue 1");
         findElement(By.id("saveRegStatus")).click();
-        hangon(2);
+        closeAlert();
         goToCdeByName("Investigator Identifier java.lang.Integer");
         Assert.assertTrue(textPresent("Recorded"));
         findElement(By.linkText("Status")).click();
@@ -72,7 +72,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Standard CDEs cannot be edited by their stewards"));
         modalHere();
         findElement(By.id("saveRegStatus")).click();
-        hangon(2);
+        closeAlert();
         goToCdeByName("Patient Name");
         Assert.assertTrue(textPresent("Standard"));
     }
@@ -88,7 +88,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
         Assert.assertTrue(textPresent("Retired Data Elements are not returned in searches"));
         findElement(By.id("saveRegStatus")).click();
-        hangon(2);
+        closeAlert();
         goToSearch();
         findElement(By.name("ftsearch")).sendKeys("Alkaline");
         findElement(By.id("search.submit")).click();
@@ -104,7 +104,8 @@ public class RegStatusTest extends NlmCdeBaseTest {
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         modalHere();
         findElement(By.id("saveRegStatus")).click();
-        hangon(2);
+        closeAlert();
+        hangon(1);
         logout();
         
         loginAs(cabigAdmin_username, cabigAdmin_password);
@@ -144,7 +145,36 @@ public class RegStatusTest extends NlmCdeBaseTest {
         // Can add Attachments
         findElement(By.linkText("Attachments")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("i.fa-upload")));
-        
+    }
+    
+    @Test
+    public void removeStatusStatusFilter() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        goToSearch();
+        findElement(By.id("li-blank-PBTC")).click();
+        Assert.assertTrue(textPresent("4 hits"));
+        String viewing = findElement(By.id("acc_link_0")).getText();
+        findElement(By.xpath("//span[@id='acc_link_0']/../i[@title='View']")).click();
+        Assert.assertTrue(textPresent(viewing));
+        findElement(By.xpath("//i[@id='editStatus']")).click();
+        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
+        modalHere();
+        findElement(By.id("saveRegStatus")).click();
+        closeAlert();
+        findElement(By.linkText("Search")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Preferred Standard")).click();
+        Assert.assertTrue(textPresent("1 hits"));
+        findElement(By.xpath("//i[@title='View']")).click();
+        findElement(By.xpath("//i[@id='editStatus']")).click();
+        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
+        modalHere();
+        findElement(By.id("saveRegStatus")).click();
+        closeAlert();
+        findElement(By.linkText("Search")).click();
+        hangon(1);
+        Assert.assertTrue(textPresent("4 hits"));
+        Assert.assertTrue(textNotPresent("Preferred Standard"));
     }
     
 }

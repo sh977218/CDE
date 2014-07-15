@@ -185,12 +185,77 @@ angular.module('resources')
 
             var from = (settings.currentPage - 1) * settings.resultPerPage;
             queryStuff.from = from;
+            
+            queryStuff.highlight = {
+                "order" : "score"
+                , "fields" : {
+                    "*" : {
+                        "pre_tags" : ["<strong>"]
+                        , "post_tags" : ["</strong>"]
+                        , "content": {"fragment_size" : 1000}
+                    }
+                }
+            };
+            
             return callback({query: queryStuff});
         }              
-        , generalSearchQuery: function(query, cb) {              
+        , generalSearchQuery: function(query, cb) {          
+            var elastic = this; 
             $http.post("/elasticSearch", query).then(function (response) {
-               cb(response.data);
+                elastic.highlightResults(response.data.cdes);
+                cb(response.data);
+            });
+        } 
+        , highlightResults: function(cdes) {
+            var elastic = this;
+            cdes.forEach(function(cde) {
+                elastic.highlightCde(cde);
             });
         }        
+        , highlightCde: function(cde) {
+            if (!cde.highlight) return;
+            this.highlight = function(field1,field2, cde) {
+                if (cde.highlight[field1+"."+field2]) {
+                    cde.highlight[field1+"."+field2].forEach(function(nameHighlight) {
+                        if (field1.indexOf(".")<0) var elements = cde[field1];
+                        else var elements = cde[field1.replace(/\..+$/,"")][field1.replace(/^.+\./,"")];
+                        elements.forEach(function(nameCde, i){
+                            if (nameCde[field2] === nameHighlight.replace(/<[^>]+>/gm, '')) {
+                                nameCde[field2] = nameHighlight;
+                                if (field2 === "designation" && i === 0) cde.highlight.primaryName = true;
+                            }
+                        });
+                        
+                    });
+                }
+            };
+            this.highlightOne = function(field, cde) {
+                if (cde.highlight[field]) {
+                    if (field.indexOf(".")<0) cde[field] = cde.highlight[field][0];
+                    else cde[field.replace(/\..+$/,"")][field.replace(/^.+\./,"")] = cde.highlight[field][0];            
+                }
+            };
+            //this.highlight("valueDomain.permissibleValues","valueMeaningName", cde);
+            //this.highlight("valueDomain.permissibleValues","permissibleValue", cde);
+            //this.highlight("valueDomain.permissibleValues","valueMeaningCode", cde);
+            this.highlightOne("stewardOrgCopy.name", cde);
+            this.highlightOne("primaryNameCopy", cde);
+            this.highlightOne("primaryDefinitionCopy", cde);
+            this.setMatchedBy(cde);            
+        }
+        , setMatchedBy: function(cde) {
+            if (cde.highlight.primaryNameCopy) return;
+            var field = null;
+            var matched = Object.keys(cde.highlight)[0];
+            if (matched === "naming.definition" || matched === "primaryDefinitionCopy") field = "Definition";
+            if (matched.indexOf("classificationCopy.")>-1) field = "Classification";
+            if (matched.indexOf(".concepts.")>-1) field = "Concepts";
+            if (matched.substr(0,11) === "valueDomain") field = "Permissible Values";
+            if (matched.substr(0,10) === "properties") field = "Properties";
+            if (matched === "naming.designation") field = "Alternative Name";
+            if (matched  === "stewardOrgCopy.name") field = "Steward";
+            if (matched  === "ids.id") field = "Identifier";
+            cde.highlight.matchedBy = field;
+        }
     };
 });

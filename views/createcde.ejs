@@ -32,9 +32,6 @@
 
             <div class="form-group" ng-show="cde.stewardOrg.name">
                 <label for="selectDefault">Default Classifications</label>
-                <div ng-show="cde.classification.length === 0">
-                    <i class="fa fa-warning"></i> You must select a default classification.
-                </div>
                 <%- include classif-sub-elements.ejs %>
                 <div ng-include="'classificationBody.html'">
                 </div>
@@ -45,9 +42,13 @@
             </script>            
             <br />
 
+            <div ng-show="validationErrors() !== null">
+                <i class="fa fa-warning"></i> {{validationErrors()}}
+            </div>
+            <hr/>
             <a href="#/" class="btn btn-warning">Cancel</a>
             <input id="submit" type="submit" ng-click="save()" class="btn btn-success" 
-                value="Save" ng-disabled="isClean() || createCde.$invalid || cde.classification.length === 0">                     
+                value="Save" ng-disabled="isClean() || createCde.$invalid || validationErrors() !== null">                     
             </input>
         </fieldset>
     </form>
