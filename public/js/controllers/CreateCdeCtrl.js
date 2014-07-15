@@ -25,6 +25,16 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
         });
     };
     
+    $scope.validationErrors = function() {
+        if ($scope.cde.classification.length === 0) {
+            return "Please select at least one classification";
+        } else if ($scope.cde.classification.length === 1) {
+            return "Please select at least one classification owned by " + $scope.cde.stewardOrg.name;
+        } else {
+            return null;
+        }
+    };
+    
     $scope.classificationToFilter = function() {
          if ($scope.cde != null) {
              return $scope.cde.classification;
