@@ -182,12 +182,12 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
     };
     
     // Create string representation of what status filters are selected
-    $scope.getSelectedStatus = function() {
+    $scope.getSelectedStatuses = function() {
         var selectedStatus = null;
         for(var i = 0; i < $scope.registrationStatuses.length; i++) {
             if($scope.registrationStatuses[i].selected) {
                 if( selectedStatus ) {
-                    selectedStatus += ' : ' + $scope.registrationStatuses[i].name;
+                    selectedStatus += ', ' + $scope.registrationStatuses[i].name;
                 } else {
                     selectedStatus = $scope.registrationStatuses[i].name;
                 }
