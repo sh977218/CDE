@@ -16,7 +16,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import org.openqa.selenium.NoSuchElementException;
-import java.lang.System;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -100,6 +99,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
+        Assert.assertTrue(textPresent("1 hits"));
         Assert.assertTrue(textPresent(name));
         findElement(By.id("acc_link_0")).click();
         hangon(1);
@@ -207,31 +207,6 @@ public class NlmCdeBaseTest {
         return OS.contains("win");
     }
     
-    /*public void addToQuickBoard(String cdeName1, String cdeName2) {
-        goToSearch();
-        Assert.assertTrue(textPresent("Quick Board ( empty )"));
-        findElement(By.name("ftsearch")).sendKeys("\""+cdeName1+"\"");
-        findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("1 hits"));
-        findElement(By.id("addToCompare_0")).click();
-        hangon(1);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
-        findElement(By.id("compare_0")).click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
-        Assert.assertTrue(textPresent("Quick Board ( 1 )"));
-        findElement(By.name("ftsearch")).clear();
-        findElement(By.name("ftsearch")).sendKeys("\"" + cdeName2 + "\"");
-        scrollToTop();
-        findElement(By.id("search.submit")).click();
-        hangon(2);
-        findElement(By.id("addToCompare_0")).click();
-        hangon(2);
-        findElement(By.id("compare_0")).click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
-        Assert.assertTrue(textPresent("Quick Board ( 2 )"));
-        findElement(By.linkText("Quick Board ( 2 )")).click();
-    }*/
-
     public void addToQuickBoard(String cdeName) {
         scrollToTop();
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName+"\"");
