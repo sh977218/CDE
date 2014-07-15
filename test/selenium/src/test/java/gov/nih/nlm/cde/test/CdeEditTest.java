@@ -47,17 +47,22 @@ public class CdeEditTest extends NlmCdeBaseTest {
         goHome();
         findElement(By.linkText("Create")).click();
         Assert.assertTrue(textPresent("Please enter a name"));
+        Assert.assertFalse(findElement(By.id("submit")).isEnabled());
         findElement(By.name("cde.designation")).sendKeys("abc");
         Assert.assertTrue(textPresent("Please enter a definition"));
+        Assert.assertFalse(findElement(By.id("submit")).isEnabled());
         findElement(By.name("cde.definition")).sendKeys("abc");
         Assert.assertTrue(textPresent("Please select a steward"));
+        Assert.assertFalse(findElement(By.id("submit")).isEnabled());
         new Select(findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText("NINDS");
         Assert.assertTrue(textPresent("Please select at least one classification"));
+        Assert.assertFalse(findElement(By.id("submit")).isEnabled());
         classify("CTEP", "DISEASE", "Gynecologic");
         Assert.assertTrue(textPresent("Please select at least one classification owned by NINDS"));
-        
-
-
+        Assert.assertFalse(findElement(By.id("submit")).isEnabled());
+        classify("NINDS", "Population", "Adult");
+        Assert.assertTrue(textNotPresent("Please"));
+        Assert.assertTrue(findElement(By.id("submit")).isEnabled());
     }
     
     @Test
@@ -77,15 +82,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
         classify("NINDS", "Disease", "Traumatic Brain Injury");
         modalGone();
         Assert.assertTrue(textPresent("Traumatic Brain Injury"));
-        //findElement(By.linkText("Classification")).click();
-        //classification-Disease,Traumatic Brain Injury,Outcomes and End Points
         findElement(By.xpath("//li[@id='classification-Disease,Traumatic Brain Injury']//a[@class='fa fa-trash-o']")).click();
         findElement(By.xpath("//li[@id='classification-Disease,Traumatic Brain Injury']//a[@class='fa fa-check']")).click();
         hangon(0.5);
         Assert.assertTrue(textNotPresent("Traumatic Brain Injury"));        
         
         classify("NINDS", "Disease", "Headache");
-        
    
         findElement(By.id("submit")).click();
         hangon(1);
