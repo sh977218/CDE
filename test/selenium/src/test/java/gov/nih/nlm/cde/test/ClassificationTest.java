@@ -17,8 +17,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         // Ensures that tree of classifications have finished loading.
         Assert.assertTrue(textPresent(categories[1]));
         
-        for (int i=1; i<categories.length-1; i++) {            
-            //findElement(By.xpath("//span[text() ='" + categories[i]+"']")).click();       
+        for (int i=1; i<categories.length-1; i++) {                   
             findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();
         }
         findElement(By.cssSelector("[id='addClassification-"+categories[categories.length-1]+"'] button")).click();         
@@ -89,6 +88,8 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("NINDS (7)"));
         Assert.assertTrue(textPresent("Imaging Diagnostics (7)"));
         Assert.assertTrue(textPresent("Spinal Muscular Atrophy (7)"));
+        List<WebElement> linkList = driver.findElements(By.xpath("//small[text()=' Disease (7)']"));
+        Assert.assertEquals(linkList.size(), 1);             
     }
     
     @Test

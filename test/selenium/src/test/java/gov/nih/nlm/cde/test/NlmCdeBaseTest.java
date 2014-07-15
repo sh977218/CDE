@@ -141,6 +141,7 @@ public class NlmCdeBaseTest {
     }
     
     protected void saveCde() {
+        modalHere();
         findElement(By.id("confirmSave")).click();
         hangon(2);
     }
