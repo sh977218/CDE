@@ -58,8 +58,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         classify("NINDS", "Disease", "Traumatic Brain Injury");
         modalGone();
         Assert.assertTrue(textPresent("Traumatic Brain Injury"));
-        //findElement(By.linkText("Classification")).click();
-        //classification-Disease,Traumatic Brain Injury,Outcomes and End Points
         findElement(By.xpath("//li[@id='classification-Disease,Traumatic Brain Injury']//a[@class='fa fa-trash-o']")).click();
         findElement(By.xpath("//li[@id='classification-Disease,Traumatic Brain Injury']//a[@class='fa fa-check']")).click();
         hangon(0.5);

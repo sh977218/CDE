@@ -30,8 +30,9 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
     }
     
     $scope.$watch('currentPage', function() {
+        var previousPage = $scope.cache.get("currentPage");
         $scope.cache.put("currentPage", $scope.currentPage);
-        $scope.reload();
+        if (previousPage) $scope.reload();
     });
 
     $scope.$watch('initialized', function() {
