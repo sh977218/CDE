@@ -46,6 +46,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         goHome();
         findElement(By.linkText("Create")).click();
+        findElement(By.linkText("CDE")).click();
         Assert.assertTrue(textPresent("Please enter a name"));
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
         findElement(By.name("cde.designation")).sendKeys("abc");
