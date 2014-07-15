@@ -46,12 +46,12 @@ public class BoardTest extends NlmCdeBaseTest {
         logout();
         driver.get(baseUrl + "/#/board/" + boardId);
         // not logged in, I can't see
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Not a very useful") < 0);
+        Assert.assertTrue(textNotPresent("Not a very useful"));
 
         loginAs(ctepCurator_username, ctepCurator_password);
         driver.get(baseUrl + "/#/board/" + boardId);
         // logged in as someone else, I can't see
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Not a very useful") < 0);
+        Assert.assertTrue(textNotPresent("Not a very useful"));
         
         logout();
         
@@ -80,7 +80,7 @@ public class BoardTest extends NlmCdeBaseTest {
         
         driver.get(baseUrl + "/#/board/" + boardId);
         // private again, I can't see
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Not a very useful") < 0);
+        Assert.assertTrue(textNotPresent("Not a very useful"));
 
         loginAs(boardUser, boardPassword);
         
@@ -105,7 +105,7 @@ public class BoardTest extends NlmCdeBaseTest {
                 findElement(By.id("removeBoard-" + i)).click();
                 findElement(By.id("confirmRemove-" + i)).click();
                 hangon(1);
-                Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(boardName) < 0);
+                Assert.assertTrue(textNotPresent(boardName));
                 return;
             }
         }
@@ -118,7 +118,7 @@ public class BoardTest extends NlmCdeBaseTest {
         removeBoard("Remove me board");
         goToSearch();
         findElement(By.linkText("My Boards")).click();
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Not a very useful") < 0);
+        Assert.assertTrue(textNotPresent("Not a very useful"));
     }
     
     private void pinTo(String cdeName, String boardName) {
@@ -225,7 +225,7 @@ public class BoardTest extends NlmCdeBaseTest {
         goToBoard("Unpin Board");
         findElement(By.id("unpin_0")).click();
         goToBoard("Unpin Board");
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Volumetric") < 0);
+        Assert.assertTrue(textNotPresent("Volumetric"));
         
         removeBoard("Unpin Board");
     }
@@ -290,8 +290,8 @@ public class BoardTest extends NlmCdeBaseTest {
         
         Assert.assertTrue(textPresent(pubBlood));
 
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Smoking") < 0);
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Private") < 0);
+        Assert.assertTrue(textNotPresent("Smoking"));
+        Assert.assertTrue(textNotPresent("Private"));
         
         removeBoard(pubBlood);
         removeBoard(privBlood);
@@ -318,7 +318,7 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.xpath("//li[@heading='Boards']/a")).click();
         
         Assert.assertTrue(textPresent(board1));
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(board2) < 0);
+        Assert.assertTrue(textNotPresent(board2));
 
         makePublic(board2);
 

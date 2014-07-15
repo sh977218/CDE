@@ -59,8 +59,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
         findElement(By.id("vsacIdCheck")).click();
         
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("removeVSButton")));
-        
+        Assert.assertTrue(textPresent("20121025"));
+                
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("version")).sendKeys(".1");
         saveCde();
