@@ -108,9 +108,6 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
                     $http.get("/org/" + $scope.selectedOrg).then(function(response) {
                         var org = response.data;
                         if (org.classifications) {
-                            /*$scope.matchFacetsOrgs(org).forEach(function (elt) {
-                                $scope.classifications.elements.push(elt);
-                            });*/   
                             $scope.classifications.elements = $scope.matchFacetsOrgs(org);
                         }
                     });
