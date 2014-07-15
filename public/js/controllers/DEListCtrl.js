@@ -25,11 +25,9 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
     $scope.totalItems = $scope.cache.get("totalItems");
     
     $scope.currentPage = $scope.cache.get("currentPage");
-    if ($scope.currentPage === undefined) {
-        $scope.currentPage = 1;
-    }
     
     $scope.$watch('currentPage', function() {
+        if (!$scope.currentPage) return;
         $scope.cache.put("currentPage", $scope.currentPage);
         $scope.reload();
     });
