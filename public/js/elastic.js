@@ -244,7 +244,7 @@ angular.module('resources')
             this.setMatchedBy(cde);            
         }
         , setMatchedBy: function(cde) {
-            if (cde.highlight.primaryName) return;
+            if (cde.highlight.primaryNameCopy) return;
             var field = null;
             var matched = Object.keys(cde.highlight)[0];
             if (matched === "naming.definition" || matched === "primaryDefinitionCopy") field = "Definition";

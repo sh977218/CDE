@@ -1,5 +1,11 @@
 if (typeof(exports)==="undefined") exports = {};
 
+exports.actions = {
+    create: "create"
+    , delete: "delete"
+    , rename: "rename"    
+};
+
 exports.findSteward = function(de, orgName) {
     for (var i = 0; i < de.classification.length; i++) {
         if (de.classification[i].stewardOrg.name === orgName) {
@@ -13,8 +19,8 @@ exports.modifyCategory = function(tree, fields, action, cb) {
     var lastLevel = classification.fetchLevel(tree, fields);
     for (var i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i].name === fields[fields.length-1]) {
-            if (action.type === "delete") lastLevel.elements.splice(i,1);
-            if (action.type === "rename") lastLevel.elements[i].name = action.newname;
+            if (action.type === classification.actions.delete) lastLevel.elements.splice(i,1);
+            if (action.type === classification.actions.rename) lastLevel.elements[i].name = action.newname;
             break;
         }
     }

@@ -24,6 +24,7 @@ var express = require('express')
   , auth = require( './authentication' )
   , helper = require('./helper.js')
   , logging = require('./logging.js')
+  , classificationShared = require('../shared/classificationShared.js')
 ;
 
 function findById(id, fn) {
@@ -372,7 +373,7 @@ app.delete('/classification/org', function(req, res) {
         res.send(403);
         return;
     }  
-    classificationNode.modifyOrgClassification(req.query, "remove", function() {
+    classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function() {
         res.send();
     });
 });
@@ -392,7 +393,7 @@ app.delete('/classification/cde', function(req, res) {
         res.send(403, "Not Authorized");
         return;
     }  
-    classificationNode.cdeClassification(req.query, "remove", function(err) {
+    classificationNode.cdeClassification(req.query, classificationShared.actions.delete, function(err) {
         if (!err) { 
             res.send(); 
         } else {
@@ -406,7 +407,7 @@ app.post('/classification/rename', function(req, res) {
         res.send(403, "Not Authorized");
         return;
     }      
-    classificationNode.modifyOrgClassification(req.body, "rename", function(err, org) {
+    classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function(err, org) {
         if (!err) res.send(org);
         else res.send(202, {error: {message: "Classification does not exists."}});
     });
@@ -417,7 +418,7 @@ app.post('/classification/cde', function(req, res) {
         res.send(403, "Not Authorized");
         return;
     }      
-    classificationNode.cdeClassification(req.body, "add", function(err) {
+    classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
         if (!err) { 
             res.send({ code: 200, msg: "Classification Added"}); 
         } else {

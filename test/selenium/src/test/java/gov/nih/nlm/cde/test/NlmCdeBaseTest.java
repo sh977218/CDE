@@ -141,7 +141,7 @@ public class NlmCdeBaseTest {
     }
     
     protected void saveCde() {
-        hangon(.5);
+        modalHere();
         findElement(By.id("confirmSave")).click();
         hangon(2);
     }
@@ -207,31 +207,6 @@ public class NlmCdeBaseTest {
         return OS.contains("win");
     }
     
-    /*public void addToQuickBoard(String cdeName1, String cdeName2) {
-        goToSearch();
-        Assert.assertTrue(textPresent("Quick Board ( empty )"));
-        findElement(By.name("ftsearch")).sendKeys("\""+cdeName1+"\"");
-        findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("1 hits"));
-        findElement(By.id("addToCompare_0")).click();
-        hangon(1);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
-        findElement(By.id("compare_0")).click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
-        Assert.assertTrue(textPresent("Quick Board ( 1 )"));
-        findElement(By.name("ftsearch")).clear();
-        findElement(By.name("ftsearch")).sendKeys("\"" + cdeName2 + "\"");
-        scrollToTop();
-        findElement(By.id("search.submit")).click();
-        hangon(2);
-        findElement(By.id("addToCompare_0")).click();
-        hangon(2);
-        findElement(By.id("compare_0")).click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
-        Assert.assertTrue(textPresent("Quick Board ( 2 )"));
-        findElement(By.linkText("Quick Board ( 2 )")).click();
-    }*/
-
     public void addToQuickBoard(String cdeName) {
         scrollToTop();
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName+"\"");
