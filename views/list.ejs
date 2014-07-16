@@ -6,8 +6,8 @@
 
             <!-- Display if screen is large -->
             <div class="input-group-btn">
-                <button name="search.submit" id="search.submit" class="btn btn-danger btn-lg" type="submit" ng-click="search()"><i class="fa fa-search"></i> Search</a>
-                <button name="resetSearch" id="resetSearch" class="btn btn-default btn-lg" type="button" ng-click="resetSearch()"><i class="fa fa-trash-o"></i> Reset</a>
+                <button name="search.submit" id="search.submit" class="btn btn-danger btn-lg" type="submit" ng-click="search()"><i class="fa fa-search"></i> Search</button>
+                <button name="resetSearch" id="resetSearch" class="btn btn-default btn-lg" type="button" ng-click="resetSearch()"><i class="fa fa-trash-o"></i> Reset</button>
             </div>
         </div>
         
@@ -59,7 +59,13 @@
                     <span class="hand-cursor">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
-                        <small> {{t.term}} ({{t.count}})</small>
+                        <small data-toggle="tooltip" title="say what say what!"> {{t.term}} ({{t.count}})</small>
+                        <div class="tooltip top" role="tooltip">
+                            <div class="tooltip-arrow"></div>
+                            <div class="tooltip-inner">
+                              Some tooltip text!
+                            </div>
+                        </div>
                     </span>
                 </li>
             </ul>
