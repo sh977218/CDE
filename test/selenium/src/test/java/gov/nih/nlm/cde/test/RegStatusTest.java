@@ -166,6 +166,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Preferred Standard")).click();
         Assert.assertTrue(textPresent("1 results for"));
         findElement(By.xpath("//i[@title='View']")).click();
+        hangon(0.5);
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         modalHere();

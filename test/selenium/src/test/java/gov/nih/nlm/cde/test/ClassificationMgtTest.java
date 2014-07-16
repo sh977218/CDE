@@ -127,17 +127,16 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     public void renameClassification() {
         mustBeLoggedInAs("ninds", "pass");
         gotoClassifMgt(); 
-        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Muscular Atrophy'][//span[text()=\"Spinal Muscular Atrophy\"]]/span/a")).click();
+        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()=\"Spinal Cord Injury\"]]/span/a")).click();
         modalHere();
         findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.id("renameClassifInput")).sendKeys("ia");
+        findElement(By.id("renameClassifInput")).sendKeys("ies");
         findElement(By.xpath("//button[text()='Save']")).click();
         modalGone();
-        findElement(By.id("classification-Disease,Spinal Muscular Atrophia,Assessments and Examinations"));
-        findElement(By.id("classification-Disease,Spinal Muscular Atrophia,Assessments and Examinations,Imaging Diagnostics"));
-        findElement(By.id("classification-Disease,Spinal Muscular Atrophia,Participant/Subject History and Family History,General Health History"));        
-        findElement(By.xpath("//li[@id='classification-Disease,Spinal Muscular Atrophia,Assessments and Examinations']/a/span")).click();      
+        findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification"));
+        findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification,Supplemental"));
+        findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/a/span")).click();      
         hangon(1);
-        Assert.assertTrue(textPresent("Spinal Muscular Atrophia (1"));
+        Assert.assertTrue(textPresent("Spinal Cord Injuries (5"));
     }
 }
