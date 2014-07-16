@@ -99,7 +99,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
-        Assert.assertTrue(textPresent("1 hits"));
+        Assert.assertTrue(textPresent("1 results for"));
         Assert.assertTrue(textPresent(name));
         findElement(By.id("acc_link_0")).click();
         hangon(1);
@@ -124,13 +124,7 @@ public class NlmCdeBaseTest {
     }
     
     public void modalHere() {
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.cssSelector("div.modal")).getCssValue("opacity").equals("1");
-            }
-        });
-        hangon(0.2);
+        hangon(1);
     }
     
     /*
@@ -154,9 +148,13 @@ public class NlmCdeBaseTest {
         }
     }
     
-    public boolean textPresent(String text) {
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
+    public boolean textPresent(String text, String where) {
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(where), text));
         return driver.findElement(By.cssSelector("BODY")).getText().contains(text);
+    }  
+    
+    public boolean textPresent(String text) {
+        return textPresent(text, "BODY");
     }
     
     public boolean textNotPresent(String text){
@@ -211,7 +209,7 @@ public class NlmCdeBaseTest {
         scrollToTop();
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName+"\"");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("1 hits"));
+        Assert.assertTrue(textPresent(cdeName, "#accordionList"));
         findElement(By.id("addToCompare_0")).click();
         findElement(By.name("ftsearch")).clear();
     }
