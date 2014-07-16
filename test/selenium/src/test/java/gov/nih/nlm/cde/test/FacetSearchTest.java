@@ -236,10 +236,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     public void infoBarStatus() {
         goToSearch();
         findElement(By.id("resetSearch")).click();
-        hangon(.5);
         findElement(By.id("li-blank-Qualified")).click();
         findElement(By.id("li-blank-Recorded")).click();
         Assert.assertTrue(textPresent( "Qualified, Recorded" ));
+        scrollToTop();
         findElement(By.id("resetSearch")).click();
         Assert.assertTrue(textPresent( "All Status" ));
     }

@@ -189,8 +189,8 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         matchedByNotVisibleIfPrimaryName();
         findElement(By.linkText("3")).click();
         hangon(0.5);
-        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Definition\"]")).size(), 10); // ASK why its 9
-        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Permissible Values\"]")).size(), 2); // ASK why its 3
+        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Definition\"]")).size(), 9); // Need to look into for possible race condition (note: another test is probably changing a CDE from PV to Definition)
+        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Permissible Values\"]")).size(), 3); // Need to look into for possible race condition
         Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Classification\"]")).size(), 8);
     }
 
