@@ -199,6 +199,6 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
     
     // Create string representation of what classification filters are selected
     $scope.getSelectedClassifications = function() {
-        return $scope.selectedOrg + ", " + $scope.selectedElements.join(" : ");
+        return $scope.selectedOrg + " : " + $scope.selectedElements.join(" : ");
     };
 }
