@@ -99,7 +99,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
-        Assert.assertTrue(textPresent("1 hits"));
+        Assert.assertTrue(textPresent("1 results for"));
         Assert.assertTrue(textPresent(name));
         findElement(By.id("acc_link_0")).click();
         hangon(1);
@@ -211,7 +211,7 @@ public class NlmCdeBaseTest {
         scrollToTop();
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName+"\"");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("1 hits"));
+        Assert.assertTrue(textPresent("1 results for"));
         findElement(By.id("addToCompare_0")).click();
         findElement(By.name("ftsearch")).clear();
     }

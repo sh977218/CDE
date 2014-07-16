@@ -103,7 +103,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     public void removeOne() {
         goToSearch();
         findElement(By.id("li-blank-OHSU Knight")).click();
-        Assert.assertTrue(textPresent("4 hits"));
+        Assert.assertTrue(textPresent("4 results for"));
         findElement(By.id("addToCompare_0")).click();
         findElement(By.id("addToCompare_1")).click();
         findElement(By.id("addToCompare_2")).click();
