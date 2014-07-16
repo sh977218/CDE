@@ -30,5 +30,5 @@ test {
     beforeTest { descriptor ->
         logger.lifecycle("Running test: " + descriptor)
     }    
-    maxParallelForks = 4
+    maxParallelForks = 16
 }
