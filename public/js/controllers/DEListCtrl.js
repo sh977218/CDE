@@ -3,25 +3,22 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
 
     $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
     if ($scope.registrationStatuses === undefined) {
-        $scope.registrationStatuses = [
-            {name: 'Preferred Standard'}
-            , {name: 'Standard'}
-            , {name: 'Qualified'}
-            , {name: 'Recorded'}
-            , {name: 'Candidate'}
-            , {name: 'Incomplete'}
-        ];
+        $scope.registrationStatuses = regStatusShared.statusList;
     }
-        
+
     $scope.resultPerPage = 20;
 
     $scope.ftsearch = $scope.cache.get("ftsearch");
+    
+    $scope.currentSearchTerm = $scope.ftsearch;
 
     $scope.selectedOrg = $scope.cache.get("selectedOrg");
+    
     $scope.selectedElements = $scope.cache.get("selectedElements");
     if (!$scope.selectedElements) {
         $scope.selectedElements = [];
-    } 
+    }
+    
     $scope.totalItems = $scope.cache.get("totalItems");
     
     $scope.currentPage = $scope.cache.get("currentPage");
@@ -108,6 +105,8 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
                         if (org.classifications) {
                             $scope.classifications.elements = $scope.matchFacetsOrgs(org);
                         }
+                        
+                        $scope.classifications;
                     });
                 }
              });
@@ -124,12 +123,15 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
             $scope.registrationStatuses[i].selected = false;
         }
         $scope.cache.removeAll();
+        $scope.currentSearchTerm = null;
         $scope.reload();
     };
 
     $scope.search = function() {
+        $scope.currentSearchTerm = $scope.ftsearch;
         $scope.cache.put("ftsearch", $scope.ftsearch);
         $scope.reload();
+        
     };
     
     $scope.isAllowed = function (cde) {
@@ -179,5 +181,36 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
         }
         $scope.cache.put("selectedElements", $scope.selectedElements);
         $scope.reload();
-    };    
+    };
+    
+    // Create string representation of what status filters are selected
+    $scope.getSelectedStatuses = function() {
+        var selectedStatus = null;
+        for(var i = 0; i < $scope.registrationStatuses.length; i++) {
+            if($scope.registrationStatuses[i].selected) {
+                if( selectedStatus ) {
+                    selectedStatus += ', ' + $scope.registrationStatuses[i].name;
+                } else {
+                    selectedStatus = $scope.registrationStatuses[i].name;
+                }
+            }
+        }
+        
+        return selectedStatus;
+    };
+    
+    // Create string representation of what classification filters are selected
+    $scope.getSelectedClassifications = function() {
+        var selectedClassifications = null;
+        
+        if( $scope.selectedOrg ) {
+            selectedClassifications = $scope.selectedOrg;
+            
+            for(var i = 0; i < $scope.selectedElements.length; i++) {
+                selectedClassifications += ' : ' + $scope.selectedElements[i];
+            }
+        }
+        
+        return selectedClassifications;
+    };
 }

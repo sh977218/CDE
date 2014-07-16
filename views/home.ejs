@@ -1,60 +1,56 @@
 <!-- jumbotron -->
 <div class="jumbotron">
     <div class="container">
-        <img class="img-center-responsive" src="assets/img/nih-nlm-logo.png" />
+        <img class="img-center-responsive" width="700px" src="assets/img/nih-nlm-logo.png" />
 
-        <div class="top40">
-            <p>
-                <strong>Welcome to the NLM Common Data Elements Repository.</strong>
-            </p>
+        <div class="pt40 hidden-xs">
+            The NLM Common Data Elements (CDE) Repository is a prototype. 
+            It has been designed to provide access to structured human and machine-readable definitions of data elements 
+            that have been recommended or required by NIH Institutes and Centers and other organizations for use in research 
+            and for other purposes, including those required for 'Meaningful Use' of electronic health records,
+            as established under the HITECH law.
+            <br/><br/>
+            The Repository is a platform for identifying related data elements in use across 
+            diverse areas, for harmonizing data elements, 
+            and for linking CDEs to other existing standards and terminologies, including the value sets in the 
+            Value Set Authority Center (VSAC).
             
-            <p>
-                <small>The NLM Common Data Elements (CDE) Repository is a prototype. 
-                It has been designed to provide access to structured human and machine-readable definitions of data elements 
-                that have been recommended or required by NIH Institutes and Centers and other organizations for use in research 
-                and for other purposes, including those required for 'Meaningful Use' of electronic health records,
-                as established under the HITECH law.</small>
-            </p>
-
-            <p>
-                <small>The Repository is a platform for identifying related data elements in use across 
-                diverse areas, for harmonizing data elements, 
-                and for linking CDEs to other existing standards and terminologies, including the value sets in the 
-                Value Set Authority Center (VSAC).</small>
-            </p>
         </div>
-        <div class="top40">
+        <div class="pt40">
             <p><strong>Quick CDE Search:</strong></p>
-            <div class="container-fluid">
-                <form name="quickSearchForm" id="quickSearchForm" class="form-inline" ng-submit="submitForm( quickSearchForm.$valid )" novalidate>
-                    <div class="row">
-                        <div class="col-md-8">
-                            <!-- Search dropdown and text field -->
-                            <div class="input-group input-group-lg">
-                                <div class="input-group-btn">
-                                    <button name="selectOrgDropdown" id="selectOrgDropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" 
-                                            ng-model="selectedOrg" ng-click="">{{ selectedOrg!=='' ? selectedOrg : ALLORGS }} <span class="caret"></span></button>
-                                    <ul class="dropdown-menu">
-                                        <li ng-click="updateSelectedOrg( '' )"><a href="">{{ALLORGS}}</a></li>
-                                        <li class="divider"></li>
-                                        <li ng-repeat="org in orgList.sort()" style="" ng-click="updateSelectedOrg( org )">
-                                            <a href="">{{org}}</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="1000" placeholder="Type search terms here">
-                            </div>
-                            <!-- Error display area -->
-                            <p class="error-block" ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><small>Query must be 1000 characters or less.</small></p>
-                        </div>
-                        <div class="col-md-4">
-                            <!-- Search and reset buttons -->
-                            <a name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid">
-                                <i class="fa fa-search"></i> Search</a><a name="quickSearchReset" id="quickSearchReset" class="btn btn-default btn-lg" ng-click="clearSearch()"><i class="fa fa-trash-o"></i> Reset</a>
-                        </div>
+            <form name="quickSearchForm" id="quickSearchForm" class="form-inline" ng-submit="submitForm( quickSearchForm.$valid )" novalidate>
+                <!-- Search dropdown and text field -->
+                <div class="input-group input-group-lg">
+                    <div class="input-group-btn">
+                        <button name="selectOrgDropdown" id="selectOrgDropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" 
+                                ng-model="selectedOrg" ng-click="">{{ selectedOrg!=='' ? selectedOrg : ALLORGS }} <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li ng-click="updateSelectedOrg( '' )"><a href="">{{ALLORGS}}</a></li>
+                            <li class="divider"></li>
+                            <li ng-repeat="org in orgList.sort()" style="" ng-click="updateSelectedOrg( org )">
+                                <a href="">{{org}}</a>
+                            </li>
+                        </ul>
                     </div>
-                </form>
-            </div>
+                    <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="500" placeholder="">
+
+                    <!-- Display if screen is large -->
+                    <div ng-if="!isSmallScreen" class="input-group-btn">
+                        <button name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid"><i class="fa fa-search"></i> Search</a>
+                        <button name="quickSearchReset" id="quickSearchReset" class="btn btn-default btn-lg" type="button" ng-click="clearSearch()"><i class="fa fa-trash-o"></i> Reset</a>
+                    </div>
+                </div>
+
+                <!-- Error display area -->
+                <center ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><p class="error-block"><small>Query terms must be 500 characters or less.</small></p></center>
+
+                <!-- Display if screen is small -->
+                <center ng-if="isSmallScreen">
+                    <br/>
+                    <button name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid"><i class="fa fa-search"></i> Search</a>
+                    <button name="quickSearchReset" id="quickSearchReset" class="btn btn-default btn-lg" type="button" ng-click="clearSearch()"><i class="fa fa-trash-o"></i> Reset</a>
+                </center> 
+            </form>
         </div>
     </div>
 </div>
@@ -62,22 +58,23 @@
 <div class="container">
     <div class="row">
       <div class="col-md-4">
-        <h2>Search</h2>
+        <h3>Search</h3>
+        <br/>
         <p>
-            For individual data elements, by definition, users or sources</li>
-            <br/>For sets of data elements ("boards") identified by a particular group for a particular use(e.g particular research solicitation)
+            Search for individual data elements, by definition, users or sources. Search for sets of data elements ("boards") identified by a particular group for a particular use (e.g particular research solicitation).
         <p><a class="btn btn-default" href="/#/search" role="button">Search CDEs &raquo;</a></p>
       </div>
       <div class="col-md-4">
-        <h2>Compare / Harmonize</h2>
+        <h3>Compare / Harmonize</h3>
+        <br/>
         <p>
-        Analyze and resolve differences between data elements<br/>
-        Assure that your forms are using variables that will be usable by certified EHRs
+        Analyze and resolve differences between data elements. Assure that your forms are using variables that will be usable by certified EHRs.
         </p>
       </div>
       <div class="col-md-4">
-        <h2>Create</h2>
-        <p>Draw upon the experience of colleagues and others to design unique data elements and measures 
+        <h3>Create</h3>
+        <br/>
+        <p>Draw upon the experience of colleagues and others to design unique data elements and measures.
         </p>
         <p><a class="btn btn-default" href="/#/login" role="button">Log in or register &raquo;</a></p>
       </div>

@@ -1,51 +1,58 @@
-<div class="container-fluid">
-    <br/><br/>
-    
-    <center>
-    <form class="form-inline">
-        <input id="ftsearch-input" name="ftsearch" type="text" ng-model="ftsearch" class="form-control search-query" placeholder="Search" ng-change="">  
-        <button id="search.submit" type="submit" value="Search" ng-click="search()" class="btn btn-default">
-            <i class="fa fa-search"></i>
-            Search
-        </button>
-        <button id="resetSearch" ng-click="resetSearch()" class="btn btn-default">
-            <i class="fa fa-trash-o"></i>
-            Reset
-        </button> 
-        <button  ng-click="openCloseAllSwitch('list');openCloseAll(cdes,'list')" class="btn btn-default btn-checkbox" id="openAllCb">
-            <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
-            <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
-        </button>
-        <small ng-show="cdes.length > 0" class="pull-right">
-            {{totalItems}} hits
-        </small>
+<div class="container pt40 pb30">
+    <form name="advSearchForm" id="advSearchForm"  class="form-inline" ng-submit="submitForm( quickSearchForm.$valid )" novalidate>
+        <!-- Search dropdown and text field -->
+        <div class="input-group input-group-lg">
+            <input name="ftsearch" id="ftsearch-input" class="form-control search-query" type="text" ng-model="ftsearch" ng-maxlength="500" placeholder="" ng-change="">
+
+            <!-- Display if screen is large -->
+            <div class="input-group-btn">
+                <button name="search.submit" id="search.submit" class="btn btn-danger btn-lg" type="submit" ng-click="search()"><i class="fa fa-search"></i> Search</a>
+                <button name="resetSearch" id="resetSearch" class="btn btn-default btn-lg" type="button" ng-click="resetSearch()"><i class="fa fa-trash-o"></i> Reset</a>
+            </div>
+        </div>
+        
+        <!-- Error display area -->
+        <center ng-show="advSearchForm.ftsearch.$invalid && !advSearchForm.ftsearch.$pristine"><p class="error-block"><small>Query terms must be 500 characters or less.</small></p></center>
     </form>
-    </center>
-    
-    <br/><br/>
-    
+</div>
+<hr class="searchInfoHr"/>
+<div class="container-fluid searchInfo">
+    <span class="pt8 pb8 ib"><strong>{{totalItems}}</strong> results for {{selectedOrg?getSelectedClassifications():'All Classifications'}} | <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> | {{getSelectedStatuses()?getSelectedStatuses():'All Status'}}</span>
+    <a href="#/cdeSearchExport" ng-show="totalItems>0">
+        <button id="gridView" value="Grid View" class="btn btn-default pull-right">
+            <i class="fa fa-table"></i>
+            Grid View
+        </button>
+    </a>
+    <button ng-show="totalItems>0" ng-click="openCloseAllSwitch('list');openCloseAll(cdes,'list')" class="btn btn-default btn-checkbox pull-right" id="openAllCb">
+        <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
+        <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
+    </button>
+</div>
+<hr class="searchInfoHr"/>
+<div class="container-fluid pt30">    
     <script type="text/ng-template"  id="facet_elements_tree.html">
 
         <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="selectedElements.indexOf(e.name) > -1">
-                <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e.name}}" ></i>
-                <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e.name}}" ></i>
-                <span>
-                    <small> {{e.name}} ({{e.count}})</small>
-                </span>
-            </div>
+            <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e.name}}" ></i>
+            <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e.name}}" ></i>
+            <span>
+                <small> {{e.name}} ({{e.count}})</small>
+            </span>
         </span>
         <div ng-show="selectedElements.indexOf(e.name) > -1" style="margin-left: 5px">
-                <div ng-repeat="e in e.elements | orderBy:'name'"
-                    ng-show="selectedElements.indexOf(e.name) > -1 || e.level > selectedElements.length"
-                    ng-include="'facet_elements_tree.html'"
-                    >        
-                </div>
+            <div ng-repeat="e in e.elements | orderBy:'name'"
+                ng-show="selectedElements.indexOf(e.name) > -1 || e.level > selectedElements.length"
+                ng-include="'facet_elements_tree.html'"
+                >        
+            </div>
 
         </div>
     </script>
 
     <div class="row">
-        <div class="col-md-2">
+        <div class="col-sm-2 hidden-xs">
+            <p ng-show="facets.orgs.terms" class="gray">Filter results by:</p>
             <strong ng-show="facets.orgs.terms">Classifications</strong>
             <ul class="fa-ul">
                 <li ng-repeat="t in facets.orgs.terms | orderBy:'term'" style="margin-right: -20px" ng-switch="t.term === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.term === selectedOrg || !selectedOrg">
@@ -63,10 +70,10 @@
                     >
                 </div>
             </div>
-            <strong ng-show="facets.statuses.terms">Status</strong>
+            <strong ng-show="facets.statuses.terms">Status</strong> 
             <ul class="fa-ul">
                 <li ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
-                    <span class="hand-cursor" ng-show="t.count > 0">
+                    <span class="hand-cursor" ng-show="t.count > 0" tooltip-html-unsafe="{{t.help}}" tooltip-popup-delay="500">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.name}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
                         <small> {{t.name}} ({{t.count}})</small>
@@ -74,15 +81,11 @@
                 </li>
             </ul>
         </div>
-        <div class="col-md-10">
+        <div class="col-sm-10">
             <span ng-hide="cdes.length >= 0"><h4><i class="fa fa-spinner fa-spin"></i> Searching...</h4></span>
             <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found.</h4></span>
-            <div ng-include="'accordionList.html'" ng-init="ejsPage = 'list';"></div>
+            <div id="accordionList" ng-include="'accordionList.html'" ng-init="ejsPage = 'list';"></div>
             <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="currentPage"></pagination>
-
-            <span class="pull-right">
-                <a class="btn btn-mini fa fa-table" href="#/cdeSearchExport" id="gridView"> Grid View</a>
-            </span>
         </div>
     </div>
 </div>    

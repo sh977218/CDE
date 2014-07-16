@@ -103,7 +103,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     public void removeOne() {
         goToSearch();
         findElement(By.id("li-blank-OHSU Knight")).click();
-        Assert.assertTrue(textPresent("4 hits"));
+        Assert.assertTrue(textPresent("4 results for"));
         findElement(By.id("addToCompare_0")).click();
         findElement(By.id("addToCompare_1")).click();
         findElement(By.id("addToCompare_2")).click();
@@ -111,6 +111,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         findElement(By.id("addToCompare_3")).click();
         hangon(.5);
         findElement(By.linkText("Quick Board ( 4 )")).click();
+        hangon(.5);
         Assert.assertTrue(textPresent(toRemove));
         List<WebElement> pluses = driver.findElements(By.cssSelector("i.fa-plus"));
         for (WebElement plus : pluses) {
