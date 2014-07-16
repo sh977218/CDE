@@ -70,10 +70,10 @@
                     >
                 </div>
             </div>
-            <strong ng-show="facets.statuses.terms">Status</strong>
+            <strong ng-show="facets.statuses.terms">Status</strong> 
             <ul class="fa-ul">
                 <li ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
-                    <span class="hand-cursor" ng-show="t.count > 0">
+                    <span class="hand-cursor" ng-show="t.count > 0" tooltip-html-unsafe="{{t.help}}" tooltip-popup-delay="500">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.name}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
                         <small> {{t.name}} ({{t.count}})</small>

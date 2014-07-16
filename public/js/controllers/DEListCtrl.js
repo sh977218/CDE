@@ -3,16 +3,9 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
 
     $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
     if ($scope.registrationStatuses === undefined) {
-        $scope.registrationStatuses = [
-            {name: 'Preferred Standard'}
-            , {name: 'Standard'}
-            , {name: 'Qualified'}
-            , {name: 'Recorded'}
-            , {name: 'Candidate'}
-            , {name: 'Incomplete'}
-        ];
+        $scope.registrationStatuses = regStatusShared.statusList;
     }
-        
+
     $scope.resultPerPage = 20;
 
     $scope.ftsearch = $scope.cache.get("ftsearch");
