@@ -130,6 +130,7 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
             $scope.registrationStatuses[i].selected = false;
         }
         $scope.cache.removeAll();
+        $scope.currentSearchTerm = null;
         $scope.reload();
     };
 
