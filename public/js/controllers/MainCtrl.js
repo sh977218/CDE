@@ -263,8 +263,4 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         $scope.isSmallScreen = mediaQueryList.matches;
     });
     
-    matchmedia.onTablet( function(mediaQueryList){
-        $scope.isMediumScreen = mediaQueryList.matches;
-    });
-    
 }
