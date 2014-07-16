@@ -27,7 +27,7 @@
                         <ul class="dropdown-menu">
                             <li ng-click="updateSelectedOrg( '' )"><a href="">{{ALLORGS}}</a></li>
                             <li class="divider"></li>
-                            <li ng-repeat="org in orgList" style="" ng-click="updateSelectedOrg( org )">
+                            <li ng-repeat="org in orgList.sort()" style="" ng-click="updateSelectedOrg( org )">
                                 <a href="">{{org}}</a>
                             </li>
                         </ul>
