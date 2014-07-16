@@ -154,9 +154,13 @@ public class NlmCdeBaseTest {
         }
     }
     
-    public boolean textPresent(String text) {
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
+    public boolean textPresent(String text, String where) {
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(where), text));
         return driver.findElement(By.cssSelector("BODY")).getText().contains(text);
+    }  
+    
+    public boolean textPresent(String text) {
+        return textPresent(text, "BODY");
     }
     
     public boolean textNotPresent(String text){
@@ -211,7 +215,7 @@ public class NlmCdeBaseTest {
         scrollToTop();
         findElement(By.name("ftsearch")).sendKeys("\""+cdeName+"\"");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("1 results for"));
+        Assert.assertTrue(textPresent(cdeName, "#accordionList"));
         findElement(By.id("addToCompare_0")).click();
         findElement(By.name("ftsearch")).clear();
     }
