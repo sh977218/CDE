@@ -8,7 +8,7 @@ regStatusShared.statusList = [
     }
     , {
         name: 'Standard'
-        ,help: "Standard elements are managed by the CDE Working Group. Standard elements can only be editied by the CDE Working Group" 
+        ,help: "Standard elements are managed by the CDE Working Group. Standard elements can only be editied by the CDE Working Group." 
         , curHelp: "Standard CDEs cannot be edited by their stewards"
     }
     , {
@@ -18,7 +18,7 @@ regStatusShared.statusList = [
     }
     , {
         name: 'Recorded'
-        , help: "Recorded elements are managed by their Stewards and indicate elements that have not yet been Qualified to become Standard"
+        , help: "Recorded elements are managed by their Stewards and indicate elements that have not yet been Qualified to become Standard."
         , curHelp: "Recorded CDEs are visible to the public"
     }
     , {
@@ -33,7 +33,7 @@ regStatusShared.statusList = [
     }
     , {
         name: "Retired"
-        , help: "CDE has been retired by the steward."
+        , help: "Retired elements are not visible in searches. Indicates elements that are no longer used or superceded by another element."
         , curHelp: "Retired Data Elements are not returned in searches"
     }
 ];
