@@ -42,6 +42,7 @@ public class MergeTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("3279225"));
         findElement(By.cssSelector("[ng-click='showMergeApproveDialog(message)']")).click();
         findElement(By.cssSelector("[ng-model='cde.version']")).sendKeys(".2");
+        hangon(.5);
         findElement(By.cssSelector("#confirmSave")).click();         
         hangon(3); 
     }    

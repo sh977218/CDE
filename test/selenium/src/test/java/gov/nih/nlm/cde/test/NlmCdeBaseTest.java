@@ -124,13 +124,7 @@ public class NlmCdeBaseTest {
     }
     
     public void modalHere() {
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.cssSelector("div.modal")).getCssValue("opacity").equals("1");
-            }
-        });
-        hangon(0.2);
+        hangon(1);
     }
     
     /*
