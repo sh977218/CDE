@@ -59,7 +59,13 @@
                     <span class="hand-cursor">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
-                        <small> {{t.term}} ({{t.count}})</small>
+                        <small data-toggle="tooltip" title="say what say what!"> {{t.term}} ({{t.count}})</small>
+                        <div class="tooltip top" role="tooltip">
+                            <div class="tooltip-arrow"></div>
+                            <div class="tooltip-inner">
+                              Some tooltip text!
+                            </div>
+                        </div>
                     </span>
                 </li>
             </ul>
