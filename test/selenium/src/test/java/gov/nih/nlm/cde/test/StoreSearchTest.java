@@ -40,7 +40,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-caCORE")).click();
         findElement(By.id("li-blank-caCORE")).click();
         findElement(By.id("li-blank-CSM")).click();
-        Assert.assertTrue(textPresent("2 hits"));
+        Assert.assertTrue(textPresent("2 results for"));
         List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);
         findElement(By.id("acc_link_0")).click();

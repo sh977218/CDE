@@ -112,7 +112,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("caBIG (1)"));
         
         Assert.assertTrue(textPresent("Biomarker Gene"));
-        Assert.assertTrue(textPresent("1 hits"));
+        Assert.assertTrue(textPresent("1 results for"));
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 1);
     }
@@ -189,8 +189,9 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         matchedByNotVisibleIfPrimaryName();
         findElement(By.linkText("3")).click();
         hangon(0.5);
-        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Definition\"]")).size(), 9);
-        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Permissible Values\"]")).size(), 3);
+        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Definition\"]")).size(), 9); // Need to look into for possible race condition (note: another test is probably changing a CDE from PV to Definition)
+        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Permissible Values\"]")).size(), 3); // Need to look into for possible race condition
         Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Classification\"]")).size(), 8);
     }
+
 }
