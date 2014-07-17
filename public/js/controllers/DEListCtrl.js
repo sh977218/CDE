@@ -183,34 +183,15 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
         $scope.reload();
     };
     
-    // Create string representation of what status filters are selected
+    // Create string representation of what status filters are selected    
     $scope.getSelectedStatuses = function() {
-        var selectedStatus = null;
-        for(var i = 0; i < $scope.registrationStatuses.length; i++) {
-            if($scope.registrationStatuses[i].selected) {
-                if( selectedStatus ) {
-                    selectedStatus += ', ' + $scope.registrationStatuses[i].name;
-                } else {
-                    selectedStatus = $scope.registrationStatuses[i].name;
-                }
-            }
-        }
-        
-        return selectedStatus;
-    };
+        return $scope.registrationStatuses.filter(function(s){
+            if(s.selected) return true;
+        }).map(function(s){return s.name;}).join(", ");
+    };    
     
     // Create string representation of what classification filters are selected
     $scope.getSelectedClassifications = function() {
-        var selectedClassifications = null;
-        
-        if( $scope.selectedOrg ) {
-            selectedClassifications = $scope.selectedOrg;
-            
-            for(var i = 0; i < $scope.selectedElements.length; i++) {
-                selectedClassifications += ' : ' + $scope.selectedElements[i];
-            }
-        }
-        
-        return selectedClassifications;
+        return $scope.selectedOrg + " : " + $scope.selectedElements.join(" : ");
     };
 }
