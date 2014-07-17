@@ -7,6 +7,8 @@ import org.xml.sax.InputSource;
 
 def mongoHost = args[1];
 def mongoDb = args[2];
+def testMode =  args[3] == "test"; 
+
 if(mongoHost == null || mongoDb == null)  {
     println "Please specify mongodb host and dbname: 'groovy UploadCadsr.groovy [filename] [mongodb-host] [dbname]'";
     System.exit(0);
@@ -147,7 +149,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
             && csi.ClassificationSchemeItemName.text()!=""
             && csi.ClassificationSchemeItemName.text()!=null) {
                 // only load allowed classifications
-                if (contextWhiteList.contains(ctx) || ("test".equals(mongoDb) && !contextIgnoreList.contains(ctx))) {
+                if (contextWhiteList.contains(ctx) || (testMode && !contextIgnoreList.contains(ctx))) {
                     def list = classificationsArrayMap.get(ctx);
                     if (!list) { 
                         list = [];
@@ -179,7 +181,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     newDE.append("usedByOrgs", usedByOrgs);
     
     
-    if ("test".equals(mongoDb)) {
+    if (testMode) {
         deColl.insert(newDE);
     } else {
         // If not classified, don't load
