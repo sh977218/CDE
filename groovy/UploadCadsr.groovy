@@ -179,7 +179,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     newDE.append("usedByOrgs", usedByOrgs);
     
     
-    if ("test".equals("mongoDb")) {
+    if ("test".equals(mongoDb)) {
         deColl.insert(newDE);
     } else {
         // If not classified, don't load
