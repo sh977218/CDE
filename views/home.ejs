@@ -27,7 +27,7 @@
                         <ul class="dropdown-menu">
                             <li ng-click="updateSelectedOrg( '' )"><a href="">{{ALLORGS}}</a></li>
                             <li class="divider"></li>
-                            <li ng-repeat="org in orgList" style="" ng-click="updateSelectedOrg( org )">
+                            <li ng-repeat="org in orgList.sort()" style="" ng-click="updateSelectedOrg( org )">
                                 <a href="">{{org}}</a>
                             </li>
                         </ul>
@@ -35,9 +35,9 @@
                     <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="500" placeholder="">
 
                     <!-- Display if screen is large -->
-                    <div ng-if="!isSmallScreen" class="input-group-btn">
-                        <button name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid"><i class="fa fa-search"></i> Search</a>
-                        <button name="quickSearchReset" id="quickSearchReset" class="btn btn-default btn-lg" type="button" ng-click="clearSearch()"><i class="fa fa-trash-o"></i> Reset</a>
+                    <div class="input-group-btn">
+                        <button name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid"><i class="fa fa-search"></i> Search</button>
+                        <button name="quickSearchReset" id="quickSearchReset" class="btn btn-default btn-lg" type="button" ng-click="clearSearch()"><i class="fa fa-trash-o"></i> Reset</button>
                     </div>
                 </div>
 
@@ -45,11 +45,11 @@
                 <center ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><p class="error-block"><small>Query terms must be 500 characters or less.</small></p></center>
 
                 <!-- Display if screen is small -->
-                <center ng-if="isSmallScreen">
+                <!--center>
                     <br/>
-                    <button name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid"><i class="fa fa-search"></i> Search</a>
-                    <button name="quickSearchReset" id="quickSearchReset" class="btn btn-default btn-lg" type="button" ng-click="clearSearch()"><i class="fa fa-trash-o"></i> Reset</a>
-                </center> 
+                    <button name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid"><i class="fa fa-search"></i> Search</button>
+                    <button name="quickSearchReset" id="quickSearchReset" class="btn btn-default btn-lg" type="button" ng-click="clearSearch()"><i class="fa fa-trash-o"></i> Reset</button>
+                </center--> 
             </form>
         </div>
     </div>

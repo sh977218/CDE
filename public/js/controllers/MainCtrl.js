@@ -1,4 +1,4 @@
-function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, isAllowedModel, $window, matchmedia) {
+function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, isAllowedModel, $window) {
     // Global variables
     var GLOBALS = {
         max_quickboard_cdes : 10
@@ -259,8 +259,8 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
         $scope.cache.put("selectedElements", elts);
     };
     
-    matchmedia.onPhone( function(mediaQueryList){
+    /*matchmedia.onPhone( function(mediaQueryList){
         $scope.isSmallScreen = mediaQueryList.matches;
-    });
+    });*/
     
 }

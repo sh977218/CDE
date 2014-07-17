@@ -111,6 +111,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         findElement(By.id("addToCompare_3")).click();
         hangon(.5);
         findElement(By.linkText("Quick Board ( 4 )")).click();
+        hangon(.5);
         Assert.assertTrue(textPresent(toRemove));
         List<WebElement> pluses = driver.findElements(By.cssSelector("i.fa-plus"));
         for (WebElement plus : pluses) {

@@ -6,8 +6,8 @@
 
             <!-- Display if screen is large -->
             <div class="input-group-btn">
-                <button name="search.submit" id="search.submit" class="btn btn-danger btn-lg" type="submit" ng-click="search()"><i class="fa fa-search"></i> Search</a>
-                <button name="resetSearch" id="resetSearch" class="btn btn-default btn-lg" type="button" ng-click="resetSearch()"><i class="fa fa-trash-o"></i> Reset</a>
+                <button name="search.submit" id="search.submit" class="btn btn-danger btn-lg" type="submit" ng-click="search()"><i class="fa fa-search"></i> Search</button>
+                <button name="resetSearch" id="resetSearch" class="btn btn-default btn-lg" type="button" ng-click="resetSearch()"><i class="fa fa-trash-o"></i> Reset</button>
             </div>
         </div>
         
@@ -59,7 +59,13 @@
                     <span class="hand-cursor">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
-                        <small> {{t.term}} ({{t.count}})</small>
+                        <small data-toggle="tooltip" title="say what say what!"> {{t.term}} ({{t.count}})</small>
+                        <div class="tooltip top" role="tooltip">
+                            <div class="tooltip-arrow"></div>
+                            <div class="tooltip-inner">
+                              Some tooltip text!
+                            </div>
+                        </div>
                     </span>
                 </li>
             </ul>
@@ -70,10 +76,10 @@
                     >
                 </div>
             </div>
-            <strong ng-show="facets.statuses.terms">Status</strong>
+            <strong ng-show="facets.statuses.terms">Status</strong> 
             <ul class="fa-ul">
                 <li ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
-                    <span class="hand-cursor" ng-show="t.count > 0">
+                    <span class="hand-cursor" ng-show="t.count > 0" tooltip-html-unsafe="{{t.help}}" tooltip-popup-delay="500">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.name}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
                         <small> {{t.name}} ({{t.count}})</small>
@@ -84,7 +90,7 @@
         <div class="col-sm-10">
             <span ng-hide="cdes.length >= 0"><h4><i class="fa fa-spinner fa-spin"></i> Searching...</h4></span>
             <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found.</h4></span>
-            <div ng-include="'accordionList.html'" ng-init="ejsPage = 'list';"></div>
+            <div id="accordionList" ng-include="'accordionList.html'" ng-init="ejsPage = 'list';"></div>
             <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="currentPage"></pagination>
         </div>
     </div>
