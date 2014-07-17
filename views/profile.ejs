@@ -13,36 +13,8 @@
     <div class="row" ng-controller="ProfileCtrl">
         <div class="col-md-11 col-md-offset1">
             <h4>Viewing History</h4>
-            {{ viewingHistory }} 
-            <div id="accordionList" ng-include="'accordionList.html'" ng-init="ejsPage = 'list'; cdes = viewingHistory;"></div>
-            <!--div class="panel-group" id="accordion">
-                <div class="panel panel-default" ng-repeat="cde in viewingHistory">
-                    <div class="panel-heading">
-                        <a data-toggle="collapse" data-parent="#accordion" id="acc_head_{{$index}}" data-target="#acc_body_{{$index}}" href="">
-                            {{cde.naming[0].designation}}
-                        </a>
-                    </div>
-                    <div id="acc_body_{{$index}}" class="panel-collapse collapse">
-                          <div class="panel-body">
-                                <div class="row">
-                                   <div class="col-md-6">
-                                       <%- include cdegeneraldetails.ejs %>
-                                   </div>
-                                   <div class="col-md-4">
-                                       <%- include valueDomainView.ejs %>
-                                   </div>
-                                    <div class="col-md-2">
-                                       <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" src="/data/{{attachment.fileid}}"/> 
-                                    </div>
-                                </div>
-                               <div class="row" >
-                                    <a class='btn btn-default' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
-                                    <a class="btn btn-small btn-default" ng-show="showCompareButton(cde)" ng-click="addToQuickBoard(cde)" title="Add to Compare List"><i class="fa fa-plus"></i> Compare</a>
-                               </div>
-                          </div>
-                    </div>  
-                </div>
-            </div-->
+            {{ viewingHistory.length }}
+            <div id="accordionList" ng-include="'accordionList.html'" ng-init="ejsPage = 'list';"></div>            
         </div>    
     </div>
 </div>
