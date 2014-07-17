@@ -1,7 +1,5 @@
-function ProfileCtrl($scope, ViewingHistory) {
-    $scope.viewingHistory = [];
-                
+function ProfileCtrl($scope, ViewingHistory) {               
     ViewingHistory.getCdes({start: 0}, function(cdes) {
-        $scope.viewingHistory = cdes;
+        $scope.cdes = cdes;
     });
 }

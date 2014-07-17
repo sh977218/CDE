@@ -23,8 +23,8 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
         OrgClassification.resource.remove({
             orgName: orgName
             , categories: elts
-        }, function (res) {
-            $route.reload();
+        }, function (org) {
+            $scope.org = org;
             $scope.addAlert("success", "Classification Deleted");
         });
     };    
@@ -50,7 +50,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
                     $scope.addAlert("danger", response.error.message);        
                 }
                 else {
-                    $route.reload();
+                    $scope.org = response;
                     $scope.addAlert("success", "Classification Added");                      
                 }              
             });
