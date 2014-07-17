@@ -14,7 +14,6 @@
             diverse areas, for harmonizing data elements, 
             and for linking CDEs to other existing standards and terminologies, including the value sets in the 
             Value Set Authority Center (VSAC).
-            
         </div>
         <div class="pt40">
             <p><strong>Quick CDE Search:</strong></p>
@@ -35,7 +34,7 @@
                     <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="500" placeholder="">
 
                     <!-- Display if screen is large -->
-                    <div class="input-group-btn">
+                    <div ng-if="!screenSizeXs" class="input-group-btn">
                         <button name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid"><i class="fa fa-search"></i> Search</button>
                         <button name="quickSearchReset" id="quickSearchReset" class="btn btn-default btn-lg" type="button" ng-click="clearSearch()"><i class="fa fa-trash-o"></i> Reset</button>
                     </div>
@@ -45,11 +44,11 @@
                 <center ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><p class="error-block"><small>Query terms must be 500 characters or less.</small></p></center>
 
                 <!-- Display if screen is small -->
-                <!--center>
+                <center ng-if="screenSizeXs">
                     <br/>
                     <button name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid"><i class="fa fa-search"></i> Search</button>
                     <button name="quickSearchReset" id="quickSearchReset" class="btn btn-default btn-lg" type="button" ng-click="clearSearch()"><i class="fa fa-trash-o"></i> Reset</button>
-                </center--> 
+                </center>
             </form>
         </div>
     </div>
