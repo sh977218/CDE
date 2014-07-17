@@ -147,7 +147,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
             && csi.ClassificationSchemeItemName.text()!=""
             && csi.ClassificationSchemeItemName.text()!=null) {
                 // only load allowed classifications
-                if (contextWhiteList.contains(ctx) || ("test".equals(mongodb) && !contextIgnoreList.contains(ctx))) {
+                if (contextWhiteList.contains(ctx) || ("test".equals(mongoDb) && !contextIgnoreList.contains(ctx))) {
                     def list = classificationsArrayMap.get(ctx);
                     if (!list) { 
                         list = [];
@@ -179,7 +179,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     newDE.append("usedByOrgs", usedByOrgs);
     
     
-    if ("test".equals("mongodb")) {
+    if ("test".equals("mongoDb")) {
         deColl.insert(newDE);
     } else {
         // If not classified, don't load
