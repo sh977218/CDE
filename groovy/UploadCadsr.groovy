@@ -7,6 +7,8 @@ import org.xml.sax.InputSource;
 
 def mongoHost = args[1];
 def mongoDb = args[2];
+def testMode =  args[3] == "test"; 
+
 if(mongoHost == null || mongoDb == null)  {
     println "Please specify mongodb host and dbname: 'groovy UploadCadsr.groovy [filename] [mongodb-host] [dbname]'";
     System.exit(0);
@@ -30,6 +32,7 @@ is.setEncoding("UTF-8");
 def deList = new XmlSlurper().parse(is);
 
 def contextIgnoreList = ['NINDS'];
+def contextWhiteList = ['NIDA', 'PhenX'];
 
 for (int i  = 0; i < deList.DataElement.size(); i++) {
     def cadsrDE = deList.DataElement[i];
@@ -43,6 +46,10 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         workflowStatus = 'Qualified';                        
     } else if (cadsrDE.WORKFLOWSTATUS.text().equals('APPRVD FOR TRIAL USE')) {
         workflowStatus = 'Standard';            
+    }
+    
+    if ("Standard".equals(cadsrDE.REGISTRATIONSTATUS.text())) {
+        workflowStatus = 'Standard';
     }
 
     DBObject newDE = new BasicDBObject();
@@ -132,11 +139,17 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     for (int csi_i = 0; csi_i < cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.size(); csi_i++) {
         def csi = cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM[csi_i];
         def ctx = csi.ClassificationScheme[0].ContextName.text();
+
+        // if caBIG > PhenX, replace with PhenX
+        if (ctx.equals("caBIG") && "PhenX".equals(csi.ClassificationScheme[0].PreferredName.text().trim())) {
+            ctx = 'PhenX';
+        }
         if (csi.ClassificationScheme[0].PreferredName.text()!=""
             && csi.ClassificationScheme[0].PreferredName.text()!=null
             && csi.ClassificationSchemeItemName.text()!=""
             && csi.ClassificationSchemeItemName.text()!=null) {
-                if (!contextIgnoreList.contains(ctx)) {
+                // only load allowed classifications
+                if (contextWhiteList.contains(ctx) || (testMode && !contextIgnoreList.contains(ctx))) {
                     def list = classificationsArrayMap.get(ctx);
                     if (!list) { 
                         list = [];
@@ -156,6 +169,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         newDE.append("classification",classifs);
     }
 
+
     
     def usedByOrgs = [];    
     for (int ani = 0; ani < cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.size(); ani++) {
@@ -165,7 +179,15 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         }
     }
     newDE.append("usedByOrgs", usedByOrgs);
-        
-    deColl.insert(newDE);
-        
+    
+    
+    if (testMode) {
+        deColl.insert(newDE);
+    } else {
+        // If not classified, don't load
+        // if Standard, load anyway
+        if ((newDE.get("classification") != null && newDE.get("classification").size() > 0) || "Standard".equals(cadsrDE.REGISTRATIONSTATUS.text())) {
+            deColl.insert(newDE);
+        }
+    }
 }
