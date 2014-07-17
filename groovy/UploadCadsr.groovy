@@ -29,8 +29,7 @@ InputSource is = new InputSource(reader);
 is.setEncoding("UTF-8");
 def deList = new XmlSlurper().parse(is);
 
-//def contextIgnoreList = ['NINDS'];
-
+def contextIgnoreList = ['NINDS'];
 def contextWhiteList = ['NIDA', 'PhenX'];
 
 for (int i  = 0; i < deList.DataElement.size(); i++) {
@@ -148,7 +147,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
             && csi.ClassificationSchemeItemName.text()!=""
             && csi.ClassificationSchemeItemName.text()!=null) {
                 // only load allowed classifications
-                if (contextWhiteList.contains(ctx)) {
+                if (contextWhiteList.contains(ctx) || ("test".equals(mongodb) && !contextIgnoreList.contains(ctx))) {
                     def list = classificationsArrayMap.get(ctx);
                     if (!list) { 
                         list = [];
@@ -179,10 +178,14 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     }
     newDE.append("usedByOrgs", usedByOrgs);
     
-    // If not classified, don't load
-    // if Standard, load anyway
-    if ((newDE.get("classification") != null && newDE.get("classification").size() > 0) || "Standard".equals(cadsrDE.REGISTRATIONSTATUS.text())) {
+    
+    if ("test".equals("mongodb")) {
         deColl.insert(newDE);
+    } else {
+        // If not classified, don't load
+        // if Standard, load anyway
+        if ((newDE.get("classification") != null && newDE.get("classification").size() > 0) || "Standard".equals(cadsrDE.REGISTRATIONSTATUS.text())) {
+            deColl.insert(newDE);
+        }
     }
-        
 }
