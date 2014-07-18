@@ -138,3 +138,11 @@ cdeApp.factory('isAllowedModel', function () {
     
     return isAllowedModel;
 });
+
+cdeApp.factory('orgHelpers', function () {
+    
+    isAllowedModel.isAllowed = function (terms, orgsProjection) {
+    };
+    
+    return isAllowedModel;
+});
