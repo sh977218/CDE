@@ -59,7 +59,7 @@
                     <span class="hand-cursor"  tooltip="{{t.longName}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
-                        <small> {{t.term}} ({{t.count}})</small>
+                        <small id="classifications-text-{{t.term}}"> {{t.term}} ({{t.count}})</small>
                     </span>
                 </li>
             </ul>
@@ -76,7 +76,7 @@
                     <span class="hand-cursor" ng-show="t.count > 0" tooltip-html-unsafe="{{t.help}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.name}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
-                        <small> {{t.name}} ({{t.count}})</small>
+                        <small id="status-text-{{t.name}}"> {{t.name}} ({{t.count}})</small>
                     </span>
                 </li>
             </ul>

@@ -41,7 +41,7 @@ db.orgs.insert({name: "SPOREs"});
 db.orgs.insert({name: "NICHD"});
 db.orgs.insert({name: "EDRN"});
 db.orgs.insert({name: "CIP"});
-db.orgs.insert({name: "AECC"});
+db.orgs.insert({name: "AECC", longName: "Albert Einstein Cancer Center"});
 db.orgs.insert({name: "LCC"});
 db.orgs.insert({name: "USC/NCCC"});
 db.orgs.insert({name: "Training"});

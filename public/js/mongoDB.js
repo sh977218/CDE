@@ -10,6 +10,7 @@ angular.module('resources')
         });
     }
     
+    
     callGetOrgsProjectionAPI();
     
     $interval(function() {

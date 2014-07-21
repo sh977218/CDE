@@ -16,6 +16,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.interactions.Actions;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -261,6 +262,12 @@ public class NlmCdeBaseTest {
     
     public void closeAlert() {
         findElement(By.xpath("//div[@type='alert.type']/button")).click();
+    }
+    
+    public void hovorOverElement( WebElement ele ) {
+        Actions action = new Actions(driver);
+        action.moveToElement(ele);
+        action.perform();
     }
 
 }

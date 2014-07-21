@@ -172,12 +172,12 @@ body {
 }
 
 /* Disable modal slide down effect.  Useful during testing. */
-/*.modal.fade .modal-dialog 
+.modal.fade .modal-dialog 
 {
     -moz-transform: none !important;
     -ms-transform: none !important;
     -o-transform: none !important;
     -webkit-transform: none !important;
     transform: none !important;
-}*/
+}
 
