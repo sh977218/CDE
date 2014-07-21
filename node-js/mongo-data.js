@@ -249,6 +249,22 @@ exports.listOrgs = function(callback) {
     });
 };
 
+// Retrieve array of ( name : longName ) pairs from Orgs collection
+exports.listOrgsProjection = function(callback) {
+    Org.find({}, {'_id': 0, "name":1, "longName":1}).exec(function(err, result) {
+        var orgsObj = {};
+        
+        result.forEach(function(org) {
+            if(org.longName) {
+                orgsObj[org.name] = org.longName;
+            }
+        });
+        
+        callback("", orgsObj);
+    });
+};
+
+
 exports.managedOrgs = function(callback) {
     Org.find().exec(function(err, orgs) {
         callback(orgs);

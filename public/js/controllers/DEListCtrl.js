@@ -1,4 +1,4 @@
-function DEListCtrl($scope, $http, $modal, Elastic) {
+function DEListCtrl($rootScope, $scope, $http, $modal, Elastic, orgHelpers) {
     $scope.setActiveMenu('LISTCDE');
 
     $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
@@ -109,6 +109,8 @@ function DEListCtrl($scope, $http, $modal, Elastic) {
                         $scope.classifications;
                     });
                 }
+                
+                orgHelpers.addLongNameToOrgs($scope.facets.orgs.terms, $rootScope.orgsProjection);
              });
         });  
     };

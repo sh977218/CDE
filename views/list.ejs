@@ -56,10 +56,10 @@
             <strong ng-show="facets.orgs.terms">Classifications</strong>
             <ul class="fa-ul">
                 <li ng-repeat="t in facets.orgs.terms | orderBy:'term'" style="margin-right: -20px" ng-switch="t.term === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.term === selectedOrg || !selectedOrg">
-                    <span class="hand-cursor">
+                    <span class="hand-cursor"  tooltip="{{t.longName}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
-                        <small tooltip="{{t.term}}" tooltip-placement="right" tooltip-append-to-body="true"> {{t.term}} ({{t.count}})</small>
+                        <small> {{t.term}} ({{t.count}})</small>
                     </span>
                 </li>
             </ul>
@@ -73,7 +73,7 @@
             <strong ng-show="facets.statuses.terms">Status</strong> 
             <ul class="fa-ul">
                 <li ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
-                    <span class="hand-cursor" ng-show="t.count > 0" tooltip-html-unsafe="{{t.help}}" tooltip-popup-delay="500">
+                    <span class="hand-cursor" ng-show="t.count > 0" tooltip-html-unsafe="{{t.help}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.name}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
                         <small> {{t.name}} ({{t.count}})</small>

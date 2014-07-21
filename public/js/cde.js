@@ -140,9 +140,30 @@ cdeApp.factory('isAllowedModel', function () {
 });
 
 cdeApp.factory('orgHelpers', function () {
+    return {
+        addLongNameToOrgs : function(terms, orgsProjection) {
+            /*for(var i=0; i<terms.length; i++) {
+                for(var j=0; j<orgsProjection.length; j++) {
+                    if(terms[i].term===orgsProjection[j].name) {
+                        terms[i].longName=orgsProjection[j].longName;
+                    }
+                }
+            }*/
+            
+            for(var i=0; i<terms.length; i++) {
+                if(orgsProjection[terms[i].term]) {
+                    terms[i].longName = orgsProjection[terms[i].term];
+                }
+            }
+            
+            /*terms = terms.map(function(t) {
+                if(orgsProjection[t.term]) {
+                    t.longName = orgsProjection[t.term];
+                }
+                
+                return t;
+            });*/
+        }
+    }
     
-    isAllowedModel.isAllowed = function (terms, orgsProjection) {
-    };
-    
-    return isAllowedModel;
 });

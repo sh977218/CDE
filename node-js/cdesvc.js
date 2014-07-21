@@ -47,6 +47,16 @@ exports.listOrgs = function(req, res) {
     });
 };
 
+exports.listOrgsProjection = function(req, res) {
+    mongo_data.listOrgsProjection(function(err, orgs) {
+       if (err) {
+           res.send("ERROR");
+       } else {
+           res.send(orgs);
+       }   
+    });
+};
+
 exports.priorCdes = function(req, res) {
     var cdeId = req.params.id;
     

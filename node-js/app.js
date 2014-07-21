@@ -361,6 +361,10 @@ app.get('/listOrgs', function(req, res) {
     cdesvc.listOrgs(req, res);
 });
 
+app.get('/listOrgsProjection', function(req, res) {
+    cdesvc.listOrgsProjection(req, res);
+});
+
 app.get('/listOrgsFromDEClassification', function(req, res) {
     elastic.DataElementDistinct("classification.stewardOrg.name", function(result) {
         res.send(result);
