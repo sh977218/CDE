@@ -1,4 +1,4 @@
-function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, isAllowedModel, $window, screenSize, getOrgsProjection) {
+function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, isAllowedModel, $window, screenSize, GetOrgsProjection) {
     // Global variables
     var GLOBALS = {
         max_quickboard_cdes : 10

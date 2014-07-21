@@ -139,7 +139,7 @@ cdeApp.factory('isAllowedModel', function () {
     return isAllowedModel;
 });
 
-cdeApp.factory('orgHelpers', function () {
+cdeApp.factory('OrgHelpers', function () {
     return {
         addLongNameToOrgs : function(terms, orgsProjection) {
             /*for(var i=0; i<terms.length; i++) {
