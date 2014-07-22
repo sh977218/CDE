@@ -63,6 +63,7 @@ public class NlmCdeBaseTest {
     }
     
     protected void mustBeLoggedInAs(String username, String password) {
+        goHome();
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
             loginAs(username, password);
@@ -188,15 +189,16 @@ public class NlmCdeBaseTest {
         goToSearch();
         try {
             findElement(By.linkText("Log In")).click();
-        } catch (TimeoutException e) {
+        } catch (NoSuchElementException e) {
             logout();
             findElement(By.linkText("Log In")).click();            
         }
+        hangon(1);
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
-        findElement(By.cssSelector("button.btn")).click();
+        findElement(By.xpath("//button[text() = 'Log in']")).click();
         findElement(By.linkText(username));
     }
     
