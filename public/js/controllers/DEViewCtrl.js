@@ -42,7 +42,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
            $scope.getPVTypeaheadCodeSystemNameList(); 
             PriorCdes.getCdes({cdeId: de._id}, function(dataElements) {
                 $scope.priorCdes = dataElements;
-            });                
+            });
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;

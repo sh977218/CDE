@@ -1,6 +1,6 @@
-<div class="container-fluid">
-    <div>{{message}}</div>
-    <tabset>
+<div class="container">
+    <div class="pt20">{{message}}</div>
+    <tabset class="pt20">
         <tab heading="Broadcast">
             <form name="form" role="form">
                 <div class="control-group" ng-class="{error: form.version.$invalid}">
@@ -21,12 +21,28 @@
             </div>
         </tab>
         <tab heading="Organizations">
-            <div class="row" ng-repeat="c in orgs">
-                <div class="col-md-11" id="orgName-{{$index}}">{{c.name}}</div>
+            <form class="form-inline pt20 pb20" role="form" id="addOrgForm" name="addOrgForm" novalidate>
+                <div class="row">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="newOrgName" name="newOrgName" placeholder="Organization Name" ng-model="newOrg.name" required></input>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="newOrgLongName" name="newOrgLongName" placeholder="Organization Long Name" ng-model="newOrg.longName"></input>
+                    </div>
+                    <button type="submit" class="btn btn-success" id="addOrg" ng-click="addOrg()" ng-disabled="addOrgForm.newOrgName.$invalid">Add It</button>
+                </div>
+            </form>
+            
+            <!-- TODO: We should really be using a BS3 table here so it displays correctly on all devices. -->
+            <div class="row pb8">
+                <div class="col-md-3"><strong>Organization Name:</strong></div>
+                <div class="col-md-5"><strong>Organization Long Name:</strong></div>
             </div>
-            <div class="row input-prepend input-append">
-                <input class="col-md-10" type="text" name="newOrg.name" ng-model="newOrg.name"></input>
-                <span class="add-on" ng-click="addOrg()" id="addOrg"> +</span>
+            <div class="row" ng-repeat="c in orgs | orderBy:'name'">
+                <div class="col-md-3" id="orgName-{{$index}}">{{c.name}}</div>
+                <div class="col-md-5">
+                    <div inline-edit id="orgLongName-{{$index}}" model="c.longName" is-allowed="true" on-ok="updateOrg(c)"></div>
+                </div>
             </div>
         </tab>
         <tab heading="Organizations Admins">

@@ -81,12 +81,15 @@ angular.module('resources', ['ngResource'])
           , removeOrgCurator: function(data, success, error) {
             $http.post('/removeOrgCurator', data).success(success).error(error);
           }  
-          , addOrg: function(name, success, error) {
-            $http.post('/addOrg', name).success(success).error(error);
+          , addOrg: function(data, success, error) {
+            $http.post('/addOrg', data).success(success).error(error);
           }  
           , removeOrg: function(id, success, error) {
             $http.post('/removeOrg', id).success(success).error(error);
-          }  
+          }
+          , updateOrg: function(org, success, error) {
+              $http.post('/updateOrg', org).success(success).error(error);
+          }
         };
     })
     .factory("LinkToVsac", function($resource) {

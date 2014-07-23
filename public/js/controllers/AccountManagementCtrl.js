@@ -1,4 +1,4 @@
-function AccountManagementCtrl($scope, $http, AccountManagement) {
+function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
     $scope.setActiveMenu('ACCOUNT');
     $scope.admin = {};
     $scope.newOrg = {};
@@ -6,6 +6,7 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     $scope.orgCurator = {};
     $scope.admin = {};
     $scope.curator = {};
+
     
     $http.get("/systemAlert").then(function(response) {
        $scope.broadcast = {message: response.data}; 
@@ -124,15 +125,15 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
     };
 
     $scope.addOrg = function() {
-        AccountManagement.addOrg({
-            name: $scope.newOrg.name
-            },
-            function(res) {
+        AccountManagement.addOrg(
+            {name:$scope.newOrg.name, longName:$scope.newOrg.longName}
+            , function(res) {
                   $scope.message = res;
                   $scope.orgs = $scope.getOrgs();
             }
         );
         $scope.newOrg.name = "";
+        $scope.newOrg.longName = "";
     };
 
     $scope.removeOrg = function(byId) {
@@ -144,7 +145,18 @@ function AccountManagementCtrl($scope, $http, AccountManagement) {
                   $scope.orgs = $scope.getOrgs();
             }
         );
-    };    
+    };
+    
+    $scope.updateOrg = function(c) {
+        $timeout(function(){
+            AccountManagement.updateOrg(c,
+                function(res) {
+                    $scope.message = res;
+                    $scope.orgs = $scope.getOrgs();
+                }
+            );
+        },0);
+    };
     
     $scope.saveMessage = function() {
         $http.post('/systemAlert', {alert: $scope.broadcast.message});

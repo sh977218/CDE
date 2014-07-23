@@ -171,6 +171,10 @@ body {
     float: right;
 }
 
+.form-inline .form-group input {
+    width:250px;
+}
+
 /* Disable modal slide down effect.  Useful during testing. */
 .modal.fade .modal-dialog 
 {

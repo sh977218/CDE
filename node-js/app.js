@@ -383,6 +383,14 @@ app.post('/addOrg', function(req, res) {
     }
 });
 
+app.post('/updateOrg', function(req, res) {
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        orgsvc.updateOrg(req, res);
+    } else {
+        res.send(403, "You are not authorized to update this organization.");                    
+    }
+});
+
 app.delete('/classification/org', function(req, res) {
     if (!usersvc.isCuratorOf(req.user, req.query.orgName)) {
         res.send(403);
