@@ -27,10 +27,9 @@ tasks.withType(Test) {
 
 test {    
     useTestNG(
-
     )
     beforeTest { descriptor ->
         logger.lifecycle("Running test: " + descriptor)
     }    
-    maxParallelForks = 14
+    maxParallelForks = Integer.parseInt(forkNb)
 }

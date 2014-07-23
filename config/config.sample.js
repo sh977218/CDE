@@ -47,6 +47,9 @@ var config = {
         }
         , buildDir: "../build"
     }
+    , test: {
+        forkNb: 12
+    }
 };
 
 module.exports = config;

@@ -87,7 +87,7 @@ module.exports = function(grunt) {
                 }
             }  
             , runTests: {
-                command: function() { return "gradle -b test/selenium/build.gradle -PtestUrl=" + grunt.config('testUrl') + " clean test &";}
+                command: function() { return "gradle -b test/selenium/build.gradle -PtestUrl=" + grunt.config('testUrl') + " -PforkNb=" + config.test.forkNb + " clean test &";}
             }
         }    
         , copy: {
