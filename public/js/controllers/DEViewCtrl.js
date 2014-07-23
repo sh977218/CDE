@@ -61,7 +61,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         if ($scope.initialized && cde.archived) {
             return false;
         }
-        if ($scope.user.siteAdmin) {
+        if ($scope.user && $scope.user.siteAdmin) {
             return true;
         } else {   
             if ($scope.initialized && $scope.myOrgs) {
