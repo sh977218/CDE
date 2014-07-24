@@ -266,7 +266,7 @@ public class NlmCdeBaseTest {
         findElement(By.xpath("//div[@type='alert.type']/button")).click();
     }
     
-    public void hovorOverElement( WebElement ele ) {
+    public void hoverOverElement( WebElement ele ) {
         Actions action = new Actions(driver);
         action.moveToElement(ele);
         action.perform();

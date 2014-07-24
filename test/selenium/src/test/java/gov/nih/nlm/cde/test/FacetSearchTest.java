@@ -260,13 +260,13 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     }
     
     @Test
-    public void hovorOverClassifications() {
+    public void hoverOverClassifications() {
         goToSearch();
         Assert.assertTrue(textNotPresent("Albert Einstein Cancer Center"));
-        hovorOverElement(findElement(By.id("classifications-text-AECC")));
+        hoverOverElement(findElement(By.id("classifications-text-AECC")));
         Assert.assertTrue(textPresent("Albert Einstein Cancer Center"));
         
-        hovorOverElement(findElement(By.id("classifications-text-caBIG")));
+        hoverOverElement(findElement(By.id("classifications-text-caBIG")));
         Assert.assertTrue(textNotPresent("Albert Einstein Cancer Center"));
     }
 }

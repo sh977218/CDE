@@ -14,7 +14,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.linkText("Organizations")).click();
         findElement(By.name("newOrgName")).sendKeys(orgName);
         
-        if( orgLongName!=null && !orgLongName.isEmpty() ) {
+        if( orgLongName!=null ) {
             findElement(By.name("newOrgLongName")).sendKeys(orgLongName);
         }
         
@@ -22,7 +22,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Org Added"));
         Assert.assertTrue(textPresent(orgName));
         
-        if( orgLongName!=null && !orgLongName.isEmpty() ) {
+        if( orgLongName!=null ) {
             Assert.assertTrue(textPresent(orgLongName));
         }
     }

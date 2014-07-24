@@ -110,7 +110,7 @@ function DEListCtrl($rootScope, $scope, $http, $modal, Elastic, OrgHelpers) {
                     });
                 }
                 
-                OrgHelpers.addLongNameToOrgs($scope.facets.orgs.terms, $rootScope.orgsProjection);
+                OrgHelpers.addLongNameToOrgs($scope.facets.orgs.terms, $rootScope.orgsLongName);
              });
         });  
     };

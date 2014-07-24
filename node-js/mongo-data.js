@@ -255,7 +255,7 @@ exports.listOrgs = function(callback) {
 };
 
 // Retrieve array of ( name : longName ) pairs from Orgs collection
-exports.listOrgsProjection = function(callback) {
+exports.listOrgsLongNames = function(callback) {
     Org.find({}, {'_id': 0, "name":1, "longName":1}).exec(function(err, result) {
         var orgsObj = {};
         
@@ -295,7 +295,7 @@ exports.removeOrg = function (id, callback) {
   });
 };
 
-exports.updateOrg = function(org, res) {
+exports.updateOrgLongName = function(org, res) {
   Org.findOne({'name': org.name}).exec(function(err, found) {
       if(found) {
           Org.update({'name':org.name}, { 'longName':org.longName }).exec();

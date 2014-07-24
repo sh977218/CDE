@@ -361,8 +361,8 @@ app.get('/listOrgs', function(req, res) {
     cdesvc.listOrgs(req, res);
 });
 
-app.get('/listOrgsProjection', function(req, res) {
-    cdesvc.listOrgsProjection(req, res);
+app.get('/listOrgsLongNames', function(req, res) {
+    cdesvc.listOrgsLongNames(req, res);
 });
 
 app.get('/listOrgsFromDEClassification', function(req, res) {

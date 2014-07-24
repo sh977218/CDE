@@ -2,6 +2,7 @@ var express = require('express')
   , request = require('request')
   , util = require('util')
   , mongo_data = require('./mongo-data')
+  , logging = require('./logging.js')
 ;
 
 exports.listform = function(req, res) {
@@ -47,9 +48,10 @@ exports.listOrgs = function(req, res) {
     });
 };
 
-exports.listOrgsProjection = function(req, res) {
-    mongo_data.listOrgsProjection(function(err, orgs) {
+exports.listOrgsLongNames = function(req, res) {
+    mongo_data.listOrgsLongNames(function(err, orgs) {
        if (err) {
+           logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
            res.send("ERROR");
        } else {
            res.send(orgs);

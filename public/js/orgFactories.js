@@ -1,28 +1,28 @@
 angular.module('resources')
-.factory('GetOrgsProjection', function($rootScope, $interval, $http) {
-    var getOrgsProjectionInterval = 1000 * 60 * 10 * 1; // 10 min
+.factory('GetOrgsLongNames', function($rootScope, $interval, $http) {
+    var getOrgsLongNameInterval = 1000 * 60 * 10 * 1; // 10 min
     
-    function callGetOrgsProjectionAPI() {
-        $http.get('/listOrgsProjection').success(function(response) {
-            $rootScope.orgsProjection = response;
+    function callGetOrgsLongNameAPI() {
+        $http.get('/listOrgsLongNames').success(function(response) {
+            $rootScope.orgsLongName = response;
         }).error(function() {
-            console.log('ERROR - callGetOrgsProjectionAPI: Error retrieving list of orgs');
+            console.log('ERROR - callGetOrgsLongNameAPI: Error retrieving list of orgs');
         });
     }
     
-    callGetOrgsProjectionAPI();
+    callGetOrgsLongNameAPI();
     
     $interval(function() {
-        callGetOrgsProjectionAPI();
-    }, getOrgsProjectionInterval);
+        callGetOrgsLongNameAPI();
+    }, getOrgsLongNameInterval);
 })
 .factory('OrgHelpers', function () {
     return {
-        addLongNameToOrgs : function(terms, orgsProjection) {
-            if(orgsProjection) {
+        addLongNameToOrgs : function(terms, orgsLongName) {
+            if(orgsLongName) {
                 for(var i=0; i<terms.length; i++) {
-                    if(orgsProjection[terms[i].term]) {
-                        terms[i].longName = orgsProjection[terms[i].term];
+                    if(orgsLongName[terms[i].term]) {
+                        terms[i].longName = orgsLongName[terms[i].term];
                     }
                 }
             }
