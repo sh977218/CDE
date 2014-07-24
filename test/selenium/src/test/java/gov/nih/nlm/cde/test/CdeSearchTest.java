@@ -181,17 +181,29 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     }
     
     @Test 
-    public void searchHighlight() {
+    public void searchHighlightDefinition() {
         goToSearch();
-        findElement(By.name("ftsearch")).sendKeys("patient");
+        findElement(By.name("ftsearch")).sendKeys("\"graded scale\"");
         findElement(By.id("search.submit")).click();    
-        hangon(0.5);
-        matchedByNotVisibleIfPrimaryName();
-        findElement(By.linkText("3")).click();
-        hangon(0.5);
-        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Definition\"]")).size(), 9); // Need to look into for possible race condition (note: another test is probably changing a CDE from PV to Definition)
-        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Permissible Values\"]")).size(), 3); // Need to look into for possible race condition
-        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Classification\"]")).size(), 8);
+        Assert.assertTrue(textPresent("| \"graded scale"));
+        Assert.assertTrue(driver.findElements(By.xpath("//span[text()=\"Definition\"]")).size() > 5); 
     }
-
+    
+    @Test 
+    public void searchHighlightPv() {
+        goToSearch();
+        findElement(By.name("ftsearch")).sendKeys("sometimes");
+        findElement(By.id("search.submit")).click();    
+        Assert.assertTrue(textPresent("| sometimes"));
+        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Permissible Values\"]")).size(), 4);
+    }
+   
+    @Test 
+    public void searchHighlightClassif() {
+        goToSearch();
+        findElement(By.name("ftsearch")).sendKeys("duchenne");
+        findElement(By.id("search.submit")).click();    
+        Assert.assertTrue(textPresent("| duchenne"));
+        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Classification\"]")).size(), 3);
+    }
 }

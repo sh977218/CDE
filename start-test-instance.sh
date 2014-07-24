@@ -4,7 +4,7 @@ mongo test deploy/dbInit.js
 mongo cde-logs-test deploy/logInit.js
 
 groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml localhost test test 
-groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx localhost test 
+groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx localhost test --testMode
 groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx localhost test 
 
 sleep 10;
@@ -16,8 +16,8 @@ export curl_res=$(curl http://localhost:9200/cdetest/_count)
 
 if [ "$curl_res" == "$target" ] 
 then
-    gradle -b test/selenium/build.gradle -PtestUrl=localhost:3001 -PforkNb:12 -Ptimeout:8 clean test & 
-    #gradle -b test/selenium/build.gradle -Dtest.single=ClassificationTest -PtestUrl=localhost:3001 test & 
+#    gradle -b test/selenium/build.gradle -PtestUrl=localhost:3001 -PforkNb=12 -Ptimeout=8 clean test & 
+    gradle -b test/selenium/build.gradle -Dtest.single=ApiTest -PtestUrl=localhost:3001  -PforkNb=12 -Ptimeout=8 test & 
     export NODE_ENV=test
     node node-js/app > test-console.out
 else
