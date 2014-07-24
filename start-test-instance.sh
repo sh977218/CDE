@@ -16,7 +16,7 @@ export curl_res=$(curl http://localhost:9200/cdetest/_count)
 
 if [ "$curl_res" == "$target" ] 
 then
-    gradle -b test/selenium/build.gradle -PtestUrl=localhost:3001 clean test & 
+    gradle -b test/selenium/build.gradle -PtestUrl=localhost:3001 -PforkNb:12 -Ptimeout:8 clean test & 
     #gradle -b test/selenium/build.gradle -Dtest.single=ClassificationTest -PtestUrl=localhost:3001 test & 
     export NODE_ENV=test
     node node-js/app > test-console.out

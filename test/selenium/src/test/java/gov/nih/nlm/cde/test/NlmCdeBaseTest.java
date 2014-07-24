@@ -36,7 +36,9 @@ public class NlmCdeBaseTest {
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";    
     protected static String macosx_detected_message = "Max OS X Detected\nStarting ./chromedriver";     
     
-    
+    protected static int defaultTimeout = 8;
+//    protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
+      
     public static WebDriverWait wait;
 
     @BeforeTest

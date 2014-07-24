@@ -49,6 +49,7 @@ var config = {
     }
     , test: {
         forkNb: 12
+        , timeout: 8
     }
 };
 
