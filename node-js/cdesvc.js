@@ -170,7 +170,7 @@ function arrayEquals(arr1, arr2) {
         return false;
     }
     for (var i = 0; i < arr1.length; i++) {
-        if (arr1[i] !== arr2[i]) {
+        if (JSON.stringify(arr1[i]) !== JSON.stringify(arr2[i])) {
             return false;
         }
     }
@@ -195,13 +195,17 @@ exports.diff = function(req, res) {
                            diff.after = {};
                            
                            if (dataElement.naming[0].designation !== priorDe.naming[0].designation) {
-                               diff.before.name = priorDe.naming[0].designation;
-                               diff.after.name = dataElement.naming[0].designation;
+                               diff.before.primaryName = priorDe.naming[0].designation;
+                               diff.after.primaryName = dataElement.naming[0].designation;
                            }
                            if (dataElement.naming[0].definition !== priorDe.naming[0].definition) {
-                               diff.before.definition = priorDe.naming[0].definition;
-                               diff.after.definition = dataElement.naming[0].definition;
+                               diff.before.primaryDefinition = priorDe.naming[0].definition;
+                               diff.after.primaryDefinition = dataElement.naming[0].definition;
                            }
+                           if (!arrayEquals(priorDe.naming.slice(), dataElement.naming.slice())) {
+                               diff.before.naming = priorDe.naming;
+                               diff.after.naming = dataElement.naming;
+                           }                           
                            if (dataElement.version !== priorDe.version) {
                                diff.before.version = priorDe.version;
                                diff.after.version = dataElement.version;

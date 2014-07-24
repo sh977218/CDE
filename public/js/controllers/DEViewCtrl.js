@@ -90,15 +90,15 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         
         CdeDiff.get({deId: cde._id}, function(diffResult) {
             $scope.diff = {};
-            if (diffResult.before.name) {
-                var d = dmp.diff_main(diffResult.before.name, diffResult.after.name);
+            if (diffResult.before.primaryName) {
+                var d = dmp.diff_main(diffResult.before.primaryName, diffResult.after.primaryName);
                 dmp.diff_cleanupSemantic(d);
-                $scope.diff.name = dmp.diff_prettyHtml(d);
+                $scope.diff.primaryName = dmp.diff_prettyHtml(d);
             }
-            if (diffResult.before.definition) {
-                var d = dmp.diff_main(diffResult.before.definition, diffResult.after.definition);
+            if (diffResult.before.primaryDefinition) {
+                var d = dmp.diff_main(diffResult.before.primaryDefinition, diffResult.after.primaryDefinition);
                 dmp.diff_cleanupSemantic(d);
-                $scope.diff.definition = dmp.diff_prettyHtml(d);
+                $scope.diff.primaryDefinition = dmp.diff_prettyHtml(d);
             }            
             if (diffResult.before.version) {
                 $scope.diff.version = "Before: " + diffResult.before.version + " -- After: " + diffResult.after.version;
