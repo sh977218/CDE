@@ -84,6 +84,27 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     $scope.revert = function(cde) {
         $scope.reload({cdeId: cde._id});
     };
+
+    $scope.compareLists = function(listA, listB) {
+        var missingInA = listA.filter(function(pvb) {
+            return listB.filter(function(pva){return JSON.stringify(pva)===JSON.stringify(pvb);}).length===0;
+        });
+        return missingInA;
+    };
+
+    $scope.setDiff2 = function(diffResult, property) {
+        if ((diffResult.before[property.first] && diffResult.before[property.first][property.second]) || (diffResult.after[property.first]&& diffResult.after[property.first][property.second])) {
+            $scope.diff[property.first] = {};
+            $scope.diff[property.first][property.second] = {
+                removed: $scope.compareLists(diffResult.before[property.first][property.second], diffResult.after[property.first][property.second])
+                , added: $scope.compareLists(diffResult.after[property.first][property.second], diffResult.before[property.first][property.second])
+            };              
+        }        
+    };    
+    
+    $scope.showDiff = function(diff, fields) {
+        return diff[fields.first][fields.second].removed.length>0 || diff[fields.first][fields.second].added.length>0;
+    };    
     
     $scope.viewDiff = function (cde) {
         var dmp = new diff_match_patch();
@@ -116,7 +137,10 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             }
             if (diffResult.before.naming || diffResult.after.naming) {
                 $scope.diff.naming = "Modified";
-            }            
+            }          
+            $scope.setDiff2(diffResult, {first: "property", second: "concepts"});       
+            $scope.setDiff2(diffResult, {first: "objectClass", second: "concepts"});       
+            $scope.setDiff2(diffResult, {first: "dataElementConcept", second: "concepts"});                 
         });
     };
     

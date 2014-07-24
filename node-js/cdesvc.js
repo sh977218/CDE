@@ -4,6 +4,8 @@ var express = require('express')
   , mongo_data = require('./mongo-data')
 ;
 
+var cdesvc = this;
+
 exports.listform = function(req, res) {
     var from = req.query["from"],
         pagesize = req.query["pagesize"],
@@ -177,6 +179,15 @@ function arrayEquals(arr1, arr2) {
     return true;
 }
 
+exports.setDiff2 = function(dataElement, priorDe, property, diff) {
+    if (!arrayEquals(dataElement[property.first][property.second], priorDe[property.first][property.second])) {
+        diff.before[property.first] = {};
+        diff.after[property.first] = {};
+        diff.before[property.first][property.second] = priorDe[property.first][property.second];
+        diff.after[property.first][property.second] = dataElement[property.first][property.second];                             
+    }    
+};
+
 exports.diff = function(req, res) {
     if (req.params.deId == "undefined") {
         res.send("Please specify an identifier as input.");
@@ -226,7 +237,9 @@ exports.diff = function(req, res) {
                                diff.before.permissibleValues = priorDe.valueDomain.permissibleValues;
                                diff.after.permissibleValues = dataElement.valueDomain.permissibleValues;                              
                            }
-                           
+                           cdesvc.setDiff2(dataElement, priorDe, {first: "property", second: "concepts"}, diff);                           
+                           cdesvc.setDiff2(dataElement, priorDe, {first: "objectClass", second: "concepts"}, diff);
+                           cdesvc.setDiff2(dataElement, priorDe, {first: "dataElementConcept", second: "concepts"}, diff);                           
                            res.send(diff);
                            
                        });

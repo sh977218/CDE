@@ -40,6 +40,24 @@
             <dt ng-show="diff.datatype">Datatype: </dt><dd><span ng-bind-html="diff.datatype"></span></dd>
             <dt ng-show="diff.permissibleValues">Permissible Values: </dt><dd><span ng-bind-html="diff.permissibleValues"></span></dd>
             <dt ng-show="diff.naming">Naming: </dt><dd><span ng-bind-html="diff.naming"></span></dd>
+            <dt ng-show="diff.property.concepts.removed.length>0 || diff.property.concepts.added.length>0">Concepts (Property): </dt>
+            <dd diff ng-show="diff.property.concepts.removed.length>0 || diff.property.concepts.added.length>0" values="diff.property.concepts"></dd>
+            
+            <dt ng-show="diff.objectClass.concepts.removed.length>0 || diff.objectClass.concepts.added.length>0">Concepts (Class): </dt>
+            <dd diff ng-show="diff.objectClass.concepts.removed.length>0 || diff.objectClass.concepts.added.length>0" values="diff.objectClass.concepts"></dd>
+
+            <dt ng-show="diff.dataElementConcept.concepts.removed.length>0 || diff.dataElementConcept.concepts.added.length>0">Concepts (Data Element): </dt>
+            <dd diff ng-show="diff.dataElementConcept.concepts.removed.length>0 || diff.dataElementConcept.concepts.added.length>0" values="diff.dataElementConcept.concepts"></dd> 
+            
         </dl>
     </div>
 </div>
+
+<script type="text/ng-template" id="/propertyDiff.html">
+    <span ng-if="values.removed.length>0">Removed: </span><span ng-repeat="pv in values.removed">
+        {{ renderValue(pv) }};
+    </span>
+    <span ng-if="values.added.length>0">Added: </span><span ng-repeat="pv in values.added">
+        {{ renderValue(pv) }};
+    </span>
+</script>
