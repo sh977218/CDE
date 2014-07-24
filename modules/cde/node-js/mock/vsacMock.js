@@ -1,4 +1,5 @@
 require('../../deploy/configTest.js');
+require(__dirname+'/../../deploy/configTest.js');
 
 var express = require('express')
   , https = require('https')

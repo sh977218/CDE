@@ -1,4 +1,6 @@
-require('../deploy/configTest.js');
+//require('../deploy/configTest.js');
+//console.log(__dirname+'/../deploy/configTest.js');
+//require(__dirname+'/../deploy/configTest.js');
 
 var express = require('express')
   , http = require('http')
