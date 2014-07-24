@@ -114,6 +114,9 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             if (diffResult.before.permissibleValues || diffResult.after.permissibleValues) {
                 $scope.diff.permissibleValues = "Modified";
             }
+            if (diffResult.before.naming || diffResult.after.naming) {
+                $scope.diff.naming = "Modified";
+            }            
         });
     };
     
