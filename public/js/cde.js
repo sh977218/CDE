@@ -138,18 +138,3 @@ cdeApp.factory('isAllowedModel', function () {
     
     return isAllowedModel;
 });
-
-cdeApp.factory('OrgHelpers', function () {
-    return {
-        addLongNameToOrgs : function(terms, orgsProjection) {
-            if(orgsProjection) {
-                for(var i=0; i<terms.length; i++) {
-                    if(orgsProjection[terms[i].term]) {
-                        terms[i].longName = orgsProjection[terms[i].term];
-                    }
-                }
-            }
-        }
-    }
-    
-});
