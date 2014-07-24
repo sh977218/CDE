@@ -28,6 +28,8 @@ var Message = conn.model('Message', schemas.message);
 
 var gfs = Grid(conn.db, mongoose.mongo);
 
+var mongo_data = this;
+
 exports.DataElement = DataElement;
 
 exports.boardsByUserId = function(userId, callback) {
@@ -218,12 +220,21 @@ exports.deByUuidAndVersion = function(uuid, version, callback) {
     });
 };
 
+exports.formatCde = function(cde) {
+    function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}
+    cde._doc.classificationCopy = cde.classification;
+    cde._doc.stewardOrgCopy = cde.stewardOrg;
+    cde._doc.primaryNameCopy = escapeHTML(cde.naming[0].designation);
+    cde._doc.primaryDefinitionCopy = escapeHTML(cde.naming[0].definition); 
+};
+
 exports.cdesByIdList = function(idList, callback) {
     DataElement.find().where('_id')
-            .in(idList)
-            .slice('valueDomain.permissibleValues', 10)
-            .exec(function(err, cdes) {
-       callback("", cdes); 
+        .in(idList)
+        .slice('valueDomain.permissibleValues', 10)
+        .exec(function(err, cdes) {
+            cdes.forEach(mongo_data.formatCde);
+            callback("", cdes); 
     });
 };
 
@@ -232,14 +243,8 @@ exports.cdesByUuidList = function(idList, callback) {
             .in(idList)
             .slice('valueDomain.permissibleValues', 10)
             .exec(function(err, cdes) {
-                cdes.forEach(function(cde) {
-                    function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}
-                    cde._doc.classificationCopy = cde.classification;
-                    cde._doc.stewardOrgCopy = cde.stewardOrg;
-                    cde._doc.primaryNameCopy = escapeHTML(cde.naming[0].designation);
-                    cde._doc.primaryDefinitionCopy = escapeHTML(cde.naming[0].definition);                    
-                });
-        callback("", cdes); 
+                cdes.forEach(mongo_data.formatCde);
+                callback("", cdes); 
     });
 };
 

@@ -79,7 +79,7 @@ app.use(function(req, res, next) {
         if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".gif") return true;
         return false;
     };
-    if (req.cookies['connect.sid'] || req.originalUrl === "/login" && !this.isFile(req)) {
+    if ((req.cookies['connect.sid'] || req.originalUrl === "/login") && !this.isFile(req)) {
         var initExpressSession = express.session({ secret: "omgnodeworks", proxy: true, store:sessionStore });
         initExpressSession(req, res, next);
    } else {
@@ -396,8 +396,8 @@ app.delete('/classification/org', function(req, res) {
         res.send(403);
         return;
     }  
-    classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function() {
-        res.send();
+    classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function(err, org) {
+        res.send(org);
     });
 });
 
@@ -406,8 +406,8 @@ app.post('/classification/org', function(req, res) {
         res.send(403);
         return;
     }      
-    classificationNode.addOrgClassification(req.body, function(result) {
-        res.send(result);
+    classificationNode.addOrgClassification(req.body, function(err, org) {
+        res.send(org);
     });
 });
 

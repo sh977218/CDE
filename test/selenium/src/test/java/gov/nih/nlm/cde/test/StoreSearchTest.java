@@ -72,7 +72,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         goToCdeByName("Administration, Management Performed Study Activity Variance Reason ISO21090.ST.v1.0");
         findElement(By.id("editStatus")).click();
         modalHere();
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
+        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         findElement(By.id("saveRegStatus")).click();
         Assert.assertTrue(textPresent("Saved"));
         logout();
@@ -81,15 +81,15 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(textPresent("10"));
         Assert.assertTrue(linkList.size() > 10);
-        findElement(By.id("li-blank-Standard")).click();
-        findElement(By.id("li-checked-Standard"));
+        findElement(By.id("li-blank-Preferred Standard")).click();
+        findElement(By.id("li-checked-Preferred Standard"));
         hangon(2);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));        
         // Expectation, less than 10 standard CDEs when this test runs.
         Assert.assertTrue(linkList.size() < 10);
         scrollToTop();
         findElement(By.id("resetSearch")).click();
-        findElement(By.id("li-blank-Standard"));
+        findElement(By.id("li-blank-Preferred Standard"));
         Assert.assertTrue(textPresent("PBTC ("));
         linkList = driver.findElements(By.cssSelector("div.panel-default"));        
         Assert.assertTrue(linkList.size() > 10);
