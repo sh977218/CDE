@@ -302,7 +302,7 @@ public class BoardTest extends NlmCdeBaseTest {
     @Test
     public void cdeBoards() {
         hangon(.5);
-        mustBeLoggedInAs(boardUser, boardPassword);
+        mustBeLoggedInAs("boarduser1", boardPassword);
         String board1 = "First CDE Board";
         String board2 = "Second CDE Board";
         

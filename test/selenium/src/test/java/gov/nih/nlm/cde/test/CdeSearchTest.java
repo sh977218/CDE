@@ -192,18 +192,18 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     @Test 
     public void searchHighlightPv() {
         goToSearch();
-        findElement(By.name("ftsearch")).sendKeys("sometimes");
+        findElement(By.name("ftsearch")).sendKeys("myopathic");
         findElement(By.id("search.submit")).click();    
-        Assert.assertTrue(textPresent("| sometimes"));
-        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Permissible Values\"]")).size(), 4);
+        Assert.assertTrue(textPresent("| myopathic"));
+        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Permissible Values\"]")).size(), 1);
     }
    
     @Test 
     public void searchHighlightClassif() {
         goToSearch();
-        findElement(By.name("ftsearch")).sendKeys("duchenne");
+        findElement(By.name("ftsearch")).sendKeys("ataxia");
         findElement(By.id("search.submit")).click();    
-        Assert.assertTrue(textPresent("| duchenne"));
-        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Classification\"]")).size(), 3);
+        Assert.assertTrue(textPresent("| ataxia"));
+        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Classification\"]")).size(), 5);
     }
 }
