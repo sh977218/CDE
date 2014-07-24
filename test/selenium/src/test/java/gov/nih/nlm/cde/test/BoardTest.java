@@ -245,7 +245,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     @Test
     public void editBoard() {
-        mustBeLoggedInAs(boardUser, boardPassword);
+        mustBeLoggedInAs("boarduserEdit", boardPassword);
         createBoard("Edit Board", "Test");
         findElement(By.linkText("My Boards")).click();
         String mod = findElement(By.id("dd_mod")).getText();
