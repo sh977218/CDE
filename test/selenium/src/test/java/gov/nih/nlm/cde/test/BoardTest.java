@@ -223,6 +223,7 @@ public class BoardTest extends NlmCdeBaseTest {
         createBoard("Unpin Board", "test");
         pinTo("Volumetric", "Unpin Board");
         goToBoard("Unpin Board");
+        Assert.assertTrue(textPresent("Volumetric"));
         findElement(By.id("unpin_0")).click();
         goToBoard("Unpin Board");
         Assert.assertTrue(textNotPresent("Volumetric"));
