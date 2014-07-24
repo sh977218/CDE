@@ -39,9 +39,9 @@
                 <div class="col-md-5"><strong>Organization Long Name:</strong></div>
             </div>
             <div class="row" ng-repeat="c in orgs | orderBy:'name'">
-                <div class="col-md-3" id="orgName-{{$index}}">{{c.name}}</div>
+                <div class="col-md-3" id="orgName-{{c.name}}">{{c.name}}</div>
                 <div class="col-md-5">
-                    <div inline-edit id="orgLongName-{{$index}}" model="c.longName" is-allowed="true" on-ok="updateOrg(c)"></div>
+                    <div inline-edit id="orgLongName-{{c.name}}" model="c.longName" is-allowed="true" on-ok="updateOrg(c)"></div>
                 </div>
             </div>
         </tab>

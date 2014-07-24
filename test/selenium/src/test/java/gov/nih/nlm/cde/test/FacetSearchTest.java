@@ -17,7 +17,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("GRDR (75)"));
     }
 
-    /*@Test
+    @Test
     public void statusFacets() {
         goToSearch();
         Assert.assertTrue(textPresent("Qualified (4"));
@@ -257,7 +257,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent( "blah blah blah" ));
         findElement(By.id("resetSearch")).click();
         Assert.assertTrue(textPresent( "All Terms" ));
-    }*/
+    }
     
     @Test
     public void hovorOverClassifications() {
