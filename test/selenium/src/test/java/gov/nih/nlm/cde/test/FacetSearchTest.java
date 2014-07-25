@@ -160,7 +160,8 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         modalHere();
         findElement(By.id("saveRegStatus")).click();
         hangon(1);
-        goToSearch();          
+        goToSearch();  
+        Assert.assertTrue(textPresent("Preferred Standard"));
         findElement(By.id("li-blank-Preferred Standard")).click();
         hangon(2);
         Assert.assertTrue(textPresent("Noncompliant Reason Text"));
