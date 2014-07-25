@@ -47,7 +47,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
             if (prior.getText().contains("Duchenne Muscular") && prior.getText().contains("Therapies")) {
                 prior.findElement(By.tagName("button")).click();
                 Assert.assertTrue(textPresent("Classification Already Exists"));
-                findElement(By.cssSelector(".alert .close")).click();
+                closeAlert();
             }
         }
         findElement(By.xpath("//button[text() = 'Done']")).click();
