@@ -228,7 +228,6 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#pvCode-4 .fa-check")).click();  
         
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-edit")).click(); 
-        Assert.assertTrue(textPresent("Confirm"));
         findElement(By.cssSelector("#pvCodeSystem-4 input[ng-show=\"typeaheadSource.length>0\"]")).sendKeys(".1");
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-check")).click();        
         
