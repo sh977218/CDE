@@ -28,6 +28,7 @@
     };    
     
     $scope.selectPriorClassification = function (classif) {
+        classif.cdeId = cde._id; 
         addClassification.addClassification(classif);
     };
     
