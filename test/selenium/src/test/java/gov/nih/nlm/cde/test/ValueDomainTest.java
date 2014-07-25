@@ -26,7 +26,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("vsacId")).sendKeys("invalidId");
         findElement(By.id("vsacIdCheck")).click();
         Assert.assertTrue(textPresent("Invalid VSAC OID"));
-        findElement(By.cssSelector("button.close")).click();
+        closeAlert();
         findElement(By.linkText("Update O.I.D")).click();
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
         findElement(By.id("vsacIdCheck")).click();
@@ -260,7 +260,6 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Post traumatic amnesia duration range");
         findElement(By.linkText("Permissible Values")).click();         
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-edit")).click();
-        Assert.assertTrue(textPresent("Confirm"));
         findElement(By.cssSelector("#pvCodeSystem-0 input[ng-show=\"typeaheadSource.length>0\"]")).sendKeys("SNOMEDCT");
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-check")).click();
         findElement(By.id("openSave")).click();

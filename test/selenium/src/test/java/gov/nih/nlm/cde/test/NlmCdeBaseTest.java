@@ -136,6 +136,14 @@ public class NlmCdeBaseTest {
         hangon(2);
     }
     
+    public void closeAlert() {
+        try {
+            findElement(By.cssSelector(".alert .close")).click();
+        } catch(Exception e) {
+                    
+        }
+    }
+    
     protected void saveCde() {
         modalHere();
         findElement(By.id("confirmSave")).click();
@@ -261,10 +269,6 @@ public class NlmCdeBaseTest {
 
     public void scrollTo( String y ) {
         ((JavascriptExecutor)driver).executeScript("scroll(0," + y + ");");
-    }
-    
-    public void closeAlert() {
-        findElement(By.xpath("//div[@type='alert.type']/button")).click();
     }
 
 }
