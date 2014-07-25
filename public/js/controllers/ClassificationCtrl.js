@@ -16,7 +16,6 @@
                     return {
                         addClassification: function(newClassification) {
                             CdeClassification.save(newClassification, function(res) {
-                                newClassification.categories.pop();    
                                 $scope.addAlert("success", res.msg);                                
                             });                   
                         }
