@@ -237,9 +237,13 @@ exports.diff = function(req, res) {
                                diff.before.permissibleValues = priorDe.valueDomain.permissibleValues;
                                diff.after.permissibleValues = dataElement.valueDomain.permissibleValues;                              
                            }
+                           if (JSON.stringify(dataElement.registrationState) !== JSON.stringify(priorDe.registrationState)) {
+                               diff.before.registrationState = priorDe.registrationState;
+                               diff.after.registrationState = dataElement.registrationState;
+                           }                           
                            cdesvc.setDiff2(dataElement, priorDe, {first: "property", second: "concepts"}, diff);                           
                            cdesvc.setDiff2(dataElement, priorDe, {first: "objectClass", second: "concepts"}, diff);
-                           cdesvc.setDiff2(dataElement, priorDe, {first: "dataElementConcept", second: "concepts"}, diff);                           
+                           cdesvc.setDiff2(dataElement, priorDe, {first: "dataElementConcept", second: "concepts"}, diff);    
                            res.send(diff);
                            
                        });

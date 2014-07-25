@@ -137,7 +137,10 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             }
             if (diffResult.before.naming || diffResult.after.naming) {
                 $scope.diff.naming = "Modified";
-            }          
+            }      
+            if (diffResult.before.registrationState || diffResult.after.registrationState) {
+                $scope.diff.registrationState = "Modified";
+            }                
             $scope.setDiff2(diffResult, {first: "property", second: "concepts"});       
             $scope.setDiff2(diffResult, {first: "objectClass", second: "concepts"});       
             $scope.setDiff2(diffResult, {first: "dataElementConcept", second: "concepts"});                 

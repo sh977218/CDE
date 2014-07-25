@@ -49,6 +49,10 @@
             <dt ng-show="diff.dataElementConcept.concepts.removed.length>0 || diff.dataElementConcept.concepts.added.length>0">Concepts (Data Element): </dt>
             <dd diff ng-show="diff.dataElementConcept.concepts.removed.length>0 || diff.dataElementConcept.concepts.added.length>0" values="diff.dataElementConcept.concepts"></dd> 
             
+            <dt ng-show="diff.registrationState">Registration State: </dt>
+            <dd><span ng-bind-html="diff.registrationState"></span></dd>
+            
+            
         </dl>
     </div>
 </div>
