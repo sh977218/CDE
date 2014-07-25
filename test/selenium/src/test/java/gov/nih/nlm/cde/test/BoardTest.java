@@ -223,6 +223,7 @@ public class BoardTest extends NlmCdeBaseTest {
         createBoard("Unpin Board", "test");
         pinTo("Volumetric", "Unpin Board");
         goToBoard("Unpin Board");
+        Assert.assertTrue(textPresent("Volumetric"));
         findElement(By.id("unpin_0")).click();
         goToBoard("Unpin Board");
         Assert.assertTrue(textNotPresent("Volumetric"));
@@ -245,7 +246,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     @Test
     public void editBoard() {
-        mustBeLoggedInAs(boardUser, boardPassword);
+        mustBeLoggedInAs("boarduserEdit", boardPassword);
         createBoard("Edit Board", "Test");
         findElement(By.linkText("My Boards")).click();
         String mod = findElement(By.id("dd_mod")).getText();
@@ -302,7 +303,7 @@ public class BoardTest extends NlmCdeBaseTest {
     @Test
     public void cdeBoards() {
         hangon(.5);
-        mustBeLoggedInAs(boardUser, boardPassword);
+        mustBeLoggedInAs("boarduser1", boardPassword);
         String board1 = "First CDE Board";
         String board2 = "Second CDE Board";
         
