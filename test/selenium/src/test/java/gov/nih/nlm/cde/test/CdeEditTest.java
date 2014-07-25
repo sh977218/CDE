@@ -187,7 +187,8 @@ public class CdeEditTest extends NlmCdeBaseTest {
     @Test
     public void cdeHistoryComplement() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");
+        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");      
+        
         findElement(By.linkText("Naming")).click();
         findElement(By.xpath("//button[text()=\" Add Naming\"]")).click();
         modalHere();
@@ -212,6 +213,16 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Naming:"));
         Assert.assertTrue(textPresent("Added: LOINC, Code Name 1, Code ID 1;"));
         
+        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");            
+        findElement(By.xpath("//i[@id='editStatus']")).click();
+        modalHere();
+        new Select(findElement(By.xpath("//label[text()=\"Registration Status\"]/following-sibling::select"))).selectByValue("Recorded");
+        findElement(By.xpath("//div[@id=\"regStatusModalFooter\"]//button[text()=\"Save\"]")).click();     
+        modalGone();
+        findElement(By.linkText("History")).click();
+        findElement(By.xpath("//table[@id = 'historyTable']//tr[3]//td[4]/a")).click();
+        Assert.assertTrue(textPresent("Registration State:"));
+        hangon(5000);
     }    
     /*
     @Test
