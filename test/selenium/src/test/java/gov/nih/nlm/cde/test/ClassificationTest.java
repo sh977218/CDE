@@ -21,7 +21,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
             findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();
         }
         findElement(By.cssSelector("[id='addClassification-"+categories[categories.length-1]+"'] button")).click();         
-        findElement(By.cssSelector(".alert .close")).click();
+        closeAlert();
         findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
         hangon(1);
         findElement(By.linkText("Classification")).click();

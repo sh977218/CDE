@@ -72,6 +72,7 @@ module.exports = function(grunt) {
                                 , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " test"
                                 , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
                                 , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
+                                , "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " test/createLargeBoard.js"
                             ].join("&&")
                 }
             }
@@ -87,7 +88,7 @@ module.exports = function(grunt) {
                 }
             }  
             , runTests: {
-                command: function() { return "gradle -b test/selenium/build.gradle -PtestUrl=" + grunt.config('testUrl') + " clean test &";}
+                command: function() { return "gradle -b test/selenium/build.gradle -PtestUrl=" + grunt.config('testUrl') + " -Ptimeout=" + config.test.timeout + " -PforkNb=" + config.test.forkNb + " clean test &";}
             }
         }    
         , copy: {
