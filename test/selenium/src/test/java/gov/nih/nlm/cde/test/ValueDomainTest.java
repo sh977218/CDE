@@ -305,7 +305,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values"));
-        Assert.assertTrue(findElement(By.id("multipleValues_input")).isSelected());
+        wait.until(ExpectedConditions.elementSelectionStateToBe(findElement(By.id("multipleValues_input")), true));
     }
     
     @Test
