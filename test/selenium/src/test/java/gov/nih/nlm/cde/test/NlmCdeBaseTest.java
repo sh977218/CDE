@@ -37,7 +37,8 @@ public class NlmCdeBaseTest {
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";    
     protected static String macosx_detected_message = "Max OS X Detected\nStarting ./chromedriver";     
     
-    
+    protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
+      
     public static WebDriverWait wait;
 
     @BeforeTest
@@ -59,8 +60,8 @@ public class NlmCdeBaseTest {
         driver = new ChromeDriver(caps);
         driver.get(baseUrl);
         driver.manage().window().setSize(new Dimension(1024,800));
-        driver.manage().timeouts().implicitlyWait(8, TimeUnit.SECONDS);
-        wait = new WebDriverWait(driver, 8, 200);
+        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+        wait = new WebDriverWait(driver, defaultTimeout, 200);
     }
     
     protected void mustBeLoggedInAs(String username, String password) {
@@ -116,6 +117,7 @@ public class NlmCdeBaseTest {
     }
     
     protected WebElement findElement(By by) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }
     
@@ -133,6 +135,14 @@ public class NlmCdeBaseTest {
     */
     public void modalGone()  {
         hangon(2);
+    }
+    
+    public void closeAlert() {
+        try {
+            findElement(By.cssSelector(".alert .close")).click();
+        } catch(Exception e) {
+                    
+        }
     }
     
     protected void saveCde() {
@@ -260,10 +270,6 @@ public class NlmCdeBaseTest {
 
     public void scrollTo( String y ) {
         ((JavascriptExecutor)driver).executeScript("scroll(0," + y + ");");
-    }
-    
-    public void closeAlert() {
-        findElement(By.xpath("//div[@type='alert.type']/button")).click();
     }
     
     public void hoverOverElement( WebElement ele ) {
