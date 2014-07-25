@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+//import com.sun.org.apache.bcel.internal.generic.Select;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -40,7 +41,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("submit")).click();
         hangon(1);
     }
-    
+    /*
     @Test
     public void createCdeValidationErrors() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
@@ -175,7 +176,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent(cdeName + "[name change number 1]"));
         Assert.assertTrue(textPresent("the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]"));
         Assert.assertTrue(textNotPresent("Permissible Values:"));
-        Assert.assertTrue(textNotPresent("Modified"));
         
         // View Prior Version
         findElement(By.linkText("History")).click();
@@ -183,7 +183,37 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("1"));
         Assert.assertTrue(textPresent("Warning: this data element is archived."));
     }
-
+    */
+    @Test
+    public void cdeHistoryComplement() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");
+        findElement(By.linkText("Naming")).click();
+        findElement(By.xpath("//button[text()=\" Add Naming\"]")).click();
+        modalHere();
+        findElement(By.xpath("//label[text()=\"Name\"]/following-sibling::input")).sendKeys("Alternative Name 1");
+        findElement(By.xpath("//label[text()=\"Definition\"]/following-sibling::textarea")).sendKeys("Alternative Definition 1");
+        findElement(By.xpath("//div[@id='newConceptModalFooter']//button[text()=\"Save\"]")).click();
+        modalGone();
+        
+        findElement(By.linkText("Concepts")).click();
+        findElement(By.xpath("//button[text()=\" Add Concept\"]")).click();
+        findElement(By.xpath("//label[text()=\"Code Name\"]/following-sibling::input")).sendKeys("Code Name 1");
+        findElement(By.xpath("//label[text()=\"Code ID\"]/following-sibling::input")).sendKeys("Code ID 1");
+        findElement(By.xpath("//div[@id='newConceptModalFooter']//button[text()=\"Save\"]")).click();       
+        modalGone();
+        
+        findElement(By.xpath("//div[@ng-controller='SaveCdeCtrl']//button[text()=\"Save\"]")).click();
+        findElement(By.xpath("//label[text()=\"Choose a new version\"]/following-sibling::input")).sendKeys(".1");                
+        saveCde();
+        hangon(1);
+        findElement(By.linkText("History")).click();
+        findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
+        Assert.assertTrue(textPresent("Naming:"));
+        Assert.assertTrue(textPresent("Added: LOINC, Code Name 1, Code ID 1;"));
+        
+    }    
+    /*
     @Test
     public void editConcepts() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
@@ -269,5 +299,5 @@ public class CdeEditTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);   
         Assert.assertTrue(textNotPresent("<b>bold</b>"));        
     }    
-
+*/
 }
