@@ -48,8 +48,8 @@ exports.listOrgs = function(req, res) {
     });
 };
 
-exports.listOrgsLongNames = function(req, res) {
-    mongo_data.listOrgsLongNames(function(err, orgs) {
+exports.listOrgsLongName = function(req, res) {
+    mongo_data.listOrgsLongName(function(err, orgs) {
        if (err) {
            logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
            res.send("ERROR");

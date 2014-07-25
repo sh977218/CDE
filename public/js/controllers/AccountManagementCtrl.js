@@ -132,8 +132,7 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
                   $scope.orgs = $scope.getOrgs();
             }
         );
-        $scope.newOrg.name = "";
-        $scope.newOrg.longName = "";
+        $scope.newOrg = {};
     };
 
     $scope.removeOrg = function(byId) {
@@ -151,8 +150,11 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
         $timeout(function(){
             AccountManagement.updateOrg(c,
                 function(res) {
-                    $scope.message = res;
+                    $scope.addAlert("success", res);
                     $scope.orgs = $scope.getOrgs();
+                },
+                function(res) {
+                    $scope.addAlert("danger", res);
                 }
             );
         },0);

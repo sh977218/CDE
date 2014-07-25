@@ -1,20 +1,22 @@
 angular.module('resources')
-.factory('GetOrgsLongNames', function($rootScope, $interval, $http) {
-    var getOrgsLongNameInterval = 1000 * 60 * 10 * 1; // 10 min
-    
-    function callGetOrgsLongNameAPI() {
-        $http.get('/listOrgsLongNames').success(function(response) {
-            $rootScope.orgsLongName = response;
-        }).error(function() {
-            console.log('ERROR - callGetOrgsLongNameAPI: Error retrieving list of orgs');
-        });
-    }
-    
-    callGetOrgsLongNameAPI();
-    
-    $interval(function() {
-        callGetOrgsLongNameAPI();
-    }, getOrgsLongNameInterval);
+.factory('GetOrgsLongName', function($rootScope, $http) {
+    return {
+        getOrgsLongNameAPI : function() {
+            $http.get('/listOrgsLongName').success(function(response) {
+                $rootScope.orgsLongName = {};
+
+                // Transforms response to object literal notation
+                response.forEach(function(org) {
+                    if(org.longName) {
+                        $rootScope.orgsLongName[org.name] = org.longName;
+                    }
+                });
+            }).error(function() {
+                console.log('ERROR - getOrgsLongNameAPI(): Error retrieving list of orgs');
+                $rootScope.orgsLongName = {};
+            });
+        }
+    };
 })
 .factory('OrgHelpers', function () {
     return {
@@ -27,5 +29,5 @@ angular.module('resources')
                 }
             }
         }
-    }
+    };
 });

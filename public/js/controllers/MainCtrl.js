@@ -1,7 +1,9 @@
-function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, isAllowedModel, $window, screenSize, GetOrgsLongNames) {
+function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, isAllowedModel, $window, screenSize, GetOrgsLongName) {
     // Global variables
     var GLOBALS = {
         max_quickboard_cdes : 10
+        , getOrgsLongNameInterval : 1000 * 60 * 10 * 1 // 10 min
+
     };
     
     $scope.isLoggedIn = function() {
@@ -260,4 +262,11 @@ function MainCtrl($scope,$modal, Myself, $http, $location, $anchorScroll, $timeo
     };
     
     $scope.screenSizeXs = screenSize.is('xs');
+    
+    // Retrieves orgs long name from database at an interval
+    GetOrgsLongName.getOrgsLongNameAPI();
+    $interval(function() {
+        GetOrgsLongName.getOrgsLongNameAPI();
+    }, GLOBALS.getOrgsLongNameInterval);
+
 }
