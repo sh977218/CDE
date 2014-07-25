@@ -31,15 +31,21 @@
         addClassification.addClassification(classif);
     };
     
-    
-    var strStore = localStorageService.get("classificationHistory");
-    if (strStore === null) {
-        $scope.defaultClassificationsHistory = [];
-    } else {
+    $scope.defaultClassificationsHistory = [];
+    var histStore = localStorageService.get("classificationHistory");
+    console.log(histStore)
+    console.log("myOrgs:" + $scope.myOrgs)
+    if (histStore !== null) {
         try {
-            $scope.defaultClassificationsHistory = strStore;
+            for (var i = 0; i < histStore.length; i++) {
+                console.log(histStore[i]);
+                console.log($scope.myOrgs.indexOf(histStore[i].orgName))
+                if ($scope.myOrgs.indexOf(histStore[i].orgName) > -1) {
+                    $scope.defaultClassificationsHistory.push(histStore[i]);
+                }
+            }
         } catch (e) {
-            $scope.defaultClassificationsHistory = [];
+            console.log(e)
             localStorageService.remove("classificationHistory");
         } 
     }
