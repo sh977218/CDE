@@ -307,7 +307,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     }
     
     @Test
-    public void otherPleaseSpecify() {
+    public void otherPleaseSpecifyAndListDatatype() {
         mustBeLoggedInAs("ninds", "pass");        
         String cdeName = "Structured Clinical Interview for Pathological Gambling (SCI-PG) - withdrawal value";
         goToCdeByName(cdeName);
@@ -317,6 +317,10 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.id("otherPleaseSpecify_input")).click();
         Assert.assertTrue(findElement(By.id("otherPleaseSpecify_input")).isSelected());
         
+        findElement(By.id("listDatatype_pencil")).click();
+        findElement(By.id("listDatatype_input")).sendKeys("Some DT");
+        findElement(By.id("confirmListType")).click();
+        
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
         modalHere();
@@ -324,7 +328,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
-        Assert.assertTrue(findElement(By.id("otherPleaseSpecify_input")).isSelected());
+        Assert.assertTrue(textPresent("Some DT"));
+        wait.until(ExpectedConditions.elementSelectionStateToBe(findElement(By.id("otherPleaseSpecify_input")), true));
         Assert.assertTrue(textPresent("Please Specify Text"));
         findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//i")).click();
         findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//input")).clear();
