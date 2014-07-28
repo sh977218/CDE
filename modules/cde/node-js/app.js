@@ -1,4 +1,4 @@
-//require('../deploy/configTest.js');
+require('../deploy/configTest.js');
 //console.log(__dirname+'/../deploy/configTest.js');
 //require(__dirname+'/../deploy/configTest.js');
 
@@ -99,7 +99,8 @@ app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, '../public')));
-app.use("/shared", express.static("shared", path.join(__dirname, '../shared')));
+
+app.use("/shared", express.static(path.join(__dirname, '../shared')));
 
 app.use(function(err, req, res, next){
   logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));

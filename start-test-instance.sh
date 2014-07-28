@@ -1,7 +1,7 @@
 #!/bin/sh
 
-mongo test deploy/dbInit.js
-mongo cde-logs-test deploy/logInit.js
+mongo test modules/cde/deploy/dbInit.js
+mongo cde-logs-test modules/cde/deploy/logInit.js
 
 groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml localhost test test 
 groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx localhost test 
@@ -19,7 +19,7 @@ then
     gradle -b test/selenium/build.gradle -PtestUrl=localhost:3001 clean test & 
     #gradle -b test/selenium/build.gradle -Dtest.single=ClassificationTest -PtestUrl=localhost:3001 test & 
     export NODE_ENV=test
-    node node-js/app > test-console.out
+    node modules/cde/node-js/app > test-console.out
 else
     echo "Not all documents indexed. Aborting"
     echo $curl_res

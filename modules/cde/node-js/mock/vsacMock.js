@@ -1,4 +1,4 @@
-require('../../deploy/configTest.js');
+//require('../../deploy/configTest.js');
 require(__dirname+'/../../deploy/configTest.js');
 
 var express = require('express')
@@ -7,6 +7,7 @@ var express = require('express')
   , crypto = require('crypto')
   , fs = require('fs')
   , config = require('config')
+  , path = require('path')
 ;
 
 var app = express();
@@ -36,10 +37,11 @@ app.post('/vsac/ws/Ticket/:ticketId', function(req, res) {
 
 app.get('/vsac/ws/RetrieveValueSet', function(req, res) {
     var key = req.query['id'];
-    if (!fs.existsSync('node-js/mock/vsac-data/' + key)) {
+    //if (!fs.existsSync('node-js/mock/vsac-data/' + key)) { path.join(__dirname, 
+    if (!fs.existsSync(path.join(__dirname, './vsac-data/' + key))) {
         res.status(404).send("The requested resource () is not available.");
     } else {
-        fs.readFile('node-js/mock/vsac-data/' + key, function(err, data) {
+        fs.readFile(path.join(__dirname, './vsac-data/' + key), function(err, data) {
             if (err) {
                 res.send("file is corrupt");
             } else {
@@ -85,10 +87,9 @@ app.post('/cas/serviceValidate', function(req, res) {
 });
 
 var options = {
-  key: fs.readFileSync('node-js/mock/server.key'),
-  cert: fs.readFileSync('node-js/mock/server.crt')
+  key: fs.readFileSync(path.join(__dirname, './server.key')),
+  cert: fs.readFileSync(path.join(__dirname, './server.crt'))
 };
-
 
 https.createServer(options, app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
