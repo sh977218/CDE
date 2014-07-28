@@ -244,6 +244,10 @@ exports.diff = function(req, res) {
                            cdesvc.setDiff2(dataElement, priorDe, {first: "property", second: "concepts"}, diff);                           
                            cdesvc.setDiff2(dataElement, priorDe, {first: "objectClass", second: "concepts"}, diff);
                            cdesvc.setDiff2(dataElement, priorDe, {first: "dataElementConcept", second: "concepts"}, diff);    
+                           if (JSON.stringify(dataElement.ids) !== JSON.stringify(priorDe.ids)) {
+                               diff.before.ids = priorDe.ids;
+                               diff.after.ids = dataElement.ids;                               
+                           }
                            res.send(diff);
                            
                        });
