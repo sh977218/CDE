@@ -36,7 +36,7 @@ function QuickBoardCtrl($scope, $location, CdeList) {
         $scope.gridCdes = [];
     };
     
-    if ($scope.quickBoard.length >= 1) {
+    if ($scope.quickBoard.length > 0) {
         CdeList.byUuidList($scope.quickBoard, function(result) {
            if(result) {
                 $scope.cdes = [];
