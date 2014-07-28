@@ -40,6 +40,18 @@ public class ClassificationTest extends NlmCdeBaseTest {
         addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
         hangon(1);
         addClassificationMethod(new String[]{"NINDS","Disease","Duchenne Muscular Dystrophy/Becker Muscular Dystrophy","Treatment/Intervention Data","Therapies"});
+        findElement(By.id("addClassification")).click(); 
+        modalHere();
+        List<WebElement> priorClassifs = driver.findElements(By.xpath("//div[ol]"));
+        for (WebElement prior : priorClassifs) {
+            if (prior.getText().contains("Duchenne Muscular") && prior.getText().contains("Therapies")) {
+                prior.findElement(By.tagName("button")).click();
+                Assert.assertTrue(textPresent("Classification Already Exists"));
+                closeAlert();
+            }
+        }
+        findElement(By.xpath("//button[text() = 'Done']")).click();
+        modalGone();
     }
     
     private void removeClassificationMethod(String[] categories) {

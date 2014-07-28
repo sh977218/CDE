@@ -17,29 +17,32 @@
         $modalInstance.close();
     };
     
-    $scope.addClassification = function (lastLeafName) {
-        $scope.newClassification.categories.push(lastLeafName);
+    $scope.addClassification = function (lastLeafName) {        
         var deepCopy = {
             orgName: $scope.newClassification.orgName
             , categories: $scope.newClassification.categories.map(function(cat){return cat})     
+            , cdeId: cde._id
         };
-        addClassification.addClassification($scope.newClassification);        
+        deepCopy.categories.push(lastLeafName);        
+        addClassification.addClassification(deepCopy);        
         $scope.insertToClassificationHistory(deepCopy);
-    };    
+    };     
     
     $scope.selectPriorClassification = function (classif) {
+        classif.cdeId = cde._id; 
         addClassification.addClassification(classif);
     };
     
-    
-    var strStore = localStorageService.get("classificationHistory");
-    if (strStore === null) {
-        $scope.defaultClassificationsHistory = [];
-    } else {
+    $scope.defaultClassificationsHistory = [];
+    var histStore = localStorageService.get("classificationHistory");
+    if (histStore !== null) {
         try {
-            $scope.defaultClassificationsHistory = strStore;
+            for (var i = 0; i < histStore.length; i++) {
+                if ($scope.myOrgs.indexOf(histStore[i].orgName) > -1) {
+                    $scope.defaultClassificationsHistory.push(histStore[i]);
+                }
+            }
         } catch (e) {
-            $scope.defaultClassificationsHistory = [];
             localStorageService.remove("classificationHistory");
         } 
     }
