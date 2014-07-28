@@ -155,6 +155,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("4 results for"));
         String viewing = findElement(By.id("acc_link_0")).getText();
         findElement(By.xpath("//span[@id='acc_link_0']/../i[@title='View']")).click();
+        Assert.assertTrue(textPresent("More Like This"));
         Assert.assertTrue(textPresent(viewing));
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
