@@ -41,7 +41,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("submit")).click();
         hangon(1);
     }
-    /*
+    
     @Test
     public void createCdeValidationErrors() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
@@ -183,7 +183,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("1"));
         Assert.assertTrue(textPresent("Warning: this data element is archived."));
     }
-    */
+
     @Test
     public void cdeHistoryComplement() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
@@ -238,7 +238,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.xpath("//table[@id = 'historyTable']//tr[4]//td[4]/a")).click();
         Assert.assertTrue(textPresent("Identifiers:"));        
     }    
-    /*
+    
     @Test
     public void editConcepts() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
@@ -324,5 +324,5 @@ public class CdeEditTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);   
         Assert.assertTrue(textNotPresent("<b>bold</b>"));        
     }    
-*/
+
 }
