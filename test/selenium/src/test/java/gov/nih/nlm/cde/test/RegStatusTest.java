@@ -142,9 +142,9 @@ public class RegStatusTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("ocConceptRemove-0")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("propConceptRemove-0")));
 
-        // Can't add Attachments
+        // Can add Attachments
         findElement(By.linkText("Attachments")).click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("i.fa-upload")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("i.fa-upload")));
     }
     
     @Test
