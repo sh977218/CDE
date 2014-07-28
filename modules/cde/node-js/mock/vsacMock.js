@@ -1,13 +1,13 @@
-//require('../../deploy/configTest.js');
-require(__dirname+'/../../deploy/configTest.js');
+var path = require('path');
+
+require(path.join(__dirname, '../../deploy/configTest.js'));
 
 var express = require('express')
   , https = require('https')
   , util = require('util')
   , crypto = require('crypto')
   , fs = require('fs')
-  , config = require('config')
-  , path = require('path')
+  , config = require('config')  
 ;
 
 var app = express();
@@ -37,7 +37,6 @@ app.post('/vsac/ws/Ticket/:ticketId', function(req, res) {
 
 app.get('/vsac/ws/RetrieveValueSet', function(req, res) {
     var key = req.query['id'];
-    //if (!fs.existsSync('node-js/mock/vsac-data/' + key)) { path.join(__dirname, 
     if (!fs.existsSync(path.join(__dirname, './vsac-data/' + key))) {
         res.status(404).send("The requested resource () is not available.");
     } else {

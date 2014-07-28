@@ -1,10 +1,9 @@
-require('../deploy/configTest.js');
-//console.log(__dirname+'/../deploy/configTest.js');
-//require(__dirname+'/../deploy/configTest.js');
+var path = require('path');
+
+require(path.join(__dirname, '../deploy/configTest.js'));
 
 var express = require('express')
   , http = require('http')
-  , path = require('path')
   , cdesvc = require('./cdesvc')
   , boardsvc = require('./boardsvc')
   , usersvc = require('./usersvc')
