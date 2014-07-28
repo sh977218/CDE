@@ -19,6 +19,8 @@ db.users.insert({username: 'reguser', password: 'pass', quota: 1073741824, viewH
 db.users.insert({username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'boarduser1', password: 'pass', quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'boarduserEdit', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'historyuser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'appScan', password: 'I@mA88Scan', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'classificationMgtUser', password: 'pass', orgCurator: ["CTEP","NINDS"], orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []});
@@ -41,7 +43,7 @@ db.orgs.insert({name: "SPOREs"});
 db.orgs.insert({name: "NICHD"});
 db.orgs.insert({name: "EDRN"});
 db.orgs.insert({name: "CIP"});
-db.orgs.insert({name: "AECC"});
+db.orgs.insert({name: "AECC", longName: "Albert Einstein Cancer Center"});
 db.orgs.insert({name: "LCC"});
 db.orgs.insert({name: "USC/NCCC"});
 db.orgs.insert({name: "Training"});

@@ -361,6 +361,10 @@ app.get('/listOrgs', function(req, res) {
     cdesvc.listOrgs(req, res);
 });
 
+app.get('/listOrgsLongName', function(req, res) {
+    cdesvc.listOrgsLongName(req, res);
+});
+
 app.get('/listOrgsFromDEClassification', function(req, res) {
     elastic.DataElementDistinct("classification.stewardOrg.name", function(result) {
         res.send(result);
@@ -376,6 +380,14 @@ app.post('/addOrg', function(req, res) {
         orgsvc.addOrg(req, res);
     } else {
         res.send(403, "You are not authorized.");                    
+    }
+});
+
+app.post('/updateOrg', function(req, res) {
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        orgsvc.updateOrg(req, res);
+    } else {
+        res.send(403, "You are not authorized to update this organization.");                    
     }
 });
 

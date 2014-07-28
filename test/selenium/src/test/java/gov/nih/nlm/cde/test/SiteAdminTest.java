@@ -8,13 +8,28 @@ import org.testng.annotations.Test;
 
 public class SiteAdminTest extends NlmCdeBaseTest {
     
-    private void addOrg(String orgName) {
+    private void addOrg(String orgName, String orgLongName) {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Site Management")).click();
         findElement(By.linkText("Organizations")).click();
-        findElement(By.name("newOrg.name")).sendKeys(orgName);
+        findElement(By.name("newOrgName")).sendKeys(orgName);
+        
+        if( orgLongName!=null ) {
+            findElement(By.name("newOrgLongName")).sendKeys(orgLongName);
+        }
+        
         findElement(By.id("addOrg")).click();
         Assert.assertTrue(textPresent("Org Added"));
+        Assert.assertTrue(textPresent(orgName));
+        
+        if( orgLongName!=null ) {
+            Assert.assertTrue(textPresent(orgLongName));
+        }
+    }
+    
+    private void refreshOrganizationsTabScreen() {
+        driver.navigate().refresh();
+        findElement(By.linkText("Organizations")).click();
     }
 
 //    private void removeOrg(String orgName) {
@@ -36,19 +51,43 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 //    }
     
     @Test
-    public void addRemoveOrg() {
+    public void addOrg() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String testOrg = "New Test Org";
-
-        addOrg(testOrg);
+        addOrg(testOrg,null);
+        
+        String testOrgName = "New Test Org 2";
+        String testOrgLongName = "New Test Org 2 Long Name 2";
+        addOrg(testOrgName,testOrgLongName);
     }
 
+    @Test
+    public void RenameOrg() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        String testOrg = "New Test Org 3";
+        String testOrgRenamed = "New Test Org 3 Renamed";
+        String testOrgNotRenamed = "New Test Org 3 Not Renamed";
+        addOrg(testOrg,null);
+        findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//input")).sendKeys(testOrgRenamed);
+        findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//button[@class='fa fa-check']")).click();
+        refreshOrganizationsTabScreen();
+        Assert.assertTrue(textPresent(testOrgRenamed));
+
+        findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//input")).sendKeys(testOrgNotRenamed);
+        findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//button[@class='fa fa-times']")).click();
+        Assert.assertTrue(textNotPresent(testOrgNotRenamed));
+        refreshOrganizationsTabScreen();
+        Assert.assertTrue(textNotPresent(testOrgNotRenamed));
+    }
+    
     @Test
     public void promoteOrgAdmin() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String testOrg = "Promote Org Test";
         
-        addOrg(testOrg);
+        addOrg(testOrg,null);
         
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Site Management")).click();

@@ -26,7 +26,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("vsacId")).sendKeys("invalidId");
         findElement(By.id("vsacIdCheck")).click();
         Assert.assertTrue(textPresent("Invalid VSAC OID"));
-        findElement(By.cssSelector("button.close")).click();
+        closeAlert();
         findElement(By.linkText("Update O.I.D")).click();
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
         findElement(By.id("vsacIdCheck")).click();
@@ -122,7 +122,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#pv-10 .fa-check")).click();
         
         findElement(By.cssSelector("#pv-10 [typeahead-source=\"pVTypeaheadCodeSystemNameList\"] .fa-edit")).click();
-        findElement(By.cssSelector("#pvCodeSystem-10 input[ng-show=\"typeaheadSource.length>0\"]")).sendKeys("N");        
+        Assert.assertTrue(textPresent("Confirm"));
+        findElement(By.xpath("//td[@id='pvCodeSystem-10']//input[@ng-show='typeaheadSource.length>0']")).sendKeys("N");
         Assert.assertTrue(textPresent("NCI Thesaurus"));
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Changed PV");
@@ -227,7 +228,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#pvCode-4 .fa-check")).click();  
         
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-edit")).click(); 
-        findElement(By.cssSelector("#pvCodeSystem-4 input[ng-show=\"typeaheadSource.length>0\"]")).sendKeys(".1");
+        findElement(By.xpath("//td[@id='pvCodeSystem-4']//input[@ng-show='typeaheadSource.length>0']")).sendKeys(".1");
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-check")).click();        
         
         findElement(By.cssSelector("button.btn.btn-primary")).click();
@@ -259,7 +260,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Post traumatic amnesia duration range");
         findElement(By.linkText("Permissible Values")).click();         
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-edit")).click();
-        findElement(By.cssSelector("#pvCodeSystem-0 input[ng-show=\"typeaheadSource.length>0\"]")).sendKeys("SNOMEDCT");
+        findElement(By.xpath("//td[@id='pvCodeSystem-0']//input[@ng-show='typeaheadSource.length>0']")).sendKeys("SNOMEDCT");
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-check")).click();
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
@@ -302,8 +303,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         saveCde();
 
         goToCdeByName(cdeName);
-        findElement(By.linkText("Permissible Values"));
-        Assert.assertTrue(findElement(By.id("multipleValues_input")).isSelected());
+        findElement(By.linkText("Permissible Values")).click();
+        wait.until(ExpectedConditions.elementSelectionStateToBe(findElement(By.id("multipleValues_input")), true));
     }
     
     @Test

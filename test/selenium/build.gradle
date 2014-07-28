@@ -22,15 +22,15 @@ dependencies {
 }
 
 tasks.withType(Test) { 
-    systemProperty 'testUrl', System.getProperty('testUrl', testUrl) 
+    systemProperty 'testUrl', System.getProperty('testUrl', testUrl)
+    systemProperty 'timeout', timeout
 }
 
 test {    
     useTestNG(
-
     )
     beforeTest { descriptor ->
         logger.lifecycle("Running test: " + descriptor)
     }    
-    maxParallelForks = 14
+    maxParallelForks = Integer.parseInt(forkNb)
 }

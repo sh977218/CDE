@@ -116,6 +116,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         openCdeInList("AlignmentCDE");
         Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
         findElement(By.linkText("View Full Detail")).click();
+        Assert.assertTrue(textPresent("ctepCurator"));
         Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
     }
 
