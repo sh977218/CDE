@@ -16,6 +16,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.interactions.Actions;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -208,7 +209,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
         findElement(By.xpath("//button[text() = 'Log in']")).click();
-        hangon(1);
+//        hangon(1);
         findElement(By.linkText(username));
     }
     
@@ -269,6 +270,12 @@ public class NlmCdeBaseTest {
 
     public void scrollTo( String y ) {
         ((JavascriptExecutor)driver).executeScript("scroll(0," + y + ");");
+    }
+    
+    public void hoverOverElement( WebElement ele ) {
+        Actions action = new Actions(driver);
+        action.moveToElement(ele);
+        action.perform();
     }
 
 }
