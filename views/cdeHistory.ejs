@@ -33,12 +33,36 @@
     </div>
     <div class="col-md-6">
         <dl>
-            <dt ng-show="diff.name">Name: </dt><dd><span ng-bind-html="diff.name"></span></dd>
-            <dt ng-show="diff.definition">Definition: </dt><dd><span ng-bind-html="diff.definition"></span></dd>
+            <dt ng-show="diff.primaryName">Primary Name: </dt><dd><span ng-bind-html="diff.primaryName"></span></dd>
+            <dt ng-show="diff.primaryDefinition">Primary Definition: </dt><dd><span ng-bind-html="diff.primaryDefinition"></span></dd>
             <dt ng-show="diff.version">Version: </dt><dd><span ng-bind-html="diff.version"></span></dd>
             <dt ng-show="diff.uom">Unit of Measure: </dt><dd><span ng-bind-html="diff.uom"></span></dd>
             <dt ng-show="diff.datatype">Datatype: </dt><dd><span ng-bind-html="diff.datatype"></span></dd>
             <dt ng-show="diff.permissibleValues">Permissible Values: </dt><dd><span ng-bind-html="diff.permissibleValues"></span></dd>
+            <dt ng-show="diff.naming">Naming: </dt><dd><span ng-bind-html="diff.naming"></span></dd>
+            <dt ng-show="diff.property.concepts.removed.length>0 || diff.property.concepts.added.length>0">Concepts (Property): </dt>
+            <dd diff ng-show="diff.property.concepts.removed.length>0 || diff.property.concepts.added.length>0" values="diff.property.concepts"></dd>
+            
+            <dt ng-show="diff.objectClass.concepts.removed.length>0 || diff.objectClass.concepts.added.length>0">Concepts (Class): </dt>
+            <dd diff ng-show="diff.objectClass.concepts.removed.length>0 || diff.objectClass.concepts.added.length>0" values="diff.objectClass.concepts"></dd>
+
+            <dt ng-show="diff.dataElementConcept.concepts.removed.length>0 || diff.dataElementConcept.concepts.added.length>0">Concepts (Data Element): </dt>
+            <dd diff ng-show="diff.dataElementConcept.concepts.removed.length>0 || diff.dataElementConcept.concepts.added.length>0" values="diff.dataElementConcept.concepts"></dd> 
+            
+            <dt ng-show="diff.registrationState">Registration State: </dt>
+            <dd ng-show="diff.registrationState"><span ng-bind-html="diff.registrationState"></span></dd>
+            
+            <dt ng-show="diff.ids">Identifiers: </dt>
+            <dd ng-show="diff.ids"><span ng-bind-html="diff.ids"></span></dd>            
         </dl>
     </div>
 </div>
+
+<script type="text/ng-template" id="/propertyDiff.html">
+    <span ng-if="values.removed.length>0">Removed: </span><span ng-repeat="pv in values.removed">
+        {{ renderValue(pv) }};
+    </span>
+    <span ng-if="values.added.length>0">Added: </span><span ng-repeat="pv in values.added">
+        {{ renderValue(pv) }};
+    </span>
+</script>
