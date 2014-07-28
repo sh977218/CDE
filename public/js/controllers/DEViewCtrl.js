@@ -34,7 +34,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         DataElement.get(query, function (de) {
            $scope.cde = de;          
            $scope.loadValueSet();
-           $scope.initialized = true;
            $scope.canLinkPvFunc();
            $scope.loadMlt();
            $scope.loadBoards();
@@ -42,7 +41,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
            $scope.getPVTypeaheadCodeSystemNameList(); 
             PriorCdes.getCdes({cdeId: de._id}, function(dataElements) {
                 $scope.priorCdes = dataElements;
-            });
+            });                
+           $scope.initialized = true;
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
