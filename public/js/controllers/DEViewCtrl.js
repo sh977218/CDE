@@ -58,7 +58,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     };
 
     $scope.isAllowedNonCuration = function (cde) {
-        if ($scope.initialized && cde.archived) {
+        if ($scope.initialized || cde.archived) {
             return false;
         }
         if ($scope.user && $scope.user.siteAdmin) {
