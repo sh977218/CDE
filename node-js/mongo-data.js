@@ -254,18 +254,26 @@ exports.listOrgs = function(callback) {
     });
 };
 
+exports.listOrgsLongName = function(callback) {
+    Org.find({}, {'_id': 0, "name":1, "longName":1}).exec(function(err, result) {
+        callback("", result);
+    });
+};
+
+
 exports.managedOrgs = function(callback) {
     Org.find().exec(function(err, orgs) {
         callback(orgs);
     });
 };
 
-exports.addOrg = function(name, res) {
-  Org.findOne({"name": name}).exec(function(err, found) {
+exports.addOrg = function(newOrgArg, res) {
+  Org.findOne({"name": newOrgArg.name}).exec(function(err, found) {
       if (found) {
           res.send("Org Already Exists");
       } else {
-          var newOrg = new Org({"name": name});
+//          var newOrg = new Org({'name':newOrg_arg.name, 'longName':newOrg_arg.longName});
+          var newOrg = new Org(newOrgArg);
           newOrg.save(function() {
               res.send("Org Added");
           });
@@ -276,6 +284,17 @@ exports.addOrg = function(name, res) {
 exports.removeOrg = function (id, callback) {
   Org.findOne({"_id": id}).remove().exec(function (err) {
       callback();
+  });
+};
+
+exports.updateOrgLongName = function(org, res) {
+  Org.findOne({'name': org.name}).exec(function(err, found) {
+    if(found) {
+        Org.update({'name':org.name}, { 'longName':org.longName }).exec();
+        res.send('Org has been updated.');
+    } else {
+        res.send('Org did not exist.');
+    }
   });
 };
 
