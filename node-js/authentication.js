@@ -87,14 +87,14 @@ exports.updateUser = function(req, user) {
     }
 };
 
-exports.authAfterVsac =   function(req, username, password, done) {
+exports.authAfterVsac = function(req, username, password, done) {
     
     // asynchronous verification, for effect...
     process.nextTick(function () {
-      // Find the user by username. If there is no user with the given
-      // username, or the password is not correct, set the user to `false` to
-      // indicate failure and set a flash message. Otherwise, return the
-      // authenticated `user`.
+        // Find the user by username. If there is no user with the given
+        // username, or the password is not correct, set the user to `false` to
+        // indicate failure and set a flash message. Otherwise, return the
+        // authenticated `user`.
         vsac.umlsAuth(username, password, function(result) { 
             if (result.indexOf("true") > 0) {
                 auth.findUser(username, req, function(user) {
@@ -123,6 +123,70 @@ exports.authAfterVsac =   function(req, username, password, done) {
     });
 };
 
+exports.authBeforeVsac = function(req, username, password, done) {
+    
+    // asynchronous verification, for effect...
+    process.nextTick(function () {
+        // Find the user by username in local database first. If there is no user with the given
+        // username, or the password is not correct, set the user to `false` to
+        // indicate failure and set a flash message. Otherwise, return the
+        // authenticated `user`.
+        mongo_data.userByName(username, function(err, user) {
+            if (err || !user ) { // If error occured or user was not found from local datastore
+                vsac.umlsAuth(username, password, function(result) {
+                    if (result.indexOf("true") > 0) {
+                        auth.findUser(username, req, function(user) {
+                            done(null, user);
+                        });
+                    } else {
+                        return done(null, false, { message: 'Incorrect username or password' });
+                    }
+                });
+            } else { // If user was found
+                if (user.lockCounter == 3) {
+                    return done(null, false, { message: 'User is locked out' }); 
+                } else if (user.password != password) {
+                    user.lockCounter = user.lockCounter + 1;
+                    return mongo_data.save(user, function(err, user) {
+                        return done(null, false, { message: 'Invalid password' }); 
+                    });
+                }
+                
+                auth.updateUser(req, user);
+                return mongo_data.save(user, function(err, user) {
+                    return done(null, user);                    
+                });
+
+            }
+        });  
+        
+        vsac.umlsAuth(username, password, function(result) { 
+            if (result.indexOf("true") > 0) {
+                auth.findUser(username, req, function(user) {
+                    done(null, user);
+                });
+            } else {
+                mongo_data.userByName(username, function(err, user) {
+                    if (err) { return done(err); }
+                    if (!user) { return done(null, false, { message: 'Incorrect username or password' }); }
+                    if (user.lockCounter == 3) {
+                        return done(null, false, { message: 'User is locked out' }); 
+                    }
+                    if (user.password != password) {
+                        user.lockCounter = user.lockCounter + 1;
+                        return mongo_data.save(user, function(err, user) {
+                            return done(null, false, { message: 'Invalid password' }); 
+                        });
+                    }
+                    auth.updateUser(req, user);
+                    return mongo_data.save(user, function(err, user) {
+                        return done(null, user);                    
+                    });
+                });                
+            };
+        });
+    });
+};
   
 exports.findUser = function(username, req, next) {
     mongo_data.userByName(username, function(err, user) {
