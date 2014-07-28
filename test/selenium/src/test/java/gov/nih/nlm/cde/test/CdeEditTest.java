@@ -204,9 +204,11 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='newConceptModalFooter']//button[text()=\"Save\"]")).click();       
         modalGone();
         
+        
         findElement(By.xpath("//div[@ng-controller='SaveCdeCtrl']//button[text()=\"Save\"]")).click();
         findElement(By.xpath("//label[text()=\"Choose a new version\"]/following-sibling::input")).sendKeys(".1");                
         saveCde();
+        
         hangon(1);
         findElement(By.linkText("History")).click();
         findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
@@ -222,7 +224,19 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.linkText("History")).click();
         findElement(By.xpath("//table[@id = 'historyTable']//tr[3]//td[4]/a")).click();
         Assert.assertTrue(textPresent("Registration State:"));
-        hangon(5000);
+
+        findElement(By.linkText("Identifiers")).click();
+        findElement(By.xpath("//button[text()=\" Add Identifier\"]")).click();
+        modalHere();
+        findElement(By.xpath("//label[text()=\"Origin\"]/following-sibling::input")).sendKeys("Origin 1");
+        findElement(By.xpath("//label[text()=\"Identifier\"]/following-sibling::textarea")).sendKeys("Identifier 1");    
+        findElement(By.xpath("//label[text()=\"Version\"]/following-sibling::textarea")).sendKeys("Version 1"); 
+        findElement(By.xpath("//div[@id=\"newIdModalFooter\"]//button[text()=\"Save\"]")).click();
+        modalGone();
+        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");   
+        findElement(By.linkText("History")).click();
+        findElement(By.xpath("//table[@id = 'historyTable']//tr[4]//td[4]/a")).click();
+        Assert.assertTrue(textPresent("Identifiers:"));        
     }    
     /*
     @Test
