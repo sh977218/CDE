@@ -47,6 +47,10 @@ var config = {
         }
         , buildDir: "../build"
     }
+    , test: {
+        forkNb: 12
+        , timeout: 8
+    }
 };
 
 module.exports = config;

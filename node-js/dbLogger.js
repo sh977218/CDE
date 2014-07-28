@@ -19,7 +19,7 @@ var logSchema = new mongoose.Schema(
     , remoteAddr: String
     , url: String
     , method: String
-    , httpStatus: Number
+    , httpStatus: String
     , date: Date
     , referrer: String
 }, { safe: {w: 0}, capped: 5368709120});
