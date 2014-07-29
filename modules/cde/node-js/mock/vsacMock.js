@@ -1,6 +1,6 @@
 var path = require('path');
 
-require(path.join(__dirname, '../../deploy/configTest.js'));
+require(path.join(__dirname, '../../../../deploy/configTest.js'));
 
 var express = require('express')
   , https = require('https')
