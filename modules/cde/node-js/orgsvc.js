@@ -10,11 +10,15 @@ exports.managedOrgs = function(req, res) {
 };
 
 exports.addOrg = function(req, res) {
-    mongo_data.addOrg(req.body.name, res);
+    mongo_data.addOrg(req.body, res);
 };
 
 exports.removeOrg = function(req, res) {
     mongo_data.removeOrg(req.body.id, function () {
         res.send("Org Removed");
     });
+};
+
+exports.updateOrg = function(req, res) {
+    mongo_data.updateOrgLongName(req.body, res);
 };

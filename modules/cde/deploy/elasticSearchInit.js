@@ -1,9 +1,6 @@
 var config = require('config');
 
 exports.createIndexJson = {
-    "settings" : {
-        "number_of_shards" : 1
-    },
     "mappings" : {
         "dataelement" : {
             "properties" : {

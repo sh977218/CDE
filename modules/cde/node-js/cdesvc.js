@@ -2,7 +2,10 @@ var express = require('express')
   , request = require('request')
   , util = require('util')
   , mongo_data = require('./mongo-data')
+  , logging = require('./logging.js')
 ;
+
+var cdesvc = this;
 
 exports.listform = function(req, res) {
     var from = req.query["from"],
@@ -40,6 +43,17 @@ exports.listform = function(req, res) {
 exports.listOrgs = function(req, res) {
     mongo_data.listOrgs(function(err, orgs) {
        if (err) {
+           res.send("ERROR");
+       } else {
+           res.send(orgs);
+       }   
+    });
+};
+
+exports.listOrgsLongName = function(req, res) {
+    mongo_data.listOrgsLongName(function(err, orgs) {
+       if (err) {
+           logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
            res.send("ERROR");
        } else {
            res.send(orgs);
@@ -170,12 +184,21 @@ function arrayEquals(arr1, arr2) {
         return false;
     }
     for (var i = 0; i < arr1.length; i++) {
-        if (arr1[i] !== arr2[i]) {
+        if (JSON.stringify(arr1[i]) !== JSON.stringify(arr2[i])) {
             return false;
         }
     }
     return true;
 }
+
+exports.setDiff2 = function(dataElement, priorDe, property, diff) {
+    if (!arrayEquals(dataElement[property.first][property.second], priorDe[property.first][property.second])) {
+        diff.before[property.first] = {};
+        diff.after[property.first] = {};
+        diff.before[property.first][property.second] = priorDe[property.first][property.second];
+        diff.after[property.first][property.second] = dataElement[property.first][property.second];                             
+    }    
+};
 
 exports.diff = function(req, res) {
     if (req.params.deId == "undefined") {
@@ -195,13 +218,17 @@ exports.diff = function(req, res) {
                            diff.after = {};
                            
                            if (dataElement.naming[0].designation !== priorDe.naming[0].designation) {
-                               diff.before.name = priorDe.naming[0].designation;
-                               diff.after.name = dataElement.naming[0].designation;
+                               diff.before.primaryName = priorDe.naming[0].designation;
+                               diff.after.primaryName = dataElement.naming[0].designation;
                            }
                            if (dataElement.naming[0].definition !== priorDe.naming[0].definition) {
-                               diff.before.definition = priorDe.naming[0].definition;
-                               diff.after.definition = dataElement.naming[0].definition;
+                               diff.before.primaryDefinition = priorDe.naming[0].definition;
+                               diff.after.primaryDefinition = dataElement.naming[0].definition;
                            }
+                           if (!arrayEquals(priorDe.naming.slice(), dataElement.naming.slice())) {
+                               diff.before.naming = priorDe.naming;
+                               diff.after.naming = dataElement.naming;
+                           }                           
                            if (dataElement.version !== priorDe.version) {
                                diff.before.version = priorDe.version;
                                diff.after.version = dataElement.version;
@@ -222,7 +249,17 @@ exports.diff = function(req, res) {
                                diff.before.permissibleValues = priorDe.valueDomain.permissibleValues;
                                diff.after.permissibleValues = dataElement.valueDomain.permissibleValues;                              
                            }
-                           
+                           if (JSON.stringify(dataElement.registrationState) !== JSON.stringify(priorDe.registrationState)) {
+                               diff.before.registrationState = priorDe.registrationState;
+                               diff.after.registrationState = dataElement.registrationState;
+                           }                           
+                           cdesvc.setDiff2(dataElement, priorDe, {first: "property", second: "concepts"}, diff);                           
+                           cdesvc.setDiff2(dataElement, priorDe, {first: "objectClass", second: "concepts"}, diff);
+                           cdesvc.setDiff2(dataElement, priorDe, {first: "dataElementConcept", second: "concepts"}, diff);    
+                           if (JSON.stringify(dataElement.ids) !== JSON.stringify(priorDe.ids)) {
+                               diff.before.ids = priorDe.ids;
+                               diff.after.ids = dataElement.ids;                               
+                           }
                            res.send(diff);
                            
                        });

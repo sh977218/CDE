@@ -144,7 +144,7 @@ var deJsonSchema = {
         {key: String, value: String, valueFormat: String}
     ]
     , ids: [
-        {origin: String, id: String, version: String}
+        {origin: String, id: String, version: String, _id: false}
     ]
     , comments: [commentSchema]
     , archived: Boolean
@@ -187,6 +187,7 @@ schemas.userSchema = mongoose.Schema ({
 
 schemas.orgSchema = mongoose.Schema ({
     name: String
+    , longName: String
     , classifications: [csEltSchema]
 });
 

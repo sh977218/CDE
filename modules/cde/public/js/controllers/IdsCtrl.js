@@ -1,4 +1,4 @@
-var IdsCtrl = function ($scope, $modal, $http) {
+var IdsCtrl = function ($scope, $modal, $http, DataElement) {
     $scope.openNewId = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newIdModalContent.html',
@@ -11,28 +11,21 @@ var IdsCtrl = function ($scope, $modal, $http) {
         });
         
         modalInstance.result.then(function (newId) {
-            $http.post("/addId", {deId: $scope.cde._id, newId: newId}).success(function(data, status, headers, config) 
-            {
-                $scope.cde = data.de;
-                $scope.addAlert("success", "Identifier Added");            
-            }).error(function(data, status, headers, config) 
-            {
-                $scope.addAlert("danger", data.error);
+            $scope.cde.ids.push(newId);
+            DataElement.save($scope.cde, function(newCde) {
+                $scope.cde = newCde;
+                $scope.addAlert("success", "Identifier Added");
             });
         });
     };
     
     $scope.removeId = function (index) {
-        $http.post("/removeId", {deId: $scope.cde._id, index: index}).success(function(data, status, headers, config) {
-            $scope.cde = data.de;
-            $scope.addAlert("success", "Identifier Removed"); 
-        }).error(function(data, status, headers, config) 
-        {
-            $scope.addAlert("danger", error);
-        });
+        $scope.cde.ids.splice(index, 1);
+        DataElement.save($scope.cde, function(newCde) {
+            $scope.cde = newCde;
+            $scope.addAlert("success", "Identifier Removed");
+        });        
     };
-
-
 };
 
 function NewIdModalCtrl($scope, $modalInstance, cde) {

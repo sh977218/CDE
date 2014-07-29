@@ -34,7 +34,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         DataElement.get(query, function (de) {
            $scope.cde = de;          
            $scope.loadValueSet();
-           $scope.initialized = true;
            $scope.canLinkPvFunc();
            $scope.loadMlt();
            $scope.loadBoards();
@@ -43,6 +42,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             PriorCdes.getCdes({cdeId: de._id}, function(dataElements) {
                 $scope.priorCdes = dataElements;
             });                
+           $scope.initialized = true;
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
@@ -84,21 +84,42 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     $scope.revert = function(cde) {
         $scope.reload({cdeId: cde._id});
     };
+
+    $scope.compareLists = function(listA, listB) {
+        var missingInA = listA.filter(function(pvb) {
+            return listB.filter(function(pva){return JSON.stringify(pva)===JSON.stringify(pvb);}).length===0;
+        });
+        return missingInA;
+    };
+
+    $scope.setDiff2 = function(diffResult, property) {
+        if ((diffResult.before[property.first] && diffResult.before[property.first][property.second]) || (diffResult.after[property.first]&& diffResult.after[property.first][property.second])) {
+            $scope.diff[property.first] = {};
+            $scope.diff[property.first][property.second] = {
+                removed: $scope.compareLists(diffResult.before[property.first][property.second], diffResult.after[property.first][property.second])
+                , added: $scope.compareLists(diffResult.after[property.first][property.second], diffResult.before[property.first][property.second])
+            };              
+        }        
+    };    
+    
+    $scope.showDiff = function(diff, fields) {
+        return diff[fields.first][fields.second].removed.length>0 || diff[fields.first][fields.second].added.length>0;
+    };    
     
     $scope.viewDiff = function (cde) {
         var dmp = new diff_match_patch();
         
         CdeDiff.get({deId: cde._id}, function(diffResult) {
             $scope.diff = {};
-            if (diffResult.before.name) {
-                var d = dmp.diff_main(diffResult.before.name, diffResult.after.name);
+            if (diffResult.before.primaryName) {
+                var d = dmp.diff_main(diffResult.before.primaryName, diffResult.after.primaryName);
                 dmp.diff_cleanupSemantic(d);
-                $scope.diff.name = dmp.diff_prettyHtml(d);
+                $scope.diff.primaryName = dmp.diff_prettyHtml(d);
             }
-            if (diffResult.before.definition) {
-                var d = dmp.diff_main(diffResult.before.definition, diffResult.after.definition);
+            if (diffResult.before.primaryDefinition) {
+                var d = dmp.diff_main(diffResult.before.primaryDefinition, diffResult.after.primaryDefinition);
                 dmp.diff_cleanupSemantic(d);
-                $scope.diff.definition = dmp.diff_prettyHtml(d);
+                $scope.diff.primaryDefinition = dmp.diff_prettyHtml(d);
             }            
             if (diffResult.before.version) {
                 $scope.diff.version = "Before: " + diffResult.before.version + " -- After: " + diffResult.after.version;
@@ -114,6 +135,18 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             if (diffResult.before.permissibleValues || diffResult.after.permissibleValues) {
                 $scope.diff.permissibleValues = "Modified";
             }
+            if (diffResult.before.naming || diffResult.after.naming) {
+                $scope.diff.naming = "Modified";
+            }      
+            if (diffResult.before.registrationState || diffResult.after.registrationState) {
+                $scope.diff.registrationState = "Modified";
+            }                
+            $scope.setDiff2(diffResult, {first: "property", second: "concepts"});       
+            $scope.setDiff2(diffResult, {first: "objectClass", second: "concepts"});       
+            $scope.setDiff2(diffResult, {first: "dataElementConcept", second: "concepts"});      
+            if (diffResult.before.ids || diffResult.after.ids) {
+                $scope.diff.ids = "Modified";
+            }             
         });
     };
     
