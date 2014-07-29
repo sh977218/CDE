@@ -16,6 +16,8 @@ var express = require('express')
   , favicon = require('serve-favicon')
   , auth = require( './modules/cde/node-js/authentication' )//TODO: Remove this dependency!
   , logging = require('./modules/cde/node-js/logging.js')//TODO: Remove this dependency!
+  , orgsvc = require('./modules/system/node-js/orgsvc')//TODO: Remove this dependency!
+  , usersrvc = require('./modules/system/node-js/usersrvc')//TODO: Remove this dependency!
 ;
 
 passport.serializeUser(function(user, done) {
@@ -183,6 +185,87 @@ app.get('/siteadmins', function(req, res) {
         res.send(403, "Not Authorized");
     }
 }); 
+
+app.get('/managedOrgs', function(req, res) {
+    orgsvc.managedOrgs(req, res);
+});
+
+app.post('/addOrg', function(req, res) {
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        orgsvc.addOrg(req, res);
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
+});
+
+app.post('/updateOrg', function(req, res) {
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        orgsvc.updateOrg(req, res);
+    } else {
+        res.send(403, "You are not authorized to update this organization.");                    
+    }
+});
+
+app.post('/addSiteAdmin', function(req, res) {
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        usersrvc.addSiteAdmin(req, res);
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
+});
+
+app.post('/removeSiteAdmin', function(req, res) {
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        usersrvc.removeSiteAdmin(req, res);
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
+});
+
+app.get('/myOrgsAdmins', function(req, res) {
+    usersrvc.myOrgsAdmins(req, res);
+});
+
+
+app.get('/orgAdmins', function(req, res) {
+    usersrvc.orgAdmins(req, res);
+});
+
+app.get('/orgCurators', function(req, res) {
+    usersrvc.orgCurators(req, res);
+});
+
+app.post('/addOrgAdmin', function(req, res) {
+    if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+        usersrvc.addOrgAdmin(req, res);
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
+});
+
+app.post('/removeOrgAdmin', function(req, res) {
+    if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {        
+        usersrvc.removeOrgAdmin(req, res);
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
+});
+
+app.post('/addOrgCurator', function(req, res) {
+    if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+        usersrvc.addOrgCurator(req, res);
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
+});
+
+app.post('/removeOrgCurator', function(req, res) {
+    if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
+        usersrvc.removeOrgCurator(req, res);
+    } else {
+        res.send(403, "You are not authorized.");                    
+    }
+});
 
 var cdeModule = require(path.join(__dirname, './modules/cde/node-js/app.js'));
 cdeModule.init(app);

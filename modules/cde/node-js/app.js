@@ -1,132 +1,7 @@
-//var path = require('path');
-//
-//require(path.join(__dirname, '../deploy/configTest.js'));
-//
-//var express = require('express')
-//  , http = require('http')
-//  , cdesvc = require('./cdesvc')
-//  , boardsvc = require('./boardsvc')
-//  , usersvc = require('./usersvc')
-//  , orgsvc = require('./orgsvc')
-//  , flash = require('connect-flash')
-//  , passport = require('passport')
-//  , crypto = require('crypto')
-//  , LocalStrategy = require('passport-local').Strategy
-//  , mongo_data = require('./mongo-data')
-//  , classificationNode = require('./classificationNode')
-//  , util = require('util')
-//  , xml2js = require('xml2js')
-//  , vsac = require('./vsac-io')
-//  , config = require('config')
-//  , MongoStore = require('./assets/connect-mongo.js')(express)
-//  , dbLogger = require('./dbLogger.js')
-//  , favicon = require('serve-favicon')
-//  , elastic = require('./elastic')
-//  , auth = require( './authentication' )
-//  , helper = require('./helper.js')
-//  , logging = require('./logging.js')
-//  , classificationShared = require('../shared/classificationShared.js')
-//;
-//
-//function findById(id, fn) {
-//    return mongo_data.userById(id, function(err, user) {
-//        return fn(null, user);
-//    });
-//}
-//
-//passport.serializeUser(function(user, done) {
-//    done(null, user._id);
-//});
-//
-//passport.deserializeUser(function(id, done) {
-//  findById(id, function (err, user) {
-//    console.log("user: " + user.username + " " + user.orgAdmin);  
-//    done(err, user);
-//  });
-//});
-//
-//passport.use(new LocalStrategy({passReqToCallback: true}, auth.authAfterVsac));
-//var app = express();
-//
-//app.use(auth.ticketAuth);
-//
-//process.on('uncaughtException', function (err) {
-//  logging.processLogger.error('Caught exception: ' + err.stack);
-//});
-//
-//var winstonStream = {
-//    write: function(message, encoding){
-//        logging.expressLogger.info(message);
-//    }
-//};
-//
-//// all environments
-//app.set('port', config.port || 3000);
-//app.set('views', __dirname + '/../views');
-//app.set('view engine', 'ejs');
-//
-//app.use(favicon(__dirname + '/../public/assets/img/favicon.ico'));
-//app.use(express.bodyParser());
-//app.use(express.methodOverride());
-//app.use(express.cookieParser('your secret here'));
-//
-//var sessionStore = new MongoStore({
-//    mongoose_connection: mongo_data.mongoose_connection  
-//});
-//app.use(function(req, res, next) {
-//    this.isFile = function(req) {
-//        if (req.originalUrl.substr(req.originalUrl.length-3,3) === ".js") return true;
-//        if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".css") return true;
-//        if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".gif") return true;
-//        return false;
-//    };
-//    if ((req.cookies['connect.sid'] || req.originalUrl === "/login") && !this.isFile(req)) {
-//        var initExpressSession = express.session({ secret: "omgnodeworks", proxy: true, store:sessionStore });
-//        initExpressSession(req, res, next);
-//   } else {
-//       next();
-//   }
-//});
-//
-//app.use(flash());
-//app.use(passport.initialize());
-//app.use(passport.session());
-//
-//var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
-//
-//app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream}));
-//
-//app.use(app.router);
-//app.use(express.static(path.join(__dirname, '../public')));
-//
-//app.use("/shared", express.static(path.join(__dirname, '../shared')));
-//
-//app.use(function(err, req, res, next){
-//  logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
-//  console.log(err.stack);
-//  res.send(500, 'Something broke!');
-//});
-//
-//// development only
-//if ('development' == app.get('env')) {
-//  app.use(express.errorHandler());
-//};
-//
-//function ensureAuthenticated(req, res, next) {
-//  if (req.isAuthenticated()) { 
-//      return next(); 
-//  }
-//  res.redirect('/login');
-//};
-//
-//app.get('/gonowhere', function(req, res) {
-//   res.send("<html><body>Nothing here</body></html>");
-//});
-
 var cdesvc = require('./cdesvc')
   , boardsvc = require('./boardsvc')
   , usersvc = require('./usersvc')
-  , orgsvc = require('./orgsvc')
+//  , orgsvc = require('./orgsvc')
   , mongo_data = require('./mongo-data')
   , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: REMOVE DEPENDENCY
   , classificationNode = require('./classificationNode')
@@ -209,67 +84,67 @@ exports.init = function(app) {
             return cb("You are not authorized.", null);                   
         }
     }
-
-    app.post('/addSiteAdmin', function(req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            usersvc.addSiteAdmin(req, res);
-        } else {
-            res.send(403, "You are not authorized.");                    
-        }
-    });
-
-    app.post('/removeSiteAdmin', function(req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            usersvc.removeSiteAdmin(req, res);
-        } else {
-            res.send(403, "You are not authorized.");                    
-        }
-    });
-
-    app.get('/myOrgsAdmins', function(req, res) {
-        usersvc.myOrgsAdmins(req, res);
-    });
-
-
-    app.get('/orgAdmins', function(req, res) {
-        usersvc.orgAdmins(req, res);
-    });
-
-    app.get('/orgCurators', function(req, res) {
-        usersvc.orgCurators(req, res);
-    });
-
-    app.post('/addOrgAdmin', function(req, res) {
-        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
-            usersvc.addOrgAdmin(req, res);
-        } else {
-            res.send(403, "You are not authorized.");                    
-        }
-    });
-
-    app.post('/removeOrgAdmin', function(req, res) {
-        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {        
-            usersvc.removeOrgAdmin(req, res);
-        } else {
-            res.send(403, "You are not authorized.");                    
-        }
-    });
-
-    app.post('/addOrgCurator', function(req, res) {
-        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
-            usersvc.addOrgCurator(req, res);
-        } else {
-            res.send(403, "You are not authorized.");                    
-        }
-    });
-
-    app.post('/removeOrgCurator', function(req, res) {
-        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
-            usersvc.removeOrgCurator(req, res);
-        } else {
-            res.send(403, "You are not authorized.");                    
-        }
-    });
+//
+//    app.post('/addSiteAdmin', function(req, res) {
+//        if (req.isAuthenticated() && req.user.siteAdmin) {
+//            usersvc.addSiteAdmin(req, res);
+//        } else {
+//            res.send(403, "You are not authorized.");                    
+//        }
+//    });
+//
+//    app.post('/removeSiteAdmin', function(req, res) {
+//        if (req.isAuthenticated() && req.user.siteAdmin) {
+//            usersvc.removeSiteAdmin(req, res);
+//        } else {
+//            res.send(403, "You are not authorized.");                    
+//        }
+//    });
+//
+//    app.get('/myOrgsAdmins', function(req, res) {
+//        usersvc.myOrgsAdmins(req, res);
+//    });
+//
+//
+//    app.get('/orgAdmins', function(req, res) {
+//        usersvc.orgAdmins(req, res);
+//    });
+//
+//    app.get('/orgCurators', function(req, res) {
+//        usersvc.orgCurators(req, res);
+//    });
+//
+//    app.post('/addOrgAdmin', function(req, res) {
+//        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+//            usersvc.addOrgAdmin(req, res);
+//        } else {
+//            res.send(403, "You are not authorized.");                    
+//        }
+//    });
+//
+//    app.post('/removeOrgAdmin', function(req, res) {
+//        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {        
+//            usersvc.removeOrgAdmin(req, res);
+//        } else {
+//            res.send(403, "You are not authorized.");                    
+//        }
+//    });
+//
+//    app.post('/addOrgCurator', function(req, res) {
+//        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+//            usersvc.addOrgCurator(req, res);
+//        } else {
+//            res.send(403, "You are not authorized.");                    
+//        }
+//    });
+//
+//    app.post('/removeOrgCurator', function(req, res) {
+//        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
+//            usersvc.removeOrgCurator(req, res);
+//        } else {
+//            res.send(403, "You are not authorized.");                    
+//        }
+//    });
 
     app.get('/createcde', function(req, res) {
        res.render('createcde'); 
@@ -354,17 +229,6 @@ exports.init = function(app) {
         });
     });
 
-    app.get('/managedOrgs', function(req, res) {
-        orgsvc.managedOrgs(req, res);
-    });
-
-    app.post('/addOrg', function(req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            orgsvc.addOrg(req, res);
-        } else {
-            res.send(403, "You are not authorized.");                    
-        }
-    });
 
     app.delete('/classification/org', function(req, res) {
         if (!usersvc.isCuratorOf(req.user, req.query.orgName)) {
@@ -663,14 +527,25 @@ exports.init = function(app) {
     });
     
 
-
-    app.post('/updateOrg', function(req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            orgsvc.updateOrg(req, res);
-        } else {
-            res.send(403, "You are not authorized to update this organization.");                    
-        }
-    });
+//    app.get('/managedOrgs', function(req, res) {
+//        orgsvc.managedOrgs(req, res);
+//    });
+//
+//    app.post('/addOrg', function(req, res) {
+//        if (req.isAuthenticated() && req.user.siteAdmin) {
+//            orgsvc.addOrg(req, res);
+//        } else {
+//            res.send(403, "You are not authorized.");                    
+//        }
+//    });
+//
+//    app.post('/updateOrg', function(req, res) {
+//        if (req.isAuthenticated() && req.user.siteAdmin) {
+//            orgsvc.updateOrg(req, res);
+//        } else {
+//            res.send(403, "You are not authorized to update this organization.");                    
+//        }
+//    });
 
     app.post('/removeAttachment', function(req, res) {
         checkCdeOwnership(req.body.deId, req, function(err, de) {
