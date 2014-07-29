@@ -165,6 +165,13 @@ app.post('/logs', function (req, res) {
     }
 });
 
+
+app.get('/org/:name', function(req, res) {
+   return mongo_data_system.orgByName(req.params.name, function (result) {
+       res.send(result);
+   });
+});
+
 var cdeModule = require(path.join(__dirname, './modules/cde/node-js/app.js'));
 cdeModule.init(app);
 http.createServer(app).listen(app.get('port'), function(){

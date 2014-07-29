@@ -357,28 +357,7 @@ exports.init = function(app) {
         } else {
             res.send(403, "Not Authorized");
         }
-    });
-//TODO: MOVE TO SYSTEM
-//    app.get('/listOrgs', function(req, res) {
-//        mongo_data.listOrgs(function(err, orgs) {
-//           if (err) {
-//               res.send("ERROR");
-//           } else {
-//               res.send(orgs);
-//           }   
-//        });        
-//    });
-//    
-//    app.get('/listOrgsLongName', function(req, res) {
-//        mongo_data.listOrgsLongName(function(err, orgs) {
-//           if (err) {
-//               logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
-//               res.send("ERROR");
-//           } else {
-//               res.send(orgs);
-//           }   
-//        });
-//    });    
+    }); 
 
     app.get('/listOrgsFromDEClassification', function(req, res) {
         elastic.DataElementDistinct("classification.stewardOrg.name", function(result) {
@@ -658,12 +637,6 @@ exports.init = function(app) {
 
     app.get('/cdediff/:deId', function(req, res) {
        return cdesvc.diff(req, res); 
-    });
-
-    app.get('/org/:name', function(req, res) {
-       return mongo_data.orgByName(req.params.name, function (result) {
-           res.send(result);
-       });
     });
 
     app.post('/elasticSearch', function(req, res) {
