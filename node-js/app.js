@@ -44,7 +44,6 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-//passport.use(new LocalStrategy({passReqToCallback: true}, auth.authAfterVsac));
 passport.use(new LocalStrategy({passReqToCallback: true}, auth.authBeforeVsac));
 var app = express();
 
