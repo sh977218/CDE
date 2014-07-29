@@ -172,6 +172,18 @@ app.get('/org/:name', function(req, res) {
    });
 });
 
+
+app.get('/siteadmins', function(req, res) {
+    var ip = req.ip;
+    if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
+        mongo_data_system.siteadmins(function(err, users) {
+            res.send(users);
+        });
+    } else {
+        res.send(403, "Not Authorized");
+    }
+}); 
+
 var cdeModule = require(path.join(__dirname, './modules/cde/node-js/app.js'));
 cdeModule.init(app);
 http.createServer(app).listen(app.get('port'), function(){

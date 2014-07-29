@@ -7,6 +7,7 @@ var mongoose = require('mongoose')
     , config = require('config')
     , schemas = require('./schemas')
     , schemas_system = require('../../system/node-js/schemas') //TODO: Remove dependency
+    , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: Remove dependency
     ;
 
 var mongoUri = config.mongoUri;
@@ -91,7 +92,7 @@ exports.userTotalSpace = function(name, callback) {
 
 exports.addComment = function(deId, comment, userId, callback) {
     exports.cdeById(deId, function(err, de) {
-        exports.userById(userId, function(err, user) {
+        mongo_data_system.userById(userId, function(err, user) {
             de.comments.push({
                 user: user._id
                 , username: user.username

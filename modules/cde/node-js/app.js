@@ -348,17 +348,6 @@ exports.init = function(app) {
         });
     });
 
-    app.get('/siteadmins', function(req, res) {
-        var ip = req.ip;
-        if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
-            mongo_data.siteadmins(function(err, users) {
-                res.send(users);
-            });
-        } else {
-            res.send(403, "Not Authorized");
-        }
-    }); 
-
     app.get('/listOrgsFromDEClassification', function(req, res) {
         elastic.DataElementDistinct("classification.stewardOrg.name", function(result) {
             res.send(result);
