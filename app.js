@@ -9,30 +9,23 @@ var express = require('express')
   , crypto = require('crypto')
   , LocalStrategy = require('passport-local').Strategy
   , mongo_data = require('./modules/cde/node-js/mongo-data') //TODO: Remove this dependency!
-  , vsac = require('./modules/cde/node-js/vsac-io') //TODO: Remove this dependency!
   , config = require('config')
   , MongoStore = require('./modules/cde/node-js/assets/connect-mongo.js')(express)//TODO: Remove this dependency!
   , dbLogger = require('./modules/cde/node-js/dbLogger.js')//TODO: Remove this dependency!
   , favicon = require('serve-favicon')
-  , auth = require( './modules/cde/node-js/authentication' )
-  , logging = require('./modules/cde/node-js/logging.js')
+  , auth = require( './modules/cde/node-js/authentication' )//TODO: Remove this dependency!
+  , logging = require('./modules/cde/node-js/logging.js')//TODO: Remove this dependency!
 ;
-
-function findById(id, fn) {
-    return mongo_data.userById(id, function(err, user) {
-        return fn(null, user);
-    });
-}
 
 passport.serializeUser(function(user, done) {
     done(null, user._id);
 });
 
 passport.deserializeUser(function(id, done) {
-  findById(id, function (err, user) {
-    console.log("user: " + user.username + " " + user.orgAdmin);  
-    done(err, user);
-  });
+    mongo_data.userById(id, function(err, user){
+        console.log("user: " + user.username + " " + user.orgAdmin);  
+        done(err, user);
+    });
 });
 
 passport.use(new LocalStrategy({passReqToCallback: true}, auth.authAfterVsac));
