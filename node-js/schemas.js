@@ -144,7 +144,7 @@ var deJsonSchema = {
         {key: String, value: String, valueFormat: String}
     ]
     , ids: [
-        {origin: String, id: String, version: String}
+        {origin: String, id: String, version: String, _id: false}
     ]
     , comments: [commentSchema]
     , archived: Boolean

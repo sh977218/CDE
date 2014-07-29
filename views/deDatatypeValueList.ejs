@@ -13,6 +13,15 @@
       <div inline-edit model="cde.valueDomain.datatypeValueList.otherPleaseSpecifyText" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)" id="otherPleaseSpecifyText_input"> </div>
     </dd>      
   </span>
+  <dt>List Datatype: </dt>
+  <dd>
+     <span ng-show="editListTypeMode">
+        <input ng-model="cde.valueDomain.datatypeValueList.datatype" id="listDatatype_input"/>
+        <i class="fa fa-check" ng-click="editListTypeMode = false; stageCde(cde)" id="confirmListType"> OK</i>
+        <i class="fa fa-times" ng-click="editListTypeMode = false"> Cancel</i>
+     </span>
+     <span ng-hide="editListTypeMode"><i ng-show="isAllowed(cde)" class="fa fa-pencil" ng-click="editListTypeMode = true" id="listDatatype_pencil"></i> {{cde.valueDomain.datatypeValueList.datatype | placeholdEmpty}}</span>
+  </dd>
 </dl>
 <hr/>
 <h4>Permissible Values</h4>
