@@ -40,26 +40,26 @@ exports.listform = function(req, res) {
     });
 };
 
-exports.listOrgs = function(req, res) {
-    mongo_data.listOrgs(function(err, orgs) {
-       if (err) {
-           res.send("ERROR");
-       } else {
-           res.send(orgs);
-       }   
-    });
-};
+//exports.listOrgs = function(req, res) {
+//    mongo_data.listOrgs(function(err, orgs) {
+//       if (err) {
+//           res.send("ERROR");
+//       } else {
+//           res.send(orgs);
+//       }   
+//    });
+//};
 
-exports.listOrgsLongName = function(req, res) {
-    mongo_data.listOrgsLongName(function(err, orgs) {
-       if (err) {
-           logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
-           res.send("ERROR");
-       } else {
-           res.send(orgs);
-       }   
-    });
-};
+//exports.listOrgsLongName = function(req, res) {
+//    mongo_data.listOrgsLongName(function(err, orgs) {
+//       if (err) {
+//           logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
+//           res.send("ERROR");
+//       } else {
+//           res.send(orgs);
+//       }   
+//    });
+//};
 
 exports.priorCdes = function(req, res) {
     var cdeId = req.params.id;

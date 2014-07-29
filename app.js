@@ -8,7 +8,8 @@ var express = require('express')
   , passport = require('passport')
   , crypto = require('crypto')
   , LocalStrategy = require('passport-local').Strategy
-  , mongo_data = require('./modules/cde/node-js/mongo-data') //TODO: Remove this dependency!
+  //, mongo_data_cde = require('./modules/cde/node-js/mongo-data') //TODO: Remove this dependency!
+  , mongo_data_system = require('./modules/system/node-js/mongo-data')
   , config = require('config')
   , MongoStore = require('./modules/cde/node-js/assets/connect-mongo.js')(express)//TODO: Remove this dependency!
   , dbLogger = require('./modules/cde/node-js/dbLogger.js')//TODO: Remove this dependency!
@@ -22,7 +23,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-    mongo_data.userById(id, function(err, user){
+    mongo_data_system.userById(id, function(err, user){
         console.log("user: " + user.username + " " + user.orgAdmin);  
         done(err, user);
     });
@@ -54,7 +55,7 @@ app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 
 var sessionStore = new MongoStore({
-    mongoose_connection: mongo_data.mongoose_connection  
+    mongoose_connection: mongo_data_system.mongoose_connection  
 });
 app.use(function(req, res, next) {
     this.isFile = function(req) {
@@ -105,6 +106,26 @@ app.get('/gonowhere', function(req, res) {
    res.send("<html><body>Nothing here</body></html>");
 });
 
+app.get('/listOrgs', function(req, res) {
+    mongo_data_system.listOrgs(function(err, orgs) {
+       if (err) {
+           res.send("ERROR");
+       } else {
+           res.send(orgs);
+       }   
+    });        
+});
+
+app.get('/listOrgsLongName', function(req, res) {
+    mongo_data_system.listOrgsLongName(function(err, orgs) {
+       if (err) {
+           logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
+           res.send("ERROR");
+       } else {
+           res.send(orgs);
+       }   
+    });
+}); 
 
 app.post('/login', function(req, res, next) {
   // Regenerate is used so appscan won't complain

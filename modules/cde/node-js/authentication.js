@@ -4,6 +4,7 @@ var https = require('https')
   , logging = require('./logging.js')
   , config = require('config')
   , mongo_data = require('./mongo-data') 
+  , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: REMOVE DEPENDENCY
   , vsac = require('./vsac-io')
 ;
 
@@ -101,7 +102,7 @@ exports.authAfterVsac =   function(req, username, password, done) {
                     done(null, user);
                 });
             } else {
-                mongo_data.userByName(username, function(err, user) {
+                mongo_data_system.userByName(username, function(err, user) {
                     if (err) { return done(err); }
                     if (!user) { return done(null, false, { message: 'Incorrect username or password' }); }
                     if (user.lockCounter == 3) {
@@ -125,12 +126,12 @@ exports.authAfterVsac =   function(req, username, password, done) {
 
   
 exports.findUser = function(username, req, next) {
-    mongo_data.userByName(username, function(err, user) {
+    mongo_data_system.userByName(username, function(err, user) {
         if( err ) { // note: findByUsername always returns error=null
             next(); 
             return;
         } else if(!user) { // User has been authenticated but user is not in local db, so register him.
-            mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
+            mongo_data_system.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
                 next(user);
             });
         } else { // User already exists, so update user info.

@@ -171,25 +171,26 @@ schemas.pinningBoardSchema = mongoose.Schema ({
    , pins: [pinSchema]
 });
 
+////TODO: MOVE TO SYSTEM
+//schemas.userSchema = mongoose.Schema ({
+//    username: String
+//    , password: String
+//    , lastLogin: Date
+//    , lockCounter: Number
+//    , orgAdmin: [String]
+//    , orgCurator: [String]
+//    , siteAdmin: Boolean
+//    , quota: Number
+//    , viewHistory: [mongoose.Schema.Types.ObjectId]
+//    , knownIPs: [String]
+//});
 
-schemas.userSchema = mongoose.Schema ({
-    username: String
-    , password: String
-    , lastLogin: Date
-    , lockCounter: Number
-    , orgAdmin: [String]
-    , orgCurator: [String]
-    , siteAdmin: Boolean
-    , quota: Number
-    , viewHistory: [mongoose.Schema.Types.ObjectId]
-    , knownIPs: [String]
-});
-
-schemas.orgSchema = mongoose.Schema ({
-    name: String
-    , longName: String
-    , classifications: [csEltSchema]
-});
+////TODO: MOVE TO SYSTEM
+//schemas.orgSchema = mongoose.Schema ({
+//    name: String
+//    , longName: String
+//    , classifications: [csEltSchema]
+//});
 
 schemas.managedContextSchema = mongoose.Schema ({
    name: String 
@@ -228,8 +229,11 @@ schemas.pinningBoardSchema.pre('save', function(next) {
 });
 
 schemas.dataElementSchema.set('collection', 'dataelements');
-schemas.userSchema.set('collection', 'users');
-schemas.orgSchema.set('collection', 'orgs');
+
+//TODO: MOVE TO SYSTEM
+//schemas.orgSchema.set('collection', 'orgs');
+//schemas.userSchema.set('collection', 'users');
+
 schemas.pinningBoardSchema.set('collection', 'pinningBoards');
 schemas.message.set('collection', 'messages');
 

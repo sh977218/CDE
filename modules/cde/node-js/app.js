@@ -128,6 +128,7 @@ var cdesvc = require('./cdesvc')
   , usersvc = require('./usersvc')
   , orgsvc = require('./orgsvc')
   , mongo_data = require('./mongo-data')
+  , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: REMOVE DEPENDENCY
   , classificationNode = require('./classificationNode')
   , xml2js = require('xml2js')
   , vsac = require('./vsac-io')
@@ -357,10 +358,27 @@ exports.init = function(app) {
             res.send(403, "Not Authorized");
         }
     });
-
-    app.get('/listOrgs', function(req, res) {
-        cdesvc.listOrgs(req, res);
-    });
+//TODO: MOVE TO SYSTEM
+//    app.get('/listOrgs', function(req, res) {
+//        mongo_data.listOrgs(function(err, orgs) {
+//           if (err) {
+//               res.send("ERROR");
+//           } else {
+//               res.send(orgs);
+//           }   
+//        });        
+//    });
+//    
+//    app.get('/listOrgsLongName', function(req, res) {
+//        mongo_data.listOrgsLongName(function(err, orgs) {
+//           if (err) {
+//               logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
+//               res.send("ERROR");
+//           } else {
+//               res.send(orgs);
+//           }   
+//        });
+//    });    
 
     app.get('/listOrgsFromDEClassification', function(req, res) {
         elastic.DataElementDistinct("classification.stewardOrg.name", function(result) {
@@ -510,7 +528,7 @@ exports.init = function(app) {
         if (!req.user) {
             res.send("You must be logged in to do that");
         } else {
-            mongo_data.userById(req.user._id, function(err, user) {
+            mongo_data_system.userById(req.user._id, function(err, user) {
                 res.send(user);
             });
         }
@@ -682,9 +700,7 @@ exports.init = function(app) {
        }) 
     });
     
-    app.get('/listOrgsLongName', function(req, res) {
-        cdesvc.listOrgsLongName(req, res);
-    });
+
 
     app.post('/updateOrg', function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
