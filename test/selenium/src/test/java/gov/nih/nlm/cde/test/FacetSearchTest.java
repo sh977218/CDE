@@ -193,7 +193,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Candidate");
         findElement(By.id("saveRegStatus")).click();
-        hangon(2);
+        hangon(3);
 
         goToSearch();
         findElement(By.id("li-blank-Candidate")).click();
