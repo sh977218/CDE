@@ -25,6 +25,7 @@ var express = require('express')
   , helper = require('./helper.js')
   , logging = require('./logging.js')
   , classificationShared = require('../shared/classificationShared.js')
+  , sdc = require("./sdc.js")
 ;
 
 function findById(id, fn) {
@@ -143,6 +144,10 @@ app.get('/list', function(req, res){
 
 app.get('/boardList', function(req, res){
   res.render('boardList');
+});
+
+app.get('/sdcView', function(req, res){
+  res.render('sdcView');
 });
 
 app.get('/deCompare', function(req, res){
@@ -834,6 +839,10 @@ app.post('/retireCde', function (req, res) {
             res.send();
         });        
     });
+});
+
+app.get('/sdc/:uuid/:version', function (req, res) {
+   sdc.byUuidVersion(req, res);
 });
 
 app.post('/logs', function (req, res) {

@@ -74,8 +74,39 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     defContext.put("acceptability", "preferred");
     defaultName.put("context", defContext);
     
+    BasicDBObject prefQContext = new BasicDBObject();
+    prefQContext.put("contextName", 'Preferred Question Text');
+    prefQContext.put("acceptability", "preferred");
+    prefQContext.put("context", defContext);
+    
+    BasicDBObject altQContext = new BasicDBObject();
+    altQContext.put("contextName", 'Alternate Question Text');
+    altQContext.put("acceptability", "preferred");
+    altQContext.put("context", defContext);
+    
     def naming = [];
     naming.add(defaultName);
+    
+    //preferred question text
+    for (int rdi = 0; rdi < cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.size(); rdi++) {
+        if ("Preferred Question Text".equals(cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentType.text())) {
+            BasicDBObject prefQuesText = new BasicDBObject();
+            prefQuesText.put("designation", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].Name.text());
+            prefQuesText.put("definition", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentText.text());
+            prefQuesText.put("languageCode", "EN-US"); 
+            prefQuesText.put("context", prefQContext);
+            naming.add(prefQuesText);
+        }
+        if ("Alternate Question Text".equals(cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentType.text())) {
+            BasicDBObject prefQuesText = new BasicDBObject();
+            prefQuesText.put("designation", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentText.text());
+            prefQuesText.put("definition", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentText.text());
+            prefQuesText.put("languageCode", "EN-US"); 
+            prefQuesText.put("context", altQContext);
+            naming.add(prefQuesText);
+        }    
+    }
+    
     newDE.put("naming", naming);
 
     BasicDBObject cadsrID = new BasicDBObject();
@@ -133,6 +164,18 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     }
     PROP.put("concepts", propConcepts);
     newDE.put("property", PROP);
+    
+    
+    def dec = new BasicDBObject();
+    def decConcepts = [];
+    def decC = new BasicDBObject();
+    decC.put("name", cadsrDE.DATAELEMENTCONCEPT[0].LongName.text());
+    decC.put("origin", "NCI caDSR");
+    decC.put("originId", cadsrDE.DATAELEMENTCONCEPT[0].PublicId.text() + "v" + cadsrDE.DATAELEMENTCONCEPT[0].Version.text());
+    decConcepts.add(decC);
+
+    dec.put("concepts", decConcepts);
+    newDE.put("dataElementConcept", dec);
     
     def classificationsArrayMap = [:];
     Classifications classifications = new Classifications(orgColl);
