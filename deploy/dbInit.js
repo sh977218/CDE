@@ -28,6 +28,7 @@ db.users.insert({username: 'phri', password: 'pass', orgCurator: ["PHRI"], orgAd
 db.users.insert({username: 'ninds', password: 'pass', orgCurator: [], orgAdmin: ["NINDS"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'grdr', password: 'pass', orgCurator: [], orgAdmin: ["GRDR"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'eyegene', password: 'pass', orgCurator: [], orgAdmin: ["EyeGene"], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'lockedUser', password: 'pass', orgCurator: [], orgAdmin: [], viewHistory: []});
 
 db.orgs.insert({name: "NHLBI"});
 db.orgs.insert({name: "caCORE"});
