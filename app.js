@@ -243,6 +243,30 @@ app.post('/addOrgAdmin', function(req, res) {
     }
 });
 
+app.isLocalIp = function (ip) {
+    return ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0;
+};
+
+app.get('/siteaudit', function(req, res) {
+    if (app.isLocalIp(req.ip) 
+            && req.user && req.user.siteAdmin) {
+        res.render('siteAudit');
+    } else {
+        res.send(403, "Not Authorized");
+    }
+});
+
+app.get('/searchUsers/:username?', function(req, res) {
+    if (app.isLocalIp(req.ip) 
+            && req.user && req.user.siteAdmin) {
+        mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
+            res.send({users: users});
+        });
+    } else {
+        res.send(403, "Not Authorized");
+    }
+});
+
 app.post('/removeOrgAdmin', function(req, res) {
     if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {        
         usersrvc.removeOrgAdmin(req, res);

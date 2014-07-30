@@ -163,29 +163,6 @@ exports.init = function(app) {
         }
     });
 
-    app.isLocalIp = function (ip) {
-        return ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0;
-    };
-
-    app.get('/siteaudit', function(req, res) {
-        if (app.isLocalIp(req.ip) 
-                && req.user && req.user.siteAdmin) {
-            res.render('siteAudit');
-        } else {
-            res.send(403, "Not Authorized");
-        }
-    });
-
-    app.get('/searchUsers/:username?', function(req, res) {
-        if (app.isLocalIp(req.ip) 
-                && req.user && req.user.siteAdmin) {
-            mongo_data.usersByPartialName(req.params.username, function (err, users) {
-                res.send({users: users});
-            });
-        } else {
-            res.send(403, "Not Authorized");
-        }
-    });
 
     app.get('/orgaccountmanagement', function(req, res) {
         res.render('orgAccountManagement');
