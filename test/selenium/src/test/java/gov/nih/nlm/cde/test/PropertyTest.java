@@ -10,7 +10,7 @@ public class PropertyTest extends NlmCdeBaseTest {
     @Test
     public void addRemoveProperty() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        String cdeName = "Intravesical Protocol Agent Administered Specify";
+        String cdeName = "Additional Pathologic Findings Chronic Proctocolitis Indicator";
         goToCdeByName(cdeName);
         findElement(By.linkText("Properties")).click();
         findElement(By.id("addProperty")).click();
