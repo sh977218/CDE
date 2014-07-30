@@ -90,42 +90,6 @@ exports.updateUserAfterLogin = function(req, user) {
     user.lastLogin = Date.now();
 };
 
-exports.authAfterVsac = function(req, username, password, done) {
-    
-    // Allows other items on the event queue to complete before execution, excluding IO related events.
-    process.nextTick(function () {
-        // Find the user by username. If there is no user with the given
-        // username, or the password is not correct, set the user to `false` to
-        // indicate failure and set a flash message. Otherwise, return the
-        // authenticated `user`.
-        vsac.umlsAuth(username, password, function(result) { 
-            if (result.indexOf("true") > 0) {
-                auth.findAddUserLocally(username, req, function(user) {
-                    done(null, user);
-                });
-            } else {
-                mongo_data.userByName(username, function(err, user) {
-                    if (err) { return done(err); }
-                    if (!user) { return done(null, false, { message: 'Incorrect username or password' }); }
-                    if (user.lockCounter == 3) {
-                        return done(null, false, { message: 'User is locked out' }); 
-                    }
-                    if (user.password != password) {
-                        (user.lockCounter>=0? user.lockCounter += 1 : user.lockCounter = 1);
-                        return mongo_data.save(user, function(err, user) {
-                            return done(null, false, { message: 'Invalid password' }); 
-                        });
-                    }
-                    auth.updateUserAfterLogin(req, user);
-                    return mongo_data.save(user, function(err, user) {
-                        return done(null, user);                    
-                    });
-                });                
-            };
-        });
-    });
-};
-
 exports.authBeforeVsac = function(req, username, password, done) {
     
     // Allows other items on the event queue to complete before execution, excluding IO related events.
@@ -146,25 +110,22 @@ exports.authBeforeVsac = function(req, username, password, done) {
                     }
                 });
             } else { // If user was found in local datastore and password != 'umls'
-                if (user.lockCounter == 3) {
+                if (user.lockCounter === 3) {
                     return done(null, false, { message: 'User is locked out' }); 
-                }
-                
-                if (user.password != password) {
+                } else if (user.password !== password) {
                     // Initialize the lockCounter if it hasn't been
                     (user.lockCounter>=0? user.lockCounter += 1 : user.lockCounter = 1);
                     
                     return mongo_data.save(user, function(err, user) {
                         return done(null, false, { message: 'Incorrect password' }); 
                     });
+                } else {
+                    // Update user info in datastore
+                    auth.updateUserAfterLogin(req, user);
+                    return mongo_data.save(user, function(err, user) {
+                        return done(null, user);                    
+                    });
                 }
-                
-                // Update user info in datastore
-                auth.updateUserAfterLogin(req, user);
-                return mongo_data.save(user, function(err, user) {
-                    return done(null, user);                    
-                });
-
             }
         });  
     });
