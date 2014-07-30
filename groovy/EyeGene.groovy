@@ -78,7 +78,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
     newDE.put("uuid", UUID.randomUUID() as String);
     newDE.put("created", new Date()); 
-    newDE.put("origin", 'EyeGene'); 
+    newDE.put("source", 'EyeGene'); 
     newDE.put("version", "1"); 
         
     def namings = [];
@@ -140,7 +140,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
     def ids = [];
     def eyeId = new BasicDBObject();
-    eyeId.put("origin", "EyeGene");
+    eyeId.put("source", "EyeGene");
     eyeId.put("id", getCellValue(row.getCell(xlsMap.findingId)));
     ids.add(eyeId);    
     

@@ -845,6 +845,10 @@ app.get('/sdc/:uuid/:version', function (req, res) {
    sdc.byUuidVersion(req, res);
 });
 
+app.get('/sdc/:id', function (req, res) {
+   sdc.byId(req, res);
+});
+
 app.post('/logs', function (req, res) {
     if (req.isAuthenticated() && req.user.siteAdmin) {
         dbLogger.getLogs(req.body.query, function(err, result) {

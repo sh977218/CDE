@@ -169,7 +169,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
     newDE.put("uuid", UUID.randomUUID() as String);
     newDE.put("created", new Date()); 
-    newDE.put("origin", 'NINDS'); 
+    newDE.put("source", 'NINDS'); 
     newDE.put("version", getCellValue(row.getCell(xlsMap.cdeVersion))); 
     
     def properties = [];
@@ -325,14 +325,14 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
     def ids = [];
     def nindsId = new BasicDBObject();
-    nindsId.put("origin", "NINDS");
+    nindsId.put("source", "NINDS");
     nindsId.put("id", getCellValue(row.getCell(xlsMap.nindsId)));
     ids.add(nindsId);
     
     def cadsrId = getCellValue(row.getCell(xlsMap.cadsrId));
     if (!cadsrId.equals("")) {
         def id = new BasicDBObject();
-        id.put("origin", "caDSR");
+        id.put("source", "caDSR");
         id.put("id", cadsrId);
         ids.add(id); 
     }

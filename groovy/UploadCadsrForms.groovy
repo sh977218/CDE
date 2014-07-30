@@ -55,7 +55,7 @@ doDataElement = {url ->
         deVersion = deVersion.substring(0, deVersion.lastIndexOf("."));
     }
     
-    def foundDe = deColl.findOne(new BasicDBObject("originId", deId + 'v' + deVersion))
+    def foundDe = deColl.findOne(new BasicDBObject("sourceId", deId + 'v' + deVersion))
     if (foundDe == null) {
         deObj.append("description", "Data Element cannot be found. Origin: " + deId + 'v' + deVersion)
     } else  {

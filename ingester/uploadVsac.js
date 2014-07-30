@@ -55,8 +55,8 @@ fs.readFile(process.argv[2], function(err, data) {
                 var newDE = new DataElement({
                     uuid: uuid.v4()
                     , created: Date.now()
-                    , origin: 'VSAC'
-                    , originId: valueSet['$'].ID + "v" + valueSet['$'].version
+                    , source: 'VSAC'
+                    , sourceId: valueSet['$'].ID + "v" + valueSet['$'].version
                     , stewardOrg: {
                         name: orgMap[valueSet['ns0:Source']]
                     }
