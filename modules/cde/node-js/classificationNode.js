@@ -1,4 +1,4 @@
-var mongo_data = require('../node-js/mongo-data')
+var mongo_data = require('./mongo-data')
     , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: Remove dependency
     , usersvc = require('./usersvc')
     , classificationShared = require('../shared/classificationShared');

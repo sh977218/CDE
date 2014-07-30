@@ -12,7 +12,7 @@ var express = require('express')
   , MongoStore = require('./modules/cde/node-js/assets/connect-mongo.js')(express)//TODO: Remove this dependency!
   , favicon = require('serve-favicon')
   , auth = require( './modules/cde/node-js/authentication' )//TODO: Remove this dependency!
-  , logging = require('./modules/cde/node-js/logging.js')//TODO: Remove this dependency!
+  , logging = require('./modules/system/node-js/logging.js')
 ;
 
 passport.serializeUser(function(user, done) {

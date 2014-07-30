@@ -1,10 +1,10 @@
 var passport = require('passport')
   , mongo_data_system = require('./mongo-data')
   , config = require('config')
-  , dbLogger = require('../../cde/node-js/dbLogger.js')//TODO: Remove this dependency!
-  , logging = require('../../cde/node-js/logging.js')//TODO: Remove this dependency!
-  , orgsvc = require('./orgsvc')//TODO: Remove this dependency!
-  , usersrvc = require('./usersrvc')//TODO: Remove this dependency!
+  , dbLogger = require('./dbLogger.js')
+  , logging = require('./logging.js')
+  , orgsvc = require('./orgsvc')
+  , usersrvc = require('./usersrvc')
 ;
 
 exports.init = function(app) {
