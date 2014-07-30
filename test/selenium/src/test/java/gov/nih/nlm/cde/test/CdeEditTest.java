@@ -229,7 +229,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.linkText("Identifiers")).click();
         findElement(By.xpath("//button[text()=\" Add Identifier\"]")).click();
         modalHere();
-        findElement(By.xpath("//label[text()=\"Origin\"]/following-sibling::input")).sendKeys("Origin 1");
+        findElement(By.xpath("//label[text()=\"Source\"]/following-sibling::input")).sendKeys("Origin 1");
         findElement(By.xpath("//label[text()=\"Identifier\"]/following-sibling::textarea")).sendKeys("Identifier 1");    
         findElement(By.xpath("//label[text()=\"Version\"]/following-sibling::textarea")).sendKeys("Version 1"); 
         findElement(By.xpath("//div[@id=\"newIdModalFooter\"]//button[text()=\"Save\"]")).click();

@@ -340,7 +340,7 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.linkText("My Boards")).click();
         findElement(By.linkText("View Board")).click();
         findElement(By.linkText("30")).click();
-        Assert.assertTrue(textPresent("Visible Tumor Anterior-Posterior Orientation Size 3 Digit Number"));
+        Assert.assertTrue(textPresent("Word discrimination result"));
         Assert.assertTrue(textPresent("Volumetric Measurement Left Limb Testing Result"));
         Assert.assertTrue(textPresent("Walking difficulty age need intermittent support not applicable indicator"));
         Assert.assertTrue(textPresent("Water reference data acquisition data acquisition time"));

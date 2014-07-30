@@ -47,7 +47,7 @@ public class CompareTest extends NlmCdeBaseTest{
         findElement(By.linkText("Quick Board ( 2 )")).click();
         findElement(By.id("qb.compare")).click();
         Assert.assertTrue(textPresent("in CTC category Blood/Bone Marrow"));
-        Assert.assertTrue(textPresent("in CTC category Pulmonary/Upper Respiratory"));
+        Assert.assertTrue(textPresent("CTC Adverse Event Platelets Grade"));
     }
     
     @Test
