@@ -12,11 +12,11 @@ var passport = require('passport')
 exports.init = function(app) {
     
     app.get('/', function(req, res) {
-        res.render('index');
+        res.render('index', 'system');
     });
 
     app.get('/home', function(req, res) {
-        res.render('home');
+        res.render('home', 'system');
     });    
 
     app.get('/gonowhere', function(req, res) {
@@ -175,7 +175,7 @@ exports.init = function(app) {
     app.get('/siteaudit', function(req, res) {
         if (app.isLocalIp(req.ip) 
                 && req.user && req.user.siteAdmin) {
-            res.render('siteAudit'); //TODO: REMOVE DEPENDENCY
+            res.render('siteAudit', 'system'); //TODO: REMOVE DEPENDENCY
         } else {
             res.send(403, "Not Authorized");
         }

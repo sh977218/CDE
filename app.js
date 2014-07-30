@@ -90,9 +90,6 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 };
 
-//app.set('views', path.join(__dirname, './modules/cde/views'));
-
-
 app.set('views', path.join(__dirname, './modules'));
 var originalRender = express.response.render;
 express.response.render = function(view, module) {
