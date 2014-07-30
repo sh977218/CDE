@@ -1,13 +1,14 @@
 var mongo_data = require('../node-js/mongo-data')
-, usersvc = require('./usersvc')
-, classificationShared = require('../shared/classificationShared');
+    , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: Remove dependency
+    , usersvc = require('./usersvc')
+    , classificationShared = require('../shared/classificationShared');
 
 exports.addOrgClassification = function(body, cb) {
     if( !(body.categories instanceof Array) ) {
         body.categories = [body.categories];
     }
     
-    mongo_data.orgByName(body.orgName, function(stewardOrg) {
+    mongo_data_system.orgByName(body.orgName, function(stewardOrg) {
         var fakeTree = {elements: stewardOrg.classifications};
         classificationShared.addCategory(fakeTree, body.categories);
         stewardOrg.markModified("classifications");
@@ -84,7 +85,7 @@ exports.modifyOrgClassification = function(request, action, callback) {
     if( !(request.categories instanceof Array) ) {
         request.categories = [request.categories];    
     }    
-    mongo_data.orgByName(request.orgName, function(stewardOrg) {
+    mongo_data_system.orgByName(request.orgName, function(stewardOrg) {
         var fakeTree = {elements: stewardOrg.classifications};
         classificationShared.modifyCategory(fakeTree, request.categories, {type: action, newname: request.newname});
         stewardOrg.markModified("classifications");
