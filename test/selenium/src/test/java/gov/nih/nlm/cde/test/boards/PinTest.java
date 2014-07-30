@@ -1,7 +1,5 @@
 package gov.nih.nlm.cde.test.boards;
 
-import gov.nih.nlm.cde.test.boards.BoardTest;
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;

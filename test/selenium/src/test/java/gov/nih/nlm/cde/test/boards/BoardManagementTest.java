@@ -107,6 +107,7 @@ public class BoardManagementTest extends BoardTest {
         modalHere();
         Assert.assertTrue(textPresent("Create a board now"));
         findElement(By.id("cancelSelect")).click();
+        modalGone();
     }
     
     @Test
