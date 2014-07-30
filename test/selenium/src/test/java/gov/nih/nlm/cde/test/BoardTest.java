@@ -173,7 +173,7 @@ public class BoardTest extends NlmCdeBaseTest {
 
         pinTo("Laboratory Procedure Blood Urea Nitrogen", "Blood Board");
         pinTo("Umbilical Cord Blood", "Blood Board");
-        pinTo("Smoking History", "Smoking Board");
+        pinTo("Smoking History Ind", "Smoking Board");
         pinTo("Form Element End Date", "Smoking Board");
         
         goToBoard("Smoking Board");

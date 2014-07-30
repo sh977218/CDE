@@ -39,7 +39,7 @@ public class CompareTest extends NlmCdeBaseTest{
         findElement(By.linkText("More Like This")).click();
         findElement(By.id("compareMe")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compareMe")));
-        findElement(By.linkText("Common Toxicity Criteria Adverse Event Prolonged Chest Tube Grade")).click();
+        findElement(By.linkText("Common Toxicity Criteria Adverse Event Platelet Count Grade")).click();
         hangon(.5);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
         findElement(By.id("compare_0")).click();

@@ -12,7 +12,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void rememberText() {
-        goToCdeByName("Smoking Status");
+        goToCdeByName("Smoking Status Ind");
         driver.navigate().back();
         hangon(1);
         Assert.assertTrue("Smoking Status".equals(findElement(By.id("acc_link_0")).getText()));
