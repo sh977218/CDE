@@ -5,9 +5,19 @@ var passport = require('passport')
   , logging = require('./logging.js')
   , orgsvc = require('./orgsvc')
   , usersrvc = require('./usersrvc')
+  , express = require('express')
+  , path = require('path')
 ;
 
 exports.init = function(app) {
+    
+    app.get('/', function(req, res) {
+        res.render('index');
+    });
+
+    app.get('/home', function(req, res) {
+        res.render('home');
+    });    
 
     app.get('/gonowhere', function(req, res) {
         res.send("<html><body>Nothing here</body></html>");
@@ -110,6 +120,16 @@ exports.init = function(app) {
             res.send(403, "You are not authorized to update this organization.");                    
         }
     });
+    
+    app.get('/user/me', function(req, res) {
+        if (!req.user) {
+            res.send("You must be logged in to do that");
+        } else {
+            mongo_data_system.userById(req.user._id, function(err, user) {
+                res.send(user);
+            });
+        }
+    });    
 
     app.post('/addSiteAdmin', function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
@@ -155,7 +175,7 @@ exports.init = function(app) {
     app.get('/siteaudit', function(req, res) {
         if (app.isLocalIp(req.ip) 
                 && req.user && req.user.siteAdmin) {
-            res.render('siteAudit');
+            res.render('siteAudit'); //TODO: REMOVE DEPENDENCY
         } else {
             res.send(403, "Not Authorized");
         }

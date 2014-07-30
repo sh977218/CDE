@@ -1,7 +1,7 @@
 var winston = require('winston')
   , util = require('util')
   , dbLogger = require('./dbLogger.js')
-  , helper = require('../../cde/node-js/helper.js')
+  , helper = require('./helper.js')
 ;
 
 var MongoLogger = winston.transports.MongoLogger = function (options) {

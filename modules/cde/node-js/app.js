@@ -2,32 +2,22 @@ var cdesvc = require('./cdesvc')
   , boardsvc = require('./boardsvc')
   , usersvc = require('./usersvc')
   , mongo_data = require('./mongo-data')
-  , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: REMOVE DEPENDENCY
   , classificationNode = require('./classificationNode')
   , xml2js = require('xml2js')
   , vsac = require('./vsac-io')
   , config = require('config')
   , elastic = require('./elastic')
   , auth = require( './authentication' )
-  , helper = require('./helper.js')
+  , helper = require('../../system/node-js/helper.js')
   , logging = require('../../system/node-js/logging.js')
   , classificationShared = require('../shared/classificationShared.js')
   , path = require('path')
   , express = require('express')
 ;
 exports.init = function(app) {
-    app.set('views', path.join(__dirname, '../views'));
 
     app.use("/cde/public", express.static(path.join(__dirname, '../public')));
     app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
-
-    app.get('/', function(req, res) {
-        res.render('index');
-    });
-
-    app.get('/home', function(req, res) {
-        res.render('home');
-    });
 
     app.get('/quickBoard', function(req, res) {
       res.render('quickBoard');
@@ -270,15 +260,6 @@ exports.init = function(app) {
         return cdesvc.save(req, res);
     });
 
-    app.get('/user/me', function(req, res) {
-        if (!req.user) {
-            res.send("You must be logged in to do that");
-        } else {
-            mongo_data_system.userById(req.user._id, function(err, user) {
-                res.send(user);
-            });
-        }
-    });
 
     app.get('/viewingHistory/:start', function(req, res) {
         if (!req.user) {

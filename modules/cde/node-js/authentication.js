@@ -1,6 +1,6 @@
 var https = require('https')
   , xml2js = require('xml2js')
-  , helper = require('./helper.js')
+  , helper = require('../../system/node-js/helper.js') //TODO: Remove dependency
   , logging = require('../../system/node-js/logging.js') //TODO: Remove dependency
   , config = require('config')
   , mongo_data = require('./mongo-data') 
