@@ -8,7 +8,6 @@ var express = require('express')
   , passport = require('passport')
   , crypto = require('crypto')
   , LocalStrategy = require('passport-local').Strategy
-  //, mongo_data_cde = require('./modules/cde/node-js/mongo-data') //TODO: Remove this dependency!
   , mongo_data_system = require('./modules/system/node-js/mongo-data')
   , config = require('config')
   , MongoStore = require('./modules/cde/node-js/assets/connect-mongo.js')(express)//TODO: Remove this dependency!
@@ -293,6 +292,10 @@ app.post('/removeOrgCurator', function(req, res) {
 
 var cdeModule = require(path.join(__dirname, './modules/cde/node-js/app.js'));
 cdeModule.init(app);
+
+var systemModule = require(path.join(__dirname, './modules/system/node-js/app.js'));
+cdeModule.init(app);
+
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
 });

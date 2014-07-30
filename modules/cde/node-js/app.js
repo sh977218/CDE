@@ -1,7 +1,6 @@
 var cdesvc = require('./cdesvc')
   , boardsvc = require('./boardsvc')
   , usersvc = require('./usersvc')
-//  , orgsvc = require('./orgsvc')
   , mongo_data = require('./mongo-data')
   , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: REMOVE DEPENDENCY
   , classificationNode = require('./classificationNode')
@@ -84,68 +83,6 @@ exports.init = function(app) {
             return cb("You are not authorized.", null);                   
         }
     }
-//
-//    app.post('/addSiteAdmin', function(req, res) {
-//        if (req.isAuthenticated() && req.user.siteAdmin) {
-//            usersvc.addSiteAdmin(req, res);
-//        } else {
-//            res.send(403, "You are not authorized.");                    
-//        }
-//    });
-//
-//    app.post('/removeSiteAdmin', function(req, res) {
-//        if (req.isAuthenticated() && req.user.siteAdmin) {
-//            usersvc.removeSiteAdmin(req, res);
-//        } else {
-//            res.send(403, "You are not authorized.");                    
-//        }
-//    });
-//
-//    app.get('/myOrgsAdmins', function(req, res) {
-//        usersvc.myOrgsAdmins(req, res);
-//    });
-//
-//
-//    app.get('/orgAdmins', function(req, res) {
-//        usersvc.orgAdmins(req, res);
-//    });
-//
-//    app.get('/orgCurators', function(req, res) {
-//        usersvc.orgCurators(req, res);
-//    });
-//
-//    app.post('/addOrgAdmin', function(req, res) {
-//        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
-//            usersvc.addOrgAdmin(req, res);
-//        } else {
-//            res.send(403, "You are not authorized.");                    
-//        }
-//    });
-//
-//    app.post('/removeOrgAdmin', function(req, res) {
-//        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {        
-//            usersvc.removeOrgAdmin(req, res);
-//        } else {
-//            res.send(403, "You are not authorized.");                    
-//        }
-//    });
-//
-//    app.post('/addOrgCurator', function(req, res) {
-//        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
-//            usersvc.addOrgCurator(req, res);
-//        } else {
-//            res.send(403, "You are not authorized.");                    
-//        }
-//    });
-//
-//    app.post('/removeOrgCurator', function(req, res) {
-//        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
-//            usersvc.removeOrgCurator(req, res);
-//        } else {
-//            res.send(403, "You are not authorized.");                    
-//        }
-//    });
-
     app.get('/createcde', function(req, res) {
        res.render('createcde'); 
     });
@@ -503,27 +440,6 @@ exports.init = function(app) {
        }) 
     });
     
-
-//    app.get('/managedOrgs', function(req, res) {
-//        orgsvc.managedOrgs(req, res);
-//    });
-//
-//    app.post('/addOrg', function(req, res) {
-//        if (req.isAuthenticated() && req.user.siteAdmin) {
-//            orgsvc.addOrg(req, res);
-//        } else {
-//            res.send(403, "You are not authorized.");                    
-//        }
-//    });
-//
-//    app.post('/updateOrg', function(req, res) {
-//        if (req.isAuthenticated() && req.user.siteAdmin) {
-//            orgsvc.updateOrg(req, res);
-//        } else {
-//            res.send(403, "You are not authorized to update this organization.");                    
-//        }
-//    });
-
     app.post('/removeAttachment', function(req, res) {
         checkCdeOwnership(req.body.deId, req, function(err, de) {
             if (err) return res.send(err);  
@@ -667,7 +583,6 @@ exports.init = function(app) {
         });
     });
 
-
     var systemAlert = "";
     app.get("/systemAlert", function(req, res) {
         res.send(systemAlert);
@@ -684,6 +599,3 @@ exports.init = function(app) {
     });
     
 };
-//http.createServer(app).listen(app.get('port'), function(){
-//  console.log('Express server listening on port ' + app.get('port'));
-//});
