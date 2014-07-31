@@ -16,8 +16,8 @@ public class NamingTest extends NlmCdeBaseTest {
  
     @Test
     public void addRemoveEdit() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        String cdeName = "Radiation Therapy Modality";
+        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        String cdeName = "Principal Investigator State java.lang.String";
         goToCdeByName(cdeName);
         findElement(By.linkText("Naming")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeNaming-0")));

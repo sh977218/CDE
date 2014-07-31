@@ -97,7 +97,7 @@ if (args.contains("--map")) {
 }
 
 mergeRecord = {phenXObj ->
-    def findObj = new BasicDBObject("originId", Pattern.compile("^" + phenXObj.get("cadsrId") + "v"));
+    def findObj = new BasicDBObject("sourceId", Pattern.compile("^" + phenXObj.get("cadsrId") + "v"));
     
     DBObject toUpdate = deColl.findOne(findObj)
     

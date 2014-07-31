@@ -86,7 +86,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
     newDE.put("uuid", UUID.randomUUID() as String);
     newDE.put("created", new Date()); 
-    newDE.put("origin", 'GRDR'); 
+    newDE.put("source", 'GRDR'); 
     newDE.put("version", "1"); 
         
     def itemNumber = getCellValue(row.getCell(xlsMap.itemNumber)).trim();
@@ -177,7 +177,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     def ids = [];
     if (itemConceptLines[0].contains("GRDR")) {
         def grdrId = new BasicDBObject();
-        grdrId.put("origin", "GRDR");
+        grdrId.put("source", "GRDR");
         grdrId.put("id", itemConceptLines[0]);
         ids.add(grdrId);    
     }
