@@ -3,7 +3,6 @@ var https = require('https')
   , helper = require('./helper.js') 
   , logging = require('./logging.js') 
   , config = require('config')
-//  , mongo_data = require('../../cde/node-js/mongo-data') //TODO: REMOVE DEPENDENCY
   , mongo_data_system = require('./mongo-data') 
   , vsac = require('./vsac-io')
 ;

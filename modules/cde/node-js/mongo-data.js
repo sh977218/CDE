@@ -6,8 +6,8 @@ var mongoose = require('mongoose')
     , fs = require('fs')
     , config = require('config')
     , schemas = require('./schemas')
-    , schemas_system = require('../../system/node-js/schemas') //TODO: Remove dependency
-    , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: Remove dependency
+    , schemas_system = require('../../system/node-js/schemas') //TODO: USE DEPENDENCY INJECTION
+    , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
     ;
 
 var mongoUri = config.mongoUri;
