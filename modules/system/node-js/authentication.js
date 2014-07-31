@@ -1,10 +1,10 @@
 var https = require('https')
   , xml2js = require('xml2js')
-  , helper = require('./helper.js') //TODO: Remove dependency
-  , logging = require('./logging.js') //TODO: Remove dependency
+  , helper = require('./helper.js') 
+  , logging = require('./logging.js') 
   , config = require('config')
-  , mongo_data = require('../../cde/node-js/mongo-data') 
-  , mongo_data_system = require('./mongo-data') //TODO: REMOVE DEPENDENCY
+//  , mongo_data = require('../../cde/node-js/mongo-data') //TODO: REMOVE DEPENDENCY
+  , mongo_data_system = require('./mongo-data') 
   , vsac = require('./vsac-io')
 ;
 
@@ -110,12 +110,14 @@ exports.authAfterVsac =   function(req, username, password, done) {
                     }
                     if (user.password != password) {
                         user.lockCounter = user.lockCounter + 1;
-                        return mongo_data.save(user, function(err, user) {
+//                        return mongo_data.save(user, function(err, user) {
+                        return user.save(function(err, user) {
                             return done(null, false, { message: 'Invalid password' }); 
                         });
                     }
                     auth.updateUser(req, user);
-                    return mongo_data.save(user, function(err, user) {
+//                    return mongo_data.save(user, function(err, user) {
+                    return user.save(function(err, user) {
                         return done(null, user);                    
                     });
                 });                
@@ -138,7 +140,8 @@ exports.findUser = function(username, req, next) {
             auth.updateUser(req, user);
             user.lockCounter = 0;
             user.lastLogin = Date.now();               
-            return mongo_data.save(user, function(err, user) {
+            //return mongo_data.save(user, function(err, user) {
+            return user.save(function(err, user) {
                 next(user);
             });
         }
