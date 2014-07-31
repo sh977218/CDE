@@ -1,3 +1,5 @@
+<%- include selectBoardModal.ejs %> 
+
 <div class="container-fluid">
     <div class="row">
     <div class="col-md-5">
@@ -56,7 +58,7 @@
     </div>
         <div class="col-md-7" ng-show="cdes">
             <h4>Possible Matches</h4>
-            <div class="panel-group" id="accordion">
+            <div class="panel-group" id="accordion">                
                 <div ng-include="'accordionList.html'" ng-init="ejsPage = 'createcde';"></div>                
                 <pagination ng-show="cdes.length > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="currentPage"></pagination>
             </div>
@@ -64,3 +66,4 @@
     </div>
 </div>
 
+<%- include accordionList.ejs %> 

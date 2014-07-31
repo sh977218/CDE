@@ -1,10 +1,10 @@
 var https = require('https')
   , xml2js = require('xml2js')
-  , helper = require('./helper.js')
-  , logging = require('./logging.js')
+  , helper = require('./helper.js') 
+  , logging = require('./logging.js') 
   , config = require('config')
-  , mongo_data = require('./mongo-data') 
-  , vsac = require('./vsac-io')
+  , mongo_data_system = require('./mongo-data') 
+  , request = require('request')
 ;
 
 var ticketValidationOptions = {
@@ -90,6 +90,21 @@ exports.updateUserAfterLogin = function(req, user) {
     user.lastLogin = Date.now();
 };
 
+exports.umlsAuth = function(user, password, cb) {
+    request.post(
+        'https://uts-ws.nlm.nih.gov/restful/isValidUMLSUser',
+        { form: {
+        licenseCode:  config.umls.licenseCode
+        , user: user
+        , password: password
+        }}, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                cb(body);
+            }
+        }
+    );
+};
+
 exports.authBeforeVsac = function(req, username, password, done) {
     
     // Allows other items on the event queue to complete before execution, excluding IO related events.
@@ -97,10 +112,10 @@ exports.authBeforeVsac = function(req, username, password, done) {
         // Find the user by username in local datastore first and perform authentication.
         // If user is not found, authenticate with UMLS. If user is authenticated with UMLS,
         // add user to local datastore. Else, don't authenticate user and send error message.
-        mongo_data.userByName(username, function(err, user) {
+        mongo_data_system.userByName(username, function(err, user) {
             // If user was not found in local datastore || an error occurred || user was found and password equals 'umls'
             if (err || !user || (user && user.password==='umls') ) {
-                vsac.umlsAuth(username, password, function(result) {                                                                                                                                                                                                                 
+                exports.umlsAuth(username, password, function(result) {                                                                                                                                                                                                                 
                     if (result.indexOf("true") > 0) {
                         auth.findAddUserLocally(username, req, function(user) {
                             return done(null, user);
@@ -116,13 +131,13 @@ exports.authBeforeVsac = function(req, username, password, done) {
                     // Initialize the lockCounter if it hasn't been
                     (user.lockCounter>=0? user.lockCounter += 1 : user.lockCounter = 1);
                     
-                    return mongo_data.save(user, function(err, user) {
+                    return user.save(function(err, user) {
                         return done(null, false, { message: 'Incorrect password' }); 
                     });
                 } else {
                     // Update user info in datastore
                     auth.updateUserAfterLogin(req, user);
-                    return mongo_data.save(user, function(err, user) {
+                    return user.save(function(err, user) {
                         return done(null, user);                    
                     });
                 }
@@ -132,17 +147,17 @@ exports.authBeforeVsac = function(req, username, password, done) {
 };
   
 exports.findAddUserLocally = function(username, req, next) {
-    mongo_data.userByName(username, function(err, user) {
+    mongo_data_system.userByName(username, function(err, user) {
         if( err ) { // note: findByUsername always returns error=null
             next(); 
             return;
         } else if(!user) { // User has been authenticated but user is not in local db, so register him.
-            mongo_data.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
+            mongo_data_system.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
                 next(newUser);
             });
         } else { // User already exists, so update user info. Code should never reach here if using authBeforeVsac()
             auth.updateUserAfterLogin(req, user);
-            return mongo_data.save(user, function(err, user) {
+            return user.save(function(err, user) {
                 next(user);
             });
         }
