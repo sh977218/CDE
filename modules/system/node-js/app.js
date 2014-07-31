@@ -10,6 +10,8 @@ var passport = require('passport')
 ;
 
 exports.init = function(app) {
+
+    app.use("/system/public", express.static(path.join(__dirname, '../public')));
     
     app.get('/', function(req, res) {
         res.render('index', 'system');
@@ -214,5 +216,13 @@ exports.init = function(app) {
         } else {
             res.send(403, "You are not authorized.");                    
         }
+    });    
+    
+    app.get('/login', function(req, res) {
+        res.render('login', "system", { user: req.user, message: req.flash('error') });
+    });
+
+    app.get('/profile', function(req, res) {
+        res.render("profile", "system"); 
     });    
 };

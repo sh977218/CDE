@@ -92,10 +92,9 @@ if ('development' == app.get('env')) {
 
 app.set('views', path.join(__dirname, './modules'));
 var originalRender = express.response.render;
-express.response.render = function(view, module) {
-    if (typeof module === "object") originalRender.call(this,  path.join(__dirname, '/modules/' + "cde" + "/views/" + view), module);
+express.response.render = function(view, module, msg) {
     if (!module) module = "cde";
-    if (typeof module === "string") originalRender.call(this,  path.join(__dirname, '/modules/' + module + "/views/" + view));
+    originalRender.call(this,  path.join(__dirname, '/modules/' + module + "/views/" + view), msg);
 };
 
 var cdeModule = require(path.join(__dirname, './modules/cde/node-js/app.js'));

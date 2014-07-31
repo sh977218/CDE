@@ -28,7 +28,7 @@ exports.init = function(app) {
     });
 
     app.get('/list', function(req, res){
-      res.render('list');
+        res.render('list');
     });
 
     app.get('/boardList', function(req, res){
@@ -103,13 +103,13 @@ exports.init = function(app) {
         res.render("deview");
     });
 
-    app.get('/login', function(req, res) {
-       res.render('login', { user: req.user, message: req.flash('error') });
-    });
-
-    app.get('/profile', function(req, res) {
-       res.render("profile"); 
-    });
+//    app.get('/login', function(req, res) {
+//       res.render('login', { user: req.user, message: req.flash('error') });
+//    });
+//
+//    app.get('/profile', function(req, res) {
+//       res.render("profile"); 
+//    });
 
     app.get('/myboards', function(req, res) {
        res.render("myBoards"); 
