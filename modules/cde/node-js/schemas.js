@@ -55,8 +55,9 @@ var attachmentSchema = mongoose.Schema({
 
 var deJsonSchema = {
     naming:[namingSchema]         
+    , source: String
+    , sourceId: String
     , origin: String
-    , originId: String
     , stewardOrg: {
         name: String
     }
@@ -144,7 +145,7 @@ var deJsonSchema = {
         {key: String, value: String, valueFormat: String}
     ]
     , ids: [
-        {origin: String, id: String, version: String, _id: false}
+        {source: String, id: String, version: String, _id: false}
     ]
     , comments: [commentSchema]
     , archived: Boolean

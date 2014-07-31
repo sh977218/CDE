@@ -56,11 +56,17 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
 
     newDE.put("uuid", UUID.randomUUID() as String); 
     newDE.put("created", new Date()); 
-    newDE.put("origin", 'caDSR'); 
-
+    newDE.put("source", 'caDSR'); 
     newDE.put("version", cadsrDE.VERSION.text());
     
-    newDE.put("valueDomain", new BasicDBObject("datatype": cadsrDE.VALUEDOMAIN[0].Datatype.text()));
+    def origin = cadsrDE.ORIGIN.text();
+    if (origin != null && origin.length() > 0) {
+        newDE.put("origin", origin); 
+    }
+    
+    def vd = new BasicDBObject("datatype": cadsrDE.VALUEDOMAIN[0].Datatype.text());
+    vd.put("name", cadsrDE.VALUEDOMAIN[0].LongName.text());
+    newDE.put("valueDomain", vd);
     newDE.put("registrationState", new BasicDBObject("registrationStatus": workflowStatus));
     newDE.put("stewardOrg", new BasicDBObject("name", cadsrDE.CONTEXTNAME.text()));
     
@@ -74,12 +80,49 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     defContext.put("acceptability", "preferred");
     defaultName.put("context", defContext);
     
+    BasicDBObject prefQContext = new BasicDBObject();
+    prefQContext.put("contextName", 'Preferred Question Text');
+    prefQContext.put("acceptability", "preferred");
+    prefQContext.put("context", defContext);
+    
+    BasicDBObject altQContext = new BasicDBObject();
+    altQContext.put("contextName", 'Alternate Question Text');
+    altQContext.put("acceptability", "preferred");
+    altQContext.put("context", defContext);
+    
     def naming = [];
     naming.add(defaultName);
+    
+    def prefQs = [];
+    def altQs = [];
+    //preferred question text
+    for (int rdi = 0; rdi < cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.size(); rdi++) {
+        if ("Preferred Question Text".equals(cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentType.text())) {
+            if (!prefQs.contains(cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].Name.text())) {
+                BasicDBObject quesText = new BasicDBObject();
+                quesText.put("designation", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].Name.text());
+                quesText.put("definition", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentText.text());
+                quesText.put("languageCode", "EN-US"); 
+                quesText.put("context", prefQContext);
+                naming.add(quesText);
+            }
+        }
+        if ("Alternate Question Text".equals(cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentType.text())) {
+            if (!altQs.contains(cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].Name.text())) {
+                BasicDBObject quesText = new BasicDBObject();
+                quesText.put("designation", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentText.text());
+                quesText.put("definition", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentText.text());
+                quesText.put("languageCode", "EN-US"); 
+                quesText.put("context", altQContext);
+                naming.add(quesText);
+            }
+        }    
+    }
+    
     newDE.put("naming", naming);
 
     BasicDBObject cadsrID = new BasicDBObject();
-    cadsrID.put("origin", 'caDSR');
+    cadsrID.put("source", 'caDSR');
     cadsrID.put("id", cadsrDE.PUBLICID.text());
     cadsrID.put("version", cadsrDE.VERSION.text());
     def ids = [];
@@ -133,6 +176,18 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     }
     PROP.put("concepts", propConcepts);
     newDE.put("property", PROP);
+    
+    
+    def dec = new BasicDBObject();
+    def decConcepts = [];
+    def decC = new BasicDBObject();
+    decC.put("name", cadsrDE.DATAELEMENTCONCEPT[0].LongName.text());
+    decC.put("origin", "NCI caDSR");
+    decC.put("originId", cadsrDE.DATAELEMENTCONCEPT[0].PublicId.text() + "v" + cadsrDE.DATAELEMENTCONCEPT[0].Version.text());
+    decConcepts.add(decC);
+
+    dec.put("concepts", decConcepts);
+    newDE.put("dataElementConcept", dec);
     
     def classificationsArrayMap = [:];
     Classifications classifications = new Classifications(orgColl);

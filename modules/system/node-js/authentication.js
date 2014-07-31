@@ -75,7 +75,7 @@ exports.ticketValidate = function( tkt, cb ) {
     req.end();
 };
 
-exports.updateUser = function(req, user) {
+exports.updateUserAfterLogin = function(req, user) {
     if( !user.knowIPs ) {
         user.knownIPs = [];
     }
@@ -85,61 +85,63 @@ exports.updateUser = function(req, user) {
     if( user.knownIPs.indexOf(req.ip) < 0 ) {
         user.knownIPs.unshift(req.ip);
     }
+    
+    user.lockCounter = 0;
+    user.lastLogin = Date.now();
 };
 
-exports.authAfterVsac =   function(req, username, password, done) {
+exports.authBeforeVsac = function(req, username, password, done) {
     
-    // asynchronous verification, for effect...
+    // Allows other items on the event queue to complete before execution, excluding IO related events.
     process.nextTick(function () {
-      // Find the user by username. If there is no user with the given
-      // username, or the password is not correct, set the user to `false` to
-      // indicate failure and set a flash message. Otherwise, return the
-      // authenticated `user`.
-        vsac.umlsAuth(username, password, function(result) { 
-            if (result.indexOf("true") > 0) {
-                auth.findUser(username, req, function(user) {
-                    done(null, user);
-                });
-            } else {
-                mongo_data_system.userByName(username, function(err, user) {
-                    if (err) { return done(err); }
-                    if (!user) { return done(null, false, { message: 'Incorrect username or password' }); }
-                    if (user.lockCounter == 3) {
-                        return done(null, false, { message: 'User is locked out' }); 
-                    }
-                    if (user.password != password) {
-                        user.lockCounter = user.lockCounter + 1;
-//                        return mongo_data.save(user, function(err, user) {
-                        return user.save(function(err, user) {
-                            return done(null, false, { message: 'Invalid password' }); 
+        // Find the user by username in local datastore first and perform authentication.
+        // If user is not found, authenticate with UMLS. If user is authenticated with UMLS,
+        // add user to local datastore. Else, don't authenticate user and send error message.
+        mongo_data.userByName(username, function(err, user) {
+            // If user was not found in local datastore || an error occurred || user was found and password equals 'umls'
+            if (err || !user || (user && user.password==='umls') ) {
+                vsac.umlsAuth(username, password, function(result) {                                                                                                                                                                                                                 
+                    if (result.indexOf("true") > 0) {
+                        auth.findAddUserLocally(username, req, function(user) {
+                            return done(null, user);
                         });
+                    } else {
+                        return done(null, false, { message: 'Incorrect username or password' });
                     }
-                    auth.updateUser(req, user);
-//                    return mongo_data.save(user, function(err, user) {
+                });
+            } else { // If user was found in local datastore and password != 'umls'
+                if (user.lockCounter === 3) {
+                    return done(null, false, { message: 'User is locked out' }); 
+                } else if (user.password !== password) {
+                    // Initialize the lockCounter if it hasn't been
+                    (user.lockCounter>=0? user.lockCounter += 1 : user.lockCounter = 1);
+                    
+                    return user.save(function(err, user) {
+                        return done(null, false, { message: 'Incorrect password' }); 
+                    });
+                } else {
+                    // Update user info in datastore
+                    auth.updateUserAfterLogin(req, user);
                     return user.save(function(err, user) {
                         return done(null, user);                    
                     });
-                });                
-            };
-        });
+                }
+            }
+        });  
     });
 };
-
   
-exports.findUser = function(username, req, next) {
+exports.findAddUserLocally = function(username, req, next) {
     mongo_data_system.userByName(username, function(err, user) {
         if( err ) { // note: findByUsername always returns error=null
             next(); 
             return;
         } else if(!user) { // User has been authenticated but user is not in local db, so register him.
             mongo_data_system.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
-                next(user);
+                next(newUser);
             });
-        } else { // User already exists, so update user info.
-            auth.updateUser(req, user);
-            user.lockCounter = 0;
-            user.lastLogin = Date.now();               
-            //return mongo_data.save(user, function(err, user) {
+        } else { // User already exists, so update user info. Code should never reach here if using authBeforeVsac()
+            auth.updateUserAfterLogin(req, user);
             return user.save(function(err, user) {
                 next(user);
             });
@@ -157,7 +159,7 @@ exports.ticketAuth = function(req, res, next){
             next(); 
             return; 
         }
-        auth.findUser(username, req, function(user) {
+        auth.findAddUserLocally(username, req, function(user) {
             if (user) req.user = user;
             next();
         });

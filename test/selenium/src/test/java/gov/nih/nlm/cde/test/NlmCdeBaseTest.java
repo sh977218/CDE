@@ -278,4 +278,14 @@ public class NlmCdeBaseTest {
         action.perform();
     }
 
+    
+    protected void enterUsernamePasswordSubmit(String username, String password, String checkText) {
+        findElement(By.id("uname")).clear();
+        findElement(By.id("uname")).sendKeys(username);
+        findElement(By.id("passwd")).clear();
+        findElement(By.id("passwd")).sendKeys(password);
+        findElement(By.cssSelector("button.btn")).click();
+        Assert.assertTrue(textPresent(checkText));
+    }
+    
 }

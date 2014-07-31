@@ -16,7 +16,7 @@ public class IdentifiersTest extends NlmCdeBaseTest {
         findElement(By.linkText("Identifiers")).click();
         findElement(By.id("addId")).click();
         modalHere();
-        findElement(By.name("origin")).sendKeys("MyOrigin1");
+        findElement(By.name("source")).sendKeys("MyOrigin1");
         findElement(By.name("id")).sendKeys("MyId1");
         findElement(By.name("version")).sendKeys("MyVersion1");
         findElement(By.id("createId")).click();
@@ -25,7 +25,7 @@ public class IdentifiersTest extends NlmCdeBaseTest {
         scrollTo( "2000" );
         findElement(By.id("addId")).click();
         modalHere();
-        findElement(By.name("origin")).sendKeys("MyOrigin2");
+        findElement(By.name("source")).sendKeys("MyOrigin2");
         findElement(By.name("id")).sendKeys("MyId2");
         findElement(By.id("createId")).click();
         Assert.assertTrue(textPresent("Identifier Added"));
@@ -33,7 +33,7 @@ public class IdentifiersTest extends NlmCdeBaseTest {
         scrollTo( "2000" );
         findElement(By.id("addId")).click();
         modalHere();
-        findElement(By.name("origin")).sendKeys("MyOrigin3");
+        findElement(By.name("source")).sendKeys("MyOrigin3");
         findElement(By.name("id")).sendKeys("MyId3");
         findElement(By.name("version")).sendKeys("MyVersion3");
         findElement(By.id("createId")).click();

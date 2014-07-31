@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
@@ -13,10 +7,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-/**
- *
- * @author ludetc
- */
 public class UserTest extends NlmCdeBaseTest {
     
     @Test
@@ -29,12 +19,24 @@ public class UserTest extends NlmCdeBaseTest {
             logout();
             findElement(By.linkText("Log In")).click();            
         }
-        findElement(By.id("uname")).clear();
-        findElement(By.id("uname")).sendKeys("bad-username");
-        findElement(By.id("passwd")).clear();
-        findElement(By.id("passwd")).sendKeys("bad-password");
-        findElement(By.cssSelector("button.btn")).click();
-        Assert.assertTrue(textPresent("Incorrect username or password"));
+        
+        enterUsernamePasswordSubmit("bad-username", "bad-password", "Incorrect username or password");
+    }
+    
+    @Test
+    public void lockUserDuringLogin() {
+        mustBeLoggedOut();
+        try {
+            findElement(By.linkText("Log In")).click();
+        } catch (TimeoutException e) {
+            logout();
+            findElement(By.linkText("Log In")).click();            
+        }
+        
+        enterUsernamePasswordSubmit("lockedUser", "wrong-password", "Incorrect password");
+        enterUsernamePasswordSubmit("lockedUser", "wrong-password", "Incorrect password");
+        enterUsernamePasswordSubmit("lockedUser", "wrong-password", "Incorrect password");
+        enterUsernamePasswordSubmit("lockedUser", "wrong-password", "User is locked out");
     }
     
     @Test

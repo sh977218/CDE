@@ -61,8 +61,8 @@ for (int i = 0; i < deList.'ns0:DescribedValueSet'.size(); i++) {
     def newDE = new BasicDBObject();
     newDE.put("uuid", UUID.randomUUID() as String); 
     newDE.put("created", new Date()); 
-    newDE.put("origin", 'VSAC'); 
-    newDE.put("originId", valueSet.@ID + "v" + valueSet.@version); 
+    newDE.put("source", 'VSAC'); 
+    newDE.put("sourceId", valueSet.@ID + "v" + valueSet.@version); 
     newDE.put("version", 1);
     newDE.put("valueDomain", new BasicDBObject("datatype": "Value List"));
     newDE.put("registrationState", new BasicDBObject("registrationStatus": "Qualified"));

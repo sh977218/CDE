@@ -49,8 +49,8 @@ fs.readFile(process.argv[2], function(err, result) {
     var newDE = new DataElement({
         uuid: uuid.v4()
         , created: Date.now()
-        , origin: globals.orgName
-        , originId: data["Data Element ID:"] + "v" + data["Version:"]
+        , source: globals.orgName
+        , sourceId: data["Data Element ID:"] + "v" + data["Version:"]
         , stewardOrg: {
             name: globals.orgName
         }

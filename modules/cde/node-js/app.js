@@ -12,6 +12,7 @@ var cdesvc = require('./cdesvc')
   , classificationShared = require('../shared/classificationShared.js')
   , path = require('path')
   , express = require('express')
+  , sdc = require("./sdc.js")
 ;
 exports.init = function(app) {
 
@@ -577,5 +578,17 @@ exports.init = function(app) {
             res.send(401, "Not Authorized");
         };
     });
+    
+    app.get('/sdc/:uuid/:version', function (req, res) {
+       sdc.byUuidVersion(req, res);
+    });
+
+    app.get('/sdc/:id', function (req, res) {
+       sdc.byId(req, res);
+    });    
+    
+    app.get('/sdcView', function(req, res){
+      res.render('sdcView');
+    });    
     
 };

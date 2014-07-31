@@ -1,33 +1,15 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.boards;
 
+import static gov.nih.nlm.cde.test.boards.BoardTest.boardUser;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class BoardTest extends NlmCdeBaseTest {
+public class BoardManagementTest extends BoardTest {
     
-    private static final String boardUser = "boarduser";
-    private static final String boardPassword = "pass";
-    
-    private void makePublic(String boardName) {
-        findElement(By.linkText("My Boards")).click();
-        Assert.assertTrue(textPresent(boardName));
-        int length = driver.findElements(By.linkText("View Board")).size();
-        for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("dd_name_" + i)).getText();
-            if (boardName.equals(name)) {
-                findElement(By.id("privateIcon_" + i)).click();
-                findElement(By.id("confirmChangeStatus_" + i)).click();
-                wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("publicIcon_" + i)));
-                hangon(2);
-                return;
-            } 
-        }
-        Assert.assertTrue(false);
-    }
-    
+  
     @Test
     public void publicVsPrivateBoards() {
         mustBeLoggedInAs(boardUser, boardPassword);
@@ -86,31 +68,7 @@ public class BoardTest extends NlmCdeBaseTest {
         
         removeBoard(boardName);
     }
-    
-    private void createBoard(String name, String description) {
-        findElement(By.linkText("My Boards")).click();
-        findElement(By.id("addBoard")).click();
-        findElement(By.name("name")).sendKeys(name);
-        findElement(By.name("description")).sendKeys(description);
-        findElement(By.id("createBoard")).click();
-        modalGone();
-    }
-    
-    private void removeBoard(String boardName) {
-        findElement(By.linkText("My Boards")).click();
-        int length = driver.findElements(By.linkText("View Board")).size();
-        for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("dd_name_" + i)).getText();
-            if (boardName.equals(name)) {
-                findElement(By.id("removeBoard-" + i)).click();
-                findElement(By.id("confirmRemove-" + i)).click();
-                hangon(1);
-                Assert.assertTrue(textNotPresent(boardName));
-                return;
-            }
-        }
-    }
-    
+        
     @Test
     public void removeBoard() {
         mustBeLoggedInAs(boardUser, boardPassword);
@@ -119,28 +77,6 @@ public class BoardTest extends NlmCdeBaseTest {
         goToSearch();
         findElement(By.linkText("My Boards")).click();
         Assert.assertTrue(textNotPresent("Not a very useful"));
-    }
-    
-    private void pinTo(String cdeName, String boardName) {
-        goToSearch();
-        openCdeInList(cdeName);
-        findElement(By.id("pin_0")).click();
-        modalHere();        
-        findElement(By.linkText(boardName)).click();
-        modalGone();
-        Assert.assertTrue(textPresent("Added to Board"));    
-    }
-    
-    private void goToBoard(String boardName) {
-        findElement(By.linkText("My Boards")).click();
-        int length = driver.findElements(By.linkText("View Board")).size();
-        for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("dd_name_" + i)).getText();
-            if (boardName.equals(name)) {
-                findElement(By.id("view_" + i)).click();
-                return;
-            }
-        }
     }
     
     @Test
@@ -161,77 +97,6 @@ public class BoardTest extends NlmCdeBaseTest {
     }
     
     @Test
-    public void pin() {
-        mustBeLoggedInAs(boardUser, boardPassword);
-        goToSearch();
-        createBoard("Blood Board", "Collect blood related cdes here");
-        createBoard("Smoking Board", "Collect Smoking CDEs here");
-        
-        findElement(By.linkText("My Boards")).click();           
-        Assert.assertTrue(textPresent("Collect blood"));
-        Assert.assertTrue(textPresent("Smoking CDEs"));
-
-        pinTo("Laboratory Procedure Blood Urea Nitrogen", "Blood Board");
-        pinTo("Umbilical Cord Blood", "Blood Board");
-        pinTo("Smoking History", "Smoking Board");
-        pinTo("Form Element End Date", "Smoking Board");
-        
-        goToBoard("Smoking Board");
-        Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 2);
-        Assert.assertTrue(textPresent("Smoking History"));
-        Assert.assertTrue(textPresent("Form Element End Date"));
-
-        goToBoard("Blood Board");
-        Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 2);
-        Assert.assertTrue(textPresent("Laboratory Procedure Blood Urea Nitrogen"));
-        Assert.assertTrue(textPresent("Umbilical Cord Blood"));
-        
-        removeBoard("Blood Board");
-        removeBoard("Smoking Board");
-
-    }
-
-    @Test
-    public void noDoublePin() {
-        mustBeLoggedInAs(boardUser, boardPassword);
-        goToSearch();
-        String cdeName = "Specimen Array";
-        String boardName = "Double Pin Board";
-        
-        createBoard(boardName, "test");
-        pinTo(cdeName, boardName);
-        
-        goToSearch();
-        openCdeInList(cdeName);
-        findElement(By.id("pin_0")).click();
-        modalHere();
-        findElement(By.linkText(boardName)).click();
-        
-        Assert.assertTrue(textPresent("Already added"));
-        modalGone();
-        
-        goToBoard(boardName);
-        Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 1);
-        
-        removeBoard(boardName);
-    }
-    
-    @Test
-    public void unpin() {
-        mustBeLoggedInAs(boardUser, boardPassword);
-        goToSearch();
-        createBoard("Unpin Board", "test");
-        pinTo("Volumetric", "Unpin Board");
-        goToBoard("Unpin Board");
-        Assert.assertTrue(textPresent("Volumetric"));
-        findElement(By.id("unpin_0")).click();
-        goToBoard("Unpin Board");
-        Assert.assertTrue(textNotPresent("Volumetric"));
-        
-        removeBoard("Unpin Board");
-    }
-    
-    @Test
     public void iHaveNoBoard() {
         mustBeLoggedInAs(boardUser, boardPassword);
         String cdeName = "Specimen Array";
@@ -242,6 +107,7 @@ public class BoardTest extends NlmCdeBaseTest {
         modalHere();
         Assert.assertTrue(textPresent("Create a board now"));
         findElement(By.id("cancelSelect")).click();
+        modalGone();
     }
     
     @Test
@@ -340,9 +206,9 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.linkText("My Boards")).click();
         findElement(By.linkText("View Board")).click();
         findElement(By.linkText("30")).click();
-        Assert.assertTrue(textPresent("Visible Tumor Anterior-Posterior Orientation Size 3 Digit Number"));
+        Assert.assertTrue(textPresent("Word discrimination result"));
         Assert.assertTrue(textPresent("Volumetric Measurement Left Limb Testing Result"));
         Assert.assertTrue(textPresent("Walking difficulty age need intermittent support not applicable indicator"));
         Assert.assertTrue(textPresent("Water reference data acquisition data acquisition time"));
-    }    
+    }        
 }

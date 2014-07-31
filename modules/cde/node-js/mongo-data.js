@@ -131,7 +131,7 @@ exports.desByConcept = function (concept, callback) {
             {'$or': [{'objectClass.concepts.originId': concept.originId},
                      {'property.concepts.originId': concept.originId}, 
                      {'dataElementConcept.concepts.originId': concept.originId}]},
-        "naming origin originId registrationState stewardOrg updated updatedBy createdBy uuid version views")
+        "naming source sourceId registrationState stewardOrg updated updatedBy createdBy uuid version views")
                 .limit(20)
                 .where("archived").equals(null)
                 .exec(function (err, cdes) {
@@ -176,7 +176,7 @@ exports.cdesByUuidList = function(idList, callback) {
 exports.priorCdes = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement != null) {
-            return DataElement.find({}, "naming origin originId registrationState stewardOrg updated updatedBy createdBy uuid version views")
+            return DataElement.find({}, "naming source sourceId registrationState stewardOrg updated updatedBy createdBy uuid version views")
                     .where("_id").in(dataElement.history).exec(function(err, cdes) {
                 callback("", cdes);
             });

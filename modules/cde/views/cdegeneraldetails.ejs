@@ -22,6 +22,7 @@
         <div inline-edit id="uomEdit" model="cde.valueDomain.uom" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </div>   
     </dd> 
     <dt ng-show="cde.origin">Origin: </dt><dd>{{cde.origin}}</dd>
+    <dt ng-show="cde.source">Source: </dt><dd>{{cde.source}}</dd>
     <dt id="dt_status">Status: </dt><dd id="dd_status"><i id="editStatus" ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="openRegStatusUpdate()"></i> {{cde.registrationState.registrationStatus}}</dd>
     <dt ng-show="cde.views">Views: </dt><dd id="dd_views">{{cde.views}}</dd>
 </dl>
