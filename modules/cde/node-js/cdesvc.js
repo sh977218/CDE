@@ -2,7 +2,7 @@ var express = require('express')
   , request = require('request')
   , util = require('util')
   , mongo_data = require('./mongo-data')
-  , logging = require('../../system/node-js/logging.js') //TODO: Remove dependency
+  , logging = require('../../system/node-js/logging.js') //TODO: USE DEPENDENCY INJECTION
 ;
 
 var cdesvc = this;

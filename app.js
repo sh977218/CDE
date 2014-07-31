@@ -9,9 +9,9 @@ var express = require('express')
   , LocalStrategy = require('passport-local').Strategy
   , mongo_data_system = require('./modules/system/node-js/mongo-data')
   , config = require('config')
-  , MongoStore = require('./modules/cde/node-js/assets/connect-mongo.js')(express)//TODO: Remove this dependency!
+  , MongoStore = require('./modules/system/node-js/assets/connect-mongo.js')(express)
   , favicon = require('serve-favicon')
-  , auth = require( './modules/cde/node-js/authentication' )//TODO: Remove this dependency!
+  , auth = require( './modules/system/node-js/authentication' )//TODO: MOVE TO SYSTEM
   , logging = require('./modules/system/node-js/logging.js')
 ;
 
@@ -45,7 +45,7 @@ var winstonStream = {
 app.set('port', config.port || 3000);
 app.set('view engine', 'ejs');
 
-app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ico')));//TODO: Remove this dependency!
+app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ico')));//TODO: MOVE TO SYSTEM
 
 app.use(express.bodyParser());
 app.use(express.methodOverride());
@@ -93,8 +93,9 @@ if ('development' == app.get('env')) {
 app.set('views', path.join(__dirname, './modules'));
 var originalRender = express.response.render;
 express.response.render = function(view, module) {
+    if (typeof module === "object") originalRender.call(this,  path.join(__dirname, '/modules/' + "cde" + "/views/" + view), module);
     if (!module) module = "cde";
-    originalRender.call(this,  path.join(__dirname, '/modules/' + module + "/views/" + view));
+    if (typeof module === "string") originalRender.call(this,  path.join(__dirname, '/modules/' + module + "/views/" + view));
 };
 
 var cdeModule = require(path.join(__dirname, './modules/cde/node-js/app.js'));

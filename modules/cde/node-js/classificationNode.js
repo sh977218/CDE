@@ -1,5 +1,5 @@
 var mongo_data = require('./mongo-data')
-    , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: Remove dependency
+    , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
     , usersvc = require('./usersvc')
     , classificationShared = require('../shared/classificationShared');
 

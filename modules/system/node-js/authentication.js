@@ -1,10 +1,10 @@
 var https = require('https')
   , xml2js = require('xml2js')
-  , helper = require('../../system/node-js/helper.js') //TODO: Remove dependency
-  , logging = require('../../system/node-js/logging.js') //TODO: Remove dependency
+  , helper = require('./helper.js') //TODO: Remove dependency
+  , logging = require('./logging.js') //TODO: Remove dependency
   , config = require('config')
-  , mongo_data = require('./mongo-data') 
-  , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: REMOVE DEPENDENCY
+  , mongo_data = require('../../cde/node-js/mongo-data') 
+  , mongo_data_system = require('./mongo-data') //TODO: REMOVE DEPENDENCY
   , vsac = require('./vsac-io')
 ;
 
