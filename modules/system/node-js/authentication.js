@@ -4,6 +4,7 @@ var https = require('https')
   , logging = require('./logging.js') 
   , config = require('config')
   , mongo_data_system = require('./mongo-data') 
+  , request = require('request')
 ;
 
 var ticketValidationOptions = {
