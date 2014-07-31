@@ -80,14 +80,14 @@ app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream
 app.use(app.router);
 
 app.use(function(err, req, res, next){
-  logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
-  console.log(err.stack);
-  res.send(500, 'Something broke!');
+    logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
+    console.log(err.stack);
+    res.send(500, 'Something broke!');
 });
 
 // development only
 if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+    app.use(express.errorHandler());
 };
 
 app.set('views', path.join(__dirname, './modules'));
@@ -99,8 +99,6 @@ express.response.render = function(view, module, msg) {
 
 var cdeModule = require(path.join(__dirname, './modules/cde/node-js/app.js'));
 cdeModule.init(app);
-
-console.log(path.join(__dirname, './modules/system/node-js/app.js'));
 
 var systemModule = require(path.join(__dirname, './modules/system/node-js/app.js'));
 systemModule.init(app);

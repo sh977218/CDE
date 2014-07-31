@@ -4,7 +4,6 @@ var https = require('https')
   , logging = require('./logging.js') 
   , config = require('config')
   , mongo_data_system = require('./mongo-data') 
-  , vsac = require('./vsac-io')
 ;
 
 var ticketValidationOptions = {
@@ -90,6 +89,21 @@ exports.updateUserAfterLogin = function(req, user) {
     user.lastLogin = Date.now();
 };
 
+exports.umlsAuth = function(user, password, cb) {
+    request.post(
+        'https://uts-ws.nlm.nih.gov/restful/isValidUMLSUser',
+        { form: {
+        licenseCode:  config.umls.licenseCode
+        , user: user
+        , password: password
+        }}, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                cb(body);
+            }
+        }
+    );
+};
+
 exports.authBeforeVsac = function(req, username, password, done) {
     
     // Allows other items on the event queue to complete before execution, excluding IO related events.
@@ -100,7 +114,7 @@ exports.authBeforeVsac = function(req, username, password, done) {
         mongo_data_system.userByName(username, function(err, user) {
             // If user was not found in local datastore || an error occurred || user was found and password equals 'umls'
             if (err || !user || (user && user.password==='umls') ) {
-                vsac.umlsAuth(username, password, function(result) {                                                                                                                                                                                                                 
+                exports.umlsAuth(username, password, function(result) {                                                                                                                                                                                                                 
                     if (result.indexOf("true") > 0) {
                         auth.findAddUserLocally(username, req, function(user) {
                             return done(null, user);
