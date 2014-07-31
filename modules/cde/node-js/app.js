@@ -561,4 +561,7 @@ exports.init = function(app) {
       res.render('sdcView');
     });    
     
+    app.get('/profile', function(req, res) {
+        res.render("profile", "cde"); 
+    });        
 };
