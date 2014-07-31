@@ -43,10 +43,6 @@ exports.init = function(app) {
        boardsvc.boardList(req, res); 
     });
 
-    app.get('/signup', function(req, res){
-      res.render('signup');
-    });
-
     function checkCdeOwnership(deId, req, cb) {
         this.userSessionExists = function(req) {
             return req.user;
@@ -77,24 +73,6 @@ exports.init = function(app) {
        res.render('createcde'); 
     });
 
-    app.get('/cdereview', function(req, res) {
-        res.render('cdereview');
-    });
-
-    app.get('/siteaccountmanagement', function(req, res) {
-        var ip = req.ip;
-        if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
-            res.render('siteaccountmanagement');
-        } else {
-            res.send(403, "Not Authorized");
-        }
-    });
-
-
-    app.get('/orgaccountmanagement', function(req, res) {
-        res.render('orgAccountManagement');
-    });
-
     app.get('/classificationmanagement', function(req, res) {
         res.render('classificationManagement');
     });
@@ -102,14 +80,6 @@ exports.init = function(app) {
     app.get('/deview', function(req, res) {
         res.render("deview");
     });
-
-//    app.get('/login', function(req, res) {
-//       res.render('login', { user: req.user, message: req.flash('error') });
-//    });
-//
-//    app.get('/profile', function(req, res) {
-//       res.render("profile"); 
-//    });
 
     app.get('/myboards', function(req, res) {
        res.render("myBoards"); 

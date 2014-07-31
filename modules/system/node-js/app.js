@@ -225,4 +225,19 @@ exports.init = function(app) {
     app.get('/profile', function(req, res) {
         res.render("profile", "system"); 
     });    
+    
+
+    app.get('/siteaccountmanagement', function(req, res) {
+        var ip = req.ip;
+        if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
+            res.render('siteaccountmanagement');
+        } else {
+            res.send(403, "Not Authorized");
+        }
+    });
+
+
+    app.get('/orgaccountmanagement', function(req, res) {
+        res.render('orgAccountManagement');
+    });    
 };
