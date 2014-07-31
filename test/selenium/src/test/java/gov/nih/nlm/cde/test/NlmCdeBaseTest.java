@@ -16,7 +16,9 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.browserlaunchers.Sleeper;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -38,7 +40,7 @@ public class NlmCdeBaseTest {
     protected static String macosx_detected_message = "Max OS X Detected\nStarting ./chromedriver";     
     
     protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
-      
+          
     public static WebDriverWait wait;
 
     @BeforeTest
@@ -52,14 +54,16 @@ public class NlmCdeBaseTest {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver");
         }
-        DesiredCapabilities caps = DesiredCapabilities.chrome();
+//        DesiredCapabilities caps = DesiredCapabilities.chrome();
+        DesiredCapabilities caps = DesiredCapabilities.firefox();
         caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
         LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(LogType.BROWSER, Level.ALL);
         caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);        
-        driver = new ChromeDriver(caps);
+//        driver = new ChromeDriver(caps);
+        driver = new FirefoxDriver(caps);
         driver.get(baseUrl);
-        driver.manage().window().setSize(new Dimension(1024,800));
+//        driver.manage().window().setSize(new Dimension(1024,800));
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, defaultTimeout, 200);
     }
@@ -152,16 +156,13 @@ public class NlmCdeBaseTest {
     }
     
     public void hangon(double i)  {
-        try {
-            Thread.sleep((long)(i * 1000));
-        } catch (InterruptedException ex) {
-            Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Sleeper.sleepTight((long)(i * 1000));
     }
     
     public boolean textPresent(String text, String where) {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(where), text));
-        return driver.findElement(By.cssSelector(where)).getText().contains(text);
+        return true;
+//        return driver.findElement(By.cssSelector(where)).getText().contains(text);
     }  
     
     public boolean textPresent(String text) {
@@ -251,7 +252,7 @@ public class NlmCdeBaseTest {
         } catch(NoSuchElementException e) {
             elementVisible = true;
         }
-        driver.manage().timeouts().implicitlyWait(8, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         return elementVisible;
     }
 
@@ -264,7 +265,7 @@ public class NlmCdeBaseTest {
         } catch(NoSuchElementException e) {
             elementVisible = true;
         }
-        driver.manage().timeouts().implicitlyWait(8, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         return elementVisible;
     }
 

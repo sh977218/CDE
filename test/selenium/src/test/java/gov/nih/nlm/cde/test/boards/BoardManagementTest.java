@@ -98,7 +98,7 @@ public class BoardManagementTest extends BoardTest {
     
     @Test
     public void iHaveNoBoard() {
-        mustBeLoggedInAs(boardUser, boardPassword);
+        mustBeLoggedInAs("boarduser2", boardPassword);
         String cdeName = "Specimen Array";
 
         goToSearch();

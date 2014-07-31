@@ -211,7 +211,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         String cdeName = "Noncompliant Reason Text";
         openCdeInList(cdeName);
         findElement(By.linkText("SDC View")).click();
-        Assert.assertTrue(findElement(By.id("dd_scopedId")).getText().startsWith("cde.nlm.nih.gov/"));
+        Assert.assertTrue(findElement(By.id("dd_scopedId")).getText().trim().startsWith("cde.nlm.nih.gov/"));
         Assert.assertEquals("1", findElement(By.id("dd_version")).getText());
         Assert.assertEquals("Noncompliant Reason Text", findElement(By.id("dd_name")).getText());
         Assert.assertEquals("Specify Reason for Noncompliance", findElement(By.id("dd_prefQ")).getText());
