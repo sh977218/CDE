@@ -97,7 +97,7 @@ exports.authBeforeVsac = function(req, username, password, done) {
         // Find the user by username in local datastore first and perform authentication.
         // If user is not found, authenticate with UMLS. If user is authenticated with UMLS,
         // add user to local datastore. Else, don't authenticate user and send error message.
-        mongo_data.userByName(username, function(err, user) {
+        mongo_data_system.userByName(username, function(err, user) {
             // If user was not found in local datastore || an error occurred || user was found and password equals 'umls'
             if (err || !user || (user && user.password==='umls') ) {
                 vsac.umlsAuth(username, password, function(result) {                                                                                                                                                                                                                 
