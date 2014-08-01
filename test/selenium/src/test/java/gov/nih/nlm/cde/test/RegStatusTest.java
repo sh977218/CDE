@@ -6,6 +6,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.annotations.DataProvider;
 
 public class RegStatusTest extends NlmCdeBaseTest {
 
@@ -95,13 +96,20 @@ public class RegStatusTest extends NlmCdeBaseTest {
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(cdeName));
     }
     
-    @Test
-    public void adminCantEditStandardCde() {
+    @DataProvider(name = "standardAndPreferredStandardCde")
+    public Object[][] standardAndPreferredStandardCdeArray() {
+        return new Object[][] {
+            { "Patient Visual Change", "Standard" },
+            { "Patient Visual Change", "Preferred Standard" },
+        };
+    }
+    
+    @Test(dataProvider = "standardAndPreferredStandardCde")
+    public void adminCantEditStandardCde(String cdeName, String regStatus) {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        String cdeName = "Patient Visual Change";
         goToCdeByName(cdeName);
         findElement(By.id("editStatus")).click();
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
+        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(regStatus);
         modalHere();
         findElement(By.id("saveRegStatus")).click();
         closeAlert();

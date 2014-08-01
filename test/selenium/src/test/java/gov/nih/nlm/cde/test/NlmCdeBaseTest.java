@@ -34,6 +34,9 @@ public class NlmCdeBaseTest {
     protected static String history_password = "pass";
     protected static String ninds_username = "ninds";
     protected static String ninds_password = "pass";
+    protected static String classificationMgtUser_username = "classificationMgtUser";
+    protected static String classificationMgtUser_password = "pass";
+    
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";    
     protected static String macosx_detected_message = "Max OS X Detected\nStarting ./chromedriver";     
     
@@ -59,7 +62,7 @@ public class NlmCdeBaseTest {
         caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);        
         driver = new ChromeDriver(caps);
         driver.get(baseUrl);
-        driver.manage().window().setSize(new Dimension(1024,800));
+        driver.manage().window().setSize(new Dimension(1000,1800));
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, defaultTimeout, 200);
     }
@@ -121,6 +124,11 @@ public class NlmCdeBaseTest {
         return driver.findElement(by);
     }
     
+    protected void clickElement( WebElement we ) {
+        Actions actions = new Actions(driver);
+        actions.moveToElement(we).click().perform();
+    }
+    
     @AfterTest
     public void endSession() {
         driver.quit();
@@ -161,7 +169,7 @@ public class NlmCdeBaseTest {
     
     public boolean textPresent(String text, String where) {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(where), text));
-        return driver.findElement(By.cssSelector(where)).getText().contains(text);
+        return true;
     }  
     
     public boolean textPresent(String text) {
