@@ -194,7 +194,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Candidate");
         findElement(By.id("saveRegStatus")).click();
-        hangon(2);
+        hangon(3);
 
         goToSearch();
         findElement(By.id("li-blank-Candidate")).click();
@@ -267,9 +267,8 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textNotPresent("Albert Einstein Cancer Center"));
         hoverOverElement(findElement(By.id("classifications-text-AECC")));
         Assert.assertTrue(textPresent("Albert Einstein Cancer Center"));
-        
+        hangon(1);        
         hoverOverElement(findElement(By.id("classifications-text-caBIG")));
-        hoverOverElement(findElement(By.linkText("Search")));
         Assert.assertTrue(textNotPresent("Albert Einstein Cancer Center"));
     }
 }

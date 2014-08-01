@@ -3,19 +3,21 @@
     <head>        
         <title>NLM CDE Repository</title>
         <meta name="site-version" content="<%- include version.ejs %>">
-        <script src="assets/js/angular-1.2.15.min.js"></script>
-        <script src="assets/js/angular-route.min.js"></script>
-        <script src="assets/js/angular-resource.min.js"></script>
-        <script src="assets/js/angular-sanitize.min.js"></script>
-        <script src="assets/js/textAngular-1.2.0.min.js"></script>
-        <script src="assets/js/angular-local-storage.js"></script>
+        <% var cdeIncludePath = "/cde/public/"; %>
+        <% var systemIncludePath = "/system/public/"; %>
+        <script src="<%= cdeIncludePath %>assets/js/angular-1.2.15.min.js"></script>
+        <script src="<%= cdeIncludePath %>assets/js/angular-route.min.js"></script>
+        <script src="<%= cdeIncludePath %>assets/js/angular-resource.min.js"></script>
+        <script src="<%= cdeIncludePath %>assets/js/angular-sanitize.min.js"></script>
+        <script src="<%= cdeIncludePath %>assets/js/textAngular-1.2.0.min.js"></script>
+        <script src="<%= cdeIncludePath %>assets/js/angular-local-storage.js"></script>
 
         <%- include includeFrontEndJS.ejs %>
-        <script src="assets/js/ui-bootstrap-tpls-0.10.0.min.js"></script>
-        <link rel="stylesheet" href="assets/bootstrap-3.1.1/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="assets/font-awesome-4.0.3/css/font-awesome.css">
-        <link rel="stylesheet" type="text/css" href="assets/css/ng-grid.min.css" />
-        <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+        <script src="<%= cdeIncludePath %>assets/js/ui-bootstrap-tpls-0.10.0.min.js"></script>
+        <link rel="stylesheet" href="<%= cdeIncludePath %>assets/bootstrap-3.1.1/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="<%= cdeIncludePath %>assets/font-awesome-4.0.3/css/font-awesome.css">
+        <link rel="stylesheet" type="text/css" href="<%= cdeIncludePath %>assets/css/ng-grid.min.css" />
+        <link href="<%= cdeIncludePath %>css/style.css" rel="stylesheet" type="text/css" media="all" />
 
         <!--[if lte IE 8]>
             <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.1/json3.min.js"></script>
@@ -44,8 +46,7 @@
         </style>
     </head>
     <body>
-        <%- include accordionList.ejs %> 
-        <%- include selectBoardModal.ejs %> 
+
         <div ng-controller="MainCtrl">
             <!-- Navagation bar -->
             <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -58,7 +59,7 @@
                             <span class="icon-bar"></span>
                         </button>
                         <a class="navbar-brand" href="#">
-                            <img alt="Home" src="assets/img/nih-nlm-logo-simple.png" />
+                            <img alt="Home" src="<%= cdeIncludePath %>assets/img/nih-nlm-logo-simple.png" />
                         </a>
                     </div>
                     <div class="navbar-collapse collapse">
@@ -129,7 +130,7 @@
                         </p>
                       </div>
                       <div class="col-md-2">
-                          <center><br/><a href="http://www.usa.gov"><img src="assets/img/usagov_logo.gif" /></a></center>
+                          <center><br/><a href="http://www.usa.gov"><img src="<%= cdeIncludePath %>assets/img/usagov_logo.gif" /></a></center>
                       </div>
                       <div class="col-md-5">
                           <p class="pull-right">
@@ -144,10 +145,10 @@
             </footer>
         </div>
         
-        <script src="assets/js/diff_match_patch.js"></script>
+        <script src="<%= cdeIncludePath %>assets/js/diff_match_patch.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <script src="assets/bootstrap-3.1.1/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="assets/js/ng-grid-2.0.7.min.js"></script>
-        <script src="assets/js/match-media.js"></script>
+        <script src="<%= cdeIncludePath %>assets/bootstrap-3.1.1/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="<%= cdeIncludePath %>assets/js/ng-grid-2.0.7.min.js"></script>
+        <script src="<%= cdeIncludePath %>assets/js/match-media.js"></script>
     </body>
 </html> 
