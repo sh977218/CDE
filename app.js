@@ -103,6 +103,9 @@ cdeModule.init(app);
 var systemModule = require(path.join(__dirname, './modules/system/node-js/app.js'));
 systemModule.init(app);
 
+var formModule = require(path.join(__dirname, './modules/form/node-js/app.js'));
+formModule.init(app);
+
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
 });

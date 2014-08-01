@@ -1,11 +1,11 @@
 var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia']).
     config(function($routeProvider) {
         $routeProvider.
-        when('/', {controller:HomeCtrl, templateUrl:'/home'}).
-        when('/search', {controller:DEListCtrl, templateUrl:'/list'}).
-        when('/login', {controller:AuthCtrl, templateUrl:'/login'}).
-        when('/signup', {controller:AuthCtrl, templateUrl:'/signup'}).
-        when('/createCde', {controller:CreateCdeCtrl, templateUrl:'/createcde'}).
+        when('/', {controller: HomeCtrl, templateUrl:'/home'}).
+        when('/search', {controller: DEListCtrl, templateUrl:'/list'}).
+        when('/login', {controller: AuthCtrl, templateUrl:'/login'}).
+        when('/signup', {controller: AuthCtrl, templateUrl:'/signup'}).
+        when('/createCde', {controller: CreateCdeCtrl, templateUrl:'/createcde'}).
         when('/deview', {controller: DEViewCtrl, templateUrl: '/deview'}).
         when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
         when('/orgaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/orgaccountmanagement'}).
@@ -20,6 +20,7 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
         when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
         when('/quickBoard', {controller: QuickBoardCtrl, templateUrl: '/quickBoard'}).
         when('/sdcview', {controller: SDCViewCtrl, templateUrl: '/sdcView'}).
+        when('/formList', {controller: FormListCtrl, templateUrl: '/formList'}).
         otherwise({redirectTo:'/'});
     })
     .directive('inlineEdit', function() {
@@ -74,24 +75,6 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
             }
         };
     });
-
-cdeApp.directive('ngCdeAvailable', ['$http', function($http) {
-  return {
-    require: 'ngModel',
-    link: function(scope, ele, attrs, ctrl) {
-      scope.$watch(attrs.ngModel, function() {
-            $http({
-              method: 'GET',
-              url: '/debyuuid/' + scope.cde.uuid + "/" + scope.cde.version
-            }).success(function(data, status, headers, cfg) {
-              ctrl.$setValidity('unique', data == "");
-            }).error(function(data, status, headers, cfg) {
-              ctrl.$setValidity('unique', false);
-            });
-      });
-    }
-  };
-}]);
 
 cdeApp.filter('placeholdEmpty', function() {
     return function(input) {
