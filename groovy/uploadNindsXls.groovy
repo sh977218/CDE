@@ -327,6 +327,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     def nindsId = new BasicDBObject();
     nindsId.put("source", "NINDS");
     nindsId.put("id", getCellValue(row.getCell(xlsMap.nindsId)));
+    nindsId.put("version", getCellValue(row.getCell(xlsMap.cdeVersion)));
     ids.add(nindsId);
     
     def cadsrId = getCellValue(row.getCell(xlsMap.cadsrId));
