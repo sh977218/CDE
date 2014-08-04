@@ -175,7 +175,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
         hangon(1);
-        findElement(By.linkText("Search")).click();
+        goToSearchByMenu();
         hangon(1);
         Assert.assertTrue(textPresent("4 results for"));
         Assert.assertTrue(textNotPresent("Preferred Standard"));
