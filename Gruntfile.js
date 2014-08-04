@@ -98,13 +98,11 @@ module.exports = function(grunt) {
                         expand: true
                         , cwd: '.'
                         , src: [
-                            'node-js/**'
-                            , 'public/**'
-                            , 'shared/**'
-                            , 'views/**'
+                            'modules/**'
                             , 'config/**'
                             , 'deploy/configTest.js'
                             , 'node_modules/**'
+                            , 'app.js'
                         ]
                         , dest: config.node.buildDir
                     }
@@ -353,7 +351,7 @@ module.exports = function(grunt) {
     });     
     
     grunt.registerTask('persistVersion', function() {
-        fs.writeFileSync("./views/version.ejs", grunt.config.get("version"));         
+        fs.writeFileSync("./modules/system/views/version.ejs", grunt.config.get("version"));         
     });    
 
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
