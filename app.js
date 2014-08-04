@@ -97,14 +97,21 @@ express.response.render = function(view, module, msg) {
     originalRender.call(this,  path.join(__dirname, '/modules/' + module + "/views/" + view), msg);
 };
 
-var cdeModule = require(path.join(__dirname, './modules/cde/node-js/app.js'));
-cdeModule.init(app);
+try {
+    var cdeModule = require(path.join(__dirname, './modules/cde/node-js/app.js'));
+    cdeModule.init(app);
 
-var systemModule = require(path.join(__dirname, './modules/system/node-js/app.js'));
-systemModule.init(app);
+    var systemModule = require(path.join(__dirname, './modules/system/node-js/app.js'));
+    systemModule.init(app);
 
-var formModule = require(path.join(__dirname, './modules/form/node-js/app.js'));
-formModule.init(app);
+    var formModule = require(path.join(__dirname, './modules/form/node-js/app.js'));
+    formModule.init(app);
+} catch (e) {
+    console.log(e);
+    process.exit();
+}
+
+
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));

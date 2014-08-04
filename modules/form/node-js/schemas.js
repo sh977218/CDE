@@ -1,7 +1,19 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+var mongoose = require('mongoose')
+    , Schema = mongoose.Schema
+    , sharedSchemas = require('../../system/node-js/schemas.js')
+    ;
 
-
+exports.formSchema = new Schema({
+    naming: [sharedSchemas.namingSchema]     
+    , version: String
+    , registrationState: sharedSchemas.registrationStateSchema
+    , properties: [
+        {key: String, value: String, valueFormat: String, _id: false}
+    ]  
+    , copyright: {
+        authority: String
+        , type: String
+        , text: String
+    }
+    , attachments: [sharedSchemas.attachmentSchema]
+});

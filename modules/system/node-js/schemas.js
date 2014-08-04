@@ -29,4 +29,41 @@ schemas.userSchema = mongoose.Schema ({
 schemas.orgSchema.set('collection', 'orgs');
 schemas.userSchema.set('collection', 'users');
 
+schemas.namingSchema = mongoose.Schema({
+    designation: String
+    , definition: String
+    , definitionFormat: String
+    , languageCode: String
+    , context: {
+        contextName: String
+        , acceptability: String
+    }
+}, {_id: false});
+
+schemas.attachmentSchema = mongoose.Schema({
+    fileid: String
+    , filename: String
+    , filetype: String
+    , uploadDate: Date
+    , comment: String
+    , uploadedBy: {
+        userId: mongoose.Schema.Types.ObjectId
+        , username: String
+    }
+    , filesize: Number
+    , isDefault: Boolean
+}, {_id: false});
+
+schemas.registrationStateSchema = {
+    registrationStatus: String
+    , effectiveDate: Date
+    , untilDate: Date
+    , administrativeNote: String
+    , unresolvedIssue: String
+    , administrativeStatus: String
+    , replacedBy: {uuid: String} 
+    //, _id: false
+};
+
+
 module.exports = schemas;
