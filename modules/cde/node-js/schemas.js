@@ -26,35 +26,10 @@ var commentSchema = mongoose.Schema({
     , created: Date
 });
 
-/*var namingSchema = mongoose.Schema({
-    designation: String
-    , definition: String
-    , definitionFormat: String
-    , languageCode: String
-    , context: {
-        contextName: String
-        , acceptability: String
-    }
-}, {_id: false});*/
-
 var csEltSchema = mongoose.Schema({
     name: String
     , elements: [csEltSchema]
 }, {_id: false});
-
-/*var attachmentSchema = mongoose.Schema({
-    fileid: String
-    , filename: String
-    , filetype: String
-    , uploadDate: Date
-    , comment: String
-    , uploadedBy: {
-        userId: mongoose.Schema.Types.ObjectId
-        , username: String
-    }
-    , filesize: Number
-    , isDefault: Boolean
-}, {_id: false});*/
 
 var deJsonSchema = {
     naming: [sharedSchemas.namingSchema]         

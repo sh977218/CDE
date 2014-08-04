@@ -17,3 +17,6 @@ exports.formSchema = new Schema({
     }
     , attachments: [sharedSchemas.attachmentSchema]
 });
+
+exports.formSchema.set('collection', 'forms');
+
