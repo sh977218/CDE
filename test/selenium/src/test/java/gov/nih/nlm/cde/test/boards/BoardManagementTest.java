@@ -150,8 +150,9 @@ public class BoardManagementTest extends BoardTest {
         
         makePublic(pubBlood);
         makePublic(pubSmoking);
+        modalGone();
+        gotoPublicBoards();
         
-        findElement(By.linkText("Boards")).click();
         findElement(By.name("search")).sendKeys("Blood");
         findElement(By.id("search.submit")).click();
         

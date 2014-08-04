@@ -163,7 +163,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
         hangon(3);
-        findElement(By.linkText("Search")).click();
+        findElement(By.linkText("CDEs")).click();
         hangon(1);
         findElement(By.id("li-blank-Preferred Standard")).click();
         Assert.assertTrue(textPresent("1 results for"));
