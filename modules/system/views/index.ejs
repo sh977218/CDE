@@ -65,15 +65,29 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li class="{{menuSearch}}"><a href="#/search">Search</a></li>
+                            <li class="{{menuSearch}}"><a href="#/search">CDEs</a></li>
+                            
+                            <li ng-show='user._id' class="dropdown">    
+                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Boards<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#/myboards">My Boards</a></li>
+                                    <li><a href="#/boardList">Public Boards</a></li>
+                                </ul>
+                            </li>   
+                            
+                            <li ng-show='!user._id' class="dropdown">    
+                                <a href="#/boardList">Boards</a>
+                            </li>
+                            
+                            <li><a href="#/formList">Forms</a></li>
+                            
                             <li ng-show='isOrgCurator()' class="dropdown">    
                                 <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Create<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#/createCde">CDE</a></li>
                                 </ul>
-                            </li>
-                            <li class="{{menuBoardList}}"><a href="#/boardList">Boards</a></li>
-                            <li class="{{menuMyBoards}}" ng-show="user._id"><a href="#/myboards">My Boards</a></li>
+                            </li>                            
+                            
                             <li class="{{menuCompare}}">
                                 <p class="navbar-text"><a class="navbar-link" href="#/quickBoard" style="text-decoration:none;">Quick Board (
                                     <span ng-switch="quickBoard.length">
