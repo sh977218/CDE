@@ -40,12 +40,12 @@ public class NlmCdeBaseTest {
     protected static String macosx_detected_message = "Max OS X Detected\nStarting ./chromedriver";     
     
     protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
+    protected static String browser = System.getProperty("browser");
           
     public static WebDriverWait wait;
 
     @BeforeTest
     public void setBaseUrl() {
-        //baseUrl = System.getProperty("testUrl");
         if (isWindows()){
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
@@ -54,14 +54,21 @@ public class NlmCdeBaseTest {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver");
         }
-//        DesiredCapabilities caps = DesiredCapabilities.chrome();
-        DesiredCapabilities caps = DesiredCapabilities.firefox();
+        DesiredCapabilities caps = null;
+        if ("firefox".equals(browser)) {
+            caps = DesiredCapabilities.firefox();
+        } else {
+            caps = DesiredCapabilities.chrome();
+        }
         caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
         LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(LogType.BROWSER, Level.ALL);
         caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);        
-//        driver = new ChromeDriver(caps);
-        driver = new FirefoxDriver(caps);
+        if ("firefox".equals(browser)) {
+            driver = new FirefoxDriver(caps);
+        } else {
+            driver = new ChromeDriver(caps);           
+        }
         driver.get(baseUrl);
 //        driver.manage().window().setSize(new Dimension(1024,800));
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
