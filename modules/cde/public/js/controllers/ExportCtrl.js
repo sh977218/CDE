@@ -42,7 +42,7 @@ function ExportCtrl($scope, Elastic, CsvDownload) {
                for (var j = 0; j < cde.valueDomain.permissibleValues.length; j++) {
                    permissibleValues = permissibleValues.concat(cde.valueDomain.permissibleValues[j].permissibleValue + "; ");
                } 
-               thisCde.permissbleValues = permissibleValues;
+               thisCde.permissibleValues = permissibleValues;
         
                $scope.gridCdes.push(thisCde);               
             }
