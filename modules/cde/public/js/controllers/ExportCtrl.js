@@ -28,22 +28,28 @@ function ExportCtrl($scope, Elastic, CsvDownload) {
                     , Name: cde.naming[0].designation
                     , Definition: cde.naming[0].definition
                     , Steward: cde.stewardOrg.name
-                    , "OriginId": cde.originId 
                     , Origin: cde.origin
-                    , "RegistrationStatus": cde.registrationState.registrationStatus
+                    , "Registration Status": cde.registrationState.registrationStatus
                }
                var otherNames = "";
                for (var j = 1; j < cde.naming.length; j++) {
                    otherNames = otherNames.concat(" " + cde.naming[j].designation);
                } 
-               thisCde.otherNames = otherNames;
+               thisCde["Other Names"] = otherNames;
                
                var permissibleValues = "";
                for (var j = 0; j < cde.valueDomain.permissibleValues.length; j++) {
                    permissibleValues = permissibleValues.concat(cde.valueDomain.permissibleValues[j].permissibleValue + "; ");
                } 
-               thisCde.permissibleValues = permissibleValues;
-        
+               thisCde["Permissible Values"] = permissibleValues;
+
+               var ids = "";
+               for (var j = 0; j < cde.ids.length; j++) {
+                   ids = ids.concat(cde.ids[j].source + ":" + cde.ids[j].id + "v"  + cde.ids[j].version + "; ");   
+               } 
+               thisCde.Identifiers = ids;
+                
+                
                $scope.gridCdes.push(thisCde);               
             }
         });
