@@ -12,7 +12,15 @@ function CreateFormCtrl($scope, $http) {
     };
     
     $scope.createNewForm = function(newForm) {
-        $http.post('/createForm', {}).success(function(form) {
+        var form = {
+            naming: [{
+                designation: newForm.designation
+                , definition: newForm.definition
+            }]
+            , version: newForm.version
+            , stewardOrg: newForm.stewardOrg
+        };
+        $http.post('/createForm', {form: form}).success(function(form) {
             console.log(form);
         });
     };

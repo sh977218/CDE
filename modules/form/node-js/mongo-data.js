@@ -21,3 +21,13 @@ exports.findForms = function(criteria, callback) {
     });
 };
 
+exports.createForm = function(form, callback) {
+    var newForm = new Form(form);
+    newForm.uuid = 123;
+    newForm.save(function(err) {
+        Form.findById(newForm, function(err, form) {
+            callback(form);
+        });        
+    });
+};
+

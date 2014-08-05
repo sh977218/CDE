@@ -15,5 +15,7 @@ exports.findForms = function(req, res) {
 };
 
 exports.createForm = function(req, res) {
-    res.send("saved");
+    mongo_data.createForm(req.body.form, function(form) {
+        res.send(form);
+    });    
 };
