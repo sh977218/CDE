@@ -10,4 +10,10 @@ function CreateFormCtrl($scope, $http) {
         }
         return null;
     };
+    
+    $scope.createNewForm = function(newForm) {
+        $http.post('/createForm', {}).success(function(form) {
+            console.log(form);
+        });
+    };
 }

@@ -13,3 +13,7 @@ exports.findForms = function(req, res) {
         res.send(forms);
     });
 };
+
+exports.createForm = function(req, res) {
+    res.send("saved");
+};

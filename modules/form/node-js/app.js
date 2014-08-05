@@ -1,16 +1,18 @@
 var express = require('express')
   , path = require('path')
-  , formListCtrl = require('./formListCtrl')
+  , formCtrl = require('./formCtrl')
 ;
 
 exports.init = function(app) {
 
     app.use("/form/public", express.static(path.join(__dirname, '../public')));
     
-    app.get('/formListPage', formListCtrl.renderListPage);
+    app.get('/formListPage', formCtrl.renderListPage);
     
-    app.get('/createFormPage', formListCtrl.createFormPage);
+    app.get('/createFormPage', formCtrl.createFormPage);
     
-    app.post('/findForms', formListCtrl.findForms);
+    app.post('/findForms', formCtrl.findForms);
+    
+    app.post('/createForm', formCtrl.createForm);
 
 };
