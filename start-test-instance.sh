@@ -1,7 +1,7 @@
 #!/bin/sh
 
-mongo test modules/cde/deploy/dbInit.js
-mongo cde-logs-test modules/cde/deploy/logInit.js
+mongo test deploy/dbInit.js
+mongo cde-logs-test deploy/logInit.js
 
 groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml localhost test test 
 groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx localhost test --testMode
