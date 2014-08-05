@@ -17,12 +17,14 @@ public class BoardTest extends NlmCdeBaseTest {
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
             if (boardName.equals(name)) {
-                scrollTo("500");
-                findElement(By.id("privateIcon_" + i)).click();
-//                clickElement(findElement(By.id("privateIcon_" + i)));
-                findElement(By.id("confirmChangeStatus_" + i)).click();
-//                clickElement(findElement(By.id("confirmChangeStatus_" + i)));
-                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='publicIcon_" + i + "']")));
+//                scrollTo("500");
+//                findElement(By.id("privateIcon_" + i)).click();
+                clickElement(findElement(By.id("privateIcon_" + i)));
+//                findElement(By.id("confirmChangeStatus_" + i)).click();
+                clickElement(findElement(By.id("confirmChangeStatus_" + i)));
+//                hangon(1);
+//                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='publicIcon_" + i + "']")));
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("publicIcon_" + i)));
                 hangon(2);
                 return;
             } 

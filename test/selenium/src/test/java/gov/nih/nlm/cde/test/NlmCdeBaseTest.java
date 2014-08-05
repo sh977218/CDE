@@ -73,7 +73,7 @@ public class NlmCdeBaseTest {
             driver = new ChromeDriver(caps);           
         }
         driver.get(baseUrl);
-        driver.manage().window().setSize(new Dimension(1024,1800));
+        driver.manage().window().setSize(new Dimension(1024,2000));
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, defaultTimeout, 200);
     }
