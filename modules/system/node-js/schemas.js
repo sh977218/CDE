@@ -65,5 +65,12 @@ schemas.registrationStateSchema = {
     , _id: false
 };
 
+var commentSchema = mongoose.Schema({
+    text: String
+    , user: String
+    , username: String
+    , created: Date
+});
+
 
 module.exports = schemas;

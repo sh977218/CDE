@@ -19,13 +19,6 @@ var permissibleValueSchema = mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
-var commentSchema = mongoose.Schema({
-    text: String
-    , user: String
-    , username: String
-    , created: Date
-});
-
 var csEltSchema = mongoose.Schema({
     name: String
     , elements: [csEltSchema]
@@ -117,7 +110,7 @@ var deJsonSchema = {
     , ids: [
         {source: String, id: String, version: String, _id: false}
     ]
-    , comments: [commentSchema]
+    , comments: [sharedSchemas.commentSchema]
     , archived: Boolean
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number

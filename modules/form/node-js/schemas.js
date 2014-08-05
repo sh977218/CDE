@@ -4,18 +4,28 @@ var mongoose = require('mongoose')
     ;
 
 exports.formSchema = new Schema({
-    naming: [sharedSchemas.namingSchema]     
+    uuid: String
+    , naming: [sharedSchemas.namingSchema]     
+    , stewardOrg: {
+        name: String
+    }    
     , version: String
     , registrationState: sharedSchemas.registrationStateSchema
     , properties: [
         {key: String, value: String, valueFormat: String, _id: false}
-    ]  
+    ]
+    , ids: [
+        {source: String, id: String, version: String, _id: false}
+    ]    
     , copyright: {
         authority: String
         , type: String
         , text: String
     }
+    , origin: String
     , attachments: [sharedSchemas.attachmentSchema]
+    , comments: [sharedSchemas.commentSchema]
+    , history: [mongoose.ObjectId]
 });
 
 exports.formSchema.set('collection', 'forms');
