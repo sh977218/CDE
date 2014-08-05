@@ -1,3 +1,3 @@
 function FormListCtrl($scope) {
-    $scope.greeting = 'Hola!';
+    $scope.listForms = [1,2,3,4];
 }

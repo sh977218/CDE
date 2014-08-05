@@ -14,8 +14,10 @@ conn.once('open', function callback () {
 
 var Form = conn.model('Form', schemas.formSchema);
 
-console.log(1);
+exports.findForms = function(criteria, callback) {
+    if (!criteria) criteria = {};
+    Form.find(criteria).exec(function (err, forms) {
+        callback(err, forms);
+    });
+};
 
-Form.find().count().exec(function (err, count) {
-    console.log(count);
-});

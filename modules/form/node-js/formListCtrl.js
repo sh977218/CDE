@@ -4,6 +4,8 @@ exports.renderListPage = function(req, res) {
     res.render('list', 'form');
 };
 
-exports.getForms = function() {
-    
+exports.findForms = function(req, res) {
+    mongo_data.findForms(req.body.criteria, function(err, forms) {
+        res.send(forms);
+    });
 };

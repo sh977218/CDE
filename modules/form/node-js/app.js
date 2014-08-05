@@ -9,6 +9,6 @@ exports.init = function(app) {
     
     app.get('/formList', formListCtrl.renderListPage);
     
-    app.get('/forms', formListCtrl.getForms);
+    app.post('/findForms', formListCtrl.findForms);
 
 };
