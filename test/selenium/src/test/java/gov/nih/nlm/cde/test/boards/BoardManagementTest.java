@@ -14,6 +14,7 @@ public class BoardManagementTest extends BoardTest {
     public void publicVsPrivateBoards() {
         mustBeLoggedInAs(boardUser, boardPassword);
         String boardName = "Public Board";
+        String boardDef = "This board will be public";
         
         createBoard(boardName, "This board will be public");
         pinTo("Heart MUGA", boardName);
@@ -21,19 +22,23 @@ public class BoardManagementTest extends BoardTest {
 
         goToBoard(boardName);
         // I can view my own board.
-        Assert.assertTrue(textPresent("MUGA"));
+        textPresent("MUGA");
         String url = driver.getCurrentUrl();
         String boardId = url.substring(url.lastIndexOf("/") + 1);
-        
+         
         logout();
         driver.get(baseUrl + "/#/board/" + boardId);
         // not logged in, I can't see
-        Assert.assertTrue(textNotPresent("Not a very useful"));
-
+        textPresent("Board not found");
+        closeAlert();
+        textNotPresent(boardDef);
+        
         loginAs(ctepCurator_username, ctepCurator_password);
         driver.get(baseUrl + "/#/board/" + boardId);
         // logged in as someone else, I can't see
-        Assert.assertTrue(textNotPresent("Not a very useful"));
+        textPresent("Board not found");
+        closeAlert();
+        textNotPresent(boardDef);
         
         logout();
         
@@ -44,7 +49,7 @@ public class BoardManagementTest extends BoardTest {
         
         driver.get(baseUrl + "/#/board/" + boardId);
         // Now I can see;
-        Assert.assertTrue(textPresent("MUGA"));
+        textPresent("MUGA");
 
         loginAs(boardUser, boardPassword);
         findElement(By.linkText("My Boards")).click();
@@ -98,7 +103,7 @@ public class BoardManagementTest extends BoardTest {
     
     @Test
     public void iHaveNoBoard() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs("boarduser2", boardPassword);
         String cdeName = "Specimen Array";
 
         goToSearch();

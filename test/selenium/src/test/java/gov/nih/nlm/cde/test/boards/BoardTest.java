@@ -17,7 +17,7 @@ public class BoardTest extends NlmCdeBaseTest {
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
             if (boardName.equals(name)) {
-                scrollTo("1000");
+                scrollTo("500");
                 findElement(By.id("privateIcon_" + i)).click();
 //                clickElement(findElement(By.id("privateIcon_" + i)));
                 findElement(By.id("confirmChangeStatus_" + i)).click();
@@ -32,7 +32,7 @@ public class BoardTest extends NlmCdeBaseTest {
   
     protected void createBoard(String name, String description) {
         findElement(By.linkText("My Boards")).click();
-        scrollTo("1000");
+        scrollTo("500");
         findElement(By.id("addBoard")).click();
 //        clickElement(findElement(By.id("addBoard")));
         findElement(By.name("name")).sendKeys(name);

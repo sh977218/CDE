@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
@@ -11,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,8 +26,6 @@ public class ScreenShotListener extends TestListenerAdapter {
     Calendar calendar = Calendar.getInstance();
 
     public void onTestFailure(ITestResult itr) {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
         String methodName = itr.getName();
         if (!itr.isSuccess()) {
             File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
