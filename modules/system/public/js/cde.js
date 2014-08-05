@@ -20,7 +20,8 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
         when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
         when('/quickBoard', {controller: QuickBoardCtrl, templateUrl: '/quickBoard'}).
         when('/sdcview', {controller: SDCViewCtrl, templateUrl: '/sdcView'}).
-        when('/formList', {controller: FormListCtrl, templateUrl: '/formList'}).
+        when('/formList', {controller: FormListCtrl, templateUrl: '/formListPage'}).
+        when('/createForm', {controller: CreateFormCtrl, templateUrl: '/createFormPage'}).
         otherwise({redirectTo:'/'});
     })
     .directive('inlineEdit', function() {

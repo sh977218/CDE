@@ -7,7 +7,9 @@ exports.init = function(app) {
 
     app.use("/form/public", express.static(path.join(__dirname, '../public')));
     
-    app.get('/formList', formListCtrl.renderListPage);
+    app.get('/formListPage', formListCtrl.renderListPage);
+    
+    app.get('/createFormPage', formListCtrl.createFormPage);
     
     app.post('/findForms', formListCtrl.findForms);
 
