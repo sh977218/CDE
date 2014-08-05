@@ -84,7 +84,7 @@ public class BoardManagementTest extends BoardTest {
         Assert.assertTrue(textNotPresent("Not a very useful"));
     }
     
-//    @Test
+    @Test
     public void cdeNumbIncrement() {
         mustBeLoggedInAs(boardUser, boardPassword);
         goToSearch();
@@ -115,7 +115,7 @@ public class BoardManagementTest extends BoardTest {
         modalGone();
     }
     
-//    @Test
+    @Test
     public void editBoard() {
         mustBeLoggedInAs("boarduserEdit", boardPassword);
         createBoard("Edit Board", "Test");
@@ -141,7 +141,7 @@ public class BoardManagementTest extends BoardTest {
         removeBoard("Edit Board -- Name Edited");
     }
     
-//    @Test
+    @Test
     public void searchBoard() {
         hangon(.5);
         mustBeLoggedInAs(boardUser, boardPassword);
@@ -171,7 +171,7 @@ public class BoardManagementTest extends BoardTest {
         
     }
 
-//    @Test
+    @Test
     public void cdeBoards() {
         hangon(.5);
         mustBeLoggedInAs("boarduser1", boardPassword);
