@@ -13,6 +13,10 @@ exports.init = function(app) {
 
     app.use("/system/public", express.static(path.join(__dirname, '../public')));
     
+    app.get("/supportedBrowsers", function(req, res) {
+       res.render('supportedBrowsers', 'system'); 
+    });
+    
     app.get('/', function(req, res) {
         res.render('index', 'system');
     });
