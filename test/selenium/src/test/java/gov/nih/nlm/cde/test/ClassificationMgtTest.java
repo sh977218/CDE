@@ -69,16 +69,18 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     private void createClassificationName(String[] categories) {
         findElement(By.id("addClassification")).click(); 
         modalHere();
-        for (int i=0; i<categories.length-1; i++) {
+        for (int i=0; i < categories.length-1; i++) {
             findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();       
         }
         findElement(By.id("addNewCatName")).sendKeys(categories[categories.length-1]);   
         findElement(By.id("addClassificationButton")).click(); 
         modalGone();
         String selector = "";
-        for (int i=0; i<categories.length; i++) {
+        for (int i=0; i < categories.length; i++) {
             selector += categories[i];
-            if (i<categories.length-1) selector += ",";
+            if (i < categories.length-1) {
+                selector += ",";
+            }
         }
         
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1]));    
