@@ -135,11 +135,6 @@ public class NlmCdeBaseTest {
         return driver.findElement(by);
     }
     
-    protected void clickElement( WebElement we ) {
-        Actions actions = new Actions(driver);
-        actions.moveToElement(we).click().perform();
-    }
-    
     @AfterTest
     public void endSession() {
         driver.quit();

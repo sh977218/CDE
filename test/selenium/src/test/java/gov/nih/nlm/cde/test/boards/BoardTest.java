@@ -17,14 +17,10 @@ public class BoardTest extends NlmCdeBaseTest {
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
             if (boardName.equals(name)) {
-//                scrollTo("500");
-//                findElement(By.id("privateIcon_" + i)).click();
-                clickElement(findElement(By.id("privateIcon_" + i)));
-//                findElement(By.id("confirmChangeStatus_" + i)).click();
-                clickElement(findElement(By.id("confirmChangeStatus_" + i)));
-//                hangon(1);
+                findElement(By.id("privateIcon_" + i)).click();
+                findElement(By.id("confirmChangeStatus_" + i)).click();
+                Assert.assertTrue(textPresent("Saved"));
 //                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='publicIcon_" + i + "']")));
-                wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("publicIcon_" + i)));
                 hangon(2);
                 return;
             } 
@@ -34,9 +30,7 @@ public class BoardTest extends NlmCdeBaseTest {
   
     protected void createBoard(String name, String description) {
         findElement(By.linkText("My Boards")).click();
-        scrollTo("500");
         findElement(By.id("addBoard")).click();
-//        clickElement(findElement(By.id("addBoard")));
         findElement(By.name("name")).sendKeys(name);
         findElement(By.name("description")).sendKeys(description);
         findElement(By.id("createBoard")).click();
@@ -51,7 +45,7 @@ public class BoardTest extends NlmCdeBaseTest {
             if (boardName.equals(name)) {
                 findElement(By.id("removeBoard-" + i)).click();
                 findElement(By.id("confirmRemove-" + i)).click();
-                hangon(1);
+                hangon(5);
                 Assert.assertTrue(textNotPresent(boardName));
                 return;
             }
