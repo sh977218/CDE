@@ -45,7 +45,7 @@ public class BoardTest extends NlmCdeBaseTest {
             if (boardName.equals(name)) {
                 findElement(By.id("removeBoard-" + i)).click();
                 findElement(By.id("confirmRemove-" + i)).click();
-                hangon(5);
+                hangon(3);
                 Assert.assertTrue(textNotPresent(boardName));
                 return;
             }
