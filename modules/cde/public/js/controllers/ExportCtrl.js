@@ -14,7 +14,7 @@ function ExportCtrl($scope, Elastic, CsvDownload) {
             , {field: 'permissibleValues', displayName: 'Permissible Values', width: 200}            
             , {field: 'origin', displayName: 'Origin', width: 60}
             , {field: 'version', displayName: 'Version', width: 40}
-            , {field: 'uuid', displayName: 'NLM Identifier', width: 100}
+            , {field: 'ids', displayName: 'IDs', width: 100}
         ]       
     };
     
@@ -43,8 +43,13 @@ function ExportCtrl($scope, Elastic, CsvDownload) {
                     , registrationStatus: cde.registrationState.registrationStatus
                     , naming: cde.naming.slice(1,100).map(function(naming) {return naming.designation;}).join(", ")
                     , permissibleValues: cde.valueDomain.permissibleValues.map(function(pv) {return pv.permissibleValue;}).join(", ")
-               };              
-               $scope.gridCdes.push(thisCde);               
+                };              
+                var ids = "";
+                for (var j = 0; j < cde.ids.length; j++) {
+                    ids = ids.concat(cde.ids[j].source + ":" + cde.ids[j].id + "v"  + cde.ids[j].version + "; ");   
+                } 
+                thisCde.ids = ids;               
+                $scope.gridCdes.push(thisCde);               
             }
         });
     });
