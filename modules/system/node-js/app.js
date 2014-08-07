@@ -10,11 +10,16 @@ var passport = require('passport')
 ;
 
 exports.init = function(app) {
+    var viewConfig = {modules: config.modules};
 
     app.use("/system/public", express.static(path.join(__dirname, '../public')));
     
+    app.get('/template/:module/:template', function(req, res) {
+        res.render(req.params.template, req.params.module);
+    });
+    
     app.get('/', function(req, res) {
-        res.render('index', 'system');
+        res.render('index', 'system', {config: viewConfig});
     });
 
     app.get('/home', function(req, res) {

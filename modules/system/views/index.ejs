@@ -79,13 +79,13 @@
                                 <a href="#/boardList">Boards</a>
                             </li>
                             
-                            <li><a href="#/formList">Forms</a></li>
+                            <% if (config.modules.forms) { %><li><a href="#/formList">Forms</a></li> <% } %>
                             
                             <li ng-show='isOrgCurator()' class="dropdown">    
                                 <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Create<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#/createCde">CDE</a></li>
-                                    <li><a href="#/createForm">Form</a></li>
+                                    <% if (config.modules.forms) { %><li><a href="#/createForm">Form</a></li><% } %>
                                 </ul>
                             </li>                            
                             
