@@ -267,6 +267,7 @@ exports.saveCde = function(req, callback) {
             newDe.attachments = req.body.attachments;
             newDe.ids = req.body.ids;
             newDe.classification = req.body.classification;
+            newDe.stewardOrg.name = req.body.stewardOrg.name;
             dataElement.archived = true;
             
             if (newDe.naming.length < 1) {

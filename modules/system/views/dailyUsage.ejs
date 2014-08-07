@@ -1,0 +1,42 @@
+ 
+<div ng-controller="DailyUsageCtrl" class="container-fluid">
+    <div class="row">
+        <form class="form-search">
+            <div class="form-group col-md-3" >
+                <button id="search.submit" type="submit" ng-click="generate()" class="btn btn-default">Generate</button>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-md-1">
+            Days Ago
+        </div>
+        <div class="col-md-1">
+            Hits
+        </div>
+        <div class="col-md-1">
+            IP
+        </div>
+        <div class="col-md-1">
+            Known Usernames
+        </div>
+    </div>    
+    <div class="row" ng-repeat="entry in dailyUsage | limitTo:entryLimit">
+        <div class="col-md-1">
+            {{entry._id.daysAgo}}
+        </div>
+        <div class="col-md-1">
+            {{entry.number}}
+        </div>
+        <div class="col-md-1">
+            {{entry._id.ip}}
+        </div>
+        <div class="col-md-1" ng-switch="entry.usernames.length > 0">
+            <span ng-switch-when="true">
+                <span ng-repeat="u in entry.usernames">{{u.username}} </span>
+            </span>
+            <span ng-switch-default><a class="btn btn-mini" ng-click="lookupUsername(entry._id.ip)" href="">Reveal</a></span>
+        </div>
+    </div>
+    <button class="btn btn-default" ng-show="dailyUsage.length > entryLimit" ng-click="seeMore()">More</button>
+</div>

@@ -24,6 +24,7 @@ dependencies {
 tasks.withType(Test) { 
     systemProperty 'testUrl', System.getProperty('testUrl', testUrl)
     systemProperty 'timeout', timeout
+    systemProperty 'browser', browser
 }
 
 test {    

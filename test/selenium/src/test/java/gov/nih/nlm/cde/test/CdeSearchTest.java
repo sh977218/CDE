@@ -208,27 +208,28 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void sdcView() {
-        String cdeName = "Noncompliant Reason Text";
+        String cdeName = "Anal Endoscopy Diagnostic Procedure Performed Other Specify Text";
         openCdeInList(cdeName);
         findElement(By.linkText("SDC View")).click();
-        Assert.assertTrue(findElement(By.id("dd_scopedId")).getText().startsWith("cde.nlm.nih.gov/"));
+        hangon(1);
+        Assert.assertTrue(findElement(By.id("dd_scopedId")).getText().trim().startsWith("cde.nlm.nih.gov/"));
         Assert.assertEquals("1", findElement(By.id("dd_version")).getText());
-        Assert.assertEquals("Noncompliant Reason Text", findElement(By.id("dd_name")).getText());
-        Assert.assertEquals("Specify Reason for Noncompliance", findElement(By.id("dd_prefQ")).getText());
-        Assert.assertEquals("If No, specify reason for noncompliance", findElement(By.id("dd_altQ")).getText());
-        Assert.assertEquals("The text that describes the reason the participant was noncompliant.", findElement(By.id("dd_def")).getText());
-        Assert.assertEquals("Not Assessed Reason", findElement(By.id("dd_dec")).getText());
+        Assert.assertEquals("Anal Endoscopy Diagnostic Procedure Performed Other Specify Text", findElement(By.id("dd_name")).getText());
+        Assert.assertEquals("Specify", findElement(By.id("dd_prefQ")).getText());
+        Assert.assertEquals("N/A", findElement(By.id("dd_altQ")).getText());
+        Assert.assertEquals("The free text field used to describe the results of the anascopy.", findElement(By.id("dd_def")).getText());
+        Assert.assertEquals("Anal Endoscopy Diagnostic Procedure Performed", findElement(By.id("dd_dec")).getText());
         Assert.assertEquals("DCP", findElement(By.id("dd_ctx")).getText());
         Assert.assertEquals("DCP", findElement(By.id("dd_ctxName")).getText());
         Assert.assertEquals("N/A", findElement(By.id("dd_adminStatus")).getText());
-        Assert.assertEquals("Standard", findElement(By.id("dd_regStatus")).getText());
+        Assert.assertEquals("Qualified", findElement(By.id("dd_regStatus")).getText());
         Assert.assertEquals("N/A", findElement(By.id("dd_updated")).getText());
         Assert.assertEquals("N/A", findElement(By.id("dd_subOrg")).getText());
         Assert.assertEquals("N/A", findElement(By.id("dd_subOrgName")).getText());
         Assert.assertEquals("DCP", findElement(By.id("dd_stewOrg")).getText());
         Assert.assertEquals("DCP", findElement(By.id("dd_stewOrgName")).getText());
         Assert.assertEquals("DCP:Division of Cancer Prevention", findElement(By.id("dd_origin")).getText());
-        Assert.assertEquals("Reason Text", findElement(By.id("dd_vd")).getText());
+        Assert.assertEquals("Other Specify Text", findElement(By.id("dd_vd")).getText());
         Assert.assertEquals("CHARACTER", findElement(By.id("dd_datatype")).getText());
         Assert.assertEquals("enumerated", findElement(By.id("dd_type")).getText());
     }

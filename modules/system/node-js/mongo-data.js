@@ -28,8 +28,6 @@ exports.orgNames = function(callback) {
     });
 };
 
-
-
 exports.userByName = function(name, callback) {
     User.findOne({'username': name}).exec(function (err, u) {
        callback("", u); 
@@ -45,6 +43,11 @@ exports.usersByPartialName = function(name, callback) {
     });
 };
 
+exports.usernamesByIp = function(ip, callback) {
+    User.find({"knownIPs": {$in: [ip]}}, {username: 1}).exec(function (err, usernames) {
+       callback(usernames); 
+    });
+};
 
 exports.userById = function(id, callback) {
     User.findOne({'_id': id}).exec(function (err, u) {

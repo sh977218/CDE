@@ -16,6 +16,10 @@ exports.init = function(app) {
     
     app.get('/template/:module/:template', function(req, res) {
         res.render(req.params.template, req.params.module);
+    });		
+
+    app.get("/supportedBrowsers", function(req, res) {
+       res.render('supportedBrowsers', 'system'); 
     });
     
     app.get('/', function(req, res) {
@@ -88,6 +92,16 @@ exports.init = function(app) {
             res.send(403, "You are not authorized.");                    
         }
     });
+    
+    app.get('/logUsageDailyReport', function(req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            dbLogger.usageByDay(function (result) {
+                res.send(result);
+            });
+        } else {
+            res.send(403, "You are not authorized.");                    
+        }        
+    });
 
 
     app.get('/org/:name', function(req, res) {
@@ -96,6 +110,15 @@ exports.init = function(app) {
        });
     });
 
+    app.get('/usernamesByIp/:ip', function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            return mongo_data_system.usernamesByIp(req.params.ip, function (result) {
+                res.send(result);
+            });
+        } else {
+            res.send(403, "You are not authorized.");                    
+        }         
+    });
 
     app.get('/siteadmins', function(req, res) {
         var ip = req.ip;

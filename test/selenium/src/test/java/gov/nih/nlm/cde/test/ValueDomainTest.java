@@ -13,8 +13,9 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     
     @Test
     public void changePermissibleValue() {
+        String cdeName = "Additional Pathologic Findings Chronic Proctocolitis Indicator";
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName("Patient Ethnic Group Category");
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click(); 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pv-0']/div/span/span[1]/i")));
         findElement(By.cssSelector("#pv-0 .fa-edit")).click();
@@ -26,7 +27,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys("4");
         findElement(By.cssSelector("button.btn.btn-warning")).click();
         modalGone();
-        goToCdeByName("Patient Ethnic Group Category");
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("added to pv"));
         findElement(By.linkText("History")).click();
@@ -38,8 +39,9 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     
     @Test
     public void addRemovePv() {
+        String cdeName = "Surgical Procedure Hand Laparoscopic Port Anatomic Site";
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName("Surgical Procedure Hand Laparoscopic Port Anatomic Site");
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("Right Middle Abdomen"));
         findElement(By.id("pvRemove-8")).click();
@@ -57,8 +59,9 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("changeNote")).sendKeys("Changed PV");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys(".addRemovePv");
-        findElement(By.cssSelector("button.btn.btn-warning")).click();
-        goToCdeByName("Surgical Procedure Hand Laparoscopic Port Anatomic Site");
+        findElement(By.id("confirmSave")).click();
+        textPresent("Qualified");
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("New PV"));
         Assert.assertEquals(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Right Middle Abdomen"), -1);

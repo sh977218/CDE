@@ -14,6 +14,7 @@ public class BoardManagementTest extends BoardTest {
     public void publicVsPrivateBoards() {
         mustBeLoggedInAs(boardUser, boardPassword);
         String boardName = "Public Board";
+        String boardDef = "This board will be public";
         
         createBoard(boardName, "This board will be public");
         pinTo("Heart MUGA", boardName);
@@ -21,19 +22,23 @@ public class BoardManagementTest extends BoardTest {
 
         goToBoard(boardName);
         // I can view my own board.
-        Assert.assertTrue(textPresent("MUGA"));
+        textPresent("MUGA");
         String url = driver.getCurrentUrl();
         String boardId = url.substring(url.lastIndexOf("/") + 1);
-        
+         
         logout();
         driver.get(baseUrl + "/#/board/" + boardId);
         // not logged in, I can't see
-        Assert.assertTrue(textNotPresent("Not a very useful"));
-
+        textPresent("Board not found");
+        closeAlert();
+        textNotPresent(boardDef);
+        
         loginAs(ctepCurator_username, ctepCurator_password);
         driver.get(baseUrl + "/#/board/" + boardId);
         // logged in as someone else, I can't see
-        Assert.assertTrue(textNotPresent("Not a very useful"));
+        textPresent("Board not found");
+        closeAlert();
+        textNotPresent(boardDef);
         
         logout();
         
@@ -44,7 +49,7 @@ public class BoardManagementTest extends BoardTest {
         
         driver.get(baseUrl + "/#/board/" + boardId);
         // Now I can see;
-        Assert.assertTrue(textPresent("MUGA"));
+        textPresent("MUGA");
 
         loginAs(boardUser, boardPassword);
         gotoMyBoards();
@@ -82,15 +87,30 @@ public class BoardManagementTest extends BoardTest {
     @Test
     public void cdeNumbIncrement() {
         mustBeLoggedInAs(boardUser, boardPassword);
+        String boardName = "Number Increment Board";
         goToSearch();
-        createBoard("Number Increment Board", "Number Increment Definition");
-        gotoMyBoards();           
-        WebElement numElt = findElement(By.id("dd_numb"));
+        createBoard(boardName, "Number Increment Definition");
+        findElement(By.linkText("My Boards")).click();           
+        WebElement numElt = null;
+        int length = driver.findElements(By.linkText("View Board")).size();
+        for (int i = 0; i < length; i++) {
+            String name = findElement(By.id("dd_name_" + i)).getText();
+            if (boardName.equals(name)) {
+                numElt = findElement(By.id("dd_numb_" + i));
+            }
+        }        
         int num = new Integer(numElt.getText());
         Assert.assertEquals(0, num);
-        pinTo("Lymph Node Procedure", "Number Increment Board");
-        gotoMyBoards();           
-        numElt = findElement(By.id("dd_numb"));
+        pinTo("Lymph Node Procedure", boardName);
+        findElement(By.linkText("My Boards")).click();           
+        length = driver.findElements(By.linkText("View Board")).size();
+        for (int i = 0; i < length; i++) {
+            String name = findElement(By.id("dd_name_" + i)).getText();
+            if (boardName.equals(name)) {
+                numElt = findElement(By.id("dd_numb_" + i));
+            }
+        }
+7
         num = new Integer(numElt.getText());
         Assert.assertEquals(1, num);
         removeBoard("Number Increment Board");
@@ -98,7 +118,7 @@ public class BoardManagementTest extends BoardTest {
     
     @Test
     public void iHaveNoBoard() {
-        mustBeLoggedInAs(boardUser, boardPassword);
+        mustBeLoggedInAs("boarduser2", boardPassword);
         String cdeName = "Specimen Array";
 
         goToSearch();

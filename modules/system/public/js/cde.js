@@ -111,7 +111,7 @@ cdeApp.factory('isAllowedModel', function () {
             return true;
         } else {   
             if ($scope.initialized && 
-                    ((cde.registrationState.registrationStatus === "Standard" || cde.registrationState.registrationStatus === "Standard") )) {
+                    ((cde.registrationState.registrationStatus === "Standard" || cde.registrationState.registrationStatus === "Preferred Standard") )) {
                 return false;
             }
             if ($scope.initialized && $scope.myOrgs) {

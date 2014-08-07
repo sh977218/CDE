@@ -47,7 +47,7 @@ exports.getLogs = function(inQuery, callback) {
     delete inQuery.fromDate;
     var toDate = inQuery.toDate;
     delete inQuery.toDate;
-    var query = LogModel.find(query);
+    var query = LogModel.find(inQuery);
     if (fromDate !== undefined) {
         query.where("date").gte(fromDate);
     }
@@ -62,6 +62,17 @@ exports.getLogs = function(inQuery, callback) {
             callback(err, logs);  
         }
     });
+};
+
+exports.usageByDay = function(callback) {
+    LogModel.aggregate(
+        {$match: {date: {$exists: true}}},
+        {$group : {_id: {ip: "$remoteAddr", daysAgo: {$subtract: [{$dayOfYear: new Date()}, {$dayOfYear: "$date"}]}}, number: {$sum: 1}}},
+        {$sort: {"_id.daysAgo": 1}}
+        , function (err, result) {
+            callback(result);
+        }
+    );
 };
 
     

@@ -6,6 +6,13 @@
         <% var cdeIncludePath = "/cde/public/"; %>
         <% var systemIncludePath = "/system/public/"; %>
         <% var formIncludePath = "/form/public/"; %>
+
+        <!--[if lt IE 9]>
+            <script type="text/javascript">
+                window.location = "/supportedBrowsers";
+            </script>
+         <![endif]--> 
+
         <script src="<%= cdeIncludePath %>assets/js/angular-1.2.15.min.js"></script>
         <script src="<%= cdeIncludePath %>assets/js/angular-route.min.js"></script>
         <script src="<%= cdeIncludePath %>assets/js/angular-resource.min.js"></script>
@@ -19,20 +26,7 @@
         <link rel="stylesheet" type="text/css" href="<%= cdeIncludePath %>assets/font-awesome-4.0.3/css/font-awesome.css">
         <link rel="stylesheet" type="text/css" href="<%= cdeIncludePath %>assets/css/ng-grid.min.css" />
         <link href="<%= cdeIncludePath %>css/style.css" rel="stylesheet" type="text/css" media="all" />
-
-        <!--[if lte IE 8]>
-            <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.1/json3.min.js"></script>
-        <![endif]-->
-
-         <!--[if lte IE 8]>
-           <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.1/json3.min.js"></script>
-        <![endif]-->
-   
-         <!--[if lt IE 9]>
-            <script src="assets/js/html5shiv.min.js"></script>
-            <script src="assets/js/respond.min.js"></script>
-         <![endif]--> 
-         
+        
         <!--[if lte IE 9]>
           <script>
             document.createElement('inline-edit');
