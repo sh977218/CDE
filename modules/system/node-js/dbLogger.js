@@ -47,7 +47,7 @@ exports.getLogs = function(inQuery, callback) {
     delete inQuery.fromDate;
     var toDate = inQuery.toDate;
     delete inQuery.toDate;
-    var query = LogModel.find(query);
+    var query = LogModel.find(inQuery);
     if (fromDate !== undefined) {
         query.where("date").gte(fromDate);
     }
