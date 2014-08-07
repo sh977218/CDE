@@ -11,3 +11,9 @@ exports.createForm = function(req, res) {
         res.send(form);
     });    
 };
+
+exports.viewForm = function(req, res) {
+    mongo_data.viewForm(req.query, function(form) {
+        res.send(form);
+    });    
+};

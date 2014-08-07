@@ -31,3 +31,9 @@ exports.createForm = function(form, callback) {
     });
 };
 
+exports.viewForm = function(form, callback) {
+    Form.findById(form._id, function(err, form) {
+        callback(form);
+    });     
+};
+
