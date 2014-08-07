@@ -19,7 +19,8 @@ public class BoardTest extends NlmCdeBaseTest {
             if (boardName.equals(name)) {
                 findElement(By.id("privateIcon_" + i)).click();
                 findElement(By.id("confirmChangeStatus_" + i)).click();
-                Assert.assertTrue(textPresent("Saved"));
+                textPresent("Saved");
+                closeAlert();
 //                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='publicIcon_" + i + "']")));
                 hangon(2);
                 return;
@@ -45,8 +46,7 @@ public class BoardTest extends NlmCdeBaseTest {
             if (boardName.equals(name)) {
                 findElement(By.id("removeBoard-" + i)).click();
                 findElement(By.id("confirmRemove-" + i)).click();
-                hangon(3);
-                Assert.assertTrue(textNotPresent(boardName));
+                textNotPresent(boardName);
                 return;
             }
         }

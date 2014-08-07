@@ -6,7 +6,7 @@
         <div inline-edit id="nameEdit" model="cde.naming[0].designation" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </div>
     </dd>    
     <dt>Steward: </dt>
-    <dd>
+    <dd id="dd_general_steward">
         <span ng-show="editDtMode">
             <select id="cde.stewardOrg.name" ng-model="cde.stewardOrg.name" ng-options="myOrg for myOrg in myOrgs"></select>
             <i id="cde.stewardOrg.name.ok" class="fa fa-check" ng-click="editDtMode = false; stageCde(cde)"></i>&nbsp;&nbsp;<i id="cde.stewardOrg.name.cancel" class="fa fa-times" ng-click="cde.stewardOrg.name = oldStewardName; editDtMode = false;"></i>

@@ -87,15 +87,29 @@ public class BoardManagementTest extends BoardTest {
     @Test
     public void cdeNumbIncrement() {
         mustBeLoggedInAs(boardUser, boardPassword);
+        String boardName = "Number Increment Board";
         goToSearch();
-        createBoard("Number Increment Board", "Number Increment Definition");
+        createBoard(boardName, "Number Increment Definition");
         findElement(By.linkText("My Boards")).click();           
-        WebElement numElt = findElement(By.id("dd_numb"));
+        WebElement numElt = null;
+        int length = driver.findElements(By.linkText("View Board")).size();
+        for (int i = 0; i < length; i++) {
+            String name = findElement(By.id("dd_name_" + i)).getText();
+            if (boardName.equals(name)) {
+                numElt = findElement(By.id("dd_numb_" + i));
+            }
+        }        
         int num = new Integer(numElt.getText());
         Assert.assertEquals(0, num);
-        pinTo("Lymph Node Procedure", "Number Increment Board");
+        pinTo("Lymph Node Procedure", boardName);
         findElement(By.linkText("My Boards")).click();           
-        numElt = findElement(By.id("dd_numb"));
+        length = driver.findElements(By.linkText("View Board")).size();
+        for (int i = 0; i < length; i++) {
+            String name = findElement(By.id("dd_name_" + i)).getText();
+            if (boardName.equals(name)) {
+                numElt = findElement(By.id("dd_numb_" + i));
+            }
+        }
         num = new Integer(numElt.getText());
         Assert.assertEquals(1, num);
         removeBoard("Number Increment Board");

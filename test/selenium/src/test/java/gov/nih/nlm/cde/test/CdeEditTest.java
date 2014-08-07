@@ -32,7 +32,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         new Select(findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText(org);
         
         classify(org, classification, subClassification);
-        
     }
     
     public void createBasicCde(String name, String definition, String version, String org, String classification, String subclassification) {
@@ -329,15 +328,15 @@ public class CdeEditTest extends NlmCdeBaseTest {
     @Test
     public void changeCDESteward() {
         mustBeLoggedInAs(classificationMgtUser_username, classificationMgtUser_password);
-        
         String cdeName = "Patient Tissue Specimen Colorectal Research Consent Ind-2";
+
         goToCdeByName(cdeName);
         
         // Changes Steward and cancels
         findElement(By.id("dd_edit_steward")).click();
         new Select(findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText("NINDS");
         findElement(By.id("cde.stewardOrg.name.cancel")).click();
-        Assert.assertTrue(textPresent("CTEP"));
+        textPresent("CTEP");
         
         // Changes Steward and save
         findElement(By.id("dd_edit_steward")).click();
@@ -348,6 +347,9 @@ public class CdeEditTest extends NlmCdeBaseTest {
         modalHere();
         findElement(By.name("version")).sendKeys(".1");
         saveCde();
-        Assert.assertTrue(textPresent("NINDS"));
+        Assert.assertEquals("NINDS", findElement(By.id("dd_general_steward")).getText());
+        findElement(By.linkText("History")).click();
+        findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
+        textPresent("Before: CTEP -- After: NINDS");
     }
 }
