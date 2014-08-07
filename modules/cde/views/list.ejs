@@ -17,7 +17,7 @@
 </div>
 <hr class="searchInfoHr"/>
 <div class="container-fluid searchInfo">
-    <span class="pt8 pb8 ib"><strong>{{totalItems}}</strong> results for {{selectedOrg?selectedOrg:'All Classifications'}} | <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> | {{getSelectedStatuses()?getSelectedStatuses():'All Status'}}</span>
+    <span class="pt8 pb8 ib"><strong>{{totalItems}}</strong> results for {{selectedOrg?getSelectedClassifications():'All Classifications'}} | <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> | {{getSelectedStatuses()?getSelectedStatuses():'All Status'}}</span>
     <a href="#/cdeSearchExport" ng-show="totalItems>0">
         <button id="gridView" value="Grid View" class="btn btn-default pull-right">
             <i class="fa fa-table"></i>
