@@ -5,6 +5,17 @@ function ExportCtrl($scope, Elastic, CsvDownload) {
         , enableColumnResize: true
         , enableRowReordering: true
         , enableCellSelection: true
+        , columnDefs: [
+            {field: 'primaryNameCopy', displayName: 'Name'}                 
+            , {field: 'primaryDefinitionCopy', displayName: 'Definition'}
+            , {field: 'stewardOrg', displayName: 'Steward', width: 60}
+            , {field: 'registrationStatus', displayName: 'Status', width: 80}
+            , {field: 'naming', displayName: 'Other Names', width: 200}
+            , {field: 'permissibleValues', displayName: 'Permissible Values', width: 200}            
+            , {field: 'origin', displayName: 'Origin', width: 60}
+            , {field: 'version', displayName: 'Version', width: 40}
+            , {field: 'ids', displayName: 'IDs', width: 100}
+        ]       
     };
     
     $scope.downloadCsv = function() {
@@ -23,28 +34,22 @@ function ExportCtrl($scope, Elastic, CsvDownload) {
                 var cde = list[i];
                 var thisCde = 
                 {
-                    ID: cde.uuid
-                    , Version: cde.version
-                    , Name: cde.naming[0].designation
-                    , Definition: cde.naming[0].definition
-                    , Steward: cde.stewardOrg.name
-                    , "OriginId": cde.originId 
-                    , Origin: cde.origin
-                    , "RegistrationStatus": cde.registrationState.registrationStatus
-               }
-               var otherNames = "";
-               for (var j = 1; j < cde.naming.length; j++) {
-                   otherNames = otherNames.concat(" " + cde.naming[j].designation);
-               } 
-               thisCde.otherNames = otherNames;
-               
-               var permissibleValues = "";
-               for (var j = 0; j < cde.valueDomain.permissibleValues.length; j++) {
-                   permissibleValues = permissibleValues.concat(cde.valueDomain.permissibleValues[j].permissibleValue + "; ");
-               } 
-               thisCde.permissbleValues = permissibleValues;
-        
-               $scope.gridCdes.push(thisCde);               
+                    uuid: cde.uuid
+                    , version: cde.version
+                    , primaryNameCopy: cde.naming[0].designation
+                    , primaryDefinitionCopy: cde.naming[0].definition
+                    , stewardOrg: cde.stewardOrg.name
+                    , origin: cde.origin
+                    , registrationStatus: cde.registrationState.registrationStatus
+                    , naming: cde.naming.slice(1,100).map(function(naming) {return naming.designation;}).join(", ")
+                    , permissibleValues: cde.valueDomain.permissibleValues.map(function(pv) {return pv.permissibleValue;}).join(", ")
+                };              
+                var ids = "";
+                for (var j = 0; j < cde.ids.length; j++) {
+                    ids = ids.concat(cde.ids[j].source + ":" + cde.ids[j].id + "v"  + cde.ids[j].version + "; ");   
+                } 
+                thisCde.ids = ids;               
+                $scope.gridCdes.push(thisCde);               
             }
         });
     });
