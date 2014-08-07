@@ -36,6 +36,9 @@ public class NlmCdeBaseTest {
     protected static String history_password = "pass";
     protected static String ninds_username = "ninds";
     protected static String ninds_password = "pass";
+    protected static String classificationMgtUser_username = "classificationMgtUser";
+    protected static String classificationMgtUser_password = "pass";
+    
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";    
     protected static String macosx_detected_message = "Max OS X Detected\nStarting ./chromedriver";     
     
@@ -54,7 +57,7 @@ public class NlmCdeBaseTest {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver");
         }
-        DesiredCapabilities caps = null;
+        DesiredCapabilities caps;
         if ("firefox".equals(browser)) {
             caps = DesiredCapabilities.firefox();
         } else {
@@ -70,7 +73,7 @@ public class NlmCdeBaseTest {
             driver = new ChromeDriver(caps);           
         }
         driver.get(baseUrl);
-//        driver.manage().window().setSize(new Dimension(1024,800));
+//        driver.manage().window().setSize(new Dimension(1024,2000));
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, defaultTimeout, 200);
     }

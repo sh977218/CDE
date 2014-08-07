@@ -8,7 +8,7 @@ import com.jayway.restassured.http.ContentType;
 import static com.jayway.restassured.RestAssured.*;
 
 
-public class ApiTest {
+public class ZeApiTest {
     protected static String baseUrl = "http://"+System.getProperty("testUrl");
     
     @Test

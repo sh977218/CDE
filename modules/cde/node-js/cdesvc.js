@@ -233,6 +233,10 @@ exports.diff = function(req, res) {
                                diff.before.version = priorDe.version;
                                diff.after.version = dataElement.version;
                            }
+                           if (dataElement.stewardOrg.name !== priorDe.stewardOrg.name) {
+                               diff.before.stewardOrg = priorDe.stewardOrg;
+                               diff.after.stewardOrg = dataElement.stewardOrg;
+                           }
                            if (dataElement.valueDomain.uom !== priorDe.valueDomain.uom) {
                                diff.before.uom = priorDe.valueDomain.uom;
                                if (!diff.before.uom) {diff.before.uom = "None Specified";}
