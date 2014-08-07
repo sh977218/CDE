@@ -32,8 +32,7 @@ public class FormCreateTest extends NlmCdeBaseTest {
         new Select(findElement(By.id("newForm.stewardOrg.name"))).selectByVisibleText("CTEP");
         findElement(By.xpath("//button[text()='Save']")).click();
         hangon(1);
-        
-        gotoPublicForms();        
+                
         Assert.assertTrue(textPresent("First Form"));
         Assert.assertTrue(textPresent("Fill out carefully!"));
         Assert.assertTrue(textPresent("0.1alpha"));        

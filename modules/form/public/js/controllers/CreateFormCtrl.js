@@ -1,4 +1,4 @@
-function CreateFormCtrl($scope, $http) {
+function CreateFormCtrl($scope, $http, $window) {
     $scope.newForm = {stewardOrg:{}};
     $scope.validationErrors = function() {
         if (!$scope.newForm.designation) {
@@ -21,7 +21,7 @@ function CreateFormCtrl($scope, $http) {
             , stewardOrg: newForm.stewardOrg
         };
         $http.post('/createForm', {form: form}).success(function(form) {
-            console.log(form);
+            $window.location.href = "/#/formView?_id=" + form._id;        
         });
     };
 }

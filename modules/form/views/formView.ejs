@@ -1,3 +1,9 @@
 <div ng-controller="FormViewCtrl">
-    {{form.naming[0].designation}} + {{form._id}}
+    <h1>{{form.naming[0].designation}}</h1>
+    <dl class="dl-horizontal">
+        <dt>Name: </dt><dd>{{form.naming[0].designation}}</dd>
+        <dt>Definition: </dt><dd>{{form.naming[0].definition}}</dd>
+        <dt>Version: </dt><dd>{{form.version}}</dd>
+        <dt>Steward: </dt><dd>{{form.stewardOrg.name}}</dd>
+    </dl>   
 </div>
