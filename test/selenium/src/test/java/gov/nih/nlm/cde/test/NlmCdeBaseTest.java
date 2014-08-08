@@ -17,6 +17,7 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 
@@ -52,28 +53,42 @@ public class NlmCdeBaseTest {
         if (isWindows()){
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
+            System.setProperty("webdriver.ie.driver", "./IEDriverServer.exe");
         }
         else {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver");
         }
         DesiredCapabilities caps;
-        if ("firefox".equals(browser)) {
-            caps = DesiredCapabilities.firefox();
-        } else {
-            caps = DesiredCapabilities.chrome();
-        }
+        switch (browser) {
+            case "firefox":
+                caps = DesiredCapabilities.firefox();
+            break;
+            case "chrome":
+                caps = DesiredCapabilities.chrome();
+            break;
+            case "ie":
+                caps = DesiredCapabilities.internetExplorer();
+            break;
+            default: 
+                caps = DesiredCapabilities.chrome();
+        }        
         caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
         LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(LogType.BROWSER, Level.ALL);
         caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);        
-        if ("firefox".equals(browser)) {
-            driver = new FirefoxDriver(caps);
-        } else {
-            driver = new ChromeDriver(caps);           
+        switch (browser) {
+            case "firefox":
+                driver = new FirefoxDriver(caps);
+            break;
+            case "chrome":
+                driver = new ChromeDriver(caps);      
+            break;
+            case "ie":
+                driver = new InternetExplorerDriver(caps);
+            break;
         }
         driver.get(baseUrl);
-//        driver.manage().window().setSize(new Dimension(1024,2000));
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, defaultTimeout, 200);
     }
