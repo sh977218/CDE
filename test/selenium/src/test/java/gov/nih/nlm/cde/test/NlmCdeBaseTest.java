@@ -67,13 +67,15 @@ public class NlmCdeBaseTest {
         LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(LogType.BROWSER, Level.ALL);
         caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);        
-        if ("firefox".equals(browser)) {
-            driver = new FirefoxDriver(caps);
-        } else {
-            driver = new ChromeDriver(caps);           
+        switch (browser) {
+            case "firefox":
+                driver = new FirefoxDriver(caps);
+            break;
+            case "chrome":
+                driver = new ChromeDriver(caps);      
+            break;
         }
         driver.get(baseUrl);
-//        driver.manage().window().setSize(new Dimension(1024,2000));
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, defaultTimeout, 200);
     }
