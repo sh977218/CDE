@@ -20,7 +20,7 @@
 <script type="text/ng-template" id="vsacAddMapping.html">   
     <div>{{vsacError}}</div>    
     <div ng-hide="editMode">
-        <a class="btn btn-default" ng-show="isAllowed(cde)" ng-click="editMode=true">Update O.I.D</a>
+        <a class="btn btn-default" ng-show="isAllowed(cde)" ng-click="editMode=true" id="updateOID">Update O.I.D</a>
         <a class="btn btn-default" ng-show="isAllowed(cde) && vsacMappingExists()" ng-click="removeVSMapping()" id="removeVSButton">Remove Mapping</a>
     </div> 
     <div ng-show="editMode">
