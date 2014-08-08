@@ -55,12 +55,8 @@ exports.getLogs = function(inQuery, callback) {
         query.where("date").lte(toDate);
     }
     
-    query.limit(10000).exec(function(err, logs) {
-        if (logs.length === 10000) {
-            callback("Query exceeds limit of 10,000 records");
-        } else {
-            callback(err, logs);  
-        }
+    query.sort("-date").limit(10000).exec(function(err, logs) {
+        callback(err, logs);  
     });
 };
 
