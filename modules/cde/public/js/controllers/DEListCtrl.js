@@ -194,6 +194,10 @@ function DEListCtrl($rootScope, $scope, $http, $modal, Elastic, OrgHelpers) {
     
     // Create string representation of what classification filters are selected
     $scope.getSelectedClassifications = function() {
-        return $scope.selectedOrg + " : " + $scope.selectedElements.join(" : ");
+        var result =  $scope.selectedOrg;
+        if ($scope.selectedElements.length > 0) {
+            result += " : " + $scope.selectedElements.join(" : ");
+        }
+        return result;
     };
 }
