@@ -3,31 +3,26 @@ var fs = require('fs')
     , xml2js = require('xml2js')
     , mongoose = require('mongoose')
     , uuid = require('node-uuid')
-    , mongodata = require('../node-js/mongo-data')
-    , config = require('../config.js')
+    , classNode = require('../modules/cde/node-js/classificationNode.js')
+    , config = require('config')
+    , cde_schemas = require('../modules/cde/node-js/schemas')
+    , sys_schemas = require('../modules/system/node-js/schemas')
 ;
 
 var parser = new xml2js.Parser();
 
-var mongoUri = config.mongo_uri;
-console.log("connecting to " + mongoUri);
+var mongoUri = config.mongoUri;
 
-if( !mongoose.connection ) {
-	mongoose.connect(mongoUri);
-}
+var conn = mongoose.createConnection(mongoUri);
+conn.on('error', console.error.bind(console, 'connection error:'));
+conn.once('open', function callback () {
+	console.log('mongodb connection open');
+    });    
 
 console.log("Loading file: " + process.argv[2]);
 
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback () {
-	console.log('mongodb connection open');
-    });
-
-var schemas = require('../node-js/schemas');
-
-var DataElement = mongoose.model('DataElement', schemas.dataElementSchema);
-var Org = mongoose.model('Org', schemas.orgSchema);
+var DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
+var Org = conn.model('Org', sys_schemas.orgSchema);
 
 // Global variables
 var globals = {
@@ -38,7 +33,10 @@ var globals = {
 
 // Adds classifications to 'orgs' collection.
 var addClassification = function (orgName, system, concept) {
-	mongodata.addClassificationToOrg( orgName, system, concept );
+    var body = {};
+    body.orgName = orgName;
+    body.categories = [system, concept];
+    classNode.addOrgClassification(body, function(){});
 };
 
 // TODO - Make this iterate over files. Otherwise, open connection is way too slow.
@@ -154,13 +152,10 @@ fs.readFile(process.argv[2], function(err, result) {
         if (err) {
           console.log('unable to save DE: ' + util.inspect(newDE));
           console.log(err);
+        } else {
+            process.exit();
         }
     });
 
-    console.log('Done');
-    // wait 5 secs for mongoose to do it's thing before closing.  
-    setTimeout((function() {
-        process.exit();
-    }), 1000);
 });
 
