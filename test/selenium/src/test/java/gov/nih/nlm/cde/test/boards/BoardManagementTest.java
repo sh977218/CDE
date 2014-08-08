@@ -110,7 +110,7 @@ public class BoardManagementTest extends BoardTest {
                 numElt = findElement(By.id("dd_numb_" + i));
             }
         }
-7
+
         num = new Integer(numElt.getText());
         Assert.assertEquals(1, num);
         removeBoard("Number Increment Board");
