@@ -136,6 +136,7 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-check")).click();        
         
         findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.name("changeNote")).clear();
         findElement(By.name("changeNote")).sendKeys("Modified VS Codes");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("6");        
