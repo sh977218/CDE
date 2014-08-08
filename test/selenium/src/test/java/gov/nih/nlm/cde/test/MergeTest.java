@@ -47,9 +47,11 @@ public class MergeTest extends NlmCdeBaseTest {
         hangon(3); 
     }    
     
-    private void checkResult() {
-        findElement(By.linkText("Smoking History Ind")).click(); 
-        switchTab(1);
+    private void checkResult() {        
+        if (!browser.equals("ie")) {
+            findElement(By.linkText("Smoking History Ind")).click(); 
+            switchTab(1);
+        } else goToCdeByName("Smoking History Ind");
         findElement(By.linkText("Classification")).click();
         Assert.assertTrue(textPresent("Health Survey"));          
         Assert.assertTrue(textPresent("Cancer Related Risks"));
@@ -65,7 +67,7 @@ public class MergeTest extends NlmCdeBaseTest {
         driver.switchTo().window(tabs2.get(i));
     }
     
-    @Test
+    //@Test
     public void mergeMineMineEverything() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         addToCompare("Common Toxicity Criteria Adverse Event Colitis Grade", "Common Toxicity Criteria Adverse Event Hypophosphatemia Grade");
@@ -85,7 +87,7 @@ public class MergeTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("2005490"));        
     }    
     
-    @Test
+    //@Test
     public void mergeMineTheirsClassificationsOnly() {
         mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
         addToCompare("Diagnosis Change Date java.util.Date", "Form Element End Date java.util.Date");
