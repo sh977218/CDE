@@ -162,3 +162,7 @@ cdeApp.directive('diff', function () {
         }
     };
 });
+
+cdeApp.config(['$compileProvider', function($compileProvider) {
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
+}]);

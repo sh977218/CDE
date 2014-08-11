@@ -1,5 +1,6 @@
 function ExportCtrl($scope, Elastic, CsvDownload) {  
     $scope.gridCdes = [];
+
     $scope.gridOptions = {
         data: 'gridCdes'
         , enableColumnResize: true
@@ -15,12 +16,13 @@ function ExportCtrl($scope, Elastic, CsvDownload) {
             , {field: 'origin', displayName: 'Origin', width: 60}
             , {field: 'version', displayName: 'Version', width: 40}
             , {field: 'ids', displayName: 'IDs', width: 100}
-        ]       
+        ]
     };
-    
-    $scope.downloadCsv = function() {
-        CsvDownload.export($scope.gridCdes);
+     
+    $scope.exportStr = function() {
+        $scope.encodedStr = "data:text/csv;charset=utf-8," + escape(CsvDownload.export($scope.gridCdes));
     };
+
     Elastic.buildElasticQueryPre($scope);
     var settings = Elastic.buildElasticQuerySettings($scope);
     Elastic.buildElasticQuery(settings, function(query) {
@@ -51,6 +53,8 @@ function ExportCtrl($scope, Elastic, CsvDownload) {
                 thisCde.ids = ids;               
                 $scope.gridCdes.push(thisCde);               
             }
+            $scope.exportStr();
         });
     });
+    
 }
