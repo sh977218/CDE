@@ -9,10 +9,10 @@ import java.util.ArrayList;
 public class MergeTest extends NlmCdeBaseTest {
     
     private void checkEverything() {
-        findElement(By.cssSelector("[ng-model='mergeRequest.fields.ids']")).click();  
-        findElement(By.cssSelector("[ng-model='mergeRequest.fields.attachments']")).click();  
-        findElement(By.cssSelector("[ng-model='mergeRequest.fields.properties']")).click();  
-        findElement(By.cssSelector("[ng-model='mergeRequest.fields.naming']")).click();     
+        findElement(By.xpath("//input[@ng-model='mergeRequest.fields.ids']")).click();  
+        findElement(By.xpath("//input[@ng-model='mergeRequest.fields.attachments']")).click();  
+        findElement(By.xpath("//input[@ng-model='mergeRequest.fields.properties']")).click();  
+        findElement(By.xpath("//input[@ng-model='mergeRequest.fields.naming']")).click();     
     }
     
     private void createMergeRequest() { 
