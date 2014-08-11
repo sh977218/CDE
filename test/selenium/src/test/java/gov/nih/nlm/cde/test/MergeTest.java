@@ -47,9 +47,11 @@ public class MergeTest extends NlmCdeBaseTest {
         hangon(3); 
     }    
     
-    private void checkResult() {
-        findElement(By.linkText("Smoking History Ind")).click(); 
-        switchTab(1);
+    private void checkResult() {        
+        if (!browser.equals("ie")) {
+            findElement(By.linkText("Smoking History Ind")).click(); 
+            switchTab(1);
+        } else goToCdeByName("Smoking History Ind");
         findElement(By.linkText("Classification")).click();
         Assert.assertTrue(textPresent("Health Survey"));          
         Assert.assertTrue(textPresent("Cancer Related Risks"));

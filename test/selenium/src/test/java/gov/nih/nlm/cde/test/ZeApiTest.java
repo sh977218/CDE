@@ -9,7 +9,7 @@ import static com.jayway.restassured.RestAssured.*;
 
 
 public class ZeApiTest {
-    protected static String baseUrl = "http://"+System.getProperty("testUrl");
+    protected static String baseUrl = System.getProperty("testUrl");
     
     @Test
     public void checkTicketValid() {
