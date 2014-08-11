@@ -70,7 +70,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
                 return false;
             }
         }
-
     };
     
 

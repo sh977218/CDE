@@ -1,6 +1,7 @@
 var mongoose = require('mongoose')
     , config = require('config')
     , schemas = require('./schemas')
+    , uuid = require('node-uuid')
     ;
     
 var mongoUri = config.mongoUri;
@@ -23,7 +24,12 @@ exports.findForms = function(criteria, callback) {
 
 exports.createForm = function(form, callback) {
     var newForm = new Form(form);
-    newForm.uuid = 123;
+    newForm.registrationState = {
+        registrationStatus: "Incomplete"
+    };
+    newForm.created = Date.now();
+//    newForm.createdBy.userId = req.user._id;
+//    newForm.createdBy.username = req.user.username;
     newForm.save(function(err) {
         Form.findById(newForm, function(err, form) {
             callback(form);

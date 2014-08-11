@@ -102,20 +102,20 @@ cdeApp.factory('isAllowedModel', function () {
     var isAllowedModel = {
     };
     
-    isAllowedModel.isAllowed = function ($scope, cde) {
-        if (!cde) return false;
-        if ($scope.initialized && cde.archived) {
+    isAllowedModel.isAllowed = function ($scope, CuratedItem) {
+        if (!CuratedItem) return false;
+        if ($scope.initialized && CuratedItem.archived) {
             return false;
         }
         if ($scope.user.siteAdmin) {
             return true;
         } else {   
             if ($scope.initialized && 
-                    ((cde.registrationState.registrationStatus === "Standard" || cde.registrationState.registrationStatus === "Preferred Standard") )) {
+                    ((CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard") )) {
                 return false;
             }
             if ($scope.initialized && $scope.myOrgs) {
-                return $scope.myOrgs.indexOf(cde.stewardOrg.name) > -1;
+                return $scope.myOrgs.indexOf(CuratedItem.stewardOrg.name) > -1;
             } else {
                 return false;
             }
