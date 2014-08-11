@@ -27,6 +27,7 @@ public class CompareTest extends NlmCdeBaseTest{
     
     @Test
     public void Compare2Elements() {
+        goToSearch();
         addToCompare("Person Gender Text Type", "Patient Gender Category");        
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));

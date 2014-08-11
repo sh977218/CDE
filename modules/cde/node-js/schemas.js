@@ -63,6 +63,7 @@ var deJsonSchema = {
     }
     , created: Date
     , updated: Date
+    , imported: Date
     , createdBy: {
         userId: mongoose.Schema.Types.ObjectId
         , username: String
