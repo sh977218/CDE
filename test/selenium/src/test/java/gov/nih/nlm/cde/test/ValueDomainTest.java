@@ -53,7 +53,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         
         findElement(By.cssSelector("#pv-10 [typeahead-source=\"pVTypeaheadCodeSystemNameList\"] .fa-edit")).click();
         Assert.assertTrue(textPresent("Confirm"));
-        findElement(By.xpath("//td[@id='pvCodeSystem-10']//input[@ng-show='typeaheadSource.length>0']")).sendKeys("N");
+        findElement(By.xpath("//td[@id='pvCodeSystem-10']//input")).sendKeys("N");
         Assert.assertTrue(textPresent("NCI Thesaurus"));
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("changeNote")).sendKeys("Changed PV");
@@ -122,7 +122,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName("Post traumatic amnesia duration range");
         findElement(By.linkText("Permissible Values")).click();         
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-edit")).click();
-        findElement(By.xpath("//td[@id='pvCodeSystem-0']//input[@ng-show='typeaheadSource.length>0']")).sendKeys("SNOMEDCT");
+        findElement(By.xpath("//td[@id='pvCodeSystem-0']//input")).sendKeys("SNOMEDCT");
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-check")).click();
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
