@@ -4,7 +4,7 @@ function CreateFormCtrl($scope, $http, $window) {
         if (!$scope.newForm.designation) {
             return "Please enter a name for the new form.";
         } else if (!$scope.newForm.definition) {
-            return "Please enter a definition for the new form.";
+            return "Please enter form description.";
         } else if (!$scope.newForm.stewardOrg.name) {
             return "Please select a steward for the new form.";
         }
@@ -20,7 +20,7 @@ function CreateFormCtrl($scope, $http, $window) {
             , version: newForm.version
             , stewardOrg: newForm.stewardOrg
         };
-        $http.post('/createForm', {form: form}).success(function(form) {
+        $http.post('/form', {form: form}).success(function(form) {
             $window.location.href = "/#/formView?_id=" + form._id;        
         });
     };

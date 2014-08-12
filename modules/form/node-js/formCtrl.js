@@ -12,8 +12,8 @@ exports.createForm = function(req, res) {
     });    
 };
 
-exports.viewForm = function(req, res) {
-    mongo_data.viewForm(req.query, function(form) {
+exports.formById = function(req, res) {
+    mongo_data.formById(req.params.id, function(form) {
         res.send(form);
     });    
 };

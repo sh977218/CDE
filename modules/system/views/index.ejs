@@ -60,20 +60,20 @@
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
                             <li class="{{menuSearch}}"><a href="#/search">CDEs</a></li>
+                                                       
+                            <% if (config.modules.forms) { %><li><a href="#/formList">Forms</a></li> <% } %>
                             
                             <li ng-show='user._id' class="dropdown">    
                                 <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Boards<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
+                                    <li><a href="#/boardList">Public Boards</a></li>                                    
                                     <li><a href="#/myboards">My Boards</a></li>
-                                    <li><a href="#/boardList">Public Boards</a></li>
                                 </ul>
                             </li>   
                             
                             <li ng-show='!user._id' class="dropdown">    
                                 <a href="#/boardList">Boards</a>
-                            </li>
-                            
-                            <% if (config.modules.forms) { %><li><a href="#/formList">Forms</a></li> <% } %>
+                            </li>                            
                             
                             <li ng-show='isOrgCurator()' class="dropdown">    
                                 <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Create<span class="caret"></span></a>

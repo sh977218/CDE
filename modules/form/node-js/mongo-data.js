@@ -40,8 +40,8 @@ exports.createForm = function(form, user, callback) {
     });
 };
 
-exports.viewForm = function(form, callback) {
-    Form.findById(form._id, function(err, form) {
+exports.formById = function(id, callback) {
+    Form.findById(id, function(err, form) {
         callback(form);
     });     
 };

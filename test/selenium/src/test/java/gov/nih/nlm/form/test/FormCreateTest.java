@@ -27,7 +27,7 @@ public class FormCreateTest extends NlmCdeBaseTest {
         gotoFormCreate();
         Assert.assertTrue(textPresent("Create New Form"));
         fillInput("Name", "First Form");
-        fillInput("Definition", "Fill out carefully!");
+        fillInput("Description", "Fill out carefully!");
         fillInput("Version", "0.1alpha");
         new Select(findElement(By.id("newForm.stewardOrg.name"))).selectByVisibleText("CTEP");
         findElement(By.xpath("//button[text()='Save']")).click();
