@@ -26,6 +26,11 @@ exports.formSchema = new Schema({
     , attachments: [sharedSchemas.attachmentSchema]
     , comments: [sharedSchemas.commentSchema]
     , history: [mongoose.ObjectId]
+    , created: Date
+    , createdBy: {
+        userId: mongoose.Schema.Types.ObjectId
+        , username: String
+    }
 });
 
 exports.formSchema.set('collection', 'forms');

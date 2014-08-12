@@ -1,8 +1,8 @@
 <div ng-controller="FormViewCtrl">
     <h1>{{form.naming[0].designation}}</h1>
     <dl class="dl-horizontal">
-        <dt>Name: </dt><dd inline-edit id="nameEdit" model="form.naming[0].designation" is-allowed="isAllowed(form)" on-ok="stageCde(form)"> </dd>
-        <dt>Definition: </dt><dd inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="form.naming[0].definition" is-allowed="isAllowed(form)" def-format="form.naming[0].definitionFormat" on-ok="stageCde(form)"> </dd>
+        <dt>Name: </dt><dd inline-edit id="nameEdit" model="form.naming[0].designation" is-allowed="isAllowed(false)" on-ok="stageCde(form)"> </dd>
+        <dt>Definition: </dt><dd inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="form.naming[0].definition" is-allowed="isAllowed(false)" def-format="form.naming[0].definitionFormat" on-ok="stageCde(form)"> </dd>
         <dt>Version: </dt><dd>{{form.version}}</dd>
         <dt>Steward: </dt><dd>{{form.stewardOrg.name}}</dd>
     </dl>   
