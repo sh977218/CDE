@@ -263,7 +263,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void hoverOverClassifications() {
         goToSearch();
-        hoverOverElement(findElement(By.linkText("Search")));
+        hoverOverElement(findElement(By.linkText("CDEs")));
         Assert.assertTrue(textNotPresent("Albert Einstein Cancer Center"));
         hoverOverElement(findElement(By.id("classifications-text-AECC")));
         Assert.assertTrue(textPresent("Albert Einstein Cancer Center"));

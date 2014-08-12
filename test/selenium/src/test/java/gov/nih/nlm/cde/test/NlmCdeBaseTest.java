@@ -210,6 +210,10 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Qualified ("));
     }
     
+    protected void goToSearchByMenu() {
+        findElement(By.linkText("CDEs")).click();
+    }
+    
     protected void logout() {
         try {
             findElement(By.id("username_link")).click();

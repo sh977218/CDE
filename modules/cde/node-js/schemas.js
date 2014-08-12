@@ -1,5 +1,8 @@
-var mongoose = require('mongoose');
-var ObjectId = require('mongodb').ObjectId;
+var mongoose = require('mongoose')
+    , ObjectId = require('mongodb').ObjectId
+    , sharedSchemas = require('../../system/node-js/schemas.js')
+    ;
+
 var schemas = {};
 
 var conceptSchema = mongoose.Schema({
@@ -16,45 +19,13 @@ var permissibleValueSchema = mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
-var commentSchema = mongoose.Schema({
-    text: String
-    , user: String
-    , username: String
-    , created: Date
-});
-
-var namingSchema = mongoose.Schema({
-    designation: String
-    , definition: String
-    , definitionFormat: String
-    , languageCode: String
-    , context: {
-        contextName: String
-        , acceptability: String
-    }
-}, {_id: false});
-
 var csEltSchema = mongoose.Schema({
     name: String
     , elements: [csEltSchema]
 }, {_id: false});
 
-var attachmentSchema = mongoose.Schema({
-    fileid: String
-    , filename: String
-    , filetype: String
-    , uploadDate: Date
-    , comment: String
-    , uploadedBy: {
-        userId: mongoose.Schema.Types.ObjectId
-        , username: String
-    }
-    , filesize: Number
-    , isDefault: Boolean
-}, {_id: false});
-
 var deJsonSchema = {
-    naming:[namingSchema]         
+    naming: [sharedSchemas.namingSchema]         
     , source: String
     , sourceId: String
     , origin: String
@@ -126,15 +97,7 @@ var deJsonSchema = {
     , history: [ObjectId]
     , changeNote: String
     , cadsrRegStatus: String
-    , registrationState: {
-            registrationStatus: String
-            , effectiveDate: Date
-            , untilDate: Date
-            , administrativeNote: String
-            , unresolvedIssue: String
-            , administrativeStatus: String
-            , replacedBy: {uuid: String} 
-        }
+    , registrationState: sharedSchemas.registrationStateSchema
     , classification:  [
             {
                 stewardOrg: {name: String}
@@ -148,9 +111,9 @@ var deJsonSchema = {
     , ids: [
         {source: String, id: String, version: String, _id: false}
     ]
-    , comments: [commentSchema]
+    , comments: [sharedSchemas.commentSchema]
     , archived: Boolean
-    , attachments: [attachmentSchema]
+    , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
     , usedByOrgs: [String]
 };

@@ -156,5 +156,22 @@ angular.module('resources', ['ngResource'])
                 $window.open("data:text/csv;charset=utf-8," + escape(str));
             }
         };
-    })
+    })    
+    .directive('ngCdeAvailable', ['$http', function($http) {
+      return {
+        require: 'ngModel',
+        link: function(scope, ele, attrs, ctrl) {
+          scope.$watch(attrs.ngModel, function() {
+                $http({
+                  method: 'GET',
+                  url: '/debyuuid/' + scope.cde.uuid + "/" + scope.cde.version
+                }).success(function(data, status, headers, cfg) {
+                  ctrl.$setValidity('unique', data == "");
+                }).error(function(data, status, headers, cfg) {
+                  ctrl.$setValidity('unique', false);
+                });
+          });
+        }
+      };
+    }]);    
     ;

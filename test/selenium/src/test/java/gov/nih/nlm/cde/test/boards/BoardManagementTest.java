@@ -52,7 +52,7 @@ public class BoardManagementTest extends BoardTest {
         textPresent("MUGA");
 
         loginAs(boardUser, boardPassword);
-        findElement(By.linkText("My Boards")).click();
+        gotoMyBoards();
         int length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
@@ -80,7 +80,7 @@ public class BoardManagementTest extends BoardTest {
         createBoard("Remove me board", "Not a very useful board");
         removeBoard("Remove me board");
         goToSearch();
-        findElement(By.linkText("My Boards")).click();
+        gotoMyBoards();
         Assert.assertTrue(textNotPresent("Not a very useful"));
     }
     
@@ -90,7 +90,7 @@ public class BoardManagementTest extends BoardTest {
         String boardName = "Number Increment Board";
         goToSearch();
         createBoard(boardName, "Number Increment Definition");
-        findElement(By.linkText("My Boards")).click();           
+        gotoMyBoards(); 
         WebElement numElt = null;
         int length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
@@ -102,7 +102,7 @@ public class BoardManagementTest extends BoardTest {
         int num = new Integer(numElt.getText());
         Assert.assertEquals(0, num);
         pinTo("Lymph Node Procedure", boardName);
-        findElement(By.linkText("My Boards")).click();           
+        gotoMyBoards();
         length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
@@ -110,6 +110,7 @@ public class BoardManagementTest extends BoardTest {
                 numElt = findElement(By.id("dd_numb_" + i));
             }
         }
+
         num = new Integer(numElt.getText());
         Assert.assertEquals(1, num);
         removeBoard("Number Increment Board");
@@ -133,7 +134,7 @@ public class BoardManagementTest extends BoardTest {
     public void editBoard() {
         mustBeLoggedInAs("boarduserEdit", boardPassword);
         createBoard("Edit Board", "Test");
-        findElement(By.linkText("My Boards")).click();
+        gotoMyBoards();
         String mod = findElement(By.id("dd_mod")).getText();
         findElement(By.id("name_edit_0")).click();
         findElement(By.id("name_input_0")).sendKeys(" -- Name Edited");
@@ -146,7 +147,7 @@ public class BoardManagementTest extends BoardTest {
         findElement(By.id("desc_confirm_0")).click();
         
         goToSearch();
-        findElement(By.linkText("My Boards")).click();
+        gotoMyBoards();
         Assert.assertTrue(textPresent("-- Name Edited"));
         Assert.assertTrue(textPresent("-- Desc Edited"));
         
@@ -169,8 +170,9 @@ public class BoardManagementTest extends BoardTest {
         
         makePublic(pubBlood);
         makePublic(pubSmoking);
+        modalGone();
+        gotoPublicBoards();
         
-        findElement(By.linkText("Boards")).click();
         findElement(By.name("search")).sendKeys("Blood");
         findElement(By.id("search.submit")).click();
         
@@ -222,7 +224,7 @@ public class BoardManagementTest extends BoardTest {
     @Test
     public void pagination() {
         mustBeLoggedInAs(ninds_username, ninds_password);
-        findElement(By.linkText("My Boards")).click();
+        gotoMyBoards();
         findElement(By.linkText("View Board")).click();
         findElement(By.linkText("30")).click();
         Assert.assertTrue(textPresent("Word discrimination result"));

@@ -13,7 +13,8 @@ public class PinTest extends BoardTest {
         createBoard("Blood Board", "Collect blood related cdes here");
         createBoard("Smoking Board", "Collect Smoking CDEs here");
         
-        findElement(By.linkText("My Boards")).click();           
+        gotoMyBoards();
+        
         Assert.assertTrue(textPresent("Collect blood"));
         Assert.assertTrue(textPresent("Smoking CDEs"));
 

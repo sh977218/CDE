@@ -11,7 +11,7 @@ public class BoardTest extends NlmCdeBaseTest {
     protected static final String boardPassword = "pass";
     
     protected void makePublic(String boardName) {
-        findElement(By.linkText("My Boards")).click();
+        gotoMyBoards();
         Assert.assertTrue(textPresent(boardName));
         int length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
@@ -21,16 +21,25 @@ public class BoardTest extends NlmCdeBaseTest {
                 findElement(By.id("confirmChangeStatus_" + i)).click();
                 textPresent("Saved");
                 closeAlert();
-//                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='publicIcon_" + i + "']")));
                 hangon(2);
                 return;
             } 
         }
         Assert.assertTrue(false);
     }
+    
+    protected void gotoMyBoards() {
+        findElement(By.linkText("Boards")).click();
+        findElement(By.linkText("My Boards")).click();
+    }
+    
+    protected void gotoPublicBoards() {
+        findElement(By.linkText("Boards")).click();
+        findElement(By.linkText("Public Boards")).click();    
+    }           
   
     protected void createBoard(String name, String description) {
-        findElement(By.linkText("My Boards")).click();
+        gotoMyBoards();
         findElement(By.id("addBoard")).click();
         findElement(By.name("name")).sendKeys(name);
         findElement(By.name("description")).sendKeys(description);
@@ -39,7 +48,7 @@ public class BoardTest extends NlmCdeBaseTest {
     }
     
     protected void removeBoard(String boardName) {
-        findElement(By.linkText("My Boards")).click();
+        gotoMyBoards();
         int length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
@@ -63,7 +72,7 @@ public class BoardTest extends NlmCdeBaseTest {
     }
     
     protected void goToBoard(String boardName) {
-        findElement(By.linkText("My Boards")).click();
+        gotoMyBoards();
         int length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
