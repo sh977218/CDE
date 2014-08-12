@@ -21,7 +21,6 @@ public class BoardTest extends NlmCdeBaseTest {
                 findElement(By.id("confirmChangeStatus_" + i)).click();
                 textPresent("Saved");
                 closeAlert();
-//                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='publicIcon_" + i + "']")));
                 hangon(2);
                 return;
             } 

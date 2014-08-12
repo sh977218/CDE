@@ -90,7 +90,7 @@ public class BoardManagementTest extends BoardTest {
         String boardName = "Number Increment Board";
         goToSearch();
         createBoard(boardName, "Number Increment Definition");
-        findElement(By.linkText("My Boards")).click();           
+        gotoMyBoards(); 
         WebElement numElt = null;
         int length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
@@ -102,7 +102,7 @@ public class BoardManagementTest extends BoardTest {
         int num = new Integer(numElt.getText());
         Assert.assertEquals(0, num);
         pinTo("Lymph Node Procedure", boardName);
-        findElement(By.linkText("My Boards")).click();           
+        gotoMyBoards();
         length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
