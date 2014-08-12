@@ -19,8 +19,19 @@ function ExportCtrl($scope, Elastic, CsvDownload) {
         ]
     };
      
+    $scope.download = function() {
+        console.log(1)
+        var pom = document.createElement('a');
+        pom.setAttribute('href', $scope.encodedStr);
+        pom.setAttribute('download', "nlm-cde-export.csv");
+        console.log(2)
+        pom.click();
+        console.log(3)
+    };
+     
     $scope.exportStr = function() {
-        $scope.encodedStr = "data:text/csv;charset=utf-8," + escape(CsvDownload.export($scope.gridCdes));
+        $scope.encodedStr = "data:text/csv;charset=utf-8," + encodeURIComponent(CsvDownload.export($scope.gridCdes));
+//        $scope.encodedStr = "paf"
     };
 
     Elastic.buildElasticQueryPre($scope);
