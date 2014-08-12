@@ -1,7 +1,7 @@
 <%- include selectBoardModal.ejs %> 
 
 <script type="text/ng-template" id="accordionList.html">
-    <div accordion close-others="false">
+    <div accordion close-others="false" id="accordionList">
         <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
             <div accordion-heading>
                 <span ng-bind-html="cde.primaryNameCopy" id="acc_link_{{$index}}" class="hand-cursor"></span>
