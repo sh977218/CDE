@@ -51,6 +51,9 @@ var config = {
         forkNb: 12
         , timeout: 8
     }
+    , modules: {
+        forms: true
+    }    
 };
 
 module.exports = config;

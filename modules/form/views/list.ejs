@@ -1,0 +1,14 @@
+<h1>Public Forms</h1>
+
+<div ng-controller="FormListCtrl">
+    <div ng-repeat="form in listForms">
+        <dl class="dl-horizontal">
+            <dt>Name: </dt><dd>{{form.naming[0].designation}}</dd>
+            <dt>Definition: </dt><dd>{{form.naming[0].definition}}</dd>
+            <dt>Version: </dt><dd>{{form.version}}</dd>
+            <dt>Steward: </dt><dd>{{form.stewardOrg.name}}</dd>
+            <dd><a class="btn btn-default" href="/#/formView?_id={{form._id}}">View Full Detail</a></dd>
+        </dl>        
+    </div>    
+</div>
+
