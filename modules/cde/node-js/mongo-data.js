@@ -176,7 +176,7 @@ exports.cdesByUuidList = function(idList, callback) {
 exports.priorCdes = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement != null) {
-            return DataElement.find({}, "naming source sourceId registrationState stewardOrg updated updatedBy createdBy uuid version views")
+            return DataElement.find({}, "naming source sourceId registrationState stewardOrg updated updatedBy createdBy uuid version views changeNote")
                     .where("_id").in(dataElement.history).exec(function(err, cdes) {
                 callback("", cdes);
             });

@@ -9,10 +9,10 @@ import java.util.ArrayList;
 public class MergeTest extends NlmCdeBaseTest {
     
     private void checkEverything() {
-        findElement(By.cssSelector("[ng-model='mergeRequest.fields.ids']")).click();  
-        findElement(By.cssSelector("[ng-model='mergeRequest.fields.attachments']")).click();  
-        findElement(By.cssSelector("[ng-model='mergeRequest.fields.properties']")).click();  
-        findElement(By.cssSelector("[ng-model='mergeRequest.fields.naming']")).click();     
+        findElement(By.xpath("//input[@ng-model='mergeRequest.fields.ids']")).click();  
+        findElement(By.xpath("//input[@ng-model='mergeRequest.fields.attachments']")).click();  
+        findElement(By.xpath("//input[@ng-model='mergeRequest.fields.properties']")).click();  
+        findElement(By.xpath("//input[@ng-model='mergeRequest.fields.naming']")).click();     
     }
     
     private void createMergeRequest() { 
@@ -47,9 +47,11 @@ public class MergeTest extends NlmCdeBaseTest {
         hangon(3); 
     }    
     
-    private void checkResult() {
-        findElement(By.linkText("Smoking History Ind")).click(); 
-        switchTab(1);
+    private void checkResult() {        
+        if (!browser.equals("ie")) {
+            findElement(By.linkText("Smoking History Ind")).click(); 
+            switchTab(1);
+        } else goToCdeByName("Smoking History Ind");
         findElement(By.linkText("Classification")).click();
         Assert.assertTrue(textPresent("Health Survey"));          
         Assert.assertTrue(textPresent("Cancer Related Risks"));

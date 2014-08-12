@@ -173,7 +173,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     BasicDBObject newDE = new BasicDBObject();
     
     newDE.put("uuid", UUID.randomUUID() as String);
-    newDE.put("created", new Date()); 
+    newDE.put("imported", new Date()); 
     newDE.put("source", 'PHRI'); 
     newDE.put("sourceId", null);
     newDE.put("version", 1);

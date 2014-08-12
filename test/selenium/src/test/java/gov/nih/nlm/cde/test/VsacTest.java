@@ -132,10 +132,11 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#pvCode-4 .fa-check")).click();  
         
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-edit")).click(); 
-        findElement(By.xpath("//td[@id='pvCodeSystem-4']//input[@ng-show='typeaheadSource.length>0']")).sendKeys(".1");
+        findElement(By.xpath("//td[@id='pvCodeSystem-4']//input")).sendKeys(".1");
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-check")).click();        
         
         findElement(By.cssSelector("button.btn.btn-primary")).click();
+        findElement(By.name("changeNote")).clear();
         findElement(By.name("changeNote")).sendKeys("Modified VS Codes");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("6");        

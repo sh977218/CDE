@@ -55,7 +55,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     DBObject newDE = new BasicDBObject();
 
     newDE.put("uuid", UUID.randomUUID() as String); 
-    newDE.put("created", new Date()); 
+    newDE.put("imported", new Date()); 
     newDE.put("source", 'caDSR'); 
     newDE.put("version", cadsrDE.VERSION.text());
     

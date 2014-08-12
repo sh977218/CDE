@@ -52,26 +52,26 @@ public class AStandardStatusTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         // CDE is Standard.
         // Can't edit name, def or status
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_def']//i[@class='fa fa-edit']")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_uom']//i[@class='fa fa-edit']")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_status']//i[@class='fa fa-edit']")));
+        Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_def']//i[@class='fa fa-edit']")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_uom']//i[@class='fa fa-edit']")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_status']//i[@class='fa fa-edit']")).size(), 0);
 
         // Can't edit Value Type or add / remove pv
         findElement(By.linkText("Permissible Values")).click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_valueType']//i[@class='fa fa-edit']")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("pvRemove-1")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("pvUp-1")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("pvDown-1")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//td[@id='pv-1']//i[@class='fa fa-edit']")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Add Permissible Value")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Update O.I.D")));
+        Assert.assertFalse(driver.findElements(By.xpath("//i[@id='editDatatype']")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.id("pvRemove-1")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.id("pvUp-1")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.id("pvDown-1")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.xpath("//td[@id='pv-1']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.id("addPv")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.id("updateOID")).get(0).isDisplayed());
 
         // Can't edit naming
         findElement(By.linkText("Naming")).click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_name_0']//i[@class='fa fa-edit']")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_def_0']//i[@class='fa fa-edit']")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//dd[@id='dd_context_0']//i[@class='fa fa-edit']")));
+        Assert.assertFalse(driver.findElements(By.xpath("//dd[@id='dd_name_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.xpath("//dd[@id='dd_def_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.xpath("//dd[@id='dd_context_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
 
         // Can edit classifications
         findElement(By.linkText("Classification")).click();
@@ -79,8 +79,8 @@ public class AStandardStatusTest extends NlmCdeBaseTest {
         
         // Can't edit Concepts
         findElement(By.linkText("Concepts")).click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("ocConceptRemove-0")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("propConceptRemove-0")));
+        Assert.assertFalse(driver.findElements(By.id("ocConceptRemove-0")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.id("propConceptRemove-0")).get(0).isDisplayed());
 
         // Can add Attachments
         findElement(By.linkText("Attachments")).click();

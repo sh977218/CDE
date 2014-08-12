@@ -77,7 +77,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     BasicDBObject newDE = new BasicDBObject();
     
     newDE.put("uuid", UUID.randomUUID() as String);
-    newDE.put("created", new Date()); 
+    newDE.put("imported", new Date()); 
     newDE.put("source", 'EyeGene'); 
     newDE.put("version", "1"); 
         
