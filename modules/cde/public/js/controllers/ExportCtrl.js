@@ -1,4 +1,4 @@
-function ExportCtrl($scope, Elastic, CsvDownload) {  
+function ExportCtrl($scope, $window, Elastic, CsvDownload) {  
     $scope.gridCdes = [];
 
     $scope.gridOptions = {
@@ -15,23 +15,25 @@ function ExportCtrl($scope, Elastic, CsvDownload) {
             , {field: 'permissibleValues', displayName: 'Permissible Values', width: 200}            
             , {field: 'origin', displayName: 'Origin', width: 60}
             , {field: 'version', displayName: 'Version', width: 40}
+            , {field: 'uuid', displayName: 'NLM ID', width: 100}            
             , {field: 'ids', displayName: 'IDs', width: 100}
         ]
     };
-     
-    $scope.download = function() {
-        console.log(1)
-        var pom = document.createElement('a');
-        pom.setAttribute('href', $scope.encodedStr);
-        pom.setAttribute('download', "nlm-cde-export.csv");
-        console.log(2)
-        pom.click();
-        console.log(3)
+
+   
+    $scope.columnNames = function() {
+        return $scope.gridOptions.columnDefs.map(function(column) {return column.displayName;}).join(", ") + "\n";
     };
-     
+    
+    $scope.checkIe = function() {
+        var browsers = {chrome: /chrome/i, safari: /safari/i, firefox: /firefox/i, ie: /MSIE/i};
+        if (browsers['ie'].test($window.navigator.userAgent)) {
+            $scope.addAlert("danger", "For security reasons, exporting is not available in Internet Explorer. Consider using a different browser for this task.")
+        }
+    };
+    
     $scope.exportStr = function() {
-        $scope.encodedStr = "data:text/csv;charset=utf-8," + encodeURIComponent(CsvDownload.export($scope.gridCdes));
-//        $scope.encodedStr = "paf"
+        $scope.encodedStr = "data:text/csv;charset=utf-8," + encodeURIComponent($scope.columnNames() + CsvDownload.export($scope.gridCdes));
     };
 
     Elastic.buildElasticQueryPre($scope);
@@ -47,15 +49,15 @@ function ExportCtrl($scope, Elastic, CsvDownload) {
                 var cde = list[i];
                 var thisCde = 
                 {
-                    uuid: cde.uuid
-                    , version: cde.version
-                    , primaryNameCopy: cde.naming[0].designation
+                    primaryNameCopy: cde.naming[0].designation
                     , primaryDefinitionCopy: cde.naming[0].definition
                     , stewardOrg: cde.stewardOrg.name
-                    , origin: cde.origin
                     , registrationStatus: cde.registrationState.registrationStatus
                     , naming: cde.naming.slice(1,100).map(function(naming) {return naming.designation;}).join(", ")
-                    , permissibleValues: cde.valueDomain.permissibleValues.map(function(pv) {return pv.permissibleValue;}).join(", ")
+                    , permissibleValues: cde.valueDomain.permissibleValues.map(function(pv) {return pv.permissibleValue;}).join(", ")                                 
+                    , origin: cde.origin
+                    , version: cde.version       
+                    , uuid: cde.uuid
                 };              
                 var ids = "";
                 for (var j = 0; j < cde.ids.length; j++) {
