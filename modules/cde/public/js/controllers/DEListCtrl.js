@@ -61,15 +61,17 @@ function DEListCtrl($rootScope, $scope, $http, $modal, Elastic, OrgHelpers) {
         facetsMatcher.match($scope.facets.elements, org.classifications, result, 1);
         return result;        
     };
-    
+        
     $scope.reload = function() {
         if (!$scope.initialized) return;
+        $scope.accordionListStyle = "semi-transparent";
         Elastic.buildElasticQueryPre($scope);
         var settings = Elastic.buildElasticQuerySettings($scope);
         Elastic.buildElasticQuery(settings, function(query) {
             Elastic.generalSearchQuery(query, function(result) {
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
+                $scope.accordionListStyle = "";
                 $scope.openCloseAll($scope.cdes, "list");
                 $scope.totalItems = result.totalNumber;
                 $scope.cache.put("totalItems", $scope.totalItems);
