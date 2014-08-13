@@ -24,7 +24,7 @@
             Grid View
         </button>
     </a>
-    <button ng-show="totalItems>0" ng-click="openCloseAllSwitch('list');openCloseAll(cdes,'list')" class="btn btn-default btn-checkbox pull-right" id="openAllCb">
+    <button ng-show="totalItems>0" ng-click="openCloseAllSwitch(cdes, 'list');" class="btn btn-default btn-checkbox pull-right" id="openAllCb">
         <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
         <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
     </button>

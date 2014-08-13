@@ -243,16 +243,16 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     $scope.openCloseAllModel["list"] = $scope.cache.get("openCloseAlllist");
     $scope.openCloseAllModel["quickboard"] = $scope.cache.get("openCloseAllquickboard");
     
-    $scope.openCloseAllSwitch = function(type) {
+    $scope.openCloseAllSwitch = function(cdes, type) {
         $scope.openCloseAllModel[type] = !$scope.openCloseAllModel[type];
+        $scope.cache.put("openCloseAllModel"+type, $scope.openCloseAllModel[type]);
+        $scope.openCloseAll(cdes,'list');
     };
     
     $scope.openCloseAll = function(cdes, type) {
         for (var i = 0; i < cdes.length; i++) {
             cdes[i].isOpen = $scope.openCloseAllModel[type];
-        }
-        
-        $scope.cache.put("openCloseAllModel"+type, $scope.openCloseAllModel[type]);
+        }        
     };
 
     $scope.searchByClassification = function(orgName, elts) {
