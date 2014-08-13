@@ -26,7 +26,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         scrollToTop();
         findElement(By.id("acc_link_0")).click();
         hangon(1);
-        findElement(By.xpath("//li[a = 'Search']")).click();
+        findElement(By.xpath("//li[a = 'CDEs']")).click();
         hangon(1);
         scrollTo("4000");
         hangon(1);
@@ -45,7 +45,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(linkList.size(), 2);
         findElement(By.id("acc_link_0")).click();
         hangon(1);
-        findElement(By.xpath("//li[a = 'Search']")).click();
+        findElement(By.xpath("//li[a = 'CDEs']")).click();
         Assert.assertTrue(textPresent("User First Name"));
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);        

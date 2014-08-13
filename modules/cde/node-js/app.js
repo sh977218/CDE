@@ -184,14 +184,13 @@ exports.init = function(app) {
                 if (err) {
                     res.send("Data Element does not exist.");
                 }
-                for (var c in de.comments) {
-                    var comment = de.comments[c];
+                de.comments.forEach(function(comment, i){
                     if (comment._id == req.body.commentId) {
-                        if( req.user._id == comment.user || 
+                        if( req.user.username == comment.username || 
                             (req.user.orgAdmin.indexOf(de.stewardOrg.name) > -1) ||
                             req.user.siteAdmin
                         ) {
-                            de.comments.splice(c, 1);
+                            de.comments.splice(i, 1);
                             de.save(function (err) {
                                if (err) {
                                    res.send({message: err});
@@ -203,7 +202,7 @@ exports.init = function(app) {
                             res.send({message: "You can only remove comments you own."});
                         }
                     }
-                }
+                });
             });
         } else {
             res.send("You are not authorized.");                   
