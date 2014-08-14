@@ -11,8 +11,8 @@ exports.save = function(req, res, dao) {
                         && !req.user.siteAdmin) {
                     res.send(403, "not authorized");
                 } else {
-                    return dao.create(elt, function(err, savedItem) {
-                        res.send(err, savedItem);
+                    return dao.create(elt, req.user, function(err, savedItem) {
+                        res.send(savedItem);
                     });
                 }
             }

@@ -41,7 +41,7 @@ public class MergeTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Free-text field to capture another method used to help stop smoking that is not already specified or mentioned."));
         Assert.assertTrue(textPresent("3279225"));
         findElement(By.cssSelector("[ng-click='showMergeApproveDialog(message)']")).click();
-        findElement(By.cssSelector("[ng-model='cde.version']")).sendKeys(".2");
+        findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
         hangon(.5);
         findElement(By.cssSelector("#confirmSave")).click();         
         hangon(3); 
@@ -76,7 +76,7 @@ public class MergeTest extends NlmCdeBaseTest {
         checkEverything();
         findElement(By.id("sendMergeRequest")).click();
         modalHere();
-        findElement(By.cssSelector("[ng-model='cde.version']")).sendKeys(".2");
+        findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
         findElement(By.cssSelector("#confirmSave")).click(); 
         hangon(5);
         findElement(By.linkText("Naming")).click();

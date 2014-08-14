@@ -160,14 +160,14 @@ angular.module('resources', ['ngResource'])
             }            
         };
     })    
-    .directive('ngCdeAvailable', ['$http', function($http) {
+    .directive('ngVersionAvailable', ['$http', function($http) {
       return {
         require: 'ngModel',
         link: function(scope, ele, attrs, ctrl) {
           scope.$watch(attrs.ngModel, function() {
                 $http({
                   method: 'GET',
-                  url: '/debyuuid/' + scope.cde.uuid + "/" + scope.cde.version
+                  url: '/debyuuid/' + scope.elt.uuid + "/" + scope.elt.version
                 }).success(function(data, status, headers, cfg) {
                   ctrl.$setValidity('unique', data == "");
                 }).error(function(data, status, headers, cfg) {

@@ -60,7 +60,7 @@ exports.cdeClassification = function(body, action, cb) {
 };
 
 exports.moveClassifications = function(request, cb) {
-    var mongo_data = require('../node-js/mongo-data');
+//    var mongo_data = require('../node-js/mongo-data');
     mongo_data.cdesByUuidList([request.body.cdeSource.uuid, request.body.cdeTarget.uuid], function(err, cde) {
         var source = null;
         var destination = null;

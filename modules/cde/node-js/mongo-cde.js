@@ -239,14 +239,14 @@ exports.save = function(mongooseObject, callback) {
     });
 };
 
-exports.create = function(req, callback) {
-    var newDe = new DataElement(req.body);
+exports.create = function(cde, user, callback) {
+    var newDe = new DataElement(cde);
     newDe.registrationState = {
         registrationStatus: "Incomplete"
     };
     newDe.created = Date.now();
-    newDe.createdBy.userId = req.user._id;
-    newDe.createdBy.username = req.user.username;
+    newDe.createdBy.userId = user._id;
+    newDe.createdBy.username = user.username;
     newDe.uuid = uuid.v4();
     newDe.save(function (err) {
         callback(err, newDe);

@@ -1,12 +1,12 @@
 function MergeApproveCtrl($scope, $modal, Mail, MergeCdes) {
     $scope.showMergeApproveDialog = function(message) {
         var modalInstance = $modal.open({
-            templateUrl: 'saveCdeModalContent.html'
+            templateUrl: '/system/public/html/saveModal.html'
             , controller: MergeApproveModalCtrl
             , resolve: {
-                cde: function() {
+                elt: function() {
                     return message.typeMergeRequest.destination.object;
-                }, user: function() {
+                } , user: function() {
                     return $scope.user;
                 } 
             }
@@ -36,8 +36,9 @@ function MergeApproveCtrl($scope, $modal, Mail, MergeCdes) {
     };      
 }
 
-var MergeApproveModalCtrl = function ($scope, $modalInstance, cde, user) {
-    $scope.cde = cde;
+var MergeApproveModalCtrl = function ($scope, $modalInstance, elt, user) {
+    $scope.cde = elt;
+    $scope.elt = elt;
     $scope.user = user;
     $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Retired'];
     $scope.ok = function () {

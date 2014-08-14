@@ -50,14 +50,14 @@ function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, Me
     
     $scope.showVersioning = function(mergeRequest, callback) {
         var modalInstance = $modal.open({
-            templateUrl: 'saveCdeModalContent.html'
+            templateUrl: '/system/public/html/saveModal.html'
             , controller: MergeApproveModalCtrl
             , resolve: {
-                cde: function() {
+                elt: function() {
                     return mergeRequest.destination.object;
                 }, user: function() {
                     return $scope.user;
-                } 
+                }
             }
         });              
         modalInstance.result.then(callback);       
