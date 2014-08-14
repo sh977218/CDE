@@ -54,7 +54,7 @@ exports.create = function(form, user, callback) {
     });
 };
 
-exports.formById = function(id, callback) {
+exports.byId = function(id, callback) {
     Form.findById(id, function(err, form) {
         callback(form);
     });     

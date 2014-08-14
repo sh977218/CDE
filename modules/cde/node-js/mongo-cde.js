@@ -91,7 +91,7 @@ exports.userTotalSpace = function(name, callback) {
 };
 
 exports.addComment = function(deId, comment, userId, callback) {
-    exports.cdeById(deId, function(err, de) {
+    exports.byId(deId, function(err, de) {
         mongo_data_system.userById(userId, function(err, user) {
             de.comments.push({
                 user: user._id

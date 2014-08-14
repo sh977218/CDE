@@ -30,7 +30,7 @@ exports.cdeClassification = function(body, action, cb) {
             if (cb) cb(err);
         });            
     };
-    mongo_data.cdeById(body.cdeId, function(err, cde) {
+    mongo_data.byId(body.cdeId, function(err, cde) {
         cdeClassif.cde = cde;
         var steward = classificationShared.findSteward(cde, body.orgName);
         if (!steward) {

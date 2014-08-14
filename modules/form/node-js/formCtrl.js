@@ -13,7 +13,7 @@ exports.save = function(req, res) {
 };
 
 exports.formById = function(req, res) {
-    mongo_data.formById(req.params.id, function(form) {
+    mongo_data.byId(req.params.id, function(form) {
         res.send(form);
     });    
 };

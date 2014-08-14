@@ -64,7 +64,7 @@ exports.show = function(req, cb) {
         return;
     }
     if (type!=='uuid') {
-        mongo_data.cdeById(cdeId, function(err, cde) {
+        mongo_data.byId(cdeId, function(err, cde) {
             // Following have no callback because it's no big deal if it fails.
             // So create new thread and move on.
             mongo_data.incDeView(cde); 
@@ -138,7 +138,7 @@ exports.diff = function(req, res) {
     if (req.params.deId == "undefined") {
         res.send("Please specify an identifier as input.");
     } else {
-        mongo_data.cdeById(req.params.deId, function (err, dataElement) {
+        mongo_data.byId(req.params.deId, function (err, dataElement) {
            if (err) {
                res.send("Error: " + err);
            } else {
@@ -146,7 +146,7 @@ exports.diff = function(req, res) {
                    res.send("Cannot retrieve element with this ID.");
                } else {
                    if (dataElement.history.length > 0) {
-                       mongo_data.cdeById(dataElement.history[dataElement.history.length - 1], function (err, priorDe) {
+                       mongo_data.byId(dataElement.history[dataElement.history.length - 1], function (err, priorDe) {
                            var diff = {};
                            diff.before = {};
                            diff.after = {};
