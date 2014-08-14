@@ -2,7 +2,7 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
     config(function($routeProvider) {
         $routeProvider.
         when('/', {controller: HomeCtrl, templateUrl:'/home'}).
-        when('/search', {controller: DEListCtrl, templateUrl:'/list'}).
+        when('/search', {controller: DEListCtrl, templateUrl:/*'/list'*/'template/system/list'}).
         when('/login', {controller: AuthCtrl, templateUrl:'/login'}).
         when('/signup', {controller: AuthCtrl, templateUrl:'/signup'}).
         when('/createCde', {controller: CreateCdeCtrl, templateUrl:'/createcde'}).
@@ -20,7 +20,8 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
         when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
         when('/quickBoard', {controller: QuickBoardCtrl, templateUrl: '/quickBoard'}).
         when('/sdcview', {controller: SDCViewCtrl, templateUrl: '/sdcView'}).
-        when('/formList', {controller: FormListCtrl, templateUrl: '/template/form/list'}).
+        //when('/formList', {controller: FormListCtrl, templateUrl: '/template/form/list'}).
+        when('/formList', {controller: FormListCtrl, templateUrl: '/template/system/list'}).
         when('/createForm', {controller: CreateFormCtrl, templateUrl: '/template/form/createForm'}).
         when('/formView', {controller: FormViewCtrl, templateUrl: '/template/form/formView'}).
         otherwise({redirectTo:'/'});

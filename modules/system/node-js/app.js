@@ -17,6 +17,10 @@ exports.init = function(app) {
     app.get('/template/:module/:template', function(req, res) {
         res.render(req.params.template, req.params.module);
     });		
+    
+    /*app.get('/sharedtemplate/:template/:module', function(req, res) {
+        res.render(req.params.template, req.params.module);
+    });*/	    
 
     app.get("/supportedBrowsers", function(req, res) {
        res.render('supportedBrowsers', 'system'); 
