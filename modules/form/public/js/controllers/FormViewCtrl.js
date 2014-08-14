@@ -1,4 +1,4 @@
-function FormViewCtrl($scope, $routeParams, $timeout, Form) {
+function FormViewCtrl($scope, $routeParams, Form) {
     var route = $routeParams;
     $scope.initialized = false;
     
@@ -8,5 +8,6 @@ function FormViewCtrl($scope, $routeParams, $timeout, Form) {
         $scope.form = form;
         $scope.initialized = true;        
     });
+
     
 }

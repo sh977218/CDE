@@ -23,15 +23,16 @@ exports.findForms = function(criteria, callback) {
 };
 
 exports.update = function(form, user, callback) {
-    form.updated = Date.now();
-    form.updatedBy = {
+    delete form._id;
+
+    var newForm = new Form(form);    
+    newForm.updated = Date.now();
+    newForm.updatedBy = {
         userId: user._id
         , username: user.username
     }; 
-    var id = form._id;
-    delete form._id;
-    Form.update({_id: id}, form, function(err, nbAffected) {
-        callback(); 
+    newForm.save(function(err) {
+        callback(err, newForm);
     });        
     
 };
@@ -48,15 +49,13 @@ exports.create = function(form, user, callback) {
         , username: user.username
     };
     newForm.save(function(err) {
-        Form.findById(newForm, function(err, form) {
-            callback(form);
-        });        
+        callback(err, newForm);
     });
 };
 
 exports.byId = function(id, callback) {
     Form.findById(id, function(err, form) {
-        callback(form);
+        callback(err, form);
     });     
 };
 

@@ -12,9 +12,8 @@ var SaveModalCtrl = function($scope, $window, $modalInstance, elt, user, redirec
     };
 
     $scope.ok = function() {
-        var id = $scope.elt._id;
         $scope.elt.$save(function(newelt) {
-            $window.location.href = redirectBaseLink + id;
+            $window.location.href = redirectBaseLink + newelt._id;            
             $modalInstance.close();
         });
     };

@@ -253,34 +253,34 @@ exports.create = function(req, callback) {
     });    
 };
 
-exports.update = function(req, callback) {
-    return DataElement.findById(req.body._id, function(err, dataElement) {
+exports.update = function(elt, user, callback) {
+    return DataElement.findById(elt._id, function(err, dataElement) {
         var jsonDe = JSON.parse(JSON.stringify(dataElement));
         delete jsonDe._id;
         var newDe = new DataElement(jsonDe);
         newDe.history.push(dataElement._id);
-        newDe.naming = req.body.naming;
-        newDe.version = req.body.version;
-        newDe.changeNote = req.body.changeNote;
+        newDe.naming = elt.naming;
+        newDe.version = elt.version;
+        newDe.changeNote = elt.changeNote;
         newDe.updated = new Date().toJSON();
-        newDe.updatedBy.userId = req.user._id;
-        newDe.updatedBy.username = req.user.username;
-        newDe.registrationState.registrationStatus = req.body.registrationState.registrationStatus;
-        newDe.registrationState.effectiveDate = req.body.registrationState.effectiveDate;
-        newDe.registrationState.untilDate = req.body.registrationState.untilDate;
-        newDe.registrationState.administrativeNote = req.body.registrationState.administrativeNote;
-        newDe.registrationState.unresolvedIssue = req.body.registrationState.unresolvedIssue;
-        newDe.registrationState.administrativeStatus = req.body.registrationState.administrativeStatus;
-        newDe.registrationState.replacedBy = req.body.registrationState.replacedBy;
-        newDe.dataElementConcept = req.body.dataElementConcept;
-        newDe.objectClass = req.body.objectClass;
-        newDe.property = req.body.property;
-        newDe.properties = req.body.properties;
-        newDe.valueDomain = req.body.valueDomain;
-        newDe.attachments = req.body.attachments;
-        newDe.ids = req.body.ids;
-        newDe.classification = req.body.classification;
-        newDe.stewardOrg.name = req.body.stewardOrg.name;
+        newDe.updatedBy.userId = user._id;
+        newDe.updatedBy.username = user.username;
+        newDe.registrationState.registrationStatus = elt.registrationState.registrationStatus;
+        newDe.registrationState.effectiveDate = elt.registrationState.effectiveDate;
+        newDe.registrationState.untilDate = elt.registrationState.untilDate;
+        newDe.registrationState.administrativeNote = elt.registrationState.administrativeNote;
+        newDe.registrationState.unresolvedIssue = elt.registrationState.unresolvedIssue;
+        newDe.registrationState.administrativeStatus = elt.registrationState.administrativeStatus;
+        newDe.registrationState.replacedBy = elt.registrationState.replacedBy;
+        newDe.dataElementConcept = elt.dataElementConcept;
+        newDe.objectClass = elt.objectClass;
+        newDe.property = elt.property;
+        newDe.properties = elt.properties;
+        newDe.valueDomain = elt.valueDomain;
+        newDe.attachments = elt.attachments;
+        newDe.ids = elt.ids;
+        newDe.classification = elt.classification;
+        newDe.stewardOrg.name = elt.stewardOrg.name;
         dataElement.archived = true;
 
         if (newDe.naming.length < 1) {
