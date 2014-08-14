@@ -175,6 +175,8 @@ body {
     width:250px;
 }
 
+.semi-transparent { opacity: 0.5; }
+
 /* Disable modal slide down effect.  Useful during testing. */
 /*.modal.fade .modal-dialog 
 {
