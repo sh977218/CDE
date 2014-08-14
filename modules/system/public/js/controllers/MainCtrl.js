@@ -126,7 +126,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     
     $scope.openPinModal = function (cde) {
         var modalInstance = $modal.open({
-          templateUrl: 'selectBoardModalContent.html',
+          templateUrl: '/cde/public/html/selectBoardModal.html',
           controller: SelectBoardModalCtrl,
           resolve: {
             boards: function () {

@@ -13,9 +13,8 @@
     <div class="row" ng-controller="ProfileCtrl">
         <div class="col-md-11 col-md-offset1">
             <h4>Viewing History</h4>
-            <div id="accordionList" ng-include="'/template/cde/accordionList'" ng-init="ejsPage = 'list';"></div>            
+            <div id="accordionList" ng-include="'/template/cde/cdeAccordionList'" ng-init="ejsPage = 'list';"></div>            
         </div>    
     </div>
-    <%- include accordionList.ejs %>     
 </div>
 
