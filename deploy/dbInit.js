@@ -21,6 +21,7 @@ db.users.insert({username: 'testuser', password: 'Test123', quota: 1073741824, v
 db.users.insert({username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boarduser1', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boarduser2', password: 'pass', quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'pinuser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boarduserEdit', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'historyuser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'appScan', password: 'I@mA88Scan', quota: 1073741824, viewHistory: []});

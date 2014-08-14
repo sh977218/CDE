@@ -1,72 +1,73 @@
 <div class="container-fluid">
-<div class="alert" ng-show="cde.archived"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is archived.</div> 
-<div class="alert" ng-show="cde.registrationState.registrationStatus=='Retired'"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is retired. <span ng-show="cde.registrationState.replacedBy"><a href="#/deview?uuid={{cde.registrationState.replacedBy.uuid}}">Replacement</a></span></div> 
-<div class="alert" ng-show="cde.registrationState.administrativeStatus=='Retire Candidate'"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is about to be retired. <span ng-show="cde.registrationState.replacedBy"><a href="#/deview?uuid={{cde.registrationState.replacedBy.uuid}}">Possible Replacement</a></span></div> 
+    <div class="alert alert-warning mt20" role="alert" ng-show="cde.archived"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is archived.</div> 
+    <div class="alert alert-warning mt20" role="alert" ng-show="cde.registrationState.registrationStatus=='Retired'"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is retired. <span ng-show="cde.registrationState.replacedBy"><a href="#/deview?uuid={{cde.registrationState.replacedBy.uuid}}">Replacement</a></span></div> 
+    <div class="alert alert-warning mt20" role="alert" ng-show="cde.registrationState.administrativeStatus=='Retire Candidate'"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is about to be retired. <span ng-show="cde.registrationState.replacedBy"><a href="#/deview?uuid={{cde.registrationState.replacedBy.uuid}}">Possible Replacement</a></span></div> 
+    <div class="alert alert-warning mt20" role="alert" ng-show="(cde.registrationState.registrationStatus=='Standard' || cde.registrationState.registrationStatus=='Preferred Standard') && !cde.archived"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> CDEs with a Standard or Preferred Standard status can't be edited.</div> 
 
-<h1 class="page-header">
-    {{cde.naming[0].designation}}
-    <a class="btn btn-small btn-default" ng-show="showCompareButton(cde)" ng-click="addToQuickBoard(cde)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add to Quick Board</a>
-</h1>
+    <h1 class="page-header">
+        {{cde.naming[0].designation}}
+        <a class="btn btn-small btn-default" ng-show="showCompareButton(cde)" ng-click="addToQuickBoard(cde)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add to Quick Board</a>
+    </h1>
 
-<div tabset>
-   <div tab heading="{{tabs[0].heading}}">
-        <%- include cdegeneraldetails.ejs %>
-        <hr/>
-        <%- include cdespecificdetails.ejs %>
-   </div>
-   <div tab heading="{{tabs[1].heading}}">
-        <%- include valueDomainView.ejs %>
-    </div>
-    <div tab heading="{{tabs[2].heading}}">
-        <%- include deNaming.ejs %>
-    </div>
-    <div tab heading="{{tabs[3].heading}}">
-        <%- include deClassification.ejs %>
-    </div>
-    <div tab heading="{{tabs[4].heading}}">
-        <%- include concepts.ejs %>
-    </div>
-    <div tab heading="{{tabs[5].heading}}">
-        <%- include deStatus.ejs %>
-    </div>
-    <div tab heading="{{tabs[6].heading}}" active='tabs[6].active'>
-        <%- include deProperties.ejs %>
-    </div>
-    <div tab heading="{{tabs[7].heading}}">
-        <%- include deIds.ejs %>
-    </div>
-    <div tab heading="{{tabs[8].heading}}">
-        <%- include deDiscussions.ejs %>
-    </div>
-    <div tab heading="{{tabs[9].heading}}">
-        <h4>Boards this Data Element is in</h4>
-        <%- include listOfBoards.ejs %>
-    </div>
-    <div tab heading="{{tabs[10].heading}}">
-        <%- include deAttachments.ejs %>
-    </div>
-    <div tab heading="{{tabs[11].heading}}">
-        <%- include deMlt.ejs %>
-    </div>
-    <div tab heading="{{tabs[12].heading}}">
-        <%- include cdeHistory.ejs %>
+    <div tabset>
+       <div tab heading="{{tabs[0].heading}}">
+            <%- include cdegeneraldetails.ejs %>
+            <hr/>
+            <%- include cdespecificdetails.ejs %>
+       </div>
+       <div tab heading="{{tabs[1].heading}}">
+            <%- include valueDomainView.ejs %>
+        </div>
+        <div tab heading="{{tabs[2].heading}}">
+            <%- include deNaming.ejs %>
+        </div>
+        <div tab heading="{{tabs[3].heading}}">
+            <%- include deClassification.ejs %>
+        </div>
+        <div tab heading="{{tabs[4].heading}}">
+            <%- include concepts.ejs %>
+        </div>
+        <div tab heading="{{tabs[5].heading}}">
+            <%- include deStatus.ejs %>
+        </div>
+        <div tab heading="{{tabs[6].heading}}" active='tabs[6].active'>
+            <%- include deProperties.ejs %>
+        </div>
+        <div tab heading="{{tabs[7].heading}}">
+            <%- include deIds.ejs %>
+        </div>
+        <div tab heading="{{tabs[8].heading}}">
+            <%- include deDiscussions.ejs %>
+        </div>
+        <div tab heading="{{tabs[9].heading}}">
+            <h4>Boards this Data Element is in</h4>
+            <%- include listOfBoards.ejs %>
+        </div>
+        <div tab heading="{{tabs[10].heading}}">
+            <%- include deAttachments.ejs %>
+        </div>
+        <div tab heading="{{tabs[11].heading}}">
+            <%- include deMlt.ejs %>
+        </div>
+        <div tab heading="{{tabs[12].heading}}">
+            <%- include cdeHistory.ejs %>
+        </div>
+
     </div>
 
-</div>
+    <hr/>
 
-<hr/>
-
-<div class="row">
-     <div ng-controller="SaveCdeCtrl">
-     <div class="col-md-12" ng-show="cde.unsaved">
-         <button class="btn cancel" ng-click="revert(cde)">Discard Changes</button>
-         <button class="btn btn-primary" ng-click="openSave()" id="openSave">Save</button>
+    <div class="row">
+         <div ng-controller="SaveCdeCtrl">
+         <div class="col-md-12" ng-show="cde.unsaved">
+             <button class="btn cancel" ng-click="revert(cde)">Discard Changes</button>
+             <button class="btn btn-primary" ng-click="openSave()" id="openSave">Save</button>
+         </div>
+         <script type="text/ng-template" id="saveCdeModalContent.html">
+             <%- include saveCdeModal.ejs %>
+         </script>
+         </div>
      </div>
-     <script type="text/ng-template" id="saveCdeModalContent.html">
-         <%- include saveCdeModal.ejs %>
-     </script>
-     </div>
- </div>
 
 </div>
 

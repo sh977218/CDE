@@ -234,4 +234,15 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals("enumerated", findElement(By.id("dd_type")).getText());
     }
     
+    @Test
+    public void StandardStatusWarningCheck() {
+        // Check that a none Standard or Preferred Standard CDE doesn't have warning message
+        goToCdeByName("Specimen Collection Sampling Number");
+        Assert.assertTrue(textNotPresent("Warning: CDEs with a Standard or Preferred Standard status can't be edited."));
+
+        // Check that a Standard CDE have warning message
+        goToCdeByName("Adverse Event Ongoing Event Indicator");
+        Assert.assertTrue(textPresent("Warning: CDEs with a Standard or Preferred Standard status can't be edited."));
+    }
+    
 }
