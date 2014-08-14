@@ -1,4 +1,4 @@
-var mongo_data = require('./mongo-data');
+var mongo_data = require('./mongo-cde');
 
 var sdcExport = function(req, res, cde) {
 

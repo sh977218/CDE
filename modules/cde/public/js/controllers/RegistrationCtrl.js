@@ -1,11 +1,26 @@
- function RegistrationCtrl($scope, DataElement) {
-    $scope.changeStatus = function(cde, status) {
-        DataElement.get({cdeId: cde._id}, function(dataElement) {
-            dataElement.registrationState.registrationStatus = status;
-            dataElement.$save(function () {
-                $scope.reload();            
-            });
-        }); 
-    };     
+ function RegistrationCtrl($scope, $modal) {
+     
+    $scope.openRegStatusUpdate = function (elt, redirectBaseLink) {
+        var modalInstance = $modal.open({
+          templateUrl: '/system/public/html/regStatusUpdateModal.html',
+          controller: SaveModalCtrl,
+          resolve: {
+              elt: function() {
+                  return elt;
+              }
+              , user: function() {
+                  return $scope.user;
+              }     
+              , redirectBaseLink: function() {
+                  return redirectBaseLink;
+              }
+          }
+        });
+
+        modalInstance.result.then(function () {
+            $scope.addAlert("success", "Saved");
+         }, function () {
+        });        
+    };
  }
  

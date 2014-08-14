@@ -3,19 +3,19 @@
 <dl class="dl-horizontal">
     <dt>Name: </dt>
     <dd id="dd_general_name">    
-        <div inline-edit id="nameEdit" model="cde.naming[0].designation" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </div>
+        <div inline-edit id="nameEdit" model="cde.naming[0].designation" is-allowed="isAllowed(cde)" on-ok="stageElt(cde)"> </div>
     </dd>    
     <dt>Steward: </dt>
     <dd id="dd_general_steward">
         <span ng-show="editDtMode">
             <select id="cde.stewardOrg.name" ng-model="cde.stewardOrg.name" ng-options="myOrg for myOrg in myOrgs"></select>
-            <i id="cde.stewardOrg.name.ok" class="fa fa-check" ng-click="editDtMode = false; stageCde(cde)"></i>&nbsp;&nbsp;<i id="cde.stewardOrg.name.cancel" class="fa fa-times" ng-click="cde.stewardOrg.name = oldStewardName; editDtMode = false;"></i>
+            <i id="cde.stewardOrg.name.ok" class="fa fa-check" ng-click="editDtMode = false; stageElt(cde)"></i>&nbsp;&nbsp;<i id="cde.stewardOrg.name.cancel" class="fa fa-times" ng-click="cde.stewardOrg.name = oldStewardName; editDtMode = false;"></i>
         </span>
         <span ng-hide="editDtMode"><i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="oldStewardName = cde.stewardOrg.name; editDtMode = true" id="dd_edit_steward"></i> {{cde.stewardOrg.name}}</span>
     </dd>
     <dt>Definition: </dt>
     <dd id="dd_def">   
-        <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="cde.naming[0].definition" is-allowed="isAllowed(cde)" def-format="cde.naming[0].definitionFormat" on-ok="stageCde(cde)"> </div>
+        <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="cde.naming[0].definition" is-allowed="isAllowed(cde)" def-format="cde.naming[0].definitionFormat" on-ok="stageElt(cde)"> </div>
     </dd>
     <dt>Used By: </dt>
     <dd id="dd_usedBy">
@@ -28,15 +28,12 @@
     </dd>
     <dt>Unit of Measure: </dt>
     <dd id="dd_uom">
-        <div inline-edit id="uomEdit" model="cde.valueDomain.uom" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)"> </div>   
+        <div inline-edit id="uomEdit" model="cde.valueDomain.uom" is-allowed="isAllowed(cde)" on-ok="stageElt(cde)"> </div>   
     </dd> 
     <dt ng-show="cde.origin">Origin: </dt><dd>{{cde.origin}}</dd>
     <dt ng-show="cde.source">Source: </dt><dd>{{cde.source}}</dd>
-    <dt id="dt_status">Status: </dt><dd id="dd_status"><i id="editStatus" ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="openRegStatusUpdate()"></i> {{cde.registrationState.registrationStatus}}</dd>
+    <dt id="dt_status">Status: </dt><dd id="dd_status" ng-controller="RegistrationCtrl"><i id="editStatus" ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="openRegStatusUpdate(cde, '#/deview?cdeId=')"></i> {{cde.registrationState.registrationStatus}}</dd>
     <dt ng-show="cde.views">Views: </dt><dd id="dd_views">{{cde.views}}</dd>
 </dl>
 
-<script type="text/ng-template" id="regStatusUpdate.html">
-    <%- include regStatusUpdateModal.ejs %>
-</script>
 </div>

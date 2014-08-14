@@ -1,4 +1,6 @@
-var mongo_data = require('./mongo-data');
+var mongo_data = require('./mongo-form')
+    , adminSvc = require('../../system/node-js/adminItemSvc.js')
+;
 
 exports.findForms = function(req, res) {
     mongo_data.findForms(req.body.criteria, function(err, forms) {
@@ -6,10 +8,8 @@ exports.findForms = function(req, res) {
     });
 };
 
-exports.createForm = function(req, res) {
-    mongo_data.createForm(req.body.form, req.user, function(form) {
-        res.send(form);
-    });    
+exports.save = function(req, res) {
+    adminSvc.save(req, res, mongo_data);
 };
 
 exports.formById = function(req, res) {

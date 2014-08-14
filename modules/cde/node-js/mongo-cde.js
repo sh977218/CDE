@@ -186,7 +186,7 @@ exports.priorCdes = function(cdeId, callback) {
     });
 };
 
-exports.cdeById = function(cdeId, callback) {
+exports.byId = function(cdeId, callback) {
     DataElement.findOne({'_id': cdeId}, function(err, cde) {
         callback("", cde);
     });
@@ -239,68 +239,68 @@ exports.save = function(mongooseObject, callback) {
     });
 };
 
-exports.saveCde = function(req, callback) {
-    if (req.body._id) { // CDE already exists
-        return DataElement.findById(req.body._id, function (err, dataElement) {
-            var jsonDe = JSON.parse(JSON.stringify(dataElement));
-            delete jsonDe._id;
-            var newDe = new DataElement(jsonDe);
-            newDe.history.push(dataElement._id);
-            newDe.naming = req.body.naming;
-            newDe.version = req.body.version;
-            newDe.changeNote = req.body.changeNote;
-            newDe.updated = new Date().toJSON();
-            newDe.updatedBy.userId = req.user._id;
-            newDe.updatedBy.username = req.user.username;
-            newDe.registrationState.registrationStatus = req.body.registrationState.registrationStatus;
-            newDe.registrationState.effectiveDate = req.body.registrationState.effectiveDate;
-            newDe.registrationState.untilDate = req.body.registrationState.untilDate;
-            newDe.registrationState.administrativeNote = req.body.registrationState.administrativeNote;
-            newDe.registrationState.unresolvedIssue = req.body.registrationState.unresolvedIssue;
-            newDe.registrationState.administrativeStatus = req.body.registrationState.administrativeStatus;
-            newDe.registrationState.replacedBy = req.body.registrationState.replacedBy;
-            newDe.dataElementConcept = req.body.dataElementConcept;
-            newDe.objectClass = req.body.objectClass;
-            newDe.property = req.body.property;
-            newDe.properties = req.body.properties;
-            newDe.valueDomain = req.body.valueDomain;
-            newDe.attachments = req.body.attachments;
-            newDe.ids = req.body.ids;
-            newDe.classification = req.body.classification;
-            newDe.stewardOrg.name = req.body.stewardOrg.name;
-            dataElement.archived = true;
-            
-            if (newDe.naming.length < 1) {
-                console.log("Cannot save without names");
-                callback ("Cannot save without names");
+exports.create = function(req, callback) {
+    var newDe = new DataElement(req.body);
+    newDe.registrationState = {
+        registrationStatus: "Incomplete"
+    };
+    newDe.created = Date.now();
+    newDe.createdBy.userId = req.user._id;
+    newDe.createdBy.username = req.user.username;
+    newDe.uuid = uuid.v4();
+    newDe.save(function (err) {
+        callback(err, newDe);
+    });    
+};
+
+exports.update = function(req, callback) {
+    return DataElement.findById(req.body._id, function(err, dataElement) {
+        var jsonDe = JSON.parse(JSON.stringify(dataElement));
+        delete jsonDe._id;
+        var newDe = new DataElement(jsonDe);
+        newDe.history.push(dataElement._id);
+        newDe.naming = req.body.naming;
+        newDe.version = req.body.version;
+        newDe.changeNote = req.body.changeNote;
+        newDe.updated = new Date().toJSON();
+        newDe.updatedBy.userId = req.user._id;
+        newDe.updatedBy.username = req.user.username;
+        newDe.registrationState.registrationStatus = req.body.registrationState.registrationStatus;
+        newDe.registrationState.effectiveDate = req.body.registrationState.effectiveDate;
+        newDe.registrationState.untilDate = req.body.registrationState.untilDate;
+        newDe.registrationState.administrativeNote = req.body.registrationState.administrativeNote;
+        newDe.registrationState.unresolvedIssue = req.body.registrationState.unresolvedIssue;
+        newDe.registrationState.administrativeStatus = req.body.registrationState.administrativeStatus;
+        newDe.registrationState.replacedBy = req.body.registrationState.replacedBy;
+        newDe.dataElementConcept = req.body.dataElementConcept;
+        newDe.objectClass = req.body.objectClass;
+        newDe.property = req.body.property;
+        newDe.properties = req.body.properties;
+        newDe.valueDomain = req.body.valueDomain;
+        newDe.attachments = req.body.attachments;
+        newDe.ids = req.body.ids;
+        newDe.classification = req.body.classification;
+        newDe.stewardOrg.name = req.body.stewardOrg.name;
+        dataElement.archived = true;
+
+        if (newDe.naming.length < 1) {
+            console.log("Cannot save without names");
+            callback("Cannot save without names");
+        }
+
+        dataElement.save(function(err) {
+            if (err) {
+                console.log(err);
+            } else {
+                newDe.save(function(err) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    callback("", newDe);
+                });
             }
-            
-            dataElement.save(function (err) {
-                 if (err) {
-                     console.log(err);
-                 } else {
-                     newDe.save(function (err) {
-                         if (err) {
-                            console.log(err);
-                         }
-                         callback("", newDe);
-                     });
-                 }
-           });
-       });
-    } else { // CDE does not already exists
-        var newDe = new DataElement(req.body);
-        newDe.registrationState = {
-            registrationStatus: "Incomplete"
-        };
-        newDe.created = Date.now();
-        newDe.createdBy.userId = req.user._id;
-        newDe.createdBy.username = req.user.username;
-        newDe.uuid = uuid.v4();
-        newDe.save(function (err) {
-            callback(err, newDe);
         });
-    }
+    });
 };
 
 exports.createMessage = function(msg, cb) {

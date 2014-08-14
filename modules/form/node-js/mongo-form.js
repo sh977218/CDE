@@ -22,7 +22,21 @@ exports.findForms = function(criteria, callback) {
     });
 };
 
-exports.createForm = function(form, user, callback) {
+exports.update = function(form, user, callback) {
+    form.updated = Date.now();
+    form.updatedBy = {
+        userId: user._id
+        , username: user.username
+    }; 
+    var id = form._id;
+    delete form._id;
+    Form.update({_id: id}, form, function(err, nbAffected) {
+        callback(); 
+    });        
+    
+};
+
+exports.create = function(form, user, callback) {
     var newForm = new Form(form);
     newForm.registrationState = {
         registrationStatus: "Incomplete"

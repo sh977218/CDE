@@ -1,4 +1,4 @@
-var mongo_data = require('./mongo-data')
+var mongo_data = require('./mongo-cde')
     ;
 
 exports.isCuratorOf = function(user, orgName){

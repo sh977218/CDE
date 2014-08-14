@@ -7,6 +7,9 @@ angular.module('resources', ['ngResource'])
     .factory('DataElement', function($resource) {
         return $resource('/dataelement/:deId/:type', {deId: '@deId', type: '_id'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
     })
+    .factory('Form', function($resource) {
+        return $resource('/form/:formId/:type', {formId: '@formId', type: '_id'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
+    })
     .factory('PriorCdes', function($resource) {
         return $resource('/priorcdes/:cdeId', {cdeId: '@cdeId'}, 
             {'getCdes': {method: 'GET', isArray: true}});

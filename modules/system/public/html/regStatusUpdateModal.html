@@ -1,0 +1,46 @@
+<div class="modal-header" id="regStatusModalHeader">
+    <h4>Update Registration Status</h4>
+</div>
+<form name="reg-form" role="form">
+    <div class="modal-body" id="regStatusModalBody">
+        <div class="alert-warning">{{helpMessage}}</div>
+        <div class="form-group">
+            <label for="registrationStatus">Registration Status</label>
+            <select class="form-control" ng-model="elt.registrationState.registrationStatus" name="registrationStatus" ng-change="setHelpMessage()">
+                <option ng-repeat="s in stewardRegStatuses" ng-value="s">{{s}}</option>
+                <option ng-if="user.siteAdmin === true" value="Standard">Standard</option>
+                <option ng-if="user.siteAdmin === true" value="Preferred Standard">Preferred Standard</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="effectiveDate">Effective Date</label>
+            <input class="form-control" name="effectiveDate" type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="elt.registrationState.effectiveDate" />
+        </div>
+
+        <div class="form-group">
+            <label for="untilDate">Until Date</label>
+            <input class="form-control" name="untilDate" type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="elt.registrationState.untilDate"/>
+        </div>
+
+        <div class="form-group">
+            <label for="administrativeStatus">Administrative Status</label>
+            <input class="form-control" type="text" name="administrativeStatus" ng-model="elt.registrationState.administrativeStatus" placeholder="Optional Administrative Status"></input>
+        </div>
+
+        <div class="form-group">
+            <label for="administrativeNote">Administrative Note</label>
+            <textArea class="form-control" name="administrativeNote" ng-model="elt.registrationState.administrativeNote" placeholder="Optional Administrative Note"></textarea>
+        </div>  
+
+        <div class="form-group">
+            <label for="unresolvedIssue">Unresolved Issue</label>
+            <textArea class="form-control" name="unresolvedIssue" ng-model="elt.registrationState.unresolvedIssue" placeholder="Optional Unresolved Issue Note"></textarea>
+        </div>
+
+    </div>
+    <div class="modal-footer" id="regStatusModalFooter">
+        <button class="btn cancel" ng-click="cancelSave()">Cancel</button>
+        <button class="btn btn-warning" ng-click="ok()" ng-disabled="isClean() || reg-form.$invalid" id="saveRegStatus">Save</button>
+    </div>
+</form>

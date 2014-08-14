@@ -1,9 +1,10 @@
 var express = require('express')
   , request = require('request')
   , util = require('util')
-  , mongo_data = require('./mongo-data')
+  , mongo_data = require('./mongo-cde')
   , logging = require('../../system/node-js/logging.js') //TODO: USE DEPENDENCY INJECTION
-;
+  , adminSvc = require('../../system/node-js/adminItemSvc.js')
+  ;
 
 var cdesvc = this;
 
@@ -80,53 +81,7 @@ exports.show = function(req, cb) {
 };
 
 exports.save = function (req, res) {
-    if (req.isAuthenticated()) {
-        if (!req.body._id) {
-            if (!req.body.stewardOrg.name) {
-                res.send("Missing Steward");
-            } else {
-                if (req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0 
-                            && req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0 
-                            && !req.user.siteAdmin) {
-                    res.send(403, "not authorized");
-                } else {
-                    return mongo_data.saveCde(req, function(err, savedCde) {
-                        res.send(savedCde);
-                    });
-                }
-            }
-        } else {
-            return mongo_data.cdeById(req.body._id, function(err, cde) {
-                if (cde.archived === true) {
-                    return res.send("Element is archived.");
-                }
-                if (req.user.orgCurator.indexOf(cde.stewardOrg.name) < 0 
-                        && req.user.orgAdmin.indexOf(cde.stewardOrg.name) < 0 
-                        && !req.user.siteAdmin) {
-                    res.send(403, "not authorized");
-                } else {
-                    if ((cde.registrationState.registrationStatus === "Standard" || cde.registrationState.registrationStatus === "Preferred Standard")
-                            && !req.user.siteAdmin) {
-                        res.send("This record is already standard.");
-                    } else {
-                        if ((cde.registrationState.registrationStatus !== "Standard"  && cde.registrationState.registrationStatus !== " Preferred Standard") && 
-                                (req.body.registrationState.registrationStatus === "Standard" || req.body.registrationState.registrationStatus === "Preferred Standard")
-                                    && !req.user.siteAdmin
-                                ) 
-                        {
-                            res.send(403, "not authorized");
-                        } else {
-                            return mongo_data.saveCde(req, function(err, savedCde) {
-                                res.send(savedCde);            
-                            });
-                        }
-                    }
-                }
-            });
-        }
-    } else {
-        res.send(403, "You are not authorized to do this.");
-    }
+    adminSvc.save(req, res, mongo_data);
 };  
 
 exports.name_autocomplete = function(name, res) {

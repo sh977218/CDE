@@ -1,7 +1,7 @@
 var cdesvc = require('./cdesvc')
   , boardsvc = require('./boardsvc')
   , usersvc = require('./usersvc')
-  , mongo_data = require('./mongo-data')
+  , mongo_data = require('./mongo-cde')
   , classificationNode = require('./classificationNode')
   , xml2js = require('xml2js')
   , vsac = require('./vsac-io')

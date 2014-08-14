@@ -234,8 +234,8 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         $scope.cache.remove("selectedElements");            
     };
     
-    $scope.isAllowed = function (cde) {
-        return isAllowedModel.isAllowed($scope, cde);  
+    $scope.isAllowed = function (elt) {
+        return isAllowedModel.isAllowed($scope, elt);  
     };
     
     $scope.initCache(); 
