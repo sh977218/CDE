@@ -1,0 +1,10 @@
+<div accordion close-others="false">
+    <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
+        <div accordion-heading>
+            <span ng-bind-html="cde.naming[0].designation" id="acc_link_{{$index}}" class="hand-cursor"></span>
+        </div>
+        <div class="row">
+            Details
+        </div>
+    </div>
+</div>

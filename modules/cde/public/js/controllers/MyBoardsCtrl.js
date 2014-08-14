@@ -1,5 +1,4 @@
 function MyBoardsCtrl($scope, $modal, $http, Board) {
-    $scope.setActiveMenu('MYBOARDS');
     
     $scope.removeBoard = function(index) {
         $http['delete']("/board/" + $scope.boards[index]._id).then(function (response) {

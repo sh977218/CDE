@@ -5,7 +5,6 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
     $scope.$watch('currentPage', function() {
         $scope.showSuggestions();
     }); 
-    $scope.setActiveMenu('CREATECDE');
     
     $scope.cde = { classification: []}; 
     $scope.save = function() {

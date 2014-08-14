@@ -1,5 +1,4 @@
 function QuickBoardCtrl($scope, $location, CdeList) {
-    $scope.setActiveMenu('QUICKBOARD');
     
     $scope.quickBoardView = true;
 

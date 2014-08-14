@@ -28,7 +28,7 @@ exports.init = function(app) {
     });
 
     app.get('/list', function(req, res){
-        res.render('list');
+        res.render('list','system',{module:"cde"});
     });
 
     app.get('/boardList', function(req, res){
