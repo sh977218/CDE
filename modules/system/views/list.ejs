@@ -84,8 +84,8 @@
         <div class="col-sm-10">
             <span ng-hide="cdes.length >= 0"><h4><i class="fa fa-spinner fa-spin"></i> Searching...</h4></span>
             <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found.</h4></span>
-            <div ng-if="module==='cde'" id="accordionList" ng-include="'accordionList.html'" ng-init="ejsPage = 'list';"></div>
-            <div ng-if="module==='form'" id="accordionList" ng-include="'accordionList.html'" ng-init="ejsPage = 'list';"></div>
+            <div ng-if="module==='cde'" id="accordionList" ng-include="'/template/cde/accordionList'" ng-init="ejsPage = 'list';"></div>
+            <div ng-if="module==='form'" id="accordionList" ng-include="'/template/form/accordionListForms'" ng-init="ejsPage = 'list';"></div>
             <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="currentPage"></pagination>
         </div>
     </div>
