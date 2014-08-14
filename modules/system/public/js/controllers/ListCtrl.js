@@ -1,6 +1,4 @@
 function ListCtrl($scope, $modal) {
-    $scope.setActiveMenu('LISTCDE');
-
     $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
     if ($scope.registrationStatuses === undefined) {
         $scope.registrationStatuses = regStatusShared.statusList;

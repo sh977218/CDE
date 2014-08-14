@@ -1,5 +1,4 @@
 function AuthCtrl($scope, Auth, $window) {
-    $scope.setActiveMenu('LOGIN');
     $scope.login = function() {
         Auth.login({
                 username: $scope.username,

@@ -60,11 +60,11 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li class="{{menuSearch}}"><a href="#/search">CDEs</a></li>
+                            <li ng-class="{ active: isPageActive('/search')}"><a href="#/search">CDEs</a></li>
                                                        
-                            <% if (config.modules.forms) { %><li><a href="#/formList">Forms</a></li> <% } %>
+                            <% if (config.modules.forms) { %><li ng-class="{ active: isPageActive('/formList')}"><a href="#/formList">Forms</a></li> <% } %>
                             
-                            <li ng-show='user._id' class="dropdown">    
+                            <li ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' class="dropdown">    
                                 <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Boards<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#/boardList">Public Boards</a></li>                                    
@@ -72,11 +72,11 @@
                                 </ul>
                             </li>   
                             
-                            <li ng-show='!user._id' class="dropdown">    
+                            <li ng-class="{ active: isPageActive('/boardList')}" ng-show='!user._id' class="dropdown">    
                                 <a href="#/boardList">Boards</a>
                             </li>                            
                             
-                            <li ng-show='isOrgCurator()' class="dropdown">    
+                            <li ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}" ng-show='isOrgCurator()' class="dropdown">    
                                 <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Create<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#/createCde">CDE</a></li>
@@ -84,20 +84,21 @@
                                 </ul>
                             </li>                            
                             
-                            <li class="{{menuCompare}}">
-                                <p class="navbar-text"><a class="navbar-link" href="#/quickBoard" style="text-decoration:none;">Quick Board (
-                                    <span ng-switch="quickBoard.length">
-                                        <span ng-switch-when="0">empty</span>
-                                        <span ng-switch-when="10">full</span>
-                                        <span ng-switch-default>{{quickBoard.length}}</span>
-                                    </span>)
-                                    </a>
-                                </p>
+                            <li ng-class="{ active: isPageActive('/quickBoard')}">
+                                <a class="navbar-link" href="#/quickBoard">
+                                    Quick Board (
+                                        <span ng-switch="quickBoard.length">
+                                            <span ng-switch-when="0">empty</span>
+                                            <span ng-switch-when="10">full</span>
+                                            <span ng-switch-default>{{quickBoard.length}}</span>
+                                        </span>
+                                    )
+                                </a>                          
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li class="{{menuLogin}}" ng-show='!user._id'><a href="#/login" id="login_link">Log In</a></li>
-                            <li class="dropdown {{menuAccount}}" ng-show="user._id">
+                            <li ng-class="{ active: isPageActive('/login')}" ng-show='!user._id'><a href="#/login" id="login_link">Log In</a></li>
+                            <li ng-show="user._id">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="username_link">{{user.username}}<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li ng-show='user._id'><a href="#/profile">Profile</a></li>

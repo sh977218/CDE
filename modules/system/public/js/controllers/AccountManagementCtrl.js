@@ -1,5 +1,4 @@
 function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
-    $scope.setActiveMenu('ACCOUNT');
     $scope.admin = {};
     $scope.newOrg = {};
     $scope.orgAdmin = {};
