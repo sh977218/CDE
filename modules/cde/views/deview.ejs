@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" ng-controller="VersionCtrl">
 <div class="alert" ng-show="cde.archived"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is archived.</div> 
 <div class="alert" ng-show="cde.registrationState.registrationStatus=='Retired'"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is retired. <span ng-show="cde.registrationState.replacedBy"><a href="#/deview?uuid={{cde.registrationState.replacedBy.uuid}}">Replacement</a></span></div> 
 <div class="alert" ng-show="cde.registrationState.administrativeStatus=='Retire Candidate'"><i class="fa fa-exclamation-triangle"></i> Warning: this data element is about to be retired. <span ng-show="cde.registrationState.replacedBy"><a href="#/deview?uuid={{cde.registrationState.replacedBy.uuid}}">Possible Replacement</a></span></div> 
@@ -57,14 +57,9 @@
 <hr/>
 
 <div class="row">
-     <div ng-controller="SaveCdeCtrl">
      <div class="col-md-12" ng-show="cde.unsaved">
          <button class="btn cancel" ng-click="revert(cde)">Discard Changes</button>
-         <button class="btn btn-primary" ng-click="openSave()" id="openSave">Save</button>
-     </div>
-     <script type="text/ng-template" id="saveCdeModalContent.html">
-         <%- include saveCdeModal.ejs %>
-     </script>
+         <button class="btn btn-primary" ng-click="openSave(cde, '#/deview?cdeId=')" id="openSave">Save</button>
      </div>
  </div>
 

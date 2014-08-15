@@ -192,6 +192,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName(cdeName);
         findElement(By.id("editStatus")).click();
+        modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Candidate");
         findElement(By.id("saveRegStatus")).click();
         hangon(3);

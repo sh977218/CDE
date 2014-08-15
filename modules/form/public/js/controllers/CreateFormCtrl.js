@@ -1,5 +1,5 @@
-function CreateFormCtrl($scope, $http, $window) {
-    $scope.newForm = {stewardOrg:{}};
+function CreateFormCtrl($scope, Form, $window) {
+    $scope.newForm = {stewardOrg:{}, naming: []};
     $scope.validationErrors = function() {
         if (!$scope.newForm.designation) {
             return "Please enter a name for the new form.";
@@ -11,16 +11,16 @@ function CreateFormCtrl($scope, $http, $window) {
         return null;
     };
     
-    $scope.createNewForm = function(newForm) {
-        var form = {
-            naming: [{
-                designation: newForm.designation
-                , definition: newForm.definition
-            }]
-            , version: newForm.version
-            , stewardOrg: newForm.stewardOrg
-        };
-        $http.post('/form', {form: form}).success(function(form) {
+    $scope.save = function() {
+        $scope.newForm.naming.push({
+           designation: $scope.newForm.designation
+           , definition: $scope.newForm.definition
+           , context: {
+               contextName: "Health"
+               , acceptability: "preferred"
+           }
+        });
+        Form.save($scope.newForm, function(form) {
             $window.location.href = "/#/formView?_id=" + form._id;        
         });
     };

@@ -9,8 +9,8 @@ exports.init = function(app) {
 
     app.post('/findForms', formCtrl.findForms);
     
-    app.post('/form', formCtrl.createForm);
+    app.post('/form', formCtrl.save);
     
-    app.get('/form/:id', formCtrl.formById);
+    app.get('/form/:id/:type', formCtrl.formById);
 
 };

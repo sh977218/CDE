@@ -1,7 +1,7 @@
 var cdesvc = require('./cdesvc')
   , boardsvc = require('./boardsvc')
   , usersvc = require('./usersvc')
-  , mongo_data = require('./mongo-data')
+  , mongo_data = require('./mongo-cde')
   , classificationNode = require('./classificationNode')
   , xml2js = require('xml2js')
   , vsac = require('./vsac-io')
@@ -28,7 +28,7 @@ exports.init = function(app) {
     });
 
     app.get('/list', function(req, res){
-        res.render('list');
+        res.render('list','system',{module:"cde"});
     });
 
     app.get('/boardList', function(req, res){
@@ -53,7 +53,7 @@ exports.init = function(app) {
         };
         var authorization = this;
         if (req.isAuthenticated()) {
-            mongo_data.cdeById(deId, function (err, de) {
+            mongo_data.byId(deId, function (err, de) {
                 if (err) {
                     return cb("Data Element does not exist.", null);
                 }
@@ -180,7 +180,7 @@ exports.init = function(app) {
 
     app.post('/removeComment', function(req, res) {
         if (req.isAuthenticated()) {
-            mongo_data.cdeById(req.body.deId, function (err, de) {
+            mongo_data.byId(req.body.deId, function (err, de) {
                 if (err) {
                     res.send("Data Element does not exist.");
                 }
@@ -522,7 +522,7 @@ exports.init = function(app) {
 
     app.post('/retireCde', function (req, res) {
         req.params.type = "received";
-        mongo_data.cdeById(req.body._id, function(err, cde) {
+        mongo_data.byId(req.body._id, function(err, cde) {
             if (err != "") res.send(404, err);
             if (!cde.registrationState.administrativeStatus === "Retire Candidate") return res.send(409, "CDE is not a Retire Candidate");
             cde.registrationState.registrationStatus = "Retired";

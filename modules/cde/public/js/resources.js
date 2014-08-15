@@ -7,6 +7,9 @@ angular.module('resources', ['ngResource'])
     .factory('DataElement', function($resource) {
         return $resource('/dataelement/:deId/:type', {deId: '@deId', type: '_id'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
     })
+    .factory('Form', function($resource) {
+        return $resource('/form/:formId/:type', {formId: '@formId', type: '_id'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
+    })
     .factory('PriorCdes', function($resource) {
         return $resource('/priorcdes/:cdeId', {cdeId: '@cdeId'}, 
             {'getCdes': {method: 'GET', isArray: true}});
@@ -157,14 +160,14 @@ angular.module('resources', ['ngResource'])
             }            
         };
     })    
-    .directive('ngCdeAvailable', ['$http', function($http) {
+    .directive('ngVersionAvailable', ['$http', function($http) {
       return {
         require: 'ngModel',
         link: function(scope, ele, attrs, ctrl) {
           scope.$watch(attrs.ngModel, function() {
                 $http({
                   method: 'GET',
-                  url: '/debyuuid/' + scope.cde.uuid + "/" + scope.cde.version
+                  url: '/debyuuid/' + scope.elt.uuid + "/" + scope.elt.version
                 }).success(function(data, status, headers, cfg) {
                   ctrl.$setValidity('unique', data == "");
                 }).error(function(data, status, headers, cfg) {

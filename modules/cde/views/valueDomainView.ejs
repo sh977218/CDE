@@ -19,7 +19,7 @@
             </select>
             or
             <input ng-model="cde.valueDomain.datatype" name="datatypeFreeText"/>
-            <i class="fa fa-check-square-o" ng-click="editDtMode = false; stageCde(cde)" id="confirmDatatype"></i>
+            <i class="fa fa-check-square-o" ng-click="editDtMode = false; stageElt(cde)" id="confirmDatatype"></i>
             <i class="fa fa-trash-o" ng-click="editDtMode = false; reload({cdeId: cde._id});"></i>
        </span>
         <span ng-hide="editDtMode"><i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="editDtMode = true" id="editDatatype"></i> {{cde.valueDomain.datatype | placeholdEmpty}}</span>

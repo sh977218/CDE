@@ -1,6 +1,4 @@
 function HomeCtrl($scope, $http, $location) {
-    $scope.setActiveMenu('HOME');
-    
     // Declare variables that will be used. Not needed but makes the code clear to understand.
     $scope.ALLORGS = 'All Classifications';
     $scope.orgList = [];

@@ -1,4 +1,4 @@
-var mongo_data = require('./mongo-data');
+var mongo_data = require('./mongo-cde');
 
 exports.boardList = function(req, res) {
     var from = req.query["from"],

@@ -5,7 +5,6 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
     $scope.$watch('currentPage', function() {
         $scope.showSuggestions();
     }); 
-    $scope.setActiveMenu('CREATECDE');
     
     $scope.cde = { classification: []}; 
     $scope.save = function() {
@@ -19,7 +18,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
            }
         });
         delete $scope.cde.designation;
-        delete $scope.cde.definition;      
+        delete $scope.cde.definition;     
         DataElement.save($scope.cde, function(cde) {
             $window.location.href = "/#/deview?cdeId=" + cde._id;        
         });

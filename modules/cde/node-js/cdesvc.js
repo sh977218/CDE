@@ -1,9 +1,10 @@
 var express = require('express')
   , request = require('request')
   , util = require('util')
-  , mongo_data = require('./mongo-data')
+  , mongo_data = require('./mongo-cde')
   , logging = require('../../system/node-js/logging.js') //TODO: USE DEPENDENCY INJECTION
-;
+  , adminSvc = require('../../system/node-js/adminItemSvc.js')
+  ;
 
 var cdesvc = this;
 
@@ -63,7 +64,7 @@ exports.show = function(req, cb) {
         return;
     }
     if (type!=='uuid') {
-        mongo_data.cdeById(cdeId, function(err, cde) {
+        mongo_data.byId(cdeId, function(err, cde) {
             // Following have no callback because it's no big deal if it fails.
             // So create new thread and move on.
             mongo_data.incDeView(cde); 
@@ -80,53 +81,7 @@ exports.show = function(req, cb) {
 };
 
 exports.save = function (req, res) {
-    if (req.isAuthenticated()) {
-        if (!req.body._id) {
-            if (!req.body.stewardOrg.name) {
-                res.send("Missing Steward");
-            } else {
-                if (req.user.orgCurator.indexOf(req.body.stewardOrg.name) < 0 
-                            && req.user.orgAdmin.indexOf(req.body.stewardOrg.name) < 0 
-                            && !req.user.siteAdmin) {
-                    res.send(403, "not authorized");
-                } else {
-                    return mongo_data.saveCde(req, function(err, savedCde) {
-                        res.send(savedCde);
-                    });
-                }
-            }
-        } else {
-            return mongo_data.cdeById(req.body._id, function(err, cde) {
-                if (cde.archived === true) {
-                    return res.send("Element is archived.");
-                }
-                if (req.user.orgCurator.indexOf(cde.stewardOrg.name) < 0 
-                        && req.user.orgAdmin.indexOf(cde.stewardOrg.name) < 0 
-                        && !req.user.siteAdmin) {
-                    res.send(403, "not authorized");
-                } else {
-                    if ((cde.registrationState.registrationStatus === "Standard" || cde.registrationState.registrationStatus === "Preferred Standard")
-                            && !req.user.siteAdmin) {
-                        res.send("This record is already standard.");
-                    } else {
-                        if ((cde.registrationState.registrationStatus !== "Standard"  && cde.registrationState.registrationStatus !== " Preferred Standard") && 
-                                (req.body.registrationState.registrationStatus === "Standard" || req.body.registrationState.registrationStatus === "Preferred Standard")
-                                    && !req.user.siteAdmin
-                                ) 
-                        {
-                            res.send(403, "not authorized");
-                        } else {
-                            return mongo_data.saveCde(req, function(err, savedCde) {
-                                res.send(savedCde);            
-                            });
-                        }
-                    }
-                }
-            });
-        }
-    } else {
-        res.send(403, "You are not authorized to do this.");
-    }
+    adminSvc.save(req, res, mongo_data);
 };  
 
 exports.name_autocomplete = function(name, res) {
@@ -183,7 +138,7 @@ exports.diff = function(req, res) {
     if (req.params.deId == "undefined") {
         res.send("Please specify an identifier as input.");
     } else {
-        mongo_data.cdeById(req.params.deId, function (err, dataElement) {
+        mongo_data.byId(req.params.deId, function (err, dataElement) {
            if (err) {
                res.send("Error: " + err);
            } else {
@@ -191,7 +146,7 @@ exports.diff = function(req, res) {
                    res.send("Cannot retrieve element with this ID.");
                } else {
                    if (dataElement.history.length > 0) {
-                       mongo_data.cdeById(dataElement.history[dataElement.history.length - 1], function (err, priorDe) {
+                       mongo_data.byId(dataElement.history[dataElement.history.length - 1], function (err, priorDe) {
                            var diff = {};
                            diff.before = {};
                            diff.after = {};
