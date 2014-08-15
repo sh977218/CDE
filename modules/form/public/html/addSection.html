@@ -1,0 +1,24 @@
+<div class="modal-header" id="newSectionModalHeader">
+    <h4>Add Section</h4>
+</div>
+<form name="section-form" role="form">
+    <div class="modal-body" id="newSectionModalBody">
+        <div class="form-group">
+            <label for="newSection.title">Title</label>
+            <input class="form-control" ng-model="newSection.title" id="newSection.title" Placeholder="Section Title" required/>
+        </div>    
+        <div class="form-group">
+            <label for="newSection.cardinality">Cardinality</label>
+            <select class="form-control" ng-model="newSection.cardinality" id="newSection.cardinality" required>
+                <option value="1">Exactly 1</option>
+                <option value="+">1 or more</option>
+                <option value="*">0 or more</option>
+                <option value="?">0 or 1</option>
+            </select>
+        </div>    
+    </div>
+    <div class="modal-footer" id="newSetionModalFooter">
+        <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
+        <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || section-form.$invalid" id="createSection">Save</button>
+    </div>
+</form>
