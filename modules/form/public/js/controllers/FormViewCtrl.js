@@ -18,5 +18,7 @@ function FormViewCtrl($scope, $routeParams, Form, $modal) {
         $scope.reload();
     };
 
-    
+    $scope.stageElt = function() {
+        $scope.form.unsaved = true;
+    };    
 }

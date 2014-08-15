@@ -9,8 +9,19 @@
     </div>   
     <div class="col-md-11">
         <dl class="dl-horizontal">
-            <dt>Title </dt><dd>{{section.title}}</dd>
-            <dt>Cardinality: </dt><dd>{{section.cardinality}}</dd>    
+            <dt>Title: </dt><dd><div inline-edit id="titleEdit" model="section.title" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+            <dt>Cardinality: </dt>
+            <dd>
+                <dd id="dd_section">
+                    <span ng-show="editCardMode">
+                        <select ng-model="section.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="section.cardinality"></select>
+                        <i class="fa fa-check-square-o" ng-click="editCardMode = false; stageElt()" id="confirmCard"></i>
+                        <i class="fa fa-trash-o" ng-click="editCardMode = false; section.cardinality = orig"></i>
+                   </span>
+                   <span ng-hide="editCardMode">
+                       <i ng-show="isAllowed(form)" class="fa fa-edit" ng-click="editCardMode = true; orig = section.cardinality"
+                          id="editSection"></i> {{cardinalityOptions[section.cardinality]}}</span>
+               </dd>    
         </dl>            
     </div>    
     <hr/>

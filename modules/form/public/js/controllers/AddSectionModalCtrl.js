@@ -1,5 +1,6 @@
- function AddSectionModalCtrl($scope, $modalInstance) {
-    $scope.newSection = {cardinality: 1};
+ function AddSectionModalCtrl($scope, $modalInstance, cardinalityOptions) {
+    $scope.newSection = {cardinality: "1"};
+    $scope.cardinalityOptions = cardinalityOptions;
      
     $scope.okCreate = function () {
       $modalInstance.close($scope.newSection);
