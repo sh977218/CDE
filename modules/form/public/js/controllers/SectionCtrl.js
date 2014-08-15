@@ -22,5 +22,9 @@ function SectionCtrl($scope, $modal) {
         $scope.form.unsaved = true;
     };
 
-
+    $scope.moveSection = function(index, inc) {
+        $scope.form.sections.splice(index + inc, 0, $scope.form.sections.splice(index, 1)[0]);    
+        $scope.form.unsaved = true;
+    };
+    
 }

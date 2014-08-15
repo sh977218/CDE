@@ -2,7 +2,9 @@
 <div ng-repeat="section in form.sections" class="row">
     <div class="col-md-1 text-right" ng-show="isAllowed(form)">
         <div class="row">
-            <i ng-click="removeSection($index)" class="fa fa-trash-o" id="removeNaming-{{$index}}"></i>
+            <i ng-click="removeSection($index)" class="fa fa-trash-o" id="removeSection-{{$index}}"></i>
+            <i ng-click="moveSection($index, -1)" class="fa fa-arrow-up" id="moveSectionUp-{{$index}}" ng-hide="$first" ></i>
+            <i ng-click="moveSection($index, 1)" class="fa fa-arrow-down" id="moveSectonDown-{{$index}}" ng-hide="$last" ></i>
         </div>
     </div>   
     <div class="col-md-11">
