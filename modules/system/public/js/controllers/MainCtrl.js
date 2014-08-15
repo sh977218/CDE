@@ -103,23 +103,23 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         $scope.quickBoard = [];
     };
     
-    $scope.cdeIconAction = function (cde, action, event) {
+    $scope.accordionIconAction = function (elt, action, event) {
         if (event) {
             event.preventDefault();
             event.stopPropagation();
         }
         switch (action) {
             case "view":
-                $scope.view(cde);
+                $scope.view(elt);
             break;
             case "openPinModal":
-                $scope.openPinModal(cde);
+                $scope.openPinModal(elt);
             break;
             case "addToQuickBoard":
-                $scope.addToQuickBoard(cde);
+                $scope.addToQuickBoard(elt);
             break;
             case "viewNewTab":
-                $scope.viewNewTab(cde);
+                $scope.viewNewTab(elt);
             break;    
         }        
     };
