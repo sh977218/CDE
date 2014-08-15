@@ -29,7 +29,6 @@ function FormViewCtrl($scope, $routeParams, Form, $modal) {
             $scope.form.sections.push(newSection);
             $scope.form.unsaved = true;
         });
-
     };
 
     $scope.revert = function() {
