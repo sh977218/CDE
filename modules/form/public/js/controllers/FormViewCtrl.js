@@ -14,23 +14,6 @@ function FormViewCtrl($scope, $routeParams, Form, $modal) {
     
     $scope.reload();
     
-    $scope.openAddSection = function() {
-        var modalInstance = $modal.open({
-          templateUrl: '/form/public/html/addSection.html',
-          controller: AddSectionModalCtrl,
-          resolve: {
-          }
-        });
-
-        modalInstance.result.then(function (newSection) {
-            if (!$scope.form.sections) {
-                $scope.form.sections = [];
-            }
-            $scope.form.sections.push(newSection);
-            $scope.form.unsaved = true;
-        });
-    };
-
     $scope.revert = function() {
         $scope.reload();
     };

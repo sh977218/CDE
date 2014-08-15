@@ -7,17 +7,7 @@
     <dt id="dt_status">Status: </dt><dd id="dd_status" ng-controller="RegistrationCtrl"><i id="editStatus" ng-show="isAllowed(form)" class="fa fa-edit" ng-click="openRegStatusUpdate(form, '#/formView?_id=')")"></i> {{form.registrationState.registrationStatus}}</dd>
 </dl> 
 
-<h3>Sections</h3>
-<div ng-repeat="section in form.sections">
-    <dl class="dl-horizontal">
-        <dt>Title </dt><dd>{{section.title}}</dd>
-        <dt>Cardinality: </dt><dd>{{section.cardinality}}</dd>    
-    </dl>
-    <hr/>
-</div>
-
-
-<button id="addSection" ng-click="openAddSection()" class="btn btn-default" ng-show="isAllowed(form)"><i class="fa fa-plus"></i> Add section</button>
+<div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
 
 <hr/>
 
