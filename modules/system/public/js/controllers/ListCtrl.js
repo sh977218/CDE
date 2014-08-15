@@ -98,7 +98,7 @@ function ListCtrl($scope, $modal) {
     };
     
     $scope.isDefaultAttachment = function (item) {
-      return item.isDefault;  
+        return item.isDefault;  
     };
     
     $scope.addOrgFilter = function(t) {               

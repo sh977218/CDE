@@ -15,8 +15,13 @@ conn.once('open', function callback () {
 
 var Form = conn.model('Form', schemas.formSchema);
 
-exports.findForms = function(criteria, callback) {
-    if (!criteria) criteria = {};
+exports.findForms = function(request, callback) {
+    var criteria = {};
+    if (request && request.term) {
+        criteria = {
+            "naming.designation": new RegExp(request.term)
+        };
+    }
     Form.find(criteria).where("archived").equals(null).exec(function (err, forms) {
         callback(err, forms);
     });
