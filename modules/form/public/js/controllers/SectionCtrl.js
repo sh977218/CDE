@@ -5,7 +5,7 @@ function SectionCtrl($scope, $modal) {
         "1": "Exactly 1"
         , "+": "1 or more"
         , "*": "0 or more"
-        , "?": "0 or 1"
+        , "0.1": "0 or 1"
     };
 
     $scope.openAddSection = function() {

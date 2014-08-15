@@ -4,19 +4,20 @@
         <div class="row">
             <i ng-click="removeSection($index)" class="fa fa-trash-o" id="removeSection-{{$index}}"></i>
             <i ng-click="moveSection($index, -1)" class="fa fa-arrow-up" id="moveSectionUp-{{$index}}" ng-hide="$first" ></i>
-            <i ng-click="moveSection($index, 1)" class="fa fa-arrow-down" id="moveSectonDown-{{$index}}" ng-hide="$last" ></i>
+            <i ng-click="moveSection($index, 1)" class="fa fa-arrow-down" id="moveSectionDown-{{$index}}" ng-hide="$last" ></i>
         </div>
     </div>   
     <div class="col-md-11">
         <dl class="dl-horizontal">
-            <dt>Title: </dt><dd><div inline-edit id="titleEdit" model="section.title" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+            <dt>Title: </dt><dd id="dd_section_title_{{$index}}"><div inline-edit id="titleEdit" model="section.title" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
             <dt>Cardinality: </dt>
             <dd>
-                <dd id="dd_section">
+                <dd id="dd_card_{{$index}}">
                     <span ng-show="editCardMode">
                         <select ng-model="section.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="section.cardinality"></select>
-                        <i class="fa fa-check-square-o" ng-click="editCardMode = false; stageElt()" id="confirmCard"></i>
-                        <i class="fa fa-trash-o" ng-click="editCardMode = false; section.cardinality = orig"></i>
+                        <br/>
+                        <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard"> Confirm</button>
+                        <button class="fa fa-times" ng-click="editCardMode = false; section.cardinality = orig"> Discard</button>
                    </span>
                    <span ng-hide="editCardMode">
                        <i ng-show="isAllowed(form)" class="fa fa-edit" ng-click="editCardMode = true; orig = section.cardinality"
