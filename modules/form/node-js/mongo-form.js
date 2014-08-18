@@ -31,6 +31,8 @@ exports.update = function(form, user, callback) {
     var origId = form._id;
     delete form._id;
 
+    console.log(JSON.stringify(form));
+
     var newForm = new Form(form);    
     newForm.updated = Date.now();
     newForm.updatedBy = {

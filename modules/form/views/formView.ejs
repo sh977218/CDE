@@ -2,19 +2,18 @@
 <dl class="dl-horizontal">
     <dt>Name: </dt><dd inline-edit id="nameEdit" model="form.naming[0].designation" is-allowed="isAllowed(false)" on-ok="stageCde(form)"> </dd>
     <dt>Description: </dt><dd inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="form.naming[0].definition" is-allowed="isAllowed(false)" def-format="form.naming[0].definitionFormat" on-ok="stageCde(form)"> </dd>
-    <dt>Version: </dt><dd>{{form.version}}</dd>
-    <dt>Steward: </dt><dd>{{form.stewardOrg.name}}</dd>
+    <dt>Version: </dt><dd>{{form.version | placeholdEmpty}}</dd>
     <dt>Steward: </dt><dd>{{form.stewardOrg.name}}</dd>
     <dt id="dt_status">Status: </dt><dd id="dd_status" ng-controller="RegistrationCtrl"><i id="editStatus" ng-show="isAllowed(form)" class="fa fa-edit" ng-click="openRegStatusUpdate(form, '#/formView?_id=')")"></i> {{form.registrationState.registrationStatus}}</dd>
 </dl> 
 
-<button id="addSection" ng-click="openAddSection()" class="btn btn-default" ng-show="isAllowed(form)"><i class="fa fa-plus"></i> Add section</button>
+<div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
 
 <hr/>
 
 <div class="row" ng-controller="VersionCtrl">
      <div class="col-md-12" ng-show="form.unsaved">
          <button class="btn cancel" ng-click="revert()">Discard Changes</button>
-         <button class="btn btn-primary" ng-click="openSave(form, '#/formView?cdeId=')" id="openSave">Save</button>
+         <button class="btn btn-primary" ng-click="openSave(form, '#/formView?_id=')" id="openSave">Save</button>
      </div>
  </div>

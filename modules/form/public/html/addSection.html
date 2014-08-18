@@ -9,12 +9,8 @@
         </div>    
         <div class="form-group">
             <label for="newSection.cardinality">Cardinality</label>
-            <select class="form-control" ng-model="newSection.cardinality" id="newSection.cardinality" required>
-                <option value="1">Exactly 1</option>
-                <option value="+">1 or more</option>
-                <option value="*">0 or more</option>
-                <option value="?">0 or 1</option>
-            </select>
+            <select class="form-control" ng-model="newSection.cardinality" 
+                    ng-options="key as value for (key, value) in cardinalityOptions" id="newSection.cardinality" required></select>
         </div>    
     </div>
     <div class="modal-footer" id="newSetionModalFooter">
