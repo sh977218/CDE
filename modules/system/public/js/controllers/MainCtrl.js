@@ -238,6 +238,10 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         return isAllowedModel.isAllowed($scope, cde);  
     };
     
+    $scope.displayStatusWarning = function(cde) {
+        return isAllowedModel.displayStatusWarning($scope, cde);
+    };
+    
     $scope.initCache(); 
     $scope.openCloseAllModel = {};
     $scope.openCloseAllModel["list"] = $scope.cache.get("openCloseAlllist");

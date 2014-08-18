@@ -120,6 +120,19 @@ cdeApp.factory('isAllowedModel', function () {
             }
         }
     };
+
+    isAllowedModel.displayStatusWarning = function($scope, CuratedItem) {
+        if(!CuratedItem) return false;
+        if(($scope.initialized && CuratedItem.archived) || $scope.user.siteAdmin) {
+            return false;
+        } else {
+            if ($scope.initialized && $scope.myOrgs) {
+                return ($scope.myOrgs.indexOf(CuratedItem.stewardOrg.name) > -1) && (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard");
+            } else {
+                return false;
+            }
+        }
+    };
     
     return isAllowedModel;
 });

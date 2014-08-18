@@ -75,6 +75,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         findElement(By.id("saveRegStatus")).click();
         Assert.assertTrue(textPresent("Saved"));
+        modalGone();
         logout();
 
         goToSearch();

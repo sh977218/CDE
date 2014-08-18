@@ -2,7 +2,7 @@
     <div class="alert alert-warning mt20" role="alert" ng-show="cde.archived"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is archived.</div> 
     <div class="alert alert-warning mt20" role="alert" ng-show="cde.registrationState.registrationStatus=='Retired'"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is retired. <span ng-show="cde.registrationState.replacedBy"><a href="#/deview?uuid={{cde.registrationState.replacedBy.uuid}}">Replacement</a></span></div> 
     <div class="alert alert-warning mt20" role="alert" ng-show="cde.registrationState.administrativeStatus=='Retire Candidate'"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is about to be retired. <span ng-show="cde.registrationState.replacedBy"><a href="#/deview?uuid={{cde.registrationState.replacedBy.uuid}}">Possible Replacement</a></span></div> 
-    <div class="alert alert-warning mt20" role="alert" ng-show="(cde.registrationState.registrationStatus=='Standard' || cde.registrationState.registrationStatus=='Preferred Standard') && !cde.archived"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> CDEs with a Standard or Preferred Standard status can't be edited.</div> 
+    <div class="alert alert-info mt20" role="alert" ng-show="displayStatusWarning(cde)"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> CDEs with a Standard or Preferred Standard status can't be edited.</div> 
 
     <h1 class="page-header">
         {{cde.naming[0].designation}}
