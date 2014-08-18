@@ -35,6 +35,11 @@ public class FormCreateTest extends NlmCdeBaseTest {
                 
         Assert.assertTrue(textPresent("First Form"));
         Assert.assertTrue(textPresent("Fill out carefully!"));
-        Assert.assertTrue(textPresent("0.1alpha"));        
+        Assert.assertTrue(textPresent("0.1alpha"));   
+        
+        gotoPublicForms();
+        findElement(By.linkText("First Form")).click();
+        Assert.assertTrue(textPresent("Fill out carefully!"));
+        Assert.assertTrue(textPresent("Incomplete"));        
     }
 }
