@@ -3,6 +3,11 @@ var mongoose = require('mongoose')
     , sharedSchemas = require('../../system/node-js/schemas.js')
     ;
 
+var sectionSchema = new Schema({
+    title: String
+    , cardinality: String
+}, {_id: false});
+
 exports.formSchema = new Schema({
     uuid: String
     , naming: [sharedSchemas.namingSchema]     
@@ -31,6 +36,8 @@ exports.formSchema = new Schema({
         userId: mongoose.Schema.Types.ObjectId
         , username: String
     }
+    , sections: [sectionSchema]
+    , archived: Boolean
 });
 
 exports.formSchema.set('collection', 'forms');
