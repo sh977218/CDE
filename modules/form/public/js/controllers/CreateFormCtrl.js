@@ -21,7 +21,8 @@ function CreateFormCtrl($scope, Form, $window) {
            }
         });
         Form.save($scope.newForm, function(form) {
-            $window.location.href = "/#/formView?_id=" + form._id;        
+            $window.location.href = "/#/formView?_id=" + form._id;    
+            $scope.addAlert("success", "Form created.")
         });
     };
 }

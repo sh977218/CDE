@@ -17,13 +17,16 @@ var Form = conn.model('Form', schemas.formSchema);
 
 exports.findForms = function(criteria, callback) {
     if (!criteria) criteria = {};
-    Form.find(criteria).exec(function (err, forms) {
+    Form.find(criteria).where("archived").equals(null).exec(function (err, forms) {
         callback(err, forms);
     });
 };
 
 exports.update = function(form, user, callback) {
+    var origId = form._id;
     delete form._id;
+
+    console.log(JSON.stringify(form));
 
     var newForm = new Form(form);    
     newForm.updated = Date.now();
@@ -32,7 +35,9 @@ exports.update = function(form, user, callback) {
         , username: user.username
     }; 
     newForm.save(function(err) {
-        callback(err, newForm);
+        Form.update({_id: origId}, {archived: true}, function(nbUpdated) {
+            callback(err, newForm);        
+        });
     });        
     
 };
