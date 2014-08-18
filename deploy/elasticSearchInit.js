@@ -47,3 +47,35 @@ exports.createRiverJson = {
         "type": "dataelement"                  
     }        
 };
+
+exports.createFormIndexJson = {
+    "mappings" : {
+        "form" : {
+            "properties" : {
+                "stewardOrg.name" : { "type" : "string", "index" : "not_analyzed" }
+                , "classification.elements.name": { "type" : "string", "index" : "not_analyzed" }
+                , "classification.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
+                , "classification.elements.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
+                , "classification.elements.elements.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
+                , "classification.elements.elements.elements.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
+                , "classification.stewardOrg.name": { "type" : "string", "index" : "not_analyzed" }
+                , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
+                , "source" : { "type" : "string", "index" : "not_analyzed" }
+                , "origin" : { "type" : "string", "index" : "not_analyzed" }
+            }
+        }
+    }
+};
+
+exports.createFormRiverJson = { 
+    "type": "mongodb"
+    , "mongodb": {
+        "servers": config.database.servers
+        , "db": config.database.dbname
+        , "collection": "forms"
+    }
+    , "index": {
+        "name": config.elastic.formIndex.name
+        , "type": "form"                  
+    }        
+};
