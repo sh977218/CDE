@@ -250,7 +250,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     $scope.openCloseAllSwitch = function(cdes, type) {
         $scope.openCloseAllModel[type] = !$scope.openCloseAllModel[type];
         $scope.cache.put("openCloseAllModel"+type, $scope.openCloseAllModel[type]);
-        $scope.openCloseAll(cdes,'list');
+        $scope.openCloseAll(cdes,type);
     };
     
     $scope.openCloseAll = function(cdes, type) {

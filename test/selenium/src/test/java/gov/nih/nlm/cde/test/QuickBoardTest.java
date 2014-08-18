@@ -127,4 +127,21 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         Assert.assertTrue(textNotPresent(toRemove));
     }
     
+    @Test
+    public void expandAllQuickBoard() {
+        goToSearch();
+        addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
+        addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
+        
+        Assert.assertTrue(textPresent("Quick Board ( 2 )"));
+    
+        findElement(By.linkText("Quick Board ( 2 )")).click();
+        
+        findElement(By.id("qb.openCloseAll")).click();
+        Assert.assertTrue(textPresent("caBIG AECC LCC USC/NCCC"));
+        Assert.assertTrue(textPresent("SPOREs CCR"));
+
+        findElement(By.id("qb.empty")).click();
+        Assert.assertTrue( textPresent( "Quick Board ( empty )" ) );
+    }
 }
