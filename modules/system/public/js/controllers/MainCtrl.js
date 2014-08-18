@@ -103,30 +103,30 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         $scope.quickBoard = [];
     };
     
-    $scope.cdeIconAction = function (cde, action, event) {
+    $scope.accordionIconAction = function (elt, action, event) {
         if (event) {
             event.preventDefault();
             event.stopPropagation();
         }
         switch (action) {
             case "view":
-                $scope.view(cde);
+                $scope.view(elt);
             break;
             case "openPinModal":
-                $scope.openPinModal(cde);
+                $scope.openPinModal(elt);
             break;
             case "addToQuickBoard":
-                $scope.addToQuickBoard(cde);
+                $scope.addToQuickBoard(elt);
             break;
             case "viewNewTab":
-                $scope.viewNewTab(cde);
+                $scope.viewNewTab(elt);
             break;    
         }        
     };
     
     $scope.openPinModal = function (cde) {
         var modalInstance = $modal.open({
-          templateUrl: 'selectBoardModalContent.html',
+          templateUrl: '/cde/public/html/selectBoardModal.html',
           controller: SelectBoardModalCtrl,
           resolve: {
             boards: function () {
@@ -165,48 +165,52 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     
     // @TODO
     // Is there a more elegant way to do this?
-    $scope.setActiveMenu = function(key) {
-        $scope.menuHome = '';
-        $scope.menuSearch = '';
-        $scope.menuForm = '';
-        $scope.menuLogin = '';
-        $scope.menuQuickBoard = '';
-        $scope.menuIntRev = '';
-        $scope.menuNlmRev = '';
-        $scope.menuAccount = '';
-        $scope.menuCreate = '';
-        $scope.menuMyBoards = '';
-        $scope.menuBoardList = '';
-        $scope.menuCompare = '';
-        $scope.menuQuickBoard = '';
-        
-        if (key === 'HOME') {
-            $scope.menuHome = 'active';
-        } else if (key === 'LISTCDE') {
-            $scope.menuSearch = 'active';
-        } else if (key === 'LOGIN') {
-            $scope.menuLogin = 'active';
-        } else if (key === 'LISTFORMS') {
-            $scope.menuForm = 'active';
-        } else if (key === 'QUICKBOARD') {
-            $scope.menuQuickBoard = 'active';
-        } else if (key === 'INTREV') {
-            $scope.menuIntRev = 'active';
-        } else if (key === 'NLMREV') {
-            $scope.menuNlmRev = 'active';
-        } else if (key === 'ACCOUNT') {
-            $scope.menuAccount = 'active';
-        } else if (key === 'CREATECDE') {
-            $scope.menuCreate = 'active';
-        } else if (key === 'MYBOARDS') {
-            $scope.menuMyBoards = 'active';
-        } else if (key === 'BOARDLIST') {
-            $scope.menuBoardList = 'active';
-        } else if (key === 'COMPARE') {
-            $scope.menuCompare = 'active';
-        } else if (key === 'QUICKBOARD') {
-            $scope.menuQuickBoard = 'active';
-        }
+//    $scope.setActiveMenu = function(key) {
+//        $scope.menuHome = '';
+//        $scope.menuSearch = '';
+//        $scope.menuForm = '';
+//        $scope.menuLogin = '';
+//        $scope.menuQuickBoard = '';
+//        $scope.menuIntRev = '';
+//        $scope.menuNlmRev = '';
+//        $scope.menuAccount = '';
+//        $scope.menuCreate = '';
+//        $scope.menuMyBoards = '';
+//        $scope.menuBoardList = '';
+//        $scope.menuCompare = '';
+//        $scope.menuQuickBoard = '';
+//        
+//        if (key === 'HOME') {
+//            $scope.menuHome = 'active';
+//        } else if (key === 'LISTCDE') {
+//            $scope.menuSearch = 'active';
+//        } else if (key === 'LOGIN') {
+//            $scope.menuLogin = 'active';
+//        } else if (key === 'LISTFORMS') {
+//            $scope.menuForm = 'active';
+//        } else if (key === 'QUICKBOARD') {
+//            $scope.menuQuickBoard = 'active';
+//        } else if (key === 'INTREV') {
+//            $scope.menuIntRev = 'active';
+//        } else if (key === 'NLMREV') {
+//            $scope.menuNlmRev = 'active';
+//        } else if (key === 'ACCOUNT') {
+//            $scope.menuAccount = 'active';
+//        } else if (key === 'CREATECDE') {
+//            $scope.menuCreate = 'active';
+//        } else if (key === 'MYBOARDS') {
+//            $scope.menuMyBoards = 'active';
+//        } else if (key === 'BOARDLIST') {
+//            $scope.menuBoardList = 'active';
+//        } else if (key === 'COMPARE') {
+//            $scope.menuCompare = 'active';
+//        } else if (key === 'QUICKBOARD') {
+//            $scope.menuQuickBoard = 'active';
+//        }
+//    };
+
+    $scope.isPageActive = function (viewLocation) { 
+        return viewLocation === $location.path();
     };
 
     $scope.scrollTo = function(id) {
@@ -234,8 +238,8 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         $scope.cache.remove("selectedElements");            
     };
     
-    $scope.isAllowed = function (cde) {
-        return isAllowedModel.isAllowed($scope, cde);  
+    $scope.isAllowed = function (elt) {
+        return isAllowedModel.isAllowed($scope, elt);  
     };
     
     $scope.displayStatusWarning = function(cde) {
@@ -247,16 +251,16 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     $scope.openCloseAllModel["list"] = $scope.cache.get("openCloseAlllist");
     $scope.openCloseAllModel["quickboard"] = $scope.cache.get("openCloseAllquickboard");
     
-    $scope.openCloseAllSwitch = function(type) {
+    $scope.openCloseAllSwitch = function(cdes, type) {
         $scope.openCloseAllModel[type] = !$scope.openCloseAllModel[type];
+        $scope.cache.put("openCloseAllModel"+type, $scope.openCloseAllModel[type]);
+        $scope.openCloseAll(cdes,'list');
     };
     
     $scope.openCloseAll = function(cdes, type) {
         for (var i = 0; i < cdes.length; i++) {
             cdes[i].isOpen = $scope.openCloseAllModel[type];
-        }
-        
-        $scope.cache.put("openCloseAllModel"+type, $scope.openCloseAllModel[type]);
+        }        
     };
 
     $scope.searchByClassification = function(orgName, elts) {

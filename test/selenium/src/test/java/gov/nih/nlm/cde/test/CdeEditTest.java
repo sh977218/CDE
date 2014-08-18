@@ -1,6 +1,5 @@
 package gov.nih.nlm.cde.test;
 
-//import com.sun.org.apache.bcel.internal.generic.Select;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -205,7 +204,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         modalGone();
         
         
-        findElement(By.xpath("//div[@ng-controller='SaveCdeCtrl']//button[text()=\"Save\"]")).click();
+        findElement(By.id("openSave")).click();
         findElement(By.xpath("//label[text()=\"Choose a new version\"]/following-sibling::input")).sendKeys(".1");                
         saveCde();
         

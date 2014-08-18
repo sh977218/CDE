@@ -1,7 +1,7 @@
 <dl class="dl-horizontal">
   <dt>Multiple Values:</dt>
   <dd>
-    <input ng-disabled="!isAllowed(cde)" type="checkbox" ng-model="cde.valueDomain.datatypeValueList.multi" ng-change="stageCde(cde)" id="multipleValues_input" boolean/>
+    <input ng-disabled="!isAllowed(cde)" type="checkbox" ng-model="cde.valueDomain.datatypeValueList.multi" ng-change="stageElt(cde)" id="multipleValues_input" boolean/>
   </dd>
     <dt>Other (Please Specify):</dt>
     <dd>
@@ -10,14 +10,14 @@
   <span ng-show="cde.valueDomain.datatypeValueList.otherPleaseSpecify === true">
     <dt>Please Specify Text:</dt>
     <dd>
-      <div inline-edit model="cde.valueDomain.datatypeValueList.otherPleaseSpecifyText" is-allowed="isAllowed(cde)" on-ok="stageCde(cde)" id="otherPleaseSpecifyText_input"> </div>
+      <div inline-edit model="cde.valueDomain.datatypeValueList.otherPleaseSpecifyText" is-allowed="isAllowed(cde)" on-ok="stageElt(cde)" id="otherPleaseSpecifyText_input"> </div>
     </dd>      
   </span>
   <dt>List Datatype: </dt>
   <dd>
      <span ng-show="editListTypeMode">
         <input ng-model="cde.valueDomain.datatypeValueList.datatype" id="listDatatype_input"/>
-        <i class="fa fa-check" ng-click="editListTypeMode = false; stageCde(cde)" id="confirmListType"> OK</i>
+        <i class="fa fa-check" ng-click="editListTypeMode = false; stageElt(cde)" id="confirmListType"> OK</i>
         <i class="fa fa-times" ng-click="editListTypeMode = false"> Cancel</i>
      </span>
      <span ng-hide="editListTypeMode"><i ng-show="isAllowed(cde)" class="fa fa-pencil" ng-click="editListTypeMode = true" id="listDatatype_pencil"></i> {{cde.valueDomain.datatypeValueList.datatype | placeholdEmpty}}</span>
@@ -41,16 +41,16 @@
      <tbody>
          <tr id="pv-{{$index}}" ng-repeat="pv in cde.valueDomain.permissibleValues | limitTo:pvLimit">
             <td headers="value" id="pv-{{$index}}">
-                <div inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageCde(cde);"> </div>
+                <div inline-edit model="pv.permissibleValue" is-allowed="isAllowed(cde)" on-ok="stageElt(cde);"> </div>
             </td>
              <td headers="codeName" id="pvName-{{$index}}">
-                <div inline-edit model="pv.valueMeaningName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeheadVsacNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
+                <div inline-edit model="pv.valueMeaningName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeheadVsacNameList" on-ok="stageElt(cde); runDelayedManualValidation();"></div>
              </td>
              <td headers="code" id="pvCode-{{$index}}">
-                <div inline-edit model="pv.valueMeaningCode" is-allowed="isAllowed(cde)" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
+                <div inline-edit model="pv.valueMeaningCode" is-allowed="isAllowed(cde)" on-ok="stageElt(cde); runDelayedManualValidation();"></div>
              </td>
              <td headers="codeSystem" id="pvCodeSystem-{{$index}}">
-                <div inline-edit model="pv.codeSystemName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeaheadCodeSystemNameList" on-ok="stageCde(cde); runDelayedManualValidation();"></div>
+                <div inline-edit model="pv.codeSystemName" is-allowed="isAllowed(cde)" typeahead-source="pVTypeaheadCodeSystemNameList" on-ok="stageElt(cde); runDelayedManualValidation();"></div>
              </td>
              <td headers="validation" ng-show="showValidationIcons || compareView">
                  <span ng-switch="pv.isValid">

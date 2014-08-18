@@ -1,4 +1,4 @@
-var mongo_data = require('./mongo-data');
+var mongo_data = require('./mongo-cde');
 
 var sdcExport = function(req, res, cde) {
 
@@ -50,7 +50,7 @@ var sdcExport = function(req, res, cde) {
 };
 
 exports.byId = function (req, res) {
-    mongo_data.cdeById(req.params.id, function(err, cde) {
+    mongo_data.byId(req.params.id, function(err, cde) {
         if (err) {
             return res.send(500, "Error");
         };

@@ -1,6 +1,4 @@
 function BoardViewCtrl($scope, $routeParams, $http) {
-    $scope.setActiveMenu('MYBOARDS');
-
     $scope.cdes = [];
         
     $scope.$watch('currentPage', function() {

@@ -17,12 +17,32 @@ var Form = conn.model('Form', schemas.formSchema);
 
 exports.findForms = function(criteria, callback) {
     if (!criteria) criteria = {};
-    Form.find(criteria).exec(function (err, forms) {
+    Form.find(criteria).where("archived").equals(null).exec(function (err, forms) {
         callback(err, forms);
     });
 };
 
-exports.createForm = function(form, user, callback) {
+exports.update = function(form, user, callback) {
+    var origId = form._id;
+    delete form._id;
+
+    console.log(JSON.stringify(form));
+
+    var newForm = new Form(form);    
+    newForm.updated = Date.now();
+    newForm.updatedBy = {
+        userId: user._id
+        , username: user.username
+    }; 
+    newForm.save(function(err) {
+        Form.update({_id: origId}, {archived: true}, function(nbUpdated) {
+            callback(err, newForm);        
+        });
+    });        
+    
+};
+
+exports.create = function(form, user, callback) {
     var newForm = new Form(form);
     newForm.registrationState = {
         registrationStatus: "Incomplete"
@@ -34,15 +54,13 @@ exports.createForm = function(form, user, callback) {
         , username: user.username
     };
     newForm.save(function(err) {
-        Form.findById(newForm, function(err, form) {
-            callback(form);
-        });        
+        callback(err, newForm);
     });
 };
 
-exports.formById = function(id, callback) {
+exports.byId = function(id, callback) {
     Form.findById(id, function(err, form) {
-        callback(form);
+        callback(err, form);
     });     
 };
 

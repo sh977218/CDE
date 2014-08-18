@@ -1,6 +1,4 @@
-function BoardListCtrl($scope, BoardSearch) {
-    $scope.setActiveMenu('BOARDLIST');
-    
+function BoardListCtrl($scope, BoardSearch) {   
     $scope.search = {name: ""};
     $scope.currentPage = 1;
     $scope.pageSize = 10;

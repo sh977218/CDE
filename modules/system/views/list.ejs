@@ -24,7 +24,7 @@
             Grid View
         </button>
     </a>
-    <button ng-show="totalItems>0" ng-click="openCloseAllSwitch('list');openCloseAll(cdes,'list')" class="btn btn-default btn-checkbox pull-right" id="openAllCb">
+    <button ng-show="totalItems>0" ng-click="openCloseAllSwitch(cdes, 'list');" class="btn btn-default btn-checkbox pull-right" id="openAllCb">
         <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
         <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
     </button>
@@ -84,10 +84,8 @@
         <div class="col-sm-10">
             <span ng-hide="cdes.length >= 0"><h4><i class="fa fa-spinner fa-spin"></i> Searching...</h4></span>
             <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found.</h4></span>
-            <div id="accordionList" ng-include="'accordionList.html'" ng-init="ejsPage = 'list';"></div>
+            <div id="accordionList" ng-include="'/template/'+module+'/'+module+'AccordionList'" ng-init="ejsPage = 'list';"></div>
             <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="currentPage"></pagination>
         </div>
     </div>
 </div>    
-
-<%- include accordionList.ejs %> 

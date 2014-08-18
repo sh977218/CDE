@@ -1,6 +1,12 @@
-function FormListCtrl($scope, $http) {
+function FormListCtrl($scope, $http, $controller) {
+    $scope.module = "form";
+    $controller('ListCtrl', {$scope: $scope});    
+    
     $scope.listForms = [];
-    $http.post('/findForms', {}).success(function(forms) {
-        $scope.listForms = forms;
-    });
+    $scope.reload = function() {
+        $http.post('/findForms', {}).success(function(forms) {
+            $scope.cdes = forms;
+            console.log(forms);
+        });
+    };
 }
