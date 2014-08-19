@@ -3,6 +3,13 @@ var mongoose = require('mongoose')
     , sharedSchemas = require('../../system/node-js/schemas.js')
     ;
 
+var questionSchema = new Schema({
+    text: String
+    , cde: {uuid: String, version: String}
+    , cardinality: {min: Number, max: Number}
+    
+}, {_id: false});
+
 var sectionSchema = new Schema({
     title: String
     , cardinality: String
