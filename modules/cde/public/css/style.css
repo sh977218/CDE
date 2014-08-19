@@ -14,10 +14,11 @@ body {
 .pt40 { padding-top:40px; }
 .pt60 { padding-top:60px; }
 .pb8 { padding-bottom:8px; }
-.pb20 { margin-bottom:20px; }
 .pb30 { padding-bottom:30px; }
 .pb40 { padding-bottom:40px; }
 .pb60 { padding-bottom:60px; }
+
+.mt20 { margin-top:20px; }
 
 .ib {
     display: inline-block;
