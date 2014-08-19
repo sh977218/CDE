@@ -10,8 +10,6 @@ exports.elasticsearch = function (query, type, cb) {
     if (type === "cde") url = elasticCdeUri;
     if (type === "form") {
         url = elasticFormUri;
-        delete query.facets;
-        delete query.highlight;
     }
     request.post(url + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
        if (!error && response.statusCode === 200) {

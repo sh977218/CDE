@@ -73,9 +73,7 @@ exports.createFormRiverJson = {
         "servers": config.database.servers
         , "db": config.database.dbname
         , "collection": "forms"
-        , "script": "var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0};"
-                    + "ctx.document.registrationState.registrationStatusSortOrder = regStatusSortMap[ctx.document.registrationState.registrationStatus];"
-                    + "ctx.document.classificationBoost = 1;"
+        , "script": riverFunction
     }
     , "index": {
         "name": config.elastic.formIndex.name
