@@ -8,10 +8,19 @@ function SectionCtrl($scope, $modal) {
         , "0.1": "0 or 1"
     };
 
-    $scope.openAddSection = function() {
+    $scope.addSection = function() {
+        if (!$scope.form.formElements) {
+            $scope.form.formElements = [];
+        }
+        $scope.form.formElements.push({label: "New Section", cardinality: "1", section: {}});
+        $scope.stageElt(); 
+    };
+
+    $scope.openAddQuestion = function(formElement) {
         var modalInstance = $modal.open({
-          templateUrl: '/form/public/html/addSection.html',
-          controller: AddSectionModalCtrl,
+          templateUrl: '/form/public/html/addQuestion.html',
+          controller: AddQuestionModalCtrl,
+          size: 'sm', 
           resolve: {
                 cardinalityOptions: function() {
                   return $scope.cardinalityOptions;
@@ -19,11 +28,11 @@ function SectionCtrl($scope, $modal) {
           }
         });
 
-        modalInstance.result.then(function (newSection) {
-            if (!$scope.form.formElements) {
-                $scope.form.formElements = [];
+        modalInstance.result.then(function (newQuestion) {
+            if (!formElement.formElements) {
+                formElement.formElements = [];
             }
-            $scope.form.formElements.push(newSection);
+            formElement.formElements.push(newQuestion);
             $scope.stageElt();
         });
     };

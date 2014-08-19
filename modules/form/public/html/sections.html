@@ -1,31 +1,56 @@
 <h3>Sections</h3>
-<div ng-repeat="section in form.formElements" class="row">
-    <div class="col-md-1 text-right" ng-show="isAllowed(form)">
-        <div class="row">
+<div ng-repeat="section in form.formElements">
+    <div class="row">
+        <div class="col-md-1 text-right" ng-show="isAllowed(form)">
             <i ng-click="removeElt($index)" class="fa fa-trash-o" id="removeElt-{{$index}}"></i>
             <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}" ng-hide="$first" ></i>
             <i ng-click="moveElt($index, 1)" class="fa fa-arrow-down" id="moveEltDown-{{$index}}" ng-hide="$last" ></i>
+        </div>   
+        <div class="col-md-11">
+            <dl class="dl-horizontal">
+                <dt class="formViewDetails">Title: </dt>
+                <dd class="formViewDetails" id="dd_section_title_{{$index}}"><div inline-edit id="titleEdit" model="section.label" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+                <dt class="formViewDetails">Cardinality: </dt>
+                <dd class="formViewDetails" id="dd_card_{{$index}}">
+                    <span ng-show="editCardMode">
+                        <select ng-model="section.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="section.cardinality"></select>
+                        <br/>
+                        <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard"> Confirm</button>
+                        <button class="fa fa-times" ng-click="editCardMode = false; section.cardinality = orig"> Discard</button>
+                    </span>
+                    <span ng-hide="editCardMode">
+                           <i ng-show="isAllowed(form)" class="fa fa-edit" ng-click="editCardMode = true; orig = section.cardinality"
+                              id="editSection"></i> {{cardinalityOptions[section.cardinality]}}
+                    </span>
+                </dd>    
+            </dl>            
+        </div> 
+    </div>
+    <div>
+        <h4>Questions</h4>
+        <div ng-repeat="question in section.formElements">
+            <dl class="dl-horizontal">
+                <dt>Title: </dt>
+                <dd id="dd_question_title_{{$index}}"><div inline-edit id="titleEdit" model="question.label" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+                <dt>Cardinality: </dt>
+                <dd id="dd_q_card_{{$index}}">
+                    <span ng-show="editCardMode">
+                        <select ng-model="section.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="question.cardinality"></select>
+                        <br/>
+                        <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard"> Confirm</button>
+                        <button class="fa fa-times" ng-click="editCardMode = false; question.cardinality = orig"> Discard</button>
+                    </span>
+                    <span ng-hide="editCardMode">
+                           <i ng-show="isAllowed(form)" class="fa fa-edit" ng-click="editCardMode = true; orig = question.cardinality"
+                              id="editQuestion"></i> {{cardinalityOptions[question.cardinality]}}
+                    </span>
+                </dd>    
+            </dl> 
+            <hr />
         </div>
-    </div>   
-    <div class="col-md-11">
-        <dl class="dl-horizontal">
-            <dt>Title: </dt><dd id="dd_section_title_{{$index}}"><div inline-edit id="titleEdit" model="section.label" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
-            <dt>Cardinality: </dt>
-            <dd id="dd_card_{{$index}}">
-                <span ng-show="editCardMode">
-                    <select ng-model="section.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="section.cardinality"></select>
-                    <br/>
-                    <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard"> Confirm</button>
-                    <button class="fa fa-times" ng-click="editCardMode = false; section.cardinality = orig"> Discard</button>
-                </span>
-                <span ng-hide="editCardMode">
-                       <i ng-show="isAllowed(form)" class="fa fa-edit" ng-click="editCardMode = true; orig = section.cardinality"
-                          id="editSection"></i> {{cardinalityOptions[section.cardinality]}}
-                </span>
-            </dd>    
-        </dl>            
-    </div>    
-    <hr/>
+        <button id="addQuestion" ng-click="openAddQuestion(section)" class="btn btn-default" ng-show="isAllowed(form)"><i class="fa fa-plus"></i> Add Question</button>
+    </div>
+    <hr />
 </div>
 
-<button id="addSection" ng-click="openAddSection()" class="btn btn-default" ng-show="isAllowed(form)"><i class="fa fa-plus"></i> Add section</button>
+<button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="isAllowed(form)"><i class="fa fa-plus"></i> Add section</button>

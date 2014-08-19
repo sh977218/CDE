@@ -7,8 +7,10 @@
     <dt id="dt_status">Status: </dt><dd id="dd_status" ng-controller="RegistrationCtrl"><i id="editStatus" ng-show="isAllowed(form)" class="fa fa-edit" ng-click="openRegStatusUpdate(form, '#/formView?_id=')")"></i> {{form.registrationState.registrationStatus}}</dd>
 </dl> 
 
-<div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
-
+<div class="row">
+    <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl" class="col-md-6"></div>
+    <div class="col-md-6"></div>
+</div>
 <hr/>
 
 <div class="row" ng-controller="VersionCtrl">
