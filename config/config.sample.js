@@ -30,6 +30,8 @@ var config = {
         uri: "http://localhost:9200"
         , index: {name: "cdetest"}
         , river: {name: "cdetest"}
+        , formIndex: {name: "formtest"}
+        , formRiver: {name: "formtest"}          
     }
     , database: {
         servers: [
@@ -63,7 +65,8 @@ module.exports.mongoUri = config.database.servers.map(function(srv) {
     return "mongodb://" + srv.host + ":" + srv.port + "/" + config.database.dbname;
 });
 
-
+module.exports.elasticFormUri = config.elastic.uri + "/" + config.elastic.index.name + "/" ;
+module.exports.elasticFormRiverUri = config.elastic.uri + "/_river/" + config.elastic.index.name + "/_meta" ;
 
 
 

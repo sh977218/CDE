@@ -46,6 +46,33 @@ module.exports = function(grunt) {
                     , json: elastic.createRiverJson                   
                 }
             }   
+            
+            , elasticDeleteFormIndex: {
+                options: {
+                    uri: config.elasticFormUri
+                    , method: 'DELETE'
+                }
+            }               
+            , elasticCreateFormIndex: {
+                options: {
+                    uri: config.elasticFormUri
+                    , method: 'POST'
+                    , json: elastic.createFormIndexJson             
+                }
+            } 
+            , elasticDeleteFormRiver: {
+                options: {
+                    uri: config.elastic.uri + "/_river/" + config.elastic.formIndex.name
+                    , method: 'DELETE'
+                }
+            }
+            , elasticCreateFormRiver: {
+                options: {
+                    uri: config.elasticFormRiverUri
+                    , method: 'POST'
+                    , json: elastic.createFormRiverJson                   
+                }
+            }             
         }
         , shell: {
             stop: {
@@ -367,5 +394,19 @@ module.exports = function(grunt) {
     grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
     grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','clear','guihelp','clear','git','clear', 'elastic','clear', 'build','clear', 'node']);
     grunt.registerTask('help', ['availabletasks']);    
+    
+    grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);
+    
+//    grunt.registerTask('form-elastic', function() {
+//        //grunt.task.run('force:on');
+//        grunt.log.writeln('\n\nDeleting Elastic Search River!');
+//        grunt.task.run('http:elasticDeleteFormRiver');
+//        grunt.log.writeln('\n\nDeleting Elastic Search Index!');
+//        grunt.task.run('http:elasticDeleteFormIndex');
+//        grunt.log.writeln('\n\nCreating Elastic Search Index!');
+//        grunt.task.run('http:elasticCreateFormIndex');
+//        grunt.log.writeln('\n\nCreating Elastic Search River!');
+//        grunt.task.run('http:elasticCreateFormRiver');      
+//    });     
 
 };

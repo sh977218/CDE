@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.openqa.selenium.By;
 
 public class FormCreateTest extends BaseFormTest {
         
@@ -18,5 +19,10 @@ public class FormCreateTest extends BaseFormTest {
         Assert.assertTrue(textPresent(formName));
         Assert.assertTrue(textPresent(formDef));
         Assert.assertTrue(textPresent(formV));        
+
+        gotoPublicForms();
+        findElement(By.linkText(formName)).click();
+        Assert.assertTrue(textPresent(formDef));
+        Assert.assertTrue(textPresent("Incomplete"));         
     }
 }
