@@ -1,4 +1,4 @@
-function ListCtrl($scope, $modal) {
+function ListCtrl($scope, $modal, Elastic, OrgHelpers) {
     $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
     if ($scope.registrationStatuses === undefined) {
         $scope.registrationStatuses = regStatusShared.statusList;
@@ -145,4 +145,5 @@ function ListCtrl($scope, $modal) {
         }
         return result;
     };
+    
 }

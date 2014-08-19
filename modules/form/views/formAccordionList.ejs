@@ -1,5 +1,5 @@
 <div accordion close-others="false">
-    <div accordion-group ng-repeat="form in (cdes+mltCdes)" is-open="cde.isOpen">
+    <div accordion-group ng-repeat="form in (cdes+mltCdes)" is-open="form.isOpen">
         <div accordion-heading>
             <span ng-bind-html="form.naming[0].designation" id="acc_link_{{$index}}" class="hand-cursor"></span>
             <!--i ng-show="ejsPage!='createcde'" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(form,'view',$event)" title="View"></i-->
@@ -15,8 +15,8 @@
                     </dd>    
                         <dt>Steward: </dt><dd ng-bind-html="form.stewardOrg.name"></dd>        
                     <dt>Definition: </dt><dd id="dd_def" ng-bind-html="form.naming[0].definition | placeholdEmpty"></dd>
-                    <dt>Used By: </dt>
-                    <dd id="dd_usedBy">
+                    <dt ng-show="form.classification.length > 0">Used By: </dt>
+                    <dd ng-show="form.classification.length > 0" id="dd_usedBy">
                         <span ng-switch="form.classification.length > 0">
                             <span ng-switch-when="false">None</span>
                             <span ng-switch-default>
@@ -24,15 +24,13 @@
                             </span>
                         </span>
                     </dd>
-                    <dt ng-show="form.origin">Origin: </dt><dd>{{cde.origin}}</dd>
-                    <dt ng-show="form.source">Source: </dt><dd>{{cde.source}}</dd>
                     <dt id="dt_status">Status: </dt><dd id="dd_status">{{form.registrationState.registrationStatus}}</dd>
                 </dl>
             </div>
         </div>         
         
         <div class="row" >
-            <a ng-show="ejsPage!='createcde'" class='btn btn-small btn-default' ng-href="/#/formView?_id={{form._id}}" title="Full Detail for {{form.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
+            <a class='btn btn-small btn-default' ng-href="/#/formView?_id={{form._id}}" title="Full Detail for {{form.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
         </div>        
     </div>
 </div>
