@@ -17,6 +17,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     
     private void gotoClassifMgt() {
         findElement(By.id("username_link")).click();
+        hangon(.5);
         findElement(By.linkText("Classifications")).click();          
     }
     

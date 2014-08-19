@@ -9,6 +9,8 @@ public class BoardTest extends NlmCdeBaseTest {
     
     protected static final String boardUser = "boarduser";
     protected static final String boardPassword = "pass";
+    protected static final String pinUser = "pinuser";
+    protected static final String pass = "pass";
     
     protected void makePublic(String boardName) {
         gotoMyBoards();
@@ -44,7 +46,9 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.name("name")).sendKeys(name);
         findElement(By.name("description")).sendKeys(description);
         findElement(By.id("createBoard")).click();
-        modalGone();
+        textPresent("Board created.");
+        closeAlert();
+        hangon(1);
     }
     
     protected void removeBoard(String boardName) {
