@@ -1,4 +1,4 @@
-function DEListCtrl($scope, $rootScope, $http, $controller, Elastic, OrgHelpers) {
+function DEListCtrl($scope, $controller) {
     $scope.module = "cde";
     $controller('ListCtrl', {$scope: $scope});
     
