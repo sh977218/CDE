@@ -7,9 +7,9 @@ function FormListCtrl($scope, $http, $controller) {
     }    
     
     $scope.listForms = [];
-    $scope.reload = function() {
-        $http.post('/findForms', {criteria: {term: $scope.currentSearchTerm}}).success(function(forms) {
-            $scope.cdes = forms;
-        });
-    };
+//    $scope.reload = function() {
+//        $http.post('/findForms', {criteria: {term: $scope.currentSearchTerm}}).success(function(forms) {
+//            $scope.cdes = forms;
+//        });
+//    };
 }

@@ -77,7 +77,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
             var settings = Elastic.buildElasticQuerySettings($scope);
             settings.searchTerm = $scope.cde.designation;
             Elastic.buildElasticQuery(settings, function(query) {
-                Elastic.generalSearchQuery(query, function(result) {     
+                Elastic.cdeSearchQuery(query, function(result) {     
                     $scope.cdes = result.cdes;
                     $scope.totalItems = result.totalNumber;
                 });

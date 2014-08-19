@@ -2,10 +2,10 @@ var config = require('config')
     , request = require('request')
 ;
 
-var elasticUri = config.elasticUri;
+var elasticCdeUri = config.elastic.uri + "/" + config.elastic.index.name + "/";
 
 exports.elasticsearch = function (query, cb) {
-    request.post(elasticUri + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
+    request.post(elasticCdeUri + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
        if (!error && response.statusCode === 200) {
         var resp = JSON.parse(body);
         var result = {cdes: []
@@ -13,7 +13,7 @@ exports.elasticsearch = function (query, cb) {
         for (var i = 0; i < resp.hits.hits.length; i++) {
             var thisCde = resp.hits.hits[i]._source;
             thisCde.score = resp.hits.hits[i]._score;
-            if (thisCde.valueDomain.permissibleValues.length > 10) {
+            if (thisCde.valueDomain && thisCde.valueDomain.permissibleValues.length > 10) {
                 thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
             } 
             thisCde.highlight = resp.hits.hits[i].highlight;
@@ -53,7 +53,7 @@ exports.morelike = function(id, callback) {
     var from = 0;
     var limit = 20;
     var mltConfUri = jsonToUri(mltConf);
-    request.get(elasticUri + "dataelement/" + id + "/_mlt?" + mltConfUri, function (error, response, body) {
+    request.get(elasticCdeUri + "dataelement/" + id + "/_mlt?" + mltConfUri, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var resp = JSON.parse(body);
             var result = {cdes: []
@@ -86,7 +86,7 @@ exports.DataElementDistinct = function(field, cb) {
             }
         }
     };
-    request.post(elasticUri + "_search", {body: JSON.stringify(distinctQuery)}, function (error, response, body) {
+    request.post(elasticCdeUri + "_search", {body: JSON.stringify(distinctQuery)}, function (error, response, body) {
         if (!error && response.statusCode === 200) {
             var resp = JSON.parse(response.body);
             var list = resp.aggregations.aggregationsName.buckets.map(function(b) {return b.key;});

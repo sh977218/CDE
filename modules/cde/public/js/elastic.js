@@ -199,7 +199,7 @@ angular.module('resources')
             
             return callback({query: queryStuff});
         }              
-        , generalSearchQuery: function(query, cb) {          
+        , cdeSearchQuery: function(query, cb) {          
             var elastic = this; 
             $http.post("/elasticSearch", query).then(function (response) {
                 elastic.highlightResults(response.data.cdes);
@@ -235,9 +235,6 @@ angular.module('resources')
                     else cde[field.replace(/\..+$/,"")][field.replace(/^.+\./,"")] = cde.highlight[field][0];            
                 }
             };
-            //this.highlight("valueDomain.permissibleValues","valueMeaningName", cde);
-            //this.highlight("valueDomain.permissibleValues","permissibleValue", cde);
-            //this.highlight("valueDomain.permissibleValues","valueMeaningCode", cde);
             this.highlightOne("stewardOrgCopy.name", cde);
             this.highlightOne("primaryNameCopy", cde);
             this.highlightOne("primaryDefinitionCopy", cde);
