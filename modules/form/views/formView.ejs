@@ -8,8 +8,14 @@
 </dl> 
 
 <div class="row">
-    <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl" class="col-md-6"></div>
-    <div class="col-md-6"></div>
+    <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl" class="col-md-5"></div>
+    <div class="col-md-7">
+        <h4>Find CDEs</h4>
+        Drag and Drop
+        <div class="panel-group" id="accordion">                
+            <div ng-include="'/template/system/list'" ng-controller="DEListCtrl"></div>                
+        </div>
+    </div>
 </div>
 <hr/>
 

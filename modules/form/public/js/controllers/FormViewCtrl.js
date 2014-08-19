@@ -1,4 +1,6 @@
 function FormViewCtrl($scope, $routeParams, Form, $modal) {
+    $scope.module = "form";
+    
     var route = $routeParams;
     $scope.initialized = false;
     
