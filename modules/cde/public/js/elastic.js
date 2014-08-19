@@ -199,9 +199,9 @@ angular.module('resources')
             
             return callback({query: queryStuff});
         }              
-        , cdeSearchQuery: function(query, cb) {          
+        , generalSearchQuery: function(query, type, cb) {          
             var elastic = this; 
-            $http.post("/elasticSearch", query).then(function (response) {
+            $http.post("/elasticSearch/" + type, query).then(function (response) {
                 elastic.highlightResults(response.data.cdes);
                 cb(response.data);
             });

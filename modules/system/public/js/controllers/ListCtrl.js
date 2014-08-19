@@ -153,7 +153,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
         Elastic.buildElasticQueryPre($scope);
         var settings = Elastic.buildElasticQuerySettings($scope);
         Elastic.buildElasticQuery(settings, function(query) {
-            Elastic.cdeSearchQuery(query, function(result) {
+            Elastic.generalSearchQuery(query, $scope.module,  function(result) {
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
                 $scope.accordionListStyle = "";

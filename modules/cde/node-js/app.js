@@ -356,8 +356,8 @@ exports.init = function(app) {
        return cdesvc.diff(req, res); 
     });
 
-    app.post('/elasticSearch', function(req, res) {
-       return elastic.elasticsearch(req.body.query, function(result) {
+    app.post('/elasticSearch/:type', function(req, res) {
+       return elastic.elasticsearch(req.body.query, req.params.type, function(result) {
            result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
            res.send(result);
        }); 
