@@ -3,16 +3,24 @@ var mongoose = require('mongoose')
     , sharedSchemas = require('../../system/node-js/schemas.js')
     ;
 
-var questionSchema = new Schema({
-    text: String
-    , cde: {uuid: String, version: String}
-    , cardinality: {min: Number, max: Number}
-    
-}, {_id: false});
+var questionSchema =  {
+    cde: {uuid: String, version: String}
+    , datatype: String
+    , uoms: [String]
+};
 
-var sectionSchema = new Schema({
-    title: String
-    , cardinality: String
+var sectionSchema = {
+};
+
+var formElementSchema = new Schema({
+    label: String
+    , code: String
+    , cardinality: {min: Number, max: Number}
+    , repeatsFor: String
+    , showIfExpression: String
+    , section: sectionSchema
+    , question: questionSchema
+    , formElements: [formElementSchema]
 }, {_id: false});
 
 exports.formSchema = new Schema({
@@ -43,7 +51,7 @@ exports.formSchema = new Schema({
         userId: mongoose.Schema.Types.ObjectId
         , username: String
     }
-    , sections: [sectionSchema]
+    , formElements: [formElementSchema]
     , archived: Boolean
 });
 
