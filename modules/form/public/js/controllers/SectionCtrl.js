@@ -20,21 +20,21 @@ function SectionCtrl($scope, $modal) {
         });
 
         modalInstance.result.then(function (newSection) {
-            if (!$scope.form.sections) {
-                $scope.form.sections = [];
+            if (!$scope.form.formElements) {
+                $scope.form.formElements = [];
             }
-            $scope.form.sections.push(newSection);
+            $scope.form.formElements.push(newSection);
             $scope.stageElt();
         });
     };
 
-    $scope.removeSection = function(index) {
-        $scope.form.sections.splice(index, 1);
+    $scope.removeElt = function(index) {
+        $scope.form.formElements.splice(index, 1);
         $scope.stageElt();
     };
 
-    $scope.moveSection = function(index, inc) {
-        $scope.form.sections.splice(index + inc, 0, $scope.form.sections.splice(index, 1)[0]);   
+    $scope.moveElt = function(index, inc) {
+        $scope.form.formElements.splice(index + inc, 0, $scope.form.formElements.splice(index, 1)[0]);   
         $scope.stageElt();
     };
 

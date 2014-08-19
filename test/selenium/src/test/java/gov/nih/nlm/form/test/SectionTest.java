@@ -10,7 +10,7 @@ public class SectionTest extends BaseFormTest {
     protected void addSection(String title, String card) {
         findElement(By.id("addSection")).click();
         modalHere();        
-        findElement(By.id("newSection.title")).sendKeys(title);
+        findElement(By.id("newSection.label")).sendKeys(title);
         if (card != null) {
             new Select(findElement(By.id("newSection.cardinality"))).selectByVisibleText(card);
         }
@@ -38,8 +38,8 @@ public class SectionTest extends BaseFormTest {
 
         saveForm();
         
-        findElement(By.id("moveSectionUp-1")).click();
-        findElement(By.id("moveSectionDown-1")).click();
+        findElement(By.id("moveEltUp-1")).click();
+        findElement(By.id("moveEltDown-1")).click();
         
         saveForm();
 
@@ -69,7 +69,7 @@ public class SectionTest extends BaseFormTest {
         Assert.assertEquals("0 or 1", findElement(By.id("dd_card_1")).getText());
         Assert.assertEquals("0 or more", findElement(By.id("dd_card_2")).getText());
 
-        findElement(By.id("removeSection-1")).click();
+        findElement(By.id("removeElt-1")).click();
         saveForm();
         
         Assert.assertEquals("Section 1", findElement(By.id("dd_section_title_1")).getText());
