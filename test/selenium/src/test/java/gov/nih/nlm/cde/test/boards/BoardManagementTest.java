@@ -10,27 +10,6 @@ import org.testng.annotations.Test;
 public class BoardManagementTest extends BoardTest {
     
     @Test
-    public void a() {
-        textPresent("CDEsx");
-    }
-    
-    @Test
-    public void b() {
-        textPresent("CDEsx");
-    }
-    
-    @Test
-    public void c() {
-        textPresent("CDEsx");
-    }
-
-    @Test
-    public void d() {
-        textPresent("CDEs");
-    }
-    
-  
-    @Test
     public void publicVsPrivateBoards() {
         mustBeLoggedInAs(boardUser, boardPassword);
         String boardName = "Public Board";
