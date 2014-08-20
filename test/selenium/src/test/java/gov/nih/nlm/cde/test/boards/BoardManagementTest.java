@@ -30,9 +30,8 @@ public class BoardManagementTest extends BoardTest {
     }
     
   
-//    @Test
+    @Test
     public void publicVsPrivateBoards() {
-        System.out.println(".....................0");
         mustBeLoggedInAs(boardUser, boardPassword);
         String boardName = "Public Board";
         String boardDef = "This board will be public";
@@ -95,7 +94,7 @@ public class BoardManagementTest extends BoardTest {
         removeBoard(boardName);
     }
         
-//    @Test
+    @Test
     public void removeBoard() {
         mustBeLoggedInAs(boardUser, boardPassword);
         createBoard("Remove me board", "Not a very useful board");
@@ -105,7 +104,7 @@ public class BoardManagementTest extends BoardTest {
         Assert.assertTrue(textNotPresent("Not a very useful"));
     }
     
-//    @Test
+    @Test
     public void cdeNumbIncrement() {
         mustBeLoggedInAs(boardUser, boardPassword);
         String boardName = "Number Increment Board";
@@ -137,7 +136,7 @@ public class BoardManagementTest extends BoardTest {
         removeBoard("Number Increment Board");
     }
     
-//    @Test
+    @Test
     public void iHaveNoBoard() {
         mustBeLoggedInAs("boarduser2", boardPassword);
         String cdeName = "Specimen Array";
@@ -151,7 +150,7 @@ public class BoardManagementTest extends BoardTest {
         modalGone();
     }
     
-//    @Test
+    @Test
     public void editBoard() {
         mustBeLoggedInAs("boarduserEdit", boardPassword);
         createBoard("Edit Board", "Test");
@@ -177,7 +176,7 @@ public class BoardManagementTest extends BoardTest {
         removeBoard("Edit Board -- Name Edited");
     }
     
-//    @Test
+    @Test
     public void searchBoard() {
         hangon(.5);
         mustBeLoggedInAs(boardUser, boardPassword);
@@ -211,7 +210,7 @@ public class BoardManagementTest extends BoardTest {
         
     }
 
-//    @Test
+    @Test
     public void cdeBoards() {
         System.out.println(".....................2");
         hangon(.5);
@@ -246,7 +245,7 @@ public class BoardManagementTest extends BoardTest {
         removeBoard(board2);
     }  
     
-//    @Test
+    @Test
     public void pagination() {
         mustBeLoggedInAs(ninds_username, ninds_password);
         gotoMyBoards();

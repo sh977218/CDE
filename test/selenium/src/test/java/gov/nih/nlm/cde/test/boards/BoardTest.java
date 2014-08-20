@@ -19,12 +19,8 @@ public class BoardTest extends NlmCdeBaseTest {
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
             if (boardName.equals(name)) {
-                System.out.println(".....................xxx");
                 findElement(By.id("privateIcon_" + i)).click();
-                System.out.println(".....................: "+"privateIcon_" + i);
-                hangon(10);
                 findElement(By.id("confirmChangeStatus_" + i)).click();
-                System.out.println(".....................zzz");
                 textPresent("Saved");
                 closeAlert();
                 hangon(2);
