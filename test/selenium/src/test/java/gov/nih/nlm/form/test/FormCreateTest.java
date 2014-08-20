@@ -18,11 +18,19 @@ public class FormCreateTest extends BaseFormTest {
         
         Assert.assertTrue(textPresent(formName));
         Assert.assertTrue(textPresent(formDef));
-        Assert.assertTrue(textPresent(formV));        
+        Assert.assertTrue(textPresent(formV));
 
+    }
+    
+    @Test(dependsOnMethods = {"gov.nih.nlm.form.test.FormCreateTest.createForm"})
+    public void listForms() {
         gotoPublicForms();
-        findElement(By.linkText(formName)).click();
-        Assert.assertTrue(textPresent(formDef));
-        Assert.assertTrue(textPresent("Incomplete"));         
+        findElement(By.linkText("Create Form Test Name")).click();
+        Assert.assertTrue(textPresent("Fill out carefully!"));
+        Assert.assertTrue(textPresent("Incomplete"));      
+        findElement(By.id("status-text-Recorded")).click();  
+        Assert.assertTrue(textNotPresent("Create Form Test Name"));   
+        findElement(By.id("status-text-Recorded")).click();       
+        Assert.assertTrue(textPresent("Create Form Test Name"));
     }
 }
