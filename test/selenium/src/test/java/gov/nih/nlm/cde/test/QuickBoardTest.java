@@ -90,14 +90,19 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         goToSearch();
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
-        Assert.assertTrue(textPresent("Quick Board ( 2 )"));
+        textPresent("Quick Board ( 2 )");
         findElement(By.linkText("Quick Board ( 2 )")).click();
         findElement(By.id("qb.compare")).click();
-        hangon(1);
-        Assert.assertTrue( textPresent( "Side by Side Compare" ) );
+        textPresent( "View Full Detail" );
+        textPresent( "Value used as a Standard Deviation in ALK" );
+        textPresent( "Number of months from frontline platinum-based treatment" );
+        textPresent( "ALK Standard Deviation" );
+        textPresent( "Platinum free interval" );
+        textPresent( "Permissible Values" );
+        
         findElement(By.linkText("Quick Board ( 2 )")).click();
         findElement(By.id("qb.empty")).click();
-        Assert.assertTrue( textPresent( "Quick Board ( empty )" ) );
+        textPresent( "Quick Board ( empty )" );
     }
     
     @Test

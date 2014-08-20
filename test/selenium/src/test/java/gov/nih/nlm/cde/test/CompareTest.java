@@ -23,15 +23,17 @@ public class CompareTest extends NlmCdeBaseTest{
         Assert.assertTrue(textPresent("Quick Board ( 1 )"));      
     }
     
-  
-    
     @Test
     public void Compare2Elements() {
         goToSearch();
         addToCompare("Person Gender Text Type", "Patient Gender Category");        
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
-        Assert.assertTrue(textNotPresent("VSAC Value Set"));
+        textPresent( "View Full Detail" );
+        textPresent( "Text designations that identify gender." );
+        textPresent( "the classification of the sex or gender role of the" );
+        textPresent( "Patient gender" );
+        textPresent( "2200600v3" );
+        textPresent( "2009919v2.31" );
+        textNotPresent("VSAC Value Set");
     }
     
     @Test

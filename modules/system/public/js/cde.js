@@ -14,7 +14,6 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
         when('/myboards', {controller: MyBoardsCtrl, templateUrl: '/myboards'}).
         when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
         when('/boardList', {controller: BoardListCtrl, templateUrl: '/boardList'}).
-        when('/deCompare', {controller: CompareCtrl, templateUrl: '/deCompare'}).
         when('/cdeSearchExport', {controller: DEListCtrl, templateUrl: '/exportCdeSearch'}).
         when('/inbox', {controller: InboxCtrl, templateUrl: '/mail/template/inbox'}).
         when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
