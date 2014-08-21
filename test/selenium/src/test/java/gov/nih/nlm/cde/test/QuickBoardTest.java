@@ -90,14 +90,19 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         goToSearch();
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
-        Assert.assertTrue(textPresent("Quick Board ( 2 )"));
+        textPresent("Quick Board ( 2 )");
         findElement(By.linkText("Quick Board ( 2 )")).click();
         findElement(By.id("qb.compare")).click();
-        hangon(1);
-        Assert.assertTrue( textPresent( "Side by Side Compare" ) );
+        textPresent( "View Full Detail" );
+        textPresent( "Value used as a Standard Deviation in ALK" );
+        textPresent( "Number of months from frontline platinum-based treatment" );
+        textPresent( "ALK Standard Deviation" );
+        textPresent( "Platinum free interval" );
+        textPresent( "Permissible Values" );
+        
         findElement(By.linkText("Quick Board ( 2 )")).click();
         findElement(By.id("qb.empty")).click();
-        Assert.assertTrue( textPresent( "Quick Board ( empty )" ) );
+        textPresent( "Quick Board ( empty )" );
     }
     
     @Test
@@ -127,4 +132,46 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         Assert.assertTrue(textNotPresent(toRemove));
     }
     
+    @Test
+    public void expandAllQuickBoard() {
+        goToSearch();
+        addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
+        addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
+        
+        Assert.assertTrue(textPresent("Quick Board ( 2 )"));
+    
+        findElement(By.linkText("Quick Board ( 2 )")).click();
+        
+        findElement(By.id("qb.openCloseAll")).click();
+        Assert.assertTrue(textPresent("caBIG AECC LCC USC/NCCC"));
+        Assert.assertTrue(textPresent("SPOREs CCR"));
+
+        findElement(By.id("qb.empty")).click();
+        Assert.assertTrue( textPresent( "Quick Board ( empty )" ) );
+    }
+    
+    @Test
+    public void testQuickBoardButtons() {
+        goToSearch();
+        addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
+        addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
+        
+        textPresent("Quick Board ( 2 )");
+    
+        findElement(By.linkText("Quick Board ( 2 )")).click();
+        
+        Assert.assertFalse( findElement(By.id("qb.accordion")).isEnabled() );
+        Assert.assertTrue( findElement(By.id("qb.gridview")).isEnabled() );
+        Assert.assertTrue( findElement(By.id("qb.compare")).isEnabled() );
+        
+        findElement(By.id("qb.gridview")).click();
+        Assert.assertTrue( findElement(By.id("qb.accordion")).isEnabled() );
+        Assert.assertFalse( findElement(By.id("qb.gridview")).isEnabled() );
+        Assert.assertTrue( findElement(By.id("qb.compare")).isEnabled() );
+        
+        findElement(By.id("qb.compare")).click();
+        Assert.assertTrue( findElement(By.id("qb.accordion")).isEnabled() );
+        Assert.assertTrue( findElement(By.id("qb.gridview")).isEnabled() );
+        Assert.assertFalse( findElement(By.id("qb.compare")).isEnabled() );
+    }
 }

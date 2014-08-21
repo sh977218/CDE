@@ -35,7 +35,7 @@ public class ScreenShotListener extends TestListenerAdapter {
                 e1.printStackTrace();
             }
         }
-        LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER);
+        LogEntries logEntries = driver.manage().logs().get(LogType.CLIENT);
         StringBuilder sb = new StringBuilder();
         for (LogEntry entry : logEntries) {
             sb.append(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage() + "\n");
