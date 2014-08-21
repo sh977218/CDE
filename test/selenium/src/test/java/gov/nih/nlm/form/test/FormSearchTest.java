@@ -9,25 +9,25 @@ public class FormSearchTest extends BaseFormTest {
     public void formFacets() {
         gotoPublicForms();
         searchForm("FormSearchTest");
-        Assert.assertTrue(textPresent("Skin Cancer Patient"));
-        Assert.assertTrue(textPresent("Traumatic Brain Injury - Adverse Events"));
-        Assert.assertTrue(textPresent("Vision Deficit Report"));        
-        Assert.assertTrue(textPresent("Qualified"));      
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Vision Deficit Report");        
+        textPresent("Qualified");      
         findElement(By.id("status-text-Qualified")).click(); 
-        Assert.assertTrue(textPresent("Skin Cancer Patient"));
-        Assert.assertTrue(textPresent("Traumatic Brain Injury - Adverse Events"));        
-        Assert.assertTrue(textNotPresent("Vision Deficit Report"));   
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");        
+        textNotPresent("Vision Deficit Report");   
         findElement(By.id("status-text-Qualified")).click();     
-        Assert.assertTrue(textPresent("Skin Cancer Patient"));
-        Assert.assertTrue(textPresent("Traumatic Brain Injury - Adverse Events"));        
-        Assert.assertTrue(textPresent("Vision Deficit Report"));
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");        
+        textPresent("Vision Deficit Report");
         findElement(By.id("status-text-Recorded")).click();  
-        Assert.assertTrue(textNotPresent("Skin Cancer Patient"));
-        Assert.assertTrue(textNotPresent("Traumatic Brain Injury - Adverse Events"));
-        Assert.assertTrue(textPresent("Vision Deficit Report"));    
+        textNotPresent("Skin Cancer Patient");
+        textNotPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Vision Deficit Report");    
         findElement(By.id("status-text-Recorded")).click();  
-        Assert.assertTrue(textPresent("Skin Cancer Patient"));
-        Assert.assertTrue(textPresent("Traumatic Brain Injury - Adverse Events"));
-        Assert.assertTrue(textPresent("Vision Deficit Report"));
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Vision Deficit Report");
     }    
 }
