@@ -1,9 +1,11 @@
- function SelectQuestionNameModalCtrl($scope, $modalInstance, cardinalityOptions) {
-    $scope.newQuestion = {cardinality: "1", question: {}};
-    $scope.cardinalityOptions = cardinalityOptions;
+ function SelectQuestionNameModalCtrl($scope, $modalInstance, cde) {
      
-    $scope.okCreate = function () {
-      $modalInstance.close($scope.newQuestion);
+    $http.get("debyuuid/" + cde.uuid + "/" + cde.version).then(function (result) {
+        $scope.cde = result.data;
+    });
+     
+    $scope.okCreate = function (naming) {
+      $modalInstance.close(naming.designation);
     };
 
     $scope.cancelCreate = function () {
