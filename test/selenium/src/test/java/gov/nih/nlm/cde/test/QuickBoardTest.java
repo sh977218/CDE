@@ -149,4 +149,29 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         findElement(By.id("qb.empty")).click();
         Assert.assertTrue( textPresent( "Quick Board ( empty )" ) );
     }
+    
+    @Test
+    public void testQuickBoardButtons() {
+        goToSearch();
+        addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
+        addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
+        
+        textPresent("Quick Board ( 2 )");
+    
+        findElement(By.linkText("Quick Board ( 2 )")).click();
+        
+        Assert.assertFalse( findElement(By.id("qb.accordion")).isEnabled() );
+        Assert.assertTrue( findElement(By.id("qb.gridview")).isEnabled() );
+        Assert.assertTrue( findElement(By.id("qb.compare")).isEnabled() );
+        
+        findElement(By.id("qb.gridview")).click();
+        Assert.assertTrue( findElement(By.id("qb.accordion")).isEnabled() );
+        Assert.assertFalse( findElement(By.id("qb.gridview")).isEnabled() );
+        Assert.assertTrue( findElement(By.id("qb.compare")).isEnabled() );
+        
+        findElement(By.id("qb.compare")).click();
+        Assert.assertTrue( findElement(By.id("qb.accordion")).isEnabled() );
+        Assert.assertTrue( findElement(By.id("qb.gridview")).isEnabled() );
+        Assert.assertFalse( findElement(By.id("qb.compare")).isEnabled() );
+    }
 }
