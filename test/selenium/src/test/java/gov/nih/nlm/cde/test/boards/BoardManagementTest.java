@@ -167,10 +167,8 @@ public class BoardManagementTest extends BoardTest {
         createBoard(privBlood, "");
         createBoard(pubSmoking, "");
         
-        System.out.println(".....................1");
         makePublic(pubBlood);
         makePublic(pubSmoking);
-        System.out.println(".....................2");
 
         modalGone();
         gotoPublicBoards();
