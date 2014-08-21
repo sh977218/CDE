@@ -189,7 +189,6 @@ public class BoardManagementTest extends BoardTest {
 
     @Test
     public void cdeBoards() {
-        System.out.println(".....................2");
         hangon(.5);
         mustBeLoggedInAs("boarduser1", boardPassword);
         String board1 = "First CDE Board";
