@@ -16,11 +16,23 @@ function SectionCtrl($scope, $modal) {
         $scope.stageElt(); 
     };
 
+    $scope.sortableOptions = {
+        receive: function(e, ui) {
+            var cde = ui.item.sortable.moved;
+            ui.item.sortable.moved = {
+                label: cde.naming[0].designation
+                , cardinality: "1"
+                , cde: {uuid: cde.uuid, version: cde.version}
+                , datatype: cde.valueDomain.datatype
+            };
+            $scope.stageElt();
+        }
+    };
+
     $scope.openAddQuestion = function(formElement) {
         var modalInstance = $modal.open({
           templateUrl: '/form/public/html/addQuestion.html',
           controller: AddQuestionModalCtrl,
-          size: 'sm', 
           resolve: {
                 cardinalityOptions: function() {
                   return $scope.cardinalityOptions;
@@ -33,6 +45,23 @@ function SectionCtrl($scope, $modal) {
                 formElement.formElements = [];
             }
             formElement.formElements.push(newQuestion);
+            $scope.stageElt();
+        });
+    };
+
+    $scope.openNameSelect = function(question) {
+        var modalInstance = $modal.open({
+          templateUrl: '/form/public/html/selectQuestionName.html',
+          controller: SelectQuestionNameModalCtrl,
+          resolve: {
+                cde: function() {
+                  return question.cde;
+                }         
+          }
+        });
+
+        modalInstance.result.then(function (selectedName) {
+            question.label = selectedName;
             $scope.stageElt();
         });
     };

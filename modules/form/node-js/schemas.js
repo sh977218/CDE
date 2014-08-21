@@ -14,7 +14,7 @@ var sectionSchema = {
 
 var formElementSchema = new Schema({
     label: String
-    , code: String
+    , instructions: String
     , cardinality: String
     , repeatsFor: String
     , showIfExpression: String

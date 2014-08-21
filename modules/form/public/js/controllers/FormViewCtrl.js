@@ -1,5 +1,6 @@
 function FormViewCtrl($scope, $routeParams, Form, $modal) {
     $scope.module = "form";
+    $scope.addCdeMode = false;
     
     var route = $routeParams;
     $scope.initialized = false;
@@ -15,6 +16,10 @@ function FormViewCtrl($scope, $routeParams, Form, $modal) {
     };
     
     $scope.reload();
+    
+    $scope.switchEditQuestionsMode = function() {
+        $scope.addCdeMode = !$scope.addCdeMode;
+    };
     
     $scope.revert = function() {
         $scope.reload();

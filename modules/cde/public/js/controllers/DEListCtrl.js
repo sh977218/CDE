@@ -55,5 +55,11 @@ function DEListCtrl($scope, $rootScope, $http, $controller, Elastic, OrgHelpers)
                 OrgHelpers.addLongNameToOrgs($scope.facets.orgs.terms, $rootScope.orgsLongName);
              });
         });  
-    };    
+    };   
+    
+    $scope.dragSortableOptions = {
+        connectWith: ".dragQuestions"
+    };
+
+    
 }

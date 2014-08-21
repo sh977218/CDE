@@ -1,20 +1,27 @@
 <h1>{{form.naming[0].designation}}</h1>
-<dl class="dl-horizontal">
-    <dt>Name: </dt><dd inline-edit id="nameEdit" model="form.naming[0].designation" is-allowed="isAllowed(false)" on-ok="stageCde(form)"> </dd>
-    <dt>Description: </dt><dd inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="form.naming[0].definition" is-allowed="isAllowed(false)" def-format="form.naming[0].definitionFormat" on-ok="stageCde(form)"> </dd>
-    <dt>Version: </dt><dd>{{form.version | placeholdEmpty}}</dd>
-    <dt>Steward: </dt><dd>{{form.stewardOrg.name}}</dd>
-    <dt id="dt_status">Status: </dt><dd id="dd_status" ng-controller="RegistrationCtrl"><i id="editStatus" ng-show="isAllowed(form)" class="fa fa-edit" ng-click="openRegStatusUpdate(form, '#/formView?_id=')")"></i> {{form.registrationState.registrationStatus}}</dd>
-</dl> 
+<div class="row">    
+    <div class="col-md-5">
+        <dl class="dl-horizontal">
+            <dt>Name: </dt><dd inline-edit id="nameEdit" model="form.naming[0].designation" is-allowed="isAllowed(false)" on-ok="stageCde(form)"> </dd>
+            <dt>Description: </dt><dd inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="form.naming[0].definition" is-allowed="isAllowed(false)" def-format="form.naming[0].definitionFormat" on-ok="stageCde(form)"> </dd>
+            <dt>Version: </dt><dd>{{form.version | placeholdEmpty}}</dd>
+            <dt>Steward: </dt><dd>{{form.stewardOrg.name}}</dd>
+            <dt id="dt_status">Status: </dt><dd id="dd_status" ng-controller="RegistrationCtrl"><i id="editStatus" ng-show="isAllowed(form)" class="fa fa-edit" ng-click="openRegStatusUpdate(form, '#/formView?_id=')")"></i> {{form.registrationState.registrationStatus}}</dd>
+        </dl> 
 
-<div class="row">
-    <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl" class="col-md-5"></div>
-    <div class="col-md-7">
-        <h4>Find CDEs</h4>
-        Drag and Drop
-        <div class="panel-group" id="accordion">                
-            <div ng-include="'/template/system/list'" ng-controller="DEListCtrl"></div>                
+        <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
+    </div>
+    <div class="col-md-7" ng-switch="addCdeMode">     
+        <div ng-switch-when="true">
+            <button ng-click="switchEditQuestionsMode()"> Done Adding</button>
+            <div class="panel-group" id="accordion">                
+                <div ng-include="'/template/system/list'" ng-controller="DEListCtrl"></div>                
+            </div>            
         </div>
+        <div ng-switch-default>
+            To add start adding questions to the form, click "Add Questions" and drag and drop into your form sections. 
+            <button ng-click="switchEditQuestionsMode()"> Add Questions</button>
+        </div>   
     </div>
 </div>
 <hr/>
