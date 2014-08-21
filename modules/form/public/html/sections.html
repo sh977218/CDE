@@ -39,7 +39,7 @@
                 <div class="col-md-11">
                     <dl class="dl-horizontal">
                         <dt>Label: </dt>
-                        <dd id="dd_question_title_{{$index}}"><i ng-show="isAllowed(form)" class="fa fa-pencil" title="Change question label" ng-click="openNameSelect()"></i> {{question.label | placeholdEmpty}}</dd>
+                        <dd id="dd_question_title_{{$index}}"><i ng-show="isAllowed(form)" class="fa fa-pencil" title="Change question label" ng-click="openNameSelect(question)"></i> {{question.label | placeholdEmpty}}</dd>
                         <dt>Instructions </dt>
                         <dd id="dd_question_instructions_{{$index}}"><div inline-edit model="questions.instructions" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
                         <dt>Cardinality: </dt>
@@ -57,8 +57,10 @@
                         </dd>    
                         <dt>Datatype: </dt>
                         <dd id="dd_d_datatype_{{$index}}">{{question.datatype | placeholdEmpty }}</dd>
+                        <dt>Units of Measures: </dt>
+                        <dd>{{question.uoms | placeholdEmpty }}</dd>
                         <dt>CDE: </dt>
-                        <dd id="dd_d_cde_{{$index}}"><a href=""><i class="fa fa-eye"></i> View</a></dd>
+                        <dd id="dd_d_cde_{{$index}}"><a href="/#/deview?uuid={{question.cde.uuid}}&version={{question.cde.version}}" target="_blank"><i class="fa fa-eye"></i> View</a></dd>
                     </dl> 
                 </div>
                 <hr />

@@ -1,14 +1,16 @@
-function ListCtrl($scope, $modal, Elastic, OrgHelpers) {
+function ListCtrl($scope, $modal) {
     $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
     if ($scope.registrationStatuses === undefined) {
         $scope.registrationStatuses = regStatusShared.statusList;
     }
 
     $scope.resultPerPage = 20;
-
-    $scope.ftsearch = $scope.cache.get("ftsearch");
     
-    $scope.currentSearchTerm = $scope.ftsearch;
+    $scope.searchForm = {};
+
+    $scope.searchForm.ftsearch = $scope.cache.get("ftsearch");
+    
+    $scope.currentSearchTerm = $scope.searchForm.ftsearch;
 
     $scope.selectedOrg = $scope.cache.get("selectedOrg");
     
@@ -19,11 +21,11 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers) {
     
     $scope.totalItems = $scope.cache.get("totalItems");
     
-    $scope.currentPage = $scope.cache.get("currentPage");
+    $scope.searchForm.currentPage = $scope.cache.get("currentPage");
     
-    $scope.$watch('currentPage', function() {
-        if (!$scope.currentPage) return;
-        $scope.cache.put("currentPage", $scope.currentPage);
+    $scope.$watch('searchForm.currentPage', function() {
+        if (!$scope.searchForm.currentPage) return;
+        $scope.cache.put("currentPage", $scope.searchForm.currentPage);
         $scope.reload();
     });
 
@@ -63,7 +65,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers) {
     $scope.resetSearch = function() {
         delete $scope.facets;
         $scope.filter = []; 
-        delete $scope.ftsearch;
+        delete $scope.searchForm.ftsearch;
         delete $scope.selectedOrg;
         $scope.selectedElements = [];
         for (var i in $scope.registrationStatuses) {
@@ -75,8 +77,8 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers) {
     };
 
     $scope.search = function() {
-        $scope.currentSearchTerm = $scope.ftsearch;
-        $scope.cache.put("ftsearch", $scope.ftsearch);
+        $scope.currentSearchTerm = $scope.searchForm.ftsearch;
+        $scope.cache.put("ftsearch", $scope.searchForm.ftsearch);
         $scope.reload();
         
     };

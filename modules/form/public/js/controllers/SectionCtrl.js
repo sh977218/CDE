@@ -19,12 +19,17 @@ function SectionCtrl($scope, $modal) {
     $scope.sortableOptions = {
         receive: function(e, ui) {
             var cde = ui.item.sortable.moved;
-            ui.item.sortable.moved = {
+            var question = {
                 label: cde.naming[0].designation
                 , cardinality: "1"
                 , cde: {uuid: cde.uuid, version: cde.version}
                 , datatype: cde.valueDomain.datatype
+                , uoms: []
             };
+            if (cde.valueDomain.uom) {
+                question.uoms.push(cde.valueDomain.uom);
+            }
+            ui.item.sortable.moved = question;
             $scope.stageElt();
         }
     };

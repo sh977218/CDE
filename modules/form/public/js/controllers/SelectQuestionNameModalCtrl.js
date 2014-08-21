@@ -1,10 +1,10 @@
- function SelectQuestionNameModalCtrl($scope, $modalInstance, cde) {
+ function SelectQuestionNameModalCtrl($scope, $modalInstance, $http, cde) {
      
     $http.get("debyuuid/" + cde.uuid + "/" + cde.version).then(function (result) {
         $scope.cde = result.data;
     });
      
-    $scope.okCreate = function (naming) {
+    $scope.okSelect = function (naming) {
       $modalInstance.close(naming.designation);
     };
 

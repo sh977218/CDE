@@ -58,26 +58,19 @@ exports.priorCdes = function(req, res) {
 
 exports.show = function(req, cb) {
     var cdeId = req.params.id;
-    var type = req.params.type;
     if (!cdeId) {
         res.send("No Data Element Id");
         return;
     }
-    if (type!=='uuid') {
-        mongo_data.byId(cdeId, function(err, cde) {
-            // Following have no callback because it's no big deal if it fails.
-            // So create new thread and move on.
-            mongo_data.incDeView(cde); 
-            if (req.isAuthenticated()) {
-               mongo_data.addToViewHistory(cde, req.user);
-            };
-            cb(cde);
-        }); 
-    } else {
-        mongo_data.cdesByUuidList([cdeId], function(err, cdes) {
-            cb(cdes[0]);
-        });    
-    }    
+    mongo_data.byId(cdeId, function(err, cde) {
+        // Following have no callback because it's no big deal if it fails.
+        // So create new thread and move on.
+        mongo_data.incDeView(cde); 
+        if (req.isAuthenticated()) {
+           mongo_data.addToViewHistory(cde, req.user);
+        };
+        cb(cde);
+    }); 
 };
 
 exports.save = function (req, res) {

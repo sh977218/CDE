@@ -1,6 +1,7 @@
-function FormViewCtrl($scope, $routeParams, Form, $modal) {
+function FormViewCtrl($scope, $routeParams, Form) {
     $scope.module = "form";
     $scope.addCdeMode = false;
+    $scope.openCdeInNewTab = true;
     
     var route = $routeParams;
     $scope.initialized = false;

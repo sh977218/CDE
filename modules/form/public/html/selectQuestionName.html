@@ -1,15 +1,21 @@
-<h4>Select a question label from a CDE Name</h4>
-
-<div ng-repeat="naming in cde.naming" class="row">
-    <div class="col-md-1"><button class="btn btn-default fa fa-check" ng-click="okSelect(naming)"> Select</button></div>
-    <div class="col-md-11">
-        <dl class="dl-horizontal">
-            <dt>Name: </dt><dd>{{naming.designation}}</dd>
-            <dt>Definition:  </dt><dd>{{naming.definition | placeholdEmpty}}</dd>
-            <dt>Context: </dt><dd>{{naming.context}}</dd>            
-        </dl>
-    </div>
-    <hr/>
+<div class="modal-header">
+    <h3>Select a question label from a CDE Name</h3>
 </div>
 
-<button class="btn btn-default" ng-click="cancel()"> Cancel</button>
+<div class="modal-body">
+    <div ng-repeat="naming in cde.naming" class="row">
+        <div class="col-md-3"><button class="btn btn-default" ng-click="okSelect(naming)"><i class="fa fa-check"></i> Select</button></div>
+        <div class="col-md-9">
+            <dl class="dl-horizontal">
+                <dt>Name: </dt><dd>{{naming.designation}}</dd>
+                <dt>Definition:  </dt><dd>{{naming.definition | placeholdEmpty}}</dd>
+                <dt>Context: </dt><dd>{{naming.context}}</dd>            
+            </dl>
+        </div>
+        <hr/>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="cancel()" id="cancelSelect">Cancel</button>
+</div>

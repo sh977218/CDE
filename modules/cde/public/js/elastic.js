@@ -17,13 +17,13 @@ angular.module('resources')
         , buildElasticQuerySettings: function(scope){
             var settings = {
                 resultPerPage: scope.resultPerPage
-                , searchTerm: scope.ftsearch
+                , searchTerm: scope.searchForm.ftsearch
                 , isSiteAdmin: scope.isSiteAdmin()
                 , myOrgs: scope.myOrgs 
                 , selectedOrg: scope.selectedOrg
                 , selectedElements: this.getSelectedElements(scope)
                 , filter: scope.filter
-                , currentPage: scope.currentPage
+                , currentPage: scope.searchForm.currentPage
             };
             return settings;
         }
