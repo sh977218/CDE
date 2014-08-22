@@ -73,6 +73,7 @@ exports.createFormRiverJson = {
         "servers": config.database.servers
         , "db": config.database.dbname
         , "collection": "forms"
+        , "script": riverFunction
     }
     , "index": {
         "name": config.elastic.formIndex.name

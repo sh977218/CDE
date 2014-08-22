@@ -1,4 +1,4 @@
-var SaveModalCtrl = function($scope, $window, $modalInstance, elt, user, redirectBaseLink) {
+var SaveModalCtrl = function($scope, $modalInstance, elt, user, redirectBaseLink) {
     $scope.elt = elt;
     $scope.user = user;
 
@@ -12,9 +12,8 @@ var SaveModalCtrl = function($scope, $window, $modalInstance, elt, user, redirec
     };
 
     $scope.ok = function() {
-        $scope.elt.$save(function(newelt) {
-            $window.location.href = redirectBaseLink + newelt._id;            
-            $modalInstance.close();
+        $scope.elt.$save(function(newelt) {                      
+            $modalInstance.close(newelt);
         });
     };
 
