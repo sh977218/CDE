@@ -91,6 +91,7 @@ if ('development' == app.get('env')) {
 };
 
 app.set('views', path.join(__dirname, './modules'));
+
 var originalRender = express.response.render;
 express.response.render = function(view, module, msg) {
     if (!module) module = "cde";

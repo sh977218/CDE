@@ -42,7 +42,7 @@ function ExportCtrl($scope, $window, Elastic, CsvDownload) {
         query.query.size = 1000;
         delete query.query.facets;
         delete query.query.from;
-        Elastic.generalSearchQuery(query, function(result) {
+        Elastic.generalSearchQuery(query, "cde",  function(result) {
             $scope.gridCdes = [];
             var list = result.cdes;
             for (var i in list) {
