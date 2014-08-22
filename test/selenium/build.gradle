@@ -34,4 +34,9 @@ test {
         logger.lifecycle("Running test: " + descriptor)
     }    
     maxParallelForks = Integer.parseInt(forkNb)
+
+    testLogging {
+        // Uncomment to display system.out and system.err messages
+        //events "standardOut", "standardError"
+    }
 }

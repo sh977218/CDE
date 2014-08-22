@@ -7,6 +7,8 @@ var questionSchema =  {
     cde: {uuid: String, version: String}
     , datatype: String
     , uoms: [String]
+    , required: Boolean
+    , multiselect: Boolean
 };
 
 var sectionSchema = {

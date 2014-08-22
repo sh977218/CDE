@@ -1,4 +1,4 @@
-function SectionCtrl($scope, $modal) {
+function SectionCtrl($scope, $modal, $timeout) {
 
     $scope.cardinalityOptions = 
     {
@@ -24,6 +24,7 @@ function SectionCtrl($scope, $modal) {
                 , cardinality: "1"
                 , cde: {uuid: cde.uuid, version: cde.version}
                 , datatype: cde.valueDomain.datatype
+                , required: false
                 , uoms: []
             };
             if (cde.valueDomain.uom) {
@@ -49,6 +50,20 @@ function SectionCtrl($scope, $modal) {
             question.label = selectedName;
             $scope.stageElt();
         });
+    };
+
+    $scope.checkUom = function(question, index) {
+        $timeout(function() {
+            if (question.uoms[index] === "") question.uoms.splice(index, 1);        
+        }, 0);
+    };
+
+    $scope.canAddUom = function(question) {
+        return $scope.isAllowed($scope.form) && (question.uoms.indexOf("Please specify") < 0);
+    };
+    
+    $scope.addUom = function(question) {
+        question.uoms.push("Please specify");
     };
 
     $scope.removeElt = function(from, index) {

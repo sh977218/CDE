@@ -18,11 +18,11 @@ public class FormCreateTest extends BaseFormTest {
         
         Assert.assertTrue(textPresent(formName));
         Assert.assertTrue(textPresent(formDef));
-        Assert.assertTrue(textPresent(formV));        
-
+        Assert.assertTrue(textPresent(formV));
+        
         gotoPublicForms();
-        findElement(By.linkText(formName)).click();
-        Assert.assertTrue(textPresent(formDef));
-        Assert.assertTrue(textPresent("Incomplete"));         
-    }
+        searchForm("Create Form Test Name");
+        findElement(By.linkText("Create Form Test Name")).click();
+        Assert.assertTrue(textPresent("Fill out carefully!"));        
+    }    
 }

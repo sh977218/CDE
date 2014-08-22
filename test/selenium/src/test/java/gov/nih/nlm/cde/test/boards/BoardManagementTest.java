@@ -9,7 +9,6 @@ import org.testng.annotations.Test;
 
 public class BoardManagementTest extends BoardTest {
     
-  
     @Test
     public void publicVsPrivateBoards() {
         mustBeLoggedInAs(boardUser, boardPassword);
@@ -163,13 +162,14 @@ public class BoardManagementTest extends BoardTest {
         String pubBlood = "Public Blood Board";
         String privBlood = "Private Blood Board";
         String pubSmoking = "Public Smoking Board";
-        
+
         createBoard(pubBlood, "");
         createBoard(privBlood, "");
         createBoard(pubSmoking, "");
         
         makePublic(pubBlood);
         makePublic(pubSmoking);
+
         modalGone();
         gotoPublicBoards();
         
