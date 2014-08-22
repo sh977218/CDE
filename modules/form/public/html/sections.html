@@ -1,6 +1,6 @@
 <h3>Sections</h3>
 <div ng-repeat="section in form.formElements">
-    <div class="row">
+    <div class="row" id="section_{{$index}}">
         <div class="col-md-1 text-right" ng-show="isAllowed(form)">
             <i ng-click="removeElt(form, $index)" class="fa fa-trash-o" id="removeElt-{{$index}}"></i>
             <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}" ng-hide="$first" ></i>
@@ -15,14 +15,14 @@
                 <dt>Cardinality: </dt>
                 <dd id="dd_card_{{$index}}">
                     <span ng-show="editCardMode">
-                        <select ng-model="section.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="section.cardinality"></select>
+                        <select ng-model="section.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="select_section_card_{{$index}}"></select>
                         <br/>
                         <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard"> Confirm</button>
                         <button class="fa fa-times" ng-click="editCardMode = false; section.cardinality = orig"> Discard</button>
                     </span>
                     <span ng-hide="editCardMode">
                            <i ng-show="isAllowed(form)" class="fa fa-edit" ng-click="editCardMode = true; orig = section.cardinality"
-                              id="editSection"></i> {{cardinalityOptions[section.cardinality]}}
+                              id="edit_section_card_{{$index}}"></i> {{cardinalityOptions[section.cardinality]}}
                     </span>
                 </dd>    
             </dl>            
@@ -31,7 +31,7 @@
     <div>
         <h4>Questions</h4>
         <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions">
-            <div ng-if="section.formElements.length === 0">
+            <div ng-if="section.formElements.length === 0" id="dropQuestionsHere">
                 Drag and drop CDEs here.            
             </div>
             <div ng-repeat="question in section.formElements" class="row">
@@ -58,7 +58,9 @@
                             </span>
                         </dd>    
                         <dt>Datatype: </dt>
-                        <dd id="dd_d_datatype_{{$index}}">{{question.datatype | placeholdEmpty }}</dd>
+                        <dd id="dd_datatype_{{$index}}">{{question.datatype | placeholdEmpty }}</dd>
+                        <dt ng-show="question.datatype === 'Value List'">Multiple Selections: </dt>
+                        <dd ng-show="question.datatype === 'Value List'" id="dd_question_multi_{{$index}}"><input type="checkbox" ng-model="question.multiselect" ng-disabled="!isAllowed(form)" ng-click="stageElt()"></input></dd>
                         <dt>Units of Measures: </dt>
                         <dd ng-switch="question.uoms.length > 0">
                             <div ng-switch-when="true">

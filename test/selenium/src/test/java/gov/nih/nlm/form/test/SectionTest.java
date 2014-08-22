@@ -1,21 +1,31 @@
 package gov.nih.nlm.form.test;
 
+import java.util.List;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class SectionTest extends BaseFormTest {
 
-    protected void addSection(String title, String card) {
+    void addSection(String title, String card) {
+        List<WebElement> sections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_')]"));
+        int nbOfSections = sections.size();
+
         findElement(By.id("addSection")).click();
-        modalHere();        
-        findElement(By.id("newSection.label")).sendKeys(title);
+
+        WebElement title_dd = findElement(By.xpath("//dd[@id='dd_section_title_" + nbOfSections + "']"));
+        title_dd.findElement(By.xpath("//i")).click();
+        title_dd.findElement(By.xpath("//input")).clear();
+        title_dd.findElement(By.xpath("//input")).sendKeys(title);
+        title_dd.findElement(By.xpath("//button[@class='fa fa-check']")).click();
+    
         if (card != null) {
-            new Select(findElement(By.id("newSection.cardinality"))).selectByVisibleText(card);
+            findElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']")).click();
+            new Select(findElement(By.xpath("//dd[@id='select_section_card_"  + nbOfSections + "']//select"))).selectByVisibleText(card);
+            findElement(By.xpath("//dd[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']")).click();
         }
-        findElement(By.id("createSection")).click();  
-        hangon(1);
     }
     
     @Test

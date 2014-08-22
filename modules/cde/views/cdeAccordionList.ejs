@@ -24,8 +24,8 @@
 
             </div>
             <div class="row" >
-                <a ng-show="ejsPage!='createcde'" class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
-                <a ng-show="ejsPage=='createcde'" target="_blank" class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
+                <a ng-show="!openCdeInNewTab" class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
+                <a ng-show="!openCdeInNewTab" target="_blank" class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
                 <a ng-show="user._id && ejsPage!='board'" class="btn btn-small btn-default" ng-click="openPinModal(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack" title="Pin"></i> Attach to Board</a>
                 <a ng-show="user._id && ejsPage=='board'" class="btn btn-small btn-default" ng-click="unpin(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack fa-rotate-90" title="unPin"></i> Remove from Board</a>
                 <a ng-show="showCompareButton(cde)" class="btn btn-small btn-default" ng-click="addToQuickBoard(cde)" title="Add to Quick Board" id="compare_{{$index}}"><i class="fa fa-plus"></i> Add to Quick Board</a>

@@ -1,4 +1,4 @@
-function ListCtrl($scope, $modal) {
+function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
 
     $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
     if ($scope.registrationStatuses === undefined) {
