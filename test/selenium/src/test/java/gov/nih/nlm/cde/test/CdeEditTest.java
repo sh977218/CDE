@@ -90,9 +90,10 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.xpath("//i[@id='editStatus']")).click();
         modalHere();
         new Select(findElement(By.xpath("//label[text()=\"Registration Status\"]/following-sibling::select"))).selectByValue("Recorded");
-        findElement(By.xpath("//div[@id=\"regStatusModalFooter\"]//button[text()=\"Save\"]")).click();     
+        findElement(By.xpath("//div[@id=\"regStatusModalFooter\"]//button[text()=\"Save\"]")).click();
         modalGone();
         findElement(By.linkText("History")).click();
+
         findElement(By.xpath("//table[@id = 'historyTable']//tr[3]//td[4]/a")).click();
         Assert.assertTrue(textPresent("Registration State:"));
 

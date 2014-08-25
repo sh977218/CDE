@@ -1,4 +1,4 @@
- function RegistrationCtrl($scope, $modal) {
+ function RegistrationCtrl($scope, $modal, $window) {
      
     $scope.openRegStatusUpdate = function (elt, redirectBaseLink) {
         var modalInstance = $modal.open({
@@ -17,7 +17,8 @@
           }
         });
 
-        modalInstance.result.then(function () {
+        modalInstance.result.then(function (cde) {
+            $window.location.href = "/#/deview?cdeId=" + cde._id;        
             $scope.addAlert("success", "Saved");
          }, function () {
         });        
