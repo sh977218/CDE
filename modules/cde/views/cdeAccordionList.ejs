@@ -1,5 +1,5 @@
 <div accordion close-others="false" id="accordionList" ng-class="accordionListStyle" >
-    <div ui-sortable="dragSortableOptions" ng-model="cdes" class="dragQuestions">
+    <div ui-sortable="dragSortableOptions" ng-model="cdes">
         <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen" >
             <div accordion-heading>
                 <span ng-bind-html="cde.primaryNameCopy" id="acc_link_{{$index}}" class="hand-cursor"></span>

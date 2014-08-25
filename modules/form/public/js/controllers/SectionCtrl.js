@@ -17,20 +17,26 @@ function SectionCtrl($scope, $modal, $timeout) {
     };
 
     $scope.sortableOptions = {
-        receive: function(e, ui) {
+        connectWith: ".dragQuestions"
+        , receive: function(e, ui) {
             var cde = ui.item.sortable.moved;
-            var question = {
-                label: cde.naming[0].designation
-                , cardinality: "1"
-                , cde: {uuid: cde.uuid, version: cde.version}
-                , datatype: cde.valueDomain.datatype
-                , required: false
-                , uoms: []
-            };
-            if (cde.valueDomain.uom) {
-                question.uoms.push(cde.valueDomain.uom);
+            if (cde.valueDomain !== undefined) {
+                var question = {
+                    label: cde.naming[0].designation
+                    , cardinality: "1"
+                    , question: {
+                        cde: {uuid: cde.uuid
+                            , version: cde.version}
+                        , datatype: cde.valueDomain.datatype
+                        , required: false
+                        , uoms: []
+                    }
+                };
+                if (cde.valueDomain.uom) {
+                    question.uoms.push(cde.valueDomain.uom);
+                }
+                ui.item.sortable.moved = question;
             }
-            ui.item.sortable.moved = question;
             $scope.stageElt();
         }
     };
@@ -41,7 +47,7 @@ function SectionCtrl($scope, $modal, $timeout) {
           controller: SelectQuestionNameModalCtrl,
           resolve: {
                 cde: function() {
-                  return question.cde;
+                  return question.question.cde;
                 }         
           }
         });
@@ -54,16 +60,16 @@ function SectionCtrl($scope, $modal, $timeout) {
 
     $scope.checkUom = function(question, index) {
         $timeout(function() {
-            if (question.uoms[index] === "") question.uoms.splice(index, 1);        
+            if (question.question.uoms[index] === "") question.question.uoms.splice(index, 1);        
         }, 0);
     };
 
     $scope.canAddUom = function(question) {
-        return $scope.isAllowed($scope.form) && (question.uoms.indexOf("Please specify") < 0);
+        return $scope.isAllowed($scope.form) && (question.question.uoms.indexOf("Please specify") < 0);
     };
     
     $scope.addUom = function(question) {
-        question.uoms.push("Please specify");
+        question.question.uoms.push("Please specify");
     };
 
     $scope.removeElt = function(from, index) {

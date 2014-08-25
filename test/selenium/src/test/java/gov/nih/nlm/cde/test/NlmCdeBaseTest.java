@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -316,5 +317,13 @@ public class NlmCdeBaseTest {
         findElement(By.cssSelector("button.btn")).click();
         Assert.assertTrue(textPresent(checkText));
     }
+    
+    protected void switchTab(int i) {
+        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
+        driver.close();
+        driver.switchTo().window(tabs2.get(i));
+    }
+    
+    
     
 }

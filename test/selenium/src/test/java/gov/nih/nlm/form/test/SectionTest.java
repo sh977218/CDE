@@ -15,11 +15,11 @@ public class SectionTest extends BaseFormTest {
 
         findElement(By.id("addSection")).click();
 
-        WebElement title_dd = findElement(By.xpath("//dd[@id='dd_section_title_" + nbOfSections + "']"));
-        title_dd.findElement(By.xpath("//i")).click();
-        title_dd.findElement(By.xpath("//input")).clear();
-        title_dd.findElement(By.xpath("//input")).sendKeys(title);
-        title_dd.findElement(By.xpath("//button[@class='fa fa-check']")).click();
+        String section_title_path = "//dd[@id='dd_section_title_" + nbOfSections + "']";
+        findElement(By.xpath(section_title_path + "//i")).click();
+        findElement(By.xpath(section_title_path + "//input")).clear();
+        findElement(By.xpath(section_title_path + "//input")).sendKeys(title);
+        findElement(By.xpath(section_title_path + "//button[@class='fa fa-check']")).click();
     
         if (card != null) {
             findElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']")).click();

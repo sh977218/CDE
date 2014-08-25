@@ -3,13 +3,13 @@
 </div>
 
 <div class="modal-body">
-    <div ng-repeat="naming in cde.naming" class="row">
+    <div ng-repeat="naming in cde.naming" class="row" id="q_select_name_{{$index}}">
         <div class="col-md-3"><button class="btn btn-default" ng-click="okSelect(naming)"><i class="fa fa-check"></i> Select</button></div>
         <div class="col-md-9">
             <dl class="dl-horizontal">
                 <dt>Name: </dt><dd>{{naming.designation}}</dd>
                 <dt>Definition:  </dt><dd>{{naming.definition | placeholdEmpty}}</dd>
-                <dt>Context: </dt><dd>{{naming.context}}</dd>            
+                <dt>Context: </dt><dd>{{naming.context.contextName}}</dd>            
             </dl>
         </div>
         <hr/>
