@@ -1,6 +1,6 @@
 <h3>Sections</h3>
 <div ng-repeat="section in form.formElements">
-    <div class="row" id="section_{{$index}}">
+    <div class="row" id="section_view_{{$index}}">
         <div class="col-md-1 text-right" ng-show="isAllowed(form)">
             <i ng-click="removeElt(form, $index)" class="fa fa-trash-o" id="removeElt-{{$index}}"></i>
             <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}" ng-hide="$first" ></i>
@@ -34,8 +34,10 @@
             <div ng-if="section.formElements.length === 0">
                 Drag and drop CDEs here.            
             </div>
-            <div ng-repeat="question in section.formElements" class="row">
-                <div class="col-md-1 text-right"><i class="fa fa-trash-o" ng-click="removeElt(section, $index)" title="Remove questions" ng-show="isAllowed(form)"></i></div>
+            <div ng-repeat="question in section.formElements" class="row" id="question_{{$index}}">
+                <div class="col-md-1 text-right">
+                    <i class="fa fa-trash-o" ng-click="removeElt(section, $index)" title="Remove questions" ng-show="isAllowed(form)" id="remove_q_{{$index}}"></i>
+                </div>
                 <div class="col-md-11">
                     <dl class="dl-horizontal">
                         <dt>Label: </dt>

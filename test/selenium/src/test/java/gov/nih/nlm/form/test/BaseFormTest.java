@@ -38,7 +38,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys("1");
         findElement(By.id("confirmSave")).click();  
         textPresent("Saved.");
-        hangon(1);
+        closeAlert();
     }
 
     protected void searchForm(String query) {

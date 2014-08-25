@@ -122,6 +122,7 @@ public class QuestionTest extends BaseFormTest {
         // Add 2nd Section
         new SectionTest().addSection("Smoking Status", null);
 
+        findElement(By.id("resetSearch")).click();
         findElement(By.name("ftsearch")).sendKeys("\"smoking history ind\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results");
@@ -137,8 +138,20 @@ public class QuestionTest extends BaseFormTest {
         saveForm();
         
         Assert.assertTrue(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
+        sourceElt = findElement(By.xpath("//div[@id='section_drop_area_1']//div[@id='question_0']"));
+        targetElt = findElement(By.id("section_drop_area_0"));
         
+        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+ 
+        saveForm();
 
+        Assert.assertEquals(2, driver.findElements(By.xpath("//div[@id='section_drop_area_0']//div[starts-with(@id, 'question_')]")).size());
+
+        findElement(By.id("remove_q_0")).click();
+        findElement(By.id("remove_q_0")).click();
+        
+        saveForm();
+        Assert.assertEquals(0, driver.findElements(By.xpath("//div[@id='section_drop_area_0']//div[starts-with(@id, 'question_')]")).size());
 
                  
    }

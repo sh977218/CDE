@@ -1,8 +1,6 @@
 package gov.nih.nlm.form.test;
 
-import java.util.List;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -10,8 +8,7 @@ import org.testng.annotations.Test;
 public class SectionTest extends BaseFormTest {
 
     void addSection(String title, String card) {
-        List<WebElement> sections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_')]"));
-        int nbOfSections = sections.size();
+        int nbOfSections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_view')]")).size();
 
         findElement(By.id("addSection")).click();
 
