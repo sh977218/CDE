@@ -66,17 +66,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Candidate (10)"));
         findElement(By.id("li-blank-Candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText("Intervention Trial Study Protocol Document Classification ")));
-//        hangon(2);
-//        List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
-//        Assert.assertEquals(linkList.size(), 10);
+
         textPresent("10 results ");
         findElement(By.id("li-blank-caBIG")).click();
-        // Seems like we should wait for something , like below, but below doesn't work and I can't come up with something to wait for ...
-//            wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(
-//                    By.linkText("caBIG -- First Follow-up Visit Date"))));
-//        hangon(1);
-//        List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
-//        Assert.assertEquals(linkList.size(), 9);
+
         textPresent("9 results");
         findElement(By.id("li-checked-Candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(
