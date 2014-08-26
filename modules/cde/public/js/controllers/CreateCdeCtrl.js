@@ -3,6 +3,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
     $scope.currentPage = 1;
     $scope.totalItems = 0;
     $scope.resultPerPage = 20;
+    $scope.searchForm = {};
     $scope.$watch('currentPage', function() {
         $scope.showSuggestions();
     }); 

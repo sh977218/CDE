@@ -20,7 +20,7 @@ public class SectionTest extends BaseFormTest {
     
         if (card != null) {
             findElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']")).click();
-            new Select(findElement(By.xpath("//dd[@id='select_section_card_"  + nbOfSections + "']//select"))).selectByVisibleText(card);
+            new Select(findElement(By.xpath("//select[@id='select_section_card_"  + nbOfSections + "']"))).selectByVisibleText(card);
             findElement(By.xpath("//dd[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']")).click();
         }
     }

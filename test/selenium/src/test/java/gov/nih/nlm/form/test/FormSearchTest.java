@@ -2,7 +2,6 @@ package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
-import org.testng.Assert;
 
 public class FormSearchTest extends BaseFormTest {
     @Test
