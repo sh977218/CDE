@@ -2,7 +2,7 @@
     <form name="advSearchForm" id="advSearchForm"  class="form-inline" ng-submit="submitForm( quickSearchForm.$valid )" novalidate>
         <!-- Search dropdown and text field -->
         <div class="input-group input-group-lg">
-            <input name="ftsearch" id="ftsearch-input" class="form-control search-query" type="text" ng-model="ftsearch" ng-maxlength="500" placeholder="" ng-change="">
+            <input name="ftsearch" id="ftsearch-input" class="form-control search-query" type="text" ng-model="searchForm.ftsearch" ng-maxlength="500" placeholder="" ng-change="">
 
             <!-- Display if screen is large -->
             <div class="input-group-btn">
@@ -85,7 +85,7 @@
             <span ng-hide="cdes.length >= 0"><h4><i class="fa fa-spinner fa-spin"></i> Searching...</h4></span>
             <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found.</h4></span>
             <div id="accordionList" ng-include="'/template/'+module+'/'+module+'AccordionList'" ng-init="ejsPage = 'list';"></div>
-            <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="currentPage"></pagination>
+            <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="searchForm.currentPage"></pagination>
         </div>
     </div>
 </div>    

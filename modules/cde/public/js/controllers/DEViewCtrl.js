@@ -1,4 +1,4 @@
-function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, PriorCdes, CdeDiff) {
+function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementUUID, PriorCdes, CdeDiff) {
     $scope.initialized = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;
@@ -29,9 +29,14 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     ];
     
     $scope.reload = function(route, cb) {
-        if (route.cdeId) var query = {deId: route.cdeId, type: '_id'};
-        if (route.uuid) var query = {deId: route.uuid, type: 'uuid'};
-        DataElement.get(query, function (de) {
+        var service = DataElement;
+        if (route.cdeId) var query = {deId: route.cdeId};
+        if (route.uuid) {
+            service = DataElementUUID;
+            var query = {uuid: route.uuid};
+            if (route.version) query.version = route.version;
+        }
+        service.get(query, function (de) {
            $scope.cde = de;          
            $scope.loadValueSet();
            $scope.canLinkPvFunc();
