@@ -397,9 +397,10 @@ exports.init = function(app) {
     });
     
     app.post('/removeAttachment', function(req, res) {
+        console.log("remove attachement." + JSON.stringify(req.body));
         checkCdeOwnership(req.body.deId, req, function(err, de) {
             if (err) return res.send(err);  
-            de.attachments.splice(index, 1);
+            de.attachments.splice(req.body.index, 1);
             de.save(function (err) {
                if (err) {
                    res.send("error: " + err);

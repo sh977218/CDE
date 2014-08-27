@@ -44,7 +44,7 @@
             <%- include listOfBoards.ejs %>
         </div>
         <div tab heading="{{tabs[10].heading}}">
-            <%- include deAttachments.ejs %>
+            <div ng-include="'/system/public/html/attachments.html'" onload="elt = cde"></div>
         </div>
         <div tab heading="{{tabs[11].heading}}">
             <%- include deMlt.ejs %>
