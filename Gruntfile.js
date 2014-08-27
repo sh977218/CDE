@@ -7,7 +7,6 @@ var config = require('config')
     
 var welcomeMessage = fs.readFileSync("./deploy/doc/welcome.txt");
 var helpMessage = fs.readFileSync("./deploy/doc/help.txt");
-var divider = "\n\n";
 
 module.exports = function(grunt) {
     grunt.initConfig({
@@ -266,6 +265,16 @@ module.exports = function(grunt) {
             }
             
         }
+        , useref: {
+            html: ['build/modules/system/views/index.ejs', 'build/modules/system/views/includeFrontEndJS.ejs']
+            , temp: 'build/modules'
+        }
+        , uglify: {
+            options: {
+                compress: true
+                , mangle: false
+            }
+        }
         , availabletasks: {
             help: {
                 options: {
@@ -300,6 +309,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-prompt');
     grunt.loadNpmTasks('grunt-available-tasks');
     grunt.loadNpmTasks('grunt-attention');
+    grunt.loadNpmTasks('grunt-useref');
     
     grunt.registerTask('do-git', 'Restart NodeJS server.', function() {
         if (grunt.config('git.pull')) {
@@ -346,8 +356,8 @@ module.exports = function(grunt) {
         grunt.task.run('clearQueue');
     });  
         
-    grunt.registerTask('clear', function() {
-        console.log("\n\n");
+    grunt.registerTask('divider', function() {
+        console.log('\n------------------------------------------------------------');
     });     
     
     grunt.registerTask('do-help', function() {
@@ -387,16 +397,19 @@ module.exports = function(grunt) {
     grunt.registerTask('buildVersion',['shell:version','persistVersion']);
     grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
     grunt.registerTask('tests',['prompt:testsLocation','do-test','clearQueue']);
+    grunt.registerTask('refreplace-concat-minify', 'Run reference replacement, concatenation, minification build directory', ['useref', 'concat', 'uglify', 'cssmin']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
         grunt.task.run('npm-install');
-        if (config.node.buildDir) grunt.task.run('copy');
+        if (config.node.buildDir) {
+            grunt.task.run('copy');
+            grunt.task.run('refreplace-concat-minify');
+        }
     });
     grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
-    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','clear','guihelp','clear','git','clear', 'elastic','clear', 'build','clear', 'node']);
+    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','divider','guihelp','divider','git','divider','elastic','divider','build','divider','node']);
     grunt.registerTask('help', ['availabletasks']);    
-    
     grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);
-    
+
 //    grunt.registerTask('form-elastic', function() {
 //        //grunt.task.run('force:on');
 //        grunt.log.writeln('\n\nDeleting Elastic Search River!');

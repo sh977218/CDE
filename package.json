@@ -38,6 +38,7 @@
     "grunt-npm-install": "*",
     "grunt-attention": "*",
     "grunt-available-tasks": "*",
+    "grunt-useref": "*",
     "chalk": "*"
   }
 }
