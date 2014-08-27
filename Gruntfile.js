@@ -35,13 +35,13 @@ module.exports = function(grunt) {
             } 
             , elasticDeleteRiver: {
                 options: {
-                    uri: config.elastic.uri + "/_river/"
+                    uri: config.elasticRiverUri
                     , method: 'DELETE'
                 }
             }
             , elasticCreateRiver: {
                 options: {
-                    uri: config.elasticRiverUri
+                    uri: config.elasticRiverUri + "/_meta"
                     , method: 'POST'
                     , json: elastic.createRiverJson                   
                 }
@@ -62,13 +62,13 @@ module.exports = function(grunt) {
             } 
             , elasticDeleteFormRiver: {
                 options: {
-                    uri: config.elastic.uri + "/_river/" + config.elastic.formIndex.name
+                    uri: config.elasticFormRiverUri
                     , method: 'DELETE'
                 }
             }
             , elasticCreateFormRiver: {
                 options: {
-                    uri: config.elasticFormRiverUri
+                    uri: config.elasticFormRiverUri + "/_meta"
                     , method: 'POST'
                     , json: elastic.createFormRiverJson                   
                 }
