@@ -1,7 +1,7 @@
 var config = require('config')
     , request = require('request')
-    , mongo = require('../../cde/node-js/mongo-cde') //TODO-remove
-    , elastic = require('./elastic');
+    , mongo = require('./mongo-cde')
+    , elastic = require('../../system/node-js/elastic');
     
     
 var status = this;
@@ -27,6 +27,7 @@ status.checkElastic = function(elasticUrl, mongoCollection) {
         var body = JSON.parse(bodyStr);     
         if (status.statusReport.elastic.up) status.checkElasticResults(body, status.statusReport);
         if (status.statusReport.elastic.results) status.checkElasticSync(body, status.statusReport, mongoCollection);
+        if (status.statusReport.elastic.sync) status.checkElasticUpdating(body, status.statusReport, elasticUrl, mongoCollection);
     });    
 };
 
@@ -60,13 +61,42 @@ status.checkElasticSync = function(body, statusReport, mongoCollection) {
             statusReport.elastic.updating = false;      
             return;
         }
-        console.log(elasticElt.uuid);
         if (elasticElt.uuid !== elt.uuid) {
             statusReport.elastic.sync = false;      
             return;
         } else {
             statusReport.elastic.sync = true; 
         }
+    });
+};
+
+status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoCollection) {
+    var seed = Math.floor(Math.random()*100000);
+    var fakeCde = {
+        archived: true
+        , naming: [{
+                designation: "NLM_APP_Status_Report_" + seed
+                , definition: "NLM_APP_Status_Report_" + seed
+        }]
+    };
+    mongoCollection.create(fakeCde, {_id: null, username: ""}, function(err, mongoCde) {
+        setInterval(function() {
+            request.get(elasticUrl + "_search?q=NLM_APP_Status_Report_"+seed, function (error, response, bodyStr) {
+                var body = JSON.parse(bodyStr);
+                if (body.hits.hits.length <= 0) {
+                    statusReport.elastic.updating = false;      
+                } else {
+                    statusReport.elastic.updating = true; 
+                    var elasticCde = body.hits.hits[0]._source;
+                    if (mongoCde.uuid !== elasticCde.uuid) {
+                        statusReport.elastic.updating = false;      
+                    } else {
+                        statusReport.elastic.updating = true;      
+                    }
+                    mongoCollection.DataElement.remove({"naming.designation":"NLM_APP_Status_Report_" + seed}).exec();
+                }
+            });            
+        }, 5000);
     });
 };
 
