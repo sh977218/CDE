@@ -41,6 +41,22 @@ exports.listform = function(req, res) {
     });
 };
 
+exports.forks = function(req, res) {
+    var cdeId = req.params.id;
+    
+    if (!cdeId) {
+        res.send("No Element Id");
+    }  
+    mongo_data.forks(cdeId, function(err, forks) {
+       if (err) {
+           res.send("ERROR");
+       } else {
+           res.send(forks);
+       }
+    });
+};
+
+
 exports.priorCdes = function(req, res) {
     var cdeId = req.params.id;
     

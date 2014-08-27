@@ -186,6 +186,18 @@ exports.priorCdes = function(cdeId, callback) {
     });
 };
 
+exports.forks = function(cdeId, callback) {
+    DataElement.findById(cdeId).exec(function (err, dataElement) {
+        if (dataElement != null) {
+            return DataElement.find({uuid: dataElement.uuid, isFork: true}, "naming stewardOrg updated updatedBy createdBy created updated  changeNote").exec(function(err, cdes) {
+                callback("", cdes);
+            });
+        } else {
+            callback("", []);
+        }
+    });
+};
+
 exports.byId = function(cdeId, callback) {
     DataElement.findOne({'_id': cdeId}, function(err, cde) {
         callback("", cde);
@@ -254,6 +266,10 @@ exports.create = function(cde, user, callback) {
 };
 
 exports.update = function(elt, user, callback) {
+    update(elt, user, false, callback);
+};
+
+exports.updateOrFork = function(elt, user, fork, callback) {
     return DataElement.findById(elt._id, function(err, dataElement) {
         var jsonDe = JSON.parse(JSON.stringify(dataElement));
         delete jsonDe._id;
@@ -281,7 +297,12 @@ exports.update = function(elt, user, callback) {
         newDe.ids = elt.ids;
         newDe.classification = elt.classification;
         newDe.stewardOrg.name = elt.stewardOrg.name;
-        dataElement.archived = true;
+
+        if (fork === true) {
+            newDe.isFork = true;
+        } else {
+            dataElement.archived = true;
+        }
 
         if (newDe.naming.length < 1) {
             console.log("Cannot save without names");

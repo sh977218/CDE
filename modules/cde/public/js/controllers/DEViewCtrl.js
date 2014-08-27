@@ -37,18 +37,18 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             var query = {uuid: route.uuid};
             if (route.version) query.version = route.version;
         }
-        service.get(query, function (de) {
-           $scope.cde = de;          
-           $scope.loadValueSet();
-           $scope.canLinkPvFunc();
-           $scope.loadMlt();
-           $scope.loadBoards();
-           $scope.showValidationIcons = $scope.cde.dataElementConcept.conceptualDomain != null && $scope.cde.dataElementConcept.conceptualDomain.vsac.id != null;
-           $scope.getPVTypeaheadCodeSystemNameList(); 
+        service.get(query, function(de) {
+            $scope.cde = de;
+            $scope.loadValueSet();
+            $scope.canLinkPvFunc();
+            $scope.loadMlt();
+            $scope.loadBoards();
+            $scope.showValidationIcons = $scope.cde.dataElementConcept.conceptualDomain != null && $scope.cde.dataElementConcept.conceptualDomain.vsac.id != null;
+            $scope.getPVTypeaheadCodeSystemNameList();
             PriorCdes.getCdes({cdeId: de._id}, function(dataElements) {
                 $scope.priorCdes = dataElements;
-            });                
-           $scope.initialized = true;
+            });
+            $scope.initialized = true;
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;

@@ -95,7 +95,6 @@ var deJsonSchema = {
         , permissibleValues: [permissibleValueSchema]
     }
     , history: [ObjectId]
-    , forks: [ObjectId]
     , changeNote: String
     , cadsrRegStatus: String
     , registrationState: sharedSchemas.registrationStateSchema
@@ -114,6 +113,7 @@ var deJsonSchema = {
     ]
     , comments: [sharedSchemas.commentSchema]
     , archived: Boolean
+    , isFork: Boolean
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
     , usedByOrgs: [String]

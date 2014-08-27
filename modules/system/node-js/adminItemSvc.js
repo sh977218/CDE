@@ -1,4 +1,3 @@
-
 exports.save = function(req, res, dao) {
     var elt = req.body;
     if (req.isAuthenticated()) {
@@ -48,4 +47,29 @@ exports.save = function(req, res, dao) {
     } else {
         res.send(403, "You are not authorized to do this.");
     }
-}
+};
+
+exports.fork = function(req, res, dao) {
+    if (req.isAuthenticated()) {
+        if (!req.id) {
+            res.send("Don't know what to fork");
+        } else {
+            return dao.byId(req.id, function(err, item) {
+                if (item.archived === true) {
+                    return res.send("Element is archived.");
+                }
+                if (req.user.orgCurator.length < 0
+                        && req.user.orgAdmin.length < 0
+                        && !req.user.siteAdmin) {
+                    res.send(403, "not authorized");
+                } else {
+                    return dao.updateOrFork(item, req.user, true, function(err, response) {
+                        res.send(response);
+                    });
+                }
+            });
+        }
+    } else {
+        res.send(403, "You are not authorized to do this.");
+    }
+};

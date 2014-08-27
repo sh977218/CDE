@@ -8,6 +8,7 @@ var cdesvc = require('./cdesvc')
   , config = require('config')
   , elastic = require('./elastic')
   , helper = require('../../system/node-js/helper.js')
+  , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
   , logging = require('../../system/node-js/logging.js')
   , classificationShared = require('../shared/classificationShared.js')
   , path = require('path')
@@ -211,6 +212,14 @@ exports.init = function(app) {
 
     app.get('/priorcdes/:id', function(req, res) {
         cdesvc.priorCdes(req, res);
+    });
+
+    app.get('/forks/:id', function(req, res) {
+        cdesvc.forks(req, res);
+    });
+
+    app.post('/dataelement/fork', function(req, res) {
+        adminItemSvc.fork(req, res, mongo_data);
     });
 
     app.get('/dataelement/:id', function(req, res) {
