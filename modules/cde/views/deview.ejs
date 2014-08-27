@@ -52,6 +52,9 @@
         <div tab heading="{{tabs[12].heading}}">
             <%- include cdeHistory.ejs %>
         </div>
+        <div tab heading="{{tabs[13].heading}}">
+            <div ng-include="'/system/public/html/futures.html'" ng-controller="ForkCtrl"></div>
+        </div>
 
     </div>
 

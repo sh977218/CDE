@@ -95,6 +95,7 @@ var deJsonSchema = {
         , permissibleValues: [permissibleValueSchema]
     }
     , history: [ObjectId]
+    , forks: [ObjectId]
     , changeNote: String
     , cadsrRegStatus: String
     , registrationState: sharedSchemas.registrationStateSchema

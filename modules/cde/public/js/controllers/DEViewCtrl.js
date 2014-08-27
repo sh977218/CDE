@@ -25,7 +25,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         {heading: "Boards"},
         {heading: "Attachments"},
         {heading: "More Like This"},
-        {heading: "History"}
+        {heading: "History"},
+        {heading: "Forks"}
     ];
     
     $scope.reload = function(route, cb) {
