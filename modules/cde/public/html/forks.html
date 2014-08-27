@@ -6,20 +6,24 @@
                 <tr>
                     <td>Steward</td>
                     <td>Created By</td>
+                    <td>Note</td>
                     <td>See Full</td>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="fork in forks">
                     <td>{{fork.stewardOrg.name}}</td>
-                    <td>{{fork.createdBy.username}}</td>
+                    <td>{{fork.updatedBy.username}}</td>
+                    <td>{{fork.changeNote}}</td>
                     <td><a href="#/deview?cdeId={{fork._id}}" target="_blank" id="fork-{{$index}}" class="fa fa-eye"> View</a></td>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
+<div ng-show="forks.length == 0">This Element has no forks</div>
+<hr/>
 <div ng-show="isOrgCurator()">
-    <button ng-click="fork()"> <i class="fa fa-code-fork"></i> Fork CDE</button>
+    <button ng-click="openAddFork()"> <i class="fa fa-code-fork"></i> Fork CDE</button>
 </div>
     

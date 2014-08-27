@@ -1,0 +1,29 @@
+<div class="modal-header">
+    <h3>Select a question label from a CDE Name</h3>
+</div>
+
+<div class="modal-body">
+    <form name="createFork" role="form">
+        <fieldset>
+            <legend>Create Data Element</legend>
+
+            <div class="form-group">        
+                <label for="selection.changeNote">Change Note</label>
+                <input type="text" class="form-control" ng-model="selection.changeNote" name="selection.changeNote">
+            </div>
+
+            <div class="form-group">
+                <label for="selection.name">Steward Organization</label>
+                <select class="form-control" ng-model="selection.org" id="selection.org" required>
+                    <option value="">Select One</option>
+                    <option ng-repeat="o in myOrgs" ng-value="o">{{o}}</option>
+                </select>
+            </div>
+            <hr/>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <input id="submit" type="submit" ng-click="doFork()" class="btn btn-success" 
+                value="Save" ng-disabled="isClean() || createFork.$invalid ">                     
+            </input>
+        </fieldset>
+    </form>
+</div>

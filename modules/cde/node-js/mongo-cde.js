@@ -189,7 +189,8 @@ exports.priorCdes = function(cdeId, callback) {
 exports.forks = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement != null) {
-            return DataElement.find({uuid: dataElement.uuid, isFork: true}, "naming stewardOrg updated updatedBy createdBy created updated  changeNote").exec(function(err, cdes) {
+            return DataElement.find({uuid: dataElement.uuid, isFork: true}, "naming stewardOrg updated updatedBy createdBy created updated changeNote")
+                    .exec(function(err, cdes) {
                 callback("", cdes);
             });
         } else {

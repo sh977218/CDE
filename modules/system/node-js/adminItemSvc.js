@@ -51,10 +51,10 @@ exports.save = function(req, res, dao) {
 
 exports.fork = function(req, res, dao) {
     if (req.isAuthenticated()) {
-        if (!req.id) {
+        if (!req.body.id) {
             res.send("Don't know what to fork");
         } else {
-            return dao.byId(req.id, function(err, item) {
+            return dao.byId(req.body.id, function(err, item) {
                 if (item.archived === true) {
                     return res.send("Element is archived.");
                 }
@@ -63,6 +63,8 @@ exports.fork = function(req, res, dao) {
                         && !req.user.siteAdmin) {
                     res.send(403, "not authorized");
                 } else {
+                    item.stewardOrg.name = req.body.org;
+                    item.changeNote = req.body.changeNote;
                     return dao.updateOrFork(item, req.user, true, function(err, response) {
                         res.send(response);
                     });
