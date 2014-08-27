@@ -3,9 +3,26 @@ var mongoose = require('mongoose')
     , sharedSchemas = require('../../system/node-js/schemas.js')
     ;
 
-var sectionSchema = new Schema({
-    title: String
+var questionSchema =  {
+    cde: {uuid: String, version: String}
+    , datatype: String
+    , uoms: [String]
+    , required: Boolean
+    , multiselect: Boolean
+};
+
+var sectionSchema = {
+};
+
+var formElementSchema = new Schema({
+    label: String
+    , instructions: String
     , cardinality: String
+    , repeatsFor: String
+    , showIfExpression: String
+    , section: sectionSchema
+    , question: questionSchema
+    , formElements: [formElementSchema]
 }, {_id: false});
 
 exports.formSchema = new Schema({
@@ -36,7 +53,7 @@ exports.formSchema = new Schema({
         userId: mongoose.Schema.Types.ObjectId
         , username: String
     }
-    , sections: [sectionSchema]
+    , formElements: [formElementSchema]
     , archived: Boolean
 });
 

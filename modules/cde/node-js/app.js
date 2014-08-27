@@ -13,6 +13,7 @@ var cdesvc = require('./cdesvc')
   , path = require('path')
   , express = require('express')
   , sdc = require("./sdc.js")
+  , status = require('./status')
 ;
 exports.init = function(app) {
 
@@ -213,16 +214,22 @@ exports.init = function(app) {
         cdesvc.priorCdes(req, res);
     });
 
-    app.get('/dataelement/:id/:type?', function(req, res) {
+    app.get('/dataelement/:id', function(req, res) {
         cdesvc.show(req, function(result) {
             res.send(cdesvc.hideProprietaryPvs(result, req.user));
         });
     });
 
-    app.get('/debyuuid/:uuid/:version', function(req, res) {
-        mongo_data.deByUuidAndVersion(req.params.uuid, req.params.version, function(err, de) {
-            res.send(cdesvc.hideProprietaryPvs(de, req.user));
-        });
+    app.get('/debyuuid/:uuid/:version?', function(req, res) {
+        if (!req.params.version) {
+            mongo_data.cdesByUuidList([req.params.uuid], function(err, cdes) {
+                res.send(cdesvc.hideProprietaryPvs(cdes[0], req.user));
+            }); 
+        } else {
+            mongo_data.deByUuidAndVersion(req.params.uuid, req.params.version, function(err, de) {
+                res.send(cdesvc.hideProprietaryPvs(de, req.user));
+            });
+        }
     });
 
     app.post('/dataelement', function (req, res) {
@@ -563,4 +570,6 @@ exports.init = function(app) {
     app.get('/profile', function(req, res) {
         res.render("profile", "cde"); 
     });        
+    
+    app.get('/status/cde', status.status);
 };

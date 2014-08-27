@@ -1,31 +1,89 @@
 <h3>Sections</h3>
-<div ng-repeat="section in form.sections" class="row">
-    <div class="col-md-1 text-right" ng-show="isAllowed(form)">
-        <div class="row">
-            <i ng-click="removeSection($index)" class="fa fa-trash-o" id="removeSection-{{$index}}"></i>
-            <i ng-click="moveSection($index, -1)" class="fa fa-arrow-up" id="moveSectionUp-{{$index}}" ng-hide="$first" ></i>
-            <i ng-click="moveSection($index, 1)" class="fa fa-arrow-down" id="moveSectionDown-{{$index}}" ng-hide="$last" ></i>
-        </div>
-    </div>   
-    <div class="col-md-11">
-        <dl class="dl-horizontal">
-            <dt>Title: </dt><dd id="dd_section_title_{{$index}}"><div inline-edit id="titleEdit" model="section.title" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
-            <dt>Cardinality: </dt>
-            <dd>
+<div ng-repeat="section in form.formElements">
+    <div class="row" id="section_view_{{$index}}">
+        <div class="col-md-1 text-right" ng-show="isAllowed(form)">
+            <i ng-click="removeElt(form, $index)" class="fa fa-trash-o" id="removeElt-{{$index}}"></i>
+            <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}" ng-hide="$first" ></i>
+            <i ng-click="moveElt($index, 1)" class="fa fa-arrow-down" id="moveEltDown-{{$index}}" ng-hide="$last" ></i>
+        </div>   
+        <div class="col-md-11">
+            <dl class="dl-horizontal">
+                <dt>Title: </dt>
+                <dd id="dd_section_title_{{$index}}"><div inline-edit model="section.label" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+                <dt>Instructions </dt>
+                <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+                <dt>Cardinality: </dt>
                 <dd id="dd_card_{{$index}}">
                     <span ng-show="editCardMode">
-                        <select ng-model="section.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="section.cardinality"></select>
+                        <select ng-model="section.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="select_section_card_{{$index}}"></select>
                         <br/>
                         <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard"> Confirm</button>
                         <button class="fa fa-times" ng-click="editCardMode = false; section.cardinality = orig"> Discard</button>
-                   </span>
-                   <span ng-hide="editCardMode">
-                       <i ng-show="isAllowed(form)" class="fa fa-edit" ng-click="editCardMode = true; orig = section.cardinality"
-                          id="editSection"></i> {{cardinalityOptions[section.cardinality]}}</span>
-               </dd>    
-        </dl>            
-    </div>    
-    <hr/>
+                    </span>
+                    <span ng-hide="editCardMode">
+                           <i ng-show="isAllowed(form)" class="fa fa-edit" ng-click="editCardMode = true; orig = section.cardinality"
+                              id="edit_section_card_{{$index}}"></i> {{cardinalityOptions[section.cardinality]}}
+                    </span>
+                </dd>    
+            </dl>            
+        </div> 
+    </div>
+    <div>
+        <h4>Questions</h4>
+        <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">
+            <div ng-if="section.formElements.length === 0">
+                Drag and drop CDEs here.            
+            </div>
+            <div ng-repeat="question in section.formElements" class="row" id="question_{{$index}}">
+                <div class="col-md-1 text-right">
+                    <i class="fa fa-trash-o" ng-click="removeElt(section, $index)" title="Remove questions" ng-show="isAllowed(form)" id="remove_q_{{$index}}"></i>
+                </div>
+                <div class="col-md-11">
+                    <dl class="dl-horizontal">
+                        <dt>Label: </dt>
+                        <dd id="dd_question_title_{{$index}}"><i ng-show="isAllowed(form)" class="fa fa-pencil" title="Change question label" ng-click="openNameSelect(question)"></i> {{question.label | placeholdEmpty}}</dd>
+                        <dt>Instructions: </dt>
+                        <dd id="dd_question_instructions_{{$index}}"><div inline-edit model="question.instructions" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+                        <dt>Required: </dt>
+                        <dd id="dd_question_required_{{$index}}"><input type="checkbox" ng-model="question.question.required" ng-disabled="!isAllowed(form)" ng-click="stageElt()"></input></dd>
+                        <dt>Cardinality: </dt>
+                        <dd id="dd_q_card_{{$index}}">
+                            <span ng-show="editCardMode">
+                                <select ng-model="question.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="question.cardinality"></select>
+                                <br/>
+                                <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard"> Confirm</button>
+                                <button class="fa fa-times" ng-click="editCardMode = false; question.cardinality = orig"> Discard</button>
+                            </span>
+                            <span ng-hide="editCardMode">
+                                   <i ng-show="isAllowed(form)" class="fa fa-edit" ng-click="editCardMode = true; orig = question.cardinality"
+                                      id="editQuestion"></i> {{cardinalityOptions[question.cardinality]}}
+                            </span>
+                        </dd>    
+                        <dt>Datatype: </dt>
+                        <dd id="dd_datatype_{{$index}}">{{question.question.datatype | placeholdEmpty }}</dd>
+                        <dt ng-show="question.question.datatype === 'Value List'">Multiple Selections: </dt>
+                        <dd ng-show="question.question.datatype === 'Value List'" id="dd_question_multi_{{$index}}">
+                            <input type="checkbox" ng-model="question.question.multiselect" ng-disabled="!isAllowed(form)" ng-click="stageElt()"></input>
+                        </dd>
+                        <dt>Units of Measures: </dt>
+                        <dd ng-switch="question.question.uoms.length > 0" id="dd_q_uoms_{{$index}}">
+                            <div ng-switch-when="true">
+                                <span ng-repeat="uom in question.question.uoms">
+                                    <div id="q_uom_list_{{$index}}" inline-edit model="question.question.uoms[$index]" is-allowed="isAllowed(form)" on-ok="checkUom(question, $index)"> </div>
+                                </span>
+                            </div>
+                            <div ng-switch-default>N/A</div>
+                            <button ng-show="canAddUom(question)" class="btn btn-default btn-xs" ng-click="addUom(question)"><i class="fa fa-plus"></i> Add</button> 
+                        </dd>
+                        <dt>CDE: </dt>
+                        <dd id="dd_d_cde_{{$index}}"><a href="/#/deview?uuid={{question.question.cde.uuid}}&version={{question.question.cde.version}}" target="_blank"><i class="fa fa-eye"></i> View</a></dd>
+                    </dl> 
+                </div>
+                <hr />
+            </div>
+        </div>
+    </div>
+    <hr />
 </div>
 
-<button id="addSection" ng-click="openAddSection()" class="btn btn-default" ng-show="isAllowed(form)"><i class="fa fa-plus"></i> Add section</button>
+<button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="isAllowed(form)"><i class="fa fa-plus"></i> Add section</button>

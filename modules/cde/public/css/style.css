@@ -187,3 +187,15 @@ body {
     -webkit-transform: none !important;
     transform: none !important;
 }*/
+
+dt.formViewDetails {
+    width: auto;
+}
+
+dd.formViewDetails {
+    margin-left: 90px;
+}
+
+.dragQuestions {
+    
+}

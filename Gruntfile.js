@@ -34,13 +34,13 @@ module.exports = function(grunt) {
             } 
             , elasticDeleteRiver: {
                 options: {
-                    uri: config.elastic.uri + "/_river/"
+                    uri: config.elasticRiverUri
                     , method: 'DELETE'
                 }
             }
             , elasticCreateRiver: {
                 options: {
-                    uri: config.elasticRiverUri
+                    uri: config.elasticRiverUri + "/_meta"
                     , method: 'POST'
                     , json: elastic.createRiverJson                   
                 }
@@ -61,13 +61,13 @@ module.exports = function(grunt) {
             } 
             , elasticDeleteFormRiver: {
                 options: {
-                    uri: config.elastic.uri + "/_river/" + config.elastic.formIndex.name
+                    uri: config.elasticFormRiverUri
                     , method: 'DELETE'
                 }
             }
             , elasticCreateFormRiver: {
                 options: {
-                    uri: config.elasticFormRiverUri
+                    uri: config.elasticFormRiverUri + "/_meta"
                     , method: 'POST'
                     , json: elastic.createFormRiverJson                   
                 }
@@ -282,7 +282,7 @@ module.exports = function(grunt) {
                     tasks: ['git', 'elastic', 'build', 'node']
                 }                
             }
-         }  
+        }  
         , attention: {
             welcome: {
                 options: {
@@ -298,6 +298,21 @@ module.exports = function(grunt) {
                     , borderColor: 'bgGreen'      
                 }
             }            
+        }
+        , watch: {
+            files: [
+                'modules/cde/public/assets/js/**/*.js',
+                'modules/system/public/js/controllers/**/*.js',
+                'modules/cde/public/js/**/*.js',
+                'modules/form/public/js/**/*.js',
+                'modules/system/public/js/**/*.js',
+                'modules/cde/shared/**/*.js',
+                'modules/cde/public/css/**/*.css'
+            ],
+            tasks: ['build'],
+            options: {
+                spawn: true
+            }
         }
     });  
     

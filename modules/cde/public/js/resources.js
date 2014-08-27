@@ -5,7 +5,19 @@ angular.module('resources', ['ngResource'])
         return $resource('/listboards');
     })
     .factory('DataElement', function($resource) {
-        return $resource('/dataelement/:deId/:type', {deId: '@deId', type: '_id'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
+        return $resource('/dataelement/:deId', {deId: '@deId'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
+    })
+    .factory('DataElementUUID', function($resource) {
+        return $resource('/debyuuid/:uuid/:version', {uuid: '@uuid', version: '@version'});
+    })
+    .factory('CdeList', function($http) {
+        return {
+            byUuidList: function(ids, cb) {              
+                $http.post("/cdesByUuidList", ids).then(function(response) {
+                    cb(response.data);
+                });
+            }
+        }; 
     })
     .factory('Form', function($resource) {
         return $resource('/form/:formId/:type', {formId: '@formId', type: '_id'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
@@ -41,16 +53,6 @@ angular.module('resources', ['ngResource'])
           }
           , setDefault: function(dat, success, error) {
               $http.post('/setAttachmentDefault', dat).success(success).error(error);
-          }
-        };
-    })
-    .factory("UsedBy", function($http) {
-        return {
-          remove: function(dat, success, error) {
-              $http.post('/removeUsedBy', dat).success(success).error(error);
-          }
-          , add :function(dat, success, error) {
-              $http.post('/addUsedBy', dat).success(success).error(error);
           }
         };
     })
@@ -115,16 +117,6 @@ angular.module('resources', ['ngResource'])
     .factory('Board', function($resource) {
         return $resource('/board/:id/:start', {id: '@id', start: '@start'}, 
             {'getCdes': {method: 'GET', isArray: true}});
-    })
-
-    .factory('CdeList', function($http) {
-        return {
-            byUuidList: function(ids, cb) {              
-                $http.post("/cdesByUuidList", ids).then(function(response) {
-                    cb(response.data);
-                });
-            }
-        }; 
     })
     .factory('CDE', function($http) {
         return {

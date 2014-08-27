@@ -7,15 +7,22 @@ import org.testng.annotations.Test;
 
 public class SectionTest extends BaseFormTest {
 
-    protected void addSection(String title, String card) {
+    void addSection(String title, String card) {
+        int nbOfSections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_view')]")).size();
+
         findElement(By.id("addSection")).click();
-        modalHere();        
-        findElement(By.id("newSection.title")).sendKeys(title);
+
+        String section_title_path = "//dd[@id='dd_section_title_" + nbOfSections + "']";
+        findElement(By.xpath(section_title_path + "//i")).click();
+        findElement(By.xpath(section_title_path + "//input")).clear();
+        findElement(By.xpath(section_title_path + "//input")).sendKeys(title);
+        findElement(By.xpath(section_title_path + "//button[@class='fa fa-check']")).click();
+    
         if (card != null) {
-            new Select(findElement(By.id("newSection.cardinality"))).selectByVisibleText(card);
+            findElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']")).click();
+            new Select(findElement(By.xpath("//select[@id='select_section_card_"  + nbOfSections + "']"))).selectByVisibleText(card);
+            findElement(By.xpath("//dd[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']")).click();
         }
-        findElement(By.id("createSection")).click();  
-        hangon(1);
     }
     
     @Test
@@ -38,8 +45,8 @@ public class SectionTest extends BaseFormTest {
 
         saveForm();
         
-        findElement(By.id("moveSectionUp-1")).click();
-        findElement(By.id("moveSectionDown-1")).click();
+        findElement(By.id("moveEltUp-1")).click();
+        findElement(By.id("moveEltDown-1")).click();
         
         saveForm();
 
@@ -69,7 +76,7 @@ public class SectionTest extends BaseFormTest {
         Assert.assertEquals("0 or 1", findElement(By.id("dd_card_1")).getText());
         Assert.assertEquals("0 or more", findElement(By.id("dd_card_2")).getText());
 
-        findElement(By.id("removeSection-1")).click();
+        findElement(By.id("removeElt-1")).click();
         saveForm();
         
         Assert.assertEquals("Section 1", findElement(By.id("dd_section_title_1")).getText());

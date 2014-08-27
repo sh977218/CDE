@@ -61,12 +61,6 @@ public class MergeTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("3279225"));
     }
     
-    private void switchTab(int i) {
-        ArrayList<String> tabs2 = new ArrayList<String> (driver.getWindowHandles());
-        driver.close();
-        driver.switchTo().window(tabs2.get(i));
-    }
-    
     @Test
     public void mergeMineMineEverything() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
