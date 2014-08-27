@@ -19,7 +19,7 @@ exports.status = function(req, res) {
     if (status.statusReport.elastic.up && status.statusReport.elastic.results && status.statusReport.elastic.sync && status.statusReport.elastic.updating) {
         res.send("ALL SERVICES UP");        
     } else {
-        res.send("ERROR " + JSON.stringify(status.statusReport));        
+        res.send("ERROR: Please, restart elastic service. Details: " + JSON.stringify(status.statusReport));        
     }
     
 };
