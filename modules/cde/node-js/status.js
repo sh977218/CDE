@@ -16,7 +16,12 @@ status.statusReport = {
 };    
 
 exports.status = function(req, res) {    
-    res.send("es " + JSON.stringify(status.statusReport));    
+    if (status.statusReport.elastic.up && status.statusReport.elastic.result && status.statusReport.elastic.sync && status.statusReport.elastic.updating) {
+        res.send("ALL SERVICES UP");        
+    } else {
+        res.send("ERROR " + JSON.stringify(status.statusReport));        
+    }
+    
 };
 
 
