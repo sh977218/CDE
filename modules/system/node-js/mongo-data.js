@@ -21,7 +21,6 @@ exports.org_autocomplete = function(name, callback) {
     }); 
 };
 
-
 exports.orgNames = function(callback) {
     Org.find({}, {name: true, _id: false}).exec(function(err, result) {
         callback(err, result);
@@ -99,7 +98,6 @@ exports.listOrgsLongName = function(callback) {
         callback("", result);
     });
 };
-
 
 exports.managedOrgs = function(callback) {
     Org.find().exec(function(err, orgs) {

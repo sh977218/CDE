@@ -1,4 +1,3 @@
-
 exports.save = function(req, res, dao) {
     var elt = req.body;
     if (req.isAuthenticated()) {
@@ -48,4 +47,46 @@ exports.save = function(req, res, dao) {
     } else {
         res.send(403, "You are not authorized to do this.");
     }
-}
+};
+
+exports.checkOwnership = function(dao, id, req, cb) {
+    this.userSessionExists = function(req) {
+        return req.user;
+    };
+    this.isCuratorOrAdmin = function(req, elt) {
+        return (req.user.orgAdmin && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0)
+               || (req.user.orgCurator && req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0);
+    };
+    var authorization = this;
+    if (req.isAuthenticated()) {
+        dao.byId(id, function (err, elt) {
+            if (err) {
+                return cb("Element does not exist.", null);
+            }
+            if (!authorization.userSessionExists(req)
+               || !authorization.isCuratorOrAdmin(req, elt)
+               ) {
+                return cb("You do not own this element.", null);
+            } else {
+                cb(null, elt);
+            }
+        });
+    } else {
+        return cb("You are not authorized.", null);                   
+    }
+};
+
+exports.addAttachment = function(req, res, dao) {
+    checkOwnership(dao, req.body.id, req, function(err, elt) {
+        if (err) return res.send(err);
+        dao.userTotalSpace(req.user.username, function(totalSpace) {
+            if (totalSpace > req.user.quota) {
+                res.send({message: "You have exceeded your quota"});
+            } else {
+                dao.addAttachment(req.files.uploadedFiles, req.user, "some comment", elt, function() {
+                    res.send(elt);            
+                });                                            
+            }
+        });
+    });
+};

@@ -1,0 +1,61 @@
+<h4>Attachments</h4>
+<div ng-controller="AttachmentsCtrl">    
+    <div ng-repeat="attachment in cde.attachments">
+        <dl class="dl-horizontal">
+            <dt>Filename: </dt><dd><a href="/data/{{attachment.fileid}}">{{attachment.filename}}</a></dd>
+            <dt>Default Image: </dt>
+            <dd>
+            <span ng-switch="attachment.filesize > 512*1024">
+                <span ng-switch-when="true">
+                    Attachments smaller than 500k can be marked as default 
+                </span>
+                <span ng-switch-default>
+                    <i ng-hide="attachment.isDefault" class="fa fa-square-o" ng-click="setDefault($index, true)"></i>
+                    <i ng-show="attachment.isDefault" class="fa fa-check-square-o" ng-click="setDefault($index, false)"></i>
+                </span>
+            </span>
+            </dd>
+            <dt ng-show="isAllowedNonCuration(cde)">Actions: </dt>
+            <dd ng-show="isAllowedNonCuration(cde)">
+                <span ng-show="showDelete">
+                    Confirm Delete <i class="fa fa-check" ng-click="showDelete = false; removeAttachment($index)" id="confirmRemove-{{$index}}"></i>
+                    <i class="fa fa-times" ng-click="showDelete = false"></i>
+                </span>
+                <i ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeAttachment-{{$index}}"></i></dd>
+            <dt>Size: </dt>
+            <dd>
+                <span ng-switch="attachment.filesize > 1024*1024">
+                    <span ng-switch-when="true">{{attachment.filesize / 1024 / 1024 | number:2}} MB</span>
+                    <span ng-switch-default>{{attachment.filesize / 1024 | number:2}} kB</span>
+                </span>
+            </dd>
+            <dt>Uploaded date: </dt><dd>{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dt>Uploaded by: </dt><dd>{{attachment.uploadedBy.username}}</dd>
+        </dl>
+    </div>
+
+    <hr/>
+    
+    <div ng-show="isAllowedNonCuration(cde)">
+        <div>{{message}}</div>
+        <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files</label>
+        <input type="file" style="display: none" ng-model-instant id="fileToUpload" onchange="angular.element(this).scope().setFiles(this)" />
+
+        <div ng-show="files.length">
+            <div ng-repeat="file in files.slice(0)">
+                <span>{{file.webkitRelativePath || file.name}}</span>
+                (<span ng-switch="file.size > 1024*1024">
+                    <span ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</span>
+                    <span ng-switch-default>{{file.size / 1024 | number:2}} kB</span>
+                </span>)
+            </div>
+            <input type="button" ng-click="uploadFiles()" id="doUploadButton" value="Upload" />
+            <div ng-show="progressVisible">
+                <div class="percent">{{progress}}%</div>
+                <div class="progress-bar">
+                    <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>

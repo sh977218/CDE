@@ -15,6 +15,12 @@ conn.once('open', function callback () {
 
 var Form = conn.model('Form', schemas.formSchema);
 
+exports.idExists = function(id, callback) { 
+    Form.count({_id: id}).count().then(function(result) {
+        callback(result === 0);
+    });
+};
+
 exports.findForms = function(request, callback) {
     var criteria = {};
     if (request && request.term) {

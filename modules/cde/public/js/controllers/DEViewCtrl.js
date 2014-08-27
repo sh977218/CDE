@@ -28,6 +28,10 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         {heading: "History"}
     ];
     
+    $scope.$watch('cde', function() {
+        $scope.elt = cde;        
+    });
+    
     $scope.reload = function(route, cb) {
         var service = DataElement;
         if (route.cdeId) var query = {deId: route.cdeId};

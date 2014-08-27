@@ -22,7 +22,7 @@ function AttachmentsCtrl($scope, $rootScope, Attachment) {
 
     $scope.uploadFile = function(file) {
         var fd = new FormData();
-        fd.append("de_id", $scope.cde._id);
+        fd.append("de_id", $scope.elt._id);
         fd.append("uploadedFiles", file);
         var xhr = new XMLHttpRequest();
         xhr.upload.addEventListener("progress", uploadProgress, false);
@@ -48,7 +48,7 @@ function AttachmentsCtrl($scope, $rootScope, Attachment) {
         $rootScope.$apply(function() {
             var resp = JSON.parse(evt.target.responseText);
             if (!resp.message) {
-                $scope.cde = JSON.parse(evt.target.responseText);
+                $scope.elt = JSON.parse(evt.target.responseText);
                 $scope.files = [];
                 $scope.message = "";
             } else {
@@ -68,26 +68,27 @@ function AttachmentsCtrl($scope, $rootScope, Attachment) {
     }
     
     $scope.removeAttachment = function(index) {
+        
         Attachment.remove({
             index: index
-            , deId: $scope.cde._id 
+            , deId: $scope.elt._id 
         }, 
         function (res) {
-            $scope.cde = res;
+            $scope.elt = res;
         });
     };
     
     $scope.setDefault = function(index, state) {
-        if (!$scope.isAllowedNonCuration($scope.cde)) {
+        if (!$scope.isAllowedNonCuration($scope.elt)) {
             return;
         };
         Attachment.setDefault({
             index: index
             , state: state
-            , deId: $scope.cde._id 
+            , deId: $scope.elt._id 
         }, 
         function (res) {
-            $scope.cde = res;
+            $scope.elt = res;
         });
     };
  };

@@ -260,8 +260,14 @@ exports.init = function(app) {
         }
     });
 
-
     app.get('/orgaccountmanagement', function(req, res) {
         res.render('orgAccountManagement', "system");
-    });    
+    }); 
+    
+    app.get('/orgNames', function(req, res) {
+       mongo_data.orgNames(function (err, names) {
+           res.send(names);
+       }); 
+    });
+
 };
