@@ -30,7 +30,7 @@ exports.save = function(req, res, dao) {
                         res.send("This record is already standard.");
                     } else {
                         if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") &&
-                                (elt.registrationState.registrationStatus === "Standard" || elt.registrationState.registrationStatus === "Preferred Standard")
+                                (item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard")
                                 && !req.user.siteAdmin
                                 )
                         {
@@ -47,6 +47,50 @@ exports.save = function(req, res, dao) {
     } else {
         res.send(403, "You are not authorized to do this.");
     }
+};
+
+exports.acceptFork = function(req, res, dao) {
+    if (req.isAuthenticated()) {
+        if (!req.body.id) {
+                res.send("Don't know what to accept");
+        } else {
+            return dao.byId(req.body.id, function(err, fork) {
+                if (fork.archived === true) {
+                    return res.send("Cannot accept an archived element");
+                }
+                dao.isForkOf(fork.uuid, function(err, origs) {
+                    if (origs.length !== 1) {
+                        return res.send("Not a fork")
+                    } 
+                    var orig = origs[0];
+                    if (req.user.orgCurator.indexOf(orig.stewardOrg.name) < 0
+                            && req.user.orgAdmin.indexOf(orig.stewardOrg.name) < 0
+                            && !req.user.siteAdmin) {
+                        res.send(403, "not authorized");
+                    } else {
+                        if ((orig.registrationState.registrationStatus === "Standard" || orig.registrationState.registrationStatus === "Preferred Standard")
+                                && !req.user.siteAdmin) {
+                            res.send("This record is already standard.");
+                        } else {
+                            if ((orig.registrationState.registrationStatus !== "Standard" && orig.registrationState.registrationStatus !== " Preferred Standard") &&
+                                    (orig.registrationState.registrationStatus === "Standard" || orig.registrationState.registrationStatus === "Preferred Standard")
+                                    && !req.user.siteAdmin
+                                    )
+                            {
+                                res.send(403, "not authorized");
+                            } else {
+                                return dao.acceptFork(fork, orig, req.user, function(err, response) {
+                                    res.send(response);
+                                });
+                            }
+                        }
+                    }
+                });
+            });
+        }
+    } else {
+        res.send(403, "You are not authorized to do this.");
+    } 
 };
 
 exports.fork = function(req, res, dao) {

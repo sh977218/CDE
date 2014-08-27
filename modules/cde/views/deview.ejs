@@ -52,7 +52,7 @@
         <div tab heading="{{tabs[12].heading}}">
             <%- include cdeHistory.ejs %>
         </div>
-        <div tab heading="{{tabs[13].heading}}">
+        <div ng-show="!cde.isFork" tab heading="{{tabs[13].heading}}">
             <div ng-include="'/cde/public/html/forks.html'" ng-controller="ForkCtrl"></div>
         </div>
 

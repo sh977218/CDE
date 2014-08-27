@@ -186,12 +186,34 @@ exports.priorCdes = function(cdeId, callback) {
     });
 };
 
+exports.acceptFork = function(fork, orig, user, callback) {
+    delete fork.isFork;
+    orig.archived = true;
+    fork.stewardOrg = orig.stewardOrg;
+    fork.registrationState.registrationStatus = orig.registrationState.registrationStatus;
+    fork.save(function(err) {
+       if (err) {callback(err);} 
+       else {
+           orig.save(function(err) {
+               callback(err);
+           });
+       }
+    });
+};
+
+exports.isForkOf = function(uuid, callback) {
+    return DataElement.find({uuid: uuid}, "naming stewardOrg updated updatedBy createdBy created updated changeNote")
+        .where("archived").equals(null).where("isFork").equals(null).exec(function(err, cdes) {
+            callback("", cdes);
+    });
+};
+
 exports.forks = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement != null) {
             return DataElement.find({uuid: dataElement.uuid, isFork: true}, "naming stewardOrg updated updatedBy createdBy created updated changeNote")
-                    .exec(function(err, cdes) {
-                callback("", cdes);
+                .where("archived").equals(null).exec(function(err, cdes) {
+                    callback("", cdes);
             });
         } else {
             callback("", []);
@@ -267,7 +289,7 @@ exports.create = function(cde, user, callback) {
 };
 
 exports.update = function(elt, user, callback) {
-    update(elt, user, false, callback);
+    exports.updateOrFork(elt, user, false, callback);
 };
 
 exports.updateOrFork = function(elt, user, fork, callback) {
@@ -301,6 +323,7 @@ exports.updateOrFork = function(elt, user, fork, callback) {
 
         if (fork === true) {
             newDe.isFork = true;
+            newDe.registrationState.registrationStatus = "Incomplete";
         } else {
             dataElement.archived = true;
         }

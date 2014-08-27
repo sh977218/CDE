@@ -222,6 +222,10 @@ exports.init = function(app) {
         adminItemSvc.fork(req, res, mongo_data);
     });
 
+    app.post('/acceptFork', function(req, res) {
+        adminItemSvc.acceptFork(req, res, mongo_data);
+    });
+
     app.get('/dataelement/:id', function(req, res) {
         cdesvc.show(req, function(result) {
             res.send(cdesvc.hideProprietaryPvs(result, req.user));

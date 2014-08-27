@@ -1,5 +1,5 @@
-function ForkCtrl($scope, $http, $modal) {
-  
+function ForkCtrl($scope, $http, $modal, $window) {
+    
     var getForks = function() {
         $http.get("/forks/" + $scope.cde._id).then(function(result) {
            $scope.forks = result.data; 
@@ -11,6 +11,13 @@ function ForkCtrl($scope, $http, $modal) {
             getForks();
         }
     });
+    
+    $scope.accept = function(id) {
+        console.log("accepting: " + id);
+        $http.post("/acceptFork", {id: id}).then(function(result) {
+            $window.location.href = "/#/deview?cdeId=" + id;
+        });
+    };
 
     $scope.openAddFork = function() {
         var modalInstance = $modal.open({

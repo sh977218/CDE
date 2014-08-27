@@ -8,6 +8,7 @@
                     <td>Created By</td>
                     <td>Note</td>
                     <td>See Full</td>
+                    <td ng-show="isAllowed(cde)">Accept</td>
                 </tr>
             </thead>
             <tbody>
@@ -16,6 +17,7 @@
                     <td>{{fork.updatedBy.username}}</td>
                     <td>{{fork.changeNote}}</td>
                     <td><a href="#/deview?cdeId={{fork._id}}" target="_blank" id="fork-{{$index}}" class="fa fa-eye"> View</a></td>
+                    <td ng-show="isAllowed(cde)"><button class="fa fa-check" ng-click="accept(fork._id)"> Accept</button></td>
                 </tr>
             </tbody>
         </table>
