@@ -16,7 +16,7 @@ status.statusReport = {
 };    
 
 exports.status = function(req, res) {    
-    if (status.statusReport.elastic.up && status.statusReport.elastic.result && status.statusReport.elastic.sync && status.statusReport.elastic.updating) {
+    if (status.statusReport.elastic.up && status.statusReport.elastic.results && status.statusReport.elastic.sync && status.statusReport.elastic.updating) {
         res.send("ALL SERVICES UP");        
     } else {
         res.send("ERROR " + JSON.stringify(status.statusReport));        
@@ -85,7 +85,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
         }]
     };
     mongoCollection.create(fakeCde, {_id: null, username: ""}, function(err, mongoCde) {
-        setInterval(function() {
+        setTimeout(function() {
             request.get(elasticUrl + "_search?q=NLM_APP_Status_Report_"+seed, function (error, response, bodyStr) {
                 var body = JSON.parse(bodyStr);
                 if (body.hits.hits.length <= 0) {
@@ -94,17 +94,17 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                     statusReport.elastic.updating = true; 
                     var elasticCde = body.hits.hits[0]._source;
                     if (mongoCde.uuid !== elasticCde.uuid) {
-                        statusReport.elastic.updating = false;      
+                        statusReport.elastic.updating = false;    
                     } else {
-                        statusReport.elastic.updating = true;      
+                        statusReport.elastic.updating = true;                        
                     }
                     mongoCollection.DataElement.remove({"naming.designation":"NLM_APP_Status_Report_" + seed}).exec();
                 }
             });            
-        }, 5000);
+        }, 30000);
     });
 };
 
 setInterval(function() {
     status.checkElastic(elastic.elasticCdeUri, mongo);
-}, 1000);
+}, 60000);
