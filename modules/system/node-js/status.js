@@ -1,5 +1,6 @@
 var config = require('config')
     , request = require('request')
+    , mongo = require('../../cde/node-js/mongo-cde') //TODO-remove
     , elastic = require('./elastic');
     
     
@@ -20,12 +21,12 @@ exports.status = function(req, res) {
 
 
 
-status.checkElastic = function() {
-    request.post(elastic.elasticCdeUri + "_search", {body: JSON.stringify({})}, function (error, response, bodyStr) {
+status.checkElastic = function(elasticUrl, mongoCollection) {
+    request.post(elasticUrl + "_search", {body: JSON.stringify({})}, function (error, response, bodyStr) {
         status.checkElasticUp(error, response, status.statusReport);
         var body = JSON.parse(bodyStr);     
         if (status.statusReport.elastic.up) status.checkElasticResults(body, status.statusReport);
-        
+        if (status.statusReport.elastic.results) status.checkElasticSync(body, status.statusReport, mongoCollection);
     });    
 };
 
@@ -51,18 +52,24 @@ status.checkElasticResults = function(body, statusReport) {
     }    
 };
 
-setInterval(function() {
-    status.checkElastic();
-}, 1000);
+status.checkElasticSync = function(body, statusReport, mongoCollection) {
+    var elasticElt = body.hits.hits[0]._source;
+    mongoCollection.byId(elasticElt._id, function(err, elt) {
+        if (err) {
+            statusReport.elastic.sync = false; 
+            statusReport.elastic.updating = false;      
+            return;
+        }
+        console.log(elasticElt.uuid);
+        if (elasticElt.uuid !== elt.uuid) {
+            statusReport.elastic.sync = false;      
+            return;
+        } else {
+            statusReport.elastic.sync = true; 
+        }
+    });
+};
 
-//exports.checkMongo = function(res) {
-//    var mongoose = require("mongoose");
-//    mongoose.connect(config.mongoUri+"/test");
-//    var conn = mongoose.createConnection(config.mongoUri+"/admin");
-//    conn.on("open",function() {
-//        conn.db.command({"replSetGetStatus":1 },function(err,result) {
-//            console.log( result );
-//            res.send("mongo " + mongo);                 
-//        });
-//    });
-//};
+setInterval(function() {
+    status.checkElastic(elastic.elasticCdeUri, mongo);
+}, 1000);
