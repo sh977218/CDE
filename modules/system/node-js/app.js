@@ -7,6 +7,7 @@ var passport = require('passport')
   , usersrvc = require('./usersrvc')
   , express = require('express')
   , path = require('path')
+  , status = require('./status')
 ;
 
 exports.init = function(app) {
@@ -264,4 +265,6 @@ exports.init = function(app) {
     app.get('/orgaccountmanagement', function(req, res) {
         res.render('orgAccountManagement', "system");
     });    
+    
+    app.get('/status', status.status);      
 };
