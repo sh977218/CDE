@@ -39,7 +39,6 @@
     "grunt-attention": "*",
     "grunt-available-tasks": "*",
     "grunt-useref": "*",
-    "grunt-watch": "*",
     "chalk": "*"
   }
 }

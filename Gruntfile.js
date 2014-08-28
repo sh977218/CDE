@@ -266,7 +266,7 @@ module.exports = function(grunt) {
             
         }
         , useref: {
-            html: ['build/modules/system/views/index.ejs', 'build/modules/system/views/includeFrontEndJS.ejs']
+            html: ['build/modules/system/views/index.ejs'/*, 'build/modules/system/views/includeFrontEndJS.ejs', 'build/modules/form/views/includeFrontEndJS.ejs', 'build/modules/cde/views/includeFrontEndJS.ejs'*/]
             , temp: 'build/modules'
         }
         , uglify: {
@@ -299,21 +299,21 @@ module.exports = function(grunt) {
                 }
             }            
         }
-        , watch: {
-            files: [
-                'modules/cde/public/assets/js/**/*.js',
-                'modules/system/public/js/controllers/**/*.js',
-                'modules/cde/public/js/**/*.js',
-                'modules/form/public/js/**/*.js',
-                'modules/system/public/js/**/*.js',
-                'modules/cde/shared/**/*.js',
-                'modules/cde/public/css/**/*.css'
-            ],
-            tasks: ['build'],
-            options: {
-                spawn: true
-            }
-        }
+//        , watch: {
+//            files: [
+//                'modules/cde/public/assets/js/**/*.js',
+//                'modules/system/public/js/controllers/**/*.js',
+//                'modules/cde/public/js/**/*.js',
+//                'modules/form/public/js/**/*.js',
+//                'modules/system/public/js/**/*.js',
+//                'modules/cde/shared/**/*.js',
+//                'modules/cde/public/css/**/*.css'
+//            ],
+//            tasks: ['build'],
+//            options: {
+//                spawn: true
+//            }
+//        }
     });  
     
     grunt.loadNpmTasks('grunt-git');
