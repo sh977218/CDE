@@ -48,6 +48,11 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             PriorCdes.getCdes({cdeId: de._id}, function(dataElements) {
                 $scope.priorCdes = dataElements;
             });
+            if ($scope.cde.isFork) {
+                $http.get('/forkroot/' + $scope.cde.uuid).then(function(result) {
+                    $scope.rootFork = result.data;
+                });
+            };
             $scope.initialized = true;
         });
         if (route.tab) {

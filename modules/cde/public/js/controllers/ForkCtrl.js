@@ -13,7 +13,6 @@ function ForkCtrl($scope, $http, $modal, $window) {
     });
     
     $scope.accept = function(id) {
-        console.log("accepting: " + id);
         $http.post("/acceptFork", {id: id}).then(function(result) {
             $window.location.href = "/#/deview?cdeId=" + id;
         });

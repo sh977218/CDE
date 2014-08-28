@@ -119,3 +119,13 @@ exports.fork = function(req, res, dao) {
         res.send(403, "You are not authorized to do this.");
     }
 };
+
+exports.forkRoot = function(req, res, dao) {
+    dao.isForkOf(req.params.uuid, function(err, cdes) {
+        if (cdes.length !== 1) {
+            res.send("Not a regular fork");
+        } else {
+            res.send(cdes[0]);
+        }
+    });
+};
