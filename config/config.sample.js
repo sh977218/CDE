@@ -59,14 +59,13 @@ var config = {
 };
 
 module.exports = config;
-module.exports.elasticUri = config.elastic.uri + "/" + config.elastic.index.name + "/" ;
-module.exports.elasticRiverUri = config.elastic.uri + "/_river/" + config.elastic.river.name + "/_meta" ;
 module.exports.mongoUri = config.database.servers.map(function(srv) {
     return "mongodb://" + srv.host + ":" + srv.port + "/" + config.database.dbname;
 });
-
-module.exports.elasticFormUri = config.elastic.uri + "/" + config.elastic.formIndex.name + "/" ;
-module.exports.elasticFormRiverUri = config.elastic.uri + "/_river/" + config.elastic.formRiver.name + "/_meta" ;
+module.exports.elasticUri = config.elastic.uri + "/" + config.elastic.index.name + "/";
+module.exports.elasticRiverUri = config.elastic.uri + "/_river/" + config.elastic.index.name;
+module.exports.elasticFormUri = config.elastic.uri + "/" + config.elastic.formIndex.name + "/";
+module.exports.elasticFormRiverUri = config.elastic.uri + "/_river/" + config.elastic.formIndex.name;
 
 
 

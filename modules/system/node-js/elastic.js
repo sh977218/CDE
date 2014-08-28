@@ -2,13 +2,13 @@ var config = require('config')
     , request = require('request')
 ;
 
-var elasticCdeUri = config.elastic.uri + "/" + config.elastic.index.name + "/";
-var elasticFormUri = config.elastic.uri + "/" + config.elastic.formIndex.name + "/";
+exports.elasticCdeUri = config.elasticUri;
+exports.elasticFormUri = config.elasticFormUri;
 
 exports.elasticsearch = function (query, type, cb) {
     var url = null;
-    if (type === "cde") url = elasticCdeUri;
-    if (type === "form") url = elasticFormUri;
+    if (type === "cde") url = exports.elasticCdeUri;
+    if (type === "form") url = exports.elasticFormUri;
     request.post(url + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
        if (!error && response.statusCode === 200) {
         var resp = JSON.parse(body);

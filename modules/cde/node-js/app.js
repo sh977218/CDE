@@ -14,6 +14,7 @@ var cdesvc = require('./cdesvc')
   , path = require('path')
   , express = require('express')
   , sdc = require("./sdc.js")
+  , status = require('./status')
 ;
 exports.init = function(app) {
 
@@ -582,4 +583,6 @@ exports.init = function(app) {
     app.get('/profile', function(req, res) {
         res.render("profile", "cde"); 
     });        
+    
+    app.get('/status/cde', status.status);
 };
