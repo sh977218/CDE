@@ -266,8 +266,8 @@ module.exports = function(grunt) {
             
         }
         , useref: {
-            html: ['build/modules/system/views/index.ejs'/*, 'build/modules/system/views/includeFrontEndJS.ejs', 'build/modules/form/views/includeFrontEndJS.ejs', 'build/modules/cde/views/includeFrontEndJS.ejs'*/]
-            , temp: 'build/modules'
+            html: [ config.node.buildDir + '/modules/system/views/index.ejs', config.node.buildDir + '/modules/system/views/includeFrontEndJS.ejs', config.node.buildDir + '/modules/form/views/includeFrontEndJS.ejs', config.node.buildDir + '/modules/cde/views/includeFrontEndJS.ejs']
+            , temp: config.node.buildDir + '/modules'
         }
         , uglify: {
             options: {
