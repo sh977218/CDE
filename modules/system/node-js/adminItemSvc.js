@@ -79,7 +79,7 @@ exports.acceptFork = function(req, res, dao) {
                             {
                                 res.send(403, "not authorized");
                             } else {
-                                return dao.acceptFork(fork, orig, req.user, function(err, response) {
+                                return dao.acceptFork(fork, orig, function(err, response) {
                                     res.send(response);
                                 });
                             }

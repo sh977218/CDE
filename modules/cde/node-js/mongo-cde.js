@@ -186,8 +186,8 @@ exports.priorCdes = function(cdeId, callback) {
     });
 };
 
-exports.acceptFork = function(fork, orig, user, callback) {
-    delete fork.isFork;
+exports.acceptFork = function(fork, orig, callback) {
+    fork.isFork = undefined;
     orig.archived = true;
     fork.stewardOrg = orig.stewardOrg;
     fork.registrationState.registrationStatus = orig.registrationState.registrationStatus;
@@ -202,7 +202,7 @@ exports.acceptFork = function(fork, orig, user, callback) {
 };
 
 exports.isForkOf = function(uuid, callback) {
-    return DataElement.find({uuid: uuid}, "naming stewardOrg updated updatedBy createdBy created updated changeNote")
+    return DataElement.find({uuid: uuid})
         .where("archived").equals(null).where("isFork").equals(null).exec(function(err, cdes) {
             callback("", cdes);
     });
