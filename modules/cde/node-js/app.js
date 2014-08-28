@@ -517,9 +517,18 @@ exports.init = function(app) {
     });
 
     app.post('/mail/messages/new', function(req, res) {
-        mongo_data.createMessage(req.body, function() {
-            res.send();
-        });    
+        if (req.isAuthenticated()) {
+            var message = req.body;
+            if (message.author.authorType === "user") {
+                message.author.name = req.user.username;
+            }
+            message.date = new Date();
+            mongo_data.createMessage(message, function() {
+              res.send();
+            });
+        } else {
+            res.send(401, "Not Authorized");
+        }
     });
 
     app.post('/mail/messages/update', function(req, res) {

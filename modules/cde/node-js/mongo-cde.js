@@ -381,7 +381,7 @@ exports.getMessages = function(req, callback) {
                         ]
                     },
                     {
-                        "typeMergeRequest.states.0.action": "Filed"
+                        "typeRequest.states.0.action": "Filed"
                     }
                 ]
             };            
@@ -416,7 +416,7 @@ exports.getMessages = function(req, callback) {
                         ]
                     },
                     {
-                        "typeMergeRequest.states.0.action": "Approved"
+                        "typeRequest.states.0.action": "Approved"
                     }
                 ]
             };             

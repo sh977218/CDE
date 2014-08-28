@@ -8,6 +8,8 @@
     <h1 class="page-header">
         {{cde.naming[0].designation}}
         <a class="btn btn-small btn-default" ng-show="showCompareButton(cde)" ng-click="addToQuickBoard(cde)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add to Quick Board</a>
+        <span ng-show="cde.isFork && isAllowed(cde)"><button class="btn btn-default btn-small" ng-click="sendForkNotification()"><i class="fa fa-envelope-o"></i> Send Notification</button> </span>
+           
     </h1>
 
     <div tabset>

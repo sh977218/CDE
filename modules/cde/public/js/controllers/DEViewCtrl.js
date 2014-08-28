@@ -62,6 +62,30 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     
     $scope.reload($routeParams);
 
+    $scope.sendForkNotification = function() {
+        var message = {
+            recipient: {recipientType: "stewardOrg", name: $scope.rootFork.stewardOrg.name},
+            author: {authorType: "user"},
+            type: "Fork Notification", 
+            typeRequest: {
+                source: {id: $scope.cde._id}
+                , destination: {uuid: $scope.cde.uuid}
+                , states: [{
+                    action: "Filed"
+                    , date: new Date()
+                    , comment: "Please review this fork"
+                }]
+            }
+        };
+        $http.post('/mail/messages/new', message)
+            .success(function(result) {
+                $scope.addAlert("success", "Notification sent.")
+            })
+            .error(function(result) {
+                $scope.addAlert("danger", "Unable to notify user. ");
+            });
+    };
+
     $scope.classificationToFilter = function() {
          if ($scope.cde != null) {
              return $scope.cde.classification;

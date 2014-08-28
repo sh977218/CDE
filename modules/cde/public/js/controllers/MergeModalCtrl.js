@@ -4,7 +4,7 @@ function MergeModalCtrl($scope, $modalInstance, cdes, retiredIndex, user) {
     $scope.mergeRequest = {
         source: {uuid: $scope.source.uuid, object: $scope.source}
         , destination: {uuid: $scope.target.uuid, object: $scope.target}
-        , fields: {
+        , mergeFields: {
             classifications: true
             , ids: false
             , naming: false

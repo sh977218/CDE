@@ -60,7 +60,7 @@ exports.acceptFork = function(req, res, dao) {
                 }
                 dao.isForkOf(fork.uuid, function(err, origs) {
                     if (origs.length !== 1) {
-                        return res.send("Not a fork")
+                        return res.send("Not a fork");
                     } 
                     var orig = origs[0];
                     if (req.user.orgCurator.indexOf(orig.stewardOrg.name) < 0

@@ -24,7 +24,7 @@ function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, Me
                 });            
             } else {
                 var gotoNewElement = function(mr) {
-                    MergeCdes.approveMerge(mr.source.object, mr.destination.object, mr.fields, function(cde) {                                        
+                    MergeCdes.approveMerge(mr.source.object, mr.destination.object, mr.mergeFields, function(cde) {                                        
                         $window.location.href = "/#/deview?cdeId=" + cde._id;
                         $scope.addAlert("success", "CDEs successfully merged");
                     }); 
