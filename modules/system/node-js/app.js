@@ -9,12 +9,12 @@ var passport = require('passport')
   , path = require('path')
 ;
 
-function nocache(req, res, next) {
+exports.nocacheMiddleware = function(req, res, next) {
     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     res.header('Expires', '-1');
     res.header('Pragma', 'no-cache');
     next();
-}
+};
 
 exports.init = function(app) {
     var viewConfig = {modules: config.modules};
@@ -254,11 +254,11 @@ exports.init = function(app) {
         }
     });    
     
-    app.get('/login', nocache, function(req, res) {
+    app.get('/login', exports.nocacheMiddleware, function(req, res) {
         res.render('login', "system", { user: req.user, message: req.flash('error') });
     });
 
-    app.get('/siteaccountmanagement', nocache, function(req, res) {
+    app.get('/siteaccountmanagement', exports.nocacheMiddleware, function(req, res) {
         var ip = req.ip;
         if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
             res.render('siteaccountmanagement', "system");
@@ -268,7 +268,7 @@ exports.init = function(app) {
     });
 
 
-    app.get('/orgaccountmanagement', nocache, function(req, res) {
+    app.get('/orgaccountmanagement', exports.nocacheMiddleware, function(req, res) {
         res.render('orgAccountManagement', "system");
     });    
           
