@@ -144,7 +144,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
         findElement(By.id("openSave")).click();
         findElement(By.name("version")).sendKeys(".1");
-        modalHere();
         saveCde();
 
         goToCdeByName(cdeName);

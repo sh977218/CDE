@@ -4,7 +4,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import java.util.ArrayList;
 
 public class MergeTest extends NlmCdeBaseTest {
     
@@ -50,7 +49,7 @@ public class MergeTest extends NlmCdeBaseTest {
     private void checkResult() {        
         if (!browser.equals("ie")) {
             findElement(By.linkText("Smoking History Ind")).click(); 
-            switchTab(1);
+            switchTabAndClose(1);
         } else goToCdeByName("Smoking History Ind");
         findElement(By.linkText("Classification")).click();
         Assert.assertTrue(textPresent("Health Survey"));          
