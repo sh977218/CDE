@@ -15,7 +15,9 @@ var cdesvc = require('./cdesvc')
   , express = require('express')
   , sdc = require("./sdc.js")
   , status = require('./status')
+  , appSystem = require('../../system/node-js/app.js')
 ;
+
 exports.init = function(app) {
 
     app.use("/cde/public", express.static(path.join(__dirname, '../public')));
@@ -33,11 +35,11 @@ exports.init = function(app) {
         res.render('list','system',{module:"cde"});
     });
 
-    app.get('/boardList', function(req, res){
+    app.get('/boardList', appSystem.nocacheMiddleware, function(req, res){
       res.render('boardList');
     });
 
-    app.get('/deCompare', function(req, res){
+    app.get('/deCompare', appSystem.nocacheMiddleware, function(req, res){
       res.render('deCompare');
     });
 
@@ -71,7 +73,7 @@ exports.init = function(app) {
             return cb("You are not authorized.", null);                   
         }
     }
-    app.get('/createcde', function(req, res) {
+    app.get('/createcde', appSystem.nocacheMiddleware, function(req, res) {
        res.render('createcde'); 
     });
 
