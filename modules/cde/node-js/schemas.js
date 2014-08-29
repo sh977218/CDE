@@ -19,10 +19,10 @@ var permissibleValueSchema = mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
-var csEltSchema = mongoose.Schema({
-    name: String
-    , elements: [csEltSchema]
-}, {_id: false});
+//var csEltSchema = mongoose.Schema({
+//    name: String
+//    , elements: [csEltSchema]
+//}, {_id: false});
 
 var deJsonSchema = {
     naming: [sharedSchemas.namingSchema]         
@@ -98,12 +98,13 @@ var deJsonSchema = {
     , changeNote: String
     , cadsrRegStatus: String
     , registrationState: sharedSchemas.registrationStateSchema
-    , classification:  [
-            {
-                stewardOrg: {name: String}
-                , elements: [csEltSchema]
-            }
-        ]
+    , classification: [sharedSchemas.classificationSchema]
+//    , classification:  [
+//            {
+//                stewardOrg: {name: String}
+//                , elements: [csEltSchema]
+//            }
+//        ]
     , formUsageCounter: Number
     , properties: [
         {key: String, value: String, valueFormat: String}
