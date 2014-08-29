@@ -114,7 +114,7 @@ module.exports = function(grunt) {
                 }
             }  
             , runTests: {
-                command: function() { return "gradle -b test/selenium/build.gradle -PtestUrl=" + grunt.config('testUrl') + " -Ptimeout=" + config.test.timeout + " -PforkNb=" + config.test.forkNb + " clean test &";}
+                command: function() { return "gradle -b test/selenium/build.gradle -PtestUrl=" + grunt.config('testUrl') + " -Pbrowser=" + config.test.browser + " -Ptimeout=" + config.test.timeout + " -PforkNb=" + config.test.forkNb + " clean test " + config.test.testsToRun + " &";}
             }
         }    
         , copy: {
@@ -252,11 +252,11 @@ module.exports = function(grunt) {
                                 , name: 'Localhost '+'localhost:3001'.green
                             }
                             , {
-                                value: "cde-dev.nlm.nih.gov:3001"
+                                value: "http://cde-dev.nlm.nih.gov:3001"
                                 , name: 'Dev '+'cde-dev.nlm.nih.gov:3001'.red
                             }
                             , {
-                                value: "cde-qa.nlm.nih.gov:3001"
+                                value: "https://cde-qa.nlm.nih.gov:3001"
                                 , name: 'QA '+'cde-qa.nlm.nih.gov:3001'.red
                             }]
                         }
