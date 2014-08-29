@@ -12,7 +12,7 @@ exports.init = function(app) {
     
     app.post('/form', formCtrl.save);
     
-    app.get('/form/:id/:type', formCtrl.formById);
+    app.get('/formById/:id/:type', formCtrl.formById);
     
     app.post('/elasticSearch/form', function(req, res) {
        sharedElastic.elasticsearch(req.body.query, 'form', function(result) {
