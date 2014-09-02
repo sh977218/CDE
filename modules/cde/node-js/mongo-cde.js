@@ -292,7 +292,7 @@ exports.fork = function(elt, user, callback) {
     exports.update(elt, user, callback, function(newDe, dataElement) {
         newDe.isFork = true;
         newDe.registrationState.registrationStatus = "Incomplete";
-        dataElement.archived = false;      
+        dataElement.archived = undefined;      
     });
 };
 
