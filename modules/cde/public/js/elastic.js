@@ -58,6 +58,10 @@ angular.module('resources')
                         term: {
                             "archived": "true"
                         }
+                    },{
+                        term: {
+                            "isFork": "true"
+                        }                    
                     } 
                     ]
                 }

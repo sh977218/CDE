@@ -1,0 +1,31 @@
+<h4>Forks</h4>
+<div class="row">
+    <div class="col-md-6">
+        <table ng-show="forks.length > 0" class="table-bordered table-condensed table-striped" id="forksTable">
+            <thead>
+                <tr>
+                    <td>Steward</td>
+                    <td>Created By</td>
+                    <td>Note</td>
+                    <td>See Full</td>
+                    <td ng-show="isAllowed(cde)">Accept</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="fork in forks">
+                    <td>{{fork.stewardOrg.name}}</td>
+                    <td>{{fork.updatedBy.username}}</td>
+                    <td>{{fork.changeNote}}</td>
+                    <td><a href="#/deview?cdeId={{fork._id}}" target="_blank" id="fork-{{$index}}" class="fa fa-eye"> View</a></td>
+                    <td ng-show="isAllowed(cde)"><button class="fa fa-check" ng-click="accept(fork._id)" id="accept_fork_{{$index}}"> Accept</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div ng-show="forks.length == 0">This Element has no forks</div>
+<hr/>
+<div ng-show="isOrgCurator()">
+    <button ng-click="openAddFork()" id="openCreateFork"> <i class="fa fa-code-fork"></i> Fork CDE</button>
+</div>
+    
