@@ -113,6 +113,7 @@ var deJsonSchema = {
     ]
     , comments: [sharedSchemas.commentSchema]
     , archived: Boolean
+    , isFork: Boolean
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
     , usedByOrgs: [String]
@@ -140,10 +141,10 @@ schemas.managedContextSchema = mongoose.Schema ({
    name: String 
 });
 
-var mergeRequestSchema = {
-    source: {uuid: String}
+var requestSchema = {
+    source: {uuid: String, id: String}
     , destination: {uuid: String}
-    , fields: {
+    , mergeFields: {
         ids: Boolean
         , naming: Boolean
         , attachments: Boolean
@@ -162,7 +163,7 @@ schemas.message = mongoose.Schema ({
     author: {authorType: String, name: String},
     date: Date,
     type: String,
-    typeMergeRequest: mergeRequestSchema
+    typeRequest: requestSchema
 });
 
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 

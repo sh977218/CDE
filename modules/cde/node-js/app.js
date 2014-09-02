@@ -8,6 +8,7 @@ var cdesvc = require('./cdesvc')
   , config = require('config')
   , elastic = require('./elastic')
   , helper = require('../../system/node-js/helper.js')
+  , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
   , logging = require('../../system/node-js/logging.js')
   , adminItemSvd = require('../../system/node-js/adminItemSvc.js')
   , classificationShared = require('../shared/classificationShared.js')
@@ -216,6 +217,22 @@ exports.init = function(app) {
 
     app.get('/priorcdes/:id', function(req, res) {
         cdesvc.priorCdes(req, res);
+    });
+
+    app.get('/forks/:id', function(req, res) {
+        cdesvc.forks(req, res);
+    });
+
+    app.post('/dataelement/fork', function(req, res) {
+        adminItemSvc.fork(req, res, mongo_data);
+    });
+
+    app.post('/acceptFork', function(req, res) {
+        adminItemSvc.acceptFork(req, res, mongo_data);
+    });
+
+    app.get('/forkroot/:uuid', function (req, res) {
+        adminItemSvc.forkRoot(req, res, mongo_data);
     });
 
     app.get('/dataelement/:id', function(req, res) {
@@ -486,9 +503,18 @@ exports.init = function(app) {
     });
 
     app.post('/mail/messages/new', function(req, res) {
-        mongo_data.createMessage(req.body, function() {
-            res.send();
-        });    
+        if (req.isAuthenticated()) {
+            var message = req.body;
+            if (message.author.authorType === "user") {
+                message.author.name = req.user.username;
+            }
+            message.date = new Date();
+            mongo_data.createMessage(message, function() {
+              res.send();
+            });
+        } else {
+            res.send(401, "Not Authorized");
+        }
     });
 
     app.post('/mail/messages/update', function(req, res) {

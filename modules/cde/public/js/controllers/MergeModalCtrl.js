@@ -4,7 +4,7 @@ function MergeModalCtrl($scope, $modalInstance, cdes, retiredIndex, user) {
     $scope.mergeRequest = {
         source: {uuid: $scope.source.uuid, object: $scope.source}
         , destination: {uuid: $scope.target.uuid, object: $scope.target}
-        , fields: {
+        , mergeFields: {
             classifications: true
             , ids: false
             , naming: false
@@ -28,7 +28,7 @@ function MergeModalCtrl($scope, $modalInstance, cdes, retiredIndex, user) {
     };
     $scope.approvalNecessary = function() {
         return {
-            fieldsRequireApproval: $scope.mergeRequest.fields.ids || $scope.mergeRequest.fields.naming || $scope.mergeRequest.fields.properties || $scope.mergeRequest.fields.attachments,
+            fieldsRequireApproval: $scope.mergeRequest.mergeFields.ids || $scope.mergeRequest.mergeFields.naming || $scope.mergeRequest.mergeFields.properties || $scope.mergeRequest.mergeFields.attachments,
             ownDestinationCde: user.orgAdmin.concat(user.orgCurator).indexOf($scope.mergeRequest.destination.object.stewardOrg.name)>-1 
         };
     };

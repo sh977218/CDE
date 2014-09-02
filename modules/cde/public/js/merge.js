@@ -2,7 +2,7 @@ angular.module('resources')
 .factory('MergeCdes', function(DataElement, CDE, CdeClassificationTransfer) {
     var service = this;
     service.approveMergeMessage = function(message) { 
-        service.approveMerge(message.typeMergeRequest.source.object, message.typeMergeRequest.destination.object, message.typeMergeRequest.fields, function() {
+        service.approveMerge(message.typeRequest.source.object, message.typeRequest.destination.object, message.typeRequest.mergeFields, function() {
             service.closeMessage(message);
         });
     };
@@ -54,7 +54,7 @@ angular.module('resources')
                 author: {authorType: "user", name: dat.author},
                 date: new Date(),
                 type: "Merge Request",
-                typeMergeRequest: dat.mergeRequest
+                typeRequest: dat.mergeRequest
             };
             Mail.sendMessage(message, success);
         }

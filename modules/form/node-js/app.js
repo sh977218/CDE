@@ -11,6 +11,7 @@ exports.init = function(app) {
     app.post('/findForms', formCtrl.findForms);
     
     app.post('/form', formCtrl.save);
+    app.get('/form/:id', formCtrl.formById);
     
     app.post('/attachments/form/remove', function(req, res) {
         checkCdeOwnership(req.body.deId, req, function(err, de) {

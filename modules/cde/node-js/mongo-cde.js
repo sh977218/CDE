@@ -186,6 +186,41 @@ exports.priorCdes = function(cdeId, callback) {
     });
 };
 
+exports.acceptFork = function(fork, orig, callback) {
+    fork.isFork = undefined;
+    orig.archived = true;
+    fork.stewardOrg = orig.stewardOrg;
+    fork.registrationState.registrationStatus = orig.registrationState.registrationStatus;
+    fork.save(function(err) {
+       if (err) {callback(err);} 
+       else {
+           orig.save(function(err) {
+               callback(err);
+           });
+       }
+    });
+};
+
+exports.isForkOf = function(uuid, callback) {
+    return DataElement.find({uuid: uuid})
+        .where("archived").equals(null).where("isFork").equals(null).exec(function(err, cdes) {
+            callback("", cdes);
+    });
+};
+
+exports.forks = function(cdeId, callback) {
+    DataElement.findById(cdeId).exec(function (err, dataElement) {
+        if (dataElement != null) {
+            return DataElement.find({uuid: dataElement.uuid, isFork: true}, "naming stewardOrg updated updatedBy createdBy created updated changeNote")
+                .where("archived").equals(null).where("registrationState.registrationStatus").ne("Retired").exec(function(err, cdes) {
+                    callback("", cdes);
+            });
+        } else {
+            callback("", []);
+        }
+    });
+};
+
 exports.byId = function(cdeId, callback) {
     DataElement.findOne({'_id': cdeId}, function(err, cde) {
         callback("", cde);
@@ -253,7 +288,15 @@ exports.create = function(cde, user, callback) {
     });    
 };
 
-exports.update = function(elt, user, callback) {
+exports.fork = function(elt, user, callback) {
+    exports.update(elt, user, callback, function(newDe, dataElement) {
+        newDe.isFork = true;
+        newDe.registrationState.registrationStatus = "Incomplete";
+        dataElement.archived = undefined;      
+    });
+};
+
+exports.update = function(elt, user, callback, special) {
     return DataElement.findById(elt._id, function(err, dataElement) {
         var jsonDe = JSON.parse(JSON.stringify(dataElement));
         delete jsonDe._id;
@@ -282,6 +325,10 @@ exports.update = function(elt, user, callback) {
         newDe.classification = elt.classification;
         newDe.stewardOrg.name = elt.stewardOrg.name;
         dataElement.archived = true;
+
+        if (special) {
+            special(newDe, dataElement);
+        }
 
         if (newDe.naming.length < 1) {
             console.log("Cannot save without names");
@@ -336,7 +383,7 @@ exports.getMessages = function(req, callback) {
                         ]
                     },
                     {
-                        "typeMergeRequest.states.0.action": "Filed"
+                        "typeRequest.states.0.action": "Filed"
                     }
                 ]
             };            
@@ -371,7 +418,7 @@ exports.getMessages = function(req, callback) {
                         ]
                     },
                     {
-                        "typeMergeRequest.states.0.action": "Approved"
+                        "typeRequest.states.0.action": "Approved"
                     }
                 ]
             };             
