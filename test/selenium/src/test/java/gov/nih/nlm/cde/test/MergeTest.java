@@ -8,10 +8,10 @@ import org.testng.annotations.Test;
 public class MergeTest extends NlmCdeBaseTest {
     
     private void checkEverything() {
-        findElement(By.xpath("//input[@ng-model='mergeRequest.fields.ids']")).click();  
-        findElement(By.xpath("//input[@ng-model='mergeRequest.fields.attachments']")).click();  
-        findElement(By.xpath("//input[@ng-model='mergeRequest.fields.properties']")).click();  
-        findElement(By.xpath("//input[@ng-model='mergeRequest.fields.naming']")).click();     
+        findElement(By.xpath("//input[@ng-model='mergeRequest.mergeFields.ids']")).click();  
+        findElement(By.xpath("//input[@ng-model='mergeRequest.mergeFields.attachments']")).click();  
+        findElement(By.xpath("//input[@ng-model='mergeRequest.mergeFields.properties']")).click();  
+        findElement(By.xpath("//input[@ng-model='mergeRequest.mergeFields.naming']")).click();     
     }
     
     private void createMergeRequest() { 
