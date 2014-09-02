@@ -19,11 +19,6 @@ var permissibleValueSchema = mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
-//var csEltSchema = mongoose.Schema({
-//    name: String
-//    , elements: [csEltSchema]
-//}, {_id: false});
-
 var deJsonSchema = {
     naming: [sharedSchemas.namingSchema]         
     , source: String
