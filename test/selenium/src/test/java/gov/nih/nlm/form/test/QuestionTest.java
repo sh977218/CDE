@@ -22,9 +22,10 @@ public class QuestionTest extends BaseFormTest {
         
         new SectionTest().addSection("Patient Information", null);
         
-        findElement(By.id("startAddingQuestions")).click();    
-                
+        findElement(By.id("startAddingQuestions")).click();
+
         // Check status facet.
+        findElement(By.id("resetSearch")).click();
         Assert.assertTrue(textPresent("Qualified (4"));
         findElement(By.id("li-blank-caBIG")).click();
         findElement(By.cssSelector("i.fa-check-square-o"));
