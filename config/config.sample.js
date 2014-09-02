@@ -52,6 +52,8 @@ var config = {
     , test: {
         forkNb: 12
         , timeout: 8
+        , browser: 'chrome'
+        , testsToRun: '--tests gov.nih.nlm.cde.test.*'
     }
     , modules: {
         forms: true
