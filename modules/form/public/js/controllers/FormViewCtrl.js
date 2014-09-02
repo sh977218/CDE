@@ -29,4 +29,10 @@ function FormViewCtrl($scope, $routeParams, Form) {
     $scope.stageElt = function() {
         $scope.form.unsaved = true;
     };    
+    
+    $scope.classificationToFilter = function() {
+         if ($scope.form != null) {
+             return $scope.form.classification;
+         } 
+    };      
 }
