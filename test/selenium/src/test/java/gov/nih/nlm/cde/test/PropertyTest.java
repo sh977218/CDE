@@ -10,7 +10,7 @@ public class PropertyTest extends NlmCdeBaseTest {
     @Test
     public void addRemoveProperty() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        String cdeName = "Additional Pathologic Findings Chronic Proctocolitis Indicator";
+        String cdeName = "Aromatase Inhibitor Most Recent Received Text";
         goToCdeByName(cdeName);
         findElement(By.linkText("Properties")).click();
         findElement(By.id("addProperty")).click();

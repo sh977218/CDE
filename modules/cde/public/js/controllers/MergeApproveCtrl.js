@@ -5,7 +5,7 @@ function MergeApproveCtrl($scope, $modal, Mail, MergeCdes) {
             , controller: MergeApproveModalCtrl
             , resolve: {
                 elt: function() {
-                    return message.typeMergeRequest.destination.object;
+                    return message.typeRequest.destination.object;
                 } , user: function() {
                     return $scope.user;
                 } 
@@ -17,12 +17,12 @@ function MergeApproveCtrl($scope, $modal, Mail, MergeCdes) {
     };    
     
     $scope.approveMergeMessage = function(message) { 
-        MergeCdes.approveMerge(message.typeMergeRequest.source.object, message.typeMergeRequest.destination.object, message.typeMergeRequest.fields, function() {
+        MergeCdes.approveMerge(message.typeRequest.source.object, message.typeRequest.destination.object, message.typeRequest.mergeFields, function() {
             $scope.closeMessage(message);
         });
     };
     $scope.closeMessage = function(message) {
-        message.typeMergeRequest.states.unshift({
+        message.typeRequest.states.unshift({
             "action" : "Approved",
             "date" : new Date(),
             "comment" : ""
