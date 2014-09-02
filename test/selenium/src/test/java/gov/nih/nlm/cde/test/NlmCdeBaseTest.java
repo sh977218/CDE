@@ -120,7 +120,7 @@ public class NlmCdeBaseTest {
         
     protected void goToCdeByName(String name) {
         openCdeInList(name);
-        findElement(By.linkText("View Full Detail")).click();
+        findElement(By.xpath("//a[@id='openCdeInCurrentTab_0']")).click();
         Assert.assertTrue(textPresent("More Like This"));
         Assert.assertTrue(textPresent(name));
     }
@@ -254,6 +254,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent(cdeName, "#accordionList"));
         findElement(By.id("addToCompare_0")).click();
+        hangon(.5);
         findElement(By.name("ftsearch")).clear();
     }
     
@@ -328,6 +329,5 @@ public class NlmCdeBaseTest {
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }
-    
     
 }
