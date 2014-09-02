@@ -288,11 +288,15 @@ exports.create = function(cde, user, callback) {
     });    
 };
 
-exports.update = function(elt, user, callback) {
-    exports.updateOrFork(elt, user, false, callback);
+exports.fork = function(elt, user, callback) {
+    exports.update(elt, user, callback, function(newDe, dataElement) {
+        newDe.isFork = true;
+        newDe.registrationState.registrationStatus = "Incomplete";
+        dataElement.archived = false;      
+    });
 };
 
-exports.updateOrFork = function(elt, user, fork, callback) {
+exports.update = function(elt, user, callback, special) {
     return DataElement.findById(elt._id, function(err, dataElement) {
         var jsonDe = JSON.parse(JSON.stringify(dataElement));
         delete jsonDe._id;
@@ -320,12 +324,10 @@ exports.updateOrFork = function(elt, user, fork, callback) {
         newDe.ids = elt.ids;
         newDe.classification = elt.classification;
         newDe.stewardOrg.name = elt.stewardOrg.name;
+        dataElement.archived = true;
 
-        if (fork === true) {
-            newDe.isFork = true;
-            newDe.registrationState.registrationStatus = "Incomplete";
-        } else {
-            dataElement.archived = true;
+        if (special) {
+            special(newDe, dataElement);
         }
 
         if (newDe.naming.length < 1) {

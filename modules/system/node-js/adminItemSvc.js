@@ -109,7 +109,7 @@ exports.fork = function(req, res, dao) {
                 } else {
                     item.stewardOrg.name = req.body.org;
                     item.changeNote = req.body.changeNote;
-                    return dao.updateOrFork(item, req.user, true, function(err, response) {
+                    return dao.fork(item, req.user, function(err, response) {
                         res.send(response);
                     });
                 }
