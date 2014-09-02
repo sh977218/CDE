@@ -3,8 +3,8 @@ var config = require('config')
     , sharedElastic = require('../../system/node-js/elastic.js')
 ;
 
-var elasticCdeUri = config.elastic.uri + "/" + config.elastic.index.name + "/";
-var elasticFormUri = config.elastic.uri + "/" + config.elastic.formIndex.name + "/";
+var elasticCdeUri = sharedElastic.elasticCdeUri;
+var elasticFormUri = sharedElastic.elasticFormUri;
 
 exports.elasticsearch = function (query, cb) {
     sharedElastic.elasticsearch(query, 'cde', cb);

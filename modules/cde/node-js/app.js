@@ -14,7 +14,10 @@ var cdesvc = require('./cdesvc')
   , path = require('path')
   , express = require('express')
   , sdc = require("./sdc.js")
+  , status = require('./status')
+  , appSystem = require('../../system/node-js/app.js')
 ;
+
 exports.init = function(app) {
 
     app.use("/cde/public", express.static(path.join(__dirname, '../public')));
@@ -32,19 +35,46 @@ exports.init = function(app) {
         res.render('list','system',{module:"cde"});
     });
 
-    app.get('/boardList', function(req, res){
+    app.get('/boardList', appSystem.nocacheMiddleware, function(req, res){
       res.render('boardList');
     });
 
-    app.get('/deCompare', function(req, res){
+    app.get('/deCompare', appSystem.nocacheMiddleware, function(req, res){
       res.render('deCompare');
     });
 
     app.get('/listboards', function(req, res) {
        boardsvc.boardList(req, res); 
     });
+
+    function checkCdeOwnership(deId, req, cb) {
+        this.userSessionExists = function(req) {
+            return req.user;
+        };
+        this.isCuratorOrAdmin = function(req, de) {
+            return (req.user.orgAdmin && req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
+                   || (req.user.orgCurator && req.user.orgCurator.indexOf(de.stewardOrg.name) < 0);
+        };
+        var authorization = this;
+        if (req.isAuthenticated()) {
+            mongo_data.byId(deId, function (err, de) {
+                if (err) {
+                    return cb("Data Element does not exist.", null);
+                }
+                if (!authorization.userSessionExists(req)
+                   || !authorization.isCuratorOrAdmin(req, de)
+                   ) {
+                    return cb("You do not own this data element.", null);
+                } else {
+                    cb(null, de);
+                }
+            });
+        } else {
+            return cb("You are not authorized.", null);                   
+        }
+    }
     
-    app.get('/createcde', function(req, res) {
+    app.get('/createcde', appSystem.nocacheMiddleware, function(req, res) {
        res.render('createcde'); 
     });
 
@@ -526,4 +556,6 @@ exports.init = function(app) {
     app.get('/profile', function(req, res) {
         res.render("profile", "cde"); 
     });        
+    
+    app.get('/status/cde', status.status);
 };

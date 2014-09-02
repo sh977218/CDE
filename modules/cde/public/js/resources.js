@@ -20,7 +20,7 @@ angular.module('resources', ['ngResource'])
         }; 
     })
     .factory('Form', function($resource) {
-        return $resource('/form/:formId/:type', {formId: '@formId', type: '_id'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
+        return $resource('/formById/:formId/:type', {formId: '@formId', type: '_id'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
     })
     .factory('PriorCdes', function($resource) {
         return $resource('/priorcdes/:cdeId', {cdeId: '@cdeId'}, 

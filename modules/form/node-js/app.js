@@ -12,8 +12,6 @@ exports.init = function(app) {
     
     app.post('/form', formCtrl.save);
     
-    app.get('/form/:id/:type', formCtrl.formById);
-
     app.post('/attachments/form/remove', function(req, res) {
         checkCdeOwnership(req.body.deId, req, function(err, de) {
             if (err) return res.send(err);  
@@ -49,6 +47,7 @@ exports.init = function(app) {
         });
     });
 
+    app.get('/formById/:id/:type', formCtrl.formById);
     
     app.post('/elasticSearch/form', function(req, res) {
        sharedElastic.elasticsearch(req.body.query, 'form', function(result) {

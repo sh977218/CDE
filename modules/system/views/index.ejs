@@ -3,9 +3,6 @@
     <head>        
         <title>NLM CDE Repository</title>
         <meta name="site-version" content="<%- include version.ejs %>">
-        <% var cdeIncludePath = "/cde/public/"; %>
-        <% var systemIncludePath = "/system/public/"; %>
-        <% var formIncludePath = "/form/public/"; %>
 
         <!--[if lt IE 9]>
             <script type="text/javascript">
@@ -20,17 +17,18 @@
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-route.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-resource.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-sanitize.min.js"></script>
-
-        <script src="<%= cdeIncludePath %>assets/js/textAngular-1.2.0.min.js"></script>
-        <script src="<%= cdeIncludePath %>assets/js/angular-local-storage.js"></script>
-        <script src="<%= cdeIncludePath %>assets/js/ui-bootstrap-tpls-0.10.0.min.js"></script>
-
+        
         <%- include includeFrontEndJS.ejs %>
+        <%- include ../../cde/views/includeFrontEndJS.ejs %>
+        <%- include ../../form/views/includeFrontEndJS.ejs %>
         
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="<%= cdeIncludePath %>assets/css/ng-grid.min.css" />
-        <link href="<%= cdeIncludePath %>css/style.css" rel="stylesheet" type="text/css" media="all" />
+        <link rel="stylesheet" type="text/css" href="/cde/public/assets/css/ng-grid.min.css" />
+        
+        <!-- build:css /cde/public/css/style.concat.min.css -->
+        <link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all" />
+        <!-- endbuild -->
         
         <!--[if lte IE 9]>
           <script>
@@ -60,7 +58,7 @@
                             <span class="icon-bar"></span>
                         </button>
                         <a class="navbar-brand" href="#">
-                            <img alt="Home" src="<%= cdeIncludePath %>assets/img/nih-nlm-logo-simple.png" />
+                            <img alt="Home" src="/cde/public/assets/img/nih-nlm-logo-simple.png" />
                         </a>
                     </div>
                     <div class="navbar-collapse collapse">
@@ -147,7 +145,7 @@
                         </p>
                       </div>
                       <div class="col-md-2">
-                          <center><br/><a href="http://www.usa.gov"><img src="<%= cdeIncludePath %>assets/img/usagov_logo.gif" /></a></center>
+                          <center><br/><a href="http://www.usa.gov"><img src="/cde/public/assets/img/usagov_logo.gif" /></a></center>
                       </div>
                       <div class="col-md-5">
                           <p class="pull-right">
@@ -162,11 +160,18 @@
             </footer>
         </div>
         
-        <script src="<%= cdeIncludePath %>assets/js/diff_match_patch.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="<%= cdeIncludePath %>assets/js/ng-grid-2.0.7.min.js"></script>
-        <script src="<%= cdeIncludePath %>assets/js/match-media.js"></script>
-        <script src="<%= cdeIncludePath %>assets/js/sortable.js"></script>
+        <script type="text/javascript" src="/cde/public/assets/js/ng-grid-2.0.7.min.js"></script>
+        
+        <!-- build:js /cde/public/assets/js/resource.concat.min.js -->
+        <script src="/cde/public/assets/js/textAngular-1.2.0.min.js"></script>
+        <script src="/cde/public/assets/js/angular-local-storage.js"></script>
+        <script src="/cde/public/assets/js/ui-bootstrap-tpls-0.10.0.min.js"></script>
+        <script src="/cde/public/assets/js/diff_match_patch.js"></script>
+        <script src="/cde/public/assets/js/match-media.js"></script>
+        <script src="/cde/public/assets/js/sortable.js"></script>
+        <!-- endbuild -->
+
     </body>
 </html>

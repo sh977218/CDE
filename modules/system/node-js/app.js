@@ -9,6 +9,13 @@ var passport = require('passport')
   , path = require('path')
 ;
 
+exports.nocacheMiddleware = function(req, res, next) {
+    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    res.header('Expires', '-1');
+    res.header('Pragma', 'no-cache');
+    next();
+};
+
 exports.init = function(app) {
     var viewConfig = {modules: config.modules};
 
@@ -247,11 +254,11 @@ exports.init = function(app) {
         }
     });    
     
-    app.get('/login', function(req, res) {
+    app.get('/login', exports.nocacheMiddleware, function(req, res) {
         res.render('login', "system", { user: req.user, message: req.flash('error') });
     });
 
-    app.get('/siteaccountmanagement', function(req, res) {
+    app.get('/siteaccountmanagement', exports.nocacheMiddleware, function(req, res) {
         var ip = req.ip;
         if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
             res.render('siteaccountmanagement', "system");
@@ -259,10 +266,6 @@ exports.init = function(app) {
             res.send(403, "Not Authorized");
         }
     });
-
-    app.get('/orgaccountmanagement', function(req, res) {
-        res.render('orgAccountManagement', "system");
-    }); 
     
     app.get('/orgNames', function(req, res) {
        mongo_data.orgNames(function (err, names) {
@@ -270,4 +273,8 @@ exports.init = function(app) {
        }); 
     });
 
+    app.get('/orgaccountmanagement', exports.nocacheMiddleware, function(req, res) {
+        res.render('orgAccountManagement', "system");
+    });    
+          
 };
