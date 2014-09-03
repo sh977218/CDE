@@ -38,12 +38,29 @@
                 <tr>
                     <th>Organization Name:</th>
                     <th>Organization Long Name:</th>
+                    <th>Mailing Address:</th>
+                    <th>E-mail Address:</th>
+                    <th>Phone Number:</th>
+                    <th>Website:</th>
                 </tr>
-                
                 <tr ng-repeat="c in orgs | orderBy:'name'">
-                    <td id="orgName-{{c.name}}">{{c.name}}</td>
+                    <td id="orgName-{{c.name}}">
+                        {{c.name}}
+                    </td>
                     <td>
-                        <div inline-edit id="orgLongName-{{c.name}}" model="c.longName" is-allowed="true" on-ok="updateOrg(c)"></div>
+                        <div inline-edit id="orgLongName-{{c.name}}" model="c.longName" is-allowed="true" on-ok="updateOrg(c, 'longName')"></div>
+                    </td>
+                    <td>
+                        <div inline-edit id="orgMailAddress-{{c.name}}" model="c.mailAddress" is-allowed="true" on-ok="updateOrg(c, 'mailAddress')"></div>
+                    </td>
+                    <td>
+                        <div inline-edit id="orgEmailAddress-{{c.name}}" model="c.emailAddress" is-allowed="true" on-ok="updateOrg(c, 'emailAddress')"></div>
+                    </td>
+                    <td>
+                        <div inline-edit id="orgPhoneNumber-{{c.name}}" model="c.phoneNumber" is-allowed="true" on-ok="updateOrg(c, 'phoneNumber')"></div>
+                    </td>
+                    <td>
+                        <div inline-edit id="orgUri-{{c.name}}" model="c.uri" is-allowed="true" on-ok="updateOrg(c, 'uri')"></div>
                     </td>
                 </tr>
             </table>

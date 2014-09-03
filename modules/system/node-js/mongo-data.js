@@ -2,7 +2,6 @@ var schemas = require('./schemas')
     , mongoose = require('mongoose')
     , config = require('config')
     , mongoUri = config.mongoUri
-    , mongoUri = config.mongoUri
     , conn = mongoose.createConnection(mongoUri)
     , Org = conn.model('Org', schemas.orgSchema)    
     , User = conn.model('User', schemas.userSchema)
@@ -126,13 +125,37 @@ exports.removeOrg = function (id, callback) {
   });
 };
 
-exports.updateOrgLongName = function(org, res) {
+exports.updateOrg = function(org, res, field) {
   Org.findOne({'name': org.name}).exec(function(err, found) {
     if(found) {
-        Org.update({'name':org.name}, { 'longName':org.longName }).exec();
-        res.send('Org has been updated.');
+        switch(field) {
+            case 'longName':
+                Org.update({'name':org.name}, { 'longName':org.longName }).exec();
+                res.send('Org long name has been updated.');
+                break;
+            case 'mailAddress':
+                Org.update({'name':org.name}, {'mailAddress':org.mailAddress}).exec();
+                res.send('Org mailing address has been updated.');
+                break;
+            case 'emailAddress':
+                Org.update({'name':org.name}, {'emailAddress':org.emailAddress}).exec();
+                res.send('Org e-mail address has been updated.');
+                break;
+            case 'phoneNumber':
+                Org.update({'name':org.name}, {'phoneNumber':org.phoneNumber}).exec();
+                res.send('Org phone number has been updated.');
+                break;
+            case 'uri':
+                Org.update({'name':org.name}, {'uri':org.uri}).exec();
+                res.send('Org website uri has been updated.');
+                break;
+            default:
+                res.send('Cannot recognize org field to update.');
+                break;
+        }
     } else {
         res.send('Org did not exist.');
     }
   });
 };
+

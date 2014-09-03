@@ -19,6 +19,6 @@ exports.removeOrg = function(req, res) {
     });
 };
 
-exports.updateOrg = function(req, res) {
-    mongo_data.updateOrgLongName(req.body, res);
+exports.updateOrg = function(req, res, field) {
+    mongo_data.updateOrg(req.body, res, field);
 };

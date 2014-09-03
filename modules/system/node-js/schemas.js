@@ -10,6 +10,10 @@ var csEltSchema = mongoose.Schema({
 schemas.orgSchema = mongoose.Schema ({
     name: String
     , longName: String
+    , mailAddress: String
+    , emailAddress: String
+    , phoneNumber: String
+    , uri: String
     , classifications: [csEltSchema]
 });
 

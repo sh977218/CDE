@@ -145,9 +145,9 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
         );
     };
     
-    $scope.updateOrg = function(c) {
+    $scope.updateOrg = function(c, field) {
         $timeout(function(){
-            AccountManagement.updateOrg(c,
+            AccountManagement.updateOrg(c, field,
                 function(res) {
                     $scope.addAlert("success", res);
                     $scope.orgs = $scope.getOrgs();

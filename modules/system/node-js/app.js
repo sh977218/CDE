@@ -151,9 +151,9 @@ exports.init = function(app) {
         }
     });
 
-    app.post('/updateOrg', function(req, res) {
+    app.post('/updateOrg/:field', function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            orgsvc.updateOrg(req, res);
+            orgsvc.updateOrg(req, res, req.params.field);
         } else {
             res.send(403, "You are not authorized to update this organization.");                    
         }
