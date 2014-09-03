@@ -6,6 +6,10 @@ function FormViewCtrl($scope, $routeParams, Form) {
     var route = $routeParams;
     $scope.initialized = false;
     
+    $scope.$watch('form', function() {
+        $scope.elt = $scope.form;        
+    });
+    
     if (route._id) var query = {formId: route._id, type: '_id'};
     if (route.uuid) var query = {formId: route.uuid, type: 'uuid'};
 

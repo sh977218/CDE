@@ -162,52 +162,6 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
                cde !== undefined &&
                $scope.quickBoard.indexOf(cde.uuid) < 0;
     };
-    
-    // @TODO
-    // Is there a more elegant way to do this?
-//    $scope.setActiveMenu = function(key) {
-//        $scope.menuHome = '';
-//        $scope.menuSearch = '';
-//        $scope.menuForm = '';
-//        $scope.menuLogin = '';
-//        $scope.menuQuickBoard = '';
-//        $scope.menuIntRev = '';
-//        $scope.menuNlmRev = '';
-//        $scope.menuAccount = '';
-//        $scope.menuCreate = '';
-//        $scope.menuMyBoards = '';
-//        $scope.menuBoardList = '';
-//        $scope.menuCompare = '';
-//        $scope.menuQuickBoard = '';
-//        
-//        if (key === 'HOME') {
-//            $scope.menuHome = 'active';
-//        } else if (key === 'LISTCDE') {
-//            $scope.menuSearch = 'active';
-//        } else if (key === 'LOGIN') {
-//            $scope.menuLogin = 'active';
-//        } else if (key === 'LISTFORMS') {
-//            $scope.menuForm = 'active';
-//        } else if (key === 'QUICKBOARD') {
-//            $scope.menuQuickBoard = 'active';
-//        } else if (key === 'INTREV') {
-//            $scope.menuIntRev = 'active';
-//        } else if (key === 'NLMREV') {
-//            $scope.menuNlmRev = 'active';
-//        } else if (key === 'ACCOUNT') {
-//            $scope.menuAccount = 'active';
-//        } else if (key === 'CREATECDE') {
-//            $scope.menuCreate = 'active';
-//        } else if (key === 'MYBOARDS') {
-//            $scope.menuMyBoards = 'active';
-//        } else if (key === 'BOARDLIST') {
-//            $scope.menuBoardList = 'active';
-//        } else if (key === 'COMPARE') {
-//            $scope.menuCompare = 'active';
-//        } else if (key === 'QUICKBOARD') {
-//            $scope.menuQuickBoard = 'active';
-//        }
-//    };
 
     $scope.isPageActive = function (viewLocation) { 
         return viewLocation === $location.path();
@@ -240,6 +194,10 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     
     $scope.isAllowed = function (elt) {
         return isAllowedModel.isAllowed($scope, elt);  
+    };
+    
+    $scope.isAllowedNonCuration = function (elt) {
+        return isAllowedModel.isAllowedNonCuration($scope, elt);
     };
     
     $scope.displayStatusWarning = function(cde) {

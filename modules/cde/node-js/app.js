@@ -8,9 +8,8 @@ var cdesvc = require('./cdesvc')
   , config = require('config')
   , elastic = require('./elastic')
   , helper = require('../../system/node-js/helper.js')
-  , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
   , logging = require('../../system/node-js/logging.js')
-  , adminItemSvd = require('../../system/node-js/adminItemSvc.js')
+  , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
   , classificationShared = require('../shared/classificationShared.js')
   , path = require('path')
   , express = require('express')
@@ -47,33 +46,6 @@ exports.init = function(app) {
     app.get('/listboards', function(req, res) {
        boardsvc.boardList(req, res); 
     });
-
-    function checkCdeOwnership(deId, req, cb) {
-        this.userSessionExists = function(req) {
-            return req.user;
-        };
-        this.isCuratorOrAdmin = function(req, de) {
-            return (req.user.orgAdmin && req.user.orgAdmin.indexOf(de.stewardOrg.name) < 0)
-                   || (req.user.orgCurator && req.user.orgCurator.indexOf(de.stewardOrg.name) < 0);
-        };
-        var authorization = this;
-        if (req.isAuthenticated()) {
-            mongo_data.byId(deId, function (err, de) {
-                if (err) {
-                    return cb("Data Element does not exist.", null);
-                }
-                if (!authorization.userSessionExists(req)
-                   || !authorization.isCuratorOrAdmin(req, de)
-                   ) {
-                    return cb("You do not own this data element.", null);
-                } else {
-                    cb(null, de);
-                }
-            });
-        } else {
-            return cb("You are not authorized.", null);                   
-        }
-    }
     
     app.get('/createcde', appSystem.nocacheMiddleware, function(req, res) {
        res.render('createcde'); 
@@ -398,7 +370,7 @@ exports.init = function(app) {
     });
 
     app.post('/attachments/cde/add', function(req, res) {
-        adminItemSvc.addAttachment(req, res, dao);
+        adminItemSvc.addAttachment(req, res, mongo_data);
     });
 
     app.post('/attachments/cde/remove', function(req, res) {
@@ -416,24 +388,7 @@ exports.init = function(app) {
     });
     
     app.post('/attachments/cde/setDefault', function(req, res) {
-        adminItemSvc.checkOwnership(mongo_data, req.body.deId, req, function(err, de) {
-            if (err) {
-                logging.expressLogger.info(err);
-                return res.send(err);
-            }  
-            var state = req.body.state;
-            for (var i = 0; i < de.attachments.length; i++) {
-                de.attachments[i].isDefault = false;
-            }
-            de.attachments[req.body.index].isDefault = state;
-            de.save(function (err) {
-               if (err) {
-                   res.send("error: " + err);
-               } else {
-                   res.send(de);
-               }
-            });
-        });
+        adminItemSvc.setAttachmentDefault(req, res, mongo_data);
     });
 
     app.get('/userTotalSpace/:uname', function(req, res) {

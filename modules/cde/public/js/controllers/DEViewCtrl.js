@@ -1,4 +1,5 @@
 function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementUUID, PriorCdes, CdeDiff) {
+    $scope.module = 'cde';
     $scope.initialized = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;
@@ -30,7 +31,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     ];
     
     $scope.$watch('cde', function() {
-        $scope.elt = cde;        
+        $scope.elt = $scope.cde;        
     });
     
     $scope.reload = function(route, cb) {
@@ -95,23 +96,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
              return $scope.cde.classification;
          } 
     };
-
-    $scope.isAllowedNonCuration = function (cde) {
-        if ($scope.initialized && cde.archived) {
-            return false;
-        }
-        if ($scope.user && $scope.user.siteAdmin) {
-            return true;
-        } else {   
-            if ($scope.initialized && $scope.myOrgs) {
-                return $scope.myOrgs.indexOf(cde.stewardOrg.name) > -1;
-            } else {
-                return false;
-            }
-        }
-    };
-    
-
    
     $scope.save = function() {
         $scope.cde.$save(function (cde) {

@@ -1,3 +1,6 @@
+var mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
+
+
 exports.save = function(req, res, dao) {
     var elt = req.body;
     if (req.isAuthenticated()) {
@@ -49,22 +52,18 @@ exports.save = function(req, res, dao) {
     }
 };
 
-exports.checkOwnership = function(dao, id, req, cb) {
-    this.userSessionExists = function(req) {
-        return req.user;
-    };
-    this.isCuratorOrAdmin = function(req, elt) {
-        return (req.user.orgAdmin && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0)
-               || (req.user.orgCurator && req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0);
-    };
-    var authorization = this;
+function isCuratorOrAdmin(req, elt) {
+    return (req.user.orgAdmin && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0)
+           || (req.user.orgCurator && req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0);
+};
+    
+function checkOwnership(dao, id, req, cb) {
     if (req.isAuthenticated()) {
         dao.byId(id, function (err, elt) {
-            if (err) {
+            if (err || !elt) {
                 return cb("Element does not exist.", null);
             }
-            if (!authorization.userSessionExists(req)
-               || !authorization.isCuratorOrAdmin(req, elt)
+            if (!req.user || !isCuratorOrAdmin(req, elt)
                ) {
                 return cb("You do not own this element.", null);
             } else {
@@ -76,6 +75,27 @@ exports.checkOwnership = function(dao, id, req, cb) {
     }
 };
 
+exports.setAttachmentDefault = function(req, res, dao) {
+    checkOwnership(dao, req.body.id, req, function(err, elt) {
+        if (err) {
+            logging.expressLogger.info(err);
+            return res.send(err);
+        }
+        var state = req.body.state;
+        for (var i = 0; i < elt.attachments.length; i++) {
+            elt.attachments[i].isDefault = false;
+        }
+        elt.attachments[req.body.index].isDefault = state;
+        elt.save(function(err) {
+            if (err) {
+                res.send("error: " + err);
+            } else {
+                res.send(elt);
+            }
+        });
+    });
+}
+
 exports.addAttachment = function(req, res, dao) {
     checkOwnership(dao, req.body.id, req, function(err, elt) {
         if (err) return res.send(err);
@@ -83,7 +103,7 @@ exports.addAttachment = function(req, res, dao) {
             if (totalSpace > req.user.quota) {
                 res.send({message: "You have exceeded your quota"});
             } else {
-                dao.addAttachment(req.files.uploadedFiles, req.user, "some comment", elt, function() {
+                mongo_data_system.addAttachment(req.files.uploadedFiles, req.user, "some comment", elt, function() {
                     res.send(elt);            
                 });                                            
             }

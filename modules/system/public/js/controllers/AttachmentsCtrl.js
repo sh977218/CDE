@@ -1,4 +1,4 @@
-function AttachmentsCtrl($scope, $rootScope, Attachment) {     
+function AttachmentsCtrl($scope, $rootScope, Attachment, $http) {     
     $scope.setFiles = function(element) {
         $scope.$apply(function($scope) {
           // Turn the FileList object into an Array
@@ -22,14 +22,14 @@ function AttachmentsCtrl($scope, $rootScope, Attachment) {
 
     $scope.uploadFile = function(file) {
         var fd = new FormData();
-        fd.append("de_id", $scope.elt._id);
+        fd.append("id", $scope.elt._id);
         fd.append("uploadedFiles", file);
         var xhr = new XMLHttpRequest();
         xhr.upload.addEventListener("progress", uploadProgress, false);
         xhr.addEventListener("load", uploadComplete, false);
         xhr.addEventListener("error", uploadFailed, false);
         xhr.addEventListener("abort", uploadCanceled, false);
-        xhr.open("POST", "/addAttachmentToCde");
+        xhr.open("POST", "/attachments/" + $scope.module + "/add");
         $scope.progressVisible = true;
         xhr.send(fd);
     };
@@ -67,8 +67,7 @@ function AttachmentsCtrl($scope, $rootScope, Attachment) {
         });
     }
     
-    $scope.removeAttachment = function(index) {
-        
+    $scope.removeAttachment = function(index) {      
         Attachment.remove({
             index: index
             , deId: $scope.elt._id 
@@ -82,12 +81,12 @@ function AttachmentsCtrl($scope, $rootScope, Attachment) {
         if (!$scope.isAllowedNonCuration($scope.elt)) {
             return;
         };
-        Attachment.setDefault({
+        $http.post("/attachments/" + $scope.module + "/setDefault", 
+        {
             index: index
             , state: state
-            , deId: $scope.elt._id 
-        }, 
-        function (res) {
+            , id: $scope.elt._id 
+        }).then(function (res) {
             $scope.elt = res;
         });
     };
