@@ -206,7 +206,7 @@ public class NlmCdeBaseTest {
     
     protected void goToSearch() {
         driver.get(baseUrl + "/gonowhere");
-        driver.get(baseUrl + "/#/search");
+        driver.get(baseUrl + "/#/cde/search");
         findElement(By.name("ftsearch"));
         Assert.assertTrue(textPresent("Qualified ("));
     }

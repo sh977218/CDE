@@ -267,6 +267,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         $scope.cache.removeAll();
         $scope.cacheOrgFilter(orgName);
         $scope.cache.put("selectedElements", elts);
+        $location.url('/'+'cde'+'/search');
     };
     
     $scope.screenSizeXs = screenSize.is('xs');

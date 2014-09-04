@@ -65,7 +65,7 @@
                         <ul class="nav navbar-nav">
                             <li ng-class="{ active: isPageActive('/cde/search')}"><a href="/#/cde/search">CDEs</a></li>
                                                        
-                            <% if (config.modules.forms) { %><li ng-class="{ active: isPageActive('/formList')}"><a href="#/formList">Forms</a></li> <% } %>
+                            <% if (config.modules.forms) { %><li ng-class="{ active: isPageActive('/form/search')}"><a href="/#/form/search">Forms</a></li> <% } %>
                             
                             <li ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' class="dropdown">    
                                 <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Boards<span class="caret"></span></a>
