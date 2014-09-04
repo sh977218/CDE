@@ -319,11 +319,15 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(textPresent(checkText));
     }
     
-    protected void switchTab(int i) {
+    protected void switchTabAndClose(int i) {
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
     }
-            
+    
+    protected void switchTab(int i) {
+        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
+        driver.switchTo().window(tabs2.get(i));
+    }
     
 }

@@ -25,7 +25,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         {heading: "Boards"},
         {heading: "Attachments"},
         {heading: "More Like This"},
-        {heading: "History"}
+        {heading: "History"},
+        {heading: "Forks"}
     ];
     
     $scope.reload = function(route, cb) {
@@ -36,18 +37,23 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             var query = {uuid: route.uuid};
             if (route.version) query.version = route.version;
         }
-        service.get(query, function (de) {
-           $scope.cde = de;          
-           $scope.loadValueSet();
-           $scope.canLinkPvFunc();
-           $scope.loadMlt();
-           $scope.loadBoards();
-           $scope.showValidationIcons = $scope.cde.dataElementConcept.conceptualDomain != null && $scope.cde.dataElementConcept.conceptualDomain.vsac.id != null;
-           $scope.getPVTypeaheadCodeSystemNameList(); 
+        service.get(query, function(de) {
+            $scope.cde = de;
+            $scope.loadValueSet();
+            $scope.canLinkPvFunc();
+            $scope.loadMlt();
+            $scope.loadBoards();
+            $scope.showValidationIcons = $scope.cde.dataElementConcept.conceptualDomain != null && $scope.cde.dataElementConcept.conceptualDomain.vsac.id != null;
+            $scope.getPVTypeaheadCodeSystemNameList();
             PriorCdes.getCdes({cdeId: de._id}, function(dataElements) {
                 $scope.priorCdes = dataElements;
-            });                
-           $scope.initialized = true;
+            });
+            if ($scope.cde.isFork) {
+                $http.get('/forkroot/' + $scope.cde.uuid).then(function(result) {
+                    $scope.rootFork = result.data;
+                });
+            };
+            $scope.initialized = true;
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
@@ -55,6 +61,30 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     };
     
     $scope.reload($routeParams);
+
+    $scope.sendForkNotification = function() {
+        var message = {
+            recipient: {recipientType: "stewardOrg", name: $scope.rootFork.stewardOrg.name},
+            author: {authorType: "user"},
+            type: "Fork Notification", 
+            typeRequest: {
+                source: {id: $scope.cde._id}
+                , destination: {uuid: $scope.cde.uuid}
+                , states: [{
+                    action: "Filed"
+                    , date: new Date()
+                    , comment: "Please review this fork"
+                }]
+            }
+        };
+        $http.post('/mail/messages/new', message)
+            .success(function(result) {
+                $scope.addAlert("success", "Notification sent.")
+            })
+            .error(function(result) {
+                $scope.addAlert("danger", "Unable to notify user. ");
+            });
+    };
 
     $scope.classificationToFilter = function() {
          if ($scope.cde != null) {
