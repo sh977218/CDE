@@ -14,7 +14,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
 //    @Test
     public void administrativeStatus() {
         loginAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName("Small Cell Lung Carcinoma Invasion Status");
+        goToElementByName("Small Cell Lung Carcinoma Invasion Status");
         findElement(By.linkText("Status")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("dd_adminStatus")));
         findElement(By.linkText("General Details")).click();
@@ -22,7 +22,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.name("administrativeStatus")).sendKeys("Ready For Review");
         findElement(By.id("saveRegStatus")).click();
         hangon(2);
-        goToCdeByName("Small Cell Lung Carcinoma Invasion Status");
+        goToElementByName("Small Cell Lung Carcinoma Invasion Status");
         findElement(By.linkText("Status")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("dd_adminStatus")));
         Assert.assertTrue(textPresent("Ready For Review"));
@@ -32,7 +32,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.name("administrativeStatus")).sendKeys(Keys.BACK_SPACE);
         findElement(By.id("saveRegStatus")).click();
         hangon(2);
-        goToCdeByName("Small Cell Lung Carcinoma Invasion Status");
+        goToElementByName("Small Cell Lung Carcinoma Invasion Status");
         findElement(By.linkText("Status")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("dd_adminStatus")));        
         logout();
@@ -41,7 +41,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
     @Test
     public void changeRegistrationStatus() {
         mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
-        goToCdeByName("Investigator Identifier java.lang.Integer");
+        goToElementByName("Investigator Identifier java.lang.Integer");
         Assert.assertTrue(textPresent("Qualified"));
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
@@ -52,7 +52,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         findElement(By.name("unresolvedIssue")).sendKeys("Unresolved Issue 1");
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
-        goToCdeByName("Investigator Identifier java.lang.Integer");
+        goToElementByName("Investigator Identifier java.lang.Integer");
         Assert.assertTrue(textPresent("Recorded"));
         findElement(By.linkText("Status")).click();
         Assert.assertTrue(textPresent("Recorded"));
@@ -66,7 +66,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
     public void retire() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         String cdeName = "Laboratory Procedure Alkaline Phosphatase Result Date";
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         Assert.assertTrue(textPresent("Qualified"));        
         findElement(By.id("editStatus")).click();
         modalHere();

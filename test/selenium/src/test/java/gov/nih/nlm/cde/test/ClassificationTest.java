@@ -36,7 +36,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
     @Test
     public void addClassification() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
-        goToCdeByName("Surgical Procedure Other Anatomic Site Performed Indicator");
+        goToElementByName("Surgical Procedure Other Anatomic Site Performed Indicator");
         addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
         hangon(1);
         addClassificationMethod(new String[]{"NINDS","Disease","Duchenne Muscular Dystrophy/Becker Muscular Dystrophy","Treatment/Intervention Data","Therapies"});
@@ -73,7 +73,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
     @Test
     public void deleteClassification() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
-        goToCdeByName("Spectroscopy geometry location not applicable indicator");
+        goToElementByName("Spectroscopy geometry location not applicable indicator");
         findElement(By.linkText("Classification")).click();
         List<WebElement> linkList = driver.findElements(By.cssSelector("li[id$='Imaging Diagnostics']"));
         Assert.assertTrue(linkList.size() == 3);
@@ -92,7 +92,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
     @Test
     public void classificationLink() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
-        goToCdeByName("Spectroscopy geometry location not applicable indicator");
+        goToElementByName("Spectroscopy geometry location not applicable indicator");
         findElement(By.linkText("Classification")).click();
         findElement(By.cssSelector("[id='classification-Disease,Spinal Muscular Atrophy,Assessments and Examinations,Imaging Diagnostics'] .name")).click();
         hangon(1);
@@ -107,7 +107,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
     @Test
     public void checkDuplicatesClassification() {
         mustBeLoggedInAs(ninds_username, ninds_password);
-        goToCdeByName("Product Problem Discover Performed Observation Outcome Identifier ISO21090.II.v1.0");
+        goToElementByName("Product Problem Discover Performed Observation Outcome Identifier ISO21090.II.v1.0");
         Assert.assertTrue( textNotPresent( "Disease" ) );
         addClassificationMethod(new String[]{"NINDS","Disease"});
         Assert.assertTrue( textPresent( "Disease" ) );

@@ -111,7 +111,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         createBasicCde("AlignmentCDE", "Definition for alignment cde", null, "CTEP", "DISEASE", "Brain");
 
         goToSearch();
-        openCdeInList("AlignmentCDE");
+        openEltInList("AlignmentCDE");
         Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
         findElement(By.linkText("View Full Detail")).click();
         Assert.assertTrue(textPresent("ctepCurator"));

@@ -47,6 +47,8 @@ public class NlmCdeBaseTest {
     protected static String browser = System.getProperty("browser");
           
     public static WebDriverWait wait;
+    
+    protected String module = "cde";
 
     @BeforeTest
     public void setBaseUrl() {
@@ -118,14 +120,14 @@ public class NlmCdeBaseTest {
         logout();
     }
         
-    protected void goToCdeByName(String name) {
-        openCdeInList(name);
-        findElement(By.xpath("//a[@id='openCdeInCurrentTab_0']")).click();
-        Assert.assertTrue(textPresent("More Like This"));
+    protected void goToElementByName(String name) {
+        openEltInList(name);
+        findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+        Assert.assertTrue(textPresent("Classification"));
         Assert.assertTrue(textPresent(name));
-    }
+    }  
 
-    protected void openCdeInList(String name) {
+    protected void openEltInList(String name) {
         goToSearch();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
@@ -134,16 +136,7 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(textPresent(name));
         findElement(By.id("acc_link_0")).click();
         hangon(1);
-    }
-    
-    protected void goToFormByName(String name) {
-        goToSearch();
-        findElement(By.id("formsLink")).click();
-        findElement(By.name("search.name")).sendKeys(name);
-        findElement(By.id("search.submit")).click();
-        findElement(By.partialLinkText(name)).click();
-        findElement(By.linkText("View Full Detail")).click();
-    }
+    }    
     
     protected WebElement findElement(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
@@ -206,7 +199,7 @@ public class NlmCdeBaseTest {
     
     protected void goToSearch() {
         driver.get(baseUrl + "/gonowhere");
-        driver.get(baseUrl + "/#/cde/search");
+        driver.get(baseUrl + "/#/"+this.module+"/search");
         findElement(By.name("ftsearch"));
         Assert.assertTrue(textPresent("Qualified ("));
     }

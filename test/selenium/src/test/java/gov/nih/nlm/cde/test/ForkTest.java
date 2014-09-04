@@ -28,7 +28,7 @@ public class ForkTest extends NlmCdeBaseTest {
     @Test
     public void forkMineTheirs() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName("Adverse Event Ongoing Event Indicator");
+        goToElementByName("Adverse Event Ongoing Event Indicator");
         
         // can't edit.
         Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']")).size(), 0);
@@ -48,7 +48,7 @@ public class ForkTest extends NlmCdeBaseTest {
         Assert.assertFalse(driver.findElement(By.id("accept_fork_0")).isDisplayed());
 
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName("Adverse Event Ongoing Event Indicator");
+        goToElementByName("Adverse Event Ongoing Event Indicator");
         findElement(By.linkText("Forks")).click();
         findElement(By.id("accept_fork_0")).click();
         textPresent("Fork merged");
@@ -68,7 +68,7 @@ public class ForkTest extends NlmCdeBaseTest {
     @Test
     public void forkMineMine() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName("Other Group Patient Identifier Number");
+        goToElementByName("Other Group Patient Identifier Number");
         findElement(By.linkText("Forks")).click();
         textPresent("This Element has no forks");
         addFork("Fork will be retired");

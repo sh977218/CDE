@@ -12,7 +12,7 @@ public class IdentifiersTest extends NlmCdeBaseTest {
     public void addRemoveId() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         String cdeName = "Intravesical Protocol Agent Administered Specify";
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         findElement(By.linkText("Identifiers")).click();
         findElement(By.id("addId")).click();
         modalHere();
@@ -44,7 +44,7 @@ public class IdentifiersTest extends NlmCdeBaseTest {
         findElement(By.id("confirmRemoveId-2")).click();
         Assert.assertTrue(textPresent("Identifier Removed"));
         
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         findElement(By.linkText("Identifiers")).click();
         Assert.assertTrue(textPresent("MyOrigin1"));
         Assert.assertTrue(textPresent("MyId1"));

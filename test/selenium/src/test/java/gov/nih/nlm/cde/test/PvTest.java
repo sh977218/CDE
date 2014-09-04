@@ -14,7 +14,7 @@ public class PvTest extends NlmCdeBaseTest {
     public void changePermissibleValue() {
         String cdeName = "Additional Pathologic Findings Chronic Proctocolitis Indicator";
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         findElement(By.linkText("Permissible Values")).click(); 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pv-0']/div/span/span[1]/i")));
         findElement(By.cssSelector("#pv-0 .fa-edit")).click();
@@ -26,7 +26,7 @@ public class PvTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys("4");
         findElement(By.cssSelector("button.btn.btn-warning")).click();
         modalGone();
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("added to pv"));
         findElement(By.linkText("History")).click();
@@ -38,7 +38,7 @@ public class PvTest extends NlmCdeBaseTest {
     
     @Test
     public void longPvList() {
-        goToCdeByName("Common Toxicity Criteria Adverse Event Short Name Type");
+        goToElementByName("Common Toxicity Criteria Adverse Event Short Name Type");
         findElement(By.linkText("Permissible Values")).click();         
         Assert.assertTrue(textPresent("Hemoglobinuria"));
         Assert.assertTrue(textNotPresent("Hypermagnesemia"));
@@ -49,7 +49,7 @@ public class PvTest extends NlmCdeBaseTest {
     @Test
     public void hideProprietaryPv() {
         mustBeLoggedInAs("ninds", "pass");        
-        goToCdeByName("Post traumatic amnesia duration range");
+        goToElementByName("Post traumatic amnesia duration range");
         findElement(By.linkText("Permissible Values")).click();         
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-edit")).click();
         findElement(By.xpath("//td[@id='pvCodeSystem-0']//input")).sendKeys("SNOMEDCT");
@@ -59,12 +59,12 @@ public class PvTest extends NlmCdeBaseTest {
         saveCde();
         
         mustBeLoggedInAs("ninds", "pass"); 
-        goToCdeByName("Post traumatic amnesia duration range");
+        goToElementByName("Post traumatic amnesia duration range");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("SNOMEDCT"));
        
         logout();
-        goToCdeByName("Post traumatic amnesia duration range");
+        goToElementByName("Post traumatic amnesia duration range");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textNotPresent("SNOMEDCT"));
         Assert.assertTrue(textPresent("Login to see the value."));        
@@ -74,7 +74,7 @@ public class PvTest extends NlmCdeBaseTest {
     public void addRemovePv() {
         String cdeName = "Surgical Procedure Hand Laparoscopic Port Anatomic Site";
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("Right Middle Abdomen"));
         findElement(By.id("pvRemove-8")).click();
@@ -94,7 +94,7 @@ public class PvTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(".addRemovePv");
         findElement(By.id("confirmSave")).click();
         textPresent("Qualified");
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("New PV"));
         Assert.assertEquals(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Right Middle Abdomen"), -1);
@@ -103,7 +103,7 @@ public class PvTest extends NlmCdeBaseTest {
     @Test
     public void reOrderPv() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName("Involved Organ Laterality Type");
+        goToElementByName("Involved Organ Laterality Type");
         findElement(By.linkText("Permissible Values")).click();
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("pvCode-2"), "C25229"));
         Assert.assertEquals(findElement(By.id("pvCode-6")).getText(), "C25594,C48046,C13717");
@@ -113,7 +113,7 @@ public class PvTest extends NlmCdeBaseTest {
         findElement(By.name("changeNote")).sendKeys("Reordered PV");
         findElement(By.name("version")).sendKeys(".addRemovePv");
         saveCde();
-        goToCdeByName("Involved Organ Laterality Type");
+        goToElementByName("Involved Organ Laterality Type");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertEquals(findElement(By.id("pvCode-1")).getText(), "C25229");
         Assert.assertEquals(findElement(By.id("pvCode-7")).getText(), "C25594,C48046,C13717");

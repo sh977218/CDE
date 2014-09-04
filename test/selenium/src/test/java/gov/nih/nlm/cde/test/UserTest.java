@@ -60,23 +60,23 @@ public class UserTest extends NlmCdeBaseTest {
     @Test
     public void viewingHistory() {
         mustBeLoggedInAs(history_username, history_password);
-        goToCdeByName("Patient Eligibility Ind-2");
+        goToElementByName("Patient Eligibility Ind-2");
         hangon(4);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         Assert.assertTrue(textPresent("Patient Eligibility Ind-2"));
         
         // now see 10 other CDEs
-        goToCdeByName("Specimen Inflammation Change Type");
-        goToCdeByName("Person Mother Onset Menopause Age Value");
-        goToCdeByName("Definition Type Definition Type String");
-        goToCdeByName("Service Item Display Name java.lang.String");
-        goToCdeByName("Apgar Score Created By java.lang.Long");
-        goToCdeByName("Target Lesion Sum Short Longest Dimension Measurement");
-        goToCdeByName("Form Element End Date");
-        goToCdeByName("Treatment Text Other Text");
-        goToCdeByName("Specimen Block Received Count");
-        goToCdeByName("Malignant Neoplasm Metastatic Involvement Anatomic");
+        goToElementByName("Specimen Inflammation Change Type");
+        goToElementByName("Person Mother Onset Menopause Age Value");
+        goToElementByName("Definition Type Definition Type String");
+        goToElementByName("Service Item Display Name java.lang.String");
+        goToElementByName("Apgar Score Created By java.lang.Long");
+        goToElementByName("Target Lesion Sum Short Longest Dimension Measurement");
+        goToElementByName("Form Element End Date");
+        goToElementByName("Treatment Text Other Text");
+        goToElementByName("Specimen Block Received Count");
+        goToElementByName("Malignant Neoplasm Metastatic Involvement Anatomic");
         hangon(4);
         
         findElement(By.id("username_link")).click();

@@ -18,7 +18,7 @@ public class CompareTest extends NlmCdeBaseTest{
     public void emptyList() {
         goToSearch();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
-        openCdeInList("Prognostic");
+        openEltInList("Prognostic");
         findElement(By.id("compare_0")).click();
         Assert.assertTrue(textPresent("Quick Board ( 1 )"));      
     }
@@ -34,7 +34,7 @@ public class CompareTest extends NlmCdeBaseTest{
     
     @Test
     public void compareMeWithMlt() {
-        goToCdeByName("Common Toxicity Criteria Adverse Event Iron Excess Grade");
+        goToElementByName("Common Toxicity Criteria Adverse Event Iron Excess Grade");
         findElement(By.linkText("More Like This")).click();
         findElement(By.id("compareMe")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compareMe")));

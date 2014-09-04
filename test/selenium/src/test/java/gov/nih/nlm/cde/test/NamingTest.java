@@ -18,7 +18,7 @@ public class NamingTest extends NlmCdeBaseTest {
     public void addRemoveEdit() {
         mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
         String cdeName = "Principal Investigator State java.lang.String";
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         findElement(By.linkText("Naming")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeNaming-0")));
         findElement(By.id("addNamePair")).click();

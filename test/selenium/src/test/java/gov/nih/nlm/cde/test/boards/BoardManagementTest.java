@@ -121,7 +121,7 @@ public class BoardManagementTest extends BoardTest {
         String cdeName = "Specimen Array";
 
         goToSearch();
-        openCdeInList(cdeName);
+        openEltInList(cdeName);
         findElement(By.id("pin_0")).click();
         modalHere();
         Assert.assertTrue(textPresent("Create a board now"));
@@ -202,7 +202,7 @@ public class BoardManagementTest extends BoardTest {
         pinTo("Biomarker Outcome", board1);
         pinTo("Biomarker Outcome", board2);
         
-        goToCdeByName("Biomarker Outcome");
+        goToElementByName("Biomarker Outcome");
         findElement(By.xpath("//li[@heading='Boards']/a")).click();
         
         Assert.assertTrue(textPresent(board1));
@@ -211,7 +211,7 @@ public class BoardManagementTest extends BoardTest {
         makePublic(board2);
 
         hangon(2);
-        goToCdeByName("Biomarker Outcome");
+        goToElementByName("Biomarker Outcome");
         findElement(By.xpath("//li[@heading='Boards']/a")).click();
         
         Assert.assertTrue(textPresent(board1));

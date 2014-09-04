@@ -12,7 +12,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void rememberText() {
-        goToCdeByName("Smoking History Ind");
+        goToElementByName("Smoking History Ind");
         driver.navigate().back();
         hangon(1);
         Assert.assertTrue("Smoking History Ind".equals(findElement(By.id("acc_link_0")).getText()));
@@ -69,7 +69,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
     @Test
     public void resetSearchStatus() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName("Administration, Management Performed Study Activity Variance Reason ISO21090.ST.v1.0");
+        goToElementByName("Administration, Management Performed Study Activity Variance Reason ISO21090.ST.v1.0");
         findElement(By.id("editStatus")).click();
         modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");

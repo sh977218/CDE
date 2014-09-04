@@ -6,6 +6,8 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 public class BaseFormTest extends NlmCdeBaseTest {
+    
+    protected String module = "form";
 
     protected void createForm(String name, String definition, String version, String org) {
         gotoFormCreate();

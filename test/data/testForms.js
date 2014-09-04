@@ -37,6 +37,52 @@ db.forms.insert({
                 "acceptability" : "preferred"
             }
         }
+    ], 
+    "classification" : [ 
+        {
+            "stewardOrg" : {
+                "name" : "NINDS"
+            },
+            "elements" : [ 
+                {
+                    "name" : "Population",
+                    "elements" : [ 
+                        {
+                            "name" : "Adult"
+                        }, 
+                        {
+                            "name" : "Pediatric"
+                        }
+                    ]
+                }, 
+                {
+                    "name" : "Disease",
+                    "elements" : [ 
+                        {
+                            "name" : "Headache",
+                            "elements" : [ 
+                                {
+                                    "name" : "Participant/Subject History and Family History",
+                                    "elements" : [ 
+                                        {
+                                            "name" : "General Health History"
+                                        }
+                                    ]
+                                }, 
+                                {
+                                    "name" : "Classification",
+                                    "elements" : [ 
+                                        {
+                                            "name" : "Supplemental"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
     ]    
 });
 

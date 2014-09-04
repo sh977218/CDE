@@ -147,7 +147,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void preferredStandardFacet() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName("Noncompliant Reason Text");
+        goToElementByName("Noncompliant Reason Text");
         findElement(By.id("editStatus")).click();
         modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
@@ -185,7 +185,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent(cdeName));
 
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         findElement(By.id("editStatus")).click();
         modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Candidate");

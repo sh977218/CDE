@@ -13,7 +13,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
     public void editCde() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         String cdeName = "Mediastinal Lymph Node Physical Examination Specify";
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         findElement(By.cssSelector("i.fa-edit")).click();
         findElement(By.xpath("//span/span[2]/input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector(".fa-check")).click();
@@ -28,7 +28,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("This version number has already been used"));
         findElement(By.name("version")).sendKeys(".001");
         saveCde();
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         Assert.assertTrue(textPresent("[name change number 1]"));
         Assert.assertTrue(textPresent("[def change number 1]"));
         Assert.assertTrue(textPresent("myUom"));
@@ -58,7 +58,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
     @Test
     public void cdeHistoryComplement() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");      
+        goToElementByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");      
         
         findElement(By.linkText("Naming")).click();
         findElement(By.xpath("//button[text()=\" Add Naming\"]")).click();
@@ -86,7 +86,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Naming:"));
         Assert.assertTrue(textPresent("Added: LOINC, Code Name 1, Code ID 1;"));
         
-        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");            
+        goToElementByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");            
         findElement(By.xpath("//i[@id='editStatus']")).click();
         modalHere();
         new Select(findElement(By.xpath("//label[text()=\"Registration Status\"]/following-sibling::select"))).selectByValue("Recorded");
@@ -105,7 +105,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.xpath("//label[text()=\"Version\"]/following-sibling::textarea")).sendKeys("Version 1"); 
         findElement(By.xpath("//div[@id=\"newIdModalFooter\"]//button[text()=\"Save\"]")).click();
         modalGone();
-        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");   
+        goToElementByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");   
         findElement(By.linkText("History")).click();
         findElement(By.xpath("//table[@id = 'historyTable']//tr[4]//td[4]/a")).click();
         Assert.assertTrue(textPresent("Identifiers:"));        
@@ -116,7 +116,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         String cdeName = "Patient Photograph Malignant";
         
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         findElement(By.linkText("Concepts")).click();
 
         findElement(By.id("addConcept")).click();
@@ -146,7 +146,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(".1");
         saveCde();
 
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         findElement(By.linkText("Concepts")).click();
         Assert.assertTrue(textPresent("DEC_CODE_111"));
         Assert.assertTrue(textPresent("OC_CODE_111"));
@@ -161,7 +161,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(".2");
         saveCde();
         
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("DEC1"));
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("OC1"));
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("PROP1"));
@@ -172,7 +172,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
 
         String cdeName = "INSS";
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         findElement(By.cssSelector("#dd_def .fa-edit")).click();
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change: adding html characters][<b>bold</b>]");
         findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
@@ -181,7 +181,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys("-plaintext"); 
         saveCde();
 
-        goToCdeByName(cdeName);   
+        goToElementByName(cdeName);   
         Assert.assertTrue(textPresent("<b>bold</b>"));
         findElement(By.cssSelector("#dd_def .fa-edit")).click();
 //        findElement(By.cssSelector(".tab-pane:nth-child(1) .definitionFormatRadio button:nth-child(2)")).click();
@@ -192,7 +192,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys("-html"); 
         saveCde();
-        goToCdeByName(cdeName);   
+        goToElementByName(cdeName);   
         Assert.assertTrue(textNotPresent("<b>bold</b>"));        
     }    
 
@@ -201,7 +201,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(classificationMgtUser_username, classificationMgtUser_password);
         String cdeName = "Patient Tissue Specimen Colorectal Research Consent Ind-2";
 
-        goToCdeByName(cdeName);
+        goToElementByName(cdeName);
         
         // Changes Steward and cancels
         findElement(By.id("dd_edit_steward")).click();
