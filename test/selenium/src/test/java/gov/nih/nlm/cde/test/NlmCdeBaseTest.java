@@ -47,8 +47,6 @@ public class NlmCdeBaseTest {
     protected static String browser = System.getProperty("browser");
           
     public static WebDriverWait wait;
-    
-    protected String module = "cde";
 
     @BeforeTest
     public void setBaseUrl() {
@@ -119,16 +117,28 @@ public class NlmCdeBaseTest {
         loginAs("nlm", "nlm");
         logout();
     }
+    
+    protected void goToCdeByName(String name) {
+        goToElementByName(name, "cde");
+    }
+    
+    protected void goToFormByName(String name) {
+        goToElementByName(name, "form");
+    }    
         
-    protected void goToElementByName(String name) {
-        openEltInList(name);
+    protected void goToElementByName(String name, String type) {
+        openEltInList(name, type);
         findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
         Assert.assertTrue(textPresent("Classification"));
         Assert.assertTrue(textPresent(name));
     }  
+    
+    protected void openCdeInList(String name) {
+        openEltInList(name, "cde");
+    }
 
-    protected void openEltInList(String name) {
-        goToSearch();
+    protected void openEltInList(String name, String type) {
+        goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
@@ -197,9 +207,13 @@ public class NlmCdeBaseTest {
         findElement(By.id("selectOrgDropdown"));
     }
     
-    protected void goToSearch() {
+    protected void goToCdeSearch() {
+        goToSearch("cde");
+    }
+    
+    protected void goToSearch(String type) {
         driver.get(baseUrl + "/gonowhere");
-        driver.get(baseUrl + "/#/"+this.module+"/search");
+        driver.get(baseUrl + "/#/"+type+"/search");
         findElement(By.name("ftsearch"));
         Assert.assertTrue(textPresent("Qualified ("));
     }
@@ -219,7 +233,7 @@ public class NlmCdeBaseTest {
     }
     
     protected void loginAs(String username, String password) {
-        goToSearch();
+        goToCdeSearch();
         try {
             findElement(By.linkText("Log In")).click();
         } catch (NoSuchElementException e) {
@@ -252,7 +266,7 @@ public class NlmCdeBaseTest {
     }
     
     public void addToCompare(String cdeName1, String cdeName2) {
-        goToSearch();
+        goToCdeSearch();
         Assert.assertTrue(textPresent("Quick Board ( empty )"));
         addToQuickBoard(cdeName1);
         addToQuickBoard(cdeName2);

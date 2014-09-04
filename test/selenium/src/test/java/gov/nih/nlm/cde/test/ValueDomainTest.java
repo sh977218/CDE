@@ -13,7 +13,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     public void randomDatatype() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         String cdeName = "CTC Adverse Event Apnea Grade";
-        goToElementByName(cdeName);
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));
         findElement(By.id("editDatatype")).click();
@@ -24,7 +24,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(".1");
         modalHere();
         saveCde();
-        goToElementByName(cdeName);
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();        
         Assert.assertTrue(textPresent("java.lang.Date"));
     }  
@@ -32,18 +32,18 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     @Test
     public void multiValue() {              
         String cdeName = "Cambridge-Hopkins Restless Legs Syndrome Diagnostic Questionnaire (CH-RLSQ) - feeling most occur time";
-        openEltInList(cdeName);
+        openCdeInList(cdeName);
         Assert.assertTrue(textPresent("Multiple Values:"));
         mustBeLoggedInAs("ninds", "pass");
-        goToElementByName(cdeName);
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(findElement(By.id("multipleValues_input")).isSelected());
 
         cdeName = "Imaging perfusion computed tomography based identification core method type";
         
-        openEltInList(cdeName);
+        openCdeInList(cdeName);
         Assert.assertTrue(textNotPresent("Multiple Values:"));
-        goToElementByName(cdeName);
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertFalse(findElement(By.id("multipleValues_input")).isSelected());
         findElement(By.id("multipleValues_input")).click();
@@ -53,7 +53,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         modalHere();
         saveCde();
 
-        goToElementByName(cdeName);
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         wait.until(ExpectedConditions.elementSelectionStateToBe(findElement(By.id("multipleValues_input")), true));
     }
@@ -62,7 +62,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     public void otherPleaseSpecifyAndListDatatype() {
         mustBeLoggedInAs("ninds", "pass");        
         String cdeName = "Structured Clinical Interview for Pathological Gambling (SCI-PG) - withdrawal value";
-        goToElementByName(cdeName);
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertFalse(findElement(By.id("otherPleaseSpecify_input")).isSelected());
         Assert.assertTrue(textNotPresent("Please Specify Text"));
@@ -78,7 +78,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         modalHere();
         saveCde();
 
-        goToElementByName(cdeName);
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("Some DT"));
         wait.until(ExpectedConditions.elementSelectionStateToBe(findElement(By.id("otherPleaseSpecify_input")), true));
@@ -93,7 +93,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         modalHere();
         saveCde();
         
-        goToElementByName(cdeName);
+        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("Other Answer"));
         

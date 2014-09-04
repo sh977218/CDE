@@ -15,7 +15,7 @@ public class VsacTest extends NlmCdeBaseTest {
     @Test
     public void importVsacValues() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToElementByName("Patient Race Category");
+        goToCdeByName("Patient Race Category");
         findElement(By.linkText("Permissible Values")).click();         
         Assert.assertTrue(textPresent("Native Hawaiian or other Pacific Islander")); 
         Assert.assertTrue(textNotPresent("Match"));
@@ -40,7 +40,7 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys("5");        
         saveCde();
         
-        goToElementByName("Patient Race Category");
+        goToCdeByName("Patient Race Category");
         findElement(By.linkText("Permissible Values")).click(); 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));   
@@ -52,7 +52,7 @@ public class VsacTest extends NlmCdeBaseTest {
    @Test
     public void assignVsacId() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToElementByName("Patient Ethnic Group Category");
+        goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("No Value Set specified."));
         findElement(By.linkText("Update O.I.D")).click();
@@ -72,7 +72,7 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys("3");
         saveCde();
         
-        goToElementByName("Patient Ethnic Group Category");
+        goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("20121025"));
         Assert.assertTrue(textPresent("2135-2"));
@@ -86,7 +86,7 @@ public class VsacTest extends NlmCdeBaseTest {
     @Test
     public void removeVsacId() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToElementByName("Left Colon Excision Ind-2");
+        goToCdeByName("Left Colon Excision Ind-2");
         findElement(By.linkText("Permissible Values")).click();   
         findElement(By.linkText("Update O.I.D")).click();
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
@@ -98,7 +98,7 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(".1");
         saveCde();
 
-        goToElementByName("Left Colon Excision Ind-2");
+        goToCdeByName("Left Colon Excision Ind-2");
         findElement(By.linkText("Permissible Values")).click();   
         findElement(By.id("removeVSButton")).click();
 
@@ -110,7 +110,7 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys("2");
         saveCde();
         
-        goToElementByName("Left Colon Excision Ind-2");
+        goToCdeByName("Left Colon Excision Ind-2");
         findElement(By.linkText("Permissible Values")).click();   
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
     }
@@ -118,7 +118,7 @@ public class VsacTest extends NlmCdeBaseTest {
     @Test(dependsOnMethods = {"importVsacValues"})
     public void modifyValueCode() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToElementByName("Patient Race Category");
+        goToCdeByName("Patient Race Category");
         findElement(By.linkText("Permissible Values")).click();         
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-valid")));
         findElement(By.cssSelector("#pvName-4 .fa-edit")).click(); 
@@ -142,7 +142,7 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys("6");        
         saveCde();
         
-        goToElementByName("Patient Race Category");  
+        goToCdeByName("Patient Race Category");  
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("Other Race Category"));
         Assert.assertTrue(textPresent("2131-1.1"));

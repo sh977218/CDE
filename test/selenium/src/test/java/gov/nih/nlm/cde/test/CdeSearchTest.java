@@ -13,7 +13,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void cdeFullDetail() {
-        goToElementByName("Genotype Therapy Basis Mutation");
+        goToCdeByName("Genotype Therapy Basis Mutation");
         Assert.assertTrue(textPresent("Genotype Therapy Basis Mutation Analysis Indicator"));
         Assert.assertTrue(textPresent("Text descriptor to indicate whether "
                 + "genotype directed therapy was based on mutation testing"));
@@ -51,7 +51,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void vdInstruction() {
-        goToElementByName("Participant Identifier Source");
+        goToCdeByName("Participant Identifier Source");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertEquals("One of \"GUID\" or \"Source Registry Specific Identifier\"", findElement(By.id("dd_vd_def")).getText());
     }
@@ -59,13 +59,13 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void unitOfMeasure() {
-        goToElementByName("Laboratory Procedure Blood");
+        goToCdeByName("Laboratory Procedure Blood");
         Assert.assertTrue(textPresent("mg/dL"));
     }
 
     @Test
     public void basicPagination() {
-        goToSearch();
+        goToCdeSearch();
         WebElement pagElt = findElement(By.cssSelector("ul.pagination"));
         findElement(By.linkText("10"));
         List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
@@ -74,14 +74,14 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void viewIncrement() {
-        goToElementByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
+        goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
         // wait for text to be here.
         Assert.assertTrue(textPresent("Someone who gives blood"));
         // do it twice to get at least one view
-        goToElementByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
+        goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
         Assert.assertTrue(textPresent("Someone who gives blood"));
         int nbOfViews = Integer.valueOf(findElement(By.id("dd_views")).getText());
-        goToElementByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
+        goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
         Assert.assertTrue(textPresent("Someone who gives blood"));
         int newNbOfViews = Integer.valueOf(findElement(By.id("dd_views")).getText());
         Assert.assertEquals(newNbOfViews, nbOfViews + 1);
@@ -89,7 +89,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         
     @Test
     public void relatedConcepts() {
-        goToElementByName("Patient Visual Change Chief Complaint Indicator");
+        goToCdeByName("Patient Visual Change Chief Complaint Indicator");
         findElement(By.linkText("Concepts")).click();
         findElement(By.linkText("Change")).click();
         hangon(2);
@@ -98,7 +98,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test 
     public void phraseSearch() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("Biomarker Gene");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("Biomarker Gene"));
@@ -118,12 +118,12 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void starSearch() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("ISO2109");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("No results were found."));
         
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("ISO2109*");
         findElement(By.id("search.submit")).click();
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
@@ -142,7 +142,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test(dataProvider = "moreLikeThisDP")
     public void moreLikeThis(String cdeSource, String[] cdeTargets){
-        goToElementByName(cdeSource);
+        goToCdeByName(cdeSource);
         findElement(By.linkText("More Like This")).click();
         for (String tCde : cdeTargets) {
             Assert.assertTrue(textPresent(tCde));
@@ -151,7 +151,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void openAllButton() {
-        goToSearch();
+        goToCdeSearch();
         for (int i = 0; i < 19; i++) {
             wait.until(ExpectedConditions.elementToBeClickable(By.id("acc_link_" + i)));
         }
@@ -163,8 +163,8 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void usedBySummary() {
-        goToSearch();
-        openEltInList("Patient Race Category");
+        goToCdeSearch();
+        openCdeInList("Patient Race Category");
         String usedBy = findElement(By.id("dd_usedBy")).getText();
         Assert.assertTrue(usedBy.contains("NIDCR"));
         Assert.assertTrue(usedBy.contains("PS&CC"));
@@ -181,7 +181,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test 
     public void searchHighlightDefinition() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("\"graded scale\"");
         findElement(By.id("search.submit")).click();    
         Assert.assertTrue(textPresent("| \"graded scale"));
@@ -190,7 +190,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test 
     public void searchHighlightPv() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("myopathic");
         findElement(By.id("search.submit")).click();    
         Assert.assertTrue(textPresent("| myopathic"));
@@ -199,7 +199,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
    
     @Test 
     public void searchHighlightClassif() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("ataxia");
         findElement(By.id("search.submit")).click();    
         Assert.assertTrue(textPresent("| ataxia"));
@@ -209,7 +209,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     @Test
     public void sdcView() {
         String cdeName = "Anal Endoscopy Diagnostic Procedure Performed Other Specify Text";
-        openEltInList(cdeName);
+        openCdeInList(cdeName);
         findElement(By.linkText("SDC View")).click();
         hangon(1);
         Assert.assertTrue(findElement(By.id("dd_scopedId")).getText().trim().startsWith("cde.nlm.nih.gov/"));
@@ -237,21 +237,21 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     @Test
     public void StandardStatusWarningCheck() {
         // Check that a none Standard or Preferred Standard CDE doesn't have warning message when not logged in
-        goToElementByName("Specimen Collection Sampling Number");
+        goToCdeByName("Specimen Collection Sampling Number");
         textNotPresent("Warning: CDEs with a Standard or Preferred Standard status can't be edited.");
 
         // Check that a Standard CDE doesn't have warning message when viewed by none owner
-        goToElementByName("Adverse Event Ongoing Event Indicator");
+        goToCdeByName("Adverse Event Ongoing Event Indicator");
         textNotPresent("Warning: CDEs with a Standard or Preferred Standard status can't be edited.");
         
         // Check that a Standard CDE doesn't have warning message when viewed by site admin
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToElementByName("Adverse Event Ongoing Event Indicator");
+        goToCdeByName("Adverse Event Ongoing Event Indicator");
         textNotPresent("Warning: CDEs with a Standard or Preferred Standard status can't be edited.");
         
         // Check that a Standard CDE have warning message
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToElementByName("Person Birth Date");
+        goToCdeByName("Person Birth Date");
         textPresent("Warning: CDEs with a Standard or Preferred Standard status can't be edited.");
     }
     

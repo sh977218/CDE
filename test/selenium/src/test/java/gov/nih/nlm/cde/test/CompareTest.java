@@ -9,23 +9,23 @@ public class CompareTest extends NlmCdeBaseTest{
     
     @Test
     public void noElementCompareList() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.linkText("Quick Board ( empty )")).click();
         Assert.assertTrue(textPresent("The quick board is empty."));
     }
     
     @Test
     public void emptyList() {
-        goToSearch();
+        goToCdeSearch();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
-        openEltInList("Prognostic");
+        openCdeInList("Prognostic");
         findElement(By.id("compare_0")).click();
         Assert.assertTrue(textPresent("Quick Board ( 1 )"));      
     }
     
     @Test
     public void Compare2Elements() {
-        goToSearch();
+        goToCdeSearch();
         addToCompare("Person Gender Text Type", "Patient Gender Category");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
@@ -34,7 +34,7 @@ public class CompareTest extends NlmCdeBaseTest{
     
     @Test
     public void compareMeWithMlt() {
-        goToElementByName("Common Toxicity Criteria Adverse Event Iron Excess Grade");
+        goToCdeByName("Common Toxicity Criteria Adverse Event Iron Excess Grade");
         findElement(By.linkText("More Like This")).click();
         findElement(By.id("compareMe")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compareMe")));

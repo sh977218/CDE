@@ -10,7 +10,7 @@ import org.openqa.selenium.WebElement;
 
 public class ClassificationMgtTest extends NlmCdeBaseTest {
     private void searchNestedClassifiedCdes() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("classification.elements.elements.name:Epilepsy");
         findElement(By.id("search.submit")).click();    
     }

@@ -78,7 +78,7 @@ public class BoardManagementTest extends BoardTest {
         mustBeLoggedInAs(boardUser, boardPassword);
         createBoard("Remove me board", "Not a very useful board");
         removeBoard("Remove me board");
-        goToSearch();
+        goToCdeSearch();
         gotoMyBoards();
         Assert.assertTrue(textNotPresent("Not a very useful"));
     }
@@ -87,7 +87,7 @@ public class BoardManagementTest extends BoardTest {
     public void cdeNumbIncrement() {
         mustBeLoggedInAs(boardUser, boardPassword);
         String boardName = "Number Increment Board";
-        goToSearch();
+        goToCdeSearch();
         createBoard(boardName, "Number Increment Definition");
         gotoMyBoards(); 
         WebElement numElt = null;
@@ -120,8 +120,8 @@ public class BoardManagementTest extends BoardTest {
         mustBeLoggedInAs("boarduser2", boardPassword);
         String cdeName = "Specimen Array";
 
-        goToSearch();
-        openEltInList(cdeName);
+        goToCdeSearch();
+        openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
         modalHere();
         Assert.assertTrue(textPresent("Create a board now"));
@@ -145,7 +145,7 @@ public class BoardManagementTest extends BoardTest {
         findElement(By.id("desc_input_0")).sendKeys(" -- Desc Edited");
         findElement(By.id("desc_confirm_0")).click();
         
-        goToSearch();
+        goToCdeSearch();
         gotoMyBoards();
         Assert.assertTrue(textPresent("-- Name Edited"));
         Assert.assertTrue(textPresent("-- Desc Edited"));
@@ -202,7 +202,7 @@ public class BoardManagementTest extends BoardTest {
         pinTo("Biomarker Outcome", board1);
         pinTo("Biomarker Outcome", board2);
         
-        goToElementByName("Biomarker Outcome");
+        goToCdeByName("Biomarker Outcome");
         findElement(By.xpath("//li[@heading='Boards']/a")).click();
         
         Assert.assertTrue(textPresent(board1));
@@ -211,7 +211,7 @@ public class BoardManagementTest extends BoardTest {
         makePublic(board2);
 
         hangon(2);
-        goToElementByName("Biomarker Outcome");
+        goToCdeByName("Biomarker Outcome");
         findElement(By.xpath("//li[@heading='Boards']/a")).click();
         
         Assert.assertTrue(textPresent(board1));

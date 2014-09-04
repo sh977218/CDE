@@ -28,7 +28,7 @@ public class ForkTest extends NlmCdeBaseTest {
     @Test
     public void forkMineTheirs() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToElementByName("Adverse Event Ongoing Event Indicator");
+        goToCdeByName("Adverse Event Ongoing Event Indicator");
         
         // can't edit.
         Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']")).size(), 0);
@@ -48,7 +48,7 @@ public class ForkTest extends NlmCdeBaseTest {
         Assert.assertFalse(driver.findElement(By.id("accept_fork_0")).isDisplayed());
 
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToElementByName("Adverse Event Ongoing Event Indicator");
+        goToCdeByName("Adverse Event Ongoing Event Indicator");
         findElement(By.linkText("Forks")).click();
         findElement(By.id("accept_fork_0")).click();
         textPresent("Fork merged");
@@ -56,7 +56,7 @@ public class ForkTest extends NlmCdeBaseTest {
         Assert.assertEquals("Adverse Event Ongoing Event Indicator - ST FORKED", findElement(By.id("dd_general_name")).getText());
         Assert.assertEquals("Standard", findElement(By.id("dd_status")).getText());
 
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("\"Adverse Event Ongoing Event Indicator\"");
         findElement(By.cssSelector("i.fa-search")).click();
         textPresent("1 results for");
@@ -68,7 +68,7 @@ public class ForkTest extends NlmCdeBaseTest {
     @Test
     public void forkMineMine() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        goToElementByName("Other Group Patient Identifier Number");
+        goToCdeByName("Other Group Patient Identifier Number");
         findElement(By.linkText("Forks")).click();
         textPresent("This Element has no forks");
         addFork("Fork will be retired");
@@ -102,7 +102,7 @@ public class ForkTest extends NlmCdeBaseTest {
 
         Assert.assertEquals("Other Group Patient Identifier Number - FORKED", findElement(By.id("dd_general_name")).getText());
 
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("\"Other Group Patient Identifier Number\"");
         findElement(By.cssSelector("i.fa-search")).click();
         textPresent("1 results for");

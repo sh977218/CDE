@@ -14,7 +14,7 @@ public class AStandardStatusTest extends NlmCdeBaseTest {
     @Test
     public void nlmPromotesToStandard() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToElementByName("Patient Name");
+        goToCdeByName("Patient Name");
         Assert.assertTrue(textPresent("Qualified"));
         findElement(By.id("editStatus")).click();
         modalHere();
@@ -23,7 +23,7 @@ public class AStandardStatusTest extends NlmCdeBaseTest {
         modalHere();
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
-        goToElementByName("Patient Name");
+        goToCdeByName("Patient Name");
         Assert.assertTrue(textPresent("Standard"));
     }
     
@@ -39,7 +39,7 @@ public class AStandardStatusTest extends NlmCdeBaseTest {
     @Test(dataProvider = "standardAndPreferredStandardCde")
     public void adminCantEditStandardCde(String cdeName, String regStatus) {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToElementByName(cdeName);
+        goToCdeByName(cdeName);
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(regStatus);
         modalHere();
@@ -49,7 +49,7 @@ public class AStandardStatusTest extends NlmCdeBaseTest {
         logout();
         
         loginAs(cabigAdmin_username, cabigAdmin_password);
-        goToElementByName(cdeName);
+        goToCdeByName(cdeName);
         // CDE is Standard.
         // Can't edit name, def or status
         Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']")).size(), 0);
