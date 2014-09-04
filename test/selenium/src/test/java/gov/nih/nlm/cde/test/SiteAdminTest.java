@@ -50,7 +50,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 //        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(orgName) < 0);
 //    }
     
-//    @Test
+    @Test
     public void addOrg() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String testOrg = "New Test Org";
@@ -148,7 +148,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         Assert.assertTrue(textNotPresent(testOrgUriNotRenamed));        
     }
     
-//    @Test
+    @Test
     public void promoteOrgAdmin() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String testOrg = "Promote Org Test";
@@ -173,7 +173,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
     } 
     
-//    @Test
+    @Test
     public void browseUsers() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         findElement(By.id("username_link")).click();
