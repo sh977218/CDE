@@ -1,4 +1,6 @@
 function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassification) {
+    $scope.module = "cde";
+    
     if ($scope.myOrgs.length > 0) {
         $scope.orgToManage = $scope.myOrgs[0];
     }

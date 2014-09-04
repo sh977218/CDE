@@ -1,4 +1,6 @@
  function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification) {
+    $scope.module = "cde";
+     
     $scope.initCache(); 
     
     $scope.openAddClassificationModal = function () {
