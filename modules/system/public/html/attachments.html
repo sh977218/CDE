@@ -15,8 +15,8 @@
                 </span>
             </span>
             </dd>
-            <dt ng-show="isAllowedNonCuration(elt)">Actions: </dt>
-            <dd ng-show="isAllowedNonCuration(elt)">
+            <dt ng-show="canDoNonCuration">Actions: </dt>
+            <dd ng-show="canDoNonCuration">
                 <span ng-show="showDelete">
                     Confirm Delete <i class="fa fa-check" ng-click="showDelete = false; removeAttachment($index)" id="confirmRemove-{{$index}}"></i>
                     <i class="fa fa-times" ng-click="showDelete = false"></i>
@@ -36,7 +36,7 @@
 
     <hr/>
     
-    <div ng-show="isAllowedNonCuration(elt)">
+    <div ng-show="canDoNonCuration">
         <div>{{message}}</div>
         <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files</label>
         <input type="file" style="display: none" ng-model-instant id="fileToUpload" onchange="angular.element(this).scope().setFiles(this)" />

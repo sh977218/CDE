@@ -15,7 +15,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
             $scope.user = u;
             $scope.setMyOrgs(); 
             $scope.loadBoards();
-            $scope.initialized = true;
+            $scope.userLoaded = true;
             callback();
         });
     };
@@ -191,19 +191,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         $scope.cache.remove("selectedOrg");
         $scope.cache.remove("selectedElements");            
     };
-    
-    $scope.isAllowed = function (elt) {
-        return isAllowedModel.isAllowed($scope, elt);  
-    };
-    
-    $scope.isAllowedNonCuration = function (elt) {
-        return isAllowedModel.isAllowedNonCuration($scope, elt);
-    };
-    
-    $scope.displayStatusWarning = function(cde) {
-        return isAllowedModel.displayStatusWarning($scope, cde);
-    };
-    
+
     $scope.initCache(); 
     $scope.openCloseAllModel = {};
     $scope.openCloseAllModel["list"] = $scope.cache.get("openCloseAlllist");

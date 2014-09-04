@@ -1,7 +1,7 @@
-<div class="alert alert-info mt20" ng-show="form.unsaved"><i class="fa fa-exclamation-triangle"></i> This element is not saved.</div>
-<div class="alert alert-warning mt20" role="alert" ng-show="form.archived"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is archived.</div> 
+<div class="alert alert-info mt20" ng-show="elt.unsaved"><i class="fa fa-exclamation-triangle"></i> This element is not saved.</div>
+<div class="alert alert-warning mt20" role="alert" ng-show="elt.archived"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is archived.</div> 
 
-<h3>{{form.naming[0].designation}}</h3>
+<h3>{{elt.naming[0].designation}}</h3>
 
 <div tabset>
    <div tab heading="General Details">
@@ -15,4 +15,11 @@
     </div>
    
 </div>
+
+<div class="row" ng-controller="VersionCtrl">
+     <div class="col-md-12" ng-show="elt.unsaved">
+         <button class="btn cancel" ng-click="revert()">Discard Changes</button>
+         <button class="btn btn-primary" ng-click="openSave(elt, '#/formView?_id=')" id="openSave">Save</button>
+     </div>
+ </div>
 

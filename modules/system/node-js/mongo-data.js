@@ -153,9 +153,10 @@ exports.userTotalSpace = function(Model, name, callback) {
 };
 
 exports.addAttachment = function(file, user, comment, elt, cb) {
-    var writestream = gfs.createWriteStream({});
-    writestream.on('error', function (err) {
-        console.log("write error: " + err);
+    var writestream = gfs.createWriteStream({
+        filename: file.name
+        , mode: 'w'
+        , content_type: file.type
     });
 
     writestream.on('close', function (newfile) {
@@ -180,6 +181,5 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
 };
 
 exports.getFile = function(callback, res, id) {
-    res.writeHead(200, { "Content-Type" : "image/png"});
     gfs.createReadStream({ _id: id }).pipe(res);
 };

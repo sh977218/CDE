@@ -18,12 +18,12 @@ public class CdeCreateTest extends NlmCdeBaseTest {
     void fillOutBasicCreateFields(String name, String definition, String version, String org, String classification, String subClassification) {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
-        findElement(By.name("cde.designation")).sendKeys(name);
-        findElement(By.name("cde.definition")).sendKeys(definition);
+        findElement(By.name("elt.designation")).sendKeys(name);
+        findElement(By.name("elt.definition")).sendKeys(definition);
         if (version != null) {
-            findElement(By.name("cde.version")).sendKeys(version);
+            findElement(By.name("elt.version")).sendKeys(version);
         }
-        new Select(findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText(org);
+        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(org);
         
         classify(org, classification, subClassification);
     } 
@@ -47,13 +47,13 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         findElement(By.linkText("CDE")).click();
         Assert.assertTrue(textPresent("Please enter a name"));
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
-        findElement(By.name("cde.designation")).sendKeys("abc");
+        findElement(By.name("elt.designation")).sendKeys("abc");
         Assert.assertTrue(textPresent("Please enter a definition"));
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
-        findElement(By.name("cde.definition")).sendKeys("abc");
+        findElement(By.name("elt.definition")).sendKeys("abc");
         Assert.assertTrue(textPresent("Please select a steward"));
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
-        new Select(findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText("NINDS");
+        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
         Assert.assertTrue(textPresent("Please select at least one classification"));
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
         classify("CTEP", "DISEASE", "Gynecologic");
@@ -75,8 +75,8 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Submission and Reporting"));
         Assert.assertTrue(textPresent("Breast Cancer Data Mart"));
 
-        new Select(findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText("Select One");
-        new Select(findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText("NINDS");
+        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("Select One");
+        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
         
         classify("NINDS", "Disease", "Traumatic Brain Injury");
         modalGone();
@@ -126,11 +126,11 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         // wait for page to load
         hangon(3);
         Assert.assertTrue(textNotPresent("Possible Matches"));
-        findElement(By.name("cde.designation")).sendKeys("10");
+        findElement(By.name("elt.designation")).sendKeys("10");
         hangon(3);
         Assert.assertTrue(textNotPresent("Possible Matches"));
-        findElement(By.name("cde.designation")).clear();
-        findElement(By.name("cde.designation")).sendKeys("ind");
+        findElement(By.name("elt.designation")).clear();
+        findElement(By.name("elt.designation")).sendKeys("ind");
         hangon(3);
         Assert.assertTrue(textPresent("Possible Matches"));
         Assert.assertTrue(textPresent("Smoking History Ind"));

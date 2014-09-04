@@ -121,8 +121,8 @@ public class NlmCdeBaseTest {
     protected void goToCdeByName(String name) {
         openCdeInList(name);
         findElement(By.xpath("//a[@id='openCdeInCurrentTab_0']")).click();
-        Assert.assertTrue(textPresent("More Like This"));
-        Assert.assertTrue(textPresent(name));
+        textPresent("More Like This");
+        textPresent(name);
     }
 
     protected void openCdeInList(String name) {
@@ -130,8 +130,8 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
-        Assert.assertTrue(textPresent("1 results for"));
-        Assert.assertTrue(textPresent(name));
+        textPresent("1 results for");
+        textPresent(name);
         findElement(By.id("acc_link_0")).click();
         hangon(1);
     }

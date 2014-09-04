@@ -1,14 +1,14 @@
 <div class="container-fluid" ng-controller="VersionCtrl">
-    <div class="alert alert-warning mt20" role="alert" ng-show="cde.archived"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is archived.</div> 
-    <div class="alert alert-warning mt20" role="alert" ng-show="cde.registrationState.registrationStatus=='Retired'"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is retired. <span ng-show="cde.registrationState.replacedBy"><a href="#/deview?uuid={{cde.registrationState.replacedBy.uuid}}">Replacement</a></span></div> 
-    <div class="alert alert-warning mt20" role="alert" ng-show="cde.registrationState.administrativeStatus=='Retire Candidate'"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is about to be retired. <span ng-show="cde.registrationState.replacedBy"><a href="#/deview?uuid={{cde.registrationState.replacedBy.uuid}}">Possible Replacement</a></span></div> 
-    <div class="alert alert-info mt20" role="alert" ng-show="displayStatusWarning(cde)"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> CDEs with a Standard or Preferred Standard status can't be edited.</div> 
-    <div class="alert alert-info mt20" role="info" ng-show="cde.isFork"><i class="fa fa-exclamation-triangle"></i> You are editing a fork. <a href="/#/deview?cdeId={{rootFork._id}}"> <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.</div> 
+    <div class="alert alert-warning mt20" role="alert" ng-show="elt.archived"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is archived.</div> 
+    <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.registrationStatus=='Retired'"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is retired. <span ng-show="elt.registrationState.replacedBy"><a href="#/deview?uuid={{elt.registrationState.replacedBy.uuid}}">Replacement</a></span></div> 
+    <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.administrativeStatus=='Retire Candidate'"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is about to be retired. <span ng-show="elt.registrationState.replacedBy"><a href="#/deview?uuid={{elt.registrationState.replacedBy.uuid}}">Possible Replacement</a></span></div> 
+    <div class="alert alert-info mt20" role="alert" ng-show="displayStatusWarning"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> CDEs with a Standard or Preferred Standard status can't be edited.</div> 
+    <div class="alert alert-info mt20" role="info" ng-show="elt.isFork"><i class="fa fa-exclamation-triangle"></i> You are editing a fork. <a href="/#/deview?cdeId={{rootFork._id}}"> <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.</div> 
 
     <h1 class="page-header">
-        {{cde.naming[0].designation}}
-        <a class="btn btn-small btn-default" ng-show="showCompareButton(cde)" ng-click="addToQuickBoard(cde)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add to Quick Board</a>
-<!--        <span ng-show="cde.isFork && isAllowed(cde)"><button class="btn btn-default btn-small" ng-click="sendForkNotification()"><i class="fa fa-envelope-o"></i> Send Notification</button> </span>-->
+        {{elt.naming[0].designation}}
+        <a class="btn btn-small btn-default" ng-show="showCompareButton(elt)" ng-click="addToQuickBoard(elt)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add to Quick Board</a>
+<!--        <span ng-show="elt.isFork && canCurate"><button class="btn btn-default btn-small" ng-click="sendForkNotification()"><i class="fa fa-envelope-o"></i> Send Notification</button> </span>-->
     </h1>
 
     <div tabset>
@@ -54,7 +54,7 @@
         <div tab heading="{{tabs[12].heading}}">
             <%- include cdeHistory.ejs %>
         </div>
-        <div ng-show="!cde.isFork" tab heading="{{tabs[13].heading}}">
+        <div ng-show="!elt.isFork" tab heading="{{tabs[13].heading}}">
             <div ng-include="'/cde/public/html/forks.html'" ng-controller="ForkCtrl"></div>
         </div>
 
@@ -63,9 +63,9 @@
     <hr/>
 
 <div class="row">
-     <div class="col-md-12" ng-show="cde.unsaved">
-         <button class="btn cancel" ng-click="revert(cde)">Discard Changes</button>
-         <button class="btn btn-primary" ng-click="openSave(cde, '#/deview?cdeId=')" id="openSave">Save</button>
+     <div class="col-md-12" ng-show="elt.unsaved">
+         <button class="btn cancel" ng-click="revert(elt)">Discard Changes</button>
+         <button class="btn btn-primary" ng-click="openSave(elt, '#/deview?cdeId=')" id="openSave">Save</button>
      </div>
 </div>
 

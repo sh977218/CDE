@@ -9,10 +9,10 @@ function SectionCtrl($scope, $modal, $timeout) {
     };
 
     $scope.addSection = function() {
-        if (!$scope.form.formElements) {
-            $scope.form.formElements = [];
+        if (!$scope.elt.formElements) {
+            $scope.elt.formElements = [];
         }
-        $scope.form.formElements.push({label: "New Section", cardinality: "1", section: {}, formElements: []});
+        $scope.elt.formElements.push({label: "New Section", cardinality: "1", section: {}, formElements: []});
         $scope.stageElt(); 
     };
 
@@ -65,7 +65,7 @@ function SectionCtrl($scope, $modal, $timeout) {
     };
 
     $scope.canAddUom = function(question) {
-        return $scope.isAllowed($scope.form) && (question.question.uoms.indexOf("Please specify") < 0);
+        return $scope.canCurate && (question.question.uoms.indexOf("Please specify") < 0);
     };
     
     $scope.addUom = function(question) {
@@ -78,7 +78,7 @@ function SectionCtrl($scope, $modal, $timeout) {
     };
 
     $scope.moveElt = function(index, inc) {
-        $scope.form.formElements.splice(index + inc, 0, $scope.form.formElements.splice(index, 1)[0]);   
+        $scope.elt.formElements.splice(index + inc, 0, $scope.elt.formElements.splice(index, 1)[0]);   
         $scope.stageElt();
     };
 

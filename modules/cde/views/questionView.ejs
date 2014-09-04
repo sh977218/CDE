@@ -2,8 +2,8 @@
     <div class="col-md-5">
         <h5>Question Details</h5>
         <dl class="dl-horizontal">
-            <dt>Question: </dt><dd><inline-edit model="question.value" is-allowed="isAllowed()" on-ok="stageForm()"> </inline-edit></dd>
-            <dt>Instructions: </dt><dd><inline-area-edit model="question.instructions" is-allowed="isAllowed()" on-ok="stageForm()"> </inline-edit></dd>
+            <dt>Question: </dt><dd><inline-edit model="question.value" is-allowed="canCurate" on-ok="stageForm()"> </inline-edit></dd>
+            <dt>Instructions: </dt><dd><inline-area-edit model="question.instructions" is-allowed="canCurate" on-ok="stageForm()"> </inline-edit></dd>
         </dl>
     </div>
     <div class="col-md-7">

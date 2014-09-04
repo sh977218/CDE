@@ -68,17 +68,16 @@ function AttachmentsCtrl($scope, $rootScope, Attachment, $http) {
     }
     
     $scope.removeAttachment = function(index) {      
-        Attachment.remove({
+        $http.post("/attachments/" + $scope.module + "/remove", {
             index: index
-            , deId: $scope.elt._id 
-        }, 
-        function (res) {
-            $scope.elt = res;
+            , id: $scope.elt._id 
+        }).then(function (res) {
+            $scope.elt = res.data;
         });
     };
     
     $scope.setDefault = function(index, state) {
-        if (!$scope.isAllowedNonCuration($scope.elt)) {
+        if (!$scope.canDoNonCuration) {
             return;
         };
         $http.post("/attachments/" + $scope.module + "/setDefault", 
@@ -87,7 +86,7 @@ function AttachmentsCtrl($scope, $rootScope, Attachment, $http) {
             , state: state
             , id: $scope.elt._id 
         }).then(function (res) {
-            $scope.elt = res;
+            $scope.elt = res.data;
         });
     };
  };

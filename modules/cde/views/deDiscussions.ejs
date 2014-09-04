@@ -4,7 +4,7 @@
     <textarea name="comment" ng-model="comment.content" placeholder="Please log in to comment"></textarea>
     <input name="postComment" type="button" value="Post" ng-click="addComment()" ng-disabled="!user._id"/>
 
-    <div ng-repeat="comment in cde.comments">
+    <div ng-repeat="comment in elt.comments">
         <hr>
         <div class="row" style="background-color: lightgrey">
             <b class="col-md-offset1 col-md-9">{{comment.username}}</b>

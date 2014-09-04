@@ -111,6 +111,22 @@ exports.addAttachment = function(req, res, dao) {
     });
 };
 
+exports.removeAttachment = function(req, res, dao) {
+    checkOwnership(dao, req.body.id, req, function(err, elt) {
+        if (err) {
+            return res.send(err);
+        }
+        elt.attachments.splice(req.body.index, 1);
+        elt.save(function(err) {
+            if (err) {
+                res.send("error: " + err);
+            } else {
+                res.send(elt);
+            }
+        });
+    });
+};
+
 exports.acceptFork = function(req, res, dao) {
     if (req.isAuthenticated()) {
         if (!req.body.id) {

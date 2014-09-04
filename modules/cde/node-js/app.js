@@ -374,17 +374,7 @@ exports.init = function(app) {
     });
 
     app.post('/attachments/cde/remove', function(req, res) {
-        adminItemSvc.checkOwnership(mongo_data, req.body.id, req, function(err, elt) {
-            if (err) return res.send(err);  
-            de.attachments.splice(req.body.index, 1);
-            de.save(function (err) {
-               if (err) {
-                   res.send("error: " + err);
-               } else {
-                   res.send(de);
-               }
-            });
-        });
+        adminItemSvc.removeAttachment(req, res, mongo_data);
     });
     
     app.post('/attachments/cde/setDefault', function(req, res) {
@@ -397,13 +387,6 @@ exports.init = function(app) {
        });
     });
     
-    app.get('/data/:imgtag', function(req, res) {
-      mongo_data.getFile( function(error,data) {
-         res.writeHead('200', {'Content-Type': 'image/png'});
-         res.end(data,'binary');
-      }, res, req.params.imgtag );
-    });    
-
     app.get('/moreLikeCde/:cdeId', function(req, res) {
         elastic.morelike(req.params.cdeId, function(result) {
             result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);

@@ -7,6 +7,53 @@ import org.testng.annotations.Test;
 
 public class SectionTest extends BaseFormTest {
 
+            
+    @Test
+    public void createForm() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+
+        String formName = "Create Form Test Name";
+        String formDef = "Fill out carefully!";
+        String formV = "0.1alpha";
+
+        createForm(formName, formDef, formV, "CTEP");
+        
+        Assert.assertTrue(textPresent(formName));
+        Assert.assertTrue(textPresent(formDef));
+        Assert.assertTrue(textPresent(formV));
+        
+        gotoPublicForms();
+        searchForm("Create Form Test Name");
+        findElement(By.linkText("Create Form Test Name")).click();
+        Assert.assertTrue(textPresent("Fill out carefully!"));        
+    }    
+    
+    @Test
+    public void formFacets() {
+        gotoPublicForms();
+        searchForm("FormSearchTest");
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Vision Deficit Report");        
+        textPresent("Qualified");      
+        findElement(By.id("status-text-Qualified")).click(); 
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");        
+        textNotPresent("Vision Deficit Report");   
+        findElement(By.id("status-text-Qualified")).click();     
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");        
+        textPresent("Vision Deficit Report");
+        findElement(By.id("status-text-Recorded")).click();  
+        textNotPresent("Skin Cancer Patient");
+        textNotPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Vision Deficit Report");    
+        findElement(By.id("status-text-Recorded")).click();  
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Vision Deficit Report");
+    }    
+    
     void addSection(String title, String card) {
         int nbOfSections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_view')]")).size();
 

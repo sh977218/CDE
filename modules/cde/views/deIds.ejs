@@ -6,17 +6,17 @@
             <dt>Source: </dt> 
             <dd id="dd_origin_nlm">NLM</dd>
             <dt>Id: </dt>
-            <dd id="dd_id_nlm">{{cde.uuid}}</dd>
+            <dd id="dd_id_nlm">{{elt.uuid}}</dd>
             <dt>Version: </dt>
-            <dd id="dd_version_nlm">{{cde.version}}</dd>
+            <dd id="dd_version_nlm">{{elt.version}}</dd>
         </dl>
     </div>
 </div>
 <hr/>
 
-<div ng-repeat="id in cde.ids">
+<div ng-repeat="id in elt.ids">
     <div class="row">
-        <div class="col-md-1 text-right" ng-show="isAllowed(cde) && cde.ids.length > 0">
+        <div class="col-md-1 text-right" ng-show="canCurate && elt.ids.length > 0">
             <div class="row">
                 <span ng-show="showDelete">
                     Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeId($index)" id="confirmRemoveId-{{$index}}" title="OK" href=""></a>
@@ -39,7 +39,7 @@
     <hr/>
 </div>
 
-<button ng-show="isAllowed(cde)" class="btn btn-small btn-default" value="add" ng-click="openNewId()" id="addId"><i class="fa fa-plus"> </i> Add Identifier</button>
+<button ng-show="canCurate" class="btn btn-small btn-default" value="add" ng-click="openNewId()" id="addId"><i class="fa fa-plus"> </i> Add Identifier</button>
 
 <script type="text/ng-template" id="newIdModalContent.html">
     <div class="modal-header" id="newIdModalHeader">

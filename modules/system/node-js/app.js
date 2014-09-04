@@ -266,15 +266,16 @@ exports.init = function(app) {
             res.send(403, "Not Authorized");
         }
     });
-    
-    app.get('/orgNames', function(req, res) {
-       mongo_data.orgNames(function (err, names) {
-           res.send(names);
-       }); 
-    });
 
     app.get('/orgaccountmanagement', exports.nocacheMiddleware, function(req, res) {
         res.render('orgAccountManagement', "system");
     });    
-          
+        
+    app.get('/data/:imgtag', function(req, res) {
+      mongo_data_system.getFile(function(err, data) {
+      }, res, req.params.imgtag );
+    });    
+
+
+    
 };

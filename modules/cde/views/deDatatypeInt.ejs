@@ -2,19 +2,19 @@
   <dt>Minimum Value: </dt>
   <dd>
      <span ng-show="editMinMode">
-        <input ng-model="cde.valueDomain.datatypeInteger.minValue" integer/>
-        <i class="fa fa-check" ng-click="editMinMode = false; stageElt(cde)" id="confirmMin"> OK</i>
+        <input ng-model="elt.valueDomain.datatypeInteger.minValue" integer/>
+        <i class="fa fa-check" ng-click="editMinMode = false; stageElt(elt)" id="confirmMin"> OK</i>
         <i class="fa fa-times" ng-click="editMinMode = false"> Cancel</i>
      </span>
-     <span ng-hide="editMinMode"><i ng-show="isAllowed(cde)" class="fa fa-pencil" ng-click="editMinMode = true"></i> {{cde.valueDomain.datatypeInteger.minValue | placeholdEmpty}}</span>
+     <span ng-hide="editMinMode"><i ng-show="canCurate" class="fa fa-pencil" ng-click="editMinMode = true"></i> {{elt.valueDomain.datatypeInteger.minValue | placeholdEmpty}}</span>
   </dd>
   <dt>Maximum Value: </dt>
   <dd>
      <span ng-show="editMaxMode">
-        <input ng-model="cde.valueDomain.datatypeInteger.maxValue" integer/>
-        <i class="fa fa-check" ng-click="editMaxMode = false; stageElt(cde)" id="confirmMax"> OK</i>
+        <input ng-model="elt.valueDomain.datatypeInteger.maxValue" integer/>
+        <i class="fa fa-check" ng-click="editMaxMode = false; stageElt(elt)" id="confirmMax"> OK</i>
         <i class="fa fa-times" ng-click="editMaxMode = false"> Cancel</i>
      </span>
-     <span ng-hide="editMaxMode"><i ng-show="isAllowed(cde)" class="fa fa-pencil" ng-click="editMaxMode = true"></i> {{cde.valueDomain.datatypeInteger.maxValue | placeholdEmpty}}</span>
+     <span ng-hide="editMaxMode"><i ng-show="canCurate" class="fa fa-pencil" ng-click="editMaxMode = true"></i> {{elt.valueDomain.datatypeInteger.maxValue | placeholdEmpty}}</span>
   </dd>  
 </dl>
