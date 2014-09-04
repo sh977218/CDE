@@ -77,10 +77,6 @@ exports.init = function(app) {
        res.render('createcde'); 
     });
 
-    app.get('/classificationmanagement', function(req, res) {
-        res.render('classificationManagement');
-    });
-
     app.get('/deview', function(req, res) {
         res.render("deview");
     });

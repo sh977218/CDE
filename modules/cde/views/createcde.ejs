@@ -32,14 +32,10 @@
 
             <div class="form-group" ng-show="cde.stewardOrg.name">
                 <label for="selectDefault">Default Classifications</label>
-                <%- include classif-sub-elements.ejs %>
                 <div ng-include="'classificationBody.html'">
                 </div>
                 <button class="btn btn-default btn-small" ng-click="openSelectDefaultClassificationModal()" id="selectDefault">Select</button>
-            </div>
-            <script type="text/ng-template" id="addClassificationModalContent.html">
-                <%- include addClassification.ejs %>
-            </script>            
+            </div>           
             <br />
 
             <div ng-show="validationErrors() !== null">
