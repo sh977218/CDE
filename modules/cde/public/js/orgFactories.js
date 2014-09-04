@@ -1,23 +1,4 @@
 angular.module('resources')
-.factory('GetOrgsLongName', function($rootScope, $http) {
-    return {
-        getOrgsLongNameAPI : function() {
-            $http.get('/listOrgsLongName').success(function(response) {
-                $rootScope.orgsLongName = {};
-
-                // Transforms response to object literal notation
-                response.forEach(function(org) {
-                    if(org.longName) {
-                        $rootScope.orgsLongName[org.name] = org.longName;
-                    }
-                });
-            }).error(function() {
-                console.log('ERROR - getOrgsLongNameAPI(): Error retrieving list of orgs long name');
-                $rootScope.orgsLongName = {};
-            });
-        }
-    };
-})
 .factory('GetOrgsDetailedInfo', function($rootScope, $http) {
     return {
         getOrgsDetailedInfoAPI : function() {
