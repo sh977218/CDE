@@ -1,4 +1,4 @@
-function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, isAllowedModel, $window, screenSize, GetOrgsLongName) {
+function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, isAllowedModel, $window, screenSize, GetOrgsLongName, GetOrgsDetailedInfo) {
     // Global variables
     var GLOBALS = {
         max_quickboard_cdes : 10
@@ -272,9 +272,15 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     $scope.screenSizeXs = screenSize.is('xs');
     
     // Retrieves orgs long name from database at an interval
-    GetOrgsLongName.getOrgsLongNameAPI();
+//    GetOrgsLongName.getOrgsLongNameAPI();
+//    $interval(function() {
+//        GetOrgsLongName.getOrgsLongNameAPI();
+//    }, GLOBALS.getOrgsLongNameInterval);
+
+    // Retrieves orgs details from database at an interval
+    GetOrgsDetailedInfo.getOrgsDetailedInfoAPI();
     $interval(function() {
-        GetOrgsLongName.getOrgsLongNameAPI();
+        GetOrgsDetailedInfo.getOrgsDetailedInfoAPI();
     }, GLOBALS.getOrgsLongNameInterval);
 
 }

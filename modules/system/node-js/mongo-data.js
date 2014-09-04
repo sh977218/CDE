@@ -94,11 +94,16 @@ exports.listOrgs = function(callback) {
 };
 
 exports.listOrgsLongName = function(callback) {
-    Org.find({}, {'_id': 0, "name":1, "longName":1}).exec(function(err, result) {
+    Org.find({}, {'_id': 0, 'name':1, 'longName':1}).exec(function(err, result) {
         callback("", result);
     });
 };
 
+exports.listOrgsDetailedInfo = function(callback) {
+    Org.find({}, {'_id': 0, 'name':1, 'longName':1, 'mailAddress':1, "emailAddress":1, "phoneNumber":1, "uri":1}).exec(function(err, result) {
+        callback("", result);
+    });
+};
 
 exports.managedOrgs = function(callback) {
     Org.find().exec(function(err, orgs) {

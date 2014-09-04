@@ -61,7 +61,18 @@ exports.init = function(app) {
                 res.send(orgs);
             }   
         });
-    }); 
+    });
+
+    app.get('/listOrgsDetailedInfo', function(req, res) {
+        mongo_data_system.listOrgsDetailedInfo(function(err, orgs) {
+            if (err) {
+                logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
+                res.send("ERROR");
+            } else {
+                res.send(orgs);
+            }   
+        });
+    });
 
     app.post('/login', function(req, res, next) {
         // Regenerate is used so appscan won't complain
