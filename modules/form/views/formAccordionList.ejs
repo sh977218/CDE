@@ -1,8 +1,7 @@
 <div accordion close-others="false">
     <div accordion-group ng-repeat="form in (cdes+mltCdes)" is-open="form.isOpen">
         <div accordion-heading>
-            <span ng-bind-html="form.naming[0].designation" id="acc_link_{{$index}}" class="hand-cursor"></span>
-            <!--i ng-show="ejsPage!='createcde'" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(form,'view',$event)" title="View"></i-->
+            <span ng-bind-html="form.naming[0].designation" id="acc_link_{{$index}}" class="hand-cursor"></span>            
         </div>
         
         <div class="row" >
@@ -30,7 +29,7 @@
         </div>         
         
         <div class="row" >
-            <a class='btn btn-small btn-default' ng-href="/#/formView?_id={{form._id}}" title="Full Detail for {{form.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
+            <a class='btn btn-small btn-default' id="openEltInCurrentTab_{{$index}}" ng-href="/#/formView?_id={{form._id}}" title="Full Detail for {{form.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
         </div>        
     </div>
 </div>
