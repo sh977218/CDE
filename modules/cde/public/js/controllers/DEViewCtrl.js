@@ -1,4 +1,4 @@
-function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementUUID, PriorCdes, CdeDiff) {
+function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementUUID, PriorCdes, CdeDiff, $rootScope, OrgHelpers) {
     $scope.initialized = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;
@@ -54,6 +54,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
                 });
             };
             $scope.initialized = true;
+            
+            $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.cde.stewardOrg.name, $rootScope.orgsDetailedInfo);
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
@@ -341,5 +343,5 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         $http.get("/permissibleValueCodeSystemList").then(function(response) {
             $scope.pVTypeaheadCodeSystemNameList = response.data;
         });
-    }; 
+    };
 }

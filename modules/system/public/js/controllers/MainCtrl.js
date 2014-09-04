@@ -2,7 +2,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     // Global variables
     var GLOBALS = {
         max_quickboard_cdes : 10
-        , getOrgsLongNameInterval : 1000 * 60 * 10 * 1 // 10 min
+        , getOrgsInterval : 1000 * 60 * 10 * 1 // 10 min
 
     };
     
@@ -275,12 +275,12 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
 //    GetOrgsLongName.getOrgsLongNameAPI();
 //    $interval(function() {
 //        GetOrgsLongName.getOrgsLongNameAPI();
-//    }, GLOBALS.getOrgsLongNameInterval);
+//    }, GLOBALS.getOrgsInterval);
 
     // Retrieves orgs details from database at an interval
     GetOrgsDetailedInfo.getOrgsDetailedInfoAPI();
     $interval(function() {
         GetOrgsDetailedInfo.getOrgsDetailedInfoAPI();
-    }, GLOBALS.getOrgsLongNameInterval);
+    }, GLOBALS.getOrgsInterval);
 
 }
