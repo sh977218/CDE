@@ -72,8 +72,8 @@ function SectionCtrl($scope, $modal, $timeout) {
         question.question.uoms.push("Please specify");
     };
 
-    $scope.removeElt = function(from, index) {
-        from.formElements.splice(index, 1);
+    $scope.removeElt = function(form, index) {
+        form.formElements.splice(index, 1);
         $scope.stageElt();
     };
 

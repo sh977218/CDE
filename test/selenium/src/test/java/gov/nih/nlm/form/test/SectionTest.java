@@ -56,6 +56,7 @@ public class SectionTest extends BaseFormTest {
     
     void addSection(String title, String card) {
         int nbOfSections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_view')]")).size();
+        findElement(By.linkText("Form Description")).click();
 
         findElement(By.id("addSection")).click();
 
@@ -77,7 +78,8 @@ public class SectionTest extends BaseFormTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         String formName = "Section Test Form";
         createForm(formName, "Form def", "1.0", "CTEP");
-        
+
+        findElement(By.linkText("Form Description")).click();
         addSection("Section 1", "0 or more");
         addSection("Section 2", "1 or more");
         addSection("Section 3", null);
@@ -91,11 +93,13 @@ public class SectionTest extends BaseFormTest {
         Assert.assertEquals("Exactly 1", findElement(By.id("dd_card_2")).getText());
 
         saveForm();
-        
+        findElement(By.linkText("Form Description")).click();
+
         findElement(By.id("moveEltUp-1")).click();
         findElement(By.id("moveEltDown-1")).click();
         
         saveForm();
+        findElement(By.linkText("Form Description")).click();
 
         Assert.assertEquals("Section 2", findElement(By.id("dd_section_title_0")).getText());
         Assert.assertEquals("Section 3", findElement(By.id("dd_section_title_1")).getText());
@@ -114,6 +118,7 @@ public class SectionTest extends BaseFormTest {
         findElement(By.xpath("//dd[@id='dd_section_title_2']//button[@class='fa fa-times']")).click();
 
         saveForm();
+        findElement(By.linkText("Form Description")).click();
         
         Assert.assertEquals("Section 2 - New", findElement(By.id("dd_section_title_0")).getText());
         Assert.assertEquals("Section 3", findElement(By.id("dd_section_title_1")).getText());
@@ -125,6 +130,7 @@ public class SectionTest extends BaseFormTest {
 
         findElement(By.id("removeElt-1")).click();
         saveForm();
+        findElement(By.linkText("Form Description")).click();
         
         Assert.assertEquals("Section 1", findElement(By.id("dd_section_title_1")).getText());
 

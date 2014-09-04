@@ -2,7 +2,7 @@
 <div ng-repeat="section in elt.formElements">
     <div class="row" id="section_view_{{$index}}">
         <div class="col-md-1 text-right" ng-show="canCurate">
-            <i ng-click="removeElt(form, $index)" class="fa fa-trash-o" id="removeElt-{{$index}}"></i>
+            <i ng-click="removeElt(elt, $index)" class="fa fa-trash-o" id="removeElt-{{$index}}"></i>
             <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}" ng-hide="$first" ></i>
             <i ng-click="moveElt($index, 1)" class="fa fa-arrow-down" id="moveEltDown-{{$index}}" ng-hide="$last" ></i>
         </div>   

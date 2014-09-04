@@ -102,7 +102,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
         // following will assert that test user was indeed promoted
-        new Select(driver.findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText(testOrg);
+        new Select(driver.findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(testOrg);
         logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
     } 
