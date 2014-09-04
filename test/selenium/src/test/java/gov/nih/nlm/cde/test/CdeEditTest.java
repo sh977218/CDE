@@ -212,7 +212,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         // Changes Steward and save
         findElement(By.id("dd_edit_steward")).click();
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
-        findElement(By.id("elt  .stewardOrg.name.ok")).click();
+        findElement(By.id("elt.stewardOrg.name.ok")).click();
         Assert.assertTrue(textPresent("NINDS"));
         findElement(By.id("openSave")).click();
         modalHere();
