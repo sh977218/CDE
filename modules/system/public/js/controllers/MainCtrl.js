@@ -271,12 +271,6 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     
     $scope.screenSizeXs = screenSize.is('xs');
     
-    // Retrieves orgs long name from database at an interval
-//    GetOrgsLongName.getOrgsLongNameAPI();
-//    $interval(function() {
-//        GetOrgsLongName.getOrgsLongNameAPI();
-//    }, GLOBALS.getOrgsInterval);
-
     // Retrieves orgs details from database at an interval
     GetOrgsDetailedInfo.getOrgsDetailedInfoAPI();
     $interval(function() {
