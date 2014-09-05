@@ -52,22 +52,11 @@ exports.init = function(app) {
         });        
     });
 
-    app.get('/listOrgsLongName', function(req, res) {
-        mongo_data_system.listOrgsLongName(function(err, orgs) {
-            if (err) {
-                logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
-                res.send("ERROR");
-            } else {
-                res.send(orgs);
-            }   
-        });
-    });
-
     app.get('/listOrgsDetailedInfo', function(req, res) {
         mongo_data_system.listOrgsDetailedInfo(function(err, orgs) {
             if (err) {
-                logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
-                res.send("ERROR");
+                logging.expressErrorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}));
+                res.send(403, 'Failed to get list of orgs detailed info.');
             } else {
                 res.send(orgs);
             }   
@@ -162,9 +151,9 @@ exports.init = function(app) {
         }
     });
 
-    app.post('/updateOrg/:field', function(req, res) {
+    app.post('/updateOrg', function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            orgsvc.updateOrg(req, res, req.params.field);
+            orgsvc.updateOrg(req, res);
         } else {
             res.send(403, "You are not authorized to update this organization.");                    
         }
