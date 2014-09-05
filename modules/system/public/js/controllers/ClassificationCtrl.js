@@ -1,5 +1,5 @@
  function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification) {
-    $scope.module = "cde";
+    //$scope.module = "cde";
      
     $scope.initCache(); 
     

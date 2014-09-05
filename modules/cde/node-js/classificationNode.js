@@ -1,6 +1,6 @@
-var mongo_data = require('./mongo-cde')
-    , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
-    , usersvc = require('./usersvc')
+var mongo_data_cde = require('./mongo-cde')
+    , mongo_data_system = require('../../system/node-js/mongo-data') 
+    , usersvc = require('../../system/node-js/usersrvc')
     , classificationShared = require('../shared/classificationShared');
 
 exports.addOrgClassification = function(body, cb) {
@@ -30,7 +30,7 @@ exports.cdeClassification = function(body, action, cb) {
             if (cb) cb(err);
         });            
     };
-    mongo_data.byId(body.cdeId, function(err, cde) {
+    mongo_data_cde.byId(body.cdeId, function(err, cde) {
         cdeClassif.cde = cde;
         var steward = classificationShared.findSteward(cde, body.orgName);
         if (!steward) {
@@ -60,8 +60,7 @@ exports.cdeClassification = function(body, action, cb) {
 };
 
 exports.moveClassifications = function(request, cb) {
-//    var mongo_data = require('../node-js/mongo-data');
-    mongo_data.cdesByUuidList([request.body.cdeSource.uuid, request.body.cdeTarget.uuid], function(err, cde) {
+    mongo_data_cde.cdesByUuidList([request.body.cdeSource.uuid, request.body.cdeTarget.uuid], function(err, cde) {
         var source = null;
         var destination = null;
         if (cde[0].uuid === request.body.cdeSource.uuid) {
@@ -97,7 +96,7 @@ exports.modifyOrgClassification = function(request, action, callback) {
                 key += ".name";
                 query[key] = request.categories[i];
             }            
-            mongo_data.DataElement.find(query).exec(function(err, result) {
+            mongo_data_cde.DataElement.find(query).exec(function(err, result) {
                 for (var i = 0; i < result.length; i++) {
                     var cde = result[i];
                     var steward = classificationShared.findSteward(cde, request.orgName);   

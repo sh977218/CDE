@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test;
 
 import org.testng.annotations.Test;
+import org.openqa.selenium.By;
 
 public class FormClassificationTest extends BaseFormTest{            
     @Test

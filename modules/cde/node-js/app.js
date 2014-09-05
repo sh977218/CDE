@@ -1,6 +1,7 @@
 var cdesvc = require('./cdesvc')
   , boardsvc = require('./boardsvc')
   , usersvc = require('./usersvc')
+  , usersvc_system = require('../../system/node-js/usersrvc')
   , mongo_data = require('./mongo-cde')
   , classificationNode = require('./classificationNode')
   , xml2js = require('xml2js')
@@ -79,7 +80,7 @@ exports.init = function(app) {
 
 
     app.delete('/classification/org', function(req, res) {
-        if (!usersvc.isCuratorOf(req.user, req.query.orgName)) {
+        if (!usersvc_system.isCuratorOf(req.user, req.query.orgName)) {
             res.send(403);
             return;
         }  
@@ -89,7 +90,7 @@ exports.init = function(app) {
     });
 
     app.post('/classification/org', function(req, res) {
-        if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
+        if (!usersvc_system.isCuratorOf(req.user, req.body.orgName)) {
             res.send(403);
             return;
         }      
@@ -99,7 +100,7 @@ exports.init = function(app) {
     });
 
     app.delete('/classification/cde', function(req, res) {
-        if (!usersvc.isCuratorOf(req.user, req.query.orgName)) {
+        if (!usersvc_system.isCuratorOf(req.user, req.query.orgName)) {
             res.send(403, "Not Authorized");
             return;
         }  
@@ -113,7 +114,7 @@ exports.init = function(app) {
     });
 
     app.post('/classification/rename', function(req, res) {
-        if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
+        if (!usersvc_system.isCuratorOf(req.user, req.body.orgName)) {
             res.send(403, "Not Authorized");
             return;
         }      
@@ -124,7 +125,7 @@ exports.init = function(app) {
     });
 
     app.post('/classification/cde', function(req, res) {
-        if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
+        if (!usersvc_system.isCuratorOf(req.user, req.body.orgName)) {
             res.send(403, "Not Authorized");
             return;
         }      
