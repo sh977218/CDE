@@ -20,7 +20,9 @@ var cdesvc = require('./cdesvc')
   , appSystem = require('../../system/node-js/app.js')
 ;
 
-exports.init = function(app) {
+exports.init = function(app, daoManager) {
+    
+    daoManager.registerDao(mongo_data);
 
     app.use("/cde/public", express.static(path.join(__dirname, '../public')));
 
@@ -104,7 +106,7 @@ exports.init = function(app) {
             res.send(403, "Not Authorized");
             return;
         }  
-        classificationNode_system.cdeClassification(req.query, classificationShared.actions.delete, mongo_data, function(err) {
+        classificationNode_system.cdeClassification(req.query, classificationShared.actions.delete, function(err) {
             if (!err) { 
                 res.send(); 
             } else {
@@ -366,20 +368,20 @@ exports.init = function(app) {
         });
     });
     
-    app.post('/classification/elt/cde', function(req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.send(403, "Not Authorized");
-            return;
-        }      
-        classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
-            if (!err) { 
-                res.send({ code: 200, msg: "Classification Added"}); 
-            } else {
-                res.send({ code: 403, msg: "Classification Already Exists"}); 
-            }
-
-        });
-    });    
+//    app.post('/classification/elt/cde', function(req, res) {
+//        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
+//            res.send(403, "Not Authorized");
+//            return;
+//        }      
+//        classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
+//            if (!err) { 
+//                res.send({ code: 200, msg: "Classification Added"}); 
+//            } else {
+//                res.send({ code: 403, msg: "Classification Already Exists"}); 
+//            }
+//
+//        });
+//    });    
 
     app.post('/attachments/cde/add', function(req, res) {
         adminItemSvc.addAttachment(req, res, mongo_data);

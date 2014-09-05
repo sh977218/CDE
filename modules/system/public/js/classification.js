@@ -9,7 +9,7 @@ angular.module('classification', ['ngResource'])
     };
 })
 .factory('CdeClassification', function($resource) {
-    return $resource('/classification/elt/cde');
+    return $resource('/classification/elt');
 })
 .factory("ClassificationTree", function() {
     return {

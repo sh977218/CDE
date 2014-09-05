@@ -18,7 +18,7 @@ exports.nocacheMiddleware = function(req, res, next) {
     next();
 };
 
-exports.init = function(app) {
+exports.init = function(app, daoManager) {
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
     
     var viewConfig = {modules: config.modules};
@@ -280,7 +280,7 @@ exports.init = function(app) {
       }, res, req.params.imgtag );
     });    
 
-    app.post('/classification/elt/cde', function(req, res) {
+    app.post('/classification/elt', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
             res.send(403, "Not Authorized");
             return;

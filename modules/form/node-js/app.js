@@ -6,8 +6,9 @@ var express = require('express')
   , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
 ;
 
-exports.init = function(app) {
-
+exports.init = function(app, daoManager) {
+    daoManager.registerDao(mongo_data);
+    
     app.use("/form/public", express.static(path.join(__dirname, '../public')));
 
     app.post('/findForms', formCtrl.findForms);
