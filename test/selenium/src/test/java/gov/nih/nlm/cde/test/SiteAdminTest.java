@@ -50,7 +50,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 //        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(orgName) < 0);
 //    }
     
-    @Test
+//    @Test
     public void addOrg() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String testOrg = "New Test Org";
@@ -116,22 +116,18 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//input")).sendKeys(testOrgMailingAddressNotRenamed);
         findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//button[@class='fa fa-times']")).click();
-        closeAlert();
         
         findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//input")).sendKeys(testOrgEmailingAddressNotRenamed);
         findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//button[@class='fa fa-times']")).click();
-        closeAlert();
         
         findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//input")).sendKeys(testOrgPhoneNumberNotRenamed);
         findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//button[@class='fa fa-times']")).click();
-        closeAlert();
 
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//input")).sendKeys(testOrgUriNotRenamed);
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//button[@class='fa fa-times']")).click();
-        closeAlert();
         
         Assert.assertTrue(textNotPresent(testOrgNotRenamed));
         Assert.assertTrue(textNotPresent(testOrgMailingAddressNotRenamed));
@@ -148,7 +144,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         Assert.assertTrue(textNotPresent(testOrgUriNotRenamed));        
     }
     
-    @Test
+//    @Test
     public void promoteOrgAdmin() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String testOrg = "Promote Org Test";
@@ -173,7 +169,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
     } 
     
-    @Test
+//    @Test
     public void browseUsers() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         findElement(By.id("username_link")).click();

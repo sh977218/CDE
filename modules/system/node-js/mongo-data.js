@@ -131,11 +131,13 @@ exports.removeOrg = function (id, callback) {
 };
 
 exports.updateOrg = function(org, res) {
-  Org.findOneAndUpdate({'name': org.name}, org).exec(function(err, found) {
-    if(found) {
-        res.send('Org has been updated.');
-    } else {
-        res.send('Org does not exist.');
-    }
-  });
+    var id = org._id;
+    delete org._id;
+    Org.findOneAndUpdate({_id: id}, org).exec(function(err, found) {
+        if (found) {
+            res.send('Org has been updated.');
+        } else {
+            res.send('Org does not exist.');
+        }
+    });
 };

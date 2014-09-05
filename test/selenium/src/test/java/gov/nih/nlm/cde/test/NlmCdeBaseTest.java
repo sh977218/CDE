@@ -176,7 +176,9 @@ public class NlmCdeBaseTest {
     
     public void closeAlert() {
         try {
+            System.out.println("1");
             findElement(By.cssSelector(".alert .close")).click();
+            System.out.println("2");
         } catch(Exception e) {
                     
         }
