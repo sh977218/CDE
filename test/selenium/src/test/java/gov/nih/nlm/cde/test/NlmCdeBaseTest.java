@@ -136,12 +136,18 @@ public class NlmCdeBaseTest {
         hangon(1);
     }
     
-    protected void goToFormByName(String name) {
+    protected void openFormInList(String name) {
         goToSearch();
-        findElement(By.id("formsLink")).click();
-        findElement(By.name("search.name")).sendKeys(name);
-        findElement(By.id("search.submit")).click();
-        findElement(By.partialLinkText(name)).click();
+        findElement(By.linkText("Forms")).click();
+        findElement(By.id("ftsearch-input")).clear();
+        findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
+        findElement(By.cssSelector("i.fa-search")).click();
+        textPresent("1 results for");
+        findElement(By.id("acc_link_0")).click();
+    }
+    
+    protected void goToFormByName(String name) {
+        openFormInList(name);
         findElement(By.linkText("View Full Detail")).click();
     }
     
