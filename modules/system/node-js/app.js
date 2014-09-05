@@ -280,7 +280,7 @@ exports.init = function(app) {
       }, res, req.params.imgtag );
     });    
 
-    app.post('/classification/elt', function(req, res) {
+    app.post('/classification/elt/cde', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
             res.send(403, "Not Authorized");
             return;

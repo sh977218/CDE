@@ -3,7 +3,7 @@ var mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , usersvc = require('../../system/node-js/usersrvc')
     , classificationShared = require('../shared/classificationShared');
 
-exports.cdeClassification = function(body, action, cb) {
+exports.cdeClassification = function(body, action, dao, cb) {
     var cdeClassif = this;
     this.saveCdeClassif = function(err, cde) {   
         if (err) {
@@ -15,7 +15,7 @@ exports.cdeClassification = function(body, action, cb) {
             if (cb) cb(err);
         });            
     };
-    mongo_data_cde.byId(body.cdeId, function(err, cde) {
+    dao.byId(body.cdeId, function(err, cde) {
         cdeClassif.cde = cde;
         var steward = classificationShared.findSteward(cde, body.orgName);
         if (!steward) {

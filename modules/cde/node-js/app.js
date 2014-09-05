@@ -4,6 +4,7 @@ var cdesvc = require('./cdesvc')
   , usersvc_system = require('../../system/node-js/usersrvc')
   , mongo_data = require('./mongo-cde')
   , classificationNode = require('./classificationNode')
+  , classificationNode_system = require('../../system/node-js/classificationNode')
   , xml2js = require('xml2js')
   , vsac = require('./vsac-io')
   , config = require('config')
@@ -103,7 +104,7 @@ exports.init = function(app) {
             res.send(403, "Not Authorized");
             return;
         }  
-        classificationNode.cdeClassification(req.query, classificationShared.actions.delete, function(err) {
+        classificationNode_system.cdeClassification(req.query, classificationShared.actions.delete, mongo_data, function(err) {
             if (!err) { 
                 res.send(); 
             } else {
@@ -364,6 +365,21 @@ exports.init = function(app) {
            if(!err) res.send(cde);
         });
     });
+    
+    app.post('/classification/elt/cde', function(req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
+            res.send(403, "Not Authorized");
+            return;
+        }      
+        classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
+            if (!err) { 
+                res.send({ code: 200, msg: "Classification Added"}); 
+            } else {
+                res.send({ code: 403, msg: "Classification Already Exists"}); 
+            }
+
+        });
+    });    
 
     app.post('/attachments/cde/add', function(req, res) {
         adminItemSvc.addAttachment(req, res, mongo_data);
