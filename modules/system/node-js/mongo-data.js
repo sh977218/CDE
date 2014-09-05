@@ -2,12 +2,12 @@ var schemas = require('./schemas')
     , mongoose = require('mongoose')
     , config = require('config')
     , mongoUri = config.mongoUri
-    , mongoUri = config.mongoUri
     , conn = mongoose.createConnection(mongoUri)
+    , Grid = require('gridfs-stream')
     , Org = conn.model('Org', schemas.orgSchema)    
     , User = conn.model('User', schemas.userSchema)
+    , fs = require('fs')
     ;
-
 
 conn.on('error', console.error.bind(console, 'connection error:'));
 conn.once('open', function callback () {
@@ -15,12 +15,13 @@ conn.once('open', function callback () {
     });    
 exports.mongoose_connection = conn;
 
+var gfs = Grid(conn.db, mongoose.mongo);
+
 exports.org_autocomplete = function(name, callback) {
     Org.find({"name": new RegExp(name, 'i')}, function(err, orgs) {
         callback(orgs);
     }); 
 };
-
 
 exports.orgNames = function(callback) {
     Org.find({}, {name: true, _id: false}).exec(function(err, result) {
@@ -100,7 +101,6 @@ exports.listOrgsLongName = function(callback) {
     });
 };
 
-
 exports.managedOrgs = function(callback) {
     Org.find().exec(function(err, orgs) {
         callback(orgs);
@@ -135,4 +135,51 @@ exports.updateOrgLongName = function(org, res) {
         res.send('Org did not exist.');
     }
   });
+};
+
+exports.userTotalSpace = function(Model, name, callback) {
+    Model.aggregate(
+            {$match: {"attachments.uploadedBy.username": name}},
+    {$unwind: "$attachments"},
+    {$group: {_id: {uname: "$attachments.uploadedBy.username"}, totalSize: {$sum: "$attachments.filesize"}}},
+    {$sort: {totalSize: -1}}
+    , function(err, res) {
+        var result = 0;
+        if (res.length > 0) {
+            result = res[0].totalSize;
+        }
+        callback(result);
+    });
+};
+
+exports.addAttachment = function(file, user, comment, elt, cb) {
+    var writestream = gfs.createWriteStream({
+        filename: file.name
+        , mode: 'w'
+        , content_type: file.type
+    });
+
+    writestream.on('close', function (newfile) {
+        elt.attachments.push({
+            fileid: newfile._id
+            , filename: file.name
+            , filetype: file.type
+            , uploadDate: Date.now()
+            , comment: comment 
+            , uploadedBy: {
+                userId: user._id
+                , username: user.username
+            }
+            , filesize: file.size
+        });
+        elt.save(function() {
+            cb();
+        });
+    });
+    
+    fs.createReadStream(file.path).pipe(writestream);
+};
+
+exports.getFile = function(callback, res, id) {
+    gfs.createReadStream({ _id: id }).pipe(res);
 };

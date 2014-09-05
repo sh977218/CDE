@@ -1,5 +1,6 @@
-function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementUUID, PriorCdes, CdeDiff) {
-    $scope.initialized = false;
+function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementUUID, PriorCdes, CdeDiff, isAllowedModel) {
+    $scope.module = 'cde';
+    $scope.eltLoaded = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;
     $scope.vsacValueSet = [];
@@ -8,9 +9,10 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     $scope.comment = {};
     $scope.pVTypeheadVsacNameList = [];
     $scope.pVTypeaheadCodeSystemNameList = [];
-    $scope.pvLimit = 30;
-    
+    $scope.pvLimit = 30;    
     $scope.showValidationIcons = false;
+    
+    $scope.canCurate = false;
     
     $scope.tabs = [
         {heading: "General Details"},
@@ -38,22 +40,24 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             if (route.version) query.version = route.version;
         }
         service.get(query, function(de) {
-            $scope.cde = de;
+            $scope.elt = de;        
             $scope.loadValueSet();
             $scope.canLinkPvFunc();
             $scope.loadMlt();
             $scope.loadBoards();
-            $scope.showValidationIcons = $scope.cde.dataElementConcept.conceptualDomain != null && $scope.cde.dataElementConcept.conceptualDomain.vsac.id != null;
+            $scope.showValidationIcons = $scope.elt.dataElementConcept.conceptualDomain != null && $scope.elt.dataElementConcept.conceptualDomain.vsac.id != null;
             $scope.getPVTypeaheadCodeSystemNameList();
             PriorCdes.getCdes({cdeId: de._id}, function(dataElements) {
                 $scope.priorCdes = dataElements;
             });
-            if ($scope.cde.isFork) {
-                $http.get('/forkroot/' + $scope.cde.uuid).then(function(result) {
+            if ($scope.elt.isFork) {
+                $http.get('/forkroot/' + $scope.elt.uuid).then(function(result) {
                     $scope.rootFork = result.data;
                 });
             };
-            $scope.initialized = true;
+            isAllowedModel.setCanCurate($scope);
+            isAllowedModel.setCanDoNonCuration($scope);
+            isAllowedModel.setDisplayStatusWarning($scope);
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
@@ -68,8 +72,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             author: {authorType: "user"},
             type: "Fork Notification", 
             typeRequest: {
-                source: {id: $scope.cde._id}
-                , destination: {uuid: $scope.cde.uuid}
+                source: {id: $scope.elt._id}
+                , destination: {uuid: $scope.elt.uuid}
                 , states: [{
                     action: "Filed"
                     , date: new Date()
@@ -87,36 +91,19 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     };
 
     $scope.classificationToFilter = function() {
-         if ($scope.cde != null) {
-             return $scope.cde.classification;
+         if ($scope.elt != null) {
+             return $scope.elt.classification;
          } 
     };
-
-    $scope.isAllowedNonCuration = function (cde) {
-        if ($scope.initialized && cde.archived) {
-            return false;
-        }
-        if ($scope.user && $scope.user.siteAdmin) {
-            return true;
-        } else {   
-            if ($scope.initialized && $scope.myOrgs) {
-                return $scope.myOrgs.indexOf(cde.stewardOrg.name) > -1;
-            } else {
-                return false;
-            }
-        }
-    };
-    
-
    
     $scope.save = function() {
-        $scope.cde.$save(function (cde) {
-            $window.location.href = "/#/deview?cdeId=" + cde._id;
+        $scope.elt.$save(function (elt) {
+            $window.location.href = "/#/deview?cdeId=" + elt._id;
         });
     }; 
     
-    $scope.revert = function(cde) {
-        $scope.reload({cdeId: cde._id});
+    $scope.revert = function(elt) {
+        $scope.reload({cdeId: elt._id});
     };
 
     $scope.compareLists = function(listA, listB) {
@@ -140,10 +127,10 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         return diff[fields.first][fields.second].removed.length>0 || diff[fields.first][fields.second].added.length>0;
     };    
     
-    $scope.viewDiff = function (cde) {
+    $scope.viewDiff = function (elt) {
         var dmp = new diff_match_patch();
         
-        CdeDiff.get({deId: cde._id}, function(diffResult) {
+        CdeDiff.get({deId: elt._id}, function(diffResult) {
             $scope.diff = {};
             if (diffResult.before.primaryName) {
                 var d = dmp.diff_main(diffResult.before.primaryName, diffResult.after.primaryName);
@@ -200,7 +187,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     };
     
     $scope.validatePvWithVsac = function() {
-        var pvs = $scope.cde.valueDomain.permissibleValues;
+        var pvs = $scope.elt.valueDomain.permissibleValues;
         if (!pvs) {
             return;
         }
@@ -231,7 +218,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
                 return value;
             }
         };
-        var pvs = $scope.cde.valueDomain.permissibleValues;
+        var pvs = $scope.elt.valueDomain.permissibleValues;
         if (!pvs) {
             return returnVal(false);       
         }
@@ -262,22 +249,22 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     };
     
     $scope.vsacMappingExists = function() {
-        return typeof($scope.cde.dataElementConcept.conceptualDomain) !== "undefined" 
-            && typeof($scope.cde.dataElementConcept.conceptualDomain.vsac) !== "undefined";
+        return typeof($scope.elt.dataElementConcept.conceptualDomain) !== "undefined" 
+            && typeof($scope.elt.dataElementConcept.conceptualDomain.vsac) !== "undefined";
     };
     
     $scope.loadValueSet = function() {
-        var dec = $scope.cde.dataElementConcept;
+        var dec = $scope.elt.dataElementConcept;
         if (dec != null && dec.conceptualDomain != null && dec.conceptualDomain.vsac !=  null) {
             $scope.vsacValueSet = [];
             $http({method: "GET", url: "/vsacBridge/" + dec.conceptualDomain.vsac.id}).
              error(function(data, status) {
                 if (status === 404) {
                    $scope.addAlert("warning", "Invalid VSAC OID");
-                   $scope.cde.dataElementConcept.conceptualDomain.vsac.id = "";                 
+                   $scope.elt.dataElementConcept.conceptualDomain.vsac.id = "";                 
                 } else { 
                    $scope.addAlert("danger", "Error quering VSAC");
-                   $scope.cde.dataElementConcept.conceptualDomain.vsac.id = "";
+                   $scope.elt.dataElementConcept.conceptualDomain.vsac.id = "";
                 }
              }).
              success(function(data, status) {
@@ -286,12 +273,12 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
                 }
                  else if (data === "") {
                 } else {
-                    $scope.cde.dataElementConcept.conceptualDomain.vsac.name = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
-                    $scope.cde.dataElementConcept.conceptualDomain.vsac.version = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].version;
+                    $scope.elt.dataElementConcept.conceptualDomain.vsac.name = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
+                    $scope.elt.dataElementConcept.conceptualDomain.vsac.version = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].version;
                     for (var i = 0; i < data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
                         $scope.vsacValueSet.push(data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$']);
                     }
-                    if ($scope.vsacValueSet.length < 50 || $scope.cde.valueDomain.permissibleValues < 50) {
+                    if ($scope.vsacValueSet.length < 50 || $scope.elt.valueDomain.permissibleValues < 50) {
                         $scope.validatePvWithVsac();
                         $scope.validateVsacWithPv();
                     } else {
@@ -307,8 +294,8 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     
     // could prob. merge this into load value set.
     $scope.canLinkPvFunc = function() {
-        var dec = $scope.cde.dataElementConcept;
-        $scope.canLinkPv = ($scope.isAllowed($scope.cde) &&
+        var dec = $scope.elt.dataElementConcept;
+        $scope.canLinkPv = ($scope.canCurate &&
                 dec != null &&
                 dec.conceptualDomain != null &&
                 dec.conceptualDomain.vsac != null &&
@@ -316,7 +303,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     };   
     
     $scope.loadMlt = function() {
-        $http({method: "GET", url: "/moreLikeCde/" + $scope.cde._id}).
+        $http({method: "GET", url: "/moreLikeCde/" + $scope.elt._id}).
              error(function(data, status) {
              }).
              success(function(data, status) {
@@ -326,7 +313,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     };
     
     $scope.loadBoards = function() {
-        $http.get("/deBoards/" + $scope.cde.uuid).then(function(response) {
+        $http.get("/deBoards/" + $scope.elt.uuid).then(function(response) {
             $scope.boards = response.data;
         });
     };

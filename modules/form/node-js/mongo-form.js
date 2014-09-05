@@ -2,6 +2,7 @@ var mongoose = require('mongoose')
     , config = require('config')
     , schemas = require('./schemas')
     , uuid = require('node-uuid')
+    , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
     ;
     
 var mongoUri = config.mongoUri;
@@ -14,6 +15,12 @@ conn.once('open', function callback () {
 });    
 
 var Form = conn.model('Form', schemas.formSchema);
+
+exports.idExists = function(id, callback) { 
+    Form.count({_id: id}).count().then(function(result) {
+        callback(result === 0);
+    });
+};
 
 exports.findForms = function(request, callback) {
     var criteria = {};
@@ -66,4 +73,9 @@ exports.byId = function(id, callback) {
         callback(err, form);
     });     
 };
+
+exports.userTotalSpace = function(name, callback) {
+    mongo_data_system.userTotalSpace(Form, name, callback);
+};
+
 

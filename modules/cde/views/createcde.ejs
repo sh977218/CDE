@@ -7,30 +7,30 @@
 
             <div class="form-group">
                 <label>Name</label>
-                <input type="text" class="form-control" required ng-model="cde.designation" name="cde.designation" ng-change="showSuggestions()">
-                <span ng-show="createCde.cde.designation.$error.required" >Required</span>
+                <input type="text" class="form-control" required ng-model="elt.designation" name="elt.designation" ng-change="showSuggestions()">
+                <span ng-show="createCde.elt.designation.$error.required" >Required</span>
             </div>
 
             <div class="form-group">
                 <label>Definition</label>
-                <input type="text" class="form-control" required ng-model="cde.definition" name="cde.definition">
-                <span ng-show="createCde.cde.definition.$error.required" class="help-inline">Required</span>
+                <input type="text" class="form-control" required ng-model="elt.definition" name="elt.definition">
+                <span ng-show="createCde.elt.definition.$error.required" class="help-inline">Required</span>
             </div>
 
             <div class="form-group">        
                 <label>Version</label>
-                <input type="text" class="form-control" ng-model="cde.version" name="cde.version">
+                <input type="text" class="form-control" ng-model="elt.version" name="elt.version">
             </div>
 
             <div class="form-group">
-                <label for="cde.stewardOrg.name">Steward Organization</label>
-                <select class="form-control" ng-model="cde.stewardOrg.name" id="cde.stewardOrg.name" required>
+                <label for="elt.stewardOrg.name">Steward Organization</label>
+                <select class="form-control" ng-model="elt.stewardOrg.name" id="elt.stewardOrg.name" required>
                     <option value="">Select One</option>
                     <option ng-repeat="o in myOrgs" ng-value="o">{{o}}</option>
                 </select>
             </div>
 
-            <div class="form-group" ng-show="cde.stewardOrg.name">
+            <div class="form-group" ng-show="elt.stewardOrg.name">
                 <label for="selectDefault">Default Classifications</label>
                 <div ng-include="'/template/system/classificationBody'">
                 </div>

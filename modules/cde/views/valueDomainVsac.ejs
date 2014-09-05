@@ -7,25 +7,25 @@
     <hr/>
     <div ng-show="vsacMappingExists()&&isLoggedIn()" ng-include="'vsacTable.html'"></div>
     <div ng-show="vsacMappingExists()&&!isLoggedIn()">Please log in to see VSAC mapping.</div>
-    <a class="btn btn-small btn-default" ng-show="vsacMappingExists() && isAllowed(cde) && !allVsacMatch()&&isLoggedIn()" ng-click="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
+    <a class="btn btn-small btn-default" ng-show="vsacMappingExists() && canCurate && !allVsacMatch()&&isLoggedIn()" ng-click="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
     </div>
 </script>
 
 <script type="text/ng-template" id="vsacHeader.html">   
-    <dt>Value Set Name: </dt><dd>{{cde.dataElementConcept.conceptualDomain.vsac.name | placeholdEmpty}}</dd>
-    <dt>Value Set ID: </dt><dd>{{cde.dataElementConcept.conceptualDomain.vsac.id | placeholdEmpty}}</dd>
-    <dt>Value Set Version: </dt><dd>{{cde.dataElementConcept.conceptualDomain.vsac.version | placeholdEmpty}}</dd>
+    <dt>Value Set Name: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.name | placeholdEmpty}}</dd>
+    <dt>Value Set ID: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.id | placeholdEmpty}}</dd>
+    <dt>Value Set Version: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.version | placeholdEmpty}}</dd>
 </script>  
 
 <script type="text/ng-template" id="vsacAddMapping.html">   
     <div>{{vsacError}}</div>    
     <div ng-hide="editMode">
-        <a class="btn btn-default" ng-show="isAllowed(cde)" ng-click="editMode=true" id="updateOID">Update O.I.D</a>
-        <a class="btn btn-default" ng-show="isAllowed(cde) && vsacMappingExists()" ng-click="removeVSMapping()" id="removeVSButton">Remove Mapping</a>
+        <a class="btn btn-default" ng-show="canCurate" ng-click="editMode=true" id="updateOID">Update O.I.D</a>
+        <a class="btn btn-default" ng-show="canCurate && vsacMappingExists()" ng-click="removeVSMapping()" id="removeVSButton">Remove Mapping</a>
     </div> 
     <div ng-show="editMode">
-        <input name="vsacId" type="text" ng-model="cde.dataElementConcept.conceptualDomain.vsac.id" placeholder="VSAC O.I.D"/>
-        <i id="vsacIdCheck" class="fa fa-check" ng-click="checkVsacId(cde); editMode = false"></i>
+        <input name="vsacId" type="text" ng-model="elt.dataElementConcept.conceptualDomain.vsac.id" placeholder="VSAC O.I.D"/>
+        <i id="vsacIdCheck" class="fa fa-check" ng-click="checkVsacId(elt); editMode = false"></i>
         <i class="fa fa-times" ng-click="editMode = false"></i>
     </div>    
 </script>    
@@ -38,7 +38,7 @@
                  <th>Code</th>
                  <th>Code System</th>
                  <th id="validation">Match</th>
-                 <th ng-show="isAllowed(cde)">Actions</th>
+                 <th ng-show="canCurate">Actions</th>
              </tr>
          </thead> 
          <tbody id="vsacTableBody">
@@ -52,7 +52,7 @@
                          <i ng-switch-default class="fa fa-exclamation text-warning" id="vset-{{$index}}-warning"></i>
                      </span>
                  </td>
-                 <td ng-show="isAllowed(cde)">
+                 <td ng-show="canCurate">
                      <i id="addVsacValue-{{$index}}" ng-click="addVsacValue(con)" ng-show="!isVsInPv(con)" class="fa fa fa-plus"></i>
                  </td>
              </tr>

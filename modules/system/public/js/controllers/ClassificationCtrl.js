@@ -12,7 +12,7 @@
                     return $scope.myOrgs;
                 }
                 , cde: function() {
-                    return $scope.cde;
+                    return $scope.elt;
                 }
                 , addClassification: function() {
                     return {
@@ -33,7 +33,7 @@
      
     $scope.removeClassification = function(orgName, elts) {
         CdeClassification.remove({
-            cdeId: $scope.cde._id
+            cdeId: $scope.elt._id
             , orgName: orgName
             , categories: elts
         }, function (res) {

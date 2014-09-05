@@ -1,6 +1,6 @@
 function NewConceptModalCtrl($scope, $modalInstance, cde) {
     $scope.newConcept = {origin: "LOINC", type: "dec"};
-    $scope.cde = cde;
+    $scope.elt = cde;
     
     $scope.cancelCreate = function() {
         $modalInstance.dismiss('cancel');

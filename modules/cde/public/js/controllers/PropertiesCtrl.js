@@ -5,20 +5,20 @@ var PropertiesCtrl = function ($scope, $modal, $http, $window, $timeout) {
           controller: NewPropertyModalCtrl,
           resolve: {
               cde: function() {
-                  return $scope.cde;
+                  return $scope.elt;
               }
           }
         });
         
         modalInstance.result.then(function (newProperty) {
-            for (var i = 0; i < $scope.cde.properties.length; i++) {
-                if ($scope.cde.properties[i].key === newProperty.key) {
+            for (var i = 0; i < $scope.elt.properties.length; i++) {
+                if ($scope.elt.properties[i].key === newProperty.key) {
                     $scope.addAlert("danger", "This property already exists.");
                     return;
                 }
             }
-            $scope.cde.properties.push(newProperty);
-            $scope.cde.$save(function (newcde) {
+            $scope.elt.properties.push(newProperty);
+            $scope.elt.$save(function (newcde) {
                 $window.location.href = "/#/deview?tab=6&cdeId=" + newcde._id;
                 $scope.addAlert("success", "Property Added"); 
             });
@@ -26,20 +26,20 @@ var PropertiesCtrl = function ($scope, $modal, $http, $window, $timeout) {
     };
     
     $scope.removeProperty = function (index) {
-        $scope.cde.properties.splice(index, 1);
-        $scope.cde.$save(function (newcde) {
+        $scope.elt.properties.splice(index, 1);
+        $scope.elt.$save(function (newcde) {
             $window.location.href = "/#/deview?tab=6&cdeId=" + newcde._id;
             $scope.addAlert("success", "Property Removed"); 
         });
     };
 
     $scope.canEditProperty = function () {
-        return $scope.isAllowed($scope.cde) && !$scope.cde.unsaved;
+        return $scope.canCurate && !$scope.elt.unsaved;
     };
 
     $scope.saveProperty = function() {
         $timeout(function() {
-            $scope.cde.$save(function (newcde) {
+            $scope.elt.$save(function (newcde) {
                 $window.location.href = "/#/deview?tab=6&cdeId=" + newcde._id;
             });
         }, 0);
@@ -48,7 +48,7 @@ var PropertiesCtrl = function ($scope, $modal, $http, $window, $timeout) {
 };
 
 function NewPropertyModalCtrl($scope, $modalInstance, cde) {
-    $scope.cde = cde;
+    $scope.elt = cde;
     $scope.newProperty = {};
 
     $scope.okCreate = function () {

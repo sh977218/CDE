@@ -26,6 +26,9 @@
                     <dt id="dt_status">Status: </dt><dd id="dd_status">{{form.registrationState.registrationStatus}}</dd>
                 </dl>
             </div>
+            <div class="col-md-2">
+                <img ng-repeat="attachment in form.attachments | filter:isDefaultAttachment" ng-src="/data/{{attachment.fileid}}"  class='cdeAttachmentThumbnail' /> 
+            </div>
         </div>         
         
         <div class="row" >
