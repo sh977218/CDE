@@ -2,7 +2,6 @@ var schemas = require('./schemas')
     , mongoose = require('mongoose')
     , config = require('config')
     , mongoUri = config.mongoUri
-    , mongoUri = config.mongoUri
     , conn = mongoose.createConnection(mongoUri)
     , Org = conn.model('Org', schemas.orgSchema)    
     , User = conn.model('User', schemas.userSchema)
@@ -95,11 +94,16 @@ exports.listOrgs = function(callback) {
 };
 
 exports.listOrgsLongName = function(callback) {
-    Org.find({}, {'_id': 0, "name":1, "longName":1}).exec(function(err, result) {
+    Org.find({}, {'_id': 0, 'name':1, 'longName':1}).exec(function(err, result) {
         callback("", result);
     });
 };
 
+exports.listOrgsDetailedInfo = function(callback) {
+    Org.find({}, {'_id': 0, 'name':1, 'longName':1, 'mailAddress':1, "emailAddress":1, "phoneNumber":1, "uri":1}).exec(function(err, result) {
+        callback("", result);
+    });
+};
 
 exports.managedOrgs = function(callback) {
     Org.find().exec(function(err, orgs) {
@@ -126,13 +130,14 @@ exports.removeOrg = function (id, callback) {
   });
 };
 
-exports.updateOrgLongName = function(org, res) {
-  Org.findOne({'name': org.name}).exec(function(err, found) {
-    if(found) {
-        Org.update({'name':org.name}, { 'longName':org.longName }).exec();
-        res.send('Org has been updated.');
-    } else {
-        res.send('Org did not exist.');
-    }
-  });
+exports.updateOrg = function(org, res) {
+    var id = org._id;
+    delete org._id;
+    Org.findOneAndUpdate({_id: id}, org).exec(function(err, found) {
+        if (found) {
+            res.send('Org has been updated.');
+        } else {
+            res.send('Org does not exist.');
+        }
+    });
 };

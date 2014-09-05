@@ -1,4 +1,5 @@
 <div ng-controller="SaveCdeCtrl">
+
 <h4>General Details</h4>    
 <dl class="dl-horizontal">
     <dt>Name: </dt>
@@ -11,7 +12,7 @@
             <select id="cde.stewardOrg.name" ng-model="cde.stewardOrg.name" ng-options="myOrg for myOrg in myOrgs"></select>
             <i id="cde.stewardOrg.name.ok" class="fa fa-check" ng-click="editDtMode = false; stageElt(cde)"></i>&nbsp;&nbsp;<i id="cde.stewardOrg.name.cancel" class="fa fa-times" ng-click="cde.stewardOrg.name = oldStewardName; editDtMode = false;"></i>
         </span>
-        <span ng-hide="editDtMode"><i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="oldStewardName = cde.stewardOrg.name; editDtMode = true" id="dd_edit_steward"></i> {{cde.stewardOrg.name}}</span>
+        <span ng-hide="editDtMode"><i ng-show="isAllowed(cde)" class="fa fa-edit" ng-click="oldStewardName = cde.stewardOrg.name; editDtMode = true" id="dd_edit_steward" ></i> <a tooltip-html-unsafe="{{orgDetailsInfoHtml}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">{{cde.stewardOrg.name}}</a></span>
     </dd>
     <dt>Definition: </dt>
     <dd id="dd_def">   

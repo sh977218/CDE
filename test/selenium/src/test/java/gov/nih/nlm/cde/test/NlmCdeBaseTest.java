@@ -119,10 +119,18 @@ public class NlmCdeBaseTest {
     }
         
     protected void goToCdeByName(String name) {
-        openCdeInList(name);
-        findElement(By.xpath("//a[@id='openCdeInCurrentTab_0']")).click();
-        Assert.assertTrue(textPresent("More Like This"));
-        Assert.assertTrue(textPresent(name));
+        try {
+            openCdeInList(name);
+            findElement(By.xpath("//a[@id='openCdeInCurrentTab_0']")).click();
+            Assert.assertTrue(textPresent("More Like This"));
+            Assert.assertTrue(textPresent(name));
+        } catch( Exception e ) {
+//            System.out.println("=== First try failed ===");
+            hangon(1);
+            findElement(By.xpath("//a[@id='openCdeInCurrentTab_0']")).click();
+            Assert.assertTrue(textPresent("More Like This"));
+            Assert.assertTrue(textPresent(name));
+        }
     }
 
     protected void openCdeInList(String name) {
@@ -168,7 +176,9 @@ public class NlmCdeBaseTest {
     
     public void closeAlert() {
         try {
+            System.out.println("1");
             findElement(By.cssSelector(".alert .close")).click();
+            System.out.println("2");
         } catch(Exception e) {
                     
         }
