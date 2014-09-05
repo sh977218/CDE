@@ -295,4 +295,17 @@ exports.init = function(app, daoManager) {
         });
     });
     
+    app.delete('/classification/elt', function(req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
+            res.send(403, "Not Authorized");
+            return;
+        }  
+        classificationNode.cdeClassification(req.query, classificationShared.actions.delete, function(err) {
+            if (!err) { 
+                res.send(); 
+            } else {
+                res.send(202, {error: {message: "Classification does not exists."}});
+            }
+        });
+    });    
 };

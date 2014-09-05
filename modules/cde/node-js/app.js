@@ -101,19 +101,19 @@ exports.init = function(app, daoManager) {
         });
     });
 
-    app.delete('/classification/cde', function(req, res) {
-        if (!usersvc_system.isCuratorOf(req.user, req.query.orgName)) {
-            res.send(403, "Not Authorized");
-            return;
-        }  
-        classificationNode_system.cdeClassification(req.query, classificationShared.actions.delete, function(err) {
-            if (!err) { 
-                res.send(); 
-            } else {
-                res.send(202, {error: {message: "Classification does not exists."}});
-            }
-        });
-    });
+//    app.delete('/classification/elt', function(req, res) {
+//        if (!usersvc_system.isCuratorOf(req.user, req.query.orgName)) {
+//            res.send(403, "Not Authorized");
+//            return;
+//        }  
+//        classificationNode_system.cdeClassification(req.query, classificationShared.actions.delete, function(err) {
+//            if (!err) { 
+//                res.send(); 
+//            } else {
+//                res.send(202, {error: {message: "Classification does not exists."}});
+//            }
+//        });
+//    });
 
     app.post('/classification/rename', function(req, res) {
         if (!usersvc_system.isCuratorOf(req.user, req.body.orgName)) {
@@ -125,21 +125,6 @@ exports.init = function(app, daoManager) {
             else res.send(202, {error: {message: "Classification does not exists."}});
         });
     });
-
-//    app.post('/classification/cde', function(req, res) {
-//        if (!usersvc_system.isCuratorOf(req.user, req.body.orgName)) {
-//            res.send(403, "Not Authorized");
-//            return;
-//        }      
-//        classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
-//            if (!err) { 
-//                res.send({ code: 200, msg: "Classification Added"}); 
-//            } else {
-//                res.send({ code: 403, msg: "Classification Already Exists"}); 
-//            }
-//
-//        });
-//    });
 
     app.post('/addComment', function(req, res) {
         if (req.isAuthenticated()) {
@@ -366,22 +351,7 @@ exports.init = function(app, daoManager) {
         classificationNode.moveClassifications(req, function(err, cde) {
            if(!err) res.send(cde);
         });
-    });
-    
-//    app.post('/classification/elt/cde', function(req, res) {
-//        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
-//            res.send(403, "Not Authorized");
-//            return;
-//        }      
-//        classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
-//            if (!err) { 
-//                res.send({ code: 200, msg: "Classification Added"}); 
-//            } else {
-//                res.send({ code: 403, msg: "Classification Already Exists"}); 
-//            }
-//
-//        });
-//    });    
+    });  
 
     app.post('/attachments/cde/add', function(req, res) {
         adminItemSvc.addAttachment(req, res, mongo_data);
