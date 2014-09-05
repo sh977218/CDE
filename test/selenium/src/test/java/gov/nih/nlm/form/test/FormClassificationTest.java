@@ -14,4 +14,10 @@ public class FormClassificationTest extends BaseFormTest{
         textPresent("Skin Cancer Patient");
         textPresent("Vision Deficit Report");               
     }
+    
+    @Test
+    public void addClassification() {
+        goToFormByName("Traumatic Brain Injury - Adverse Events");
+          
+    }    
 }
