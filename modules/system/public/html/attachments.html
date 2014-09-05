@@ -9,7 +9,7 @@
                 <span ng-switch-when="true">
                     Attachments smaller than 500k can be marked as default 
                 </span>
-                <input type="checkbox" id="defaultCb" ng-model="attachment.isDefault" ng-change="setDefault($index)" ng-disabled="!canDoNonCuration" />
+                <input class="fa-cb" type="checkbox" id="defaultCb" ng-model="attachment.isDefault" ng-change="setDefault($index)" ng-disabled="!canDoNonCuration" />
                 <label for="defaultCb" id="defaultCbLabel">Should this image be displayed in search results?</label>
             </span>
             </dd>
