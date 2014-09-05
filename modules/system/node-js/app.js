@@ -52,16 +52,16 @@ exports.init = function(app) {
         });        
     });
 
-    app.get('/listOrgsLongName', function(req, res) {
-        mongo_data_system.listOrgsLongName(function(err, orgs) {
+    app.get('/listOrgsDetailedInfo', function(req, res) {
+        mongo_data_system.listOrgsDetailedInfo(function(err, orgs) {
             if (err) {
-                logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
-                res.send("ERROR");
+                logging.expressErrorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}));
+                res.send(403, 'Failed to get list of orgs detailed info.');
             } else {
                 res.send(orgs);
             }   
         });
-    }); 
+    });
 
     app.post('/login', function(req, res, next) {
         // Regenerate is used so appscan won't complain

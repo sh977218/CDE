@@ -35,8 +35,8 @@ db.users.insert({username: 'lockedUser', password: 'pass', orgCurator: [], orgAd
 db.orgs.insert({name: "NHLBI"});
 db.orgs.insert({name: "caCORE"});
 db.orgs.insert({name: "NIDCR"});
-db.orgs.insert({name: "caBIG"});
-db.orgs.insert({name: "CTEP"});
+db.orgs.insert({name: "caBIG", longName: "Cancer Biomedical Informatics Grid", mailAddress: "123 Somewhere On Earth, Abc, Def, 20001", emailAddress: "caBig@nih.gov", phoneNumber: "111-222-3333", uri: "https://cabig.nci.nih.gov/"});
+db.orgs.insert({name: "CTEP", longName: "Cancer Therapy Evaluation Program", mailAddress: "75 Sunshine Street, Blah, Doh 12345", uri: "https://cabig.nci.nih.gov/"});
 db.orgs.insert({name: "DCP"});
 db.orgs.insert({name: "PS&CC"});
 db.orgs.insert({name: "CCR"});
