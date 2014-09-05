@@ -162,14 +162,14 @@ public class NlmCdeBaseTest {
     }
     
     public void modalHere() {
-        hangon(2);
+        hangon(1);
     }
     
     /*
     * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
     */
     public void modalGone()  {
-        hangon(2);
+        hangon(1);
     }
     
     public void closeAlert() {
