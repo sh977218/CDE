@@ -7,6 +7,8 @@ var passport = require('passport')
   , usersrvc = require('./usersrvc')
   , express = require('express')
   , path = require('path')
+  , classificationShared = require('../shared/classificationShared.js')
+  , classificationNode = require('./classificationNode')
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -17,6 +19,8 @@ exports.nocacheMiddleware = function(req, res, next) {
 };
 
 exports.init = function(app) {
+    app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
+    
     var viewConfig = {modules: config.modules};
 
     app.use("/system/public", express.static(path.join(__dirname, '../public')));
@@ -276,6 +280,19 @@ exports.init = function(app) {
       }, res, req.params.imgtag );
     });    
 
+    app.post('/classification/elt', function(req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
+            res.send(403, "Not Authorized");
+            return;
+        }      
+        classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
+            if (!err) { 
+                res.send({ code: 200, msg: "Classification Added"}); 
+            } else {
+                res.send({ code: 403, msg: "Classification Already Exists"}); 
+            }
 
+        });
+    });
     
 };

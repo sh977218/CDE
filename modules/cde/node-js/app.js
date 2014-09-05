@@ -11,7 +11,7 @@ var cdesvc = require('./cdesvc')
   , helper = require('../../system/node-js/helper.js')
   , logging = require('../../system/node-js/logging.js')
   , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
-  , classificationShared = require('../shared/classificationShared.js')
+  , classificationShared = require('../../system/shared/classificationShared.js')
   , path = require('path')
   , express = require('express')
   , sdc = require("./sdc.js")
@@ -22,7 +22,6 @@ var cdesvc = require('./cdesvc')
 exports.init = function(app) {
 
     app.use("/cde/public", express.static(path.join(__dirname, '../public')));
-    app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
 
     app.get('/quickBoard', function(req, res) {
       res.render('quickBoard');
@@ -124,20 +123,20 @@ exports.init = function(app) {
         });
     });
 
-    app.post('/classification/cde', function(req, res) {
-        if (!usersvc_system.isCuratorOf(req.user, req.body.orgName)) {
-            res.send(403, "Not Authorized");
-            return;
-        }      
-        classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
-            if (!err) { 
-                res.send({ code: 200, msg: "Classification Added"}); 
-            } else {
-                res.send({ code: 403, msg: "Classification Already Exists"}); 
-            }
-
-        });
-    });
+//    app.post('/classification/cde', function(req, res) {
+//        if (!usersvc_system.isCuratorOf(req.user, req.body.orgName)) {
+//            res.send(403, "Not Authorized");
+//            return;
+//        }      
+//        classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
+//            if (!err) { 
+//                res.send({ code: 200, msg: "Classification Added"}); 
+//            } else {
+//                res.send({ code: 403, msg: "Classification Already Exists"}); 
+//            }
+//
+//        });
+//    });
 
     app.post('/addComment', function(req, res) {
         if (req.isAuthenticated()) {
