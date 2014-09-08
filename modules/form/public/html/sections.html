@@ -1,13 +1,13 @@
-<br/>
 <button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="isAllowed(form)"><i class="fa fa-plus"></i> Add Section</button>
 <br/><br/>
 <div ng-repeat="section in form.formElements">
     <div class="panel panel-default">
         <div class="panel-heading">
+            <h3>Section Details</h3>
             <dl class="dl-horizontal">
                 <dt>Title: </dt>
                 <dd id="dd_section_title_{{$index}}"><div inline-edit model="section.label" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
-                <dt>Instructions </dt>
+                <dt>Instructions: </dt>
                 <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
                 <dt>Cardinality: </dt>
                 <dd id="dd_card_{{$index}}">
@@ -25,7 +25,6 @@
             </dl>
         </div>
         <div class="panel-body">
-            Panel content
         </div>
     </div>
     
