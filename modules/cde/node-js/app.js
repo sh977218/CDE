@@ -81,36 +81,36 @@ exports.init = function(app, daoManager) {
     });
 
 
-    app.delete('/classification/org', function(req, res) {
-        if (!usersvc_system.isCuratorOf(req.user, req.query.orgName)) {
-            res.send(403);
-            return;
-        }  
-        classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function(err, org) {
-            res.send(org);
-        });
-    });
-
-    app.post('/classification/org', function(req, res) {
-        if (!usersvc_system.isCuratorOf(req.user, req.body.orgName)) {
-            res.send(403);
-            return;
-        }      
-        classificationNode.addOrgClassification(req.body, function(err, org) {
-            res.send(org);
-        });
-    });
-
-    app.post('/classification/rename', function(req, res) {
-        if (!usersvc_system.isCuratorOf(req.user, req.body.orgName)) {
-            res.send(403, "Not Authorized");
-            return;
-        }      
-        classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function(err, org) {
-            if (!err) res.send(org);
-            else res.send(202, {error: {message: "Classification does not exists."}});
-        });
-    });
+//    app.delete('/classification/org', function(req, res) {
+//        if (!usersvc_system.isCuratorOf(req.user, req.query.orgName)) {
+//            res.send(403);
+//            return;
+//        }  
+//        classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function(err, org) {
+//            res.send(org);
+//        });
+//    });
+//
+//    app.post('/classification/org', function(req, res) {
+//        if (!usersvc_system.isCuratorOf(req.user, req.body.orgName)) {
+//            res.send(403);
+//            return;
+//        }      
+//        classificationNode.addOrgClassification(req.body, function(err, org) {
+//            res.send(org);
+//        });
+//    });
+//
+//    app.post('/classification/rename', function(req, res) {
+//        if (!usersvc_system.isCuratorOf(req.user, req.body.orgName)) {
+//            res.send(403, "Not Authorized");
+//            return;
+//        }      
+//        classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function(err, org) {
+//            if (!err) res.send(org);
+//            else res.send(202, {error: {message: "Classification does not exists."}});
+//        });
+//    });
 
     app.post('/addComment', function(req, res) {
         if (req.isAuthenticated()) {
