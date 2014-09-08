@@ -1,5 +1,34 @@
-<h3>Sections</h3>
+<br/>
+<button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="isAllowed(form)"><i class="fa fa-plus"></i> Add Section</button>
+<br/><br/>
 <div ng-repeat="section in form.formElements">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <dl class="dl-horizontal">
+                <dt>Title: </dt>
+                <dd id="dd_section_title_{{$index}}"><div inline-edit model="section.label" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+                <dt>Instructions </dt>
+                <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+                <dt>Cardinality: </dt>
+                <dd id="dd_card_{{$index}}">
+                    <span ng-show="editCardMode">
+                        <select ng-model="section.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="select_section_card_{{$index}}"></select>
+                        <br/>
+                        <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard"> Confirm</button>
+                        <button class="fa fa-times" ng-click="editCardMode = false; section.cardinality = orig"> Discard</button>
+                    </span>
+                    <span ng-hide="editCardMode">
+                           <i ng-show="isAllowed(form)" class="fa fa-edit" ng-click="editCardMode = true; orig = section.cardinality"
+                              id="edit_section_card_{{$index}}"></i> {{cardinalityOptions[section.cardinality]}}
+                    </span>
+                </dd>
+            </dl>
+        </div>
+        <div class="panel-body">
+            Panel content
+        </div>
+    </div>
+    
     <div class="row" id="section_view_{{$index}}">
         <div class="col-md-1 text-right" ng-show="isAllowed(form)">
             <i ng-click="removeElt(form, $index)" class="fa fa-trash-o" id="removeElt-{{$index}}"></i>
@@ -28,7 +57,7 @@
             </dl>            
         </div> 
     </div>
-    <div>
+<!--    <div>
         <h4>Questions</h4>
         <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">
             <div ng-if="section.formElements.length === 0">
@@ -82,8 +111,7 @@
                 <hr />
             </div>
         </div>
-    </div>
-    <hr />
+    </div>-->
+    <!--<hr />-->
 </div>
 
-<button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="isAllowed(form)"><i class="fa fa-plus"></i> Add section</button>
