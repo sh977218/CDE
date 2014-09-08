@@ -614,8 +614,44 @@ db.forms.insert({
                     ]
                 }
             ]
-        }
-    ],    
+        },
+        {
+            "stewardOrg" : {
+                "name" : "NINDS"
+            },
+            "elements" : [ 
+                {
+                    "name" : "Population",
+                    "elements" : [ 
+                        {
+                            "name" : "Adult"
+                        }, 
+                        {
+                            "name" : "Pediatric"
+                        }
+                    ]
+                }, 
+                {
+                    "name" : "Disease",
+                    "elements" : [ 
+                        {
+                            "name" : "Epilepsy",
+                            "elements" : [ 
+                                {
+                                    "name" : "Assessments and Examinations",
+                                    "elements" : [ 
+                                        {
+                                            "name" : "Imaging Diagnostics"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }        
+    ]    
 });
 
 db.forms.insert({

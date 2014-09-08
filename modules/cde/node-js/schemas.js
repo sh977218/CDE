@@ -94,12 +94,6 @@ var deJsonSchema = {
     , cadsrRegStatus: String
     , registrationState: sharedSchemas.registrationStateSchema
     , classification: [sharedSchemas.classificationSchema]
-//    , classification:  [
-//            {
-//                stewardOrg: {name: String}
-//                , elements: [csEltSchema]
-//            }
-//        ]
     , formUsageCounter: Number
     , properties: [
         {key: String, value: String, valueFormat: String}

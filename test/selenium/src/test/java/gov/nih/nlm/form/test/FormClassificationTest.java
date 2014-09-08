@@ -7,6 +7,7 @@ public class FormClassificationTest extends BaseFormTest{
     @Test
     public void formClassificationLink() {
         goToFormByName("Skin Cancer Patient");
+        findElement(By.linkText("Classification")).click();
         textPresent("Disease");
         textPresent("Headache");
         textPresent("Participant/Subject History and Family History");          
@@ -18,7 +19,8 @@ public class FormClassificationTest extends BaseFormTest{
     
     @Test
     public void addClassification() {
+        mustBeLoggedInAs("ninds", "pass");
         goToFormByName("Traumatic Brain Injury - Adverse Events");
-          
+        addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
     }    
 }
