@@ -83,6 +83,7 @@ exports.init = function(app) {
     app.get('/logout', function(req, res) {
         req.session.destroy(function (err) {
             req.logout();
+            res.clearCookie('connect.sid');
             res.redirect('/');
         });
     });
