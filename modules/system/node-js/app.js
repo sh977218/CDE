@@ -85,10 +85,15 @@ exports.init = function(app, daoManager) {
     });
 
     app.get('/logout', function(req, res) {
+        if (!req.session) {
+            return res.send(403);
+        } 
         req.session.destroy(function (err) {
             req.logout();
+            res.clearCookie('connect.sid');
             res.redirect('/');
         });
+        
     });
 
     app.post('/logs', function (req, res) {

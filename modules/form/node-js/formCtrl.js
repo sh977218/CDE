@@ -14,6 +14,10 @@ exports.save = function(req, res) {
 
 exports.formById = function(req, res) {
     mongo_data.byId(req.params.id, function(err, form) {
-        res.send(form);
+        if (form) {
+            res.send(form);
+        } else {
+            res.send(404);
+        }
     });    
 };
