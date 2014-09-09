@@ -15,9 +15,7 @@ function CompareCtrl($scope, CdeList) {
         $scope.cache.put("openAllCompare", $scope.openAllCompareModel);
     };
     
-    $scope.isAllowed = function(cde) {
-        return false;
-    };
+    $scope.canCurate = false;
     
     if ($scope.quickBoard.length === 2) {
         CdeList.byUuidList( $scope.quickBoard, function( result ) {

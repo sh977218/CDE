@@ -103,37 +103,78 @@ cdeApp.factory('isAllowedModel', function () {
     
     isAllowedModel.isAllowed = function ($scope, CuratedItem) {
         if (!CuratedItem) return false;
-        if ($scope.initialized && CuratedItem.archived) {
+        if (CuratedItem.archived) {
             return false;
         }
         if ($scope.user.siteAdmin) {
             return true;
         } else {   
-            if ($scope.initialized && 
-                    ((CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard") )) {
+            if (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard") {
                 return false;
             }
-            if ($scope.initialized && $scope.myOrgs) {
+            if ($scope.myOrgs) {
                 return $scope.myOrgs.indexOf(CuratedItem.stewardOrg.name) > -1;
             } else {
                 return false;
             }
         }
     };
-
+    
+    isAllowedModel.setCanCurate = function($scope) {
+        isAllowedModel.runWhenInitialized($scope, function() {
+            $scope.canCurate = isAllowedModel.isAllowed($scope, $scope.elt);
+        });
+    };
+    
+    isAllowedModel.runWhenInitialized = function($scope, toRun) {
+        if (!$scope.userLoaded) {
+            $timeout(isAllowedModel.runWhenInitialized($scope, toRun), 1000);
+        } else {
+            toRun($scope);
+        }                
+    };
+    
+    isAllowedModel.setDisplayStatusWarning = function($scope) {
+        isAllowedModel.runWhenInitialized($scope, function() {
+            $scope.displayStatusWarning = isAllowedModel.displayStatusWarning($scope, $scope.elt);
+        });    
+    };
+    
     isAllowedModel.displayStatusWarning = function($scope, CuratedItem) {
         if(!CuratedItem) return false;
-        if(($scope.initialized && CuratedItem.archived) || $scope.user.siteAdmin) {
+        if(CuratedItem.archived || $scope.user.siteAdmin) {
             return false;
         } else {
-            if ($scope.initialized && $scope.myOrgs) {
+            if ($scope.myOrgs) {
                 return ($scope.myOrgs.indexOf(CuratedItem.stewardOrg.name) > -1) && (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard");
             } else {
                 return false;
             }
         }
     };
-    
+
+    isAllowedModel.setCanDoNonCuration = function($scope) {
+        isAllowedModel.runWhenInitialized($scope, function() {
+            $scope.canDoNonCuration = isAllowedModel.isAllowedNonCuration($scope, $scope.elt);
+        });    
+    }; 
+
+    isAllowedModel.isAllowedNonCuration = function ($scope, curatedItem) {
+        if (!curatedItem) return false;
+        if (curatedItem.archived) {
+            return false;
+        } else {
+            if ($scope.user && $scope.user.siteAdmin) {
+                return true;
+            } else {   
+                if ($scope.myOrgs) {
+                    return $scope.myOrgs.indexOf(curatedItem.stewardOrg.name) > -1;
+                } else {
+                    return false;
+                }
+            }
+        }
+    };
     return isAllowedModel;
 });
 
@@ -164,3 +205,18 @@ cdeApp.directive('diff', function () {
 cdeApp.config(['$compileProvider', function($compileProvider) {
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }]);
+
+cdeApp.config(function($provide) {
+    $provide.decorator('uiSortableDirective', function($delegate) {
+        var directive = $delegate[0];
+        var link = directive.link;
+        directive.compile = function() {
+          return function(scope, element, attrs, ngModel) {
+              if (scope.dragEnabled) {
+                  link(scope, element, attrs, ngModel);
+              }
+            };
+        };
+        return $delegate;
+    });
+});

@@ -5,25 +5,25 @@ function ConceptsCtrl($scope, $modal, $http) {
           controller: NewConceptModalCtrl,
           resolve: {
               cde: function() {
-                  return $scope.cde;
+                  return $scope.elt;
               }
           }
         });
     };
     
     $scope.removeDecConcept = function (index) {
-        $scope.cde.dataElementConcept.concepts.splice(index, 1);
-        $scope.cde.unsaved = true;
+        $scope.elt.dataElementConcept.concepts.splice(index, 1);
+        $scope.elt.unsaved = true;
     };
     
     $scope.removeOcConcept = function (index) {
-        $scope.cde.objectClass.concepts.splice(index, 1);
-        $scope.cde.unsaved = true;
+        $scope.elt.objectClass.concepts.splice(index, 1);
+        $scope.elt.unsaved = true;
     };
     
     $scope.removePropConcept = function (index) {
-        $scope.cde.property.concepts.splice(index, 1);
-        $scope.cde.unsaved = true;
+        $scope.elt.property.concepts.splice(index, 1);
+        $scope.elt.unsaved = true;
     };
     
     $scope.relatedCdes = function (concept) {

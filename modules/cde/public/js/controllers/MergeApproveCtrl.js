@@ -37,7 +37,6 @@ function MergeApproveCtrl($scope, $modal, Mail, MergeCdes) {
 }
 
 var MergeApproveModalCtrl = function ($scope, $modalInstance, elt, user) {
-    $scope.cde = elt;
     $scope.elt = elt;
     $scope.user = user;
     $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Retired'];

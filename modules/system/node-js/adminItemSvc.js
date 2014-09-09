@@ -1,3 +1,6 @@
+var mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
+
+
 exports.save = function(req, res, dao) {
     var elt = req.body;
     if (req.isAuthenticated()) {
@@ -47,6 +50,81 @@ exports.save = function(req, res, dao) {
     } else {
         res.send(403, "You are not authorized to do this.");
     }
+};
+
+function isCuratorOrAdmin(req, elt) {
+    return (req.user.orgAdmin && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0)
+           || (req.user.orgCurator && req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0);
+};
+    
+function checkOwnership(dao, id, req, cb) {
+    if (req.isAuthenticated()) {
+        dao.byId(id, function (err, elt) {
+            if (err || !elt) {
+                return cb("Element does not exist.", null);
+            }
+            if (!req.user || !isCuratorOrAdmin(req, elt)
+               ) {
+                return cb("You do not own this element.", null);
+            } else {
+                cb(null, elt);
+            }
+        });
+    } else {
+        return cb("You are not authorized.", null);                   
+    }
+};
+
+exports.setAttachmentDefault = function(req, res, dao) {
+    checkOwnership(dao, req.body.id, req, function(err, elt) {
+        if (err) {
+            logging.expressLogger.info(err);
+            return res.send(err);
+        }
+        var state = req.body.state;
+        for (var i = 0; i < elt.attachments.length; i++) {
+            elt.attachments[i].isDefault = false;
+        }
+        elt.attachments[req.body.index].isDefault = state;
+        elt.save(function(err) {
+            if (err) {
+                res.send("error: " + err);
+            } else {
+                res.send(elt);
+            }
+        });
+    });
+}
+
+exports.addAttachment = function(req, res, dao) {
+    checkOwnership(dao, req.body.id, req, function(err, elt) {
+        if (err) return res.send(err);
+        dao.userTotalSpace(req.user.username, function(totalSpace) {
+            if (totalSpace > req.user.quota) {
+                res.send({message: "You have exceeded your quota"});
+            } else {
+                mongo_data_system.addAttachment(req.files.uploadedFiles, req.user, "some comment", elt, function() {
+                    res.send(elt);            
+                });                                            
+            }
+        });
+    });
+};
+
+exports.removeAttachment = function(req, res, dao) {
+    checkOwnership(dao, req.body.id, req, function(err, elt) {
+        if (err) {
+            return res.send(err);
+        }
+        elt.attachments.splice(req.body.index, 1);
+        elt.save(function(err) {
+            if (err) {
+                res.send("error: " + err);
+            } else {
+                res.send(elt);
+            }
+        });
+    });
 };
 
 exports.acceptFork = function(req, res, dao) {

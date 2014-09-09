@@ -1,17 +1,17 @@
 <h3>Sections</h3>
-<div ng-repeat="section in form.formElements">
+<div ng-repeat="section in elt.formElements">
     <div class="row" id="section_view_{{$index}}">
-        <div class="col-md-1 text-right" ng-show="isAllowed(form)">
-            <i ng-click="removeElt(form, $index)" class="fa fa-trash-o" id="removeElt-{{$index}}"></i>
+        <div class="col-md-1 text-right" ng-show="canCurate">
+            <i ng-click="removeElt(elt, $index)" class="fa fa-trash-o" id="removeElt-{{$index}}"></i>
             <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}" ng-hide="$first" ></i>
             <i ng-click="moveElt($index, 1)" class="fa fa-arrow-down" id="moveEltDown-{{$index}}" ng-hide="$last" ></i>
         </div>   
         <div class="col-md-11">
             <dl class="dl-horizontal">
                 <dt>Title: </dt>
-                <dd id="dd_section_title_{{$index}}"><div inline-edit model="section.label" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+                <dd id="dd_section_title_{{$index}}"><div inline-edit model="section.label" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
                 <dt>Instructions </dt>
-                <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+                <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
                 <dt>Cardinality: </dt>
                 <dd id="dd_card_{{$index}}">
                     <span ng-show="editCardMode">
@@ -21,7 +21,7 @@
                         <button class="fa fa-times" ng-click="editCardMode = false; section.cardinality = orig"> Discard</button>
                     </span>
                     <span ng-hide="editCardMode">
-                           <i ng-show="isAllowed(form)" class="fa fa-edit" ng-click="editCardMode = true; orig = section.cardinality"
+                           <i ng-show="canCurate" class="fa fa-edit" ng-click="editCardMode = true; orig = section.cardinality"
                               id="edit_section_card_{{$index}}"></i> {{cardinalityOptions[section.cardinality]}}
                     </span>
                 </dd>    
@@ -36,16 +36,16 @@
             </div>
             <div ng-repeat="question in section.formElements" class="row" id="question_{{$index}}">
                 <div class="col-md-1 text-right">
-                    <i class="fa fa-trash-o" ng-click="removeElt(section, $index)" title="Remove questions" ng-show="isAllowed(form)" id="remove_q_{{$index}}"></i>
+                    <i class="fa fa-trash-o" ng-click="removeElt(section, $index)" title="Remove questions" ng-show="canCurate" id="remove_q_{{$index}}"></i>
                 </div>
                 <div class="col-md-11">
                     <dl class="dl-horizontal">
                         <dt>Label: </dt>
-                        <dd id="dd_question_title_{{$index}}"><i ng-show="isAllowed(form)" class="fa fa-pencil" title="Change question label" ng-click="openNameSelect(question)"></i> {{question.label | placeholdEmpty}}</dd>
+                        <dd id="dd_question_title_{{$index}}"><i ng-show="canCurate" class="fa fa-pencil" title="Change question label" ng-click="openNameSelect(question)"></i> {{question.label | placeholdEmpty}}</dd>
                         <dt>Instructions: </dt>
-                        <dd id="dd_question_instructions_{{$index}}"><div inline-edit model="question.instructions" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+                        <dd id="dd_question_instructions_{{$index}}"><div inline-edit model="question.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
                         <dt>Required: </dt>
-                        <dd id="dd_question_required_{{$index}}"><input type="checkbox" ng-model="question.question.required" ng-disabled="!isAllowed(form)" ng-click="stageElt()"></input></dd>
+                        <dd id="dd_question_required_{{$index}}"><input type="checkbox" ng-model="question.question.required" ng-disabled="!canCurate" ng-click="stageElt()"></input></dd>
                         <dt>Cardinality: </dt>
                         <dd id="dd_q_card_{{$index}}">
                             <span ng-show="editCardMode">
@@ -55,7 +55,7 @@
                                 <button class="fa fa-times" ng-click="editCardMode = false; question.cardinality = orig"> Discard</button>
                             </span>
                             <span ng-hide="editCardMode">
-                                   <i ng-show="isAllowed(form)" class="fa fa-edit" ng-click="editCardMode = true; orig = question.cardinality"
+                                   <i ng-show="canCurate" class="fa fa-edit" ng-click="editCardMode = true; orig = question.cardinality"
                                       id="editQuestion"></i> {{cardinalityOptions[question.cardinality]}}
                             </span>
                         </dd>    
@@ -63,13 +63,13 @@
                         <dd id="dd_datatype_{{$index}}">{{question.question.datatype | placeholdEmpty }}</dd>
                         <dt ng-show="question.question.datatype === 'Value List'">Multiple Selections: </dt>
                         <dd ng-show="question.question.datatype === 'Value List'" id="dd_question_multi_{{$index}}">
-                            <input type="checkbox" ng-model="question.question.multiselect" ng-disabled="!isAllowed(form)" ng-click="stageElt()"></input>
+                            <input type="checkbox" ng-model="question.question.multiselect" ng-disabled="!canCurate" ng-click="stageElt()"></input>
                         </dd>
                         <dt>Units of Measures: </dt>
                         <dd ng-switch="question.question.uoms.length > 0" id="dd_q_uoms_{{$index}}">
                             <div ng-switch-when="true">
                                 <span ng-repeat="uom in question.question.uoms">
-                                    <div id="q_uom_list_{{$index}}" inline-edit model="question.question.uoms[$index]" is-allowed="isAllowed(form)" on-ok="checkUom(question, $index)"> </div>
+                                    <div id="q_uom_list_{{$index}}" inline-edit model="question.question.uoms[$index]" is-allowed="canCurate" on-ok="checkUom(question, $index)"> </div>
                                 </span>
                             </div>
                             <div ng-switch-default>N/A</div>
@@ -86,4 +86,4 @@
     <hr />
 </div>
 
-<button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="isAllowed(form)"><i class="fa fa-plus"></i> Add section</button>
+<button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="canCurate"><i class="fa fa-plus"></i> Add section</button>

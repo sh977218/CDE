@@ -2,8 +2,6 @@ var mongoose = require('mongoose')
     , util = require('util')
     , xml2js = require('xml2js')
     , uuid = require('node-uuid')
-    , Grid = require('gridfs-stream')
-    , fs = require('fs')
     , config = require('config')
     , schemas = require('./schemas')
     , schemas_system = require('../../system/node-js/schemas') //TODO: USE DEPENDENCY INJECTION
@@ -28,8 +26,6 @@ var DataElement = conn.model('DataElement', schemas.dataElementSchema);
 var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
 var Message = conn.model('Message', schemas.message);
 
-var gfs = Grid(conn.db, mongoose.mongo);
-
 var mongo_data = this;
 
 exports.DataElement = DataElement;
@@ -46,48 +42,8 @@ exports.publicBoardsByDeUuid = function(uuid, callback) {
     });
 };
 
-exports.getFile = function(callback, res, id) {
-    res.writeHead(200, { "Content-Type" : "image/png"});
-    gfs.createReadStream({ _id: id }).pipe(res);
-};
- 
-exports.addCdeAttachment = function(file, user, comment, cde, cb) {
-    var writestream = gfs.createWriteStream({});
-    writestream.on('close', function (newfile) {
-        cde.attachments.push({
-            fileid: newfile._id
-            , filename: file.name
-            , filetype: file.type
-            , uploadDate: Date.now()
-            , comment: comment 
-            , uploadedBy: {
-                userId: user._id
-                , username: user.username
-            }
-            , filesize: file.size
-        });
-        cde.save(function() {
-            cb();
-        });
-    });
-    
-    fs.createReadStream(file.path).pipe(writestream);
-
-};
-
 exports.userTotalSpace = function(name, callback) {
-  DataElement.aggregate(
-    {$match: {"attachments.uploadedBy.username": "cabigAdmin"}},
-    {$unwind: "$attachments"},
-    {$group: {_id: {uname: "$attachments.uploadedBy.username"} , totalSize: {$sum: "$attachments.filesize"}}},
-    {$sort: {totalSize : -1}}
-        , function (err, res) {
-            var result = 0;
-            if (res.length > 0) {
-                result = res[0].totalSize;
-            }
-           callback(result);
-        });
+    mongo_data_system.userTotalSpace(DataElement, name, callback);
 };
 
 exports.addComment = function(deId, comment, userId, callback) {

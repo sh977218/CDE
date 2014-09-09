@@ -272,9 +272,15 @@ exports.init = function(app) {
         }
     });
 
-
     app.get('/orgaccountmanagement', exports.nocacheMiddleware, function(req, res) {
         res.render('orgAccountManagement', "system");
     });    
-          
+        
+    app.get('/data/:imgtag', function(req, res) {
+      mongo_data_system.getFile(function(err, data) {
+      }, res, req.params.imgtag );
+    });    
+
+
+    
 };

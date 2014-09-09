@@ -20,6 +20,8 @@ public class QuestionTest extends BaseFormTest {
 
         createForm(formName, formDef, formV, "CTEP");
         
+        findElement(By.linkText("Form Description")).click();
+        
         new SectionTest().addSection("Patient Information", null);
         
         findElement(By.id("startAddingQuestions")).click();
@@ -105,6 +107,9 @@ public class QuestionTest extends BaseFormTest {
         String newFormUrl = driver.getCurrentUrl();
         textNotPresent("This element is not saved.");
 
+        findElement(By.linkText("Form Description")).click();
+
+        
         Assert.assertEquals("Date of Birth", findElement(By.id("dd_question_title_0")).getText());
         Assert.assertEquals("Instructions for PBD", findElement(By.id("dd_question_instructions_0")).getText());
         Assert.assertTrue(findElement(By.xpath("//dd[@id='dd_question_required_0']/input")).isSelected());
@@ -118,6 +123,7 @@ public class QuestionTest extends BaseFormTest {
         textPresent("this form is archived");
         
         driver.get(newFormUrl);
+        findElement(By.linkText("Form Description")).click();
         findElement(By.id("startAddingQuestions")).click();    
 
         // Add 2nd Section
@@ -137,7 +143,8 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).click();
         
         saveForm();
-        
+        findElement(By.linkText("Form Description")).click();
+
         Assert.assertTrue(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
         sourceElt = findElement(By.xpath("//div[@id='section_drop_area_1']//div[@id='question_0']"));
         targetElt = findElement(By.id("section_drop_area_0"));
@@ -145,6 +152,7 @@ public class QuestionTest extends BaseFormTest {
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
  
         saveForm();
+        findElement(By.linkText("Form Description")).click();
 
         Assert.assertEquals(2, driver.findElements(By.xpath("//div[@id='section_drop_area_0']//div[starts-with(@id, 'question_')]")).size());
 
@@ -152,6 +160,7 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.id("remove_q_0")).click();
         
         saveForm();
+        findElement(By.linkText("Form Description")).click();
         Assert.assertEquals(0, driver.findElements(By.xpath("//div[@id='section_drop_area_0']//div[starts-with(@id, 'question_')]")).size());
 
                  

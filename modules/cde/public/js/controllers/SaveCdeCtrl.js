@@ -1,7 +1,7 @@
 function SaveCdeCtrl($scope, $modal) { 
-    $scope.checkVsacId = function(cde) {
+    $scope.checkVsacId = function(elt) {
         $scope.loadValueSet();
-        cde.unsaved = true;
+        elt.unsaved = true;
     };
     
     $scope.attachPv = function(pv) {
@@ -15,41 +15,41 @@ function SaveCdeCtrl($scope, $modal) {
             pv.valueMeaningName = code.displayName;
             pv.valueMeaningCode = code.code;
             pv.codeSystemName = code.codeSystemName;
-            $scope.stageElt($scope.cde);
+            $scope.stageElt($scope.elt);
         }
     };
     
     $scope.removePv = function(index) {
-        $scope.cde.valueDomain.permissibleValues.splice(index, 1);
-        $scope.stageElt($scope.cde);
+        $scope.elt.valueDomain.permissibleValues.splice(index, 1);
+        $scope.stageElt($scope.elt);
         $scope.runManualValidation();
     };
     $scope.addPv = function() {
-        $scope.cde.valueDomain.permissibleValues.push({permissibleValue: "Unspecified"});
+        $scope.elt.valueDomain.permissibleValues.push({permissibleValue: "Unspecified"});
     };
     
     $scope.movePvUp = function(index) {
-        var pvArray = $scope.cde.valueDomain.permissibleValues;
+        var pvArray = $scope.elt.valueDomain.permissibleValues;
         pvArray.splice(index - 1, 0, pvArray.splice(index, 1)[0]);    
-        $scope.stageElt($scope.cde);
+        $scope.stageElt($scope.elt);
     };
     
     $scope.movePvDown = function(index) {
-        var pvArray = $scope.cde.valueDomain.permissibleValues;
+        var pvArray = $scope.elt.valueDomain.permissibleValues;
         pvArray.splice(index + 1, 0, pvArray.splice(index, 1)[0]);    
-        $scope.stageElt($scope.cde);
+        $scope.stageElt($scope.elt);
     };
     
     
     $scope.removeVSMapping = function() {
-        delete $scope.cde.dataElementConcept.conceptualDomain.vsac;
-        $scope.stageElt($scope.cde);
+        delete $scope.elt.dataElementConcept.conceptualDomain.vsac;
+        $scope.stageElt($scope.elt);
     };
     
     $scope.removeAllPvs = function() {
-        $scope.cde.valueDomain.permissibleValues = [];
+        $scope.elt.valueDomain.permissibleValues = [];
         $scope.runManualValidation();
-        $scope.stageElt($scope.cde);
+        $scope.stageElt($scope.elt);
     };  
     
     $scope.addAllVsac = function () {
@@ -62,8 +62,8 @@ function SaveCdeCtrl($scope, $modal) {
         if ($scope.isVsInPv(vsacValue)) {
             return;
         }
-        $scope.cde.valueDomain.permissibleValues.push($scope.convertVsacValueToPv(vsacValue));
-        $scope.stageElt($scope.cde);
+        $scope.elt.valueDomain.permissibleValues.push($scope.convertVsacValueToPv(vsacValue));
+        $scope.stageElt($scope.elt);
         $scope.runManualValidation();
     };    
     
@@ -79,13 +79,13 @@ function SaveCdeCtrl($scope, $modal) {
     };
 
     $scope.changeOtherPleaseSpecify = function() {
-        var cde = $scope.cde;
-        if (cde.valueDomain.datatypeValueList.otherPleaseSpecify === true) {
-            cde.valueDomain.datatypeValueList.otherPleaseSpecifyText = "Other (Please specify)";
+        var elt = $scope.elt;
+        if (elt.valueDomain.datatypeValueList.otherPleaseSpecify === true) {
+            elt.valueDomain.datatypeValueList.otherPleaseSpecifyText = "Other (Please specify)";
         } else {
-            delete cde.valueDomain.datatypeValueList.otherPleaseSpecifyText;
+            delete elt.valueDomain.datatypeValueList.otherPleaseSpecifyText;
         }
-        $scope.stageElt(cde);
+        $scope.stageElt(elt);
     };
     
     $scope.openNewNamePair = function () {
@@ -94,14 +94,14 @@ function SaveCdeCtrl($scope, $modal) {
           controller: NewNamePairModalCtrl,
           resolve: {
               cde: function() {
-                  return $scope.cde;
+                  return $scope.elt;
               }
           }
         });
     };  
     
     $scope.stageNewName = function(namePair) {
-      $scope.stageElt($scope.cde);
+      $scope.stageElt($scope.elt);
       namePair.editMode = false;
     };
     
@@ -110,8 +110,8 @@ function SaveCdeCtrl($scope, $modal) {
     };
     
     $scope.removeNamePair = function(index) {
-        $scope.cde.naming.splice(index, 1);
-        $scope.stageElt($scope.cde);          
+        $scope.elt.naming.splice(index, 1);
+        $scope.stageElt($scope.elt);          
     };
     
 };
