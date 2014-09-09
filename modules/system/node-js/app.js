@@ -82,7 +82,7 @@ exports.init = function(app) {
 
     app.get('/logout', function(req, res) {
         if (!req.session) {
-            return res.redirect('/');
+            return res.send(403);
         } 
         req.session.destroy(function (err) {
             req.logout();
