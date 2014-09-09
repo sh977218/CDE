@@ -39,6 +39,7 @@
     "grunt-attention": "*",
     "grunt-available-tasks": "*",
     "grunt-useref": "*",
-    "chalk": "*"
-  }
+    "chalk": "*",
+    "shortid": "2.0.1"
+    }
 }

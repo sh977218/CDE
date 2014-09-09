@@ -1,12 +1,12 @@
 var mongoose = require('mongoose')
     , util = require('util')
     , xml2js = require('xml2js')
-    , uuid = require('node-uuid')
     , config = require('config')
     , schemas = require('./schemas')
     , schemas_system = require('../../system/node-js/schemas') 
     , mongo_data_system = require('../../system/node-js/mongo-data') 
-    ;
+    , shortid = require("shortid") 
+;
 
 var mongoUri = config.mongoUri;
 
@@ -238,7 +238,7 @@ exports.create = function(cde, user, callback) {
     newDe.created = Date.now();
     newDe.createdBy.userId = user._id;
     newDe.createdBy.username = user.username;
-    newDe.uuid = uuid.v4();
+    newDe.uuid = shortid.generate();
     newDe.save(function (err) {
         callback(err, newDe);
     });    
