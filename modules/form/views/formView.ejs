@@ -19,7 +19,7 @@
             <br/>
             <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
 
-<!--            <div class="col-md-6" ng-switch="addCdeMode">     
+            <div class="col-md-6" ng-switch="addCdeMode">     
                 <div ng-switch-when="true">
                     <button ng-click="switchEditQuestionsMode()"> Done Adding</button>
                     <div class="panel-group" id="accordion">                
@@ -28,7 +28,7 @@
                 </div>
                 <div ng-switch-default>
                     To add start adding questions to the form, click "Add Questions" and drag and drop into your form sections. 
-                    <button ng-click="switchEditQuestionsMode()" id="startAddingQuestions"> Add Questions</button>
+                    
                 </div>
             </div>
             <hr/>
@@ -37,7 +37,7 @@
                      <button class="btn cancel" ng-click="revert()">Discard Changes</button>
                      <button class="btn btn-primary" ng-click="openSave(form, '#/formView?_id=')" id="openSave">Save</button>
                  </div>
-            </div>-->
+            </div>
         </div>
     </div>
 </div>
