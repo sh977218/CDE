@@ -77,7 +77,7 @@ static def String getCellValue(Cell cell) {
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     BasicDBObject newDE = new BasicDBObject();
     
-    newDE.put("uuid", idUtils.generateID());
+    newDE.put("tinyId", idUtils.generateID());
     newDE.put("imported", new Date()); 
     newDE.put("source", 'EyeGene'); 
     newDE.put("version", "1"); 

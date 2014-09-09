@@ -15,7 +15,7 @@ function ExportCtrl($scope, $window, Elastic, CsvDownload) {
             , {field: 'permissibleValues', displayName: 'Permissible Values', width: 200}            
             , {field: 'origin', displayName: 'Origin', width: 60}
             , {field: 'version', displayName: 'Version', width: 40}
-            , {field: 'uuid', displayName: 'NLM ID', width: 100}            
+            , {field: 'tinyId', displayName: 'NLM ID', width: 100}            
             , {field: 'ids', displayName: 'IDs', width: 100}
         ]
     };
@@ -57,7 +57,7 @@ function ExportCtrl($scope, $window, Elastic, CsvDownload) {
                     , permissibleValues: cde.valueDomain.permissibleValues.map(function(pv) {return pv.permissibleValue;}).join(", ")                                 
                     , origin: cde.origin
                     , version: cde.version       
-                    , uuid: cde.uuid
+                    , tinyId: cde.tinyId
                 };              
                 var ids = "";
                 for (var j = 0; j < cde.ids.length; j++) {

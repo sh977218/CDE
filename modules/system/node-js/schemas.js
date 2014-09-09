@@ -72,7 +72,7 @@ schemas.registrationStateSchema = {
     , administrativeNote: String
     , unresolvedIssue: String
     , administrativeStatus: String
-    , replacedBy: {uuid: String} 
+    , replacedBy: {tinyId: String} 
     , _id: false
 };
 

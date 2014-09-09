@@ -18,7 +18,7 @@ function CompareCtrl($scope, CdeList) {
     $scope.canCurate = false;
     
     if ($scope.quickBoard.length === 2) {
-        CdeList.byUuidList( $scope.quickBoard, function( result ) {
+        CdeList.byTinyIdList( $scope.quickBoard, function( result ) {
             if( result ) {
                 $scope.cdes = result;
                 if ($scope.cdes.length === 2) {

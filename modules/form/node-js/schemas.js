@@ -4,7 +4,7 @@ var mongoose = require('mongoose')
     ;
 
 var questionSchema =  {
-    cde: {uuid: String, version: String}
+    cde: {tinyId: String, version: String}
     , datatype: String
     , uoms: [String]
     , required: Boolean
@@ -26,7 +26,7 @@ var formElementSchema = new Schema({
 }, {_id: false});
 
 exports.formSchema = new Schema({
-    uuid: String
+    tinyId: String
     , naming: [sharedSchemas.namingSchema]     
     , stewardOrg: {
         name: String

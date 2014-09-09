@@ -57,7 +57,7 @@ for (int i = 0; i < deList.'ns0:DescribedValueSet'.size(); i++) {
     println "        Definition: " + valueSet.'ns0:Definition';
 
     def newDE = new BasicDBObject();
-    newDE.put("uuid", idUtils.generateID()); 
+    newDE.put("tinyId", idUtils.generateID()); 
     newDE.put("created", new Date()); 
     newDE.put("source", 'VSAC'); 
     newDE.put("sourceId", valueSet.@ID + "v" + valueSet.@version); 

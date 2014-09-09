@@ -58,7 +58,7 @@ exports.create = function(form, user, callback) {
         registrationStatus: "Incomplete"
     };
     newForm.created = Date.now();
-    newForm.uuid = shortid.generate();
+    newForm.tinyId = shortid.generate();
     newForm.createdBy = {
         userId: user._id
         , username: user.username

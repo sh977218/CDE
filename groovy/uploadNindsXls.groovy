@@ -168,7 +168,7 @@ def void addSubDiseaseClassification(de, type, disease, subDisease, value) {
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     BasicDBObject newDE = new BasicDBObject();
     
-    newDE.put("uuid", idUtils.generateID());
+    newDE.put("tinyId", idUtils.generateID());
     newDE.put("imported", new Date()); 
     newDE.put("source", 'NINDS'); 
     newDE.put("version", getCellValue(row.getCell(xlsMap.cdeVersion))); 
