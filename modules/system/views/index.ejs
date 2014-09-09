@@ -10,9 +10,8 @@
             </script>
          <![endif]--> 
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-        
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>        
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-route.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-resource.min.js"></script>
@@ -20,7 +19,7 @@
         
         <%- include includeFrontEndJS.ejs %>
         <%- include ../../cde/views/includeFrontEndJS.ejs %>
-        <%- include ../../form/views/includeFrontEndJS.ejs %>
+        <%- include ../../form/views/includeFrontEndJS.ejs %>    
         
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
@@ -63,9 +62,9 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li ng-class="{ active: isPageActive('/search')}"><a href="#/search">CDEs</a></li>
+                            <li ng-class="{ active: isPageActive('/cde/search')}"><a href="/#/cde/search">CDEs</a></li>
                                                        
-                            <% if (config.modules.forms) { %><li ng-class="{ active: isPageActive('/formList')}"><a href="#/formList">Forms</a></li> <% } %>
+                            <% if (config.modules.forms) { %><li ng-class="{ active: isPageActive('/form/search')}"><a href="/#/form/search">Forms</a></li> <% } %>
                             
                             <li ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' class="dropdown">    
                                 <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Boards<span class="caret"></span></a>

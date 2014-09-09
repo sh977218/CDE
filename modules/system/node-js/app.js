@@ -7,6 +7,8 @@ var passport = require('passport')
   , usersrvc = require('./usersrvc')
   , express = require('express')
   , path = require('path')
+  , classificationShared = require('../shared/classificationShared.js')
+  , classificationNode = require('./classificationNode')
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -16,7 +18,9 @@ exports.nocacheMiddleware = function(req, res, next) {
     next();
 };
 
-exports.init = function(app) {
+exports.init = function(app, daoManager) {
+    app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
+    
     var viewConfig = {modules: config.modules};
 
     app.use("/system/public", express.static(path.join(__dirname, '../public')));
@@ -281,6 +285,63 @@ exports.init = function(app) {
       }, res, req.params.imgtag );
     });    
 
+    app.post('/classification/elt', function(req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
+            res.send(403, "Not Authorized");
+            return;
+        }      
+        classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
+            if (!err) { 
+                res.send({ code: 200, msg: "Classification Added"}); 
+            } else {
+                res.send({ code: 403, msg: "Classification Already Exists"}); 
+            }
 
+        });
+    });
     
+    app.delete('/classification/elt', function(req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
+            res.send(403, "Not Authorized");
+            return;
+        }  
+        classificationNode.cdeClassification(req.query, classificationShared.actions.delete, function(err) {
+            if (!err) { 
+                res.send(); 
+            } else {
+                res.send(202, {error: {message: "Classification does not exists."}});
+            }
+        });
+    });  
+    
+    app.delete('/classification/org', function(req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
+            res.send(403);
+            return;
+        }  
+        classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function(err, org) {
+            res.send(org);
+        });
+    });
+
+    app.post('/classification/org', function(req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
+            res.send(403);
+            return;
+        }      
+        classificationNode.addOrgClassification(req.body, function(err, org) {
+            res.send(org);
+        });
+    });
+
+    app.post('/classification/rename', function(req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
+            res.send(403, "Not Authorized");
+            return;
+        }      
+        classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function(err, org) {
+            if (!err) res.send(org);
+            else res.send(202, {error: {message: "Classification does not exists."}});
+        });
+    });    
 };

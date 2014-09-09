@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 public class CdeCreateTest extends NlmCdeBaseTest {
    
     public void createBasicCde(String name, String definition, String version, String org, String classification, String subclassification) {
-        goToSearch();
+        goToCdeSearch();
         fillOutBasicCreateFields(name, definition, version, org, classification, subclassification);
         findElement(By.id("submit")).click();
         hangon(1);
@@ -110,7 +110,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         createBasicCde("AlignmentCDE", "Definition for alignment cde", null, "CTEP", "DISEASE", "Brain");
 
-        goToSearch();
+        goToCdeSearch();
         openCdeInList("AlignmentCDE");
         Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
         findElement(By.linkText("View Full Detail")).click();

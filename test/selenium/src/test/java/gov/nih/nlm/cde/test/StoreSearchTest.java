@@ -20,7 +20,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void rememberPageNumber() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.linkText("2")).click();
         hangon(2);
         scrollToTop();
@@ -36,7 +36,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void rememberFacets() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("li-blank-caCORE")).click();
         findElement(By.id("li-blank-caCORE")).click();
         findElement(By.id("li-blank-CSM")).click();
@@ -53,7 +53,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void resetSearch() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("li-blank-caCORE")).click();
         findElement(By.id("li-blank-caCORE")).click();
         findElement(By.id("li-blank-CSM")).click();
@@ -78,7 +78,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         modalGone();
         logout();
 
-        goToSearch();
+        goToCdeSearch();
         List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(textPresent("10"));
         Assert.assertTrue(linkList.size() > 10);

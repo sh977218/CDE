@@ -17,7 +17,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
 
     @Test
     public void addtoQuickBoardUntilFull() {
-        goToSearch();
+        goToCdeSearch();
         addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
@@ -39,7 +39,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
 
     @Test
     public void emptyQuickBoard() {
-        goToSearch();
+        goToCdeSearch();
         addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
@@ -53,7 +53,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     
     @Test
     public void showGridView() {
-        goToSearch();
+        goToCdeSearch();
         addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
@@ -73,7 +73,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
 
     @Test
     public void noSideBySideCompare() {
-        goToSearch();
+        goToCdeSearch();
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
         addToQuickBoard( "Prior BMSCT Administered Indicator" );
@@ -87,7 +87,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
 
     @Test
     public void sideBySideCompare() {
-        goToSearch();
+        goToCdeSearch();
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
         textPresent("Quick Board ( 2 )");
@@ -107,7 +107,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     
     @Test
     public void removeOne() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("li-blank-OHSU Knight")).click();
         Assert.assertTrue(textPresent("4 results for"));
         findElement(By.id("addToCompare_0")).click();
@@ -134,7 +134,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     
     @Test
     public void expandAllQuickBoard() {
-        goToSearch();
+        goToCdeSearch();
         addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         
@@ -152,7 +152,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     
     @Test
     public void testQuickBoardButtons() {
-        goToSearch();
+        goToCdeSearch();
         addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         
