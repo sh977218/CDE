@@ -3,7 +3,6 @@
 
 import com.mongodb.*;
 import com.mongodb.util.JSON;
-import java.util.UUID;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -58,6 +57,8 @@ static def String getCellValue(Cell cell) {
            }
    }
 }
+
+def idUtils = new IdUtils();
 
 def xlsMap = [
     namingDesignation: 1
@@ -172,7 +173,7 @@ def parsePatientStory(ArrayList<BasicDBObject> classificationArray, BasicDBObjec
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     BasicDBObject newDE = new BasicDBObject();
     
-    newDE.put("uuid", UUID.randomUUID() as String);
+    newDE.put("uuid", idUtils.generateID());
     newDE.put("imported", new Date()); 
     newDE.put("source", 'PHRI'); 
     newDE.put("sourceId", null);

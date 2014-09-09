@@ -4,7 +4,6 @@
 
 import com.mongodb.*;
 import com.mongodb.util.JSON;
-import java.util.UUID;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -34,6 +33,8 @@ DBCollection deColl = db.getCollection("dataelements");
 DBCollection orgColl = db.getCollection("orgs");
 
 println "GRDR Ingester"
+
+def idUtils = new IdUtils();
 
 @Field Classifications classifications;
 classifications = new Classifications(orgColl);
@@ -84,7 +85,7 @@ static def String getCellValue(Cell cell) {
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     BasicDBObject newDE = new BasicDBObject();
     
-    newDE.put("uuid", UUID.randomUUID() as String);
+    newDE.put("uuid", idUtils.generateID());
     newDE.put("imported", new Date()); 
     newDE.put("source", 'GRDR'); 
     newDE.put("version", "1"); 

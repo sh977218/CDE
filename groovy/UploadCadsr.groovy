@@ -2,7 +2,6 @@
 
 import com.mongodb.*;
 import com.mongodb.util.JSON;
-import java.util.UUID;
 import org.xml.sax.InputSource;
 
 def mongoHost = args[1];
@@ -15,6 +14,8 @@ if(mongoHost == null || mongoDb == null)  {
 } else {
     println "MongoDB host: " + mongoHost + ", db: " + mongoDb
 }
+
+def idUtils = new IdUtils();
 
 MongoClient mongoClient = new MongoClient( mongoHost );
 DB db = mongoClient.getDB(mongoDb);
@@ -54,7 +55,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
 
     DBObject newDE = new BasicDBObject();
 
-    newDE.put("uuid", UUID.randomUUID() as String); 
+    newDE.put("uuid", idUtils.generateID()); 
     newDE.put("imported", new Date()); 
     newDE.put("source", 'caDSR'); 
     newDE.put("version", cadsrDE.VERSION.text());
