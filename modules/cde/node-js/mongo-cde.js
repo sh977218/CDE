@@ -4,8 +4,8 @@ var mongoose = require('mongoose')
     , uuid = require('node-uuid')
     , config = require('config')
     , schemas = require('./schemas')
-    , schemas_system = require('../../system/node-js/schemas') //TODO: USE DEPENDENCY INJECTION
-    , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
+    , schemas_system = require('../../system/node-js/schemas') 
+    , mongo_data_system = require('../../system/node-js/mongo-data') 
     ;
 
 var mongoUri = config.mongoUri;
@@ -397,5 +397,11 @@ exports.archiveCde = function(cde, callback) {
         cde.save(function() {
             callback("", cde);
         });
+    });
+};
+
+exports.query = function(query, callback) {
+    DataElement.find(query).exec(function(err, result) {
+        callback(err, result);
     });
 };

@@ -65,7 +65,7 @@ public class BoardTest extends NlmCdeBaseTest {
     }
     
     protected void pinTo(String cdeName, String boardName) {
-        goToSearch();
+        goToCdeSearch();
         openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
         modalHere();        

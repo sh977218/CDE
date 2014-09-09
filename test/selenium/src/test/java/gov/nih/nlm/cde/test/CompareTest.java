@@ -9,14 +9,14 @@ public class CompareTest extends NlmCdeBaseTest{
     
     @Test
     public void noElementCompareList() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.linkText("Quick Board ( empty )")).click();
         Assert.assertTrue(textPresent("The quick board is empty."));
     }
     
     @Test
     public void emptyList() {
-        goToSearch();
+        goToCdeSearch();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
         openCdeInList("Prognostic");
         findElement(By.id("compare_0")).click();
@@ -25,7 +25,7 @@ public class CompareTest extends NlmCdeBaseTest{
     
     @Test
     public void Compare2Elements() {
-        goToSearch();
+        goToCdeSearch();
         addToCompare("Person Gender Text Type", "Patient Gender Category");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));

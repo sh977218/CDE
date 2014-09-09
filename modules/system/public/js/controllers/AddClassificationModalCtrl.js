@@ -1,5 +1,5 @@
  function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, Organization, myOrgs, cde, addClassification, localStorageService) {
-    $scope.classificationType = "cde";
+    $scope.classificationType = "elt";
     $scope.myOrgs = myOrgs; 
     $scope.newClassification = { orgName: myOrgs[0], categories: [], cdeId: cde._id };
     $scope.classTree = ClassificationTree;

@@ -1,15 +1,15 @@
-var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable']).
+var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable']).
     config(function($routeProvider) {
         $routeProvider.
         when('/', {controller: HomeCtrl, templateUrl:'/home'}).
-        when('/search', {controller: DEListCtrl, templateUrl: 'template/system/list'}).
+        when('/cde/search', {controller: DEListCtrl, templateUrl: 'template/system/list'}).
         when('/login', {controller: AuthCtrl, templateUrl:'/login'}).
         when('/signup', {controller: AuthCtrl, templateUrl:'/signup'}).
         when('/createCde', {controller: CreateCdeCtrl, templateUrl:'/createcde'}).
         when('/deview', {controller: DEViewCtrl, templateUrl: '/deview'}).
         when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
         when('/orgaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/orgaccountmanagement'}).
-        when('/classificationmanagement', {controller: ClassificationManagementCtrl, templateUrl: '/classificationmanagement'}).
+        when('/classificationmanagement', {controller: ClassificationManagementCtrl, templateUrl: '/template/system/classificationmanagement'}).
         when('/profile', {controller: AccountManagementCtrl, templateUrl: '/profile'}).
         when('/myboards', {controller: MyBoardsCtrl, templateUrl: '/myboards'}).
         when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
@@ -19,8 +19,7 @@ var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSa
         when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
         when('/quickBoard', {controller: QuickBoardCtrl, templateUrl: '/quickBoard'}).
         when('/sdcview', {controller: SDCViewCtrl, templateUrl: '/sdcView'}).
-        //when('/formList', {controller: FormListCtrl, templateUrl: '/template/form/list'}).
-        when('/formList', {controller: FormListCtrl, templateUrl: '/template/system/list'}).
+        when('/form/search', {controller: FormListCtrl, templateUrl: '/template/system/list'}).
         when('/createForm', {controller: CreateFormCtrl, templateUrl: '/template/form/createForm'}).
         when('/formView', {controller: FormViewCtrl, templateUrl: '/template/form/formView'}).
         otherwise({redirectTo:'/'});

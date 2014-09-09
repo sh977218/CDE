@@ -78,7 +78,7 @@ public class BoardManagementTest extends BoardTest {
         mustBeLoggedInAs(boardUser, boardPassword);
         createBoard("Remove me board", "Not a very useful board");
         removeBoard("Remove me board");
-        goToSearch();
+        goToCdeSearch();
         gotoMyBoards();
         Assert.assertTrue(textNotPresent("Not a very useful"));
     }
@@ -87,7 +87,7 @@ public class BoardManagementTest extends BoardTest {
     public void cdeNumbIncrement() {
         mustBeLoggedInAs(boardUser, boardPassword);
         String boardName = "Number Increment Board";
-        goToSearch();
+        goToCdeSearch();
         createBoard(boardName, "Number Increment Definition");
         gotoMyBoards(); 
         WebElement numElt = null;
@@ -120,7 +120,7 @@ public class BoardManagementTest extends BoardTest {
         mustBeLoggedInAs("boarduser2", boardPassword);
         String cdeName = "Specimen Array";
 
-        goToSearch();
+        goToCdeSearch();
         openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
         modalHere();
@@ -145,7 +145,7 @@ public class BoardManagementTest extends BoardTest {
         findElement(By.id("desc_input_0")).sendKeys(" -- Desc Edited");
         findElement(By.id("desc_confirm_0")).click();
         
-        goToSearch();
+        goToCdeSearch();
         gotoMyBoards();
         Assert.assertTrue(textPresent("-- Name Edited"));
         Assert.assertTrue(textPresent("-- Desc Edited"));

@@ -32,7 +32,7 @@ function HomeCtrl($scope, $http, $location) {
         }
         $scope.cache.put( 'ftsearch', $scope.ftsearch );
 
-        $location.url( 'search' );
+        $location.url( '/cde/search' );
     };
     
     $scope.submitForm = function( isValid ) {

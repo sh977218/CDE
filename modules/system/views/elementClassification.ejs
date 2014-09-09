@@ -4,13 +4,7 @@
         <button class="btn btn-small btn-default" value="add" ng-click="openAddClassificationModal()" id="addClassification" ng-show="myOrgs.length>0"><i class="fa fa-plus"> </i> Add Classification</button>
     </h2>
 
-    <%- include classif-sub-elements.ejs %>
-
-    <div ng-include="'classificationBody.html'">
+    <div ng-include="'/template/system/classificationBody'">
     </div>
-
-    <script type="text/ng-template" id="addClassificationModalContent.html">
-        <%- include addClassification.ejs %>
-    </script>
 
 </div>

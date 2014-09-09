@@ -65,7 +65,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void basicPagination() {
-        goToSearch();
+        goToCdeSearch();
         WebElement pagElt = findElement(By.cssSelector("ul.pagination"));
         findElement(By.linkText("10"));
         List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
@@ -98,7 +98,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test 
     public void phraseSearch() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("Biomarker Gene");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("Biomarker Gene"));
@@ -118,12 +118,12 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void starSearch() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("ISO2109");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("No results were found."));
         
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("ISO2109*");
         findElement(By.id("search.submit")).click();
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
@@ -151,7 +151,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void openAllButton() {
-        goToSearch();
+        goToCdeSearch();
         for (int i = 0; i < 19; i++) {
             wait.until(ExpectedConditions.elementToBeClickable(By.id("acc_link_" + i)));
         }
@@ -163,7 +163,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void usedBySummary() {
-        goToSearch();
+        goToCdeSearch();
         openCdeInList("Patient Race Category");
         String usedBy = findElement(By.id("dd_usedBy")).getText();
         Assert.assertTrue(usedBy.contains("NIDCR"));
@@ -181,7 +181,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test 
     public void searchHighlightDefinition() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("\"graded scale\"");
         findElement(By.id("search.submit")).click();    
         Assert.assertTrue(textPresent("| \"graded scale"));
@@ -190,7 +190,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test 
     public void searchHighlightPv() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("myopathic");
         findElement(By.id("search.submit")).click();    
         Assert.assertTrue(textPresent("| myopathic"));
@@ -199,7 +199,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
    
     @Test 
     public void searchHighlightClassif() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("ataxia");
         findElement(By.id("search.submit")).click();    
         Assert.assertTrue(textPresent("| ataxia"));

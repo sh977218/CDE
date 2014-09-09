@@ -117,23 +117,35 @@ public class NlmCdeBaseTest {
         loginAs("nlm", "nlm");
         logout();
     }
-        
+    
     protected void goToCdeByName(String name) {
+        goToElementByName(name, "cde");
+    }
+    
+    protected void goToFormByName(String name) {
+        goToElementByName(name, "form");
+    }    
+        
+    protected void goToElementByName(String name, String type) {      
         try {
-            openCdeInList(name);
-            findElement(By.xpath("//a[@id='openCdeInCurrentTab_0']")).click();
-            Assert.assertTrue(textPresent("More Like This"));
+            openEltInList(name, type);
+            findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+            Assert.assertTrue(textPresent("Classification"));
             Assert.assertTrue(textPresent(name));
         } catch( Exception e ) {
             hangon(1);
-            findElement(By.xpath("//a[@id='openCdeInCurrentTab_0']")).click();
-            Assert.assertTrue(textPresent("More Like This"));
+            findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+            Assert.assertTrue(textPresent("Classification"));
             Assert.assertTrue(textPresent(name));
-        }
+        }                
+    }  
+    
+    protected void openCdeInList(String name) {
+        openEltInList(name, "cde");
     }
 
-    protected void openCdeInList(String name) {
-        goToSearch();
+    protected void openEltInList(String name, String type) {
+        goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
@@ -144,7 +156,7 @@ public class NlmCdeBaseTest {
     }
     
     protected void openFormInList(String name) {
-        goToSearch();
+        goToFormSearch();
         findElement(By.linkText("Forms")).click();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
@@ -153,11 +165,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("acc_link_0")).click();
     }
     
-    protected void goToFormByName(String name) {
-        openFormInList(name);
-        findElement(By.linkText("View Full Detail")).click();
-    }
-    
+   
     protected WebElement findElement(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
@@ -169,14 +177,14 @@ public class NlmCdeBaseTest {
     }
     
     public void modalHere() {
-        hangon(1);
+        hangon(2);
     }
     
     /*
     * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
     */
     public void modalGone()  {
-        hangon(1);
+        hangon(2);
     }
     
     public void closeAlert() {
@@ -219,9 +227,18 @@ public class NlmCdeBaseTest {
         findElement(By.id("selectOrgDropdown"));
     }
     
-    protected void goToSearch() {
+    protected void goToCdeSearch() {
+        goToSearch("cde");
+    }
+    
+    protected void goToFormSearch() {
+        goToSearch("form");
+    }    
+    
+    
+    protected void goToSearch(String type) {
         driver.get(baseUrl + "/gonowhere");
-        driver.get(baseUrl + "/#/search");
+        driver.get(baseUrl + "/#/"+type+"/search");
         findElement(By.name("ftsearch"));
         Assert.assertTrue(textPresent("Qualified ("));
     }
@@ -241,7 +258,7 @@ public class NlmCdeBaseTest {
     }
     
     protected void loginAs(String username, String password) {
-        goToSearch();
+        goToCdeSearch();
         try {
             findElement(By.linkText("Log In")).click();
         } catch (NoSuchElementException e) {
@@ -278,7 +295,7 @@ public class NlmCdeBaseTest {
     }
     
     public void addToCompare(String cdeName1, String cdeName2) {
-        goToSearch();
+        goToCdeSearch();
         Assert.assertTrue(textPresent("Quick Board ( empty )"));
         addToQuickBoard(cdeName1);
         addToQuickBoard(cdeName2);
@@ -348,5 +365,30 @@ public class NlmCdeBaseTest {
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }
+    
+    protected void addClassificationMethod(String[] categories){
+        findElement(By.linkText("Classification")).click();
+        findElement(By.id("addClassification")).click(); 
+        modalHere();              
+        findElement(By.id("classifySlectOrg-"+categories[0])).click();
+        
+        // Ensures that tree of classifications have finished loading.
+        Assert.assertTrue(textPresent(categories[1]));
+        
+        for (int i=1; i<categories.length-1; i++) {                   
+            findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();
+        }
+        findElement(By.cssSelector("[id='addClassification-"+categories[categories.length-1]+"'] button")).click();         
+        closeAlert();
+        findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
+        hangon(1);
+        findElement(By.linkText("Classification")).click();
+        String selector = "";        
+        for (int i=1; i<categories.length; i++) {
+            selector += categories[i];
+            if (i<categories.length-1) selector += ",";
+        }
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1]));      
+    }    
     
 }

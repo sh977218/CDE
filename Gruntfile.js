@@ -169,6 +169,27 @@ module.exports = function(grunt) {
                             config: 'elastic.river.create'
                             , type: 'confirm'
                             , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'river for ' + config.name + ' configuration?'
+                        }     
+                        
+                        , {
+                            config: 'elastic.form.index.delete'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'form index for ' + config.name + ' configuration?'
+                        }
+                        , {
+                            config: 'elastic.form.index.create'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'form index for ' + config.name + ' configuration?'
+                        }
+                        , {
+                            config: 'elastic.form.river.delete'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'form river for ' + config.name + ' configuration?'
+                        } 
+                        , {
+                            config: 'elastic.form.river.create'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'form river for ' + config.name + ' configuration?'
                         }                           
                     ]
                 }
@@ -349,7 +370,24 @@ module.exports = function(grunt) {
         if (grunt.config('elastic.river.create')) {
             grunt.log.writeln('\n\nCreating Elastic Search River!');
             grunt.task.run('http:elasticCreateRiver');
+        }   
+        
+        if (grunt.config('elastic.form.river.delete')) {
+            grunt.log.writeln('\n\nDeleting Elastic Search Form River!');
+            grunt.task.run('http:elasticDeleteFormRiver');
         }        
+        if (grunt.config('elastic.form.index.delete')) {
+            grunt.log.writeln('\n\nDeleting Elastic Search Form Index!');
+            grunt.task.run('http:elasticDeleteFormIndex');
+        }
+        if (grunt.config('elastic.form.index.create')) {
+            grunt.log.writeln('\n\nCreating Elastic Search Form Index!');
+            grunt.task.run('http:elasticCreateFormIndex');
+        }
+        if (grunt.config('elastic.form.river.create')) {
+            grunt.log.writeln('\n\nCreating Elastic Search Form River!');
+            grunt.task.run('http:elasticCreateFormRiver');
+        }         
     });       
     
     grunt.registerTask('do-node', function() {

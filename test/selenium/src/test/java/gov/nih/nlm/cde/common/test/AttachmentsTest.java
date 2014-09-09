@@ -24,7 +24,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
 
         openCdeInList(cdeName);
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
-        findElement(By.xpath("//a[@id='openCdeInCurrentTab_0']")).click();    
+        findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();    
         
         removeAttachment();
     }

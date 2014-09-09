@@ -13,6 +13,7 @@ var express = require('express')
   , favicon = require('serve-favicon')
   , auth = require( './modules/system/node-js/authentication' )//TODO: MOVE TO SYSTEM
   , logging = require('./modules/system/node-js/logging.js')
+  , daoManager = require('./modules/system/node-js/moduleDaoManager.js')
 ;
 
 passport.serializeUser(function(user, done) {
@@ -62,7 +63,7 @@ app.use(function(req, res, next) {
         return false;
     };
     if ((req.cookies['connect.sid'] || req.originalUrl === "/login") && !this.isFile(req)) {
-        var initExpressSession = express.session({ secret: "omgnodeworks", proxy: true, store:sessionStore });
+        var initExpressSession = express.session({ secret: "omgnodeworks", store:sessionStore });
         initExpressSession(req, res, next);
    } else {
        next();
@@ -100,13 +101,13 @@ express.response.render = function(view, module, msg) {
 
 try {
     var cdeModule = require(path.join(__dirname, './modules/cde/node-js/app.js'));
-    cdeModule.init(app);
+    cdeModule.init(app, daoManager);
 
     var systemModule = require(path.join(__dirname, './modules/system/node-js/app.js'));
-    systemModule.init(app);
+    systemModule.init(app, daoManager);
 
     var formModule = require(path.join(__dirname, './modules/form/node-js/app.js'));
-    formModule.init(app);
+    formModule.init(app, daoManager);
 } catch (e) {
     console.log(e);
     process.exit();

@@ -1,0 +1,30 @@
+> <a>
+        <span ng-click="searchByClassification(orgName, pathArray, module)"  id="classification-{{elt.name}}" class="name hand-cursor" ng:class="($parent.$parent.$parent.$index===undefined) ? 'first-level-classification' : ''">
+            <span class="name">{{elt.name}}</span>
+        </span>
+
+</a> 
+<span ng-show="myOrg">
+    <a ng-show="page=='management'" ng-click="showRenameDialog(orgName, pathArray)" class="fa fa-pencil" ></a>
+    <span ng-show="showDelete">
+        Confirm
+        <a class="fa fa-check" ng-click="showDelete=false; removeClassification(orgName, pathArray)" 
+           title="OK" href=""></a>
+        <a class="fa fa-times" ng-click="showDelete=false" title="Cancel" href=""></a>
+    </span>
+    <a ng-init="showDelete=false" 
+       ng-click="showDelete=true" 
+       ng-hide="showDelete" 
+       class="fa fa-trash-o" 
+       title="Remove" 
+       href="">
+    </a>
+</span>
+
+<ul class="fa-ul">
+    <li ng-repeat="elt in elt.elements | orderBy:'name'"
+        ng-include="'/template/system/classif-sub-elements'"
+        ng-init="pathArray=pathArray.slice(0); pathArray.push(elt.name)"
+        id="classification-{{pathArray.join()}}">
+    </li>
+</ul>

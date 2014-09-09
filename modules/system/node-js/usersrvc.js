@@ -1,6 +1,11 @@
 var mongo_data = require('./mongo-data')
     ;
     
+exports.isCuratorOf = function(user, orgName){
+    if (!user) return false;
+    return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
+};    
+    
 exports.addSiteAdmin = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {
         if (!found) {
