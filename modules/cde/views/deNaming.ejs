@@ -1,8 +1,8 @@
 <div ng-controller="SaveCdeCtrl">
 
-<div ng-repeat="namePair in cde.naming">
+<div ng-repeat="namePair in elt.naming">
     <div class="row">
-        <div class="col-md-1 text-right" ng-show="isAllowed(cde) && cde.naming.length > 1">
+        <div class="col-md-1 text-right" ng-show="canCurate && elt.naming.length > 1">
             <div class="row">
                 <i ng-click="removeNamePair($index)" class="fa fa-trash-o" id="removeNaming-{{$index}}"></i>
             </div>
@@ -11,15 +11,15 @@
             <dl class="dl-horizontal">
                 <dt>Name: </dt> 
                 <dd id="dd_name_{{$index}}">
-                    <div inline-edit id="nameEdit" model="namePair.designation" is-allowed="isAllowed(cde)" on-ok="stageNewName(namePair)"> </div>
+                    <div inline-edit id="nameEdit" model="namePair.designation" is-allowed="canCurate" on-ok="stageNewName(namePair)"> </div>
                 </dd>
                 <dt>Definition: </dt>
                 <dd id="dd_def_{{$index}}">
-                    <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="namePair.definition" is-allowed="isAllowed(cde)" def-format="namePair.definitionFormat" on-ok="stageNewName(namePair)"> </div>
+                    <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="namePair.definition" is-allowed="canCurate" def-format="namePair.definitionFormat" on-ok="stageNewName(namePair)"> </div>
                 </dd>
                 <dt>Context: </dt> 
                 <dd id="dd_context_{{$index}}">
-                    <div inline-edit id="nameEdit" model="namePair.context.contextName" is-allowed="isAllowed(cde)" on-ok="stageNewName(namePair)"> </div>
+                    <div inline-edit id="nameEdit" model="namePair.context.contextName" is-allowed="canCurate" on-ok="stageNewName(namePair)"> </div>
                 </dd>
             </dl>
         </div>
@@ -27,7 +27,7 @@
     <hr/>
 </div>
 
-<button ng-show="isAllowed(cde)" class="btn btn-small btn-default" value="add" ng-click="openNewNamePair()" id="addNamePair"><i class="fa fa-plus"> </i> Add Naming</button>
+<button ng-show="canCurate" class="btn btn-small btn-default" value="add" ng-click="openNewNamePair()" id="addNamePair"><i class="fa fa-plus"> </i> Add Naming</button>
 
 <script type="text/ng-template" id="newNamePairModalContent.html">
     <%- include newNamePairModal.ejs %>

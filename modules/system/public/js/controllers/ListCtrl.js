@@ -30,7 +30,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
         $scope.reload();
     });
 
-    $scope.$watch('initialized', function() {
+    $scope.$watch('userLoaded', function() {
         $scope.reload();        
     });
 
@@ -151,7 +151,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
     
     
     $scope.reload = function() {
-        if (!$scope.initialized) return;
+        if (!$scope.userLoaded) return;
         $scope.accordionListStyle = "semi-transparent";
         Elastic.buildElasticQueryPre($scope);
         var settings = Elastic.buildElasticQuerySettings($scope);
@@ -195,12 +195,10 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                         if (org.classifications) {
                             $scope.classifications.elements = $scope.matchFacetsOrgs(org);
                         }
-                        
-                        $scope.classifications;
                     });
                 }
                 
-                OrgHelpers.addLongNameToOrgs($scope.facets.orgs.terms, $rootScope.orgsLongName);
+                OrgHelpers.addLongNameToOrgs($scope.facets.orgs.terms, $rootScope.orgsDetailedInfo);
              });
         });  
     };     

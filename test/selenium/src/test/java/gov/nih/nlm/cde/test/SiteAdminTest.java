@@ -50,7 +50,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 //        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(orgName) < 0);
 //    }
     
-    @Test
+//    @Test
     public void addOrg() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String testOrg = "New Test Org";
@@ -67,22 +67,84 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         String testOrg = "New Test Org 3";
         String testOrgRenamed = "New Test Org 3 Renamed";
         String testOrgNotRenamed = "New Test Org 3 Not Renamed";
+        String testOrgMailingAddress = "123 Sunshine Street, City, State 12345";
+        String testOrgMailingAddressNotRenamed = "Address Not Renamed";
+        String testOrgEmailingAddress = "abc123@abc.com";
+        String testOrgEmailingAddressNotRenamed = "Email Not Renamed";
+        String testOrgPhoneNumber = "111-222-3333";
+        String testOrgPhoneNumberNotRenamed = "Phone Number Not Renamed";
+        String testOrgUri = "www.google.com";
+        String testOrgUriNotRenamed = "Website Not Renamed";
         addOrg(testOrg,null);
+        
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//input")).sendKeys(testOrgRenamed);
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//button[@class='fa fa-check']")).click();
+        closeAlert();
+        
+        findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//input")).sendKeys(testOrgMailingAddress);
+        findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//button[@class='fa fa-check']")).click();
+        closeAlert();
+        
+        findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//input")).sendKeys(testOrgEmailingAddress);
+        findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//button[@class='fa fa-check']")).click();
+        closeAlert();
+        
+        findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//input")).sendKeys(testOrgPhoneNumber);
+        findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//button[@class='fa fa-check']")).click();
+        closeAlert();
+
+        findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//input")).sendKeys(testOrgUri);
+        findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//button[@class='fa fa-check']")).click();
+        closeAlert();
+        
         refreshOrganizationsTabScreen();
         Assert.assertTrue(textPresent(testOrgRenamed));
-
+        Assert.assertTrue(textPresent(testOrgMailingAddress));
+        Assert.assertTrue(textPresent(testOrgEmailingAddress));
+        Assert.assertTrue(textPresent(testOrgPhoneNumber));
+        Assert.assertTrue(textPresent(testOrgUri));
+        
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//input")).sendKeys(testOrgNotRenamed);
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//button[@class='fa fa-times']")).click();
+        
+        findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//input")).sendKeys(testOrgMailingAddressNotRenamed);
+        findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//button[@class='fa fa-times']")).click();
+        
+        findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//input")).sendKeys(testOrgEmailingAddressNotRenamed);
+        findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//button[@class='fa fa-times']")).click();
+        
+        findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//input")).sendKeys(testOrgPhoneNumberNotRenamed);
+        findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//button[@class='fa fa-times']")).click();
+
+        findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//input")).sendKeys(testOrgUriNotRenamed);
+        findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//button[@class='fa fa-times']")).click();
+        
         Assert.assertTrue(textNotPresent(testOrgNotRenamed));
+        Assert.assertTrue(textNotPresent(testOrgMailingAddressNotRenamed));
+        Assert.assertTrue(textNotPresent(testOrgEmailingAddressNotRenamed));
+        Assert.assertTrue(textNotPresent(testOrgPhoneNumberNotRenamed));
+        Assert.assertTrue(textNotPresent(testOrgUriNotRenamed));
+        
         refreshOrganizationsTabScreen();
+        
         Assert.assertTrue(textNotPresent(testOrgNotRenamed));
+        Assert.assertTrue(textNotPresent(testOrgMailingAddressNotRenamed));
+        Assert.assertTrue(textNotPresent(testOrgEmailingAddressNotRenamed));
+        Assert.assertTrue(textNotPresent(testOrgPhoneNumberNotRenamed));
+        Assert.assertTrue(textNotPresent(testOrgUriNotRenamed));        
     }
     
-    @Test
+//    @Test
     public void promoteOrgAdmin() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String testOrg = "Promote Org Test";
@@ -102,12 +164,12 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
         // following will assert that test user was indeed promoted
-        new Select(driver.findElement(By.id("cde.stewardOrg.name"))).selectByVisibleText(testOrg);
+        new Select(driver.findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(testOrg);
         logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
     } 
     
-    @Test
+//    @Test
     public void browseUsers() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         findElement(By.id("username_link")).click();

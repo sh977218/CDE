@@ -4,32 +4,32 @@ var IdsCtrl = function ($scope, $modal, $http, DataElement) {
           templateUrl: 'newIdModalContent.html',
           controller: NewIdModalCtrl,
           resolve: {
-              cde: function() {
-                  return $scope.cde;
+              elt: function() {
+                  return $scope.elt;
               }
           }
         });
         
         modalInstance.result.then(function (newId) {
-            $scope.cde.ids.push(newId);
-            DataElement.save($scope.cde, function(newCde) {
-                $scope.cde = newCde;
+            $scope.elt.ids.push(newId);
+            DataElement.save($scope.elt, function(newCde) {
+                $scope.elt = newCde;
                 $scope.addAlert("success", "Identifier Added");
             });
         });
     };
     
     $scope.removeId = function (index) {
-        $scope.cde.ids.splice(index, 1);
-        DataElement.save($scope.cde, function(newCde) {
-            $scope.cde = newCde;
+        $scope.elt.ids.splice(index, 1);
+        DataElement.save($scope.elt, function(newCde) {
+            $scope.elt = newCde;
             $scope.addAlert("success", "Identifier Removed");
         });        
     };
 };
 
-function NewIdModalCtrl($scope, $modalInstance, cde) {
-    $scope.cde = cde;
+function NewIdModalCtrl($scope, $modalInstance, elt) {
+    $scope.elt = elt;
     $scope.newId = {};
 
     $scope.okCreate = function () {

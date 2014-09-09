@@ -1,4 +1,4 @@
-function AttachmentsCtrl($scope, $rootScope, Attachment) {     
+function AttachmentsCtrl($scope, $rootScope, $http, $timeout) {
     $scope.setFiles = function(element) {
         $scope.$apply(function($scope) {
           // Turn the FileList object into an Array
@@ -22,14 +22,14 @@ function AttachmentsCtrl($scope, $rootScope, Attachment) {
 
     $scope.uploadFile = function(file) {
         var fd = new FormData();
-        fd.append("de_id", $scope.cde._id);
+        fd.append("id", $scope.elt._id);
         fd.append("uploadedFiles", file);
         var xhr = new XMLHttpRequest();
         xhr.upload.addEventListener("progress", uploadProgress, false);
         xhr.addEventListener("load", uploadComplete, false);
         xhr.addEventListener("error", uploadFailed, false);
         xhr.addEventListener("abort", uploadCanceled, false);
-        xhr.open("POST", "/addAttachmentToCde");
+        xhr.open("POST", "/attachments/" + $scope.module + "/add");
         $scope.progressVisible = true;
         xhr.send(fd);
     };
@@ -48,7 +48,7 @@ function AttachmentsCtrl($scope, $rootScope, Attachment) {
         $rootScope.$apply(function() {
             var resp = JSON.parse(evt.target.responseText);
             if (!resp.message) {
-                $scope.cde = JSON.parse(evt.target.responseText);
+                $scope.elt = JSON.parse(evt.target.responseText);
                 $scope.files = [];
                 $scope.message = "";
             } else {
@@ -67,28 +67,28 @@ function AttachmentsCtrl($scope, $rootScope, Attachment) {
         });
     }
     
-    $scope.removeAttachment = function(index) {
-        Attachment.remove({
+    $scope.removeAttachment = function(index) {      
+        $http.post("/attachments/" + $scope.module + "/remove", {
             index: index
-            , deId: $scope.cde._id 
-        }, 
-        function (res) {
-            $scope.cde = res;
+            , id: $scope.elt._id 
+        }).then(function (res) {
+            $scope.elt = res.data;
         });
     };
     
-    $scope.setDefault = function(index, state) {
-        if (!$scope.isAllowedNonCuration($scope.cde)) {
-            return;
-        };
-        Attachment.setDefault({
-            index: index
-            , state: state
-            , deId: $scope.cde._id 
-        }, 
-        function (res) {
-            $scope.cde = res;
-        });
+    $scope.setDefault = function(index) {
+        if (!$scope.canDoNonCuration) return;
+        $timeout(function () {
+            $http.post("/attachments/" + $scope.module + "/setDefault", 
+            {
+                index: index
+                , state: $scope.elt.attachments[index].isDefault
+                , id: $scope.elt._id 
+            }).then(function (res) {
+                $scope.elt = res.data;
+                $scope.addAlert("success", "Saved");
+            });
+        }, 0);
     };
  };
  

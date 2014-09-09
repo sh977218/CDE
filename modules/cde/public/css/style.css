@@ -199,3 +199,15 @@ dd.formViewDetails {
 .dragQuestions {
     
 }
+
+.fa-cb  { display:none; } /* to hide the checkbox itself */
+.fa-cb + label:before {
+  font-family: FontAwesome;
+  display: inline-block;
+}
+
+.fa-cb + label:before { content: "\f096"; } /* unchecked icon */
+.fa-cb + label:before { letter-spacing: 10px; } /* space between checkbox and label */
+
+.fa-cb:checked + label:before { content: "\f046"; } /* checked icon */
+.fa-cb:checked + label:before { letter-spacing: 5px; }

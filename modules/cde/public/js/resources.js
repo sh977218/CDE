@@ -161,7 +161,7 @@ angular.module('resources', ['ngResource'])
                   method: 'GET',
                   url: '/debyuuid/' + scope.elt.uuid + "/" + scope.elt.version
                 }).success(function(data, status, headers, cfg) {
-                  ctrl.$setValidity('unique', data == "");
+                  ctrl.$setValidity('unique', data === "");
                 }).error(function(data, status, headers, cfg) {
                   ctrl.$setValidity('unique', false);
                 });
