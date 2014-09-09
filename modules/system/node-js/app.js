@@ -256,7 +256,11 @@ exports.init = function(app) {
     });    
     
     app.get('/login', exports.nocacheMiddleware, function(req, res) {
-        res.render('login', "system", { user: req.user, message: req.flash('error') });
+        req.session.destroy(function (err) {
+            req.logout();
+            res.clearCookie('connect.sid');
+            res.render('login', "system", { user: req.user, message: req.flash('error') });
+        }); 
     });
 
     app.get('/siteaccountmanagement', exports.nocacheMiddleware, function(req, res) {
