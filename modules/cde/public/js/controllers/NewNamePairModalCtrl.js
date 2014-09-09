@@ -6,7 +6,7 @@ function NewNamePairModalCtrl($scope, $modalInstance, cde) {
             , "acceptability" : "preferred"
         }
     };
-    $scope.cde = cde;
+    $scope.elt = cde;
     
     $scope.cancelCreate = function() {
         $modalInstance.dismiss('cancel');

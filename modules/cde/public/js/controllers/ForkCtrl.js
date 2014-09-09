@@ -1,13 +1,13 @@
 function ForkCtrl($scope, $http, $modal, $window) {
     
     var getForks = function() {
-        $http.get("/forks/" + $scope.cde._id).then(function(result) {
+        $http.get("/forks/" + $scope.elt._id).then(function(result) {
            $scope.forks = result.data; 
         }); 
     };
     
-    $scope.$watch('initialized', function() {
-        if ($scope.initialized === true) {
+    $scope.$watch('elt', function() {
+        if ($scope.elt !== undefined ) {
             getForks();
         }
     });
@@ -33,7 +33,7 @@ function ForkCtrl($scope, $http, $modal, $window) {
         });
 
         modalInstance.result.then(function (result) {
-            $http.post('/dataelement/fork', {id: $scope.cde._id, org: result.org, changeNote: result.changeNote}).then(function(result) {
+            $http.post('/dataelement/fork', {id: $scope.elt._id, org: result.org, changeNote: result.changeNote}).then(function(result) {
                 getForks();
             });
         });

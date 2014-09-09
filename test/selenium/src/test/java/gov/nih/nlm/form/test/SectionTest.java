@@ -7,8 +7,56 @@ import org.testng.annotations.Test;
 
 public class SectionTest extends BaseFormTest {
 
+            
+    @Test
+    public void createForm() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+
+        String formName = "Create Form Test Name";
+        String formDef = "Fill out carefully!";
+        String formV = "0.1alpha";
+
+        createForm(formName, formDef, formV, "CTEP");
+        
+        Assert.assertTrue(textPresent(formName));
+        Assert.assertTrue(textPresent(formDef));
+        Assert.assertTrue(textPresent(formV));
+        
+        gotoPublicForms();
+        searchForm("Create Form Test Name");
+        findElement(By.linkText("Create Form Test Name")).click();
+        Assert.assertTrue(textPresent("Fill out carefully!"));        
+    }    
+    
+    @Test
+    public void formFacets() {
+        gotoPublicForms();
+        searchForm("FormSearchTest");
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Vision Deficit Report");        
+        textPresent("Qualified");      
+        findElement(By.id("status-text-Qualified")).click(); 
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");        
+        textNotPresent("Vision Deficit Report");   
+        findElement(By.id("status-text-Qualified")).click();     
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");        
+        textPresent("Vision Deficit Report");
+        findElement(By.id("status-text-Recorded")).click();  
+        textNotPresent("Skin Cancer Patient");
+        textNotPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Vision Deficit Report");    
+        findElement(By.id("status-text-Recorded")).click();  
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Vision Deficit Report");
+    }    
+    
     void addSection(String title, String card) {
         int nbOfSections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_view')]")).size();
+        findElement(By.linkText("Form Description")).click();
 
         findElement(By.id("addSection")).click();
 
@@ -30,7 +78,8 @@ public class SectionTest extends BaseFormTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         String formName = "Section Test Form";
         createForm(formName, "Form def", "1.0", "CTEP");
-        
+
+        findElement(By.linkText("Form Description")).click();
         addSection("Section 1", "0 or more");
         addSection("Section 2", "1 or more");
         addSection("Section 3", null);
@@ -44,11 +93,13 @@ public class SectionTest extends BaseFormTest {
         Assert.assertEquals("Exactly 1", findElement(By.id("dd_card_2")).getText());
 
         saveForm();
-        
+        findElement(By.linkText("Form Description")).click();
+
         findElement(By.id("moveEltUp-1")).click();
         findElement(By.id("moveEltDown-1")).click();
         
         saveForm();
+        findElement(By.linkText("Form Description")).click();
 
         Assert.assertEquals("Section 2", findElement(By.id("dd_section_title_0")).getText());
         Assert.assertEquals("Section 3", findElement(By.id("dd_section_title_1")).getText());
@@ -67,6 +118,7 @@ public class SectionTest extends BaseFormTest {
         findElement(By.xpath("//dd[@id='dd_section_title_2']//button[@class='fa fa-times']")).click();
 
         saveForm();
+        findElement(By.linkText("Form Description")).click();
         
         Assert.assertEquals("Section 2 - New", findElement(By.id("dd_section_title_0")).getText());
         Assert.assertEquals("Section 3", findElement(By.id("dd_section_title_1")).getText());
@@ -78,6 +130,7 @@ public class SectionTest extends BaseFormTest {
 
         findElement(By.id("removeElt-1")).click();
         saveForm();
+        findElement(By.linkText("Form Description")).click();
         
         Assert.assertEquals("Section 1", findElement(By.id("dd_section_title_1")).getText());
 
