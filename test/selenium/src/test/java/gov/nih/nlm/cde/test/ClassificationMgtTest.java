@@ -15,6 +15,12 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();    
     }
     
+    private void searchNestedClassifiedForms() {
+        goToFormSearch();
+        findElement(By.name("ftsearch")).sendKeys("classification.elements.elements.name:Epilepsy");
+        findElement(By.id("search.submit")).click();    
+    }    
+    
     private void gotoClassifMgt() {
         findElement(By.id("username_link")).click();
         hangon(.5);
@@ -58,6 +64,8 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         mustBeLoggedInAs("ninds", "pass");
         searchNestedClassifiedCdes();
         Assert.assertTrue(textPresent("NINDS (7)"));
+        searchNestedClassifiedForms();
+        Assert.assertTrue(textPresent("NINDS (1)"));
         gotoClassifMgt();
         
         checkNestedClassifs();
@@ -65,6 +73,9 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         searchNestedClassifiedCdes();
         hangon(3);
         Assert.assertTrue(textNotPresent("NINDS (7)"));
+        searchNestedClassifiedForms();
+        hangon(1);
+        Assert.assertTrue(textNotPresent("NINDS (1)"));
     }
     
     private void createClassificationName(String[] categories) {

@@ -65,15 +65,17 @@ exports.modifyOrgClassification = function(request, action, callback) {
                 key += ".name";
                 query[key] = request.categories[i];
             }            
-            mongo_data_cde.DataElement.find(query).exec(function(err, result) {
-                for (var i = 0; i < result.length; i++) {
-                    var cde = result[i];
-                    var steward = classificationShared.findSteward(cde, request.orgName);   
-                    classificationShared.modifyCategory(steward.object, request.categories, {type: action, newname: request.newname});
-                    cde.markModified("classification");
-                    cde.save(function(err) {
-                    });
-                };
+            daoManager.getDaoList().forEach(function(dao) {
+                dao.query(query, function(err, result) {
+                    for (var i = 0; i < result.length; i++) {
+                        var cde = result[i];
+                        var steward = classificationShared.findSteward(cde, request.orgName);   
+                        classificationShared.modifyCategory(steward.object, request.categories, {type: action, newname: request.newname});
+                        cde.markModified("classification");
+                        cde.save(function(err) {
+                        });
+                    }
+                });
             });            
             if(callback) callback(err, stewardOrg);
         });   

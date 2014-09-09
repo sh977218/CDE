@@ -211,6 +211,11 @@ public class NlmCdeBaseTest {
         goToSearch("cde");
     }
     
+    protected void goToFormSearch() {
+        goToSearch("form");
+    }    
+    
+    
     protected void goToSearch(String type) {
         driver.get(baseUrl + "/gonowhere");
         driver.get(baseUrl + "/#/"+type+"/search");

@@ -399,3 +399,9 @@ exports.archiveCde = function(cde, callback) {
         });
     });
 };
+
+exports.query = function(query, callback) {
+    DataElement.find(query).exec(function(err, result) {
+        callback(err, result);
+    });
+};
