@@ -81,11 +81,15 @@ exports.init = function(app) {
     });
 
     app.get('/logout', function(req, res) {
+        if (!req.session) {
+            return res.redirect('/');
+        } 
         req.session.destroy(function (err) {
             req.logout();
             res.clearCookie('connect.sid');
             res.redirect('/');
         });
+        
     });
 
     app.post('/logs', function (req, res) {
@@ -256,11 +260,7 @@ exports.init = function(app) {
     });    
     
     app.get('/login', exports.nocacheMiddleware, function(req, res) {
-        req.session.destroy(function (err) {
-            req.logout();
-            res.clearCookie('connect.sid');
-            res.render('login', "system", { user: req.user, message: req.flash('error') });
-        }); 
+        res.render('login', "system", { user: req.user, message: req.flash('error') });
     });
 
     app.get('/siteaccountmanagement', exports.nocacheMiddleware, function(req, res) {
