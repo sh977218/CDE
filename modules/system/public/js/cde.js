@@ -1,4 +1,4 @@
-var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable']).
+var cdeApp = angular.module('cde', ['resources', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'mgcrea.ngStrap']).
     config(function($routeProvider) {
         $routeProvider.
         when('/', {controller: HomeCtrl, templateUrl:'/home'}).
