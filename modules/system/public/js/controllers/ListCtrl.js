@@ -195,14 +195,12 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                         if (org.classifications) {
                             $scope.classifications.elements = $scope.matchFacetsOrgs(org);
                         }
-                        
-                        $scope.classifications;
                     });
                 }
                 
-                OrgHelpers.addLongNameToOrgs($scope.facets.orgs.terms, $rootScope.orgsLongName);
+                OrgHelpers.addLongNameToOrgs($scope.facets.orgs.terms, $rootScope.orgsDetailedInfo);
              });
         });  
     };     
-    
+
 }

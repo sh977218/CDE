@@ -1,4 +1,4 @@
-function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementUUID, PriorCdes, CdeDiff, isAllowedModel) {
+function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementUUID, PriorCdes, CdeDiff, isAllowedModel, OrgHelpers, $rootScope) {
     $scope.module = 'cde';
     $scope.eltLoaded = false;
     $scope.detailedView = true;
@@ -58,6 +58,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setCanDoNonCuration($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
+            $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
@@ -328,5 +329,5 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         $http.get("/permissibleValueCodeSystemList").then(function(response) {
             $scope.pVTypeaheadCodeSystemNameList = response.data;
         });
-    }; 
+    };
 }

@@ -1,4 +1,4 @@
-function AttachmentsCtrl($scope, $rootScope, Attachment, $http) {     
+function AttachmentsCtrl($scope, $rootScope, $http, $timeout) {
     $scope.setFiles = function(element) {
         $scope.$apply(function($scope) {
           // Turn the FileList object into an Array
@@ -76,18 +76,19 @@ function AttachmentsCtrl($scope, $rootScope, Attachment, $http) {
         });
     };
     
-    $scope.setDefault = function(index, state) {
-        if (!$scope.canDoNonCuration) {
-            return;
-        };
-        $http.post("/attachments/" + $scope.module + "/setDefault", 
-        {
-            index: index
-            , state: state
-            , id: $scope.elt._id 
-        }).then(function (res) {
-            $scope.elt = res.data;
-        });
+    $scope.setDefault = function(index) {
+        if (!$scope.canDoNonCuration) return;
+        $timeout(function () {
+            $http.post("/attachments/" + $scope.module + "/setDefault", 
+            {
+                index: index
+                , state: $scope.elt.attachments[index].isDefault
+                , id: $scope.elt._id 
+            }).then(function (res) {
+                $scope.elt = res.data;
+                $scope.addAlert("success", "Saved");
+            });
+        }, 0);
     };
  };
  

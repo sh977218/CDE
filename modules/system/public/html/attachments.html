@@ -9,10 +9,8 @@
                 <span ng-switch-when="true">
                     Attachments smaller than 500k can be marked as default 
                 </span>
-                <span ng-switch-default>
-                    <i ng-hide="attachment.isDefault" class="fa fa-square-o" ng-click="setDefault($index, true)"></i>
-                    <i ng-show="attachment.isDefault" class="fa fa-check-square-o" ng-click="setDefault($index, false)"></i>
-                </span>
+                <input class="fa-cb" type="checkbox" id="defaultCb" ng-model="attachment.isDefault" ng-change="setDefault($index)" ng-disabled="!canDoNonCuration" />
+                <label for="defaultCb" id="defaultCbLabel">Should this image be displayed in search results?</label>
             </span>
             </dd>
             <dt ng-show="canDoNonCuration">Actions: </dt>
@@ -23,7 +21,7 @@
                 </span>
                 <i ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeAttachment-{{$index}}"></i></dd>
             <dt>Size: </dt>
-            <dd>
+            <dd id="dd_attach_size_{{$index}}">
                 <span ng-switch="attachment.filesize > 1024*1024">
                     <span ng-switch-when="true">{{attachment.filesize / 1024 / 1024 | number:2}} MB</span>
                     <span ng-switch-default>{{attachment.filesize / 1024 | number:2}} kB</span>
@@ -39,7 +37,7 @@
     <div ng-show="canDoNonCuration">
         <div>{{message}}</div>
         <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files</label>
-        <input type="file" style="display: none" ng-model-instant id="fileToUpload" onchange="angular.element(this).scope().setFiles(this)" />
+        <input type="file" style="display: none" ng-model="currentFile" id="fileToUpload" onchange="angular.element(this).scope().setFiles(this)" />
 
         <div ng-show="files.length">
             <div ng-repeat="file in files.slice(0)">

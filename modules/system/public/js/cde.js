@@ -206,3 +206,18 @@ cdeApp.directive('diff', function () {
 cdeApp.config(['$compileProvider', function($compileProvider) {
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }]);
+
+cdeApp.config(function($provide) {
+    $provide.decorator('uiSortableDirective', function($delegate) {
+        var directive = $delegate[0];
+        var link = directive.link;
+        directive.compile = function() {
+          return function(scope, element, attrs, ngModel) {
+              if (scope.dragEnabled) {
+                  link(scope, element, attrs, ngModel);
+              }
+            };
+        };
+        return $delegate;
+    });
+});

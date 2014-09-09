@@ -196,31 +196,4 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textNotPresent("<b>bold</b>"));        
     }    
 
-    @Test
-    public void changeCDESteward() {
-        mustBeLoggedInAs(classificationMgtUser_username, classificationMgtUser_password);
-        String cdeName = "Patient Tissue Specimen Colorectal Research Consent Ind-2";
-
-        goToCdeByName(cdeName);
-        
-        // Changes Steward and cancels
-        findElement(By.id("dd_edit_steward")).click();
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
-        findElement(By.id("elt.stewardOrg.name.cancel")).click();
-        textPresent("CTEP");
-        
-        // Changes Steward and save
-        findElement(By.id("dd_edit_steward")).click();
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
-        findElement(By.id("elt.stewardOrg.name.ok")).click();
-        Assert.assertTrue(textPresent("NINDS"));
-        findElement(By.id("openSave")).click();
-        modalHere();
-        findElement(By.name("version")).sendKeys(".1");
-        saveCde();
-        Assert.assertEquals("NINDS", findElement(By.id("dd_general_steward")).getText());
-        findElement(By.linkText("History")).click();
-        findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
-        textPresent("Before: CTEP -- After: NINDS");
-    }
 }

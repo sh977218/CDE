@@ -17,10 +17,6 @@ import org.openqa.selenium.logging.LogType;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 
-/**
- *
- * @author ludetc
- */
 public class ScreenShotListener extends TestListenerAdapter {
     SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
     Calendar calendar = Calendar.getInstance();

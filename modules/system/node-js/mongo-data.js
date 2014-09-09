@@ -96,7 +96,13 @@ exports.listOrgs = function(callback) {
 };
 
 exports.listOrgsLongName = function(callback) {
-    Org.find({}, {'_id': 0, "name":1, "longName":1}).exec(function(err, result) {
+    Org.find({}, {'_id': 0, 'name':1, 'longName':1}).exec(function(err, result) {
+        callback("", result);
+    });
+};
+
+exports.listOrgsDetailedInfo = function(callback) {
+    Org.find({}, {'_id': 0, 'name':1, 'longName':1, 'mailAddress':1, "emailAddress":1, "phoneNumber":1, "uri":1}).exec(function(err, result) {
         callback("", result);
     });
 };
@@ -123,17 +129,6 @@ exports.addOrg = function(newOrgArg, res) {
 exports.removeOrg = function (id, callback) {
   Org.findOne({"_id": id}).remove().exec(function (err) {
       callback();
-  });
-};
-
-exports.updateOrgLongName = function(org, res) {
-  Org.findOne({'name': org.name}).exec(function(err, found) {
-    if(found) {
-        Org.update({'name':org.name}, { 'longName':org.longName }).exec();
-        res.send('Org has been updated.');
-    } else {
-        res.send('Org did not exist.');
-    }
   });
 };
 
@@ -183,3 +178,16 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
 exports.getFile = function(callback, res, id) {
     gfs.createReadStream({ _id: id }).pipe(res);
 };
+
+exports.updateOrg = function(org, res) {
+    var id = org._id;
+    delete org._id;
+    Org.findOneAndUpdate({_id: id}, org).exec(function(err, found) {
+        if (found) {
+            res.send('Org has been updated.');
+        } else {
+            res.send('Org does not exist.');
+        }
+    });
+};
+

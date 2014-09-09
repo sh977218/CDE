@@ -126,11 +126,18 @@ public class NlmCdeBaseTest {
         goToElementByName(name, "form");
     }    
         
-    protected void goToElementByName(String name, String type) {
-        openEltInList(name, type);
-        findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
-        Assert.assertTrue(textPresent("Classification"));
-        Assert.assertTrue(textPresent(name));
+    protected void goToElementByName(String name, String type) {      
+        try {
+            openEltInList(name, type);
+            findElement(By.xpath("//a[@id='openCdeInCurrentTab_0']")).click();
+            Assert.assertTrue(textPresent("Classification"));
+            Assert.assertTrue(textPresent(name));
+        } catch( Exception e ) {
+            hangon(1);
+            findElement(By.xpath("//a[@id='openCdeInCurrentTab_0']")).click();
+            Assert.assertTrue(textPresent("Classification"));
+            Assert.assertTrue(textPresent(name));
+        }                
     }  
     
     protected void openCdeInList(String name) {
@@ -146,7 +153,22 @@ public class NlmCdeBaseTest {
         textPresent(name);
         findElement(By.id("acc_link_0")).click();
         hangon(1);
-    }    
+    }
+    
+    protected void openFormInList(String name) {
+        goToSearch();
+        findElement(By.linkText("Forms")).click();
+        findElement(By.id("ftsearch-input")).clear();
+        findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
+        findElement(By.cssSelector("i.fa-search")).click();
+        textPresent("1 results for");
+        findElement(By.id("acc_link_0")).click();
+    }
+    
+    protected void goToFormByName(String name) {
+        openFormInList(name);
+        findElement(By.linkText("View Full Detail")).click();
+    }
     
     protected WebElement findElement(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
@@ -159,19 +181,21 @@ public class NlmCdeBaseTest {
     }
     
     public void modalHere() {
-        hangon(2);
+        hangon(1);
     }
     
     /*
     * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
     */
     public void modalGone()  {
-        hangon(2);
+        hangon(1);
     }
     
     public void closeAlert() {
         try {
+            System.out.println("1");
             findElement(By.cssSelector(".alert .close")).click();
+            System.out.println("2");
         } catch(Exception e) {
                     
         }
@@ -250,9 +274,13 @@ public class NlmCdeBaseTest {
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
-        findElement(By.xpath("//button[text() = 'Log in']")).click();
-//        hangon(1);
-        findElement(By.linkText(username));
+        try {
+            findElement(By.xpath("//button[text() = 'Log in']")).click();
+            findElement(By.linkText(username));            
+        } catch (NoSuchElementException e) {
+            findElement(By.xpath("//button[text() = 'Log in']")).click();
+            findElement(By.linkText(username));
+        }
     }
     
     private boolean isWindows(){
