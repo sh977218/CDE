@@ -2,7 +2,6 @@ var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui
     config(function($routeProvider) {
         $routeProvider.
         when('/', {controller: HomeCtrl, templateUrl:'/home'}).
-//        when('/search', {controller: DEListCtrl, templateUrl: 'template/system/list'}).
         when('/cde/search', {controller: DEListCtrl, templateUrl: 'template/system/list'}).
         when('/login', {controller: AuthCtrl, templateUrl:'/login'}).
         when('/signup', {controller: AuthCtrl, templateUrl:'/signup'}).
@@ -20,7 +19,6 @@ var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui
         when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
         when('/quickBoard', {controller: QuickBoardCtrl, templateUrl: '/quickBoard'}).
         when('/sdcview', {controller: SDCViewCtrl, templateUrl: '/sdcView'}).
-//        when('/formList', {controller: FormListCtrl, templateUrl: '/template/system/list'}).
         when('/form/search', {controller: FormListCtrl, templateUrl: '/template/system/list'}).
         when('/createForm', {controller: CreateFormCtrl, templateUrl: '/template/form/createForm'}).
         when('/formView', {controller: FormViewCtrl, templateUrl: '/template/form/formView'}).
