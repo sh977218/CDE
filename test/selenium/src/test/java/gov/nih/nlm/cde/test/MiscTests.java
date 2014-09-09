@@ -61,7 +61,7 @@ public class MiscTests extends NlmCdeBaseTest {
     
     @Test
     public void gridView() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("li-blank-AECC")).click();
         hangon(2);
         findElement(By.id("gridView")).click();

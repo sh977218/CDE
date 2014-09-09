@@ -129,12 +129,12 @@ public class NlmCdeBaseTest {
     protected void goToElementByName(String name, String type) {      
         try {
             openEltInList(name, type);
-            findElement(By.xpath("//a[@id='openCdeInCurrentTab_0']")).click();
+            findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
             Assert.assertTrue(textPresent("Classification"));
             Assert.assertTrue(textPresent(name));
         } catch( Exception e ) {
             hangon(1);
-            findElement(By.xpath("//a[@id='openCdeInCurrentTab_0']")).click();
+            findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
             Assert.assertTrue(textPresent("Classification"));
             Assert.assertTrue(textPresent(name));
         }                
@@ -156,7 +156,7 @@ public class NlmCdeBaseTest {
     }
     
     protected void openFormInList(String name) {
-        goToSearch();
+        goToFormSearch();
         findElement(By.linkText("Forms")).click();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
@@ -165,11 +165,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("acc_link_0")).click();
     }
     
-    protected void goToFormByName(String name) {
-        openFormInList(name);
-        findElement(By.linkText("View Full Detail")).click();
-    }
-    
+   
     protected WebElement findElement(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
@@ -181,14 +177,14 @@ public class NlmCdeBaseTest {
     }
     
     public void modalHere() {
-        hangon(1);
+        hangon(2);
     }
     
     /*
     * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
     */
     public void modalGone()  {
-        hangon(1);
+        hangon(2);
     }
     
     public void closeAlert() {
