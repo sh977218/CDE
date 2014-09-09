@@ -169,7 +169,7 @@ public class NlmCdeBaseTest {
     }
     
     public void modalHere() {
-        hangon(1);
+        hangon(2);
     }
     
     /*
