@@ -2,8 +2,15 @@ var mongoose = require('mongoose');
 
 var schemas = {};
 
+
+
 var csEltSchema = mongoose.Schema({
     name: String
+    , elements: [csEltSchema]
+}, {_id: false});
+
+exports.classificationSchema = mongoose.Schema({
+    stewardOrg: {name: String}
     , elements: [csEltSchema]
 }, {_id: false});
 

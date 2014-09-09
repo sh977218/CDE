@@ -89,7 +89,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
 
     $scope.openSelectDefaultClassificationModal = function () {
         var modalInstance = $modal.open({
-            templateUrl: 'addClassificationModalContent.html',
+            templateUrl: '/template/system/addClassification',
             controller: AddClassificationModalCtrl,
             resolve: {
                 myOrgs: function() {

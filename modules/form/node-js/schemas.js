@@ -55,6 +55,7 @@ exports.formSchema = new Schema({
     }
     , formElements: [formElementSchema]
     , archived: Boolean
+    , classification: [sharedSchemas.classificationSchema]
 });
 
 exports.formSchema.set('collection', 'forms');

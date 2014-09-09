@@ -31,4 +31,10 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
     $scope.stageElt = function() {
         $scope.elt.unsaved = true;
     };    
+    
+    $scope.classificationToFilter = function() {
+         if ($scope.elt != null) {
+             return $scope.elt.classification;
+         } 
+    };      
 }

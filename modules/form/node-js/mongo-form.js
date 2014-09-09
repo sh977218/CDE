@@ -78,4 +78,9 @@ exports.userTotalSpace = function(name, callback) {
     mongo_data_system.userTotalSpace(Form, name, callback);
 };
 
+exports.query = function(query, callback) {
+    Form.find(query).exec(function(err, result) {
+        callback(err, result);
+    });
+};
 
