@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.common.test;
 
 import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 import org.openqa.selenium.By;
