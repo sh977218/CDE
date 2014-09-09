@@ -253,9 +253,13 @@ public class NlmCdeBaseTest {
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
-        findElement(By.xpath("//button[text() = 'Log in']")).click();
-//        hangon(1);
-        findElement(By.linkText(username));
+        try {
+            findElement(By.xpath("//button[text() = 'Log in']")).click();
+            findElement(By.linkText(username));            
+        } catch (NoSuchElementException e) {
+            findElement(By.xpath("//button[text() = 'Log in']")).click();
+            findElement(By.linkText(username));
+        }
     }
     
     private boolean isWindows(){

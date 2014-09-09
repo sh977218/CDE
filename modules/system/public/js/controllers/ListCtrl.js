@@ -202,5 +202,5 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
              });
         });  
     };     
-    
+
 }
