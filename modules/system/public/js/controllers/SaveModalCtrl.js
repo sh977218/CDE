@@ -1,4 +1,4 @@
-var SaveModalCtrl = function($scope, $modalInstance, elt, user, redirectBaseLink) {
+var SaveModalCtrl = function($scope, $modalInstance, elt, user) {
     $scope.elt = elt;
     $scope.user = user;
 
