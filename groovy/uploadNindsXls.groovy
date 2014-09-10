@@ -21,6 +21,8 @@ if(mongoHost == null || mongoDb == null)  {
     println "MongoDB host: " + mongoHost + ", db: " + mongoDb
 }
 
+@Field idUtils = new IdUtils();
+
 @Field MongoClient mongoClient 
 mongoClient = new MongoClient( mongoHost );
 @Field DB db 
@@ -60,8 +62,6 @@ static def String getCellValue(Cell cell) {
            }
    }
 }
-
-def idUtils = new IdUtils();
 
 // input type is free-form, single value or multi value.
 @Field def xlsMap = [

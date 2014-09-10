@@ -25,6 +25,8 @@ if(mongoHost == null || mongoDb == null)  {
     println "MongoDB host: " + mongoHost + ", db: " + mongoDb
 }
 
+@Field idUtils = new IdUtils();
+
 @Field MongoClient mongoClient 
 mongoClient = new MongoClient( mongoHost );
 @Field DB db 
@@ -33,8 +35,6 @@ DBCollection deColl = db.getCollection("dataelements");
 DBCollection orgColl = db.getCollection("orgs");
 
 println "GRDR Ingester"
-
-def idUtils = new IdUtils();
 
 @Field Classifications classifications;
 classifications = new Classifications(orgColl);

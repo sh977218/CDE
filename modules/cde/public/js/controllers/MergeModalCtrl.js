@@ -3,7 +3,7 @@ function MergeModalCtrl($scope, $modalInstance, cdes, retiredIndex, user) {
     $scope.target = cdes[(retiredIndex + 1) % 2];
     $scope.mergeRequest = {
         source: {tinyId: $scope.source.tinyId, object: $scope.source}
-        , destination: {tinyId: $scope.target.tinyIds, object: $scope.target}
+        , destination: {tinyId: $scope.target.tinyId, object: $scope.target}
         , mergeFields: {
             classifications: true
             , ids: false

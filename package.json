@@ -19,7 +19,6 @@
     "passport-local": "1.0.0",
     "connect-flash": "0.1.1",
     "mongodb": "1.4.7",
-    "node-uuid": "1.4.1",
     "request": "2.36.0",
     "winston": "0.7.3",
     "gridfs-stream": "0.5.1",
