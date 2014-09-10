@@ -38,10 +38,10 @@ angular.module('classification', ['ngResource'])
 })
 .factory('CdeClassificationTransfer', function($http) {
     return {
-        byUuids: function(uuidSource, uuidTarget, cb) {
+        byTinyIds: function(tinyIdSource, tinyIdTarget, cb) {
             var request = {
-                cdeSource: {uuid: uuidSource},
-                cdeTarget: {uuid: uuidTarget}
+                cdeSource: {tinyId: tinyIdSource},
+                cdeTarget: {tinyId: tinyIdTarget}
             };
             $http.post('/classification/cde/moveclassif', request).success(cb).error(cb);
         }

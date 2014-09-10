@@ -2,7 +2,7 @@ var fs = require('fs')
     , util = require('util')
     , xml2js = require('xml2js')
     , mongoose = require('mongoose')
-    , uuid = require('node-uuid')
+    , shortid = require('shortid')
 ;
 
 var parser = new xml2js.Parser();
@@ -53,7 +53,7 @@ fs.readFile(process.argv[2], function(err, data) {
                 console.log("        Definition: " + valueSet['ns0:Definition']);
 
                 var newDE = new DataElement({
-                    uuid: uuid.v4()
+                    tinyId: shortid.generate()
                     , created: Date.now()
                     , source: 'VSAC'
                     , sourceId: valueSet['$'].ID + "v" + valueSet['$'].version

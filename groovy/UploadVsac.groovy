@@ -2,8 +2,6 @@
 
 import com.mongodb.*;
 import com.mongodb.util.JSON;
-import java.util.UUID;
-
 
 def mongoHost = System.getenv()['MONGO_HOST'];
 if(mongoHost == null) mongoHost = "localhost";
@@ -47,7 +45,7 @@ def buildClassif = {conceptSystem, concept ->
     newClassif;
 }
 
-
+def idUtils = new IdUtils();
 def deList = new XmlSlurper().parse(new File(args[0])).declareNamespace(ns0: "urn:ihe:iti:svs:2008");
 
 for (int i = 0; i < deList.'ns0:DescribedValueSet'.size(); i++) {
@@ -59,7 +57,7 @@ for (int i = 0; i < deList.'ns0:DescribedValueSet'.size(); i++) {
     println "        Definition: " + valueSet.'ns0:Definition';
 
     def newDE = new BasicDBObject();
-    newDE.put("uuid", UUID.randomUUID() as String); 
+    newDE.put("tinyId", idUtils.generateID()); 
     newDE.put("created", new Date()); 
     newDE.put("source", 'VSAC'); 
     newDE.put("sourceId", valueSet.@ID + "v" + valueSet.@version); 

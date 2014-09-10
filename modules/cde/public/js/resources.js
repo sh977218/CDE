@@ -7,13 +7,13 @@ angular.module('resources', ['ngResource'])
     .factory('DataElement', function($resource) {
         return $resource('/dataelement/:deId', {deId: '@deId'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
     })
-    .factory('DataElementUUID', function($resource) {
-        return $resource('/debyuuid/:uuid/:version', {uuid: '@uuid', version: '@version'});
+    .factory('DataElementTinyId', function($resource) {
+        return $resource('/debytinyid/:tinyId/:version', {tinyId: 'tinyId', version: '@version'});
     })
     .factory('CdeList', function($http) {
         return {
-            byUuidList: function(ids, cb) {              
-                $http.post("/cdesByUuidList", ids).then(function(response) {
+            byTinyIdList: function(ids, cb) {              
+                $http.post("/cdesByTinyIdList", ids).then(function(response) {
                     cb(response.data);
                 });
             }
@@ -159,7 +159,7 @@ angular.module('resources', ['ngResource'])
           scope.$watch(attrs.ngModel, function() {
                 $http({
                   method: 'GET',
-                  url: '/debyuuid/' + scope.elt.uuid + "/" + scope.elt.version
+                  url: '/debytinyid/' + scope.elt.tinyId + "/" + scope.elt.version
                 }).success(function(data, status, headers, cfg) {
                   ctrl.$setValidity('unique', data === "");
                 }).error(function(data, status, headers, cfg) {

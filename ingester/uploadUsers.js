@@ -1,6 +1,5 @@
 var util = require('util')
     , mongoose = require('mongoose')
-    , uuid = require('node-uuid')
 ;
 
 var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/nlmcde';

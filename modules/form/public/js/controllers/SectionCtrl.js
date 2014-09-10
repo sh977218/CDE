@@ -25,7 +25,7 @@ function SectionCtrl($scope, $modal, $timeout) {
                     label: cde.naming[0].designation
                     , cardinality: "1"
                     , question: {
-                        cde: {uuid: cde.uuid
+                        cde: {tinyId: cde.tinyId
                             , version: cde.version}
                         , datatype: cde.valueDomain.datatype
                         , required: false

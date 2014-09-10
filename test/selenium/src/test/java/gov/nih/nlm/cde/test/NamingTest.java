@@ -28,9 +28,7 @@ public class NamingTest extends NlmCdeBaseTest {
         findElement(By.id("createNamePair")).click();
         modalGone();
         
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        saveCde();
+        newCdeVersion();
 
         findElement(By.linkText("Naming")).click();
         Assert.assertTrue(textPresent("New Name"));
@@ -40,10 +38,7 @@ public class NamingTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#dd_name_1 input")).sendKeys(" Changed");
         findElement(By.cssSelector("#dd_name_1 .fa-check")).click();
         
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("2");
-        saveCde();
+        newCdeVersion();
 
         findElement(By.linkText("Naming")).click();
         Assert.assertTrue(textPresent("New Name Changed"));
@@ -52,10 +47,7 @@ public class NamingTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#dd_def_1 textarea ")).sendKeys(" Changed");
         findElement(By.cssSelector("#dd_def_1 .fa-check")).click();
         
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("3");
-        saveCde();
+        newCdeVersion();
 
         findElement(By.linkText("Naming")).click();
         Assert.assertTrue(textPresent("New Definition Changed"));
@@ -64,20 +56,14 @@ public class NamingTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#dd_context_1 input")).sendKeys(" Changed");
         findElement(By.cssSelector("#dd_context_1 .fa-check")).click();
         
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("4");
-        saveCde();
+        newCdeVersion();
 
         findElement(By.linkText("Naming")).click();
         Assert.assertTrue(textPresent("Health Changed"));
 
         findElement(By.id("removeNaming-1")).click();
         
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("5");
-        saveCde();
+        newCdeVersion();
         
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("New Name") < 0);
         
