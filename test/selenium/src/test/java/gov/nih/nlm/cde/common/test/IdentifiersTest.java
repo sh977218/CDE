@@ -1,18 +1,18 @@
+package gov.nih.nlm.cde.common.test;
 
-package gov.nih.nlm.cde.test;
-
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ctepCurator_username;
+import gov.nih.nlm.cde.test.NlmCdeBaseTest;
+import java.util.List;
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.testng.annotations.Test;
+import org.openqa.selenium.WebElement;
 
-public class IdentifiersTest extends NlmCdeBaseTest {
+public abstract class IdentifiersTest extends NlmCdeBaseTest {
 
-    @Test
-    public void addRemoveId() {
+    public abstract void goToEltByName(String name);
+    
+    public void addRemoveId(String eltName) {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        String cdeName = "Intravesical Protocol Agent Administered Specify";
-        goToCdeByName(cdeName);
+        goToEltByName(eltName);
         findElement(By.linkText("Identifiers")).click();
         findElement(By.id("addId")).click();
         modalHere();
@@ -22,6 +22,7 @@ public class IdentifiersTest extends NlmCdeBaseTest {
         findElement(By.id("createId")).click();
         Assert.assertTrue(textPresent("Identifier Added"));
         modalGone();
+        
         scrollTo( "2000" );
         findElement(By.id("addId")).click();
         modalHere();
@@ -30,6 +31,7 @@ public class IdentifiersTest extends NlmCdeBaseTest {
         findElement(By.id("createId")).click();
         Assert.assertTrue(textPresent("Identifier Added"));
         modalGone();
+        
         scrollTo( "2000" );
         findElement(By.id("addId")).click();
         modalHere();
@@ -40,11 +42,18 @@ public class IdentifiersTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Identifier Added"));
         modalGone();
 
-        findElement(By.id("removeId-2")).click();
-        findElement(By.id("confirmRemoveId-2")).click();
-        Assert.assertTrue(textPresent("Identifier Removed"));
+        //remove MyOrigin2
+        List<WebElement> ddElts = driver.findElements(By.xpath("//dd[starts-with(@id, 'dd_id_origin')]"));
+        for (int i = 0; i < ddElts.size(); i++) {
+            if (ddElts.get(i).getText().equals("MyOrigin2")) {
+                findElement(By.id("removeId-" + i)).click();
+                findElement(By.id("confirmRemoveId-" + i)).click();
+                Assert.assertTrue(textPresent("Identifier Removed"));
+                i = ddElts.size();
+            }
+        }
         
-        goToCdeByName(cdeName);
+        goToEltByName(eltName);
         findElement(By.linkText("Identifiers")).click();
         Assert.assertTrue(textPresent("MyOrigin1"));
         Assert.assertTrue(textPresent("MyId1"));
