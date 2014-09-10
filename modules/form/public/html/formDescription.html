@@ -1,20 +1,20 @@
 <br/>
 <div class="row">    
-    <div class="col-md-6">
+    <div ng-class="viewOptions.sectionAreaWidth">
         <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
     </div>
-    <div class="col-md-6" ng-switch="addCdeMode">
+    <div ng-class="viewOptions.searchAreaWidth" ng-switch="addCdeMode">
+        <br/>
         <div class="bs-sidebar hidden-print" role="complementary"  data-offset-bottom="450" bs-affix>
             <div ng-switch-when="true">
-                <button ng-click="switchEditQuestionsMode()"> Done Adding</button>
                 <div class="panel-group" id="accordion">                
                     <div ng-include="'/template/system/list'" ng-controller="DEListCtrl"></div>                
                 </div>            
             </div>
-            <div ng-switch-default>
+<!--            <div ng-switch-default>
                 To add start adding questions to the form, click "Add Questions" and drag and drop into your form sections. 
                 <button ng-click="switchEditQuestionsMode()" id="startAddingQuestions"> Add Questions</button>
-            </div>
+            </div>-->
         </div>
     </div>
 </div>
