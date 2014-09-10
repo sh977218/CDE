@@ -1,12 +1,12 @@
 var mongoose = require('mongoose')
     , util = require('util')
     , xml2js = require('xml2js')
-    , uuid = require('node-uuid')
     , config = require('config')
     , schemas = require('./schemas')
     , schemas_system = require('../../system/node-js/schemas') 
     , mongo_data_system = require('../../system/node-js/mongo-data') 
-    ;
+    , shortid = require("shortid") 
+;
 
 var mongoUri = config.mongoUri;
 
@@ -36,8 +36,8 @@ exports.boardsByUserId = function(userId, callback) {
     });
 };
 
-exports.publicBoardsByDeUuid = function(uuid, callback) {
-    PinningBoard.find({"pins.deUuid": uuid, "shareStatus": "Public"}).exec(function (err, result) {
+exports.publicBoardsByDeTinyId = function(tinyId, callback) {
+    PinningBoard.find({"pins.deTinyId": tinyId, "shareStatus": "Public"}).exec(function (err, result) {
         callback(result); 
     });
 };
@@ -87,7 +87,7 @@ exports.desByConcept = function (concept, callback) {
             {'$or': [{'objectClass.concepts.originId': concept.originId},
                      {'property.concepts.originId': concept.originId}, 
                      {'dataElementConcept.concepts.originId': concept.originId}]},
-        "naming source sourceId registrationState stewardOrg updated updatedBy createdBy uuid version views")
+        "naming source sourceId registrationState stewardOrg updated updatedBy createdBy tinyId version views")
                 .limit(20)
                 .where("archived").equals(null)
                 .exec(function (err, cdes) {
@@ -95,8 +95,8 @@ exports.desByConcept = function (concept, callback) {
     });
 };
 
-exports.deByUuidAndVersion = function(uuid, version, callback) {
-    DataElement.findOne({'uuid': uuid, "version": version}).exec(function (err, de) {
+exports.deByTinyIdAndVersion = function(tinyId, version, callback) {
+    DataElement.findOne({'tinyId': tinyId, "version": version}).exec(function (err, de) {
        callback("", de); 
     });
 };
@@ -119,8 +119,8 @@ exports.cdesByIdList = function(idList, callback) {
     });
 };
 
-exports.cdesByUuidList = function(idList, callback) {
-    DataElement.find({'archived':null}).where('uuid')
+exports.cdesByTinyIdList = function(idList, callback) {
+    DataElement.find({'archived':null}).where('tinyId')
             .in(idList)
             .slice('valueDomain.permissibleValues', 10)
             .exec(function(err, cdes) {
@@ -132,7 +132,7 @@ exports.cdesByUuidList = function(idList, callback) {
 exports.priorCdes = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement != null) {
-            return DataElement.find({}, "naming source sourceId registrationState stewardOrg updated updatedBy createdBy uuid version views changeNote")
+            return DataElement.find({}, "naming source sourceId registrationState stewardOrg updated updatedBy createdBy tinyId version views changeNote")
                     .where("_id").in(dataElement.history).exec(function(err, cdes) {
                 callback("", cdes);
             });
@@ -157,8 +157,8 @@ exports.acceptFork = function(fork, orig, callback) {
     });
 };
 
-exports.isForkOf = function(uuid, callback) {
-    return DataElement.find({uuid: uuid})
+exports.isForkOf = function(tinyId, callback) {
+    return DataElement.find({tinyId: tinyId})
         .where("archived").equals(null).where("isFork").equals(null).exec(function(err, cdes) {
             callback("", cdes);
     });
@@ -167,7 +167,7 @@ exports.isForkOf = function(uuid, callback) {
 exports.forks = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement != null) {
-            return DataElement.find({uuid: dataElement.uuid, isFork: true}, "naming stewardOrg updated updatedBy createdBy created updated changeNote")
+            return DataElement.find({tinyId: dataElement.tinyId, isFork: true}, "naming stewardOrg updated updatedBy createdBy created updated changeNote")
                 .where("archived").equals(null).where("registrationState.registrationStatus").ne("Retired").exec(function(err, cdes) {
                     callback("", cdes);
             });
@@ -238,7 +238,7 @@ exports.create = function(cde, user, callback) {
     newDe.created = Date.now();
     newDe.createdBy.userId = user._id;
     newDe.createdBy.username = user.username;
-    newDe.uuid = uuid.v4();
+    newDe.tinyId = shortid.generate();
     newDe.save(function (err) {
         callback(err, newDe);
     });    

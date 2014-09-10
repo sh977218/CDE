@@ -4,7 +4,7 @@ db.dataelements.ensureIndex({"registrationState.registrationStatus": 1});
 db.dataelements.ensureIndex({"views": 1});
 db.dataelements.ensureIndex({"archived": 1});
 db.dataelements.ensureIndex({"sourceId": 1});
-db.dataelements.ensureIndex({"uuid": 1});
+db.dataelements.ensureIndex({"tinyId": 1});
 db.dataelements.ensureIndex({"classification.elements.name": 1});
 db.dataelements.ensureIndex({"formUsageCounter": 1});
 db.dataelements.ensureIndex({"objectClass.concepts.originId": 1});

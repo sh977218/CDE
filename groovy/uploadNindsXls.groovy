@@ -3,7 +3,6 @@
 
 import com.mongodb.*;
 import com.mongodb.util.JSON;
-import java.util.UUID;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -21,6 +20,8 @@ if(mongoHost == null || mongoDb == null)  {
 } else {
     println "MongoDB host: " + mongoHost + ", db: " + mongoDb
 }
+
+@Field idUtils = new IdUtils();
 
 @Field MongoClient mongoClient 
 mongoClient = new MongoClient( mongoHost );
@@ -167,7 +168,7 @@ def void addSubDiseaseClassification(de, type, disease, subDisease, value) {
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     BasicDBObject newDE = new BasicDBObject();
     
-    newDE.put("uuid", UUID.randomUUID() as String);
+    newDE.put("tinyId", idUtils.generateID());
     newDE.put("imported", new Date()); 
     newDE.put("source", 'NINDS'); 
     newDE.put("version", getCellValue(row.getCell(xlsMap.cdeVersion))); 

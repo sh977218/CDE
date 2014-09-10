@@ -14,7 +14,7 @@ var des = db.dataelements.find({}).sort({"naming.designation":1});
 
 des.forEach(function(de) {
     newBoard.pins.push({
-        "deUuid" : de.uuid,
+        "deTinyId" : de.tinyId,
         "_id" : de._id     
     });
 });

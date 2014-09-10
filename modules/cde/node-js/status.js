@@ -66,7 +66,7 @@ status.checkElasticSync = function(body, statusReport, mongoCollection) {
             statusReport.elastic.updating = false;      
             return;
         }
-        if (elasticElt.uuid !== elt.uuid) {
+        if (elasticElt.tinyId !== elt.tinyId) {
             statusReport.elastic.sync = false;      
             return;
         } else {
@@ -93,7 +93,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                 } else {
                     statusReport.elastic.updating = true; 
                     var elasticCde = body.hits.hits[0]._source;
-                    if (mongoCde.uuid !== elasticCde.uuid) {
+                    if (mongoCde.tinyId !== elasticCde.tinyId) {
                         statusReport.elastic.updating = false;    
                     } else {
                         statusReport.elastic.updating = true;                        

@@ -95,7 +95,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     $scope.quickBoard = [];
     $scope.addToQuickBoard = function(cdeId) {
         if( $scope.quickBoard.length < GLOBALS.max_quickboard_cdes ) {
-            $scope.quickBoard.push(cdeId.uuid);
+            $scope.quickBoard.push(cdeId.tinyId);
         }
     };
     
@@ -136,7 +136,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         });
 
         modalInstance.result.then(function (selectedBoard) {
-            $http.put("/pincde/" + cde.uuid + "/" + selectedBoard._id).then(function(response) {
+            $http.put("/pincde/" + cde.tinyId + "/" + selectedBoard._id).then(function(response) {
                 if (response.status==200) {
                     $scope.addAlert("success", response.data);
                     $scope.loadBoards();
@@ -160,7 +160,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     $scope.showCompareButton = function(cde) {
         return $scope.quickBoard.length < GLOBALS.max_quickboard_cdes &&
                cde !== undefined &&
-               $scope.quickBoard.indexOf(cde.uuid) < 0;
+               $scope.quickBoard.indexOf(cde.tinyId) < 0;
     };
 
     $scope.isPageActive = function (viewLocation) { 

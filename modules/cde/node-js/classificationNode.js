@@ -4,10 +4,10 @@ var mongo_data_cde = require('./mongo-cde')
     , classificationShared = require('../../system/shared/classificationShared.js');
 
 exports.moveClassifications = function(request, cb) {
-    mongo_data_cde.cdesByUuidList([request.body.cdeSource.uuid, request.body.cdeTarget.uuid], function(err, cde) {
+    mongo_data_cde.cdesByTinyIdList([request.body.cdeSource.tinyId, request.body.cdeTarget.tinyId], function(err, cde) {
         var source = null;
         var destination = null;
-        if (cde[0].uuid === request.body.cdeSource.uuid) {
+        if (cde[0].tinyId === request.body.cdeSource.tinyId) {
             source = cde[0];
             destination = cde[1];
         } else {
