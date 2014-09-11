@@ -18,7 +18,7 @@
 <hr class="searchInfoHr"/>
 <div class="container-fluid searchInfo">
     <span class="pt8 pb8 ib"><strong>{{totalItems}}</strong> results for {{selectedOrg?getSelectedClassifications():'All Classifications'}} | <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> | {{getSelectedStatuses()?getSelectedStatuses():'All Status'}}</span>
-    <a href="#/cdeSearchExport" ng-show="totalItems>0">
+    <a href="#/cdeSearchExport" ng-show="totalItems>0 && currentPage != 'createForm'">
         <button id="gridView" value="Grid View" class="btn btn-default pull-right">
             <i class="fa fa-table"></i>
             Grid View
@@ -28,11 +28,14 @@
         <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
         <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
     </button>
+    <button ng-click="hideShowFilter()" class="btn btn-default btn-checkbox pull-right" id="">
+        <span ng-hide="filterMode"><i class="glyphicon glyphicon-filter"></i> Show Filters</span>
+        <span ng-show="filterMode"><i class="glyphicon glyphicon-filter"></i> Hide Filters</span>
+    </button>    
 </div>
 <hr class="searchInfoHr"/>
 <div class="container-fluid pt30">    
     <script type="text/ng-template"  id="facet_elements_tree.html">
-
         <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="selectedElements.indexOf(e.name) > -1">
             <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e.name}}" ></i>
             <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e.name}}" ></i>
@@ -46,12 +49,11 @@
                 ng-include="'facet_elements_tree.html'"
                 >        
             </div>
-
         </div>
     </script>
 
     <div class="row">
-        <div class="col-sm-2 hidden-xs">
+        <div class="hidden-xs" ng-class="pageWidthOptions.filterAreaWidth" ng-show="filterMode">
             <p ng-show="facets.orgs.terms" class="gray">Filter results by:</p>
             <strong ng-show="facets.orgs.terms">Classifications</strong>
             <ul class="fa-ul">
@@ -81,10 +83,10 @@
                 </li>
             </ul>
         </div>
-        <div class="col-sm-10">
+        <div ng-class="pageWidthOptions.cdeAreaWidth">
             <span ng-hide="cdes.length >= 0"><h4><i class="fa fa-spinner fa-spin"></i> Searching...</h4></span>
             <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found.</h4></span>
-            <div id="accordionList" ng-include="'/template/'+module+'/'+module+'AccordionList'" ng-init="ejsPage = 'list';"></div>
+            <div id="accordionList" ng-include="'/template/'+module+'/'+module+'AccordionList'" ng-init="ejsPage = 'formCreateList';"></div>
             <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="searchForm.currentPage"></pagination>
         </div>
     </div>

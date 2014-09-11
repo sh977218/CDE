@@ -1,12 +1,28 @@
 function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
+    $scope.filterMode = true;
+
+    $scope.pageWidthOptions = {
+        filterAreaWidth: "col-sm-2"
+        , cdeAreaWidth: "col-sm-10"
+    };
+    
+    $scope.hideShowFilter = function() {
+        $scope.filterMode = !$scope.filterMode;
+
+        if($scope.filterMode) {
+            $scope.pageWidthOptions.filterAreaWidth = "col-sm-2";
+            $scope.pageWidthOptions.cdeAreaWidth = "col-sm-10";
+        } else {
+            $scope.pageWidthOptions.filterAreaWidth = "col-sm-0";
+            $scope.pageWidthOptions.cdeAreaWidth = "col-sm-12";
+        }
+    };
 
     $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
     if ($scope.registrationStatuses === undefined) {
         $scope.registrationStatuses = regStatusShared.statusList;
     }
 
-    $scope.resultPerPage = 20;
-    
     $scope.searchForm = {};
 
     $scope.searchForm.ftsearch = $scope.cache.get("ftsearch");

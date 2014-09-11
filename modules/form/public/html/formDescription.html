@@ -7,9 +7,8 @@
         <br/>
         <div ui-scrollfix="+180" offset-bottom="180" class="question-search-area">
             <div class="panel-group" id="accordion">
-                <div ng-include="'/template/system/list'" ng-controller="DEListCtrl"></div>
+                <div ng-include="'/template/system/list'" ng-controller="DEListCtrl" ng-init="currentPage = 'createForm';" ></div>
             </div>            
         </div>
     </div>
 </div>
-<hr/>

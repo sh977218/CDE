@@ -11,6 +11,8 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
     
     var route = $routeParams;
     
+    $scope.resultPerPage = 10;
+    
     if (route._id) var query = {formId: route._id, type: '_id'};
     if (route.tinyId) var query = {formId: route.tinyId, type: 'tinyId'};
 
