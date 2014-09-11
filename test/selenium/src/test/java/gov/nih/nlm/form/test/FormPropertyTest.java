@@ -11,13 +11,13 @@ public class FormPropertyTest extends PropertyTest {
     }
 
     @Test
-    public void addRemoveCdeProperty() {
-        addRemoveProperty("Diabetes - Adverse Event - Patient Report");
+    public void addRemoveFormProperty() {
+        addRemoveProperty("Form Property Test");
     }
     
     @Test
     public void richPropText() {
-        richText("Diabetes - Adverse Event - Patient Report");
+        richText("Form Rich Text Property Test");
     }
     
 }

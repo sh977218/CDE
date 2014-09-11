@@ -27,7 +27,7 @@ var PropertiesCtrl = function ($scope, $modal, $http, $window, $timeout) {
     
     $scope.removeProperty = function (index) {
         $scope.elt.properties.splice(index, 1);
-        $scope.elt.$save(function (newelt) {
+        $scope.elt.$save(function (newElt) {
             $scope.elt = newElt;
             $scope.addAlert("success", "Property Removed"); 
         });
