@@ -23,6 +23,8 @@ if(mongoDb == null) mongoDb = "nlmcde";
 @Field DBCollection deColl = db.getCollection("dataelements");
 @Field DBCollection orgColl = db.getCollection("orgs");
 
+@Field idUtils = new IdUtils();
+
 println "PHRI Ingester"
 
 @Field XSSFWorkbook book = new XSSFWorkbook("../nlm-seed/ExternalCDEs/phri/phri.xlsx");
@@ -58,7 +60,6 @@ static def String getCellValue(Cell cell) {
    }
 }
 
-def idUtils = new IdUtils();
 
 def xlsMap = [
     namingDesignation: 1
