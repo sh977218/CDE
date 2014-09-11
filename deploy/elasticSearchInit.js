@@ -21,7 +21,7 @@ exports.createIndexJson = {
 };
 
 var riverFunction = 
-    "if (ctx.document.naming && ctx.document.naming.registrationState) { \
+    " \
         function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}\
         ctx.document.classificationCopy = ctx.document.classification;\
         ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
@@ -34,7 +34,7 @@ var riverFunction =
             if (size > 10) {ctx.document.classificationBoost = 2.1;} \
             else {ctx.document.classificationBoost = 0.1 + 0.2 * size;} \
         } else {ctx.document.classificationBoost = .1;}\
-    }";
+    ";
 
 exports.createRiverJson = { 
     "type": "mongodb",
