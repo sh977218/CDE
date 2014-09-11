@@ -24,6 +24,9 @@ exports.status = function(req, res) {
     
 };
 
+exports.evaluateResult = function(statusReport) {
+    if ()
+};
 
 
 status.checkElastic = function(elasticUrl, mongoCollection) {
@@ -33,6 +36,7 @@ status.checkElastic = function(elasticUrl, mongoCollection) {
         if (status.statusReport.elastic.up) status.checkElasticResults(body, status.statusReport);
         if (status.statusReport.elastic.results) status.checkElasticSync(body, status.statusReport, mongoCollection);
         if (status.statusReport.elastic.sync) status.checkElasticUpdating(body, status.statusReport, elasticUrl, mongoCollection);
+        status.evaluateResult(status.statusReport);
     });    
 };
 
@@ -99,7 +103,12 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                     } else {
                         statusReport.elastic.updating = true;                        
                     }
-                    mongoCollection.DataElement.remove({"naming.designation":"NLM_APP_Status_Report_" + seed}).exec();
+                    try {
+                        mongoCollection.DataElement.remove({"naming.designation":"NLM_APP_Status_Report_" + seed}).exec();
+                    } catch(e) {
+                        console.log("\n\n\n\n Cannot delete data element \n\n\n");
+                        console.log(e.toString());
+                    }
                 }
             });            
         }, 30000);
