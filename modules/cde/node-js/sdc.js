@@ -3,8 +3,8 @@ var mongo_data = require('./mongo-cde');
 var sdcExport = function(req, res, cde) {
 
     var sdcRecord = {
-        scopedIdentifier: "cde.nlm.nih.gov/" + cde.uuid + "/" + cde.version
-        , identifier: cde.uuid
+        scopedIdentifier: "cde.nlm.nih.gov/" + cde.tinyId + "/" + cde.version
+        , identifier: cde.tinyId
         , version: cde.version
         , name: cde.naming[0].designation
         , definition: cde.naming[0].definition
@@ -61,8 +61,8 @@ exports.byId = function (req, res) {
     });
 };
 
-exports.byUuidVersion = function (req, res) {
-    mongo_data.deByUuidAndVersion(req.params.uuid, req.params.version, function(err, cde) {
+exports.byTinyIdVersion = function (req, res) {
+    mongo_data.deByTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, cde) {
         if (err) {
             return res.send(500, "Error");
         };

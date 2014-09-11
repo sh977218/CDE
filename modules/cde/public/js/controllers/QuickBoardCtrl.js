@@ -32,7 +32,7 @@ function QuickBoardCtrl($scope, CdeList) {
             var cde = $scope.cdes[i];
             var thisCde = 
             {
-                ID: cde.uuid
+                ID: cde.tinyId
                 , Version: cde.version
                 , Name: cde.naming[0].designation
                 , Definition: cde.naming[0].definition
@@ -79,12 +79,12 @@ function QuickBoardCtrl($scope, CdeList) {
     };
 
     if ($scope.quickBoard.length > 0) {
-        CdeList.byUuidList($scope.quickBoard, function(result) {
+        CdeList.byTinyIdList($scope.quickBoard, function(result) {
            if(result) {
                 $scope.cdes = [];
                 for (var i = 0; i < $scope.quickBoard.length; i++) {
                    for (var j = 0; j < result.length; j++) {
-                       if ($scope.quickBoard[i] === result[j].uuid) {
+                       if ($scope.quickBoard[i] === result[j].tinyId) {
                            $scope.cdes.push(result[j]);
                        }
                    }

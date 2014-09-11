@@ -1,4 +1,4 @@
-function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementUUID, PriorCdes, CdeDiff, isAllowedModel, OrgHelpers, $rootScope) {
+function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, CdeDiff, isAllowedModel, OrgHelpers, $rootScope) {
     $scope.module = 'cde';
     $scope.eltLoaded = false;
     $scope.detailedView = true;
@@ -34,9 +34,9 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     $scope.reload = function(route, cb) {
         var service = DataElement;
         if (route.cdeId) var query = {deId: route.cdeId};
-        if (route.uuid) {
-            service = DataElementUUID;
-            var query = {uuid: route.uuid};
+        if (route.tinyId) {
+            service = DataElementTinyId;
+            var query = {tinyId: route.tinyId};
             if (route.version) query.version = route.version;
         }
         service.get(query, function(de) {
@@ -51,7 +51,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
                 $scope.priorCdes = dataElements;
             });
             if ($scope.elt.isFork) {
-                $http.get('/forkroot/' + $scope.elt.uuid).then(function(result) {
+                $http.get('/forkroot/' + $scope.elt.tinyId).then(function(result) {
                     $scope.rootFork = result.data;
                 });
             };
@@ -74,7 +74,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             type: "Fork Notification", 
             typeRequest: {
                 source: {id: $scope.elt._id}
-                , destination: {uuid: $scope.elt.uuid}
+                , destination: {tinyId: $scope.elt.tinyId}
                 , states: [{
                     action: "Filed"
                     , date: new Date()
@@ -314,7 +314,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     };
     
     $scope.loadBoards = function() {
-        $http.get("/deBoards/" + $scope.elt.uuid).then(function(response) {
+        $http.get("/deBoards/" + $scope.elt.tinyId).then(function(response) {
             $scope.boards = response.data;
         });
     };
