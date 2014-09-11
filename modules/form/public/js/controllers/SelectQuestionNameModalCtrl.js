@@ -1,6 +1,6 @@
  function SelectQuestionNameModalCtrl($scope, $modalInstance, $http, cde) {
      
-    $http.get("debyuuid/" + cde.uuid + "/" + cde.version).then(function (result) {
+    $http.get("debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
         $scope.cde = result.data;
     });
      

@@ -136,7 +136,7 @@ exports.acceptFork = function(req, res, dao) {
                 if (fork.archived === true) {
                     return res.send("Cannot accept an archived element");
                 }
-                dao.isForkOf(fork.uuid, function(err, origs) {
+                dao.isForkOf(fork.tinyId, function(err, origs) {
                     if (origs.length !== 1) {
                         return res.send("Not a fork");
                     } 
@@ -199,7 +199,7 @@ exports.fork = function(req, res, dao) {
 };
 
 exports.forkRoot = function(req, res, dao) {
-    dao.isForkOf(req.params.uuid, function(err, cdes) {
+    dao.isForkOf(req.params.tinyId, function(err, cdes) {
         if (cdes.length !== 1) {
             res.send("Not a regular fork");
         } else {

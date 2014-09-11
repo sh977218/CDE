@@ -38,7 +38,7 @@ var deJsonSchema = {
         userId: mongoose.Schema.Types.ObjectId
         , username: String
     }
-    , uuid: String
+    , tinyId: String
     , version: String
     , dataElementConcept: {
         concepts: [conceptSchema]
@@ -112,7 +112,7 @@ var deJsonSchema = {
 var pinSchema = mongoose.Schema ({
    name: String
    , pinnedDate: Date
-   , deUuid: String
+   , deTinyId: String
 });
 
 schemas.pinningBoardSchema = mongoose.Schema ({
@@ -132,8 +132,8 @@ schemas.managedContextSchema = mongoose.Schema ({
 });
 
 var requestSchema = {
-    source: {uuid: String, id: String}
-    , destination: {uuid: String}
+    source: {tinyId: String, id: String}
+    , destination: {tinyId: String}
     , mergeFields: {
         ids: Boolean
         , naming: Boolean

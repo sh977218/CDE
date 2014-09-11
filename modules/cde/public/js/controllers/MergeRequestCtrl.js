@@ -16,7 +16,7 @@ function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, Me
                 MergeRequest.create(dat, function() {
                     if (!dat.mergeRequest.source.object.registrationState) dat.mergeRequest.source.object.registrationState = {};
                     dat.mergeRequest.source.object.registrationState.administrativeStatus = "Retire Candidate";
-                    dat.mergeRequest.source.object.registrationState.replacedBy = {uuid: $scope.cdes[($scope.retiredIndex + 1) % 2].uuid};
+                    dat.mergeRequest.source.object.registrationState.replacedBy = {tinyId: $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId};
                     DataElement.save(dat.mergeRequest.source.object, function(cde) {   
                         $window.location.href = "/#/deCompare";
                         $scope.addAlert("success", "Merge request sent");

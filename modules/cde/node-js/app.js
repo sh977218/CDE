@@ -62,8 +62,8 @@ exports.init = function(app, daoManager) {
        res.render("myBoards"); 
     });
 
-    app.post('/cdesByUuidList', function(req, res) {
-        mongo_data.cdesByUuidList(req.body, function(err, cdes) {
+    app.post('/cdesByTinyIdList', function(req, res) {
+        mongo_data.cdesByTinyIdList(req.body, function(err, cdes) {
             res.send(cdes);
         });
     });
@@ -142,7 +142,7 @@ exports.init = function(app, daoManager) {
         adminItemSvc.acceptFork(req, res, mongo_data);
     });
 
-    app.get('/forkroot/:uuid', function (req, res) {
+    app.get('/forkroot/:tinyId', function (req, res) {
         adminItemSvc.forkRoot(req, res, mongo_data);
     });
 
@@ -152,13 +152,13 @@ exports.init = function(app, daoManager) {
         });
     });
 
-    app.get('/debyuuid/:uuid/:version?', function(req, res) {
+    app.get('/debytinyid/:tinyId/:version?', function(req, res) {
         if (!req.params.version) {
-            mongo_data.cdesByUuidList([req.params.uuid], function(err, cdes) {
+            mongo_data.cdesByTinyIdList([req.params.tinyId], function(err, cdes) {
                 res.send(cdesvc.hideProprietaryPvs(cdes[0], req.user));
             }); 
         } else {
-            mongo_data.deByUuidAndVersion(req.params.uuid, req.params.version, function(err, de) {
+            mongo_data.deByTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, de) {
                 res.send(cdesvc.hideProprietaryPvs(de, req.user));
             });
         }
@@ -190,8 +190,8 @@ exports.init = function(app, daoManager) {
         });
     });
 
-    app.get('/deBoards/:uuid', function(req, res) {
-       mongo_data.publicBoardsByDeUuid(req.params.uuid, function (result) {
+    app.get('/deBoards/:tinyId', function(req, res) {
+       mongo_data.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
             res.send(result);
        });
     });
@@ -212,9 +212,9 @@ exports.init = function(app, daoManager) {
             board.pins = pins;
             var idList = [];
             for (var i = 0; i < pins.length; i++) {
-                idList.push(pins[i].deUuid);
+                idList.push(pins[i].deTinyId);
             }
-            mongo_data.cdesByUuidList(idList, function(err, cdes) {
+            mongo_data.cdesByTinyIdList(idList, function(err, cdes) {
                 res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes), totalItems: totalItems});
             });
         });
@@ -273,7 +273,7 @@ exports.init = function(app, daoManager) {
        }
     });
 
-    app.put('/pincde/:uuid/:boardId', function(req, res) {
+    app.put('/pincde/:tinyId/:boardId', function(req, res) {
        if (req.isAuthenticated()) {
            usersvc.pinToBoard(req, res);
        } else {
@@ -444,8 +444,8 @@ exports.init = function(app, daoManager) {
         };
     });
     
-    app.get('/sdc/:uuid/:version', function (req, res) {
-       sdc.byUuidVersion(req, res);
+    app.get('/sdc/:tinyId/:version', function (req, res) {
+       sdc.byTinyIdVersion(req, res);
     });
 
     app.get('/sdc/:id', function (req, res) {

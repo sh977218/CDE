@@ -197,8 +197,15 @@ public class NlmCdeBaseTest {
         }
     }
     
-    protected void saveCde() {
+    protected void newCdeVersion() {
+        findElement(By.id("openSave")).click();
         modalHere();
+        findElement(By.name("version")).sendKeys(".1");
+        findElement(By.id("confirmSave")).click();
+        hangon(2);
+    }
+    
+    protected void saveCde() {
         findElement(By.id("confirmSave")).click();
         hangon(2);
     }

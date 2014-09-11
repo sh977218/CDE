@@ -2,7 +2,7 @@ var mongo_data = require('./mongo-cde')
     ;
 
 exports.pinToBoard = function(req, res) {
-    var uuid = req.params.uuid;
+    var tinyId = req.params.tinyId;
     mongo_data.boardsByUserId(req.user._id, function(boards) {
         var boardId = req.params.boardId;
         mongo_data.boardById(boardId, function(err, board) {
@@ -12,10 +12,10 @@ exports.pinToBoard = function(req, res) {
             } else {        
                 var pin = {
                     pinnedDate: Date.now()
-                    , deUuid: uuid
+                    , deTinyId: tinyId
                 };
                 for (var i = 0 ; i < board.pins.length; i++) {
-                    if (JSON.stringify(board.pins[i].deUuid) === JSON.stringify(uuid)) {
+                    if (JSON.stringify(board.pins[i].deTinyId) === JSON.stringify(tinyId)) {
                         res.statusCode = 202;
                         return res.send("Already added to the board.");
                     }
