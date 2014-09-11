@@ -1,4 +1,6 @@
 function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassification) {
+    $scope.module = "cde";
+    
     if ($scope.myOrgs.length > 0) {
         $scope.orgToManage = $scope.myOrgs[0];
     }
@@ -31,7 +33,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
     
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
-            templateUrl: 'addClassificationModalContent.html',
+            templateUrl: '/template/system/addClassification',
             controller: AddClassificationToOrgModalCtrl,
             resolve: {
                 org: function() {

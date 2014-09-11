@@ -1,4 +1,4 @@
-angular.module('resources')
+angular.module('classification', ['ngResource'])
 .factory('OrgClassification', function($resource, $http) {
     return {
         resource: $resource('/classification/org')
@@ -9,7 +9,7 @@ angular.module('resources')
     };
 })
 .factory('CdeClassification', function($resource) {
-    return $resource('/classification/cde');
+    return $resource('/classification/elt');
 })
 .factory("ClassificationTree", function() {
     return {

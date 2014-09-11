@@ -1,11 +1,6 @@
 var mongo_data = require('./mongo-cde')
     ;
 
-exports.isCuratorOf = function(user, orgName){
-    if (!user) return false;
-    return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
-};
-
 exports.pinToBoard = function(req, res) {
     var uuid = req.params.uuid;
     mongo_data.boardsByUserId(req.user._id, function(boards) {

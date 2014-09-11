@@ -74,7 +74,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Retired Data Elements are not returned in searches"));
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("Alkaline");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(cdeName));
@@ -83,7 +83,7 @@ public class RegStatusTest extends NlmCdeBaseTest {
     @Test
     public void removeStatusStatusFilter() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("li-blank-PBTC")).click();
         Assert.assertTrue(textPresent("4 results for"));
         String viewing = findElement(By.id("acc_link_0")).getText();

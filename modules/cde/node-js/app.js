@@ -1,8 +1,10 @@
 var cdesvc = require('./cdesvc')
   , boardsvc = require('./boardsvc')
   , usersvc = require('./usersvc')
+  , usersvc_system = require('../../system/node-js/usersrvc')
   , mongo_data = require('./mongo-cde')
   , classificationNode = require('./classificationNode')
+  , classificationNode_system = require('../../system/node-js/classificationNode')
   , xml2js = require('xml2js')
   , vsac = require('./vsac-io')
   , config = require('config')
@@ -10,7 +12,7 @@ var cdesvc = require('./cdesvc')
   , helper = require('../../system/node-js/helper.js')
   , logging = require('../../system/node-js/logging.js')
   , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
-  , classificationShared = require('../shared/classificationShared.js')
+  , classificationShared = require('../../system/shared/classificationShared.js')
   , path = require('path')
   , express = require('express')
   , sdc = require("./sdc.js")
@@ -18,10 +20,11 @@ var cdesvc = require('./cdesvc')
   , appSystem = require('../../system/node-js/app.js')
 ;
 
-exports.init = function(app) {
+exports.init = function(app, daoManager) {
+    
+    daoManager.registerDao(mongo_data);
 
     app.use("/cde/public", express.static(path.join(__dirname, '../public')));
-    app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
 
     app.get('/quickBoard', function(req, res) {
       res.render('quickBoard');
@@ -51,10 +54,6 @@ exports.init = function(app) {
        res.render('createcde'); 
     });
 
-    app.get('/classificationmanagement', function(req, res) {
-        res.render('classificationManagement');
-    });
-
     app.get('/deview', function(req, res) {
         res.render("deview");
     });
@@ -82,65 +81,36 @@ exports.init = function(app) {
     });
 
 
-    app.delete('/classification/org', function(req, res) {
-        if (!usersvc.isCuratorOf(req.user, req.query.orgName)) {
-            res.send(403);
-            return;
-        }  
-        classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function(err, org) {
-            res.send(org);
-        });
-    });
-
-    app.post('/classification/org', function(req, res) {
-        if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.send(403);
-            return;
-        }      
-        classificationNode.addOrgClassification(req.body, function(err, org) {
-            res.send(org);
-        });
-    });
-
-    app.delete('/classification/cde', function(req, res) {
-        if (!usersvc.isCuratorOf(req.user, req.query.orgName)) {
-            res.send(403, "Not Authorized");
-            return;
-        }  
-        classificationNode.cdeClassification(req.query, classificationShared.actions.delete, function(err) {
-            if (!err) { 
-                res.send(); 
-            } else {
-                res.send(202, {error: {message: "Classification does not exists."}});
-            }
-        });
-    });
-
-    app.post('/classification/rename', function(req, res) {
-        if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.send(403, "Not Authorized");
-            return;
-        }      
-        classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function(err, org) {
-            if (!err) res.send(org);
-            else res.send(202, {error: {message: "Classification does not exists."}});
-        });
-    });
-
-    app.post('/classification/cde', function(req, res) {
-        if (!usersvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.send(403, "Not Authorized");
-            return;
-        }      
-        classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
-            if (!err) { 
-                res.send({ code: 200, msg: "Classification Added"}); 
-            } else {
-                res.send({ code: 403, msg: "Classification Already Exists"}); 
-            }
-
-        });
-    });
+//    app.delete('/classification/org', function(req, res) {
+//        if (!usersvc_system.isCuratorOf(req.user, req.query.orgName)) {
+//            res.send(403);
+//            return;
+//        }  
+//        classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function(err, org) {
+//            res.send(org);
+//        });
+//    });
+//
+//    app.post('/classification/org', function(req, res) {
+//        if (!usersvc_system.isCuratorOf(req.user, req.body.orgName)) {
+//            res.send(403);
+//            return;
+//        }      
+//        classificationNode.addOrgClassification(req.body, function(err, org) {
+//            res.send(org);
+//        });
+//    });
+//
+//    app.post('/classification/rename', function(req, res) {
+//        if (!usersvc_system.isCuratorOf(req.user, req.body.orgName)) {
+//            res.send(403, "Not Authorized");
+//            return;
+//        }      
+//        classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function(err, org) {
+//            if (!err) res.send(org);
+//            else res.send(202, {error: {message: "Classification does not exists."}});
+//        });
+//    });
 
     app.post('/addComment', function(req, res) {
         if (req.isAuthenticated()) {
@@ -367,7 +337,7 @@ exports.init = function(app) {
         classificationNode.moveClassifications(req, function(err, cde) {
            if(!err) res.send(cde);
         });
-    });
+    });  
 
     app.post('/attachments/cde/add', function(req, res) {
         adminItemSvc.addAttachment(req, res, mongo_data);

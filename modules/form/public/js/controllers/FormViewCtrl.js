@@ -31,7 +31,7 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
             $scope.viewOptions.searchAreaWidth = "col-md-0";
         }
     };
-    
+
     $scope.revert = function() {
         $scope.reload();
     };
@@ -39,9 +39,16 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
     $scope.stageElt = function() {
         $scope.elt.unsaved = true;
     };
-    
+
     $scope.viewOptions = {
         sectionAreaWidth: "col-md-6"
         , searchAreaWidth: "col-md-6"
     };
+
+    $scope.classificationToFilter = function() {
+         if ($scope.elt != null) {
+             return $scope.elt.classification;
+         }
+    };
+
 }

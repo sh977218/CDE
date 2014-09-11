@@ -56,7 +56,7 @@ public class ForkTest extends NlmCdeBaseTest {
         Assert.assertEquals("Adverse Event Ongoing Event Indicator - ST FORKED", findElement(By.id("dd_general_name")).getText());
         Assert.assertEquals("Standard", findElement(By.id("dd_status")).getText());
 
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("\"Adverse Event Ongoing Event Indicator\"");
         findElement(By.cssSelector("i.fa-search")).click();
         textPresent("1 results for");
@@ -102,7 +102,7 @@ public class ForkTest extends NlmCdeBaseTest {
 
         Assert.assertEquals("Other Group Patient Identifier Number - FORKED", findElement(By.id("dd_general_name")).getText());
 
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("\"Other Group Patient Identifier Number\"");
         findElement(By.cssSelector("i.fa-search")).click();
         textPresent("1 results for");

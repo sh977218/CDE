@@ -13,13 +13,13 @@ import org.testng.annotations.Test;
 public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void stewardFacets() {
-        goToSearch();
+        goToCdeSearch();
         Assert.assertTrue(textPresent("GRDR (75)"));
     }
 
     @Test
     public void statusFacets() {
-        goToSearch();
+        goToCdeSearch();
         Assert.assertTrue(textPresent("Qualified (4"));
         findElement(By.id("li-blank-caBIG")).click();
         findElement(By.cssSelector("i.fa-check-square-o"));
@@ -28,7 +28,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void deepFacets() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("li-blank-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
         findElement(By.id("li-blank-Traumatic Brain Injury")).click();
@@ -60,7 +60,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void facets() {
         mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("Study");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("Candidate (10)"));
@@ -83,7 +83,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void facetPagination() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("li-blank-CTEP")).click();
         // next line should make it wait.
         findElement(By.cssSelector("i.fa-check-square-o"));
@@ -103,7 +103,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void classificationFilters() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("Image");
         findElement(By.id("search.submit")).click();
         Assert.assertTrue(textPresent("caBIG (8)"));
@@ -155,7 +155,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         modalHere();
         findElement(By.id("saveRegStatus")).click();
         hangon(1);
-        goToSearch();  
+        goToCdeSearch();  
         Assert.assertTrue(textPresent("Preferred Standard"));
         findElement(By.id("li-blank-Preferred Standard")).click();
         hangon(2);
@@ -167,12 +167,12 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         String cdeName = "Low Status Cde";
         new CdeCreateTest().createBasicCde(cdeName, "Low Stat Definition", "0.1", "CTEP", "DISEASE", "Lung");
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("li-blank-Incomplete")).click();
         Assert.assertTrue(textPresent(cdeName));
         
         mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
-        goToSearch();
+        goToCdeSearch();
         hangon(1);
         if (!textNotPresent("Incomplete (")) {
             findElement(By.id("li-blank-Incomplete")).click();
@@ -180,7 +180,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         }
         
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("li-blank-Incomplete")).click();
         Assert.assertTrue(textPresent(cdeName));
 
@@ -192,12 +192,12 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("saveRegStatus")).click();
         hangon(3);
 
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("li-blank-Candidate")).click();
         Assert.assertTrue(textPresent(cdeName));
         
         mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
-        goToSearch();
+        goToCdeSearch();
         hangon(1);
         if (!textNotPresent("Incomplete (")) {
             findElement(By.id("li-blank-Candidate")).click();
@@ -205,7 +205,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         }
         
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys(cdeName);
         findElement(By.cssSelector("i.fa-search")).click();
         hangon(1);
@@ -216,7 +216,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void infoBarClassification() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("resetSearch")).click();
         hangon(.5);
         findElement(By.id("li-blank-NINDS")).click();
@@ -231,7 +231,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void infoBarStatus() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("resetSearch")).click();
         hangon(2);
         findElement(By.id("li-blank-Qualified")).click();
@@ -245,7 +245,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         
     @Test
     public void infoBarTerms() {
-        goToSearch();
+        goToCdeSearch();
         findElement(By.id("resetSearch")).click();
         findElement(By.name("ftsearch")).sendKeys("blah blah blah");
         findElement(By.cssSelector("i.fa-search")).click();
@@ -258,7 +258,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void hoverOverClassifications() {
-        goToSearch();
+        goToCdeSearch();
         hoverOverElement(findElement(By.linkText("CDEs")));
         Assert.assertTrue(textNotPresent("Albert Einstein Cancer Center"));
         hoverOverElement(findElement(By.id("classifications-text-AECC")));
