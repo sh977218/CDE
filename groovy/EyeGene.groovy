@@ -16,11 +16,14 @@ import org.apache.commons.lang.NumberUtils;
 import org.apache.commons.lang.StringUtils;
 
 
-@Field def mongoHost = System.getenv()['MONGO_HOST'];
-if(mongoHost == null) mongoHost = "localhost";
+if (args.length < 3) {
+    println "Please specify mongodb host and dbname: 'groovy UploadCadsr.groovy [filename] [mongodb-host] [dbname]'";
+    System.exit(0);   
+}
+def mongoHost = args[1];
+def mongoDb = args[2];
+println "MongoDB host: " + mongoHost + ", db: " + mongoDb
 
-@Field def mongoDb = System.getenv()['MONGO_DB'];
-if(mongoDb == null) mongoDb = "nlmcde";
 
 @Field MongoClient mongoClient 
 mongoClient = new MongoClient( mongoHost );
