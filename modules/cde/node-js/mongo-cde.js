@@ -11,11 +11,7 @@ var mongoose = require('mongoose')
 var mongoUri = config.mongoUri;
 
 var conn = mongoose.createConnection(mongoUri);
-//conn.on('error', console.error.bind(console, 'connection error:'));
-conn.on("error", function(errorObject){
-    console.log("error");
-    console.log(errorObject);
-});
+conn.on('error', console.error.bind(console, 'connection error:'));
 
 conn.once('open', function callback () {
     console.log('mongodb connection open');
