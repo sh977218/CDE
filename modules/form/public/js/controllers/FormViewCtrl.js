@@ -1,8 +1,13 @@
 function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
     $scope.module = "form";
-    $scope.addCdeMode = true;
+    $scope.addCdeMode = false;
     $scope.openCdeInNewTab = true;
     $scope.dragEnabled = true;
+    
+    $scope.pageWidthOptions = {
+        sectionAreaWidth: "col-md-12"
+        , searchAreaWidth: "col-md-0"
+    };
     
     var route = $routeParams;
     
@@ -24,11 +29,11 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
         $scope.addCdeMode = !$scope.addCdeMode;
 
         if($scope.addCdeMode) {
-            $scope.viewOptions.sectionAreaWidth = "col-md-6";
-            $scope.viewOptions.searchAreaWidth = "col-md-6";
+            $scope.pageWidthOptions.sectionAreaWidth = "col-md-6";
+            $scope.pageWidthOptions.searchAreaWidth = "col-md-6";
         } else {
-            $scope.viewOptions.sectionAreaWidth = "col-md-12";
-            $scope.viewOptions.searchAreaWidth = "col-md-0";
+            $scope.pageWidthOptions.sectionAreaWidth = "col-md-12";
+            $scope.pageWidthOptions.searchAreaWidth = "col-md-0";
         }
     };
 
@@ -38,11 +43,6 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
 
     $scope.stageElt = function() {
         $scope.elt.unsaved = true;
-    };
-
-    $scope.viewOptions = {
-        sectionAreaWidth: "col-md-6"
-        , searchAreaWidth: "col-md-6"
     };
 
     $scope.classificationToFilter = function() {

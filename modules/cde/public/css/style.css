@@ -211,3 +211,13 @@ dd.formViewDetails {
 
 .fa-cb:checked + label:before { content: "\f046"; } /* checked icon */
 .fa-cb:checked + label:before { letter-spacing: 5px; }
+
+.question-search-area.ui-scrollfix {
+    position: fixed;
+    top: 75px;
+}
+
+.question-search-area.ui-scrollfix.ui-scrollfix-bottom {
+    top: auto;
+    bottom: 250px;
+}
