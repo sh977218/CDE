@@ -4,7 +4,7 @@ var PropertiesCtrl = function ($scope, $modal, $http, $window, $timeout) {
           templateUrl: 'newPropertyModalContent.html',
           controller: NewPropertyModalCtrl,
           resolve: {
-              cde: function() {
+              elt: function() {
                   return $scope.elt;
               }
           }
@@ -18,8 +18,8 @@ var PropertiesCtrl = function ($scope, $modal, $http, $window, $timeout) {
                 }
             }
             $scope.elt.properties.push(newProperty);
-            $scope.elt.$save(function (newcde) {
-                $window.location.href = "/#/deview?tab=6&cdeId=" + newcde._id;
+            $scope.elt.$save(function (newElt) {
+                $scope.elt = newElt;
                 $scope.addAlert("success", "Property Added"); 
             });
         });
@@ -27,8 +27,8 @@ var PropertiesCtrl = function ($scope, $modal, $http, $window, $timeout) {
     
     $scope.removeProperty = function (index) {
         $scope.elt.properties.splice(index, 1);
-        $scope.elt.$save(function (newcde) {
-            $window.location.href = "/#/deview?tab=6&cdeId=" + newcde._id;
+        $scope.elt.$save(function (newelt) {
+            $scope.elt = newElt;
             $scope.addAlert("success", "Property Removed"); 
         });
     };
@@ -39,16 +39,16 @@ var PropertiesCtrl = function ($scope, $modal, $http, $window, $timeout) {
 
     $scope.saveProperty = function() {
         $timeout(function() {
-            $scope.elt.$save(function (newcde) {
-                $window.location.href = "/#/deview?tab=6&cdeId=" + newcde._id;
+            $scope.elt.$save(function (newElt) {
+                $scope.elt = newElt;
             });
         }, 0);
     };
 
 };
 
-function NewPropertyModalCtrl($scope, $modalInstance, cde) {
-    $scope.elt = cde;
+function NewPropertyModalCtrl($scope, $modalInstance, elt) {
+    $scope.elt = elt;
     $scope.newProperty = {};
 
     $scope.okCreate = function () {
