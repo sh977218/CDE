@@ -79,6 +79,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
     var seed = Math.floor(Math.random()*100000);
     var fakeCde = {
         archived: true
+        , stewardOrg: {name: ""}
         , naming: [{
                 designation: "NLM_APP_Status_Report_" + seed
                 , definition: "NLM_APP_Status_Report_" + seed
