@@ -2,8 +2,8 @@ var fs = require('fs')
     , util = require('util')
     , xml2js = require('xml2js')
     , mongoose = require('mongoose')
-    , uuid = require('node-uuid')
-    , classNode = require('../modules/cde/node-js/classificationNode.js')
+    , shortid = require('shortid')
+    , classNode = require('../modules/system/node-js/classificationNode.js')
     , config = require('config')
     , cde_schemas = require('../modules/cde/node-js/schemas')
     , sys_schemas = require('../modules/system/node-js/schemas')
@@ -45,7 +45,7 @@ fs.readFile(process.argv[2], function(err, result) {
     console.log("Name: " + data["Name:"]);
     
     var newDE = new DataElement({
-        uuid: uuid.v4()
+        tinyId: shortid.generate()
         , created: Date.now()
         , source: globals.orgName
         , sourceId: data["Data Element ID:"] + "v" + data["Version:"]

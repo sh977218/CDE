@@ -23,7 +23,7 @@ angular.module('resources')
                 });             
             });
         } else {
-            CdeClassificationTransfer.byUuids(service.source.uuid, service.destination.uuid, callback);
+            CdeClassificationTransfer.byTinyIds(service.source.tinyId, service.destination.tinyId, callback);
         }
     };
     service.transferFields = function(source, destination, type) {

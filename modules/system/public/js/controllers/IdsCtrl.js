@@ -12,8 +12,8 @@ var IdsCtrl = function ($scope, $modal, $http, DataElement) {
         
         modalInstance.result.then(function (newId) {
             $scope.elt.ids.push(newId);
-            DataElement.save($scope.elt, function(newCde) {
-                $scope.elt = newCde;
+            $scope.elt.$save(function(newElt) {
+                $scope.elt = newElt;
                 $scope.addAlert("success", "Identifier Added");
             });
         });
@@ -21,8 +21,8 @@ var IdsCtrl = function ($scope, $modal, $http, DataElement) {
     
     $scope.removeId = function (index) {
         $scope.elt.ids.splice(index, 1);
-        DataElement.save($scope.elt, function(newCde) {
-            $scope.elt = newCde;
+        $scope.elt.$save(function(newElt) {
+            $scope.elt = newElt;
             $scope.addAlert("success", "Identifier Removed");
         });        
     };

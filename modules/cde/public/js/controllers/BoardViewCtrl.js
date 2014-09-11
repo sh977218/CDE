@@ -17,7 +17,7 @@ function BoardViewCtrl($scope, $routeParams, $http) {
                 var respCdes = response.data.cdes;
                 for (var i = 0; i < pins.length; i++) {
                     for (var j = 0; j < respCdes.length; j++) {
-                        if (pins[i].deUuid === respCdes[j].uuid) {
+                        if (pins[i].deTinyId === respCdes[j].tinyId) {
                             pins[i].cde = respCdes[j];                    
                             $scope.cdes.push(respCdes[j]);
                         }

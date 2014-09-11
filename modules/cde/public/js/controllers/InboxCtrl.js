@@ -15,18 +15,18 @@ function InboxCtrl($scope, Mail, CdeList) {
     $scope.getMail($scope.mailTypeArchived);
     
     $scope.fetchMRCdes = function(type) {           
-        var uuidList = $scope.mail[type].map(function(m) {return m.typeRequest.source.uuid;});
-        uuidList = uuidList.concat($scope.mail[type].map(function(m) {return m.typeRequest.destination.uuid;}));
-        CdeList.byUuidList(uuidList, function(result) {
+        var tinyIdList = $scope.mail[type].map(function(m) {return m.typeRequest.source.tinyId;});
+        tinyIdList = tinyIdList.concat($scope.mail[type].map(function(m) {return m.typeRequest.destination.tinyId;}));
+        CdeList.byTinyIdList(tinyIdList, function(result) {
            if (!result) {
                return;
            }
            var cdesKeyValuePair = {};
-           result.map(function(cde) { cdesKeyValuePair[cde.uuid] = cde; });
+           result.map(function(cde) { cdesKeyValuePair[cde.tinyId] = cde; });
            $scope.mail[type].map(function(message) {
                if (message.type!=="Merge Request") return;
-               message.typeRequest.source.object = cdesKeyValuePair[message.typeRequest.source.uuid];
-               message.typeRequest.destination.object = cdesKeyValuePair[message.typeRequest.destination.uuid];
+               message.typeRequest.source.object = cdesKeyValuePair[message.typeRequest.source.tinyId];
+               message.typeRequest.destination.object = cdesKeyValuePair[message.typeRequest.destination.tinyId];
            });
         });
     };

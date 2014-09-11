@@ -54,8 +54,8 @@
         <div class="panel-body">
             <h3>Questions</h3>
             <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">
-                <div ng-if="section.formElements.length === 0">
-                    Drag and drop questions here.
+                <div ng-show="section.formElements.length === 0">
+                    <i class="fa fa-exclamation-triangle"></i> This section is empty. Click on <strong>Show Question Search Area</strong> to search for and drag questions here.
                 </div>
                 <div ng-repeat="question in section.formElements" id="question_{{$index}}">
                     <div accordion close-others="false" id="" ng-class="accordionListStyle" >
@@ -102,7 +102,7 @@
                                     <button ng-show="canAddUom(question)" class="btn btn-default btn-xs" ng-click="addUom(question)"><i class="fa fa-plus"></i> Add</button> 
                                 </dd>
                                 <dt>CDE: </dt>
-                                <dd id="dd_d_cde_{{$index}}"><a href="/#/deview?uuid={{question.question.cde.uuid}}&version={{question.question.cde.version}}" target="_blank"><i class="fa fa-eye"></i> View</a></dd>
+                                <dd id="dd_d_cde_{{$index}}"><a href="/#/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}" target="_blank"><i class="fa fa-eye"></i> View</a></dd>
                             </dl>
                         </div>
                     </div>

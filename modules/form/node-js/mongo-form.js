@@ -1,8 +1,8 @@
 var mongoose = require('mongoose')
     , config = require('config')
     , schemas = require('./schemas')
-    , uuid = require('node-uuid')
     , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
+    , shortid = require("shortid") 
     ;
     
 var mongoUri = config.mongoUri;
@@ -58,7 +58,7 @@ exports.create = function(form, user, callback) {
         registrationStatus: "Incomplete"
     };
     newForm.created = Date.now();
-    newForm.uuid = uuid.v4();
+    newForm.tinyId = shortid.generate();
     newForm.createdBy = {
         userId: user._id
         , username: user.username

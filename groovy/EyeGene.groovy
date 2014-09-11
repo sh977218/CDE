@@ -4,7 +4,6 @@
 
 import com.mongodb.*;
 import com.mongodb.util.JSON;
-import java.util.UUID;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -17,11 +16,14 @@ import org.apache.commons.lang.NumberUtils;
 import org.apache.commons.lang.StringUtils;
 
 
-@Field def mongoHost = System.getenv()['MONGO_HOST'];
-if(mongoHost == null) mongoHost = "localhost";
+if (args.length < 3) {
+    println "Please specify mongodb host and dbname: 'groovy UploadCadsr.groovy [filename] [mongodb-host] [dbname]'";
+    System.exit(0);   
+}
+def mongoHost = args[1];
+def mongoDb = args[2];
+println "MongoDB host: " + mongoHost + ", db: " + mongoDb
 
-@Field def mongoDb = System.getenv()['MONGO_DB'];
-if(mongoDb == null) mongoDb = "nlmcde";
 
 @Field MongoClient mongoClient 
 mongoClient = new MongoClient( mongoHost );
@@ -34,6 +36,8 @@ println "Eye Gene Ingester"
 
 @Field Classifications classifications;
 classifications = new Classifications(orgColl);
+
+@Field idUtils = new IdUtils();
 
 static def String getCellValue(Cell cell) {
    if(cell == null) {
@@ -76,7 +80,7 @@ static def String getCellValue(Cell cell) {
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     BasicDBObject newDE = new BasicDBObject();
     
-    newDE.put("uuid", UUID.randomUUID() as String);
+    newDE.put("tinyId", idUtils.generateID());
     newDE.put("imported", new Date()); 
     newDE.put("source", 'EyeGene'); 
     newDE.put("version", "1"); 

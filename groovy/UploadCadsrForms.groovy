@@ -59,7 +59,7 @@ doDataElement = {url ->
     if (foundDe == null) {
         deObj.append("description", "Data Element cannot be found. Origin: " + deId + 'v' + deVersion)
     } else  {
-        deObj.append("de_uuid", foundDe.get("uuid"))        
+        deObj.append("de_tinyId", foundDe.get("tinyId"))        
         def findObj = new BasicDBObject("_id", foundDe.get('_id'))
         def incWhat = new BasicDBObject("formUsageCounter", 1)
         def incObj = new BasicDBObject("\$inc", incWhat)

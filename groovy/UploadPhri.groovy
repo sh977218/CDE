@@ -3,7 +3,6 @@
 
 import com.mongodb.*;
 import com.mongodb.util.JSON;
-import java.util.UUID;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -23,6 +22,8 @@ if(mongoDb == null) mongoDb = "nlmcde";
 @Field DB db = mongoClient.getDB(mongoDb);
 @Field DBCollection deColl = db.getCollection("dataelements");
 @Field DBCollection orgColl = db.getCollection("orgs");
+
+@Field idUtils = new IdUtils();
 
 println "PHRI Ingester"
 
@@ -58,6 +59,7 @@ static def String getCellValue(Cell cell) {
            }
    }
 }
+
 
 def xlsMap = [
     namingDesignation: 1
@@ -172,7 +174,7 @@ def parsePatientStory(ArrayList<BasicDBObject> classificationArray, BasicDBObjec
 def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     BasicDBObject newDE = new BasicDBObject();
     
-    newDE.put("uuid", UUID.randomUUID() as String);
+    newDE.put("tinyId", idUtils.generateID());
     newDE.put("imported", new Date()); 
     newDE.put("source", 'PHRI'); 
     newDE.put("sourceId", null);

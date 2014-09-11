@@ -12,7 +12,7 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
     var route = $routeParams;
     
     if (route._id) var query = {formId: route._id, type: '_id'};
-    if (route.uuid) var query = {formId: route.uuid, type: 'uuid'};
+    if (route.tinyId) var query = {formId: route.tinyId, type: 'tinyId'};
 
     $scope.reload = function() {
         Form.get(query, function (form) {

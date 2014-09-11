@@ -22,17 +22,18 @@ exports.createIndexJson = {
 
 var riverFunction = 
     "function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}\
-    ctx.document.classificationCopy = ctx.document.classification;\
-    ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
-    ctx.document.primaryNameCopy = escapeHTML(ctx.document.naming[0].designation);\
-    ctx.document.primaryDefinitionCopy = escapeHTML(ctx.document.naming[0].definition);\
-    var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0}; \
-    ctx.document.registrationState.registrationStatusSortOrder = regStatusSortMap[ctx.document.registrationState.registrationStatus]; \
-    if (ctx.document.classification) { \
-        var size = ctx.document.classification.length; \
-        if (size > 10) {ctx.document.classificationBoost = 2.1;} \
-        else {ctx.document.classificationBoost = 0.1 + 0.2 * size;} \
-    } else {ctx.document.classificationBoost = .1;}" ;
+        ctx.document.classificationCopy = ctx.document.classification;\
+        ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
+        ctx.document.primaryNameCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].designation):'';\
+        ctx.document.primaryDefinitionCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].definition):'';\
+        var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0}; \
+        ctx.document.registrationState.registrationStatusSortOrder = regStatusSortMap[ctx.document.registrationState.registrationStatus]; \
+        if (ctx.document.classification) { \
+            var size = ctx.document.classification.length; \
+            if (size > 10) {ctx.document.classificationBoost = 2.1;} \
+            else {ctx.document.classificationBoost = 0.1 + 0.2 * size;} \
+        } else {ctx.document.classificationBoost = .1;}\
+    ";
 
 exports.createRiverJson = { 
     "type": "mongodb",
