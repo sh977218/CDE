@@ -34,7 +34,7 @@ println "Eye Gene Ingester"
 @Field Classifications classifications;
 classifications = new Classifications(orgColl);
 
-def idUtils = new IdUtils();
+@Field idUtils = new IdUtils();
 
 static def String getCellValue(Cell cell) {
    if(cell == null) {
