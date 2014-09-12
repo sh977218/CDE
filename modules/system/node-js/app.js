@@ -25,7 +25,7 @@ exports.init = function(app, daoManager) {
 
     app.use("/system/public", express.static(path.join(__dirname, '../public')));
     
-    app.get('/template/:module/:template', function(req, res) {
+    app.get('/template/:module/:template', function(req, res) {        
         res.render(req.params.template, req.params.module);
     });		
    
@@ -47,7 +47,7 @@ exports.init = function(app, daoManager) {
     });
 
     app.get('/listOrgs', function(req, res) {
-        mongo_data_system.listOrgs(function(err, orgs) {
+        mongo_data_system.listOrgs(function(err, orgs) { 
             if (err) {
                 res.send("ERROR");
             } else {
