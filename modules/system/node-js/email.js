@@ -1,18 +1,19 @@
-var nodemailer = require('nodemailer');
+var nodemailer = require('nodemailer')
+    , config = require('config');
     
 var transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-        user: 'nlmcdeapp@gmail.com',
-        pass: 'MeanPowered'
+    service: 'Gmail'
+    , auth: {
+        user: 'nlmcdeapp@gmail.com'
+        , pass: 'MeanPowered'
     }
 });    
 
 var mailOptions = {
-    from: 'NLM CDE APP <nlmcdeapp@gmail.com>', 
-    to: 'jakub.flaska@nih.gov', 
-    subject: 'URGENT: Production Server Problems', 
-    text: null
+    from: 'NLM CDE APP <nlmcdeapp@gmail.com>'
+    , to: config.admins.map(function(a) {return a.email;}).join(",")
+    , subject: 'URGENT: Production Server Problems'
+    , text: null
 };
 
 exports.send = function(msg) {
