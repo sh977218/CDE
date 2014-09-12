@@ -2,7 +2,7 @@ var config = require('config')
     , request = require('request')
     , mongo = require('./mongo-cde')
     , elastic = require('../../system/node-js/elastic')
-    
+    , email = require('../../system/node-js/email')
 ;
 
 var status = this;
@@ -26,14 +26,13 @@ exports.status = function(req, res) {
     } else {
         res.send("ERROR: Please, restart elastic service. Details: " + JSON.stringify(status.statusReport));        
     }
-    // mailOptions.text = 'ElasticSearch is misbehaving on production servers. Status: ' + JSON.stringify(status.statusReport);
 };
 
 exports.evaluateResult = function(statusReport) {
-    if (process.uptime()<240) return;
+    if (process.uptime()<1) return;
     if (status.everythingOk()) return;
-    
-   
+    var msg = 'ElasticSearch is misbehaving on production servers. Status: ' + JSON.stringify(status.statusReport);
+    email.send(msg);
 };
 
 
