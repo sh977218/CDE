@@ -16,7 +16,7 @@ var mailOptions = {
     , text: null
 };
 
-exports.send = function(msg) {
+exports.send = function(msg, cb) {
     mailOptions.text = msg;
     transporter.sendMail(mailOptions, function(error, info){
         if(error){
@@ -24,5 +24,6 @@ exports.send = function(msg) {
         }else{
             console.log('Message sent: ' + info.response);
         }
+        if (cb) cb(error);
     });     
 };

@@ -28,11 +28,21 @@ exports.status = function(req, res) {
     }
 };
 
+status.delayReports = function() {
+    status.reportSent = true;
+    setTimeout(function() {
+        status.reportSent = false;
+    }, config.status.timeouts.emailSendPeriod);
+};
+
 exports.evaluateResult = function(statusReport) {
     if (process.uptime()<1) return;
     if (status.everythingOk()) return;
+    if (status.reportSent) return;
     var msg = 'ElasticSearch is misbehaving on production servers. Status: ' + JSON.stringify(status.statusReport);
-    email.send(msg);
+    email.send(msg, function(err) {
+        if (!err) status.delayReports();
+    });
 };
 
 
@@ -118,10 +128,10 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                     }
                 }
             });            
-        }, 30000);
+        }, config.status.timeouts.dummyElementCheck);
     });
 };
 
 setInterval(function() {
     status.checkElastic(elastic.elasticCdeUri, mongo);
-}, 60000);
+}, config.status.timeouts.statusCheck);
