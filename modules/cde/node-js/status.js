@@ -1,9 +1,10 @@
 var config = require('config')
     , request = require('request')
     , mongo = require('./mongo-cde')
-    , elastic = require('../../system/node-js/elastic');
+    , elastic = require('../../system/node-js/elastic')
     
-    
+;
+
 var status = this;
 
 status.statusReport = {
@@ -15,17 +16,24 @@ status.statusReport = {
     }
 };    
 
+exports.everythingOk = function() {
+    return status.statusReport.elastic.up && status.statusReport.elastic.results && status.statusReport.elastic.sync && status.statusReport.elastic.updating;
+};
+
 exports.status = function(req, res) {    
-    if (status.statusReport.elastic.up && status.statusReport.elastic.results && status.statusReport.elastic.sync && status.statusReport.elastic.updating) {
+    if (status.everythingOk()) {
         res.send("ALL SERVICES UP");        
     } else {
         res.send("ERROR: Please, restart elastic service. Details: " + JSON.stringify(status.statusReport));        
     }
-    
+    // mailOptions.text = 'ElasticSearch is misbehaving on production servers. Status: ' + JSON.stringify(status.statusReport);
 };
 
 exports.evaluateResult = function(statusReport) {
-    if ()
+    if (process.uptime()<240) return;
+    if (status.everythingOk()) return;
+    
+   
 };
 
 

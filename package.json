@@ -39,6 +39,7 @@
     "grunt-available-tasks": "*",
     "grunt-useref": "*",
     "chalk": "*",
-    "shortid": "2.0.1"
+    "shortid": "2.0.1",
+    "nodemailer": "*"
     }
 }
