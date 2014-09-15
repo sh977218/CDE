@@ -1,6 +1,8 @@
 <div accordion close-others="false" id="accordionList" ng-class="accordionListStyle" >
+    <!--<div data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" jqyoui-draggable="{index: {{$index}}, animate: true, placeholder: 'keep'}" ng-model="cdes">-->
     <div ui-sortable="dragSortableOptions" ng-model="cdes">
-        <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen" >
+        <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="cde" jqyoui-draggable="{index: {{$index}}, animate: true, placeholder: 'keep'}">
+        <!--<div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">-->
             <div accordion-heading>
                 <span ng-bind-html="cde.primaryNameCopy" id="acc_link_{{$index}}" class="hand-cursor"></span>
                 <i ng-show="!openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(cde,'view',$event)" title="View"></i>
@@ -21,7 +23,6 @@
                 <div class="col-md-2">
                     <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" ng-src="/data/{{attachment.fileid}}"  class='cdeAttachmentThumbnail' /> 
                 </div>
-
             </div>
             <div class="row" >
                 <a ng-show="!openCdeInNewTab" class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" id="openEltInCurrentTab_{{$index}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>

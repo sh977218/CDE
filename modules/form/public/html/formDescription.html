@@ -3,12 +3,12 @@
     <div ng-class="pageWidthOptions.sectionAreaWidth">
         <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
     </div>
-    <div ng-class="pageWidthOptions.searchAreaWidth" ng-show="addCdeMode && elt.formElements.length > 0">
+    <div ng-class="pageWidthOptions.searchAreaWidth" ng-show="addCdeMode && elt.formElements.length > 0" style="overflow: visible; overflow-y: scroll; height: auto; max-height: 650px;">
         <br/>
-        <div ui-scrollfix="+180" offset-bottom="180" class="question-search-area">
+        <div ui-scrollfix="+10" offset-bottom="0" class="question-search-area" >
             <div class="panel-group" id="accordion">
-                <div ng-include="'/template/system/list'" ng-controller="DEListCtrl" ng-init="currentPage = 'createForm';" ></div>
-            </div>            
+                <div id="questionSearchArea" ng-include="'/template/system/list'" ng-controller="DEListCtrl" ng-init="currentPage = 'createForm';" ></div>
+            </div>
         </div>
     </div>
 </div>
