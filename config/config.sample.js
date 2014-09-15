@@ -60,9 +60,9 @@ var config = {
     } 
     , status: {
         timeouts: { 
-            statusCheck: 1000*5 // How often to update /status/cde page ? (miliseconds)
-            , dummyElementCheck: 1000*2 // How long should we wait for a dummy element created in MongoDB to also appear in ElasticSearch? (miliseconds)
-            , emailSendPeriod: 1000*60 // How long should we wait after an email with a negative status report before we send another one? (miliseconds)
+            statusCheck: 1000*60*2 // How often to update /status/cde page ? (miliseconds)
+            , dummyElementCheck: 1000*30 // How long should we wait for a dummy element created in MongoDB to also appear in ElasticSearch? (miliseconds)
+            , emailSendPeriod: 1000*60*60*4 // How long should we wait after an email with a negative status report before we send another one? (miliseconds)
         }    
     }
 };
