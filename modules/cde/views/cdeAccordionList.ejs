@@ -1,7 +1,7 @@
 <div accordion close-others="false" id="accordionList" ng-class="accordionListStyle" >
     <!--<div data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" jqyoui-draggable="{index: {{$index}}, animate: true, placeholder: 'keep'}" ng-model="cdes">-->
     <div ui-sortable="dragSortableOptions" ng-model="cdes">
-        <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="cde" jqyoui-draggable="{index: {{$index}}, animate: true, placeholder: 'keep'}">
+        <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone', appendToBody: true}" ng-model="cde" jqyoui-draggable="{index: {{$index}}, animate: true, placeholder: 'keep'}">
         <!--<div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">-->
             <div accordion-heading>
                 <span ng-bind-html="cde.primaryNameCopy" id="acc_link_{{$index}}" class="hand-cursor"></span>

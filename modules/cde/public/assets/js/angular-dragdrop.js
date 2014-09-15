@@ -249,11 +249,12 @@ var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$ti
           if (newValue) {
             dragSettings = scope.$eval(element.attr('jqyoui-draggable') || element.attr('data-jqyoui-draggable')) || {};
             jqyouiOptions = scope.$eval(attrs.jqyouiOptions) || {};
-            jqyouiOptions.helper = function(event) {
-                var obj = $(event.currentTarget).clone();
-                obj.appendTo("body");
-                return obj;
-            };
+            
+            if(jqyouiOptions.appendToBody===true) {
+                jqyouiOptions.helper = function(event) {
+                    return $(event.currentTarget).clone().appendTo("body");
+                };
+            }
             element
               .draggable({disabled: false})
               .draggable(jqyouiOptions)
