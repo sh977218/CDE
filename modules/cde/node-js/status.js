@@ -20,11 +20,19 @@ exports.everythingOk = function() {
     return status.statusReport.elastic.up && status.statusReport.elastic.results && status.statusReport.elastic.sync && status.statusReport.elastic.updating;
 };
 
+exports.assembleErrorMessage = function(statusReport) {
+    if (!statusReport.up) return "ElasticSearch service is not responding. ES service might be not running.";
+    if (!statusReport.results) return "ElasticSearch service is not returning any results. Index might be empty.";
+    if (!statusReport.sync) return "ElasticSearch index is completely different from MongoDB. Data might be reingested but ES not updated.";
+    if (!statusReport.updating) return "ElasticSearch service does not reflect modifications in MongoDB. River plugin might be out of order.";
+};
+
 exports.status = function(req, res) {    
     if (status.everythingOk()) {
         res.send("ALL SERVICES UP");        
     } else {
-        res.send("ERROR: Please, restart elastic service. Details: " + JSON.stringify(status.statusReport));        
+        var msg = status.assembleErrorMessage(status.statusReport);
+        res.send("ERROR: " + msg);        
     }
 };
 
@@ -39,7 +47,7 @@ exports.evaluateResult = function(statusReport) {
     if (process.uptime()<1) return;
     if (status.everythingOk()) return;
     if (status.reportSent) return;
-    var msg = 'ElasticSearch is misbehaving on production servers. Status: ' + JSON.stringify(status.statusReport);
+    var msg = status.assembleErrorMessage(status.statusReport);
     email.send(msg, function(err) {
         if (!err) status.delayReports();
     });
