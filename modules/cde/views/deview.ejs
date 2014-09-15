@@ -33,10 +33,10 @@
             <%- include deStatus.ejs %>
         </div>
         <div tab heading="{{tabs[6].heading}}" active='tabs[6].active'>
-            <%- include deProperties.ejs %>
+            <div ng-include="'/system/public/html/properties.html'"></div>
         </div>
         <div tab heading="{{tabs[7].heading}}">
-            <%- include deIds.ejs %>
+            <div ng-include="'/system/public/html/identifiers.html'"></div>
         </div>
         <div tab heading="{{tabs[8].heading}}">
             <%- include deDiscussions.ejs %>
