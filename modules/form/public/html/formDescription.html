@@ -1,11 +1,11 @@
 <br/>
 <div class="row">    
-    <div ng-class="pageWidthOptions.sectionAreaWidth" style="height: 700px;">
+    <div ng-class="pageWidthOptions.sectionAreaWidth" class="formSectionArea">
         <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
     </div>
-    <div id="questionsSearchWrapper" ng-class="pageWidthOptions.searchAreaWidth" ng-show="addCdeMode && elt.formElements.length > 0" style="overflow: -moz-scrollbars-vertical; overflow-y: scroll; height: 700px;">
+    <div id="questionsSearchWrapper" ng-class="pageWidthOptions.searchAreaWidth" ng-show="addCdeMode && elt.formElements.length > 0" >
         <br/>
-        <div ui-scrollfix="+10" offset-bottom="0" class="question-search-area" >
+        <div ui-scrollfix="+10" offset-bottom="100" class="question-search-area">
             <div class="panel-group" id="accordion">
                 <div id="questionSearchArea" ng-include="'/template/system/list'" ng-controller="DEListCtrl" ng-init="currentPage = 'createForm';" ></div>
             </div>

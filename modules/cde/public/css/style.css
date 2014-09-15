@@ -212,6 +212,15 @@ dd.formViewDetails {
 .fa-cb:checked + label:before { content: "\f046"; } /* checked icon */
 .fa-cb:checked + label:before { letter-spacing: 5px; }
 
+.formSectionArea {
+    min-height: 700px;
+}
+
+.question-search-area {
+    overflow-y: scroll;
+    height: 700px;
+}
+
 .question-search-area.ui-scrollfix {
     position: fixed;
     top: 75px;
