@@ -3,7 +3,7 @@
     <div ng-class="pageWidthOptions.sectionAreaWidth" class="formSectionArea">
         <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
     </div>
-    <div id="questionsSearchWrapper" ng-class="pageWidthOptions.searchAreaWidth" ng-show="addCdeMode && elt.formElements.length > 0" >
+    <div ng-class="pageWidthOptions.searchAreaWidth" ng-show="addCdeMode && elt.formElements.length > 0" >
         <br/>
         <div ui-scrollfix="+10" offset-bottom="100" class="question-search-area">
             <div class="panel-group" id="accordion">
@@ -12,3 +12,9 @@
         </div>
     </div>
 </div>
+
+<script>
+    #(window).resize(function() {
+        $("#question-search-area").height() = $(document).height() - 200;
+    });
+</script>
