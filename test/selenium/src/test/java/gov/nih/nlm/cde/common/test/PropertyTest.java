@@ -1,17 +1,17 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.common.test;
 
+import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.testng.annotations.Test;
 
-public class PropertyTest extends NlmCdeBaseTest {
+public abstract class PropertyTest extends NlmCdeBaseTest {
     
-    @Test
-    public void addRemoveProperty() {
+    public abstract void goToEltByName(String name);
+    
+    public void addRemoveProperty(String eltName) {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        String cdeName = "Aromatase Inhibitor Most Recent Received Text";
-        goToCdeByName(cdeName);
+        goToEltByName(eltName);
         findElement(By.linkText("Properties")).click();
         findElement(By.id("addProperty")).click();
         modalHere();
@@ -39,7 +39,7 @@ public class PropertyTest extends NlmCdeBaseTest {
         findElement(By.id("confirmRemoveProperty-1")).click();
         Assert.assertTrue(textPresent("Property Removed"));
         
-        goToCdeByName(cdeName);
+        goToEltByName(eltName);
         findElement(By.linkText("Properties")).click();
         Assert.assertTrue(textPresent("MyKey1"));
         Assert.assertTrue(textPresent("MyKey3"));
@@ -50,10 +50,9 @@ public class PropertyTest extends NlmCdeBaseTest {
         
     }
     
-    @Test
-    public void richText() {
+    public void richText(String eltName) {
         mustBeLoggedInAs(ninds_username, ninds_password);
-        goToCdeByName("Imaging diffusion sixth b value");
+        goToEltByName(eltName);
         findElement(By.linkText("Properties")).click();
         hangon(2);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//dd[@id='dd_prop_value_1']//i[@class='fa fa-edit']")));
