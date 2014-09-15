@@ -54,7 +54,7 @@
 
     <div class="row">
         <div class="hidden-xs" ng-class="pageWidthOptions.filterAreaWidth" ng-show="filterMode">
-            <p ng-show="facets.orgs.terms" class="gray">Filter results by:</p>
+            <p ng-show="facets.orgs.terms" class="gray">Filter by:</p>
             <strong ng-show="facets.orgs.terms">Classifications</strong>
             <ul class="fa-ul">
                 <li ng-repeat="t in facets.orgs.terms | orderBy:'term'" style="margin-right: -20px" ng-switch="t.term === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.term === selectedOrg || !selectedOrg">

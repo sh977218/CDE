@@ -4,17 +4,10 @@
         <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
     </div>
     <div ng-class="pageWidthOptions.searchAreaWidth" ng-show="addCdeMode && elt.formElements.length > 0" >
-        <br/>
-        <div ui-scrollfix="+10" offset-bottom="100" class="question-search-area">
+        <div ui-scrollfix="+35" offset-bottom="70" class="question-search-area">
             <div class="panel-group" id="accordion">
                 <div id="questionSearchArea" ng-include="'/template/system/list'" ng-controller="DEListCtrl" ng-init="currentPage = 'createForm';" ></div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    #(window).resize(function() {
-        $("#question-search-area").height() = $(document).height() - 200;
-    });
-</script>

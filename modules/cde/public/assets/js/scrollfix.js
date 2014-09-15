@@ -42,10 +42,8 @@ angular.module('ui.scrollfix',[]).directive('uiScrollfix', ['$window', function 
           offset = iebody.scrollTop;
         }
         if (!elm.hasClass('ui-scrollfix') && offset > attrs.uiScrollfix) {
-//          setTimeout(function() { if( !elm.hasClass('ui-scrollfix') && offset > attrs.uiScrollfix ) { elm.addClass('ui-scrollfix') } }, 500);
           elm.addClass('ui-scrollfix');
         } else if (elm.hasClass('ui-scrollfix') && offset < attrs.uiScrollfix) {
-//          setTimeout(function() { if( elm.hasClass('ui-scrollfix') && offset < attrs.uiScrollfix ) { elm.removeClass('ui-scrollfix') } }, 500);
           elm.removeClass('ui-scrollfix');
         }
         

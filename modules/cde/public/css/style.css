@@ -218,19 +218,21 @@ dd.formViewDetails {
 }
 
 .question-search-area {
+    max-height: 800px;
     overflow-y: scroll;
-    height: 700px;
     border-style: solid;
     border-width: 1px;
     border-color: #ddd;
 }
 
 .question-search-area.ui-scrollfix {
+    max-height: 700px;
     position: fixed;
-    top: 75px;
+    top: 125px;
 }
 
 .question-search-area.ui-scrollfix.ui-scrollfix-bottom {
+    max-height: 600px;
     top: auto;
     bottom: 250px;
 }
