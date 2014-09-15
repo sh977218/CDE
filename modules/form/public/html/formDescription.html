@@ -1,9 +1,9 @@
 <br/>
 <div class="row">    
-    <div ng-class="pageWidthOptions.sectionAreaWidth">
+    <div ng-class="pageWidthOptions.sectionAreaWidth" style="height: 700px;">
         <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
     </div>
-    <div id="questionsSearchWrapper" ng-class="pageWidthOptions.searchAreaWidth" ng-show="addCdeMode && elt.formElements.length > 0" style="overflow: visible; overflow-y: scroll; height: auto; max-height: 700px;">
+    <div id="questionsSearchWrapper" ng-class="pageWidthOptions.searchAreaWidth" ng-show="addCdeMode && elt.formElements.length > 0" style="overflow: -moz-scrollbars-vertical; overflow-y: scroll; height: 700px;">
         <br/>
         <div ui-scrollfix="+10" offset-bottom="0" class="question-search-area" >
             <div class="panel-group" id="accordion">
@@ -12,10 +12,3 @@
         </div>
     </div>
 </div>
-
-<!--<script type="text/javascript">
-    $(window).resize(function() {
-        var h = $(window).height() - 300;
-        $("#questionsSearchWrapper").height(h);
-    });
-</script>-->
