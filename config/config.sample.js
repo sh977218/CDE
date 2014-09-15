@@ -58,10 +58,6 @@ var config = {
     , modules: {
         forms: true
     } 
-    , admins: [{
-        name: "Admin Name"
-        , email: "admin@email.com"
-    }]
     , status: {
         timeouts: { 
             statusCheck: 1000*5 // How often to update /status/cde page ? (miliseconds)

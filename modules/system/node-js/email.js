@@ -1,5 +1,6 @@
 var nodemailer = require('nodemailer')
-    , config = require('config');
+    , config = require('config')
+    , mongo_data_system = require('./mongo-data');
     
 var transporter = nodemailer.createTransport({
     service: 'Gmail'
@@ -9,9 +10,15 @@ var transporter = nodemailer.createTransport({
     }
 });    
 
+var admins = [];
+
+mongo_data_system.siteadmins(function(err, users) {
+    admins = users;
+});
+
 var mailOptions = {
     from: 'NLM CDE APP <nlmcdeapp@gmail.com>'
-    , to: config.admins.map(function(a) {return a.email;}).join(",")
+    , to: admins.map(function(a) {return a.email;}).join(",")
     , subject: 'URGENT: Production Server Problems'
     , text: null
 };
