@@ -79,8 +79,6 @@ exports.show = function(req, cb) {
         return;
     }
     mongo_data.byId(cdeId, function(err, cde) {
-
-        nothing.do();
         // Following have no callback because it's no big deal if it fails.
         // So create new thread and move on.
         mongo_data.incDeView(cde); 

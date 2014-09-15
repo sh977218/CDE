@@ -40,6 +40,6 @@
     "grunt-useref": "*",
     "chalk": "*",
     "shortid": "2.0.1",
-    "nodemailer": "*"
+    "nodemailer": "0.1.1"
     }
 }
