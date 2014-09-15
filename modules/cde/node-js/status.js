@@ -49,10 +49,15 @@ exports.evaluateResult = function(statusReport) {
 status.checkElastic = function(elasticUrl, mongoCollection) {
     request.post(elasticUrl + "_search", {body: JSON.stringify({})}, function (error, response, bodyStr) {
         status.checkElasticUp(error, response, status.statusReport);
-        var body = JSON.parse(bodyStr);     
-        if (status.statusReport.elastic.up) status.checkElasticResults(body, status.statusReport);
-        if (status.statusReport.elastic.results) status.checkElasticSync(body, status.statusReport, mongoCollection);
-        if (status.statusReport.elastic.sync) status.checkElasticUpdating(body, status.statusReport, elasticUrl, mongoCollection);
+        var body = '';
+        try {
+            body = JSON.parse(bodyStr);  
+            if (status.statusReport.elastic.up) status.checkElasticResults(body, status.statusReport);
+            if (status.statusReport.elastic.results) status.checkElasticSync(body, status.statusReport, mongoCollection);
+            if (status.statusReport.elastic.sync) status.checkElasticUpdating(body, status.statusReport, elasticUrl, mongoCollection);            
+        } catch(e) {
+            
+        }
         status.evaluateResult(status.statusReport);
     });    
 };

@@ -10,15 +10,13 @@ var transporter = nodemailer.createTransport({
     }
 });    
 
-var admins = [];
-
 mongo_data_system.siteadmins(function(err, users) {
-    admins = users;
+    mailOptions.to = users.map(function(a) {return a.email;}).join(",");
 });
 
 var mailOptions = {
     from: 'NLM CDE APP <nlmcdeapp@gmail.com>'
-    , to: admins.map(function(a) {return a.email;}).join(",")
+    , to: ''
     , subject: 'URGENT: Production Server Problems'
     , text: null
 };
