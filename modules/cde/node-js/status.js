@@ -44,7 +44,7 @@ status.delayReports = function() {
 };
 
 exports.evaluateResult = function(statusReport) {
-    if (process.uptime()<1) return;
+    if (process.uptime()<config.status.timeouts.minUptime) return;
     if (status.everythingOk()) return;
     if (status.reportSent) return;
     var msg = status.assembleErrorMessage(status.statusReport);

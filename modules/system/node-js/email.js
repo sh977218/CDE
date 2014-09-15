@@ -17,7 +17,7 @@ mongo_data_system.siteadmins(function(err, users) {
 var mailOptions = {
     from: 'NLM CDE APP <nlmcdeapp@gmail.com>'
     , to: ''
-    , subject: 'URGENT: Production Server Problems'
+    , subject: 'URGENT: Server Problems on ' + config.name
     , text: null
 };
 
