@@ -75,6 +75,10 @@ function SectionCtrl($scope, $modal, $timeout) {
     $scope.removeElt = function(form, index) {
         form.formElements.splice(index, 1);
         $scope.stageElt();
+        
+        if(form.formElements.length == 0) {
+            $scope.setToNoneAddCdeMode();
+        }
     };
 
     $scope.moveElt = function(index, inc) {

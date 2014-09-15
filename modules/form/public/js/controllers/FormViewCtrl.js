@@ -9,6 +9,18 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
         , searchAreaWidth: "col-md-0"
     };
     
+    $scope.setToAddCdeMode = function() {
+        $scope.addCdeMode = true;
+        $scope.pageWidthOptions.sectionAreaWidth = "col-md-6";
+        $scope.pageWidthOptions.searchAreaWidth = "col-md-6";   
+    }
+    
+    $scope.setToNoneAddCdeMode = function() {
+        $scope.addCdeMode = false;
+        $scope.pageWidthOptions.sectionAreaWidth = "col-md-12";
+        $scope.pageWidthOptions.searchAreaWidth = "col-md-0";   
+    }
+    
     var route = $routeParams;
     
     $scope.resultPerPage = 10;
@@ -31,11 +43,9 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
         $scope.addCdeMode = !$scope.addCdeMode;
 
         if($scope.addCdeMode) {
-            $scope.pageWidthOptions.sectionAreaWidth = "col-md-6";
-            $scope.pageWidthOptions.searchAreaWidth = "col-md-6";
+            $scope.setToAddCdeMode();
         } else {
-            $scope.pageWidthOptions.sectionAreaWidth = "col-md-12";
-            $scope.pageWidthOptions.searchAreaWidth = "col-md-0";
+            $scope.setToNoneAddCdeMode();
         }
     };
 
