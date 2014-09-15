@@ -22,18 +22,49 @@ exports.createIndexJson = {
 
 var riverFunction = 
     "function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}\
-        ctx.document.classificationCopy = ctx.document.classification;\
-        ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
-        ctx.document.primaryNameCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].designation):'';\
-        ctx.document.primaryDefinitionCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].definition):'';\
-        var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0}; \
-        ctx.document.registrationState.registrationStatusSortOrder = regStatusSortMap[ctx.document.registrationState.registrationStatus]; \
-        if (ctx.document.classification) { \
-            var size = ctx.document.classification.length; \
-            if (size > 10) {ctx.document.classificationBoost = 2.1;} \
-            else {ctx.document.classificationBoost = 0.1 + 0.2 * size;} \
-        } else {ctx.document.classificationBoost = .1;}\
+     var flatArray = [];\
+     function doClassif(currentString, classif) {\
+        if (currentString.length > 0) {currentString = currentString + ';';}\
+        currentString = currentString + classif.name;\
+        flatArray.push(currentString);\
+            if (classif.elements) {\
+                for (var i = 0; i < classif.elements.length; i++) {\
+                    doClassif(currentString, classif.elements[i]);\
+                }\
+            }\
+     }\
+    function flattenClassification(doc) {\
+            if (doc.classification) {\
+                for (var i = 0; i < doc.classification.length; i++) {\
+                    if (doc.classification[i].elements) {\
+                        for (var j=0; j < doc.classification[i].elements.length; j++) {\
+                            doClassif('', doc.classification[i].elements[j]);\
+                        }\
+                    }\
+                }\
+            }\
+    }\
+    flattenClassification(ctx.document); \
+    ctx.document.flatClassification = flatArray; \
+    ctx.document.classificationCopy = ctx.document.classification;\
+    ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
+    ctx.document.primaryNameCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].designation):'';\
+    ctx.document.primaryDefinitionCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].definition):'';\
+    var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0}; \
+    ctx.document.registrationState.registrationStatusSortOrder = regStatusSortMap[ctx.document.registrationState.registrationStatus]; \
+    if (ctx.document.classification) { \
+        var size = ctx.document.classification.length; \
+        if (size > 10) {ctx.document.classificationBoost = 2.1;} \
+        else {ctx.document.classificationBoost = 0.1 + 0.2 * size;} \
+    } else {ctx.document.classificationBoost = .1;}\
     ";
+
+function doClassif() {}
+function flattenClassifications() {
+    for (var i = 0; i < ctx.document.classification.length; i++) {
+        flatClassification.push(doClassif("", ctx.document.classification[i]));
+    }
+}
 
 exports.createRiverJson = { 
     "type": "mongodb",
