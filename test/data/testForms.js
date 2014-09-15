@@ -784,3 +784,113 @@ db.forms.insert({
         }
     ]      
 });
+
+
+db.forms.insert({
+    "version" : "1.01111",
+    "__v" : 0,
+    "sections" : [ 
+    ],
+    "createdBy" : {
+        "username" : "ctepCurator"
+    },
+    "history" : [],
+    "comments" : [],
+    "attachments" : [],
+    "ids" : [],
+    "properties" : [],
+    "registrationState" : {
+        "registrationStatus" : "Recorded"
+    },
+    "stewardOrg" : {
+        "name" : "CTEP"
+    },
+    "naming" : [ 
+        {
+            "designation" : "Form Property Test",
+            "definition" : "Form to tes properties",
+            "context" : {
+                "contextName" : "Health",
+                "acceptability" : "preferred"
+            }
+        }
+    ],
+    "classification" : [ 
+        {
+            "stewardOrg" : {
+                "name" : "NINDS"
+            },
+            "elements" : [ 
+                {
+                    "name" : "Population",
+                    "elements" : [ 
+                        {
+                            "name" : "Adult"
+                        }, 
+                        {
+                            "name" : "Pediatric"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]      
+});
+
+
+db.forms.insert({
+    "version" : "1.01111",
+    "__v" : 0,
+    "sections" : [ 
+    ],
+    "createdBy" : {
+        "username" : "ctepCurator"
+    },
+    "history" : [],
+    "comments" : [],
+    "attachments" : [],
+    "ids" : [],
+    "properties" : [{
+            "key": "Prop 1"
+            , "value": "Value 1"
+    }, {
+            "key": "Prop 2"
+            , "value": "Value 2"
+    }],
+    "registrationState" : {
+        "registrationStatus" : "Recorded"
+    },
+    "stewardOrg" : {
+        "name" : "NINDS"
+    },
+    "naming" : [ 
+        {
+            "designation" : "Form Rich Text Property Test",
+            "definition" : "Form properties",
+            "context" : {
+                "contextName" : "Health",
+                "acceptability" : "preferred"
+            }
+        }
+    ],
+    "classification" : [ 
+        {
+            "stewardOrg" : {
+                "name" : "NINDS"
+            },
+            "elements" : [ 
+                {
+                    "name" : "Population",
+                    "elements" : [ 
+                        {
+                            "name" : "Adult"
+                        }, 
+                        {
+                            "name" : "Pediatric"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]      
+});
