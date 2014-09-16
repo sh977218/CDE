@@ -5,11 +5,11 @@ var nodemailer = require('nodemailer')
 var transporter = nodemailer.createTransport();    
 
 mongo_data_system.siteadmins(function(err, users) {
-    mailOptions.to = users.map(function(a) {return a.email;}).join(",");
+    mailOptions.to = users.filter(function(a){return typeof(a.email)!=="undefined";}).map(function(a) {return a.email;}).join(",");
 });
 
 var mailOptions = {
-    from: 'NLM CDE APP <nlmcdeapp@gmail.com>'
+    from: 'CDE Account <cdeuser@nlm.nih.gov>'
     , to: ''
     , subject: 'URGENT: Server Problems on ' + config.name
     , text: null
