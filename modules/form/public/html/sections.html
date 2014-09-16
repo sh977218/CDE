@@ -54,8 +54,13 @@
         <div class="panel-body">
             <h3>Questions</h3>
             <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">
+            <!--<div data-drop="true" jqyoui-droppable="{multiple:true, onDrop:go()}" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">-->
                 <div ng-show="section.formElements.length === 0">
-                    <i class="fa fa-exclamation-triangle"></i> This section is empty. Click on <strong>Show Question Search Area</strong> to search for and drag questions here.
+                    <i class="fa fa-exclamation-triangle"></i> To add question, search for and drag them here.
+                    <button id="startAddingQuestions" ng-show="elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default">
+                        <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
+                        <span ng-show="addCdeMode"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
+                    </button>
                 </div>
                 <div ng-repeat="question in section.formElements" id="question_{{$index}}">
                     <div accordion close-others="false" id="" ng-class="accordionListStyle" >
@@ -64,7 +69,6 @@
                                 <span ng-bind-html="question.label | placeholdEmpty" id="question_accordion_{{$index}}" class="hand-cursor"></span>
                                 <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeElt(section, $index)" title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>
                             </div>
-
                             <dl class="dl-horizontal">
                                 <dt>Label: </dt>
                                 <dd id="dd_question_title_{{$index}}"><i ng-show="canCurate" class="fa fa-pencil" title="Change question label" ng-click="openNameSelect(question)"></i> {{question.label | placeholdEmpty}}</dd>
@@ -108,6 +112,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

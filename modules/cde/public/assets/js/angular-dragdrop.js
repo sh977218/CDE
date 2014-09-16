@@ -305,7 +305,10 @@ var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$ti
                   ngDragDropService.callEventCallback(scope, dropSettings.onOut, event, ui);
                 },
                 drop: function(event, ui) {
-                  if (angular.element(ui.draggable).ngattr('ng-model') && attrs.ngModel) {
+                    var a = angular.element(ui.draggable);
+//                    var b = a.ngattr('ng-model');
+//                  if (angular.element(ui.draggable).ngattr('ng-model') && 
+                  if (attrs.ngModel) {
                     ngDragDropService.invokeDrop(angular.element(ui.draggable), angular.element(this), event, ui);
                   } else {
                     ngDragDropService.callEventCallback(scope, dropSettings.onDrop, event, ui);
