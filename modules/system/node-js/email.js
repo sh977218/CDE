@@ -2,13 +2,7 @@ var nodemailer = require('nodemailer')
     , config = require('config')
     , mongo_data_system = require('./mongo-data');
     
-var transporter = nodemailer.createTransport({
-    service: 'Gmail'
-    , auth: {
-        user: 'nlmcdeapp@gmail.com'
-        , pass: 'MeanPowered'
-    }
-});    
+var transporter = nodemailer.createTransport();    
 
 mongo_data_system.siteadmins(function(err, users) {
     mailOptions.to = users.map(function(a) {return a.email;}).join(",");
