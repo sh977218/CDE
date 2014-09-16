@@ -123,13 +123,23 @@ angular.module('resources')
                 queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
             }
 
-            var queryBuilder = this;
-            for (var i=0; i<settings.selectedElements.length; i++) {
-                var facetsDepth = queryBuilder.countFacetsDepthString(i+1);            
-                var term = {term:{}};
-                term.term[facetsDepth] = settings.selectedElements[i];
-                queryStuff.query.bool.must.push(term);
+            var flatSelection = "";
+            for (var i = 0; i < settings.selectedElements.length; i++) {
+                if (flatSelection !== "") flatSelection = flatSelection + ";";
+                flatSelection = flatSelection + settings.selectedElements[i];
             }
+            console.log(flatSelection);
+            if (flatSelection !== "") {
+                queryStuff.query.bool.must.push({term: {flatClassification: flatSelection}});
+            }
+            
+            var queryBuilder = this;
+//            for (var i = 0; i< settings.selectedElements.length; i++) {
+//                var facetsDepth = queryBuilder.countFacetsDepthString(i+1);            
+//                var term = {term:{}};
+//                term.term[facetsDepth] = settings.selectedElements[i];
+//                queryStuff.query.bool.must.push(term);
+//            }
 
 
             queryStuff.facets = {
@@ -200,6 +210,8 @@ angular.module('resources')
                     }
                 }
             };
+            
+            console.log(queryStuff);
             
             return callback({query: queryStuff});
         }              

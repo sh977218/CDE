@@ -45,7 +45,7 @@ var riverFunction =
             }\
     }\
     flattenClassification(ctx.document); \
-    ctx.document.flatClassification = flatArray; \
+    ctx.document.flatClassifications = flatArray; \
     ctx.document.classificationCopy = ctx.document.classification;\
     ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
     ctx.document.primaryNameCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].designation):'';\
