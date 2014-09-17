@@ -55,8 +55,8 @@
             <h3>Questions</h3>
             <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">
             <!--<div data-drop="true" jqyoui-droppable="{multiple:true, onDrop:go()}" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">-->
-                <div ng-show="section.formElements.length === 0">
-                    <i class="fa fa-exclamation-triangle"></i> To add question, search for and drag them here.
+                <div id="drag-n-drop-area" ng-show="section.formElements.length === 0">
+                    <i class="fa fa-exclamation-triangle"></i> To add questions, search for and drag them here.
                     <button id="startAddingQuestions" ng-show="elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default">
                         <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
                         <span ng-show="addCdeMode"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
@@ -67,7 +67,7 @@
                         <div accordion-group is-open="" >
                             <div accordion-heading>
                                 <span ng-bind-html="question.label | placeholdEmpty" id="question_accordion_{{$index}}" class="hand-cursor"></span>
-                                <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeElt(section, $index)" title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>
+                                <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeQuestion(section, $index)" title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>
                             </div>
                             <dl class="dl-horizontal">
                                 <dt>Label: </dt>

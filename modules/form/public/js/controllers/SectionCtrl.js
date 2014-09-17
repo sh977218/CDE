@@ -78,9 +78,14 @@ function SectionCtrl($scope, $modal, $timeout) {
         form.formElements.splice(index, 1);
         $scope.stageElt();
         
-        if(form.formElements.length == 0) {
+        if(form.formElements.length === 0) {
             $scope.setToNoneAddCdeMode();
         }
+    };
+    
+    $scope.removeQuestion = function(section, index) {
+        section.formElements.splice(index, 1);
+        $scope.stageElt();
     };
 
     $scope.moveElt = function(index, inc) {
