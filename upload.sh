@@ -8,7 +8,7 @@ find ../nlm-seed/ExternalCDEs/Vsac/*.xml -exec node ingester/uploadVsac {} \;
 
 find ../nlm-seed/ExternalCDEs/Ahrq -name "de_*.json" -exec node ingester/uploadAhrq {} \;
 
-groovy -cp ./groovy/ groovy/uploadNindsXls "../nlm-seed/ExternalCDEs/ninds/Data Element Import_20140523.xlsx"
+groovy -cp ./groovy/ groovy/uploadNindsXls "../nlm-seed/ExternalCDEs/ninds/Data Element Import_20140523.xlsx" MONGO_HOST MONGO_DB
 
 node ingester/matchToVsac.js
 

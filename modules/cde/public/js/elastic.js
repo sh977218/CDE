@@ -39,7 +39,15 @@ angular.module('resources')
                 for (var j=1; j<=depth; j++) fd += ".elements";
                 fd += ".name";  
                 return fd;
-            };        
+            };
+            this.flattenSelection = function(upTo) {
+                var flatSelection = "";
+                for (var i = 0; i < settings.selectedElements.length && i < upTo; i++) {
+                    if (flatSelection !== "") flatSelection = flatSelection + ";";
+                    flatSelection = flatSelection + settings.selectedElements[i];
+                } 
+                return flatSelection;
+            };
             var queryStuff = {size: this.getSize(settings)};
             var searchQ = settings.searchTerm;       
 
@@ -123,24 +131,13 @@ angular.module('resources')
                 queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
             }
 
-            var flatSelection = "";
-            for (var i = 0; i < settings.selectedElements.length; i++) {
-                if (flatSelection !== "") flatSelection = flatSelection + ";";
-                flatSelection = flatSelection + settings.selectedElements[i];
-            }
-            console.log(flatSelection);
+            var queryBuilder = this;
+            
+            var flatSelection = queryBuilder.flattenSelection(1000);
             if (flatSelection !== "") {
                 queryStuff.query.bool.must.push({term: {flatClassification: flatSelection}});
             }
             
-            var queryBuilder = this;
-//            for (var i = 0; i< settings.selectedElements.length; i++) {
-//                var facetsDepth = queryBuilder.countFacetsDepthString(i+1);            
-//                var term = {term:{}};
-//                term.term[facetsDepth] = settings.selectedElements[i];
-//                queryStuff.query.bool.must.push(term);
-//            }
-
 
             queryStuff.facets = {
                 orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}}
@@ -169,13 +166,22 @@ angular.module('resources')
                     if (!settings.isSiteAdmin) {
                         queryStuff.facets["elements" + i].facet_filter.and.push({or: lowRegStatusOrCuratorFilter});
                     }
-                    for (var j=0; j<settings.selectedElements.length; j++) {
-                        fd = queryBuilder.countFacetsDepthString(j+1);
-                        var f = {term: {}};
-                        f.term[fd] = settings.selectedElements[j];
-                        queryStuff.facets["elements"+i].facet_filter.and.push(f);
+                    var flatFacetFilter = queryBuilder.flattenSelection(i - 1);
+                    if (flatFacetFilter !== "") {
+                        queryStuff.facets["elements"+i].facet_filter.and.push({term: {flatClassification: flatFacetFilter}});
                     }
-                }            
+                }
+                if (flatSelection !== "") {
+                    queryStuff.aggregations = {
+                        flatClassification: {
+                            terms: {
+                                field: "flatClassification",
+                                include: flatSelection + ".*",
+                                exclude: flatSelection + ".*;.*"
+                            } 
+                        }
+                    };
+                }
             }        
 
             if (settings.filter !== undefined) {

@@ -164,6 +164,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                 $scope.totalItems = result.totalNumber;
                 $scope.cache.put("totalItems", $scope.totalItems);
                 $scope.facets = result.facets;
+                console.log(result);
                 
                 for (var j = 0; j < $scope.registrationStatuses.length; j++) {
                    $scope.registrationStatuses[j].count = 0; 

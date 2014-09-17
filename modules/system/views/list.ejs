@@ -32,12 +32,11 @@
 <hr class="searchInfoHr"/>
 <div class="container-fluid pt30">    
     <script type="text/ng-template"  id="facet_elements_tree.html">
-
         <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="selectedElements.indexOf(e.name) > -1">
             <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e.name}}" ></i>
             <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e.name}}" ></i>
             <span>
-                <small> {{e.name}} ({{e.count}})</small>
+                <small> {{e.name}} <span ng-show="e.elements.length === 0">({{e.count}})<span></small>
             </span>
         </span>
         <div ng-show="selectedElements.indexOf(e.name) > -1" style="margin-left: 5px">
@@ -46,7 +45,6 @@
                 ng-include="'facet_elements_tree.html'"
                 >        
             </div>
-
         </div>
     </script>
 
