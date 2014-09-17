@@ -54,7 +54,6 @@
         <div class="panel-body">
             <h3>Questions</h3>
             <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">
-            <!--<div data-drop="true" jqyoui-droppable="{multiple:true, onDrop:go()}" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">-->
                 <div id="drag-n-drop-area" ng-show="section.formElements.length === 0">
                     <i class="fa fa-exclamation-triangle"></i> To add questions, search for and drag them here.
                     <button id="startAddingQuestions" ng-show="elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default">
@@ -112,7 +111,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
