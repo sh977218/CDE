@@ -1,9 +1,10 @@
 var config = require('config')
     , request = require('request')
     , mongo = require('./mongo-cde')
-    , elastic = require('../../system/node-js/elastic');
-    
-    
+    , elastic = require('../../system/node-js/elastic')
+    , email = require('../../system/node-js/email')
+;
+
 var status = this;
 
 status.statusReport = {
@@ -15,24 +16,57 @@ status.statusReport = {
     }
 };    
 
-exports.status = function(req, res) {    
-    if (status.statusReport.elastic.up && status.statusReport.elastic.results && status.statusReport.elastic.sync && status.statusReport.elastic.updating) {
-        res.send("ALL SERVICES UP");        
-    } else {
-        res.send("ERROR: Please, restart elastic service. Details: " + JSON.stringify(status.statusReport));        
-    }
-    
+exports.everythingOk = function() {
+    return status.statusReport.elastic.up && status.statusReport.elastic.results && status.statusReport.elastic.sync && status.statusReport.elastic.updating;
 };
 
+exports.assembleErrorMessage = function(statusReport) {
+    if (!statusReport.up) return "ElasticSearch service is not responding. ES service might be not running.";
+    if (!statusReport.results) return "ElasticSearch service is not returning any results. Index might be empty.";
+    if (!statusReport.sync) return "ElasticSearch index is completely different from MongoDB. Data might be reingested but ES not updated.";
+    if (!statusReport.updating) return "ElasticSearch service does not reflect modifications in MongoDB. River plugin might be out of order.";
+};
+
+exports.status = function(req, res) {    
+    if (status.everythingOk()) {
+        res.send("ALL SERVICES UP");        
+    } else {
+        var msg = status.assembleErrorMessage(status.statusReport);
+        res.send("ERROR: " + msg);        
+    }
+};
+
+status.delayReports = function() {
+    status.reportSent = true;
+    setTimeout(function() {
+        status.reportSent = false;
+    }, config.status.timeouts.emailSendPeriod);
+};
+
+exports.evaluateResult = function(statusReport) {
+    if (process.uptime()<config.status.timeouts.minUptime) return;
+    if (status.everythingOk()) return;
+    if (status.reportSent) return;
+    var msg = status.assembleErrorMessage(status.statusReport);
+    email.send(msg, function(err) {
+        if (!err) status.delayReports();
+    });
+};
 
 
 status.checkElastic = function(elasticUrl, mongoCollection) {
     request.post(elasticUrl + "_search", {body: JSON.stringify({})}, function (error, response, bodyStr) {
         status.checkElasticUp(error, response, status.statusReport);
-        var body = JSON.parse(bodyStr);     
-        if (status.statusReport.elastic.up) status.checkElasticResults(body, status.statusReport);
-        if (status.statusReport.elastic.results) status.checkElasticSync(body, status.statusReport, mongoCollection);
-        if (status.statusReport.elastic.sync) status.checkElasticUpdating(body, status.statusReport, elasticUrl, mongoCollection);
+        var body = '';
+        try {
+            body = JSON.parse(bodyStr);  
+            if (status.statusReport.elastic.up) status.checkElasticResults(body, status.statusReport);
+            if (status.statusReport.elastic.results) status.checkElasticSync(body, status.statusReport, mongoCollection);
+            if (status.statusReport.elastic.sync) status.checkElasticUpdating(body, status.statusReport, elasticUrl, mongoCollection);            
+        } catch(e) {
+            
+        }
+        status.evaluateResult(status.statusReport);
     });    
 };
 
@@ -99,13 +133,18 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                     } else {
                         statusReport.elastic.updating = true;                        
                     }
-                    mongoCollection.DataElement.remove({"naming.designation":"NLM_APP_Status_Report_" + seed}).exec();
+                    try {
+                        mongoCollection.DataElement.remove({"naming.designation":"NLM_APP_Status_Report_" + seed}).exec();
+                    } catch(e) {
+                        console.log("\n\n\n\n Cannot delete data element \n\n\n");
+                        console.log(e.toString());
+                    }
                 }
             });            
-        }, 30000);
+        }, config.status.timeouts.dummyElementCheck);
     });
 };
 
 setInterval(function() {
     status.checkElastic(elastic.elasticCdeUri, mongo);
-}, 60000);
+}, config.status.timeouts.statusCheck);
