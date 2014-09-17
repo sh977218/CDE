@@ -9,7 +9,7 @@ mongo_data_system.siteadmins(function(err, users) {
 });
 
 var mailOptions = {
-    from: 'CDE Account <cdeuser@nlm.nih.gov>'
+    from: config.account
     , to: ''
     , subject: 'URGENT: Server Problems on ' + config.name
     , text: null

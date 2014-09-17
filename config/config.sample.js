@@ -66,6 +66,7 @@ var config = {
             , minUptime: 60*5 // How long should we wait after starting the app before we send a first negative email? (seconds!)
         }    
     }
+    , account: 'CDE Account <cdeuser@nlm.nih.gov>'    
 };
 
 module.exports = config;
