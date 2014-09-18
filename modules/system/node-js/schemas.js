@@ -26,6 +26,7 @@ schemas.orgSchema = mongoose.Schema ({
 
 schemas.userSchema = mongoose.Schema ({
     username: String
+    , email: String
     , password: String
     , lastLogin: Date
     , lockCounter: Number
