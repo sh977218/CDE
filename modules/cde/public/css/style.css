@@ -249,3 +249,11 @@ dd.formViewDetails {
     border-width: 1px;
     border-color: #ddd;
 }
+
+.dl-horizontal dt {
+    width: 100px;
+}
+
+.dl-horizontal dd {
+    margin-left: 120px;
+}

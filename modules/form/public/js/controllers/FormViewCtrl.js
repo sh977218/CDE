@@ -5,20 +5,20 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
     $scope.dragEnabled = true;
     
     $scope.pageWidthOptions = {
-        sectionAreaWidth: "col-sm-12"
-        , searchAreaWidth: "col-sm-0"
+        sectionAreaWidth: "col-md-12"
+        , searchAreaWidth: "col-md-0"
     };
     
     $scope.setToAddCdeMode = function() {
         $scope.addCdeMode = true;
-        $scope.pageWidthOptions.sectionAreaWidth = "col-sm-6";
-        $scope.pageWidthOptions.searchAreaWidth = "col-sm-6";   
+        $scope.pageWidthOptions.sectionAreaWidth = "col-md-5";
+        $scope.pageWidthOptions.searchAreaWidth = "col-md-7 hidden-sm";   
     }
     
     $scope.setToNoneAddCdeMode = function() {
         $scope.addCdeMode = false;
-        $scope.pageWidthOptions.sectionAreaWidth = "col-sm-12";
-        $scope.pageWidthOptions.searchAreaWidth = "col-sm-0";   
+        $scope.pageWidthOptions.sectionAreaWidth = "col-md-12";
+        $scope.pageWidthOptions.searchAreaWidth = "col-md-0";   
     }
     
     var route = $routeParams;

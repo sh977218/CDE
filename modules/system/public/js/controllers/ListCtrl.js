@@ -2,16 +2,16 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
     $scope.filterMode = true;
 
     $scope.pageWidthOptions = {
-        filterAreaWidth: "col-sm-2"
-        , cdeAreaWidth: "col-sm-10"
+        filterAreaWidth: "col-sm-3"
+        , cdeAreaWidth: "col-sm-9"
     };
     
     $scope.hideShowFilter = function() {
         $scope.filterMode = !$scope.filterMode;
 
         if($scope.filterMode) {
-            $scope.pageWidthOptions.filterAreaWidth = "col-sm-2";
-            $scope.pageWidthOptions.cdeAreaWidth = "col-sm-10";
+            $scope.pageWidthOptions.filterAreaWidth = "col-sm-3";
+            $scope.pageWidthOptions.cdeAreaWidth = "col-sm-9";
         } else {
             $scope.pageWidthOptions.filterAreaWidth = "col-sm-0";
             $scope.pageWidthOptions.cdeAreaWidth = "col-sm-12";
