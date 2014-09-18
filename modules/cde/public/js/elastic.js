@@ -139,7 +139,7 @@ angular.module('resources')
             
             var flatSelection = queryBuilder.flattenSelection(1000);
             if (flatSelection !== "") {
-                queryStuff.query.bool.must.push({term: {flatClassification: flatSelection}});
+                queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
             }
             
 
@@ -172,7 +172,7 @@ angular.module('resources')
                     }
                     var flatFacetFilter = queryBuilder.flattenSelection(i - 1);
                     if (flatFacetFilter !== "") {
-                        queryStuff.facets["elements"+i].facet_filter.and.push({term: {flatClassification: flatFacetFilter}});
+                        queryStuff.facets["elements"+i].facet_filter.and.push({term: {flatClassification: settings.selectedOrg + ";" + flatFacetFilter}});
                     }
                 }
                 queryStuff.aggregations = {

@@ -60,12 +60,6 @@ var riverFunction =
     } else {ctx.document.classificationBoost = .1;}\
     ";
 
-function doClassif() {}
-function flattenClassifications() {
-    for (var i = 0; i < ctx.document.classification.length; i++) {
-        flatClassification.push(doClassif("", ctx.document.classification[i]));
-    }
-}
 
 exports.createRiverJson = { 
     "type": "mongodb",
