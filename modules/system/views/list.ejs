@@ -28,6 +28,9 @@
         <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
         <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
     </button>
+    <button ng-click="showClassifyEntireSearchModal();" ng-show="totalItems>0" class="btn btn-default btn-checkbox pull-right">
+        Classify All
+    </button>
 </div>
 <hr class="searchInfoHr"/>
 <div class="container-fluid pt30">    
