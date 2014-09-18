@@ -35,15 +35,15 @@ var riverFunction =
             }\
      }\
     function flattenClassification(doc) {\
-            if (doc.classification) {\
-                for (var i = 0; i < doc.classification.length; i++) {\
-                    if (doc.classification[i].elements) {\
-                        for (var j=0; j < doc.classification[i].elements.length; j++) {\
-                            doClassif('', doc.classification[i].elements[j]);\
-                        }\
+        if (doc.classification) {\
+            for (var i = 0; i < doc.classification.length; i++) {\
+                if (doc.classification[i].elements) {\
+                    for (var j=0; j < doc.classification[i].elements.length; j++) {\
+                        doClassif(doc.classification[i].stewardOrg.name, doc.classification[i].elements[j]);\
                     }\
                 }\
             }\
+        }\
     }\
     flattenClassification(ctx.document); \
     ctx.document.flatClassifications = flatArray; \

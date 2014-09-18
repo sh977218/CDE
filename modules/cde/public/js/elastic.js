@@ -48,6 +48,10 @@ angular.module('resources')
                 } 
                 return flatSelection;
             };
+            this.escapeRegExp = function(str) {
+                return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            };
+            
             var queryStuff = {size: this.getSize(settings)};
             var searchQ = settings.searchTerm;       
 
@@ -171,18 +175,20 @@ angular.module('resources')
                         queryStuff.facets["elements"+i].facet_filter.and.push({term: {flatClassification: flatFacetFilter}});
                     }
                 }
-                if (flatSelection !== "") {
-                    queryStuff.aggregations = {
-                        flatClassification: {
-                            terms: {
-                                field: "flatClassification",
-                                include: flatSelection + ".*",
-                                exclude: flatSelection + ".*;.*"
-                            } 
-                        }
-                    };
+                queryStuff.aggregations = {
+                    flatClassification: {
+                        terms: {
+                            field: "flatClassification",
+                        } 
+                    }
+                };       
+                if (flatSelection === "") {
+                    queryStuff.aggregations.flatClassification.terms.include = settings.selectedOrg + ";[^;]+";
+                } else {
+                    queryStuff.aggregations.flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
                 }
             }        
+
 
             if (settings.filter !== undefined) {
                 if (settings.filter.and !== undefined) {
@@ -239,8 +245,9 @@ angular.module('resources')
             this.highlight = function(field1,field2, cde) {
                 if (cde.highlight[field1+"."+field2]) {
                     cde.highlight[field1+"."+field2].forEach(function(nameHighlight) {
-                        if (field1.indexOf(".")<0) var elements = cde[field1];
-                        else var elements = cde[field1.replace(/\..+$/,"")][field1.replace(/^.+\./,"")];
+                        var elements;
+                        if (field1.indexOf(".")<0) elements = cde[field1];
+                        else elements = cde[field1.replace(/\..+$/,"")][field1.replace(/^.+\./,"")];
                         elements.forEach(function(nameCde, i){
                             if (nameCde[field2] === nameHighlight.replace(/<[^>]+>/gm, '')) {
                                 nameCde[field2] = nameHighlight;

@@ -60,7 +60,27 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
         var result = [];
         var facetsMatcher = this; 
         facetsMatcher.match($scope.facets.elements, org.classifications, result, 1);
-        return result;        
+        return result;
+//        this.addToClassifTree = function(tree, array) {
+//            if (array.length === 0) {
+//                return;
+//            } else if (array.length === 1) {
+//                for (var i = 0; i < $scope.aggregations.flatClassification.buckets.length; i++) {
+//                    var splitStr = $scope.aggregations.flatClassification.buckets[i].split(";");
+//                    tree.push({name: splitStr[splitStr.length - 1]});
+//                }
+//            } else {
+//                var newElt = {name: array[0], elements: []}
+//                this.addToClassifTree(newElt.elements, array.shift());
+//                tree.push(newElt);
+//            }
+//        };
+//        var classifTree = [];
+//        if ($scope.aggregations.flatClassification && $scope.aggregations.flatClassification.buckets.length > 0) {
+//            var classifArray = $scope.aggregations.flatClassification.buckets[0].key.split(";");
+//            addToClassifTree(classifTree, classifArray)
+//        }
+//        return classifTree;
     };    
 
     $scope.resetSearch = function() {
@@ -164,7 +184,8 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                 $scope.totalItems = result.totalNumber;
                 $scope.cache.put("totalItems", $scope.totalItems);
                 $scope.facets = result.facets;
-                console.log(result);
+                $scope.aggregations = result.aggregations;
+                console.log(result.aggregations);
                 
                 for (var j = 0; j < $scope.registrationStatuses.length; j++) {
                    $scope.registrationStatuses[j].count = 0; 
@@ -189,7 +210,8 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                 }    
                 
                 $scope.classifications = {elements: []};
-
+                
+//                if ($scope.aggregations !== undefined) {
                 if ($scope.facets.elements !== undefined) {
                     $http.get("/org/" + $scope.selectedOrg).then(function(response) {
                         var org = response.data;
