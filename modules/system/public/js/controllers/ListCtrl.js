@@ -234,7 +234,9 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
         var data = {
             query: $scope.query.query
             , newClassification: newClassification
+            , itemType: $scope.module
         };
+        data.query.size = 100000;
         $http.post('/classifyEntireSearch', data).success(function() {}).error(function() {});  
     };
 }

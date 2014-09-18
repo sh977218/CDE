@@ -461,4 +461,11 @@ exports.init = function(app, daoManager) {
     });        
     
     app.get('/status/cde', status.status);
+    
+//    app.post('/classifyEntireSearch/cde', function(req, res) {
+//        appSystem.classifyEntireSearch(req, elastic, mongo_data, function(err) {
+//            if (!err) res.send(200);
+//            else res.send(202);
+//        });
+//    });    
 };

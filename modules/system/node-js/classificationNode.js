@@ -3,6 +3,7 @@ var mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , usersvc = require('../../system/node-js/usersrvc')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
+    , elastic = require('./elastic')
 ;
 
 var classification = this;
@@ -98,5 +99,17 @@ exports.addOrgClassification = function(body, cb) {
 };
 
 exports.classifyEntireSearch = function(req) {
-    console.log(req);
+    elastic.elasticsearch(req.query, req.itemType, function(result) {
+        var ids = result.cdes.map(function(cde) {return cde._id;});
+        ids.forEach(function(id){
+            var classifReq = {
+                orgName: req.newClassification.orgName
+                , categories: req.newClassification.categories
+                , cdeId: id
+            };
+            exports.cdeClassification(classifReq, classificationShared.actions.create,function() {
+                console.log("classified, id "+ id);
+            });
+        });
+    });
 };
