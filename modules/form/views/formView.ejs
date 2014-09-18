@@ -4,19 +4,24 @@
 
     <h3>{{elt.naming[0].designation}}</h3>
 
-    <div tabset>
-        <div tab heading="General Details">
-            <div ng-include="'/form/public/html/formGeneralDetails.html'"></div>
-        </div>
-        <div tab heading="Form Description">
-            <div ng-include="'/form/public/html/formDescription.html'"></div>
-        </div>
-        <div tab heading="Identifiers">
-            <div ng-include="'/system/public/html/identifiers.html'"></div>
-        </div>
-        <div tab heading="Attachments">
-            <div ng-include="'/system/public/html/attachments.html'"></div>
-        </div>
+<div tabset>
+    <div tab heading="General Details">
+        <div ng-include="'/form/public/html/formGeneralDetails.html'"></div>
+    </div>
+    <div tab heading="Form Description">
+        <div ng-include="'/form/public/html/formDescription.html'"></div>
+    </div>
+    <div tab heading="Properties">
+        <div ng-include="'/system/public/html/properties.html'"></div>
+    </div>
+    <div tab heading="Identifiers">
+        <div ng-include="'/system/public/html/identifiers.html'"></div>
+    </div>
+    <div tab heading="Attachments">
+        <div ng-include="'/system/public/html/attachments.html'"></div>
+    </div>
+    <div tab heading="Classification">
+        <div ng-include="'/template/system/elementClassification'"></div>
     </div>
 </div>
 

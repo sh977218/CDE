@@ -12,9 +12,10 @@ var mongoUri = config.mongoUri;
 
 var conn = mongoose.createConnection(mongoUri);
 conn.on('error', console.error.bind(console, 'connection error:'));
+
 conn.once('open', function callback () {
-	console.log('mongodb connection open');
-    });    
+    console.log('mongodb connection open');
+});    
 exports.mongoose_connection = conn;
 
 var User = conn.model('User', schemas_system.userSchema);

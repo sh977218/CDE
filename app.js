@@ -14,6 +14,7 @@ var express = require('express')
   , auth = require( './modules/system/node-js/authentication' )//TODO: MOVE TO SYSTEM
   , logging = require('./modules/system/node-js/logging.js')
   , daoManager = require('./modules/system/node-js/moduleDaoManager.js')
+  , domain = require('domain').create()
 ;
 
 passport.serializeUser(function(user, done) {
@@ -34,6 +35,10 @@ app.use(auth.ticketAuth);
 
 process.on('uncaughtException', function (err) {
   logging.processLogger.error('Caught exception: ' + err.stack);
+});
+
+domain.on('error', function(err){
+    console.log(err); 
 });
 
 var winstonStream = {
@@ -115,6 +120,10 @@ try {
 
 
 
-http.createServer(app).listen(app.get('port'), function(){
-    console.log('Express server listening on port ' + app.get('port'));
+
+
+domain.run(function(){
+    http.createServer(app).listen(app.get('port'), function(){
+        console.log('Express server listening on port ' + app.get('port'));
+    });
 });

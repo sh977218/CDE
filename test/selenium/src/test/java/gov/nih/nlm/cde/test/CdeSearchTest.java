@@ -238,21 +238,21 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     public void StandardStatusWarningCheck() {
         // Check that a none Standard or Preferred Standard CDE doesn't have warning message when not logged in
         goToCdeByName("Specimen Collection Sampling Number");
-        textNotPresent("Warning: CDEs with a Standard or Preferred Standard status can't be edited.");
+        textNotPresent("Note: You may not edit this CDE because it is standard.");
 
         // Check that a Standard CDE doesn't have warning message when viewed by none owner
         goToCdeByName("Adverse Event Ongoing Event Indicator");
-        textNotPresent("Warning: CDEs with a Standard or Preferred Standard status can't be edited.");
+        textNotPresent("Note: You may not edit this CDE because it is standard.");
         
         // Check that a Standard CDE doesn't have warning message when viewed by site admin
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Adverse Event Ongoing Event Indicator");
-        textNotPresent("Warning: CDEs with a Standard or Preferred Standard status can't be edited.");
+        textNotPresent("Note: You may not edit this CDE because it is standard.");
         
         // Check that a Standard CDE have warning message
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Person Birth Date");
-        textPresent("Warning: CDEs with a Standard or Preferred Standard status can't be edited.");
+        textPresent("Note: You may not edit this CDE because it is standard.");
     }
     
 }
