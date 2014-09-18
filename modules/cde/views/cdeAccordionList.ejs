@@ -5,9 +5,9 @@
                 <span ng-bind-html="cde.primaryNameCopy" id="acc_link_{{$index}}" class="hand-cursor"></span>
                 <i ng-show="!openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(cde,'view',$event)" title="View"></i>
                 <i ng-show="openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(cde,'viewNewTab',$event)" title="View"></i>
-                <i ng-show="user._id && ejsPage!='board' && ejsPage!=='formCreateList'" class="fa fa-thumb-tack hand-cursor" ng-click="accordionIconAction(cde,'openPinModal',$event)" title="Pin"> </i>
-                <i ng-show="user._id && ejsPage=='board'" class="fa fa-thumb-tack fa-rotate-90 hand-cursor" ng-click="unpin(board.pins[$index])" title="unPin" id="unpin_{{$index}}"> </i>          
-                <i ng-show="showCompareButton(cde) && ejsPage!=='formCreateList'" class="fa fa-plus hand-cursor" ng-click="accordionIconAction(cde,'addToQuickBoard',$event)" title="Add to Quick Board" id="addToCompare_{{$index}}"></i>
+                <i ng-show="user._id && ejsPage!=='board' && cPage!=='forms'" class="fa fa-thumb-tack hand-cursor" ng-click="accordionIconAction(cde,'openPinModal',$event)" title="Pin"> </i>
+                <i ng-show="user._id && ejsPage==='board'" class="fa fa-thumb-tack fa-rotate-90 hand-cursor" ng-click="unpin(board.pins[$index])" title="unPin" id="unpin_{{$index}}"> </i>          
+                <i ng-show="showCompareButton(cde) && cPage!=='forms'" class="fa fa-plus hand-cursor" ng-click="accordionIconAction(cde,'addToQuickBoard',$event)" title="Add to Quick Board" id="addToCompare_{{$index}}"></i>
                 <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-hide="ejsPage!='quickboard'" ng-click="removeDE($index)" title="remove" id="remove_{{$index}}"></i>              
                 <small class="matched-by" ng-show="cde.highlight.matchedBy">Matched by: <strong><span ng-bind-html="cde.highlight.matchedBy"></span></strong></small>
             </div>

@@ -7,7 +7,8 @@
 <div ng-show="elt.formElements.length === 0">
     <i class="fa fa-exclamation-triangle"></i> This form is empty. Get started by adding sections. Then add questions to each section.
 </div>
-<div ng-repeat="section in elt.formElements">
+
+<div ng-repeat="(sectionIndex, section) in elt.formElements">
     <div class="panel panel-default" id="section_view_{{$index}}">
         <div class="panel-heading">
             <h3>Section {{$index+1}}</h3>
@@ -15,9 +16,9 @@
                 <div class="col-md-6">
                     <dl class="dl-horizontal">
                         <dt>Title: </dt>
-                        <dd id="dd_section_title_{{$index}}"><div inline-edit model="section.label" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+                        <dd id="dd_section_title_{{$index}}"><div inline-edit model="section.label" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
                         <dt>Instructions: </dt>
-                        <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="isAllowed(form)" on-ok="stageElt()"> </div></dd>
+                        <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
                         <dt>Cardinality: </dt>
                         <dd id="dd_card_{{$index}}">
                             <span ng-show="editCardMode">
@@ -27,7 +28,7 @@
                                 <button class="fa fa-times" ng-click="editCardMode = false; section.cardinality = orig"> Discard</button>
                             </span>
                             <span ng-hide="editCardMode">
-                                <i ng-show="isAllowed(form)" class="fa fa-edit" ng-click="editCardMode = true; orig = section.cardinality" id="edit_section_card_{{$index}}"></i> {{cardinalityOptions[section.cardinality]}}
+                                <i ng-show="canCurate" class="fa fa-edit" ng-click="editCardMode = true; orig = section.cardinality" id="edit_section_card_{{$index}}"></i> {{cardinalityOptions[section.cardinality]}}
                             </span>
                         </dd>
                     </dl>
@@ -54,18 +55,11 @@
         <div class="panel-body">
             <h3>Questions</h3>
             <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">
-                <div id="drag-n-drop-area" ng-show="section.formElements.length === 0">
-                    <i class="fa fa-exclamation-triangle"></i> To add questions, search for and drag them here.
-                    <button id="startAddingQuestions" ng-show="elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default">
-                        <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
-                        <span ng-show="addCdeMode"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
-                    </button>
-                </div>
-                <div ng-repeat="question in section.formElements" id="question_{{$index}}">
+                <div ng-repeat="(questionIndex, question) in section.formElements" id="question_{{$index}}">
                     <div accordion close-others="false" id="" ng-class="accordionListStyle" >
                         <div accordion-group is-open="" >
                             <div accordion-heading>
-                                <span ng-bind-html="question.label | placeholdEmpty" id="question_accordion_{{$index}}" class="hand-cursor"></span>
+                                <span ng-bind-html="question.label | placeholdEmpty" id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></span>
                                 <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeQuestion(section, $index)" title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>
                             </div>
                             <dl class="dl-horizontal">
@@ -84,8 +78,8 @@
                                         <button class="fa fa-times" ng-click="editCardMode = false; question.cardinality = orig"> Discard</button>
                                     </span>
                                     <span ng-hide="editCardMode">
-                                           <i ng-show="canCurate" class="fa fa-edit" ng-click="editCardMode = true; orig = question.cardinality"
-                                              id="editQuestion"></i> {{cardinalityOptions[question.cardinality]}}
+                                        <i ng-show="canCurate" class="fa fa-edit" ng-click="editCardMode = true; orig = question.cardinality"
+                                           id="editQuestion"></i> {{cardinalityOptions[question.cardinality]}}
                                     </span>
                                 </dd>    
                                 <dt>Datatype: </dt>
@@ -109,6 +103,13 @@
                             </dl>
                         </div>
                     </div>
+                </div>
+                <div ng-show="section.formElements.length === 0">
+                    <i class="fa fa-exclamation-triangle"></i> To add questions, search for and drag them here.
+                    <button id="startAddingQuestions_question_{{$index}}" ng-show="elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default">
+                        <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
+                        <span ng-show="addCdeMode"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
+                    </button>
                 </div>
             </div>
         </div>

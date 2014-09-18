@@ -53,7 +53,9 @@ public class QuestionTest extends BaseFormTest {
         
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
 
-        Assert.assertEquals("Person Birth Date", findElement(By.id("dd_question_title_0")).getText());
+        Assert.assertEquals("Person Birth Date", findElement(By.id("question_accordion_0_0")).getText());
+        findElement(By.id("question_accordion_0_0")).click();
+        
         findElement(By.xpath("//dd[@id='dd_question_title_0']//i")).click();
         modalHere();
         findElement(By.xpath("//div[@id='q_select_name_3']//button")).click();
@@ -109,7 +111,8 @@ public class QuestionTest extends BaseFormTest {
 
         findElement(By.linkText("Form Description")).click();
 
-        
+        Assert.assertEquals("Date of Birth", findElement(By.id("question_accordion_0_0")).getText());
+        findElement(By.id("question_accordion_0_0")).click();
         Assert.assertEquals("Date of Birth", findElement(By.id("dd_question_title_0")).getText());
         Assert.assertEquals("Instructions for PBD", findElement(By.id("dd_question_instructions_0")).getText());
         Assert.assertTrue(findElement(By.xpath("//dd[@id='dd_question_required_0']/input")).isSelected());
@@ -137,23 +140,36 @@ public class QuestionTest extends BaseFormTest {
         sourceElt = findElement(By.id("acc_link_0"));
         targetElt = findElement(By.id("section_drop_area_1"));
 
+        scrollTo("500");
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+        findElement(By.id("question_accordion_1_0")).click();
+
         Assert.assertEquals("Value List", findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_datatype_0']")).getText().trim());
         Assert.assertFalse(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
+
         findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).click();
         
+        scrollTo("1500");
+        
         saveForm();
+        
         findElement(By.linkText("Form Description")).click();
+        findElement(By.id("question_accordion_1_0")).click();
 
         Assert.assertTrue(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
+
+        findElement(By.id("startAddingQuestions")).click();
+
         sourceElt = findElement(By.xpath("//div[@id='section_drop_area_1']//div[@id='question_0']"));
         targetElt = findElement(By.id("section_drop_area_0"));
-        
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
- 
+        scrollTo("1500");
+    
         saveForm();
-        findElement(By.linkText("Form Description")).click();
 
+        findElement(By.linkText("Form Description")).click();
+        findElement(By.id("question_accordion_0_0")).click();
+        
         Assert.assertEquals(2, driver.findElements(By.xpath("//div[@id='section_drop_area_0']//div[starts-with(@id, 'question_')]")).size());
 
         findElement(By.id("remove_q_0")).click();
@@ -163,7 +179,6 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.linkText("Form Description")).click();
         Assert.assertEquals(0, driver.findElements(By.xpath("//div[@id='section_drop_area_0']//div[starts-with(@id, 'question_')]")).size());
 
-                 
    }
     
 }

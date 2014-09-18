@@ -18,7 +18,7 @@
 <hr class="searchInfoHr"/>
 <div class="container-fluid searchInfo">
     <span class="pt8 pb8 ib"><strong>{{totalItems}}</strong> results for {{selectedOrg?getSelectedClassifications():'All Classifications'}} | <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> | {{getSelectedStatuses()?getSelectedStatuses():'All Status'}}</span>
-    <a href="#/cdeSearchExport" ng-show="totalItems>0 && currentPage != 'createForm'">
+    <a href="#/cdeSearchExport" ng-show="totalItems>0 && cPage !== 'forms'">
         <button id="gridView" value="Grid View" class="btn btn-default pull-right">
             <i class="fa fa-table"></i>
             Grid View
@@ -86,7 +86,7 @@
         <div ng-class="pageWidthOptions.cdeAreaWidth">
             <span ng-hide="cdes.length >= 0"><h4><i class="fa fa-spinner fa-spin"></i> Searching...</h4></span>
             <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found.</h4></span>
-            <div id="accordionList" ng-include="'/template/'+module+'/'+module+'AccordionList'" ng-init="ejsPage = 'formCreateList';"></div>
+            <div id="accordionList" ng-include="'/template/'+module+'/'+module+'AccordionList'"></div>
             <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="searchForm.currentPage"></pagination>
         </div>
     </div>
