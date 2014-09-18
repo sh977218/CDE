@@ -344,4 +344,15 @@ exports.init = function(app, daoManager) {
             else res.send(202, {error: {message: "Classification does not exists."}});
         });
     });    
+    
+    app.post('/classifyEntireSearch', function(req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
+            res.send(403, "Not Authorized");
+            return;
+        }      
+        classificationNode.classifyEntireSearch(req.body, function(err) {
+            if (!err) res.send();
+            else res.send(202, {error: {message: "Unable to classify."}});
+        });        
+    });
 };

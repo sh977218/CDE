@@ -96,3 +96,7 @@ exports.addOrgClassification = function(body, cb) {
         });
     });
 };
+
+exports.classifyEntireSearch = function(req) {
+    console.log(req);
+};
