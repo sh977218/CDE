@@ -80,6 +80,7 @@ exports.createFormIndexJson = {
         "form" : {
             "properties" : {
                 "stewardOrg.name" : { "type" : "string", "index" : "not_analyzed" }
+                , "flatClassifications": { "type" : "string", "index" : "not_analyzed", "index_name": "flatClassification"}
                 , "classification.elements.name": { "type" : "string", "index" : "not_analyzed" }
                 , "classification.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }
                 , "classification.elements.elements.elements.name": { "type" : "string", "index" : "not_analyzed" }

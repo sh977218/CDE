@@ -205,7 +205,7 @@ angular.module('resources')
                     }
                 }
             };
-                        
+                    
             return callback({query: queryStuff});
         }              
         , generalSearchQuery: function(query, type, cb) {          
