@@ -55,7 +55,7 @@ app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ic
 
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(express.cookieParser('your secret here'));
+app.use(express.cookieParser('your secret here', {secure: true}));
 
 var sessionStore = new MongoStore({
     mongoose_connection: mongo_data_system.mongoose_connection  
