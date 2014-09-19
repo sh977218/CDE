@@ -28,7 +28,7 @@
         <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
         <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
     </button>
-    <button id="classifyAll" ng-click="showClassifyEntireSearchModal();" ng-show="totalItems>0 && (isOrgCurator() || isOrgAdmin())" class="btn btn-default btn-checkbox pull-right">
+    <button id="classifyAll" ng-click="showClassifyEntireSearchModal();" ng-show="totalItems>0 && isOrgCurator()" class="btn btn-default btn-checkbox pull-right">
         Classify All
     </button>
 </div>
