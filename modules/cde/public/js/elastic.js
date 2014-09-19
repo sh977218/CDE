@@ -153,31 +153,14 @@ angular.module('resources')
             }
 
             if (settings.selectedOrg !== undefined) {
-                queryStuff.facets.elements = {
-                    terms: {field: "classification.elements.name", size: 500}
-                    , facet_filter: {and: [{term: {"classification.stewardOrg.name": settings.selectedOrg}}]}
-                };
-                if (!settings.isSiteAdmin) {
-                    queryStuff.facets.elements.facet_filter.and.push({or: lowRegStatusOrCuratorFilter});
-                }
-
-                for (var i=2; i<=settings.selectedElements.length+1; i++) {   
-                    var fd = queryBuilder.countFacetsDepthString(i);
-                    queryStuff.facets["elements"+i] = {
-                        terms: {field: fd, size: 500}
-                        , facet_filter: {and: [{term: {"classification.stewardOrg.name": settings.selectedOrg}}]}
-                    };
-                    if (!settings.isSiteAdmin) {
-                        queryStuff.facets["elements" + i].facet_filter.and.push({or: lowRegStatusOrCuratorFilter});
-                    }
-                    var flatFacetFilter = queryBuilder.flattenSelection(i - 1);
-                    if (flatFacetFilter !== "") {
-                        queryStuff.facets["elements"+i].facet_filter.and.push({term: {flatClassification: settings.selectedOrg + ";" + flatFacetFilter}});
-                    }
-                }
+                var flatFacetFilter = queryBuilder.flattenSelection(i - 1);
+//                if (flatFacetFilter !== "") {
+//                    queryStuff.facets["elements"+i].facet_filter.and.push({term: {flatClassification: settings.selectedOrg + ";" + flatFacetFilter}});
+//                }
                 queryStuff.aggregations = {
                     flatClassification: {
                         terms: {
+                            size: 500,
                             field: "flatClassification",
                         } 
                     }
@@ -222,9 +205,7 @@ angular.module('resources')
                     }
                 }
             };
-            
-            console.log(queryStuff);
-            
+                        
             return callback({query: queryStuff});
         }              
         , generalSearchQuery: function(query, type, cb) {          

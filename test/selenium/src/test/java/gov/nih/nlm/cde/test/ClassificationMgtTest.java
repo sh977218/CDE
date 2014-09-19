@@ -151,6 +151,6 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification,Supplemental"));
         findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/a/span")).click();      
         hangon(1);
-        Assert.assertTrue(textPresent("Spinal Cord Injuries (5"));
+        Assert.assertTrue(textPresent("Spinal Cord Injuries"));
     }
 }

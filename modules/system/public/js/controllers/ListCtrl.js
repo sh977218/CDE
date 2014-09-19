@@ -98,13 +98,13 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
     $scope.selectElement = function(e) {        
         if ($scope.selectedElements === undefined) {
             $scope.selectedElements = [];
-            $scope.selectedElements.push(e.name);
+            $scope.selectedElements.push(e);
         } else {
-            var i = $scope.selectedElements.indexOf(e.name);
+            var i = $scope.selectedElements.indexOf(e);
             if (i > -1) {
                 $scope.selectedElements.length = i;
             } else {
-                $scope.selectedElements.push(e.name);
+                $scope.selectedElements.push(e);
             }
         }
         $scope.cache.put("selectedElements", $scope.selectedElements);
@@ -171,6 +171,8 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                     $scope.aggregations = result.aggregations.flatClassification.buckets.map(function (c) {
                         return {name: c.key.split(';').pop(), count: c.doc_count};
                     });
+                } else {
+                    $scope.aggregations = [];
                 }
                 
                 OrgHelpers.addLongNameToOrgs($scope.facets.orgs.terms, $rootScope.orgsDetailedInfo);
