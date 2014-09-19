@@ -154,9 +154,6 @@ angular.module('resources')
 
             if (settings.selectedOrg !== undefined) {
                 var flatFacetFilter = queryBuilder.flattenSelection(i - 1);
-//                if (flatFacetFilter !== "") {
-//                    queryStuff.facets["elements"+i].facet_filter.and.push({term: {flatClassification: settings.selectedOrg + ";" + flatFacetFilter}});
-//                }
                 queryStuff.aggregations = {
                     flatClassification: {
                         terms: {
