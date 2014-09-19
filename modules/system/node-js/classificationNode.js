@@ -98,8 +98,10 @@ exports.addOrgClassification = function(body, cb) {
     });
 };
 
-exports.classifyEntireSearch = function(req) {
+exports.classifyEntireSearch = function(req, cb) {
     elastic.elasticsearch(req.query, req.itemType, function(result) {
+        var cdesNumber = result.cdes.length;
+        var cdesClassified = 0;
         var ids = result.cdes.map(function(cde) {return cde._id;});
         ids.forEach(function(id){
             var classifReq = {
@@ -107,9 +109,17 @@ exports.classifyEntireSearch = function(req) {
                 , categories: req.newClassification.categories
                 , cdeId: id
             };
-            exports.cdeClassification(classifReq, classificationShared.actions.create,function() {
-                console.log("classified, id "+ id);
+            exports.cdeClassification(classifReq, classificationShared.actions.create, function() {
+                cdesClassified++;
+                if (cdesNumber === cdesClassified) {
+                    cb();
+                    clearTimeout(timoeut);
+                }
             });
         });
+        var timoeut = setTimeout(function(){
+            if (cdesNumber === cdesClassified) cb();
+            else cb("not classified everything");
+        }, 3000);
     });
 };

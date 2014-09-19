@@ -237,6 +237,10 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
             , itemType: $scope.module
         };
         data.query.size = 100000;
-        $http.post('/classifyEntireSearch', data).success(function() {}).error(function() {});  
+        $http.post('/classifyEntireSearch', data).success(function() {
+            $scope.addAlert("success", "Search result classified.");  
+        }).error(function() {
+            $scope.addAlert("danger", "Search result was not classified completely!");  
+        });  
     };
 }
