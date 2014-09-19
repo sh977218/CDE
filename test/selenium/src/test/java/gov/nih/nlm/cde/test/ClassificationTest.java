@@ -75,9 +75,9 @@ public class ClassificationTest extends NlmCdeBaseTest {
         hangon(1);
         Assert.assertTrue(textPresent("Classifications"));
         Assert.assertTrue(textPresent("NINDS (7)"));
-        Assert.assertTrue(textPresent("Imaging Diagnostics (7)"));
-        Assert.assertTrue(textPresent("Spinal Muscular Atrophy (7)"));
-        List<WebElement> linkList = driver.findElements(By.xpath("//small[text()=' Disease (7)']"));
+        Assert.assertTrue(textPresent("Imaging Diagnostics"));
+        Assert.assertTrue(textPresent("Spinal Muscular Atrophy"));
+        List<WebElement> linkList = driver.findElements(By.xpath("//small[text()='Disease']"));
         Assert.assertEquals(linkList.size(), 1);
     }
     

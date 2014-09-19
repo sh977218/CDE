@@ -34,25 +34,6 @@
 </div>
 <hr class="searchInfoHr"/>
 <div class="container-fluid pt30">    
-    <script type="text/ng-template"  id="facet_elements_tree.html">
-
-        <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="selectedElements.indexOf(e.name) > -1">
-            <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e.name}}" ></i>
-            <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e.name}}" ></i>
-            <span>
-                <small> {{e.name}} ({{e.count}})</small>
-            </span>
-        </span>
-        <div ng-show="selectedElements.indexOf(e.name) > -1" style="margin-left: 5px">
-            <div ng-repeat="e in e.elements | orderBy:'name'"
-                ng-show="selectedElements.indexOf(e.name) > -1 || e.level > selectedElements.length"
-                ng-include="'facet_elements_tree.html'"
-                >        
-            </div>
-
-        </div>
-    </script>
-
     <div class="row">
         <div class="col-sm-2 hidden-xs">
             <p ng-show="facets.orgs.terms" class="gray">Filter results by:</p>
@@ -67,10 +48,23 @@
                 </li>
             </ul>
             <div id="classification-facets">
-                <div ng-repeat="e in classifications.elements | orderBy:'name'"
-                    ng-show="selectedElements.indexOf(e.name) > -1 || selectedElements.length < 1"
-                    ng-include="'facet_elements_tree.html'"
-                    >
+                <div ng-repeat="e in selectedElements" style="margin-left:{{$index * 5}}px;">
+                    <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="selectedElements.indexOf(e) > -1">
+                        <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e}}" ></i>
+                        <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e}}" ></i>
+                        <span>
+                            <small>{{e}}</small>
+                        </span>
+                    </span>
+                </div>  
+                <div ng-repeat="b in aggregations | orderBy:'name'" style="margin-left:{{selectedElements.length * 5}}px;">
+                    <span ng-click="selectElement(b.name)" class="hand-cursor" ng-switch="selectedElements.indexOf(b.name) > -1">
+                        <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{b.name}}" ></i>
+                        <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{b.name}}" ></i>
+                        <span>
+                            <small> {{b.name}} ({{b.count}})</small>
+                        </span>
+                    </span>
                 </div>
             </div>
             <strong ng-show="facets.statuses.terms">Status</strong> 

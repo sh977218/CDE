@@ -24,6 +24,7 @@ exports.elasticsearch = function (query, type, cb) {
             result.cdes.push(thisCde);
         }
         result.facets = resp.facets;
+        result.aggregations = resp.aggregations;
         cb(result);
      } else {
          console.log("es error: " + error + " response: " + response.statusCode);
