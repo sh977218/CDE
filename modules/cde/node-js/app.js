@@ -173,12 +173,12 @@ exports.init = function(app, daoManager) {
         if (!req.user) {
             res.send("You must be logged in to do that");
         } else {
-            var splicedArray = splicedArray = req.user.viewHistory.splice(req.params.start, 10);
+            var splicedArray = req.user.viewHistory.splice(req.params.start, 10);
             var idList = [];
             for (var i = 0; i < splicedArray.length; i++) {
                 idList.push(splicedArray[i]);
             }
-            mongo_data.cdesByIdList(idList, function(err, cdes) {
+            mongo_data.cdesByTinyIdList(idList, function(err, cdes) {
                 res.send(cdesvc.hideProprietaryPvs(cdes, req.user));
             });
         }
