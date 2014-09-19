@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ctepCurator_username;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -125,7 +126,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("codeId")).sendKeys("DEC_CODE_111");
         findElement(By.id("createConcept")).click();
         hangon(5);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("addConcept")));
+        shortWait.until(ExpectedConditions.elementToBeClickable(By.id("addConcept")));
         findElement(By.id("addConcept")).click();
         modalHere();
         findElement(By.name("name")).sendKeys("OC1");
@@ -184,7 +185,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);   
         Assert.assertTrue(textPresent("<b>bold</b>"));
         findElement(By.cssSelector("#dd_def .fa-edit")).click();
-//        findElement(By.cssSelector(".tab-pane:nth-child(1) .definitionFormatRadio button:nth-child(2)")).click();
         findElement(By.xpath("//dd[@id='dd_def']//button[text() = 'Rich Text']")).click();
         hangon(2);
         findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
@@ -196,4 +196,46 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textNotPresent("<b>bold</b>"));        
     }    
 
+    @Test
+    public void doNotSaveIfPendingChanges() {   
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        String cdeName = "ATRA Agent Current Report Period Administered Ind-2";
+        goToCdeByName(cdeName);
+        findElement(By.cssSelector("i.fa-edit")).click();
+        findElement(By.xpath("//span/span[2]/input")).sendKeys("[name change number 1]");
+        findElement(By.cssSelector(".fa-check")).click();
+        findElement(By.linkText("Classification")).click();
+        
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("addClassification")));
+        
+        findElement(By.linkText("Properties")).click();
+
+        findElement(By.id("addProperty")).click();
+        modalHere();
+        findElement(By.name("key")).sendKeys("MyKey2");
+        findElement(By.name("value")).sendKeys("MyValue2");
+        findElement(By.id("createProperty")).click();
+        Assert.assertTrue(textPresent("Property added. Save to confirm."));
+        modalGone();
+        findElement(By.id("removeProperty-0")).click();
+        findElement(By.id("confirmRemoveProperty-0")).click();
+        Assert.assertTrue(textPresent("Property removed. Save to confirm."));
+
+        findElement(By.linkText("Identifiers")).click();
+        findElement(By.id("addId")).click();
+        modalHere();
+        findElement(By.name("source")).sendKeys("MyOrigin1");
+        findElement(By.name("id")).sendKeys("MyId1");
+        findElement(By.name("version")).sendKeys("MyVersion1");
+        findElement(By.id("createId")).click();
+        Assert.assertTrue(textPresent("Identifier added. Save to confirm."));
+        modalGone();
+        
+        findElement(By.id("removeId-1")).click();
+        findElement(By.id("confirmRemoveId-1")).click();
+        Assert.assertTrue(textPresent("Identifier removed. Save to confirm."));
+        
+    }
+    
+    
 }
