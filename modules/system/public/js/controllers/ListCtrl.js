@@ -39,29 +39,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
         t.selected = !t.selected;
         $scope.cache.put("registrationStatuses", $scope.registrationStatuses);
         $scope.reload();
-    };
-    
-    $scope.matchFacetsOrgs = function(org) {
-        this.match = function(facets, orgClassifs, parent, level) {
-            if (facets === undefined || facets.terms === undefined) return;
-            facets.terms.forEach(function (term) {
-                if (orgClassifs) {
-                  orgClassifs.forEach(function (oe3) {
-                      if (oe3.name === term.term) {
-                          var elt = {name: term.term, count: term.count, elements: [], level: level};
-                          facetsMatcher.match($scope.facets["elements"+(level+1)], oe3.elements, elt.elements, level+1);
-                          parent.push(elt);
-                      }
-                  });
-                }
-            });                     
-        };
-        
-        var result = [];
-        var facetsMatcher = this; 
-        facetsMatcher.match($scope.facets.elements, org.classifications, result, 1);
-        return result;        
-    };    
+    }; 
 
     $scope.resetSearch = function() {
         delete $scope.facets;
@@ -120,13 +98,13 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
     $scope.selectElement = function(e) {        
         if ($scope.selectedElements === undefined) {
             $scope.selectedElements = [];
-            $scope.selectedElements.push(e.name);
+            $scope.selectedElements.push(e);
         } else {
-            var i = $scope.selectedElements.indexOf(e.name);
+            var i = $scope.selectedElements.indexOf(e);
             if (i > -1) {
                 $scope.selectedElements.length = i;
             } else {
-                $scope.selectedElements.push(e.name);
+                $scope.selectedElements.push(e);
             }
         }
         $scope.cache.put("selectedElements", $scope.selectedElements);
@@ -188,14 +166,13 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                 }    
                 
                 $scope.classifications = {elements: []};
-
-                if ($scope.facets.elements !== undefined) {
-                    $http.get("/org/" + $scope.selectedOrg).then(function(response) {
-                        var org = response.data;
-                        if (org.classifications) {
-                            $scope.classifications.elements = $scope.matchFacetsOrgs(org);
-                        }
+                
+                if (result.aggregations !== undefined) {
+                    $scope.aggregations = result.aggregations.flatClassification.buckets.map(function (c) {
+                        return {name: c.key.split(';').pop(), count: c.doc_count};
                     });
+                } else {
+                    $scope.aggregations = [];
                 }
                 
                 OrgHelpers.addLongNameToOrgs($scope.facets.orgs.terms, $rootScope.orgsDetailedInfo);
