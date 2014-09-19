@@ -214,7 +214,6 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
             , itemType: $scope.module
         };
         data.query.size = 100000;
-        //$http({timeout: 1500}).post('/classifyEntireSearch', data).success(function() {
         $http({method: 'post', url: '/classifyEntireSearch', timeout: 3000, data: data}).success(function() {
             $scope.addAlert("success", "Search result classified.");  
         }).error(function() {

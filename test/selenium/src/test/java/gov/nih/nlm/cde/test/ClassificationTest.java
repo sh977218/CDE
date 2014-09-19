@@ -8,9 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ClassificationTest extends NlmCdeBaseTest {  
-
-    
-    /*@Test
+    @Test
     public void addClassification() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         goToCdeByName("Surgical Procedure Other Anatomic Site Performed Indicator");
@@ -91,7 +89,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         addClassificationMethod(new String[]{"NINDS","Disease"});
         List<WebElement> linkList = driver.findElements(By.cssSelector("li[id$='Disease']"));
         Assert.assertTrue(linkList.size() == 1);
-    }*/
+    }
     
     @Test
     public void classifyEntireSearch() {
