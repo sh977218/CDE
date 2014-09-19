@@ -1,4 +1,5 @@
 function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
+    $scope.query = null;
 
     $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
     if ($scope.registrationStatuses === undefined) {
@@ -125,8 +126,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
             result += " : " + $scope.selectedElements.join(" : ");
         }
         return result;
-    };
-    
+    };    
     
     $scope.reload = function() {
         if (!$scope.userLoaded) return;
@@ -134,6 +134,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
         Elastic.buildElasticQueryPre($scope);
         var settings = Elastic.buildElasticQuerySettings($scope);
         Elastic.buildElasticQuery(settings, function(query) {
+            $scope.query = query;
             Elastic.generalSearchQuery(query, $scope.module,  function(result) {
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
@@ -178,6 +179,45 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                 OrgHelpers.addLongNameToOrgs($scope.facets.orgs.terms, $rootScope.orgsDetailedInfo);
              });
         });  
-    };     
+    };   
+    
+    $scope.showClassifyEntireSearchModal = function () {
+        var modalInstance = $modal.open({
+          templateUrl: '/template/system/addClassification',
+          controller: AddClassificationModalCtrl,
+          resolve: {
+                myOrgs: function() {
+                    return $scope.myOrgs;
+                }
+                , cde: function() {
+                    return {_id:null};
+                }
+                , addClassification: function() {
+                    return {
+                        addClassification: function(newClassification) {
+                            $scope.classifyEntireSearch(newClassification);
+                        }
+                    };
+                }
+            }          
+        });
 
+        modalInstance.result.then(function () {
+            $scope.reload($routeParams);
+        });
+    };       
+
+    $scope.classifyEntireSearch = function(newClassification) {        
+        var data = {
+            query: $scope.query.query
+            , newClassification: newClassification
+            , itemType: $scope.module
+        };
+        data.query.size = 100000;
+        $http({method: 'post', url: '/classifyEntireSearch', timeout: 3000, data: data}).success(function() {
+            $scope.addAlert("success", "Search result classified.");  
+        }).error(function() {
+            $scope.addAlert("danger", "Search result was not classified completely!");  
+        });  
+    };
 }
