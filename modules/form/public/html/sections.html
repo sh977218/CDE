@@ -1,14 +1,14 @@
 <button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="canCurate"><i class="fa fa-plus"></i> Add Section</button>
-<button id="startAddingQuestions" ng-show="elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-sm">
+<button id="startAddingQuestions" ng-show="canCurate && elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-sm">
     <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
     <span ng-show="addCdeMode"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
 </button>
-<br/><br/>
+<div ng-show="canCurate"><br/></div>
 <div ng-if="elt.formElements.length > 0" class="visible-xs visible-sm">
     <div class="alert alert-danger" role="alert">To be able to add questions to form, enlarge your browser window or use a larger device.</div>
 </div>
 <div ng-show="elt.formElements.length === 0">
-    <i class="fa fa-exclamation-triangle"></i> This form is empty. Get started by adding sections. Then add questions to each section.
+    <i class="fa fa-exclamation-triangle"></i> There is no content yet.
 </div>
 <div ng-repeat="(sectionIndex, section) in elt.formElements">
     <div class="panel panel-default" id="section_view_{{$index}}">
@@ -36,7 +36,7 @@
                     </dl>
                 </div>
                 <div class="col-sm-6">
-                    <dl class="dl-horizontal">
+                    <dl ng-show="canCurate" class="dl-horizontal">
                         <dt>Delete:</dt>
                         <dd>
                             <div>
@@ -108,7 +108,7 @@
                 </div>
                 <div ng-show="section.formElements.length === 0">
                     <i class="fa fa-exclamation-triangle"></i> To add questions, search for and drag them here.
-                    <button id="startAddingQuestions_question_{{$index}}" ng-show="elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-sm">
+                    <button id="startAddingQuestions_section_{{sectionIndex}}" ng-show="elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-sm">
                         <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
                         <span ng-show="addCdeMode"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
                     </button>

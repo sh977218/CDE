@@ -7,11 +7,15 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.openqa.selenium.Dimension;
 
 public class QuestionTest extends BaseFormTest {
     
     @Test
     public void questions() {
+        Dimension currentWindowSize = getWindowSize();
+        resizeWindow(1024, 1150);
+        
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
 
         String formName = "Questions Form Test";
@@ -140,7 +144,7 @@ public class QuestionTest extends BaseFormTest {
         sourceElt = findElement(By.id("acc_link_0"));
         targetElt = findElement(By.id("section_drop_area_1"));
 
-        scrollTo("500");
+        scrollTo("1000");
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
         findElement(By.id("question_accordion_1_0")).click();
 
@@ -148,9 +152,7 @@ public class QuestionTest extends BaseFormTest {
         Assert.assertFalse(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
 
         findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).click();
-        
-        scrollTo("1500");
-        
+//        scrollTo("1000");
         saveForm();
         
         findElement(By.linkText("Form Description")).click();
@@ -163,8 +165,7 @@ public class QuestionTest extends BaseFormTest {
         sourceElt = findElement(By.xpath("//div[@id='section_drop_area_1']//div[@id='question_0']"));
         targetElt = findElement(By.id("section_drop_area_0"));
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
-        scrollTo("1500");
-    
+//        scrollTo("1000");
         saveForm();
 
         findElement(By.linkText("Form Description")).click();
@@ -179,6 +180,7 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.linkText("Form Description")).click();
         Assert.assertEquals(0, driver.findElements(By.xpath("//div[@id='section_drop_area_0']//div[starts-with(@id, 'question_')]")).size());
 
-   }
+        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
+    }
     
 }

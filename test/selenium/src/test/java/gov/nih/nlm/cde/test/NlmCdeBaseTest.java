@@ -76,7 +76,8 @@ public class NlmCdeBaseTest {
         caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
         LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(LogType.BROWSER, Level.ALL);
-        caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);        
+        caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+        
         switch (browser) {
             case "firefox":
                 driver = new FirefoxDriver(caps);
@@ -90,7 +91,16 @@ public class NlmCdeBaseTest {
         }
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+
         wait = new WebDriverWait(driver, defaultTimeout, 200);
+    }
+    
+    protected void resizeWindow(int width, int height) {
+        driver.manage().window().setSize(new Dimension(width, height));
+    }
+    
+    protected Dimension getWindowSize() {
+        return driver.manage().window().getSize();
     }
     
     protected void mustBeLoggedInAs(String username, String password) {
