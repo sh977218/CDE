@@ -124,7 +124,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("name")).sendKeys("DEC1");
         findElement(By.name("codeId")).sendKeys("DEC_CODE_111");
         findElement(By.id("createConcept")).click();
-        hangon(5);
+        hangon(2);
         shortWait.until(ExpectedConditions.elementToBeClickable(By.id("addConcept")));
         findElement(By.id("addConcept")).click();
         modalHere();
@@ -205,7 +205,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.cssSelector(".fa-check")).click();
         findElement(By.linkText("Classification")).click();
         
-        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("addClassification")));
+        Assert.assertFalse(findElement(By.id("addClassification")).isEnabled());
         
         findElement(By.linkText("Properties")).click();
 
