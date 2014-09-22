@@ -18,19 +18,27 @@ var PropertiesCtrl = function ($scope, $modal, $http, $window, $timeout) {
                 }
             }
             $scope.elt.properties.push(newProperty);
-            $scope.elt.$save(function (newElt) {
-                $scope.elt = newElt;
-                $scope.addAlert("success", "Property Added"); 
-            });
+            if ($scope.elt.unsaved) {
+                $scope.addAlert("info", "Property added. Save to confirm.")
+            } else {
+                $scope.elt.$save(function (newElt) {
+                    $scope.elt = newElt;
+                    $scope.addAlert("success", "Property Added"); 
+                });
+            }
         });
     };
     
     $scope.removeProperty = function (index) {
         $scope.elt.properties.splice(index, 1);
-        $scope.elt.$save(function (newElt) {
-            $scope.elt = newElt;
-            $scope.addAlert("success", "Property Removed"); 
-        });
+        if ($scope.elt.unsaved) {
+            $scope.addAlert("info", "Property removed. Save to confirm.")
+        } else {
+            $scope.elt.$save(function (newElt) {
+                $scope.elt = newElt;
+                $scope.addAlert("success", "Property Removed"); 
+            });
+        }
     };
 
     $scope.canEditProperty = function () {

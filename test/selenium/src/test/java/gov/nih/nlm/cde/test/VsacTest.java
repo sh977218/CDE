@@ -102,7 +102,7 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.linkText("Permissible Values")).click();   
         findElement(By.id("removeVSButton")).click();
 
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
         Assert.assertEquals(driver.findElement(By.cssSelector("BODY")).getText().indexOf("2.16.840.1.114222.4.11.837"), -1);
 
         findElement(By.cssSelector("button.btn.btn-primary")).click();
@@ -112,7 +112,7 @@ public class VsacTest extends NlmCdeBaseTest {
         
         goToCdeByName("Left Colon Excision Ind-2");
         findElement(By.linkText("Permissible Values")).click();   
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
     }
         
     @Test(dependsOnMethods = {"importVsacValues"})
@@ -120,12 +120,12 @@ public class VsacTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Patient Race Category");
         findElement(By.linkText("Permissible Values")).click();         
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-valid")));
+        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-valid")));
         findElement(By.cssSelector("#pvName-4 .fa-edit")).click(); 
         findElement(By.cssSelector("#pvName-4 input.typeahead")).sendKeys(" Category");
         findElement(By.cssSelector("#pvName-4 .fa-check")).click();
         hangon(1);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-warning")));
+        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-warning")));
         
         findElement(By.cssSelector("#pvCode-4 .fa-edit")).click(); 
         findElement(By.cssSelector("#pvCode-4 input")).sendKeys(".1");

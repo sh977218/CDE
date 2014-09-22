@@ -47,6 +47,7 @@ public class NlmCdeBaseTest {
     protected static String browser = System.getProperty("browser");
           
     public static WebDriverWait wait;
+    public static WebDriverWait shortWait;
 
     @BeforeTest
     public void setBaseUrl() {
@@ -91,6 +92,7 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, defaultTimeout, 200);
+        shortWait = new WebDriverWait(driver, 2);
     }
     
     protected void mustBeLoggedInAs(String username, String password) {
