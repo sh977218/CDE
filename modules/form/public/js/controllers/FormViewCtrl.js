@@ -4,21 +4,12 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
     $scope.openCdeInNewTab = true;
     $scope.dragEnabled = true;
     
-    $scope.pageWidthOptions = {
-        sectionAreaWidth: "col-md-12"
-        , searchAreaWidth: "col-md-0"
-    };
-    
     $scope.setToAddCdeMode = function() {
         $scope.addCdeMode = true;
-        $scope.pageWidthOptions.sectionAreaWidth = "col-md-5";
-        $scope.pageWidthOptions.searchAreaWidth = "col-md-7 hidden-sm";   
     }
     
     $scope.setToNoneAddCdeMode = function() {
         $scope.addCdeMode = false;
-        $scope.pageWidthOptions.sectionAreaWidth = "col-md-12";
-        $scope.pageWidthOptions.searchAreaWidth = "col-md-0";   
     }
     
     var route = $routeParams;

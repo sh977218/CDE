@@ -1,9 +1,9 @@
 <br/>
 <div class="row">    
-    <div ng-class="pageWidthOptions.sectionAreaWidth" class="formSectionArea">
+    <div ng-class="addCdeMode ? 'col-md-5' : 'col-md-12'" class="formSectionArea">
         <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
     </div>
-    <div ng-class="pageWidthOptions.searchAreaWidth" ng-show="addCdeMode && elt.formElements.length > 0" >
+    <div ng-class="addCdeMode ? 'col-md-7 hidden-sm' : 'col-md-0'" ng-show="addCdeMode && elt.formElements.length > 0" >
         <div ui-scrollfix="+35" offset-bottom="70" class="question-search-area">
             <div class="panel-group" id="accordion">
                 <div id="questionSearchArea" ng-include="'/template/system/list'" ng-controller="DEListCtrl" ng-init="cPage = 'forms';" ></div>

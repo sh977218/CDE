@@ -1,7 +1,5 @@
 function SectionCtrl($scope, $modal, $timeout) {
     
-    $scope.list2 = [];
-    
     $scope.cardinalityOptions = 
     {
         "1": "Exactly 1"

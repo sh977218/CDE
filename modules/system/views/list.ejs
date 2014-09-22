@@ -32,7 +32,7 @@
         <span ng-hide="filterMode"><i class="glyphicon glyphicon-filter"></i> Show Filters</span>
         <span ng-show="filterMode"><i class="glyphicon glyphicon-filter"></i> Hide Filters</span>
     </button>
-    <button id="classifyAll" ng-click="showClassifyEntireSearchModal();" ng-show="totalItems>0 && isOrgCurator()" class="btn btn-default btn-checkbox pull-right">
+    <button id="classifyAll" ng-click="showClassifyEntireSearchModal();" ng-show="totalItems>0 && isOrgCurator() && cPage !== 'forms'" class="btn btn-default btn-checkbox pull-right">
         Classify All
     </button>
 </div>
@@ -55,7 +55,7 @@
         </div>
     </script>
     <div class="row">
-        <div class="hidden-xs" ng-class="pageWidthOptions.filterAreaWidth" ng-show="filterMode">
+        <div class="hidden-xs" ng-class="filterMode ? 'col-sm-3' : 'col-sm-0'" ng-show="filterMode">
             <p ng-show="facets.orgs.terms" class="gray">Filter by:</p>
             <strong ng-show="facets.orgs.terms">Classifications</strong>
             <ul class="fa-ul">
@@ -98,7 +98,7 @@
                 </li>
             </ul>
         </div>
-        <div ng-class="pageWidthOptions.cdeAreaWidth">
+        <div ng-class="filterMode ? 'col-sm-9' : 'col-sm-12'">
             <span ng-hide="cdes.length >= 0"><h4><i class="fa fa-spinner fa-spin"></i> Searching...</h4></span>
             <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found.</h4></span>
             <div id="accordionList" ng-include="'/template/'+module+'/'+module+'AccordionList'"></div>
