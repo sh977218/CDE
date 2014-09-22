@@ -13,12 +13,10 @@
 <div ng-repeat="(sectionIndex, section) in elt.formElements">
     <div class="panel panel-default" id="section_view_{{$index}}">
         <div class="panel-heading">
-            <h4><strong>Section {{$index+1}}</strong></h4>
+            <h4><strong><div inline-edit model="section.label" is-allowed="canCurate" on-ok="stageElt()"> </div></strong></h4>
             <div class="row">
                 <div class="col-sm-6">
                     <dl class="dl-horizontal">
-                        <dt>Title: </dt>
-                        <dd id="dd_section_title_{{$index}}"><div inline-edit model="section.label" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
                         <dt>Instructions: </dt>
                         <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
                         <dt>Cardinality: </dt>
