@@ -201,7 +201,7 @@ exports.removeBoard = function (boardId, callback) {
 //TODO: Consider moving
 exports.addToViewHistory = function(cde, user) {
     User.findOne({'_id': user._id}, function (err, u) {
-        u.viewHistory.splice(0, 0, cde._id);
+        u.viewHistory.splice(0, 0, cde.tinyId);
         if (u.viewHistory.length > 1000) {
             u.viewHistory.length(1000);
         };
