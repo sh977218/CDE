@@ -13,7 +13,7 @@
 <div ng-repeat="(sectionIndex, section) in elt.formElements">
     <div class="panel panel-default" id="section_view_{{$index}}">
         <div class="panel-heading">
-            <h4><strong><div inline-edit model="section.label" is-allowed="canCurate" on-ok="stageElt()"> </div></strong></h4>
+            <h4><strong><div id="section_title_{{$index}}" inline-edit model="section.label" is-allowed="canCurate" on-ok="stageElt()"></div></strong></h4>
             <div class="row">
                 <div class="col-sm-6">
                     <dl class="dl-horizontal">

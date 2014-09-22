@@ -61,7 +61,7 @@ public class SectionTest extends BaseFormTest {
 
         findElement(By.id("addSection")).click();
 
-        String section_title_path = "//dd[@id='dd_section_title_" + nbOfSections + "']";
+        String section_title_path = "//div[@id='section_title_" + nbOfSections + "']";
         findElement(By.xpath(section_title_path + "//i")).click();
         findElement(By.xpath(section_title_path + "//input")).clear();
         findElement(By.xpath(section_title_path + "//input")).sendKeys(title);
@@ -85,9 +85,9 @@ public class SectionTest extends BaseFormTest {
         addSection("Section 2", "1 or more");
         addSection("Section 3", null);
 
-        Assert.assertEquals("Section 1", findElement(By.id("dd_section_title_0")).getText());
-        Assert.assertEquals("Section 2", findElement(By.id("dd_section_title_1")).getText());
-        Assert.assertEquals("Section 3", findElement(By.id("dd_section_title_2")).getText());
+        Assert.assertEquals("Section 1", findElement(By.id("section_title_0")).getText());
+        Assert.assertEquals("Section 2", findElement(By.id("section_title_1")).getText());
+        Assert.assertEquals("Section 3", findElement(By.id("section_title_2")).getText());
 
         Assert.assertEquals("0 or more", findElement(By.id("dd_card_0")).getText());
         Assert.assertEquals("1 or more", findElement(By.id("dd_card_1")).getText());
@@ -102,28 +102,28 @@ public class SectionTest extends BaseFormTest {
         saveForm();
         findElement(By.linkText("Form Description")).click();
 
-        Assert.assertEquals("Section 2", findElement(By.id("dd_section_title_0")).getText());
-        Assert.assertEquals("Section 3", findElement(By.id("dd_section_title_1")).getText());
-        Assert.assertEquals("Section 1", findElement(By.id("dd_section_title_2")).getText());
+        Assert.assertEquals("Section 2", findElement(By.id("section_title_0")).getText());
+        Assert.assertEquals("Section 3", findElement(By.id("section_title_1")).getText());
+        Assert.assertEquals("Section 1", findElement(By.id("section_title_2")).getText());
         
-        findElement(By.xpath("//dd[@id='dd_section_title_0']//i")).click();
-        findElement(By.xpath("//dd[@id='dd_section_title_0']//input")).sendKeys(" - New");
-        findElement(By.xpath("//dd[@id='dd_section_title_0']//button[@class='fa fa-check']")).click();
+        findElement(By.xpath("//div[@id='section_title_0']//i")).click();
+        findElement(By.xpath("//div[@id='section_title_0']//input")).sendKeys(" - New");
+        findElement(By.xpath("//div[@id='section_title_0']//button[@class='fa fa-check']")).click();
         
         findElement(By.xpath("//dd[@id='dd_card_1']//i")).click();
         new Select(findElement(By.xpath("//dd[@id='dd_card_1']//select"))).selectByVisibleText("0 or 1");
         findElement(By.xpath("//dd[@id='dd_card_1']//button[@id='confirmCard']")).click();
         
-        findElement(By.xpath("//dd[@id='dd_section_title_2']//i")).click();
-        findElement(By.xpath("//dd[@id='dd_section_title_2']//input")).sendKeys(" - New");
-        findElement(By.xpath("//dd[@id='dd_section_title_2']//button[@class='fa fa-times']")).click();
+        findElement(By.xpath("//div[@id='section_title_2']//i")).click();
+        findElement(By.xpath("//div[@id='section_title_2']//input")).sendKeys(" - New");
+        findElement(By.xpath("//div[@id='section_title_2']//button[@class='fa fa-times']")).click();
 
         saveForm();
         findElement(By.linkText("Form Description")).click();
         
-        Assert.assertEquals("Section 2 - New", findElement(By.id("dd_section_title_0")).getText());
-        Assert.assertEquals("Section 3", findElement(By.id("dd_section_title_1")).getText());
-        Assert.assertEquals("Section 1", findElement(By.id("dd_section_title_2")).getText());
+        Assert.assertEquals("Section 2 - New", findElement(By.id("section_title_0")).getText());
+        Assert.assertEquals("Section 3", findElement(By.id("section_title_1")).getText());
+        Assert.assertEquals("Section 1", findElement(By.id("section_title_2")).getText());
 
         Assert.assertEquals("1 or more", findElement(By.id("dd_card_0")).getText());
         Assert.assertEquals("0 or 1", findElement(By.id("dd_card_1")).getText());
@@ -133,7 +133,7 @@ public class SectionTest extends BaseFormTest {
         saveForm();
         findElement(By.linkText("Form Description")).click();
         
-        Assert.assertEquals("Section 1", findElement(By.id("dd_section_title_1")).getText());
+        Assert.assertEquals("Section 1", findElement(By.id("section_title_1")).getText());
 
         
     }
