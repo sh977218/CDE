@@ -77,7 +77,7 @@ angular.module('resources')
                     } 
                     ]
                 }
-           };
+            };
 
             if (!settings.isSiteAdmin) {
                 var lowRegStatusOrCuratorFilter = [];
@@ -143,13 +143,16 @@ angular.module('resources')
             }
             
 
-            queryStuff.facets = {
+//            queryStuff.facets = {
+            queryStuff.aggregations = {
                 orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}}
                 , statuses: {terms: {field: "registrationState.registrationStatus"}}
             };
             if (!settings.isSiteAdmin) {
-               queryStuff.facets.orgs.facet_filter = {or: lowRegStatusOrCuratorFilter};
-               queryStuff.facets.statuses.facet_filter = {or: lowRegStatusOrCuratorFilter};
+//               queryStuff.facets.orgs.facet_filter = {or: lowRegStatusOrCuratorFilter};
+//               queryStuff.facets.statuses.facet_filter = {or: lowRegStatusOrCuratorFilter};
+               queryStuff.aggregations.orgs.facet_filter = {or: lowRegStatusOrCuratorFilter};
+               queryStuff.aggregations.statuses.facet_filter = {or: lowRegStatusOrCuratorFilter};
             }
 
             if (settings.selectedOrg !== undefined) {
@@ -202,7 +205,7 @@ angular.module('resources')
                     }
                 }
             };
-                    
+            
             return callback({query: queryStuff});
         }              
         , generalSearchQuery: function(query, type, cb) {          

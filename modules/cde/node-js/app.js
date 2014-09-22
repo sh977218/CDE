@@ -299,7 +299,7 @@ exports.init = function(app, daoManager) {
        return elastic.elasticsearch(req.body.query, function(result) {
            result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
            res.send(result);
-       }); 
+       });
     });
 
     app.post('/classification/cde/moveclassif', function(req, res) {
