@@ -34,7 +34,7 @@ schemas.userSchema = mongoose.Schema ({
     , orgCurator: [String]
     , siteAdmin: Boolean
     , quota: Number
-    , viewHistory: [mongoose.Schema.Types.ObjectId]
+    , viewHistory: [String]
     , knownIPs: [String]
 });
 

@@ -204,9 +204,8 @@ public class SectionTest extends BaseFormTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         gotoPublicForms();
         searchForm(formName);
-
         findElement(By.linkText(formName)).click();
-        
+        findElement(By.id("openEltInCurrentTab_0")).click();
         textNotPresent("Delete");
         textNotPresent("Add Section");
         textNotPresent("Show Question Search Area");

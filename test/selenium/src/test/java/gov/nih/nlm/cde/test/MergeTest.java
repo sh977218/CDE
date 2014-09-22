@@ -64,7 +64,8 @@ public class MergeTest extends NlmCdeBaseTest {
     public void mergeMineMineEverything() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         addToCompare("Common Toxicity Criteria Adverse Event Colitis Grade", "Common Toxicity Criteria Adverse Event Hypophosphatemia Grade");
-        findElement(By.id("retireMerge-0")).click();   
+        findElement(By.id("retireMerge-0")).click(); 
+        modalHere();
         Assert.assertTrue(textPresent("Common Toxicity Criteria Adverse Event Colitis Grade"));
         checkEverything();
         findElement(By.id("sendMergeRequest")).click();

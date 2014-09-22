@@ -42,7 +42,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
             }
         }
         findElement(By.id("li-blank-Basic")).click();
-        Assert.assertTrue(textPresent("11 results for"));
+        Assert.assertTrue(textPresent("9 results for"));
         Assert.assertTrue(textPresent("Traffic accident other party role type"));
         findElement(By.id("li-checked-Acute Hospitalized")).click();
         Assert.assertTrue(textPresent("24 results for"));

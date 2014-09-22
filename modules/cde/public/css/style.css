@@ -207,8 +207,8 @@ dd.formViewDetails {
 
 .fa-cb  { display:none; } /* to hide the checkbox itself */
 .fa-cb + label:before {
-  font-family: FontAwesome;
-  display: inline-block;
+    font-family: FontAwesome;
+    display: inline-block;
 }
 
 .fa-cb + label:before { content: "\f096"; } /* unchecked icon */

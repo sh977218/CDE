@@ -104,7 +104,6 @@ exports.deByTinyIdAndVersion = function(tinyId, version, callback) {
 
 exports.formatCde = function(cde) {
     function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}
-    cde._doc.classificationCopy = cde.classification;
     cde._doc.stewardOrgCopy = cde.stewardOrg;
     cde._doc.primaryNameCopy = escapeHTML(cde.naming[0].designation);
     cde._doc.primaryDefinitionCopy = escapeHTML(cde.naming[0].definition); 
@@ -202,7 +201,7 @@ exports.removeBoard = function (boardId, callback) {
 //TODO: Consider moving
 exports.addToViewHistory = function(cde, user) {
     User.findOne({'_id': user._id}, function (err, u) {
-        u.viewHistory.splice(0, 0, cde._id);
+        u.viewHistory.splice(0, 0, cde.tinyId);
         if (u.viewHistory.length > 1000) {
             u.viewHistory.length(1000);
         };

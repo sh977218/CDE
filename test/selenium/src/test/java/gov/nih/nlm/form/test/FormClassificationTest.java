@@ -12,7 +12,7 @@ public class FormClassificationTest extends BaseFormTest{
         textPresent("Headache");
         textPresent("Participant/Subject History and Family History");          
         findElement(By.linkText("Participant/Subject History and Family History")).click();
-        textPresent("Participant/Subject History and Family History (2)");   
+        textPresent("Participant/Subject History and Family History");   
         textPresent("Skin Cancer Patient");
         textPresent("Vision Deficit Report");               
     }

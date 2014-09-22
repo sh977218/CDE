@@ -25,7 +25,7 @@ public class ForkTest extends NlmCdeBaseTest {
         saveCde();
     }
     
-//    @Test
+    @Test
     public void forkMineTheirs() {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToCdeByName("Adverse Event Ongoing Event Indicator");
