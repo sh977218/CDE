@@ -3,6 +3,7 @@ var mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , usersvc = require('../../system/node-js/usersrvc')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
+    , elastic = require('./elastic')
 ;
 
 var classification = this;
@@ -94,5 +95,31 @@ exports.addOrgClassification = function(body, cb) {
         stewardOrg.save(function (err) {
             if(cb) cb(err, stewardOrg);
         });
+    });
+};
+
+exports.classifyEntireSearch = function(req, cb) {
+    elastic.elasticsearch(req.query, req.itemType, function(result) {
+        var cdesNumber = result.cdes.length;
+        var cdesClassified = 0;
+        var ids = result.cdes.map(function(cde) {return cde._id;});
+        ids.forEach(function(id){
+            var classifReq = {
+                orgName: req.newClassification.orgName
+                , categories: req.newClassification.categories
+                , cdeId: id
+            };
+            exports.cdeClassification(classifReq, classificationShared.actions.create, function() {
+                cdesClassified++;
+                if (cdesNumber === cdesClassified) {
+                    cb();
+                    clearTimeout(timoeut);
+                }
+            });
+        });
+        var timoeut = setTimeout(function(){
+            if (cdesNumber === cdesClassified) cb();
+            else cb("not classified everything");
+        }, 3000);
     });
 };
