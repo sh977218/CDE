@@ -39,7 +39,19 @@ angular.module('resources')
                 for (var j=1; j<=depth; j++) fd += ".elements";
                 fd += ".name";  
                 return fd;
-            };        
+            };
+            this.flattenSelection = function(upTo) {
+                var flatSelection = "";
+                for (var i = 0; i < settings.selectedElements.length && i < upTo; i++) {
+                    if (flatSelection !== "") flatSelection = flatSelection + ";";
+                    flatSelection = flatSelection + settings.selectedElements[i];
+                } 
+                return flatSelection;
+            };
+            this.escapeRegExp = function(str) {
+                return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            };
+            
             var queryStuff = {size: this.getSize(settings)};
             var searchQ = settings.searchTerm;       
 
@@ -124,13 +136,12 @@ angular.module('resources')
             }
 
             var queryBuilder = this;
-            for (var i=0; i<settings.selectedElements.length; i++) {
-                var facetsDepth = queryBuilder.countFacetsDepthString(i+1);            
-                var term = {term:{}};
-                term.term[facetsDepth] = settings.selectedElements[i];
-                queryStuff.query.bool.must.push(term);
+            
+            var flatSelection = queryBuilder.flattenSelection(1000);
+            if (flatSelection !== "") {
+                queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
             }
-
+            
 
             queryStuff.facets = {
                 orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}}
@@ -142,31 +153,22 @@ angular.module('resources')
             }
 
             if (settings.selectedOrg !== undefined) {
-                queryStuff.facets.elements = {
-                    terms: {field: "classification.elements.name", size: 500}
-                    , facet_filter: {and: [{term: {"classification.stewardOrg.name": settings.selectedOrg}}]}
-                };
-                if (!settings.isSiteAdmin) {
-                    queryStuff.facets.elements.facet_filter.and.push({or: lowRegStatusOrCuratorFilter});
+                var flatFacetFilter = queryBuilder.flattenSelection(i - 1);
+                queryStuff.aggregations = {
+                    flatClassification: {
+                        terms: {
+                            size: 500,
+                            field: "flatClassification",
+                        } 
+                    }
+                };       
+                if (flatSelection === "") {
+                    queryStuff.aggregations.flatClassification.terms.include = settings.selectedOrg + ";[^;]+";
+                } else {
+                    queryStuff.aggregations.flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
                 }
-
-                for (var i=2; i<=settings.selectedElements.length+1; i++) {   
-                    var fd = queryBuilder.countFacetsDepthString(i);
-                    queryStuff.facets["elements"+i] = {
-                        terms: {field: fd, size: 500}
-                        , facet_filter: {and: [{term: {"classification.stewardOrg.name": settings.selectedOrg}}]}
-                    };
-                    if (!settings.isSiteAdmin) {
-                        queryStuff.facets["elements" + i].facet_filter.and.push({or: lowRegStatusOrCuratorFilter});
-                    }
-                    for (var j=0; j<settings.selectedElements.length; j++) {
-                        fd = queryBuilder.countFacetsDepthString(j+1);
-                        var f = {term: {}};
-                        f.term[fd] = settings.selectedElements[j];
-                        queryStuff.facets["elements"+i].facet_filter.and.push(f);
-                    }
-                }            
             }        
+
 
             if (settings.filter !== undefined) {
                 if (settings.filter.and !== undefined) {
@@ -200,7 +202,7 @@ angular.module('resources')
                     }
                 }
             };
-            
+                    
             return callback({query: queryStuff});
         }              
         , generalSearchQuery: function(query, type, cb) {          
@@ -221,8 +223,9 @@ angular.module('resources')
             this.highlight = function(field1,field2, cde) {
                 if (cde.highlight[field1+"."+field2]) {
                     cde.highlight[field1+"."+field2].forEach(function(nameHighlight) {
-                        if (field1.indexOf(".")<0) var elements = cde[field1];
-                        else var elements = cde[field1.replace(/\..+$/,"")][field1.replace(/^.+\./,"")];
+                        var elements;
+                        if (field1.indexOf(".")<0) elements = cde[field1];
+                        else elements = cde[field1.replace(/\..+$/,"")][field1.replace(/^.+\./,"")];
                         elements.forEach(function(nameCde, i){
                             if (nameCde[field2] === nameHighlight.replace(/<[^>]+>/gm, '')) {
                                 nameCde[field2] = nameHighlight;
@@ -249,7 +252,7 @@ angular.module('resources')
             var field = null;
             var matched = Object.keys(cde.highlight)[0];
             if (matched === "naming.definition" || matched === "primaryDefinitionCopy") field = "Definition";
-            if (matched.indexOf("classificationCopy.")>-1) field = "Classification";
+            if (matched.indexOf("classification.")>-1) field = "Classification";
             if (matched.indexOf(".concepts.")>-1) field = "Concepts";
             if (matched.substr(0,11) === "valueDomain") field = "Permissible Values";
             if (matched.substr(0,10) === "properties") field = "Properties";

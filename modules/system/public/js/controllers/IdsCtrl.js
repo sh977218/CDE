@@ -12,19 +12,27 @@ var IdsCtrl = function ($scope, $modal, $http, DataElement) {
         
         modalInstance.result.then(function (newId) {
             $scope.elt.ids.push(newId);
-            $scope.elt.$save(function(newElt) {
-                $scope.elt = newElt;
-                $scope.addAlert("success", "Identifier Added");
-            });
+            if ($scope.elt.unsaved) {
+                $scope.addAlert("info", "Identifier added. Save to confirm.")
+            } else {
+                $scope.elt.$save(function(newElt) {
+                    $scope.elt = newElt;
+                    $scope.addAlert("success", "Identifier Added");
+                });
+            }
         });
     };
     
     $scope.removeId = function (index) {
         $scope.elt.ids.splice(index, 1);
-        $scope.elt.$save(function(newElt) {
-            $scope.elt = newElt;
-            $scope.addAlert("success", "Identifier Removed");
-        });        
+        if ($scope.elt.unsaved) {
+            $scope.addAlert("info", "Identifier removed. Save to confirm.")
+        } else {
+            $scope.elt.$save(function(newElt) {
+                $scope.elt = newElt;
+                $scope.addAlert("success", "Identifier Removed");
+            });        
+        }
     };
 };
 

@@ -4,7 +4,17 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
     $scope.openCdeInNewTab = true;
     $scope.dragEnabled = true;
     
+    $scope.setToAddCdeMode = function() {
+        $scope.addCdeMode = true;
+    }
+    
+    $scope.setToNoneAddCdeMode = function() {
+        $scope.addCdeMode = false;
+    }
+    
     var route = $routeParams;
+    
+    $scope.resultPerPage = 10;
     
     if (route._id) var query = {formId: route._id, type: '_id'};
     if (route.tinyId) var query = {formId: route.tinyId, type: 'tinyId'};
@@ -15,26 +25,33 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
             isAllowedModel.setCanDoNonCuration($scope);
-        });        
+        });
     };
     
     $scope.reload();
-    
+
     $scope.switchEditQuestionsMode = function() {
         $scope.addCdeMode = !$scope.addCdeMode;
+
+        if($scope.addCdeMode) {
+            $scope.setToAddCdeMode();
+        } else {
+            $scope.setToNoneAddCdeMode();
+        }
     };
-    
+
     $scope.revert = function() {
         $scope.reload();
     };
 
     $scope.stageElt = function() {
         $scope.elt.unsaved = true;
-    };    
-    
+    };
+
     $scope.classificationToFilter = function() {
-         if ($scope.elt != null) {
+         if ($scope.elt !== null) {
              return $scope.elt.classification;
-         } 
-    };      
+         }
+    };
+
 }

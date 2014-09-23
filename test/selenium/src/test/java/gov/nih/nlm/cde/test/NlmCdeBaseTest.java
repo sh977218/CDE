@@ -47,6 +47,7 @@ public class NlmCdeBaseTest {
     protected static String browser = System.getProperty("browser");
           
     public static WebDriverWait wait;
+    public static WebDriverWait shortWait;
 
     @BeforeTest
     public void setBaseUrl() {
@@ -76,7 +77,8 @@ public class NlmCdeBaseTest {
         caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
         LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(LogType.BROWSER, Level.ALL);
-        caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);        
+        caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+        
         switch (browser) {
             case "firefox":
                 driver = new FirefoxDriver(caps);
@@ -90,7 +92,17 @@ public class NlmCdeBaseTest {
         }
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+
         wait = new WebDriverWait(driver, defaultTimeout, 200);
+        shortWait = new WebDriverWait(driver, 2);
+    }
+    
+    protected void resizeWindow(int width, int height) {
+        driver.manage().window().setSize(new Dimension(width, height));
+    }
+    
+    protected Dimension getWindowSize() {
+        return driver.manage().window().getSize();
     }
     
     protected void mustBeLoggedInAs(String username, String password) {
@@ -189,9 +201,7 @@ public class NlmCdeBaseTest {
     
     public void closeAlert() {
         try {
-            System.out.println("1");
             findElement(By.cssSelector(".alert .close")).click();
-            System.out.println("2");
         } catch(Exception e) {
                     
         }

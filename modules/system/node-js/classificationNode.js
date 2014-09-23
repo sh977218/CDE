@@ -3,24 +3,30 @@ var mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , usersvc = require('../../system/node-js/usersrvc')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
+    , elastic = require('./elastic')
 ;
 
 var classification = this;
 
-exports.cdeClassification = function(body, action, cb) {
-    this.saveCdeClassif = function(err, cde) {   
-        if (err) {
-            if (cb) cb(err);
-            return;
-        }
-        classification.cde.markModified('classification');
-        classification.cde.save(function() {
-            if (cb) cb(err);
-        });            
-    };    
+classification.saveCdeClassif = function(err, cde, cb) {   
+    if (err) {
+        if (cb) cb(err);
+        return;
+    }
+    cde.classification.forEach(function(steward, i) {
+        if (steward.elements.length === 0) {
+            cde.classification.splice(i, 1);
+        }            
+    });
+    cde.markModified('classification');
+    cde.save(function() {
+        if (cb) cb(err);
+    });            
+};  
+
+exports.cdeClassification = function(body, action, cb) {  
     daoManager.getDaoList().forEach(function(dao) {
         dao.byId(body.cdeId, function(err, cde) {
-            classification.cde = cde;
             var steward = classificationShared.findSteward(cde, body.orgName);
             if (!steward) {
                 cde.classification.push({
@@ -36,14 +42,14 @@ exports.cdeClassification = function(body, action, cb) {
                 body.categories = [body.categories];
             }
 
-            if (action === classificationShared.actions.create) classificationShared.addCategory(steward.object, body.categories, classification.saveCdeClassif);
-            if (action === classificationShared.actions.delete) {
-                classificationShared.modifyCategory(steward.object, body.categories, {type:"delete"}, classification.saveCdeClassif);
-
-                // Delete the organization from classificaiton if organization doesn't have any descendant elements.
-                if( steward.object.elements.length === 0 ) {
-                    classificationShared.removeClassification( cde, body.orgName );
-                }
+            if (action === classificationShared.actions.create) {
+                classificationShared.addCategory(steward.object, body.categories, function(err) {
+                    classification.saveCdeClassif(err, cde, cb);
+                });
+            } else if (action === classificationShared.actions.delete) {
+                classificationShared.modifyCategory(steward.object, body.categories, {type:"delete"}, function() {
+                    classification.saveCdeClassif("", cde, cb);
+                });
             }
         });     
     });    
@@ -68,11 +74,10 @@ exports.modifyOrgClassification = function(request, action, callback) {
             daoManager.getDaoList().forEach(function(dao) {
                 dao.query(query, function(err, result) {
                     for (var i = 0; i < result.length; i++) {
-                        var cde = result[i];
-                        var steward = classificationShared.findSteward(cde, request.orgName);   
-                        classificationShared.modifyCategory(steward.object, request.categories, {type: action, newname: request.newname});
-                        cde.markModified("classification");
-                        cde.save(function(err) {
+                        var elt = result[i];
+                        var steward = classificationShared.findSteward(elt, request.orgName);   
+                        classificationShared.modifyCategory(steward.object, request.categories, {type: action, newname: request.newname}, function() {
+                            classification.saveCdeClassif("", elt);     
                         });
                     }
                 });
@@ -94,5 +99,31 @@ exports.addOrgClassification = function(body, cb) {
         stewardOrg.save(function (err) {
             if(cb) cb(err, stewardOrg);
         });
+    });
+};
+
+exports.classifyEntireSearch = function(req, cb) {
+    elastic.elasticsearch(req.query, req.itemType, function(result) {
+        var cdesNumber = result.cdes.length;
+        var cdesClassified = 0;
+        var ids = result.cdes.map(function(cde) {return cde._id;});
+        ids.forEach(function(id){
+            var classifReq = {
+                orgName: req.newClassification.orgName
+                , categories: req.newClassification.categories
+                , cdeId: id
+            };
+            exports.cdeClassification(classifReq, classificationShared.actions.create, function() {
+                cdesClassified++;
+                if (cdesNumber === cdesClassified) {
+                    cb();
+                    clearTimeout(timoeut);
+                }
+            });
+        });
+        var timoeut = setTimeout(function(){
+            if (cdesNumber === cdesClassified) cb();
+            else cb("not classified everything");
+        }, 3000);
     });
 };

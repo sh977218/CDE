@@ -1,4 +1,4 @@
-<div class="container pt40 pb30">
+<div class="container-fluid pt40 pb30">
     <form name="advSearchForm" id="advSearchForm"  class="form-inline" ng-submit="submitForm( quickSearchForm.$valid )" novalidate>
         <!-- Search dropdown and text field -->
         <div class="input-group input-group-lg">
@@ -18,7 +18,7 @@
 <hr class="searchInfoHr"/>
 <div class="container-fluid searchInfo">
     <span class="pt8 pb8 ib"><strong>{{totalItems}}</strong> results for {{selectedOrg?getSelectedClassifications():'All Classifications'}} | <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> | {{getSelectedStatuses()?getSelectedStatuses():'All Status'}}</span>
-    <a href="#/cdeSearchExport" ng-show="totalItems>0">
+    <a href="#/cdeSearchExport" ng-show="totalItems>0 && cPage !== 'forms'">
         <button id="gridView" value="Grid View" class="btn btn-default pull-right">
             <i class="fa fa-table"></i>
             Grid View
@@ -28,11 +28,17 @@
         <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
         <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
     </button>
+    <button ng-click="hideShowFilter()" class="btn btn-default btn-checkbox pull-right" id="showHideFilters">
+        <span ng-hide="filterMode"><i class="glyphicon glyphicon-filter"></i> Show Filters</span>
+        <span ng-show="filterMode"><i class="glyphicon glyphicon-filter"></i> Hide Filters</span>
+    </button>
+    <button id="classifyAll" ng-click="showClassifyEntireSearchModal();" ng-show="totalItems>0 && isOrgCurator() && cPage !== 'forms'" class="btn btn-default btn-checkbox pull-right">
+        Classify All
+    </button>
 </div>
 <hr class="searchInfoHr"/>
 <div class="container-fluid pt30">    
     <script type="text/ng-template"  id="facet_elements_tree.html">
-
         <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="selectedElements.indexOf(e.name) > -1">
             <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e.name}}" ></i>
             <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e.name}}" ></i>
@@ -46,13 +52,11 @@
                 ng-include="'facet_elements_tree.html'"
                 >        
             </div>
-
         </div>
     </script>
-
     <div class="row">
-        <div class="col-sm-2 hidden-xs">
-            <p ng-show="facets.orgs.terms" class="gray">Filter results by:</p>
+        <div class="hidden-xs" ng-class="filterMode ? 'col-sm-3' : 'col-sm-0'" ng-show="filterMode">
+            <p ng-show="facets.orgs.terms" class="gray">Filter by:</p>
             <strong ng-show="facets.orgs.terms">Classifications</strong>
             <ul class="fa-ul">
                 <li ng-repeat="t in facets.orgs.terms | orderBy:'term'" style="margin-right: -20px" ng-switch="t.term === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.term === selectedOrg || !selectedOrg">
@@ -64,10 +68,23 @@
                 </li>
             </ul>
             <div id="classification-facets">
-                <div ng-repeat="e in classifications.elements | orderBy:'name'"
-                    ng-show="selectedElements.indexOf(e.name) > -1 || selectedElements.length < 1"
-                    ng-include="'facet_elements_tree.html'"
-                    >
+                <div ng-repeat="e in selectedElements" style="margin-left:{{$index * 5}}px;">
+                    <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="selectedElements.indexOf(e) > -1">
+                        <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e}}" ></i>
+                        <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e}}" ></i>
+                        <span>
+                            <small>{{e}}</small>
+                        </span>
+                    </span>
+                </div>  
+                <div ng-repeat="b in aggregations | orderBy:'name'" style="margin-left:{{selectedElements.length * 5}}px;">
+                    <span ng-click="selectElement(b.name)" class="hand-cursor" ng-switch="selectedElements.indexOf(b.name) > -1">
+                        <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{b.name}}" ></i>
+                        <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{b.name}}" ></i>
+                        <span>
+                            <small> {{b.name}} ({{b.count}})</small>
+                        </span>
+                    </span>
                 </div>
             </div>
             <strong ng-show="facets.statuses.terms">Status</strong> 
@@ -81,10 +98,10 @@
                 </li>
             </ul>
         </div>
-        <div class="col-sm-10">
+        <div ng-class="filterMode ? 'col-sm-9' : 'col-sm-12'">
             <span ng-hide="cdes.length >= 0"><h4><i class="fa fa-spinner fa-spin"></i> Searching...</h4></span>
             <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found.</h4></span>
-            <div id="accordionList" ng-include="'/template/'+module+'/'+module+'AccordionList'" ng-init="ejsPage = 'list';"></div>
+            <div id="accordionList" ng-include="'/template/'+module+'/'+module+'AccordionList'"></div>
             <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="searchForm.currentPage"></pagination>
         </div>
     </div>
