@@ -86,8 +86,8 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
     
     $scope.addOrgFilter = function(t) {               
         if ($scope.selectedOrg === undefined) {
-            $scope.cacheOrgFilter(t.term);
-            $scope.selectedOrg = t.term;
+            $scope.cacheOrgFilter(t.key);
+            $scope.selectedOrg = t.key;
         } else {
             $scope.removeCacheOrgFilter();
             delete $scope.selectedOrg;

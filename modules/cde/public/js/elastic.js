@@ -183,12 +183,10 @@ angular.module('resources')
 
             if (settings.selectedOrg !== undefined) {
                 var flatFacetFilter = queryBuilder.flattenSelection(i - 1);
-                queryStuff.aggregations = {
-                    flatClassification: {
-                        terms: {
-                            size: 500,
-                            field: "flatClassification"
-                        }
+                queryStuff.aggregations.flatClassification = {
+                    terms: {
+                        size: 500,
+                        field: "flatClassification"
                     }
                 };
                 if (flatSelection === "") {
