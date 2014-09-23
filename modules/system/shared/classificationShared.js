@@ -39,8 +39,8 @@ exports.addCategory = function(tree, fields, cb) {
         if( cb ) return cb({error: {message: "Classification Already Exists"}});
     } else {    
         lastLevel.elements.push( {name: fields[fields.length-1], elements:[]} );
+        if (cb) return cb();
     }
-    if (cb) cb();
 };
 
 exports.fetchLevel = function(tree, fields) {

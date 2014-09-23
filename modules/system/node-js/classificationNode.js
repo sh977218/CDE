@@ -8,7 +8,7 @@ var mongo_data_cde = require('../../cde/node-js/mongo-cde')
 
 var classification = this;
 
-classification.saveCdeClassif = function(err, cde) {   
+classification.saveCdeClassif = function(err, cde, cb) {   
     if (err) {
         if (cb) cb(err);
         return;
@@ -42,10 +42,13 @@ exports.cdeClassification = function(body, action, cb) {
                 body.categories = [body.categories];
             }
 
-            if (action === classificationShared.actions.create) classificationShared.addCategory(steward.object, body.categories, classification.saveCdeClassif);
-            if (action === classificationShared.actions.delete) {
+            if (action === classificationShared.actions.create) {
+                classificationShared.addCategory(steward.object, body.categories, function(err) {
+                    classification.saveCdeClassif(err, cde, cb);
+                });
+            } else if (action === classificationShared.actions.delete) {
                 classificationShared.modifyCategory(steward.object, body.categories, {type:"delete"}, function() {
-                    classification.saveCdeClassif("", cde);
+                    classification.saveCdeClassif("", cde, cb);
                 });
             }
         });     
