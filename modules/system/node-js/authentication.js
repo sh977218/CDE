@@ -132,7 +132,7 @@ exports.authBeforeVsac = function(req, username, password, done) {
                     (user.lockCounter>=0? user.lockCounter += 1 : user.lockCounter = 1);
                     
                     return user.save(function(err, user) {
-                        return done(null, false, { message: 'Incorrect password' }); 
+                        return done(null, false, { message: 'Incorrect username or password' }); 
                     });
                 } else {
                     // Update user info in datastore
