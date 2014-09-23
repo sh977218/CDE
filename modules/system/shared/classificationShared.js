@@ -19,7 +19,9 @@ exports.modifyCategory = function(tree, fields, action, cb) {
     var lastLevel = classification.fetchLevel(tree, fields);
     for (var i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i].name === fields[fields.length-1]) {
-            if (action.type === classification.actions.delete) lastLevel.elements.splice(i,1);
+            if (action.type === classification.actions.delete) {
+                lastLevel.elements.splice(i,1);
+            }
             if (action.type === classification.actions.rename) lastLevel.elements[i].name = action.newname;
             break;
         }
@@ -37,8 +39,8 @@ exports.addCategory = function(tree, fields, cb) {
         if( cb ) return cb({error: {message: "Classification Already Exists"}});
     } else {    
         lastLevel.elements.push( {name: fields[fields.length-1], elements:[]} );
+        if (cb) return cb();
     }
-    if (cb) cb();
 };
 
 exports.fetchLevel = function(tree, fields) {
@@ -98,10 +100,10 @@ exports.transferClassifications = function (source, destination) {
  * @param {type} orgName - organization name
  * @returns none
  */
-exports.removeClassification = function(de, orgName) {
-    for( var i = 0; i < de.classification.length; i++ ) {
-        if( de.classification[i].stewardOrg.name === orgName ) {
-            de.classification.splice(i, 1);
+exports.removeClassification = function(elt, orgName) {
+    for( var i = 0; i < elt.classification.length; i++ ) {
+        if( elt.classification[i].stewardOrg.name === orgName ) {
+            elt.classification.splice(i, 1);
             break;
         }
     }
