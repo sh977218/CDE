@@ -36,14 +36,14 @@
 <div class="container-fluid pt30">    
     <div class="row">
         <div class="col-sm-2 hidden-xs">
-            <p ng-show="facets.orgs.terms" class="gray">Filter results by:</p>
-            <strong ng-show="facets.orgs.terms">Classifications</strong>
+            <p ng-show="aggregations.orgs.buckets" class="gray">Filter results by:</p>
+            <strong ng-show="aggregations.orgs.buckets">Classifications</strong>
             <ul class="fa-ul">
-                <li ng-repeat="t in facets.orgs.terms | orderBy:'term'" style="margin-right: -20px" ng-switch="t.term === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.term === selectedOrg || !selectedOrg">
+                <li ng-repeat="t in aggregations.orgs.buckets | orderBy:'key'" style="margin-right: -20px" ng-switch="t.key === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.key === selectedOrg || !selectedOrg">
                     <span class="hand-cursor"  tooltip="{{t.longName}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
-                        <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.term}}" ></i>
-                        <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.term}}"></i>
-                        <small id="classifications-text-{{t.term}}"> {{t.term}} ({{t.count}})</small>
+                        <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.key}}" ></i>
+                        <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.key}}"></i>
+                        <small id="classifications-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
                     </span>
                 </li>
             </ul>
@@ -57,17 +57,17 @@
                         </span>
                     </span>
                 </div>  
-                <div ng-repeat="b in aggregations | orderBy:'name'" style="margin-left:{{selectedElements.length * 5}}px;">
+                <div ng-repeat="b in aggregations.flatClassification | orderBy:'name'" style="margin-left:{{selectedElements.length * 5}}px;">
                     <span ng-click="selectElement(b.name)" class="hand-cursor" ng-switch="selectedElements.indexOf(b.name) > -1">
                         <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{b.name}}" ></i>
                         <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{b.name}}" ></i>
                         <span>
-                            <small> {{b.name}} ({{b.count}})</small>
+                            <small> {{b.name}} ({{b.doc_count}})</small>
                         </span>
                     </span>
                 </div>
             </div>
-            <strong ng-show="facets.statuses.terms">Status</strong> 
+            <strong ng-show="aggregations.statuses.buckets">Status</strong> 
             <ul class="fa-ul">
                 <li ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
                     <span class="hand-cursor" ng-show="t.count > 0" tooltip-html-unsafe="{{t.help}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">

@@ -40,7 +40,8 @@ function ExportCtrl($scope, $window, Elastic, CsvDownload) {
     var settings = Elastic.buildElasticQuerySettings($scope);
     Elastic.buildElasticQuery(settings, function(query) {
         query.query.size = 1000;
-        delete query.query.facets;
+//        delete query.query.facets;
+        delete query.query.aggregations;
         delete query.query.from;
         Elastic.generalSearchQuery(query, "cde",  function(result) {
             $scope.gridCdes = [];

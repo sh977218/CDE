@@ -145,14 +145,40 @@ angular.module('resources')
 
 //            queryStuff.facets = {
             queryStuff.aggregations = {
-                orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}}
-                , statuses: {terms: {field: "registrationState.registrationStatus"}}
+//                orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}}
+//                , statuses: {terms: {field: "registrationState.registrationStatus"}}
+                orgs: {
+                    terms: {
+                        "field": "classification.stewardOrg.name", 
+                        "size": 40, 
+                        order: {
+                            "_term": "desc"
+                        }
+                    }
+                }
+                , statuses: {
+                    terms: {
+                        field: "registrationState.registrationStatus"
+                    }
+                }
             };
             if (!settings.isSiteAdmin) {
 //               queryStuff.facets.orgs.facet_filter = {or: lowRegStatusOrCuratorFilter};
 //               queryStuff.facets.statuses.facet_filter = {or: lowRegStatusOrCuratorFilter};
-               queryStuff.aggregations.orgs.facet_filter = {or: lowRegStatusOrCuratorFilter};
-               queryStuff.aggregations.statuses.facet_filter = {or: lowRegStatusOrCuratorFilter};
+                queryStuff.aggregations.orgs.aggregations = {
+                    "orgs_filter": {
+                        "filter": {
+                            "or": lowRegStatusOrCuratorFilter
+                        }
+                    }
+                };
+                queryStuff.aggregations.statuses.aggregations = {
+                    "statuses_filter": {
+                        "filter": {
+                            "or": lowRegStatusOrCuratorFilter
+                        }
+                    }
+                };
             }
 
             if (settings.selectedOrg !== undefined) {
@@ -161,10 +187,10 @@ angular.module('resources')
                     flatClassification: {
                         terms: {
                             size: 500,
-                            field: "flatClassification",
-                        } 
+                            field: "flatClassification"
+                        }
                     }
-                };       
+                };
                 if (flatSelection === "") {
                     queryStuff.aggregations.flatClassification.terms.include = settings.selectedOrg + ";[^;]+";
                 } else {

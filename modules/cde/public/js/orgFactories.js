@@ -20,11 +20,11 @@ angular.module('resources')
 })
 .factory('OrgHelpers', function () {
     return {
-        addLongNameToOrgs : function(terms, orgsDetailedInfo) {
+        addLongNameToOrgs : function(buckets, orgsDetailedInfo) {
             if(orgsDetailedInfo) {
-                for(var i=0; i<terms.length; i++) {
-                    if(orgsDetailedInfo[terms[i].term] && orgsDetailedInfo[terms[i].term].longName) {
-                        terms[i].longName = orgsDetailedInfo[terms[i].term].longName;
+                for(var i=0; i<buckets.length; i++) {
+                    if(orgsDetailedInfo[buckets[i].key] && orgsDetailedInfo[buckets[i].key].longName) {
+                        buckets[i].longName = orgsDetailedInfo[buckets[i].key].longName;
                     }
                 }
             }
