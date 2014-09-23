@@ -1,22 +1,19 @@
 package gov.nih.nlm.cde.test;
 
 
-import gov.nih.nlm.cde.test.NlmCdeBaseTest;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.http.ContentType;
 import static com.jayway.restassured.RestAssured.*;
+import com.jayway.restassured.http.ContentType;
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import java.util.List;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class MiscTests extends NlmCdeBaseTest {
-
-    protected static String baseUrl = System.getProperty("testUrl");
 
     @Test
     public void testSearchBox() {
@@ -116,5 +113,27 @@ public class MiscTests extends NlmCdeBaseTest {
         Assert.assertTrue( response.contains("ninds") );
     }
 
+    
+    @Test
+    public void leavePageWarning() {
+        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        goToCdeByName("Intra-arterial Catheter Patient Not Administered Reason");
+        findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
+        findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
+        
+        findElement(By.linkText("CDEs")).click();
+        shortWait.until(ExpectedConditions.alertIsPresent());
+        Alert alert = driver.switchTo().alert();
+        Assert.assertTrue(alert.getText().contains("are you sure you want to leave"));
+        alert.dismiss();
+        
+        findElement(By.linkText("CDEs")).click();
+        shortWait.until(ExpectedConditions.alertIsPresent());
+        alert = driver.switchTo().alert();
+        Assert.assertTrue(alert.getText().contains("are you sure you want to leave"));
+        alert.accept();
+        findElement(By.id("classifyAll"));
+    }
     
 }
