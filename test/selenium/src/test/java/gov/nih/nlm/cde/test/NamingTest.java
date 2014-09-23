@@ -20,7 +20,7 @@ public class NamingTest extends NlmCdeBaseTest {
         String cdeName = "Principal Investigator State java.lang.String";
         goToCdeByName(cdeName);
         findElement(By.linkText("Naming")).click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeNaming-0")));
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeNaming-0")));
         findElement(By.id("addNamePair")).click();
         modalHere();
         findElement(By.name("designation")).sendKeys("New Name");

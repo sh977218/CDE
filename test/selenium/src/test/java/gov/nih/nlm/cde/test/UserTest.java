@@ -54,7 +54,7 @@ public class UserTest extends NlmCdeBaseTest {
     public void regUserCannotCreate() {
         mustBeLoggedInAs("reguser", "pass");
         findElement(By.id("username_link"));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Create")));
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Create")));
     }
     
     @Test
