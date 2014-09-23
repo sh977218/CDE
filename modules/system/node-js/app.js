@@ -71,12 +71,12 @@ exports.init = function(app, daoManager) {
         // Regenerate is used so appscan won't complain
         req.session.regenerate(function(err) {  
             passport.authenticate('local', function(err, user, info) {
-                if (err) { return next(err); }
+                if (err) { return res.send(403); }
                 if (!user) { 
-                    return res.send(info.message);
+                    return res.send(403, info.message);
                 }
                 req.logIn(user, function(err) {
-                    if (err) { return next(err); }
+                    if (err) { return res.send(403); }
                     req.session.passport = {user: req.user._id};
                     return res.send("OK");
                 });
