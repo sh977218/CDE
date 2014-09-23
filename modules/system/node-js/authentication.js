@@ -125,7 +125,7 @@ exports.authBeforeVsac = function(req, username, password, done) {
                     }
                 });
             } else { // If user was found in local datastore and password != 'umls'
-                if (user.lockCounter === 30) {
+                if (user.lockCounter === 300) {
                     return done(null, false, { message: 'User is locked out' }); 
                 } else if (user.password !== password) {
                     // Initialize the lockCounter if it hasn't been
