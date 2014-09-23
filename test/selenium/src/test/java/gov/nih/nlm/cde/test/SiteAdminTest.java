@@ -144,7 +144,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         Assert.assertTrue(textNotPresent(testOrgUriNotRenamed));        
     }
     
-//    @Test
+    @Test
     public void promoteOrgAdmin() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String testOrg = "Promote Org Test";
@@ -165,11 +165,18 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.linkText("CDE")).click();
         // following will assert that test user was indeed promoted
         new Select(driver.findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(testOrg);
-        logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
+
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Site Management")).click();
+        findElement(By.linkText("Organizations Admins")).click();
+
+        findElement(By.xpath("//div[text() = '" + test_username + "' ]/..//i[@title=\"Remove\"]")).click();
+        textNotPresent(test_username);
+    
     } 
     
-//    @Test
+    @Test
     public void browseUsers() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         findElement(By.id("username_link")).click();

@@ -31,6 +31,15 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         {heading: "Forks"}
     ];
     
+    $scope.$on('$locationChangeStart', function( event ) {
+        if ($scope.elt.unsaved) {
+            var answer = confirm("You have unsaved changes, are you sure you want to leave this page?");
+            if (!answer) {
+                event.preventDefault();
+            }
+        }
+    });
+    
     $scope.reload = function(route, cb) {
         var service = DataElement;
         if (route.cdeId) var query = {deId: route.cdeId};
