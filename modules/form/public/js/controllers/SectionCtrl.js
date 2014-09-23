@@ -1,5 +1,5 @@
 function SectionCtrl($scope, $modal, $timeout) {
-
+    
     $scope.cardinalityOptions = 
     {
         "1": "Exactly 1"
@@ -74,6 +74,15 @@ function SectionCtrl($scope, $modal, $timeout) {
 
     $scope.removeElt = function(form, index) {
         form.formElements.splice(index, 1);
+        $scope.stageElt();
+        
+        if(form.formElements.length === 0) {
+            $scope.setToNoneAddCdeMode();
+        }
+    };
+    
+    $scope.removeQuestion = function(section, index) {
+        section.formElements.splice(index, 1);
         $scope.stageElt();
     };
 

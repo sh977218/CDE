@@ -197,13 +197,18 @@ dd.formViewDetails {
 }
 
 .dragQuestions {
-    
+    min-height: 20px!important;
+    min-width: 300px!important;
+    border-style: dotted!important;
+    border-color: #ddd!important;
+    border-width: 1px!important;
+    padding: 10px;
 }
 
 .fa-cb  { display:none; } /* to hide the checkbox itself */
 .fa-cb + label:before {
-  font-family: FontAwesome;
-  display: inline-block;
+    font-family: FontAwesome;
+    display: inline-block;
 }
 
 .fa-cb + label:before { content: "\f096"; } /* unchecked icon */
@@ -211,3 +216,44 @@ dd.formViewDetails {
 
 .fa-cb:checked + label:before { content: "\f046"; } /* checked icon */
 .fa-cb:checked + label:before { letter-spacing: 5px; }
+
+
+.formSectionArea {
+    min-height: 700px;
+}
+
+.question-search-area {
+    max-height: 800px;
+    overflow-y: scroll;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ddd;
+}
+
+.question-search-area.ui-scrollfix {
+    max-height: 700px;
+    position: fixed;
+    top: 125px;
+}
+
+.question-search-area.ui-scrollfix.ui-scrollfix-bottom {
+    max-height: 600px;
+    top: auto;
+    bottom: 250px;
+}
+
+#section-questions {
+    width: 300px;
+    height: 80px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ddd;
+}
+
+.dl-horizontal dt {
+    width: 100px;
+}
+
+.dl-horizontal dd {
+    margin-left: 120px;
+}

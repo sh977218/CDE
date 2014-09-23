@@ -1,4 +1,10 @@
 function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
+    $scope.filterMode = true;
+
+    $scope.hideShowFilter = function() {
+        $scope.filterMode = !$scope.filterMode;
+    };
+    
     $scope.query = null;
 
     $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
@@ -6,8 +12,6 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
         $scope.registrationStatuses = regStatusShared.statusList;
     }
 
-    $scope.resultPerPage = 20;
-    
     $scope.searchForm = {};
 
     $scope.searchForm.ftsearch = $scope.cache.get("ftsearch");

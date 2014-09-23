@@ -6,6 +6,8 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
 
     };
     
+    $scope.resultPerPage = 20;
+    
     $scope.isLoggedIn = function() {
         return typeof($scope.user._id)!=="undefined";
     };
