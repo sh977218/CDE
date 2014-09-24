@@ -92,6 +92,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
         textPresent("Quick Board ( 2 )");
         findElement(By.linkText("Quick Board ( 2 )")).click();
+        hangon(1);
         findElement(By.id("qb.compare")).click();
         textPresent( "View Full Detail" );
         textPresent( "Value used as a Standard Deviation in ALK" );
