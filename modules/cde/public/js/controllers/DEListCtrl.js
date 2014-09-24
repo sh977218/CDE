@@ -3,7 +3,9 @@ function DEListCtrl($scope, $controller) {
     $controller('ListCtrl', {$scope: $scope}); 
         
     $scope.dragSortableOptions = {
-        connectWith: ".dragQuestions"
+        connectWith: ".dragQuestions",
+        helper: "clone",
+        appendTo: "body"
     };
 
     

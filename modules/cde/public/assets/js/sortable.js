@@ -133,7 +133,8 @@ angular.module('ui.sortable', [])
               // the start and stop of repeat sections and sortable doesn't
               // respect their order (even if we cancel, the order of the
               // comments are still messed up).
-              if (hasSortingHelper(element, ui) && !ui.item.sortable.received) {
+              if (hasSortingHelper(element, ui) && !ui.item.sortable.received &&
+                  element.sortable( 'option', 'appendTo' ) === 'parent') {
                 // restore all the savedNodes except .ui-sortable-helper element
                 // (which is placed last). That way it will be garbage collected.
                 savedNodes = savedNodes.not(savedNodes.last());
@@ -206,8 +207,13 @@ angular.module('ui.sortable', [])
               // so the next list can retrive it
               if (!ui.item.sortable.isCanceled()) {
                 scope.$apply(function () {
-                  ui.item.sortable.moved = ngModel.$modelValue.splice(
-                    ui.item.sortable.index, 1)[0];
+//                  ui.item.sortable.moved = ngModel.$modelValue.splice(ui.item.sortable.index, 1)[0];
+                    if (element.sortable('option', 'helper') === 'clone') {
+                        ui.item.sortable.moved = angular.copy(ngModel.$modelValue[ui.item.sortable.index]);
+                    } else {
+                        ui.item.sortable.moved = ngModel.$modelValue.splice(
+                        ui.item.sortable.index, 1)[0];
+                    }
                 });
               }
             };
