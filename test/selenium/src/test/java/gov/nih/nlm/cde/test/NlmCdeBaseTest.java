@@ -189,9 +189,7 @@ public class NlmCdeBaseTest {
     
     public void closeAlert() {
         try {
-            System.out.println("1");
             findElement(By.cssSelector(".alert .close")).click();
-            System.out.println("2");
         } catch(Exception e) {
                     
         }
@@ -221,6 +219,10 @@ public class NlmCdeBaseTest {
     
     public boolean textPresent(String text) {
         return textPresent(text, "BODY");
+    }
+    
+    public boolean textPresentTrueFalse(String text) {
+        return driver.findElement(By.tagName("body")).getText().contains(text);
     }
     
     public boolean textNotPresent(String text){
