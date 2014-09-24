@@ -68,7 +68,7 @@ app.use(function(req, res, next) {
         return false;
     };
     if ((req.cookies['connect.sid'] || req.originalUrl === "/login") && !this.isFile(req)) {
-        var initExpressSession = express.session({ secret: "omgnodeworks", store:sessionStore });
+        var initExpressSession = express.session({proxy: true, secret: "omgnodeworks", store:sessionStore, cookie: {httpOnly: true, secure: true } });
         initExpressSession(req, res, next);
    } else {
        next();
