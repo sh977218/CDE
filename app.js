@@ -55,7 +55,7 @@ app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ic
 
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(express.cookieParser('your secret here', {secure: true}));
+app.use(express.cookieParser("Jk87fhK"));
 
 var sessionStore = new MongoStore({
     mongoose_connection: mongo_data_system.mongoose_connection  
@@ -68,7 +68,7 @@ app.use(function(req, res, next) {
         return false;
     };
     if ((req.cookies['connect.sid'] || req.originalUrl === "/login") && !this.isFile(req)) {
-        var initExpressSession = express.session({proxy: true, secret: "omgnodeworks", store:sessionStore, cookie: {httpOnly: true, secure: true } });
+        var initExpressSession = express.session({secret: "98KJf34", store: sessionStore});
         initExpressSession(req, res, next);
    } else {
        next();
@@ -78,6 +78,12 @@ app.use(function(req, res, next) {
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.csrf());
+
+app.use(function (req, res, next) {  
+    res.locals.csrftoken = req.session._csrf;  
+    next();  
+  });
 
 var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
 
