@@ -160,7 +160,13 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                             if ($scope.aggregations.statuses.buckets[j].key === $scope.registrationStatuses[i].name) {
                                 statusFound = true;
 //                                $scope.registrationStatuses[i].count = $scope.facets.statuses.terms[j].count;
-                                $scope.registrationStatuses[i].count = $scope.aggregations.statuses.buckets[j].doc_count;
+                                
+//                                if( $scope.aggregations.statuses.buckets[j].statuses_filter &&
+//                                    $scope.aggregations.statuses.buckets[j].statuses_filter.doc_count ) {
+                                    $scope.registrationStatuses[i].count = $scope.aggregations.statuses.buckets[j].lowRegStatusOrCurator_filter.doc_count;
+//                                } else {
+//                                    $scope.registrationStatuses[i].count = $scope.aggregations.statuses.buckets[j].doc_count;
+//                                }
                             }
                         }
                         if (!statusFound) {

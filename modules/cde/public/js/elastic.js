@@ -79,30 +79,34 @@ angular.module('resources')
                 }
             };
 
-            if (!settings.isSiteAdmin) {
+            var registrationStatusSortOrderLte = 3;
+            if (settings.isSiteAdmin) {
+                registrationStatusSortOrderLte = 100;
+            }
+                
                 var lowRegStatusOrCuratorFilter = [];
-                lowRegStatusOrCuratorFilter.push({range: {"registrationState.registrationStatusSortOrder": {lte: 3}}});
+                lowRegStatusOrCuratorFilter.push({range: {"registrationState.registrationStatusSortOrder": {lte: registrationStatusSortOrderLte}}});
                 if (settings.myOrgs !== undefined) {
                      for (var i = 0; i < settings.myOrgs.length; i++) {
                          lowRegStatusOrCuratorFilter.push({term: {"stewardOrg.name": settings.myOrgs[i]}});
                      }
                 }
                 settings.filter.and.push({or: lowRegStatusOrCuratorFilter});
-            }  
+//            }
             
-           queryStuff.query.bool.must = [];
+            queryStuff.query.bool.must = [];
 
-           var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
+            var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
 
-           queryStuff.query.bool.must.push({
-              dis_max: {
-                  queries: [
-                      {function_score: {script_score: {script: script}}}
-                  ]
-              } 
-           });
+            queryStuff.query.bool.must.push({
+                dis_max: {
+                    queries: [
+                        {function_score: {script_score: {script: script}}}
+                    ]
+                }
+            });
 
-           if (searchQ !== undefined && searchQ !== "") {
+            if (searchQ !== undefined && searchQ !== "") {
                 queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
                     {
                         query_string: {
@@ -162,24 +166,25 @@ angular.module('resources')
                     }
                 }
             };
-            if (!settings.isSiteAdmin) {
+            
+//            if (!settings.isSiteAdmin) {
 //               queryStuff.facets.orgs.facet_filter = {or: lowRegStatusOrCuratorFilter};
 //               queryStuff.facets.statuses.facet_filter = {or: lowRegStatusOrCuratorFilter};
                 queryStuff.aggregations.orgs.aggregations = {
-                    "orgs_filter": {
+                    "lowRegStatusOrCurator_filter": {
                         "filter": {
                             "or": lowRegStatusOrCuratorFilter
                         }
                     }
                 };
                 queryStuff.aggregations.statuses.aggregations = {
-                    "statuses_filter": {
+                    "lowRegStatusOrCurator_filter": {
                         "filter": {
                             "or": lowRegStatusOrCuratorFilter
                         }
                     }
                 };
-            }
+//            }
 
             if (settings.selectedOrg !== undefined) {
                 var flatFacetFilter = queryBuilder.flattenSelection(i - 1);

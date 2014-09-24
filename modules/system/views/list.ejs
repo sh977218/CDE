@@ -36,7 +36,7 @@
 <div class="container-fluid pt30">    
     <div class="row">
         <div class="col-sm-2 hidden-xs">
-            <p ng-show="aggregations.orgs.buckets" class="gray">Filter results by:</p>
+            <p ng-show="aggregations.orgs.buckets" class="gray">Filter by:</p>
             <strong ng-show="aggregations.orgs.buckets">Classifications</strong>
             <ul class="fa-ul">
                 <li ng-repeat="t in aggregations.orgs.buckets | orderBy:'key'" style="margin-right: -20px" ng-switch="t.key === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.key === selectedOrg || !selectedOrg">
