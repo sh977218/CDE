@@ -84,15 +84,14 @@ angular.module('resources')
                 registrationStatusSortOrderLte = 100;
             }
                 
-                var lowRegStatusOrCuratorFilter = [];
-                lowRegStatusOrCuratorFilter.push({range: {"registrationState.registrationStatusSortOrder": {lte: registrationStatusSortOrderLte}}});
-                if (settings.myOrgs !== undefined) {
-                     for (var i = 0; i < settings.myOrgs.length; i++) {
-                         lowRegStatusOrCuratorFilter.push({term: {"stewardOrg.name": settings.myOrgs[i]}});
-                     }
-                }
-                settings.filter.and.push({or: lowRegStatusOrCuratorFilter});
-//            }
+            var lowRegStatusOrCuratorFilter = [];
+            lowRegStatusOrCuratorFilter.push({range: {"registrationState.registrationStatusSortOrder": {lte: registrationStatusSortOrderLte}}});
+            if (settings.myOrgs !== undefined) {
+                 for (var i = 0; i < settings.myOrgs.length; i++) {
+                     lowRegStatusOrCuratorFilter.push({term: {"stewardOrg.name": settings.myOrgs[i]}});
+                 }
+            }
+            settings.filter.and.push({or: lowRegStatusOrCuratorFilter});
             
             queryStuff.query.bool.must = [];
 
@@ -147,10 +146,7 @@ angular.module('resources')
             }
             
 
-//            queryStuff.facets = {
             queryStuff.aggregations = {
-//                orgs: {terms: {field: "classification.stewardOrg.name", size: 40, order: "term"}}
-//                , statuses: {terms: {field: "registrationState.registrationStatus"}}
                 orgs: {
                     terms: {
                         "field": "classification.stewardOrg.name", 
@@ -167,24 +163,20 @@ angular.module('resources')
                 }
             };
             
-//            if (!settings.isSiteAdmin) {
-//               queryStuff.facets.orgs.facet_filter = {or: lowRegStatusOrCuratorFilter};
-//               queryStuff.facets.statuses.facet_filter = {or: lowRegStatusOrCuratorFilter};
-                queryStuff.aggregations.orgs.aggregations = {
-                    "lowRegStatusOrCurator_filter": {
-                        "filter": {
-                            "or": lowRegStatusOrCuratorFilter
-                        }
+            queryStuff.aggregations.orgs.aggregations = {
+                "lowRegStatusOrCurator_filter": {
+                    "filter": {
+                        "or": lowRegStatusOrCuratorFilter
                     }
-                };
-                queryStuff.aggregations.statuses.aggregations = {
-                    "lowRegStatusOrCurator_filter": {
-                        "filter": {
-                            "or": lowRegStatusOrCuratorFilter
-                        }
+                }
+            };
+            queryStuff.aggregations.statuses.aggregations = {
+                "lowRegStatusOrCurator_filter": {
+                    "filter": {
+                        "or": lowRegStatusOrCuratorFilter
                     }
-                };
-//            }
+                }
+            };
 
             if (settings.selectedOrg !== undefined) {
                 var flatFacetFilter = queryBuilder.flattenSelection(i - 1);

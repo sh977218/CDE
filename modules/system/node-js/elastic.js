@@ -24,7 +24,6 @@ exports.elasticsearch = function (query, type, cb) {
             thisCde.highlight = resp.hits.hits[i].highlight;
             result.cdes.push(thisCde);
         }
-//        result.facets = resp.facets;
         result.aggregations = resp.aggregations;
         cb(result);
      } else {

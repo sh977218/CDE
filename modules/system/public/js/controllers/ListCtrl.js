@@ -47,7 +47,6 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
     }; 
 
     $scope.resetSearch = function() {
-//        delete $scope.facets;
         delete $scope.aggregations;
         $scope.filter = []; 
         delete $scope.searchForm.ftsearch;
@@ -97,7 +96,6 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
             delete $scope.selectedOrg;
             $scope.selectedElements = [];            
         }  
-//        delete $scope.facets.groups;
         delete $scope.aggregations.groups;
         $scope.reload();
     };
@@ -148,29 +146,19 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                 $scope.openCloseAll($scope.cdes, "list");
                 $scope.totalItems = result.totalNumber;
                 $scope.cache.put("totalItems", $scope.totalItems);
-//                $scope.facets = result.facets;
                 $scope.aggregations = result.aggregations;
                 
                 for (var j = 0; j < $scope.registrationStatuses.length; j++) {
                    $scope.registrationStatuses[j].count = 0; 
                 }
-//                if ($scope.facets.statuses !== undefined) {
                 if ($scope.aggregations.statuses !== undefined) {
                     for (var i = 0; i < $scope.registrationStatuses.length; i++) {
                         var statusFound = false;
-//                        for (var j = 0; j < $scope.facets.statuses.terms.length; j++) {
                         for (var j = 0; j < $scope.aggregations.statuses.buckets.length; j++) {
-//                            if ($scope.facets.statuses.terms[j].term === $scope.registrationStatuses[i].name) {
                             if ($scope.aggregations.statuses.buckets[j].key === $scope.registrationStatuses[i].name) {
                                 statusFound = true;
-//                                $scope.registrationStatuses[i].count = $scope.facets.statuses.terms[j].count;
                                 
-//                                if( $scope.aggregations.statuses.buckets[j].statuses_filter &&
-//                                    $scope.aggregations.statuses.buckets[j].statuses_filter.doc_count ) {
-                                    $scope.registrationStatuses[i].count = $scope.aggregations.statuses.buckets[j].lowRegStatusOrCurator_filter.doc_count;
-//                                } else {
-//                                    $scope.registrationStatuses[i].count = $scope.aggregations.statuses.buckets[j].doc_count;
-//                                }
+                                $scope.registrationStatuses[i].count = $scope.aggregations.statuses.buckets[j].lowRegStatusOrCurator_filter.doc_count;
                             }
                         }
                         if (!statusFound) {
@@ -193,7 +181,6 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                     $scope.aggregations.flatClassification = [];
                 }
                 
-//                OrgHelpers.addLongNameToOrgs($scope.facets.orgs.terms, $rootScope.orgsDetailedInfo);
                 OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.buckets, $rootScope.orgsDetailedInfo);
              });
         });  
