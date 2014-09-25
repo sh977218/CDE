@@ -34,7 +34,7 @@ public class CompareTest extends NlmCdeBaseTest{
     
     @Test
     public void Compare3Then2Elements() {
-        String cde1 = "Lymphoma First Recurrence Date";
+        String cde1 = "Assessment of Motor and Process Skills Assessment Complete Indicator";
         String cde2 = "EuroQOL Complete Indicator";
         String cde3 = "Administration Route of Administration java.lang.String";
         
@@ -53,9 +53,10 @@ public class CompareTest extends NlmCdeBaseTest{
         
         findElement(By.id("qb.compare")).click();
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
-        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-6-warning")));
-        textPresent("of disease symptoms is reported");        
-        textPresent("mobility, self-care, usual activity, pain/discomfort,");        
+        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-valid")));
+        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-6-valid")));
+        textPresent("an observational assessment that is used to measure");        
+        textPresent("pain/discomfort, and anxiety/depression");        
     }
     
     @Test
