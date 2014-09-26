@@ -7,14 +7,14 @@ function QuickBoardCtrl($scope, CdeList) {
     };
     
     $scope.gridOptions = {
-        data: 'gridCdes'
+        data: 'qbGridCdes'
         , enableColumnResize: true
         , enableRowReordering: true
         , enableCellSelection: true
     };
     
     $scope.cdes = [];
-    $scope.gridCdes = [];
+    $scope.qbGridCdes = [];
     
     $scope.showAccordionView = function() {
         $scope.viewType.accordion = true;
@@ -27,7 +27,7 @@ function QuickBoardCtrl($scope, CdeList) {
         $scope.viewType.grid = true;
         $scope.viewType.sidebyside = false;
         
-        $scope.gridCdes = [];
+        $scope.qbGridCdes = [];
         for( var i in $scope.cdes ) {
             var cde = $scope.cdes[i];
             var thisCde = 
@@ -53,7 +53,7 @@ function QuickBoardCtrl($scope, CdeList) {
            } 
            thisCde.permissbleValues = permissibleValues;
 
-           $scope.gridCdes.push(thisCde);               
+           $scope.qbGridCdes.push(thisCde);               
         }
     };
     
@@ -64,6 +64,7 @@ function QuickBoardCtrl($scope, CdeList) {
             $scope.viewType.accordion = false;
             $scope.viewType.grid = false;
             $scope.viewType.sidebyside = true;
+            
         }
     };
     
@@ -75,7 +76,7 @@ function QuickBoardCtrl($scope, CdeList) {
     $scope.emptyQuickBoardAndScreen = function() {
         $scope.emptyQuickBoard();
         $scope.cdes = [];
-        $scope.gridCdes = [];
+        $scope.qbGridCdes = [];
     };
 
     if ($scope.quickBoard.length > 0) {

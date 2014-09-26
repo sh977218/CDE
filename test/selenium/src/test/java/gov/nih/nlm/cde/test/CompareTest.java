@@ -33,6 +33,33 @@ public class CompareTest extends NlmCdeBaseTest{
     }
     
     @Test
+    public void Compare3Then2Elements() {
+        String cde1 = "Assessment of Motor and Process Skills Assessment Complete Indicator";
+        String cde2 = "EuroQOL Complete Indicator";
+        String cde3 = "Administration Route of Administration java.lang.String";
+        
+        goToCdeSearch();
+        addToQuickBoard(cde1);
+        addToQuickBoard(cde2);
+        addToQuickBoard(cde3);
+        findElement(By.linkText("Quick Board ( 3 )")).click();
+        Assert.assertTrue(textPresent(cde1));
+        Assert.assertTrue(textPresent(cde2));
+        Assert.assertTrue(textPresent(cde3));
+        
+        findElement(By.id("qb.compare")).click();
+        textPresent("You may only compare 2 CDEs side by side.");
+        findElement(By.id("remove_2")).click();
+        
+        findElement(By.id("qb.compare")).click();
+        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
+        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-valid")));
+        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-6-valid")));
+        textPresent("an observational assessment that is used to measure");        
+        textPresent("pain/discomfort, and anxiety/depression");        
+    }
+    
+    @Test
     public void compareMeWithMlt() {
         goToCdeByName("Common Toxicity Criteria Adverse Event Iron Excess Grade");
         findElement(By.linkText("More Like This")).click();
