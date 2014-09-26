@@ -1,14 +1,11 @@
 package gov.nih.nlm.cde.common.test;
 
-import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-public abstract class PropertyTest extends NlmCdeBaseTest {
-    
-    public abstract void goToEltByName(String name);
-    
+public abstract class PropertyTest extends CommonTest {
+        
     public void addRemoveProperty(String eltName) {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToEltByName(eltName);
