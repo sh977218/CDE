@@ -94,6 +94,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         }
     };
     
+    // quickBoard contains an array of CDE IDs
     $scope.quickBoard = [];
     $scope.addToQuickBoard = function(cdeId) {
         if( $scope.quickBoard.length < GLOBALS.max_quickboard_cdes ) {
