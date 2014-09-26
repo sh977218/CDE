@@ -20,7 +20,7 @@ public abstract class CommentTest extends CommonTest {
         scrollTo( "2000" );
         findElement(By.id("removeComment-0")).click();
         Assert.assertTrue(textPresent("Comment removed"));
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("My First Comment!") < 0);
+        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("My First Comment!"));
     }
 
     public void orgAdminCanRemoveComment(String eltName) {        
@@ -42,7 +42,7 @@ public abstract class CommentTest extends CommonTest {
                 i = length;
                 Assert.assertTrue(textPresent("Comment removed"));
                 hangon(1);
-                Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(commentText) < 0);
+                Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(commentText));
             }
         }
     }

@@ -17,7 +17,7 @@ public class FormCommentTest extends CommentTest {
 
     @Test
     public void orgAdminCanRemoveFormComment() {
-        orgAdminCanRemoveComment("Form Property Test");
+        orgAdminCanRemoveComment("Form Comment Test");
     }
 
     @Test
