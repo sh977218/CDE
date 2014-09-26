@@ -34,7 +34,7 @@ var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui
                             '<input type="text" ng-model="value" typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +                                                        
                             '<button class="fa fa-check" ng-click="model = value;editMode = false; onOk();"> Confirm</button>' + 
                             '<button class="fa fa-times" ng-click="editMode = false"> Discard</button>' + 
-                        '</span>' +       
+                        '</span>' +
                     '</span>'
                 ,
         restrict: 'AE',
