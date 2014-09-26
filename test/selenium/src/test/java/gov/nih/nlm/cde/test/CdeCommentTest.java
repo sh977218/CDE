@@ -12,17 +12,17 @@ public class CdeCommentTest extends CommentTest {
     
     @Test
     public void cdeComments() {
-        comments();
+        comments("Hospital Confidential Institution Referred From");
     }
 
     @Test
     public void orgAdminCanRemoveCdeComment() {
-        orgAdminCanRemoveComment();
+        orgAdminCanRemoveComment("Genbank");
     }
 
     @Test
     public void siteAdminCanRemoveCdeComment() {
-        siteAdminCanRemoveComment();
+        siteAdminCanRemoveComment("Genbank");
     }
 
 }

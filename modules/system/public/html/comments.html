@@ -1,0 +1,22 @@
+<div ng-controller="CommentsCtrl">
+    <h4>Discussions</h4>
+
+    <textarea name="comment" ng-model="comment.content" placeholder="Please log in to comment"></textarea>
+    <input name="postComment" type="button" value="Post" ng-click="addComment()" ng-disabled="!user._id"/>
+
+    <div ng-repeat="comment in elt.comments">
+        <hr>
+        <div class="row" style="background-color: lightgrey">
+            <b class="col-md-offset1 col-md-9">{{comment.username}}</b>
+            <div class="col-md-2">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-11"  id="commentText-{{$index}}">
+                {{comment.text}}    
+            </div>
+            <div class="col-md-1">
+                <i class="fa fa-trash-o" ng-show="canRemoveComment(comment)" ng-click="removeComment(comment._id)" id="removeComment-{{$index}}"></i>
+            </div>
+        </div>
+    </div>
+</div>
