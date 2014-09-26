@@ -47,22 +47,6 @@ exports.userTotalSpace = function(name, callback) {
     mongo_data_system.userTotalSpace(DataElement, name, callback);
 };
 
-exports.addComment = function(deId, comment, userId, callback) {
-    exports.byId(deId, function(err, de) {
-        mongo_data_system.userById(userId, function(err, user) {
-            de.comments.push({
-                user: user._id
-                , username: user.username
-                , created: new Date().toJSON()
-                , text: comment
-            });
-            de.save(function (err) {
-                callback(err, de);
-            });
-        });
-    });
-};
-
 exports.deCount = function (callback) {
     DataElement.find().count().exec(function (err, count) {
         callback(count);
