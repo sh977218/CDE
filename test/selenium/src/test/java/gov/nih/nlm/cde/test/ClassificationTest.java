@@ -91,7 +91,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(linkList.size() == 1);
     }
     
-    @Test
+    //@Test
     public void classifyEntireSearch() {
         mustBeLoggedInAs(ninds_username, ninds_password);
         goToCdeSearch();

@@ -103,32 +103,6 @@ exports.addOrgClassification = function(body, cb) {
     });
 };
 
-//exports.classifyEntireSearch = function(req, cb) {
-//    elastic.elasticsearch(req.query, req.itemType, function(result) {
-//        var cdesNumber = result.cdes.length;
-//        var cdesClassified = 0;
-//        var ids = result.cdes.map(function(cde) {return cde._id;});
-//        ids.forEach(function(id){
-//            var classifReq = {
-//                orgName: req.newClassification.orgName
-//                , categories: req.newClassification.categories
-//                , cdeId: id
-//            };
-//            exports.cdeClassification(classifReq, classificationShared.actions.create, function() {
-//                cdesClassified++;
-//                if (cdesNumber === cdesClassified) {
-//                    cb();
-//                    clearTimeout(timoeut);
-//                }
-//            });
-//        });
-//        var timoeut = setTimeout(function(){
-//            if (cdesNumber === cdesClassified) cb();
-//            else cb("not classified everything");
-//        }, 3000);
-//    });
-//};
-
 exports.classifyEntireSearch = function(req, cb) {
     adminItemSvc.bulkActionOnSearch(req, cb);
 };
