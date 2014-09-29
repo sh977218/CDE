@@ -211,7 +211,34 @@ exports.forkRoot = function(req, res, dao) {
     });
 };
 
-exports.bulkActionOnSearch = function(req, cb) {
+//exports.bulkActionOnSearch = function(req, cb) {
+//    elastic.elasticsearch(req.query, req.itemType, function(result) {
+//        var eltsTotal = result.cdes.length;
+//        var eltsProcessed = 0;
+//        var ids = result.cdes.map(function(cde) {return cde._id;});
+//        var actionCallback = function() {
+//            eltsProcessed++;
+//            if (eltsTotal === eltsProcessed) {
+//                cb();
+//                clearTimeout(timoeut);
+//            }
+//        };        
+//        ids.forEach(function(id){
+//            var classifReq = {
+//                orgName: req.newClassification.orgName
+//                , categories: req.newClassification.categories
+//                , cdeId: id
+//            };
+//            classificationNode.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
+//        });
+//        var timoeut = setTimeout(function(){
+//            if (eltsTotal === eltsProcessed) cb();
+//            else cb("not classified everything");
+//        }, 3000);
+//    });
+//};
+
+exports.bulkActionOnSearch = function(req, action, cb) {
     elastic.elasticsearch(req.query, req.itemType, function(result) {
         var eltsTotal = result.cdes.length;
         var eltsProcessed = 0;
@@ -224,12 +251,13 @@ exports.bulkActionOnSearch = function(req, cb) {
             }
         };        
         ids.forEach(function(id){
-            var classifReq = {
-                orgName: req.newClassification.orgName
-                , categories: req.newClassification.categories
-                , cdeId: id
-            };
-            classificationNode.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
+//            var classifReq = {
+//                orgName: req.newClassification.orgName
+//                , categories: req.newClassification.categories
+//                , cdeId: id
+//            };
+//            classificationNode.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
+            action(id, actionCallback);
         });
         var timoeut = setTimeout(function(){
             if (eltsTotal === eltsProcessed) cb();

@@ -3,7 +3,7 @@ var mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , usersvc = require('../../system/node-js/usersrvc')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
-    , adminItemSvc = require("./adminItemSvc");
+    , adminItemSvc = require("./adminItemSvc")    
 ;
 
 var classification = this;
@@ -103,5 +103,13 @@ exports.addOrgClassification = function(body, cb) {
 };
 
 exports.classifyEntireSearch = function(req, cb) {
-    adminItemSvc.bulkActionOnSearch(req, cb);
+    var action = function(id, actionCallback) {
+        var classifReq = {
+            orgName: req.newClassification.orgName
+            , categories: req.newClassification.categories
+            , cdeId: id
+        };          
+        classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);  
+    };
+    adminItemSvc.bulkActionOnSearch(req, action, cb);
 };
