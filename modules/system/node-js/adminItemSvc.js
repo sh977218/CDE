@@ -207,3 +207,30 @@ exports.forkRoot = function(req, res, dao) {
         }
     });
 };
+
+exports.bulkActionOnSearch = function(req, action, cb) {
+    elastic.elasticsearch(req.query, req.itemType, function(result) {
+        var eltsTotal = result.cdes.length;
+        var eltsProcessed = 0;
+        var ids = result.cdes.map(function(cde) {return cde._id;});
+        ids.forEach(function(id){
+            var classifReq = {
+                orgName: req.newClassification.orgName
+                , categories: req.newClassification.categories
+                , cdeId: id
+            };
+            var actionCallback = function() {
+                eltsProcessed++;
+                if (eltsTotal === eltsProcessed) {
+                    cb();
+                    clearTimeout(timoeut);
+                }
+            };
+            if (action === "classify") exports.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
+        });
+        var timoeut = setTimeout(function(){
+            if (eltsTotal === eltsProcessed) cb();
+            else cb("not classified everything");
+        }, 3000);
+    });
+};
