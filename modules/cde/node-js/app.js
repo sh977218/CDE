@@ -461,4 +461,12 @@ exports.init = function(app, daoManager) {
     });        
     
     app.get('/status/cde', status.status);
+    
+    app.post('/pinEntireSearchToBoard', function(req, res) {
+        if (req.isAuthenticated()) {
+            usersvc.pinToBoard(req, res);
+        } else {
+            res.send("Please login first.");
+        }      
+    });    
 };
