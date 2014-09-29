@@ -3,7 +3,6 @@ var mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , usersvc = require('../../system/node-js/usersrvc')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
-    , elastic = require('./elastic')
     , adminItemSvc = require("./adminItemSvc");
 ;
 

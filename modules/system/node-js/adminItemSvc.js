@@ -1,4 +1,7 @@
-var mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
+var mongo_data_system = require('../../system/node-js/mongo-data')
+    , classificationShared = require('../shared/classificationShared')
+    , classificationNode = require('./classificationNode')
+    , elastic = require('./elastic');
 
 
 exports.save = function(req, res, dao) {
@@ -226,7 +229,7 @@ exports.bulkActionOnSearch = function(req, action, cb) {
                     clearTimeout(timoeut);
                 }
             };
-            if (action === "classify") exports.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
+            classificationNode.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
         });
         var timoeut = setTimeout(function(){
             if (eltsTotal === eltsProcessed) cb();
