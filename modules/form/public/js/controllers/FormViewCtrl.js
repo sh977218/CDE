@@ -7,7 +7,7 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
     
     $scope.tabs = {
         general: {heading: "General Details"},
-        description: {heading: "Description"},
+        description: {heading: "Form Description"},
         classification: {heading: "Classification"},
         concepts: {heading: "Concepts"},
         status: {heading: "Status"},
