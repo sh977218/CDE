@@ -38,7 +38,7 @@ function BoardViewCtrl($scope, $routeParams, $http, $modal) {
     $scope.openChangeStewardBulk = function (elt, redirectBaseLink) {
         var modalInstance = $modal.open({
             templateUrl: '/cde/public/html/changeStewardBulk.html',
-            controller: ChangeStewardBulkCtrl,
+            controller: ChangeStewardBulkModalCtrl,
             resolve: {
                 elt: function() {
                     return elt;

@@ -1,4 +1,4 @@
-function ChangeStewardBulkCtrl($scope, $modal) {
+function ChangeStewardBulkModalCtrl($scope, $modal) {
     $scope.checkVsacId = function(elt) {
         $scope.loadValueSet();
         elt.unsaved = true;
