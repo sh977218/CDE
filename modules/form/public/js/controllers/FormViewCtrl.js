@@ -1,5 +1,6 @@
 function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
     $scope.module = "form";
+    $scope.baseLink = '#/formView?_id=';
     $scope.addCdeMode = false;
     $scope.openCdeInNewTab = true;
     $scope.dragEnabled = true;

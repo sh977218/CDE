@@ -1,5 +1,6 @@
 function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, CdeDiff, isAllowedModel, OrgHelpers, $rootScope) {
     $scope.module = 'cde';
+    $scope.baseLink = '#/deview?cdeId=';
     $scope.eltLoaded = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;

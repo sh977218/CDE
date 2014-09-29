@@ -1,4 +1,4 @@
-var PropertiesCtrl = function ($scope, $modal, $http, $window, $timeout) {
+var PropertiesCtrl = function ($scope, $modal, $window, $timeout) {
     $scope.openNewProperty = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newPropertyModalContent.html',
@@ -22,7 +22,7 @@ var PropertiesCtrl = function ($scope, $modal, $http, $window, $timeout) {
                 $scope.addAlert("info", "Property added. Save to confirm.")
             } else {
                 $scope.elt.$save(function (newElt) {
-                    $scope.elt = newElt;
+                    $window.location.href = $scope.baseLink + newElt._id;  
                     $scope.addAlert("success", "Property Added"); 
                 });
             }
@@ -35,7 +35,7 @@ var PropertiesCtrl = function ($scope, $modal, $http, $window, $timeout) {
             $scope.addAlert("info", "Property removed. Save to confirm.")
         } else {
             $scope.elt.$save(function (newElt) {
-                $scope.elt = newElt;
+                $window.location.href = $scope.baseLink + newElt._id;  
                 $scope.addAlert("success", "Property Removed"); 
             });
         }
