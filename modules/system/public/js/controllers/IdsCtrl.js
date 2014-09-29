@@ -16,7 +16,7 @@ var IdsCtrl = function ($scope, $modal, $window) {
                 $scope.addAlert("info", "Identifier added. Save to confirm.")
             } else {
                 $scope.elt.$save(function(newElt) {
-                    $window.location.href = $scope.baseLink + newElt._id;  
+                    $window.location.href = $scope.baseLink + newElt._id + "&tab=ids";  
                     $scope.addAlert("success", "Identifier Added");
                 });
             }
@@ -29,7 +29,7 @@ var IdsCtrl = function ($scope, $modal, $window) {
             $scope.addAlert("info", "Identifier removed. Save to confirm.")
         } else {
             $scope.elt.$save(function(newElt) {
-                $window.location.href = $scope.baseLink + newElt._id;  
+                $window.location.href = $scope.baseLink + newElt._id + "&tab=ids";  
                 $scope.addAlert("success", "Identifier Removed");
             });        
         }

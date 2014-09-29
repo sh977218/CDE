@@ -22,7 +22,7 @@ var PropertiesCtrl = function ($scope, $modal, $window, $timeout) {
                 $scope.addAlert("info", "Property added. Save to confirm.")
             } else {
                 $scope.elt.$save(function (newElt) {
-                    $window.location.href = $scope.baseLink + newElt._id;  
+                    $window.location.href = $scope.baseLink + newElt._id + "&tab=properties";  
                     $scope.addAlert("success", "Property Added"); 
                 });
             }
@@ -35,7 +35,7 @@ var PropertiesCtrl = function ($scope, $modal, $window, $timeout) {
             $scope.addAlert("info", "Property removed. Save to confirm.")
         } else {
             $scope.elt.$save(function (newElt) {
-                $window.location.href = $scope.baseLink + newElt._id;  
+                $window.location.href = $scope.baseLink + newElt._id + "&tab=properties";  
                 $scope.addAlert("success", "Property Removed"); 
             });
         }

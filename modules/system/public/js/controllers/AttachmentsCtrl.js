@@ -72,7 +72,7 @@ function AttachmentsCtrl($scope, $rootScope, $http, $timeout) {
             index: index
             , id: $scope.elt._id 
         }).then(function (res) {
-            $window.location.href = $scope.baseLink + res.data._id;  
+            $scope.elt = res.data;  
         });
     };
     
