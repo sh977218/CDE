@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid">
     <div class="pt20">{{message}}</div>
     <tabset class="pt20">
         <tab heading="Broadcast">
@@ -21,19 +21,15 @@
             </div>
         </tab>
         <tab heading="Organizations">
-            <br/>
-            <form class="form-inline pt20 pb20" role="form" id="addOrgForm" name="addOrgForm" novalidate>
-                <div class="row">
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="newOrgName" name="newOrgName" placeholder="Organization Name" ng-model="newOrg.name" required></input>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="newOrgLongName" name="newOrgLongName" placeholder="Organization Long Name" ng-model="newOrg.longName"></input>
-                    </div>
-                    <button type="submit" class="btn btn-success" id="addOrg" ng-click="addOrg()" ng-disabled="addOrgForm.newOrgName.$invalid">Add It</button>
+            <form class="form-inline pt40 pb40" role="form" id="addOrgForm" name="addOrgForm" novalidate>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="newOrgName" name="newOrgName" placeholder="Organization Name" ng-model="newOrg.name" required>
                 </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="newOrgLongName" name="newOrgLongName" placeholder="Organization Long Name" ng-model="newOrg.longName">
+                </div>
+                <button type="submit" class="btn btn-success" id="addOrg" ng-click="addOrg()" ng-disabled="addOrgForm.newOrgName.$invalid">Add It</button>
             </form>
-            <br/><br/>
             <table class="table table-border table-responsive">
                 <tr>
                     <th>Organization Name:</th>
@@ -42,6 +38,7 @@
                     <th>E-mail Address:</th>
                     <th>Phone Number:</th>
                     <th>Website:</th>
+                    <th>Working Group:</th>
                 </tr>
                 <tr ng-repeat="c in orgs | orderBy:'name'">
                     <td id="orgName-{{c.name}}">
@@ -61,6 +58,9 @@
                     </td>
                     <td>
                         <div inline-edit id="orgUri-{{c.name}}" model="c.uri" is-allowed="true" on-ok="updateOrg(c)"></div>
+                    </td>
+                    <td class="center">
+                        <input id="workingGroupCheckbox" type="checkbox" ng-checked="c.workingGroup" ng-click="c.workingGroup = !c.workingGroup; updateOrg(c);">
                     </td>
                 </tr>
             </table>

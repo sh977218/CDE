@@ -257,3 +257,7 @@ dd.formViewDetails {
 .dl-horizontal dd {
     margin-left: 120px;
 }
+
+.table td.center{
+   text-align: center;   
+}
