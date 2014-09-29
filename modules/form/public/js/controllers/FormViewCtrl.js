@@ -5,13 +5,29 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
     $scope.openCdeInNewTab = true;
     $scope.dragEnabled = true;
     
+    $scope.tabs = {
+        general: {heading: "General Details"},
+        description: {heading: "Description"},
+        classification: {heading: "Classification"},
+        concepts: {heading: "Concepts"},
+        status: {heading: "Status"},
+        properties: {heading: "Properties"},
+        ids: {heading: "Identifiers"},
+        discussions: {heading: "Discussions"},
+        boards: {heading: "Boards"},
+        attachments: {heading: "Attachments"},
+        mlt: {heading: "More Like This"},
+        history: {heading: "History"},
+        forks: {heading: "Forks"}
+    };
+    
     $scope.setToAddCdeMode = function() {
         $scope.addCdeMode = true;
-    }
+    };
     
     $scope.setToNoneAddCdeMode = function() {
         $scope.addCdeMode = false;
-    }
+    };
     
     var route = $routeParams;
     
@@ -27,6 +43,9 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
             isAllowedModel.setDisplayStatusWarning($scope);
             isAllowedModel.setCanDoNonCuration($scope);
         });
+        if (route.tab) {
+            $scope.tabs[route.tab].active = true;
+        }
     };
     
     $scope.reload();

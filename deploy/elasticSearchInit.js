@@ -52,6 +52,7 @@ var riverFunction =
         if (size > 10) {ctx.document.classificationBoost = 2.1;} \
         else {ctx.document.classificationBoost = 0.1 + 0.2 * size;} \
     } else {ctx.document.classificationBoost = .1;}\
+    if (ctx.document.archived) {ctx.deleted = true;}\
     ";
 
 

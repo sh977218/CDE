@@ -1,16 +1,13 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.common.test;
 
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.test_username;
 import org.openqa.selenium.By;
 import org.testng.Assert;
-import org.testng.annotations.Test;
 
-public class CommentTest extends NlmCdeBaseTest {
+public abstract class CommentTest extends CommonTest {
     
-    @Test
-    public void comments() {
+    public void comments(String eltName) {
         mustBeLoggedInAs(test_username, test_password);
-        goToCdeByName("Hospital Confidential Institution Referred From");
+        goToEltByName(eltName);
         findElement(By.linkText("Discussions")).click();
         findElement(By.name("comment")).sendKeys("My First Comment!");
         findElement(By.name("postComment")).click();
@@ -21,23 +18,22 @@ public class CommentTest extends NlmCdeBaseTest {
         findElement(By.name("postComment")).click();
         Assert.assertTrue(textPresent("Comment added"));
         scrollTo( "2000" );
-        findElement(By.id("removeComment-1")).click();
+        findElement(By.id("removeComment-0")).click();
         Assert.assertTrue(textPresent("Comment removed"));
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("My First Comment!") < 0);
+        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("My First Comment!"));
     }
 
-    @Test
-    public void orgAdminCanRemoveComment() {        
+    public void orgAdminCanRemoveComment(String eltName) {        
         mustBeLoggedInAs(test_username, test_password);
         String commentText = "Inappropriate Comment";
-        goToCdeByName("Genbank");
+        goToEltByName(eltName);
         findElement(By.linkText("Discussions")).click();
         findElement(By.name("comment")).sendKeys(commentText);
         findElement(By.name("postComment")).click();
         Assert.assertTrue(textPresent("Comment added"));
         logout();
         loginAs(cabigAdmin_username, cabigAdmin_password);
-        goToCdeByName("Genbank");
+        goToEltByName(eltName);
         findElement(By.linkText("Discussions")).click();
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
         for (int i = 0; i < length; i++) {
@@ -46,23 +42,22 @@ public class CommentTest extends NlmCdeBaseTest {
                 i = length;
                 Assert.assertTrue(textPresent("Comment removed"));
                 hangon(1);
-                Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(commentText) < 0);
+                Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(commentText));
             }
         }
     }
 
-    @Test
-    public void siteAdminCanRemoveComment() {        
+    public void siteAdminCanRemoveComment(String eltName) {        
         mustBeLoggedInAs(test_username, test_password);
         String commentText = "Another Inappropriate Comment";
-        goToCdeByName("Genbank");
+        goToEltByName(eltName);
         findElement(By.linkText("Discussions")).click();
         findElement(By.name("comment")).sendKeys(commentText);
         findElement(By.name("postComment")).click();
         Assert.assertTrue(textPresent("Comment added"));
         logout();
         loginAs(nlm_username, nlm_password);
-        goToCdeByName("Genbank");
+        goToEltByName(eltName);
         findElement(By.linkText("Discussions")).click();
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
         for (int i = 0; i < length; i++) {
@@ -75,5 +70,5 @@ public class CommentTest extends NlmCdeBaseTest {
             }
         }
     }
-
+    
 }

@@ -39,13 +39,13 @@
             <div ng-include="'/system/public/html/identifiers.html'"></div>
         </div>
         <div tab heading="{{tabs['discussions'].heading}}">
-            <%- include deDiscussions.ejs %>
+            <div ng-include="'/system/public/html/comments.html'"></div>
         </div>
         <div tab heading="{{tabs['boards'].heading}}">
             <h4>Boards this Data Element is in</h4>
             <%- include listOfBoards.ejs %>
         </div>
-        <div tab heading="{{tabs['attachments'].heading}}" active="tabs['attachments'].active">
+        <div tab heading="{{tabs['attachments'].heading}}">
             <div ng-include="'/system/public/html/attachments.html'"></div>
         </div>
         <div tab heading="{{tabs['mlt'].heading}}">
