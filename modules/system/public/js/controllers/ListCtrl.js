@@ -225,21 +225,4 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
             $scope.addAlert("danger", "Search result was not classified completely!");  
         });  
     };
-    
-    $scope.showPinAllModal = function() {
-        var modalInstance = $modal.open({
-          templateUrl: '/cde/public/html/selectBoardModal.html',
-          controller: SelectBoardModalCtrl,
-          resolve: {
-            boards: function () {
-              return $scope.boards;
-            }
-          }
-        });
-
-        modalInstance.result.then(function (selectedBoard) {
-            console.log(selectedBoard);
-        }, function () {
-        });        
-    };
 }
