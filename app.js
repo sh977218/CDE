@@ -102,7 +102,7 @@ app.use(function(err, req, res, next){
     var str = JSON.stringify({msg: err.stack});
     logging.expressErrorLogger.error(str);
     console.log(err.stack);
-    if (str.indexof("invalid csrf") > 0) {
+    if (str.indexOf("invalid csrf") > 0) {
         res.send(403, "Unauthorized");
     } else {
         res.send(500, 'Something broke!');
