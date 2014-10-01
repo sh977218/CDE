@@ -99,9 +99,10 @@ app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream
 app.use(app.router);
 
 app.use(function(err, req, res, next){
-    logging.expressErrorLogger.error(JSON.stringify({msg: err.stack}));
+    var str = JSON.stringify({msg: err.stack});
+    logging.expressErrorLogger.error(str);
     console.log(err.stack);
-    if (err.stack.indexof("invalid csrf") > 0) {
+    if (str.indexof("invalid csrf") > 0) {
         res.send(403, "Unauthorized");
     } else {
         res.send(500, 'Something broke!');
