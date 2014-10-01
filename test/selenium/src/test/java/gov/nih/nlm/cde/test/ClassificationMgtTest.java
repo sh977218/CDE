@@ -146,6 +146,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         findElement(By.id("renameClassifInput")).clear();
         textPresent("Name is required");
         findElement(By.id("cancelRename")).click();
+        modalGone();
         driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()=\"Spinal Cord Injury\"]]/span/a")).click();
         modalHere();
         findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);

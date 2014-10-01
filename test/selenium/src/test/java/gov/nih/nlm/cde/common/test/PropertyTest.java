@@ -51,13 +51,10 @@ public abstract class PropertyTest extends CommonTest {
         mustBeLoggedInAs(ninds_username, ninds_password);
         goToEltByName(eltName);
         findElement(By.linkText("Properties")).click();
-//        hangon(2);
-//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//dd[@id='dd_prop_value_1']//i[@class='fa fa-edit']")));
         findElement(By.xpath("//dd[@id='dd_prop_value_1']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//dd[@id='dd_prop_value_1']//button[@btn-radio=\"'html'\"]")).click();
         findElement(By.xpath("//dd[@id='dd_prop_value_1']//div[@id='taTextElement']")).sendKeys(" Hello From Selenium  ");
         findElement(By.xpath("//dd[@id='dd_prop_value_1']//button[@class='fa fa-check']")).click();
-//        hangon(1);
         textPresent("Hello From Selenium");
     }
     
