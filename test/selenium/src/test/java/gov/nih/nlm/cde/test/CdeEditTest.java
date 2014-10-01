@@ -40,19 +40,19 @@ public class CdeEditTest extends NlmCdeBaseTest {
         
         // Test history
         findElement(By.linkText("History")).click();
-        Assert.assertTrue(textPresent(cdeName));
-        Assert.assertTrue(textPresent("Change note for change number 1"));
+        textPresent(cdeName);
+        textPresent("Change note for change number 1");
         hangon(1);
         findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
-        Assert.assertTrue(textPresent(cdeName + "[name change number 1]"));
-        Assert.assertTrue(textPresent("the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]"));
-        Assert.assertTrue(textNotPresent("Permissible Values:"));
+        textPresent(cdeName + "[name change number 1]");
+        textPresent("the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]");
+        textNotPresent("Permissible Values:");
         
         // View Prior Version
         findElement(By.linkText("History")).click();
         findElement(By.id("prior-0")).click();
-        Assert.assertTrue(textPresent("1"));
-        Assert.assertTrue(textPresent("Warning: this data element is archived."));
+        textPresent("1");
+        textPresent("Warning: this data element is archived.");
     }
 
     @Test

@@ -61,29 +61,30 @@ exports.modifyOrgClassification = function(request, action, callback) {
     }    
     mongo_data_system.orgByName(request.orgName, function(stewardOrg) {
         var fakeTree = {elements: stewardOrg.classifications};
-        classificationShared.modifyCategory(fakeTree, request.categories, {type: action, newname: request.newname});
-        stewardOrg.markModified("classifications");
-        stewardOrg.save(function (err) {
-            var query = {"classification.stewardOrg.name": request.orgName};
-            for (var i = 0; i<request.categories.length; i++) {
-                var key = "classification";
-                for (var j = 0; j<=i; j++) key += ".elements";
-                key += ".name";
-                query[key] = request.categories[i];
-            }            
-            daoManager.getDaoList().forEach(function(dao) {
-                dao.query(query, function(err, result) {
-                    for (var i = 0; i < result.length; i++) {
-                        var elt = result[i];
-                        var steward = classificationShared.findSteward(elt, request.orgName);   
-                        classificationShared.modifyCategory(steward.object, request.categories, {type: action, newname: request.newname}, function() {
-                            classification.saveCdeClassif("", elt);     
-                        });
-                    }
-                });
-            });            
-            if(callback) callback(err, stewardOrg);
-        });   
+        classificationShared.modifyCategory(fakeTree, request.categories, {type: action, newname: request.newname}, function() {
+            stewardOrg.markModified("classifications");
+            stewardOrg.save(function (err) {
+                var query = {"classification.stewardOrg.name": request.orgName};
+                for (var i = 0; i<request.categories.length; i++) {
+                    var key = "classification";
+                    for (var j = 0; j<=i; j++) key += ".elements";
+                    key += ".name";
+                    query[key] = request.categories[i];
+                }            
+                daoManager.getDaoList().forEach(function(dao) {
+                    dao.query(query, function(err, result) {
+                        for (var i = 0; i < result.length; i++) {
+                            var elt = result[i];
+                            var steward = classificationShared.findSteward(elt, request.orgName);   
+                            classificationShared.modifyCategory(steward.object, request.categories, {type: action, newname: request.newname}, function() {
+                                classification.saveCdeClassif("", elt);     
+                            });
+                        }
+                    });
+                });            
+                if(callback) callback(err, stewardOrg);
+            });   
+        });
     });
 };
 

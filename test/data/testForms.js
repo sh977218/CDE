@@ -929,3 +929,54 @@ db.forms.insert({
         }
     ]      
 });
+
+db.forms.insert({
+    "version" : "1.01111",
+    "__v" : 0,
+    "sections" : [ 
+    ],
+    "createdBy" : {
+        "username" : "ctepCurator"
+    },
+    "history" : [],
+    "comments" : [],
+    "attachments" : [],
+    "ids" : [],
+    "properties" : [],
+    "registrationState" : {
+        "registrationStatus" : "Recorded"
+    },
+    "stewardOrg" : {
+        "name" : "NINDS"
+    },
+    "naming" : [ 
+        {
+            "designation" : "Form Permission Test",
+            "definition" : "Form Definition",
+            "context" : {
+                "contextName" : "Health",
+                "acceptability" : "preferred"
+            }
+        }
+    ],
+    "classification" : [ 
+        {
+            "stewardOrg" : {
+                "name" : "NINDS"
+            },
+            "elements" : [ 
+                {
+                    "name" : "Population",
+                    "elements" : [ 
+                        {
+                            "name" : "Adult"
+                        }, 
+                        {
+                            "name" : "Pediatric"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]      
+});
