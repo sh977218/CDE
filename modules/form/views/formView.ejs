@@ -5,26 +5,26 @@
     <h3>{{elt.naming[0].designation}}</h3>
 
 <div tabset>
-    <div tab heading="General Details">
+    <div tab heading="{{tabs['general'].heading}}">
         <div ng-include="'/form/public/html/formGeneralDetails.html'"></div>
     </div>
-    <div tab heading="Form Description">
+    <div tab heading="{{tabs['description'].heading}}">
         <div ng-include="'/form/public/html/formDescription.html'"></div>
     </div>
-    <div tab heading="Properties">
+    <div tab heading="{{tabs['classification'].heading}}">
+        <div ng-include="'/template/system/elementClassification'"></div>
+    </div>
+    <div tab heading="{{tabs['properties'].heading}}" active="tabs['properties'].active">
         <div ng-include="'/system/public/html/properties.html'"></div>
     </div>
-    <div tab heading="Identifiers">
+    <div tab heading="{{tabs['ids'].heading}}" active="tabs['ids'].active">
         <div ng-include="'/system/public/html/identifiers.html'"></div>
     </div>
-        <div tab heading="Discussions">
-            <div ng-include="'/system/public/html/comments.html'"></div>
-        </div>
-    <div tab heading="Attachments">
-        <div ng-include="'/system/public/html/attachments.html'"></div>
+    <div tab heading="{{tabs['discussions'].heading}}">
+        <div ng-include="'/system/public/html/comments.html'"></div>
     </div>
-    <div tab heading="Classification">
-        <div ng-include="'/template/system/elementClassification'"></div>
+    <div tab heading="{{tabs['attachments'].heading}}">
+        <div ng-include="'/system/public/html/attachments.html'"></div>
     </div>
 </div>
 
