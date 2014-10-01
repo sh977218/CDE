@@ -194,6 +194,7 @@ public class SectionTest extends BaseFormTest {
         gotoPublicForms();
         searchForm(formName);
         findElement(By.linkText(formName)).click();
+        hangon(1);
         findElement(By.id("openEltInCurrentTab_0")).click();
         
         String sec1 = "test permission section";

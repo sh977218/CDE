@@ -1,14 +1,11 @@
 package gov.nih.nlm.cde.common.test;
 
-import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 import java.util.List;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-public abstract class IdentifiersTest extends NlmCdeBaseTest {
-
-    public abstract void goToEltByName(String name);
+public abstract class IdentifiersTest extends CommonTest {
     
     public void addRemoveId(String eltName) {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);

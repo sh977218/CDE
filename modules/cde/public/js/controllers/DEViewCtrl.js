@@ -1,5 +1,6 @@
 function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, CdeDiff, isAllowedModel, OrgHelpers, $rootScope) {
     $scope.module = 'cde';
+    $scope.baseLink = '#/deview?cdeId=';
     $scope.eltLoaded = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;
@@ -14,22 +15,31 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     
     $scope.canCurate = false;
     
-    $scope.tabs = [
-        {heading: "General Details"},
-        {heading: "Permissible Values"},
-        {heading: "Naming"},
-        {heading: "Classification"},
-        {heading: "Concepts"},
-        {heading: "Status"},
-        {heading: "Properties"},
-        {heading: "Identifiers"},
-        {heading: "Discussions"},
-        {heading: "Boards"},
-        {heading: "Attachments"},
-        {heading: "More Like This"},
-        {heading: "History"},
-        {heading: "Forks"}
-    ];
+    $scope.tabs = {
+        general: {heading: "General Details"},
+        pvs: {heading: "Permissible Values"},
+        naming: {heading: "Naming"},
+        classification: {heading: "Classification"},
+        concepts: {heading: "Concepts"},
+        status: {heading: "Status"},
+        properties: {heading: "Properties"},
+        ids: {heading: "Identifiers"},
+        discussions: {heading: "Discussions"},
+        boards: {heading: "Boards"},
+        attachments: {heading: "Attachments"},
+        mlt: {heading: "More Like This"},
+        history: {heading: "History"},
+        forks: {heading: "Forks"}
+    };
+    
+    $scope.$on('$locationChangeStart', function( event ) {
+        if ($scope.elt.unsaved) {
+            var answer = confirm("You have unsaved changes, are you sure you want to leave this page?");
+            if (!answer) {
+                event.preventDefault();
+            }
+        }
+    });
     
     $scope.reload = function(route, cb) {
         var service = DataElement;

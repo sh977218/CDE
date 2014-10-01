@@ -174,7 +174,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
         goToCdeSearch();
         hangon(1);
-        if (!textNotPresent("Incomplete (")) {
+        if (textPresentTrueFalse("Incomplete (")) {
             findElement(By.id("li-blank-Incomplete")).click();
             Assert.assertTrue(textNotPresent(cdeName));
         }
@@ -199,7 +199,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
         goToCdeSearch();
         hangon(1);
-        if (!textNotPresent("Incomplete (")) {
+        if (textPresentTrueFalse("Candidate (")) {
             findElement(By.id("li-blank-Candidate")).click();
             Assert.assertTrue(textNotPresent(cdeName));
         }

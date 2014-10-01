@@ -1,6 +1,5 @@
 function CompareCtrl($scope, CdeList) {
     $scope.compareView = true;
-    $scope.cdes = [];
     $scope.pvLimit = 30;
     
     $scope.initCache();

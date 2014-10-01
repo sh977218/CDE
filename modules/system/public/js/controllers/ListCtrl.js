@@ -47,7 +47,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
     }; 
 
     $scope.resetSearch = function() {
-        delete $scope.facets;
+        delete $scope.aggregations;
         $scope.filter = []; 
         delete $scope.searchForm.ftsearch;
         delete $scope.selectedOrg;
@@ -89,14 +89,14 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
     
     $scope.addOrgFilter = function(t) {               
         if ($scope.selectedOrg === undefined) {
-            $scope.cacheOrgFilter(t.term);
-            $scope.selectedOrg = t.term;
+            $scope.cacheOrgFilter(t.key);
+            $scope.selectedOrg = t.key;
         } else {
             $scope.removeCacheOrgFilter();
             delete $scope.selectedOrg;
             $scope.selectedElements = [];            
         }  
-        delete $scope.facets.groups;
+        delete $scope.aggregations.groups;
         $scope.reload();
     };
 
@@ -146,18 +146,19 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                 $scope.openCloseAll($scope.cdes, "list");
                 $scope.totalItems = result.totalNumber;
                 $scope.cache.put("totalItems", $scope.totalItems);
-                $scope.facets = result.facets;
+                $scope.aggregations = result.aggregations;
                 
                 for (var j = 0; j < $scope.registrationStatuses.length; j++) {
                    $scope.registrationStatuses[j].count = 0; 
                 }
-                if ($scope.facets.statuses !== undefined) {
+                if ($scope.aggregations.statuses !== undefined) {
                     for (var i = 0; i < $scope.registrationStatuses.length; i++) {
                         var statusFound = false;
-                        for (var j = 0; j < $scope.facets.statuses.terms.length; j++) {
-                            if ($scope.facets.statuses.terms[j].term === $scope.registrationStatuses[i].name) {
+                        for (var j = 0; j < $scope.aggregations.statuses.buckets.length; j++) {
+                            if ($scope.aggregations.statuses.buckets[j].key === $scope.registrationStatuses[i].name) {
                                 statusFound = true;
-                                $scope.registrationStatuses[i].count = $scope.facets.statuses.terms[j].count;
+                                
+                                $scope.registrationStatuses[i].count = $scope.aggregations.statuses.buckets[j].lowRegStatusOrCurator_filter.doc_count;
                             }
                         }
                         if (!statusFound) {
@@ -172,15 +173,15 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                 
                 $scope.classifications = {elements: []};
                 
-                if (result.aggregations !== undefined) {
-                    $scope.aggregations = result.aggregations.flatClassification.buckets.map(function (c) {
+                if (result.aggregations !== undefined && result.aggregations.flatClassification !== undefined) {
+                    $scope.aggregations.flatClassification = result.aggregations.flatClassification.buckets.map(function (c) {
                         return {name: c.key.split(';').pop(), count: c.doc_count};
                     });
                 } else {
-                    $scope.aggregations = [];
+                    $scope.aggregations.flatClassification = [];
                 }
                 
-                OrgHelpers.addLongNameToOrgs($scope.facets.orgs.terms, $rootScope.orgsDetailedInfo);
+                OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.buckets, $rootScope.orgsDetailedInfo);
              });
         });  
     };   

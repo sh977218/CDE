@@ -127,6 +127,67 @@ exports.removeAttachment = function(req, res, dao) {
     });
 };
 
+exports.addComment = function(req, res, dao) {
+    if (req.isAuthenticated()) {
+        dao.byId(req.body.eltId, function(err, elt) {
+            if (!elt || err) {
+                res.send(404, "Element does not exist.");
+            } else {
+                mongo_data_system.userById(req.user._id, function(err, user) {
+                    elt.comments.push({
+                        user: user._id
+                        , username: user.username
+                        , created: new Date().toJSON()
+                        , text: req.body.comment
+                    });
+                    elt.save(function(err) {
+                        if (err) {
+                            res.send(err);
+                            return;
+                        } else {
+                            console.log("sending");
+                            return res.send({message: "Comment added", elt: elt});
+                        }
+                    });
+                });
+            }
+        });
+    } else {
+        res.send({message: "You are not authorized."});                   
+    }
+};
+
+exports.removeComment = function(req, res, dao) {
+    if (req.isAuthenticated()) {
+        dao.byId(req.body.eltId, function (err, elt) {
+            if (err) {
+                res.send(404, "Element does not exist.");
+            }
+            elt.comments.forEach(function(comment, i){
+                if (comment._id == req.body.commentId) {
+                    if( req.user.username === comment.username || 
+                        (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
+                        req.user.siteAdmin
+                    ) {
+                        elt.comments.splice(i, 1);
+                        elt.save(function (err) {
+                           if (err) {
+                               res.send({message: err});
+                           } else {
+                               res.send({message: "Comment removed", elt: elt});
+                           }
+                        });                        
+                    } else {
+                        res.send({message: "You can only remove comments you own."});
+                    }
+                }
+            });
+        });
+    } else {
+        res.send("You are not authorized.");                   
+    }
+};
+
 exports.acceptFork = function(req, res, dao) {
     if (req.isAuthenticated()) {
         if (!req.body.id) {

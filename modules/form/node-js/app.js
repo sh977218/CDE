@@ -36,4 +36,12 @@ exports.init = function(app, daoManager) {
        }); 
     });    
 
+    app.post('/comments/form/add', function(req, res) {
+        adminItemSvc.addComment(req, res, mongo_data);
+    });
+
+    app.post('/comments/form/remove', function(req, res) {
+        adminItemSvc.removeComment(req, res, mongo_data);
+    });
+
 };
