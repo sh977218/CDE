@@ -1,9 +1,10 @@
 var mongo_data = require('./mongo-cde')
+    , elastic = require('./elastic')
     ;
 
 exports.pinToBoard = function(req, res) {
     var tinyId = req.params.tinyId;
-    mongo_data.boardsByUserId(req.user._id, function(boards) {
+    //mongo_data.boardsByUserId(req.user._id, function(boards) {
         var boardId = req.params.boardId;
         mongo_data.boardById(boardId, function(err, board) {
             if (err) return res.send("Board cannot be found.");
@@ -25,8 +26,8 @@ exports.pinToBoard = function(req, res) {
                     return res.send("Added to Board"); 
                 });
             }
-        })
-    });
+        });
+    //});
 };
 
 exports.removePinFromBoard = function(req, res) {
@@ -47,4 +48,37 @@ exports.removePinFromBoard = function(req, res) {
             }
         }
     });
+};
+
+exports.pinAllToBoard = function(req, res) {
+    elastic.elasticsearch(req.body.query, function(result) {
+        var ids = result.cdes.map(function(cde) {return cde.tinyId;});
+        
+        
+        var boardId = req.body.board._id;
+        mongo_data.boardById(boardId, function(err, board) {
+            if (err) return res.send("Board cannot be found.");
+            if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
+                return res.send("You must own a board to edit it.");
+            } else {        
+                res.send("OK");
+//                var pin = {
+//                    pinnedDate: Date.now()
+//                    , deTinyId: tinyId
+//                };
+//                for (var i = 0 ; i < board.pins.length; i++) {
+//                    if (JSON.stringify(board.pins[i].deTinyId) === JSON.stringify(tinyId)) {
+//                        res.statusCode = 202;
+//                        return res.send("Already added to the board.");
+//                    }
+//                }
+//                board.pins.push(pin);
+//                mongo_data.save(board, function(err, b) {
+//                    return res.send("Added to Board"); 
+//                });
+            }
+        });        
+
+    });
+    
 };
