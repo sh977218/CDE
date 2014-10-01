@@ -143,8 +143,15 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         gotoClassifMgt(); 
         driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()=\"Spinal Cord Injury\"]]/span/a")).click();
         modalHere();
+        findElement(By.id("renameClassifInput")).clear();
+        textPresent("Name is required");
+        findElement(By.id("cancelRename")).click();
+        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()=\"Spinal Cord Injury\"]]/span/a")).click();
+        modalHere();
         findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.id("renameClassifInput")).sendKeys("ies");
+        findElement(By.id("renameClassifInput")).sendKeys("ies;");
+        textPresent("Classification Name cannot contain ;");
+        findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
         findElement(By.xpath("//button[text()='Save']")).click();
         modalGone();
         findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification"));
