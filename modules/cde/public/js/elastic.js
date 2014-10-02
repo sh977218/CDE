@@ -169,14 +169,6 @@ angular.module('resources')
                     }
                 }
             };
-            
-//            queryStuff.aggregations.orgs.aggregations = {
-//                "lowRegStatusOrCurator_filter": {
-//                    "filter": {
-//                        "or": lowRegStatusOrCuratorFilter
-//                    }
-//                }
-//            };
             queryStuff.aggregations.statuses.aggregations = {
                 "lowRegStatusOrCurator_filter": {
                     "filter": {
