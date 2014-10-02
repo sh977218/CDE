@@ -28,7 +28,12 @@
                 <div class="form-group">
                     <input type="text" class="form-control" id="newOrgLongName" name="newOrgLongName" placeholder="Organization Long Name" ng-model="newOrg.longName">
                 </div>
-                <button type="submit" class="btn btn-success" id="addOrg" ng-click="addOrg()" ng-disabled="addOrgForm.newOrgName.$invalid">Add It</button>
+                <div class="form-group">
+                    <select id="newOrgWorkingGroup" class="form-control" ng-model="newOrg.workingGroupOf" ng-options="myOrg for myOrg in myOrgs">
+                        <option value="">Working Group Of</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success" id="addOrg" ng-click="addOrg()" ng-disabled="addOrgForm.newOrgName.$invalid">Add Organization</button>
             </form>
             <table class="table table-border table-responsive">
                 <tr>
@@ -38,7 +43,7 @@
                     <th>E-mail Address:</th>
                     <th>Phone Number:</th>
                     <th>Website:</th>
-                    <th>Working Group:</th>
+                    <th>Working Group Of:</th>
                 </tr>
                 <tr ng-repeat="c in orgs | orderBy:'name'">
                     <td id="orgName-{{c.name}}">
@@ -59,8 +64,8 @@
                     <td>
                         <div inline-edit id="orgUri-{{c.name}}" model="c.uri" is-allowed="true" on-ok="updateOrg(c)"></div>
                     </td>
-                    <td class="center">
-                        <input id="workingGroupCheckbox" type="checkbox" ng-checked="c.workingGroup" ng-click="c.workingGroup = !c.workingGroup; updateOrg(c);">
+                    <td>
+                        {{c.workingGroupOf}}
                     </td>
                 </tr>
             </table>
@@ -80,7 +85,7 @@
                     <option value="">--</option>
                     <option ng-repeat="a in orgs" ng-value="a.name">{{a.name}}</option>
                 </select>
-                <input class="col-md-5" type="text" ng-model="orgAdmin.username" name="orgAdmin.username"></input>
+                <input class="col-md-5" type="text" ng-model="orgAdmin.username" id="orgAdmin.username">
                 <button class="add-on btn btn-default fa fa-plus" title="Add" ng-click="addOrgAdmin()" id="addOrgAdmin"> Add</button>
             </div>
         </tab>

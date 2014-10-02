@@ -22,7 +22,7 @@ schemas.orgSchema = mongoose.Schema ({
     , phoneNumber: String
     , uri: String
     , classifications: [csEltSchema]
-    , workingGroup: Boolean
+    , workingGroupOf: String
 });
 
 schemas.userSchema = mongoose.Schema ({

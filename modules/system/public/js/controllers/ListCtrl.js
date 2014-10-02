@@ -225,4 +225,20 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
             $scope.addAlert("danger", "Search result was not classified completely!");  
         });  
     };
+    
+    $scope.showOrgInClassificationFilter = function(orgName) {
+        if(OrgHelpers.orgIsWorkingGroupOf(orgName, $rootScope.orgsDetailedInfo)) {
+            if($scope.isSiteAdmin()) return true;
+            
+            for(var i=0; i<$scope.myOrgs.length; i++) {
+                if(orgName===$scope.myOrgs[i]) {
+                    return true;
+                }                
+            }
+            
+            return false;
+        }
+        
+        return true;
+    };
 }

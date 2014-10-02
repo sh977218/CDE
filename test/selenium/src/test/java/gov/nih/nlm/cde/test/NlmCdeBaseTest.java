@@ -118,6 +118,79 @@ public class NlmCdeBaseTest {
         }
     }
     
+    protected void addOrg(String orgName, String orgLongName, String orgWGOf) {
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Site Management")).click();
+        findElement(By.linkText("Organizations")).click();
+        findElement(By.name("newOrgName")).sendKeys(orgName);
+        
+        if( orgLongName!=null ) {
+            findElement(By.name("newOrgLongName")).sendKeys(orgLongName);
+        }
+        
+        if( orgWGOf!=null ) {
+            new Select(findElement(By.id("newOrgWorkingGroup"))).selectByVisibleText("ACRIN");
+        }
+        
+        findElement(By.id("addOrg")).click();
+        Assert.assertTrue(textPresent("Org Added"));
+        Assert.assertTrue(textPresent(orgName));
+        
+        if( orgLongName!=null ) {
+            Assert.assertTrue(textPresent(orgLongName));
+        }
+    }
+    
+    protected void classify(String org, String classification, String subClassification) {
+        findElement(By.id("selectDefault")).click();
+        modalHere();        
+        findElement(By.id("classifySlectOrg-"+org)).click();
+        hangon(1);   
+        findElement(By.cssSelector("[id='addClassification-"+classification+"'] span.fake-link")).click();
+        findElement(By.cssSelector("[id='addClassification-"+subClassification+"'] button")).click();
+        findElement(By.cssSelector(".modal-dialog .done")).click();
+        modalGone();    
+    }
+    
+    protected void gotoClassifMgt() {
+        findElement(By.id("username_link")).click();
+        hangon(.5);
+        findElement(By.linkText("Classifications")).click();          
+    }
+    
+    protected void createClassificationName(String[] categories) {
+        findElement(By.id("addClassification")).click(); 
+        modalHere();
+        for (int i=0; i < categories.length-1; i++) {
+            findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();       
+        }
+        findElement(By.id("addNewCatName")).sendKeys(categories[categories.length-1]);   
+        findElement(By.id("addClassificationButton")).click(); 
+        modalGone();
+        String selector = "";
+        for (int i=0; i < categories.length; i++) {
+            selector += categories[i];
+            if (i < categories.length-1) {
+                selector += ",";
+            }
+        }
+        
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1]));    
+    }
+    
+    protected void fillOutBasicCreateFields(String name, String definition, String version, String org, String classification, String subClassification) {
+        findElement(By.linkText("Create")).click();
+        findElement(By.linkText("CDE")).click();
+        findElement(By.name("elt.designation")).sendKeys(name);
+        findElement(By.name("elt.definition")).sendKeys(definition);
+        if (version != null) {
+            findElement(By.name("elt.version")).sendKeys(version);
+        }
+        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(org);
+        
+        classify(org, classification, subClassification);
+    } 
+
     protected void mustBeLoggedOut() {
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (!loginLinkList.isDisplayed()) {

@@ -8,25 +8,6 @@ import org.testng.annotations.Test;
 
 public class SiteAdminTest extends NlmCdeBaseTest {
     
-    private void addOrg(String orgName, String orgLongName) {
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Site Management")).click();
-        findElement(By.linkText("Organizations")).click();
-        findElement(By.name("newOrgName")).sendKeys(orgName);
-        
-        if( orgLongName!=null ) {
-            findElement(By.name("newOrgLongName")).sendKeys(orgLongName);
-        }
-        
-        findElement(By.id("addOrg")).click();
-        Assert.assertTrue(textPresent("Org Added"));
-        Assert.assertTrue(textPresent(orgName));
-        
-        if( orgLongName!=null ) {
-            Assert.assertTrue(textPresent(orgLongName));
-        }
-    }
-    
     private void refreshOrganizationsTabScreen() {
         driver.navigate().refresh();
         findElement(By.linkText("Organizations")).click();
@@ -50,15 +31,15 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 //        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(orgName) < 0);
 //    }
     
-//    @Test
+    @Test
     public void addOrg() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String testOrg = "New Test Org";
-        addOrg(testOrg,null);
+        addOrg(testOrg, null, null);
         
         String testOrgName = "New Test Org 2";
         String testOrgLongName = "New Test Org 2 Long Name 2";
-        addOrg(testOrgName,testOrgLongName);
+        addOrg(testOrgName, testOrgLongName, null);
     }
 
     @Test
@@ -75,7 +56,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         String testOrgPhoneNumberNotRenamed = "Phone Number Not Renamed";
         String testOrgUri = "www.google.com";
         String testOrgUriNotRenamed = "Website Not Renamed";
-        addOrg(testOrg,null);
+        addOrg(testOrg, null, null);
         
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//input")).sendKeys(testOrgRenamed);
@@ -149,7 +130,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String testOrg = "Promote Org Test";
         
-        addOrg(testOrg,null);
+        addOrg(testOrg, null, null);
         
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Site Management")).click();

@@ -179,14 +179,14 @@ body {
 .semi-transparent { opacity: 0.5; }
 
 /* Disable modal slide down effect.  Useful during testing. */
-/*.modal.fade .modal-dialog 
+.modal.fade .modal-dialog 
 {
     -moz-transform: none !important;
     -ms-transform: none !important;
     -o-transform: none !important;
     -webkit-transform: none !important;
     transform: none !important;
-}*/
+}
 
 dt.formViewDetails {
     width: auto;
@@ -256,8 +256,4 @@ dd.formViewDetails {
 
 .dl-horizontal dd {
     margin-left: 120px;
-}
-
-.table td.center{
-   text-align: center;   
 }

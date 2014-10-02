@@ -15,30 +15,6 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         hangon(1);
     }    
 
-    void fillOutBasicCreateFields(String name, String definition, String version, String org, String classification, String subClassification) {
-        findElement(By.linkText("Create")).click();
-        findElement(By.linkText("CDE")).click();
-        findElement(By.name("elt.designation")).sendKeys(name);
-        findElement(By.name("elt.definition")).sendKeys(definition);
-        if (version != null) {
-            findElement(By.name("elt.version")).sendKeys(version);
-        }
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(org);
-        
-        classify(org, classification, subClassification);
-    } 
-
-    void classify(String org, String classification, String subClassification) {
-        findElement(By.id("selectDefault")).click();
-        modalHere();        
-        findElement(By.id("classifySlectOrg-"+org)).click();
-        hangon(1);   
-        findElement(By.cssSelector("[id='addClassification-"+classification+"'] span.fake-link")).click();
-        findElement(By.cssSelector("[id='addClassification-"+subClassification+"'] button")).click();
-        findElement(By.cssSelector(".modal-dialog .done")).click();
-        modalGone();    
-    }   
-
     @Test
     public void createCdeValidationErrors() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
