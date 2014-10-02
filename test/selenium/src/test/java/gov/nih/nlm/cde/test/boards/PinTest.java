@@ -5,7 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class PinTest extends BoardTest {
-    /*
+    
     @Test
     public void pin() {
         mustBeLoggedInAs(pinUser, pass);
@@ -76,7 +76,7 @@ public class PinTest extends BoardTest {
         Assert.assertTrue(textNotPresent("Volumetric"));
         
         removeBoard("Unpin Board");
-    }*/
+    }
         
     
     @Test
