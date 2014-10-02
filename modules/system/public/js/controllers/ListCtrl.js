@@ -173,8 +173,8 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                 
                 $scope.classifications = {elements: []};
                 
-                if (result.aggregations !== undefined && result.aggregations.flatClassification !== undefined) {
-                    $scope.aggregations.flatClassification = result.aggregations.flatClassification.buckets.map(function (c) {
+                if (result.aggregations !== undefined && result.aggregations.filteredFlatClassification !== undefined) {
+                    $scope.aggregations.flatClassification = result.aggregations.filteredFlatClassification.aggs.flatClassification.buckets.map(function (c) {
                         return {name: c.key.split(';').pop(), count: c.doc_count};
                     });
                 } else {

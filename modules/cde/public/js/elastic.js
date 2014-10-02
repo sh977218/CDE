@@ -179,18 +179,24 @@ angular.module('resources')
             };
 
             if (settings.selectedOrg !== undefined) {
-                var flatFacetFilter = queryBuilder.flattenSelection(i - 1);
-                queryStuff.aggregations.flatClassification = {
+                var flatClassification = {
                     terms: {
                         size: 500,
                         field: "flatClassification"
                     }
                 };
                 if (flatSelection === "") {
-                    queryStuff.aggregations.flatClassification.terms.include = settings.selectedOrg + ";[^;]+";
+                    flatClassification.terms.include = settings.selectedOrg + ";[^;]+";
                 } else {
-                    queryStuff.aggregations.flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
+                    flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
                 }
+                queryStuff.aggregations.filteredFlattClassification = {
+                    filter: {or: lowRegStatusOrCuratorFilter}
+                    , aggs: {
+                        flatClassification: flatClassification
+                    }
+                };
+                
             }        
 
 
