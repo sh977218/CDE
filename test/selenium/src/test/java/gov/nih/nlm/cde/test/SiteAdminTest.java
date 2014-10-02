@@ -57,6 +57,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         String testOrgUri = "www.google.com";
         String testOrgUriNotRenamed = "Website Not Renamed";
         addOrg(testOrg, null, null);
+        closeAlert();
         
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//input")).sendKeys(testOrgRenamed);
@@ -136,7 +137,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.linkText("Site Management")).click();
         findElement(By.linkText("Organizations Admins")).click();
         new Select(driver.findElement(By.name("admin.orgName"))).selectByVisibleText(testOrg);
-        findElement(By.name("orgAdmin.username")).sendKeys(test_username);
+        findElement(By.id("orgAdmin.username")).sendKeys(test_username);
         findElement(By.id("addOrgAdmin")).click();
 
         logout();
@@ -174,7 +175,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         hangon(.5);
         Assert.assertEquals("nlm", findElement(By.id("dd_username_0")).getText());
-        Assert.assertEquals("[]", findElement(By.id("dd_orgAdmin_0")).getText());
+        Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\"]", findElement(By.id("dd_orgAdmin_0")).getText());
         Assert.assertEquals("true", findElement(By.id("dd_siteAdmin_0")).getText());
     }
     
