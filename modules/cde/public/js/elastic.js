@@ -147,13 +147,20 @@ angular.module('resources')
             
 
             queryStuff.aggregations = {
-                orgs: {
-                    terms: {
-                        "field": "classification.stewardOrg.name", 
-                        "size": 40, 
-                        order: {
-                            "_term": "desc"
-                        }
+                lowRegStatusOrCurator_filter: {                
+                    "filter": {
+                        "or": lowRegStatusOrCuratorFilter
+                    }
+                    , aggs: {
+                        orgs: {
+                            terms: {
+                                "field": "classification.stewardOrg.name", 
+                                "size": 40, 
+                                order: {
+                                    "_term": "desc"
+                                }
+                            }
+                        }                        
                     }
                 }
                 , statuses: {
@@ -163,13 +170,13 @@ angular.module('resources')
                 }
             };
             
-            queryStuff.aggregations.orgs.aggregations = {
-                "lowRegStatusOrCurator_filter": {
-                    "filter": {
-                        "or": lowRegStatusOrCuratorFilter
-                    }
-                }
-            };
+//            queryStuff.aggregations.orgs.aggregations = {
+//                "lowRegStatusOrCurator_filter": {
+//                    "filter": {
+//                        "or": lowRegStatusOrCuratorFilter
+//                    }
+//                }
+//            };
             queryStuff.aggregations.statuses.aggregations = {
                 "lowRegStatusOrCurator_filter": {
                     "filter": {
@@ -190,7 +197,7 @@ angular.module('resources')
                 } else {
                     flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
                 }
-                queryStuff.aggregations.filteredFlattClassification = {
+                queryStuff.aggregations.filteredFlatClassification = {
                     filter: {or: lowRegStatusOrCuratorFilter}
                     , aggs: {
                         flatClassification: flatClassification
