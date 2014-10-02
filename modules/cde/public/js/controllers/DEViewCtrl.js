@@ -93,7 +93,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         };
         $http.post('/mail/messages/new', message)
             .success(function(result) {
-                $scope.addAlert("success", "Notification sent.")
+                $scope.addAlert("success", "Notification sent.");
             })
             .error(function(result) {
                 $scope.addAlert("danger", "Unable to notify user. ");

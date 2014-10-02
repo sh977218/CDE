@@ -289,7 +289,7 @@ exports.bulkActionOnSearch = function(req, action, cb) {
         });
         var timoeut = setTimeout(function(){
             if (eltsTotal === eltsProcessed) cb();
-            else cb("Some CDEs were not classified!");
+            else cb("Search result was not classified completely!");
         }, 15000);
     });
 };
