@@ -345,6 +345,7 @@ exports.init = function(app, daoManager) {
         });
     });    
     
+ 
     app.post('/classifyEntireSearch', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
             res.send(403, "Not Authorized");
