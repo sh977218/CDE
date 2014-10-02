@@ -91,7 +91,8 @@ public class ClassificationTest extends NlmCdeBaseTest {
         Assert.assertTrue(linkList.size() == 1);
     }
     
-    @Test
+    // Feature is Temporarily Disabled
+    //@Test
     public void classifyEntireSearch() {
         mustBeLoggedInAs(ninds_username, ninds_password);
         goToCdeSearch();

@@ -1,4 +1,4 @@
-function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
+function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeout) {
     $scope.filterMode = true;
 
     $scope.hideShowFilter = function() {
@@ -219,10 +219,41 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
             , itemType: $scope.module
         };
         data.query.size = 100000;
-        $http({method: 'post', url: '/classifyEntireSearch', timeout: 3000, data: data}).success(function() {
+        var timeout = $timeout(function() {
+            $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
+        }, 3000);
+        $http({method: 'post', url: '/classifyEntireSearch', data: data}).success(function() {
             $scope.addAlert("success", "Search result classified.");  
+            $timeout.cancel(timeout);
         }).error(function() {
             $scope.addAlert("danger", "Search result was not classified completely!");  
+            $timeout.cancel(timeout);
         });  
+    };
+    
+    $scope.showPinAllModal = function() {
+        var modalInstance = $modal.open({
+          templateUrl: '/cde/public/html/selectBoardModal.html',
+          controller: SelectBoardModalCtrl,
+          resolve: {
+            boards: function () {
+              return $scope.boards;
+            }
+          }
+        });
+
+        modalInstance.result.then(function (selectedBoard) {
+            var data = {
+                query: $scope.query.query
+                , board: selectedBoard
+                , itemType: $scope.module
+            };
+            $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
+                $scope.addAlert("success", "Search result classified.");  
+            }).error(function() {
+                $scope.addAlert("danger", "Search result was not classified completely!");  
+            });  
+        }, function () {
+        });        
     };
 }

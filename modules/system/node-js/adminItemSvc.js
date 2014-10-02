@@ -1,4 +1,7 @@
-var mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
+var mongo_data_system = require('../../system/node-js/mongo-data')
+    , classificationShared = require('../shared/classificationShared')
+    , classificationNode = require('./classificationNode')
+    , elastic = require('./elastic');
 
 
 exports.save = function(req, res, dao) {
@@ -266,5 +269,27 @@ exports.forkRoot = function(req, res, dao) {
         } else {
             res.send(cdes[0]);
         }
+    });
+};
+
+exports.bulkActionOnSearch = function(req, action, cb) {
+    elastic.elasticsearch(req.query, req.itemType, function(result) {
+        var eltsTotal = result.cdes.length;
+        var eltsProcessed = 0;
+        var ids = result.cdes.map(function(cde) {return cde._id;});
+        var actionCallback = function() {
+            eltsProcessed++;
+            if (eltsTotal === eltsProcessed) {
+                cb();
+                clearTimeout(timoeut);
+            }
+        };        
+        ids.forEach(function(id){
+            action(id, actionCallback);
+        });
+        var timoeut = setTimeout(function(){
+            if (eltsTotal === eltsProcessed) cb();
+            else cb("Task not performed completely!");
+        }, 15000);
     });
 };
