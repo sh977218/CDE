@@ -52,8 +52,7 @@ exports.removePinFromBoard = function(req, res) {
 
 exports.pinAllToBoard = function(req, res) {
     elastic.elasticsearch(req.body.query, function(result) {
-        var ids = result.cdes.map(function(cde) {return cde.tinyId;});
-        
+        var ids = result.cdes.map(function(cde) {return cde.tinyId;});        
         var boardId = req.body.board._id;
         mongo_data.boardById(boardId, function(err, board) {
             if (err) return res.send("Board cannot be found.");
