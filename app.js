@@ -87,8 +87,9 @@ app.use(passport.session());
 app.use(express.csrf());
 
 app.use(function(req, res, next) {
-    res.cookie('XSRF-TOKEN', req.csrfToken());
-    res.locals.csrftoken = req.csrfToken();
+    var token = req.csrfToken();
+    res.cookie('XSRF-TOKEN', token);
+    res.locals.csrftoken = token;
     next();
 });
 
@@ -101,7 +102,7 @@ app.use(app.router);
 app.use(function(err, req, res, next){
     var str = JSON.stringify({msg: err.stack});
     logging.expressErrorLogger.error(str);
-    console.log(err);
+    console.log(err.stack);
     if (err.status === 403) {
         res.send(403, "Unauthorized");
     } else {
