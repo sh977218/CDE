@@ -72,7 +72,7 @@ function AttachmentsCtrl($scope, $rootScope, $http, $timeout) {
             index: index
             , id: $scope.elt._id 
         }).then(function (res) {
-            $scope.elt = res.data;
+            $scope.elt = res.data;  
         });
     };
     

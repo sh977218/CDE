@@ -1,4 +1,4 @@
-function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassification) {
+function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification) {
     $scope.module = "cde";
     
     if ($scope.myOrgs.length > 0) {
@@ -46,16 +46,18 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
         });
 
         modalInstance.result.then(function (newClassification) {
-            newClassification.orgName = $scope.orgToManage;
-            OrgClassification.resource.save(newClassification, function(response) {
-                if (response.error) {
-                    $scope.addAlert("danger", response.error.message);        
-                }
-                else {
-                    $scope.org = response;
-                    $scope.addAlert("success", "Classification Added");                      
-                }              
-            });
+            if (newClassification) {
+                newClassification.orgName = $scope.orgToManage;
+                OrgClassification.resource.save(newClassification, function(response) {
+                    if (response.error) {
+                        $scope.addAlert("danger", response.error.message);        
+                    }
+                    else {
+                        $scope.org = response;
+                        $scope.addAlert("success", "Classification Added");                      
+                    }              
+                });
+            }
         });
     };
     
@@ -70,10 +72,12 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
             }
         });
 
-        modalInstance.result.then(function (newname) {           
-            OrgClassification.rename(orgName, pathArray, newname, function(response) {
-                $scope.org = response;
-            });
+        modalInstance.result.then(function (newname) {
+            if (newname) {
+                OrgClassification.rename(orgName, pathArray, newname, function(response) {
+                    $scope.org = response;
+                });
+            }
         });        
     };
 }

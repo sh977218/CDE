@@ -1,14 +1,11 @@
 package gov.nih.nlm.cde.common.test;
 
-import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-public abstract class PropertyTest extends NlmCdeBaseTest {
-    
-    public abstract void goToEltByName(String name);
-    
+public abstract class PropertyTest extends CommonTest {
+        
     public void addRemoveProperty(String eltName) {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         goToEltByName(eltName);
@@ -54,14 +51,11 @@ public abstract class PropertyTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, ninds_password);
         goToEltByName(eltName);
         findElement(By.linkText("Properties")).click();
-        hangon(2);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//dd[@id='dd_prop_value_1']//i[@class='fa fa-edit']")));
         findElement(By.xpath("//dd[@id='dd_prop_value_1']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//dd[@id='dd_prop_value_1']//button[@btn-radio=\"'html'\"]")).click();
         findElement(By.xpath("//dd[@id='dd_prop_value_1']//div[@id='taTextElement']")).sendKeys(" Hello From Selenium  ");
         findElement(By.xpath("//dd[@id='dd_prop_value_1']//button[@class='fa fa-check']")).click();
-        hangon(1);
-        Assert.assertTrue(textPresent("Hello From Selenium"));
+        textPresent("Hello From Selenium");
     }
     
     
