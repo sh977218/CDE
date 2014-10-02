@@ -79,4 +79,28 @@ public class PinTest extends BoardTest {
     }
         
     
+    @Test
+    public void pinAll() {
+        mustBeLoggedInAs("ninds", "pass");
+        goToCdeSearch();
+        createBoard("Cerebral Palsy > Public Review", "CDEs to be uset for Cerebral Palsy");        
+        goToCdeSearch();
+        findElement(By.id("classifications-text-NINDS")).click();
+        findElement(By.id("li-blank-Disease")).click();
+        findElement(By.id("li-blank-General (For all diseases)")).click();
+        findElement(By.id("pinAll")).click();
+        findElement(By.linkText("Cerebral Palsy > Public Review")).click();
+        modalGone();
+        gotoMyBoards();
+        findElement(By.id("view_1")).click();        
+        Assert.assertTrue(driver.findElements(By.xpath("//h4[@class=\"panel-title\"]")).size()==13); 
+        Assert.assertTrue(textPresent("Site number"));
+        Assert.assertTrue(textPresent("Family income range"));
+        Assert.assertTrue(textPresent("Risk Factor Questionnaire (RFQ) - age 66 and over residential history residence pesticide use frequency"));
+        Assert.assertTrue(textPresent("Risk Factor Questionnaire (RFQ) - age 18 25 residential history residence pesticide use frequency"));
+        Assert.assertTrue(textPresent("Traffic accident other party role type"));
+        Assert.assertTrue(textPresent("Food Frequency Questionnaire - (FFQ)-vitamin E type"));
+        Assert.assertTrue(textPresent("Family history medical condition relative type"));
+        Assert.assertTrue(textPresent("Alcohol use frequency"));
+    }    
 }
