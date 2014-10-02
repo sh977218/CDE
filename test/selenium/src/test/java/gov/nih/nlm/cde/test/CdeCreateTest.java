@@ -32,7 +32,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         findElement(By.id("selectDefault")).click();
         modalHere();        
         findElement(By.id("classifySlectOrg-"+org)).click();
-        hangon(1);   
+        modalHere();
         findElement(By.cssSelector("[id='addClassification-"+classification+"'] span.fake-link")).click();
         findElement(By.cssSelector("[id='addClassification-"+subClassification+"'] button")).click();
         findElement(By.cssSelector(".modal-dialog .done")).click();

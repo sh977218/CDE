@@ -3,7 +3,7 @@ var mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , usersvc = require('../../system/node-js/usersrvc')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
-    , elastic = require('./elastic')
+    , adminItemSvc = require("./adminItemSvc")    
 ;
 
 var classification = this;
@@ -61,29 +61,30 @@ exports.modifyOrgClassification = function(request, action, callback) {
     }    
     mongo_data_system.orgByName(request.orgName, function(stewardOrg) {
         var fakeTree = {elements: stewardOrg.classifications};
-        classificationShared.modifyCategory(fakeTree, request.categories, {type: action, newname: request.newname});
-        stewardOrg.markModified("classifications");
-        stewardOrg.save(function (err) {
-            var query = {"classification.stewardOrg.name": request.orgName};
-            for (var i = 0; i<request.categories.length; i++) {
-                var key = "classification";
-                for (var j = 0; j<=i; j++) key += ".elements";
-                key += ".name";
-                query[key] = request.categories[i];
-            }            
-            daoManager.getDaoList().forEach(function(dao) {
-                dao.query(query, function(err, result) {
-                    for (var i = 0; i < result.length; i++) {
-                        var elt = result[i];
-                        var steward = classificationShared.findSteward(elt, request.orgName);   
-                        classificationShared.modifyCategory(steward.object, request.categories, {type: action, newname: request.newname}, function() {
-                            classification.saveCdeClassif("", elt);     
-                        });
-                    }
-                });
-            });            
-            if(callback) callback(err, stewardOrg);
-        });   
+        classificationShared.modifyCategory(fakeTree, request.categories, {type: action, newname: request.newname}, function() {
+            stewardOrg.markModified("classifications");
+            stewardOrg.save(function (err) {
+                var query = {"classification.stewardOrg.name": request.orgName};
+                for (var i = 0; i<request.categories.length; i++) {
+                    var key = "classification";
+                    for (var j = 0; j<=i; j++) key += ".elements";
+                    key += ".name";
+                    query[key] = request.categories[i];
+                }            
+                daoManager.getDaoList().forEach(function(dao) {
+                    dao.query(query, function(err, result) {
+                        for (var i = 0; i < result.length; i++) {
+                            var elt = result[i];
+                            var steward = classificationShared.findSteward(elt, request.orgName);   
+                            classificationShared.modifyCategory(steward.object, request.categories, {type: action, newname: request.newname}, function() {
+                                classification.saveCdeClassif("", elt);     
+                            });
+                        }
+                    });
+                });            
+                if(callback) callback(err, stewardOrg);
+            });   
+        });
     });
 };
 
@@ -103,27 +104,13 @@ exports.addOrgClassification = function(body, cb) {
 };
 
 exports.classifyEntireSearch = function(req, cb) {
-    elastic.elasticsearch(req.query, req.itemType, function(result) {
-        var cdesNumber = result.cdes.length;
-        var cdesClassified = 0;
-        var ids = result.cdes.map(function(cde) {return cde._id;});
-        ids.forEach(function(id){
-            var classifReq = {
-                orgName: req.newClassification.orgName
-                , categories: req.newClassification.categories
-                , cdeId: id
-            };
-            exports.cdeClassification(classifReq, classificationShared.actions.create, function() {
-                cdesClassified++;
-                if (cdesNumber === cdesClassified) {
-                    cb();
-                    clearTimeout(timoeut);
-                }
-            });
-        });
-        var timoeut = setTimeout(function(){
-            if (cdesNumber === cdesClassified) cb();
-            else cb("not classified everything");
-        }, 3000);
-    });
+    var action = function(id, actionCallback) {
+        var classifReq = {
+            orgName: req.newClassification.orgName
+            , categories: req.newClassification.categories
+            , cdeId: id
+        };          
+        classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);  
+    };
+    adminItemSvc.bulkActionOnSearch(req, action, cb);
 };
