@@ -92,7 +92,7 @@ public class PinTest extends BoardTest {
         findElement(By.linkText("Cerebral Palsy > Public Review")).click();
         modalGone();
         gotoMyBoards();
-        findElement(By.xpath("//a[../dl/dd/div/div/span[contains(text(),'CDEs to be use for Cerebral Palsy')]]")).click();        
+        findElement(By.xpath("//a[../dl/dd/div/div/span[contains(text(),'CDEs to be use for Cerebral Palsy')]]")).click();
         Assert.assertTrue(driver.findElements(By.xpath("//h4[@class=\"panel-title\"]")).size()==13); 
         Assert.assertTrue(textPresent("Site number"));
         Assert.assertTrue(textPresent("Family income range"));
