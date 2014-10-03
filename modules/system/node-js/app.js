@@ -353,7 +353,7 @@ exports.init = function(app, daoManager) {
         }      
         classificationNode.classifyEntireSearch(req.body, function(err) {
             if (!err) res.send();
-            else res.send(500, {error: {message: err}});
+            else res.send(202, {error: {message: err}});
         });        
     });
     
