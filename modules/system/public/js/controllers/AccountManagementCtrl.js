@@ -3,7 +3,6 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
     $scope.newOrg = {};
     $scope.orgAdmin = {};
     $scope.orgCurator = {};
-    $scope.admin = {};
     $scope.curator = {};
 
     
@@ -125,10 +124,10 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
 
     $scope.addOrg = function() {
         AccountManagement.addOrg(
-            {name:$scope.newOrg.name, longName:$scope.newOrg.longName}
+            {name:$scope.newOrg.name, longName:$scope.newOrg.longName, workingGroupOf:$scope.newOrg.workingGroupOf}
             , function(res) {
-                  $scope.message = res;
-                  $scope.orgs = $scope.getOrgs();
+                $scope.addAlert("success", res);
+                $scope.orgs = $scope.getOrgs();
             }
         );
         $scope.newOrg = {};
@@ -139,8 +138,8 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
             id: byId
             },
             function(res) {
-                  $scope.message = res;
-                  $scope.orgs = $scope.getOrgs();
+                $scope.addAlert("success", res);
+                $scope.orgs = $scope.getOrgs();
             }
         );
     };

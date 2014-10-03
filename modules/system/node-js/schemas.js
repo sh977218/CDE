@@ -20,6 +20,7 @@ schemas.orgSchema = mongoose.Schema ({
     , phoneNumber: String
     , uri: String
     , classifications: [csEltSchema]
+    , workingGroupOf: String
 });
 
 schemas.userSchema = mongoose.Schema ({
