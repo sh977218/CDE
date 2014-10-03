@@ -1,7 +1,9 @@
 var mongo_data_system = require('../../system/node-js/mongo-data')
     , classificationShared = require('../shared/classificationShared')
     , classificationNode = require('./classificationNode')
-    , elastic = require('./elastic');
+    , elastic = require('./elastic')
+    , async = require('async')
+;
 
 
 exports.save = function(req, res, dao) {
@@ -276,20 +278,18 @@ exports.bulkActionOnSearch = function(req, action, cb) {
     elastic.elasticsearch(req.query, req.itemType, function(result) {
         var eltsTotal = result.cdes.length;
         var eltsProcessed = 0;
-        var ids = result.cdes.map(function(cde) {return cde._id;});
-        var actionCallback = function() {
-            eltsProcessed++;
-            if (eltsTotal === eltsProcessed) {
-                cb();
-                clearTimeout(timoeut);
+        var ids = result.cdes.map(function(cde) {return cde._id;});        
+        async.each(ids,
+            function(id, cb){
+                action(id, function() {
+                    eltsProcessed++;
+                    cb();
+                });
+            },
+            function(err){
+                if (eltsTotal === eltsProcessed) cb();
+                else cb("Task not performed completely!");   
             }
-        };        
-        ids.forEach(function(id){
-            action(id, actionCallback);
-        });
-        var timoeut = setTimeout(function(){
-            if (eltsTotal === eltsProcessed) cb();
-            else cb("Task not performed completely!");
-        }, 15000);
+        );
     });
 };
