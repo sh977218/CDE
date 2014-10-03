@@ -35,6 +35,8 @@ public class NlmCdeBaseTest {
     protected static String test_password = "Test123";
     protected static String history_username = "historyuser";
     protected static String history_password = "pass";
+    protected static String acrin_username = "acrin";
+    protected static String acrin_password = "pass";
     protected static String ninds_username = "ninds";
     protected static String ninds_password = "pass";
     protected static String classificationMgtUser_username = "classificationMgtUser";
@@ -189,7 +191,6 @@ public class NlmCdeBaseTest {
     }
     
     public void modalHere() {
-        hangon(2);
     }
     
     /*

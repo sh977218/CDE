@@ -1,9 +1,12 @@
-function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassification) {
+function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification) {
     $scope.module = "cde";
     
-    if ($scope.myOrgs.length > 0) {
-        $scope.orgToManage = $scope.myOrgs[0];
-    }
+    $scope.$watch("userLoaded", function() {
+        if ($scope.myOrgs.length > 0)  {
+            $scope.orgToManage = $scope.myOrgs[0];
+            $scope.updateOrg();
+        }        
+    });
     
     $scope.org = {};
     
@@ -14,8 +17,6 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
             });
         }
     };
-    
-    $scope.updateOrg();
     
     $scope.classificationToFilter = function() {
          return $scope.org.classifications;
@@ -46,16 +47,18 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
         });
 
         modalInstance.result.then(function (newClassification) {
-            newClassification.orgName = $scope.orgToManage;
-            OrgClassification.resource.save(newClassification, function(response) {
-                if (response.error) {
-                    $scope.addAlert("danger", response.error.message);        
-                }
-                else {
-                    $scope.org = response;
-                    $scope.addAlert("success", "Classification Added");                      
-                }              
-            });
+            if (newClassification) {
+                newClassification.orgName = $scope.orgToManage;
+                OrgClassification.resource.save(newClassification, function(response) {
+                    if (response.error) {
+                        $scope.addAlert("danger", response.error.message);        
+                    }
+                    else {
+                        $scope.org = response;
+                        $scope.addAlert("success", "Classification Added");                      
+                    }              
+                });
+            }
         });
     };
     
@@ -70,10 +73,12 @@ function ClassificationManagementCtrl($scope, $http, $modal, $route, OrgClassifi
             }
         });
 
-        modalInstance.result.then(function (newname) {           
-            OrgClassification.rename(orgName, pathArray, newname, function(response) {
-                $scope.org = response;
-            });
+        modalInstance.result.then(function (newname) {
+            if (newname) {
+                OrgClassification.rename(orgName, pathArray, newname, function(response) {
+                    $scope.org = response;
+                });
+            }
         });        
     };
 }

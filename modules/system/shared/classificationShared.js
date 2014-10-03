@@ -18,6 +18,10 @@ exports.modifyCategory = function(tree, fields, action, cb) {
     var classification = this;
     var lastLevel = classification.fetchLevel(tree, fields);
     for (var i = 0; i < lastLevel.elements.length; i++) {
+        if (lastLevel.elements[i] === null) {
+            lastLevel.elements.splice(i, 1);
+            i = i - 1;
+        }
         if (lastLevel.elements[i].name === fields[fields.length-1]) {
             if (action.type === classification.actions.delete) {
                 lastLevel.elements.splice(i,1);

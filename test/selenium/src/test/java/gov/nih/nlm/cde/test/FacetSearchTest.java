@@ -266,4 +266,14 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         hoverOverElement(findElement(By.id("classifications-text-caBIG")));
         Assert.assertTrue(textNotPresent("Albert Einstein Cancer Center"));
     }
+    
+    @Test
+    public void lowStatusFilter() {
+        mustBeLoggedInAs(acrin_username, acrin_password);
+        goToCdeSearch();
+        textPresent("ACRIN (3)");
+        logout();
+        goToCdeSearch();
+        textNotPresent("ACRIN (3");
+    }
 }

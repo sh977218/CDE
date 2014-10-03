@@ -147,26 +147,25 @@ angular.module('resources')
             
 
             queryStuff.aggregations = {
-                orgs: {
-                    terms: {
-                        "field": "classification.stewardOrg.name", 
-                        "size": 40, 
-                        order: {
-                            "_term": "desc"
-                        }
+                lowRegStatusOrCurator_filter: {                
+                    "filter": {
+                        "or": lowRegStatusOrCuratorFilter
+                    }
+                    , aggs: {
+                        orgs: {
+                            terms: {
+                                "field": "classification.stewardOrg.name", 
+                                "size": 40, 
+                                order: {
+                                    "_term": "desc"
+                                }
+                            }
+                        }                        
                     }
                 }
                 , statuses: {
                     terms: {
                         field: "registrationState.registrationStatus"
-                    }
-                }
-            };
-            
-            queryStuff.aggregations.orgs.aggregations = {
-                "lowRegStatusOrCurator_filter": {
-                    "filter": {
-                        "or": lowRegStatusOrCuratorFilter
                     }
                 }
             };
@@ -179,18 +178,24 @@ angular.module('resources')
             };
 
             if (settings.selectedOrg !== undefined) {
-                var flatFacetFilter = queryBuilder.flattenSelection(i - 1);
-                queryStuff.aggregations.flatClassification = {
+                var flatClassification = {
                     terms: {
                         size: 500,
                         field: "flatClassification"
                     }
                 };
                 if (flatSelection === "") {
-                    queryStuff.aggregations.flatClassification.terms.include = settings.selectedOrg + ";[^;]+";
+                    flatClassification.terms.include = settings.selectedOrg + ";[^;]+";
                 } else {
-                    queryStuff.aggregations.flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
+                    flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
                 }
+                queryStuff.aggregations.filteredFlatClassification = {
+                    filter: {or: lowRegStatusOrCuratorFilter}
+                    , aggs: {
+                        flatClassification: flatClassification
+                    }
+                };
+                
             }        
 
 

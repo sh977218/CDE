@@ -37,15 +37,15 @@
     </div>
 
     <div ng-if="cdes.length>0" >
-        <div ng-show="viewType.accordion">
+        <div ng-if="viewType.accordion">
             <div ng-include="'/template/cde/cdeAccordionList'" ng-init="ejsPage = 'quickboard';"></div>
         </div>
 
-        <div ng-show="viewType.grid">
+        <div ng-if="viewType.grid">
             <div id="quickBoardGridView" class="gridStyle" ng-grid="gridOptions"></div>
         </div>
         
-        <div ng-show="viewType.sidebyside">
+        <div ng-if="viewType.sidebyside">
             <div ng-include="'/template/cde/deCompare'"></div>
         </div>        
 

@@ -1,9 +1,8 @@
-function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, isAllowedModel, $window, screenSize, GetOrgsDetailedInfo) {
+function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, GetOrgsDetailedInfo) {
     // Global variables
     var GLOBALS = {
         max_quickboard_cdes : 10
         , getOrgsInterval : 1000 * 60 * 10 * 1 // 10 min
-
     };
     
     $scope.resultPerPage = 20;
@@ -94,6 +93,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         }
     };
     
+    // quickBoard contains an array of CDE IDs
     $scope.quickBoard = [];
     $scope.addToQuickBoard = function(cdeId) {
         if( $scope.quickBoard.length < GLOBALS.max_quickboard_cdes ) {
