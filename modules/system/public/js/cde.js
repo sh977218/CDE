@@ -10,7 +10,7 @@ var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui
         when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
         when('/orgaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/orgaccountmanagement'}).
         when('/classificationmanagement', {controller: ClassificationManagementCtrl, templateUrl: '/template/system/classificationManagement'}).
-        when('/profile', {controller: AccountManagementCtrl, templateUrl: '/profile'}).
+        when('/profile', {controller: ProfileCtrl, templateUrl: '/profile'}).
         when('/myboards', {controller: MyBoardsCtrl, templateUrl: '/myboards'}).
         when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
         when('/boardList', {controller: BoardListCtrl, templateUrl: '/boardList'}).
@@ -30,19 +30,23 @@ var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui
                         '<span ng-hide="editMode">' + 
                             '<i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' + 
                         '</span>' + 
-                        '<span ng-show="editMode">' +                                            
-                            '<input type="text" ng-model="value" typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +                                                        
-                            '<button class="fa fa-check" ng-click="model = value;editMode = false; onOk();"> Confirm</button>' + 
-                            '<button class="fa fa-times" ng-click="editMode = false"> Discard</button>' + 
-                        '</span>' +       
+                        '<form name="inlineForm" ng-show="editMode">' + 
+                            '<input name="inlineInput" type="{{inputType}}" ng-model="value" typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +                                                        
+                            '<button class="btn btn-default btn-sm fa fa-check" ng-click="model = value;editMode = false; onOk();" ng-disabled="!inlineForm.inlineInput.$valid"> Confirm</button>' + 
+                            '<button class="btn btn-default btn-sm fa fa-times" ng-click="editMode = false"> Discard</button>' + 
+                        '</form>' +       
                     '</span>'
                 ,
         restrict: 'AE',
         scope: {
             model: '='
+            , inputType: '=?'
             , isAllowed: '&'
             , onOk: '&'
             , typeaheadSource: '='
+        }, 
+        controller: function($scope){
+            $scope.inputType = $scope.inputType || 'text';
         }
     };
     })

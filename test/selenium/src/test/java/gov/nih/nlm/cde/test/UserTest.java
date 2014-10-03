@@ -1,6 +1,5 @@
 package gov.nih.nlm.cde.test;
 
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -65,18 +64,34 @@ public class UserTest extends NlmCdeBaseTest {
         
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
-        Assert.assertTrue(textPresent("Specimen Inflammation Change Type"));
-        Assert.assertTrue(textPresent("Person Mother Onset Menopause Age Value"));
-        Assert.assertTrue(textPresent("Definition Type Definition Type String"));
-        Assert.assertTrue(textPresent("Service Item Display Name java.lang.String"));
-        Assert.assertTrue(textPresent("Apgar Score Created By java.lang.Long"));
-        Assert.assertTrue(textPresent("Target Lesion Sum Short Longest Dimension Measurement"));
-        Assert.assertTrue(textPresent("Form Element End Date"));
-        Assert.assertTrue(textPresent("Treatment Text Other Text"));
-        Assert.assertTrue(textPresent("Specimen Block Received Count"));
-        Assert.assertTrue(textPresent("Malignant Neoplasm Metastatic Involvement Anatomic"));
+        textPresent("Specimen Inflammation Change Type");
+        textPresent("Person Mother Onset Menopause Age Value");
+        textPresent("Definition Type Definition Type String");
+        textPresent("Service Item Display Name java.lang.String");
+        textPresent("Apgar Score Created By java.lang.Long");
+        textPresent("Target Lesion Sum Short Longest Dimension Measurement");
+        textPresent("Form Element End Date");
+        textPresent("Treatment Text Other Text");
+        textPresent("Specimen Block Received Count");
+        textPresent("Malignant Neoplasm Metastatic Involvement Anatomic");
         
         Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("Patient Eligibility Ind-2"));
+    }
+    
+    @Test
+    public void userEmail() {
+        mustBeLoggedInAs(test_username, test_password);
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Profile")).click();
+        Assert.assertEquals("test@example.com", findElement(By.id("dd_user_email")).getText());
+        findElement(By.xpath("//div[@id='emailEdit']//i")).click();
+        findElement(By.xpath("//div[@id='emailEdit']//input")).clear();
+        findElement(By.xpath("//div[@id='emailEdit']//input")).sendKeys("me@");        
+        Assert.assertFalse(findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']")).isEnabled());
+        findElement(By.xpath("//div[@id='emailEdit']//input")).sendKeys("me.com");        
+        Assert.assertTrue(findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']")).isEnabled());
+        findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']")).click();
+        textPresent("Saved");                
     }
 
 }

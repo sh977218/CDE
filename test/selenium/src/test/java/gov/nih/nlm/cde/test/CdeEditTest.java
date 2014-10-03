@@ -15,7 +15,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         String cdeName = "Mediastinal Lymph Node Physical Examination Specify";
         goToCdeByName(cdeName);
         findElement(By.cssSelector("i.fa-edit")).click();
-        findElement(By.xpath("//span/span[2]/input")).sendKeys("[name change number 1]");
+        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector(".fa-check")).click();
         findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
@@ -201,7 +201,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         String cdeName = "ATRA Agent Current Report Period Administered Ind-2";
         goToCdeByName(cdeName);
         findElement(By.cssSelector("i.fa-edit")).click();
-        findElement(By.xpath("//span/span[2]/input")).sendKeys("[name change number 1]");
+        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector(".fa-check")).click();
         findElement(By.linkText("Classification")).click();
         

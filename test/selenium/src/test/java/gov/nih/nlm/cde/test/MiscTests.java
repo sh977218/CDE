@@ -76,7 +76,7 @@ public class MiscTests extends NlmCdeBaseTest {
         
         // Test to make sure user isn't logged in
         String response = get(baseUrl+"/user/me").asString();
-        Assert.assertEquals( "You must be logged in to do that", response );
+        Assert.assertEquals( "Not logged in.", response );
 
         // Provide fake ticket and make sure user info is retrieved
         response = get(baseUrl+"/user/me?ticket=valid").asString();
@@ -91,11 +91,11 @@ public class MiscTests extends NlmCdeBaseTest {
         
         // Test to make sure user isn't logged in
         String response = get(baseUrl+"/user/me").asString();
-        Assert.assertEquals( "You must be logged in to do that", response );
+        Assert.assertEquals( "Not logged in.", response );
 
         // Provide fake invalid ticket and make sure user info is NOT retrieved
         response = get(baseUrl+"/user/me?ticket=invalid").asString();
-        Assert.assertEquals( "You must be logged in to do that", response );
+        Assert.assertEquals( "Not logged in.", response );
     }
 
     @Test
@@ -104,7 +104,7 @@ public class MiscTests extends NlmCdeBaseTest {
         // Make sure ticket validation times out
         String response = get(baseUrl+"/user/me?ticket=timeout4").asString();
         //System.out.println(response);
-        Assert.assertEquals( "You must be logged in to do that", response );
+        Assert.assertEquals( "Not logged in.", response );
         
         // Make sure ticket validation doesn't times out
         response = get(baseUrl+"/user/me?ticket=timeout1").asString();

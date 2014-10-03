@@ -177,13 +177,31 @@ exports.init = function(app, daoManager) {
     
     app.get('/user/me', function(req, res) {
         if (!req.user) {
-            res.send("You must be logged in to do that");
+            res.send("Not logged in.");
         } else {
             mongo_data_system.userById(req.user._id, function(err, user) {
                 res.send(user);
             });
         }
     });    
+    
+    app.post('/user/me', function(req, res) {
+        if (!req.user) {
+            res.send(403, "Not authorized");
+        } else {
+            if (req.user._id != req.body._id) {
+                res.send(403, "Not authorized");
+            } else {
+                mongo_data_system.userById(req.user._id, function(err, user) {
+                    user.email = req.body.email;
+                    user.save(function(err, u) {
+                        if (err) res.send(500, "Unable to save");
+                        res.send("OK");
+                    });
+                });
+            }
+        }
+    });
 
     app.post('/addSiteAdmin', function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
@@ -365,7 +383,7 @@ exports.init = function(app, daoManager) {
         }      
         classificationNode.classifyEntireSearch(req.body, function(err) {
             if (!err) res.send();
-            else res.send(500, {error: {message: err}});
+            else res.send(202, {error: {message: err}});
         });        
     });
     
