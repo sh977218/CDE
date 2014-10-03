@@ -1,4 +1,4 @@
-function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
+function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeout) {
     $scope.filterMode = true;
 
     $scope.hideShowFilter = function() {
@@ -173,15 +173,15 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
                 
                 $scope.classifications = {elements: []};
                 
-                if (result.aggregations !== undefined && result.aggregations.flatClassification !== undefined) {
-                    $scope.aggregations.flatClassification = result.aggregations.flatClassification.buckets.map(function (c) {
+                if (result.aggregations !== undefined && result.aggregations.filteredFlatClassification !== undefined) {
+                    $scope.aggregations.flatClassification = result.aggregations.filteredFlatClassification.flatClassification.buckets.map(function (c) {
                         return {name: c.key.split(';').pop(), count: c.doc_count};
                     });
                 } else {
                     $scope.aggregations.flatClassification = [];
                 }
                 
-                OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.buckets, $rootScope.orgsDetailedInfo);
+                OrgHelpers.addLongNameToOrgs($scope.aggregations.lowRegStatusOrCurator_filter.orgs.buckets, $rootScope.orgsDetailedInfo);
              });
         });  
     };   
@@ -219,13 +219,34 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http) {
             , itemType: $scope.module
         };
         data.query.size = 100000;
+        var timeout = $timeout(function() {
+            $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
+        }, 3000);
         $http({method: 'post', url: '/classifyEntireSearch', data: data}).success(function() {
             $scope.addAlert("success", "Search result classified.");  
+            $timeout.cancel(timeout);
         }).error(function() {
             $scope.addAlert("danger", "Search result was not classified completely!");  
+            $timeout.cancel(timeout);
         });  
     };
     
+    $scope.showOrgInClassificationFilter = function(orgName) {
+        if(OrgHelpers.orgIsWorkingGroupOf(orgName, $rootScope.orgsDetailedInfo)) {
+            if($scope.isSiteAdmin()) return true;
+            
+            for(var i=0; i<$scope.myOrgs.length; i++) {
+                if(orgName===$scope.myOrgs[i]) {
+                    return true;
+                }                
+            }
+            
+            return false;
+        }
+        
+        return true;
+    };
+
     $scope.showPinAllModal = function() {
         var modalInstance = $modal.open({
           templateUrl: '/cde/public/html/selectBoardModal.html',

@@ -1,9 +1,12 @@
 function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification) {
     $scope.module = "cde";
     
-    if ($scope.myOrgs.length > 0) {
-        $scope.orgToManage = $scope.myOrgs[0];
-    }
+    $scope.$watch("userLoaded", function() {
+        if ($scope.myOrgs.length > 0)  {
+            $scope.orgToManage = $scope.myOrgs[0];
+            $scope.updateOrg();
+        }        
+    });
     
     $scope.org = {};
     
@@ -14,8 +17,6 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification) 
             });
         }
     };
-    
-    $scope.updateOrg();
     
     $scope.classificationToFilter = function() {
          return $scope.org.classifications;
