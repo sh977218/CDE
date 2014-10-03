@@ -65,7 +65,7 @@ public class SectionTest extends BaseFormTest {
         findElement(By.xpath(section_title_path + "//i")).click();
         findElement(By.xpath(section_title_path + "//input")).clear();
         findElement(By.xpath(section_title_path + "//input")).sendKeys(title);
-        findElement(By.xpath(section_title_path + "//button[test()=' Confirm']")).click();
+        findElement(By.xpath(section_title_path + "//button[text()=' Confirm']")).click();
     
         if (card != null) {
             findElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']")).click();
@@ -108,7 +108,7 @@ public class SectionTest extends BaseFormTest {
         
         findElement(By.xpath("//div[@id='section_title_0']//i")).click();
         findElement(By.xpath("//div[@id='section_title_0']//input")).sendKeys(" - New");
-        findElement(By.xpath("//div[@id='section_title_0']//button[@class='fa fa-check']")).click();
+        findElement(By.xpath("//div[@id='section_title_0']//button[text() = ' Confirm']")).click();
         
         findElement(By.xpath("//dd[@id='dd_card_1']//i")).click();
         new Select(findElement(By.xpath("//dd[@id='dd_card_1']//select"))).selectByVisibleText("0 or 1");
@@ -116,7 +116,7 @@ public class SectionTest extends BaseFormTest {
         
         findElement(By.xpath("//div[@id='section_title_2']//i")).click();
         findElement(By.xpath("//div[@id='section_title_2']//input")).sendKeys(" - New");
-        findElement(By.xpath("//div[@id='section_title_2']//button[@class='fa fa-times']")).click();
+        findElement(By.xpath("//div[@id='section_title_2']//button[text() = ' Discard']")).click();
 
         saveForm();
         findElement(By.linkText("Form Description")).click();
