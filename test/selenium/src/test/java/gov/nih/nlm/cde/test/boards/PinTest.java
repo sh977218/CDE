@@ -81,9 +81,9 @@ public class PinTest extends BoardTest {
     
     @Test
     public void pinAll() {
-        mustBeLoggedInAs("ninds", "pass");
+        mustBeLoggedInAs(ninds_username, ninds_password);
         goToCdeSearch();
-        createBoard("Cerebral Palsy > Public Review", "CDEs to be uset for Cerebral Palsy");        
+        createBoard("Cerebral Palsy > Public Review", "CDEs to be use for Cerebral Palsy");        
         goToCdeSearch();
         findElement(By.id("classifications-text-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
@@ -92,7 +92,7 @@ public class PinTest extends BoardTest {
         findElement(By.linkText("Cerebral Palsy > Public Review")).click();
         modalGone();
         gotoMyBoards();
-        findElement(By.id("view_1")).click();        
+        findElement(By.xpath("//a[../dl/dd/div/div/span[contains(text(),'CDEs to be use for Cerebral Palsy')]]")).click();
         Assert.assertTrue(driver.findElements(By.xpath("//h4[@class=\"panel-title\"]")).size()==13); 
         Assert.assertTrue(textPresent("Site number"));
         Assert.assertTrue(textPresent("Family income range"));

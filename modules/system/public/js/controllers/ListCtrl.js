@@ -222,15 +222,33 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
         var timeout = $timeout(function() {
             $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
         }, 3000);
-        $http({method: 'post', url: '/classifyEntireSearch', data: data}).success(function() {
-            $scope.addAlert("success", "Search result classified.");  
-            $timeout.cancel(timeout);
-        }).error(function() {
-            $scope.addAlert("danger", "Search result was not classified completely!");  
+        $http({method: 'post', url: '/classifyEntireSearch', data: data}).success(function(data, status, headers, config) {
+            $timeout.cancel(timeout);            
+            if (status===200) $scope.addAlert("success", "Search result classified.");  
+            else $scope.addAlert("danger", data.error.message);  
+
+        }).error(function(data) {
+            $scope.addAlert("danger", "Task not performed completely!");  
             $timeout.cancel(timeout);
         });  
     };
     
+    $scope.showOrgInClassificationFilter = function(orgName) {
+        if(OrgHelpers.orgIsWorkingGroupOf(orgName, $rootScope.orgsDetailedInfo)) {
+            if($scope.isSiteAdmin()) return true;
+            
+            for(var i=0; i<$scope.myOrgs.length; i++) {
+                if(orgName===$scope.myOrgs[i]) {
+                    return true;
+                }                
+            }
+            
+            return false;
+        }
+        
+        return true;
+    };
+
     $scope.showPinAllModal = function() {
         var modalInstance = $modal.open({
           templateUrl: '/cde/public/html/selectBoardModal.html',
