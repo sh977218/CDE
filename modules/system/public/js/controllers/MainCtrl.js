@@ -1,9 +1,8 @@
-function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, isAllowedModel, $window, screenSize, GetOrgsDetailedInfo) {
+function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, GetOrgsDetailedInfo) {
     // Global variables
     var GLOBALS = {
         max_quickboard_cdes : 10
         , getOrgsInterval : 1000 * 60 * 10 * 1 // 10 min
-
     };
     
     $scope.resultPerPage = 20;
