@@ -80,52 +80,6 @@ exports.init = function(app, daoManager) {
         });
     });
     
-    app.post('/addComment', function(req, res) {
-        if (req.isAuthenticated()) {
-            mongo_data.addComment(req.body.deId, req.body.comment, req.user._id, function (err, de) {
-                
-                if (err) {
-                    res.send(err);
-                    return;
-                }
-                res.send({message: "Comment added", de: de});
-            });
-        } else {
-            res.send({message: "You are not authorized."});                   
-        }
-    });
-
-    app.post('/removeComment', function(req, res) {
-        if (req.isAuthenticated()) {
-            mongo_data.byId(req.body.deId, function (err, de) {
-                if (err) {
-                    res.send("Data Element does not exist.");
-                }
-                de.comments.forEach(function(comment, i){
-                    if (comment._id == req.body.commentId) {
-                        if( req.user.username == comment.username || 
-                            (req.user.orgAdmin.indexOf(de.stewardOrg.name) > -1) ||
-                            req.user.siteAdmin
-                        ) {
-                            de.comments.splice(i, 1);
-                            de.save(function (err) {
-                               if (err) {
-                                   res.send({message: err});
-                               } else {
-                                   res.send({message: "Comment removed", de: de});
-                               }
-                            });                        
-                        } else {
-                            res.send({message: "You can only remove comments you own."});
-                        }
-                    }
-                });
-            });
-        } else {
-            res.send("You are not authorized.");                   
-        }
-    });
-
     app.get('/priorcdes/:id', function(req, res) {
         cdesvc.priorCdes(req, res);
     });
@@ -316,6 +270,14 @@ exports.init = function(app, daoManager) {
         adminItemSvc.removeAttachment(req, res, mongo_data);
     });
     
+    app.post('/comments/cde/add', function(req, res) {
+        adminItemSvc.addComment(req, res, mongo_data);
+    });
+
+    app.post('/comments/cde/remove', function(req, res) {
+        adminItemSvc.removeComment(req, res, mongo_data);
+    });
+    
     app.post('/attachments/cde/setDefault', function(req, res) {
         adminItemSvc.setAttachmentDefault(req, res, mongo_data);
     });
@@ -453,7 +415,7 @@ exports.init = function(app, daoManager) {
     });    
     
     app.get('/sdcView', function(req, res){
-      res.render('sdcView');
+        res.render('sdcView');
     });    
     
     app.get('/profile', function(req, res) {
@@ -461,4 +423,13 @@ exports.init = function(app, daoManager) {
     });        
     
     app.get('/status/cde', status.status);
+    
+    app.post('/pinEntireSearchToBoard', function(req, res) {
+        if (req.isAuthenticated()) {
+            usersvc.pinAllToBoard(req, res);
+        } else {
+            res.send("Please login first.");
+        }      
+    });    
+
 };

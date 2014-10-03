@@ -2,8 +2,6 @@ var mongoose = require('mongoose');
 
 var schemas = {};
 
-
-
 var csEltSchema = mongoose.Schema({
     name: String
     , elements: [csEltSchema]
@@ -78,12 +76,12 @@ schemas.registrationStateSchema = {
     , _id: false
 };
 
-var commentSchema = mongoose.Schema({
+schemas.commentSchema = {
     text: String
     , user: String
     , username: String
     , created: Date
-});
+}
 
 
 module.exports = schemas;

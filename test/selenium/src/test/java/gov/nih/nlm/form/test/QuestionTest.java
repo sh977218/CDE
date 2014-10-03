@@ -170,7 +170,7 @@ public class QuestionTest extends BaseFormTest {
 
         findElement(By.linkText("Form Description")).click();
         findElement(By.id("question_accordion_0_0")).click();
-        
+        hangon(1);
         Assert.assertEquals(2, driver.findElements(By.xpath("//div[@id='section_drop_area_0']//div[starts-with(@id, 'question_')]")).size());
 
         findElement(By.id("remove_q_0")).click();

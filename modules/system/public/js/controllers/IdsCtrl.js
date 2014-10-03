@@ -1,4 +1,4 @@
-var IdsCtrl = function ($scope, $modal, $http, DataElement) {
+var IdsCtrl = function ($scope, $modal, $window) {
     $scope.openNewId = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newIdModalContent.html',
@@ -16,7 +16,7 @@ var IdsCtrl = function ($scope, $modal, $http, DataElement) {
                 $scope.addAlert("info", "Identifier added. Save to confirm.")
             } else {
                 $scope.elt.$save(function(newElt) {
-                    $scope.elt = newElt;
+                    $window.location.href = $scope.baseLink + newElt._id + "&tab=ids";  
                     $scope.addAlert("success", "Identifier Added");
                 });
             }
@@ -29,7 +29,7 @@ var IdsCtrl = function ($scope, $modal, $http, DataElement) {
             $scope.addAlert("info", "Identifier removed. Save to confirm.")
         } else {
             $scope.elt.$save(function(newElt) {
-                $scope.elt = newElt;
+                $window.location.href = $scope.baseLink + newElt._id + "&tab=ids";  
                 $scope.addAlert("success", "Identifier Removed");
             });        
         }
