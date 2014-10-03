@@ -65,7 +65,7 @@ public class SectionTest extends BaseFormTest {
         findElement(By.xpath(section_title_path + "//i")).click();
         findElement(By.xpath(section_title_path + "//input")).clear();
         findElement(By.xpath(section_title_path + "//input")).sendKeys(title);
-        findElement(By.xpath(section_title_path + "//button[@class='fa fa-check']")).click();
+        findElement(By.xpath(section_title_path + "//button[test()=' Confirm']")).click();
     
         if (card != null) {
             findElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']")).click();
