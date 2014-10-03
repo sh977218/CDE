@@ -15,7 +15,9 @@ exports.nocacheMiddleware = function(req, res, next) {
     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     res.header('Expires', '-1');
     res.header('Pragma', 'no-cache');
-    next();
+    if (next) {
+        next();
+    }
 };
 
 exports.init = function(app, daoManager) {
@@ -268,7 +270,11 @@ exports.init = function(app, daoManager) {
         }
     });    
     
-    app.get('/login', express.csrf(), function(req, res) {
+    app.get('/login', function(req, res, next) {
+        exports.nocacheMiddleware(req, res);
+        var csrfFunc = express.csrf();
+        csrfFunc(req, res, next);
+    }, function(req, res) {
         var token = req.csrfToken();
         res.render('login', "system", { csrftoken: token });
     });
