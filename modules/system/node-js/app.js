@@ -170,7 +170,7 @@ exports.init = function(app, daoManager) {
     
     app.get('/user/me', function(req, res) {
         if (!req.user) {
-            res.send(403, "Not authorized");
+            res.send("Not logged in.");
         } else {
             mongo_data_system.userById(req.user._id, function(err, user) {
                 res.send(user);

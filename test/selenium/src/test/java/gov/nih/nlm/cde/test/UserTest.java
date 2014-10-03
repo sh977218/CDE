@@ -102,12 +102,11 @@ public class UserTest extends NlmCdeBaseTest {
         Assert.assertEquals("test@example.com", findElement(By.id("dd_user_email")).getText());
         findElement(By.xpath("//div[@id='emailEdit']//i")).click();
         findElement(By.xpath("//div[@id='emailEdit']//input")).clear();
-        Assert.assertFalse(findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']")).isEnabled());
         findElement(By.xpath("//div[@id='emailEdit']//input")).sendKeys("me@");        
         Assert.assertFalse(findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']")).isEnabled());
         findElement(By.xpath("//div[@id='emailEdit']//input")).sendKeys("me.com");        
         Assert.assertTrue(findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']")).isEnabled());
-        findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']"));
+        findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']")).click();
         textPresent("Saved");                
     }
 
