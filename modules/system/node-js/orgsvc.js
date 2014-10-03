@@ -10,7 +10,16 @@ exports.managedOrgs = function(req, res) {
 };
 
 exports.addOrg = function(req, res) {
-    mongo_data.addOrg(req.body, res);
+    var newOrg = req.body;
+    if (newOrg.workingGroupOf) {
+        mongo_data.orgByName(newOrg.workingGroupOf, function(parentOrg) {
+            newOrg.classifications = parentOrg.classifications;
+            console.log(newOrg);
+            mongo_data.addOrg(newOrg, res);
+        });
+    } else {
+        mongo_data.addOrg(newOrg, res);
+    }
 };
 
 exports.removeOrg = function(req, res) {
