@@ -84,14 +84,14 @@ app.use(express.session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.csrf());
+//app.use(express.csrf());
 
-app.use(function(req, res, next) {
-    var token = req.csrfToken();
-    res.cookie('XSRF-TOKEN', token);
-    res.locals.csrftoken = token;
-    next();
-});
+//app.use(function(req, res, next) {
+//    var token = req.csrfToken();
+////    res.cookie('XSRF-TOKEN', token);
+//    res.locals.csrftoken = token;
+//    next();
+//});
 
 var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
 

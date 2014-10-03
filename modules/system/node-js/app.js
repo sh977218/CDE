@@ -67,7 +67,12 @@ exports.init = function(app, daoManager) {
         });
     });
 
-    app.post('/login', function(req, res, next) {
+    app.get('/loginText', express.csrf(), function(req, res, next) {
+        var token = req.csrfToken();
+        res.render("loginText", "system", {csrftoken: token});
+    });
+
+    app.post('/login', express.csrf(), function(req, res, next) {
         // Regenerate is used so appscan won't complain
         req.session.regenerate(function(err) {  
             passport.authenticate('local', function(err, user, info) {
@@ -263,8 +268,9 @@ exports.init = function(app, daoManager) {
         }
     });    
     
-    app.get('/login', exports.nocacheMiddleware, function(req, res) {
-        res.render('login', "system", { user: req.user, message: req.flash('error') });
+    app.get('/login', express.csrf(), function(req, res) {
+        var token = req.csrfToken();
+        res.render('login', "system", { csrftoken: token });
     });
 
     app.get('/siteaccountmanagement', exports.nocacheMiddleware, function(req, res) {
