@@ -34,10 +34,8 @@
     </button>   
     <button id="pinAll" ng-click="showPinAllModal();" ng-show="totalItems>0 && isOrgCurator() && cPage !== 'forms'" class="btn btn-default btn-checkbox pull-right">
         Pin All
-    </button>    
-    <button id="classifyAll" ng-click="showClassifyEntireSearchModal();" ng-show="totalItems>0 && isOrgCurator()" class="btn btn-default btn-checkbox pull-right">
-        Classify All
-    </button>    
+    </button>        
+
 </div>
 <hr class="searchInfoHr"/>
 <div class="container-fluid pt30">    
@@ -59,10 +57,10 @@
     </script>
     <div class="row">
         <div class="hidden-xs" ng-class="filterMode ? 'col-sm-3' : 'col-sm-0'" ng-show="filterMode">
-            <p ng-show="ggregations.orgs.buckets" class="gray">Filter by:</p>
-            <strong ng-show="aggregations.orgs.buckets">Classifications</strong>
+            <p ng-show="aggregations.orgs.buckets" class="gray">Filter by:</p>
+            <strong ng-show="aggregations.lowRegStatusOrCurator_filter.orgs.buckets">Classifications</strong>
             <ul class="fa-ul">
-                <li ng-repeat="t in aggregations.orgs.buckets | orderBy:'key'" style="margin-right: -20px" ng-switch="t.key === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.key === selectedOrg || !selectedOrg">
+                <li ng-repeat="t in aggregations.lowRegStatusOrCurator_filter.orgs.buckets | orderBy:'key'" style="margin-right: -20px" ng-switch="t.key === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.key === selectedOrg || !selectedOrg">
                     <span class="hand-cursor"  tooltip="{{t.longName}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.key}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.key}}"></i>

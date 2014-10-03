@@ -46,6 +46,13 @@ angular.module('resources')
             }
 
             return '';
+        },
+        orgIsWorkingGroupOf : function(orgName, orgsDetailedInfo) {
+            if( orgsDetailedInfo[orgName].workingGroupOf && orgsDetailedInfo[orgName].workingGroupOf.trim()!=='' ) {
+                return true;
+            }
+            
+            return false;
         }
     };
 });

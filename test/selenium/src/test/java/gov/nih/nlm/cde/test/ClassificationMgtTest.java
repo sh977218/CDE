@@ -21,12 +21,6 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();    
     }    
     
-    private void gotoClassifMgt() {
-        findElement(By.id("username_link")).click();
-        hangon(.5);
-        findElement(By.linkText("Classifications")).click();          
-    }
-    
     private void checkNestedClassifs() {
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] .name")).getText().equals("Epilepsy"));
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy,Assessments and Examinations'] .name")).getText().equals("Assessments and Examinations"));
@@ -76,26 +70,6 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         searchNestedClassifiedForms();
         hangon(1);
         Assert.assertTrue(textNotPresent("NINDS (1)"));
-    }
-    
-    private void createClassificationName(String[] categories) {
-        findElement(By.id("addClassification")).click(); 
-        modalHere();
-        for (int i=0; i < categories.length-1; i++) {
-            findElement(By.cssSelector("[id='addClassification-"+categories[i]+"'] span.fake-link")).click();       
-        }
-        findElement(By.id("addNewCatName")).sendKeys(categories[categories.length-1]);   
-        findElement(By.id("addClassificationButton")).click(); 
-        modalGone();
-        String selector = "";
-        for (int i=0; i < categories.length; i++) {
-            selector += categories[i];
-            if (i < categories.length-1) {
-                selector += ",";
-            }
-        }
-        
-        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1]));    
     }
     
     @Test
