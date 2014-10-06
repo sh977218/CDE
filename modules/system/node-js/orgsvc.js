@@ -14,7 +14,6 @@ exports.addOrg = function(req, res) {
     if (newOrg.workingGroupOf) {
         mongo_data.orgByName(newOrg.workingGroupOf, function(parentOrg) {
             newOrg.classifications = parentOrg.classifications;
-            console.log(newOrg);
             mongo_data.addOrg(newOrg, res);
         });
     } else {

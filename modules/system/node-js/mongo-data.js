@@ -83,7 +83,7 @@ exports.orgCurators = function(orgs, callback) {
 
 
 exports.orgByName = function(orgName,callback) {
-    Org.findOne({"name": orgName}).exec(function(err, org) {
+    Org.findOne({"name": orgName}).exec(function(error, org) {
         callback(org);
     });
 };
