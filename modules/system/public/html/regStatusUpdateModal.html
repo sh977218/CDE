@@ -7,9 +7,7 @@
         <div class="form-group">
             <label for="registrationStatus">Registration Status</label>
             <select class="form-control" ng-model="elt.registrationState.registrationStatus" name="registrationStatus" ng-change="setHelpMessage()">
-                <option ng-repeat="s in stewardRegStatuses" ng-value="s">{{s}}</option>
-                <option ng-if="user.siteAdmin === true" value="Standard">Standard</option>
-                <option ng-if="user.siteAdmin === true" value="Preferred Standard">Preferred Standard</option>
+                <option ng-repeat="s in validRegStatuses" ng-value="s">{{s}}</option>
             </select>
         </div>
 
