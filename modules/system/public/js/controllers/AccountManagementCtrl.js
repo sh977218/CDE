@@ -4,6 +4,7 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
     $scope.orgAdmin = {};
     $scope.orgCurator = {};
     $scope.curator = {};
+    $scope.cdesTransferSteward = { from:'', to:''};
 
     
     $http.get("/systemAlert").then(function(response) {
@@ -37,6 +38,8 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
         });
     };
     $scope.getMyOrgAdmins();
+    
+    $scope.myOrgAdmins;
 
     $scope.getOrgCurators = function() {
         return $http.get("/orgcurators").then(function(response) {

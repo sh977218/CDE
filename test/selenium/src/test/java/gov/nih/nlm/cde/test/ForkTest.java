@@ -11,6 +11,7 @@ public class ForkTest extends NlmCdeBaseTest {
         findElement(By.id("openCreateFork")).click();
         modalHere();
         findElement(By.name("selection.changeNote")).sendKeys(changeNote);
+        new Select(driver.findElement(By.id("selection.org"))).selectByVisibleText("CTEP");
         findElement(By.id("submit")).click();
         modalGone();
         textNotPresent("This Element has no forks");
