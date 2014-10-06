@@ -39,6 +39,8 @@ public class NlmCdeBaseTest {
     protected static String acrin_password = "pass";
     protected static String ninds_username = "ninds";
     protected static String ninds_password = "pass";
+    protected static String wguser_username = "wguser";
+    protected static String common_password = "pass";
     protected static String classificationMgtUser_username = "classificationMgtUser";
     protected static String classificationMgtUser_password = "pass";
     

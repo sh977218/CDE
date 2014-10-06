@@ -1,6 +1,8 @@
 package gov.nih.nlm.cde.test;
 
+import java.util.List;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
@@ -61,6 +63,18 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
         goToCdeSearch();
         textNotPresent("Test Working Group (");
+    }
+    
+    @Test
+    public void wgRegStatus() {
+        mustBeLoggedInAs(wguser_username, common_password);
+        new CdeCreateTest().createBasicCde("WG Test CDE", "Def", null, "WG-TEST", "WG Classif", "WG Sub Classif");
+        findElement(By.id("editStatus")).click();
+        List<WebElement> options = new Select(driver.findElement(By.name("registrationStatus"))).getOptions();
+        for (WebElement option : options) {
+            Assert.assertNotEquals("Qualified", option.getText());
+            Assert.assertNotEquals("Recorded", option.getText());
+        }
     }
     
 }
