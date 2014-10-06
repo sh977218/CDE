@@ -19,23 +19,7 @@ public class UserTest extends NlmCdeBaseTest {
             findElement(By.linkText("Log In")).click();            
         }
         
-        enterUsernamePasswordSubmit("bad-username", "bad-password", "Incorrect username or password");
-    }
-    
-    @Test
-    public void lockUserDuringLogin() {
-        mustBeLoggedOut();
-        try {
-            findElement(By.linkText("Log In")).click();
-        } catch (TimeoutException e) {
-            logout();
-            findElement(By.linkText("Log In")).click();            
-        }
-        
-        enterUsernamePasswordSubmit("lockedUser", "wrong-password", "Incorrect password");
-        enterUsernamePasswordSubmit("lockedUser", "wrong-password", "Incorrect password");
-        enterUsernamePasswordSubmit("lockedUser", "wrong-password", "Incorrect password");
-        enterUsernamePasswordSubmit("lockedUser", "wrong-password", "User is locked out");
+        enterUsernamePasswordSubmit("bad-username", "bad-password", "Failed to login");
     }
     
     @Test

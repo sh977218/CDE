@@ -15,7 +15,9 @@ exports.nocacheMiddleware = function(req, res, next) {
     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     res.header('Expires', '-1');
     res.header('Pragma', 'no-cache');
-    next();
+    if (next) {
+        next();
+    }
 };
 
 exports.init = function(app, daoManager) {
@@ -67,16 +69,21 @@ exports.init = function(app, daoManager) {
         });
     });
 
-    app.post('/login', function(req, res, next) {
+    app.get('/loginText', express.csrf(), function(req, res, next) {
+        var token = req.csrfToken();
+        res.render("loginText", "system", {csrftoken: token});
+    });
+
+    app.post('/login', express.csrf(), function(req, res, next) {
         // Regenerate is used so appscan won't complain
         req.session.regenerate(function(err) {  
             passport.authenticate('local', function(err, user, info) {
-                if (err) { return next(err); }
+                if (err) { return res.send(403); }
                 if (!user) { 
-                    return res.send(info.message);
+                    return res.send(403, info.message);
                 }
                 req.logIn(user, function(err) {
-                    if (err) { return next(err); }
+                    if (err) { return res.send(403); }
                     req.session.passport = {user: req.user._id};
                     return res.send("OK");
                 });
@@ -281,8 +288,13 @@ exports.init = function(app, daoManager) {
         }
     });    
     
-    app.get('/login', exports.nocacheMiddleware, function(req, res) {
-        res.render('login', "system", { user: req.user, message: req.flash('error') });
+    app.get('/login', function(req, res, next) {
+        exports.nocacheMiddleware(req, res);
+        var csrfFunc = express.csrf();
+        csrfFunc(req, res, next);
+    }, function(req, res) {
+        var token = req.csrfToken();
+        res.render('login', "system", { csrftoken: token });
     });
 
     app.get('/siteaccountmanagement', exports.nocacheMiddleware, function(req, res) {
