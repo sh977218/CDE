@@ -71,7 +71,7 @@ public class QuestionTest extends BaseFormTest {
         Assert.assertEquals("N/A", findElement(By.id("dd_question_instructions_0")).getText());
         findElement(By.xpath(instXPath +  "//i")).click();
         findElement(By.xpath(instXPath + "//input")).sendKeys("Instructions for PBD");
-        findElement(By.xpath(instXPath + "//button[@class='fa fa-check']")).click();
+        findElement(By.xpath(instXPath + "//button[text() = ' Confirm']")).click();
         
         Assert.assertFalse(findElement(By.xpath("//dd[@id='dd_question_required_0']/input")).isSelected());
         findElement(By.xpath("//dd[@id='dd_question_required_0']//input")).click();
@@ -80,7 +80,7 @@ public class QuestionTest extends BaseFormTest {
         Assert.assertEquals("Exactly 1", findElement(By.xpath(cardXPath)).getText().trim());
         findElement(By.xpath(cardXPath + "//i")).click();
         new Select(findElement(By.xpath(cardXPath + "//select"))).selectByVisibleText("1 or more");
-        findElement(By.xpath(cardXPath + "//button[@class='fa fa-check']")).click();
+        findElement(By.xpath(cardXPath + "//button[text() = ' Confirm']")).click();
         
         String uomXPath = "//dd[@id='dd_q_uoms_0']";
         Assert.assertEquals("N/A", findElement(By.xpath(uomXPath + "/div")).getText());
@@ -88,7 +88,7 @@ public class QuestionTest extends BaseFormTest {
         
         findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_0']//i")).click();
         findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_0']//input")).clear();
-        findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_0']//button[@class='fa fa-check']")).click();
+        findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_0']//button[text() = ' Confirm']")).click();
         
         List<WebElement> uoms = driver.findElements(By.xpath(uomXPath + "//div[contains(@id, 'q_uom_list_')]"));
         Assert.assertEquals(0, uoms.size());
@@ -97,14 +97,14 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_0']//i")).click();
         findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_0']//input")).clear();
         findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_0']//input")).sendKeys("PBD UOM 1");
-        findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_0']//button[@class='fa fa-check']")).click();
+        findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_0']//button[text() = ' Confirm']")).click();
         hangon(.5);
 
         findElement(By.xpath(uomXPath + "//button[contains(., 'Add')]")).click();
         findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_1']//i")).click();
         findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_1']//input")).clear();
         findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_1']//input")).sendKeys("PBD UOM 2");
-        findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_1']//button[@class='fa fa-check']")).click();
+        findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_1']//button[text() = ' Confirm']")).click();
         
         String oldFormUrl = driver.getCurrentUrl();
         

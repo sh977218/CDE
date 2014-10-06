@@ -125,14 +125,14 @@ exports.authBeforeVsac = function(req, username, password, done) {
                     }
                 });
             } else { // If user was found in local datastore and password != 'umls'
-                if (user.lockCounter === 3) {
+                if (user.lockCounter === 300) {
                     return done(null, false, { message: 'User is locked out' }); 
                 } else if (user.password !== password) {
                     // Initialize the lockCounter if it hasn't been
                     (user.lockCounter>=0? user.lockCounter += 1 : user.lockCounter = 1);
                     
                     return user.save(function(err, user) {
-                        return done(null, false, { message: 'Incorrect password' }); 
+                        return done(null, false, { message: 'Incorrect username or password' }); 
                     });
                 } else {
                     // Update user info in datastore

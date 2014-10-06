@@ -2,7 +2,8 @@ function AuthCtrl($scope, Auth, $window) {
     $scope.login = function() {
         Auth.login({
                 username: $scope.username,
-                password: $scope.password
+                password: $scope.password,
+                _csrf: $scope.csrf
             },
             function(res) {
                 if (res === "OK") {

@@ -61,27 +61,27 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//input")).sendKeys(testOrgRenamed);
-        findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//button[@class='fa fa-check']")).click();
+        findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//button[text()=' Confirm']")).click();
         closeAlert();
         
         findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//input")).sendKeys(testOrgMailingAddress);
-        findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//button[@class='fa fa-check']")).click();
+        findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//button[text()=' Confirm']")).click();
         closeAlert();
         
         findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//input")).sendKeys(testOrgEmailingAddress);
-        findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//button[@class='fa fa-check']")).click();
+        findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//button[text()=' Confirm']")).click();
         closeAlert();
         
         findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//input")).sendKeys(testOrgPhoneNumber);
-        findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//button[@class='fa fa-check']")).click();
+        findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//button[text()=' Confirm']")).click();
         closeAlert();
 
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//input")).sendKeys(testOrgUri);
-        findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//button[@class='fa fa-check']")).click();
+        findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//button[text()=' Confirm']")).click();
         closeAlert();
         
         refreshOrganizationsTabScreen();
@@ -93,23 +93,23 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//input")).sendKeys(testOrgNotRenamed);
-        findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//button[@class='fa fa-times']")).click();
+        findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//button[text() = ' Discard']")).click();
         
         findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//input")).sendKeys(testOrgMailingAddressNotRenamed);
-        findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//button[@class='fa fa-times']")).click();
+        findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//button[text() = ' Discard']")).click();
         
         findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//input")).sendKeys(testOrgEmailingAddressNotRenamed);
-        findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//button[@class='fa fa-times']")).click();
+        findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//button[text() = ' Discard']")).click();
         
         findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//input")).sendKeys(testOrgPhoneNumberNotRenamed);
-        findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//button[@class='fa fa-times']")).click();
+        findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//button[text() = ' Discard']")).click();
 
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//input")).sendKeys(testOrgUriNotRenamed);
-        findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//button[@class='fa fa-times']")).click();
+        findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//button[text() = ' Discard']")).click();
         
         Assert.assertTrue(textNotPresent(testOrgNotRenamed));
         Assert.assertTrue(textNotPresent(testOrgMailingAddressNotRenamed));
