@@ -186,52 +186,52 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
         });  
     };   
     
-    $scope.showClassifyEntireSearchModal = function () {
-        var modalInstance = $modal.open({
-          templateUrl: '/template/system/addClassification',
-          controller: AddClassificationModalCtrl,
-          resolve: {
-                myOrgs: function() {
-                    return $scope.myOrgs;
-                }
-                , cde: function() {
-                    return {_id:null};
-                }
-                , addClassification: function() {
-                    return {
-                        addClassification: function(newClassification) {
-                            $scope.classifyEntireSearch(newClassification);
-                        }
-                    };
-                }
-            }          
-        });
-
-        modalInstance.result.then(function () {
-            $scope.reload($routeParams);
-        });
-    };       
-
-    $scope.classifyEntireSearch = function(newClassification) {        
-        var data = {
-            query: $scope.query.query
-            , newClassification: newClassification
-            , itemType: $scope.module
-        };
-        data.query.size = 100000;
-        var timeout = $timeout(function() {
-            $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
-        }, 3000);
-        $http({method: 'post', url: '/classifyEntireSearch', data: data}).success(function(data, status, headers, config) {
-            $timeout.cancel(timeout);            
-            if (status===200) $scope.addAlert("success", "Search result classified.");  
-            else $scope.addAlert("danger", data.error.message);  
-
-        }).error(function(data) {
-            $scope.addAlert("danger", "Task not performed completely!");  
-            $timeout.cancel(timeout);
-        });  
-    };
+//    $scope.showClassifyEntireSearchModal = function () {
+//        var modalInstance = $modal.open({
+//          templateUrl: '/template/system/addClassification',
+//          controller: AddClassificationModalCtrl,
+//          resolve: {
+//                myOrgs: function() {
+//                    return $scope.myOrgs;
+//                }
+//                , cde: function() {
+//                    return {_id:null};
+//                }
+//                , addClassification: function() {
+//                    return {
+//                        addClassification: function(newClassification) {
+//                            $scope.classifyEntireSearch(newClassification);
+//                        }
+//                    };
+//                }
+//            }          
+//        });
+//
+//        modalInstance.result.then(function () {
+//            $scope.reload($routeParams);
+//        });
+//    };       
+//
+//    $scope.classifyEntireSearch = function(newClassification) {        
+//        var data = {
+//            query: $scope.query.query
+//            , newClassification: newClassification
+//            , itemType: $scope.module
+//        };
+//        data.query.size = 100000;
+//        var timeout = $timeout(function() {
+//            $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
+//        }, 3000);
+//        $http({method: 'post', url: '/classifyEntireSearch', data: data}).success(function(data, status, headers, config) {
+//            $timeout.cancel(timeout);            
+//            if (status===200) $scope.addAlert("success", "Search result classified.");  
+//            else $scope.addAlert("danger", data.error.message);  
+//
+//        }).error(function(data) {
+//            $scope.addAlert("danger", "Task not performed completely!");  
+//            $timeout.cancel(timeout);
+//        });  
+//    };
     
     $scope.showOrgInClassificationFilter = function(orgName) {
         if(OrgHelpers.orgIsWorkingGroupOf(orgName, $rootScope.orgsDetailedInfo)) {

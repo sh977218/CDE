@@ -275,7 +275,9 @@ exports.forkRoot = function(req, res, dao) {
 };
 
 exports.bulkActionOnSearch = function(req, action, cb) {
+    
     elastic.elasticsearch(req.query, req.itemType, function(result) {
+    
         var eltsTotal = result.cdes.length;
         var eltsProcessed = 0;
         var ids = result.cdes.map(function(cde) {return cde._id;});        
