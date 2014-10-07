@@ -42,39 +42,21 @@
             </div>
         </tab>
         <tab heading="CDE Management">
-            <form class="form-inline pt30" role="form" id="cdesTransferStewardForm" novalidate>
+            <form class="form-inline pt30" role="form" id="cdesTransferStewardForm" name="cdesTransferStewardForm" novalidate>
                 Transfer CDEs owned by
                 <div class="form-group">
-                    <select id="cdesTransferStewardForm.from" class="form-control" ng-model="cdesTransferSteward.from" ng-options="myOrgAdmin.name for myOrgAdmin in myOrgAdmins">
+                    <select id="cdesTransferStewardForm.from" name="cdesTransferStewardForm_from" class="form-control" ng-model="cdesTransferSteward.from" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
                         <option value="">select organization</option>
                     </select>
                 </div>
                 to 
                 <div class="form-group">
-                    <select id="cdesTransferStewardForm.to" class="form-control" ng-model="cdesTransferSteward.to" ng-options="myOrgAdmin.name for myOrgAdmin in myOrgAdmins">
+                    <select id="cdesTransferStewardForm.to" name="cdesTransferStewardForm_to" class="form-control" ng-model="cdesTransferSteward.to" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
                         <option value="">select organization</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-success" id="transferCDEs" ng-click="" ng-disabled="cdesTransferStewardForm.from.$invalid || cdesTransferStewardForm.to.$invalid">Transfer CDEs</button>
+                <button type="submit" class="btn btn-success" id="transferCDEs" ng-click="cdesTransferStewardFunc()" ng-disabled="cdesTransferStewardForm.cdesTransferStewardForm_from.$error.required || cdesTransferStewardForm.cdesTransferStewardForm_to.$error.required">Transfer CDEs</button>
             </form>
-            
-<!--            <div class="row" ng-repeat="org in myOrgAdmins">
-                <div class="col-md-4">{{org.name}}</div>
-                <div class="col-md-8">
-                    <div class="row" ng-repeat="us in org.users">
-                        <div class="col-md-11">{{us.username}}</div>
-                        <div class="col-md-1"><i class="fa fa-trash-o" ng-click="removeOrgCurator(org.name, us._id)"></i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="row input-prepend input-append">
-                <select class="col-md-5" type="text" name="curator.orgName" ng-model="curator.orgName">
-                    <option value="">--</option>
-                    <option ng-repeat="c in user.orgAdmin" ng-value="c">{{c}}</option>
-                </select>
-                <input class="col-md-5" type="text" name="orgCurator.username" ng-model="orgCurator.username"></input>
-                <span class="add-on" id="addOrgCurator" ng-click="addOrgCurator()">+</span>
-            </div>-->
         </tab>
     </tabset>
 </div>    

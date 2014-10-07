@@ -5,7 +5,11 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
     $scope.orgCurator = {};
     $scope.curator = {};
     $scope.cdesTransferSteward = { from:'', to:''};
-
+    
+    function resetCdesTransferSteward() {
+        $scope.cdesTransferSteward.from = '';
+        $scope.cdesTransferSteward.to = '';
+    }
     
     $http.get("/systemAlert").then(function(response) {
        $scope.broadcast = {message: response.data}; 
@@ -165,4 +169,16 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
         $http.post('/systemAlert', {alert: $scope.broadcast.message});
     };
     
+    $scope.cdesTransferStewardFunc = function() {
+        AccountManagement.cdesTransferSteward($scope.cdesTransferSteward,
+            function(successMsg) {
+                $scope.addAlert("success", successMsg);
+                resetCdesTransferSteward();
+            },
+            function(errorMsg) {
+                $scope.addAlert("danger", errorMsg);
+                resetCdesTransferSteward();
+            }
+        );
+    };
 }

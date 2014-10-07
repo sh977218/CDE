@@ -79,3 +79,19 @@ exports.pinAllToBoard = function(req, res) {
     });
     
 };
+
+exports.cdesTransferSteward = function(req, res) {
+    var from = req.body.from;    
+    var to = req.body.to;
+    mongo_data.cdesTransferSteward(from, to, function(err, result) {
+        if(err) {
+            res.statusCode = 202;
+            return res.send("Error transferring steward. Please try again.");
+        }
+
+        if(!isNaN(result) && result===0)
+            return res.send("There are no CDEs to transfer.");
+
+        return res.send(result + " CDEs transferred."); 
+    });
+};

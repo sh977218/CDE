@@ -430,6 +430,14 @@ exports.init = function(app, daoManager) {
         } else {
             res.send("Please login first.");
         }      
-    });    
+    });
+    
+    app.post('/cdesTransferSteward', function(req, res) {
+        if (req.isAuthenticated()) {
+            usersvc.cdesTransferSteward(req, res);
+        } else {
+            res.send("Please login first.");
+        }      
+    });
 
 };

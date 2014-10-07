@@ -69,9 +69,30 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         Assert.assertEquals("cabigAdmin", findElement(By.id("dd_username")).getText());
         Assert.assertEquals("1,024.00 MB", findElement(By.id("dd_quota")).getText());
         Assert.assertEquals("[]", findElement(By.id("dd_curatorFor")).getText());
-        Assert.assertEquals("[\"caBIG\"]", findElement(By.id("dd_adminFor")).getText());
+        Assert.assertEquals("[\"caBIG\",\"LCC\"]", findElement(By.id("dd_adminFor")).getText());
     }
     
-
+    @Test
+    public void cdesTransferSteward() {
+        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Account Management")).click();
+        findElement(By.linkText("CDE Management")).click();
+        
+        new Select(findElement(By.name("cdesTransferStewardForm_from"))).selectByVisibleText("caBIG");
+        new Select(findElement(By.name("cdesTransferStewardForm_to"))).selectByVisibleText("LCC");
+        findElement(By.id("transferCDEs")).click();
+        textPresent("CDEs transferred.");
+        
+        new Select(findElement(By.name("cdesTransferStewardForm_from"))).selectByVisibleText("caBIG");
+        new Select(findElement(By.name("cdesTransferStewardForm_to"))).selectByVisibleText("LCC");
+        findElement(By.id("transferCDEs")).click();
+        textPresent("There are no CDEs to transfer.");
+        
+        new Select(findElement(By.name("cdesTransferStewardForm_from"))).selectByVisibleText("LCC");
+        new Select(findElement(By.name("cdesTransferStewardForm_to"))).selectByVisibleText("caBIG");
+        findElement(By.id("transferCDEs")).click();
+        textPresent("193 CDEs transferred.");
+    }
     
 }
