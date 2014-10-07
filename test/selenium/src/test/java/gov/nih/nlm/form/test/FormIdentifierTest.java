@@ -10,6 +10,11 @@ public class FormIdentifierTest extends IdentifiersTest {
         goToFormByName(name);
     }
     
+    @Override
+    public void goToEltSearch() {
+        goToFormSearch();
+    }
+    
     @Test
     public void addRemoveFormId() {
         addRemoveId("Vision Deficit Report");
