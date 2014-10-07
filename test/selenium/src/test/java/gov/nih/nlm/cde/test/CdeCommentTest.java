@@ -9,6 +9,12 @@ public class CdeCommentTest extends CommentTest {
     public void goToEltByName(String name) {
         goToCdeByName(name);
     }
+
+    @Override
+    public void goToEltSearch() {
+        goToCdeSearch();
+    }
+    
     
     @Test
     public void cdeComments() {

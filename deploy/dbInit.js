@@ -32,6 +32,8 @@ db.users.insert({username: 'acrin', password: 'pass', orgCurator: ["ACRIN"], org
 db.users.insert({username: 'grdr', password: 'pass', orgCurator: [], orgAdmin: ["GRDR"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'eyegene', password: 'pass', orgCurator: [], orgAdmin: ["EyeGene"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'lockedUser', password: 'pass', orgCurator: [], orgAdmin: [], viewHistory: []});
+db.users.insert({username: 'wguser', password: 'pass', orgCurator: [], orgAdmin: ['WG-TEST'], viewHistory: []});
+
 
 db.orgs.insert({name: "NHLBI"});
 db.orgs.insert({name: "caCORE"});
@@ -64,5 +66,6 @@ db.orgs.insert({name: "PhenX"});
 db.orgs.insert({name: "AHRQ"});
 db.orgs.insert({name: "PHRI"});
 db.orgs.insert({name: "GRDR"});
+db.orgs.insert({name: "WG-TEST", workingGroupOf: "caCORE", classifications: [{name: "WG Classif", elements: [{name: "WG Sub Classif"}]}]});
 
 

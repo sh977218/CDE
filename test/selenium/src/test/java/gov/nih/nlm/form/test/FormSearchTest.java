@@ -28,7 +28,5 @@ public class FormSearchTest extends BaseFormTest {
         textPresent("Skin Cancer Patient");
         textPresent("Traumatic Brain Injury - Adverse Events");
         textPresent("Vision Deficit Report");
-        
-        
     }    
 }

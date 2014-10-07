@@ -11,5 +11,7 @@ import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 
 public abstract class CommonTest extends NlmCdeBaseTest {
     public abstract void goToEltByName(String name);
+    
+    public abstract void goToEltSearch();
 
 }
