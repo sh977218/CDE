@@ -17,7 +17,7 @@ public class FormRegStatus extends RegStatusTest {
     
     @Test
     public void changeRegistrationStatus() {
-        changeRegistrationStatus("Traumatic Brain Injury - Adverse Events", ctepCurator_username);
+        changeRegistrationStatus("Form Status Test", ctepCurator_username);
     }
         
     @Test
