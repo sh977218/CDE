@@ -38,7 +38,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     }    
     
 
-    /*@Test
+    @Test
     public void viewOrgClassifications() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         findElement(By.id("username_link")).click();
@@ -135,7 +135,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/a/span")).click();      
         hangon(1);
         Assert.assertTrue(textPresent("Spinal Cord Injuries"));
-    }*/
+    }
     
     @Test
     public void classifyEntireSearch() {
@@ -147,13 +147,6 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id=\"addClassificationModalBody\"]//span[text()='Classification Transfer']")).click();
         findElement(By.xpath("//div[@id='addClassification-Child Classification']//button")).click();        
         hangon(3);
-        
-//        goToCdeSearch();
-//        findElement(By.id("li-blank-AECC")).click();
-//        textPresent("NCI Standard Template CDEs (7)");
-//        findElement(By.id("classifyAll")).click();
-//        textPresent("Search result classified");
-        
         
         goToCdeByName("Gastrointestinal therapy water flush status");
         findElement(By.linkText("Classification")).click();
