@@ -4,7 +4,6 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
     $scope.orgAdmin = {};
     $scope.orgCurator = {};
     $scope.curator = {};
-
     
     $http.get("/systemAlert").then(function(response) {
        $scope.broadcast = {message: response.data}; 
