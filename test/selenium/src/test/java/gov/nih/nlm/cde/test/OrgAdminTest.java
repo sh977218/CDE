@@ -92,7 +92,7 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         new Select(findElement(By.name("cdesTransferStewardForm_from"))).selectByVisibleText("LCC");
         new Select(findElement(By.name("cdesTransferStewardForm_to"))).selectByVisibleText("caBIG");
         findElement(By.id("transferCDEs")).click();
-        textPresent("193 CDEs transferred.");
+        textPresent("CDEs transferred.");
     }
     
 }
