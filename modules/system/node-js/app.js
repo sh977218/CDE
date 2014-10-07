@@ -374,7 +374,6 @@ exports.init = function(app, daoManager) {
             else res.send(202, {error: {message: "Classification does not exists."}});
         });
     });    
-    
  
     app.post('/classifyEntireSearch', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
@@ -385,7 +384,6 @@ exports.init = function(app, daoManager) {
             if (!err) res.send();
             else res.send(202, {error: {message: err}});
         });        
-    });
-    
+    });    
 
 };

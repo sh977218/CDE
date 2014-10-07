@@ -126,7 +126,6 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
         };
         
         Elastic.buildElasticQuery(settings, function(query) {
-
             var data = {
                 query: query.query
                 , newClassification: newClassification
@@ -143,11 +142,8 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
             }).error(function(data) {
                 $scope.addAlert("danger", "Task not performed completely!");  
                 $timeout.cancel(timeout);
-            }); 
-
-        });        
-        
- 
+            });
+        }); 
     };    
 }
 
