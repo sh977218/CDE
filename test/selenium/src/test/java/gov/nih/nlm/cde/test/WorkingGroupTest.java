@@ -4,7 +4,6 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 
 import org.testng.annotations.Test;
 
@@ -34,6 +33,12 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
         gotoClassifMgt();
         new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText(orgWG);
+        
+        // Verify that Acrin Tree was duplicated
+        findElement(By.linkText("Imaging Modality"));
+        findElement(By.linkText("Magnetic Resonance Imaging (MRI)"));
+        findElement(By.linkText("Under Review"));
+        findElement(By.linkText("6701"));
         createClassificationName(new String[]{classification});
         modalGone();
         createClassificationName(new String[]{classification, subClassification});
