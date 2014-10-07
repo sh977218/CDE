@@ -10,6 +10,12 @@ public class CdePropertyTest extends PropertyTest {
         goToCdeByName(name);
     }
 
+    @Override
+    public void goToEltSearch() {
+        goToCdeSearch();
+    }
+    
+    
     @Test
     public void addRemoveCdeProperty() {
         addRemoveProperty("Aromatase Inhibitor Most Recent Received Text");

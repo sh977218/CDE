@@ -1,6 +1,6 @@
 package gov.nih.nlm.cde.test.regstatus;
 
-import gov.nih.nlm.cde.test.NlmCdeBaseTest;
+import gov.nih.nlm.cde.common.test.RegStatusTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class RegStatusTest extends NlmCdeBaseTest {
+public class CdeRegStatusTest extends RegStatusTest {
 
     // TODO - Cannot get this test to pass. Can't figure out why.
 //    @Test
@@ -40,44 +40,17 @@ public class RegStatusTest extends NlmCdeBaseTest {
     
     @Test
     public void changeRegistrationStatus() {
-        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
-        goToCdeByName("Investigator Identifier java.lang.Integer");
-        Assert.assertTrue(textPresent("Qualified"));
-        findElement(By.id("editStatus")).click();
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
-        Assert.assertTrue(textPresent("Recorded CDEs are visible to the public"));
-        findElement(By.name("effectiveDate")).sendKeys("9/15/2013");
-        findElement(By.name("untilDate")).sendKeys("10/31/2014");
-        findElement(By.name("administrativeNote")).sendKeys("Admin Note 1");
-        findElement(By.name("unresolvedIssue")).sendKeys("Unresolved Issue 1");
-        findElement(By.id("saveRegStatus")).click();
-        closeAlert();
-        goToCdeByName("Investigator Identifier java.lang.Integer");
-        Assert.assertTrue(textPresent("Recorded"));
-        findElement(By.linkText("Status")).click();
-        Assert.assertTrue(textPresent("Recorded"));
-        Assert.assertTrue(textPresent("09/15/2013"));
-        Assert.assertTrue(textPresent("10/31/2014"));
-        Assert.assertTrue(textPresent("Admin Note 1"));
-        Assert.assertTrue(textPresent("Unresolved Issue 1"));
+        changeRegistrationStatus("Investigator Identifier java.lang.Integer", cabigAdmin_username);
     }
         
     @Test
     public void retire() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
-        String cdeName = "Laboratory Procedure Alkaline Phosphatase Result Date";
-        goToCdeByName(cdeName);
-        Assert.assertTrue(textPresent("Qualified"));        
-        findElement(By.id("editStatus")).click();
-        modalHere();
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
-        Assert.assertTrue(textPresent("Retired Data Elements are not returned in searches"));
-        findElement(By.id("saveRegStatus")).click();
-        closeAlert();
-        goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("Alkaline");
-        findElement(By.id("search.submit")).click();
-        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(cdeName));
+        retire("Laboratory Procedure Alkaline Phosphatase Result Date", ctepCurator_username);
+    }
+
+    @Test
+    public void nlmPromotesToStandard() {
+        nlmPromotesToStandard("Patient Name");
     }
     
     @Test
@@ -112,6 +85,16 @@ public class RegStatusTest extends NlmCdeBaseTest {
         hangon(1);
         Assert.assertTrue(textPresent("4 results for"));
         Assert.assertTrue(textNotPresent("Preferred Standard"));
+    }
+
+    @Override
+    public void goToEltByName(String name) {
+        goToCdeByName(name);
+    }
+
+    @Override
+    public void goToEltSearch() {
+        goToCdeSearch();
     }
     
 }
