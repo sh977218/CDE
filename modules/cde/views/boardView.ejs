@@ -1,19 +1,6 @@
-<div class="container-fluid">
-    <h1 class="page-header">
-        {{board.name}}
-        <div class="btn-group" ng-if="totalItems>0">
-            <button id="changeStewardBulkButton" ng-disabled="" value="Change All Stewards" ng-click="openChangeStewardBulk()" class="btn btn-default">
-                Change All Stewards
-            </button>
-        </div>
-    </h1>
-    
-    <div ng-if="totalItems===0" class="container">
-        <h3>This board is empty.</h3>
-        <p>Note: Click on <i class="fa fa-thumb-tack"></i> to add a CDE to a board. <a href="/#/cde/search">Go to the search page and get started.</a></p>
-    </div>
+<h3><center>{{board.name}}<center></h3>
+            
+<div ng-include="'/template/cde/cdeAccordionList'" ng-init="ejsPage = 'board';"></div>
 
-    <div ng-include="'/template/cde/cdeAccordionList'" ng-init="ejsPage = 'board';"></div>
-
-    <pagination ng-if="totalItems>0" align="center" direction-links="true" items-per-page="20" total-items="totalItems" page="currentPage"></pagination>
-</div>
+<pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems" page="currentPage"></pagination>
+ 

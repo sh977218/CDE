@@ -1,4 +1,4 @@
-function BoardViewCtrl($scope, $routeParams, $http, $modal) {
+function BoardViewCtrl($scope, $routeParams, $http) {
     $scope.cdes = [];
         
     $scope.$watch('currentPage', function() {
@@ -33,28 +33,6 @@ function BoardViewCtrl($scope, $routeParams, $http, $modal) {
         $http['delete']("/pincde/" + pin._id + "/" + $scope.board._id).then(function(response) {
             $scope.reload();
         });
-    };
-    
-    $scope.openChangeStewardBulk = function (elt, redirectBaseLink) {
-        var modalInstance = $modal.open({
-            templateUrl: '/cde/public/html/changeStewardBulk.html',
-            controller: ChangeStewardBulkModalCtrl,
-            resolve: {
-                elt: function() {
-                    return elt;
-                }
-                , user: function() {
-                    return $scope.user;
-                }
-                , redirectBaseLink: function() {
-                    return redirectBaseLink;
-                }
-            }
-        });
-        modalInstance.result.then(function (newelt) {
-            $window.location.href = redirectBaseLink + newelt._id;  
-            $scope.addAlert("success", "Saved.");
-        });        
     };
     
     $scope.reload();
