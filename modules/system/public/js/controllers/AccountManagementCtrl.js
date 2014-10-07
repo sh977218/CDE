@@ -43,8 +43,6 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
     };
     $scope.getMyOrgAdmins();
     
-    $scope.myOrgAdmins;
-
     $scope.getOrgCurators = function() {
         return $http.get("/orgcurators").then(function(response) {
             $scope.orgCurators = response.data.orgs;
