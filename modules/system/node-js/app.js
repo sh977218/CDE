@@ -394,6 +394,8 @@ exports.init = function(app, daoManager) {
 
     app.get('/rsConf', function(req, res) {
         mongo_data_system.rsConf(function(err, doc) {
+            console.log("err" + err);
+            console.log(doc);
             if (err) res.send(500, err);
             else res.send(doc);
         });
@@ -402,7 +404,7 @@ exports.init = function(app, daoManager) {
 
     // TODO move to post and add security
     app.get('/nccsPrimary', function(req, res) {
-        mongo_data_system.toNccsPrimary(config.nccsPrimaryRepl, function(err, doc) {
+        mongo_data_system.switchToReplSet(config.nccsPrimaryRepl, function(err, doc) {
             if (err) res.send(500, err);
             else res.send(doc);
         });
@@ -410,7 +412,7 @@ exports.init = function(app, daoManager) {
 
     // TODO move to post and add security
     app.get('/occsPrimary', function(req, res) {
-        mongo_data_system.toNccsPrimary(config.occsPrimaryRepl, function(err, doc) {
+        mongo_data_system.switchToReplSet(config.occsPrimaryRepl, function(err, doc) {
             if (err) res.send(500, err);
             else res.send(doc);
         });
