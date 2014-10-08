@@ -1,4 +1,5 @@
 var mongo_data = require('./mongo-data')
+  , daoManager = require('./moduleDaoManager')
     ;
     
 exports.isCuratorOf = function(user, orgName){
@@ -201,18 +202,18 @@ exports.removeOrgCurator = function(req, res) {
     });  
 };
 
-exports.cdesTransferSteward = function(req, res) {
+exports.transferSteward = function(req, res) {
     if(req.isAuthenticated() && isAdminOf(req.user, req.body.from) && isAdminOf(req.user, req.body.to)) {
-        mongo_data.cdesTransferSteward(req.body.from, req.body.to, function(err, result) {
-            if(err || Number.isNaN(result)) {
-                return res.send(400, "Error transferring steward. Please try again.");
-            }
-
-            if(result===0) {
-                return res.send(204, "There are no CDEs to transfer.");
-            }
-
-            return res.send(200, result + " CDEs transferred."); 
+        daoManager.getDaoList().forEach(function(dao) {
+            dao.transferSteward(req.body.from, req.body.to, function(err, result) {
+                if(err || Number.isNaN(result)) {
+                    return res.send(400, "Error transferring steward. Please try again.");
+                }
+                if(result===0) {
+                    return res.send(204, "There are no elements to transfer.");
+                }
+                return res.send(200, result + " elements transferred."); 
+            });
         });
     } else {
         res.send(403, "Please login first.");
