@@ -387,34 +387,39 @@ exports.init = function(app, daoManager) {
     });
     
     app.get('/rsStatus', function(req, res) {
-        mongo_data_system.rsStatus(function(st) {
-            res.send(st);
+        mongo_data_system.rsStatus(function(err, st) {
+            if (err) res.send(500, err);
+            else res.send(st);
         });
     });
 
     app.get('/rsConf', function(req, res) {
         mongo_data_system.rsConf(function(err, doc) {
-            console.log("err" + err);
-            console.log(doc);
             if (err) res.send(500, err);
             else res.send(doc);
         });
     });
 
 
-    // TODO move to post and add security
-    app.get('/nccsPrimary', function(req, res) {
-        mongo_data_system.switchToReplSet(config.nccsPrimaryRepl, function(err, doc) {
-            if (err) res.send(500, err);
-            else res.send(doc);
-        });
+    app.post('/occsPrimary', function(req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            mongo_data_system.switchToReplSet(config.nccsPrimaryRepl, function(err, doc) {
+                if (err) res.send(500, err);
+                else res.send(doc);
+            });
+        } else {
+            res.send(403, "Not Authorized");
+        }
     });
 
-    // TODO move to post and add security
-    app.get('/occsPrimary', function(req, res) {
-        mongo_data_system.switchToReplSet(config.occsPrimaryRepl, function(err, doc) {
-            if (err) res.send(500, err);
-            else res.send(doc);
-        });
+    app.post('/occsPrimary', function(req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            mongo_data_system.switchToReplSet(config.occsPrimaryRepl, function(err, doc) {
+                if (err) res.send(500, err);
+                else res.send(doc);
+            });
+        } else {
+            res.send(403, "Not Authorized");
+        }
     });
 };
