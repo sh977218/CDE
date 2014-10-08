@@ -106,7 +106,7 @@ exports.init = function(app, daoManager) {
         req.session.destroy(function (err) {
             req.logout();
             res.clearCookie('connect.sid');
-            res.redirect('/');
+            res.redirect('/#/login');
         });
         
     });
