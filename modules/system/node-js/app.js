@@ -391,7 +391,16 @@ exports.init = function(app, daoManager) {
             res.send(st);
         });
     });
-    
+
+    app.get('/rsConf', function(req, res) {
+        mongo_data_system.rsConf(function(err, doc) {
+            if (err) res.send(500, err);
+            else res.send(doc);
+        });
+    });
+
+
+    // TODO move to post and add security
     app.get('/nccsPrimary', function(req, res) {
         mongo_data_system.toNccsPrimary(function(err, doc) {
             if (err) res.send(500, err);

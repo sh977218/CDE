@@ -3,6 +3,7 @@ var schemas = require('./schemas')
     , config = require('config')
     , mongoUri = config.mongoUri
     , conn = mongoose.createConnection(mongoUri)
+    , localConn = mongoose.createConnection(config.database.local.uri)
     , Grid = require('gridfs-stream')
     , Org = conn.model('Org', schemas.orgSchema)    
     , User = conn.model('User', schemas.userSchema)
@@ -202,35 +203,18 @@ exports.rsStatus = function (cb) {
     });
 };
 
-exports.toNccsPrimary = function (cb) {
-    var db = conn.db;
-    db.admin().command({"replSetReconfig": config.nccsPrimaryRepl}, function (err, doc) {
-        cb(err, doc);
+exports.rsConf = function(cb) {
+    var db = localConn.db;
+    db.collection('system.replset').findOne(function(err, conf) {
+       cb(err, conf); 
     });
-   
 };
 
-exports.rsRemove = function (hn, cb) {
-    var db = conn.db;
-    exports.rsConf(function(conf) {
-        for (var i in conf.documents[0].members) {
-            if (conf.documents[0].members[i].host == hn) {
-                conf.documents[0].members.splice(i, 1);
-                db.adminCommand({ replSetReconfig : c});
-            }
-        }        
-    });
-
-    return "error: couldn't find "+hn+" in "+tojson(c.members);
-}
-
-exports.rsConf = function (cb) {
-    var db = conn.db;
-    db.admin().command({"replSetGetConf": 1}, function (err, doc) {
-        if (err) {
-            console.log(err);
-        } else {
-            cb(doc);
-        }
-    });
+exports.toNccsPrimary = function (cb) {
+    localConn.db.collection('system.replset').findOne(function(err, conf) {
+        config.nccsPrimaryRepl.version = conf.version + 1;
+        conn.db.admin().command({"replSetReconfig": config.nccsPrimaryRepl}, function (err, doc) {
+            cb(err, doc);
+        });
+    });   
 };
