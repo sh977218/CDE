@@ -24,25 +24,25 @@ public class UserTest extends NlmCdeBaseTest {
     
     @Test
     public void curatorProfile() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         Assert.assertEquals("ctepCurator", findElement(By.id("dd_username")).getText());
         Assert.assertEquals("1,024.00 MB", findElement(By.id("dd_quota")).getText());
         Assert.assertEquals("[\"CTEP\"]", findElement(By.id("dd_curatorFor")).getText());
-//        Assert.assertEquals("[]", findElement(By.id("dd_adminFor")).getText());
+        Assert.assertEquals("[]", findElement(By.id("dd_adminFor")).getText());
     }
 
     @Test
     public void regUserCannotCreate() {
-        mustBeLoggedInAs("reguser", "pass");
+        mustBeLoggedInAs(reguser_username, password);
         findElement(By.id("username_link"));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Create")));
     }
     
     @Test
     public void viewingHistory() {
-        mustBeLoggedInAs(history_username, history_password);
+        mustBeLoggedInAs(history_username, password);
         goToCdeByName("Patient Eligibility Ind-2");
         hangon(4);
         findElement(By.id("username_link")).click();

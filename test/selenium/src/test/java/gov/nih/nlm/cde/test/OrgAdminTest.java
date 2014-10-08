@@ -10,7 +10,7 @@ public class OrgAdminTest extends NlmCdeBaseTest {
 
     @Test
     public void orgAdminCanEditHisCdes() {
-        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeByName("Cervical Tumor Clinical T Stage");
         textPresent("as defined by the AJCC Cancer Staging Manual, 6th Ed.");
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("i.fa-edit")));
@@ -21,7 +21,7 @@ public class OrgAdminTest extends NlmCdeBaseTest {
     
     @Test
     public void orgAdminTasks() {
-        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
         findElement(By.linkText("Organizations Curators")).click();       
@@ -60,18 +60,18 @@ public class OrgAdminTest extends NlmCdeBaseTest {
     
     @Test
     public void adminProfile() {
-        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         Assert.assertEquals("cabigAdmin", findElement(By.id("dd_username")).getText());
         Assert.assertEquals("1,024.00 MB", findElement(By.id("dd_quota")).getText());
         Assert.assertEquals("[]", findElement(By.id("dd_curatorFor")).getText());
-        Assert.assertEquals("[\"caBIG\",\"LCC\"]", findElement(By.id("dd_adminFor")).getText());
+        Assert.assertEquals("[\"caBIG\"]", findElement(By.id("dd_adminFor")).getText());
     }
     
     @Test
     public void cdesTransferSteward() {
-        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        mustBeLoggedInAs(transferStewardUser_username, password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
         findElement(By.linkText("CDE Management")).click();

@@ -4,7 +4,12 @@ var mongo_data = require('./mongo-data')
 exports.isCuratorOf = function(user, orgName){
     if (!user) return false;
     return user.orgCurator.indexOf(orgName)>-1 || user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
-};    
+};
+
+exports.isAdminOf = function(user, orgName){
+    if (!user) return false;
+    return user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
+};   
     
 exports.addSiteAdmin = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {
@@ -194,4 +199,23 @@ exports.removeOrgCurator = function(req, res) {
             }
         }
     });  
+};
+
+exports.cdesTransferSteward = function(req, res) {
+    if(req.isAuthenticated() && isAdminOf(req.user, req.body.from) && isAdminOf(req.user, req.body.to)) {
+        mongo_data.cdesTransferSteward(req.body.from, req.body.to, function(err, result) {
+            if(err || Number.isNaN(result)) {
+                return res.send(400, "Error transferring steward. Please try again.");
+            }
+
+            if(result===0) {
+                return res.send(204, "There are no CDEs to transfer.");
+            }
+
+            return res.send(200, result + " CDEs transferred."); 
+        });
+    } else {
+        res.send(403, "Please login first.");
+    }
+    
 };

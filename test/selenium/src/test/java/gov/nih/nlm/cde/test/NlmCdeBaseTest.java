@@ -23,35 +23,37 @@ import org.openqa.selenium.browserlaunchers.Sleeper;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
-    protected static String baseUrl = System.getProperty("testUrl");
-    protected static WebDriver driver;    
-    protected static String nlm_username = "nlm";
-    protected static String nlm_password = "nlm";
-    protected static String cabigAdmin_username = "cabigAdmin";
-    protected static String cabigAdmin_password = "pass";
-    protected static String ctepCurator_username = "ctepCurator";
-    protected static String ctepCurator_password = "pass";   
-    protected static String test_username = "testuser";
-    protected static String test_password = "Test123";
-    protected static String history_username = "historyuser";
-    protected static String history_password = "pass";
-    protected static String acrin_username = "acrin";
-    protected static String acrin_password = "pass";
-    protected static String ninds_username = "ninds";
-    protected static String ninds_password = "pass";
-    protected static String wguser_username = "wguser";
-    protected static String common_password = "pass";
-    protected static String classificationMgtUser_username = "classificationMgtUser";
-    protected static String classificationMgtUser_password = "pass";
+    protected static WebDriver driver;
+    public static WebDriverWait wait;
+    public static WebDriverWait shortWait;
     
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";    
     protected static String macosx_detected_message = "Max OS X Detected\nStarting ./chromedriver";     
     
     protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
     protected static String browser = System.getProperty("browser");
+    protected static String baseUrl = System.getProperty("testUrl");
+    
+    protected static String nlm_username = "nlm";
+    protected static String nlm_password = "nlm";
+    protected static String cabigAdmin_username = "cabigAdmin";
+    protected static String ctepCurator_username = "ctepCurator";
+    protected static String test_username = "testuser";
+    protected static String test_password = "Test123";
+    protected static String history_username = "historyuser";
+    protected static String acrin_username = "acrin";
+    protected static String ninds_username = "ninds";
+    protected static String wguser_username = "wguser";
+    protected static String reguser_username = "reguser";
+    protected static String boarduser1_username = "boarduser1";
+    protected static String boarduser2_username = "boarduser2";
+    protected static String boarduserEdit_username = "boarduserEdit";
+    protected static String boardUser = "boarduser";
+    protected static String pinUser = "pinuser";
+    protected static String classificationMgtUser_username = "classificationMgtUser";
+    protected static String transferStewardUser_username = "transferStewardUser";
           
-    public static WebDriverWait wait;
-    public static WebDriverWait shortWait;
+    protected static String password = "pass";
 
     @BeforeTest
     public void setBaseUrl() {

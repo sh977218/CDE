@@ -31,7 +31,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         hangon(1);
         logout();
         
-        loginAs(cabigAdmin_username, cabigAdmin_password);
+        loginAs(cabigAdmin_username, password);
         goToCdeByName(cdeName);
         // CDE is Standard.
         // Can't edit name, def or status

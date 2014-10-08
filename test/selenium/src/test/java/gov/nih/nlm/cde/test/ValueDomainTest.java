@@ -11,7 +11,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     
     @Test
     public void randomDatatype() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "CTC Adverse Event Apnea Grade";
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
@@ -34,7 +34,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         String cdeName = "Cambridge-Hopkins Restless Legs Syndrome Diagnostic Questionnaire (CH-RLSQ) - feeling most occur time";
         openCdeInList(cdeName);
         Assert.assertTrue(textPresent("Multiple Values:"));
-        mustBeLoggedInAs("ninds", "pass");
+        mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(findElement(By.id("multipleValues_input")).isSelected());
@@ -60,7 +60,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
     
     @Test
     public void otherPleaseSpecifyAndListDatatype() {
-        mustBeLoggedInAs("ninds", "pass");        
+        mustBeLoggedInAs(ninds_username, password);        
         String cdeName = "Structured Clinical Interview for Pathological Gambling (SCI-PG) - withdrawal value";
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();

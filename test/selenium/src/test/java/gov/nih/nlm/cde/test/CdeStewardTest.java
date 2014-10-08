@@ -10,7 +10,7 @@ public class CdeStewardTest extends NlmCdeBaseTest {
     
     @Test
     public void changeCDESteward() {
-        mustBeLoggedInAs(classificationMgtUser_username, classificationMgtUser_password);
+        mustBeLoggedInAs(classificationMgtUser_username, password);
         String cdeName = "Patient Tissue Specimen Colorectal Research Consent Ind-2";
 
         goToCdeByName(cdeName);
@@ -38,7 +38,7 @@ public class CdeStewardTest extends NlmCdeBaseTest {
     
     @Test
     public void checkStewardOrgDetails() {
-        mustBeLoggedInAs(classificationMgtUser_username, classificationMgtUser_password);
+        mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale");
         hoverOverElement(findElement(By.linkText("caBIG")));
         textPresent("Organization Details");

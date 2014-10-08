@@ -28,7 +28,7 @@ public class ForkTest extends NlmCdeBaseTest {
     
     @Test
     public void forkMineTheirs() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Adverse Event Ongoing Event Indicator");
         
         // can't edit.
@@ -68,7 +68,7 @@ public class ForkTest extends NlmCdeBaseTest {
     
     @Test
     public void forkMineMine() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Other Group Patient Identifier Number");
         findElement(By.linkText("Forks")).click();
         textPresent("This Element has no forks");

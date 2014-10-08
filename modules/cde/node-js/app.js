@@ -433,11 +433,7 @@ exports.init = function(app, daoManager) {
     });
     
     app.post('/cdesTransferSteward', function(req, res) {
-        if (req.isAuthenticated()) {
-            usersvc.cdesTransferSteward(req, res);
-        } else {
-            res.send("Please login first.");
-        }      
+        usersvc.cdesTransferSteward(req, res);
     });
 
 };

@@ -13,7 +13,7 @@ var defaultBoard = {
 };
 
 db.users.insert({username: 'nlm', password: 'nlm', siteAdmin: true, orgAdmin: ["caBIG","CTEP","NINDS","ACRIN"], viewHistory: []});
-db.users.insert({username: 'cabigAdmin', password: 'pass', orgAdmin: ["caBIG", "LCC"], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'cabigAdmin', password: 'pass', orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'user1', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'reguser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
@@ -33,6 +33,7 @@ db.users.insert({username: 'grdr', password: 'pass', orgCurator: [], orgAdmin: [
 db.users.insert({username: 'eyegene', password: 'pass', orgCurator: [], orgAdmin: ["EyeGene"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'lockedUser', password: 'pass', orgCurator: [], orgAdmin: [], viewHistory: []});
 db.users.insert({username: 'wguser', password: 'pass', orgCurator: [], orgAdmin: ['WG-TEST'], viewHistory: []});
+db.users.insert({username: 'transferStewardUser', password: 'pass', orgAdmin: ["caBIG", "LCC"], quota: 1073741824, viewHistory: []});
 
 
 db.orgs.insert({name: "NHLBI"});
