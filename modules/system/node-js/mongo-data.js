@@ -201,3 +201,36 @@ exports.rsStatus = function (cb) {
         }
     });
 };
+
+exports.toNccsPrimary = function (cb) {
+    var db = conn.db;
+    db.admin().command({"replSetReconfig": config.nccsPrimaryRepl}, function (err, doc) {
+        cb(err, doc);
+    });
+   
+};
+
+exports.rsRemove = function (hn, cb) {
+    var db = conn.db;
+    exports.rsConf(function(conf) {
+        for (var i in conf.documents[0].members) {
+            if (conf.documents[0].members[i].host == hn) {
+                conf.documents[0].members.splice(i, 1);
+                db.adminCommand({ replSetReconfig : c});
+            }
+        }        
+    });
+
+    return "error: couldn't find "+hn+" in "+tojson(c.members);
+}
+
+exports.rsConf = function (cb) {
+    var db = conn.db;
+    db.admin().command({"replSetGetConf": 1}, function (err, doc) {
+        if (err) {
+            console.log(err);
+        } else {
+            cb(doc);
+        }
+    });
+};
