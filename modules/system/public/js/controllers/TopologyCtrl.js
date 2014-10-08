@@ -4,8 +4,27 @@ function TopologyCtrl($scope, $http) {
 
     $scope.rsConf = function() {
         $http.get("/rsConf").then(function(result) {
-            $scope.textContent = JSON.stringify(result.data);
+            $scope.textContent = result.data;
         });
     };
+
+    $scope.rsStatus = function() {
+        $http.get("/rsStatus").then(function(result) {
+            $scope.textContent = result.data;
+        });
+    };
+    
+    $scope.nccsPrimary = function() {
+        $http.post("/nccsPrimary").then(function(result) {
+            $scope.textContent = result.data;
+        });
+    }; 
+
+    $scope.occsPrimary = function() {
+        $http.post("/occsPrimary").then(function(result) {
+            $scope.textContent = result.data;
+        });
+    }; 
+
 
 }

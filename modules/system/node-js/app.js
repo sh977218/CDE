@@ -401,7 +401,7 @@ exports.init = function(app, daoManager) {
     });
 
 
-    app.post('/occsPrimary', function(req, res) {
+    app.post('/nccsPrimary', function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             mongo_data_system.switchToReplSet(config.nccsPrimaryRepl, function(err, doc) {
                 if (err) res.send(500, err);
