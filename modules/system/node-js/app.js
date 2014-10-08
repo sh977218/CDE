@@ -30,7 +30,6 @@ exports.init = function(app, daoManager) {
     app.get('/template/:module/:template', function(req, res) {        
         res.render(req.params.template, req.params.module);
     });		
-   
 
     app.get("/supportedBrowsers", function(req, res) {
        res.render('supportedBrowsers', 'system'); 
@@ -387,5 +386,10 @@ exports.init = function(app, daoManager) {
         });        
     });
     
+    app.get('/rsStatus', function(req, res) {
+        mongo_data_system.rsStatus(function(st) {
+            res.send(st);
+        });
+    });
 
 };

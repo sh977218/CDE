@@ -191,3 +191,13 @@ exports.updateOrg = function(org, res) {
     });
 };
 
+exports.rsStatus = function (cb) {
+    var db = conn.db;
+    db.admin().command({"replSetGetStatus": 1}, function (err, doc) {
+        if (err) {
+            console.log(err);
+        } else {
+            cb(doc);
+        }
+    });
+};
