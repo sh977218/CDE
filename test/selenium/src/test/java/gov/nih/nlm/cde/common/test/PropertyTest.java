@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.common.test;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public abstract class PropertyTest extends CommonTest {
         

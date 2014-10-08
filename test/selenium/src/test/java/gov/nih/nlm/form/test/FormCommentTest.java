@@ -10,6 +10,11 @@ public class FormCommentTest extends CommentTest {
         goToFormByName(name);
     }
 
+    @Override
+    public void goToEltSearch() {
+        goToFormSearch();
+    }
+    
     @Test
     public void formComments() {
         comments("Skin Cancer Patient");
@@ -24,5 +29,5 @@ public class FormCommentTest extends CommentTest {
     public void siteAdminCanRemoveFormComment() {
         siteAdminCanRemoveComment("Form Property Test");
     }
-    
+
 }

@@ -5,14 +5,20 @@ import org.testng.annotations.Test;
 
 public class CdeIdentifierTest extends IdentifiersTest {
     
-    @Override
-    public void goToEltByName(String name) {
-        goToCdeByName(name);
-    }
-    
     @Test
     public void addRemoveCdeId() {
         addRemoveId("Intravesical Protocol Agent Administered Specify");
     }
+    
+    @Override
+    public void goToEltByName(String name) {
+        goToCdeByName(name);
+    }
+
+    @Override
+    public void goToEltSearch() {
+        goToCdeSearch();
+    }
+    
     
 }

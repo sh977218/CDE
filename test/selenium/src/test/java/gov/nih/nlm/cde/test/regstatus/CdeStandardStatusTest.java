@@ -9,25 +9,8 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-public class AStandardStatusTest extends NlmCdeBaseTest {
-    
-    @Test
-    public void nlmPromotesToStandard() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName("Patient Name");
-        Assert.assertTrue(textPresent("Qualified"));
-        findElement(By.id("editStatus")).click();
-        modalHere();
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
-        Assert.assertTrue(textPresent("Standard CDEs cannot be edited by their stewards"));
-        modalHere();
-        findElement(By.id("saveRegStatus")).click();
-        closeAlert();
-        goToCdeByName("Patient Name");
-        Assert.assertTrue(textPresent("Standard"));
-    }
-    
-    
+public class CdeStandardStatusTest extends NlmCdeBaseTest {
+       
     @DataProvider(name = "standardAndPreferredStandardCde")
     public Object[][] standardAndPreferredStandardCdeArray() {
         return new Object[][] {

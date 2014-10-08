@@ -4,5 +4,5 @@
     <dt>Description: </dt><dd inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="elt.naming[0].definition" is-allowed="false" def-format="elt.naming[0].definitionFormat" on-ok="stageCde(form)"> </dd>
     <dt>Version: </dt><dd>{{elt.version | placeholdEmpty}}</dd>
     <dt>Steward: </dt><dd>{{elt.stewardOrg.name}}</dd>
-    <dt id="dt_status">Status: </dt><dd id="dd_status" ng-controller="RegistrationCtrl"><i id="editStatus" ng-show="canCurate" class="fa fa-edit" ng-click="openRegStatusUpdate(form, '#/formView?_id=')")"></i> {{elt.registrationState.registrationStatus}}</dd>
+    <dt id="dt_status">Status: </dt><dd id="dd_status" ng-controller="RegistrationCtrl"><i id="editStatus" ng-show="canCurate" class="fa fa-edit" ng-click="openRegStatusUpdate()"></i> {{elt.registrationState.registrationStatus}}</dd>
 </dl> 

@@ -12,10 +12,10 @@ public class OrgAdminTest extends NlmCdeBaseTest {
     public void orgAdminCanEditHisCdes() {
         mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
         goToCdeByName("Cervical Tumor Clinical T Stage");
-        Assert.assertTrue(textPresent("as defined by the AJCC Cancer Staging Manual, 6th Ed."));
+        textPresent("as defined by the AJCC Cancer Staging Manual, 6th Ed.");
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("i.fa-edit")));
         goToCdeByName("Communication Contact Email Address java.lang.String");
-        Assert.assertTrue(textPresent("A modern Internet e-mail address (using SMTP)"));
+        textPresent("A modern Internet e-mail address (using SMTP)");
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("i.fa-edit")));
     }
     
@@ -31,15 +31,15 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Organization Curator Added"));
         Assert.assertTrue(textPresent("user1"));
         findElement(By.xpath("//div[2]/div/div[2]/div/div[2]/i")).click();
-        Assert.assertTrue(textPresent("Organization Curator Removed"));
-        Assert.assertTrue(findElement(By.cssSelector("BODY")).getText().indexOf("user1") < 0);
+        textPresent("Organization Curator Removed");
+        Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("user1"));
 
         findElement(By.linkText("Organizations Admins")).click();       
         new Select(findElement(By.name("admin.orgName"))).selectByVisibleText("caBIG");
         findElement(By.name("orgAdmin.username")).sendKeys("user1");
         findElement(By.id("addOrgAdmin")).click();
-        Assert.assertTrue(textPresent("Organization Administrator Added"));
-        Assert.assertTrue(textPresent("user1"));
+        textPresent("Organization Administrator Added");
+        textPresent("user1");
 
         int orgLength = driver.findElements(By.xpath("//div[starts-with(@id, 'orgAdmin-')]")).size();
         for (int i = 0; i < orgLength; i++) {
@@ -54,11 +54,8 @@ public class OrgAdminTest extends NlmCdeBaseTest {
                 }
             }
         }
-
-        
-//        findElement(By.xpath("//div[2]/div[2]/i")).click();
-        Assert.assertTrue(textPresent("Organization Administrator Removed"));
-        Assert.assertTrue(findElement(By.cssSelector("BODY")).getText().indexOf("user1") < 0);
+        textPresent("Organization Administrator Removed");
+        Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("user1"));
     }
     
     @Test
