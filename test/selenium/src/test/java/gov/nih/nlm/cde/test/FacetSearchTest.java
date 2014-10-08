@@ -151,7 +151,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("editStatus")).click();
         modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
-        Assert.assertTrue(textPresent("Standard CDEs cannot be edited by their stewards"));
+        Assert.assertTrue(textPresent("Standard elements cannot be edited by their stewards"));
         modalHere();
         findElement(By.id("saveRegStatus")).click();
         hangon(1);

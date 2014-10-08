@@ -89,29 +89,6 @@ public class ClassificationTest extends NlmCdeBaseTest {
         addClassificationMethod(new String[]{"NINDS","Disease"});
         List<WebElement> linkList = driver.findElements(By.cssSelector("li[id$='Disease']"));
         Assert.assertTrue(linkList.size() == 1);
-    }
-    
-    // Feature is Temporarily Disabled
-    //@Test
-    public void classifyEntireSearch() {
-        mustBeLoggedInAs(ninds_username, ninds_password);
-        goToCdeSearch();
-        findElement(By.id("li-blank-AECC")).click();
-        textPresent("NCI Standard Template CDEs (7)");
-        findElement(By.id("classifyAll")).click();
-        findElement(By.xpath("//span[text()='Population']")).click();
-        findElement(By.xpath("//div[@id='addClassification-Adult']//button")).click();
-        textPresent("Search result classified");
-        goToCdeByName("Noncompliant Reason Text");
-        findElement(By.linkText("Classification")).click();
-        textPresent("NINDS");
-        textPresent("Population");
-        textPresent("Adult");
-        goToCdeByName("Adverse Event Ongoing Event Indicator");
-        findElement(By.linkText("Classification")).click();
-        textPresent("NINDS");
-        textPresent("Population");
-        textPresent("Adult");        
-    }    
+    }     
 
 }

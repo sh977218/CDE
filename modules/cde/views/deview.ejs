@@ -30,7 +30,7 @@
             <%- include concepts.ejs %>
         </div>
         <div tab heading="{{tabs['status'].heading}}">
-            <%- include deStatus.ejs %>
+            <div ng-include="'/system/public/html/status.html'"></div>
         </div>
         <div tab heading="{{tabs['properties'].heading}}" active="tabs['properties'].active">
             <div ng-include="'/system/public/html/properties.html'"></div>

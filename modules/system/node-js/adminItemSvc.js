@@ -31,21 +31,28 @@ exports.save = function(req, res, dao) {
                 if (req.user.orgCurator.indexOf(item.stewardOrg.name) < 0
                         && req.user.orgAdmin.indexOf(item.stewardOrg.name) < 0
                         && !req.user.siteAdmin) {
-                    res.send(403, "not authorized");
+                    res.send(403, "Not authorized");
                 } else {
                     if ((item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard")
                             && !req.user.siteAdmin) {
-                        res.send("This record is already standard.");
+                        res.send(403, "This record is already standard.");
                     } else {
                         if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") &&
                                 (item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard")
                                 && !req.user.siteAdmin
                                 )
                         {
-                            res.send(403, "not authorized");
+                            res.send(403, "Not authorized");
                         } else {
-                            return dao.update(elt, req.user, function(err, response) {
-                                res.send(response);
+                            mongo_data_system.orgByName(item.stewardOrg.name, function(org) {
+                                var allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
+                                if (org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
+                                    res.send(403, "Not authorized");
+                                } else {
+                                    return dao.update(elt, req.user, function(err, response) {
+                                        res.send(response);
+                                    });
+                                }
                             });
                         }
                     }
@@ -274,8 +281,8 @@ exports.forkRoot = function(req, res, dao) {
     });
 };
 
-exports.bulkActionOnSearch = function(req, action, cb) {
-    elastic.elasticsearch(req.query, req.itemType, function(result) {
+exports.bulkActionOnSearch = function(req, action, cb) {    
+    elastic.elasticsearch(req.query, req.itemType, function(result) {    
         var eltsTotal = result.cdes.length;
         var eltsProcessed = 0;
         var ids = result.cdes.map(function(cde) {return cde._id;});        

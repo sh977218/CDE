@@ -73,6 +73,10 @@ exports.init = function(app, daoManager) {
         res.render("loginText", "system", {csrftoken: token});
     });
 
+    app.get('/csrf', express.csrf(), function(req, res) {
+        res.send(req.csrfToken());
+    });
+
     app.post('/login', express.csrf(), function(req, res, next) {
         // Regenerate is used so appscan won't complain
         req.session.regenerate(function(err) {  
@@ -89,6 +93,10 @@ exports.init = function(app, daoManager) {
             })(req, res, next);
         });
     });
+    
+    app.get('/login', exports.nocacheMiddleware, function(req, res) {
+        res.render('login', "system");
+    });
 
     app.get('/logout', function(req, res) {
         if (!req.session) {
@@ -97,7 +105,7 @@ exports.init = function(app, daoManager) {
         req.session.destroy(function (err) {
             req.logout();
             res.clearCookie('connect.sid');
-            res.redirect('/');
+            res.redirect('/#/login');
         });
         
     });
@@ -286,15 +294,6 @@ exports.init = function(app, daoManager) {
             res.send(403, "You are not authorized.");                    
         }
     });    
-    
-    app.get('/login', function(req, res, next) {
-        exports.nocacheMiddleware(req, res);
-        var csrfFunc = express.csrf();
-        csrfFunc(req, res, next);
-    }, function(req, res) {
-        var token = req.csrfToken();
-        res.render('login', "system", { csrftoken: token });
-    });
 
     app.get('/siteaccountmanagement', exports.nocacheMiddleware, function(req, res) {
         var ip = req.ip;
@@ -373,7 +372,6 @@ exports.init = function(app, daoManager) {
             else res.send(202, {error: {message: "Classification does not exists."}});
         });
     });    
-    
  
     app.post('/classifyEntireSearch', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
@@ -399,7 +397,6 @@ exports.init = function(app, daoManager) {
             else res.send(doc);
         });
     });
-
 
     app.post('/nccsPrimary', function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {

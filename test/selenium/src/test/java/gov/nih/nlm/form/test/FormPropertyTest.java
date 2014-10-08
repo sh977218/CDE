@@ -9,6 +9,11 @@ public class FormPropertyTest extends PropertyTest {
     public void goToEltByName(String name) {
         goToFormByName(name);
     }
+    
+    @Override
+    public void goToEltSearch() {
+        goToFormSearch();
+    }
 
     @Test
     public void addRemoveFormProperty() {
