@@ -136,7 +136,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
             }, 3000);
             $http({method: 'post', url: '/classifyEntireSearch', data: data}).success(function(data, status, headers, config) {
                 $timeout.cancel(timeout);            
-                if (status===200) $scope.addAlert("success", "Search result classified.");  
+                if (status===200) $scope.addAlert("success", "Elements classified.");  
                 else $scope.addAlert("danger", data.error.message);  
 
             }).error(function(data) {

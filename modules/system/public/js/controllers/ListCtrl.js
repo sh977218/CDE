@@ -220,9 +220,9 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
                 , itemType: $scope.module
             };
             $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
-                $scope.addAlert("success", "CDEs classified.");  
+                $scope.addAlert("success", "Elements classified.");  
             }).error(function() {
-                $scope.addAlert("danger", "CDEs were not classified completely!");  
+                $scope.addAlert("danger", "Elements were not classified completely!");  
             });  
         }, function () {
         });        
