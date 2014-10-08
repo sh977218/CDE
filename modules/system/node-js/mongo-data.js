@@ -14,6 +14,19 @@ conn.on('error', console.error.bind(console, 'connection error:'));
 conn.once('open', function callback () {
 	console.log('mongodb connection open');
     });    
+conn.on('error', function(error) {
+    console.error('Error in MongoDb connection: ' + error);
+    mongoose.disconnect();
+});
+
+conn.on('reconnected', function () {
+    console.log('MongoDB reconnected!');
+});
+conn.on('disconnected', function() {
+  console.log('MongoDB disconnected!');
+//  mongoose.connect(dbURI, {server:{auto_reconnect:true}});
+});
+  
 exports.mongoose_connection = conn;
 
 var gfs = Grid(conn.db, mongoose.mongo);
