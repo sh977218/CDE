@@ -10,7 +10,6 @@ var schemas = require('./schemas')
     , fs = require('fs')
     ;
 
-conn.on('error', console.error.bind(console, 'connection error:'));
 conn.once('open', function callback () {
 	console.log('mongodb connection open');
     });    
@@ -18,13 +17,12 @@ conn.on('error', function(error) {
     console.error('Error in MongoDb connection: ' + error);
     mongoose.disconnect();
 });
-
 conn.on('reconnected', function () {
     console.log('MongoDB reconnected!');
 });
 conn.on('disconnected', function() {
   console.log('MongoDB disconnected!');
-//  mongoose.connect(dbURI, {server:{auto_reconnect:true}});
+  conn = mongoose.createConnection(mongoUri);
 });
   
 exports.mongoose_connection = conn;
@@ -224,7 +222,12 @@ exports.switchToReplSet = function (replConfig, cb) {
         else {
             replConfig.version = conf.version + 1;        
             conn.db.admin().command({"replSetReconfig": replConfig}, function (err, doc) {
-                cb(err, doc);
+                if (err) {
+                    mongoose.disconnect();
+                    cb(err, doc);
+                } else {
+                    cb(err, doc);
+                }
             });
         }
     });   

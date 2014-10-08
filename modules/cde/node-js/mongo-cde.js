@@ -11,8 +11,10 @@ var mongoose = require('mongoose')
 var mongoUri = config.mongoUri;
 
 var conn = mongoose.createConnection(mongoUri);
-conn.on('error', console.error.bind(console, 'connection error:'));
-
+conn.on('disconnected', function() {
+  console.log('MongoDB disconnected!');
+  conn = mongoose.createConnection(mongoUri);
+});
 conn.once('open', function callback () {
     console.log('mongodb connection open');
 });    
