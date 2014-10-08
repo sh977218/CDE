@@ -1,4 +1,4 @@
-function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification) {
+function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, $timeout, Elastic) {
     $scope.module = "cde";
     
     $scope.$watch("userLoaded", function() {
@@ -81,6 +81,70 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification) 
             }
         });        
     };
+    
+    $scope.showClassifyEntireSearchModal = function (orgName, pathArray) {
+        var modalInstance = $modal.open({
+          templateUrl: '/template/system/addClassification',
+          controller: AddClassificationModalCtrl,
+          resolve: {
+                myOrgs: function() {
+                    return $scope.myOrgs;
+                }
+                , cde: function() {
+                    return {_id:null};
+                }
+                , addClassification: function() {
+                    return {
+                        addClassification: function(newClassification) {
+                            var oldClassification = {
+                                orgName: orgName
+                                , classifications: pathArray
+                            };
+                            $scope.classifyEntireSearch(oldClassification, newClassification);
+                        }
+                    };
+                }
+            }          
+        });
+
+        modalInstance.result.then(function () {
+            $scope.reload($routeParams);
+        });
+    };       
+
+    $scope.classifyEntireSearch = function(oldClassification, newClassification) {  
+        
+        var settings = {
+            resultPerPage: 1000000
+            , searchTerm: ""
+            , isSiteAdmin: null
+            , myOrgs: []
+            , selectedOrg: oldClassification.orgName
+            , selectedElements: oldClassification.classifications
+            , filter: {and: []}
+            , currentPage: 1
+        };
+        
+        Elastic.buildElasticQuery(settings, function(query) {
+            var data = {
+                query: query.query
+                , newClassification: newClassification
+                , itemType: $scope.module
+            };
+            var timeout = $timeout(function() {
+                $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
+            }, 3000);
+            $http({method: 'post', url: '/classifyEntireSearch', data: data}).success(function(data, status, headers, config) {
+                $timeout.cancel(timeout);            
+                if (status===200) $scope.addAlert("success", "Elements classified.");  
+                else $scope.addAlert("danger", data.error.message);  
+
+            }).error(function(data) {
+                $scope.addAlert("danger", "Task not performed completely!");  
+                $timeout.cancel(timeout);
+            });
+        }); 
+    };    
 }
 
 function RenameClassificationModalCtrl($scope, $modalInstance, classifName) {
