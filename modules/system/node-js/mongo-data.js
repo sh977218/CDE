@@ -205,16 +205,20 @@ exports.rsStatus = function (cb) {
 
 exports.rsConf = function(cb) {
     var db = localConn.db;
-    db.collection('system.replset').findOne(function(err, conf) {
+    db.collection('system.replset').findOne({}, function(err, conf) {
        cb(err, conf); 
     });
 };
 
-exports.toNccsPrimary = function (cb) {
-    localConn.db.collection('system.replset').findOne(function(err, conf) {
-        config.nccsPrimaryRepl.version = conf.version + 1;
-        conn.db.admin().command({"replSetReconfig": config.nccsPrimaryRepl}, function (err, doc) {
-            cb(err, doc);
-        });
+exports.switchToReplSet = function (replConfig, cb) {
+    localConn.db.collection('system.replset').findOne({}, function(err, conf) {
+        if (err) cb(err)
+        else {
+            replConfig.version = conf.version + 1;        
+            conn.db.admin().command({"replSetReconfig": replConfig}, function (err, doc) {
+                cb(err, doc);
+            });
+        }
     });   
 };
+

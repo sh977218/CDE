@@ -402,11 +402,17 @@ exports.init = function(app, daoManager) {
 
     // TODO move to post and add security
     app.get('/nccsPrimary', function(req, res) {
-        mongo_data_system.toNccsPrimary(function(err, doc) {
+        mongo_data_system.toNccsPrimary(config.nccsPrimaryRepl, function(err, doc) {
             if (err) res.send(500, err);
             else res.send(doc);
         });
     });
 
-
+    // TODO move to post and add security
+    app.get('/occsPrimary', function(req, res) {
+        mongo_data_system.toNccsPrimary(config.occsPrimaryRepl, function(err, doc) {
+            if (err) res.send(500, err);
+            else res.send(doc);
+        });
+    });
 };
