@@ -50,6 +50,7 @@ var winstonStream = {
 // all environments
 app.set('port', config.port || 3000);
 app.set('view engine', 'ejs');
+app.set('trust proxy', true);
 
 app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ico')));//TODO: MOVE TO SYSTEM
 
@@ -62,10 +63,22 @@ var sessionStore = new MongoStore({
 });
 
 app.use(flash());
-app.use(express.session({
-  secret: 'Kfji76R',
-  cookie: {httpOnly: true}
-}));
+
+//if (config.proxy === true) {
+//    console.log("SECURE !!!!")
+//    app.use(express.session({
+//      secret: 'Kfji76R',
+//      proxy: true,
+//      cookie: {httpOnly: true, secure: true}
+//    }));
+//} else {
+    console.log("SECURE: " + config.proxy)
+    app.use(express.session({
+      secret: 'Kfji76R',
+      proxy: config.proxy,
+      cookie: {httpOnly: true, secure: config.proxy}
+    }));   
+//} 
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -85,11 +98,6 @@ app.use(function(err, req, res, next){
         res.send(500, 'Something broke!');
     }
 });
-
-// development only
-if ('development' == app.get('env')) {
-    app.use(express.errorHandler());
-};
 
 app.set('views', path.join(__dirname, './modules'));
 
