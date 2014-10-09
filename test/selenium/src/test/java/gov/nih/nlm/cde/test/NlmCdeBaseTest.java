@@ -163,6 +163,7 @@ public class NlmCdeBaseTest {
     }
     
     protected void createClassificationName(String[] categories) {
+        scrollToTop();
         findElement(By.id("addClassification")).click(); 
         modalHere();
         for (int i=0; i < categories.length-1; i++) {

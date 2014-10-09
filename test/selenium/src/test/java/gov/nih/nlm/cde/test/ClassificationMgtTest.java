@@ -105,10 +105,13 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         Assert.assertTrue(linkList.size() == 1);        
         createClassificationName(new String[]{"_a","_a_a","_a_a_a"});
         createClassificationName(new String[]{"_a","_a_b"});
-        createClassificationName(new String[]{"_a","_a_c"});        
+        createClassificationName(new String[]{"_a","_a_c"});          
         driver.findElement(By.cssSelector("[id='classification-_a,_a_a'] [title=\"Remove\"]")).click();
+        // CDE-317: The following line is here because of bug mentioned in CDE-317.
+        scrollTo("10000");
         driver.findElement(By.cssSelector("[id='classification-_a,_a_a'] [title=\"OK\"]")).click();        
         checkElementDoesNotExistByCSS("[id='removeClassification-_a,_a_a']");
+        scrollTo("0");
     }
     
     @Test
@@ -135,4 +138,26 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         hangon(1);
         Assert.assertTrue(textPresent("Spinal Cord Injuries"));
     }
+    
+    @Test
+    public void classifyEntireSearch() {
+        mustBeLoggedInAs(ninds_username, ninds_password);
+        gotoClassifMgt(); 
+        createClassificationName(new String[]{"Classification Transfer"});
+        createClassificationName(new String[]{"Classification Transfer","Child Classification"});
+        findElement(By.xpath("//li[@id=\"classification-Disease,Duchenne Muscular Dystrophy/Becker Muscular Dystrophy\"]//a[@class=\"classifyAll\"]")).click();
+        findElement(By.xpath("//div[@id='addClassificationModalBody']//span[text()='Classification Transfer']")).click();
+        findElement(By.xpath("//div[@id='addClassification-Child Classification']//button")).click();        
+        textPresent("Elements classified");        
+        goToCdeByName("Gastrointestinal therapy water flush status");
+        findElement(By.linkText("Classification")).click();
+        textPresent("NINDS");
+        textPresent("Population");
+        textPresent("Adult");
+        goToCdeByName("Gastrointestinal therapy feed tube type");
+        findElement(By.linkText("Classification")).click();
+        textPresent("NINDS");
+        textPresent("Population");
+        textPresent("Adult");        
+    }      
 }

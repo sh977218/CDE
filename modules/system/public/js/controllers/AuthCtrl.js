@@ -1,4 +1,13 @@
-function AuthCtrl($scope, Auth, $window) {
+function AuthCtrl($scope, Auth, $window, $http) {
+    
+    $scope.getCsrf = function() {
+        $http.get('/csrf').then(function(res) {
+            $scope.csrf = res.data;
+        });
+    };
+    
+    $scope.getCsrf();
+    
     $scope.login = function() {
         Auth.login({
                 username: $scope.username,
@@ -9,11 +18,13 @@ function AuthCtrl($scope, Auth, $window) {
                 if (res === "OK") {
                     $window.location.href = "/";
                 } else {
-                    $scope.addAlert("success", res);
+                    $scope.addAlert("danger", res.data);
+                    $scope.getCsrf();
                 }
               },
             function(err) {
                 $scope.addAlert("danger", "Failed to login.");
+                $scope.getCsrf();
             });
     };
 }
