@@ -368,10 +368,10 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
         try {
-            findElement(By.xpath("//button[text() = 'Log in']")).click();
+            findElement(By.xpath("//button[text() = 'Log In']")).click();
             findElement(By.linkText(username));            
         } catch (NoSuchElementException e) {
-            findElement(By.xpath("//button[text() = 'Log in']")).click();
+            findElement(By.xpath("//button[text() = 'Log In']")).click();
             findElement(By.linkText(username));
         }
     }
