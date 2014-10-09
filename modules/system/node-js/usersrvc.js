@@ -11,7 +11,7 @@ exports.isAdminOf = function(user, orgName){
     if (!user) return false;
     return user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
 };   
-    
+
 exports.addSiteAdmin = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {
         if (!found) {
@@ -200,23 +200,4 @@ exports.removeOrgCurator = function(req, res) {
             }
         }
     });  
-};
-
-exports.transferSteward = function(req, res) {
-    if(req.isAuthenticated() && isAdminOf(req.user, req.body.from) && isAdminOf(req.user, req.body.to)) {
-        daoManager.getDaoList().forEach(function(dao) {
-            dao.transferSteward(req.body.from, req.body.to, function(err, result) {
-                if(err || Number.isNaN(result)) {
-                    return res.send(400, "Error transferring steward. Please try again.");
-                }
-                if(result===0) {
-                    return res.send(204, "There are no elements to transfer.");
-                }
-                return res.send(200, result + " elements transferred."); 
-            });
-        });
-    } else {
-        res.send(403, "Please login first.");
-    }
-    
 };

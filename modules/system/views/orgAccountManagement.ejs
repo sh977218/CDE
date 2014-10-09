@@ -41,21 +41,21 @@
                 <span class="add-on" id="addOrgCurator" ng-click="addOrgCurator()">+</span>
             </div>
         </tab>
-        <tab heading="CDE Management">
-            <form class="form-inline pt30" role="form" id="cdesTransferStewardForm" name="cdesTransferStewardForm" novalidate>
-                Transfer CDEs owned by
+        <tab heading="CDE & Form Management">
+            <form class="form-inline pt30" role="form" id="transferStewardForm" name="transferStewardForm" novalidate>
+                Transfer CDEs and forms owned by
                 <div class="form-group">
-                    <select id="cdesTransferStewardForm.from" name="cdesTransferStewardForm_from" class="form-control" ng-model="cdesTransferSteward.from" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
+                    <select id="transferSteward_from" name="transferSteward_from" class="form-control" ng-model="transferStewardObj.from" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
                         <option value="">select organization</option>
                     </select>
                 </div>
                 to 
                 <div class="form-group">
-                    <select id="cdesTransferStewardForm.to" name="cdesTransferStewardForm_to" class="form-control" ng-model="cdesTransferSteward.to" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
+                    <select id="transferSteward_to" name="transferSteward_to" class="form-control" ng-model="transferStewardObj.to" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
                         <option value="">select organization</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-success" id="transferCDEs" ng-click="cdesTransferStewardFunc()" ng-disabled="cdesTransferStewardForm.cdesTransferStewardForm_from.$error.required || cdesTransferStewardForm.cdesTransferStewardForm_to.$error.required">Transfer CDEs</button>
+                <button type="submit" class="btn btn-success" id="transferCDEs" ng-click="transferStewardFunc()" ng-disabled="transferStewardForm.transferSteward_from.$error.required || transferStewardForm.transferSteward_to.$error.required">Transfer Now</button>
             </form>
         </tab>
     </tabset>

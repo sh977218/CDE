@@ -388,7 +388,7 @@ exports.init = function(app) {
     });
         
     app.post('/transferSteward', function(req, res) {
-        usersvc.transferSteward(req, res);
+        orgsvc.transferSteward(req, res);
     });
 
 };

@@ -72,6 +72,14 @@ public class OrgAdminTest extends NlmCdeBaseTest {
     @Test
     public void cdesTransferSteward() {
         mustBeLoggedInAs(transferStewardUser_username, password);
+        
+        // create cdes
+        
+        
+        // create forms
+        
+        
+        
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
         findElement(By.linkText("CDE Management")).click();

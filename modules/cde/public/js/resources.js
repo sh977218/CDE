@@ -85,8 +85,8 @@ angular.module('resources', ['ngResource'])
           , updateOrg: function(org, success, error) {
               $http.post('/updateOrg', org).success(success).error(error);
           }
-          , cdesTransferSteward: function(cdesTransferStewardObj, successMsg, errorMsg) {
-              $http.post('/cdesTransferSteward', cdesTransferStewardObj).success(successMsg).error(errorMsg);
+          , transferSteward: function(transferStewardObj, successMsg, errorMsg) {
+              $http.post('/transferSteward', transferStewardObj).success(successMsg).error(errorMsg);
           }
         };
     })
