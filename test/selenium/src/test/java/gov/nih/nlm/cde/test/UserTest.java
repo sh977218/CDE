@@ -20,6 +20,9 @@ public class UserTest extends NlmCdeBaseTest {
         }
         
         enterUsernamePasswordSubmit("bad-username", "bad-password", "Failed to login");
+    
+        enterUsernamePasswordSubmit(ctepCurator_username, password, "ctepCurator");
+    
     }
     
     @Test
@@ -47,7 +50,7 @@ public class UserTest extends NlmCdeBaseTest {
         hangon(4);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
-        Assert.assertTrue(textPresent("Patient Eligibility Ind-2"));
+        textPresent("Patient Eligibility Ind-2");
         
         // now see 10 other CDEs
         goToCdeByName("Specimen Inflammation Change Type");

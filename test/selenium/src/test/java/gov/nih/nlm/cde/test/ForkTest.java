@@ -7,11 +7,11 @@ import org.testng.annotations.Test;
 
 public class ForkTest extends NlmCdeBaseTest {
     
-    private void addFork(String changeNote) {
+    private void addFork(String changeNote, String org) {
         findElement(By.id("openCreateFork")).click();
         modalHere();
         findElement(By.name("selection.changeNote")).sendKeys(changeNote);
-        new Select(driver.findElement(By.id("selection.org"))).selectByVisibleText("CTEP");
+        new Select(driver.findElement(By.id("selection.org"))).selectByVisibleText(org);
         findElement(By.id("submit")).click();
         modalGone();
         textNotPresent("This Element has no forks");
@@ -35,7 +35,7 @@ public class ForkTest extends NlmCdeBaseTest {
         Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']")).size(), 0);
 
         findElement(By.linkText("Forks")).click();
-        addFork("forking a st cde");
+        addFork("forking a st cde", "CTEP");
 
         findElement(By.id("fork-0")).click();
         switchTab(1);
@@ -72,7 +72,7 @@ public class ForkTest extends NlmCdeBaseTest {
         goToCdeByName("Other Group Patient Identifier Number");
         findElement(By.linkText("Forks")).click();
         textPresent("This Element has no forks");
-        addFork("Fork will be retired");
+        addFork("Fork will be retired", "CTEP");
         
         findElement(By.id("fork-0")).click();
         switchTab(1);
@@ -90,7 +90,7 @@ public class ForkTest extends NlmCdeBaseTest {
         findElement(By.linkText("Forks")).click();
         textPresent("This Element has no forks");
 
-        addFork("fork will be merged");
+        addFork("fork will be merged", "CTEP");
         findElement(By.id("fork-0")).click();
         switchTab(1);
 
