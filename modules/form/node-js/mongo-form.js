@@ -4,7 +4,9 @@ var mongoose = require('mongoose')
     , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
     , shortid = require("shortid") 
     ;
-    
+
+exports.name = "forms";
+
 var mongoUri = config.mongoUri;
 
 var conn = mongoose.createConnection(mongoUri);
@@ -86,7 +88,7 @@ exports.query = function(query, callback) {
 
 exports.transferSteward = function(from, to, callback) {
     Form.update({'stewardOrg.name':from},{$set:{'stewardOrg.name':to}},{multi:true}).exec(function(err, result) {
-        callback(err, 'forms', result);
+        callback(err, result);
     });
 };
 

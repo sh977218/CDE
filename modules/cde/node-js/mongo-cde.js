@@ -8,6 +8,8 @@ var mongoose = require('mongoose')
     , shortid = require("shortid") 
 ;
 
+exports.name = "CDEs";
+        
 var mongoUri = config.mongoUri;
 
 var conn = mongoose.createConnection(mongoUri);
@@ -392,6 +394,6 @@ exports.query = function(query, callback) {
 
 exports.transferSteward = function(from, to, callback) {
     DataElement.update({'stewardOrg.name':from},{$set:{'stewardOrg.name':to}},{multi:true}).exec(function(err, result) {
-        callback(err, 'CDEs', result);
+        callback(err, result);
     });
 };
