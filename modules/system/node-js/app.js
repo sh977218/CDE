@@ -96,7 +96,7 @@ exports.init = function(app, daoManager) {
     });
     
     app.get('/login', exports.nocacheMiddleware, function(req, res) {
-        console.log(JSON.stringify(req));
+        console.log(req);
         res.render('login', "system");
     });
 
