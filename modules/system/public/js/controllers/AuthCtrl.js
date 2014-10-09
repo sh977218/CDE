@@ -9,11 +9,11 @@ function AuthCtrl($scope, Auth, $window) {
                 if (res === "OK") {
                     $window.location.href = "/";
                 } else {
-                    $scope.message = res;
+                    $scope.addAlert("success", res);
                 }
               },
             function(err) {
-                $scope.message = "Failed to login";
+                $scope.addAlert("danger", "Failed to login.");
             });
     };
 }
