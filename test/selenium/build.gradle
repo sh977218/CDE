@@ -37,6 +37,6 @@ test {
 
     testLogging {
         // Uncomment to display system.out and system.err messages
-//        events "standardOut", "standardError"
+        events "standardOut", "standardError"
     }
 }

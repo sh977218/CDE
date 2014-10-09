@@ -167,7 +167,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         hangon(.5);
         Assert.assertEquals("cabigAdmin", findElement(By.id("dd_username_0")).getText());
-        Assert.assertEquals("[\"caBIG\"", findElement(By.id("dd_orgAdmin_0")).getText());
+        Assert.assertEquals("[\"caBIG\"]", findElement(By.id("dd_orgAdmin_0")).getText());
         Assert.assertEquals("N/A", findElement(By.id("dd_siteAdmin_0")).getText());
 
         findElement(By.name("search")).clear();            
@@ -175,7 +175,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         hangon(.5);
         Assert.assertEquals("nlm", findElement(By.id("dd_username_0")).getText());
-        Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\"]", findElement(By.id("dd_orgAdmin_0")).getText());
+        Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\"]", findElement(By.id("dd_orgAdmin_0")).getText());
         Assert.assertEquals("true", findElement(By.id("dd_siteAdmin_0")).getText());
     }
     
