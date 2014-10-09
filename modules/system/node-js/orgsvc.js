@@ -34,20 +34,24 @@ exports.updateOrg = function(req, res) {
 };
 
 exports.transferSteward = function(req, res) {
-    var cdeStatusCode = '';
-    var formStatusCode = '';
-    var cdeResMsg = '';
-    var formResMsg = '';
+
+    var results = [];
+//    var cdeStatusCode = '';
+//    var formStatusCode = '';
+//    var cdeResMsg = '';
+//    var formResMsg = '';
     
     if(req.isAuthenticated() && usersrvc.isAdminOf(req.user, req.body.from) && usersrvc.isAdminOf(req.user, req.body.to)) {
         daoManager.getDaoList().forEach(function(dao) {
             dao.transferSteward(req.body.from, req.body.to, function(err, eleType, result) {
-                var tempStatusCode = '';
-                var tempResMsg = '';
+
+//                var tempStatusCode = '';
+//                var tempResMsg = '';
                 
                 if(err || Number.isNaN(result)) {
-                    tempStatusCode = 400;
-                    tempResMsg = 'Error transferring ' + eleType + ' from ' + req.body.from + ' to ' + req.body.to + '. Please try again.';
+                    results.push({status: 400, message: 'Error transferring ' + eleType + ' from ' + req.body.from + ' to ' + req.body.to + '. Please try again.'});
+//                    tempStatusCode = 400;
+//                    tempResMsg = 'Error transferring ' + eleType + ' from ' + req.body.from + ' to ' + req.body.to + '. Please try again.';
                 } else if(result===0) {
                     tempStatusCode = 200;
                     tempResMsg = 'There are no ' + eleType + ' to transfer.';
@@ -56,17 +60,20 @@ exports.transferSteward = function(req, res) {
                     tempResMsg = result + ' ' + eleType + ' transferred.';
                 }
                 
-                if(eleType==='CDEs') {
-                    cdeStatusCode = tempStatusCode;
-                    cdeResMsg = tempResMsg;
-                } else {
-                    formStatusCode = tempStatusCode;
-                    formResMsg = tempResMsg;
+//                if(eleType==='CDEs') {
+//                    cdeStatusCode = tempStatusCode;
+//                    cdeResMsg = tempResMsg;
+//                } else {
+//                    formStatusCode = tempStatusCode;
+//                    formResMsg = tempResMsg;
+//                }
+
+                if (results.length === daoManager.getDaoList().length) {
+                    return res.send(cdeStatusCode===400||formStatusCode===400 ? 400 : 200, cdeResMsg + ' ' + formResMsg);                    
                 }
-                
-                if(cdeStatusCode!=='' && formStatusCode!=='') {
+//                if(cdeStatusCode!=='' && formStatusCode!=='') {
                     return res.send(cdeStatusCode===400||formStatusCode===400 ? 400 : 200, cdeResMsg + ' ' + formResMsg);
-                }
+//                }
             });
         });
     } else {
