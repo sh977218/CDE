@@ -1,33 +1,16 @@
-<div class="container-fluid">
-<div class="row">
-    <div class="col-md-3">
-        <div>{{message}}</div>  
-        <div><b>Please use your UMLS account to login</b><br/><br/></div>
-        <form role="form" ng-submit="login()">
-            <fieldset>
-                <div class="form-group">
-                    <label>Username:</label>
-                    <input  class="form-control" type="text" ng-model="username" id="uname"/>
-                </div>
-                <div class="form-group">
-                    <label>Password:</label>
-                    <input  class="form-control" type="password" ng-model="password" id="passwd"/><br>
-                </div>
-                <input type="hidden" name="_csrf" ng-model="csrf"/>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-default">Log in</button>
-                </div>
-            </fieldset>
-            <p>Don't have a UMLS license/account?<br/>
-                <a href="https://uts.nlm.nih.gov//license.html" class="vsloginLink" target="_blank">
-                    <span  class="vsloginLink">Request One Now</span></a>
-                <br/> 
-                <a href="https://uts.nlm.nih.gov/license.html#emailUsername" class="vsloginLink" target="_blank">
-                    <span  class="vsloginLink">Forgot Username</span></a>
-                <br/>        
-                <a href="https://uts.nlm.nih.gov/license.html#emailTemporaryPassword" class="vsloginLink" target="_blank">
-                    <span  class="vsloginLink">Forgot Password</span></a> </p>
-        </form>
-    </div>
-</div>
+<div class="container">
+    <form class="form-signin" role="form" ng-submit="login()">
+        <h2 class="form-signin-heading">Please Log In</h2>
+        <p>Note: Please log in with your UMLS account. Don't have a UMLS account? <a href="https://uts.nlm.nih.gov//license.html" class="vsloginLink" target="_blank"><span  class="vsloginLink">Request One Now</span></a></p>
+        
+        <input id="uname" type="text" class="form-control" placeholder="Username" ng-model="username" autofocus="">
+        <input id="passwd" type="password" class="form-control" placeholder="Password" ng-model="password">
+        <input type="hidden" name="_csrf" ng-model="csrf">
+        
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
+        <br/>
+        <a href="https://uts.nlm.nih.gov/license.html#emailUsername" class="vsloginLink" target="_blank"><span  class="vsloginLink">Forget your username?</span></a>
+        <br/>        
+        <a href="https://uts.nlm.nih.gov/license.html#emailTemporaryPassword" class="vsloginLink" target="_blank"><span  class="vsloginLink">Forget your password?</span></a>
+    </form>
 </div>
