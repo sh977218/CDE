@@ -64,21 +64,11 @@ var sessionStore = new MongoStore({
 
 app.use(flash());
 
-//if (config.proxy === true) {
-//    console.log("SECURE !!!!")
-//    app.use(express.session({
-//      secret: 'Kfji76R',
-//      proxy: true,
-//      cookie: {httpOnly: true, secure: true}
-//    }));
-//} else {
-    console.log("SECURE: " + config.proxy)
-    app.use(express.session({
-      secret: 'Kfji76R',
-      proxy: config.proxy,
-      cookie: {httpOnly: true, secure: config.proxy}
-    }));   
-//} 
+app.use(express.session({
+  secret: 'Kfji76R',
+  proxy: config.proxy,
+  cookie: {httpOnly: true, secure: config.proxy}
+}));   
 app.use(passport.initialize());
 app.use(passport.session());
 
