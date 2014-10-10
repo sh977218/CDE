@@ -10,6 +10,10 @@ logConn.on('error', console.error.bind(console, 'connection error:'));
 logConn.once('open', function callback () {
 	console.log('logger connection open');
     });    
+logConn.on('disconnected', function() {
+  console.log('MongoDB disconnected!');
+  logConn = mongoose.createConnection(mongoUri);
+});    
     
 // w = 0 means write very fast. It's ok if it fails.   
 // capped means no more than 5 gb for that collection.
