@@ -450,7 +450,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
         findElement(By.cssSelector("button.btn")).click();
-        Assert.assertTrue(textPresent(checkText));
+        textPresent(checkText);
     }
     
     protected void switchTabAndClose(int i) {

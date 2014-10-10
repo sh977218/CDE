@@ -23,7 +23,7 @@ function AuthCtrl($scope, Auth, $window, $http) {
                 }
               },
             function(err) {
-                $scope.addAlert("danger", "Failed to login.");
+                $scope.addAlert("danger", "Failed to log in.");
                 $scope.getCsrf();
             });
     };

@@ -19,7 +19,7 @@ public class UserTest extends NlmCdeBaseTest {
             findElement(By.linkText("Log In")).click();            
         }
         
-        enterUsernamePasswordSubmit("bad-username", "bad-password", "Failed to login");
+        enterUsernamePasswordSubmit("bad-username", "bad-password", "Failed to log in.");
     
         enterUsernamePasswordSubmit(ctepCurator_username, ctepCurator_password, "ctepCurator");
     
