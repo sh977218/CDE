@@ -12,7 +12,7 @@ logConn.once('open', function callback () {
     });    
 logConn.on('disconnected', function() {
   console.log('MongoDB disconnected!');
-  logConn = mongoose.createConnection(mongoUri);
+  logConn = mongoose.createConnection(mongoLogUri);
 });    
     
 // w = 0 means write very fast. It's ok if it fails.   
