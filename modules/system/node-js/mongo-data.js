@@ -21,8 +21,10 @@ conn.on('reconnected', function () {
     console.log('MongoDB reconnected!');
 });
 conn.on('disconnected', function() {
-  console.log('MongoDB disconnected!');
-  conn = mongoose.createConnection(mongoUri);
+  console.log('MongoDB disconnected!, reconnecting in 10 seconds');
+  setTimeout(10 * 1000, function() {
+    conn = mongoose.createConnection(mongoUri);  
+  });
 });
   
 exports.mongoose_connection = conn;

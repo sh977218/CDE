@@ -13,6 +13,12 @@ conn.on('error', console.error.bind(console, 'connection error:'));
 conn.once('open', function callback () {
     console.log('mongodb connection open');
 });    
+conn.on('disconnected', function() {
+  console.log('MongoDB disconnected!, reconnecting in 10 secs');
+  setTimeout(10 * 1000, function() {
+    conn = mongoose.createConnection(mongoUri);  
+  });
+});
 
 var Form = conn.model('Form', schemas.formSchema);
 
