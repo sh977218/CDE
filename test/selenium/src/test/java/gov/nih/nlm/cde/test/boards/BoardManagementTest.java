@@ -1,6 +1,5 @@
 package gov.nih.nlm.cde.test.boards;
 
-import static gov.nih.nlm.cde.test.boards.BoardTest.boardUser;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -11,7 +10,7 @@ public class BoardManagementTest extends BoardTest {
     
     @Test
     public void publicVsPrivateBoards() {
-        mustBeLoggedInAs(boardUser, boardPassword);
+        mustBeLoggedInAs(boardUser, password);
         String boardName = "Public Board";
         String boardDef = "This board will be public";
         
@@ -32,7 +31,7 @@ public class BoardManagementTest extends BoardTest {
         closeAlert();
         textNotPresent(boardDef);
         
-        loginAs(ctepCurator_username, ctepCurator_password);
+        loginAs(ctepCurator_username, password);
         driver.get(baseUrl + "/#/board/" + boardId);
         // logged in as someone else, I can't see
         textPresent("Board not found");
@@ -41,7 +40,7 @@ public class BoardManagementTest extends BoardTest {
         
         logout();
         
-        loginAs(boardUser, boardPassword);
+        loginAs(boardUser, password);
         makePublic(boardName);
         
         logout();
@@ -50,7 +49,7 @@ public class BoardManagementTest extends BoardTest {
         // Now I can see;
         textPresent("MUGA");
 
-        loginAs(boardUser, boardPassword);
+        loginAs(boardUser, password);
         gotoMyBoards();
         int length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
@@ -68,14 +67,14 @@ public class BoardManagementTest extends BoardTest {
         // private again, I can't see
         Assert.assertTrue(textNotPresent("Not a very useful"));
 
-        loginAs(boardUser, boardPassword);
+        loginAs(boardUser, password);
         
         removeBoard(boardName);
     }
         
     @Test
     public void removeBoard() {
-        mustBeLoggedInAs(boardUser, boardPassword);
+        mustBeLoggedInAs(boardUser, password);
         createBoard("Remove me board", "Not a very useful board");
         removeBoard("Remove me board");
         goToCdeSearch();
@@ -85,7 +84,7 @@ public class BoardManagementTest extends BoardTest {
     
     @Test
     public void cdeNumbIncrement() {
-        mustBeLoggedInAs(boardUser, boardPassword);
+        mustBeLoggedInAs(boardUser, password);
         String boardName = "Number Increment Board";
         goToCdeSearch();
         createBoard(boardName, "Number Increment Definition");
@@ -117,7 +116,7 @@ public class BoardManagementTest extends BoardTest {
     
     @Test
     public void iHaveNoBoard() {
-        mustBeLoggedInAs("boarduser2", boardPassword);
+        mustBeLoggedInAs(boarduser2_username, password);
         String cdeName = "Specimen Array";
 
         goToCdeSearch();
@@ -131,7 +130,7 @@ public class BoardManagementTest extends BoardTest {
     
     @Test
     public void editBoard() {
-        mustBeLoggedInAs("boarduserEdit", boardPassword);
+        mustBeLoggedInAs(boarduserEdit_username, password);
         createBoard("Edit Board", "Test");
         gotoMyBoards();
         String mod = findElement(By.id("dd_mod")).getText();
@@ -158,7 +157,7 @@ public class BoardManagementTest extends BoardTest {
     @Test
     public void searchBoard() {
         hangon(.5);
-        mustBeLoggedInAs(boardUser, boardPassword);
+        mustBeLoggedInAs(boardUser, password);
         String pubBlood = "Public Blood Board";
         String privBlood = "Private Blood Board";
         String pubSmoking = "Public Smoking Board";
@@ -190,7 +189,7 @@ public class BoardManagementTest extends BoardTest {
     @Test
     public void cdeBoards() {
         hangon(.5);
-        mustBeLoggedInAs("boarduser1", boardPassword);
+        mustBeLoggedInAs(boarduser1_username, password);
         String board1 = "First CDE Board";
         String board2 = "Second CDE Board";
         
@@ -223,7 +222,7 @@ public class BoardManagementTest extends BoardTest {
     
     @Test
     public void pagination() {
-        mustBeLoggedInAs(ninds_username, ninds_password);
+        mustBeLoggedInAs(ninds_username, password);
         gotoMyBoards();
         findElement(By.linkText("View Board")).click();
         findElement(By.linkText("30")).click();

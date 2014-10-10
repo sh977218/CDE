@@ -21,13 +21,13 @@ public class UserTest extends NlmCdeBaseTest {
         
         enterUsernamePasswordSubmit("bad-username", "bad-password", "Failed to log in.");
     
-        enterUsernamePasswordSubmit(ctepCurator_username, ctepCurator_password, "ctepCurator");
+        enterUsernamePasswordSubmit(ctepCurator_username, password, "ctepCurator");
     
     }
     
     @Test
     public void curatorProfile() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         Assert.assertEquals("ctepCurator", findElement(By.id("dd_username")).getText());
@@ -38,14 +38,14 @@ public class UserTest extends NlmCdeBaseTest {
 
     @Test
     public void regUserCannotCreate() {
-        mustBeLoggedInAs("reguser", "pass");
+        mustBeLoggedInAs(reguser_username, password);
         findElement(By.id("username_link"));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Create")));
     }
     
     @Test
     public void viewingHistory() {
-        mustBeLoggedInAs(history_username, history_password);
+        mustBeLoggedInAs(history_username, password);
         goToCdeByName("Patient Eligibility Ind-2");
         hangon(4);
         findElement(By.id("username_link")).click();

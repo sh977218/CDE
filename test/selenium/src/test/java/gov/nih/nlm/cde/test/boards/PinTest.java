@@ -8,7 +8,7 @@ public class PinTest extends BoardTest {
     
     @Test
     public void pin() {
-        mustBeLoggedInAs(pinUser, pass);
+        mustBeLoggedInAs(pinUser, password);
         goToCdeSearch();
         createBoard("Blood Board", "Collect blood related cdes here");
         createBoard("Smoking Board", "Collect Smoking CDEs here");
@@ -40,7 +40,7 @@ public class PinTest extends BoardTest {
 
     @Test
     public void noDoublePin() {
-        mustBeLoggedInAs(pinUser, pass);
+        mustBeLoggedInAs(pinUser, password);
         goToCdeSearch();
         String cdeName = "Specimen Array";
         String boardName = "Double Pin Board";
@@ -65,7 +65,7 @@ public class PinTest extends BoardTest {
     
     @Test
     public void unpin() {
-        mustBeLoggedInAs(pinUser, pass);
+        mustBeLoggedInAs(pinUser, password);
         goToCdeSearch();
         createBoard("Unpin Board", "test");
         pinTo("Volumetric", "Unpin Board");
@@ -81,7 +81,7 @@ public class PinTest extends BoardTest {
     
     @Test
     public void pinAll() {
-        mustBeLoggedInAs(ninds_username, ninds_password);
+        mustBeLoggedInAs(ninds_username, password);
         goToCdeSearch();
         createBoard("Cerebral Palsy > Public Review", "CDEs to be use for Cerebral Palsy");        
         goToCdeSearch();

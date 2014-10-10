@@ -11,7 +11,7 @@ public class SectionTest extends BaseFormTest {
             
     @Test
     public void createForm() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
 
         String formName = "Create Form Test Name";
         String formDef = "Fill out carefully!";
@@ -76,7 +76,7 @@ public class SectionTest extends BaseFormTest {
     
     @Test
     public void createEditSection() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         String formName = "Section Test Form";
         createForm(formName, "Form def", "1.0", "CTEP");
 
@@ -143,7 +143,7 @@ public class SectionTest extends BaseFormTest {
         Dimension currentWindowSize = getWindowSize();
         resizeWindow(1024, 1150);
         
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         String formName = "Question Layout Test Form";
         String formDef = "This form is used to test the permission of tests";
         String formV = "0.1";
@@ -188,7 +188,7 @@ public class SectionTest extends BaseFormTest {
         Dimension currentWindowSize = getWindowSize();
         resizeWindow(1024, 1150);
         
-        mustBeLoggedInAs(ninds_username, ninds_password);
+        mustBeLoggedInAs(ninds_username, password);
         String formName = "Form Permission Test";
         
         gotoPublicForms();
@@ -202,7 +202,7 @@ public class SectionTest extends BaseFormTest {
         textPresent(sec1);
         saveForm();
         
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         gotoPublicForms();
         searchForm(formName);
         findElement(By.linkText(formName)).click();

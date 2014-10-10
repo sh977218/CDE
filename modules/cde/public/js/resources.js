@@ -85,6 +85,9 @@ angular.module('resources', ['ngResource'])
           , updateOrg: function(org, success, error) {
               $http.post('/updateOrg', org).success(success).error(error);
           }
+          , transferSteward: function(transferStewardObj, successMsg, errorMsg) {
+              $http.post('/transferSteward', transferStewardObj).success(successMsg).error(errorMsg);
+          }
         };
     })
     .factory("LinkToVsac", function($resource) {

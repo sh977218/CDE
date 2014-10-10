@@ -13,7 +13,7 @@ public class CdeRegStatusTest extends RegStatusTest {
     // TODO - Cannot get this test to pass. Can't figure out why.
 //    @Test
     public void administrativeStatus() {
-        loginAs(ctepCurator_username, ctepCurator_password);
+        loginAs(ctepCurator_username, password);
         goToCdeByName("Small Cell Lung Carcinoma Invasion Status");
         findElement(By.linkText("Status")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("dd_adminStatus")));

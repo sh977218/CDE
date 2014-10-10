@@ -11,7 +11,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
  
     @Test
     public void editCde() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Mediastinal Lymph Node Physical Examination Specify";
         goToCdeByName(cdeName);
         findElement(By.cssSelector("i.fa-edit")).click();
@@ -57,7 +57,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeHistoryComplement() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");      
         
         findElement(By.linkText("Naming")).click();
@@ -113,7 +113,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
     
     @Test
     public void editConcepts() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Patient Photograph Malignant";
         
         goToCdeByName(cdeName);
@@ -169,7 +169,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
     
     @Test
     public void changeDefinitionFormat() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
 
         String cdeName = "INSS";
         goToCdeByName(cdeName);
@@ -197,7 +197,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test
     public void doNotSaveIfPendingChanges() {   
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "ATRA Agent Current Report Period Administered Ind-2";
         goToCdeByName(cdeName);
         findElement(By.cssSelector("i.fa-edit")).click();
