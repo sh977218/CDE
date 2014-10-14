@@ -178,7 +178,7 @@ body {
 
 .semi-transparent { opacity: 0.5; }
 
-/* Disable modal slide down effect.  Useful during testing. */
+/* Disable modal slide down effect */
 .modal.fade .modal-dialog 
 {
     -moz-transform: none !important;
@@ -187,6 +187,7 @@ body {
     -webkit-transform: none !important;
     transform: none !important;
 }
+/***********************************/
 
 dt.formViewDetails {
     width: auto;
@@ -258,6 +259,7 @@ dd.formViewDetails {
     margin-left: 120px;
 }
 
+/* Style for log in page */
 .form-signin {
   max-width: 330px;
   padding: 15px;
@@ -268,7 +270,7 @@ dd.formViewDetails {
   margin-bottom: 10px;
 }
 .form-signin .btn {
-  margin-left: 0;
+  margin: 15px 0 10px 0;
 }
 
 .form-signin .form-control {
@@ -283,13 +285,13 @@ dd.formViewDetails {
 .form-signin .form-control:focus {
   z-index: 2;
 }
-.form-signin input[type="email"] {
+.form-signin input[type="text"] {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
 .form-signin input[type="password"] {
-  margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+/*************************/

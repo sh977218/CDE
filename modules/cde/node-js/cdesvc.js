@@ -94,7 +94,7 @@ exports.save = function (req, res) {
 };  
 
 exports.name_autocomplete = function(name, res) {
-    if (name == "undefined") {
+    if (name === "undefined") {
         res.send("");
     } else {
         mongo_data.name_autocomplete(name, function(err, nameList) {
@@ -108,8 +108,8 @@ exports.name_autocomplete = function(name, res) {
 };
 
 exports.name_autocomplete_form = function(req, res) {
-    var search = req.query["search"]    
-    if (search == "undefined" || search.name == "undefined") {
+    var search = req.query["search"];    
+    if (search === "undefined" || search.name === "undefined") {
         res.send("");
     } else {
         mongo_data.name_autocomplete_form(JSON.parse(search), function(err, nameList) {
@@ -144,7 +144,7 @@ exports.setDiff2 = function(dataElement, priorDe, property, diff) {
 };
 
 exports.diff = function(req, res) {
-    if (req.params.deId == "undefined") {
+    if (req.params.deId === "undefined") {
         res.send("Please specify an identifier as input.");
     } else {
         mongo_data.byId(req.params.deId, function (err, dataElement) {

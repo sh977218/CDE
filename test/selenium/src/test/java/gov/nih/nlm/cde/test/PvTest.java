@@ -13,7 +13,7 @@ public class PvTest extends NlmCdeBaseTest {
     @Test
     public void changePermissibleValue() {
         String cdeName = "Additional Pathologic Findings Chronic Proctocolitis Indicator";
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click(); 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pv-0']/div/span/span[1]/i")));
@@ -49,7 +49,7 @@ public class PvTest extends NlmCdeBaseTest {
     
     @Test
     public void hideProprietaryPv() {
-        mustBeLoggedInAs("ninds", "pass");        
+        mustBeLoggedInAs(ninds_username, password);        
         goToCdeByName("Post traumatic amnesia duration range");
         findElement(By.linkText("Permissible Values")).click();         
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-edit")).click();
@@ -59,7 +59,7 @@ public class PvTest extends NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(".1");
         saveCde();
         
-        mustBeLoggedInAs("ninds", "pass"); 
+        mustBeLoggedInAs(ninds_username, password); 
         goToCdeByName("Post traumatic amnesia duration range");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("SNOMEDCT"));
@@ -74,7 +74,7 @@ public class PvTest extends NlmCdeBaseTest {
     @Test
     public void addRemovePv() {
         String cdeName = "Surgical Procedure Hand Laparoscopic Port Anatomic Site";
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("Right Middle Abdomen"));
@@ -103,7 +103,7 @@ public class PvTest extends NlmCdeBaseTest {
     
     @Test
     public void reOrderPv() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Involved Organ Laterality Type");
         findElement(By.linkText("Permissible Values")).click();
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("pvCode-2"), "C25229"));

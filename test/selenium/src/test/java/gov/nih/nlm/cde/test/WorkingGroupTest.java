@@ -31,7 +31,7 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
         // Create some classifications for working group
         String classification = "DISEASE";
         String subClassification = "Phase II Lung Cancer";
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         gotoClassifMgt();
         new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText(orgWG);
         
@@ -66,14 +66,14 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
         textPresent("Test Working Group (");
         
         // Make sure cabigAdmin can't
-        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeSearch();
         textNotPresent("Test Working Group (");
     }
     
     @Test
     public void wgRegStatus() {
-        mustBeLoggedInAs(wguser_username, common_password);
+        mustBeLoggedInAs(wguser_username, password);
         new CdeCreateTest().createBasicCde("WG Test CDE", "Def", null, "WG-TEST", "WG Classif", "WG Sub Classif");
         findElement(By.id("editStatus")).click();
         List<WebElement> options = new Select(driver.findElement(By.name("registrationStatus"))).getOptions();

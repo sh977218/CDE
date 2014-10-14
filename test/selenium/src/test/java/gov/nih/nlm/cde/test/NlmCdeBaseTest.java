@@ -20,38 +20,41 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.browserlaunchers.Sleeper;
+import org.openqa.selenium.support.ui.Select;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
-    protected static String baseUrl = System.getProperty("testUrl");
-    protected static WebDriver driver;    
-    protected static String nlm_username = "nlm";
-    protected static String nlm_password = "nlm";
-    protected static String cabigAdmin_username = "cabigAdmin";
-    protected static String cabigAdmin_password = "pass";
-    protected static String ctepCurator_username = "ctepCurator";
-    protected static String ctepCurator_password = "pass";   
-    protected static String test_username = "testuser";
-    protected static String test_password = "Test123";
-    protected static String history_username = "historyuser";
-    protected static String history_password = "pass";
-    protected static String acrin_username = "acrin";
-    protected static String acrin_password = "pass";
-    protected static String ninds_username = "ninds";
-    protected static String ninds_password = "pass";
-    protected static String wguser_username = "wguser";
-    protected static String common_password = "pass";
-    protected static String classificationMgtUser_username = "classificationMgtUser";
-    protected static String classificationMgtUser_password = "pass";
+    protected static WebDriver driver;
+    public static WebDriverWait wait;
+    public static WebDriverWait shortWait;
     
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";    
     protected static String macosx_detected_message = "Max OS X Detected\nStarting ./chromedriver";     
     
     protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
     protected static String browser = System.getProperty("browser");
+    protected static String baseUrl = System.getProperty("testUrl");
+    
+    protected static String nlm_username = "nlm";
+    protected static String nlm_password = "nlm";
+    protected static String cabigAdmin_username = "cabigAdmin";
+    protected static String ctepCurator_username = "ctepCurator";
+    protected static String test_username = "testuser";
+    protected static String test_password = "Test123";
+    protected static String history_username = "historyuser";
+    protected static String acrin_username = "acrin";
+    protected static String ninds_username = "ninds";
+    protected static String wguser_username = "wguser";
+    protected static String reguser_username = "reguser";
+    protected static String boarduser1_username = "boarduser1";
+    protected static String boarduser2_username = "boarduser2";
+    protected static String boarduserEdit_username = "boarduserEdit";
+    protected static String boardUser = "boarduser";
+    protected static String pinUser = "pinuser";
+    protected static String classificationMgtUser_username = "classificationMgtUser";
+    protected static String transferStewardUser_username = "transferStewardUser";
           
-    public static WebDriverWait wait;
-    public static WebDriverWait shortWait;
+    protected static String password = "pass";
 
     @BeforeTest
     public void setBaseUrl() {
@@ -450,7 +453,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
         findElement(By.cssSelector("button.btn")).click();
-        Assert.assertTrue(textPresent(checkText));
+        textPresent(checkText);
     }
     
     protected void switchTabAndClose(int i) {
@@ -487,6 +490,28 @@ public class NlmCdeBaseTest {
             if (i<categories.length-1) selector += ",";
         }
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-"+selector+"'] .name")).getText().equals(categories[categories.length-1]));      
-    }    
+    }
+    
+    protected void fillInput(String type, String value) {
+        findElement(By.xpath("//label[text()=\""+type+"\"]/following-sibling::input")).sendKeys(value); 
+    }   
+
+    protected void gotoFormCreate() {
+        findElement(By.linkText("Create")).click();
+        findElement(By.linkText("Form")).click();    
+    }
+        
+    protected void createForm(String name, String definition, String version, String org) {
+        gotoFormCreate();
+        Assert.assertTrue(textPresent("Create New Form"));
+        fillInput("Name", name);
+        fillInput("Description", definition);
+        fillInput("Version", version);
+        new Select(findElement(By.id("newForm.stewardOrg.name"))).selectByVisibleText(org);
+        findElement(By.xpath("//button[text()='Save']")).click();
+        textPresent("Form created");
+        closeAlert();
+        hangon(1);
+    }
     
 }

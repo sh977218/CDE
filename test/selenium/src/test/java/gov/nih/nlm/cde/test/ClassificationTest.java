@@ -47,7 +47,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
     
     @Test
     public void deleteClassification() {
-        mustBeLoggedInAs("classificationMgtUser", "pass");
+        mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName("Spectroscopy geometry location not applicable indicator");
         findElement(By.linkText("Classification")).click();
         List<WebElement> linkList = driver.findElements(By.cssSelector("li[id$='Imaging Diagnostics']"));
@@ -66,7 +66,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
     
     @Test
     public void classificationLink() {
-        mustBeLoggedInAs("classificationMgtUser", "pass");
+        mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName("Spectroscopy geometry location not applicable indicator");
         findElement(By.linkText("Classification")).click();
         findElement(By.cssSelector("[id='classification-Disease,Spinal Muscular Atrophy,Assessments and Examinations,Imaging Diagnostics'] .name")).click();
@@ -81,7 +81,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
     
     @Test
     public void checkDuplicatesClassification() {
-        mustBeLoggedInAs(ninds_username, ninds_password);
+        mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Product Problem Discover Performed Observation Outcome Identifier ISO21090.II.v1.0");
         Assert.assertTrue( textNotPresent( "Disease" ) );
         addClassificationMethod(new String[]{"NINDS","Disease"});
@@ -89,6 +89,29 @@ public class ClassificationTest extends NlmCdeBaseTest {
         addClassificationMethod(new String[]{"NINDS","Disease"});
         List<WebElement> linkList = driver.findElements(By.cssSelector("li[id$='Disease']"));
         Assert.assertTrue(linkList.size() == 1);
-    }     
+    }
+    
+    // Feature is Temporarily Disabled
+    //@Test
+    public void classifyEntireSearch() {
+        mustBeLoggedInAs(ninds_username, password);
+        goToCdeSearch();
+        findElement(By.id("li-blank-AECC")).click();
+        textPresent("NCI Standard Template CDEs (7)");
+        findElement(By.id("classifyAll")).click();
+        findElement(By.xpath("//span[text()='Population']")).click();
+        findElement(By.xpath("//div[@id='addClassification-Adult']//button")).click();
+        textPresent("Search result classified");
+        goToCdeByName("Noncompliant Reason Text");
+        findElement(By.linkText("Classification")).click();
+        textPresent("NINDS");
+        textPresent("Population");
+        textPresent("Adult");
+        goToCdeByName("Adverse Event Ongoing Event Indicator");
+        findElement(By.linkText("Classification")).click();
+        textPresent("NINDS");
+        textPresent("Population");
+        textPresent("Adult");        
+    }    
 
 }

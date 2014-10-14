@@ -16,7 +16,7 @@ public class QuestionTest extends BaseFormTest {
         Dimension currentWindowSize = getWindowSize();
         resizeWindow(1024, 1150);
         
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
 
         String formName = "Questions Form Test";
         String formDef = "Form to test adding questions. ";

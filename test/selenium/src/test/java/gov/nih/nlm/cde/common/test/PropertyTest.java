@@ -6,7 +6,7 @@ import org.openqa.selenium.By;
 public abstract class PropertyTest extends CommonTest {
         
     public void addRemoveProperty(String eltName) {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToEltByName(eltName);
         findElement(By.linkText("Properties")).click();
         findElement(By.id("addProperty")).click();
@@ -47,7 +47,7 @@ public abstract class PropertyTest extends CommonTest {
     }
     
     public void richText(String eltName) {
-        mustBeLoggedInAs(ninds_username, ninds_password);
+        mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName);
         findElement(By.linkText("Properties")).click();
         findElement(By.xpath("//dd[@id='dd_prop_value_1']//i[@class='fa fa-edit']")).click();

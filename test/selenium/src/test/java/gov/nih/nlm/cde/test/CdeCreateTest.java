@@ -17,7 +17,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
 
     @Test
     public void createCdeValidationErrors() {
-        mustBeLoggedInAs("classificationMgtUser", "pass");
+        mustBeLoggedInAs(classificationMgtUser_username, password);
         goHome();
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
@@ -42,7 +42,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
     
     @Test
     public void createCde() {
-        mustBeLoggedInAs("classificationMgtUser", "pass");
+        mustBeLoggedInAs(classificationMgtUser_username, password);
         String name = "Abracadabra";
         String definition = "Definition for testUser CDE 1";
         String version = "1.0alpha1";
@@ -83,7 +83,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
     
     @Test
     public void testAlignmentForMissingFields() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         createBasicCde("AlignmentCDE", "Definition for alignment cde", null, "CTEP", "DISEASE", "Brain");
 
         goToCdeSearch();
@@ -96,7 +96,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
 
     @Test
     public void createCdeSuggest() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
         // wait for page to load
