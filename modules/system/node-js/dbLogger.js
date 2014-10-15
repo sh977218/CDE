@@ -11,7 +11,7 @@ logConn.once('open', function callback () {
 	console.log('logger connection open');
     });    
 logConn.on('disconnected', function() {
-  console.log('MongoDB disconnected!');
+  console.log('MongoDB Logger disconnected!');
   setTimeout(10 * 1000, function() {
       logConn = mongoose.createConnection(mongoLogUri);
   });
