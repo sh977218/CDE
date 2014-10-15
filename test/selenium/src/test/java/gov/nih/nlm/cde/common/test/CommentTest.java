@@ -32,7 +32,7 @@ public abstract class CommentTest extends CommonTest {
         findElement(By.name("postComment")).click();
         Assert.assertTrue(textPresent("Comment added"));
         logout();
-        loginAs(cabigAdmin_username, cabigAdmin_password);
+        loginAs(cabigAdmin_username, password);
         goToEltByName(eltName);
         findElement(By.linkText("Discussions")).click();
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();

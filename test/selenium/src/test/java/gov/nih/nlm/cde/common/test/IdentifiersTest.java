@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 public abstract class IdentifiersTest extends CommonTest {
     
     public void addRemoveId(String eltName) {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToEltByName(eltName);
         findElement(By.linkText("Identifiers")).click();
         findElement(By.id("addId")).click();

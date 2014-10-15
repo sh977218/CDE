@@ -4,6 +4,12 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
     $scope.orgAdmin = {};
     $scope.orgCurator = {};
     $scope.curator = {};
+    $scope.transferStewardObj = { from:'', to:''};
+    
+    function resetTransferStewardObj() {
+        $scope.transferStewardObj.from = '';
+        $scope.transferStewardObj.to = '';
+    }
     
     $http.get("/systemAlert").then(function(response) {
        $scope.broadcast = {message: response.data}; 
@@ -36,7 +42,7 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
         });
     };
     $scope.getMyOrgAdmins();
-
+    
     $scope.getOrgCurators = function() {
         return $http.get("/orgcurators").then(function(response) {
             $scope.orgCurators = response.data.orgs;
@@ -161,4 +167,16 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
         $http.post('/systemAlert', {alert: $scope.broadcast.message});
     };
     
+    $scope.transferStewardFunc = function() {
+        AccountManagement.transferSteward($scope.transferStewardObj,
+            function(successMsg) {
+                $scope.addAlert("success", successMsg);
+                resetTransferStewardObj();
+            },
+            function(errorMsg) {
+                $scope.addAlert("danger", errorMsg);
+                resetTransferStewardObj();
+            }
+        );
+    };
 }

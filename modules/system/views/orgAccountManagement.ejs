@@ -1,6 +1,6 @@
-<div class="container-fluid">
+<div class="container">
     <div>{{message}}</div>
-    <tabset>
+    <tabset class="pt20">
         <tab heading="Organizations Admins">
             <div class="row" ng-repeat="org in myOrgAdmins">
                 <div class="col-md-4" id="orgAdmin-{{$index}}">{{org.name}}</div>
@@ -40,6 +40,23 @@
                 <input class="col-md-5" type="text" name="orgCurator.username" ng-model="orgCurator.username"></input>
                 <span class="add-on" id="addOrgCurator" ng-click="addOrgCurator()">+</span>
             </div>
+        </tab>
+        <tab heading="CDE & Form Management">
+            <form class="form-inline pt30" role="form" id="transferStewardForm" name="transferStewardForm" novalidate>
+                Transfer CDEs and forms owned by
+                <div class="form-group">
+                    <select id="transferSteward_from" name="transferSteward_from" class="form-control" ng-model="transferStewardObj.from" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
+                        <option value="">select organization</option>
+                    </select>
+                </div>
+                to 
+                <div class="form-group">
+                    <select id="transferSteward_to" name="transferSteward_to" class="form-control" ng-model="transferStewardObj.to" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
+                        <option value="">select organization</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success" id="transferStewardButton" ng-click="transferStewardFunc()" ng-disabled="transferStewardForm.transferSteward_from.$error.required || transferStewardForm.transferSteward_to.$error.required">Transfer Now</button>
+            </form>
         </tab>
     </tabset>
 </div>    
