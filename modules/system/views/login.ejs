@@ -4,7 +4,7 @@
         <p>Note: Log in with your UMLS account. Don't have a UMLS account? <a href="https://uts.nlm.nih.gov//license.html" class="vsloginLink" target="_blank"><span  class="vsloginLink">Request One Now</span></a></p>
         
         <input id="uname" type="text" class="form-control" placeholder="Username" ng-model="username" autofocus="">
-        <input id="passwd" type="password" class="form-control" placeholder="Password" ng-model="password">
+        <input id="passwd" type="password" class="form-control" placeholder="Password" ng-model="password" autocomplete="off"/>
         <input type="hidden" name="_csrf" ng-model="csrf">
         
         <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
