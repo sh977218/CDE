@@ -61,11 +61,28 @@ var sessionStore = new MongoStore({
     mongoose_connection: mongo_data_system.mongoose_connection  
 });
 
+var expressSettings = {
+    secret: "Kfji76R"
+    , store: sessionStore
+    , cookie: {httpOnly: true}
+};
+
+app.use(function(req, res, next) {
+    this.isFile = function(req) {
+        if (req.originalUrl.substr(req.originalUrl.length-3,3) === ".js") return true;
+        if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".css") return true;
+        if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".gif") return true;
+        return false;
+    };
+    if ((req.cookies['connect.sid'] || req.originalUrl === "/login") && !this.isFile(req)) {
+        var initExpressSession = express.session(expressSettings);
+        initExpressSession(req, res, next);
+   } else {
+       next();
+   }
+});
+
 app.use(flash());
-app.use(express.session({
-  secret: 'Kfji76R',
-  cookie: {httpOnly: true}
-}));
 app.use(passport.initialize());
 app.use(passport.session());
 
