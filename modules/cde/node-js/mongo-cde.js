@@ -15,9 +15,9 @@ var mongoUri = config.mongoUri;
 var conn = mongoose.createConnection(mongoUri);
 conn.on('disconnected', function() {
   console.log('Mongo CDE disconnected!, reconnecting in 10 secs');
-  setTimeout(10 * 1000, function() {
+  setTimeout(function() {
     conn = mongoose.createConnection(mongoUri);  
-  });
+  }, 10 * 1000);
 });
 conn.once('open', function callback () {
     console.log('mongodb connection open');

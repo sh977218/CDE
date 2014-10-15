@@ -17,9 +17,9 @@ conn.once('open', function callback () {
 });    
 conn.on('disconnected', function() {
   console.log('MongoDB FORM disconnected!, reconnecting in 10 secs');
-  setTimeout(10 * 1000, function() {
+  setTimeout(function() {
     conn = mongoose.createConnection(mongoUri);  
-  });
+  }, 10 * 1000);
 });
 
 var Form = conn.model('Form', schemas.formSchema);
