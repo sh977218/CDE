@@ -15,7 +15,7 @@ public class MergeTest extends NlmCdeBaseTest {
     }
     
     private void createMergeRequest() { 
-        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         addToCompare("Smoking Cessation Other Method Specify Text", "Smoking History Ind");
         findElement(By.linkText("Retire & Merge")).click();  
         modalHere();
@@ -32,7 +32,7 @@ public class MergeTest extends NlmCdeBaseTest {
     }
     
     private void acceptMergeRequest() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         gotoInbox();
         findElement(By.cssSelector(".accordion-toggle")).click();  
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Smoking Cessation Other Method Specify Text")));
@@ -62,7 +62,7 @@ public class MergeTest extends NlmCdeBaseTest {
     
     @Test
     public void mergeMineMineEverything() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         addToCompare("Common Toxicity Criteria Adverse Event Colitis Grade", "Common Toxicity Criteria Adverse Event Hypophosphatemia Grade");
         findElement(By.id("retireMerge-0")).click(); 
         modalHere();
@@ -83,7 +83,7 @@ public class MergeTest extends NlmCdeBaseTest {
     
     @Test
     public void mergeMineTheirsClassificationsOnly() {
-        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         addToCompare("Diagnosis Change Date java.util.Date", "Form Element End Date java.util.Date");
         findElement(By.linkText("Retire & Merge")).click();  
         modalHere();    

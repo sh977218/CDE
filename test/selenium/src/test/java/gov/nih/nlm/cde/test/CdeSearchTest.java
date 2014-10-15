@@ -250,7 +250,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textNotPresent("Note: You may not edit this CDE because it is standard.");
         
         // Check that a Standard CDE have warning message
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Person Birth Date");
         textPresent("Note: You may not edit this CDE because it is standard.");
     }

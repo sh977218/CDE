@@ -8,6 +8,8 @@ var mongoose = require('mongoose')
     , shortid = require("shortid") 
 ;
 
+exports.name = "CDEs";
+        
 var mongoUri = config.mongoUri;
 
 var conn = mongoose.createConnection(mongoUri);
@@ -119,7 +121,7 @@ exports.cdesByTinyIdList = function(idList, callback) {
 
 exports.priorCdes = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
-        if (dataElement != null) {
+        if (dataElement !== null) {
             return DataElement.find({}, "naming source sourceId registrationState stewardOrg updated updatedBy createdBy tinyId version views changeNote")
                     .where("_id").in(dataElement.history).exec(function(err, cdes) {
                 callback("", cdes);
@@ -154,7 +156,7 @@ exports.isForkOf = function(tinyId, callback) {
 
 exports.forks = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
-        if (dataElement != null) {
+        if (dataElement !== null) {
             return DataElement.find({tinyId: dataElement.tinyId, isFork: true}, "naming stewardOrg updated updatedBy createdBy created updated changeNote")
                 .where("archived").equals(null).where("registrationState.registrationStatus").ne("Retired").exec(function(err, cdes) {
                     callback("", cdes);
@@ -390,6 +392,12 @@ exports.archiveCde = function(cde, callback) {
 
 exports.query = function(query, callback) {
     DataElement.find(query).exec(function(err, result) {
+        callback(err, result);
+    });
+};
+
+exports.transferSteward = function(from, to, callback) {
+    DataElement.update({'stewardOrg.name':from},{$set:{'stewardOrg.name':to}},{multi:true}).exec(function(err, result) {
         callback(err, result);
     });
 };

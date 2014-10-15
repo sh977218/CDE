@@ -20,7 +20,7 @@ exports.nocacheMiddleware = function(req, res, next) {
     }
 };
 
-exports.init = function(app, daoManager) {
+exports.init = function(app) {
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
     
     var viewConfig = {modules: config.modules};
@@ -383,7 +383,11 @@ exports.init = function(app, daoManager) {
             else res.send(202, {error: {message: err}});
         });        
     });
-    
+
+    app.post('/transferSteward', function(req, res) {
+        orgsvc.transferSteward(req, res);
+    });
+
     app.get('/rsStatus', function(req, res) {
         mongo_data_system.rsStatus(function(err, st) {
             if (err) res.send(500, err);

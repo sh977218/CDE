@@ -430,6 +430,6 @@ exports.init = function(app, daoManager) {
         } else {
             res.send("Please login first.");
         }      
-    });    
+    });
 
 };

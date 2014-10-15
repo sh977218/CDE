@@ -12,12 +12,12 @@ public class AttachmentsTest extends NlmCdeBaseTest {
     public void cdeAttachment() {
         String cdeName = "Alcohol use frequency";
         
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
         findElement(By.linkText("Attachments")).click();
         textNotPresent("Upload more files");
         
-        mustBeLoggedInAs(ninds_username, ninds_password);
+        mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Alcohol use frequency");
 
         addAttachment();
@@ -33,12 +33,12 @@ public class AttachmentsTest extends NlmCdeBaseTest {
     public void formAttachments() {
         String formName = "Skin Cancer Patient";
         
-        mustBeLoggedInAs(ninds_username, ninds_password);
+        mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
         findElement(By.linkText("Attachments")).click();
         textNotPresent("Upload more files");        
         
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToFormByName(formName);
 
         addAttachment();

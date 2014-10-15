@@ -102,7 +102,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     };
 
     $scope.classificationToFilter = function() {
-         if ($scope.elt != null) {
+         if ($scope.elt !== null) {
              return $scope.elt.classification;
          } 
     };
@@ -188,9 +188,9 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     
     $scope.isPvInVSet = function(pv, callback) {
             for (var i = 0; i < $scope.vsacValueSet.length; i++) {
-                if (pv.valueMeaningCode == $scope.vsacValueSet[i].code && 
-                    pv.codeSystemName == $scope.vsacValueSet[i].codeSystemName &&
-                    pv.valueMeaningName == $scope.vsacValueSet[i].displayName) {
+                if (pv.valueMeaningCode === $scope.vsacValueSet[i].code && 
+                    pv.codeSystemName === $scope.vsacValueSet[i].codeSystemName &&
+                    pv.valueMeaningName === $scope.vsacValueSet[i].displayName) {
                         return callback(true);
                 }
             }
@@ -307,10 +307,10 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     $scope.canLinkPvFunc = function() {
         var dec = $scope.elt.dataElementConcept;
         $scope.canLinkPv = ($scope.canCurate &&
-                dec != null &&
-                dec.conceptualDomain != null &&
-                dec.conceptualDomain.vsac != null &&
-                dec.conceptualDomain.vsac.id != null);
+                dec !== null &&
+                dec.conceptualDomain !== null &&
+                dec.conceptualDomain.vsac !== null &&
+                dec.conceptualDomain.vsac.id !== null);
     };   
     
     $scope.loadMlt = function() {
