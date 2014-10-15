@@ -50,6 +50,7 @@ var winstonStream = {
 // all environments
 app.set('port', config.port || 3000);
 app.set('view engine', 'ejs');
+app.set('trust proxy', true);
 
 app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ico')));//TODO: MOVE TO SYSTEM
 
@@ -64,7 +65,8 @@ var sessionStore = new MongoStore({
 var expressSettings = {
     secret: "Kfji76R"
     , store: sessionStore
-    , cookie: {httpOnly: true}
+    , proxy: config.proxy
+    , cookie: {httpOnly: true, secure: config.proxy}
 };
 
 app.use(function(req, res, next) {
@@ -102,11 +104,6 @@ app.use(function(err, req, res, next){
         res.send(500, 'Something broke!');
     }
 });
-
-// development only
-if ('development' == app.get('env')) {
-    app.use(express.errorHandler());
-};
 
 app.set('views', path.join(__dirname, './modules'));
 
