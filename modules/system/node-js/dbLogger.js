@@ -1,22 +1,12 @@
 var mongoose = require('mongoose')
     , config = require('config')
+    , connHelper = require('./connections')
     ;
     
-    
 var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
-    
-var logConn = mongoose.createConnection(mongoLogUri);
-logConn.on('error', console.error.bind(console, 'connection error:'));
-logConn.once('open', function callback () {
-	console.log('logger connection open');
-    });    
-logConn.on('disconnected', function() {
-  console.log('MongoDB Logger disconnected!');
-  setTimeout(function() {
-      logConn = mongoose.createConnection(mongoLogUri);
-  }, 10 * 1000);
-});    
-    
+var LogModel;
+
+
 // w = 0 means write very fast. It's ok if it fails.   
 // capped means no more than 5 gb for that collection.
 var logSchema = new mongoose.Schema(
@@ -28,15 +18,22 @@ var logSchema = new mongoose.Schema(
     , httpStatus: String
     , date: Date
     , referrer: String
-}, { safe: {w: 0}, capped: 5368709120});
+}
+, { safe: {w: 0}, capped: 5368709120}
+        );
 logSchema.index({remoteAddr: 1});
 logSchema.index({url: 1});
 logSchema.index({httpStatus: 1});
 logSchema.index({date: 1});
 logSchema.index({referrer: 1});
 
-// w = 0 means write very fast. It's ok if it fails.     
-var LogModel = logConn.model('DbLogger', logSchema);
+connHelper.setupConnection(mongoLogUri, 'Logger', function(conn) {}, function(conn) {
+    LogModel = conn.model('DbLogger', logSchema);
+});
+
+
+//// w = 0 means write very fast. It's ok if it fails.     
+//var LogModel = logConn.model('DbLogger', logSchema);
 
 exports.log = function(message, callback) {    
     if (message.httpStatus !== "304") {

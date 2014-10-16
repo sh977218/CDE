@@ -423,4 +423,11 @@ exports.init = function(app) {
             res.send(403, "Not Authorized");
         }
     });
+    
+    // TODO REMOVE!
+    app.get('/disconnect', function(req, res) {
+        mongo_data_system.disconnect();
+        res.send("OK");
+    });
+    
 };

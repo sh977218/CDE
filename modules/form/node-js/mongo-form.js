@@ -3,26 +3,20 @@ var mongoose = require('mongoose')
     , schemas = require('./schemas')
     , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
     , shortid = require("shortid") 
+    , connHelper = require('../../system/node-js/connections')
     ;
 
 exports.name = "forms";
 
 var mongoUri = config.mongoUri;
+var Form;
 
-var conn = mongoose.createConnection(mongoUri);
-
-conn.on('error', console.error.bind(console, 'connection error:'));
-conn.once('open', function callback () {
-    console.log('mongodb connection open');
-});    
-conn.on('disconnected', function() {
-  console.log('MongoDB FORM disconnected!, reconnecting in 10 secs');
-  setTimeout(function() {
-    conn = mongoose.createConnection(mongoUri);  
-  }, 10 * 1000);
+connHelper.setupConnection(mongoUri, 'Forms', function(conn) {}, function(conn) {
+    console.log("form CB")
+//    Form = conn.model('Form', schemas.formSchema);
 });
 
-var Form = conn.model('Form', schemas.formSchema);
+//var Form = conn.model('Form', schemas.formSchema);
 
 exports.idExists = function(id, callback) { 
     Form.count({_id: id}).count().then(function(result) {

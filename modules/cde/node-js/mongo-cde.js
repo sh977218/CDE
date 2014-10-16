@@ -6,32 +6,32 @@ var mongoose = require('mongoose')
     , schemas_system = require('../../system/node-js/schemas') 
     , mongo_data_system = require('../../system/node-js/mongo-data') 
     , shortid = require("shortid") 
+    , connHelper = require('../../system/node-js/connections')
 ;
 
 exports.name = "CDEs";
         
 var mongoUri = config.mongoUri;
+var DataElement;
+var PinningBoard;
+var Message;
+var User;
 
-var conn = mongoose.createConnection(mongoUri);
-conn.on('disconnected', function() {
-  console.log('Mongo CDE disconnected!, reconnecting in 10 secs');
-  setTimeout(function() {
-    conn = mongoose.createConnection(mongoUri);  
-  }, 10 * 1000);
+connHelper.setupConnection(mongoUri, 'CDE', function(resConn) {
+//    exports.mongoose_connection = conn;
+//    conn = resConn;
+}, function(conn) {
+    DataElement = conn.model('DataElement', schemas.dataElementSchema);
+    PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
+    Message = conn.model('Message', schemas.message);        DataElement = conn.model('DataElement', schemas.dataElementSchema);
+    User = conn.model('User', schemas_system.userSchema);
 });
-conn.once('open', function callback () {
-    console.log('mongodb connection open');
-});    
-exports.mongoose_connection = conn;
-
-var User = conn.model('User', schemas_system.userSchema);
 
 var xmlParser = new xml2js.Parser();
 
-var DataElement = conn.model('DataElement', schemas.dataElementSchema);
-
-var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
-var Message = conn.model('Message', schemas.message);
+//var DataElement = conn.model('DataElement', schemas.dataElementSchema);
+//var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
+//var Message = conn.model('Message', schemas.message);
 
 var mongo_data = this;
 
@@ -53,6 +53,7 @@ exports.userTotalSpace = function(name, callback) {
     mongo_data_system.userTotalSpace(DataElement, name, callback);
 };
 
+//TODO remove this
 exports.deCount = function (callback) {
     DataElement.find().count().exec(function (err, count) {
         callback(count);

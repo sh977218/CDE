@@ -2,34 +2,33 @@ var schemas = require('./schemas')
     , mongoose = require('mongoose')
     , config = require('config')
     , mongoUri = config.mongoUri
-    , conn = mongoose.createConnection(mongoUri)
     , localConn = mongoose.createConnection(config.database.local.uri)
     , Grid = require('gridfs-stream')
-    , Org = conn.model('Org', schemas.orgSchema)    
-    , User = conn.model('User', schemas.userSchema)
     , fs = require('fs')
+    , conn = mongoose.createConnection(mongoUri)
+    , Org = conn.model('Org', schemas.orgSchema)
+    , User = conn.model('User', schemas.userSchema)
+    , gfs = Grid(conn.db, mongoose.mongo)
+    , connHelper = require('./connections')
     ;
 
-conn.once('open', function callback () {
-	console.log('mongodb connection open');
-    });    
-conn.on('error', function(error) {
-    console.error('Error in MongoDb connection: ' + error);
-    mongoose.disconnect();
-});
-conn.on('reconnected', function () {
-    console.log('MongoDB reconnected!');
-});
-conn.on('disconnected', function() {
-  console.log('MongoDB SYS disconnected!, reconnecting in 10 seconds');
-  setTimeout(function() {
-    conn = mongoose.createConnection(mongoUri);  
-  }, 10 * 1000);
-});
-  
-exports.mongoose_connection = conn;
+var conn;
+var localConn;
 
-var gfs = Grid(conn.db, mongoose.mongo);
+connHelper.setupConnection(mongoUri, 'SYS', function(resCon) {
+        exports.mongoose_connection = resCon; 
+        conn = resCon;
+    }, function(conn) {
+    Org = conn.model('Org', schemas.orgSchema);
+    User = conn.model('User', schemas.userSchema);
+    gfs = Grid(conn.db, mongoose.mongo);
+});
+
+connHelper.setupConnection(config.database.local.uri, 'LOCAL', function(resCon) {
+    }, function(resCon) {
+        localConn = resCon;
+        
+});
 
 exports.org_autocomplete = function(name, callback) {
     Org.find({"name": new RegExp(name, 'i')}, function(err, orgs) {
@@ -235,3 +234,6 @@ exports.switchToReplSet = function (replConfig, cb) {
     });   
 };
 
+exports.disconnect = function() {
+    mongoose.disconnect();
+};
