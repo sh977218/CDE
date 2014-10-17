@@ -4,15 +4,15 @@ var schemas = require('./schemas')
     , mongoUri = config.mongoUri
     , Grid = require('gridfs-stream')
     , fs = require('fs')
-    , Org = conn.model('Org', schemas.orgSchema)
-    , User = conn.model('User', schemas.userSchema)
-    , gfs = Grid(conn.db, mongoose.mongo)
+    , conn = mongoose.createConnection(mongoUri)
     , connHelper = require('./connections')
     ;
 
 var conn;
 var localConn;
-
+var Org;
+var User;
+var gfs;
 var connectionEstablisher = connHelper.connectionEstablisher;
 
 var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');

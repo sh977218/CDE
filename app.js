@@ -64,7 +64,7 @@ var sessionStore = new MongoStore({
 
 var expressSettings = {
     secret: "Kfji76R"
-    , store: sessionStore
+//    , store: sessionStore
     , proxy: config.proxy
     , cookie: {httpOnly: true, secure: config.proxy}
 };
@@ -123,7 +123,7 @@ try {
     var formModule = require(path.join(__dirname, './modules/form/node-js/app.js'));
     formModule.init(app, daoManager);
 } catch (e) {
-    console.log(e);
+    console.log(e.stack);
     process.exit();
 }
 
