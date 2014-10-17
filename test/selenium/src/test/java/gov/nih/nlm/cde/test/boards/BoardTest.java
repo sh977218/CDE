@@ -6,11 +6,6 @@ import org.testng.Assert;
 
 public class BoardTest extends NlmCdeBaseTest {
     
-    protected static final String boardUser = "boarduser";
-    protected static final String boardPassword = "pass";
-    protected static final String pinUser = "pinuser";
-    protected static final String pass = "pass";
-    
     protected void makePublic(String boardName) {
         gotoMyBoards();
         Assert.assertTrue(textPresent(boardName));

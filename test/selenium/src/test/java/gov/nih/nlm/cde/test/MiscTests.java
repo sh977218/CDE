@@ -116,7 +116,7 @@ public class MiscTests extends NlmCdeBaseTest {
     
     @Test
     public void leavePageWarning() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Intra-arterial Catheter Patient Not Administered Reason");
         findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");

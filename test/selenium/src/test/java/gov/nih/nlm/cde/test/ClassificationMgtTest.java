@@ -40,7 +40,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
 
     @Test
     public void viewOrgClassifications() {
-        mustBeLoggedInAs("classificationMgtUser", "pass");
+        mustBeLoggedInAs(classificationMgtUser_username, password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Classifications")).click();
         hangon(1);
@@ -55,7 +55,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     
     @Test
     public void removeClassificationMgt() {
-        mustBeLoggedInAs("ninds", "pass");
+        mustBeLoggedInAs(ninds_username, password);
         searchNestedClassifiedCdes();
         Assert.assertTrue(textPresent("NINDS (7)"));
         searchNestedClassifiedForms();
@@ -74,7 +74,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     
     @Test
     public void addNestedClassification() {
-        mustBeLoggedInAs("ninds", "pass");
+        mustBeLoggedInAs(ninds_username, password);
         gotoClassifMgt();
         Assert.assertTrue(textPresent("Headache"));
         createClassificationName(new String[]{"Disease","Multiple Sclerosis","Assessments and Examinations","Imaging Diagnostics","MRI"});
@@ -85,7 +85,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     
     @Test
     public void link() {
-        mustBeLoggedInAs("ninds", "pass");
+        mustBeLoggedInAs(ninds_username, password);
         gotoClassifMgt();
         Assert.assertTrue(textPresent("Headache"));
 
@@ -93,7 +93,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     
     @Test
     public void addDeleteClassificationMgt() {
-        mustBeLoggedInAs("ninds", "pass");
+        mustBeLoggedInAs(ninds_username, password);
         gotoClassifMgt();  
         createClassificationName(new String[]{"_a"});        
         createClassificationName(new String[]{"_a"});
@@ -116,7 +116,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     
     @Test
     public void renameClassification() {
-        mustBeLoggedInAs("ninds", "pass");
+        mustBeLoggedInAs(ninds_username, password);
         gotoClassifMgt(); 
         driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()=\"Spinal Cord Injury\"]]/span/a")).click();
         modalHere();
@@ -141,7 +141,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     
     @Test
     public void classifyEntireSearch() {
-        mustBeLoggedInAs(ninds_username, ninds_password);
+        mustBeLoggedInAs(ninds_username, password);
         gotoClassifMgt(); 
         createClassificationName(new String[]{"Classification Transfer"});
         createClassificationName(new String[]{"Classification Transfer","Child Classification"});

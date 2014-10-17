@@ -79,7 +79,7 @@ public class CompareTest extends NlmCdeBaseTest{
     
     @Test
     public void cantEditInCompare() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         addToCompare("Person Birth Date", "Patient Ethnic Group Category");
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editStatus")));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("addNamePair")));

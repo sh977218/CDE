@@ -59,7 +59,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void facets() {
-        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("Study");
         findElement(By.id("search.submit")).click();
@@ -164,14 +164,14 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void ownerAndAdminCanSeeLowStatus() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Low Status Cde";
         new CdeCreateTest().createBasicCde(cdeName, "Low Stat Definition", "0.1", "CTEP", "DISEASE", "Lung");
         goToCdeSearch();
         findElement(By.id("li-blank-Incomplete")).click();
         Assert.assertTrue(textPresent(cdeName));
         
-        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeSearch();
         hangon(1);
         if (textPresentTrueFalse("Incomplete (")) {
@@ -184,7 +184,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Incomplete")).click();
         Assert.assertTrue(textPresent(cdeName));
 
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
         findElement(By.id("editStatus")).click();
         modalHere();
@@ -196,7 +196,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Candidate")).click();
         Assert.assertTrue(textPresent(cdeName));
         
-        mustBeLoggedInAs(cabigAdmin_username, cabigAdmin_password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeSearch();
         hangon(1);
         if (textPresentTrueFalse("Candidate (")) {
@@ -269,7 +269,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void lowStatusFilter() {
-        mustBeLoggedInAs(acrin_username, acrin_password);
+        mustBeLoggedInAs(acrin_username, password);
         goToCdeSearch();
         textPresent("ACRIN (3)");
         logout();

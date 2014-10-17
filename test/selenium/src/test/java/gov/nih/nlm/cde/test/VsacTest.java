@@ -14,7 +14,7 @@ public class VsacTest extends NlmCdeBaseTest {
     
     @Test
     public void importVsacValues() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Patient Race Category");
         findElement(By.linkText("Permissible Values")).click();         
         Assert.assertTrue(textPresent("Native Hawaiian or other Pacific Islander")); 
@@ -51,7 +51,7 @@ public class VsacTest extends NlmCdeBaseTest {
     
    @Test
     public void assignVsacId() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("No Value Set specified."));
@@ -85,7 +85,7 @@ public class VsacTest extends NlmCdeBaseTest {
     
     @Test
     public void removeVsacId() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Left Colon Excision Ind-2");
         findElement(By.linkText("Permissible Values")).click();   
         findElement(By.linkText("Update O.I.D")).click();
@@ -117,7 +117,7 @@ public class VsacTest extends NlmCdeBaseTest {
         
     @Test(dependsOnMethods = {"importVsacValues"})
     public void modifyValueCode() {
-        mustBeLoggedInAs(ctepCurator_username, ctepCurator_password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Patient Race Category");
         findElement(By.linkText("Permissible Values")).click();         
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-valid")));

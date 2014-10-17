@@ -50,6 +50,7 @@ var winstonStream = {
 // all environments
 app.set('port', config.port || 3000);
 app.set('view engine', 'ejs');
+app.set('trust proxy', true);
 
 app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ico')));//TODO: MOVE TO SYSTEM
 
@@ -61,11 +62,29 @@ var sessionStore = new MongoStore({
     mongoose_connection: mongo_data_system.mongoose_connection  
 });
 
+var expressSettings = {
+    secret: "Kfji76R"
+    , store: sessionStore
+    , proxy: config.proxy
+    , cookie: {httpOnly: true, secure: config.proxy}
+};
+
+app.use(function(req, res, next) {
+    this.isFile = function(req) {
+        if (req.originalUrl.substr(req.originalUrl.length-3,3) === ".js") return true;
+        if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".css") return true;
+        if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".gif") return true;
+        return false;
+    };
+    if ((req.cookies['connect.sid'] || req.originalUrl === "/login") && !this.isFile(req)) {
+        var initExpressSession = express.session(expressSettings);
+        initExpressSession(req, res, next);
+   } else {
+       next();
+   }
+});
+
 app.use(flash());
-app.use(express.session({
-  secret: 'Kfji76R',
-  cookie: {httpOnly: true}
-}));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -85,11 +104,6 @@ app.use(function(err, req, res, next){
         res.send(500, 'Something broke!');
     }
 });
-
-// development only
-if ('development' == app.get('env')) {
-    app.use(express.errorHandler());
-};
 
 app.set('views', path.join(__dirname, './modules'));
 

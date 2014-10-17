@@ -7,7 +7,7 @@ import org.testng.Assert;
 public abstract class RegStatusTest extends CommonTest {
  
     public void changeRegistrationStatus(String eltName, String user) {
-        mustBeLoggedInAs(user, common_password);
+        mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
         findElement(By.id("editStatus")).click();
@@ -30,7 +30,7 @@ public abstract class RegStatusTest extends CommonTest {
     }
         
     public void retire(String eltName, String user) {
-        mustBeLoggedInAs(user, common_password);
+        mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         Assert.assertTrue(textPresent("Qualified"));        
         findElement(By.id("editStatus")).click();
