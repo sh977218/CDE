@@ -64,7 +64,7 @@ var sessionStore = new MongoStore({
 
 var expressSettings = {
     secret: "Kfji76R"
-//    , store: sessionStore
+    , store: sessionStore
     , proxy: config.proxy
     , cookie: {httpOnly: true, secure: config.proxy}
 };
