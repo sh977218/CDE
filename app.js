@@ -58,13 +58,13 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser("Jk87fhK"));
 
-var sessionStore = new MongoStore({
-    mongoose_connection: mongo_data_system.mongoose_connection  
-});
+//var sessionStore = new MongoStore({
+//    mongoose_connection: mongo_data_system.mongoose_connection  
+//});
 
 var expressSettings = {
     secret: "Kfji76R"
-    , store: sessionStore
+    , store: mongo_data_system.sessionStore
     , proxy: config.proxy
     , cookie: {httpOnly: true, secure: config.proxy}
 };

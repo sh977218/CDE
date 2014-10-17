@@ -6,6 +6,8 @@ var schemas = require('./schemas')
     , fs = require('fs')
     , conn = mongoose.createConnection(mongoUri)
     , connHelper = require('./connections')
+    , express = require('express')
+    , MongoStore = require('./assets/connect-mongo.js')(express)
     ;
 
 var conn;
@@ -14,6 +16,7 @@ var Org;
 var User;
 var gfs;
 var connectionEstablisher = connHelper.connectionEstablisher;
+var sessionStore;
 
 var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');
 iConnectionEstablisherSys.connect(function(resCon) {
@@ -22,12 +25,18 @@ iConnectionEstablisherSys.connect(function(resCon) {
     Org = conn.model('Org', schemas.orgSchema);
     User = conn.model('User', schemas.userSchema);
     gfs = Grid(conn.db, mongoose.mongo);
+    sessionStore = new MongoStore({
+        mongoose_connection: resCon  
+    });
+    exports.sessionStore = sessionStore;
 });
 
 var iConnectionEstablisherLocal = new connectionEstablisher(config.database.local.uri, 'LOCAL');
 iConnectionEstablisherLocal.connect(function(resCon) {
         localConn = resCon;        
 });
+
+exports.sessionStore = sessionStore;
 
 exports.mongoose_connection = conn;
 
