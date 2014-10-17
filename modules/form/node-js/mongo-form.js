@@ -11,12 +11,12 @@ exports.name = "forms";
 var mongoUri = config.mongoUri;
 var Form;
 
-connHelper.setupConnection(mongoUri, 'Forms', function(conn) {}, function(conn) {
-    console.log("form CB")
-//    Form = conn.model('Form', schemas.formSchema);
-});
+var connectionEstablisher = connHelper.connectionEstablisher;
 
-//var Form = conn.model('Form', schemas.formSchema);
+var iConnectionEstablisherForm = new connectionEstablisher(mongoUri, 'Forms');
+iConnectionEstablisherForm.connect(function(conn) {
+    Form = conn.model('Form', schemas.formSchema);
+});
 
 exports.idExists = function(id, callback) { 
     Form.count({_id: id}).count().then(function(result) {

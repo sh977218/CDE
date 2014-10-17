@@ -6,7 +6,6 @@ var mongoose = require('mongoose')
 var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
 var LogModel;
 
-
 // w = 0 means write very fast. It's ok if it fails.   
 // capped means no more than 5 gb for that collection.
 var logSchema = new mongoose.Schema(
@@ -18,22 +17,19 @@ var logSchema = new mongoose.Schema(
     , httpStatus: String
     , date: Date
     , referrer: String
-}
-, { safe: {w: 0}, capped: 5368709120}
-        );
+}, { safe: {w: 0}, capped: 5368709120});
 logSchema.index({remoteAddr: 1});
 logSchema.index({url: 1});
 logSchema.index({httpStatus: 1});
 logSchema.index({date: 1});
 logSchema.index({referrer: 1});
 
-connHelper.setupConnection(mongoLogUri, 'Logger', function(conn) {}, function(conn) {
+var connectionEstablisher = connHelper.connectionEstablisher;
+
+var iConnectionEstablisherLog = new connectionEstablisher(mongoLogUri, 'Logs');
+iConnectionEstablisherLog.connect(function(conn) {
     LogModel = conn.model('DbLogger', logSchema);
 });
-
-
-//// w = 0 means write very fast. It's ok if it fails.     
-//var LogModel = logConn.model('DbLogger', logSchema);
 
 exports.log = function(message, callback) {    
     if (message.httpStatus !== "304") {

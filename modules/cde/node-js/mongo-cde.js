@@ -1,6 +1,4 @@
 var mongoose = require('mongoose')
-    , util = require('util')
-    , xml2js = require('xml2js')
     , config = require('config')
     , schemas = require('./schemas')
     , schemas_system = require('../../system/node-js/schemas') 
@@ -17,21 +15,15 @@ var PinningBoard;
 var Message;
 var User;
 
-connHelper.setupConnection(mongoUri, 'CDE', function(resConn) {
-//    exports.mongoose_connection = conn;
-//    conn = resConn;
-}, function(conn) {
+var connectionEstablisher = connHelper.connectionEstablisher;
+
+var iConnectionEstablisherCde = new connectionEstablisher(mongoUri, 'CDE');
+iConnectionEstablisherCde.connect(function(conn) {
     DataElement = conn.model('DataElement', schemas.dataElementSchema);
     PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
-    Message = conn.model('Message', schemas.message);        DataElement = conn.model('DataElement', schemas.dataElementSchema);
+    Message = conn.model('Message', schemas.message); 
     User = conn.model('User', schemas_system.userSchema);
 });
-
-var xmlParser = new xml2js.Parser();
-
-//var DataElement = conn.model('DataElement', schemas.dataElementSchema);
-//var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
-//var Message = conn.model('Message', schemas.message);
 
 var mongo_data = this;
 

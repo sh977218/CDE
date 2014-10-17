@@ -15,20 +15,23 @@ var schemas = require('./schemas')
 var conn;
 var localConn;
 
-connHelper.setupConnection(mongoUri, 'SYS', function(resCon) {
-        exports.mongoose_connection = resCon; 
-        conn = resCon;
-    }, function(conn) {
+var connectionEstablisher = connHelper.connectionEstablisher;
+
+var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');
+iConnectionEstablisherSys.connect(function(resCon) {
+    exports.mongoose_connection = resCon;
+    conn = resCon;
     Org = conn.model('Org', schemas.orgSchema);
     User = conn.model('User', schemas.userSchema);
     gfs = Grid(conn.db, mongoose.mongo);
 });
 
-connHelper.setupConnection(config.database.local.uri, 'LOCAL', function(resCon) {
-    }, function(resCon) {
-        localConn = resCon;
-        
+var iConnectionEstablisherLocal = new connectionEstablisher(config.database.local.uri, 'LOCAL');
+iConnectionEstablisherLocal.connect(function(resCon) {
+        localConn = resCon;        
 });
+
+exports.mongoose_connection = conn;
 
 exports.org_autocomplete = function(name, callback) {
     Org.find({"name": new RegExp(name, 'i')}, function(err, orgs) {
