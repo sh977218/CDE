@@ -1,23 +1,23 @@
 /*
  * Angular matchMedia Module
- * Version 0.2.0
+ * Version 0.2.2
  * Uses Bootstrap 3 breakpoint sizes
  * Exposes service "screenSize" which returns true if breakpoint(s) matches.
  * Includes matchMedia polyfill for backward compatibility.
- * Copyright Â© 2013-2014 Jack Tarantino.
+ * Copyright © 2013-2014 Jack Tarantino.
 **/
 
 angular.module('matchMedia', [])
 
 
-.run(function () {
+.run(function initializeNgMatchMedia() {
   /*! matchMedia() polyfill - Test a CSS media type/query in JS.
    * Authors & copyright (c) 2012: Scott Jehl, Paul Irish, Nicholas Zakas, David Knight.
    * Dual MIT/BSD license
   **/
 
-  window.matchMedia || (window.matchMedia = function() {
-    "use strict";
+  window.matchMedia || (window.matchMedia = function matchMediaPolyfill() {
+    'use strict';
 
     // For browsers that support matchMedium api such as IE 9 and webkit
     var styleMedia = (window.styleMedia || window.media);
@@ -35,7 +35,7 @@ angular.module('matchMedia', [])
 
       // 'style.currentStyle' is used by IE <= 8
       // 'window.getComputedStyle' for all other browsers
-      info = ('getComputedStyle' in window) 
+      info = ('getComputedStyle' in window)
         && window.getComputedStyle(style, null)
         || style.currentStyle;
 
@@ -69,7 +69,7 @@ angular.module('matchMedia', [])
 
 // takes a comma-separated list of screen sizes to match.
 // returns true if any of them match.
-.service('screenSize', function () {
+.service('screenSize', function screenSize($rootScope) {
   'use strict';
 
   var defaultRules = {
@@ -78,10 +78,25 @@ angular.module('matchMedia', [])
     sm : '(min-width: 768px) and (max-width: 991px)',
     xs : '(max-width: 767px)'
   };
-
+  
+  var that = this;
+  
+  // Executes Angular $apply in a safe way
+  var safeApply = function(fn, scope) {
+    scope = scope || $rootScope;
+    var phase = scope.$root.$$phase;
+    if(phase === '$apply' || phase === '$digest') {
+        if(fn && (typeof(fn) === 'function')) {
+          fn();
+        }
+    } else {
+       scope.$apply(fn);
+    }
+  };
+  
   this.is = function (list) {
     var rules = this.rules || defaultRules;
-    
+
     // validate that we're getting a string or array.
     if (typeof list !== 'string' && typeof list !== 'array') {
       throw new Error('screenSize requires array or comma-separated list');
@@ -97,5 +112,16 @@ angular.module('matchMedia', [])
         return true;
       }
     });
+  };
+
+  // Returns the result of calling 'is' AND executes the 'callback' function with
+  // the result of calling 'is' on window resize. The 'scope' parameter
+  // is optional. If it's not passed in, '$rootScope' is used.
+  this.on = function (list, callback, scope) {
+    window.addEventListener('resize', function(event){
+        safeApply(callback(that.is(list)), scope);
+    });
+    
+    return that.is(list);
   };
 });

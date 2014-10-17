@@ -49,5 +49,4 @@ function HomeCtrl($scope, $http, $location) {
     // Retrieves list of organizations from backend
     $scope.getOrgList();
     
-
 }
