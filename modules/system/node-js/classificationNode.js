@@ -3,7 +3,7 @@ var mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , usersvc = require('../../system/node-js/usersrvc')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
-    , adminItemSvc = require("./adminItemSvc")    
+    , adminItemSvc = require("./adminItemSvc")     
 ;
 
 var classification = this;
@@ -60,7 +60,6 @@ exports.cdeClassification = function(body, action, cb) {
         if( !(body.categories instanceof Array) ) {
             body.categories = [body.categories];
         }
-
         if (action === classificationShared.actions.create) {
             classificationShared.addCategory(steward.object, body.categories, function(err) {
                 classification.saveCdeClassif(err, cde, cb);
@@ -75,15 +74,20 @@ exports.cdeClassification = function(body, action, cb) {
         dao.byId(body.cdeId, function(err, cde) {
             var steward = classificationShared.findSteward(cde, body.orgName);
             if (!steward) {
-                cde.classification.push({
-                    stewardOrg: {
-                        name: body.orgName
-                    }
-                    , elements: []
+                mongo_data_system.orgByName(body.orgName, function(stewardOrg) {
+                    var classifOrg = {
+                        stewardOrg: {
+                            name: body.orgName
+                        }
+                        , elements: []
+                    };                    
+                    
+                    if (stewardOrg.workingGroupOf) classifOrg.workingGroup = true;
+                    cde.classification.push(classifOrg);
+                    steward = classificationShared.findSteward(cde, body.orgName);  
+                    classify(steward, cde);
                 });
-                steward = classificationShared.findSteward(cde, body.orgName);
-            }
-            classify(steward, cde);
+            } else classify(steward, cde);
         });     
     });    
 };
