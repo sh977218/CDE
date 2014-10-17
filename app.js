@@ -64,7 +64,6 @@ app.use(express.cookieParser("Jk87fhK"));
 
 var expressSettings = {
     secret: "Kfji76R"
-    , store: mongo_data_system.sessionStore
     , proxy: config.proxy
     , cookie: {httpOnly: true, secure: config.proxy}
 };
@@ -77,6 +76,7 @@ app.use(function(req, res, next) {
         return false;
     };
     if ((req.cookies['connect.sid'] || req.originalUrl === "/login") && !this.isFile(req)) {
+        expressSettings.store = mongo_data_system.sessionStore;
         var initExpressSession = express.session(expressSettings);
         initExpressSession(req, res, next);
    } else {
