@@ -24,37 +24,6 @@ classification.saveCdeClassif = function(err, cde, cb) {
     });            
 };  
 
-//exports.cdeClassification = function(body, action, cb) {  
-//    daoManager.getDaoList().forEach(function(dao) {
-//        dao.byId(body.cdeId, function(err, cde) {
-//            var steward = classificationShared.findSteward(cde, body.orgName);
-//            if (!steward) {
-//                cde.classification.push({
-//                    stewardOrg: {
-//                        name: body.orgName
-//                    }
-//                    , elements: []
-//                });
-//                steward = classificationShared.findSteward(cde, body.orgName);
-//            }
-//
-//            if( !(body.categories instanceof Array) ) {
-//                body.categories = [body.categories];
-//            }
-//
-//            if (action === classificationShared.actions.create) {
-//                classificationShared.addCategory(steward.object, body.categories, function(err) {
-//                    classification.saveCdeClassif(err, cde, cb);
-//                });
-//            } else if (action === classificationShared.actions.delete) {
-//                classificationShared.modifyCategory(steward.object, body.categories, {type:"delete"}, function() {
-//                    classification.saveCdeClassif("", cde, cb);
-//                });
-//            }
-//        });     
-//    });    
-//};
-
 exports.cdeClassification = function(body, action, cb) {  
     var classify = function (steward, cde) {
         if( !(body.categories instanceof Array) ) {
