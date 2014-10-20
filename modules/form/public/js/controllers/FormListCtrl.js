@@ -17,4 +17,35 @@ function FormListCtrl($scope, $http, $controller) {
         $scope.cache.put($scope.getCacheName("registrationStatuses"), $scope.registrationStatuses);
         $scope.reload();
     };       
+    
+    $scope.selectedOrg = $scope.cache.get($scope.getCacheName("selectedOrg"));    
+    $scope.selectedElements = $scope.cache.get($scope.getCacheName("selectedElements"));
+    if (!$scope.selectedElements) {
+        $scope.selectedElements = [];
+    }  
+    
+    $scope.selectElement = function(e) {        
+        if ($scope.selectedElements === undefined) {
+            $scope.selectedElements = [];
+            $scope.selectedElements.push(e);
+        } else {
+            var i = $scope.selectedElements.indexOf(e);
+            if (i > -1) {
+                $scope.selectedElements.length = i;
+            } else {
+                $scope.selectedElements.push(e);
+            }
+        }
+        $scope.cache.put($scope.getCacheName("selectedElements"), $scope.selectedElements);
+        $scope.reload();
+    };    
+    
+    $scope.cacheOrgFilter = function(t) {
+        $scope.cache.put($scope.getCacheName("selectedOrg"), t);       
+    };
+    
+    $scope.removeCacheOrgFilter = function() {
+        $scope.cache.remove($scope.getCacheName("selectedOrg"));
+        $scope.cache.remove($scope.getCacheName("selectedElements"));            
+    };      
 }

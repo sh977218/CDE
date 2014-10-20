@@ -185,14 +185,14 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         }        
     };
 
-    $scope.cacheOrgFilter = function(t) {
-        $scope.cache.put("selectedOrg", t);       
-    };
-    
-    $scope.removeCacheOrgFilter = function() {
-        $scope.cache.remove("selectedOrg");
-        $scope.cache.remove("selectedElements");            
-    };
+//    $scope.cacheOrgFilter = function(t) {
+//        $scope.cache.put("selectedOrg", t);       
+//    };
+//    
+//    $scope.removeCacheOrgFilter = function() {
+//        $scope.cache.remove("selectedOrg");
+//        $scope.cache.remove("selectedElements");            
+//    };
 
     $scope.initCache(); 
     $scope.openCloseAllModel = {};

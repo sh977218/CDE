@@ -25,12 +25,12 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
         return "search." + $scope.module + "." + name;
     };
 
-    $scope.selectedOrg = $scope.cache.get("selectedOrg");
-    
-    $scope.selectedElements = $scope.cache.get("selectedElements");
-    if (!$scope.selectedElements) {
-        $scope.selectedElements = [];
-    }
+//    $scope.selectedOrg = $scope.cache.get("selectedOrg");
+//    
+//    $scope.selectedElements = $scope.cache.get("selectedElements");
+//    if (!$scope.selectedElements) {
+//        $scope.selectedElements = [];
+//    }
     
     $scope.totalItems = $scope.cache.get("totalItems");
     
@@ -107,21 +107,21 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
         $scope.reload();
     };
 
-    $scope.selectElement = function(e) {        
-        if ($scope.selectedElements === undefined) {
-            $scope.selectedElements = [];
-            $scope.selectedElements.push(e);
-        } else {
-            var i = $scope.selectedElements.indexOf(e);
-            if (i > -1) {
-                $scope.selectedElements.length = i;
-            } else {
-                $scope.selectedElements.push(e);
-            }
-        }
-        $scope.cache.put("selectedElements", $scope.selectedElements);
-        $scope.reload();
-    };
+//    $scope.selectElement = function(e) {        
+//        if ($scope.selectedElements === undefined) {
+//            $scope.selectedElements = [];
+//            $scope.selectedElements.push(e);
+//        } else {
+//            var i = $scope.selectedElements.indexOf(e);
+//            if (i > -1) {
+//                $scope.selectedElements.length = i;
+//            } else {
+//                $scope.selectedElements.push(e);
+//            }
+//        }
+//        $scope.cache.put("selectedElements", $scope.selectedElements);
+//        $scope.reload();
+//    };
     
     // Create string representation of what status filters are selected    
     $scope.getSelectedStatuses = function() {
