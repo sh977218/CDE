@@ -53,19 +53,19 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
 //        $scope.reload();
 //    }; 
 
-    $scope.resetSearch = function() {
-        delete $scope.aggregations;
-        $scope.filter = []; 
-        delete $scope.searchForm.ftsearch;
-        delete $scope.selectedOrg;
-        $scope.selectedElements = [];
-        for (var i in $scope.registrationStatuses) {
-            $scope.registrationStatuses[i].selected = false;
-        }
-        $scope.cache.removeAll();
-        $scope.currentSearchTerm = null;
-        $scope.reload();
-    };
+//    $scope.resetSearch = function() {
+//        delete $scope.aggregations;
+//        $scope.filter = []; 
+//        delete $scope.searchForm.ftsearch;
+//        delete $scope.selectedOrg;
+//        $scope.selectedElements = [];
+//        for (var i in $scope.registrationStatuses) {
+//            $scope.registrationStatuses[i].selected = false;
+//        }
+//        $scope.cache.removeAll();
+//        $scope.currentSearchTerm = null;
+//        $scope.reload();
+//    };
 
     $scope.search = function() {
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;

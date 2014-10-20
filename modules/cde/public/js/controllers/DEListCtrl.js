@@ -53,5 +53,24 @@ function DEListCtrl($scope, $controller) {
     $scope.removeCacheOrgFilter = function() {
         $scope.cache.remove($scope.getCacheName("selectedOrg"));
         $scope.cache.remove($scope.getCacheName("selectedElements"));            
-    };     
+    };   
+    
+    $scope.resetSearch = function() {
+        delete $scope.aggregations;
+        $scope.filter = []; 
+        delete $scope.searchForm.ftsearch;
+        delete $scope.selectedOrg;
+        $scope.selectedElements = [];
+        for (var i in $scope.registrationStatuses) {
+            $scope.registrationStatuses[i].selected = false;
+        }
+        //$scope.cache.removeAll();
+        $scope.cache.remove($scope.getCacheName("selectedOrg"));
+        $scope.cache.remove($scope.getCacheName("selectedElements"));  
+        $scope.cache.remove($scope.getCacheName("registrationStatuses"));
+        $scope.cache.remove($scope.getCacheName("ftsearch"));  
+        
+        $scope.currentSearchTerm = null;
+        $scope.reload();
+    };    
 }
