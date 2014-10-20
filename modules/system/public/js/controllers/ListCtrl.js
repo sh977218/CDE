@@ -7,16 +7,19 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
     
     $scope.query = null;
 
-    $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
-    if ($scope.registrationStatuses === undefined) {
-        $scope.registrationStatuses = regStatusShared.statusList;
-    }
+//    $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
+//    if ($scope.registrationStatuses === undefined) {
+//        $scope.registrationStatuses = regStatusShared.statusList;
+//    }
 
 //    $scope.searchForm = {};
-//
 //    $scope.searchForm.ftsearch = $scope.cache.get("ftsearch");
-    
 //    $scope.currentSearchTerm = $scope.searchForm.ftsearch;
+
+//    $scope.searchForm = {};
+//    $scope.searchForm.ftsearch = $scope.cache.get("ftsearch");
+//    $scope.currentSearchTerm = $scope.searchForm.ftsearch;
+
 
     $scope.getCacheName = function(name) {
         return "search." + $scope.module + "." + name;
@@ -44,11 +47,11 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
     });
 
     
-    $scope.addStatusFilter = function(t) {
-        t.selected = !t.selected;
-        $scope.cache.put("registrationStatuses", $scope.registrationStatuses);
-        $scope.reload();
-    }; 
+//    $scope.addStatusFilter = function(t) {
+//        t.selected = !t.selected;
+//        $scope.cache.put("registrationStatuses", $scope.registrationStatuses);
+//        $scope.reload();
+//    }; 
 
     $scope.resetSearch = function() {
         delete $scope.aggregations;

@@ -77,7 +77,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         return $scope.user !== undefined && $scope.user.siteAdmin;
     };
     
-    $scope.registrationStatuses = ['Retired', 'Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard'];
+    //$scope.registrationStatuses = ['Retired', 'Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Standard', 'Preferred Standard'];
 
     $scope.setMyOrgs = function() {
         if ($scope.user && $scope.user.orgAdmin) {
