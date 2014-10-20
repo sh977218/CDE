@@ -9,6 +9,7 @@ var csEltSchema = mongoose.Schema({
 
 exports.classificationSchema = mongoose.Schema({
     stewardOrg: {name: String}
+    , workingGroup: Boolean
     , elements: [csEltSchema]
 }, {_id: false});
 
