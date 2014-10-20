@@ -10,7 +10,7 @@ public class SearchTest extends NlmCdeBaseTest {
     public void saveSearchState() {
         goToCdeSearch();
         findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
-        findElement(By.xpath("//small[text()=\" CATEGORY (50)\"]")).click();
+        findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
         findElement(By.xpath("//i[@id=\"li-blank-Qualified\"]")).click();
         findElement(By.name("ftsearch")).sendKeys("name");
         findElement(By.id("search.submit")).click();     
