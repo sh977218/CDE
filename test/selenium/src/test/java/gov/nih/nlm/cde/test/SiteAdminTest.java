@@ -13,23 +13,23 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.linkText("Organizations")).click();
     }
 
-    private void removeOrg(String orgName) {
-        findElement(By.linkText("Account")).click();
-        findElement(By.linkText("Site Management")).click();
-        findElement(By.linkText("Organizations")).click();
-        
-        int length = driver.findElements(By.xpath("//i[contains(@id,'removeOrg-')]")).size();
-        for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("orgName-" + i)).getText();
-            if (orgName.equals(name)) {
-                findElement(By.id("removeOrg-" + i)).click();     
-                i = length;
-            }
-        }
-        
-        Assert.assertTrue(textPresent("Org Removed"));
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(orgName) < 0);
-    }
+//    private void removeOrg(String orgName) {
+//        findElement(By.linkText("Account")).click();
+//        findElement(By.linkText("Site Management")).click();
+//        findElement(By.linkText("Organizations")).click();
+//        
+//        int length = driver.findElements(By.xpath("//i[contains(@id,'removeOrg-')]")).size();
+//        for (int i = 0; i < length; i++) {
+//            String name = findElement(By.id("orgName-" + i)).getText();
+//            if (orgName.equals(name)) {
+//                findElement(By.id("removeOrg-" + i)).click();     
+//                i = length;
+//            }
+//        }
+//        
+//        Assert.assertTrue(textPresent("Org Removed"));
+//        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(orgName) < 0);
+//    }
     
     @Test
     public void addOrg() {
@@ -158,25 +158,25 @@ public class SiteAdminTest extends NlmCdeBaseTest {
     
     } 
     
-//    @Test
-//    public void browseUsers() {
-//        mustBeLoggedInAs(nlm_username, nlm_password);
-//        findElement(By.id("username_link")).click();
-//        findElement(By.linkText("Audit")).click();
-//        findElement(By.name("search")).sendKeys("cabig");
-//        findElement(By.id("search.submit")).click();
-//        hangon(.5);
-//        Assert.assertEquals("cabigAdmin", findElement(By.id("dd_username_0")).getText());
-//        Assert.assertEquals("[\"caBIG\"]", findElement(By.id("dd_orgAdmin_0")).getText());
-//        Assert.assertEquals("N/A", findElement(By.id("dd_siteAdmin_0")).getText());
-//
-//        findElement(By.name("search")).clear();            
-//        findElement(By.name("search")).sendKeys("nlm");
-//        findElement(By.id("search.submit")).click();
-//        hangon(.5);
-//        Assert.assertEquals("nlm", findElement(By.id("dd_username_0")).getText());
-//        Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\"]", findElement(By.id("dd_orgAdmin_0")).getText());
-//        Assert.assertEquals("true", findElement(By.id("dd_siteAdmin_0")).getText());
-//    }
+    @Test
+    public void browseUsers() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Audit")).click();
+        findElement(By.name("search")).sendKeys("cabig");
+        findElement(By.id("search.submit")).click();
+        hangon(.5);
+        Assert.assertEquals("cabigAdmin", findElement(By.id("dd_username_0")).getText());
+        Assert.assertEquals("[\"caBIG\"]", findElement(By.id("dd_orgAdmin_0")).getText());
+        Assert.assertEquals("N/A", findElement(By.id("dd_siteAdmin_0")).getText());
+
+        findElement(By.name("search")).clear();            
+        findElement(By.name("search")).sendKeys("nlm");
+        findElement(By.id("search.submit")).click();
+        hangon(.5);
+        Assert.assertEquals("nlm", findElement(By.id("dd_username_0")).getText());
+        Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\"]", findElement(By.id("dd_orgAdmin_0")).getText());
+        Assert.assertEquals("true", findElement(By.id("dd_siteAdmin_0")).getText());
+    }
     
 }
