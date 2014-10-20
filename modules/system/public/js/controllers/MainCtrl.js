@@ -212,10 +212,16 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     };
 
     $scope.searchByClassification = function(orgName, elts, type) {
-        $scope.cache.removeAll();
-        $scope.cacheOrgFilter(orgName);
-        $scope.cache.put("selectedElements", elts);
+//        $scope.cache.removeAll();
+//        $scope.cacheOrgFilter(orgName);
+//        $scope.cache.put("selectedElements", elts);
+//        $location.url('/'+type+'/search');
+        $scope.cache.removeAll();        
+        $scope.cache.remove("search." + type + "." + "selectedOrg");
+        $scope.cache.remove("search." + type + "." + "selectedElements");        
+        $scope.cache.put("search." + type + "." + "selectedElements", elts);
         $location.url('/'+type+'/search');
+
     };
     
     $scope.screenSizeXs = screenSize.is('xs');
