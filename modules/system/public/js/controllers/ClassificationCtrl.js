@@ -40,5 +40,8 @@
         });
     };     
   
+    $scope.hideWorkingGroups = function(stewardClassifications) {
+        return stewardClassifications.workingGroup && !($scope.myOrgs.indexOf(stewardClassifications.stewardOrg.name)>=0);
+    };
  }
  
