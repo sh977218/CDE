@@ -7,7 +7,7 @@ function DEListCtrl($scope, $controller) {
         appendTo: "body"
     };
     $scope.searchForm = {};
-    $scope.searchForm.ftsearch = $scope.cache.get("ftsearch"+$scope.module);    
-    $scope.currentSearchTerm = $scope.searchForm.ftsearch;
     $controller('ListCtrl', {$scope: $scope}); 
+    $scope.searchForm.ftsearch = $scope.cache.get($scope.getCacheName("ftsearch"));    
+    $scope.currentSearchTerm = $scope.searchForm.ftsearch;    
 }

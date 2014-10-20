@@ -18,6 +18,10 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
     
 //    $scope.currentSearchTerm = $scope.searchForm.ftsearch;
 
+    $scope.getCacheName = function(name) {
+        return "search." + $scope.module + "." + name;
+    };
+
     $scope.selectedOrg = $scope.cache.get("selectedOrg");
     
     $scope.selectedElements = $scope.cache.get("selectedElements");
@@ -62,7 +66,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
 
     $scope.search = function() {
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;
-        $scope.cache.put("ftsearch"+$scope.module, $scope.searchForm.ftsearch);
+        $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
         $scope.reload();
         
     };
