@@ -12,11 +12,11 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
         $scope.registrationStatuses = regStatusShared.statusList;
     }
 
-    $scope.searchForm = {};
-
-    $scope.searchForm.ftsearch = $scope.cache.get("ftsearch");
+//    $scope.searchForm = {};
+//
+//    $scope.searchForm.ftsearch = $scope.cache.get("ftsearch");
     
-    $scope.currentSearchTerm = $scope.searchForm.ftsearch;
+//    $scope.currentSearchTerm = $scope.searchForm.ftsearch;
 
     $scope.selectedOrg = $scope.cache.get("selectedOrg");
     
@@ -62,7 +62,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
 
     $scope.search = function() {
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;
-        $scope.cache.put("ftsearch", $scope.searchForm.ftsearch);
+        $scope.cache.put("ftsearch"+$scope.module, $scope.searchForm.ftsearch);
         $scope.reload();
         
     };
