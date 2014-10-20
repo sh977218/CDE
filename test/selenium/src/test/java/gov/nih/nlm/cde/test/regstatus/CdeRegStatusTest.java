@@ -70,7 +70,7 @@ public class CdeRegStatusTest extends RegStatusTest {
         closeAlert();
         hangon(3);
         findElement(By.linkText("CDEs")).click();
-        hangon(1);
+        showSearchFilters();
         findElement(By.id("li-blank-Preferred Standard")).click();
         Assert.assertTrue(textPresent("1 results for"));
         findElement(By.xpath("//i[@title='View']")).click();

@@ -144,7 +144,9 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         gotoClassifMgt(); 
         createClassificationName(new String[]{"Classification Transfer"});
+        closeAlert();
         createClassificationName(new String[]{"Classification Transfer","Child Classification"});
+        closeAlert();
         findElement(By.xpath("//li[@id=\"classification-Disease,Duchenne Muscular Dystrophy/Becker Muscular Dystrophy\"]//a[@class=\"classifyAll\"]")).click();
         findElement(By.xpath("//div[@id='addClassificationModalBody']//span[text()='Classification Transfer']")).click();
         findElement(By.xpath("//div[@id='addClassification-Child Classification']//button")).click();        

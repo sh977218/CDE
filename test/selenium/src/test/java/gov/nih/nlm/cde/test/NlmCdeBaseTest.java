@@ -21,6 +21,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.TimeoutException;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -296,8 +297,15 @@ public class NlmCdeBaseTest {
     }
     
     protected void saveCde() {
-        findElement(By.id("confirmSave")).click();
+        try {
+            findElement(By.id("confirmSave")).click();
+        } catch( WebDriverException wde ) {
+            hangon(1);
+            findElement(By.id("confirmSave")).click();
+        }
+        
         hangon(2);
+
     }
     
     public void hangon(double i)  {
@@ -341,6 +349,7 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/gonowhere");
         driver.get(baseUrl + "/#/"+type+"/search");
         findElement(By.name("ftsearch"));
+        showSearchFilters();
         Assert.assertTrue(textPresent("Qualified ("));
     }
     
@@ -514,4 +523,12 @@ public class NlmCdeBaseTest {
         hangon(1);
     }
     
+    protected void showSearchFilters() {
+        try {
+            hangon(1.5);
+            findElement(By.xpath("//button//span[contains(text(),'Show Filters')]")).click();
+            hangon(.5);
+        } catch( TimeoutException te ) {
+        }
+    }
 }
