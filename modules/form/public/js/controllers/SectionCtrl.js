@@ -1,4 +1,4 @@
-function SectionCtrl($scope, $modal, $timeout) {
+function SectionCtrl($scope, $modal, $timeout, $http) {
     
     $scope.cardinalityOptions = 
     {
@@ -7,6 +7,8 @@ function SectionCtrl($scope, $modal, $timeout) {
         , "*": "0 or more"
         , "0.1": "0 or 1"
     };
+    
+    $scope.availableColors = ["blue", "green"];
 
     $scope.addSection = function() {
         if (!$scope.elt.formElements) {
@@ -26,14 +28,32 @@ function SectionCtrl($scope, $modal, $timeout) {
                     , cardinality: "1"
                     , question: {
                         cde: {tinyId: cde.tinyId
-                            , version: cde.version}
+                            , version: cde.version
+                            }
                         , datatype: cde.valueDomain.datatype
                         , required: false
                         , uoms: []
                     }
                 };
                 if (cde.valueDomain.uom) {
-                    question.uoms.push(cde.valueDomain.uom);
+                    question.question.uoms.push(cde.valueDomain.uom);
+                }
+                if (cde.valueDomain.permissibleValues.length > 0) {
+                    question.question.answers = [];
+                    question.question.cde.permissibleValues = [];
+                    if (cde.valueDomain.permissibleValues.length > 9) {
+                        $http.get("debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
+                            result.data.valueDomain.permissibleValues.forEach(function(pv) {
+                                question.question.answers.push(pv); 
+                                question.question.cde.permissibleValues .push(pv);  
+                            });
+                        });
+                    } else {
+                        cde.valueDomain.permissibleValues.forEach(function(pv) {
+                            question.question.answers.push(pv); 
+                            question.question.cde.permissibleValues.push(pv);
+                        });
+                    }
                 }
                 ui.item.sortable.moved = question;
             }
@@ -57,6 +77,28 @@ function SectionCtrl($scope, $modal, $timeout) {
             $scope.stageElt();
         });
     };
+    
+//    $scope.getPvs = function(question) {
+//        var cde = question.question.cde;
+//        if (!cde.loaded) {
+//            cde.loaded = true;
+//            $http.get("debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
+//                cde.permissibleValues = result.data.valueDomain.permissibleValues;
+//            }); 
+//            return [];
+//        } else {
+//            return cde.permissibleValues;
+//        }
+//        
+//    };
+    
+//    $scope.loadPvs = function(cde) {
+//        if (!cde.loaded) {
+//            $http.get("debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
+//                cde.permissibleValues = result.data.valueDomain.permissibleValues;
+//            }); 
+//        }
+//    };
 
     $scope.checkUom = function(question, index) {
         $timeout(function() {
