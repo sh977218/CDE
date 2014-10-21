@@ -7,7 +7,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
     $scope.$watch('currentPage', function() {
         $scope.showSuggestions();
     }); 
-    
+        
     $scope.elt = { classification: []}; 
     $scope.save = function() {
         $scope.elt.naming = [];
@@ -75,7 +75,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
             return;
         }
         suggestionPromise = $timeout(function () {            
-            Elastic.buildElasticQueryPre($scope);
+            $scope.filter = Elastic.buildElasticQueryPre($scope);
             var settings = Elastic.buildElasticQuerySettings($scope);
             settings.searchTerm = $scope.elt.designation;
             Elastic.buildElasticQuery(settings, function(query) {

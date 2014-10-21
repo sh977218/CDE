@@ -1,37 +1,40 @@
 function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeout) {
     $scope.filterMode = true;
 
+    $scope.searchForm = {};
+    $scope.registrationStatuses = [];
+
     $scope.hideShowFilter = function() {
         $scope.filterMode = !$scope.filterMode;
     };
     
     $scope.query = null;
+    
+    $scope.getCacheName = function(name) {
+        return "search." + $scope.module + "." + name;
+    };    
 
-    $scope.registrationStatuses = $scope.cache.get("registrationStatuses");
+    $scope.registrationStatuses = $scope.cache.get($scope.getCacheName("registrationStatuses"));
     if ($scope.registrationStatuses === undefined) {
-        $scope.registrationStatuses = regStatusShared.statusList;
-    }
+        $scope.registrationStatuses = JSON.parse(JSON.stringify(regStatusShared.statusList));
+    }   
 
-    $scope.searchForm = {};
-
-    $scope.searchForm.ftsearch = $scope.cache.get("ftsearch");
-    
-    $scope.currentSearchTerm = $scope.searchForm.ftsearch;
-
-    $scope.selectedOrg = $scope.cache.get("selectedOrg");
-    
-    $scope.selectedElements = $scope.cache.get("selectedElements");
+    $scope.searchForm.ftsearch = $scope.cache.get($scope.getCacheName("ftsearch")); 
+    $scope.currentSearchTerm = $scope.searchForm.ftsearch;   
+   
+    $scope.selectedOrg = $scope.cache.get($scope.getCacheName("selectedOrg"));    
+    $scope.selectedElements = $scope.cache.get($scope.getCacheName("selectedElements"));
     if (!$scope.selectedElements) {
         $scope.selectedElements = [];
-    }
+    }       
     
-    $scope.totalItems = $scope.cache.get("totalItems");
-    
-    $scope.searchForm.currentPage = $scope.cache.get("currentPage");
+    $scope.totalItems = $scope.cache.get($scope.getCacheName("totalItems"));
+
+    $scope.searchForm.currentPage = $scope.cache.get($scope.getCacheName("currentPage"));
     
     $scope.$watch('searchForm.currentPage', function() {
         if (!$scope.searchForm.currentPage) return;
-        $scope.cache.put("currentPage", $scope.searchForm.currentPage);
+        $scope.cache.put($scope.getCacheName("currentPage"), $scope.searchForm.currentPage);
         $scope.reload();
     });
 
@@ -42,27 +45,31 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
     
     $scope.addStatusFilter = function(t) {
         t.selected = !t.selected;
-        $scope.cache.put("registrationStatuses", $scope.registrationStatuses);
+        $scope.cache.put($scope.getCacheName("registrationStatuses"), $scope.registrationStatuses);
         $scope.reload();
     }; 
 
     $scope.resetSearch = function() {
         delete $scope.aggregations;
-        $scope.filter = []; 
+        delete $scope.filter;
         delete $scope.searchForm.ftsearch;
         delete $scope.selectedOrg;
         $scope.selectedElements = [];
         for (var i in $scope.registrationStatuses) {
             $scope.registrationStatuses[i].selected = false;
         }
-        $scope.cache.removeAll();
+        $scope.cache.remove($scope.getCacheName("selectedOrg"));
+        $scope.cache.remove($scope.getCacheName("selectedElements"));  
+        $scope.cache.remove($scope.getCacheName("registrationStatuses"));
+        $scope.cache.remove($scope.getCacheName("ftsearch"));   
+        
         $scope.currentSearchTerm = null;
         $scope.reload();
-    };
+    };  
 
     $scope.search = function() {
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;
-        $scope.cache.put("ftsearch", $scope.searchForm.ftsearch);
+        $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
         $scope.reload();
         
     };
@@ -112,9 +119,18 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
                 $scope.selectedElements.push(e);
             }
         }
-        $scope.cache.put("selectedElements", $scope.selectedElements);
+        $scope.cache.put($scope.getCacheName("selectedElements"), $scope.selectedElements);
         $scope.reload();
+    };    
+    
+    $scope.cacheOrgFilter = function(t) {
+        $scope.cache.put($scope.getCacheName("selectedOrg"), t);       
     };
+    
+    $scope.removeCacheOrgFilter = function() {
+        $scope.cache.remove($scope.getCacheName("selectedOrg"));
+        $scope.cache.remove($scope.getCacheName("selectedElements"));            
+    };   
     
     // Create string representation of what status filters are selected    
     $scope.getSelectedStatuses = function() {
@@ -135,7 +151,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
     $scope.reload = function() {
         if (!$scope.userLoaded) return;
         $scope.accordionListStyle = "semi-transparent";
-        Elastic.buildElasticQueryPre($scope);
+        $scope.filter = Elastic.buildElasticQueryPre($scope);
         var settings = Elastic.buildElasticQuerySettings($scope);
         Elastic.buildElasticQuery(settings, function(query) {
             $scope.query = query;
@@ -145,7 +161,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
                 $scope.accordionListStyle = "";
                 $scope.openCloseAll($scope.cdes, "list");
                 $scope.totalItems = result.totalNumber;
-                $scope.cache.put("totalItems", $scope.totalItems);
+                $scope.cache.put($scope.getCacheName("totalItems"), $scope.totalItems);
                 $scope.aggregations = result.aggregations;
                 
                 for (var j = 0; j < $scope.registrationStatuses.length; j++) {
