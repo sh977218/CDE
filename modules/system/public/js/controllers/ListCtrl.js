@@ -1,6 +1,9 @@
 function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeout) {
     $scope.filterMode = true;
 
+    $scope.searchForm = {};
+    $scope.registrationStatuses = [];
+
     $scope.hideShowFilter = function() {
         $scope.filterMode = !$scope.filterMode;
     };
