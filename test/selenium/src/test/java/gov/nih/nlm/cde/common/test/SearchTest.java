@@ -14,11 +14,11 @@ public class SearchTest extends NlmCdeBaseTest {
         findElement(By.xpath("//i[@id=\"li-blank-Qualified\"]")).click();
         findElement(By.name("ftsearch")).sendKeys("name");
         findElement(By.id("search.submit")).click();     
-        textPresent("4 results for CTEP : CATEGORY | name | Qualified");
+        textPresent("results for CTEP : CATEGORY | name | Qualified");
         findElement(By.linkText("Forms")).click();     
         textNotPresent("CATEGORY");
         findElement(By.linkText("CDEs")).click();     
-        textPresent("4 results for CTEP : CATEGORY | name | Qualified");
+        textPresent("results for CTEP : CATEGORY | name | Qualified");
     }
     
 }

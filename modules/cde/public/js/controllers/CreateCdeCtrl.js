@@ -8,6 +8,8 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
         $scope.showSuggestions();
     }); 
     
+    $scope.registrationStatuses = [];
+    
     $scope.elt = { classification: []}; 
     $scope.save = function() {
         $scope.elt.naming = [];

@@ -185,15 +185,6 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         }        
     };
 
-//    $scope.cacheOrgFilter = function(t) {
-//        $scope.cache.put("selectedOrg", t);       
-//    };
-//    
-//    $scope.removeCacheOrgFilter = function() {
-//        $scope.cache.remove("selectedOrg");
-//        $scope.cache.remove("selectedElements");            
-//    };
-
     $scope.initCache(); 
     $scope.openCloseAllModel = {};
     $scope.openCloseAllModel["list"] = $scope.cache.get("openCloseAlllist");
@@ -212,13 +203,10 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     };
 
     $scope.searchByClassification = function(orgName, elts, type) {
-//        $scope.cache.removeAll();
-//        $scope.cacheOrgFilter(orgName);
-//        $scope.cache.put("selectedElements", elts);
-//        $location.url('/'+type+'/search');
         $scope.cache.removeAll();        
         $scope.cache.remove("search." + type + "." + "selectedOrg");
-        $scope.cache.remove("search." + type + "." + "selectedElements");        
+        $scope.cache.remove("search." + type + "." + "selectedElements"); 
+        $scope.cache.put("search." + type + "." + "selectedOrg", orgName);   
         $scope.cache.put("search." + type + "." + "selectedElements", elts);
         $location.url('/'+type+'/search');
 
