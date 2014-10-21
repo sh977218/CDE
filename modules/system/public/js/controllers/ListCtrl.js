@@ -25,7 +25,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
         $scope.selectedElements = [];
     }       
     
-    $scope.totalItems = $scope.cache.get("totalItems");
+    $scope.totalItems = $scope.cache.get($scope.getCacheName("totalItems"));
     
 //    $scope.searchForm.currentPage = $scope.cache.get("currentPage");
 //    
@@ -42,6 +42,12 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
         $scope.cache.put($scope.getCacheName("currentPage"), $scope.searchForm.currentPage);
         $scope.reload();
     });
+
+//    $scope.selectPage = function(no) {
+//        $scope.searchForm.currentPage = no;
+//        $scope.cache.put($scope.getCacheName("currentPage"), $scope.searchForm.currentPage);
+//        $scope.reload();
+//    };
 
     $scope.$watch('userLoaded', function() {
         $scope.reload();        
@@ -166,7 +172,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
                 $scope.accordionListStyle = "";
                 $scope.openCloseAll($scope.cdes, "list");
                 $scope.totalItems = result.totalNumber;
-                $scope.cache.put("totalItems", $scope.totalItems);
+                $scope.cache.put($scope.getCacheName("totalItems"), $scope.totalItems);
                 $scope.aggregations = result.aggregations;
                 
                 for (var j = 0; j < $scope.registrationStatuses.length; j++) {
