@@ -8,8 +8,6 @@ function SectionCtrl($scope, $modal, $timeout, $http) {
         , "0.1": "0 or 1"
     };
     
-    $scope.availableColors = ["blue", "green"];
-
     $scope.addSection = function() {
         if (!$scope.elt.formElements) {
             $scope.elt.formElements = [];

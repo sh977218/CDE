@@ -103,7 +103,7 @@
                                     <dd id="dd_d_cde_{{$index}}"><a href="/#/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}" target="_blank"><i class="fa fa-eye"></i> View</a></dd>
                                 </dl>
                                 <div class="col-md-6 answerList" >
-                                    <ui-select multiple ng-model="question.question.answers" theme="select2" ng-disabled="disabled">
+                                    <ui-select multiple ng-model="question.question.answers" theme="select2" ng-disabled="!canCurate">
                                         <ui-select-match placeholder="Select answers...">{{$item.permissibleValue}}</ui-select-match>
                                         <ui-select-choices repeat="pv in question.question.cde.permissibleValues | filter:$select.search ">
                                           {{pv.permissibleValue}}
