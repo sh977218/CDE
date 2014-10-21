@@ -1,11 +1,7 @@
 angular.module('resources')
 .factory('Elastic', function($http) {
     return {
-        filter: {and: []}
-        , resetSearch: function () {
-            this.filter = {and: []};
-        }
-        , buildElasticQueryPre: function (scope) {
+        buildElasticQueryPre: function (scope) {
             var regStatuses = scope.registrationStatuses;
             if (!regStatuses) regStatuses = [];
             var regStatusOr = [];
@@ -15,9 +11,11 @@ angular.module('resources')
                     regStatusOr.push({term: {"registrationState.registrationStatus": t.name}});
                 }
             }
+            var filter = {and: []};
             if (regStatusOr.length > 0) {
-                this.filter.and.push({or: regStatusOr});
-            }               
+                filter.and.push({or: regStatusOr});
+            }      
+            return filter;
         }
         , buildElasticQuerySettings: function(scope){
             var settings = {
@@ -27,7 +25,7 @@ angular.module('resources')
                 , myOrgs: scope.myOrgs
                 , selectedOrg: scope.selectedOrg
                 , selectedElements: this.getSelectedElements(scope)
-                , filter: this.filter
+                , filter: scope.filter
                 , currentPage: scope.searchForm.currentPage
             };
             return settings;

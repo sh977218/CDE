@@ -48,7 +48,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
 
     $scope.resetSearch = function() {
         delete $scope.aggregations;
-        Elastic.resetSearch(); 
+        delete $scope.filter;
         delete $scope.searchForm.ftsearch;
         delete $scope.selectedOrg;
         $scope.selectedElements = [];
@@ -148,7 +148,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
     $scope.reload = function() {
         if (!$scope.userLoaded) return;
         $scope.accordionListStyle = "semi-transparent";
-        Elastic.buildElasticQueryPre($scope);
+        $scope.filter = Elastic.buildElasticQueryPre($scope);
         var settings = Elastic.buildElasticQuerySettings($scope);
         Elastic.buildElasticQuery(settings, function(query) {
             $scope.query = query;
