@@ -1,17 +1,22 @@
 angular.module('resources')
 .factory('Elastic', function($http) {
     return {
-        buildElasticQueryPre: function (scope) {
-            scope.filter = {and: []};
+        filter: {and: []}
+        , resetSearch: function () {
+            this.filter = {and: []};
+        }
+        , buildElasticQueryPre: function (scope) {
+            var regStatuses = scope.registrationStatuses;
+            if (!regStatuses) regStatuses = [];
             var regStatusOr = [];
-            for (var i = 0; i < scope.registrationStatuses.length; i++) {
-                var t = scope.registrationStatuses[i];
+            for (var i = 0; i < regStatuses.length; i++) {
+                var t = regStatuses[i];
                 if (t.selected === true) {
                     regStatusOr.push({term: {"registrationState.registrationStatus": t.name}});
                 }
             }
             if (regStatusOr.length > 0) {
-                scope.filter.and.push({or: regStatusOr});
+                this.filter.and.push({or: regStatusOr});
             }               
         }
         , buildElasticQuerySettings: function(scope){
@@ -22,7 +27,7 @@ angular.module('resources')
                 , myOrgs: scope.myOrgs
                 , selectedOrg: scope.selectedOrg
                 , selectedElements: this.getSelectedElements(scope)
-                , filter: scope.filter
+                , filter: this.filter
                 , currentPage: scope.searchForm.currentPage
             };
             return settings;

@@ -48,7 +48,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
 
     $scope.resetSearch = function() {
         delete $scope.aggregations;
-        $scope.filter = []; 
+        Elastic.resetSearch(); 
         delete $scope.searchForm.ftsearch;
         delete $scope.selectedOrg;
         $scope.selectedElements = [];
