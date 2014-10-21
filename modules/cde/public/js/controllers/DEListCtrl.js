@@ -8,5 +8,6 @@ function DEListCtrl($scope, $controller) {
     };
     $scope.searchForm = {};
     $scope.registrationStatuses = [];
+    $scope.searchForm.currentPage = 1;
     $controller('ListCtrl', {$scope: $scope}); 
 }

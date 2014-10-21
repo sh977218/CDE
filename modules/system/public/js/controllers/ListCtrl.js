@@ -27,11 +27,19 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, $timeo
     
     $scope.totalItems = $scope.cache.get("totalItems");
     
-    $scope.searchForm.currentPage = $scope.cache.get("currentPage");
+//    $scope.searchForm.currentPage = $scope.cache.get("currentPage");
+//    
+//    $scope.$watch('searchForm.currentPage', function() {
+//        if (!$scope.searchForm.currentPage) return;
+//        $scope.cache.put("currentPage", $scope.searchForm.currentPage);
+//        $scope.reload();
+//    });
+
+    $scope.searchForm.currentPage = $scope.cache.get($scope.getCacheName("currentPage"));
     
     $scope.$watch('searchForm.currentPage', function() {
         if (!$scope.searchForm.currentPage) return;
-        $scope.cache.put("currentPage", $scope.searchForm.currentPage);
+        $scope.cache.put($scope.getCacheName("currentPage"), $scope.searchForm.currentPage);
         $scope.reload();
     });
 
