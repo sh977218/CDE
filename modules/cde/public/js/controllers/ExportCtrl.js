@@ -36,7 +36,7 @@ function ExportCtrl($scope, $window, Elastic, CsvDownload) {
         $scope.encodedStr = "data:text/csv;charset=utf-8," + encodeURIComponent($scope.columnNames() + CsvDownload.export($scope.gridCdes));
     };
 
-    Elastic.buildElasticQueryPre($scope);
+    $scope.filter = Elastic.buildElasticQueryPre($scope);
     var settings = Elastic.buildElasticQuerySettings($scope);
     Elastic.buildElasticQuery(settings, function(query) {
         query.query.size = 1000;

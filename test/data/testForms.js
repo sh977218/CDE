@@ -925,8 +925,6 @@ db.forms.insert({
         }
     ],
     "classification" : [ 
-        {
-        }
     ]      
 });
 
