@@ -1,16 +1,20 @@
-function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screenSize) {
+function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screenSize, $timeout) {
     $scope.filterMode = true;
-    if($scope.isScreenSizeXsSm) {
-        $scope.filterMode = false;
-    }
+    
+    $timeout(function(){
+        if($scope.isScreenSizeXsSm) {
+            $scope.filterMode = false;
+        }
+    },0);
+    
 
     $scope.hideShowFilter = function() {
         $scope.filterMode = !$scope.filterMode;
     };
     
-    $scope.$watch('isScreenSizeXsSm', function(newValue, oldValue) {
-        if (newValue !== oldValue) {
-            $scope.filterMode = oldValue;
+    $scope.$watch('isScreenSizeXsSm', function(isScreenSizeXsSm_new, isScreenSizeXsSm_old) {
+        if (isScreenSizeXsSm_new !== isScreenSizeXsSm_old) {
+            $scope.filterMode = !isScreenSizeXsSm_new;
         }
     });
     
