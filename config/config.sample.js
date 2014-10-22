@@ -31,7 +31,11 @@ var config = {
         , index: {name: "cdetest"}
         , river: {name: "cdetest"}
         , formIndex: {name: "formtest"}
-        , formRiver: {name: "formtest"}          
+        , formRiver: {name: "formtest"} 
+        , scripts: {
+            stop: "sudo /sbin/service elasticsearch stop"
+            , start: "sudo /sbin/service elasticsearch start"
+        }          
     }
     , database: {
         servers: [
