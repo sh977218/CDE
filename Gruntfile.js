@@ -461,18 +461,6 @@ module.exports = function(grunt) {
     grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
     grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','divider','guihelp','divider','git','divider','elastic','divider','build','divider','node']);
     grunt.registerTask('help', ['availabletasks']);    
-    grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);
-
-//    grunt.registerTask('form-elastic', function() {
-//        //grunt.task.run('force:on');
-//        grunt.log.writeln('\n\nDeleting Elastic Search River!');
-//        grunt.task.run('http:elasticDeleteFormRiver');
-//        grunt.log.writeln('\n\nDeleting Elastic Search Index!');
-//        grunt.task.run('http:elasticDeleteFormIndex');
-//        grunt.log.writeln('\n\nCreating Elastic Search Index!');
-//        grunt.task.run('http:elasticCreateFormIndex');
-//        grunt.log.writeln('\n\nCreating Elastic Search River!');
-//        grunt.task.run('http:elasticCreateFormRiver');      
-//    });     
+    grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);  
 
 };

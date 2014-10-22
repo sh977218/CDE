@@ -31,7 +31,11 @@ var config = {
         , index: {name: "cdetest"}
         , river: {name: "cdetest"}
         , formIndex: {name: "formtest"}
-        , formRiver: {name: "formtest"}          
+        , formRiver: {name: "formtest"} 
+        , scripts: {
+            stop: "echo stop"
+            , start: "echo start"
+        }          
     }
     , database: {
         servers: [
