@@ -102,13 +102,18 @@
                                     <dt>CDE: </dt>
                                     <dd id="dd_d_cde_{{$index}}"><a href="/#/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}" target="_blank"><i class="fa fa-eye"></i> View</a></dd>
                                 </dl>
-                                <div class="col-md-6 answerList" >
-                                    <ui-select multiple ng-model="question.question.answers" theme="select2" ng-disabled="!canCurate">
-                                        <ui-select-match placeholder="Select answers...">{{$item.permissibleValue}}</ui-select-match>
-                                        <ui-select-choices repeat="pv in question.question.cde.permissibleValues | filter:$select.search ">
-                                          {{pv.permissibleValue}}
-                                        </ui-select-choices>
-                                    </ui-select>
+                               
+                                <div class="col-md-6 answerList" ng-if="question.question.datatype === 'Value List'">
+                                    <div><strong>Answer List:</strong></div>
+                                    <div class="panel-body">
+                                        <ui-select multiple ng-model="question.question.answers" theme="select2" ng-disabled="!canCurate" style="min-width: 125px">
+                                            <ui-select-match placeholder="Select answers...">{{$item.permissibleValue}}</ui-select-match>
+                                            <ui-select-choices repeat="pv in question.question.cde.permissibleValues | filter:$select.search track by pv.permissibleValue">
+                                              {{pv.permissibleValue}}
+                                            </ui-select-choices>
+                                        </ui-select>
+                                        
+                                    </div>
                                 </div>
                             </div>
                         </div>

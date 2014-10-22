@@ -1,5 +1,5 @@
 function SectionCtrl($scope, $modal, $timeout, $http) {
-    
+        
     $scope.cardinalityOptions = 
     {
         "1": "Exactly 1"
@@ -36,9 +36,9 @@ function SectionCtrl($scope, $modal, $timeout, $http) {
                 if (cde.valueDomain.uom) {
                     question.question.uoms.push(cde.valueDomain.uom);
                 }
+                question.question.answers = [];
+                question.question.cde.permissibleValues = [];
                 if (cde.valueDomain.permissibleValues.length > 0) {
-                    question.question.answers = [];
-                    question.question.cde.permissibleValues = [];
                     if (cde.valueDomain.permissibleValues.length > 9) {
                         $http.get("debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
                             result.data.valueDomain.permissibleValues.forEach(function(pv) {
