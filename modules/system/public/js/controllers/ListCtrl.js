@@ -9,10 +9,8 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
     };
     
     $scope.$watch('isScreenSizeXsSm', function(newValue, oldValue) {
-        if(newValue===false && oldValue===true) { // Screen going from small to big
-            $scope.filterMode = true;
-        } else if(newValue===true && oldValue===false) { // Screen going from small to big
-            $scope.filterMode = false;
+        if (newValue !== oldValue) {
+            $scope.filterMode = oldValue;
         }
     });
     

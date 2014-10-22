@@ -265,6 +265,11 @@ public class NlmCdeBaseTest {
         return driver.findElement(by);
     }
     
+    protected WebElement findElementShortWait(By by) {
+        shortWait.until(ExpectedConditions.visibilityOfElementLocated(by));
+        return driver.findElement(by);
+    }
+    
     @AfterTest
     public void endSession() {
         driver.quit();
@@ -343,7 +348,6 @@ public class NlmCdeBaseTest {
     protected void goToFormSearch() {
         goToSearch("form");
     }    
-    
     
     protected void goToSearch(String type) {
         driver.get(baseUrl + "/gonowhere");
@@ -525,10 +529,11 @@ public class NlmCdeBaseTest {
     
     protected void showSearchFilters() {
         try {
-            hangon(1.5);
-            findElement(By.xpath("//button//span[contains(text(),'Show Filters')]")).click();
-            hangon(.5);
+//            hangon(1.5);
+            findElementShortWait(By.xpath("//button//span[contains(text(),'Show Filters')]")).click();
+//            hangon(.5);
         } catch( TimeoutException te ) {
+            System.err.println("---> Unable to click 'Show Filters' button!");
         }
     }
 }
