@@ -76,28 +76,6 @@ function SectionCtrl($scope, $modal, $timeout, $http) {
         });
     };
     
-//    $scope.getPvs = function(question) {
-//        var cde = question.question.cde;
-//        if (!cde.loaded) {
-//            cde.loaded = true;
-//            $http.get("debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
-//                cde.permissibleValues = result.data.valueDomain.permissibleValues;
-//            }); 
-//            return [];
-//        } else {
-//            return cde.permissibleValues;
-//        }
-//        
-//    };
-    
-//    $scope.loadPvs = function(cde) {
-//        if (!cde.loaded) {
-//            $http.get("debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
-//                cde.permissibleValues = result.data.valueDomain.permissibleValues;
-//            }); 
-//        }
-//    };
-
     $scope.checkUom = function(question, index) {
         $timeout(function() {
             if (question.question.uoms[index] === "") question.question.uoms.splice(index, 1);        
