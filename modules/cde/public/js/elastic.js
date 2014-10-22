@@ -2,24 +2,27 @@ angular.module('resources')
 .factory('Elastic', function($http) {
     return {
         buildElasticQueryPre: function (scope) {
-            scope.filter = {and: []};
+            var regStatuses = scope.registrationStatuses;
+            if (!regStatuses) regStatuses = [];
             var regStatusOr = [];
-            for (var i = 0; i < scope.registrationStatuses.length; i++) {
-                var t = scope.registrationStatuses[i];
+            for (var i = 0; i < regStatuses.length; i++) {
+                var t = regStatuses[i];
                 if (t.selected === true) {
                     regStatusOr.push({term: {"registrationState.registrationStatus": t.name}});
                 }
             }
+            var filter = {and: []};
             if (regStatusOr.length > 0) {
-                scope.filter.and.push({or: regStatusOr});
-            }               
+                filter.and.push({or: regStatusOr});
+            }      
+            return filter;
         }
         , buildElasticQuerySettings: function(scope){
             var settings = {
                 resultPerPage: scope.resultPerPage
                 , searchTerm: scope.searchForm.ftsearch
                 , isSiteAdmin: scope.isSiteAdmin()
-                , myOrgs: scope.myOrgs 
+                , myOrgs: scope.myOrgs
                 , selectedOrg: scope.selectedOrg
                 , selectedElements: this.getSelectedElements(scope)
                 , filter: scope.filter
