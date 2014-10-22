@@ -33,8 +33,8 @@ var config = {
         , formIndex: {name: "formtest"}
         , formRiver: {name: "formtest"} 
         , scripts: {
-            stop: "echo stop"
-            , start: "echo start"
+            stop: "sudo /sbin/service elasticsearch stop"
+            , start: "sudo /sbin/service elasticsearch start"
         }          
     }
     , database: {
