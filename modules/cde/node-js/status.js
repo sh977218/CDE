@@ -61,7 +61,7 @@ status.tryRestart = function() {
     exec(config.elastic.scripts.stop, function (error, stdout, stderr) {
         console.log("Elastic Search Stopped, STDOUT:" + stdout + "STDERR:" + stderr + "ERROR:" + error);
         exec(config.elastic.scripts.start, function (error, stdout, stderr) {
-            console.log("Elastic Search Stopped, STDOUT:" + stdout + "STDERR:" + stderr + "ERROR:" + error);
+            console.log("Elastic Search Started, STDOUT:" + stdout + "STDERR:" + stderr + "ERROR:" + error);
             status.delayReports();
             status.restartAttempted = true;
         });    
