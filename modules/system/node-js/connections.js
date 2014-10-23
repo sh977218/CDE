@@ -18,11 +18,11 @@ var connectionEstablisher = function(uri, type) {
             console.log('MongoDB ' + _type + ' reconnected!');
         });
         conn.on('disconnected', function () {
-            console.log('MongoDB ' + _type + ' disconnected!, reconnecting in 10 seconds');
+            console.log('MongoDB ' + _type + ' disconnected!, reconnecting in 2 seconds');
             setTimeout(function() {
                 conn = mongoose.createConnection(uri);
                 connect(openCb);
-            }, 10 * 1000);
+            }, 2 * 1000);
         });
     };
     var connect = this.connect;
