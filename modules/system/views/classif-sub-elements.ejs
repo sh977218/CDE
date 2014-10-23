@@ -5,12 +5,12 @@
 
 </a> 
 <span ng-show="myOrg">
-    <a ng-show="page=='management'" ng-click="showRenameDialog(orgName, pathArray)" class="fa fa-pencil" ></a>
+    <a ng-show="page=='management'" ng-click="showRenameDialog(orgName, pathArray)" class="fa fa-pencil hand-cursor" ></a>
     <span ng-show="showDelete">
         Confirm
-        <a class="fa fa-check" ng-click="showDelete=false; removeClassification(orgName, pathArray)" 
+        <a class="fa fa-check hand-cursor" ng-click="showDelete=false; removeClassification(orgName, pathArray)" 
            title="OK" href=""></a>
-        <a class="fa fa-times" ng-click="showDelete=false" title="Cancel" href=""></a>
+        <a class="fa fa-times hand-cursor" ng-click="showDelete=false" title="Cancel" href=""></a>
     </span>
     <a ng-init="showDelete=false" 
        ng-click="showDelete=true" 
@@ -19,8 +19,8 @@
        title="Remove" 
        href="">
     </a>
-    <a class="classifyAll" ng-click="showClassifyEntireSearchModal(orgName, pathArray);" ng-show="true">
-        <i class="fa fa-retweet"></i>
+    <a class="classifyAll" ng-click="showClassifyEntireSearchModal(orgName, pathArray);" ng-hide="classificationPage==='deview'">
+        <i class="fa fa-retweet hand-cursor"></i>
     </a>    
 </span>
 
