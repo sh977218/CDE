@@ -46,9 +46,9 @@ public class CompareTest extends NlmCdeBaseTest{
         Assert.assertTrue(textPresent(cde1));
         Assert.assertTrue(textPresent(cde2));
         Assert.assertTrue(textPresent(cde3));
-        
         findElement(By.id("qb.compare")).click();
         textPresent("You may only compare 2 CDEs side by side.");
+        closeAlert();
         findElement(By.id("remove_2")).click();
         
         findElement(By.id("qb.compare")).click();
