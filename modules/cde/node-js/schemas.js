@@ -11,14 +11,6 @@ var conceptSchema = mongoose.Schema({
     originId: String
 }, {_id: false});
 
-var permissibleValueSchema = mongoose.Schema({
-    permissibleValue: String
-    , valueMeaningName: String
-    , valueMeaningCode: String
-    , codeSystemName: String
-    , codeSystemVersion: String
-}, {_id: false});
-
 var deJsonSchema = {
     naming: [sharedSchemas.namingSchema]         
     , source: String
@@ -87,7 +79,7 @@ var deJsonSchema = {
             , otherPleaseSpecify: Boolean
             , otherPleaseSpecifyText: String
         }
-        , permissibleValues: [permissibleValueSchema]
+        , permissibleValues: [sharedSchemas.permissibleValueSchema]
     }
     , history: [ObjectId]
     , changeNote: String
