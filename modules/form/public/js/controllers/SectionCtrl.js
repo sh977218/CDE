@@ -1,5 +1,5 @@
-function SectionCtrl($scope, $modal, $timeout) {
-    
+function SectionCtrl($scope, $modal, $timeout, $http) {
+        
     $scope.cardinalityOptions = 
     {
         "1": "Exactly 1"
@@ -7,7 +7,7 @@ function SectionCtrl($scope, $modal, $timeout) {
         , "*": "0 or more"
         , "0.1": "0 or 1"
     };
-
+    
     $scope.addSection = function() {
         if (!$scope.elt.formElements) {
             $scope.elt.formElements = [];
@@ -26,14 +26,32 @@ function SectionCtrl($scope, $modal, $timeout) {
                     , cardinality: "1"
                     , question: {
                         cde: {tinyId: cde.tinyId
-                            , version: cde.version}
+                            , version: cde.version
+                            }
                         , datatype: cde.valueDomain.datatype
                         , required: false
                         , uoms: []
                     }
                 };
                 if (cde.valueDomain.uom) {
-                    question.uoms.push(cde.valueDomain.uom);
+                    question.question.uoms.push(cde.valueDomain.uom);
+                }
+                question.question.answers = [];
+                question.question.cde.permissibleValues = [];
+                if (cde.valueDomain.permissibleValues.length > 0) {
+                    if (cde.valueDomain.permissibleValues.length > 9) {
+                        $http.get("debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
+                            result.data.valueDomain.permissibleValues.forEach(function(pv) {
+                                question.question.answers.push(pv); 
+                                question.question.cde.permissibleValues .push(pv);  
+                            });
+                        });
+                    } else {
+                        cde.valueDomain.permissibleValues.forEach(function(pv) {
+                            question.question.answers.push(pv); 
+                            question.question.cde.permissibleValues.push(pv);
+                        });
+                    }
                 }
                 ui.item.sortable.moved = question;
             }
@@ -57,7 +75,7 @@ function SectionCtrl($scope, $modal, $timeout) {
             $scope.stageElt();
         });
     };
-
+    
     $scope.checkUom = function(question, index) {
         $timeout(function() {
             if (question.question.uoms[index] === "") question.question.uoms.splice(index, 1);        
