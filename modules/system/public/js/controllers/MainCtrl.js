@@ -210,8 +210,11 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
 
     };
     
-    $scope.screenSizeXs = screenSize.is('xs');
-    
+    // Gets screen size and also updates it in the callboack on screen resize
+    $scope.isScreenSizeXsSm = screenSize.on('xs, sm', function(isScreenSize){
+        $scope.isScreenSizeXsSm = isScreenSize;
+    });
+
     // Retrieves orgs details from database at an interval
     GetOrgsDetailedInfo.getOrgsDetailedInfoAPI();
     $interval(function() {

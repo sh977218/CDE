@@ -9,6 +9,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
     protected void gotoPublicForms() {
         findElement(By.linkText("Forms")).click();    
         findElement(By.id("resetSearch")).click();
+        showSearchFilters();
     }
     
     protected void saveForm() {
