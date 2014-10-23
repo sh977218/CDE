@@ -5,12 +5,12 @@
 ###Prerequisites
 
     * Java
-    * Node.js
+    * Node.js 0.10.x
     * Gradle
     * Groovy
-    * Mongodb
-    * ElasticSearch
-    * Elastic River for MongoDB
+    * Mongodb - 2.4.9
+    * ElasticSearch 1.1.1
+    * Elastic River for MongoDB - 1.7.3
 
 **ElasticSearch** should be installed with the river for mongo plugin.
 
@@ -98,7 +98,7 @@ $> node app
 Start the **vsac mock** with 
 
 ```sh
-$> node ./node-js/mock/vsacMock
+$> node ./modules/cde/node-js/mock/vsacMock
 ```
 
 You may need to generate your own **ssl** server key. 
@@ -114,12 +114,6 @@ You may try testing with Firefox but Selenium is bad with Firefox. At this time,
 Create test database and elastic search indexes:
 
 ```sh
-$> ./test/testInit.sh
-```
-
-To run the test suite
-
-```sh
 $> ./start-test-instance.sh
 ```
 
@@ -129,7 +123,7 @@ SSH to the desired server and do the following.
 
 ```sh
 $> export NODE_ENV=test
-$> node node-js/mock/vsackMock.js
+$> node modules/cde/node-js/mock/vsackMock.js
 ```
 
 Run grunt and re-ingest the test collection.
@@ -146,12 +140,6 @@ To seed data
 
 ```sh
 $> ./upload.sh
-```
-
-To upload some forms: 
-
-```sh
-$> groovy UploadCadsrForms
 ```
 
 ### Run

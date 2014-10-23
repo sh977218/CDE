@@ -28,9 +28,9 @@ function HomeCtrl($scope, $http, $location) {
         $scope.initCache();
         
         if( $scope.selectedOrg !== '' ) {
-            $scope.cache.put( 'selectedOrg', $scope.selectedOrg );
+            $scope.cache.put( 'search.cde.selectedOrg', $scope.selectedOrg );
         }
-        $scope.cache.put( 'ftsearch', $scope.ftsearch );
+        $scope.cache.put( 'search.cde.ftsearch', $scope.ftsearch );
 
         $location.url( '/cde/search' );
     };
@@ -49,5 +49,4 @@ function HomeCtrl($scope, $http, $location) {
     // Retrieves list of organizations from backend
     $scope.getOrgList();
     
-
 }

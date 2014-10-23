@@ -1,5 +1,5 @@
 <div id="repeatCs" class="container-fluid">
-    <div ng-repeat="stewardClassifications in classificationToFilter()" class="pull-left" id="stewardClassificationGroup-{{stewardClassifications.stewardOrg.name}}">
+    <div ng-repeat="stewardClassifications in classificationToFilter()" ng-hide="hideWorkingGroups(stewardClassifications)" class="pull-left" id="stewardClassificationGroup-{{stewardClassifications.stewardOrg.name}}">
         <h4 id="{{stewardClassifications.stewardOrg.name}}">{{stewardClassifications.stewardOrg.name}}</h4>
         <hr/>
         <div class="pull-left" 

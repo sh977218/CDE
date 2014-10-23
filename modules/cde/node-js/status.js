@@ -7,6 +7,8 @@ var config = require('config')
 
 var status = this;
 
+status.restartAttempted = false; 
+
 status.statusReport = {
     elastic: {
         up: false
@@ -46,13 +48,25 @@ status.delayReports = function() {
 exports.evaluateResult = function(statusReport) {
     if (process.uptime()<config.status.timeouts.minUptime) return;
     if (status.everythingOk()) return;
-    if (status.reportSent) return;
+    if (status.reportSent) return;    
+    if (!status.restartAttempted) status.tryRestart();    
     var msg = status.assembleErrorMessage(status.statusReport);
     email.send(msg, function(err) {
         if (!err) status.delayReports();
     });
 };
 
+status.tryRestart = function() {
+    var exec = require('child_process').exec;
+    exec(config.elastic.scripts.stop, function (error, stdout, stderr) {
+        console.log("Elastic Search Stopped, STDOUT:" + stdout + "STDERR:" + stderr + "ERROR:" + error);
+        exec(config.elastic.scripts.start, function (error, stdout, stderr) {
+            console.log("Elastic Search Started, STDOUT:" + stdout + "STDERR:" + stderr + "ERROR:" + error);
+            status.delayReports();
+            status.restartAttempted = true;
+        });    
+    });    
+};
 
 status.checkElastic = function(elasticUrl, mongoCollection) {
     request.post(elasticUrl + "_search", {body: JSON.stringify({})}, function (error, response, bodyStr) {
@@ -146,5 +160,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
 };
 
 setInterval(function() {
+    console.log("status check");
     status.checkElastic(elastic.elasticCdeUri, mongo);
-}, config.status.timeouts.statusCheck);
+}, config.status.timeouts.statusCheck);    
+

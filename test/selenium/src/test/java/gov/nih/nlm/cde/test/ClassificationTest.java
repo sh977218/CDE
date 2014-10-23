@@ -70,6 +70,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         goToCdeByName("Spectroscopy geometry location not applicable indicator");
         findElement(By.linkText("Classification")).click();
         findElement(By.cssSelector("[id='classification-Disease,Spinal Muscular Atrophy,Assessments and Examinations,Imaging Diagnostics'] .name")).click();
+        showSearchFilters();
         hangon(1);
         Assert.assertTrue(textPresent("Classifications"));
         Assert.assertTrue(textPresent("NINDS (7)"));

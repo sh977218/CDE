@@ -82,5 +82,17 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
             Assert.assertNotEquals("Recorded", option.getText());
         }
     }
-    
+   
+    @Test
+    public void wgClassificationsInvisible() {
+        mustBeLoggedInAs(wguser_username, password);
+        goToCdeByName("Specimen Block Received Count");
+        findElement(By.linkText("Classification")).click();
+        addClassificationMethod(new String[]{"WG-TEST", "WG Classif", "WG Sub Classif"});
+        textPresent("WG Sub Classif");
+        logout();
+        goToCdeByName("Specimen Block Received Count");
+        findElement(By.linkText("Classification")).click();  
+        textNotPresent("WG Sub Classif");
+    }    
 }
