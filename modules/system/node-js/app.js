@@ -424,10 +424,4 @@ exports.init = function(app) {
         }
     });
     
-    // TODO REMOVE!
-    app.get('/disconnect', function(req, res) {
-        mongo_data_system.disconnect();
-        res.send("OK");
-    });
-    
 };

@@ -58,10 +58,6 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser("Jk87fhK"));
 
-//var sessionStore = new MongoStore({
-//    mongoose_connection: mongo_data_system.mongoose_connection  
-//});
-
 var expressSettings = {
     secret: "Kfji76R"
     , proxy: config.proxy
