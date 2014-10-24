@@ -14,8 +14,8 @@ function TopologyCtrl($scope, $http) {
         });
     };
     
-    $scope.nccsPrimary = function() {
-        $http.post("/nccsPrimary").then(function(result) {
+    $scope.nccsPrimary = function(force) {
+        $http.post("/nccsPrimary", {force: force}).then(function(result) {
             $scope.textContent = result.data;
         });
     }; 

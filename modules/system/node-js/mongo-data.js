@@ -227,12 +227,12 @@ exports.rsConf = function(cb) {
     });
 };
 
-exports.switchToReplSet = function (replConfig, cb) {
+exports.switchToReplSet = function (replConfig, force, cb) {
     localConn.db.collection('system.replset').findOne({}, function(err, conf) {
         if (err) cb(err);
         else {
             replConfig.version = conf.version + 1;        
-            conn.db.admin().command({"replSetReconfig": replConfig}, function (err, doc) {
+            conn.db.admin().command({"replSetReconfig": replConfig, force: force}, function (err, doc) {
                 if (err) {
                     mongoose.disconnect();
                     cb(err, doc);

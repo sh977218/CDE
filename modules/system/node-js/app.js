@@ -404,7 +404,8 @@ exports.init = function(app) {
 
     app.post('/nccsPrimary', function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data_system.switchToReplSet(config.nccsPrimaryRepl, function(err, doc) {
+            var force = req.body.force === true;
+            mongo_data_system.switchToReplSet(config.nccsPrimaryRepl, force, function(err, doc) {
                 if (err) res.send(500, err);
                 else res.send(doc);
             });
@@ -415,7 +416,7 @@ exports.init = function(app) {
 
     app.post('/occsPrimary', function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data_system.switchToReplSet(config.occsPrimaryRepl, function(err, doc) {
+            mongo_data_system.switchToReplSet(config.occsPrimaryRepl, false, function(err, doc) {
                 if (err) res.send(500, err);
                 else res.send(doc);
             });
