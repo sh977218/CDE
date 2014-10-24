@@ -41,7 +41,7 @@ exports.cdeClassification = function(body, action, cb) {
         }        
     };
     daoManager.getDaoList().forEach(function(dao) {
-        dao.byId(body.cdeId, function(err, cde) {
+        var  findElements = function(err, cde) {
             var steward = classificationShared.findSteward(cde, body.orgName);
             if (!steward) {
                 mongo_data_system.orgByName(body.orgName, function(stewardOrg) {
@@ -58,7 +58,9 @@ exports.cdeClassification = function(body, action, cb) {
                     classify(steward, cde);
                 });
             } else classify(steward, cde);
-        });     
+        };
+        if (body.cdeId) dao.byId(body.cdeId, findElements);  
+        if (body.tinyId) dao.eltByTinyId(body.tinyId, body.version, findElements);     
     });    
 };
 

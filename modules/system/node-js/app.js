@@ -399,7 +399,7 @@ exports.init = function(app) {
             var classifReq = {
                 orgName: req.body.classification.orgName
                 , categories: req.body.classification.categories
-                , cdeId: id
+                , tinyId: id
             };          
             classificationNode.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);  
         };        

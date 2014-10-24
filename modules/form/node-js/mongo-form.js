@@ -92,3 +92,14 @@ exports.transferSteward = function(from, to, callback) {
     });
 };
 
+exports.eltByTinyIdAndVersion = function(tinyId, version, callback) {
+    Form.findOne({'tinyId': tinyId, "version": version}).exec(function (err, elt) {
+       callback("", elt); 
+    });
+};
+
+exports.eltByTinyId = function(tinyId, version, callback) {
+    Form.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, elt) {
+       callback("", elt); 
+    });
+};
