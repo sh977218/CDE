@@ -5,7 +5,7 @@
 
 </a> 
 <span ng-show="myOrg">
-    <a ng-show="page=='management'" ng-click="showRenameDialog(orgName, pathArray)" class="fa fa-pencil hand-cursor" ></a>
+    <a title="Edit" ng-show="page=='management'" ng-click="showRenameDialog(orgName, pathArray)" class="fa fa-pencil hand-cursor" ></a>
     <span ng-show="showDelete">
         Confirm
         <a class="fa fa-check hand-cursor" ng-click="showDelete=false; removeClassification(orgName, pathArray)" 
@@ -19,7 +19,7 @@
        title="Remove" 
        href="">
     </a>
-    <a class="classifyAll" ng-click="showClassifyEntireSearchModal(orgName, pathArray);" ng-hide="classificationPage==='deview'">
+    <a title="Reclassify" class="classifyAll" ng-click="showClassifyEntireSearchModal(orgName, pathArray);" ng-hide="classificationPage==='deview'">
         <i class="fa fa-retweet hand-cursor"></i>
     </a>    
 </span>
