@@ -9,7 +9,7 @@
 
             <ul class="fa-ul">
                 <li ng-include="'/template/system/classif-sub-elements'" 
-                    ng-init="myOrg = myOrgs.indexOf(stewardClassifications.stewardOrg.name) >= 0; orgName = stewardClassifications.stewardOrg.name; pathArray = pathArray.slice(0)"
+                    ng-init="myOrg = myOrgs.indexOf(stewardClassifications.stewardOrg.name) >= 0; orgName = stewardClassifications.stewardOrg.name; pathArray = pathArray.slice(0); classificationPage='deview'"
                     id="classification-{{pathArray.join()}}">
                 </li>
             </ul>
