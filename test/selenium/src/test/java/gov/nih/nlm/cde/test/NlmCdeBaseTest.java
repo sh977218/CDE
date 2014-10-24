@@ -185,6 +185,7 @@ public class NlmCdeBaseTest {
         }
 
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-" + selector + "'] .name")).getText().equals(categories[categories.length - 1]));
+        closeAlert();
     }
 
     protected void fillOutBasicCreateFields(String name, String definition, String version, String org, String classification, String subClassification) {
@@ -530,4 +531,5 @@ public class NlmCdeBaseTest {
             findElement(By.id("showHideFilters")).click();
         }
     }
+
 }
