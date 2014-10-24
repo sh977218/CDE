@@ -1,21 +1,50 @@
 <div class="container-fluid">
+    <h1 class="page-header">
+        <label>User Profile</label>
+    </h1>
+    
+    <h3>General Info</h3>
     <div class="row">
-        <div class="col-md-11 col-md-offset1">
-            <h4>Profile</h4>
-            <dl class="dl-horizontal">
-                <dt>Username: </dt><dd id="dd_username">{{user.username}}</dd>
-                <dt>Quota: </dt><dd id="dd_quota">{{user.quota / 1024 / 1024 | number:2 | placeholdEmpty}} MB</dd>
-                <dt>Curator for: </dt><dd id="dd_curatorFor">{{user.orgCurator}}</dd>
-                <dt>Admin for: </dt><dd id="dd_adminFor">{{user.orgAdmin}}</dd>
-                <dt>Email: </dt><dd id="dd_user_email"><div inline-edit id="emailEdit" model="user.email" input-type="'email'" is-allowed="true" on-ok="saveProfile()" /></dd>
-            </dl>
+        <div class="col-md-4">
+            <table class="table table-user-information">
+                <tbody>
+                    <tr>
+                      <td>Username:</td>
+                      <td>{{user.username}}</td>
+                    </tr>
+                    <tr>
+                      <td>Quota:</td>
+                      <td>{{user.quota / 1024 / 1024 | number:2 | placeholdEmpty}}<span ng-show="hasQuota"> MB</span></td>
+                    </tr>
+                    <tr>
+                      <td>E-mail:</td>
+                      <td><div inline-edit id="emailEdit" model="user.email" input-type="'email'" is-allowed="true" on-ok="saveProfile()" /></td>
+                    </tr>
+                    <tr>
+                      <td>Curator for:</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Admin for:</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-11 col-md-offset1">
-            <h4>Viewing History</h4>
-            <div id="accordionList" ng-include="'/template/cde/cdeAccordionList'" ng-init="ejsPage = 'list';"></div>            
-        </div>    
-    </div>
+    
+<!--    <dl class="dl-horizontal">
+        <dt>Username: </dt><dd id="dd_username">{{user.username}}</dd>
+        <dt>Quota: </dt><dd id="dd_quota">{{user.quota / 1024 / 1024 | number:2 | placeholdEmpty}} MB</dd>
+        <dt>Curator for: </dt><dd id="dd_curatorFor">{{user.orgCurator}}</dd>
+        <dt>Admin for: </dt><dd id="dd_adminFor">{{user.orgAdmin}}</dd>
+        <dt>Email: </dt><dd id="dd_user_email"><div inline-edit id="emailEdit" model="user.email" input-type="'email'" is-allowed="true" on-ok="saveProfile()" /></dd>
+    </dl>-->
+    
+    <h3>CDE Viewing History</h3>
+    <div id="accordionList" ng-include="'/template/cde/cdeAccordionList'" ng-init="ejsPage = 'list';"></div>            
 </div>
-
