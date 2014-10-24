@@ -4,6 +4,7 @@ var mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
     , adminItemSvc = require("./adminItemSvc")     
+    , elastic = require('./elastic')
 ;
 
 var classification = this;
@@ -118,5 +119,8 @@ exports.classifyEntireSearch = function(req, cb) {
         };          
         classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);  
     };
-    adminItemSvc.bulkActionOnSearch(req, action, cb);
+    elastic.elasticsearch(req.query, req.itemType, function(result) {   
+        var ids = result.cdes.map(function(cde) {return cde._id;});    
+        adminItemSvc.bulkAction(ids, action, cb);
+    });
 };

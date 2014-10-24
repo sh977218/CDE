@@ -1,7 +1,7 @@
 var mongo_data_system = require('../../system/node-js/mongo-data')
     , classificationShared = require('../shared/classificationShared')
     , classificationNode = require('./classificationNode')
-    , elastic = require('./elastic')
+//    , elastic = require('./elastic')
     , async = require('async')
 ;
 
@@ -281,11 +281,9 @@ exports.forkRoot = function(req, res, dao) {
     });
 };
 
-exports.bulkActionOnSearch = function(req, action, cb) {    
-    elastic.elasticsearch(req.query, req.itemType, function(result) {    
-        var eltsTotal = result.cdes.length;
-        var eltsProcessed = 0;
-        var ids = result.cdes.map(function(cde) {return cde._id;});        
+exports.bulkAction = function(ids, action, cb) {       
+        var eltsTotal = ids.length;
+        var eltsProcessed = 0;    
         async.each(ids,
             function(id, cb){
                 action(id, function() {
@@ -298,5 +296,4 @@ exports.bulkActionOnSearch = function(req, action, cb) {
                 else cb("Task not performed completely!");   
             }
         );
-    });
 };
