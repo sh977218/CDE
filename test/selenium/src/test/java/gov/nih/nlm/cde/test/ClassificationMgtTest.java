@@ -36,7 +36,6 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations,Imaging Diagnostics']");
     }    
-    
 
     @Test
     public void viewOrgClassifications() {
@@ -161,5 +160,22 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         textPresent("NINDS");
         textPresent("Population");
         textPresent("Adult");        
-    }      
+    }
+    
+    @Test
+    public void checkReclassificationIcon() {
+        mustBeLoggedInAs(ninds_username, password);
+        
+        // Check icons appear on classification management page
+        gotoClassifMgt();
+        List<WebElement> icons = driver.findElements(By.xpath("//a[not(contains(@class, 'ng-hide'))]/i[contains(@class, 'fa-retweet')]"));
+        Assert.assertTrue(icons.size() > 1);
+        
+        // Check icons don't appear on CDE detail page
+        String cdeName = "Brief Symptom Inventory-18 (BSI18)- Anxiety raw score";
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Classification")).click();
+        icons = driver.findElements(By.xpath("//a[not(contains(@class, 'ng-hide'))]/i[contains(@class, 'fa-retweet')]"));
+        Assert.assertTrue(icons.isEmpty());
+    }
 }
