@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    def seleniumVersion = "2.+"
+    def seleniumVersion = "2.42.0"
     testCompile group: 'org.testng', name: 'testng', version: '6.8'
     testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
