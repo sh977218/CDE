@@ -65,8 +65,8 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         findElement(By.linkText("Profile")).click();
         Assert.assertEquals("cabigAdmin", findElement(By.id("username")).getText());
         Assert.assertEquals("1,024.00 MB", findElement(By.id("quota")).getText());
-        Assert.assertEquals("[]", findElement(By.id("curatorFor")).getText());
-        Assert.assertEquals("[\"caBIG\"]", findElement(By.id("adminFor")).getText());
+        Assert.assertEquals("", findElement(By.id("curatorFor")).getText());
+        Assert.assertEquals("caBIG", findElement(By.id("adminFor")).getText());
     }
     
     @Test

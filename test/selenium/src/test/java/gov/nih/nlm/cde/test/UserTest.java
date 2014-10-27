@@ -30,10 +30,10 @@ public class UserTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
-        Assert.assertEquals("ctepCurator", findElement(By.id("dd_username")).getText());
-        Assert.assertEquals("1,024.00 MB", findElement(By.id("dd_quota")).getText());
-        Assert.assertEquals("[\"CTEP\"]", findElement(By.id("dd_curatorFor")).getText());
-        Assert.assertEquals("[]", findElement(By.id("dd_adminFor")).getText());
+        Assert.assertEquals("ctepCurator", findElement(By.id("username")).getText());
+        Assert.assertEquals("1,024.00 MB", findElement(By.id("quota")).getText());
+        Assert.assertEquals("CTEP", findElement(By.id("curatorFor")).getText());
+        Assert.assertEquals("", findElement(By.id("adminFor")).getText());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class UserTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(test_username, test_password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
-        Assert.assertEquals("test@example.com", findElement(By.id("dd_user_email")).getText());
+        Assert.assertEquals("test@example.com", findElement(By.id("user_email")).getText());
         findElement(By.xpath("//div[@id='emailEdit']//i")).click();
         findElement(By.xpath("//div[@id='emailEdit']//input")).clear();
         findElement(By.xpath("//div[@id='emailEdit']//input")).sendKeys("me@");        
