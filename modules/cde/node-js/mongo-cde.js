@@ -1,33 +1,29 @@
 var mongoose = require('mongoose')
-    , util = require('util')
-    , xml2js = require('xml2js')
     , config = require('config')
     , schemas = require('./schemas')
     , schemas_system = require('../../system/node-js/schemas') 
     , mongo_data_system = require('../../system/node-js/mongo-data') 
     , shortid = require("shortid") 
+    , connHelper = require('../../system/node-js/connections')
 ;
 
 exports.name = "CDEs";
         
 var mongoUri = config.mongoUri;
+var DataElement;
+var PinningBoard;
+var Message;
+var User;
 
-var conn = mongoose.createConnection(mongoUri);
-conn.on('error', console.error.bind(console, 'connection error:'));
+var connectionEstablisher = connHelper.connectionEstablisher;
 
-conn.once('open', function callback () {
-    console.log('mongodb connection open');
-});    
-exports.mongoose_connection = conn;
-
-var User = conn.model('User', schemas_system.userSchema);
-
-var xmlParser = new xml2js.Parser();
-
-var DataElement = conn.model('DataElement', schemas.dataElementSchema);
-
-var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
-var Message = conn.model('Message', schemas.message);
+var iConnectionEstablisherCde = new connectionEstablisher(mongoUri, 'CDE');
+iConnectionEstablisherCde.connect(function(conn) {
+    DataElement = conn.model('DataElement', schemas.dataElementSchema);
+    PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
+    Message = conn.model('Message', schemas.message); 
+    User = conn.model('User', schemas_system.userSchema);
+});
 
 var mongo_data = this;
 

@@ -1,0 +1,11 @@
+<div class="container-fluid" ng-controller="TopologyCtrl">
+    <div class="row">
+        <button class="btn btn-default" ng-click="rsConf()">Config</button>
+        <button class="btn btn-default" ng-click="rsStatus()">Status</button>
+        <button class="btn btn-default" ng-click="nccsPrimary()">Switch to NCCS</button>
+        <button class="btn btn-default" ng-click="occsPrimary()">Switch to OCCS</button>
+    </div>
+    <div class="row">
+        <pre>{{textContent | json}}</pre>
+    </div>
+</div>

@@ -3,20 +3,20 @@ var mongoose = require('mongoose')
     , schemas = require('./schemas')
     , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
     , shortid = require("shortid") 
+    , connHelper = require('../../system/node-js/connections')
     ;
 
 exports.name = "forms";
 
 var mongoUri = config.mongoUri;
+var Form;
 
-var conn = mongoose.createConnection(mongoUri);
+var connectionEstablisher = connHelper.connectionEstablisher;
 
-conn.on('error', console.error.bind(console, 'connection error:'));
-conn.once('open', function callback () {
-    console.log('mongodb connection open');
-});    
-
-var Form = conn.model('Form', schemas.formSchema);
+var iConnectionEstablisherForm = new connectionEstablisher(mongoUri, 'Forms');
+iConnectionEstablisherForm.connect(function(conn) {
+    Form = conn.model('Form', schemas.formSchema);
+});
 
 exports.idExists = function(id, callback) { 
     Form.count({_id: id}).count().then(function(result) {

@@ -4,10 +4,6 @@ var nodemailer = require('nodemailer')
     
 var transporter = nodemailer.createTransport();    
 
-mongo_data_system.siteadmins(function(err, users) {
-    mailOptions.to = users.filter(function(a){return typeof(a.email)!=="undefined";}).map(function(a) {return a.email;}).join(",");
-});
-
 var mailOptions = {
     from: config.account
     , to: ''
@@ -16,13 +12,16 @@ var mailOptions = {
 };
 
 exports.send = function(msg, cb) {
-    mailOptions.text = msg;
-    transporter.sendMail(mailOptions, function(error, info){
-        if(error){
-            console.log(error);
-        }else{
-            console.log('Message sent: ' + info.response);
-        }
-        if (cb) cb(error);
-    });     
+    mongo_data_system.siteadmins(function(err, users) {
+        mailOptions.to = users.filter(function(a){return typeof(a.email)!=="undefined";}).map(function(a) {return a.email;}).join(",");
+        mailOptions.text = msg;
+        transporter.sendMail(mailOptions, function(error, info){
+            if(error){
+                console.log(error);
+            }else{
+                console.log('Message sent: ' + info.response);
+            }
+            if (cb) cb(error);
+        });     
+    });
 };
