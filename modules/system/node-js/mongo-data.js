@@ -2,20 +2,43 @@ var schemas = require('./schemas')
     , mongoose = require('mongoose')
     , config = require('config')
     , mongoUri = config.mongoUri
-    , conn = mongoose.createConnection(mongoUri)
     , Grid = require('gridfs-stream')
-    , Org = conn.model('Org', schemas.orgSchema)    
-    , User = conn.model('User', schemas.userSchema)
     , fs = require('fs')
+    , conn = mongoose.createConnection(mongoUri)
+    , connHelper = require('./connections')
+    , express = require('express')
+    , MongoStore = require('./assets/connect-mongo.js')(express)
     ;
 
-conn.on('error', console.error.bind(console, 'connection error:'));
-conn.once('open', function callback () {
-	console.log('mongodb connection open');
-    });    
-exports.mongoose_connection = conn;
+var conn;
+var localConn;
+var Org;
+var User;
+var gfs;
+var connectionEstablisher = connHelper.connectionEstablisher;
+var sessionStore;
 
-var gfs = Grid(conn.db, mongoose.mongo);
+var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');
+iConnectionEstablisherSys.connect(function(resCon) {
+    exports.mongoose_connection = resCon;
+    conn = resCon;
+    Org = conn.model('Org', schemas.orgSchema);
+    User = conn.model('User', schemas.userSchema);
+    gfs = Grid(conn.db, mongoose.mongo);
+    sessionStore = new MongoStore({
+        mongoose_connection: resCon  
+    });
+    exports.sessionStore = sessionStore;
+});
+
+var iConnectionEstablisherLocal = new connectionEstablisher(config.database.local.uri, 'LOCAL');
+iConnectionEstablisherLocal.connect(function(resCon) {
+        localConn = resCon;        
+});
+
+exports.sessionStore = sessionStore;
+
+exports.mongoose_connection = conn;
 
 exports.org_autocomplete = function(name, callback) {
     Org.find({"name": new RegExp(name, 'i')}, function(err, orgs) {
@@ -191,3 +214,32 @@ exports.updateOrg = function(org, res) {
     });
 };
 
+exports.rsStatus = function (cb) {
+    var db = conn.db;
+    db.admin().command({"replSetGetStatus": 1}, function (err, doc) {
+        cb(err, doc);        
+    });
+};
+
+exports.rsConf = function(cb) {
+    localConn.db.collection('system.replset').findOne({}, function(err, conf) {
+       cb(err, conf); 
+    });
+};
+
+exports.switchToReplSet = function (replConfig, force, cb) {
+    localConn.db.collection('system.replset').findOne({}, function(err, conf) {
+        if (err) cb(err);
+        else {
+            replConfig.version = conf.version + 1;        
+            conn.db.admin().command({"replSetReconfig": replConfig, force: force}, function (err, doc) {
+                if (err) {
+                    mongoose.disconnect();
+                    cb(err, doc);
+                } else {
+                    cb(err, doc);
+                }
+            });
+        }
+    });   
+};
