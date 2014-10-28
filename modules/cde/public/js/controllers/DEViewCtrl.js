@@ -7,7 +7,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     $scope.vsacValueSet = [];
     $scope.mltCdes = [];
     $scope.boards = [];
-    $scope.comment = {};
     $scope.pVTypeheadVsacNameList = [];
     $scope.pVTypeaheadCodeSystemNameList = [];
     $scope.pvLimit = 30;    
