@@ -58,13 +58,8 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser("Jk87fhK"));
 
-var sessionStore = new MongoStore({
-    mongoose_connection: mongo_data_system.mongoose_connection  
-});
-
 var expressSettings = {
     secret: "Kfji76R"
-    , store: sessionStore
     , proxy: config.proxy
     , cookie: {httpOnly: true, secure: config.proxy}
 };
@@ -77,6 +72,7 @@ app.use(function(req, res, next) {
         return false;
     };
     if ((req.cookies['connect.sid'] || req.originalUrl === "/login") && !this.isFile(req)) {
+        expressSettings.store = mongo_data_system.sessionStore;
         var initExpressSession = express.session(expressSettings);
         initExpressSession(req, res, next);
    } else {
@@ -123,7 +119,7 @@ try {
     var formModule = require(path.join(__dirname, './modules/form/node-js/app.js'));
     formModule.init(app, daoManager);
 } catch (e) {
-    console.log(e);
+    console.log(e.stack);
     process.exit();
 }
 

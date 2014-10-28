@@ -69,7 +69,7 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
     };
 
     $scope.classificationToFilter = function() {
-         if ($scope.elt !== null) {
+         if ($scope.elt) {
              return $scope.elt.classification;
          }
     };

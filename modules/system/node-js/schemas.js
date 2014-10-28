@@ -7,6 +7,15 @@ var csEltSchema = mongoose.Schema({
     , elements: [csEltSchema]
 }, {_id: false});
 
+exports.permissibleValueSchema = mongoose.Schema({
+    permissibleValue: String
+    , valueMeaningName: String
+    , valueMeaningCode: String
+    , codeSystemName: String
+    , codeSystemVersion: String
+}, {_id: false});
+
+
 exports.classificationSchema = mongoose.Schema({
     stewardOrg: {name: String}
     , workingGroup: Boolean

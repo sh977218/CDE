@@ -1,5 +1,5 @@
 <button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="canCurate"><i class="fa fa-plus"></i> Add Section</button>
-<button id="startAddingQuestions" ng-show="canCurate && elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-sm">
+<button id="startAddingQuestions" ng-show="canCurate && elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-xs hidden-sm">
     <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
     <span ng-show="addCdeMode"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
 </button>
@@ -8,7 +8,7 @@
 </button>
 <div ng-show="canCurate"><br/></div>
 <div ng-if="elt.formElements.length > 0" class="visible-xs visible-sm">
-    <div class="alert alert-danger" role="alert">To be able to add questions to form, enlarge your browser window or use a larger device.</div>
+    <div class="alert alert-danger" role="alert">To add questions to this form, enlarge your browser window or use a larger device.</div>
 </div>
 <div ng-show="elt.formElements.length === 0">
     <i class="fa fa-exclamation-triangle"></i> There is no content yet.
@@ -65,45 +65,61 @@
                                 <span ng-bind-html="question.label | placeholdEmpty" id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></span>
                                 <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeQuestion(section, $index)" title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>
                             </div>
-                            <dl class="dl-horizontal">
-                                <dt>Label: </dt>
-                                <dd id="dd_question_title_{{$index}}"><i ng-show="canCurate" class="fa fa-pencil" title="Change question label" ng-click="openNameSelect(question)"></i> {{question.label | placeholdEmpty}}</dd>
-                                <dt>Instructions: </dt>
-                                <dd id="dd_question_instructions_{{$index}}"><div inline-edit model="question.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
-                                <dt>Required: </dt>
-                                <dd id="dd_question_required_{{$index}}"><input type="checkbox" ng-model="question.question.required" ng-disabled="!canCurate" ng-click="stageElt()"></input></dd>
-                                <dt>Cardinality: </dt>
-                                <dd id="dd_q_card_{{$index}}">
-                                    <span ng-show="editCardMode">
-                                        <select ng-model="question.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="question.cardinality"></select>
-                                        <br/>
-                                        <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard"> Confirm</button>
-                                        <button class="fa fa-times" ng-click="editCardMode = false; question.cardinality = orig"> Discard</button>
-                                    </span>
-                                    <span ng-hide="editCardMode">
-                                        <i ng-show="canCurate" class="fa fa-edit" ng-click="editCardMode = true; orig = question.cardinality"
-                                           id="editQuestion"></i> {{cardinalityOptions[question.cardinality]}}
-                                    </span>
-                                </dd>    
-                                <dt>Datatype: </dt>
-                                <dd id="dd_datatype_{{$index}}">{{question.question.datatype | placeholdEmpty }}</dd>
-                                <dt ng-show="question.question.datatype === 'Value List'">Multiple Selections: </dt>
-                                <dd ng-show="question.question.datatype === 'Value List'" id="dd_question_multi_{{$index}}">
-                                    <input type="checkbox" ng-model="question.question.multiselect" ng-disabled="!canCurate" ng-click="stageElt()"></input>
-                                </dd>
-                                <dt>Units of Measures: </dt>
-                                <dd ng-switch="question.question.uoms.length > 0" id="dd_q_uoms_{{$index}}">
-                                    <div ng-switch-when="true">
-                                        <span ng-repeat="uom in question.question.uoms">
-                                            <div id="q_uom_list_{{$index}}" inline-edit model="question.question.uoms[$index]" is-allowed="canCurate" on-ok="checkUom(question, $index)"> </div>
-                                        </span>
+                            <div class="row questionAccordionContent">
+                                <div class="col-md-6">
+                                    <dl class="dl-horizontal" >
+                                        <dt>Label: </dt>
+                                        <dd id="dd_question_title_{{$index}}"><i ng-show="canCurate" class="fa fa-pencil" title="Change question label" ng-click="openNameSelect(question)"></i> {{question.label | placeholdEmpty}}</dd>
+                                        <dt>Instructions: </dt>
+                                        <dd id="dd_question_instructions_{{$index}}"><div inline-edit model="question.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
+                                        <dt>Required: </dt>
+                                        <dd id="dd_question_required_{{$index}}"><input type="checkbox" ng-model="question.question.required" ng-disabled="!canCurate" ng-click="stageElt()"></input></dd>
+                                        <dt>Cardinality: </dt>
+                                        <dd id="dd_q_card_{{$index}}">
+                                            <span ng-show="editCardMode">
+                                                <select ng-model="question.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="question.cardinality"></select>
+                                                <br/>
+                                                <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard"> Confirm</button>
+                                                <button class="fa fa-times" ng-click="editCardMode = false; question.cardinality = orig"> Discard</button>
+                                            </span>
+                                            <span ng-hide="editCardMode">
+                                                <i ng-show="canCurate" class="fa fa-edit" ng-click="editCardMode = true; orig = question.cardinality"
+                                                   id="editQuestion"></i> {{cardinalityOptions[question.cardinality]}}
+                                            </span>
+                                        </dd>    
+                                        <dt>Datatype: </dt>
+                                        <dd id="dd_datatype_{{$index}}">{{question.question.datatype | placeholdEmpty }}</dd>
+                                        <dt ng-show="question.question.datatype === 'Value List'">Multiple Selections: </dt>
+                                        <dd ng-show="question.question.datatype === 'Value List'" id="dd_question_multi_{{$index}}">
+                                            <input type="checkbox" ng-model="question.question.multiselect" ng-disabled="!canCurate" ng-click="stageElt()"></input>
+                                        </dd>
+                                        <dt>Units of Measures: </dt>
+                                        <dd ng-switch="question.question.uoms.length > 0" id="dd_q_uoms_{{$index}}">
+                                            <div ng-switch-when="true">
+                                                <span ng-repeat="uom in question.question.uoms">
+                                                    <div id="q_uom_list_{{$index}}" inline-edit model="question.question.uoms[$index]" is-allowed="canCurate" on-ok="checkUom(question, $index)"> </div>
+                                                </span>
+                                            </div>
+                                            <div ng-switch-default>N/A</div>
+                                            <button ng-show="canAddUom(question)" class="btn btn-default btn-xs" ng-click="addUom(question)"><i class="fa fa-plus"></i> Add</button> 
+                                        </dd>
+                                        <dt>CDE: </dt>
+                                        <dd id="dd_d_cde_{{$index}}"><a href="/#/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}" target="_blank"><i class="fa fa-eye"></i> View</a></dd>
+                                    </dl>
+                                </div>                               
+                                <div class="col-md-6 answerList" ng-if="question.question.datatype === 'Value List'">
+                                    <div><strong>Answer List:</strong></div>
+                                    <div class="panel-body">
+                                        <ui-select multiple ng-model="question.question.answers" theme="select2" ng-disabled="!canCurate" style="min-width: 125px">
+                                            <ui-select-match placeholder="Select answers...">{{$item.permissibleValue}}</ui-select-match>
+                                            <ui-select-choices repeat="pv in question.question.cde.permissibleValues | filter:$select.search track by pv.permissibleValue">
+                                              {{pv.permissibleValue}}
+                                            </ui-select-choices>
+                                        </ui-select>
+                                        
                                     </div>
-                                    <div ng-switch-default>N/A</div>
-                                    <button ng-show="canAddUom(question)" class="btn btn-default btn-xs" ng-click="addUom(question)"><i class="fa fa-plus"></i> Add</button> 
-                                </dd>
-                                <dt>CDE: </dt>
-                                <dd id="dd_d_cde_{{$index}}"><a href="/#/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}" target="_blank"><i class="fa fa-eye"></i> View</a></dd>
-                            </dl>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

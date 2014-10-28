@@ -51,6 +51,7 @@ public class MiscTests extends NlmCdeBaseTest {
         findElement(By.id("searchTerms")).sendKeys("Person Birth");
         findElement(By.id("quickSearchButton")).click();
         findElement(By.name("ftsearch"));
+        showSearchFilters();
         Assert.assertTrue(textPresent("Qualified ("));
         Assert.assertTrue( textPresent("Person Other Premalignant Non-Melanomatous Lesion Indicator") );
     }

@@ -9,6 +9,7 @@ var questionSchema =  {
     , uoms: [String]
     , required: Boolean
     , multiselect: Boolean
+    , answers: [sharedSchemas.permissibleValueSchema]
 };
 
 var sectionSchema = {    

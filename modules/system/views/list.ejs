@@ -33,9 +33,8 @@
         <span ng-show="filterMode"><i class="glyphicon glyphicon-filter"></i> Hide Filters</span>
     </button>   
     <button id="pinAll" ng-click="showPinAllModal();" ng-show="totalItems>0 && isOrgCurator() && cPage !== 'forms'" class="btn btn-default btn-checkbox pull-right">
-        Pin All
+        <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
     </button>        
-
 </div>
 <hr class="searchInfoHr"/>
 <div class="container-fluid pt30">    
@@ -56,8 +55,8 @@
         </div>
     </script>
     <div class="row">
-        <div class="hidden-xs" ng-class="filterMode ? 'col-sm-3' : 'col-sm-0'" ng-show="filterMode">
-            <p ng-show="aggregations.orgs.buckets" class="gray">Filter by:</p>
+        <div ng-class="{'col-xs-3' : filterMode===true}" ng-show="filterMode">
+            <p ng-show="aggregations.lowRegStatusOrCurator_filter.orgs.buckets" class="gray">Filter by:</p>
             <strong ng-show="aggregations.lowRegStatusOrCurator_filter.orgs.buckets">Classifications</strong>
             <ul class="fa-ul">
                 <li ng-repeat="t in aggregations.lowRegStatusOrCurator_filter.orgs.buckets | orderBy:'key'" style="margin-right: -20px" ng-switch="t.key === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.key === selectedOrg || !selectedOrg">
@@ -99,7 +98,7 @@
                 </li>
             </ul>
         </div>
-        <div ng-class="filterMode ? 'col-sm-9' : 'col-sm-12'">
+        <div ng-class="{'col-xs-9' : filterMode===true, 'col-xs-12' : filterMode===false}">
             <span ng-hide="cdes.length >= 0"><h4><i class="fa fa-spinner fa-spin"></i> Searching...</h4></span>
             <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found.</h4></span>
             <div id="accordionList" ng-include="'/template/'+module+'/'+module+'AccordionList'"></div>

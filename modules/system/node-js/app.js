@@ -31,7 +31,6 @@ exports.init = function(app) {
     app.get('/template/:module/:template', function(req, res) {        
         res.render(req.params.template, req.params.module);
     });		
-   
 
     app.get("/supportedBrowsers", function(req, res) {
        res.render('supportedBrowsers', 'system'); 
@@ -385,7 +384,7 @@ exports.init = function(app) {
             else res.send(202, {error: {message: err}});
         });        
     });
-        
+
     app.post('/transferSteward', function(req, res) {
         orgsvc.transferSteward(req, res);
     });
@@ -415,4 +414,41 @@ exports.init = function(app) {
         });        
     });    
 
+    app.get('/rsStatus', function(req, res) {
+        mongo_data_system.rsStatus(function(err, st) {
+            if (err) res.send(500, err);
+            else res.send(st);
+        });
+    });
+
+    app.get('/rsConf', function(req, res) {
+        mongo_data_system.rsConf(function(err, doc) {
+            if (err) res.send(500, err);
+            else res.send(doc);
+        });
+    });
+
+    app.post('/nccsPrimary', function(req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            var force = req.body.force === true;
+            mongo_data_system.switchToReplSet(config.nccsPrimaryRepl, force, function(err, doc) {
+                if (err) res.send(500, err);
+                else res.send(doc);
+            });
+        } else {
+            res.send(403, "Not Authorized");
+        }
+    });
+
+    app.post('/occsPrimary', function(req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            mongo_data_system.switchToReplSet(config.occsPrimaryRepl, false, function(err, doc) {
+                if (err) res.send(500, err);
+                else res.send(doc);
+            });
+        } else {
+            res.send(403, "Not Authorized");
+        }
+    });
+    
 };

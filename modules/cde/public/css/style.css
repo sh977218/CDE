@@ -295,3 +295,13 @@ dd.formViewDetails {
   border-top-right-radius: 0;
 }
 /*************************/
+
+.panel.panel-default.ng-isolate-scope{
+    overflow: visible;
+}
+
+.questionAccordionContent {
+    max-height: 500px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
