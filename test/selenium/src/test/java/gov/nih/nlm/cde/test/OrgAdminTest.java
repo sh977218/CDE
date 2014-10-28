@@ -63,10 +63,10 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
-        Assert.assertEquals("cabigAdmin", findElement(By.id("dd_username")).getText());
-        Assert.assertEquals("1,024.00 MB", findElement(By.id("dd_quota")).getText());
-        Assert.assertEquals("[]", findElement(By.id("dd_curatorFor")).getText());
-        Assert.assertEquals("[\"caBIG\"]", findElement(By.id("dd_adminFor")).getText());
+        Assert.assertEquals("cabigAdmin", findElement(By.id("username")).getText());
+        Assert.assertEquals("1,024.00 MB", findElement(By.id("quota")).getText());
+        Assert.assertEquals("", findElement(By.id("curatorFor")).getText());
+        Assert.assertEquals("caBIG", findElement(By.id("adminFor")).getText());
     }
     
     @Test
