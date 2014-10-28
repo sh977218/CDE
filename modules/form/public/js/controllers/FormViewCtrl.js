@@ -92,7 +92,7 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
                             var ids = [];
                             var getChildren = function(element) {
                                 if (element.question && element.question.cde) {                                    
-                                    ids.push(element.question.cde.tinyId);
+                                    ids.push({id: element.question.cde.tinyId, version: element.question.cde.version});
                                     return;
                                 }  
                                 else element.formElements.forEach(function(e) {

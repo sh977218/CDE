@@ -22,5 +22,12 @@ public class FormClassificationTest extends BaseFormTest{
         mustBeLoggedInAs("ninds", "pass");
         goToFormByName("Traumatic Brain Injury - Adverse Events");
         addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
-    }    
+    }   
+    
+    @Test
+    public void classifyFormCdes() {
+        mustBeLoggedInAs("ninds", "pass");
+        goToFormByName("Traumatic Brain Injury - Adverse Events");
+        addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
+    }     
 }

@@ -395,17 +395,23 @@ exports.init = function(app) {
             res.send(403, "Not Authorized");
             return;
         }        
-        var action = function(id, actionCallback) {
+        var action = function(elt, actionCallback) {
             var classifReq = {
                 orgName: req.body.classification.orgName
                 , categories: req.body.classification.categories
-                , tinyId: id
+                , tinyId: elt.id || elt
+                , version: elt.version || null
             };          
             classificationNode.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);  
         };        
         adminItemSvc.bulkAction(req.body.elements, action, function(err) {
-            if (!err) res.send();
-            else res.send(202, {error: {message: err}});
+            var elts = req.body.elements.map(function(e){ 
+                return e.id;
+            });
+            adminItemSvc.bulkAction(elts, action, function(err) {
+                if (!err) res.send();
+                else res.send(202, {error: {message: err}});
+            });                
         });        
     });    
 
