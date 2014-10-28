@@ -14,4 +14,13 @@ function ProfileCtrl($scope, ViewingHistory, $timeout, $http) {
             });
         }, 0);
     };
+    
+    $scope.hasQuota = true;
+    if(!$scope.user.quota) {
+        $scope.hasQuota = false;
+    }
+    
+    $scope.orgCurator = $scope.user.orgCurator.toString().replace(/,/g,', ');
+    
+    $scope.orgAdmin = $scope.user.orgAdmin.toString().replace(/,/g,', ');
 }
