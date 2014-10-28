@@ -1,22 +1,25 @@
 <div ng-controller="CommentsCtrl">
-    <h4>Discussions</h4>
-
-    <textarea name="comment" ng-model="comment.content" placeholder="Please log in to comment"></textarea>
-    <input name="postComment" type="button" value="Post" ng-click="addComment()" ng-disabled="!user._id"/>
-
-    <div ng-repeat="comment in elt.comments">
-        <hr>
-        <div class="row" style="background-color: lightgrey">
-            <b class="col-md-offset1 col-md-9">{{comment.username}}</b>
-            <div class="col-md-2">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
-        </div>
-        <div class="row">
-            <div class="col-md-11"  id="commentText-{{$index}}">
-                {{comment.text}}    
-            </div>
-            <div class="col-md-1">
-                <i class="fa fa-trash-o" ng-show="canRemoveComment(comment)" ng-click="removeComment(comment._id)" id="removeComment-{{$index}}"></i>
-            </div>
-        </div>
+    <br/>
+    <div ng-if="!user._id">Please <a href="#/login">log in</a> to comment.</div>
+    <div ng-if="user._id">
+        <form role="form" name="commentForm" novalidate>
+            <textarea name="commentTextArea" class="form-control" rows="3" ng-model="comment.content" placeholder="Join the discussion..." required></textarea>
+            <br/>
+            <input name="postComment" class="btn btn-primary" type="button" value="Post Comment" ng-click="addComment()" ng-disabled="commentForm.commentTextArea.$invalid" />
+        </form>
     </div>
+    <br/>
+    <div ng-repeat="comment in elt.comments">
+        <div class="row">
+            <div class="col-xs-1">
+                <img class="pull-right" src="/cde/public/assets/img/portrait.png" width="50" alt="portrait"/>
+            </div>
+            <div class="col-xs-11">
+                <strong>{{comment.username}}</strong> - <small class="gray">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</small><span ng-show="canRemoveComment(comment)" > - <i class="fa fa-trash-o hand-cursor" ng-click="removeComment(comment._id)" id="removeComment-{{$index}}"></i></span>
+                <div id="commentText-{{$index}}">{{comment.text}}</div>
+            </div>
+        </div>
+        <br/>
+    </div>
+    <br/>
 </div>
