@@ -300,3 +300,12 @@ exports.bulkActionOnSearch = function(req, action, cb) {
         );
     });
 };
+
+exports.allPropertiesKeys = function(req, res, dao) {
+    dao.allPropertiesKeys(function(err, keys) {
+        if (err) res.send(500, "Unexpected Error");
+        else {
+            res.send(keys);
+        }
+    });
+};
