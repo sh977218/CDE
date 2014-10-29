@@ -4,7 +4,17 @@ import org.junit.Assert;
 import org.openqa.selenium.By;
 
 public abstract class PropertyTest extends CommonTest {
-        
+    
+    public void autocomplete(String eltName, String checkString, String expected) {
+        mustBeLoggedInAs(ctepCurator_username, password);
+        goToEltByName(eltName);
+        findElement(By.linkText("Properties")).click();
+        findElement(By.id("addProperty")).click();
+        modalHere();
+        findElement(By.name("key")).sendKeys(checkString);
+        Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
+    }
+    
     public void addRemoveProperty(String eltName) {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToEltByName(eltName);
@@ -42,8 +52,7 @@ public abstract class PropertyTest extends CommonTest {
         Assert.assertTrue(textPresent("MyValue1"));
         Assert.assertTrue(textPresent("MyValue3"));
         Assert.assertTrue(textNotPresent("MyValue2"));
-        Assert.assertTrue(textNotPresent("MyValue2"));
-        
+        Assert.assertTrue(textNotPresent("MyValue2"));     
     }
     
     public void richText(String eltName) {
