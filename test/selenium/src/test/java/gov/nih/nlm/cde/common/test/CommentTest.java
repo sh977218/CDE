@@ -9,12 +9,12 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(test_username, test_password);
         goToEltByName(eltName);
         findElement(By.linkText("Discussions")).click();
-        findElement(By.name("comment")).sendKeys("My First Comment!");
+        findElement(By.name("commentTextArea")).sendKeys("My First Comment!");
         findElement(By.name("postComment")).click();
         Assert.assertTrue(textPresent("Comment added"));
         Assert.assertTrue(textPresent("testuser"));
         Assert.assertTrue(textPresent("My First Comment!"));
-        findElement(By.name("comment")).sendKeys("another comment");
+        findElement(By.name("commentTextArea")).sendKeys("another comment");
         findElement(By.name("postComment")).click();
         Assert.assertTrue(textPresent("Comment added"));
         scrollTo( "2000" );
@@ -28,7 +28,7 @@ public abstract class CommentTest extends CommonTest {
         String commentText = "Inappropriate Comment";
         goToEltByName(eltName);
         findElement(By.linkText("Discussions")).click();
-        findElement(By.name("comment")).sendKeys(commentText);
+        findElement(By.name("commentTextArea")).sendKeys(commentText);
         findElement(By.name("postComment")).click();
         Assert.assertTrue(textPresent("Comment added"));
         logout();
@@ -52,7 +52,7 @@ public abstract class CommentTest extends CommonTest {
         String commentText = "Another Inappropriate Comment";
         goToEltByName(eltName);
         findElement(By.linkText("Discussions")).click();
-        findElement(By.name("comment")).sendKeys(commentText);
+        findElement(By.name("commentTextArea")).sendKeys(commentText);
         findElement(By.name("postComment")).click();
         Assert.assertTrue(textPresent("Comment added"));
         logout();

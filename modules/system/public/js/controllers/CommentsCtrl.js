@@ -1,4 +1,6 @@
-function CommentsCtrl($scope, $http) {   
+function CommentsCtrl($scope, $http) {
+    $scope.comment = {};
+        
     $scope.canRemoveComment = function(com) {
         return (($scope.user._id) && 
                 ($scope.user._id === com.user ||

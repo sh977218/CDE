@@ -1,7 +1,7 @@
 <dl class="dl-horizontal">
-    <dt ng-show="elt.imported">Last import date: </dt><dd ng-show="elt.imported">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+    <dt ng-show="elt.imported">Last import: </dt><dd ng-show="elt.imported">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
     <dt ng-show="elt.created">Date Created: </dt><dd ng-show="elt.created">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>    
-    <dt id="dt_updated" ng-show="elt.updated">Date of last updated: </dt><dd id="dd_updated">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+    <dt id="dt_updated" ng-show="elt.updated">Last update: </dt><dd id="dd_updated">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
     <dt id="dt_createdBy" ng-show="elt.createdBy">Created By: </dt><dd id="dd_createdBy">{{elt.createdBy.username}}</dd>
     <dt ng-show="elt.protocolDescription">Protocol Description: </dt> <dd>{{elt.protocolDescription}}</dd>
     <dt ng-show="elt.protocolText">Protocol Text </dt> <dd><div ng-bind-html="elt.protocolText"/></dd>
