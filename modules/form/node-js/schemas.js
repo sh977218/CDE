@@ -17,7 +17,6 @@ var sectionSchema = {
 
 var formElementSchema = new Schema({
     label: String
-//    , elementType: String
     , instructions: String
     , cardinality: String
     , repeatsFor: String
@@ -26,11 +25,6 @@ var formElementSchema = new Schema({
     , question: questionSchema
     , formElements: [formElementSchema]
 }, {_id: false});
-
-//formElementSchema.pre('save', function(next) {
-//   if (this.elementType === 'section') this.question = undefined;
-//   next();
-//});
 
 exports.formSchema = new Schema({
     tinyId: String
