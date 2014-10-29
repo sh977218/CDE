@@ -4,7 +4,7 @@ import org.testng.annotations.Test;
 import org.openqa.selenium.By;
 
 public class FormClassificationTest extends BaseFormTest {            
-    /*@Test
+    @Test
     public void formClassificationLink() {
         goToFormByName("Skin Cancer Patient");
         findElement(By.linkText("Classification")).click();
@@ -22,7 +22,7 @@ public class FormClassificationTest extends BaseFormTest {
         mustBeLoggedInAs("ninds", "pass");
         goToFormByName("Traumatic Brain Injury - Adverse Events");
         addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
-    }  */
+    }  
     
     @Test
     public void classifyFormCdes() {

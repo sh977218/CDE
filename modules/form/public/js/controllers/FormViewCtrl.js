@@ -100,10 +100,8 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
                                 });
                             };
                             getChildren($scope.elt);
-                            console.log(ids);
-                            console.log(newClassification);
                             BulkClassification.classifyTinyidList(ids, newClassification, function(res) {
-                                $scope.addAlert("success", res.msg);              
+                                $scope.addAlert("success", "CDEs classified!");              
                             });                 
                         }
                     };
