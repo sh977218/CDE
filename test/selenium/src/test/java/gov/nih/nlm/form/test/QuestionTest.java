@@ -13,7 +13,7 @@ import org.openqa.selenium.Dimension;
 public class QuestionTest extends BaseFormTest {
     
     
-    private void addQuestionToSection(String cdeName, int sectionNumber) {
+    public void addQuestionToSection(String cdeName, int sectionNumber) {
         findElement(By.id("resetSearch")).click();
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();

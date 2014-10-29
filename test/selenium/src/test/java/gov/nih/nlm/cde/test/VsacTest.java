@@ -115,7 +115,7 @@ public class VsacTest extends NlmCdeBaseTest {
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
     }
         
-    @Test(dependsOnMethods = {"importVsacValues"})
+    @Test(dependsOnGroups = {"importVsacValues"})
     public void modifyValueCode() {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Patient Race Category");
