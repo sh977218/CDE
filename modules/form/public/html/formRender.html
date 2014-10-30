@@ -83,7 +83,7 @@
                   </div>
               </div>
         </form>
-        <input id="submit" type="submit" ng-click="export()" class="btn btn-success" value="Save"/>                     
+        <a class="btn btn-default btn-success fa fa-external-link" target="_blank" id="exportLink" ng-click="exportStr()" href="{{encodedStr}}" download="form-data.json"> Export</a>                     
       </div>
   </body>
 </html>
