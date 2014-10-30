@@ -79,7 +79,6 @@ function FormRenderCtrl($scope, $http, $location, $window) {
                 stripFieldsOut(formData.formElements[i]);
             }
         }
-        console.log(formData);
         $scope.encodedStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(formData));
     };
 
