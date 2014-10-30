@@ -49,6 +49,9 @@ function FormRenderCtrl($scope, $http, $location, $window) {
     var stripFieldsOut = function(elt) {
         delete elt.cardinality;
         delete elt.$$hashKey;
+        if (elt.elementType === 'section') {
+            delete elt.question;
+        }
         if (elt.question) {
             delete elt.question.answers;
             delete elt.question.uoms;
