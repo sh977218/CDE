@@ -13,6 +13,7 @@ public abstract class PropertyTest extends CommonTest {
         modalHere();
         findElement(By.name("key")).sendKeys(checkString);
         Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
+        goHome();
     }
     
     public void addRemoveProperty(String eltName) {
