@@ -515,7 +515,9 @@ public class NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Create New Form"));
         fillInput("Name", name);
         fillInput("Description", definition);
-        fillInput("Version", version);
+        if (version != null) {
+            fillInput("Version", version);
+        }
         new Select(findElement(By.id("newForm.stewardOrg.name"))).selectByVisibleText(org);
         findElement(By.xpath("//button[text()='Save']")).click();
         textPresent("Form created");
