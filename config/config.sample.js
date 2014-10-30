@@ -78,7 +78,7 @@ var config = {
 module.exports = config;
 module.exports.mongoUri = "mongodb://" + config.database.servers.map(function(srv) {
     return srv.host + ":" + srv.port;
-}).join(",") + "/" + database.dbname;
+}).join(",") + "/" + config.database.dbname;
 module.exports.elasticUri = config.elastic.uri + "/" + config.elastic.index.name + "/";
 module.exports.elasticRiverUri = config.elastic.uri + "/_river/" + config.elastic.index.name;
 module.exports.elasticFormUri = config.elastic.uri + "/" + config.elastic.formIndex.name + "/";
