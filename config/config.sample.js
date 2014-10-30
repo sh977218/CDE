@@ -7,7 +7,7 @@ var config = {
     , vsac: {
         username: 'user'
         , password: 'pass'
-        , host: 'vsac-qa.nlm.nih.gov'
+        , host: 'localhost'
         , ticket: {
             path: '/vsac/ws/Ticket'
         }
