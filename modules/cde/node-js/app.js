@@ -431,5 +431,9 @@ exports.init = function(app, daoManager) {
             res.send("Please login first.");
         }      
     });
+    
+    app.get('/cde/properties/keys', function(req, res) {
+        adminItemSvc.allPropertiesKeys(req, res, mongo_data);
+    });
 
 };

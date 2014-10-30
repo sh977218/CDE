@@ -6,6 +6,9 @@ var PropertiesCtrl = function ($scope, $modal, $window, $timeout) {
           resolve: {
               elt: function() {
                   return $scope.elt;
+              },
+              module: function() {
+                  return $scope.module;
               }
           }
         });
@@ -19,7 +22,7 @@ var PropertiesCtrl = function ($scope, $modal, $window, $timeout) {
             }
             $scope.elt.properties.push(newProperty);
             if ($scope.elt.unsaved) {
-                $scope.addAlert("info", "Property added. Save to confirm.")
+                $scope.addAlert("info", "Property added. Save to confirm.");
             } else {
                 $scope.elt.$save(function (newElt) {
                     $window.location.href = $scope.baseLink + newElt._id + "&tab=properties";  
@@ -32,7 +35,7 @@ var PropertiesCtrl = function ($scope, $modal, $window, $timeout) {
     $scope.removeProperty = function (index) {
         $scope.elt.properties.splice(index, 1);
         if ($scope.elt.unsaved) {
-            $scope.addAlert("info", "Property removed. Save to confirm.")
+            $scope.addAlert("info", "Property removed. Save to confirm.");
         } else {
             $scope.elt.$save(function (newElt) {
                 $window.location.href = $scope.baseLink + newElt._id + "&tab=properties";  
@@ -55,9 +58,14 @@ var PropertiesCtrl = function ($scope, $modal, $window, $timeout) {
 
 };
 
-function NewPropertyModalCtrl($scope, $modalInstance, elt) {
+function NewPropertyModalCtrl($scope, $modalInstance, $http, module, elt) {
     $scope.elt = elt;
     $scope.newProperty = {};
+    $scope.autocompleteList = [];
+    
+    $http.get("/" + module + "/properties/keys").then(function(result) {
+        $scope.autocompleteList = result.data;
+    });
 
     $scope.okCreate = function () {
         $modalInstance.close($scope.newProperty);
