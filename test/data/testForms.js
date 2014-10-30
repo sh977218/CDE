@@ -1093,7 +1093,7 @@ db.forms.insert({
     "comments" : [],
     "attachments" : [],
     "ids" : [],
-    "properties" : [],
+    "properties" : [{key: "Autocomplete", value: "test autocomplete feature"}],
     "registrationState" : {
         "registrationStatus" : "Qualified"
     },

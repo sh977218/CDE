@@ -382,6 +382,12 @@ exports.archiveCde = function(cde, callback) {
     });
 };
 
+exports.allPropertiesKeys = function(callback) {
+    DataElement.distinct("properties.key").exec(function (err, keys) {
+        callback(err, keys);
+    });
+};
+
 exports.query = function(query, callback) {
     DataElement.find(query).exec(function(err, result) {
         callback(err, result);

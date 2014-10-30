@@ -44,4 +44,8 @@ exports.init = function(app, daoManager) {
         adminItemSvc.removeComment(req, res, mongo_data);
     });
 
+    app.get('/form/properties/keys', function(req, res) {
+        adminItemSvc.allPropertiesKeys(req, res, mongo_data);
+    });
+
 };
