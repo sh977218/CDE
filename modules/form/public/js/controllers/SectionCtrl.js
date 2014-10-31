@@ -15,6 +15,13 @@ function SectionCtrl($scope, $modal, $timeout, $http) {
         $scope.elt.formElements.push({label: "New Section", cardinality: "1", section: {}, formElements: []});
         $scope.stageElt(); 
     };
+    
+    $scope.sortableOptionsSections = {
+        receive: function(e, ui) {
+            console.log("received"+e);
+        }
+        , connectWith: ".dragQuestions"
+    };        
 
     $scope.sortableOptions = {
         connectWith: ".dragQuestions"

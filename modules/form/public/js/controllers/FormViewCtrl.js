@@ -72,6 +72,6 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
          if ($scope.elt) {
              return $scope.elt.classification;
          }
-    };
+    };    
 
 }
