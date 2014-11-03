@@ -170,14 +170,11 @@ body {
 
 .matched-by {
     float: right;
+    color:#4c4c4c;
 }
 
-.matched-by-4c4c4c {
-	color:#4c4c4c !important;
-}
-
-.ahref-default-207b9e {
-	color: #207b9e !important;
+a {
+    color: #207b9e;
 }
 
 .btn-primary {
@@ -186,10 +183,10 @@ body {
 	border-color: #207b9e !important;
 }
 
-.btn-danger-791d1a:hover, .btn-danger-791d1a:focus, .btn-danger-791d1a:active, .btn-danger-791d1a.active
+.btn-danger:hover, .btn-danger:focus, .btn-danger:active, .btn-danger.active
 {
-	background-color: #791d1a !important;
-	border-color: #601714 !important;
+	background-color: #791d1a;
+	border-color: #601714;
 }
 .btn-danger-791d1a {
 	background-color: #92231f !important;
