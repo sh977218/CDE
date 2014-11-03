@@ -435,5 +435,12 @@ exports.init = function(app, daoManager) {
     app.get('/cde/properties/keys', function(req, res) {
         adminItemSvc.allPropertiesKeys(req, res, mongo_data);
     });
+    
+    app.get('/archivedCdes/:cdeArray', function(req, res) {
+        mongo_data.archivedCdes(req.params.cdeArray, function(err, resultCdes) {
+            if (err) res.send(500, "Unexpected Error");
+            else res.send(resultCdes);
+        });
+    });
 
 };

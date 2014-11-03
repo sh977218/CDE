@@ -16,6 +16,7 @@ var Message;
 var User;
 
 var connectionEstablisher = connHelper.connectionEstablisher;
+var connection = null;
 
 var iConnectionEstablisherCde = new connectionEstablisher(mongoUri, 'CDE');
 iConnectionEstablisherCde.connect(function(conn) {
@@ -23,6 +24,7 @@ iConnectionEstablisherCde.connect(function(conn) {
     PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
     Message = conn.model('Message', schemas.message); 
     User = conn.model('User', schemas_system.userSchema);
+    connection = conn;
 });
 
 var mongo_data = this;
@@ -396,6 +398,15 @@ exports.query = function(query, callback) {
 
 exports.transferSteward = function(from, to, callback) {
     DataElement.update({'stewardOrg.name':from},{$set:{'stewardOrg.name':to}},{multi:true}).exec(function(err, result) {
+        callback(err, result);
+    });
+};
+
+exports.archivedCdes = function(cdeArray, callback) {
+    var evalF = function (cdeArray) {
+        
+    };
+    connection.db.eval(JSON.stringify(evalF), cdeArray, function(err, result) {
         callback(err, result);
     });
 };
