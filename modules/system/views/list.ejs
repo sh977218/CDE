@@ -2,11 +2,12 @@
     <form name="advSearchForm" id="advSearchForm"  class="form-inline" ng-submit="submitForm( quickSearchForm.$valid )" novalidate>
         <!-- Search dropdown and text field -->
         <div class="input-group input-group-lg">
-            <input name="ftsearch" id="ftsearch-input" class="form-control search-query" type="text" ng-model="searchForm.ftsearch" ng-maxlength="500" placeholder="" ng-change="">
+        	<label class="sr-only" id="l1" for="ftsearch-input">Search Terms</label>
+            <input name="ftsearch" id="ftsearch-input" class="form-control search-query" type="text" ng-model="searchForm.ftsearch" ng-maxlength="500" placeholder="" ng-change="" aria-labelledby="l1">
 
             <!-- Display if screen is large -->
             <div class="input-group-btn">
-                <button name="search.submit" id="search.submit" class="btn btn-danger btn-lg" type="submit" ng-click="search()"><i class="fa fa-search"></i> Search</button>
+                <button name="search.submit" id="search.submit" class="btn btn-danger btn-lg btn-danger-791d1a" type="submit" ng-click="search()"><i class="fa fa-search"></i> Search</button>
                 <button name="resetSearch" id="resetSearch" class="btn btn-default btn-lg" type="button" ng-click="resetSearch()"><i class="fa fa-trash-o"></i> Reset</button>
             </div>
         </div>
@@ -59,7 +60,7 @@
             <p ng-show="aggregations.lowRegStatusOrCurator_filter.orgs.buckets" class="gray">Filter by:</p>
             <strong ng-show="aggregations.lowRegStatusOrCurator_filter.orgs.buckets">Classifications</strong>
             <ul class="fa-ul">
-                <li ng-repeat="t in aggregations.lowRegStatusOrCurator_filter.orgs.buckets | orderBy:'key'" style="margin-right: -20px" ng-switch="t.key === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.key === selectedOrg || !selectedOrg">
+                <li tabindex="0" ng-repeat="t in aggregations.lowRegStatusOrCurator_filter.orgs.buckets | orderBy:'key'" style="margin-right: -20px" ng-switch="t.key === selectedOrg" ng-click="addOrgFilter(t)" ng-show="t.key === selectedOrg || !selectedOrg">
                     <span class="hand-cursor"  tooltip="{{t.longName}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.key}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.key}}"></i>
@@ -89,7 +90,7 @@
             </div>
             <strong ng-show="aggregations.statuses.buckets">Status</strong> 
             <ul class="fa-ul">
-                <li ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
+                <li tabindex="0" ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
                     <span class="hand-cursor" ng-show="t.count > 0" tooltip-html-unsafe="{{t.help}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.name}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.name}}"></i>

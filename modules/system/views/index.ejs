@@ -17,10 +17,11 @@
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-resource.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-sanitize.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-animate.min.js"></script>
+        <script src="/cde/public/js/bootstrap-accessibility.min.js"></script>
         
         <%- include includeFrontEndJS.ejs %>
         <%- include ../../cde/views/includeFrontEndJS.ejs %>
-        <%- include ../../form/views/includeFrontEndJS.ejs %>    
+        <%- include ../../form/views/includeFrontEndJS.ejs %>
         
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
@@ -31,6 +32,7 @@
 
         <!-- build:css /cde/public/css/style.concat.min.css -->
         <link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="/cde/public/css/bootstrap-accessibility.css" rel="stylesheet" type="text/css" media="all" />
         <!-- endbuild -->
         
         <!--[if lte IE 9]>
@@ -46,7 +48,7 @@
             .hand-cursor {cursor: pointer;}
         </style>
     </head>
-    <body>
+    <body role="application">
         
         
         <div ng-controller="MainCtrl">
@@ -55,7 +57,7 @@
                 <div class="container">
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                            <span class="sr-only">Toggle navigation</span>
+                            <span class="sr-only sr-only-focusable">Toggle navigation</span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
@@ -70,9 +72,9 @@
                                                        
                             <% if (config.modules.forms) { %><li ng-class="{ active: isPageActive('/form/search')}"><a href="/#/form/search">Forms</a></li> <% } %>
                             
-                            <li ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' class="dropdown">    
-                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Boards<span class="caret"></span></a>
-                                <ul class="dropdown-menu">
+                            <li ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' class="dropdown" tabindex="0">    
+                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#" id="dropdownMenu1" tabindex="-1" alt="Boards" title="Boards" aria-label="Boards">Boards<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="group" aria-labelledby="dropdownMenu1" tabindex="0" aria-expanded="true">
                                     <li><a href="#/boardList">Public Boards</a></li>                                    
                                     <li><a href="#/myboards">My Boards</a></li>
                                 </ul>
@@ -82,9 +84,9 @@
                                 <a href="#/boardList">Boards</a>
                             </li>                            
                             
-                            <li ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}" ng-show='isOrgCurator()' class="dropdown">    
-                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#">Create<span class="caret"></span></a>
-                                <ul class="dropdown-menu">
+                            <li ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}" ng-show='isOrgCurator()' class="dropdown" tabindex="0">    
+                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#" id="dropdownMenu2" tabindex="-1" alt="Create" title="Create" aria-label="Create">Create<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2" tabindex="0">
                                     <li><a href="#/createCde">CDE</a></li>
                                     <% if (config.modules.forms) { %><li><a href="#/createForm">Form</a></li><% } %>
                                 </ul>
@@ -103,10 +105,10 @@
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li ng-class="{ active: isPageActive('/login')}" ng-show='!user._id'><a href="#/login" id="login_link">Log In</a></li>
-                            <li ng-show="user._id">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="username_link">{{user.username}}<span class="caret"></span></a>
-                                <ul class="dropdown-menu">
+                            <li ng-class="{ active: isPageActive('/login')}" ng-show='!user._id'><a href="#/login" id="login_link" tabindex="0" alt="Log in" aria-label="Log in">Log In</a></li>
+                            <li ng-show="user._id" tabindex="0">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="username_link" tabindex="-1" alt="{{user.username}}" title="{{user.username}}" aria-label="{{user.username}}">{{user.username}}<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="username_link" tabindex="0">
                                     <li ng-show='user._id'><a href="#/profile">Profile</a></li>
                                     <li ng-show='isOrgCurator()||isOrgAdmin()'><a href="#/inbox">Inbox</a></li>
                                     <li ng-show="isOrgCurator()"><a href="#/classificationmanagement">Classifications</a></li>
@@ -140,26 +142,26 @@
                     <div class="row pt20">
                       <div class="col-md-5">
                         <p>
-                            <a href="http://www.nlm.nih.gov/copyright.html"><small>Copyright</small></a>,
-                            <a href="http://www.nlm.nih.gov/privacy.html"><small>Privacy</small></a>,
-                            <a href="http://www.nlm.nih.gov/accessibility.html"><small>Accessibility</small></a>
+                            <a class="ahref-default-207b9e" href="http://www.nlm.nih.gov/copyright.html"><small>Copyright</small></a>,
+                            <a class="ahref-default-207b9e" href="http://www.nlm.nih.gov/privacy.html"><small>Privacy</small></a>,
+                            <a class="ahref-default-207b9e" href="http://www.nlm.nih.gov/accessibility.html"><small>Accessibility</small></a>
                             <br/><br/>
                             <small>U.S. National Library of Medicine<br/>8600 Rockville Pike, Bethesda, MD 20894</small>
                         </p>
                       </div>
                       <div class="col-md-2">
-                          <center><br/><a href="http://www.usa.gov"><img src="/cde/public/assets/img/usagov_logo.gif" /></a></center>
+                          <center><br/><a href="http://www.usa.gov"><img alt="USA.gov logo" src="/cde/public/assets/img/usagov_logo.gif" /></a></center>
                       </div>
                       <div class="col-md-5">
                           <p class="pull-right">
-                                <a href="http://www.nih.gov/"><small>National Institutes of Health</small></a><br/>
-                                <a href="http://www.hhs.gov/"><small>Health &amp; Human Services</small></a><br/>
-                                <a href="http://www.nih.gov/icd/od/foia/index.htm"><small>Freedom of Information Act</small></a><br/>
-                                <a href="http://apps.nlm.nih.gov/mainweb/siebel/nlm/index.cfm"><small>Contact Us</small></a>
+                                <a class="ahref-default-207b9e" href="http://www.nih.gov/"><small>National Institutes of Health</small></a><br/>
+                                <a class="ahref-default-207b9e" href="http://www.hhs.gov/"><small>Health &amp; Human Services</small></a><br/>
+                                <a class="ahref-default-207b9e" href="http://www.nih.gov/icd/od/foia/index.htm"><small>Freedom of Information Act</small></a><br/>
+                                <a class="ahref-default-207b9e" href="http://apps.nlm.nih.gov/mainweb/siebel/nlm/index.cfm"><small>Contact Us</small></a>
                           </p>
                       </div>
                     </div>
-                </div>            
+                </div>
             </footer>
         </div>
         

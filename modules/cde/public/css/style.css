@@ -35,11 +35,11 @@ body {
 }
 
 .gray {
-    color: #a7a7a7;
+    color: #595959;
 }
 
 .error-block {
-    color: brown;
+    color: #650000;
     font-size: 18px !important; 
     font-weight: bold !important;
 }
@@ -171,6 +171,51 @@ body {
 .matched-by {
     float: right;
 }
+
+.matched-by-4c4c4c {
+	color:#4c4c4c !important;
+}
+
+.ahref-default-207b9e {
+	color: #207b9e !important;
+}
+
+.btn-primary {
+	color: #fff;
+	background-color: #207b9e !important;
+	border-color: #207b9e !important;
+}
+
+.btn-danger-791d1a:hover, .btn-danger-791d1a:focus, .btn-danger-791d1a:active, .btn-danger-791d1a.active
+{
+	background-color: #791d1a !important;
+	border-color: #601714 !important;
+}
+.btn-danger-791d1a {
+	background-color: #92231f !important;
+	border-color: #791d1a !important;
+}
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+	background-color: #207b9e !important;
+	color: #fff !important;
+}
+
+a.paginate_button {
+	color: #666666 !important;
+	border: 1px solid #e7e7e7 !important;
+}
+
+.tabbable>.nav>li.active>a {
+	background-color: #207b9e !important;
+	color: #fff;
+}
+.tabbable>.nav>li>a {
+	color: #207b9e;
+}
+
+
+
 
 .form-inline .form-group input {
     width:250px;
