@@ -44,7 +44,6 @@
         <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">
             <div ng-repeat="formElement in section.formElements" id="question_{{$index}}">
                 <div ng-if="formElement.elementType === 'question'" ng-include="'/template/form/question'" ng-init="question = formElement;"></div>
-                {{ formElement }}
                 <div ng-if="formElement.elementType === 'section'" ng-include="'/template/form/section'" ng-init="section = formElement;"></div>
             </div>
             <div ng-show="section.formElements.length === 0">
