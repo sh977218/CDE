@@ -405,7 +405,7 @@ exports.transferSteward = function(from, to, callback) {
 exports.archivedCdes = function(cdeArray, callback) {
     var evalF = function (cdeArray) {
         var resultArray = [];
-        cdeArray.forEach(function(idPair) {
+        cdeArray.array.forEach(function(idPair) {
            var cur = db.dataelements.find({tinyId: idPair.tinyId, version: idPair.version, archived: null});
            if (!cur.hasNext()) {
                resultArray.push(idPair);
@@ -413,11 +413,7 @@ exports.archivedCdes = function(cdeArray, callback) {
         });
         return resultArray;
     };
-    var stringF = JSON.stringify('' + evalF);
-    console.log(JSON.stringify(cdeArray));
-    console.log(stringF);
-    connection.db.eval(stringF, cdeArray, function(err, result) {
-        console.log("RESULT: " + JSON.stringify(result));
+    connection.db.eval(evalF, {array: JSON.parse(cdeArray)}, function(err, result) {
         callback(err, result);
     });
 };
