@@ -14,6 +14,11 @@ public class FormPropertyTest extends PropertyTest {
     public void goToEltSearch() {
         goToFormSearch();
     }
+    
+    @Test 
+    public void autocomplete() {
+        autocomplete("Skin Cancer Patient", "autoc", "Autocomplete");
+    }
 
     @Test
     public void addRemoveFormProperty() {

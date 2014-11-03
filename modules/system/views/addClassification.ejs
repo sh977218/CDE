@@ -19,7 +19,7 @@
     <div ng-repeat="cat in newClassification.categories" ng-click="classTree.wipeRest(newClassification, $index+1)" style="margin-left: {{10+10*$index}}px">
         <span class="fake-link">{{cat}}</span>
     </div>
-    <div ng-repeat="cat in classTree.getCategories(org, newClassification, newClassification.categories.length)" style="margin-left: {{10+10*newClassification.categories.length}}px" id="addClassification-{{cat.name}}">
+    <div ng-repeat="cat in classTree.getCategories(org, newClassification, newClassification.categories.length) | orderBy:'name'" style="margin-left: {{10+10*newClassification.categories.length}}px" id="addClassification-{{cat.name}}">
 
         > <span ng-if="classificationType=='org' || cat.elements.length>0" ng-click="newClassification.categories.push(cat.name)" class="fake-link">{{cat.name}}</span>
         <span ng-if="classificationType=='elt' && (cat.elements.length==0 || !cat.elements)" class="fake-link">{{cat.name}}</span>

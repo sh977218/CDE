@@ -1093,7 +1093,7 @@ db.forms.insert({
     "comments" : [],
     "attachments" : [],
     "ids" : [],
-    "properties" : [],
+    "properties" : [{key: "Autocomplete", value: "test autocomplete feature"}],
     "registrationState" : {
         "registrationStatus" : "Qualified"
     },
@@ -1132,11 +1132,11 @@ db.forms.insert({
     ]      
 });
 
-db.forms.insert({"tinyId":"-1EuCaaUS","created":"2014-10-24T15:20:16.263Z","classification":[]
-    ,"formElements":[{"label":"Your Health Information","cardinality":"1","formElements":[
-                {"label":"Patient Name","cardinality":"1","question":{"cde":{"tinyId":"yj0fzVoqNFU","version":"5","permissibleValues":[]}
+db.forms.insert({"tinyId":"-1EuCaaUS","created":"2014-10-24T15:20:16.263Z","classification":[],"formElements":[
+        {elementType: "section", "label":"Your Health Information","cardinality":"1","formElements":[
+                {elementType: "question", "label":"Patient Name","cardinality":"1","question":{"cde":{"tinyId":"yj0fzVoqNFU","version":"5","permissibleValues":[]}
                         ,"datatype":"CHARACTER","required":false,"uoms":[],"answers":[]}},
-                {"label":"Person Gender Text Type","cardinality":"1","question":{
+                {elementType: "question", "label":"Person Gender Text Type","cardinality":"1","question":{
                         "cde":{"tinyId":"UVBtDbEs1cx","version":"3","permissibleValues":[
                                 {"permissibleValue":"Female","valueMeaningName":"Female Gender","valueMeaningCode":"C46110","valueMeaningCodeSystem":"NCI Thesaurus"},
                                 {"permissibleValue":"Male","valueMeaningName":"Male Gender","valueMeaningCode":"C46109","valueMeaningCodeSystem":"NCI Thesaurus"},
@@ -1146,14 +1146,15 @@ db.forms.insert({"tinyId":"-1EuCaaUS","created":"2014-10-24T15:20:16.263Z","clas
                             {"permissibleValue":"Female","valueMeaningName":"Female Gender","valueMeaningCode":"C46110","valueMeaningCodeSystem":"NCI Thesaurus"},
                             {"permissibleValue":"Male","valueMeaningName":"Male Gender","valueMeaningCode":"C46109","valueMeaningCodeSystem":"NCI Thesaurus"},
                             {"permissibleValue":"Unknown","valueMeaningName":"Unknown","valueMeaningCode":"C17998","valueMeaningCodeSystem":"NCI Thesaurus"}]}},
-                {"label":"Person Birth Date","cardinality":"1","question":{
+                {elementType: "question", "label":"Person Birth Date","cardinality":"1","question":{
                         "cde":{"tinyId":"9dkUVHdy3Cx","version":"5.2","permissibleValues":[]},"datatype":"Date","required":false,"uoms":[],"answers":[]}},
-                {"label":"Participant Weight","cardinality":"1",
+                {elementType: "question", "label":"Participant Weight","cardinality":"1",
                     "question":{"cde":{"tinyId":"zZoPTQYOGoX","version":"1","permissibleValues":[]},
                         "datatype":"String\nNumeric","required":false,"uoms":["Lbs"],"answers":[]}}],"question":{"answers":[],"uoms":[]}},
-        {"label":"Your Disease History","cardinality":"*","formElements":[{"label":"Age at Diagnosis","cardinality":"1","question":{
-                        "cde":{"tinyId":"zYS4004yOYG","version":"1.1","permissibleValues":[]},"datatype":"Integer","required":false,"uoms":[],"answers":[]}},{
-                    "label":"Disease or Condition","cardinality":"1","question":{
+        {elementType: "section", "label":"Your Disease History","cardinality":"*","formElements":[
+                {elementType: "question", "label":"Age at Diagnosis","cardinality":"1","question":{
+                        "cde":{"tinyId":"zYS4004yOYG","version":"1.1","permissibleValues":[]},"datatype":"Integer","required":false,"uoms":[],"answers":[]}},
+                {elementType: "question", "label":"Disease or Condition","cardinality":"1","question":{
                         "cde":{"tinyId":"-1ng6CRLB","permissibleValues":[{"valueMeaningName":"Cancer","isValid":false,"valueMeaningCode":"Cancer","permissibleValue":"Cancer"},
                                 {"valueMeaningName":"-- Breast Cancer","isValid":false,"valueMeaningCode":"Breast Cancer","permissibleValue":"-- Breast Cancer"},
                                 {"valueMeaningName":"-- Colon Cancer","isValid":false,"valueMeaningCode":"Colon Cancer","permissibleValue":"-- Colon Cancer"},
