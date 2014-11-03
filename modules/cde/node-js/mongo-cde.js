@@ -404,9 +404,20 @@ exports.transferSteward = function(from, to, callback) {
 
 exports.archivedCdes = function(cdeArray, callback) {
     var evalF = function (cdeArray) {
-        
+        var resultArray = [];
+        cdeArray.forEach(function(idPair) {
+           var cur = db.dataelements.find({tinyId: idPair.tinyId, version: idPair.version, archived: null});
+           if (!cur.hasNext()) {
+               resultArray.push(idPair);
+           }
+        });
+        return resultArray;
     };
-    connection.db.eval(JSON.stringify(evalF), cdeArray, function(err, result) {
+    var stringF = JSON.stringify('' + evalF);
+    console.log(JSON.stringify(cdeArray));
+    console.log(stringF);
+    connection.db.eval(stringF, cdeArray, function(err, result) {
+        console.log("RESULT: " + JSON.stringify(result));
         callback(err, result);
     });
 };
