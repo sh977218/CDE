@@ -19,7 +19,8 @@ var sectionSchema = {
 };
 
 var formElementSchema = new Schema({
-    label: String
+    elementType: {type: String, enum: ['section', 'question']} 
+    , label: String
     , instructions: String
     , cardinality: String
     , repeatsFor: String
