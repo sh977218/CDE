@@ -19,9 +19,6 @@
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-animate.min.js"></script>
         <script src="/cde/public/js/bootstrap-accessibility.min.js"></script>
         
-        <%- include includeFrontEndJS.ejs %>
-        <%- include ../../cde/views/includeFrontEndJS.ejs %>
-        <%- include ../../form/views/includeFrontEndJS.ejs %>
         
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
@@ -172,7 +169,7 @@
         <!-- build:js /cde/public/assets/js/resource.concat.min.js -->
         <script src="/cde/public/assets/js/textAngular-1.2.0.min.js"></script>
         <script src="/cde/public/assets/js/angular-local-storage.js"></script>
-        <script src="/cde/public/assets/js/ui-bootstrap-tpls-0.10.0.min.js"></script>
+        <script src="/cde/public/assets/js/ui-bootstrap-tpls.js"></script>
         <script src="/cde/public/assets/js/diff_match_patch.js"></script>
         <script src="/cde/public/assets/js/match-media.js"></script>
         <script src="/cde/public/assets/js/sortable.js"></script>
@@ -180,5 +177,9 @@
         <script src="/cde/public/assets/js/select.js"></script>        
         <!-- endbuild -->
 
+        <%- include includeFrontEndJS.ejs %>
+        <%- include ../../cde/views/includeFrontEndJS.ejs %>
+        <%- include ../../form/views/includeFrontEndJS.ejs %>
+        
     </body>
 </html>
