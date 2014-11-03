@@ -1,0 +1,59 @@
+<div class="panel panel-default" id="section_view_{{$index}}">
+    <div class="panel-heading">
+        <h4><strong><div id="section_title_{{$index}}" inline-edit model="section.label" is-allowed="canCurate" on-ok="stageElt()"></div></strong></h4>
+        <div class="row">
+            <div class="col-sm-6">
+                <dl class="dl-horizontal">
+                    <dt>Instructions: </dt>
+                    <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
+                    <dt>Cardinality: </dt>
+                    <dd id="dd_card_{{$index}}">
+                        <span ng-show="editCardMode">
+                            <select ng-model="section.cardinality" ng-options="key as value for (key, value) in cardinalityOptions" id="select_section_card_{{$index}}"></select>
+                            <br/>
+                            <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard"> Confirm</button>
+                            <button class="fa fa-times" ng-click="editCardMode = false; section.cardinality = orig"> Discard</button>
+                        </span>
+                        <span ng-hide="editCardMode">
+                            <i ng-show="canCurate" class="fa fa-edit" ng-click="editCardMode = true; orig = section.cardinality" id="edit_section_card_{{$index}}"></i> {{cardinalityOptions[section.cardinality]}}
+                        </span>
+                    </dd>
+                </dl>
+            </div>
+            <div class="col-sm-6">
+                <dl ng-show="canCurate" class="dl-horizontal">
+                    <dt>Delete:</dt>
+                    <dd>
+                        <div>
+                            <i ng-click="removeElt(elt, $index)" class="fa fa-trash-o" id="removeElt-{{$index}}"></i>
+                        </div>                    
+                    </dd>
+                    <dt ng-hide="$first && $last">Move:</dt>
+                    <dd>
+                        <div ng-show="canCurate">
+                            <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}" ng-hide="$first" ></i>
+                            <i ng-click="moveElt($index, 1)" class="fa fa-arrow-down" id="moveEltDown-{{$index}}" ng-hide="$last" ></i>
+                        </div>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <h4><strong>Elements</strong></h4>
+        <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">
+            <div ng-repeat="formElement in section.formElements" id="question_{{$index}}">
+                <div ng-if="formElement.elementType === 'question'" ng-include="'/template/form/question'" ng-init="question = formElement;"></div>
+                {{ formElement }}
+                <div ng-if="formElement.elementType === 'section'" ng-include="'/template/form/section'" ng-init="section = formElement;"></div>
+            </div>
+            <div ng-show="section.formElements.length === 0">
+                <i class="fa fa-exclamation-triangle"></i> To add questions, search for and drag them here.
+                <button id="startAddingQuestions_section_{{sectionIndex}}" ng-show="elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-sm">
+                    <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
+                    <span ng-show="addCdeMode"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
