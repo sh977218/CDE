@@ -179,8 +179,8 @@ a {
 
 .btn-primary {
 	color: #fff;
-	background-color: #207b9e !important;
-	border-color: #207b9e !important;
+	background-color: #207b9e;
+	border-color: #207b9e;
 }
 
 .btn-danger:hover, .btn-danger:focus, .btn-danger:active, .btn-danger.active
