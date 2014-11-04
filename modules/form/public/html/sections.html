@@ -11,7 +11,8 @@
     <i class="fa fa-exclamation-triangle"></i> There is no content yet.
 </div>
 <div ui-sortable="sortableOptionsSections" ng-model="elt.formElements" class="dragQuestions">
-    <div ng-repeat="(sectionIndex, section) in elt.formElements">
-        <div ng-include="'/template/form/section'"></div>
+    <div ng-repeat="(sectionIndex, formElement) in elt.formElements">
+        <div ng-if="formElement.elementType === 'question'" ng-include="'/template/form/question'" ng-init="question = formElement;"></div>
+        <div ng-if="formElement.elementType === 'section'" ng-include="'/template/form/section'" ng-init="section = formElement;"></div>
     </div>
 </div>

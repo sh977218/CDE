@@ -305,3 +305,9 @@ dd.formViewDetails {
     overflow-y: scroll;
     overflow-x: hidden;
 }
+
+.section-move-handle {
+    float: left;
+    top: 10px;
+    margin: 10px;    
+}
