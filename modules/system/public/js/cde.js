@@ -28,7 +28,7 @@ var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui
     return {
         template: '<span>' + 
                         '<span ng-hide="editMode">' + 
-                            '<i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' + 
+                            '<i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' + 
                         '</span>' + 
                         '<form name="inlineForm" ng-show="editMode">' + 
                             '<input name="inlineInput" type="{{inputType}}" ng-model="value" typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +                                                        
@@ -54,7 +54,7 @@ var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui
         return {
             template: '<div>' + 
                             '<div ng-hide="editMode" ng-switch="defFormat">' + 
-                            '   <i ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>' +
+                            '   <i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>' +
                             '   <span ng-switch-default><span ng-bind="model"></span></span>' +
                             '   <span ng-switch-when="html"><span ng-bind-html="model"></span></span>' +
                             '</div>' + 
@@ -223,3 +223,39 @@ cdeApp.config(function($provide) {
         return $delegate;
     });
 });
+
+angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function($templateCache) {
+	  $templateCache.put("template/accordion/accordion-group.html",
+	    "<div class=\"panel panel-default\">\n" +
+	    "  <div class=\"panel-heading\">\n" +
+	    "    <h4 class=\"panel-title\">\n" +
+	    "      <a tabindex=\"-1\" class=\"accordion-toggle\" ng-click=\"isOpen = !isOpen\" accordion-transclude=\"heading\">{{heading}}</a>\n" +
+	    "    </h4>\n" +
+	    "  </div>\n" +
+	    "  <div class=\"panel-collapse\" collapse=\"!isOpen\">\n" +
+	    "	  <div class=\"panel-body\" ng-transclude></div>\n" +
+	    "  </div>\n" +
+	    "</div>");
+	}]);
+
+angular.module("template/pagination/pager.html", []).run(["$templateCache", function($templateCache) {
+	  $templateCache.put("template/pagination/pager.html",
+	    "<ul class=\"pager\">\n" +
+	    "  <li ng-repeat=\"page in pages\" ng-class=\"{disabled: page.disabled, previous: page.previous, next: page.next}\"><a tabindex=\"0\" ng-click=\"selectPage(page.number)\">{{page.text}}</a></li>\n" +
+	    "</ul>");
+	}]);
+
+angular.module("template/pagination/pagination.html", []).run(["$templateCache", function($templateCache) {
+	  $templateCache.put("template/pagination/pagination.html",
+	    "<ul class=\"pagination\">\n" +
+	    "  <li ng-repeat=\"page in pages\" ng-class=\"{active: page.active, disabled: page.disabled}\"><a tabindex=\"0\" ng-click=\"selectPage(page.number)\">{{page.text}}</a></li>\n" +
+	    "</ul>");
+	}]);
+
+angular.module("template/tabs/tab.html", []).run(["$templateCache", function($templateCache) {
+	  $templateCache.put("template/tabs/tab.html",
+	    "<li ng-class=\"{active: active, disabled: disabled}\">\n" +
+	    "  <a tabindex=\"0\" ng-click=\"select()\" tab-heading-transclude>{{heading}}</a>\n" +
+	    "</li>\n" +
+	    "");
+	}]);

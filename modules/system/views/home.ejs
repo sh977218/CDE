@@ -1,7 +1,9 @@
 <!-- jumbotron -->
 <div class="jumbotron">
     <div class="container">
+    	<h1>
         <img class="img-center-responsive" width="700px" alt="National Library of Medicine logo" src="/cde/public/assets/img/nih-nlm-logo.png" />
+        </h1>
 
         <div class="pt40 hidden-xs">
             The NLM Common Data Elements (CDE) Repository is a prototype. 
@@ -16,7 +18,7 @@
             Value Set Authority Center (VSAC).
         </div>
         <div class="pt40">
-            <h1 style="font-weight: 700;font-size: 21px;">Quick CDE Search:</h1>
+            <p><strong>Quick CDE Search:</strong></p>
             <form name="quickSearchForm" id="quickSearchForm" class="form-inline" ng-submit="submitForm( quickSearchForm.$valid )" novalidate>
                 <!-- Search dropdown and text field -->
                 <div class="input-group input-group-lg">
@@ -31,12 +33,12 @@
                             </li>
                         </ul>
                     </div>
-                    <label id="l1" class="sr-only" for="searchTerms">Search Terms</label>
-                    <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="500" placeholder="" aria-labelledby="l1">
+                    <label class="sr-only" for="searchTerms">Search Terms</label>
+                    <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="500" placeholder="">
 
                     <!-- Display if screen is large -->
                     <div ng-if="!isScreenSizeXsSm" class="input-group-btn">
-                        <button name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg btn-danger-791d1a" type="submit" ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid"><i class="fa fa-search"></i> Search</button>
+                        <button name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid"><i class="fa fa-search"></i> Search</button>
                         <button name="quickSearchReset" id="quickSearchReset" class="btn btn-default btn-lg" type="button" ng-click="clearSearch()"><i class="fa fa-trash-o"></i> Reset</button>
                     </div>
                 </div>
@@ -58,21 +60,21 @@
 <div class="container">
     <div class="row">
       <div class="col-md-4">
-        <h2 style="font-size: 24px;">Search</h2>
+        <h3>Search</h3>
         <br/>
         <p>
             Search for individual data elements, by definition, users or sources. Search for sets of data elements ("boards") identified by a particular group for a particular use (e.g particular research solicitation).
         <p><a class="btn btn-default" href="/#/cde/search" role="button">Search CDEs &raquo;</a></p>
       </div>
       <div class="col-md-4">
-        <h2 style="font-size: 24px;">Compare / Harmonize</h2>
+        <h3>Compare / Harmonize</h3>
         <br/>
         <p>
         Analyze and resolve differences between data elements. Assure that your forms are using variables that will be usable by certified EHRs.
         </p>
       </div>
       <div class="col-md-4">
-        <h2 style="font-size: 24px;">Create</h2>
+        <h3>Create</h3>
         <br/>
         <p>Draw upon the experience of colleagues and others to design unique data elements and measures.
         </p>

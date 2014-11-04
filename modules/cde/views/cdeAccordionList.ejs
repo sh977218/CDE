@@ -2,14 +2,14 @@
     <div ui-sortable="dragSortableOptions" ng-model="cdes">
         <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
             <div accordion-heading>
-                <span ng-bind-html="cde.primaryNameCopy" id="acc_link_{{$index}}" class="hand-cursor"></span>
-                <i tabindex="0" ng-show="!openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(cde,'view',$event)" title="View"></i>
-                <i tabindex="0" ng-show="openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(cde,'viewNewTab',$event)" title="View"></i>
-                <i tabindex="0" ng-show="user._id && ejsPage!=='board' && cPage!=='forms'" class="fa fa-thumb-tack hand-cursor" ng-click="accordionIconAction(cde,'openPinModal',$event)" title="Pin"> </i>
-                <i tabindex="0" ng-show="user._id && ejsPage==='board'" class="fa fa-thumb-tack fa-rotate-90 hand-cursor" ng-click="unpin(board.pins[$index])" title="unPin" id="unpin_{{$index}}"> </i>          
-                <i tabindex="0" ng-show="showCompareButton(cde) && cPage!=='forms'" class="fa fa-plus hand-cursor" ng-click="accordionIconAction(cde,'addToQuickBoard',$event)" title="Add to Quick Board" id="addToCompare_{{$index}}"></i>
-                <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-hide="ejsPage!='quickboard'" ng-click="removeDE($index)" title="remove" id="remove_{{$index}}"></i>              
-                <small class="matched-by matched-by-4c4c4c" ng-show="cde.highlight.matchedBy">Matched by: <strong><span ng-bind-html="cde.highlight.matchedBy"></span></strong></small>
+                <span tabindex="0" role="link" ng-bind-html="cde.primaryNameCopy" id="acc_link_{{$index}}" class="hand-cursor"></span>
+                <i tabindex="0" ng-show="!openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(cde,'view',$event)" title="View Full Detail" role="link"></i>
+                <i tabindex="0" ng-show="openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(cde,'viewNewTab',$event)" title="View Full Detail" role="link"></i>
+                <i tabindex="0" ng-show="user._id && ejsPage!=='board' && cPage!=='forms'" class="fa fa-thumb-tack hand-cursor" ng-click="accordionIconAction(cde,'openPinModal',$event)" title="Attach to Board" role="link"> </i>
+                <i tabindex="0" ng-show="user._id && ejsPage==='board'" class="fa fa-thumb-tack fa-rotate-90 hand-cursor" ng-click="unpin(board.pins[$index])" title="unPin from Board" id="unpin_{{$index}}" role="link"> </i>          
+                <i tabindex="0" ng-show="showCompareButton(cde) && cPage!=='forms'" class="fa fa-plus hand-cursor" ng-click="accordionIconAction(cde,'addToQuickBoard',$event)" title="Add to Quick Board" id="addToCompare_{{$index}}" role="link"></i>
+                <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-hide="ejsPage!='quickboard'" ng-click="removeDE($index)" title="remove" id="remove_{{$index}}" role="link"></i>
+                <small class="matched-by" ng-show="cde.highlight.matchedBy">Matched by: <strong><span ng-bind-html="cde.highlight.matchedBy"></span></strong></small>
             </div>
             <div class="row">
                 <div class="col-md-6">
@@ -24,12 +24,12 @@
             </div>
             <div class="row" >
                 <div class="col-md-12">
-                    <a ng-show="!openCdeInNewTab" class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" id="openEltInCurrentTab_{{$index}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
-                    <a ng-show="openCdeInNewTab" target="_blank" class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" id="openCdeInNewTab_{{$index}}" title="Full Detail for {{cde.naming[0].designation}}"><i class="fa fa-eye"></i> View Full Detail</a>
-                    <a ng-show="user._id && ejsPage!='board'" class="btn btn-small btn-default" ng-click="openPinModal(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack" title="Pin"></i> Attach to Board</a>
-                    <a ng-show="user._id && ejsPage=='board'" class="btn btn-small btn-default" ng-click="unpin(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack fa-rotate-90" title="unPin"></i> Remove from Board</a>
-                    <a tabindex="0" ng-show="showCompareButton(cde)" class="btn btn-small btn-default" ng-click="addToQuickBoard(cde)" title="Add to Quick Board" id="compare_{{$index}}"><i class="fa fa-plus"></i> Add to Quick Board</a>
-                    <a class="pull-right ahref-default-207b9e" ng-href="#/sdcview/?cdeId={{cde._id}}" title="SDC View" id="sdcView_{{$index}}"><i class="fa fa-share-square-o"></i> SDC View</a>
+                    <a tabindex="0" ng-show="!openCdeInNewTab" class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" id="openEltInCurrentTab_{{$index}}"><i class="fa fa-eye"></i> View Full Detail</a>
+                    <a tabindex="0" ng-show="openCdeInNewTab" target="_blank" class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" id="openCdeInNewTab_{{$index}}"><i class="fa fa-eye"></i> View Full Detail</a>
+                    <a tabindex="0" ng-show="user._id && ejsPage!='board'" class="btn btn-small btn-default" ng-click="openPinModal(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack"></i> Attach to Board</a>
+                    <a tabindex="0" ng-show="user._id && ejsPage=='board'" class="btn btn-small btn-default" ng-click="unpin(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack fa-rotate-90" title="unPin"></i> Remove from Board</a>
+                    <a tabindex="0" ng-show="showCompareButton(cde)" class="btn btn-small btn-default" ng-click="addToQuickBoard(cde)" id="compare_{{$index}}"><i class="fa fa-plus"></i> Add to Quick Board</a>
+                    <a class="pull-right" ng-href="#/sdcview/?cdeId={{cde._id}}" aria-label="SDC View" id="sdcView_{{$index}}"><i class="fa fa-share-square-o"></i> SDC View</a>
                 </div>
             </div>
         </div>

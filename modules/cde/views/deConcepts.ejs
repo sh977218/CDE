@@ -21,11 +21,11 @@
         </thead>
         <tbody>
             <tr ng-repeat="concept in elt.<%- conceptConf.deConceptSource %>.concepts">
-                <td><a class="ahref-default-207b9e" ng-click="relatedCdes(concept)" tabindex="0" alt="{{concept.name}}" title="{{concept.name}}" aria-label="{{concept.name}}">{{concept.name}}</a></td>
+                <td><a tabindex="0" ng-click="relatedCdes(concept)">{{concept.name}}</a></td>
                 <td>{{concept.origin}}</td>
                 <td>{{concept.originId}}</td>
                 <td headers="actions" ng-show="canCurate">
-                     <a id="<%- conceptConf.deConceptId %>-{{$index}}" class="fa fa-trash-o" ng-click="<%- conceptConf.deConceptCallback %>($index)" title="Remove" href=""></a>
+                     <a tabindex="0" id="<%- conceptConf.deConceptId %>-{{$index}}" class="fa fa-trash-o" ng-click="<%- conceptConf.deConceptCallback %>($index)" title="Remove" href=""></a>
                 </td>
             </tr>
         </tbody>
