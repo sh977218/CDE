@@ -77,17 +77,17 @@ function FormViewCtrl($scope, $routeParams, $http, Form, isAllowedModel) {
     
     $scope.checkForArchivedCdes = function() {
         var checkArray = [];
-        var doFormElements = function(node) {
+        var findAllCdesInFormElement = function(node) {
             if (node.formElements) {
                 for (var i = 0; i < node.formElements.length; i++) {
                     if (node.formElements[i].elementType === "question") {
                         checkArray.push({tinyId: node.formElements[i].question.cde.tinyId, version: node.formElements[i].question.cde.version});
                     }
-                    doFormElements(node.formElements[i]);
+                    findAllCdesInFormElement(node.formElements[i]);
                 }
             }
         };
-        doFormElements($scope.elt);
+        findAllCdesInFormElement($scope.elt);
         
         var applyOutdatedElements = function(node, outdatedElements) {
             if (node.formElements) {
