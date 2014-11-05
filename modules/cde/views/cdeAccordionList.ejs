@@ -2,7 +2,7 @@
     <div ui-sortable="dragSortableOptions" ng-model="cdes">
         <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
             <div accordion-heading>
-                <i class="fa fa-arrows question-move-handle"></i>
+                <i ng-show="addCdeMode" class="fa fa-arrows question-move-handle"></i>
                 <span ng-bind-html="cde.primaryNameCopy" id="acc_link_{{$index}}" class="hand-cursor"></span>
                 <i ng-show="!openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(cde,'view',$event)" title="View"></i>
                 <i ng-show="openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(cde,'viewNewTab',$event)" title="View"></i>
