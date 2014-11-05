@@ -1,10 +1,12 @@
 <dl class="dl-horizontal">
   <dt>Multiple Values:</dt>
   <dd>
-    <input ng-disabled="!canCurate" type="checkbox" ng-model="elt.valueDomain.datatypeValueList.multi" ng-change="stageElt(elt)" id="multipleValues_input" boolean/>
+  	<label class="sr-only" for="multipleValues_input">Multiple Values</label>
+    <input ng-disabled="!canCurate" type="checkbox" ng-model="elt.valueDomain.datatypeValueList.multi" ng-change="stageElt(elt)" id="multipleValues_input" tabindex="0" boolean/>
   </dd>
     <dt>Other (Please Specify):</dt>
     <dd>
+      <label class="sr-only" for="otherPleaseSpecify_input">Others</label>
       <input type="checkbox" ng-disabled="!canCurate" ng-model="elt.valueDomain.datatypeValueList.otherPleaseSpecify" ng-change="changeOtherPleaseSpecify()" id="otherPleaseSpecify_input" boolean/>
     </dd>
   <span ng-show="elt.valueDomain.datatypeValueList.otherPleaseSpecify === true">
