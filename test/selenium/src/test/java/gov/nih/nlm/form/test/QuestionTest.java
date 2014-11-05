@@ -280,14 +280,19 @@ public class QuestionTest extends BaseFormTest {
         // Add 2nd Section
 
         addQuestionToSection("Smoking History Ind", 0);
-        addQuestionToSection("Smoking History Ind", 1);
-        
-        saveForm();        
+        addQuestionToSection("First-Line Therapy Chemotherapy Regimen Name", 1);             
 
-//        WebElement sourceElt = findElement(By.xpath("//div[@id='section_drop_area_1']//div[@id='question_0']"));
-//        WebElement targetElt = findElement(By.id("section_drop_area_0"));
-//        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
-        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
+        WebElement sourceElt = findElement(By.xpath("//div[@id=\"section_view_1\"]//i[@class=\"fa fa-arrows section-move-handle\"]"));
+        WebElement targetElt = findElement(By.id("section_drop_area_0"));
+        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+        saveForm();        
+        goToFormByName(formName);
+        findElement(By.linkText("Form Description")).click();        
+        
+        
+        findElement(By.xpath("//div[@id=\"section_drop_area_0\"]//div[@id=\"section_drop_area_0\"]//span[text()=\"First-Line Therapy Chemotherapy Regimen Name\"]"));       
+        
+        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());        
     }
     
     /*@Test
