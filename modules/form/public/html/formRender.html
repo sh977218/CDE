@@ -45,45 +45,12 @@
 
   <body ng-controller="FormRenderCtrl">
       <div class="container-fluid">
-          <h2>{{myForm.naming[0].designation}}</h2>
-          <form ng-repeat="section in myForm.formElements track by $index" name="sectionLabel" role="form" class="form-inline">
-              <div class="panel panel-default">
-                  <div class="panel-heading">
-                      <div class="row">
-                        <div class="col-md-9">
-                          <h4>{{section.label}}</h4>
-                          <p>{{section.instructions}}</p>
-                        </div>
-                        <div class="col-md-3" ng-if="canRepeat(section)">
-                            <button class="btn btn-default fa fa-plus" ng-click="addSection($index)"> Add One</button>
-                            <button ng-if="section.isCopy" class="btn btn-default fa fa-trash-o" ng-click="removeSection($index)"> Remove</button>
-                        </div>
-                      </div>
-                  </div>
-                  <div class="panel-body">
-                    <div ng-repeat="question in section.formElements" class="row">
-                        <div class="col-md-3">
-                          <label>{{question.label}}</label>                      
-                        </div>
-                        <div ng-switch="question.question.datatype" class="col-md-9">
-                            <select ng-switch-when="Value List" class="form-control" ng-model="question.question.answer">
-                                <option ng-repeat="answer in question.question.answers" >{{answer.valueMeaningName}}</option>
-                                <option ng-if="question.question.otherPleaseSpecify.value" value="otherPleaseSpecify">Other</option>
-                            </select>
-                            <input ng-if="question.question.answer === 'otherPleaseSpecify'" type="text" class="form-control" required placeholder="Please Specify" ng-model="question.question.otherPleaseSpecify.answer" name="Please Specify"/>
-                            <input ng-switch-when="Date" class="form-control" datepicker-popup="dd-MMMM-yyyy" type="text" required ng-model="question.question.answer"/>
-                            <span ng-switch-default class="form-group">
-                              <input type="text" class="form-control" required ng-model="question.question.answer" name=""/>
-                              <select class="form-control" ng-if="question.question.uoms.length > 0" ng-model="question.question.answerUom" ng-init="question.question.answerUom = question.question.uoms[0]">
-                                  <option ng-repeat="uom in question.question.uoms">{{uom}}</option>
-                              </select>                                
-                            </span>
-                        </div>
-                    </div>
-                  </div>
-              </div>
-        </form>
-        <a class="btn btn-default btn-success fa fa-external-link" target="_blank" id="exportLink" ng-click="exportStr()" href="{{encodedStr}}" download="form-data.json"> Export</a>                     
+            <h2>{{myForm.naming[0].designation}}</h2>
+            <form ng-repeat="formElement in myForm.formElements track by $index" name="sectionLabel" role="form" class="form-inline">
+                <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'" ng-init="question = formElement;"></div>
+                <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'" ng-init="section = formElement;"></div>
+            </form>
+            <a class="btn btn-default btn-success fa fa-external-link" target="_blank" id="exportLink" ng-click="exportStr()" href="{{encodedStr}}" download="form-data.json"> Export</a>                     
       </div>
   </body>
 </html>
