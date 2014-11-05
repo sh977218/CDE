@@ -292,20 +292,13 @@ public class NlmCdeBaseTest {
         findElement(By.id("openSave")).click();
         modalHere();
         findElement(By.name("version")).sendKeys(".1");
-        findElement(By.id("confirmSave")).click();
+        findElement(By.id("confirmNewVersion")).click();
         hangon(2);
     }
 
     protected void saveCde() {
-        try {
-            findElement(By.id("confirmSave")).click();
-        } catch (WebDriverException wde) {
-            hangon(1);
-            findElement(By.id("confirmSave")).click();
-        }
-
+        findElement(By.id("confirmNewVersion")).click();
         hangon(2);
-
     }
 
     public void hangon(double i) {

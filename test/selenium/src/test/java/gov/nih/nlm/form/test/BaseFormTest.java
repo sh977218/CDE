@@ -16,7 +16,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
     protected void saveForm() {
         findElement(By.id("openSaveBottom")).click();
         findElement(By.name("version")).sendKeys("1");
-        findElement(By.id("confirmSave")).click();  
+        findElement(By.id("confirmNewVersion")).click();  
         textPresent("Saved.");
         closeAlert();
         hangon(1);
@@ -26,7 +26,8 @@ public class BaseFormTest extends NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys("\"" + query + "\"");
         findElement(By.id("search.submit")).click();    
     }
-        protected void gotoFormCreate() {
+    
+    protected void gotoFormCreate() {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("Form")).click();
     }
