@@ -26,6 +26,7 @@ function SectionCtrl($scope, $modal, $timeout, $http) {
 
     $scope.sortableOptions = {
         connectWith: ".dragQuestions"
+        , handle: ".fa.fa-arrows"
         , receive: function(e, ui) {
             var cde = ui.item.sortable.moved;
             if (cde.valueDomain !== undefined) {

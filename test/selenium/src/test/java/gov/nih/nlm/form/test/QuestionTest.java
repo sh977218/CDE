@@ -19,7 +19,7 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.id("search.submit")).click();
         textPresent("1 results");
         
-        WebElement sourceElt = findElement(By.id("acc_link_0"));
+        WebElement sourceElt = findElement(By.xpath("//div[@id='accordionList']//i[@class=\"fa fa-arrows question-move-handle ng-scope\"]"));
         WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumber));
         
         Assert.assertTrue(sourceElt.isDisplayed());
@@ -28,7 +28,7 @@ public class QuestionTest extends BaseFormTest {
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
     }
     
-    /*@Test
+    @Test
     public void questions() {
         Dimension currentWindowSize = getWindowSize();
         resizeWindow(1024, 1150);
@@ -158,7 +158,7 @@ public class QuestionTest extends BaseFormTest {
 
         findElement(By.id("startAddingQuestions")).click();
 
-        WebElement sourceElt = findElement(By.xpath("//div[@id='section_drop_area_1']//div[@id='question_0']"));
+        WebElement sourceElt = findElement(By.xpath("//div[@id='section_drop_area_1']//div[@id='question_0']//i[@class='fa fa-arrows question-move-handle ng-scope']"));
         WebElement targetElt = findElement(By.id("section_drop_area_0"));
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
 
@@ -261,7 +261,7 @@ public class QuestionTest extends BaseFormTest {
         
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
 
-    }*/
+    }
     
     @Test
     public void sectionInSection() {
@@ -280,11 +280,14 @@ public class QuestionTest extends BaseFormTest {
         // Add 2nd Section
 
         addQuestionToSection("Smoking History Ind", 0);
+        hangon(1);
         addQuestionToSection("First-Line Therapy Chemotherapy Regimen Name", 1);             
+        hangon(1);
 
         WebElement sourceElt = findElement(By.xpath("//div[@id=\"section_view_1\"]//i[@class=\"fa fa-arrows section-move-handle\"]"));
         WebElement targetElt = findElement(By.id("section_drop_area_0"));
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+        hangon(1);
         saveForm();        
         goToFormByName(formName);
         findElement(By.linkText("Form Description")).click();        
@@ -295,46 +298,5 @@ public class QuestionTest extends BaseFormTest {
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());        
     }
     
-    /*@Test
-    public void answerList() {
-        Dimension currentWindowSize = getWindowSize();
-        resizeWindow(1024, 1150);
-        
-        mustBeLoggedInAs(ctepCurator_username, password);
-
-        String formName = "Answer List Test";
-        String formDef = "Form to test answer lists ";
-        String formV = "0.1alpha";
-
-        createForm(formName, formDef, formV, "CTEP");
-        
-        findElement(By.linkText("Form Description")).click();
-
-        new SectionTest().addSection("Answer List Section", null);
-        
-        findElement(By.id("startAddingQuestions")).click();
-        addQuestionToSection("Patient Gender Category", 0);
-        findElement(By.id("question_accordion_0_0")).click();
-        hangon(1);
-
-        List<WebElement> lis = driver.findElements(By.xpath("//div[@id = 'question_0']//ul[@class='select2-choices']//li/span/span"));
-        Assert.assertEquals(lis.size(), 3);
-        Assert.assertEquals(lis.get(0).getText(), "FEMALE");
-        Assert.assertEquals(lis.get(1).getText(), "MALE");
-        Assert.assertEquals(lis.get(2).getText(), "UNKNOWN");
-
-        findElement(By.xpath("//div[@id='question_0']//ul[@class='select2-choices']//li[1]/a")).click();
-        textNotPresent("FEMALE");
-        lis = driver.findElements(By.xpath("//div[@id = 'question_0']//ul[@class='select2-choices']//li/span/span"));
-        Assert.assertEquals(lis.size(), 2);
-        Assert.assertEquals("MALE", lis.get(0).getText());
-        Assert.assertEquals("UNKNOWN", lis.get(1).getText());
-        
-        saveForm();
-        
-        new FormRegStatus().changeRegistrationStatus(formName, ctepCurator_username, "Incomplete", "Qualified");
-        
-        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());        
-    }*/
     
 }
