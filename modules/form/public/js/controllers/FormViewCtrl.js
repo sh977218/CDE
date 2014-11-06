@@ -114,4 +114,9 @@ function FormViewCtrl($scope, $routeParams, $http, Form, isAllowedModel) {
         });
     };
     
+    $scope.isIe = function() {
+        var browsers = {chrome: /chrome/i, safari: /safari/i, firefox: /firefox/i, ie: /MSIE/i};
+        return browsers['ie'].test($window.navigator.userAgent);
+    };
+    
 }

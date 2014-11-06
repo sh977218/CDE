@@ -39,13 +39,6 @@ function FormRenderCtrl($scope, $http, $location, $window) {
         return formElt.cardinality === '*' || formElt.cardinality === '+';
     };
     
-    $scope.checkIe = function() {
-        var browsers = {chrome: /chrome/i, safari: /safari/i, firefox: /firefox/i, ie: /MSIE/i};
-        if (browsers['ie'].test($window.navigator.userAgent)) {
-            $scope.addAlert("danger", "For security reasons, exporting is not available in Internet Explorer. Consider using a different browser for this task.");
-        }
-    };
-    
     var stripFieldsOut = function(elt) {
         delete elt.cardinality;
         delete elt.$$hashKey;
