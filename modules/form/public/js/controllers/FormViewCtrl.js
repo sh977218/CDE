@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification) {
-=======
-function FormViewCtrl($scope, $routeParams, $http, Form, isAllowedModel) {
->>>>>>> 21a14cbc2e4e541f5469d114bf9050d7f0b1fd37
+function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http) {
     $scope.module = "form";
     $scope.baseLink = '#/formView?_id=';
     $scope.addCdeMode = false;
