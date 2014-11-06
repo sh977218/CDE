@@ -21,8 +21,9 @@ exports.checkOwnership = function(dao, id, req, cb) {
     }
 };
 
-exports.isOrgOrSiteAdmin = function(req) {
-    if(req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org)>=0)) {
+// Check if user is site admin or org admin for at least one org
+exports.isSiteOrgAdmin = function(req) {
+    if(req.isAuthenticated() && (req.user.siteAdmin || (req.user.orgAdmin && req.user.orgAdmin.length >= 0))) {
         return true;
     }
     

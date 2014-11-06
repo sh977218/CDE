@@ -1,24 +1,35 @@
-<div class="container-fluid">
-    <div class="pt20">{{message}}</div>
-    <tabset class="pt20">
+<div class="container">
+    <tabset class="pt40 pb40">
         <tab heading="Broadcast">
-            <form name="form" role="form">
-                <div class="control-group" ng-class="{error: form.version.$invalid}">
-                   <label for="message">Broadcast Message: </label>
-                   <input class="form-control" name="message" type="text" ng-model="broadcast.message"></input>
+            <form name="form" role="form" class="form-inline pt40 pb40" novalidate>
+                <div class="form-group long-field" ng-class="{error: form.version.$invalid}">
+                   <input class="form-control" name="message" type="text" ng-model="broadcast.message" placeholder="Broadcast a message to all users..."/>
                 </div>
-                <button class="btn btn-warning" ng-click="saveMessage()" id="saveMessage">Save</button>
+                <button class="btn btn-warning" ng-click="saveMessage()" id="saveMessage">Broadcast</button>
             </form>
         </tab>
         <tab heading="Site Admins">
-            <div class="row" ng-repeat="u in siteAdmins">
-                <div class="col-md-11">{{u.username}}</div>
-                <div class="col-md-1" ng-show="siteAdmins.length > 1"><span class="fa fa-trash-o" ng-click="removeSiteAdmin(u._id)"> Remove</span></div>
-            </div>
-            <div class="row input-prepend input-append">
-                <input class="col-md-10" type="text" ng-model="admin.username"></input>
-                <button class="add-on fa fa-plus btn btn-default" ng-click="addSiteAdmin()"> Add</button>
-            </div>
+            <form name="form" role="form" class="form-inline pt40 pb40" novalidate>
+                Make
+                <div class="form-group">
+                   <input class="form-control" name="message" type="text" ng-model="admin.username" placeholder="enter user name" typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100" typeahead-min-length="3" required />
+                </div>
+                a site admin
+                <button class="btn btn-warning" ng-click="addSiteAdmin()" id="saveMessage">Make Admin</button>
+            </form>
+            
+            <table class="table table-border table-responsive">
+                <tr>
+                    <th>Site Admins:</th>
+                </tr>
+                <tr>
+                    <td>
+                        <div ng-repeat="user in siteAdmins">
+                            <span id="existingOrgAdminUsername-{{$parent.$index}}-{{$index}}">{{user.username}}</span> <i class="fa fa-trash-o hand-cursor" ng-click="removeSiteAdmin(user._id)" id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </tab>
         <tab heading="Organizations">
             <form class="form-inline pt40 pb40" role="form" id="addOrgForm" name="addOrgForm" novalidate>
@@ -71,7 +82,37 @@
             </table>
         </tab>
         <tab heading="Organizations Admins">
-            <div class="row" ng-repeat="adm in orgAdmins">
+            <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
+                Make
+                <div class="form-group">
+                    <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control" placeholder="enter user name" ng-model="orgAdmin.username" typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100" typeahead-min-length="3" required>
+                </div>
+                an administrator for
+                <div class="form-group">
+                    <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control" ng-model="admin.orgName" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in orgs" required>
+                        <option value="">select organization</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success" id="newOrgAdminSubmit" ng-click="addOrgAdmin()" ng-disabled="newOrgAdminForm.newOrgAdminUsername.$invalid || newOrgAdminForm.newOrgAdminOrgName.$invalid">Make Admin</button>
+            </form>
+            <table class="table table-border table-responsive">
+                <tr>
+                    <th>Organization Name:</th>
+                    <th>Admins for this Organization:</th>
+                </tr>
+                <tr ng-repeat="orgAdmin in orgAdmins | orderBy:'name'">
+                    <td id="existingOrgAdminOrgName-{{orgAdmin.name}}">
+                        {{orgAdmin.name}}
+                    </td>
+                    <td>
+                        <div ng-repeat="user in orgAdmin.users">
+                            <span id="existingOrgAdminUsername-{{$parent.$index}}-{{$index}}">{{user.username}}</span> <i class="fa fa-trash-o hand-cursor" ng-click="removeOrgAdmin(orgAdmin.name, user._id)" id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            
+<!--            <div class="row" ng-repeat="adm in orgAdmins">
                 <div class="col-md-4">{{adm.name}}</div>
                 <div class="col-md-8">
                     <div class="row" ng-repeat="us in adm.users">
@@ -87,7 +128,7 @@
                 </select>
                 <input class="col-md-5" type="text" ng-model="orgAdmin.username" id="orgAdmin.username">
                 <button class="add-on btn btn-default fa fa-plus" title="Add" ng-click="addOrgAdmin()" id="addOrgAdmin"> Add</button>
-            </div>
+            </div>-->
         </tab>
     </tabset>
 </div>   

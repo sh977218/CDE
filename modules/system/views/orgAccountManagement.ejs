@@ -1,48 +1,69 @@
 <div class="container">
-    <div>{{message}}</div>
     <tabset class="pt20">
         <tab heading="Organizations Admins">
-            <div class="row" ng-repeat="org in myOrgAdmins">
-                <div class="col-md-4" id="orgAdmin-{{$index}}">{{org.name}}</div>
-                <div class="col-md-8">
-                    <div class="row" ng-repeat="us in org.users">
-                        <div class="col-md-11" id="orgAdminUsername-{{$parent.$index}}-{{$index}}">{{us.username}}</div>
-                        <div class="col-md-1"><i class="fa fa-trash-o" ng-click="removeOrgAdmin(org.name, us._id)" id="orgAdminTrash-{{$parent.$index}}-{{$index}}"></i></div>
-                    </div>
+            <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
+                Make
+                <div class="form-group">
+                    <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control" placeholder="enter user name" ng-model="orgAdmin.username" typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100" typeahead-min-length="3" required>
                 </div>
-            </div>
-            <hr/>
-            <div class="row input-prepend input-append">
-                <select class="col-md-5" type="text" name="admin.orgName" ng-model="admin.orgName">
-                    <option value="">--</option>
-                    <option ng-repeat="c in user.orgAdmin" ng-value="c">{{c}}</option>
-                </select>
-                <input class="col-md-5" type="text" name="orgAdmin.username" ng-model="orgAdmin.username"></input>
-                <span class="add-on" id="addOrgAdmin" ng-click="addOrgAdmin()">+</span>
-            </div>
+                an administrator for
+                <div class="form-group">
+                    <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control" ng-model="admin.orgName" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
+                        <option value="">select organization</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success" id="newOrgAdminSubmit" ng-click="addOrgAdmin()" ng-disabled="newOrgAdminForm.newOrgAdminUsername.$invalid || newOrgAdminForm.newOrgAdminOrgName.$invalid">Make Admin</button>
+            </form>
+            <table class="table table-border table-responsive">
+                <tr>
+                    <th>Organization Name:</th>
+                    <th>Admins for this Organization:</th>
+                </tr>
+                <tr ng-repeat="myOrgAdmin in myOrgAdmins | orderBy:'name'">
+                    <td id="existingOrgAdminOrgName-{{myOrgAdmin.name}}">
+                        {{myOrgAdmin.name}}
+                    </td>
+                    <td>
+                        <div ng-repeat="user in myOrgAdmin.users">
+                            <span id="existingOrgAdminUsername-{{$parent.$index}}-{{$index}}">{{user.username}}</span> <i class="fa fa-trash-o hand-cursor" ng-click="removeOrgAdmin(myOrgAdmin.name, user._id)" id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </tab>
         <tab heading="Organizations Curators">
-            <div class="row" ng-repeat="org in orgCurators">
-                <div class="col-md-4">{{org.name}}</div>
-                <div class="col-md-8">
-                    <div class="row" ng-repeat="us in org.users">
-                        <div class="col-md-11">{{us.username}}</div>
-                        <div class="col-md-1"><i class="fa fa-trash-o" ng-click="removeOrgCurator(org.name, us._id)"></i></div>
-                    </div>
+            <form class="form-inline pt40 pb40" role="form" id="newOrgCuratorForm" name="newOrgCuratorForm" novalidate>
+                Make
+                <div class="form-group">
+                    <input id="newOrgCuratorUsername" name="newOrgCuratorUsername" type="text" class="form-control" placeholder="enter user name" ng-model="orgCurator.username" typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100" typeahead-min-length="3" required>
                 </div>
-            </div>
-            <hr/>
-            <div class="row input-prepend input-append">
-                <select class="col-md-5" type="text" name="curator.orgName" ng-model="curator.orgName">
-                    <option value="">--</option>
-                    <option ng-repeat="c in user.orgAdmin" ng-value="c">{{c}}</option>
-                </select>
-                <input class="col-md-5" type="text" name="orgCurator.username" ng-model="orgCurator.username"></input>
-                <span class="add-on" id="addOrgCurator" ng-click="addOrgCurator()">+</span>
-            </div>
+                a curator for
+                <div class="form-group">
+                    <select id="newOrgCuratorOrgName" name="newOrgCuratorOrgName" class="form-control" ng-model="curator.orgName" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
+                        <option value="">select organization</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success" id="newOrgCuratorSubmit" ng-click="addOrgCurator()" ng-disabled="newOrgCuratorForm.newOrgCuratorUsername.$invalid || newOrgCuratorForm.newOrgCuratorOrgName.$invalid">Make Curator</button>
+            </form>
+            <table class="table table-border table-responsive">
+                <tr>
+                    <th>Organization Name:</th>
+                    <th>Curators for this Organization:</th>
+                </tr>
+                <tr ng-repeat="orgCurator in orgCurators | orderBy:'name'">
+                    <td id="existingOrgCuratorOrgName-{{orgCurator.name}}">
+                        {{orgCurator.name}}
+                    </td>
+                    <td>
+                        <div ng-repeat="user in orgCurator.users">
+                            <span id="existingOrgCuratorUsername-{{$parent.$index}}-{{$index}}">{{user.username}}</span> <i class="fa fa-trash-o hand-cursor" ng-click="removeOrgCurator(orgCurator.name, user._id)" id="removeOrgCuratorUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </tab>
         <tab heading="CDE & Form Management">
-            <form class="form-inline pt30" role="form" id="transferStewardForm" name="transferStewardForm" novalidate>
+            <form class="form-inline pt40 pb40" role="form" id="transferStewardForm" name="transferStewardForm" novalidate>
                 Transfer CDEs and forms owned by
                 <div class="form-group">
                     <select id="transferSteward_from" name="transferSteward_from" class="form-control" ng-model="transferStewardObj.from" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>

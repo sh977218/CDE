@@ -88,6 +88,9 @@ angular.module('resources', ['ngResource'])
           , transferSteward: function(transferStewardObj, successMsg, errorMsg) {
               $http.post('/transferSteward', transferStewardObj).success(successMsg).error(errorMsg);
           }
+          , getAllUsernames: function(usernames, errorMsg) {
+              $http.get('/getAllUsernames').success(usernames).error(errorMsg);
+          }
         };
     })
     .factory("LinkToVsac", function($resource) {
