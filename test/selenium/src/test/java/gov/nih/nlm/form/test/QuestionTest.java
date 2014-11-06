@@ -27,7 +27,7 @@ public class QuestionTest extends BaseFormTest {
         
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
     }
-    /*
+    
     @Test
     public void questions() {
         Dimension currentWindowSize = getWindowSize();
@@ -261,7 +261,7 @@ public class QuestionTest extends BaseFormTest {
         
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
 
-    }*/
+    }
     
     @Test
     public void sectionInSection() {

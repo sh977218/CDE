@@ -11,7 +11,7 @@ groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml localhost te
 groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx localhost test --testMode
 groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx localhost test 
 
-sleep 15;
+sleep 10;
 
 mongo test test/createLargeBoard.js
 
