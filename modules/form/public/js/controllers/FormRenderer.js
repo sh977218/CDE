@@ -1,7 +1,4 @@
 var formApp = angular.module('FormRenderer', ['ui.bootstrap']);
-formApp.config(function($locationProvider) {
-    $locationProvider.html5Mode(true);
-});
 formApp.config(['$compileProvider', function($compileProvider) {
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }]);
@@ -23,7 +20,7 @@ function FormRenderCtrl($scope, $http, $location, $window) {
         });
     };
                 
-    $scope.reload( $location.search().id );
+    $scope.reload(location.search.substring(4));
 
     $scope.addSection = function(index) {
         var newElt =  JSON.parse(JSON.stringify($scope.myForm.formElements[index]));
@@ -37,6 +34,11 @@ function FormRenderCtrl($scope, $http, $location, $window) {
     
     $scope.canRepeat = function(formElt) {
         return formElt.cardinality === '*' || formElt.cardinality === '+';
+    };
+    
+    $scope.isIe = function() {
+        var browsers = {chrome: /chrome/i, safari: /safari/i, firefox: /firefox/i, ie: /MSIE/i};
+        return browsers['ie'].test($window.navigator.userAgent);
     };
     
     var stripFieldsOut = function(elt) {
@@ -68,14 +70,20 @@ function FormRenderCtrl($scope, $http, $location, $window) {
         }
     };
     
+    
     $scope.exportStr = function() {
-        var formData = JSON.parse(JSON.stringify($scope.myForm));
-        if (formData.formElements) {
-            for (var i = 0; i < formData.formElements.length; i++) {
-                stripFieldsOut(formData.formElements[i]);
+        if (!$scope.isIe()) {
+            var formData = JSON.parse(JSON.stringify($scope.myForm));
+            if (formData.formElements) {
+                for (var i = 0; i < formData.formElements.length; i++) {
+                    stripFieldsOut(formData.formElements[i]);
+                }
             }
+            $scope.encodedStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(formData));
+        } else {
+            alert("For security reasons, this feature is not supported in IE. ");
+            $scope.encodedStr = '/';
         }
-        $scope.encodedStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(formData));
     };
 
 }
