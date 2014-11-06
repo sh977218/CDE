@@ -72,6 +72,9 @@ var doNext = function(result) {
                             elementType: "question"
                             , label: result[0].naming[0].designation
                             , cardinality: "0.1"
+                            , question: {
+                                cde: {tinyId: result[0].tinyId, version: "" + result[0].version}
+                            }
                         });
                     } else {
                         console.log("CDE: " + elt.dataElement[0].name[0] + " not found");
