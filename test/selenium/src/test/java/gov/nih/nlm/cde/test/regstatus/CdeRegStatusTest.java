@@ -60,7 +60,7 @@ public class CdeRegStatusTest extends RegStatusTest {
         findElement(By.id("li-blank-PBTC")).click();
         Assert.assertTrue(textPresent("4 results for"));
         String viewing = findElement(By.id("acc_link_0")).getText();
-        findElement(By.xpath("//span[@id='acc_link_0']/../i[@title='View']")).click();
+        findElement(By.xpath("//span[@id='acc_link_0']/../i[@title='View Full Detail']")).click();
         Assert.assertTrue(textPresent("More Like This"));
         Assert.assertTrue(textPresent(viewing));
         findElement(By.xpath("//i[@id='editStatus']")).click();
@@ -73,7 +73,7 @@ public class CdeRegStatusTest extends RegStatusTest {
         showSearchFilters();
         findElement(By.id("li-blank-Preferred Standard")).click();
         Assert.assertTrue(textPresent("1 results for"));
-        findElement(By.xpath("//i[@title='View']")).click();
+        findElement(By.xpath("//i[@title='View Full Detail']")).click();
         hangon(0.5);
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");

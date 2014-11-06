@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -25,29 +26,44 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
         findElement(By.linkText("Organizations Curators")).click();       
-        new Select(findElement(By.name("curator.orgName"))).selectByVisibleText("caBIG");
-        findElement(By.name("orgCurator.username")).sendKeys("user1");
-        findElement(By.id("addOrgCurator")).click();
+        new Select(findElement(By.name("newOrgCuratorOrgName"))).selectByVisibleText("caBIG");
+        findElement(By.name("newOrgCuratorUsername")).sendKeys("use");
+        Assert.assertEquals(findElement(By.xpath("//form[@id='newOrgCuratorForm']/div[1]/ul/li[1]/a")).getText(), "user1");
+        findElement(By.xpath("//form[@id='newOrgCuratorForm']/div[1]/ul/li[1]/a")).click();
+        findElement(By.id("newOrgCuratorSubmit")).click();
         Assert.assertTrue(textPresent("Organization Curator Added"));
         Assert.assertTrue(textPresent("user1"));
-        findElement(By.xpath("//div[2]/div/div[2]/div/div[2]/i")).click();
+        int orgLength = driver.findElements(By.xpath("//td[starts-with(@id, 'existingOrgCuratorOrgName-')]")).size();
+        for (int i = 0; i < orgLength; i++) {
+            if ("caBIG".equals(findElement(By.xpath("//td[@id='existingOrgCuratorOrgName-caBIG']")).getText())) {
+                int userLength = driver.findElements(By.xpath("//span[starts-with(@id, 'existingOrgCuratorUsername-" + i + "-')]")).size();
+                for (int j = 0; j < userLength; j++) {
+                    if ("user1".equals(findElement(By.xpath("//span[@id='existingOrgCuratorUsername-" + i + "-" + j + "']")).getText())) {
+                        findElement(By.xpath("//i[@id='removeOrgCuratorUsername-" + i + "-" + j + "']")).click();
+                        j = userLength;
+                        i = orgLength;
+                    }
+                }
+            }
+        }
         textPresent("Organization Curator Removed");
         Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("user1"));
 
         findElement(By.linkText("Organizations Admins")).click();       
-        new Select(findElement(By.name("admin.orgName"))).selectByVisibleText("caBIG");
-        findElement(By.name("orgAdmin.username")).sendKeys("user1");
-        findElement(By.id("addOrgAdmin")).click();
+        new Select(findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText("caBIG");
+        findElement(By.id("newOrgAdminUsername")).sendKeys("use");
+        Assert.assertEquals(findElement(By.xpath("//form[@id='newOrgAdminForm']/div[1]/ul/li[1]/a")).getText(), "user1");
+        findElement(By.xpath("//form[@id='newOrgAdminForm']/div[1]/ul/li[1]/a")).click();
+        findElement(By.id("newOrgAdminSubmit")).click();
         textPresent("Organization Administrator Added");
         textPresent("user1");
-
-        int orgLength = driver.findElements(By.xpath("//div[starts-with(@id, 'orgAdmin-')]")).size();
+        orgLength = driver.findElements(By.xpath("//td[starts-with(@id, 'existingOrgAdminOrgName-')]")).size();
         for (int i = 0; i < orgLength; i++) {
-            if ("caBIG".equals(findElement(By.xpath("//div[@id='orgAdmin-" + i + "']")).getText())) {
-                int userLength = driver.findElements(By.xpath("//div[starts-with(@id, 'orgAdminUsername-" + i + "-')]")).size();
+            if ("caBIG".equals(findElement(By.xpath("//td[@id='existingOrgAdminOrgName-caBIG']")).getText())) {
+                int userLength = driver.findElements(By.xpath("//span[starts-with(@id, 'existingOrgAdminUsername-" + i + "-')]")).size();
                 for (int j = 0; j < userLength; j++) {
-                    if ("user1".equals(findElement(By.xpath("//div[@id='orgAdminUsername-" + i + "-" + j + "']")).getText())) {
-                        findElement(By.xpath("//i[@id='orgAdminTrash-" + i + "-" + j + "']")).click();
+                    if ("user1".equals(findElement(By.xpath("//span[@id='existingOrgAdminUsername-" + i + "-" + j + "']")).getText())) {
+                        findElement(By.xpath("//i[@id='removeOrgAdminUsername-" + i + "-" + j + "']")).click();
                         j = userLength;
                         i = orgLength;
                     }
@@ -101,14 +117,14 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         String formName1 = "Transfer Steward Test Form 1";
         String formDef1 = "Definition for Transfer Steward Test CDE 1";
         String formV1 = "3.0";
-        createForm(formName1, formDef1, formV1, org1);
+        new BaseFormTest().createForm(formName1, formDef1, formV1, org1);
         Assert.assertTrue(textPresent(formName1));
         Assert.assertTrue(textPresent(formDef1));
         
         String formName2 = "Transfer Steward Test Form 2";
         String formDef2 = "Definition for Transfer Steward Test CDE 2";
         String formV2 = "4.0";
-        createForm(formName2, formDef2, formV2, org1);
+        new BaseFormTest().createForm(formName2, formDef2, formV2, org1);
         Assert.assertTrue(textPresent(formName2));
         Assert.assertTrue(textPresent(formDef2));       
         

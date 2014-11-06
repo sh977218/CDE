@@ -10,6 +10,7 @@ var passport = require('passport')
   , classificationShared = require('../shared/classificationShared.js')
   , classificationNode = require('./classificationNode')
   , adminItemSvc = require("./adminItemSvc")       
+  , auth = require( './authorization' )
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -197,7 +198,7 @@ exports.init = function(app) {
         if (!req.user) {
             res.send(403, "Not authorized");
         } else {
-            if (req.user._id != req.body._id) {
+            if (req.user._id.toString() !== req.body._id) {
                 res.send(403, "Not authorized");
             } else {
                 mongo_data_system.userById(req.user._id, function(err, user) {
@@ -446,6 +447,14 @@ exports.init = function(app) {
                 if (err) res.send(500, err);
                 else res.send(doc);
             });
+        } else {
+            res.send(403, "Not Authorized");
+        }
+    });
+    
+    app.get('/getAllUsernames', function(req, res) {
+        if(auth.isSiteOrgAdmin(req)) {
+            usersrvc.getAllUsernames(req, res);
         } else {
             res.send(403, "Not Authorized");
         }

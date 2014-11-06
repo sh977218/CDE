@@ -243,3 +243,9 @@ exports.switchToReplSet = function (replConfig, force, cb) {
         }
     });   
 };
+
+exports.getAllUsernames = function(callback) {
+    User.find({}, {username: true, _id: false}).exec(function(err, usernames) {
+        callback(err, usernames);
+    });
+};

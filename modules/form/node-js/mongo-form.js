@@ -86,6 +86,12 @@ exports.query = function(query, callback) {
     });
 };
 
+exports.allPropertiesKeys = function(callback) {
+    Form.distinct("properties.key").exec(function (err, keys) {
+        callback(err, keys);
+    });
+};
+
 exports.transferSteward = function(from, to, callback) {
     Form.update({'stewardOrg.name':from},{$set:{'stewardOrg.name':to}},{multi:true}).exec(function(err, result) {
         callback(err, result);

@@ -9,6 +9,9 @@ var questionSchema =  {
     , uoms: [String]
     , required: Boolean
     , multiselect: Boolean
+    , otherPleaseSpecify: {
+        value: {type: Boolean, default: false}
+    }
     , answers: [sharedSchemas.permissibleValueSchema]
 };
 
@@ -16,7 +19,8 @@ var sectionSchema = {
 };
 
 var formElementSchema = new Schema({
-    label: String
+    elementType: {type: String, enum: ['section', 'question']} 
+    , label: String
     , instructions: String
     , cardinality: String
     , repeatsFor: String

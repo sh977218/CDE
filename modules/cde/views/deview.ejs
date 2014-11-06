@@ -3,11 +3,11 @@
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.registrationStatus=='Retired'"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is retired. <span ng-show="elt.registrationState.replacedBy"><a href="#/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div> 
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.administrativeStatus=='Retire Candidate'"><i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is about to be retired. <span ng-show="elt.registrationState.replacedBy"><a href="#/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a></span></div> 
     <div class="alert alert-info mt20" role="alert" ng-show="displayStatusWarning"><i class="fa fa-exclamation-triangle"></i> <strong>Note:</strong> You may not edit this CDE because it is standard.</div> 
-    <div class="alert alert-info mt20" role="info" ng-show="elt.isFork"><i class="fa fa-exclamation-triangle"></i> You are editing a fork. <a href="/#/deview?cdeId={{rootFork._id}}"> <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.</div> 
+    <div class="alert alert-info mt20" role="alert" ng-show="elt.isFork"><i class="fa fa-exclamation-triangle"></i> You are editing a fork. <a tabindex="0" href="/#/deview?cdeId={{rootFork._id}}"> <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.</div> 
 
     <h1 class="page-header">
         {{elt.naming[0].designation}}
-        <a class="btn btn-small btn-default" ng-show="showCompareButton(elt)" ng-click="addToQuickBoard(elt)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add to Quick Board</a>
+        <a class="btn btn-small btn-default" ng-show="showCompareButton(elt)" role="button" tabindex="0" ng-click="addToQuickBoard(elt)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add to Quick Board</a>
 <!--        <span ng-show="elt.isFork && canCurate"><button class="btn btn-default btn-small" ng-click="sendForkNotification()"><i class="fa fa-envelope-o"></i> Send Notification</button> </span>-->
     </h1>
 

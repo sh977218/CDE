@@ -63,6 +63,7 @@
                         <div accordion-group is-open="" >
                             <div accordion-heading>
                                 <span ng-bind-html="question.label | placeholdEmpty" id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></span>
+                                <span ng-if="question.question.cde.outdated"> (Outdated)</span>
                                 <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeQuestion(section, $index)" title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>
                             </div>
                             <div class="row questionAccordionContent">
@@ -74,6 +75,10 @@
                                         <dd id="dd_question_instructions_{{$index}}"><div inline-edit model="question.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
                                         <dt>Required: </dt>
                                         <dd id="dd_question_required_{{$index}}"><input type="checkbox" ng-model="question.question.required" ng-disabled="!canCurate" ng-click="stageElt()"></input></dd>
+                                        <span ng-if="question.question.datatype === 'Value List'">
+                                            <dt>Allow Other?: </dt>
+                                            <dd id="dd_question_other_{{$index}}"><input type="checkbox" id="input_otherPleaseSpecify" ng-model="question.question.otherPleaseSpecify.value" ng-disabled="!canCurate" ng-click="stageElt()"></input></dd>
+                                        </span>
                                         <dt>Cardinality: </dt>
                                         <dd id="dd_q_card_{{$index}}">
                                             <span ng-show="editCardMode">
@@ -115,8 +120,7 @@
                                             <ui-select-choices repeat="pv in question.question.cde.permissibleValues | filter:$select.search track by pv.permissibleValue">
                                               {{pv.permissibleValue}}
                                             </ui-select-choices>
-                                        </ui-select>
-                                        
+                                        </ui-select>                                        
                                     </div>
                                 </div>
                             </div>
