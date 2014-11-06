@@ -17,7 +17,7 @@ function SectionCtrl($scope, $modal, $timeout, $http) {
     };
     
     $scope.sortableOptionsSections = {
-        , connectWith: ".dragQuestions"
+        connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
     };        
 

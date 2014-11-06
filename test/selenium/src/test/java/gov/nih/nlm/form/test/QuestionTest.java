@@ -27,7 +27,7 @@ public class QuestionTest extends BaseFormTest {
         
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
     }
-    
+    /*
     @Test
     public void questions() {
         Dimension currentWindowSize = getWindowSize();
@@ -261,7 +261,7 @@ public class QuestionTest extends BaseFormTest {
         
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
 
-    }
+    }*/
     
     @Test
     public void sectionInSection() {
@@ -284,11 +284,20 @@ public class QuestionTest extends BaseFormTest {
         WebElement targetElt = findElement(By.id("section_drop_area_0"));
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
         hangon(1);
+        
+        String cardXPath = "//*[@class='dragQuestions ng-pristine ng-valid ui-sortable']//dd[@id='dd_card_0']";
+        Assert.assertEquals("Exactly 1", findElement(By.xpath(cardXPath)).getText().trim());
+        findElement(By.xpath(cardXPath + "//i")).click();
+        new Select(findElement(By.xpath(cardXPath + "//select"))).selectByVisibleText("1 or more");
+        findElement(By.xpath(cardXPath + "//button[text() = ' Confirm']")).click();
+        
         saveForm();        
         goToFormByName(formName);
         findElement(By.linkText("Form Description")).click();        
         findElement(By.xpath("//div[@id=\"section_drop_area_0\"]//div[@id=\"section_drop_area_0\"]//span[text()=\"First-Line Therapy Chemotherapy Regimen Name\"]")); 
+        
         findElement(By.id("formPreview")).click();
+        switchTab(1);
         findElement(By.xpath("//div[@id=\"formRenderSection_Medical History\"]//div[@id=\"formRenderSection_Treatment Details\"]//label[text()='First-Line Therapy Chemotherapy Regimen Name']"));        
         
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());        
