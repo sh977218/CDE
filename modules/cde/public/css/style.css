@@ -373,3 +373,7 @@ dd.formViewDetails {
     overflow-y: scroll;
     overflow-x: hidden;
 }
+
+.form-inline .form-group.long-field input {
+    width: 800px !important;
+}

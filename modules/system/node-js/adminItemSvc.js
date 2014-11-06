@@ -3,6 +3,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , classificationNode = require('./classificationNode')
     , elastic = require('./elastic')
     , async = require('async')
+    , auth = require('./authorization.js')
 ;
 
 
@@ -64,31 +65,8 @@ exports.save = function(req, res, dao) {
     }
 };
 
-function isCuratorOrAdmin(req, elt) {
-    return (req.user.orgAdmin && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0)
-           || (req.user.orgCurator && req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0);
-};
-    
-function checkOwnership(dao, id, req, cb) {
-    if (req.isAuthenticated()) {
-        dao.byId(id, function (err, elt) {
-            if (err || !elt) {
-                return cb("Element does not exist.", null);
-            }
-            if (!req.user || !isCuratorOrAdmin(req, elt)
-               ) {
-                return cb("You do not own this element.", null);
-            } else {
-                cb(null, elt);
-            }
-        });
-    } else {
-        return cb("You are not authorized.", null);                   
-    }
-};
-
 exports.setAttachmentDefault = function(req, res, dao) {
-    checkOwnership(dao, req.body.id, req, function(err, elt) {
+    auth.checkOwnership(dao, req.body.id, req, function(err, elt) {
         if (err) {
             logging.expressLogger.info(err);
             return res.send(err);
@@ -109,7 +87,7 @@ exports.setAttachmentDefault = function(req, res, dao) {
 }
 
 exports.addAttachment = function(req, res, dao) {
-    checkOwnership(dao, req.body.id, req, function(err, elt) {
+    auth.checkOwnership(dao, req.body.id, req, function(err, elt) {
         if (err) return res.send(err);
         dao.userTotalSpace(req.user.username, function(totalSpace) {
             if (totalSpace > req.user.quota) {
@@ -124,7 +102,7 @@ exports.addAttachment = function(req, res, dao) {
 };
 
 exports.removeAttachment = function(req, res, dao) {
-    checkOwnership(dao, req.body.id, req, function(err, elt) {
+    auth.checkOwnership(dao, req.body.id, req, function(err, elt) {
         if (err) {
             return res.send(err);
         }
