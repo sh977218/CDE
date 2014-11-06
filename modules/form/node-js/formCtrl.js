@@ -15,7 +15,6 @@ exports.save = function(req, res) {
 exports.formById = function(req, res) {
     mongo_data.byId(req.params.id, function(err, form) {
         if (form) {
-            res.set('Access-Control-Allow-Origin', "*");
             res.send(form);
         } else {
             res.send(404);

@@ -17,10 +17,6 @@ function SectionCtrl($scope, $modal, $timeout, $http) {
     };
     
     $scope.sortableOptionsSections = {
-        receive: function(e, ui) {
-            //$scope.addSection();
-            $scope.sortableOptions.receive(e, ui);
-        }
         , connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
     };        
