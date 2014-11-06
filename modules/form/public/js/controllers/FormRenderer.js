@@ -25,10 +25,15 @@ function FormRenderCtrl($scope, $http, $location, $window) {
                 
     $scope.reload( $location.search().id );
 
-    $scope.addSection = function(index) {
-        var newElt =  JSON.parse(JSON.stringify($scope.myForm.formElements[index]));
+//    $scope.addSection = function(index) {
+//        var newElt =  JSON.parse(JSON.stringify($scope.myForm.formElements[index]));
+//        newElt.isCopy = true;
+//        $scope.myForm.formElements.splice(index + 1, 0, newElt);
+//    };
+    $scope.addSection = function(section, formElements, index) {
+        var newElt =  JSON.parse(JSON.stringify(section));
         newElt.isCopy = true;
-        $scope.myForm.formElements.splice(index + 1, 0, newElt);
+        formElements.splice(index + 1, 0, newElt);
     };
     
     $scope.removeSection = function(index) {

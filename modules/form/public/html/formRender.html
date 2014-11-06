@@ -24,7 +24,11 @@
 
     .formRenderSection .formRenderSection {
         margin-left: 15px;
+        margin-right: 15px;
     }      
+    form[name='sectionLabel'] > .row {
+        margin-bottom: 10px;
+    }
     </style>
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -50,9 +54,11 @@
   <body ng-controller="FormRenderCtrl">
       <div class="container-fluid">
             <h2>{{myForm.naming[0].designation}}</h2>
-            <form ng-repeat="formElement in myForm.formElements track by $index" name="sectionLabel" role="form" class="form-inline">
-                <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'" ng-init="question = formElement;"></div>
-                <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'" ng-init="section = formElement;"></div>
+            <form name="sectionLabel" role="form" class="form-inline">      
+                <div ng-repeat="formElement in myForm.formElements track by $index" class="row">
+                    <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'" ng-init="question = formElement;"></div>
+                    <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'" ng-init="section = formElement; formElements = myForm.formElements;"></div>
+                </div>
             </form>
             <a class="btn btn-default btn-success fa fa-external-link" target="_blank" id="exportLink" ng-click="exportStr()" href="{{encodedStr}}" download="form-data.json"> Export</a>                     
       </div>

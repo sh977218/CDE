@@ -200,9 +200,6 @@ dd.formViewDetails {
 .dragQuestions {
     min-height: 20px!important;
     min-width: 300px!important;
-    border-style: dotted!important;
-    border-color: #ddd!important;
-    border-width: 1px!important;
     padding: 10px;
 }
 
