@@ -42,7 +42,7 @@ public class MergeTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("[ng-click='showMergeApproveDialog(message)']")).click();
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
         hangon(.5);
-        findElement(By.cssSelector("#confirmSave")).click();         
+        findElement(By.cssSelector("#confirmNewVersion")).click();         
         hangon(3); 
     }    
     
@@ -71,7 +71,7 @@ public class MergeTest extends NlmCdeBaseTest {
         findElement(By.id("sendMergeRequest")).click();
         modalHere();
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
-        findElement(By.cssSelector("#confirmSave")).click(); 
+        findElement(By.cssSelector("#confirmNewVersion")).click(); 
         hangon(5);
         findElement(By.linkText("Naming")).click();
         Assert.assertTrue(textPresent("Common Toxicity Criteria Adverse Event Colitis Grade"));
