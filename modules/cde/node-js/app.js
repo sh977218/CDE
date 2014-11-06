@@ -112,7 +112,7 @@ exports.init = function(app, daoManager) {
                 res.send(cdesvc.hideProprietaryPvs(cdes[0], req.user));
             }); 
         } else {
-            mongo_data.eltByTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, de) {
+            mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, de) {
                 res.send(cdesvc.hideProprietaryPvs(de, req.user));
             });
         }

@@ -1,7 +1,6 @@
 var mongo_data_system = require('../../system/node-js/mongo-data')
     , classificationShared = require('../shared/classificationShared')
     , classificationNode = require('./classificationNode')
-//    , elastic = require('./elastic')
     , async = require('async')
 ;
 

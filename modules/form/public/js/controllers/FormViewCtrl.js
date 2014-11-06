@@ -109,9 +109,6 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
             }          
         });
 
-        modalInstance.result.then(function () {
-            //$scope.reload($routeParams);
-        });
     }; 
 
 

@@ -62,7 +62,7 @@ exports.byId = function (req, res) {
 };
 
 exports.byTinyIdVersion = function (req, res) {
-    mongo_data.eltByTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, cde) {
+    mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, cde) {
         if (err) {
             return res.send(500, "Error");
         };

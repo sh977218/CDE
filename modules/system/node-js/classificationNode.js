@@ -60,8 +60,8 @@ exports.cdeClassification = function(body, action, cb) {
             } else classify(steward, cde);
         };
         if (body.cdeId) dao.byId(body.cdeId, findElements);  
-        if (body.tinyId && (!body.version)) dao.eltByTinyId(body.tinyId, body.version, findElements);     
-        if (body.tinyId && body.version) dao.eltByTinyIdAndVersion(body.tinyId, body.version, findElements);     
+        if (body.tinyId && (!body.version)) dao.eltByTinyId(body.tinyId, findElements);     
+        if (body.tinyId && body.version) dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);     
     });    
 };
 
