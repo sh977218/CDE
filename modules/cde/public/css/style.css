@@ -381,3 +381,7 @@ dd.formViewDetails {
     float: left;
     margin: 2px 9px 2px -4px;
 }
+
+.form-inline .form-group.long-field input {
+    width: 800px !important;
+}

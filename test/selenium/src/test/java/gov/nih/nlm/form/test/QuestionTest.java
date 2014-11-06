@@ -300,7 +300,7 @@ public class QuestionTest extends BaseFormTest {
         switchTab(1);
         findElement(By.xpath("//div[@id=\"formRenderSection_Medical History\"]//div[@id=\"formRenderSection_Treatment Details\"]//label[text()='First-Line Therapy Chemotherapy Regimen Name']"));        
         Assert.assertTrue(driver.findElements(By.xpath("//*[text()=\"Treatment Details\"]")).size() == 1); 
-        findElement(By.xpath("//*[text()=\" Add One\"]").click());
+        findElement(By.xpath("//*[text()=\" Add One\"]")).click();
         Assert.assertTrue(driver.findElements(By.xpath("//*[text()=\"Treatment Details\"]")).size() == 2);              
         
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());        
