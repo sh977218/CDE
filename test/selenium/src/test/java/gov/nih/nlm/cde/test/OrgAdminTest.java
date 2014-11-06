@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -101,14 +102,14 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         String formName1 = "Transfer Steward Test Form 1";
         String formDef1 = "Definition for Transfer Steward Test CDE 1";
         String formV1 = "3.0";
-        createForm(formName1, formDef1, formV1, org1);
+        new BaseFormTest().createForm(formName1, formDef1, formV1, org1);
         Assert.assertTrue(textPresent(formName1));
         Assert.assertTrue(textPresent(formDef1));
         
         String formName2 = "Transfer Steward Test Form 2";
         String formDef2 = "Definition for Transfer Steward Test CDE 2";
         String formV2 = "4.0";
-        createForm(formName2, formDef2, formV2, org1);
+        new BaseFormTest().createForm(formName2, formDef2, formV2, org1);
         Assert.assertTrue(textPresent(formName2));
         Assert.assertTrue(textPresent(formDef2));       
         

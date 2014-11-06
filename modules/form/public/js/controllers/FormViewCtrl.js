@@ -1,4 +1,4 @@
-function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
+function FormViewCtrl($scope, $routeParams, $http, Form, isAllowedModel) {
     $scope.module = "form";
     $scope.baseLink = '#/formView?_id=';
     $scope.addCdeMode = false;
@@ -42,6 +42,7 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
             isAllowedModel.setCanDoNonCuration($scope);
+            $scope.checkForArchivedCdes();
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
@@ -72,6 +73,45 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel) {
          if ($scope.elt) {
              return $scope.elt.classification;
          }
-    };    
-
+    };
+    
+    $scope.checkForArchivedCdes = function() {
+        var checkArray = [];
+        var findAllCdesInFormElement = function(node) {
+            if (node.formElements) {
+                for (var i = 0; i < node.formElements.length; i++) {
+                    if (node.formElements[i].elementType === "question") {
+                        checkArray.push({tinyId: node.formElements[i].question.cde.tinyId, version: node.formElements[i].question.cde.version});
+                    }
+                    findAllCdesInFormElement(node.formElements[i]);
+                }
+            }
+        };
+        findAllCdesInFormElement($scope.elt);
+        
+        var applyOutdatedElements = function(node, outdatedElements) {
+            if (node.formElements) {
+                for (var i = 0; i < node.formElements.length; i++) {
+                    if (node.formElements[i].elementType === "question") {
+                        if (outdatedElements.indexOf(node.formElements[i].question.cde.tinyId + "v" + node.formElements[i].question.cde.version) > -1) {
+                            node.formElements[i].question.cde.outdated = true;
+                        }
+                    }
+                    applyOutdatedElements(node.formElements[i], outdatedElements);
+                }
+            }
+        };    
+        
+        $http.get("/archivedCdes/" + JSON.stringify(checkArray)).then(function(result) {
+            if (result.data.length > 0) {
+                $scope.elt.outdated = true;
+                var outdatedElements = [];
+                result.data.forEach(function(e) {
+                    outdatedElements.push(e.tinyId + "v" + e.version);
+                });
+                applyOutdatedElements($scope.elt, outdatedElements);
+            }
+        });
+    };
+    
 }

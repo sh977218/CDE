@@ -22,7 +22,7 @@
             <i class="fa fa-check-square-o" ng-click="editDtMode = false; stageElt(elt)" id="confirmDatatype"></i>
             <i class="fa fa-trash-o" ng-click="editDtMode = false; reload({cdeId: elt._id});"></i>
        </span>
-        <span ng-hide="editDtMode"><i ng-show="canCurate" class="fa fa-edit" ng-click="editDtMode = true" id="editDatatype"></i> {{elt.valueDomain.datatype | placeholdEmpty}}</span>
+        <span ng-hide="editDtMode"><i tabindex="0" title="Edit Value" role="link" ng-show="canCurate" class="fa fa-edit" ng-click="editDtMode = true" id="editDatatype"></i> {{elt.valueDomain.datatype | placeholdEmpty}}</span>
     </dd>
 </dl>
 

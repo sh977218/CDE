@@ -39,3 +39,4 @@ Thumbs.db
 /test/selenium/.nb-gradle/profiles/private/
 .nide
 /test/selenium/.nb-gradle/private/
+/bin
