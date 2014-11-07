@@ -372,3 +372,7 @@ dd.formViewDetails {
     text-align: right;
     padding-right: 5px;
 }
+
+.form-inline .form-group.long-field input {
+    width: 800px !important;
+}

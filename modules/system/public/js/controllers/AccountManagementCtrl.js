@@ -4,11 +4,22 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
     $scope.orgAdmin = {};
     $scope.orgCurator = {};
     $scope.curator = {};
-    $scope.transferStewardObj = { from:'', to:''};
+    $scope.transferStewardObj = {from:'', to:''};
+    $scope.allUsernames = [];
     
     function resetTransferStewardObj() {
         $scope.transferStewardObj.from = '';
         $scope.transferStewardObj.to = '';
+    }
+    
+    function resetOrgAdminForm() {
+        $scope.orgAdmin.username = "";
+        $scope.admin = {};
+    }
+    
+    function resetOrgCuratorForm() {
+        $scope.orgCurator.username = "";
+        $scope.curator = {};
     }
     
     $http.get("/systemAlert").then(function(response) {
@@ -29,6 +40,7 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
     };
     $scope.getOrgs(); 
 
+    // Retrieve all orgs and users who are admins of each org
     $scope.getOrgAdmins = function() {
         return $http.get("/orgAdmins").then(function(response) {
             $scope.orgAdmins = response.data.orgs;
@@ -36,6 +48,7 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
     };
     $scope.getOrgAdmins(); 
     
+    // Retrieve orgs user is admin of
     $scope.getMyOrgAdmins = function() {
         return $http.get("/myOrgsAdmins").then(function(response) {
             $scope.myOrgAdmins = response.data.orgs;
@@ -43,6 +56,7 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
     };
     $scope.getMyOrgAdmins();
     
+    // Retrieve orgs user is curator of
     $scope.getOrgCurators = function() {
         return $http.get("/orgcurators").then(function(response) {
             $scope.orgCurators = response.data.orgs;
@@ -55,7 +69,7 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
             username: $scope.admin.username
             },
             function(res) {
-                  $scope.message = res;
+                  $scope.addAlert("success", res);
                   $scope.siteAdmins = $scope.getSiteAdmins();
             }
         );
@@ -67,7 +81,7 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
             id: byId
             },
             function(res) {
-                  $scope.message = res;
+                  $scope.addAlert("success", res);
                   $scope.siteAdmins = $scope.getSiteAdmins();
             }
         );
@@ -79,12 +93,12 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
             , org: $scope.admin.orgName
             },
             function(res) {
-                  $scope.message = res;
+                  $scope.addAlert("success", res);
                   $scope.orgAdmins = $scope.getOrgAdmins();
                   $scope.myOrgAdmins = $scope.getMyOrgAdmins();
             }
         );
-        $scope.orgAdmin.username = "";
+        resetOrgAdminForm();
     };
 
     $scope.removeOrgAdmin = function(orgName, userId) {
@@ -93,7 +107,7 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
             , userId: userId
             },
             function (res) {
-                $scope.message = res;
+                $scope.addAlert("success", res);
                 $scope.orgAdmins = $scope.getOrgAdmins();
                 $scope.myOrgAdmins = $scope.getMyOrgAdmins();
             }
@@ -107,11 +121,11 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
             , org: $scope.curator.orgName
             },
             function(res) {
-                  $scope.message = res;
+                  $scope.addAlert("success", res);
                   $scope.orgCurators = $scope.getOrgCurators(); 
             }
         );
-        $scope.orgCurator.username = "";
+        resetOrgCuratorForm();
     };
         
     $scope.removeOrgCurator = function(orgName, userId) {
@@ -120,7 +134,7 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
             , userId: userId
             },
             function (res) {
-                $scope.message = res;
+                $scope.addAlert("success", res);
                 $scope.orgCurators = $scope.getOrgCurators(); 
             }
         
@@ -179,4 +193,22 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
             }
         );
     };
+    
+    $scope.getAllUsernames = function() {
+        AccountManagement.getAllUsernames(
+            function(usernames) {
+                $scope.allUsernames = [];
+            
+                // Transform array of username objects to array of username strings
+                usernames.forEach(function(un) {
+                    if(un) {
+                        $scope.allUsernames.push(un.username);
+                    }
+                });
+            },
+            function(errorMsg) {
+            }
+        );
+    };
+    $scope.getAllUsernames();
 }
