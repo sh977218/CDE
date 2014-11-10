@@ -372,7 +372,6 @@ module.exports = function(grunt) {
                       // Values are sources (prefixed with `options.srcPrefix`); One source per destination
                       // e.g. 'bower_components/jquery/dist/jquery.min.js' will be copied to 'public/js/jquery.min.js'
           	      'js/jquery.min.map': 'jquery/dist/jquery.min.map',
-          	      'js/jquery-ui.min.js': 'jquery-ui/ui/minified/jquery-ui.min.js',
           	      'js/angular.min.js.map': 'angular/angular.min.js.map',
           	      'js/angular-route.min.js.map': 'angular-route/angular-route.min.js.map',
           	      'js/angular-resource.min.js.map': 'angular-resource/angular-resource.min.js.map',
