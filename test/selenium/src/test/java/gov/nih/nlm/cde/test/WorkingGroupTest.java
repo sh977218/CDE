@@ -23,9 +23,9 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Site Management")).click();
         findElement(By.linkText("Organizations Admins")).click();
-        new Select(driver.findElement(By.name("admin.orgName"))).selectByVisibleText(orgWG);
-        findElement(By.id("orgAdmin.username")).sendKeys(ctepCurator_username);
-        findElement(By.id("addOrgAdmin")).click();
+        new Select(driver.findElement(By.name("newOrgAdminOrgName"))).selectByVisibleText(orgWG);
+        findElement(By.id("newOrgAdminUsername")).sendKeys(ctepCurator_username);
+        findElement(By.id("newOrgAdminSubmit")).click();
         textPresent("Organization Administrator Added");
         
         // Create some classifications for working group

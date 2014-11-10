@@ -362,6 +362,24 @@ module.exports = function(grunt) {
         	      'js/bootstrap.min.js': 'bootstrap/dist/js/bootstrap.min.js'
         	    }
         	  },
+        	  map: {
+          	    options: {
+          	    	// prefix for destinations
+          	      destPrefix: 'modules/cde/public/assets'
+          	    },
+          	    files: {
+          	    	// Keys are destinations (prefixed with `options.destPrefix`)
+                      // Values are sources (prefixed with `options.srcPrefix`); One source per destination
+                      // e.g. 'bower_components/jquery/dist/jquery.min.js' will be copied to 'public/js/jquery.min.js'
+          	      'js/jquery.min.map': 'jquery/dist/jquery.min.map',
+          	      'js/jquery-ui.min.js': 'jquery-ui/ui/minified/jquery-ui.min.js',
+          	      'js/angular.min.js.map': 'angular/angular.min.js.map',
+          	      'js/angular-route.min.js.map': 'angular-route/angular-route.min.js.map',
+          	      'js/angular-resource.min.js.map': 'angular-resource/angular-resource.min.js.map',
+          	      'js/angular-sanitize.min.js.map': 'angular-sanitize/angular-sanitize.min.js.map',
+          	      'js/angular-animate.min.js.map': 'angular-animate/angular-animate.min.js.map'
+          	    }
+          	  },
         	  css: {
           	    options: {
           	      destPrefix: 'modules/cde/public/assets'

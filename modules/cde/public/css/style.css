@@ -268,9 +268,6 @@ dd.formViewDetails {
 .dragQuestions {
     min-height: 20px!important;
     min-width: 300px!important;
-    border-style: dotted!important;
-    border-color: #ddd!important;
-    border-width: 1px!important;
     padding: 10px;
 }
 
@@ -372,4 +369,19 @@ dd.formViewDetails {
     max-height: 500px;
     overflow-y: scroll;
     overflow-x: hidden;
+}
+
+.section-move-handle {
+    float: left;
+    top: 10px;
+    margin: 10px;    
+}
+
+.question-move-handle {
+    float: left;
+    margin: 2px 9px 2px -4px;
+}
+
+.form-inline .form-group.long-field input {
+    width: 800px !important;
 }

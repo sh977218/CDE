@@ -27,13 +27,13 @@ public class UserTest extends NlmCdeBaseTest {
     
     @Test
     public void curatorProfile() {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
-        Assert.assertEquals("ctepCurator", findElement(By.id("username")).getText());
+        Assert.assertEquals("cabigAdmin", findElement(By.id("username")).getText());
         Assert.assertEquals("1,024.00 MB", findElement(By.id("quota")).getText());
-        Assert.assertEquals("CTEP", findElement(By.id("curatorFor")).getText());
-        Assert.assertEquals("", findElement(By.id("adminFor")).getText());
+        Assert.assertEquals("", findElement(By.id("curatorFor")).getText());
+        Assert.assertEquals("caBIG", findElement(By.id("adminFor")).getText());
     }
 
     @Test
