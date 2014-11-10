@@ -265,9 +265,6 @@ dd.formViewDetails {
 .dragQuestions {
     min-height: 20px!important;
     min-width: 300px!important;
-    border-style: dotted!important;
-    border-color: #ddd!important;
-    border-width: 1px!important;
     padding: 10px;
 }
 
@@ -371,6 +368,16 @@ dd.formViewDetails {
 .table.accordionlist>tbody>tr>th {
     text-align: right;
     padding-right: 5px;
+
+.section-move-handle {
+    float: left;
+    top: 10px;
+    margin: 10px;    
+}
+
+.question-move-handle {
+    float: left;
+    margin: 2px 9px 2px -4px;
 }
 
 .form-inline .form-group.long-field input {

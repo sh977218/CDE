@@ -1,0 +1,17 @@
+<div class="col-md-3">
+  <label>{{question.label}}</label>                      
+</div>
+<div ng-switch="question.question.datatype" class="col-md-9">
+    <select ng-switch-when="Value List" class="form-control" ng-model="question.question.answer">
+        <option ng-repeat="answer in question.question.answers" >{{answer.valueMeaningName}}</option>
+        <option ng-if="question.question.otherPleaseSpecify.value" value="otherPleaseSpecify">Other</option>
+    </select>
+    <input ng-if="question.question.answer === 'otherPleaseSpecify'" type="text" class="form-control" required placeholder="Please Specify" ng-model="question.question.otherPleaseSpecify.answer" name="Please Specify"/>
+    <input ng-switch-when="Date" class="form-control" datepicker-popup="dd-MMMM-yyyy" type="text" required ng-model="question.question.answer"/>
+    <span ng-switch-default class="form-group">
+      <input type="text" class="form-control" required ng-model="question.question.answer" name=""/>
+      <select class="form-control" ng-if="question.question.uoms.length > 0" ng-model="question.question.answerUom" ng-init="question.question.answerUom = question.question.uoms[0]">
+          <option ng-repeat="uom in question.question.uoms">{{uom}}</option>
+      </select>                                
+    </span>
+</div>
