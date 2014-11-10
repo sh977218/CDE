@@ -352,7 +352,7 @@ module.exports = function(grunt) {
         	    	// Keys are destinations (prefixed with `options.destPrefix`)
                     // Values are sources (prefixed with `options.srcPrefix`); One source per destination
                     // e.g. 'bower_components/jquery/dist/jquery.min.js' will be copied to 'public/js/jquery.min.js'
-        	      'js/jquery.min.js': 'jquery/dist/jquery.min.js',
+        	      'js/jquery.min.js': 'jquery/jquery.min.js',
         	      'js/jquery-ui.min.js': 'jquery-ui/ui/minified/jquery-ui.min.js',
         	      'js/angular.min.js': 'angular/angular.min.js',
         	      'js/angular-route.min.js': 'angular-route/angular-route.min.js',
@@ -371,7 +371,7 @@ module.exports = function(grunt) {
           	    	// Keys are destinations (prefixed with `options.destPrefix`)
                       // Values are sources (prefixed with `options.srcPrefix`); One source per destination
                       // e.g. 'bower_components/jquery/dist/jquery.min.js' will be copied to 'public/js/jquery.min.js'
-          	      'js/jquery.min.map': 'jquery/dist/jquery.min.map',
+          	      'js/jquery.min.map': 'jquery/jquery.min.map',
           	      'js/angular.min.js.map': 'angular/angular.min.js.map',
           	      'js/angular-route.min.js.map': 'angular-route/angular-route.min.js.map',
           	      'js/angular-resource.min.js.map': 'angular-resource/angular-resource.min.js.map',
@@ -544,9 +544,9 @@ module.exports = function(grunt) {
         }
     });
     grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
-    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','divider','guihelp','divider','git','divider','elastic','divider','build','divider','node']);
+    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','divider','guihelp','divider','git','divider','elastic','divider','bower-install-simple','divider','bowercopy','divider','build','divider','node']);
     grunt.registerTask('help', ['availabletasks']);    
     grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);
     // https://www.npmjs.org/package/grunt-bower-install-simple
-    grunt.registerTask("bower-install", [ "bower-install-simple" ]);
+    //grunt.registerTask("bower-install", [ "bower-install-simple" ]);
 };
