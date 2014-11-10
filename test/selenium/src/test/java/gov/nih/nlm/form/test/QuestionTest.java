@@ -264,7 +264,7 @@ public class QuestionTest extends BaseFormTest {
     @Test
     public void sectionInSection() {
         Dimension currentWindowSize = getWindowSize();
-        resizeWindow(1024, 1150);        
+        resizeWindow(1524, 1150);        
         mustBeLoggedInAs(ctepCurator_username, password);
         String formName = "Cancer Patient Data Collection";
         String formDef = "Section in Section";
