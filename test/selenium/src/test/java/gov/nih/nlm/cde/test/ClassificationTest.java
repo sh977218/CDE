@@ -8,7 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ClassificationTest extends NlmCdeBaseTest {  
-   protected void addClassificationMethod(String[] categories) {
+   public void addClassificationMethod(String[] categories) {
         findElement(By.linkText("Classification")).click();
         findElement(By.id("addClassification")).click();
         modalHere();
@@ -39,14 +39,14 @@ public class ClassificationTest extends NlmCdeBaseTest {
     public void addClassification() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         goToCdeByName("Surgical Procedure Other Anatomic Site Performed Indicator");
-        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
+        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Classification","Supplemental"});
         hangon(1);
-        addClassificationMethod(new String[]{"NINDS","Disease","Duchenne Muscular Dystrophy/Becker Muscular Dystrophy","Treatment/Intervention Data","Therapies"});
+        addClassificationMethod(new String[]{"NINDS","Domain","Treatment/Intervention Data","Therapies"});
         findElement(By.id("addClassification")).click(); 
         modalHere();
         List<WebElement> priorClassifs = driver.findElements(By.xpath("//div[ol]"));
         for (WebElement prior : priorClassifs) {
-            if (prior.getText().contains("Duchenne Muscular") && prior.getText().contains("Therapies")) {
+            if (prior.getText().contains("Myasthenia Gravis") && prior.getText().contains("Supplemental")) {
                 prior.findElement(By.tagName("button")).click();
                 Assert.assertTrue(textPresent("Classification Already Exists"));
                 closeAlert();
@@ -78,17 +78,15 @@ public class ClassificationTest extends NlmCdeBaseTest {
         goToCdeByName("Spectroscopy geometry location not applicable indicator");
         findElement(By.linkText("Classification")).click();
         List<WebElement> linkList = driver.findElements(By.cssSelector("li[id$='Imaging Diagnostics']"));
-        Assert.assertTrue(linkList.size() == 3);
-        removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis","Assessments and Examinations","Imaging Diagnostics"});
+        Assert.assertEquals(linkList.size(), 1);
+        removeClassificationMethod(new String[]{"Domain","Assessments and Examinations","Imaging Diagnostics"});
         linkList = driver.findElements(By.cssSelector("li[id$='Imaging Diagnostics']"));
-        Assert.assertTrue(linkList.size() == 2);
+        Assert.assertEquals(linkList.size(), 0);
         linkList = driver.findElements(By.cssSelector("li[id$='Assessments and Examinations']"));
-        Assert.assertTrue(linkList.size() == 3);
+        Assert.assertTrue(linkList.size() == 1);
         
         removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis"});
         Assert.assertTrue(textNotPresent("Myasthenia Gravis"));
-        linkList = driver.findElements(By.cssSelector("li[id$='Assessments and Examinations']"));
-        Assert.assertTrue(linkList.size() == 2);
     }    
     
     @Test
@@ -96,7 +94,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName("Spectroscopy geometry location not applicable indicator");
         findElement(By.linkText("Classification")).click();
-        findElement(By.cssSelector("[id='classification-Disease,Spinal Muscular Atrophy,Assessments and Examinations,Imaging Diagnostics'] .name")).click();
+        findElement(By.cssSelector("[id='classification-Domain,Assessments and Examinations,Imaging Diagnostics'] .name")).click();
         showSearchFilters();
         hangon(1);
         Assert.assertTrue(textPresent("Classifications"));

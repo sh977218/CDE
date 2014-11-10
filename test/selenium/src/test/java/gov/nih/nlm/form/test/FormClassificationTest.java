@@ -1,5 +1,6 @@
 package gov.nih.nlm.form.test;
 
+import gov.nih.nlm.cde.test.ClassificationTest;
 import org.testng.annotations.Test;
 import org.openqa.selenium.By;
 
@@ -21,6 +22,6 @@ public class FormClassificationTest extends BaseFormTest{
     public void addClassification() {
         mustBeLoggedInAs("ninds", "pass");
         goToFormByName("Traumatic Brain Injury - Adverse Events");
-        addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
+        new ClassificationTest().addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
     }    
 }

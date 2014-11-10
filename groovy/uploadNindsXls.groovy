@@ -173,10 +173,6 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     newDE.put("version", getCellValue(row.getCell(xlsMap.cdeVersion))); 
     
     def properties = [];
-    def prop = new BasicDBObject();
-    prop.put("key", "NINDS Variable Name");
-    prop.put("value", getCellValue(row.getCell(xlsMap.variableName)));
-    properties.add(prop);
     
     def description = getCellValue(row.getCell(xlsMap.description)).trim();
     
@@ -220,20 +216,20 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
     def datatype = getCellValue(row.getCell(xlsMap.datatype));
     if (datatype.toLowerCase().trim().equals("numeric values")) {
-        def datatypeFloat;
+        def datatypeInt;
         if (!getCellValue(row.getCell(xlsMap.minValue)).isEmpty()) {
-            datatypeFloat = new BasicDBObject();
-            datatypeFloat.put("minValue", getCellValue(row.getCell(xlsMap.minValue)));
+            datatypeInt = new BasicDBObject();
+            datatypeInt.put("minValue", getCellValue(row.getCell(xlsMap.minValue)));
         }
         if (!getCellValue(row.getCell(xlsMap.maxValue)).isEmpty()) {
-            if (datatypeFloat == null) {
-                datatypeFloat = new BasicDBObject();
+            if (datatypeInt == null) {
+                datatypeInt = new BasicDBObject();
             }
-            datatypeFloat.put("maxValue", getCellValue(row.getCell(xlsMap.maxValue)));
+            datatypeInt.put("maxValue", getCellValue(row.getCell(xlsMap.maxValue)));
         }
-        datatype = "Float";
-        if (datatypeFloat != null) {
-            vd.put("datatypeFloat", datatypeFloat);
+        datatype = "Integer";
+        if (datatypeInt != null) {
+            vd.put("datatypeInteger", datatypeInt);
         }
     } else if (datatype.toLowerCase().trim().equals("alphanumeric")) {
         datatype = "Text";
@@ -329,6 +325,11 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     nindsId.put("id", getCellValue(row.getCell(xlsMap.nindsId)));
     nindsId.put("version", getCellValue(row.getCell(xlsMap.cdeVersion)));
     ids.add(nindsId);
+
+    def variableName = new BasicDBObject();
+    variableName.put("source", "NINDS Variable Name");
+    variableName.put("id", getCellValue(row.getCell(xlsMap.variableName)));
+    ids.add(variableName);
     
     def cadsrId = getCellValue(row.getCell(xlsMap.cadsrId));
     if (!cadsrId.equals("")) {
