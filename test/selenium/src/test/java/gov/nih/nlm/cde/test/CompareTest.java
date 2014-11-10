@@ -68,9 +68,9 @@ public class CompareTest extends NlmCdeBaseTest{
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compareMe")));
         findElement(By.linkText("Common Toxicity Criteria Adverse Event Platelet Count Grade")).click();
         hangon(.5);
-        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//a[@title='Add to Quick Board']")));
-        findElement(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//a[@title='Add to Quick Board']")).click();
-        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//a[@title='Add to Quick Board']")));
+        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")));
+        findElement(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")).click();
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")));
         findElement(By.linkText("Quick Board ( 2 )")).click();
         findElement(By.id("qb.compare")).click();
         Assert.assertTrue(textPresent("in CTC category Blood/Bone Marrow"));

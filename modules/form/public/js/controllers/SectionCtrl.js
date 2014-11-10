@@ -12,17 +12,24 @@ function SectionCtrl($scope, $modal, $timeout, $http) {
         if (!$scope.elt.formElements) {
             $scope.elt.formElements = [];
         }
-        $scope.elt.formElements.push({label: "New Section", cardinality: "1", section: {}, formElements: []});
+        $scope.elt.formElements.push({elementType: "section", label: "New Section", cardinality: "1", section: {}, formElements: []});
         $scope.stageElt(); 
     };
+    
+    $scope.sortableOptionsSections = {
+        connectWith: ".dragQuestions"
+        , handle: ".fa.fa-arrows"
+    };        
 
     $scope.sortableOptions = {
         connectWith: ".dragQuestions"
+        , handle: ".fa.fa-arrows"
         , receive: function(e, ui) {
             var cde = ui.item.sortable.moved;
             if (cde.valueDomain !== undefined) {
                 var question = {
-                    label: cde.naming[0].designation
+                    elementType: "question"
+                    , label: cde.naming[0].designation
                     , cardinality: "1"
                     , question: {
                         cde: {tinyId: cde.tinyId

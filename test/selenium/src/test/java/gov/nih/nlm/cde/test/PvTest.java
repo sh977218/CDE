@@ -93,7 +93,7 @@ public class PvTest extends NlmCdeBaseTest {
         findElement(By.name("changeNote")).sendKeys("Changed PV");
         findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("version")).sendKeys(".addRemovePv");
-        findElement(By.id("confirmSave")).click();
+        findElement(By.id("confirmNewVersion")).click();
         textPresent("Qualified");
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();

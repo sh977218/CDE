@@ -431,5 +431,18 @@ exports.init = function(app, daoManager) {
             res.send("Please login first.");
         }      
     });
+    
+    app.get('/cde/properties/keys', function(req, res) {
+        adminItemSvc.allPropertiesKeys(req, res, mongo_data);
+    });
+    
+    app.get('/archivedCdes/:cdeArray', function(req, res) {
+        mongo_data.archivedCdes(req.params.cdeArray, function(err, resultCdes) {
+            if (err) {
+                console.log(err);
+                res.send(500, "Unexpected Error");
+            } else res.send(resultCdes);
+        });
+    });
 
 };
