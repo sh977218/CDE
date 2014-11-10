@@ -15,6 +15,15 @@ var questionSchema =  {
     , answers: [sharedSchemas.permissibleValueSchema]
 };
 
+
+var skipLogicRule = new Schema({
+    ruleType: {type: String, enum: ['and', 'or', 'inSub']}
+    , typeIn: {
+        quesion: String
+        , answers: [sharedSchemas.permissibleValueSchema]
+    }
+});
+
 var sectionSchema = {
 };
 
@@ -28,7 +37,9 @@ var formElementSchema = new Schema({
     , section: sectionSchema
     , question: questionSchema
     , formElements: [formElementSchema]
+    , skipLogic:  skipLogicRule
 }, {_id: false});
+
 
 exports.formSchema = new Schema({
     tinyId: String
