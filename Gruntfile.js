@@ -319,7 +319,75 @@ module.exports = function(grunt) {
                     , borderColor: 'bgGreen'      
                 }
             }            
-        }
+        },
+        // https://www.npmjs.org/package/grunt-bower-install-simple
+        // Grunt Task for Installing Bower Dependencies
+        "bower-install-simple": {
+                options: {
+                	// Whether output is colorized
+                    color: true,
+                    // Path where bower installed components should be saved
+                    directory: "bower_components"
+                },
+                "dev": {
+                    options: {
+                    	// Do not install project devDependencies. The equivalent of bower install --production.
+                        production: false
+                    }
+                }
+        },
+        // https://www.npmjs.org/package/grunt-bowercopy
+        // Wrangle bower dependencies and place each one where it's supposed to be.
+        bowercopy: {
+        	  options: {
+        		  //  source locations with the correct bower folder location
+        	    srcPrefix: 'bower_components'
+        	  },
+        	  js: {
+        	    options: {
+        	    	// prefix for destinations
+        	      destPrefix: 'modules/cde/public/assets'
+        	    },
+        	    files: {
+        	    	// Keys are destinations (prefixed with `options.destPrefix`)
+                    // Values are sources (prefixed with `options.srcPrefix`); One source per destination
+                    // e.g. 'bower_components/jquery/dist/jquery.min.js' will be copied to 'public/js/jquery.min.js'
+        	      'js/jquery.min.js': 'jquery/dist/jquery.min.js',
+        	      'js/jquery-ui.min.js': 'jquery-ui/ui/minified/jquery-ui.min.js',
+        	      'js/angular.min.js': 'angular/angular.min.js',
+        	      'js/angular-route.min.js': 'angular-route/angular-route.min.js',
+        	      'js/angular-resource.min.js': 'angular-resource/angular-resource.min.js',
+        	      'js/angular-sanitize.min.js': 'angular-sanitize/angular-sanitize.min.js',
+        	      'js/angular-animate.min.js': 'angular-animate/angular-animate.min.js',
+        	      'js/bootstrap.min.js': 'bootstrap/dist/js/bootstrap.min.js'
+        	    }
+        	  },
+        	  css: {
+          	    options: {
+          	      destPrefix: 'modules/cde/public/assets'
+          	    },
+          	    files: {
+          	      'css/bootstrap.min.css': 'bootstrap/dist/css/bootstrap.min.css',
+          	      'css/font-awesome.min.css': 'font-awesome/css/font-awesome.min.css',
+          	      'css/select2.css': 'select2/select2.css'
+          	      //,
+          	      // added already
+       	    	  //'css/selectize.default.css': 'selectize/dist/css/selectize.default.css'
+          	    }
+          	  },
+          	  // Copy entire folders
+        	  bootstrapFont: {
+        		  files: {
+                      'modules/cde/public/assets/fonts': 'bootstrap/dist/fonts/*'
+                  }
+          	  },
+          	  fontAwesomeFont: {
+          		  files: {
+                    'modules/cde/public/assets/fonts': 'font-awesome/fonts/*'
+          		  }
+        	  }
+        	}
+        
 //        , watch: {
 //            files: [
 //                'modules/cde/public/assets/js/**/*.js',
@@ -346,6 +414,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-available-tasks');
     grunt.loadNpmTasks('grunt-attention');
     grunt.loadNpmTasks('grunt-useref');
+    grunt.loadNpmTasks("grunt-bower-install-simple");
+    grunt.loadNpmTasks('grunt-bowercopy');
     
     grunt.registerTask('do-git', 'Restart NodeJS server.', function() {
         if (grunt.config('git.pull')) {
@@ -461,6 +531,7 @@ module.exports = function(grunt) {
     grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
     grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','divider','guihelp','divider','git','divider','elastic','divider','build','divider','node']);
     grunt.registerTask('help', ['availabletasks']);    
-    grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);  
-
+    grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);
+    // https://www.npmjs.org/package/grunt-bower-install-simple
+    grunt.registerTask("bower-install", [ "bower-install-simple" ]);
 };
