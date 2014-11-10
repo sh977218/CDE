@@ -15,7 +15,7 @@ var questionSchema =  {
     , answers: [sharedSchemas.permissibleValueSchema]
 };
 
-var sectionSchema = {
+var sectionSchema = {    
 };
 
 var formElementSchema = new Schema({

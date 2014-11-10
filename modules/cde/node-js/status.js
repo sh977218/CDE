@@ -160,7 +160,6 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
 };
 
 setInterval(function() {
-    console.log("status check");
     status.checkElastic(elastic.elasticCdeUri, mongo);
 }, config.status.timeouts.statusCheck);    
 

@@ -22,6 +22,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.TimeoutException;
+import java.util.Random;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -60,6 +61,7 @@ public class NlmCdeBaseTest {
 
     @BeforeTest
     public void setBaseUrl() {
+        hangon(new Random().nextInt(10));
         if (isWindows()) {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
