@@ -387,10 +387,8 @@ module.exports = function(grunt) {
           	    files: {
           	      'css/bootstrap.min.css': 'bootstrap/dist/css/bootstrap.min.css',
           	      'css/font-awesome.min.css': 'font-awesome/css/font-awesome.min.css',
-          	      'css/select2.css': 'select2/select2.css'
-          	      //,
-          	      // added already
-       	    	  //'css/selectize.default.css': 'selectize/dist/css/selectize.default.css'
+          	      'css/select2.css': 'select2/select2.css',
+          	      'css/selectize.default.css': 'selectize/dist/css/selectize.default.css'
           	    }
           	  },
           	  // Copy entire folders

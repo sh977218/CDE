@@ -41,11 +41,6 @@
     "chalk": "*",
     "shortid": "2.0.1",
     "nodemailer": "1.3.0",
-    "async": "0.9.0",
-    "grunt-bower":"*"
-  },
-  "devDependencies": {
-    "grunt-bower-install-simple": "^1.0.3",
-    "grunt-bowercopy": "*"
+    "async": "0.9.0"
   }
 }
