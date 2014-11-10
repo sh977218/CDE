@@ -11,6 +11,14 @@ angular.module('classification', ['ngResource'])
 .factory('CdeClassification', function($resource) {
     return $resource('/classification/elt');
 })
+.factory('BulkClassification', function($resource, $http) {
+    return {
+        classifyTinyidList: function(list, newClassif, cb) {
+            var data = {classification: newClassif, elements: list};
+            $http.post('/classification/bulk/tinyid', data).success(cb);
+        }
+    };
+})
 .factory("ClassificationTree", function() {
     return {
         getCategories: function(org, newClassification, level) {
