@@ -297,7 +297,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void saveCde() {
-        findElement(By.id("confirmNewVersion")).click();
+        try {
+            findElement(By.id("confirmNewVersion")).click();
+        } catch(WebDriverException wde) {
+            hangon(1);
+            findElement(By.id("confirmNewVersion")).click();
+        }
         hangon(2);
     }
 
