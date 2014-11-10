@@ -1,0 +1,20 @@
+<div class="panel panel-default formRenderSection" id="formRenderSection_{{section.label}}">
+    <div class="panel-heading">
+        <div class="row">
+          <div class="col-md-9">
+            <h4>{{section.label}}</h4>
+            <p>{{section.instructions}}</p>
+          </div>
+          <div class="col-md-3" ng-if="canRepeat(section)">
+              <button class="btn btn-default fa fa-plus" ng-click="addSection(section, formElements, $index)"> Add One</button>
+              <button ng-if="section.isCopy" class="btn btn-default fa fa-trash-o" ng-click="removeSection($index)"> Remove</button>
+          </div>
+        </div>
+    </div>
+    <div class="panel-body">
+      <div ng-repeat="formElement in section.formElements track by $index" class="row">
+            <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'" ng-init="question = formElement;"></div>
+            <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'" ng-init="formElements = section.formElements; section = formElement;"></div>          
+      </div>
+    </div>
+</div>

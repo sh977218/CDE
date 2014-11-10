@@ -19,7 +19,7 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.id("search.submit")).click();
         textPresent("1 results");
         
-        WebElement sourceElt = findElement(By.id("acc_link_0"));
+        WebElement sourceElt = findElement(By.xpath("//div[@id='accordionList']//i[@class=\"fa fa-arrows question-move-handle ng-scope\"]"));
         WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumber));
         
         Assert.assertTrue(sourceElt.isDisplayed());
@@ -158,7 +158,7 @@ public class QuestionTest extends BaseFormTest {
 
         findElement(By.id("startAddingQuestions")).click();
 
-        WebElement sourceElt = findElement(By.xpath("//div[@id='section_drop_area_1']//div[@id='question_0']"));
+        WebElement sourceElt = findElement(By.xpath("//div[@id='section_drop_area_1']//div[@id='question_0']//i[@class='fa fa-arrows question-move-handle ng-scope']"));
         WebElement targetElt = findElement(By.id("section_drop_area_0"));
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
 
@@ -262,5 +262,49 @@ public class QuestionTest extends BaseFormTest {
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
 
     }
+    
+    @Test
+    public void sectionInSection() {
+        Dimension currentWindowSize = getWindowSize();
+        resizeWindow(1024, 1150);        
+        mustBeLoggedInAs(ctepCurator_username, password);
+        String formName = "Cancer Patient Data Collection";
+        String formDef = "Section in Section";
+        String formV = "0.1";
+        createForm(formName, formDef, formV, "CTEP");        
+        findElement(By.linkText("Form Description")).click();        
+        new SectionTest().addSection("Medical History", null);  
+        new SectionTest().addSection("Treatment Details", null);
+        findElement(By.id("startAddingQuestions")).click();          
+
+        // Add 2nd Section
+        addQuestionToSection("Smoking History Ind", 0);
+        addQuestionToSection("First-Line Therapy Chemotherapy Regimen Name", 1);             
+        WebElement sourceElt = findElement(By.xpath("//div[@id=\"section_view_1\"]//i[@class=\"fa fa-arrows section-move-handle\"]"));
+        WebElement targetElt = findElement(By.id("section_drop_area_0"));
+        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+        hangon(1);
+        
+        String cardXPath = "//*[@class='dragQuestions ng-pristine ng-valid ui-sortable']//dd[@id='dd_card_0']";
+        Assert.assertEquals("Exactly 1", findElement(By.xpath(cardXPath)).getText().trim());
+        findElement(By.xpath(cardXPath + "//i")).click();
+        new Select(findElement(By.xpath(cardXPath + "//select"))).selectByVisibleText("1 or more");
+        findElement(By.xpath(cardXPath + "//button[text() = ' Confirm']")).click();
+        
+        saveForm();        
+        goToFormByName(formName);
+        findElement(By.linkText("Form Description")).click();        
+        findElement(By.xpath("//div[@id=\"section_drop_area_0\"]//div[@id=\"section_drop_area_0\"]//span[text()=\"First-Line Therapy Chemotherapy Regimen Name\"]")); 
+        
+        findElement(By.id("formPreview")).click();
+        switchTab(1);
+        findElement(By.xpath("//div[@id=\"formRenderSection_Medical History\"]//div[@id=\"formRenderSection_Treatment Details\"]//label[text()='First-Line Therapy Chemotherapy Regimen Name']"));        
+        Assert.assertTrue(driver.findElements(By.xpath("//*[text()=\"Treatment Details\"]")).size() == 1); 
+        findElement(By.xpath("//*[text()=\" Add One\"]")).click();
+        Assert.assertTrue(driver.findElements(By.xpath("//*[text()=\"Treatment Details\"]")).size() == 2);              
+        
+        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());        
+    }
+    
     
 }

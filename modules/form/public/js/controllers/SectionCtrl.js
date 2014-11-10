@@ -15,9 +15,15 @@ function SectionCtrl($scope, $modal, $timeout, $http) {
         $scope.elt.formElements.push({elementType: "section", label: "New Section", cardinality: "1", section: {}, formElements: []});
         $scope.stageElt(); 
     };
+    
+    $scope.sortableOptionsSections = {
+        connectWith: ".dragQuestions"
+        , handle: ".fa.fa-arrows"
+    };        
 
     $scope.sortableOptions = {
         connectWith: ".dragQuestions"
+        , handle: ".fa.fa-arrows"
         , receive: function(e, ui) {
             var cde = ui.item.sortable.moved;
             if (cde.valueDomain !== undefined) {
