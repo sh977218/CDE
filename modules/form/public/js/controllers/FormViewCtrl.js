@@ -114,4 +114,19 @@ function FormViewCtrl($scope, $routeParams, $http, Form, isAllowedModel) {
         });
     };
     
+    $scope.typeAheadSelect = function(condition, $item) {
+        if ($scope.languageMode == 'question') return $scope.languageMode = 'operator';
+        if ($scope.languageMode == 'operator') return $scope.languageMode = 'answer';
+        if ($scope.languageMode == 'answer') return $scope.languageMode = 'conjuction';
+        if ($scope.languageMode == 'conjuction') return $scope.languageMode = 'question';
+    };
+    
+    $scope.languageOptions = function(previousLevel) {
+        if ($scope.languageMode == 'question') return previousLevel.filter(function(q){return q.elementType === "question";}).map(function(q){return q.label;});
+        if ($scope.languageMode == 'operator') return ["=", "<", ">"];
+        if ($scope.languageMode == 'answer') return ["Answer1", "Answer2", "Answer3"];
+        if ($scope.languageMode == 'conjuction') return ["AND", "OR"];
+    };
+    
+    $scope.languageMode = 'question'; // question, operator, answer, conjuction
 }

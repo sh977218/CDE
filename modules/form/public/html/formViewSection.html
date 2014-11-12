@@ -8,7 +8,13 @@
                     <dt>Instructions: </dt>
                     <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
                     <dt>Skip Logic </dt>
-                    <dd id="dd_section_skiplogic_{{$index}}"><div inline-edit model="section.skipLogic.condition" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
+<!--                    <dd id="dd_section_skiplogic_{{$index}}"><div inline-edit model="section.skipLogic.condition" is-allowed="canCurate" on-ok="stageElt()" typeahead-source="['aaa','bbb']"> </div></dd>-->
+
+
+                    <dd><input style="width: 500px;"name="inlineInput"  ng-model="section.skipLogic.condition" typeahead="name for name in [].concat(languageOptions(previousLevel))" typeahead-on-select="typeAheadSelect(section.skipLogic.condition, $item)" class="form-ontrol typeahead"/></dd>                                                 
+
+
+
                     <dt>Cardinality: </dt>
                     <dd id="dd_card_{{$index}}">
                         <span ng-show="editCardMode">
@@ -46,7 +52,7 @@
         <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">
             <div ng-repeat="(questionIndex, formElement) in section.formElements" id="question_{{$index}}">
                 <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formViewQuestion.html'" ng-init="question = formElement;"></div>
-                <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'" ng-init="section = formElement;"></div>
+                <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'" ng-init="previousLevel = section.formElements; section = formElement;"></div>
             </div>
         </div>
         <div ng-show="section.formElements.length === 0">

@@ -13,6 +13,6 @@
 <div ui-sortable="sortableOptionsSections" ng-model="elt.formElements" class="dragQuestions">
     <div ng-repeat="(sectionIndex, formElement) in elt.formElements">
         <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formViewQuestion.html'" ng-init="question = formElement; section = elt;"></div>
-        <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'" ng-init="section = formElement;"></div>
+        <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'" ng-init="previousLevel = elt.formElements;section = formElement;"></div>
     </div>
 </div>
