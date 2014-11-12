@@ -4,6 +4,7 @@ var mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
     , adminItemSvc = require("./adminItemSvc")     
+    , elastic = require('./elastic')
 ;
 
 var classification = this;
@@ -40,7 +41,7 @@ exports.cdeClassification = function(body, action, cb) {
         }        
     };
     daoManager.getDaoList().forEach(function(dao) {
-        dao.byId(body.cdeId, function(err, cde) {
+        var  findElements = function(err, cde) {
             var steward = classificationShared.findSteward(cde, body.orgName);
             if (!steward) {
                 mongo_data_system.orgByName(body.orgName, function(stewardOrg) {
@@ -57,7 +58,10 @@ exports.cdeClassification = function(body, action, cb) {
                     classify(steward, cde);
                 });
             } else classify(steward, cde);
-        });     
+        };
+        if (body.cdeId) dao.byId(body.cdeId, findElements);  
+        if (body.tinyId && (!body.version)) dao.eltByTinyId(body.tinyId, findElements);     
+        if (body.tinyId && body.version) dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);     
     });    
 };
 
@@ -118,5 +122,8 @@ exports.classifyEntireSearch = function(req, cb) {
         };          
         classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);  
     };
-    adminItemSvc.bulkActionOnSearch(req, action, cb);
+    elastic.elasticsearch(req.query, req.itemType, function(result) {   
+        var ids = result.cdes.map(function(cde) {return cde._id;});    
+        adminItemSvc.bulkAction(ids, action, cb);
+    });
 };

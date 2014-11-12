@@ -9,6 +9,7 @@ var passport = require('passport')
   , path = require('path')
   , classificationShared = require('../shared/classificationShared.js')
   , classificationNode = require('./classificationNode')
+  , adminItemSvc = require("./adminItemSvc")       
   , auth = require( './authorization' )
 ;
 
@@ -388,6 +389,31 @@ exports.init = function(app) {
     app.post('/transferSteward', function(req, res) {
         orgsvc.transferSteward(req, res);
     });
+    
+    app.post('/classification/bulk/tinyid', function(req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.classification.orgName)) {
+            res.send(403, "Not Authorized");
+            return;
+        }        
+        var action = function(elt, actionCallback) {
+            var classifReq = {
+                orgName: req.body.classification.orgName
+                , categories: req.body.classification.categories
+                , tinyId: elt.id || elt
+                , version: elt.version || null
+            };          
+            classificationNode.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);  
+        };        
+        adminItemSvc.bulkAction(req.body.elements, action, function(err) {
+            var elts = req.body.elements.map(function(e){ 
+                return e.id;
+            });
+            adminItemSvc.bulkAction(elts, action, function(err) {
+                if (!err) res.send();
+                else res.send(202, {error: {message: err}});
+            });                
+        });        
+    });    
 
     app.get('/rsStatus', function(req, res) {
         mongo_data_system.rsStatus(function(err, st) {

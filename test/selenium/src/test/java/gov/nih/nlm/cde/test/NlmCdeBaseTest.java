@@ -22,6 +22,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.TimeoutException;
+import java.util.Random;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -60,6 +61,7 @@ public class NlmCdeBaseTest {
 
     @BeforeTest
     public void setBaseUrl() {
+        hangon(new Random().nextInt(10));
         if (isWindows()) {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
@@ -297,7 +299,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void saveCde() {
-        findElement(By.id("confirmNewVersion")).click();
+        try {
+            findElement(By.id("confirmNewVersion")).click();
+        } catch(WebDriverException wde) {
+            hangon(1);
+            findElement(By.id("confirmNewVersion")).click();
+        }
         hangon(2);
     }
 
@@ -482,7 +489,7 @@ public class NlmCdeBaseTest {
         findElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button")).click();
         closeAlert();
         findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
-        hangon(1);
+        hangon(1.5);
         findElement(By.linkText("Classification")).click();
         String selector = "";
         for (int i = 1; i < categories.length; i++) {
