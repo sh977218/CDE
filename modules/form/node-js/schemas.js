@@ -15,14 +15,29 @@ var questionSchema =  {
     , answers: [sharedSchemas.permissibleValueSchema]
 };
 
-
-var skipLogicRule = new Schema({
-    ruleType: {type: String, enum: ['and', 'or', 'inSub']}
-    , typeIn: {
-        quesion: String
-        , answers: [sharedSchemas.permissibleValueSchema]
-    }
-});
+//var logicRuleSchema = new Schema({
+//    ruleType: {type: String, enum: ['and', 'or', 'xor']}
+//    , rules: [skipLogicRule]
+//    
+//});
+//
+//var evalRuleSchema = new Schema({
+//    ruleType: {type: String, enum: ['inSubset', 'sum']}
+//    , typeInSubset: {
+//        quesion: String
+//        , answers: [sharedSchemas.permissibleValueSchema]   
+//    }
+//    , typeSum: {
+//        quesions: [String]
+//        , sum: Integer   
+//    }    
+//});
+//
+//var skipLogicRule = new Schema({
+//    ruleType: {type: String, enum: ['logic', 'eval']}
+//    , typeLogic: logicRuleSchema
+//    , typeEval: evalRuleSchema
+//});
 
 var sectionSchema = {
 };
@@ -37,7 +52,11 @@ var formElementSchema = new Schema({
     , section: sectionSchema
     , question: questionSchema
     , formElements: [formElementSchema]
-    , skipLogic:  skipLogicRule
+//    , skipLogic:  skipLogicRule
+    , skipLogic: {
+        action: {type: String, enum: ['show', 'enable']} 
+        , condition: String
+    }
 }, {_id: false});
 
 

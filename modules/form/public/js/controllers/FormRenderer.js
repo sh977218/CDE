@@ -85,5 +85,9 @@ function FormRenderCtrl($scope, $http, $location, $window) {
             $scope.encodedStr = '/';
         }
     };
+    
+    $scope.evaluateSkipLogic = function(string) {
+        
+    };
 
 }
