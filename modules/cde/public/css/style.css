@@ -237,9 +237,6 @@ a.paginate_button {
 	color: #207b9e;
 }
 
-
-
-
 .form-inline .form-group input {
     width:250px;
 }
@@ -316,14 +313,6 @@ dd.formViewDetails {
     border-color: #ddd;
 }
 
-.dl-horizontal dt {
-    width: 100px;
-}
-
-.dl-horizontal dd {
-    margin-left: 120px;
-}
-
 /* Style for log in page */
 .form-signin {
   max-width: 330px;
@@ -370,6 +359,15 @@ dd.formViewDetails {
     overflow-y: scroll;
     overflow-x: hidden;
 }
+
+.table.accordionlist>tbody>tr>th, .table.accordionlist>tbody>tr>td, .table-responsive.accordionlist {
+    border: none;
+    padding: 4px;
+}
+
+.table.accordionlist>tbody>tr>th {
+    text-align: right;
+    padding-right: 5px;
 
 .section-move-handle {
     float: left;

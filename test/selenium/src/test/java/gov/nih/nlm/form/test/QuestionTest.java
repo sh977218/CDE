@@ -31,7 +31,7 @@ public class QuestionTest extends BaseFormTest {
     @Test
     public void questions() {
         Dimension currentWindowSize = getWindowSize();
-        resizeWindow(1024, 1150);
+        resizeWindow(1524, 1150);
         
         mustBeLoggedInAs(ctepCurator_username, password);
 
@@ -144,10 +144,8 @@ public class QuestionTest extends BaseFormTest {
 
         addQuestionToSection("Smoking History Ind", 1);
         findElement(By.id("question_accordion_1_0")).click();
-
         Assert.assertEquals("Value List", findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_datatype_0']")).getText().trim());
         Assert.assertFalse(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
-
         findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).click();
         saveForm();
         
@@ -266,7 +264,7 @@ public class QuestionTest extends BaseFormTest {
     @Test
     public void sectionInSection() {
         Dimension currentWindowSize = getWindowSize();
-        resizeWindow(1024, 1150);        
+        resizeWindow(1524, 1150);        
         mustBeLoggedInAs(ctepCurator_username, password);
         String formName = "Cancer Patient Data Collection";
         String formDef = "Section in Section";
@@ -302,7 +300,7 @@ public class QuestionTest extends BaseFormTest {
         Assert.assertTrue(driver.findElements(By.xpath("//*[text()=\"Treatment Details\"]")).size() == 1); 
         findElement(By.xpath("//*[text()=\" Add One\"]")).click();
         Assert.assertTrue(driver.findElements(By.xpath("//*[text()=\"Treatment Details\"]")).size() == 2);              
-        
+        switchTab(0);
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());        
     }
     

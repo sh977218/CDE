@@ -80,8 +80,14 @@ exports.desByConcept = function (concept, callback) {
     });
 };
 
-exports.deByTinyIdAndVersion = function(tinyId, version, callback) {
+exports.byTinyIdAndVersion = function(tinyId, version, callback) {
     DataElement.findOne({'tinyId': tinyId, "version": version}).exec(function (err, de) {
+       callback("", de); 
+    });
+};
+
+exports.eltByTinyId = function(tinyId, callback) {
+    DataElement.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, de) {
        callback("", de); 
     });
 };
