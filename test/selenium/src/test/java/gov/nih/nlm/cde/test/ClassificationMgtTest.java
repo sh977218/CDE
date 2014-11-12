@@ -136,7 +136,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     }
     
     @Test
-    public void classifyEntireSearch() {
+    public void reclassify() {
         mustBeLoggedInAs(ninds_username, password);
         gotoClassifMgt(); 
         createClassificationName(new String[]{"Classification Transfer"});
