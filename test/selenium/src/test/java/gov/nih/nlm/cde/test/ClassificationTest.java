@@ -92,16 +92,14 @@ public class ClassificationTest extends NlmCdeBaseTest {
     @Test
     public void classificationLink() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
-        goToCdeByName("Spectroscopy geometry location not applicable indicator");
+        goToCdeByName("Spectroscopy water signal removal filter text");
         findElement(By.linkText("Classification")).click();
         findElement(By.cssSelector("[id='classification-Domain,Assessments and Examinations,Imaging Diagnostics'] .name")).click();
         showSearchFilters();
         hangon(1);
         Assert.assertTrue(textPresent("Classifications"));
-        Assert.assertTrue(textPresent("NINDS (34)"));
+        Assert.assertTrue(textPresent("NINDS (3"));
         Assert.assertTrue(textPresent("Imaging Diagnostics"));
-        List<WebElement> linkList = driver.findElements(By.xpath("//small[text()='Disease']"));
-        Assert.assertEquals(linkList.size(), 1);
     }
     
     @Test
