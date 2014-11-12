@@ -89,23 +89,26 @@ function FormRenderCtrl($scope, $http, $location, $window) {
     $scope.evaluateSkipLogic = function(rule, formElements) {
         if (!rule) return true;
         if (rule.indexOf("AND")>-1) {
-            return $scope.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0,-4),formElements) && $scope.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4,100),formElements);
+            var firstRule = /.+AND/.exec(rule)[0].slice(0,-4);
+            var secondRule = /AND.+/.exec(rule)[0].substr(4,100);
+            return $scope.evaluateSkipLogic(firstRule, formElements) && $scope.evaluateSkipLogic(secondRule, formElements);
         }
         if (rule.indexOf("OR")>-1) {
-            return $scope.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0,-3),formElements) || $scope.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3,100),formElements);
+            var firstRule = /.+OR/.exec(rule)[0].slice(0,-3);
+            var secondRule = /OR.+/.exec(rule)[0].substr(3,100);            
+            return $scope.evaluateSkipLogic(firstRule, formElements) || $scope.evaluateSkipLogic(secondRule, formElements);
         }        
         var question = /^'[^']+'/.exec(rule)[0].substr(1,100).slice(0,-1);
         var operator = /=|<|>/.exec(rule)[0];
-        console.log(operator);
-        var answer = /'[^']+'$/.exec(rule)[0].substr(1,100).slice(0,-1);
-        var questionObject = formElements.filter(function(element) {
+        var expectedAnswer = /'[^']+'$/.exec(rule)[0].substr(1,100).slice(0,-1);
+        var realAnswer = formElements.filter(function(element) {
             if (element.elementType !== 'question') return;
             if (element.label !== question) return;
             return true;
-        })[0].question;        
-        if (operator === '=') return questionObject.answer == answer;
-        if (operator === '<') return parseInt(questionObject.answer) < parseInt(answer);
-        if (operator === '>') return parseInt(questionObject.answer) > parseInt(answer);
+        })[0].question.answer;        
+        if (operator === '=') return realAnswer === expectedAnswer;
+        if (operator === '<') return parseInt(realAnswer) < parseInt(expectedAnswer);
+        if (operator === '>') return parseInt(realAnswer) > parseInt(expectedAnswer);
     };
 
 }
