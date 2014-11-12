@@ -11,6 +11,17 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class FacetSearchTest extends NlmCdeBaseTest {
+
+    private void clickIfDisplayed(String id) {
+        List<WebElement> elts = driver.findElements(By.id(id));
+        for (int i = 0; i < elts.size(); i++) {
+            if (elts.get(i).isDisplayed()) {
+                elts.get(i).click();
+                i = elts.size();
+            }
+        }
+    }
+    
     @Test
     public void stewardFacets() {
         goToCdeSearch();
@@ -34,26 +45,13 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Traumatic Brain Injury")).click();
         findElement(By.id("li-blank-Acute Hospitalized")).click();
         hangon(1);
-        List<WebElement> elts = driver.findElements(By.id("li-blank-Classification"));
-        for (int i = 0; i < elts.size(); i++) {
-            if (elts.get(i).isDisplayed()) {
-                elts.get(i).click();
-                i = elts.size();
-            }
-        }
+        clickIfDisplayed("li-blank-Classification");
         findElement(By.id("li-blank-Basic")).click();
         Assert.assertTrue(textPresent("9 results for"));
         Assert.assertTrue(textPresent("Traffic accident other party role type"));
         findElement(By.id("li-checked-Acute Hospitalized")).click();
         Assert.assertTrue(textPresent("24 results for"));
-        elts = driver.findElements(By.id("li-blank-Assessments and Examinations"));
-        for (int i = 0; i < elts.size(); i++) {
-            if (elts.get(i).isDisplayed()) {
-                elts.get(i).click();
-                i = elts.size();
-            }
-        }
-        Assert.assertTrue(textPresent("8 results for"));
+        Assert.assertTrue(textPresent("Epidemiology (2"));
         findElement(By.id("li-checked-Disease")).click();
     }
     
@@ -222,9 +220,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
         findElement(By.id("li-blank-Amyotrophic Lateral Sclerosis")).click();
-        findElement(By.id("li-blank-Assessments and Examinations")).click();
-        findElement(By.id("li-blank-Physical/Neurological Examination")).click();
-        Assert.assertTrue(textPresent( "NINDS : Disease : Amyotrophic Lateral Sclerosis : Assessments and Examinations : Physical/Neurological Examination" ));
+        clickIfDisplayed("li-blank-Classification");
+        clickIfDisplayed("li-blank-Core");
+        Assert.assertTrue(textPresent( "NINDS : Disease : Amyotrophic Lateral Sclerosis : Classification : Core" ));
         findElement(By.id("resetSearch")).click();
         Assert.assertTrue(textPresent( "All Classifications" ));
     }
