@@ -1,5 +1,5 @@
 {{section.skipLogic.condition}}
-<div ng-show="translateSkipLogic(section.skipLogic.condition)" class="panel panel-default formRenderSection" id="formRenderSection_{{section.label}}">
+<div ng-show="evaluateSkipLogic(section.skipLogic.condition, formElements)" class="panel panel-default formRenderSection" id="formRenderSection_{{section.label}}">
     <div class="panel-heading">
         <div class="row">
           <div class="col-md-9">

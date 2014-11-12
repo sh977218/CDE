@@ -86,8 +86,22 @@ function FormRenderCtrl($scope, $http, $location, $window) {
         }
     };
     
-    $scope.evaluateSkipLogic = function(string) {
-        
+    $scope.evaluateSkipLogic = function(rule, formElements) {
+        if (!rule) return true;
+        if (rule.indexOf("AND")>-1) {
+            return $scope.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0,-4),formElements) && $scope.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4,100),formElements);
+        }
+        if (rule.indexOf("OR")>-1) {
+            return $scope.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0,-3),formElements) || $scope.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3,100),formElements);
+        }        
+        var question = /^'[^']+'/.exec(rule)[0].substr(1,100).slice(0,-1);
+        var answer = /'[^']+'$/.exec(rule)[0].substr(1,100).slice(0,-1);
+        var questionObject = formElements.filter(function(element) {
+            if (element.elementType !== 'question') return;
+            if (element.label !== question) return;
+            return true;
+        })[0].question;        
+        return questionObject.answer == answer;
     };
 
 }

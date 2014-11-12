@@ -7,6 +7,8 @@
                 <dl class="dl-horizontal">
                     <dt>Instructions: </dt>
                     <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
+                    <dt>Skip Logic </dt>
+                    <dd id="dd_section_skiplogic_{{$index}}"><div inline-edit model="section.skipLogic.condition" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
                     <dt>Cardinality: </dt>
                     <dd id="dd_card_{{$index}}">
                         <span ng-show="editCardMode">
