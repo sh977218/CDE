@@ -95,13 +95,17 @@ function FormRenderCtrl($scope, $http, $location, $window) {
             return $scope.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0,-3),formElements) || $scope.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3,100),formElements);
         }        
         var question = /^'[^']+'/.exec(rule)[0].substr(1,100).slice(0,-1);
+        var operator = /=|<|>/.exec(rule)[0];
+        console.log(operator);
         var answer = /'[^']+'$/.exec(rule)[0].substr(1,100).slice(0,-1);
         var questionObject = formElements.filter(function(element) {
             if (element.elementType !== 'question') return;
             if (element.label !== question) return;
             return true;
         })[0].question;        
-        return questionObject.answer == answer;
+        if (operator === '=') return questionObject.answer == answer;
+        if (operator === '<') return parseInt(questionObject.answer) < parseInt(answer);
+        if (operator === '>') return parseInt(questionObject.answer) > parseInt(answer);
     };
 
 }
