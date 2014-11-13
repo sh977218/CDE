@@ -18,6 +18,7 @@ public abstract class IdentifiersTest extends CommonTest {
         findElement(By.name("version")).sendKeys("MyVersion1");
         findElement(By.id("createId")).click();
         Assert.assertTrue(textPresent("Identifier Added"));
+        closeAlert();
         modalGone();
         
         scrollTo( "2000" );

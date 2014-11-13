@@ -98,6 +98,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Registration State:"));
 
         findElement(By.linkText("Identifiers")).click();
+        closeAlert();
         findElement(By.xpath("//button[text()=\" Add Identifier\"]")).click();
         modalHere();
         findElement(By.xpath("//label[text()=\"Source\"]/following-sibling::input")).sendKeys("Origin 1");
@@ -215,10 +216,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("value")).sendKeys("MyValue2");
         findElement(By.id("createProperty")).click();
         Assert.assertTrue(textPresent("Property added. Save to confirm."));
+        closeAlert();
         modalGone();
         findElement(By.id("removeProperty-0")).click();
         findElement(By.id("confirmRemoveProperty-0")).click();
         Assert.assertTrue(textPresent("Property removed. Save to confirm."));
+        closeAlert();
 
         findElement(By.linkText("Identifiers")).click();
         findElement(By.id("addId")).click();

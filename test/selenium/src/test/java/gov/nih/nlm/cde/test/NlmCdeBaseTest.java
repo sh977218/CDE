@@ -295,6 +295,7 @@ public class NlmCdeBaseTest {
         modalHere();
         findElement(By.name("version")).sendKeys(".1");
         findElement(By.id("confirmNewVersion")).click();
+        closeAlert();
         hangon(2);
     }
 
