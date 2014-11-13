@@ -22,6 +22,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.TimeoutException;
+import java.util.Random;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -60,6 +61,7 @@ public class NlmCdeBaseTest {
 
     @BeforeTest
     public void setBaseUrl() {
+        hangon(new Random().nextInt(10));
         if (isWindows()) {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
@@ -293,11 +295,17 @@ public class NlmCdeBaseTest {
         modalHere();
         findElement(By.name("version")).sendKeys(".1");
         findElement(By.id("confirmNewVersion")).click();
+        closeAlert();
         hangon(2);
     }
 
     protected void saveCde() {
-        findElement(By.id("confirmNewVersion")).click();
+        try {
+            findElement(By.id("confirmNewVersion")).click();
+        } catch(WebDriverException wde) {
+            hangon(1);
+            findElement(By.id("confirmNewVersion")).click();
+        }
         hangon(2);
     }
 
@@ -465,33 +473,6 @@ public class NlmCdeBaseTest {
     protected void switchTab(int i) {
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
-    }
-
-    protected void addClassificationMethod(String[] categories) {
-        findElement(By.linkText("Classification")).click();
-        findElement(By.id("addClassification")).click();
-        modalHere();
-        findElement(By.id("classifySlectOrg-" + categories[0])).click();
-
-        // Ensures that tree of classifications have finished loading.
-        Assert.assertTrue(textPresent(categories[1]));
-
-        for (int i = 1; i < categories.length - 1; i++) {
-            findElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link")).click();
-        }
-        findElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button")).click();
-        closeAlert();
-        findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
-        hangon(1);
-        findElement(By.linkText("Classification")).click();
-        String selector = "";
-        for (int i = 1; i < categories.length; i++) {
-            selector += categories[i];
-            if (i < categories.length - 1) {
-                selector += ",";
-            }
-        }
-        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-" + selector + "'] .name")).getText().equals(categories[categories.length - 1]));
     }
 
     protected void fillInput(String type, String value) {

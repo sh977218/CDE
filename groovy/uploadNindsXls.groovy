@@ -124,12 +124,11 @@ static def String getCellValue(Cell cell) {
     , cdeVersion: 60
 ];
 
-def void addDomain(de, type, subtype, value) { 
+def void addDomain(de, value) { 
     if (!value.equals("") && !value.equals("N/A.N/A")) {
         for (semiColonSplit in value.split(";")) {
             def cls = new ArrayList<String>();
-            cls.add(type);
-            cls.add(subtype)
+            cls.add("Domain");
             cls.addAll(semiColonSplit.split("\\."));
             def classifToAdd = classifications.buildMultiLevelClassif("NINDS", cls.toArray(new String[cls.size()]));
             classifications.addClassifToDe(classifToAdd, de);
@@ -174,10 +173,6 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     newDE.put("version", getCellValue(row.getCell(xlsMap.cdeVersion))); 
     
     def properties = [];
-    def prop = new BasicDBObject();
-    prop.put("key", "NINDS Variable Name");
-    prop.put("value", getCellValue(row.getCell(xlsMap.variableName)));
-    properties.add(prop);
     
     def description = getCellValue(row.getCell(xlsMap.description)).trim();
     
@@ -221,20 +216,20 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
     def datatype = getCellValue(row.getCell(xlsMap.datatype));
     if (datatype.toLowerCase().trim().equals("numeric values")) {
-        def datatypeFloat;
+        def datatypeInt;
         if (!getCellValue(row.getCell(xlsMap.minValue)).isEmpty()) {
-            datatypeFloat = new BasicDBObject();
-            datatypeFloat.put("minValue", getCellValue(row.getCell(xlsMap.minValue)));
+            datatypeInt = new BasicDBObject();
+            datatypeInt.put("minValue", getCellValue(row.getCell(xlsMap.minValue)));
         }
         if (!getCellValue(row.getCell(xlsMap.maxValue)).isEmpty()) {
-            if (datatypeFloat == null) {
-                datatypeFloat = new BasicDBObject();
+            if (datatypeInt == null) {
+                datatypeInt = new BasicDBObject();
             }
-            datatypeFloat.put("maxValue", getCellValue(row.getCell(xlsMap.maxValue)));
+            datatypeInt.put("maxValue", getCellValue(row.getCell(xlsMap.maxValue)));
         }
-        datatype = "Float";
-        if (datatypeFloat != null) {
-            vd.put("datatypeFloat", datatypeFloat);
+        datatype = "Integer";
+        if (datatypeInt != null) {
+            vd.put("datatypeInteger", datatypeInt);
         }
     } else if (datatype.toLowerCase().trim().equals("alphanumeric")) {
         datatype = "Text";
@@ -288,7 +283,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     if (!guidelines.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS Guidelines");
-        p.put("value", guidelines);
+        p.put("value", guidelines.replaceAll("-----", "-----<br/>"));
+        p.put("valueFormat", "html");
         properties.add(p);
     }
     
@@ -296,7 +292,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     if (!notes.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS Notes");
-        p.put("value", notes);
+        p.put("value", notes.replaceAll("-----", "-----<br/>"));
+        p.put("valueFormat", "html");
         properties.add(p);
     }
 
@@ -304,7 +301,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     if (!suggestedQuestion.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS Suggested Question");
-        p.put("value", suggestedQuestion);
+        p.put("value", suggestedQuestion.replaceAll("-----", "-----<br/>"));
+        p.put("valueFormat", "html");
         properties.add(p);
     }
     
@@ -312,7 +310,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     if (!keywords.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS Keywords");
-        p.put("value", keywords);
+        p.put("value", keywords.replaceAll("-----", "-----<br/>"));
+        p.put("valueFormat", "html");
         properties.add(p);
     }
 
@@ -320,7 +319,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     if (!references.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS References");
-        p.put("value", references);
+        p.put("value", references.replaceAll("-----", "-----<br/>"));
+        p.put("valueFormat", "html");
         properties.add(p);
     }
     
@@ -330,6 +330,11 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     nindsId.put("id", getCellValue(row.getCell(xlsMap.nindsId)));
     nindsId.put("version", getCellValue(row.getCell(xlsMap.cdeVersion)));
     ids.add(nindsId);
+
+    def variableName = new BasicDBObject();
+    variableName.put("source", "NINDS Variable Name");
+    variableName.put("id", getCellValue(row.getCell(xlsMap.variableName)));
+    ids.add(variableName);
     
     def cadsrId = getCellValue(row.getCell(xlsMap.cadsrId));
     if (!cadsrId.equals("")) {
@@ -354,22 +359,22 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     
     
     
-    addDomain(newDE, "Disease", "General (For all diseases)", getCellValue(row.getCell(xlsMap.generalDomain)));
-    addDomain(newDE, "Disease", "Traumatic Brain Injury", getCellValue(row.getCell(xlsMap.tbiDomain)));
-    addDomain(newDE, "Disease", "Parkinson's Disease", getCellValue(row.getCell(xlsMap.parkinsonDomain)));
-    addDomain(newDE, "Disease", "Friedreich's Ataxia", getCellValue(row.getCell(xlsMap.ataxiaDomain)));
-    addDomain(newDE, "Disease", "Stroke", getCellValue(row.getCell(xlsMap.strokeDomain)));
-    addDomain(newDE, "Disease", "Amyotrophic Lateral Sclerosis", getCellValue(row.getCell(xlsMap.alsDomain)));
-    addDomain(newDE, "Disease", "Huntington's Disease", getCellValue(row.getCell(xlsMap.huntingtonDomain)));
-    addDomain(newDE, "Disease", "Multiple Sclerosis", getCellValue(row.getCell(xlsMap.msDomain)));
-    addDomain(newDE, "Disease", "Neuromuscular Disease", getCellValue(row.getCell(xlsMap.neuromuscDomain)));
-    addDomain(newDE, "Disease", "Myasthenia Gravis", getCellValue(row.getCell(xlsMap.myastheniaDomain)));
-    addDomain(newDE, "Disease", "Spinal Muscular Atrophy",getCellValue(row.getCell(xlsMap.spinalDomain)));
-    addDomain(newDE, "Disease", "Duchenne Muscular Dystrophy/Becker Muscular Dystrophy",getCellValue(row.getCell(xlsMap.duchenneDomain)));
-    addDomain(newDE, "Disease", "Congenital Muscular Dystrophy",getCellValue(row.getCell(xlsMap.congenitalDomain)));
-    addDomain(newDE, "Disease", "Spinal Cord Injury",getCellValue(row.getCell(xlsMap.spinalCordInjuryDomain)));
-    addDomain(newDE, "Disease", "Headache",getCellValue(row.getCell(xlsMap.headacheDomain)));
-    addDomain(newDE, "Disease", "Epilepsy",getCellValue(row.getCell(xlsMap.epilepsyDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.generalDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.tbiDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.parkinsonDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.ataxiaDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.strokeDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.alsDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.huntingtonDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.msDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.neuromuscDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.myastheniaDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.spinalDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.duchenneDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.congenitalDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.spinalCordInjuryDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.headacheDomain)));
+    addDomain(newDE, getCellValue(row.getCell(xlsMap.epilepsyDomain)));
 
     addClassification(newDE, "Disease", "General (For all diseases)",getCellValue(row.getCell(xlsMap.generalClassif)));
     addClassification(newDE, "Disease", "Parkinson's Disease",getCellValue(row.getCell(xlsMap.parkinsonClassif)));
