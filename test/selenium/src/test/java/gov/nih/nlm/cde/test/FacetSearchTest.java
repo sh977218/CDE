@@ -233,11 +233,12 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("resetSearch")).click();
         hangon(2);
         findElement(By.id("li-blank-Qualified")).click();
+        textPresent("| Qualified");
         findElement(By.id("li-blank-Recorded")).click();
-        Assert.assertTrue(textPresent( "Qualified, Recorded" ));
+        textPresent( "Qualified, Recorded" );
         scrollToTop();
         findElement(By.id("resetSearch")).click();
-        Assert.assertTrue(textPresent( "All Status" ));
+        textPresent( "All Status" );
     }
     
         
@@ -249,9 +250,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-search")).click();
         hangon(.5);
         scrollToTop();
-        Assert.assertTrue(textPresent( "blah blah blah" ));
+        textPresent( "blah blah blah" );
         findElement(By.id("resetSearch")).click();
-        Assert.assertTrue(textPresent( "All Terms" ));
+        textPresent( "All Terms" );
     }
     
     @Test

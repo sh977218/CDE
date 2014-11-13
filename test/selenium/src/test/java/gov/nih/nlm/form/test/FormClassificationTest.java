@@ -64,27 +64,27 @@ public class FormClassificationTest extends BaseFormTest {
         findElement(By.id("classifyAllCdes")).click();
         findElement(By.cssSelector("[id='addClassification-Disease'] span.fake-link")).click();        
         findElement(By.cssSelector("[id='addClassification-Headache'] span.fake-link")).click();
-        findElement(By.cssSelector("[id='addClassification-Outcomes and End Points'] span.fake-link")).click();        
-        findElement(By.cssSelector("[id='addClassification-Patient Reported Outcomes'] button")).click();        
+        findElement(By.cssSelector("[id='addClassification-Classification'] span.fake-link")).click();        
+        findElement(By.cssSelector("[id='addClassification-Supplemental'] button")).click();        
         
         // Verify
         goToCdeByName("Patient Name");
         findElement(By.linkText("Classification")).click();
-        textPresent("Outcomes and End Points");
-        textPresent("Patient Reported Outcomes");
+        textPresent("Headache");
+        textPresent("Supplemental");
         goToCdeByName("Person Birth Date");
         findElement(By.linkText("Classification")).click();
-        textPresent("Outcomes and End Points");
-        textPresent("Patient Reported Outcomes");
+        textPresent("Headache");
+        textPresent("Supplemental");
         
         goToCdeByName("Imaging contrast agent name");
         findElement(By.linkText("Classification")).click();
-        textPresent("Outcomes and End Points");
-        textPresent("Patient Reported Outcomes");
+        textPresent("Headache");
+        textPresent("Supplemental");
         findElement(By.linkText("History")).click();
         findElement(By.id("prior-0")).click();
         findElement(By.linkText("Classification")).click();
-        textPresent("Outcomes and End Points");
-        textPresent("Patient Reported Outcomes");
+        textPresent("Headache");
+        textPresent("Supplemental");
     }     
 }

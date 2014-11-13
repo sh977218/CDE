@@ -283,7 +283,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     if (!guidelines.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS Guidelines");
-        p.put("value", guidelines);
+        p.put("value", guidelines.replaceAll("-----", "-----<br/>"));
+        p.put("valueFormat", "html");
         properties.add(p);
     }
     
@@ -291,7 +292,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     if (!notes.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS Notes");
-        p.put("value", notes);
+        p.put("value", notes.replaceAll("-----", "-----<br/>"));
+        p.put("valueFormat", "html");
         properties.add(p);
     }
 
@@ -299,7 +301,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     if (!suggestedQuestion.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS Suggested Question");
-        p.put("value", suggestedQuestion);
+        p.put("value", suggestedQuestion.replaceAll("-----", "-----<br/>"));
+        p.put("valueFormat", "html");
         properties.add(p);
     }
     
@@ -307,7 +310,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     if (!keywords.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS Keywords");
-        p.put("value", keywords);
+        p.put("value", keywords.replaceAll("-----", "-----<br/>"));
+        p.put("valueFormat", "html");
         properties.add(p);
     }
 
@@ -315,7 +319,8 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     if (!references.equals("")) {
         def p = new BasicDBObject();
         p.put("key", "NINDS References");
-        p.put("value", references);
+        p.put("value", references.replaceAll("-----", "-----<br/>"));
+        p.put("valueFormat", "html");
         properties.add(p);
     }
     
