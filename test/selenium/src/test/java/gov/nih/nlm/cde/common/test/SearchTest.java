@@ -12,6 +12,7 @@ public class SearchTest extends NlmCdeBaseTest {
         findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
         findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
         findElement(By.xpath("//i[@id=\"li-blank-Qualified\"]")).click();
+        textPresent("| Qualified");
         findElement(By.name("ftsearch")).sendKeys("name");
         findElement(By.id("search.submit")).click();     
         textPresent("results for CTEP : CATEGORY | name | Qualified");

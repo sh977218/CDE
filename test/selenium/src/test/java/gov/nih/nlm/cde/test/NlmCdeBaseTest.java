@@ -475,33 +475,6 @@ public class NlmCdeBaseTest {
         driver.switchTo().window(tabs2.get(i));
     }
 
-    protected void addClassificationMethod(String[] categories) {
-        findElement(By.linkText("Classification")).click();
-        findElement(By.id("addClassification")).click();
-        modalHere();
-        findElement(By.id("classifySlectOrg-" + categories[0])).click();
-
-        // Ensures that tree of classifications have finished loading.
-        Assert.assertTrue(textPresent(categories[1]));
-
-        for (int i = 1; i < categories.length - 1; i++) {
-            findElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link")).click();
-        }
-        findElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button")).click();
-        closeAlert();
-        findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
-        hangon(1.5);
-        findElement(By.linkText("Classification")).click();
-        String selector = "";
-        for (int i = 1; i < categories.length; i++) {
-            selector += categories[i];
-            if (i < categories.length - 1) {
-                selector += ",";
-            }
-        }
-        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-" + selector + "'] .name")).getText().equals(categories[categories.length - 1]));
-    }
-
     protected void fillInput(String type, String value) {
         findElement(By.xpath("//label[text()=\"" + type + "\"]/following-sibling::input")).sendKeys(value);
     }
