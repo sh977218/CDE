@@ -15,6 +15,7 @@ public class QuestionTest extends BaseFormTest {
     
     public void addQuestionToSection(String cdeName, int sectionNumber) {
         findElement(By.id("resetSearch")).click();
+        hangon(1);
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results");

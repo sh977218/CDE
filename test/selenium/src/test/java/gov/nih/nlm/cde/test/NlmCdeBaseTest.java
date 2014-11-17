@@ -306,7 +306,7 @@ public class NlmCdeBaseTest {
             hangon(1);
             findElement(By.id("confirmNewVersion")).click();
         }
-        hangon(2);
+        hangon(3);
     }
 
     public void hangon(double i) {
@@ -380,13 +380,13 @@ public class NlmCdeBaseTest {
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
-        try {
-            findElement(By.xpath("//button[text() = 'Log In']")).click();
-            findElement(By.linkText(username));
-        } catch (NoSuchElementException e) {
-            findElement(By.xpath("//button[text() = 'Log In']")).click();
-            findElement(By.linkText(username));
+        findElement(By.id("login_button")).click();
+        hangon(1);
+        if (driver.findElements(By.id("login_button")).size() > 0) {
+            System.out.println("Re-clicking Log In");
+            findElement(By.id("login_button")).click();
         }
+        findElement(By.linkText(username));
     }
 
     private boolean isWindows() {
@@ -395,10 +395,11 @@ public class NlmCdeBaseTest {
     }
 
     public void addToQuickBoard(String cdeName) {
-        scrollToTop();
+//        scrollToTop();
+        findElement(By.name("ftsearch")).clear();        
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent(cdeName, "#accordionList"));
+        textPresent(cdeName, "#acc_link_0");
         findElement(By.id("addToCompare_0")).click();
         hangon(.5);
         findElement(By.name("ftsearch")).clear();

@@ -50,7 +50,7 @@ public class CdeRegStatusTest extends RegStatusTest {
 
     @Test
     public void nlmPromotesToStandard() {
-        nlmPromotesToStandard("Patient Name");
+        nlmPromotesToStandard("Axillary Surgery Dissection Date");
     }
     
     @Test

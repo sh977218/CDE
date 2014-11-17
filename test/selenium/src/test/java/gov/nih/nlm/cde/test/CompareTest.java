@@ -54,7 +54,7 @@ public class CompareTest extends NlmCdeBaseTest{
         findElement(By.id("remove_2")).click();
         
         findElement(By.id("qb.compare")).click();
-        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-valid")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-6-valid")));
         textPresent("an observational assessment that is used to measure");        
