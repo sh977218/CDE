@@ -38,24 +38,28 @@ public class FormClassificationTest extends BaseFormTest {
         new SectionTest().addSection("Patient Information", null);
         new SectionTest().addSection("Diagnostic Methods", null);
         findElement(By.id("startAddingQuestions")).click();
-        new QuestionTest().addQuestionToSection("Patient Name", 0);
-        new QuestionTest().addQuestionToSection("Person Birth Date", 0);
-        new QuestionTest().addQuestionToSection("Imaging contrast agent name", 1); 
-        hangon(5);
+        String cde1 = "Informed consent type",
+                cde2 = "Person Birth Date",
+                cde3 = "Imaging contrast agent name";
+        
+        
+        new QuestionTest().addQuestionToSection(cde1, 0);
+        new QuestionTest().addQuestionToSection(cde2, 0);
+        new QuestionTest().addQuestionToSection(cde3, 1); 
+        hangon(2);
         findElement(By.id("startAddingQuestions")).click();
-        hangon(20);
-        textPresent("Imaging contrast agent name");       
+        textPresent(cde3);       
         saveForm();
         
         //Modify one of them                        
-        goToCdeByName("Imaging contrast agent name");
+        goToCdeByName(cde3);
         findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
         findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
         findElement(By.cssSelector("button.btn.btn-primary")).click();
         findElement(By.name("version")).sendKeys(".001");
         saveCde();
-        goToCdeByName("Imaging contrast agent name");
+        goToCdeByName(cde3);
         textPresent("[def change number 1]");        
         
         //Classify All
@@ -68,16 +72,16 @@ public class FormClassificationTest extends BaseFormTest {
         findElement(By.cssSelector("[id='addClassification-Supplemental'] button")).click();        
         
         // Verify
-        goToCdeByName("Patient Name");
+        goToCdeByName(cde1);
         findElement(By.linkText("Classification")).click();
         textPresent("Headache");
         textPresent("Supplemental");
-        goToCdeByName("Person Birth Date");
+        goToCdeByName(cde2);
         findElement(By.linkText("Classification")).click();
         textPresent("Headache");
         textPresent("Supplemental");
         
-        goToCdeByName("Imaging contrast agent name");
+        goToCdeByName(cde3);
         findElement(By.linkText("Classification")).click();
         textPresent("Headache");
         textPresent("Supplemental");

@@ -4,7 +4,7 @@
 NODE_LOC='.'
 
 mongo test deploy/dbInit.js
-sleep 2;
+sleep 5;
 mongo test test/data/testForms.js
 mongo cde-logs-test deploy/logInit.js
 
