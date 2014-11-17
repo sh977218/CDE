@@ -143,9 +143,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("createConcept")).click();
         hangon(2);
 
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        saveCde();
+        newCdeVersion();
 
         goToCdeByName(cdeName);
         findElement(By.linkText("Concepts")).click();
@@ -157,10 +155,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("ocConceptRemove-1")).click();
         findElement(By.id("propConceptRemove-3")).click();
         
-        findElement(By.id("openSave")).click();
-        modalHere();
-        findElement(By.name("version")).sendKeys(".2");
-        saveCde();
+        newCdeVersion();
         
         goToCdeByName(cdeName);
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("DEC1"));
@@ -177,10 +172,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#dd_def .fa-edit")).click();
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change: adding html characters][<b>bold</b>]");
         findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("-plaintext"); 
-        saveCde();
+        newCdeVersion();
 
         goToCdeByName(cdeName);   
         Assert.assertTrue(textPresent("<b>bold</b>"));
@@ -188,10 +180,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.xpath("//dd[@id='dd_def']//button[text() = 'Rich Text']")).click();
         hangon(2);
         findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("-html"); 
-        saveCde();
+        newCdeVersion();
         goToCdeByName(cdeName);   
         Assert.assertTrue(textNotPresent("<b>bold</b>"));        
     }    

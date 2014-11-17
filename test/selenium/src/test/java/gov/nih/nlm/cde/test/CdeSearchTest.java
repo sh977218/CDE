@@ -136,7 +136,8 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     public Object[][] getMoreLikeThisData() {
         return new Object[][] {
             { "Patient Gender Category", new String[] {"Person Gender Text Type", "Patient Gender Code"} },
-            { "Ethnic Group Category Text", new String[] {"Participant Ethnic Group Category", "Patient Ethnic Group Category"} },
+            { "Laboratory Procedure Oncotype DX Breast Cancer Assay Result Indicator", 
+                new String[] {"Laboratory Procedure Hematocrit Outcome Status Indicator", "Laboratory Procedure Basophil Outcome Status Indicator"} },
         };
     }
     
@@ -253,6 +254,22 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Person Birth Date");
         textPresent("Note: You may not edit this CDE because it is standard.");
+    }
+    
+    @Test
+    public void saveSearchState() {
+        goToCdeSearch();
+        findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
+        findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
+        findElement(By.xpath("//i[@id=\"li-blank-Qualified\"]")).click();
+        textPresent("| Qualified");
+        findElement(By.name("ftsearch")).sendKeys("name");
+        findElement(By.id("search.submit")).click();     
+        textPresent("results for CTEP : CATEGORY | name | Qualified");
+        findElement(By.linkText("Forms")).click();     
+        textNotPresent("CATEGORY");
+        findElement(By.linkText("CDEs")).click();     
+        textPresent("results for CTEP : CATEGORY | name | Qualified");
     }
     
 }
