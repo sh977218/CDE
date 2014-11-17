@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.boards;
 
 import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
 public class BoardTest extends NlmCdeBaseTest {
