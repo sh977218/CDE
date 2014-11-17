@@ -98,7 +98,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         showSearchFilters();
         hangon(1);
         Assert.assertTrue(textPresent("Classifications"));
-        Assert.assertTrue(textPresent("NINDS (3"));
+        Assert.assertTrue(textPresent("NINDS (10"));
         Assert.assertTrue(textPresent("Imaging Diagnostics"));
     }
     

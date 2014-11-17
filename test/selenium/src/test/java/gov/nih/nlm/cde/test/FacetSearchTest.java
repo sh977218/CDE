@@ -31,7 +31,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void statusFacets() {
         goToCdeSearch();
-        Assert.assertTrue(textPresent("Qualified (4"));
+        Assert.assertTrue(textPresent("Qualified (94"));
         findElement(By.id("li-blank-caBIG")).click();
         findElement(By.cssSelector("i.fa-check-square-o"));
         Assert.assertTrue(textPresent("Qualified (1"));
@@ -47,11 +47,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         hangon(1);
         clickIfDisplayed("li-blank-Classification");
         findElement(By.id("li-blank-Basic")).click();
-        Assert.assertTrue(textPresent("9 results for"));
-        Assert.assertTrue(textPresent("Traffic accident other party role type"));
+        Assert.assertTrue(textPresent("88 results for"));
         findElement(By.id("li-checked-Acute Hospitalized")).click();
-        Assert.assertTrue(textPresent("24 results for"));
-        Assert.assertTrue(textPresent("Epidemiology (2"));
+        Assert.assertTrue(textPresent("1174 results for"));
+        Assert.assertTrue(textPresent("Epidemiology (11"));
         findElement(By.id("li-checked-Disease")).click();
     }
     
@@ -93,7 +92,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         scrollToTop();
         
         findElement(By.id("resetSearch")).click();
-        Assert.assertTrue(textPresent("Qualified (4"));
+        Assert.assertTrue(textPresent("Qualified (94"));
         findElement(By.name("ftsearch")).sendKeys("Immunology");
         findElement(By.cssSelector("i.fa-search")).click();
         Assert.assertTrue(textPresent("Immunology Gonorrhea Assay Laboratory Finding Result"));
@@ -137,9 +136,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(linkList.size(), 2);
         
         findElement(By.id("li-checked-caBIG")).click();
-        Assert.assertTrue(textPresent("9 results for"));
-        linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 9);
+        Assert.assertTrue(textPresent("92 results for"));
+
+    
     }
     
     @Test

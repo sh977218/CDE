@@ -50,9 +50,9 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     public void removeClassificationMgt() {
         mustBeLoggedInAs(ninds_username, password);
         searchNestedClassifiedCdes();
-        Assert.assertTrue(textPresent("NINDS (7)"));
+        Assert.assertTrue(textPresent("NINDS (8"));
         searchNestedClassifiedForms();
-        Assert.assertTrue(textPresent("NINDS (1)"));
+        Assert.assertTrue(textPresent("NINDS (40)"));
         gotoClassifMgt();
         
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] .name")).getText().equals("Epilepsy"));
@@ -62,10 +62,10 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         deleteNestedClassifTree();  
         searchNestedClassifiedCdes();
         hangon(3);
-        Assert.assertTrue(textNotPresent("NINDS (7)"));
+        Assert.assertTrue(textNotPresent("NINDS (8)"));
         searchNestedClassifiedForms();
         hangon(1);
-        Assert.assertTrue(textNotPresent("NINDS (1)"));
+        Assert.assertTrue(textNotPresent("NINDS (40)"));
     }
     
     @Test
@@ -152,7 +152,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         textPresent("NINDS");
         textPresent("Population");
         textPresent("Adult");
-        goToCdeByName("Gastrointestinal therapy feed tube type");
+        goToCdeByName("Gastrointestinal therapy feed tube other text");
         findElement(By.linkText("Classification")).click();
         textPresent("NINDS");
         textPresent("Population");

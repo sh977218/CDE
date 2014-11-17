@@ -4,18 +4,22 @@
 NODE_LOC='.'
 
 mongo test deploy/dbInit.js
+sleep 2;
 mongo test test/data/testForms.js
 mongo cde-logs-test deploy/logInit.js
 
+mongorestore -d test -c dataelements test/data/nindsDump/test/dataelements.bson
+mongorestore -d test -c forms test/data/nindsDump/test/forms.bson
+
 groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml localhost test test 
-groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx localhost test --testMode
 groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx localhost test 
+
 
 sleep 10;
 
 mongo test test/createLargeBoard.js
 
-export target='{"count":592,"_shards":{"total":1,"successful":1,"failed":0}}'
+export target='{"count":9575,"_shards":{"total":1,"successful":1,"failed":0}}'
 export curl_res=$(curl http://localhost:9200/cdetest/_count)
 
 if [ "$curl_res" == "$target" ] 
