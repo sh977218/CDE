@@ -15,7 +15,7 @@ while [ $COUNTER -lt 60 ]; do
         COUNTER=60
     else 
         sleep 1
-        COUNTER=COUNTER+1
+        let COUNTER=COUNTER+1
     fi
 done
 
@@ -50,7 +50,7 @@ while [ $COUNTER -lt 60 ]; do
         COUNTER=60
     else 
         sleep 1
-        COUNTER=COUNTER+1
+        let COUNTER=COUNTER+1
     fi
 done
 

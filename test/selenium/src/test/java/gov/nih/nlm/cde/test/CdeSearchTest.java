@@ -211,7 +211,8 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         String cdeName = "Anal Endoscopy Diagnostic Procedure Performed Other Specify Text";
         openCdeInList(cdeName);
         findElement(By.linkText("SDC View")).click();
-        hangon(1);
+        textPresent(cdeName);
+        textPresent("jgWfZUGNe5N");
         Assert.assertTrue(findElement(By.id("dd_scopedId")).getText().trim().startsWith("cde.nlm.nih.gov/"));
         Assert.assertEquals("1", findElement(By.id("dd_version")).getText());
         Assert.assertEquals("Anal Endoscopy Diagnostic Procedure Performed Other Specify Text", findElement(By.id("dd_name")).getText());

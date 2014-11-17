@@ -294,18 +294,14 @@ public class NlmCdeBaseTest {
         findElement(By.id("openSave")).click();
         modalHere();
         findElement(By.name("version")).sendKeys(".1");
+        textNotPresent("This version number has already been used");
         findElement(By.id("confirmNewVersion")).click();
         closeAlert();
         hangon(2);
     }
 
     protected void saveCde() {
-        try {
-            findElement(By.id("confirmNewVersion")).click();
-        } catch(WebDriverException wde) {
-            hangon(1);
-            findElement(By.id("confirmNewVersion")).click();
-        }
+        findElement(By.id("confirmNewVersion")).click();
         hangon(3);
     }
 
