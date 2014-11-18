@@ -32,7 +32,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertEquals(findElement(By.id("dt_updated")).getLocation().y, findElement(By.id("dd_updated")).getLocation().y);
 
         findElement(By.linkText("Identifiers")).click();
-        Assert.assertEquals("1.001", findElement(By.id("dd_version_nlm")).getText());                
+        Assert.assertEquals("1.1", findElement(By.id("dd_version_nlm")).getText());                
         
         // Test history
         findElement(By.linkText("History")).click();

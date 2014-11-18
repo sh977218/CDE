@@ -30,7 +30,7 @@ var deJsonSchema = {
         userId: mongoose.Schema.Types.ObjectId
         , username: String
     }
-    , tinyId: String
+    , tinyId: {type: String, index: true}
     , version: String
     , dataElementConcept: {
         concepts: [conceptSchema]
