@@ -56,10 +56,7 @@ public class FormClassificationTest extends BaseFormTest {
         findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
         findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
-        findElement(By.cssSelector("button.btn.btn-primary")).click();
-        findElement(By.name("version")).sendKeys(".001");
-        saveCde();
-        goToCdeByName(cde3);
+        newCdeVersion();
         textPresent("[def change number 1]");        
         
         //Classify All

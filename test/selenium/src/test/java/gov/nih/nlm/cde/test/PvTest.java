@@ -55,9 +55,7 @@ public class PvTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-edit")).click();
         findElement(By.xpath("//td[@id='pvCodeSystem-0']//input")).sendKeys("SNOMEDCT");
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-check")).click();
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        saveCde();
+        newCdeVersion();
         
         mustBeLoggedInAs(ninds_username, password); 
         goToCdeByName("Post traumatic amnesia duration range");
@@ -106,11 +104,7 @@ public class PvTest extends NlmCdeBaseTest {
         Assert.assertEquals(findElement(By.id("pvCode-6")).getText(), "C25594,C48046,C13717");
         findElement(By.id("pvUp-2")).click();
         findElement(By.id("pvDown-6")).click();
-        findElement(By.id("openSave")).click();
-        findElement(By.name("changeNote")).sendKeys("Reordered PV");
-        findElement(By.name("version")).sendKeys(".addRemovePv");
-        saveCde();
-        goToCdeByName("Involved Organ Laterality Type");
+        newCdeVersion("Reordered PV");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertEquals(findElement(By.id("pvCode-1")).getText(), "C25229");
         Assert.assertEquals(findElement(By.id("pvCode-7")).getText(), "C25594,C48046,C13717");

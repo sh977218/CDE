@@ -20,11 +20,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("datatypeFreeText")).clear();
         findElement(By.name("datatypeFreeText")).sendKeys("java.lang.Date");
         findElement(By.id("confirmDatatype")).click();
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        modalHere();
-        saveCde();
-        goToCdeByName(cdeName);
+        newCdeVersion();
         findElement(By.linkText("Permissible Values")).click();        
         Assert.assertTrue(textPresent("java.lang.Date"));
     }  

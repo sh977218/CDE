@@ -299,6 +299,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("openSave")).click();
         modalHere();
         if (changeNote != null) {
+            findElement(By.name("changeNote")).clear();
             findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
         }
         findElement(By.name("version")).sendKeys(".1");
