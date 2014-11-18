@@ -382,7 +382,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).sendKeys(password);
         findElement(By.id("login_button")).click();
         hangon(1);
-        // Assumption is that this funny stuff comes from a CSRF error. So reload the whole page if it fails. 
+        // Assumption is that this comes from a CSRF error. So reload the whole page if it fails. 
         if (driver.findElements(By.id("login_button")).size() > 0) {
             driver.get(baseUrl);
             findElement(By.linkText("Log In")).click();
