@@ -20,11 +20,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("datatypeFreeText")).clear();
         findElement(By.name("datatypeFreeText")).sendKeys("java.lang.Date");
         findElement(By.id("confirmDatatype")).click();
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        modalHere();
-        saveCde();
-        goToCdeByName(cdeName);
+        newCdeVersion();
         findElement(By.linkText("Permissible Values")).click();        
         Assert.assertTrue(textPresent("java.lang.Date"));
     }  
@@ -48,12 +44,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertFalse(findElement(By.id("multipleValues_input")).isSelected());
         findElement(By.id("multipleValues_input")).click();
         
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        modalHere();
-        saveCde();
+        newCdeVersion();
 
-        goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         wait.until(ExpectedConditions.elementSelectionStateToBe(findElement(By.id("multipleValues_input")), true));
     }
@@ -73,10 +65,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.id("listDatatype_input")).sendKeys("Some DT");
         findElement(By.id("confirmListType")).click();
         
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        modalHere();
-        saveCde();
+        newCdeVersion();
 
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
@@ -88,10 +77,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//input")).sendKeys("Other Answer");
         findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//button[text()=' Confirm']")).click();
 
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        modalHere();
-        saveCde();
+        newCdeVersion();
         
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();

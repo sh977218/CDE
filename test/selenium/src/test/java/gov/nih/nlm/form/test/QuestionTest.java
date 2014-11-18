@@ -15,6 +15,7 @@ public class QuestionTest extends BaseFormTest {
     
     public void addQuestionToSection(String cdeName, int sectionNumber) {
         findElement(By.id("resetSearch")).click();
+        hangon(1);
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results");
@@ -49,7 +50,7 @@ public class QuestionTest extends BaseFormTest {
 
         // Check status facet.
         findElement(By.id("resetSearch")).click();
-        Assert.assertTrue(textPresent("Qualified (4"));
+        Assert.assertTrue(textPresent("Qualified (94"));
         findElement(By.id("li-blank-caBIG")).click();
         findElement(By.cssSelector("i.fa-check-square-o"));
         Assert.assertTrue(textPresent("Qualified (1"));

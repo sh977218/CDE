@@ -223,12 +223,9 @@ public class BoardManagementTest extends BoardTest {
     @Test
     public void pagination() {
         mustBeLoggedInAs(ninds_username, password);
-        gotoMyBoards();
-        findElement(By.linkText("View Board")).click();
+        goToBoard("Large Board");
         findElement(By.linkText("30")).click();
-        Assert.assertTrue(textPresent("Word discrimination result"));
-        Assert.assertTrue(textPresent("Volumetric Measurement Left Limb Testing Result"));
-        Assert.assertTrue(textPresent("Walking difficulty age need intermittent support not applicable indicator"));
-        Assert.assertTrue(textPresent("Water reference data acquisition data acquisition time"));
+        Assert.assertTrue(textPresent("Respiratory oxygen administration method name"));
+        Assert.assertTrue(textPresent("Polysomnography study date"));
     }        
 }

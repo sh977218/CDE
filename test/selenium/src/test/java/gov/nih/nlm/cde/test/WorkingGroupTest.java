@@ -54,7 +54,7 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
         textPresent(classification);
         textPresent(subClassification);
         findElement(By.id("submit")).click();
-        hangon(1);
+        hangon(3);
         
         // Make sure ctepCurator user can see it
         goToCdeSearch();
