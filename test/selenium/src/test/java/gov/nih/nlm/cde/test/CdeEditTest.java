@@ -23,11 +23,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.xpath("//dd[@id = 'dd_uom']//i[@class = 'fa fa-edit']")).click();
         findElement(By.xpath("//dd[@id = 'dd_uom']//input")).sendKeys("myUom");
         findElement(By.cssSelector("#dd_uom .fa-check")).click();
-        findElement(By.cssSelector("button.btn.btn-primary")).click();
-        findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
-        Assert.assertTrue(textPresent("This version number has already been used"));
-        findElement(By.name("version")).sendKeys(".001");
-        saveCde();
+        newCdeVersion("Change note for change number 1");
         goToCdeByName(cdeName);
         Assert.assertTrue(textPresent("[name change number 1]"));
         Assert.assertTrue(textPresent("[def change number 1]"));
@@ -75,12 +71,8 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='newConceptModalFooter']//button[text()=\"Save\"]")).click();       
         modalGone();
         
+        newCdeVersion();
         
-        findElement(By.id("openSave")).click();
-        findElement(By.xpath("//label[text()=\"Choose a new version\"]/following-sibling::input")).sendKeys(".1");                
-        saveCde();
-        
-        hangon(1);
         findElement(By.linkText("History")).click();
         findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
         Assert.assertTrue(textPresent("Naming:"));

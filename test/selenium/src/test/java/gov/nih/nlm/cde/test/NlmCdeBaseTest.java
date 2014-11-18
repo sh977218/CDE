@@ -290,18 +290,21 @@ public class NlmCdeBaseTest {
         }
     }
 
+    
     protected void newCdeVersion() {
+        newCdeVersion(null);
+    }
+    
+    protected void newCdeVersion(String changeNote) {
         findElement(By.id("openSave")).click();
         modalHere();
+        if (changeNote != null) {
+            findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
+        }
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("This version number has already been used");
         findElement(By.id("confirmNewVersion")).click();
         closeAlert();
-        hangon(2);
-    }
-
-    protected void saveCde() {
-        findElement(By.id("confirmNewVersion")).click();
         hangon(3);
     }
 
@@ -378,8 +381,15 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).sendKeys(password);
         findElement(By.id("login_button")).click();
         hangon(1);
+        // Assumption is that this funny stuff comes from a CSRF error. So reload the whole page if it fails. 
         if (driver.findElements(By.id("login_button")).size() > 0) {
+            driver.get(baseUrl);
+            findElement(By.linkText("Log In")).click();
             System.out.println("Re-clicking Log In");
+            findElement(By.id("uname")).clear();
+            findElement(By.id("uname")).sendKeys(username);
+            findElement(By.id("passwd")).clear();
+            findElement(By.id("passwd")).sendKeys(password);
             findElement(By.id("login_button")).click();
         }
         findElement(By.linkText(username));

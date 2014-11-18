@@ -48,10 +48,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertFalse(findElement(By.id("multipleValues_input")).isSelected());
         findElement(By.id("multipleValues_input")).click();
         
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        modalHere();
-        saveCde();
+        newCdeVersion();
 
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
@@ -73,10 +70,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.id("listDatatype_input")).sendKeys("Some DT");
         findElement(By.id("confirmListType")).click();
         
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        modalHere();
-        saveCde();
+        newCdeVersion();
 
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
@@ -88,10 +82,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//input")).sendKeys("Other Answer");
         findElement(By.xpath("//div[@id='otherPleaseSpecifyText_input']//button[text()=' Confirm']")).click();
 
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        modalHere();
-        saveCde();
+        newCdeVersion();
         
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();

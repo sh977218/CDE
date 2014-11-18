@@ -89,11 +89,7 @@ public class PvTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Confirm"));
         findElement(By.xpath("//td[@id='pvCodeSystem-10']//input")).sendKeys("N");
         Assert.assertTrue(textPresent("NCI Thesaurus"));
-        findElement(By.cssSelector("button.btn.btn-primary")).click();
-        findElement(By.name("changeNote")).sendKeys("Changed PV");
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys(".addRemovePv");
-        findElement(By.id("confirmNewVersion")).click();
+        newCdeVersion();
         textPresent("Qualified");
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();

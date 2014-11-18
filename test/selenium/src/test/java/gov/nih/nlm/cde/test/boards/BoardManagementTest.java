@@ -223,8 +223,7 @@ public class BoardManagementTest extends BoardTest {
     @Test
     public void pagination() {
         mustBeLoggedInAs(ninds_username, password);
-        gotoMyBoards();
-        findElement(By.linkText("View Board")).click();
+        goToBoard("Large Board");
         findElement(By.linkText("30")).click();
         Assert.assertTrue(textPresent("Respiratory oxygen administration method name"));
         Assert.assertTrue(textPresent("Polysomnography study date"));
