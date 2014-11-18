@@ -303,7 +303,8 @@ public class NlmCdeBaseTest {
             findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
         }
         findElement(By.name("version")).sendKeys(".1");
-        textNotPresent("This version number has already been used");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("confirmNewVersion")));
+//        textNotPresent("This version number has already been used");
         findElement(By.id("confirmNewVersion")).click();
         closeAlert();
         hangon(3);
