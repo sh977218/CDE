@@ -384,17 +384,21 @@ public class NlmCdeBaseTest {
         findElement(By.id("login_button")).click();
         hangon(1);
         // Assumption is that this comes from a CSRF error. So reload the whole page if it fails. 
-        if (driver.findElements(By.id("login_button")).size() > 0) {
-            driver.get(baseUrl);
-            findElement(By.linkText("Log In")).click();
-            System.out.println("Re-clicking Log In");
-            findElement(By.id("uname")).clear();
-            findElement(By.id("uname")).sendKeys(username);
-            findElement(By.id("passwd")).clear();
-            findElement(By.id("passwd")).sendKeys(password);
-            findElement(By.id("login_button")).click();
+        try {
+            findElement(By.linkText(username));
+        } catch (Exception e) {
+            if (driver.findElements(By.id("login_button")).size() > 0) {
+                driver.get(baseUrl);
+                findElement(By.linkText("Log In")).click();
+                System.out.println("Re-clicking Log In");
+                findElement(By.id("uname")).clear();
+                findElement(By.id("uname")).sendKeys(username);
+                findElement(By.id("passwd")).clear();
+                findElement(By.id("passwd")).sendKeys(password);
+                findElement(By.id("login_button")).click();
+                findElement(By.linkText(username));
+            }
         }
-        findElement(By.linkText(username));
     }
 
     private boolean isWindows() {
