@@ -9,7 +9,7 @@ modules/system/views/version.ejs
 
 ## Secret Config Files
 config.js
-config.test.js
+config/test.js
 views/version.ejs
 
 ## Local Files
