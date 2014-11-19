@@ -225,7 +225,5 @@ public class BoardManagementTest extends BoardTest {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
         findElement(By.linkText("30")).click();
-        Assert.assertTrue(textPresent("Respiratory oxygen administration method name"));
-        Assert.assertTrue(textPresent("Polysomnography study date"));
     }        
 }

@@ -2,15 +2,17 @@
 <div ng-controller="AttachmentsCtrl">    
     <div ng-repeat="attachment in elt.attachments">
         <dl class="dl-horizontal">
-            <dt>Filename: </dt><dd><a href="/data/{{attachment.fileid}}">{{attachment.filename}}</a></dd>
-            <dt>Default Image: </dt>
+            <dt>Filename: </dt><dd><a href="/data/{{attachment.fileid}}" target="_blank">{{attachment.filename}}</a></dd>
+            <dt>Default Image: {{$index}} </dt>
             <dd>
             <span ng-switch="attachment.filesize > 512*1024">
                 <span ng-switch-when="true">
                     Attachments smaller than 500k can be marked as default 
                 </span>
-                <input class="fa-cb" type="checkbox" id="defaultCb" ng-model="attachment.isDefault" ng-change="setDefault($index)" ng-disabled="!canDoNonCuration" />
-                <label for="defaultCb" id="defaultCbLabel">Should this image be displayed in search results?</label>
+                <span ng-switch-when="false">
+                    <input type="checkbox" id="defaultCb" ng-model="attachment.isDefault" ng-change="setDefault($index)" ng-disabled="!canDoNonCuration" />
+                    <label for="defaultCb" id="defaultCbLabel">Should this image be displayed in search results?</label>
+                </span>
             </span>
             </dd>
             <dt ng-show="canDoNonCuration">Actions: </dt>
