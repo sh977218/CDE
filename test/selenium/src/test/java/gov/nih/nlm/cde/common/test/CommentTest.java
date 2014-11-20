@@ -16,8 +16,9 @@ public abstract class CommentTest extends CommonTest {
         Assert.assertTrue(textPresent("My First Comment!"));
         findElement(By.name("commentTextArea")).sendKeys("another comment");
         findElement(By.name("postComment")).click();
-        Assert.assertTrue(textPresent("Comment added"));
-        scrollTo( "2000" );
+        textPresent("Comment added");
+        // this effectively waits for the angular repeat to get reload and avoids stale elt reference.
+        findElement(By.id("removeComment-1"));
         findElement(By.id("removeComment-0")).click();
         Assert.assertTrue(textPresent("Comment removed"));
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("My First Comment!"));

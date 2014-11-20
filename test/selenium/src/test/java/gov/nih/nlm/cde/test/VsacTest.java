@@ -34,13 +34,8 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.id("pvRemove-0")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));        
         
-        findElement(By.cssSelector("button.btn.btn-primary")).click();
-        findElement(By.name("changeNote")).sendKeys("Importing All VSAC Values");
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("5");        
-        saveCde();
-        
-        goToCdeByName("Patient Race Category");
+        newCdeVersion("Importing All VSAC Values");
+
         findElement(By.linkText("Permissible Values")).click(); 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));   
@@ -65,14 +60,7 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.id("vsacIdCheck")).click();
         // check that version got fetched.
         Assert.assertTrue(textPresent("20121025"));
-        findElement(By.cssSelector("button.btn.btn-primary")).click();
-        findElement(By.name("changeNote")).sendKeys("Adding vsac Id");
-        Assert.assertTrue(textPresent("This version number has already been used"));
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("3");
-        saveCde();
-        
-        goToCdeByName("Patient Ethnic Group Category");
+        newCdeVersion("Adding vsac Id");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("20121025"));
         Assert.assertTrue(textPresent("2135-2"));
@@ -94,23 +82,16 @@ public class VsacTest extends NlmCdeBaseTest {
         
         Assert.assertTrue(textPresent("20121025"));
                 
-        findElement(By.cssSelector("button.btn.btn-primary")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        saveCde();
-
-        goToCdeByName("Left Colon Excision Ind-2");
+        newCdeVersion();
+        
         findElement(By.linkText("Permissible Values")).click();   
         findElement(By.id("removeVSButton")).click();
 
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
         Assert.assertEquals(driver.findElement(By.cssSelector("BODY")).getText().indexOf("2.16.840.1.114222.4.11.837"), -1);
 
-        findElement(By.cssSelector("button.btn.btn-primary")).click();
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("2");
-        saveCde();
+        newCdeVersion();
         
-        goToCdeByName("Left Colon Excision Ind-2");
         findElement(By.linkText("Permissible Values")).click();   
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
     }
@@ -135,12 +116,7 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.xpath("//td[@id='pvCodeSystem-4']//input")).sendKeys(".1");
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-check")).click();        
         
-        findElement(By.cssSelector("button.btn.btn-primary")).click();
-        findElement(By.name("changeNote")).clear();
-        findElement(By.name("changeNote")).sendKeys("Modified VS Codes");
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("6");        
-        saveCde();
+        newCdeVersion("Modified VS Codes");
         
         goToCdeByName("Patient Race Category");  
         findElement(By.linkText("Permissible Values")).click();

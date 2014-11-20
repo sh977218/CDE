@@ -4,6 +4,7 @@ node_modules
 test/selenium/.gradle
 test/selenium/*.png
 test-console.out
+bower_components
 
 ## Secret Config Files
 config.js
@@ -18,6 +19,7 @@ my-*
 ## Logs
 expressLog*
 expressErrorLog*
+logs
 
 ## Tests
 /test/selenium/build/

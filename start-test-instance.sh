@@ -4,19 +4,55 @@
 NODE_LOC='.'
 
 mongo test deploy/dbInit.js
+
+target='{"count":0,"_shards":{"total":1,"successful":1,"failed":0}}'
+#wait for empty
+COUNTER=0
+while [ $COUNTER -lt 60 ]; do
+    curl_res=$(curl http://localhost:9200/cdetest/_count)
+    if [ "$curl_res" == "$target" ] 
+    then
+        COUNTER=60
+    else 
+        sleep 1
+        let COUNTER=COUNTER+1
+    fi
+done
+
+if [ "$curl_res" == "$target" ] 
+then
+    echo "All documents Removed"
+else
+    echo "Not all documents removed. Aborting"
+    echo $curl_res
+    exit
+fi
+
+
 mongo test test/data/testForms.js
 mongo cde-logs-test deploy/logInit.js
 
-groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml localhost test test 
-groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx localhost test --testMode
-groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx localhost test 
+mongorestore -d test -c dataelements test/data/nindsDump/test/dataelements.bson
+mongorestore -d test -c forms test/data/nindsDump/test/forms.bson
 
-sleep 10;
+groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml localhost test test 
+groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx localhost test 
 
 mongo test test/createLargeBoard.js
 
-export target='{"count":592,"_shards":{"total":1,"successful":1,"failed":0}}'
-export curl_res=$(curl http://localhost:9200/cdetest/_count)
+target='{"count":9575,"_shards":{"total":1,"successful":1,"failed":0}}'
+#wait for full
+COUNTER=0
+while [ $COUNTER -lt 60 ]; do
+    curl_res=$(curl http://localhost:9200/cdetest/_count)
+    if [ "$curl_res" == "$target" ] 
+    then
+        COUNTER=60
+    else 
+        sleep 1
+        let COUNTER=COUNTER+1
+    fi
+done
 
 if [ "$curl_res" == "$target" ] 
 then
@@ -27,4 +63,5 @@ then
 else
     echo "Not all documents indexed. Aborting"
     echo $curl_res
+    exit
 fi

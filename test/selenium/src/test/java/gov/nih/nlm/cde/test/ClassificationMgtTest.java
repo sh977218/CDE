@@ -56,9 +56,9 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     public void removeClassificationMgt() {
         mustBeLoggedInAs(ninds_username, password);
         searchNestedClassifiedCdes();
-        Assert.assertTrue(textPresent("NINDS (7)"));
+        Assert.assertTrue(textPresent("NINDS (8"));
         searchNestedClassifiedForms();
-        Assert.assertTrue(textPresent("NINDS (1)"));
+        Assert.assertTrue(textPresent("NINDS (40)"));
         gotoClassifMgt();
         
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] .name")).getText().equals("Epilepsy"));
@@ -68,10 +68,10 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         deleteNestedClassifTree();  
         searchNestedClassifiedCdes();
         hangon(3);
-        Assert.assertTrue(textNotPresent("NINDS (7)"));
+        Assert.assertTrue(textNotPresent("NINDS (8)"));
         searchNestedClassifiedForms();
         hangon(1);
-        Assert.assertTrue(textNotPresent("NINDS (1)"));
+        Assert.assertTrue(textNotPresent("NINDS (40)"));
     }
     
     @Test
@@ -136,46 +136,5 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/a/span")).click();      
         hangon(1);
         Assert.assertTrue(textPresent("Spinal Cord Injuries"));
-    }
-    
-    @Test
-    public void reclassify() {
-        mustBeLoggedInAs(ninds_username, password);
-        gotoClassifMgt(); 
-        createClassificationName(new String[]{"Classification Transfer"});
-        closeAlert();
-        createClassificationName(new String[]{"Classification Transfer","Child Classification"});
-        closeAlert();
-        findElement(By.xpath("//li[@id=\"classification-Disease,Duchenne Muscular Dystrophy/Becker Muscular Dystrophy\"]//a[contains(@class, 'classifyAll')]")).click();
-        findElement(By.xpath("//div[@id='addClassificationModalBody']//span[text()='Classification Transfer']")).click();
-        findElement(By.xpath("//div[@id='addClassification-Child Classification']//button")).click();        
-        textPresent("Elements classified");        
-        goToCdeByName("Gastrointestinal therapy water flush status");
-        findElement(By.linkText("Classification")).click();
-        textPresent("NINDS");
-        textPresent("Population");
-        textPresent("Adult");
-        goToCdeByName("Gastrointestinal therapy feed tube type");
-        findElement(By.linkText("Classification")).click();
-        textPresent("NINDS");
-        textPresent("Population");
-        textPresent("Adult");        
-    }
-    
-    @Test
-    public void checkReclassificationIcon() {
-        mustBeLoggedInAs(ninds_username, password);
-        
-        // Check icons appear on classification management page
-        gotoClassifMgt();
-        List<WebElement> icons = driver.findElements(By.xpath("//a[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
-        Assert.assertTrue(icons.size() > 1);
-        
-        // Check icons don't appear on CDE detail page
-        String cdeName = "Brief Symptom Inventory-18 (BSI18)- Anxiety raw score";
-        goToCdeByName(cdeName);
-        findElement(By.linkText("Classification")).click();
-        icons = driver.findElements(By.xpath("//a[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
-        Assert.assertTrue(icons.isEmpty());
     }
 }

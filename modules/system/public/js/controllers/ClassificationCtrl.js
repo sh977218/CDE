@@ -1,4 +1,4 @@
- function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification) {
+function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification) {
     $scope.initCache(); 
     
     $scope.openAddClassificationModal = function () {
@@ -43,5 +43,32 @@
     $scope.hideWorkingGroups = function(stewardClassifications) {
         return stewardClassifications.workingGroup && !($scope.myOrgs.indexOf(stewardClassifications.stewardOrg.name)>=0);
     };
- }
+    
+    $scope.showRemoveClassificationModal = function(orgName, pathArray) {
+        var modalInstance = $modal.open({
+            templateUrl: '/template/system/removeClassificationModal',
+            controller: RemoveClassificationModalCtrl,
+            resolve: {
+                classifName: function() {
+                    return pathArray[pathArray.length-1];
+                }
+            }
+        });
+
+        modalInstance.result.then(function () {
+            $scope.removeClassification(orgName, pathArray);
+        });
+    };
+}
  
+function RemoveClassificationModalCtrl($scope, $modalInstance, classifName) {
+    $scope.classifName = classifName;
+
+    $scope.ok = function() {
+        $modalInstance.close();
+    };
+
+    $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+    };  
+}
