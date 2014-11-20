@@ -7,8 +7,10 @@ function BoardViewCtrl($scope, $routeParams, $http) {
     });
 
     $scope.reload = function() {
+        $scope.accordionListStyle = "semi-transparent";
         $http.get("/board/" + $routeParams.boardId + "/" + (($scope.currentPage-1) * 20)).
             success(function(response) {
+                $scope.accordionListStyle = "";
                 $scope.cdes = [];
                 if (response.board) {
                     $scope.board = response.board;
