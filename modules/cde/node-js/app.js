@@ -156,21 +156,25 @@ exports.init = function(app, daoManager) {
 
     app.get('/board/:boardId/:start', function(req, res) {
         mongo_data.boardById(req.params.boardId, function (err, board) {
-            if (board.shareStatus !== "Public") {
-                if (!req.isAuthenticated() || (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))) {
-                    return res.send("This board is private");
+            if (board) {
+                if (board.shareStatus !== "Public") {
+                    if (!req.isAuthenticated() || (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))) {
+                        return res.send(403);
+                    }
                 }
+                var totalItems = board.pins.length;
+                var pins = board.pins.splice(req.params.start, 20); 
+                board.pins = pins;
+                var idList = [];
+                for (var i = 0; i < pins.length; i++) {
+                    idList.push(pins[i].deTinyId);
+                }
+                mongo_data.cdesByTinyIdList(idList, function(err, cdes) {
+                    res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes), totalItems: totalItems});
+                });
+            } else {
+                res.send(404);
             }
-            var totalItems = board.pins.length;
-            var pins = board.pins.splice(req.params.start, 20); 
-            board.pins = pins;
-            var idList = [];
-            for (var i = 0; i < pins.length; i++) {
-                idList.push(pins[i].deTinyId);
-            }
-            mongo_data.cdesByTinyIdList(idList, function(err, cdes) {
-                res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes), totalItems: totalItems});
-            });
         });
     });
 
