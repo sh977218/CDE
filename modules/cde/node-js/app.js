@@ -154,7 +154,14 @@ exports.init = function(app, daoManager) {
        res.render("boardView"); 
     });
 
-    app.get('/board/:boardId/:start', function(req, res) {
+    app.get('/board/:boardId/:start/:size?', function(req, res) {
+        var size = 20;
+        if (req.params.size) {
+            size = req.params.size;
+        }
+        if (size > 500) {
+            return res.send(403, "Request too large")
+        }
         mongo_data.boardById(req.params.boardId, function (err, board) {
             if (board) {
                 if (board.shareStatus !== "Public") {
@@ -163,7 +170,7 @@ exports.init = function(app, daoManager) {
                     }
                 }
                 var totalItems = board.pins.length;
-                var pins = board.pins.splice(req.params.start, 20); 
+                var pins = board.pins.splice(req.params.start, size); 
                 board.pins = pins;
                 var idList = [];
                 for (var i = 0; i < pins.length; i++) {

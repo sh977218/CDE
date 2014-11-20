@@ -302,11 +302,14 @@ public class NlmCdeBaseTest {
             findElement(By.name("changeNote")).clear();
             findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
         }
+        // assumption is that text is sent before JS can load. So wait 1 sec.
+        hangon(1);
         findElement(By.name("version")).sendKeys(".1");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("confirmNewVersion")));
 //        textNotPresent("This version number has already been used");
         findElement(By.id("confirmNewVersion")).click();
         closeAlert();
+        // wait for ES to refresh.
         hangon(3);
     }
 
