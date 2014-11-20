@@ -66,14 +66,15 @@ public class PinTest extends BoardTest {
     @Test
     public void unpin() {
         mustBeLoggedInAs(pinUser, password);
+        String cdeName = "Imaging volumetric result";
         goToCdeSearch();
         createBoard("Unpin Board", "test");
-        pinTo("Volumetric", "Unpin Board");
+        pinTo(cdeName, "Unpin Board");
         goToBoard("Unpin Board");
-        Assert.assertTrue(textPresent("Volumetric"));
+        Assert.assertTrue(textPresent(cdeName));
         findElement(By.id("unpin_0")).click();
         goToBoard("Unpin Board");
-        Assert.assertTrue(textNotPresent("Volumetric"));
+        Assert.assertTrue(textNotPresent(cdeName));
         
         removeBoard("Unpin Board");
     }
@@ -88,19 +89,20 @@ public class PinTest extends BoardTest {
         findElement(By.id("classifications-text-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
         findElement(By.id("li-blank-General (For all diseases)")).click();
+        findElement(By.id("li-blank-Classification")).click();
+        findElement(By.id("li-blank-Core")).click();
         findElement(By.id("pinAll")).click();
         findElement(By.linkText("Cerebral Palsy > Public Review")).click();
         modalGone();
         gotoMyBoards();
         findElement(By.xpath("//a[../dl/dd/div/div/span[contains(text(),'CDEs to be use for Cerebral Palsy')]]")).click();
-        Assert.assertTrue(driver.findElements(By.xpath("//h4[@class=\"panel-title\"]")).size()==13); 
-        Assert.assertTrue(textPresent("Site number"));
-        Assert.assertTrue(textPresent("Family income range"));
-        Assert.assertTrue(textPresent("Risk Factor Questionnaire (RFQ) - age 66 and over residential history residence pesticide use frequency"));
-        Assert.assertTrue(textPresent("Risk Factor Questionnaire (RFQ) - age 18 25 residential history residence pesticide use frequency"));
-        Assert.assertTrue(textPresent("Traffic accident other party role type"));
-        Assert.assertTrue(textPresent("Food Frequency Questionnaire - (FFQ)-vitamin E type"));
-        Assert.assertTrue(textPresent("Family history medical condition relative type"));
-        Assert.assertTrue(textPresent("Alcohol use frequency"));
+        Assert.assertEquals(driver.findElements(By.xpath("//h4[@class=\"panel-title\"]")).size(), 7); 
+        Assert.assertTrue(textPresent("Birth date"));
+        Assert.assertTrue(textPresent("Race USA category"));
+        Assert.assertTrue(textPresent("Ethnicity USA category"));
+        Assert.assertTrue(textPresent("Medical history condition text"));
+        Assert.assertTrue(textPresent("Medical history condition SNOMED CT code"));
+        Assert.assertTrue(textPresent("Education year count"));
+        Assert.assertTrue(textPresent("Gender Type"));
     }    
 }

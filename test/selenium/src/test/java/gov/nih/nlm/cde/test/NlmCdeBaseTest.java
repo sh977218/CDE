@@ -36,7 +36,7 @@ public class NlmCdeBaseTest {
 
     protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
     protected static String browser = System.getProperty("browser");
-    protected static String baseUrl = System.getProperty("testUrl");
+    public static String baseUrl = System.getProperty("testUrl");
 
     protected static String nlm_username = "nlm";
     protected static String nlm_password = "nlm";
@@ -290,23 +290,24 @@ public class NlmCdeBaseTest {
         }
     }
 
+    
     protected void newCdeVersion() {
+        newCdeVersion(null);
+    }
+    
+    protected void newCdeVersion(String changeNote) {
         findElement(By.id("openSave")).click();
         modalHere();
+        if (changeNote != null) {
+            findElement(By.name("changeNote")).clear();
+            findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
+        }
         findElement(By.name("version")).sendKeys(".1");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("confirmNewVersion")));
+//        textNotPresent("This version number has already been used");
         findElement(By.id("confirmNewVersion")).click();
         closeAlert();
-        hangon(2);
-    }
-
-    protected void saveCde() {
-        try {
-            findElement(By.id("confirmNewVersion")).click();
-        } catch(WebDriverException wde) {
-            hangon(1);
-            findElement(By.id("confirmNewVersion")).click();
-        }
-        hangon(2);
+        hangon(3);
     }
 
     public void hangon(double i) {
@@ -380,12 +381,23 @@ public class NlmCdeBaseTest {
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
+        findElement(By.id("login_button")).click();
+        hangon(1);
+        // Assumption is that this comes from a CSRF error. So reload the whole page if it fails. 
         try {
-            findElement(By.xpath("//button[text() = 'Log In']")).click();
             findElement(By.linkText(username));
-        } catch (NoSuchElementException e) {
-            findElement(By.xpath("//button[text() = 'Log In']")).click();
-            findElement(By.linkText(username));
+        } catch (Exception e) {
+            if (driver.findElements(By.id("login_button")).size() > 0) {
+                driver.get(baseUrl);
+                findElement(By.linkText("Log In")).click();
+                System.out.println("Re-clicking Log In");
+                findElement(By.id("uname")).clear();
+                findElement(By.id("uname")).sendKeys(username);
+                findElement(By.id("passwd")).clear();
+                findElement(By.id("passwd")).sendKeys(password);
+                findElement(By.id("login_button")).click();
+                findElement(By.linkText(username));
+            }
         }
     }
 
@@ -395,10 +407,11 @@ public class NlmCdeBaseTest {
     }
 
     public void addToQuickBoard(String cdeName) {
-        scrollToTop();
+//        scrollToTop();
+        findElement(By.name("ftsearch")).clear();        
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent(cdeName, "#accordionList"));
+        textPresent(cdeName, "#acc_link_0");
         findElement(By.id("addToCompare_0")).click();
         hangon(.5);
         findElement(By.name("ftsearch")).clear();

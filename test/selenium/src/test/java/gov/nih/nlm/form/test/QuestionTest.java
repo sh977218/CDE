@@ -15,6 +15,7 @@ public class QuestionTest extends BaseFormTest {
     
     public void addQuestionToSection(String cdeName, int sectionNumber) {
         findElement(By.id("resetSearch")).click();
+        hangon(1);
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results");
@@ -49,7 +50,7 @@ public class QuestionTest extends BaseFormTest {
 
         // Check status facet.
         findElement(By.id("resetSearch")).click();
-        Assert.assertTrue(textPresent("Qualified (4"));
+        Assert.assertTrue(textPresent("Qualified (94"));
         findElement(By.id("li-blank-caBIG")).click();
         findElement(By.cssSelector("i.fa-check-square-o"));
         Assert.assertTrue(textPresent("Qualified (1"));
@@ -278,7 +279,7 @@ public class QuestionTest extends BaseFormTest {
         // Add 2nd Section
         addQuestionToSection("Smoking History Ind", 0);
         addQuestionToSection("First-Line Therapy Chemotherapy Regimen Name", 1);             
-        WebElement sourceElt = findElement(By.xpath("//div[@id=\"section_view_1\"]//i[@class=\"fa fa-arrows section-move-handle\"]"));
+        WebElement sourceElt = findElement(By.xpath("//div[@id=\"section_view_1\"]/div/h4/i"));
         WebElement targetElt = findElement(By.id("section_drop_area_0"));
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
         hangon(1);

@@ -43,10 +43,10 @@ exports.formSchema = new Schema({
     ]
     , ids: [
         {source: String, id: String, version: String, _id: false}
-    ]    
+    ] 
+    , isCopyrighted: {type: Boolean, default: false}
     , copyright: {
         authority: String
-        , type: String
         , text: String
     }
     , origin: String

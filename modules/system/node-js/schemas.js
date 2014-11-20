@@ -76,7 +76,7 @@ schemas.attachmentSchema = mongoose.Schema({
 }, {_id: false});
 
 schemas.registrationStateSchema = {
-    registrationStatus: String
+    registrationStatus: {type: String, index: true}
     , effectiveDate: Date
     , untilDate: Date
     , administrativeNote: String
@@ -91,7 +91,6 @@ schemas.commentSchema = {
     , user: String
     , username: String
     , created: Date
-}
-
+};
 
 module.exports = schemas;

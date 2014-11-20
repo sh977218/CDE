@@ -1,7 +1,6 @@
 package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -23,11 +22,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.xpath("//dd[@id = 'dd_uom']//i[@class = 'fa fa-edit']")).click();
         findElement(By.xpath("//dd[@id = 'dd_uom']//input")).sendKeys("myUom");
         findElement(By.cssSelector("#dd_uom .fa-check")).click();
-        findElement(By.cssSelector("button.btn.btn-primary")).click();
-        findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
-        Assert.assertTrue(textPresent("This version number has already been used"));
-        findElement(By.name("version")).sendKeys(".001");
-        saveCde();
+        newCdeVersion("Change note for change number 1");
         goToCdeByName(cdeName);
         Assert.assertTrue(textPresent("[name change number 1]"));
         Assert.assertTrue(textPresent("[def change number 1]"));
@@ -36,7 +31,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertEquals(findElement(By.id("dt_updated")).getLocation().y, findElement(By.id("dd_updated")).getLocation().y);
 
         findElement(By.linkText("Identifiers")).click();
-        Assert.assertEquals("1.001", findElement(By.id("dd_version_nlm")).getText());                
+        Assert.assertEquals("1.1", findElement(By.id("dd_version_nlm")).getText());                
         
         // Test history
         findElement(By.linkText("History")).click();
@@ -54,63 +49,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         textPresent("1");
         textPresent("Warning: this data element is archived.");
     }
-
-    @Test
-    public void cdeHistoryComplement() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");      
-        
-        findElement(By.linkText("Naming")).click();
-        findElement(By.xpath("//button[text()=\" Add Naming\"]")).click();
-        modalHere();
-        findElement(By.xpath("//label[text()=\"Name\"]/following-sibling::input")).sendKeys("Alternative Name 1");
-        findElement(By.xpath("//label[text()=\"Definition\"]/following-sibling::textarea")).sendKeys("Alternative Definition 1");
-        findElement(By.xpath("//div[@id='newConceptModalFooter']//button[text()=\"Save\"]")).click();
-        modalGone();
-        
-        findElement(By.linkText("Concepts")).click();
-        findElement(By.xpath("//button[text()=\" Add Concept\"]")).click();
-        findElement(By.xpath("//label[text()=\"Code Name\"]/following-sibling::input")).sendKeys("Code Name 1");
-        findElement(By.xpath("//label[text()=\"Code ID\"]/following-sibling::input")).sendKeys("Code ID 1");
-        findElement(By.xpath("//div[@id='newConceptModalFooter']//button[text()=\"Save\"]")).click();       
-        modalGone();
-        
-        
-        findElement(By.id("openSave")).click();
-        findElement(By.xpath("//label[text()=\"Choose a new version\"]/following-sibling::input")).sendKeys(".1");                
-        saveCde();
-        
-        hangon(1);
-        findElement(By.linkText("History")).click();
-        findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
-        Assert.assertTrue(textPresent("Naming:"));
-        Assert.assertTrue(textPresent("Added: LOINC, Code Name 1, Code ID 1;"));
-        
-        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");            
-        findElement(By.xpath("//i[@id='editStatus']")).click();
-        modalHere();
-        new Select(findElement(By.xpath("//label[text()=\"Registration Status\"]/following-sibling::select"))).selectByValue("Recorded");
-        findElement(By.xpath("//div[@id=\"regStatusModalFooter\"]//button[text()=\"Save\"]")).click();
-        modalGone();
-        findElement(By.linkText("History")).click();
-
-        findElement(By.xpath("//table[@id = 'historyTable']//tr[3]//td[4]/a")).click();
-        Assert.assertTrue(textPresent("Registration State:"));
-
-        findElement(By.linkText("Identifiers")).click();
-        closeAlert();
-        findElement(By.xpath("//button[text()=\" Add Identifier\"]")).click();
-        modalHere();
-        findElement(By.xpath("//label[text()=\"Source\"]/following-sibling::input")).sendKeys("Origin 1");
-        findElement(By.xpath("//label[text()=\"Identifier\"]/following-sibling::textarea")).sendKeys("Identifier 1");    
-        findElement(By.xpath("//label[text()=\"Version\"]/following-sibling::textarea")).sendKeys("Version 1"); 
-        findElement(By.xpath("//div[@id=\"newIdModalFooter\"]//button[text()=\"Save\"]")).click();
-        modalGone();
-        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");   
-        findElement(By.linkText("History")).click();
-        findElement(By.xpath("//table[@id = 'historyTable']//tr[4]//td[4]/a")).click();
-        Assert.assertTrue(textPresent("Identifiers:"));        
-    }    
     
     @Test
     public void editConcepts() {
@@ -143,9 +81,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("createConcept")).click();
         hangon(2);
 
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        saveCde();
+        newCdeVersion();
 
         goToCdeByName(cdeName);
         findElement(By.linkText("Concepts")).click();
@@ -157,10 +93,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("ocConceptRemove-1")).click();
         findElement(By.id("propConceptRemove-3")).click();
         
-        findElement(By.id("openSave")).click();
-        modalHere();
-        findElement(By.name("version")).sendKeys(".2");
-        saveCde();
+        newCdeVersion();
         
         goToCdeByName(cdeName);
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("DEC1"));
@@ -168,34 +101,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("PROP1"));
     }
     
-    @Test
-    public void changeDefinitionFormat() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-
-        String cdeName = "INSS";
-        goToCdeByName(cdeName);
-        findElement(By.cssSelector("#dd_def .fa-edit")).click();
-        findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change: adding html characters][<b>bold</b>]");
-        findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("-plaintext"); 
-        saveCde();
-
-        goToCdeByName(cdeName);   
-        Assert.assertTrue(textPresent("<b>bold</b>"));
-        findElement(By.cssSelector("#dd_def .fa-edit")).click();
-        findElement(By.xpath("//dd[@id='dd_def']//button[text() = 'Rich Text']")).click();
-        hangon(2);
-        findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("-html"); 
-        saveCde();
-        goToCdeByName(cdeName);   
-        Assert.assertTrue(textNotPresent("<b>bold</b>"));        
-    }    
-
     @Test
     public void doNotSaveIfPendingChanges() {   
         mustBeLoggedInAs(ctepCurator_username, password);
