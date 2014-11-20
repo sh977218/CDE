@@ -7,6 +7,15 @@ import org.testng.annotations.Test;
 public class BoardViewTest extends BoardTest {
 
     @Test
+    public void showLargeGridView() {
+        mustBeLoggedInAs(ninds_username, password);
+        goToBoard("Large Board");
+        findElement(By.linkText("Grid View")).click();
+        textPresent("500 documents returned");
+        Assert.assertTrue(driver.findElements(By.cssSelector("div.ngRow")).size() > 20);
+    }
+    
+    @Test
     public void showGridView() {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Test Board";
@@ -25,8 +34,9 @@ public class BoardViewTest extends BoardTest {
         closeAlert();
         hangon(1);
         goToBoard(boardName);
-        findElement(By.id("gridView")).click();
+        findElement(By.linkText("Grid View")).click();
         Assert.assertEquals(driver.findElements(By.cssSelector("div.ngRow")).size(), 5);
+        
     }
 
     public void attachToBoard(String cdeName) {
