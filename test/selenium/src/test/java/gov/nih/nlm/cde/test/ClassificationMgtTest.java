@@ -22,14 +22,20 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     }    
 
     private void deleteNestedClassifTree() {
-        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"Remove\"]")).click();
-        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"OK\"]")).click(); 
-        hangon(0.3);
+        deleteClassification("classification-Disease,Epilepsy");
         Assert.assertTrue(textNotPresent("Epilepsy"));
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations,Imaging Diagnostics']");
     }    
+    
+    private void deleteClassification(String classificationId) {
+        driver.findElement(By.cssSelector("[id='"+classificationId+"'] [title=\"Remove\"]")).click();
+        modalHere();
+        driver.findElement(By.cssSelector("[id='okRemoveClassificationModal']")).click();
+        modalGone();
+        closeAlert();
+    }
 
     @Test
     public void viewOrgClassifications() {
@@ -102,11 +108,8 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         createClassificationName(new String[]{"_a","_a_a","_a_a_a"});
         createClassificationName(new String[]{"_a","_a_b"});
         createClassificationName(new String[]{"_a","_a_c"});          
-        driver.findElement(By.cssSelector("[id='classification-_a,_a_a'] [title=\"Remove\"]")).click();
-        // CDE-317: The following line is here because of bug mentioned in CDE-317.
-//        scrollTo("10000");
-        driver.findElement(By.cssSelector("[id='classification-_a,_a_a'] [title=\"OK\"]")).click();        
-        checkElementDoesNotExistByCSS("[id='removeClassification-_a,_a_a']");
+        deleteClassification("classification-_a,_a_a");
+        checkElementDoesNotExistByCSS("[id='okRemoveClassificationModal']");
         scrollTo("0");
     }
     
@@ -114,13 +117,13 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     public void renameClassification() {
         mustBeLoggedInAs(ninds_username, password);
         gotoClassifMgt(); 
-        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()=\"Spinal Cord Injury\"]]/span/a")).click();
+        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()='Spinal Cord Injury']]/span/a")).click();
         modalHere();
         findElement(By.id("renameClassifInput")).clear();
         textPresent("Name is required");
         findElement(By.id("cancelRename")).click();
         modalGone();
-        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()=\"Spinal Cord Injury\"]]/span/a")).click();
+        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()='Spinal Cord Injury']]/span/a")).click();
         modalHere();
         findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
         findElement(By.id("renameClassifInput")).sendKeys("ies;");
@@ -143,7 +146,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         closeAlert();
         createClassificationName(new String[]{"Classification Transfer","Child Classification"});
         closeAlert();
-        findElement(By.xpath("//li[@id=\"classification-Disease,Duchenne Muscular Dystrophy/Becker Muscular Dystrophy\"]//a[@class=\"classifyAll\"]")).click();
+        findElement(By.xpath("//li[@id=\"classification-Disease,Duchenne Muscular Dystrophy/Becker Muscular Dystrophy\"]//a[contains(@class, 'classifyAll')]")).click();
         findElement(By.xpath("//div[@id='addClassificationModalBody']//span[text()='Classification Transfer']")).click();
         findElement(By.xpath("//div[@id='addClassification-Child Classification']//button")).click();        
         textPresent("Elements classified");        
@@ -165,14 +168,14 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         
         // Check icons appear on classification management page
         gotoClassifMgt();
-        List<WebElement> icons = driver.findElements(By.xpath("//a[not(contains(@class, 'ng-hide'))]/i[contains(@class, 'fa-retweet')]"));
+        List<WebElement> icons = driver.findElements(By.xpath("//a[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
         Assert.assertTrue(icons.size() > 1);
         
         // Check icons don't appear on CDE detail page
         String cdeName = "Brief Symptom Inventory-18 (BSI18)- Anxiety raw score";
         goToCdeByName(cdeName);
         findElement(By.linkText("Classification")).click();
-        icons = driver.findElements(By.xpath("//a[not(contains(@class, 'ng-hide'))]/i[contains(@class, 'fa-retweet')]"));
+        icons = driver.findElements(By.xpath("//a[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
         Assert.assertTrue(icons.isEmpty());
     }
 }
