@@ -31,18 +31,8 @@ public class ScreenShotListener extends TestListenerAdapter {
                 e1.printStackTrace();
             }
         }
-        LogEntries logEntries = driver.manage().logs().get(LogType.CLIENT);
-        StringBuilder sb = new StringBuilder();
-        for (LogEntry entry : logEntries) {
-            sb.append(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage() + "\n");
-        }
-        if (sb.length() > 0) {
-            try {
-                FileUtils.writeStringToFile(new File("build/consolelogs/" + methodName + "_" + formater.format(calendar.getTime()) + ".txt"), sb.toString());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        }
+        saveLogs(methodName);
+        driver.get(NlmCdeBaseTest.baseUrl);
     }
     
     public void onTestSuccess(ITestResult itr) {
@@ -61,6 +51,22 @@ public class ScreenShotListener extends TestListenerAdapter {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+        saveLogs(methodName);
+    }
+    
+    private void saveLogs(String methodName) {
+        LogEntries logEntries = driver.manage().logs().get(LogType.CLIENT);
+        StringBuilder sb = new StringBuilder();
+        for (LogEntry entry : logEntries) {
+            sb.append(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage() + "\n");
+        }
+        if (sb.length() > 0) {
+            try {
+                FileUtils.writeStringToFile(new File("build/consolelogs/" + methodName + "_" + formater.format(calendar.getTime()) + ".txt"), sb.toString());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }        
     }
     
 }

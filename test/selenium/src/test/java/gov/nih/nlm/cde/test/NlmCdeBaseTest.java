@@ -36,7 +36,7 @@ public class NlmCdeBaseTest {
 
     protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
     protected static String browser = System.getProperty("browser");
-    protected static String baseUrl = System.getProperty("testUrl");
+    public static String baseUrl = System.getProperty("testUrl");
 
     protected static String nlm_username = "nlm";
     protected static String nlm_password = "nlm";
