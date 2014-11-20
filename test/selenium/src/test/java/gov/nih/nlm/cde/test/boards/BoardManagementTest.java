@@ -224,6 +224,6 @@ public class BoardManagementTest extends BoardTest {
     public void pagination() {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
-        findElement(By.linkText("30")).click();
+        findElement(By.linkText("10")).click();
     }        
 }
