@@ -51,7 +51,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
     };
     
     $scope.classificationToFilter = function() {
-         if ($scope.elt != null) {
+         if ($scope.elt) {
              return $scope.elt.classification;
          } 
     };    

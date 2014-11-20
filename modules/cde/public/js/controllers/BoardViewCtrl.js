@@ -27,10 +27,7 @@ function BoardViewCtrl($scope, $routeParams, $http) {
                 }
             }).
             error(function(response) {
-                if (response.statusCode === 404)
-                    $scope.addAlert("danger", "Board not found");
-                if (response.statusCode === 403)
-                    $scope.addAlert("danger", "Board too large");
+                $scope.addAlert("danger", "Board not found");
             });
     };
         
