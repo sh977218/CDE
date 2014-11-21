@@ -279,7 +279,7 @@ public class QuestionTest extends BaseFormTest {
         // Add 2nd Section
         addQuestionToSection("Smoking History Ind", 0);
         addQuestionToSection("First-Line Therapy Chemotherapy Regimen Name", 1);             
-        WebElement sourceElt = findElement(By.xpath("//div[@id=\"section_view_1\"]//i[@class=\"fa fa-arrows section-move-handle\"]"));
+        WebElement sourceElt = findElement(By.xpath("//div[@id=\"section_view_1\"]/div/h4/i"));
         WebElement targetElt = findElement(By.id("section_drop_area_0"));
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
         hangon(1);

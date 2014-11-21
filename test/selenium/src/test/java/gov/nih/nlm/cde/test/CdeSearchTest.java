@@ -261,6 +261,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
         findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
+        hangon(1);
         findElement(By.xpath("//i[@id=\"li-blank-Qualified\"]")).click();
         textPresent("| Qualified");
         findElement(By.name("ftsearch")).sendKeys("name");

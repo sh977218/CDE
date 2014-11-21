@@ -1,7 +1,7 @@
 <div accordion close-others="false" id="" ng-class="accordionListStyle" >
     <div accordion-group is-open="" >
         <div accordion-heading>
-            <i class="fa fa-arrows question-move-handle"></i>
+            <i ng-if="canCurate" class="fa fa-arrows question-move-handle"></i>
             <span ng-bind-html="question.label | placeholdEmpty" id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></span>
             <span ng-if="question.question.cde.outdated"> (Outdated)</span>
             <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeQuestion(section, $index)" title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>
