@@ -22,9 +22,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     }    
 
     private void deleteNestedClassifTree() {
-        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"Remove\"]")).click();
-        driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] [title=\"OK\"]")).click(); 
-        hangon(0.3);
+        deleteClassification("classification-Disease,Epilepsy");
         Assert.assertTrue(textNotPresent("Epilepsy"));
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
@@ -102,11 +100,8 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         createClassificationName(new String[]{"_a","_a_a","_a_a_a"});
         createClassificationName(new String[]{"_a","_a_b"});
         createClassificationName(new String[]{"_a","_a_c"});          
-        driver.findElement(By.cssSelector("[id='classification-_a,_a_a'] [title=\"Remove\"]")).click();
-        // CDE-317: The following line is here because of bug mentioned in CDE-317.
-//        scrollTo("10000");
-        driver.findElement(By.cssSelector("[id='classification-_a,_a_a'] [title=\"OK\"]")).click();        
-        checkElementDoesNotExistByCSS("[id='removeClassification-_a,_a_a']");
+        deleteClassification("classification-_a,_a_a");
+        checkElementDoesNotExistByCSS("[id='okRemoveClassificationModal']");
         scrollTo("0");
     }
     
@@ -114,13 +109,13 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     public void renameClassification() {
         mustBeLoggedInAs(ninds_username, password);
         gotoClassifMgt(); 
-        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()=\"Spinal Cord Injury\"]]/span/a")).click();
+        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()='Spinal Cord Injury']]/span/a")).click();
         modalHere();
         findElement(By.id("renameClassifInput")).clear();
         textPresent("Name is required");
         findElement(By.id("cancelRename")).click();
         modalGone();
-        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()=\"Spinal Cord Injury\"]]/span/a")).click();
+        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()='Spinal Cord Injury']]/span/a")).click();
         modalHere();
         findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
         findElement(By.id("renameClassifInput")).sendKeys("ies;");
@@ -134,5 +129,4 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         hangon(1);
         Assert.assertTrue(textPresent("Spinal Cord Injuries"));
     }
-   
 }

@@ -32,7 +32,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
             $scope.org = org;
             $scope.addAlert("success", "Classification Deleted");
         });
-    };    
+    };
     
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
@@ -81,6 +81,22 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
         });        
     };
     
+    $scope.showRemoveClassificationModal = function(orgName, pathArray) {
+        var modalInstance = $modal.open({
+            templateUrl: '/template/system/removeClassificationModal',
+            controller: RemoveClassificationModalCtrl,
+            resolve: {
+                classifName: function() {
+                    return pathArray[pathArray.length-1];
+                }
+            }
+        });
+
+        modalInstance.result.then(function () {
+            $scope.removeClassification(orgName, pathArray);
+        });
+    };
+
     $scope.showClassifyEntireSearchModal = function (orgName, pathArray) {
         var modalInstance = $modal.open({
           templateUrl: '/template/system/addClassification',
