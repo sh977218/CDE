@@ -132,4 +132,21 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
         });
     };
     
+    $scope.showRemoveClassificationModal = function(orgName, pathArray) {
+        var modalInstance = $modal.open({
+            templateUrl: '/template/system/removeClassificationModal',
+            controller: RemoveClassificationModalCtrl,
+            resolve: {
+                classifName: function() {
+                    return pathArray[pathArray.length-1];
+                }
+            }
+        });
+
+        modalInstance.result.then(function () {
+            $scope.removeClassification(orgName, pathArray);
+        });
+    };
+
+    
 }

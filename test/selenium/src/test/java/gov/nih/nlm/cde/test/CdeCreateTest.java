@@ -57,11 +57,9 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         classify("NINDS", "Disease", "Traumatic Brain Injury");
         modalGone();
         Assert.assertTrue(textPresent("Traumatic Brain Injury"));
-        findElement(By.xpath("//li[@id='classification-Disease,Traumatic Brain Injury']//a[@class='fa fa-trash-o']")).click();
-        findElement(By.xpath("//li[@id='classification-Disease,Traumatic Brain Injury']//a[@class='fa fa-check hand-cursor']")).click();
-        hangon(0.5);
-        Assert.assertTrue(textNotPresent("Traumatic Brain Injury"));        
         
+        deleteClassification("classification-Disease,Traumatic Brain Injury");
+
         classify("NINDS", "Disease", "Headache");
    
         findElement(By.id("submit")).click();

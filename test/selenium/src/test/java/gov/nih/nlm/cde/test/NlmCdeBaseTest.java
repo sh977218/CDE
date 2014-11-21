@@ -497,5 +497,13 @@ public class NlmCdeBaseTest {
             findElement(By.id("showHideFilters")).click();
         }
     }
+    
+    protected void deleteClassification(String classificationId) {
+        driver.findElement(By.cssSelector("[id='"+classificationId+"'] [title=\"Remove\"]")).click();
+        modalHere();
+        driver.findElement(By.cssSelector("[id='okRemoveClassificationModal']")).click();
+        modalGone();
+        closeAlert();
+    }
 
 }

@@ -28,14 +28,6 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations,Imaging Diagnostics']");
     }    
-    
-    private void deleteClassification(String classificationId) {
-        driver.findElement(By.cssSelector("[id='"+classificationId+"'] [title=\"Remove\"]")).click();
-        modalHere();
-        driver.findElement(By.cssSelector("[id='okRemoveClassificationModal']")).click();
-        modalGone();
-        closeAlert();
-    }
 
     @Test
     public void viewOrgClassifications() {
