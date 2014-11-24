@@ -266,7 +266,6 @@ exports.update = function(elt, user, callback, special) {
         newDe.property = elt.property;
         newDe.properties = elt.properties;
         newDe.valueDomain = elt.valueDomain;
-        newDe.attachments = elt.attachments;
         newDe.ids = elt.ids;
         newDe.classification = elt.classification;
         newDe.stewardOrg.name = elt.stewardOrg.name;

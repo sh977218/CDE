@@ -12,6 +12,7 @@ var fs = require('fs')
 var parser = new xml2js.Parser();
 
 var mongoUri = config.mongoUri;
+var mongoMigrationUri = config.mongoMigrationUri;
 
 var conn = mongoose.createConnection(mongoUri);
 conn.on('error', console.error.bind(console, 'connection error:'));
@@ -20,13 +21,10 @@ conn.once('open', function callback () {
     });    
 
 var migrationConn = mongoose.createConnection(mongoMigrationUri);
-migrationCconn.on('error', console.error.bind(console, 'connection error:'));
+migrationConn.on('error', console.error.bind(console, 'connection error:'));
 migrationConn.once('open', function callback () {
     console.log('mongodb connection open');
 });    
-
-
-console.log("Loading file: " + process.argv[2]);
 
 var DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
 var MigrationDataElement = migrationConn.model('DataElement', cde_schemas.dataElementSchema);
@@ -59,7 +57,7 @@ stream.on('data', function (migrationCde) {
     }
     
     if (cdeId !== 0) {
-        DataElement.find({}).where("ids").elemMatch(function(elem) {
+        DataElement.find({archived: null}).where("ids").elemMatch(function(elem) {
             elem.where("source").equals(orgName);
             elem.where("id").equals(cdeId);
         }).exec(function(err, existingCdes) {
@@ -77,8 +75,9 @@ stream.on('data', function (migrationCde) {
                 console.log("Too many CDEs with Id = " + cdeId);                
             } else {
                 var existingCde = existingCdes[0];
-                var newDe = new DataElement(existingCde);
-                delete newDe._id;
+                var jsonDe = JSON.parse(JSON.stringify(existingCde));
+                delete jsonDe._id;                
+                var newDe = new DataElement(jsonDe);
                 newDe.history.push(existingCde._id);
                 newDe.naming[0] = migrationCde.naming[0];
                 newDe.version = migrationCde.version;
