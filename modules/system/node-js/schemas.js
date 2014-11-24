@@ -93,4 +93,10 @@ schemas.commentSchema = {
     , created: Date
 };
 
+schemas.helpItemSchema = mongoose.Schema({
+    permalink: String
+    , title: String
+    , tags: [String]
+});
+
 module.exports = schemas;
