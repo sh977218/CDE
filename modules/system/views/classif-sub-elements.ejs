@@ -1,26 +1,23 @@
-> <a tabindex="-1">
-        <span role="button" title="{{elt.name}}" tabindex="0" ng-click="searchByClassification(orgName, pathArray, module)"  id="classification-{{elt.name}}" class="name hand-cursor" ng:class="($parent.$parent.$parent.$index===undefined) ? 'first-level-classification' : ''">
-            <span class="name">{{elt.name}}</span>
-        </span>
-
-</a> 
-<span ng-show="myOrg">
-    <a title="Edit" ng-show="page=='management'" ng-click="showRenameDialog(orgName, pathArray)" class="fa fa-pencil hand-cursor" ></a>
-    <span ng-show="showDelete">
-        Confirm
-        <a class="fa fa-check hand-cursor" ng-click="showDelete=false; removeClassification(orgName, pathArray)" 
-           title="OK" href=""></a>
-        <a class="fa fa-times hand-cursor" ng-click="showDelete=false" title="Cancel" href=""></a>
+<a tabindex="-1">
+    <span role="button" title="{{elt.name}}" tabindex="0" ng-click="searchByClassification(orgName, pathArray, module)"  id="classification-{{elt.name}}" class="name hand-cursor" ng:class="($parent.$parent.$parent.$index===undefined) ? 'first-level-classification' : ''">
+        <span class="name">{{elt.name}}</span>
     </span>
-    <a ng-init="showDelete=false" 
-       ng-click="showDelete=true" 
-       ng-hide="showDelete" 
-       class="fa fa-trash-o" 
-       title="Remove" 
-       href="">
+</a>
+
+<span ng-show="myOrg">
+    <a title="Edit" 
+       ng-show="page=='management'" 
+       ng-click="showRenameDialog(orgName, pathArray)" 
+       class="fa fa-pencil hand-cursor" >
     </a>
-    <a title="Reclassify" class="classifyAll" ng-click="showClassifyEntireSearchModal(orgName, pathArray);" ng-hide="classificationPage==='deview'">
-        <i class="fa fa-retweet hand-cursor"></i>
+    <a ng-click="showRemoveClassificationModal(orgName, pathArray)" 
+       class="fa fa-trash-o hand-cursor" 
+       title="Remove">
+    </a>
+    <a title="Reclassify"
+       class="fa fa-retweet hand-cursor classifyAll" 
+       ng-click="showClassifyEntireSearchModal(orgName, pathArray);" 
+       ng-hide="classificationPage==='deview'">
     </a>    
 </span>
 

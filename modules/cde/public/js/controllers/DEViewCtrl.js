@@ -101,7 +101,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     };
 
     $scope.classificationToFilter = function() {
-         if ($scope.elt !== null) {
+         if ($scope.elt) {
              return $scope.elt.classification;
          } 
     };

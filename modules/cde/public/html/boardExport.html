@@ -1,0 +1,14 @@
+<style>
+.gridStyle {
+    border: 1px solid rgb(212,212,212);
+    width: auto; 
+    height: 600px;
+}
+</style>
+<div ng-controller="BoardExportCtrl">
+    <div class="gridStyle" ng-grid="gridOptions"></div>
+    <a class="btn btn-mini fa fa-external-link" id="exportLink" ng-click="checkIe()" href="{{encodedStr}}" download="Export.csv"> Export</a>
+    <a class="btn btn-mini pull-right" href="/#/board/{{board._id}}" id="backToSearch"> Normal View</a>
+</div>
+
+

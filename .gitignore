@@ -5,10 +5,11 @@ test/selenium/.gradle
 test/selenium/*.png
 test-console.out
 bower_components
+modules/system/views/version.ejs
 
 ## Secret Config Files
 config.js
-config.test.js
+config/test.js
 views/version.ejs
 
 ## Local Files
@@ -25,6 +26,27 @@ logs
 /test/selenium/build/
 /test/selenium/chromedriver
 /test/selenium/chromedriver.exe
+
+## Pulled at build time
+modules/cde/public/assets/css/bootstrap.min.css
+modules/cde/public/assets/css/font-awesome.min.css
+modules/cde/public/assets/css/select2.css
+modules/cde/public/assets/css/selectize.default.css
+modules/cde/public/assets/fonts/
+modules/cde/public/assets/js/angular-animate.min.js
+modules/cde/public/assets/js/angular-animate.min.js.map
+modules/cde/public/assets/js/angular-resource.min.js
+modules/cde/public/assets/js/angular-resource.min.js.map
+modules/cde/public/assets/js/angular-route.min.js
+modules/cde/public/assets/js/angular-route.min.js.map
+modules/cde/public/assets/js/angular-sanitize.min.js
+modules/cde/public/assets/js/angular-sanitize.min.js.map
+modules/cde/public/assets/js/angular.min.js
+modules/cde/public/assets/js/angular.min.js.map
+modules/cde/public/assets/js/bootstrap.min.js
+modules/cde/public/assets/js/jquery-ui.min.js
+modules/cde/public/assets/js/jquery.min.js
+modules/cde/public/assets/js/jquery.min.map
 
 # OS generated files #
 ######################

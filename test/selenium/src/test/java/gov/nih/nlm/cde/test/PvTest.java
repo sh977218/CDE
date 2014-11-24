@@ -20,14 +20,7 @@ public class PvTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#pv-0 .fa-edit")).click();
         findElement(By.cssSelector("#pv-0 input")).sendKeys(" added to pv");
         findElement(By.cssSelector("#pv-0 .fa-check")).click();
-        findElement(By.cssSelector("button.btn.btn-primary")).click();
-        modalHere();
-        findElement(By.name("changeNote")).sendKeys("Changed PV");
-        findElement(By.name("version")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("version")).sendKeys("4");
-        findElement(By.cssSelector("button.btn.btn-warning")).click();
-        modalGone();
-        goToCdeByName(cdeName);
+        newCdeVersion("Changed PV");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("added to pv"));
         findElement(By.linkText("History")).click();

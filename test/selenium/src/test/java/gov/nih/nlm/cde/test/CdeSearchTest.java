@@ -30,10 +30,10 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         List<WebElement> csElements = csDl.findElements(By.cssSelector("#repeatCs ul li"));
         Assert.assertEquals(csElements.size(), 7);
         List<String> assertList = new ArrayList<>();
-        assertList.add("> GO Trial");
-        assertList.add("> GO New CDEs");
-        assertList.add("> C3D");
-        assertList.add("> caBIG");  
+        assertList.add("GO Trial");
+        assertList.add("GO New CDEs");
+        assertList.add("C3D");
+        assertList.add("caBIG");  
 
         List<String> actualList = new ArrayList<>();
         for (WebElement csElt : csElements) {
@@ -261,6 +261,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
         findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
+        hangon(1);
         findElement(By.xpath("//i[@id=\"li-blank-Qualified\"]")).click();
         textPresent("| Qualified");
         findElement(By.name("ftsearch")).sendKeys("name");

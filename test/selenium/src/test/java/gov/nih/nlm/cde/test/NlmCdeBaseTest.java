@@ -36,7 +36,7 @@ public class NlmCdeBaseTest {
 
     protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
     protected static String browser = System.getProperty("browser");
-    protected static String baseUrl = System.getProperty("testUrl");
+    public static String baseUrl = System.getProperty("testUrl");
 
     protected static String nlm_username = "nlm";
     protected static String nlm_password = "nlm";
@@ -302,11 +302,14 @@ public class NlmCdeBaseTest {
             findElement(By.name("changeNote")).clear();
             findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
         }
+        // assumption is that text is sent before JS can load. So wait 1 sec.
+        hangon(1);
         findElement(By.name("version")).sendKeys(".1");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("confirmNewVersion")));
 //        textNotPresent("This version number has already been used");
         findElement(By.id("confirmNewVersion")).click();
         closeAlert();
+        // wait for ES to refresh.
         hangon(3);
     }
 
@@ -384,17 +387,21 @@ public class NlmCdeBaseTest {
         findElement(By.id("login_button")).click();
         hangon(1);
         // Assumption is that this comes from a CSRF error. So reload the whole page if it fails. 
-        if (driver.findElements(By.id("login_button")).size() > 0) {
-            driver.get(baseUrl);
-            findElement(By.linkText("Log In")).click();
-            System.out.println("Re-clicking Log In");
-            findElement(By.id("uname")).clear();
-            findElement(By.id("uname")).sendKeys(username);
-            findElement(By.id("passwd")).clear();
-            findElement(By.id("passwd")).sendKeys(password);
-            findElement(By.id("login_button")).click();
+        try {
+            findElement(By.linkText(username));
+        } catch (Exception e) {
+            if (driver.findElements(By.id("login_button")).size() > 0) {
+                driver.get(baseUrl);
+                findElement(By.linkText("Log In")).click();
+                System.out.println("Re-clicking Log In");
+                findElement(By.id("uname")).clear();
+                findElement(By.id("uname")).sendKeys(username);
+                findElement(By.id("passwd")).clear();
+                findElement(By.id("passwd")).sendKeys(password);
+                findElement(By.id("login_button")).click();
+                findElement(By.linkText(username));
+            }
         }
-        findElement(By.linkText(username));
     }
 
     private boolean isWindows() {
@@ -496,6 +503,14 @@ public class NlmCdeBaseTest {
             wait.until(ExpectedConditions.elementToBeClickable(By.id("gridView")));
             findElement(By.id("showHideFilters")).click();
         }
+    }
+    
+    protected void deleteClassification(String classificationId) {
+        driver.findElement(By.cssSelector("[id='"+classificationId+"'] [title=\"Remove\"]")).click();
+        modalHere();
+        driver.findElement(By.cssSelector("[id='okRemoveClassificationModal']")).click();
+        modalGone();
+        closeAlert();
     }
 
 }

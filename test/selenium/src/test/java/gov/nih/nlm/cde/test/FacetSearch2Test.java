@@ -37,7 +37,7 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Candidate");
         findElement(By.id("saveRegStatus")).click();
-        hangon(3);
+        hangon(4);
 
         goToCdeSearch();
         findElement(By.id("li-blank-Candidate")).click();
