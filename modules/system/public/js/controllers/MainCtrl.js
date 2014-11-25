@@ -76,6 +76,12 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     $scope.isSiteAdmin = function() {
         return $scope.user !== undefined && $scope.user.siteAdmin;
     };
+    
+    $scope.isDocumentationEditor = function() {
+        if (!$scope.user) return false;
+        if ($scope.user.siteAdmin) return true;
+        if ($scope.user.roles && $scope.user.roles.indexOf('DocumentationEditor') > -1) return true;
+    };
 
     $scope.setMyOrgs = function() {
         if ($scope.user && $scope.user.orgAdmin) {

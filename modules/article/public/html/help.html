@@ -1,9 +1,9 @@
 <!--<div class="container-fluid" ng-include="'/help/public/html/' + help.destination + '.html'"></div>-->
 <div class="container-fluid">
-    <button class="btn btn-default" ng-click="openNewArticleModal()"><i class="fa fa-plus"></i> Add New</button>
+    <button ng-if="isDocumentationEditor()" class="btn btn-default" ng-click="openNewArticleModal()"><i class="fa fa-plus"></i> Add New</button>
     <div ng-switch="editMode">
         <div ng-switch-default>
-            <button class="btn btn-default" ng-click="edit()"><i class="fa fa-pencil"></i> Edit</button>
+            <button ng-if="isDocumentationEditor()" class="btn btn-default" ng-click="edit()"><i class="fa fa-pencil"></i> Edit</button>
             <div ng-bind-html="article.body"/>
         </div> 
         <div ng-switch-when="true">

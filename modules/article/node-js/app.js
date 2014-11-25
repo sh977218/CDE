@@ -1,6 +1,7 @@
 var  path = require('path')
     , express = require('express')
-    , mongo = require('./mongo_article');
+    , mongo = require('./mongo_article')
+    , authorization = require('../../system/node-js/authorization')
 ;
 
 exports.init = function(app) {    
@@ -15,16 +16,20 @@ exports.init = function(app) {
     });
     
     app.post("/article/:key", function(req, res) {
-        if (!req.body.key) {
-            mongo.newArticle(req.params.key, function(err, newArticle) {
-                if (err) res.send(400);
-                else res.send(newArticle);
-            });
+        if (authorization.isDocumentationEditor(req)) {
+            if (!req.body.key) {
+                mongo.newArticle(req.params.key, function(err, newArticle) {
+                    if (err) res.send(400);
+                    else res.send(newArticle);
+                });
+            } else {
+                mongo.update(req.body, function(err, nbAffected) {
+                    if (err) res.send(400);
+                    else res.send("OK");                
+                });
+            }
         } else {
-            mongo.update(req.body, function(err, nbAffected) {
-                if (err) res.send(400);
-                else res.send("OK");                
-            });
+            res.send(403, "Not Authorized");
         }
     });
     

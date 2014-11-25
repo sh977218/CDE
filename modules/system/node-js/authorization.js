@@ -29,3 +29,9 @@ exports.isSiteOrgAdmin = function(req) {
     
     return false;
 };
+
+exports.isDocumentationEditor = function(req) {
+    if (!req.user) return false;
+    if (req.user.siteAdmin) return true;
+    if (req.user.roles && req.user.roles.indexOf('DocumentationEditor') > -1) return true;
+};
