@@ -18,8 +18,24 @@ iConnectionEstablisherCde.connect(function(conn) {
     connection = conn;
 });
 
-exports.byPath = function(path, cb) {
-    Article.findOne({path: path}).exec(cb);
+exports.byKey = function(key, cb) {
+    Article.findOne({key: key}).exec(cb);
 };
+
+exports.newArticle = function(key, cb) {
+    exports.byKey(key, function(err, found) {
+        if (found) cb("Duplicate", null);
+        else {
+            var article = new Article({key: key, body: "This article has no content"});
+            article.save(cb);            
+        }
+    });
+};
+
+exports.update = function(article, cb) {
+    var id = article._id;
+    delete article._id;
+    Article.update({_id: id}, article, {}, cb);
+};  
 
 

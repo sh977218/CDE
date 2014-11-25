@@ -5,7 +5,7 @@ var mongoose = require('mongoose')
 var schemas = {};
 
 schemas.articleSchema = mongoose.Schema({
-    path: String
+    key: String
     , title: String
     , body: String
     , createdBy: {
