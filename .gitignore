@@ -47,6 +47,10 @@ modules/cde/public/assets/js/bootstrap.min.js
 modules/cde/public/assets/js/jquery-ui.min.js
 modules/cde/public/assets/js/jquery.min.js
 modules/cde/public/assets/js/jquery.min.map
+modules/cde/public/assets/css/textAngular.css
+modules/cde/public/assets/js/textAngular-rangy.min.js
+modules/cde/public/assets/js/textAngular-sanitize.min.js
+modules/cde/public/assets/js/textAngular.min.js
 
 # OS generated files #
 ######################
