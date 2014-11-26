@@ -91,11 +91,13 @@
                                     )
                                 </a>                          
                             </li>
+                            <% if (config.modules.article) { %>
                             <li ng-class="{ active: isPageActive('/help')}">
                                 <a class="navbar-link" href="#/help/index">
                                     Help
                                 </a>                          
                             </li>
+                            <% } %>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li ng-class="{ active: isPageActive('/login')}" ng-show='!user._id'><a href="#/login" id="login_link" tabindex="0" alt="Log in" aria-label="Log in">Log In</a></li>
