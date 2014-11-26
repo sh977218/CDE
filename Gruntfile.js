@@ -339,69 +339,72 @@ module.exports = function(grunt) {
         // https://www.npmjs.org/package/grunt-bowercopy
         // Wrangle bower dependencies and place each one where it's supposed to be.
         bowercopy: {
-        	  options: {
-        		  //  source locations with the correct bower folder location
-        	    srcPrefix: 'bower_components'
-        	  },
-        	  js: {
-        	    options: {
-        	    	// prefix for destinations
-        	      destPrefix: 'modules/cde/public/assets'
-        	    },
-        	    files: {
-        	    	// Keys are destinations (prefixed with `options.destPrefix`)
+            options: {
+                //  source locations with the correct bower folder location
+                srcPrefix: 'bower_components'
+            },
+            js: {
+                options: {
+                    // prefix for destinations
+                    destPrefix: 'modules/cde/public/assets'
+                },
+                files: {
+                    // Keys are destinations (prefixed with `options.destPrefix`)
                     // Values are sources (prefixed with `options.srcPrefix`); One source per destination
                     // e.g. 'bower_components/jquery/dist/jquery.min.js' will be copied to 'public/js/jquery.min.js'
-        	      'js/jquery.min.js': 'jquery/jquery.min.js',
-        	      'js/jquery-ui.min.js': 'jquery-ui/ui/minified/jquery-ui.min.js',
-        	      'js/angular.min.js': 'angular/angular.min.js',
-        	      'js/angular-route.min.js': 'angular-route/angular-route.min.js',
-        	      'js/angular-resource.min.js': 'angular-resource/angular-resource.min.js',
-        	      'js/angular-sanitize.min.js': 'angular-sanitize/angular-sanitize.min.js',
-        	      'js/angular-animate.min.js': 'angular-animate/angular-animate.min.js',
-        	      'js/bootstrap.min.js': 'bootstrap/dist/js/bootstrap.min.js'
-        	    }
-        	  },
-        	  map: {
-          	    options: {
-          	    	// prefix for destinations
-          	      destPrefix: 'modules/cde/public/assets'
-          	    },
-          	    files: {
-          	    	// Keys are destinations (prefixed with `options.destPrefix`)
-                      // Values are sources (prefixed with `options.srcPrefix`); One source per destination
-                      // e.g. 'bower_components/jquery/dist/jquery.min.js' will be copied to 'public/js/jquery.min.js'
-          	      'js/jquery.min.map': 'jquery/jquery.min.map',
-          	      'js/angular.min.js.map': 'angular/angular.min.js.map',
-          	      'js/angular-route.min.js.map': 'angular-route/angular-route.min.js.map',
-          	      'js/angular-resource.min.js.map': 'angular-resource/angular-resource.min.js.map',
-          	      'js/angular-sanitize.min.js.map': 'angular-sanitize/angular-sanitize.min.js.map',
-          	      'js/angular-animate.min.js.map': 'angular-animate/angular-animate.min.js.map'
-          	    }
-          	  },
-        	  css: {
-          	    options: {
-          	      destPrefix: 'modules/cde/public/assets'
-          	    },
-          	    files: {
-          	      'css/bootstrap.min.css': 'bootstrap/dist/css/bootstrap.min.css',
-          	      'css/font-awesome.min.css': 'font-awesome/css/font-awesome.min.css',
-          	      'css/select2.css': 'select2/select2.css',
-          	      'css/selectize.default.css': 'selectize/dist/css/selectize.default.css'
-          	    }
-          	  },
-          	  // Copy entire folders
-        	  bootstrapFont: {
-        		  files: {
-                      'modules/cde/public/assets/fonts': 'bootstrap/dist/fonts/*'
-                  }
-          	  },
-          	  fontAwesomeFont: {
-          		  files: {
+                    'js/jquery.min.js': 'jquery/jquery.min.js',
+                    'js/jquery-ui.min.js': 'jquery-ui/ui/minified/jquery-ui.min.js',
+                    'js/angular.min.js': 'angular/angular.min.js',
+                    'js/angular-route.min.js': 'angular-route/angular-route.min.js',
+                    'js/angular-resource.min.js': 'angular-resource/angular-resource.min.js',
+                    'js/angular-sanitize.min.js': 'angular-sanitize/angular-sanitize.min.js',
+                    'js/angular-animate.min.js': 'angular-animate/angular-animate.min.js',
+                    'js/textAngular.min.js': 'textAngular/dist/textAngular.min.js',
+                    'js/textAngular-rangy.min.js': 'textAngular/dist/textAngular-rangy.min.js',
+                    'js/textAngular-sanitize.min.js': 'textAngular/dist/textAngular-sanitize.min.js'
+                }
+            },
+            map: {
+                options: {
+                    // prefix for destinations
+                    destPrefix: 'modules/cde/public/assets'
+                },
+                files: {
+                    // Keys are destinations (prefixed with `options.destPrefix`)
+                    // Values are sources (prefixed with `options.srcPrefix`); One source per destination
+                    // e.g. 'bower_components/jquery/dist/jquery.min.js' will be copied to 'public/js/jquery.min.js'
+                    'js/jquery.min.map': 'jquery/jquery.min.map',
+                    'js/angular.min.js.map': 'angular/angular.min.js.map',
+                    'js/angular-route.min.js.map': 'angular-route/angular-route.min.js.map',
+                    'js/angular-resource.min.js.map': 'angular-resource/angular-resource.min.js.map',
+                    'js/angular-sanitize.min.js.map': 'angular-sanitize/angular-sanitize.min.js.map',
+                    'js/angular-animate.min.js.map': 'angular-animate/angular-animate.min.js.map'
+                }
+            },
+            css: {
+                options: {
+                    destPrefix: 'modules/cde/public/assets'
+                },
+                files: {
+                    'css/bootstrap.min.css': 'bootstrap/dist/css/bootstrap.min.css',
+                    'css/font-awesome.min.css': 'font-awesome/css/font-awesome.min.css',
+                    'css/select2.css': 'select2/select2.css',
+                    'css/selectize.default.css': 'selectize/dist/css/selectize.default.css',
+                    'css/textAngular.css': 'textAngular/src/textAngular.css'
+                }
+            },
+            // Copy entire folders
+            bootstrapFont: {
+                files: {
+                    'modules/cde/public/assets/fonts': 'bootstrap/dist/fonts/*'
+                }
+            },
+            fontAwesomeFont: {
+                files: {
                     'modules/cde/public/assets/fonts': 'font-awesome/fonts/*'
-          		  }
-        	  }
-        	}
+                }
+            }
+        }
         
 //        , watch: {
 //            files: [

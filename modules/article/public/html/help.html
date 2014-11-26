@@ -7,11 +7,10 @@
             <div ng-bind-html="article.body"/>
         </div> 
         <div ng-switch-when="true">
+            <button class="btn btn-default btn-danger" ng-click="cancel()"><i class="fa fa-times"></i> Cancel</button>
             <button class="btn btn-default btn-success" ng-click="save()"><i class="fa fa-floppy-o"></i> Save</button>
             <hr/>
-            <div text-angular ng-model="article.body" ta-toolbar-group-class="btn-group btn-group-sm" ></div>
-            <hr/>
-            <button class="btn btn-default btn-success" ng-click="save()"><i class="fa fa-floppy-o"></i> Save</button>
+            <div text-angular ng-model="article.body" ta-toolbar-group-class="btn-group" ></div>
         </div>
     </div>
 </div>

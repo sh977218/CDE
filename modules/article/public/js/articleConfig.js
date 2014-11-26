@@ -14,10 +14,12 @@ cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$m
     this.name = "HelpCtrl";
     this.destination = $routeParams.helpPage;
     $scope.article = {};
+    $scope.originalBody = {};
     $scope.article.body = "<div ng-if='!elt'><h1 class='pt60 pb40 text-center'><i class='fa fa-spinner fa-spin'></i> Loading...</h1></div>";
     $http.get("/article/" + this.destination).
             success(function (result) {
                 $scope.article = result;
+                $scope.originalBody = $scope.article.body;
             }).
             error(function (result) {
                 $scope.article = {body: "<h1>404 - Page Not Found. You have reached the unreachable.</h1>"};
@@ -33,6 +35,12 @@ cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$m
             delete $scope.editMode;
         });
     };
+
+    $scope.cancel = function() {
+        delete $scope.editMode;
+        $scope.article.body = $scope.originalBody;
+    };
+
 
     $scope.openNewArticleModal = function() {
         var modalInstance = $modal.open({
