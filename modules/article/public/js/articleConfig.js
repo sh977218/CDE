@@ -11,18 +11,19 @@ cdeApp.config(['$routeProvider',
 cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$modal', 
         function ($routeParams, $http, $scope, $window, $modal) {
 
-    this.name = "HelpCtrl";
+
+    $scope.module = "article";
     this.destination = $routeParams.helpPage;
-    $scope.article = {};
+    $scope.elt = {};
     $scope.originalBody = {};
-    $scope.article.body = "<div ng-if='!elt'><h1 class='pt60 pb40 text-center'><i class='fa fa-spinner fa-spin'></i> Loading...</h1></div>";
+    $scope.elt.body = "<div ng-if='!elt'><h1 class='pt60 pb40 text-center'><i class='fa fa-spinner fa-spin'></i> Loading...</h1></div>";
     $http.get("/article/" + this.destination).
             success(function (result) {
-                $scope.article = result;
-                $scope.originalBody = $scope.article.body;
+                $scope.elt = result;
+                $scope.originalBody = $scope.elt.body;
             }).
             error(function (result) {
-                $scope.article = {body: "<h1>404 - Page Not Found. You have reached the unreachable.</h1>"};
+                $scope.elt = {body: "<h1>404 - Page Not Found. You have reached the unreachable.</h1>"};
             });
 
     $scope.edit = function() {
@@ -30,7 +31,7 @@ cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$m
     };
     
     $scope.save = function() {
-        $http.post("/article/" + $scope.article.key, $scope.article).then(function(result) {
+        $http.post("/article/" + $scope.elt.key, $scope.elt).then(function(result) {
             $scope.addAlert("success", "Saved.");
             delete $scope.editMode;
         });
@@ -38,7 +39,7 @@ cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$m
 
     $scope.cancel = function() {
         delete $scope.editMode;
-        $scope.article.body = $scope.originalBody;
+        $scope.elt.body = $scope.originalBody;
     };
 
 
@@ -55,15 +56,18 @@ cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$m
         });          
     };
 
+    $scope.canDoNonCuration = function() {
+        $scope.isDocumentationEditor();
+    };
 
 }]);
 
 cdeApp.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', function($scope, $modalInstance, $http) {
 
-    $scope.article = {};
+    $scope.elt = {};
 
     $scope.ok = function() {
-        $http.post("/article/" + $scope.article.key, {}).
+        $http.post("/article/" + $scope.elt.key, {}).
                 success(function(newArticle) {                      
                     $modalInstance.close(newArticle);
                 }).

@@ -22,6 +22,10 @@ exports.byKey = function(key, cb) {
     Article.findOne({key: key}).exec(cb);
 };
 
+exports.byId = function(id, cb) {
+    Article.findOne({_id: id}).exec(cb);
+};
+
 exports.newArticle = function(key, cb) {
     exports.byKey(key, function(err, found) {
         if (found) cb("Duplicate", null);

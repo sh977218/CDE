@@ -1,6 +1,8 @@
 var  path = require('path')
     , express = require('express')
     , mongo = require('./mongo_article')
+    , mongo_data_system = require('../../system/node-js/mongo-data')
+    , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , authorization = require('../../system/node-js/authorization')
 ;
 
@@ -32,5 +34,52 @@ exports.init = function(app) {
             res.send(403, "Not Authorized");
         }
     });
-    
+  
+
+exports.removeAttachment = function(req, res, dao) {
+    auth.checkOwnership(dao, req.body.id, req, function(err, elt) {
+        if (err) {
+            return res.send(err);
+        }
+        elt.attachments.splice(req.body.index, 1);
+        elt.save(function(err) {
+            if (err) {
+                res.send("error: " + err);
+            } else {
+                res.send(elt);
+            }
+        });
+    });
+};
+  
+    app.post('/attachments/article/add', function(req, res) {
+        if (authorization.isDocumentationEditor(req)) {
+            mongo.byId(req.body.id, function(err, elt) {
+                if (err) res.send(404);
+                else {
+                    mongo_data_system.addAttachment(req.files.uploadedFiles, req.user, "some comment", elt, function() {
+                        res.send(elt);            
+                    });                
+                }
+            });
+        }
+    });
+
+    app.post('/attachments/article/remove', function(req, res) {
+        if (authorization.isDocumentationEditor(req)) {
+            mongo.byId(req.body.id, function(err, elt) {
+                if (err) res.send(404);
+                else {
+                    elt.attachments.splice(req.body.index, 1);
+                    elt.save(function (err) {
+                        if (err) {
+                            res.send(500);
+                        } else {
+                            res.send(elt);
+                        }
+                    });
+                }
+            });
+        }
+    });
 };
