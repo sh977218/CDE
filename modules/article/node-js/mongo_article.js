@@ -19,7 +19,7 @@ iConnectionEstablisherCde.connect(function(conn) {
 });
 
 exports.byKey = function(key, cb) {
-    Article.findOne({key: key}).exec(cb);
+    Article.findOne({key: key, archived: null}).exec(cb);
 };
 
 exports.byId = function(id, cb) {
@@ -30,7 +30,10 @@ exports.newArticle = function(key, cb) {
     exports.byKey(key, function(err, found) {
         if (found) cb("Duplicate", null);
         else {
-            var article = new Article({key: key, body: "This article has no content"});
+            var article = new Article(
+                    {key: key
+                    , body: "This article has no content"
+                    , created: Date.now()});
             article.save(cb);            
         }
     });
@@ -39,7 +42,19 @@ exports.newArticle = function(key, cb) {
 exports.update = function(article, cb) {
     var id = article._id;
     delete article._id;
-    Article.update({_id: id}, article, {}, cb);
+    var newArticle = new Article(article);
+    exports.byId(id, function(err, oldArticle) {
+        oldArticle.archived = true;
+        oldArticle.save(function(err, oldArticle) {
+            if (err) cb(err);
+            else {
+                newArticle.history.push(oldArticle._id);
+                newArticle.updated = Date.now();
+                newArticle.save(cb);
+            }
+        });
+        
+    });
 };  
 
 

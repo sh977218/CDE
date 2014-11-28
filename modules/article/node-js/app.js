@@ -9,7 +9,7 @@ var  path = require('path')
 exports.init = function(app) {    
     app.use("/article/public", express.static(path.join(__dirname, '../public')));
     
-    app.get("/article/:key", function(req, res) {
+    app.get("/article/key/:key", function(req, res) {
         mongo.byKey(req.params.key, function(err, result) {
             if (err) res.send(404);
             else if (!result) res.send(404);
@@ -17,7 +17,15 @@ exports.init = function(app) {
         });
     });
     
-    app.post("/article/:key", function(req, res) {
+    app.get("/article/id/:id", function(req, res) {
+        mongo.byId(req.params.id, function(err, result) {
+            if (err) res.send(404);
+            else if (!result) res.send(404);
+            else res.send(result);
+        });
+    });
+    
+    app.post("/article/key/:key", function(req, res) {
         if (authorization.isDocumentationEditor(req)) {
             if (!req.body.key) {
                 mongo.newArticle(req.params.key, function(err, newArticle) {

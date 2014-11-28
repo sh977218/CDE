@@ -9,6 +9,8 @@ schemas.articleSchema = mongoose.Schema({
     key: String
     , title: String
     , body: String
+    , created: Date
+    , updated: Date
     , createdBy: {
         userId: mongoose.Schema.Types.ObjectId
         , username: String
@@ -18,6 +20,8 @@ schemas.articleSchema = mongoose.Schema({
         , username: String
     } 
     , attachments: [sharedSchemas.attachmentSchema]
+    , history: [ObjectId]
+    , archived: Boolean
 });
 
 schemas.articleSchema.set('collection', 'articles');

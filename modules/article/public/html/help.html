@@ -16,6 +16,12 @@
 </div>
     
 <hr/>
-<div ng-include="'/system/public/html/attachments.html'"></div>
-
+<div tabset ng-if="isDocumentationEditor()">
+   <div tab heading="Attachments">
+        <div ng-include="'/system/public/html/attachments.html'"></div>
+   </div>
+   <div tab heading="History">
+        <div ng-include="'/article/public/html/articleHistory.html'"></div>
+   </div>
+</div>
 
