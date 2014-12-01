@@ -3289,12 +3289,12 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
         locals[parserResult.itemName] = item = scope.matches[activeIdx].model;
         //if (scope.query.indexOf("\'")>-1) scope.query = scope.query.replace(/'\s.+$/,"") + "'";
-        if (scope.query.indexOf("'")>-1) {
-            var lastQuote = scope.query.lastIndexOf("'");
+        if (scope.query.indexOf(" ")>-1) {
+            var lastQuote = scope.query.lastIndexOf(" ");
             scope.query = scope.query.slice(0,-scope.query.length+lastQuote+1);
         }        
         else scope.query = "";
-        model = scope.query + " '" + parserResult.modelMapper(originalScope, locals) + "' ";
+        model = scope.query + "" + parserResult.modelMapper(originalScope, locals) + "";
         $setModelValue(originalScope, model);
         modelCtrl.$setValidity('editable', true);
 

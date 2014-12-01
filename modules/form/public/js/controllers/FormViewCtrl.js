@@ -114,19 +114,21 @@ function FormViewCtrl($scope, $routeParams, $http, Form, isAllowedModel) {
         });
     };
     
-    $scope.typeAheadSelect = function(condition, $item) {
-        if ($scope.languageMode == 'question') return $scope.languageMode = 'operator';
-        if ($scope.languageMode == 'operator') return $scope.languageMode = 'answer';
-        if ($scope.languageMode == 'answer') return $scope.languageMode = 'conjuction';
-        if ($scope.languageMode == 'conjuction') return $scope.languageMode = 'question';
+
+
+    $scope.typeAheadSelect = function(section, $item) {
+        section.skipLogic.condition = "'" + section.skipLogic.condition1 + "' " + section.skipLogic.condition2 + " '" + section.skipLogic.condition3+ "'";
     };
-    
-    $scope.languageOptions = function(previousLevel) {
-        if ($scope.languageMode == 'question') return previousLevel.filter(function(q){return q.elementType === "question";}).map(function(q){return q.label;});
-        if ($scope.languageMode == 'operator') return ["=", "<", ">"];
-        if ($scope.languageMode == 'answer') return ["Answer1", "Answer2", "Answer3"];
-        if ($scope.languageMode == 'conjuction') return ["AND", "OR"];
+  
+    $scope.languageOptions = function(languageMode, previousLevel, questionName) {
+        if (languageMode == 'question') return previousLevel.filter(function(q){return q.elementType === "question";}).map(function(q){return q.label;});
+        if (languageMode == 'operator') return ["=", "<", ">"];
+        if (languageMode == 'answer') {
+            var answers = previousLevel.filter(function(q) {return q.label.trim() === questionName.trim()})[0].question.answers;
+            console.log(answers);
+            return answers.map(function(a) {return a.permissibleValue;});
+        }
+        if (languageMode == 'conjuction') return ["AND", "OR"];
     };
-    
-    $scope.languageMode = 'question'; // question, operator, answer, conjuction
+
 }
