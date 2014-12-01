@@ -34,12 +34,36 @@ public class FormEditTest extends BaseFormTest {
         findElement(By.cssSelector(".fa-check")).click();
         newCdeVersion();
         
-        goToFormByName(formDef);
+        goToFormByName(formName);
         findElement(By.linkText("Form Description")).click();
         textPresent("Some CDEs in this form have newer version");
         textPresent("Cytogenetics Karyotype Mutation Abnormality Cell Count (Outdated)");
-        
-        
     }
+
+    @Test
+    public void formFacets() {
+        gotoPublicForms();
+        searchForm("FormSearchTest");
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Vision Deficit Report");        
+        textPresent("Qualified");      
+        findElement(By.id("status-text-Qualified")).click(); 
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");        
+        textNotPresent("Vision Deficit Report");   
+        findElement(By.id("status-text-Qualified")).click();     
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");        
+        textPresent("Vision Deficit Report");
+        findElement(By.id("status-text-Recorded")).click();  
+        textNotPresent("Skin Cancer Patient");
+        textNotPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Vision Deficit Report");    
+        findElement(By.id("status-text-Recorded")).click();  
+        textPresent("Skin Cancer Patient");
+        textPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Vision Deficit Report");
+    }    
     
 }

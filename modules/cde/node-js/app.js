@@ -112,7 +112,7 @@ exports.init = function(app, daoManager) {
                 res.send(cdesvc.hideProprietaryPvs(cdes[0], req.user));
             }); 
         } else {
-            mongo_data.deByTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, de) {
+            mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, de) {
                 res.send(cdesvc.hideProprietaryPvs(de, req.user));
             });
         }
@@ -154,23 +154,34 @@ exports.init = function(app, daoManager) {
        res.render("boardView"); 
     });
 
-    app.get('/board/:boardId/:start', function(req, res) {
+    app.get('/board/:boardId/:start/:size?', function(req, res) {
+        var size = 20;
+        if (req.params.size) {
+            size = req.params.size;
+        }
+        if (size > 500) {
+            return res.send(403, "Request too large")
+        }
         mongo_data.boardById(req.params.boardId, function (err, board) {
-            if (board.shareStatus !== "Public") {
-                if (!req.isAuthenticated() || (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))) {
-                    return res.send("This board is private");
+            if (board) {
+                if (board.shareStatus !== "Public") {
+                    if (!req.isAuthenticated() || (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))) {
+                        return res.send(403);
+                    }
                 }
+                var totalItems = board.pins.length;
+                var pins = board.pins.splice(req.params.start, size); 
+                board.pins = pins;
+                var idList = [];
+                for (var i = 0; i < pins.length; i++) {
+                    idList.push(pins[i].deTinyId);
+                }
+                mongo_data.cdesByTinyIdList(idList, function(err, cdes) {
+                    res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes), totalItems: totalItems});
+                });
+            } else {
+                res.send(404);
             }
-            var totalItems = board.pins.length;
-            var pins = board.pins.splice(req.params.start, 20); 
-            board.pins = pins;
-            var idList = [];
-            for (var i = 0; i < pins.length; i++) {
-                idList.push(pins[i].deTinyId);
-            }
-            mongo_data.cdesByTinyIdList(idList, function(err, cdes) {
-                res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes), totalItems: totalItems});
-            });
         });
     });
 

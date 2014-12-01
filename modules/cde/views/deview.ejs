@@ -5,62 +5,66 @@
     <div class="alert alert-info mt20" role="alert" ng-show="displayStatusWarning"><i class="fa fa-exclamation-triangle"></i> <strong>Note:</strong> You may not edit this CDE because it is standard.</div> 
     <div class="alert alert-info mt20" role="alert" ng-show="elt.isFork"><i class="fa fa-exclamation-triangle"></i> You are editing a fork. <a tabindex="0" href="/#/deview?cdeId={{rootFork._id}}"> <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.</div> 
 
-    <h1 class="page-header">
-        {{elt.naming[0].designation}}
-        <a class="btn btn-small btn-default" ng-show="showCompareButton(elt)" role="button" tabindex="0" ng-click="addToQuickBoard(elt)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add to Quick Board</a>
-<!--        <span ng-show="elt.isFork && canCurate"><button class="btn btn-default btn-small" ng-click="sendForkNotification()"><i class="fa fa-envelope-o"></i> Send Notification</button> </span>-->
-    </h1>
+    <div ng-if="!elt"><h1 class="pt60 pb40 text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</h1></div>
 
-    <div tabset>
-       <div tab heading="{{tabs['general'].heading}}">
-            <%- include cdegeneraldetails.ejs %>
-            <%- include cdespecificdetails.ejs %>
-       </div>
-       <div tab heading="{{tabs['pvs'].heading}}">
-            <%- include valueDomainView.ejs %>
-        </div>
-        <div tab heading="{{tabs['naming'].heading}}">
-            <%- include deNaming.ejs %>
-        </div>
-        <div tab heading="{{tabs['classification'].heading}}">
-            <%- include ../../system/views/elementClassification.ejs %>
-        </div>
-        <div tab heading="{{tabs['concepts'].heading}}">
-            <%- include concepts.ejs %>
-        </div>
-        <div tab heading="{{tabs['status'].heading}}">
-            <div ng-include="'/system/public/html/status.html'"></div>
-        </div>
-        <div tab heading="{{tabs['properties'].heading}}" active="tabs['properties'].active">
-            <div ng-include="'/system/public/html/properties.html'"></div>
-        </div>
-        <div tab heading="{{tabs['ids'].heading}}" active="tabs['ids'].active">
-            <div ng-include="'/system/public/html/identifiers.html'"></div>
-        </div>
-        <div tab heading="{{tabs['discussions'].heading}}">
-            <div ng-include="'/system/public/html/comments.html'"></div>
-        </div>
-        <div tab heading="{{tabs['boards'].heading}}">
-            <h4>Boards this Data Element is in</h4>
-            <%- include listOfBoards.ejs %>
-        </div>
-        <div tab heading="{{tabs['attachments'].heading}}">
-            <div ng-include="'/system/public/html/attachments.html'"></div>
-        </div>
-        <div tab heading="{{tabs['mlt'].heading}}">
-            <%- include deMlt.ejs %>
-        </div>
-        <div tab heading="{{tabs['history'].heading}}">
-            <%- include cdeHistory.ejs %>
-        </div>
-        <div ng-show="!elt.isFork" tab heading="{{tabs['forks'].heading}}">
-            <div ng-include="'/cde/public/html/forks.html'" ng-controller="ForkCtrl"></div>
-        </div>
-    </div>
+    <div ng-if="elt">
+        <h1 class="page-header">
+            {{elt.naming[0].designation}}
+            <a class="btn btn-small btn-default" ng-show="showCompareButton(elt)" role="button" tabindex="0" ng-click="addToQuickBoard(elt)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add to Quick Board</a>
+    <!--        <span ng-show="elt.isFork && canCurate"><button class="btn btn-default btn-small" ng-click="sendForkNotification()"><i class="fa fa-envelope-o"></i> Send Notification</button> </span>-->
+        </h1>
 
-    <div ng-show="elt.unsaved">
-        <button class="btn cancel" ng-click="revert(elt)">Discard Changes</button>
-        <button class="btn btn-primary" ng-click="openSave(elt, '#/deview?cdeId=')" id="openSave">Save Changes</button>
+        <div tabset>
+           <div tab heading="{{tabs['general'].heading}}">
+                <%- include cdegeneraldetails.ejs %>
+                <%- include cdespecificdetails.ejs %>
+           </div>
+           <div tab heading="{{tabs['pvs'].heading}}">
+                <%- include valueDomainView.ejs %>
+            </div>
+            <div tab heading="{{tabs['naming'].heading}}">
+                <%- include deNaming.ejs %>
+            </div>
+            <div tab heading="{{tabs['classification'].heading}}">
+                <%- include ../../system/views/elementClassification.ejs %>
+            </div>
+            <div tab heading="{{tabs['concepts'].heading}}">
+                <%- include concepts.ejs %>
+            </div>
+            <div tab heading="{{tabs['status'].heading}}">
+                <div ng-include="'/system/public/html/status.html'"></div>
+            </div>
+            <div tab heading="{{tabs['properties'].heading}}" active="tabs['properties'].active">
+                <div ng-include="'/system/public/html/properties.html'"></div>
+            </div>
+            <div tab heading="{{tabs['ids'].heading}}" active="tabs['ids'].active">
+                <div ng-include="'/system/public/html/identifiers.html'"></div>
+            </div>
+            <div tab heading="{{tabs['discussions'].heading}}">
+                <div ng-include="'/system/public/html/comments.html'"></div>
+            </div>
+            <div tab heading="{{tabs['boards'].heading}}">
+                <h4>Boards this Data Element is in</h4>
+                <%- include listOfBoards.ejs %>
+            </div>
+            <div tab heading="{{tabs['attachments'].heading}}">
+                <div ng-include="'/system/public/html/attachments.html'"></div>
+            </div>
+            <div tab heading="{{tabs['mlt'].heading}}">
+                <%- include deMlt.ejs %>
+            </div>
+            <div tab heading="{{tabs['history'].heading}}">
+                <%- include cdeHistory.ejs %>
+            </div>
+            <div ng-show="!elt.isFork" tab heading="{{tabs['forks'].heading}}">
+                <div ng-include="'/cde/public/html/forks.html'" ng-controller="ForkCtrl"></div>
+            </div>
+        </div>
+
+        <div ng-show="elt.unsaved">
+            <button class="btn cancel" ng-click="revert(elt)">Discard Changes</button>
+            <button class="btn btn-primary" ng-click="openSave(elt, '#/deview?cdeId=')" id="openSave">Save Changes</button>
+        </div>
     </div>
 </div>
 

@@ -11,11 +11,13 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
     $scope.org = {};
     
     $scope.updateOrg = function() {
-        if ($scope.orgToManage !== undefined) {
-            $http.get("/org/" + $scope.orgToManage).then(function(response) {
-               $scope.org = response.data;
-            });
-        }
+        $timeout(function () {
+            if ($scope.orgToManage !== undefined) {
+                $http.get("/org/" + $scope.orgToManage).then(function(response) {
+                   $scope.org = response.data;
+                });
+            }
+        }, 0);
     };
     
     $scope.classificationToFilter = function() {
@@ -30,7 +32,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
             $scope.org = org;
             $scope.addAlert("success", "Classification Deleted");
         });
-    };    
+    };
     
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
@@ -39,9 +41,6 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
             resolve: {
                 org: function() {
                     return $scope.org;
-                }   
-                , mode: function() {
-                    return "org";
                 }                 
             }
         });
@@ -82,6 +81,22 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
         });        
     };
     
+    $scope.showRemoveClassificationModal = function(orgName, pathArray) {
+        var modalInstance = $modal.open({
+            templateUrl: '/template/system/removeClassificationModal',
+            controller: RemoveClassificationModalCtrl,
+            resolve: {
+                classifName: function() {
+                    return pathArray[pathArray.length-1];
+                }
+            }
+        });
+
+        modalInstance.result.then(function () {
+            $scope.removeClassification(orgName, pathArray);
+        });
+    };
+
     $scope.showClassifyEntireSearchModal = function (orgName, pathArray) {
         var modalInstance = $modal.open({
           templateUrl: '/template/system/addClassification',

@@ -30,10 +30,10 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         List<WebElement> csElements = csDl.findElements(By.cssSelector("#repeatCs ul li"));
         Assert.assertEquals(csElements.size(), 7);
         List<String> assertList = new ArrayList<>();
-        assertList.add("> GO Trial");
-        assertList.add("> GO New CDEs");
-        assertList.add("> C3D");
-        assertList.add("> caBIG");  
+        assertList.add("GO Trial");
+        assertList.add("GO New CDEs");
+        assertList.add("C3D");
+        assertList.add("caBIG");  
 
         List<String> actualList = new ArrayList<>();
         for (WebElement csElt : csElements) {
@@ -136,7 +136,8 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     public Object[][] getMoreLikeThisData() {
         return new Object[][] {
             { "Patient Gender Category", new String[] {"Person Gender Text Type", "Patient Gender Code"} },
-            { "Ethnic Group Category Text", new String[] {"Participant Ethnic Group Category", "Patient Ethnic Group Category"} },
+            { "Laboratory Procedure Oncotype DX Breast Cancer Assay Result Indicator", 
+                new String[] {"Laboratory Procedure Hematocrit Outcome Status Indicator", "Laboratory Procedure Basophil Outcome Status Indicator"} },
         };
     }
     
@@ -194,16 +195,16 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys("myopathic");
         findElement(By.id("search.submit")).click();    
         Assert.assertTrue(textPresent("| myopathic"));
-        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Permissible Values\"]")).size(), 1);
+        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Permissible Values\"]")).size(), 2);
     }
    
     @Test 
     public void searchHighlightClassif() {
         goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("ataxia");
+        findElement(By.name("ftsearch")).sendKeys("finasteride");
         findElement(By.id("search.submit")).click();    
-        Assert.assertTrue(textPresent("| ataxia"));
-        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Classification\"]")).size(), 5);
+        Assert.assertTrue(textPresent("| finasteride"));
+        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Classification\"]")).size(), 6);
     }
     
     @Test
@@ -211,7 +212,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         String cdeName = "Anal Endoscopy Diagnostic Procedure Performed Other Specify Text";
         openCdeInList(cdeName);
         findElement(By.linkText("SDC View")).click();
-        hangon(1);
+        textPresent(cdeName);
         Assert.assertTrue(findElement(By.id("dd_scopedId")).getText().trim().startsWith("cde.nlm.nih.gov/"));
         Assert.assertEquals("1", findElement(By.id("dd_version")).getText());
         Assert.assertEquals("Anal Endoscopy Diagnostic Procedure Performed Other Specify Text", findElement(By.id("dd_name")).getText());
@@ -253,6 +254,23 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Person Birth Date");
         textPresent("Note: You may not edit this CDE because it is standard.");
+    }
+    
+    @Test
+    public void saveSearchState() {
+        goToCdeSearch();
+        findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
+        findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
+        hangon(1);
+        findElement(By.xpath("//i[@id=\"li-blank-Qualified\"]")).click();
+        textPresent("| Qualified");
+        findElement(By.name("ftsearch")).sendKeys("name");
+        findElement(By.id("search.submit")).click();     
+        textPresent("results for CTEP : CATEGORY | name | Qualified");
+        findElement(By.linkText("Forms")).click();     
+        textNotPresent("CATEGORY");
+        findElement(By.linkText("CDEs")).click();     
+        textPresent("results for CTEP : CATEGORY | name | Qualified");
     }
     
 }

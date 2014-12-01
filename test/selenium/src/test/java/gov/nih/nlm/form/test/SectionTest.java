@@ -9,7 +9,7 @@ import org.openqa.selenium.Dimension;
 public class SectionTest extends BaseFormTest {
 
             
-    @Test
+//    @Test
     public void createForm() {
         mustBeLoggedInAs(ctepCurator_username, password);
 
@@ -29,7 +29,7 @@ public class SectionTest extends BaseFormTest {
         Assert.assertTrue(textPresent("Fill out carefully!"));        
     }
     
-    @Test
+//    @Test
     public void formFacets() {
         gotoPublicForms();
         searchForm("FormSearchTest");
@@ -74,7 +74,7 @@ public class SectionTest extends BaseFormTest {
         }
     }
     
-    @Test
+//    @Test
     public void createEditSection() {
         mustBeLoggedInAs(ctepCurator_username, password);
         String formName = "Section Test Form";
@@ -138,7 +138,7 @@ public class SectionTest extends BaseFormTest {
         
     }
     
-    @Test
+//    @Test
     public void questionsLayoutTest() {
         Dimension currentWindowSize = getWindowSize();
         resizeWindow(1024, 1150);
@@ -183,7 +183,7 @@ public class SectionTest extends BaseFormTest {
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
     }
 
-    @Test
+//    @Test
     public void formPermissionTest() {
         Dimension currentWindowSize = getWindowSize();
         resizeWindow(1024, 1150);
@@ -213,4 +213,20 @@ public class SectionTest extends BaseFormTest {
         
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
     }
+    
+    @Test
+    public void dragHandleVisibility() {
+        mustBeLoggedOut();
+        goToFormByName("Intraoperative Management");
+        findElement(By.linkText("Form Description")).click();
+        Assert.assertEquals(findElement(By.cssSelector("div.formSectionArea")).findElements(By.cssSelector("i.question-move-handle")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.cssSelector("i.section-move-handle")).size(), 0);
+
+        mustBeLoggedInAs(ninds_username, password);
+        goToFormByName("Intraoperative Management");
+        findElement(By.linkText("Form Description")).click();
+        findElement(By.cssSelector("div.formSectionArea")).findElement(By.cssSelector("i.question-move-handle"));
+        findElement(By.cssSelector("div.formSectionArea")).findElement(By.cssSelector("i.section-move-handle"));
+    }
+    
 }

@@ -54,7 +54,7 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
         textPresent(classification);
         textPresent(subClassification);
         findElement(By.id("submit")).click();
-        hangon(1);
+        hangon(4);
         
         // Make sure ctepCurator user can see it
         goToCdeSearch();
@@ -88,7 +88,7 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(wguser_username, password);
         goToCdeByName("Specimen Block Received Count");
         findElement(By.linkText("Classification")).click();
-        addClassificationMethod(new String[]{"WG-TEST", "WG Classif", "WG Sub Classif"});
+        new ClassificationTest().addClassificationMethod(new String[]{"WG-TEST", "WG Classif", "WG Sub Classif"});
         textPresent("WG Sub Classif");
         logout();
         goToCdeByName("Specimen Block Received Count");

@@ -15,31 +15,8 @@ var questionSchema =  {
     , answers: [sharedSchemas.permissibleValueSchema]
 };
 
-//var logicRuleSchema = new Schema({
-//    ruleType: {type: String, enum: ['and', 'or', 'xor']}
-//    , rules: [skipLogicRule]
-//    
-//});
-//
-//var evalRuleSchema = new Schema({
-//    ruleType: {type: String, enum: ['inSubset', 'sum']}
-//    , typeInSubset: {
-//        quesion: String
-//        , answers: [sharedSchemas.permissibleValueSchema]   
-//    }
-//    , typeSum: {
-//        quesions: [String]
-//        , sum: Integer   
-//    }    
-//});
-//
-//var skipLogicRule = new Schema({
-//    ruleType: {type: String, enum: ['logic', 'eval']}
-//    , typeLogic: logicRuleSchema
-//    , typeEval: evalRuleSchema
-//});
+var sectionSchema = {    
 
-var sectionSchema = {
 };
 
 var formElementSchema = new Schema({
@@ -52,7 +29,6 @@ var formElementSchema = new Schema({
     , section: sectionSchema
     , question: questionSchema
     , formElements: [formElementSchema]
-//    , skipLogic:  skipLogicRule
     , skipLogic: {
         action: {type: String, enum: ['show', 'enable']} 
         , condition: String
@@ -73,10 +49,10 @@ exports.formSchema = new Schema({
     ]
     , ids: [
         {source: String, id: String, version: String, _id: false}
-    ]    
+    ] 
+    , isCopyrighted: {type: Boolean, default: false}
     , copyright: {
         authority: String
-        , type: String
         , text: String
     }
     , origin: String

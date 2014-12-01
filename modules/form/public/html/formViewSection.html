@@ -1,7 +1,8 @@
 <div class="panel panel-default" id="section_view_{{$index}}">    
-    <div class="panel-heading">
-        <i class="fa fa-arrows section-move-handle" style="float: left;"></i>
-        <h4><strong><div id="section_title_{{$index}}" inline-edit model="section.label" is-allowed="canCurate" on-ok="stageElt()"></div></strong></h4>
+    <div class="panel-heading">        
+        <h4>
+            <i ng-if="canCurate" class="fa fa-arrows section-move-handle" style="float: left;"></i>
+            <strong><div id="section_title_{{$index}}" inline-edit model="section.label" is-allowed="canCurate" on-ok="stageElt()"></div></strong></h4>
         <div class="row">
             <div class="col-sm-6">
                 <dl class="dl-horizontal">

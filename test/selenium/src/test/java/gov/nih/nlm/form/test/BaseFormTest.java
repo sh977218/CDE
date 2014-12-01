@@ -8,12 +8,14 @@ import org.testng.Assert;
 public class BaseFormTest extends NlmCdeBaseTest {
     
     protected void gotoPublicForms() {
+        goHome();
         findElement(By.linkText("Forms")).click();    
         findElement(By.id("resetSearch")).click();
         showSearchFilters();
     }
     
     protected void saveForm() {
+        scrollToTop();
         findElement(By.id("openSaveBottom")).click();
         findElement(By.name("version")).sendKeys("1");
         findElement(By.id("confirmNewVersion")).click();  

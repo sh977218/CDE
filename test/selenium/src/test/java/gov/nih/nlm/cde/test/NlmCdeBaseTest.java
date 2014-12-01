@@ -22,6 +22,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.TimeoutException;
+import java.util.Random;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -35,7 +36,7 @@ public class NlmCdeBaseTest {
 
     protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
     protected static String browser = System.getProperty("browser");
-    protected static String baseUrl = System.getProperty("testUrl");
+    public static String baseUrl = System.getProperty("testUrl");
 
     protected static String nlm_username = "nlm";
     protected static String nlm_password = "nlm";
@@ -53,6 +54,7 @@ public class NlmCdeBaseTest {
     protected static String boarduserEdit_username = "boarduserEdit";
     protected static String boardUser = "boarduser";
     protected static String pinUser = "pinuser";
+    protected static String docEditor = "docEditor";
     protected static String classificationMgtUser_username = "classificationMgtUser";
     protected static String transferStewardUser_username = "transferStewardUser";
 
@@ -60,6 +62,7 @@ public class NlmCdeBaseTest {
 
     @BeforeTest
     public void setBaseUrl() {
+        hangon(new Random().nextInt(10));
         if (isWindows()) {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
@@ -288,17 +291,27 @@ public class NlmCdeBaseTest {
         }
     }
 
+    
     protected void newCdeVersion() {
+        newCdeVersion(null);
+    }
+    
+    protected void newCdeVersion(String changeNote) {
         findElement(By.id("openSave")).click();
         modalHere();
+        if (changeNote != null) {
+            findElement(By.name("changeNote")).clear();
+            findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
+        }
+        // assumption is that text is sent before JS can load. So wait 1 sec.
+        hangon(1);
         findElement(By.name("version")).sendKeys(".1");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("confirmNewVersion")));
+//        textNotPresent("This version number has already been used");
         findElement(By.id("confirmNewVersion")).click();
-        hangon(2);
-    }
-
-    protected void saveCde() {
-        findElement(By.id("confirmNewVersion")).click();
-        hangon(2);
+        closeAlert();
+        // wait for ES to refresh.
+        hangon(3);
     }
 
     public void hangon(double i) {
@@ -372,12 +385,23 @@ public class NlmCdeBaseTest {
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
+        findElement(By.id("login_button")).click();
+        hangon(1);
+        // Assumption is that this comes from a CSRF error. So reload the whole page if it fails. 
         try {
-            findElement(By.xpath("//button[text() = 'Log In']")).click();
             findElement(By.linkText(username));
-        } catch (NoSuchElementException e) {
-            findElement(By.xpath("//button[text() = 'Log In']")).click();
-            findElement(By.linkText(username));
+        } catch (Exception e) {
+            if (driver.findElements(By.id("login_button")).size() > 0) {
+                driver.get(baseUrl);
+                findElement(By.linkText("Log In")).click();
+                System.out.println("Re-clicking Log In");
+                findElement(By.id("uname")).clear();
+                findElement(By.id("uname")).sendKeys(username);
+                findElement(By.id("passwd")).clear();
+                findElement(By.id("passwd")).sendKeys(password);
+                findElement(By.id("login_button")).click();
+                findElement(By.linkText(username));
+            }
         }
     }
 
@@ -387,10 +411,11 @@ public class NlmCdeBaseTest {
     }
 
     public void addToQuickBoard(String cdeName) {
-        scrollToTop();
+//        scrollToTop();
+        findElement(By.name("ftsearch")).clear();        
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent(cdeName, "#accordionList"));
+        textPresent(cdeName, "#acc_link_0");
         findElement(By.id("addToCompare_0")).click();
         hangon(.5);
         findElement(By.name("ftsearch")).clear();
@@ -467,33 +492,6 @@ public class NlmCdeBaseTest {
         driver.switchTo().window(tabs2.get(i));
     }
 
-    protected void addClassificationMethod(String[] categories) {
-        findElement(By.linkText("Classification")).click();
-        findElement(By.id("addClassification")).click();
-        modalHere();
-        findElement(By.id("classifySlectOrg-" + categories[0])).click();
-
-        // Ensures that tree of classifications have finished loading.
-        Assert.assertTrue(textPresent(categories[1]));
-
-        for (int i = 1; i < categories.length - 1; i++) {
-            findElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link")).click();
-        }
-        findElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button")).click();
-        closeAlert();
-        findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
-        hangon(1);
-        findElement(By.linkText("Classification")).click();
-        String selector = "";
-        for (int i = 1; i < categories.length; i++) {
-            selector += categories[i];
-            if (i < categories.length - 1) {
-                selector += ",";
-            }
-        }
-        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-" + selector + "'] .name")).getText().equals(categories[categories.length - 1]));
-    }
-
     protected void fillInput(String type, String value) {
         findElement(By.xpath("//label[text()=\"" + type + "\"]/following-sibling::input")).sendKeys(value);
     }
@@ -506,6 +504,14 @@ public class NlmCdeBaseTest {
             wait.until(ExpectedConditions.elementToBeClickable(By.id("gridView")));
             findElement(By.id("showHideFilters")).click();
         }
+    }
+    
+    protected void deleteClassification(String classificationId) {
+        driver.findElement(By.cssSelector("[id='"+classificationId+"'] [title=\"Remove\"]")).click();
+        modalHere();
+        driver.findElement(By.cssSelector("[id='okRemoveClassificationModal']")).click();
+        modalGone();
+        closeAlert();
     }
 
 }

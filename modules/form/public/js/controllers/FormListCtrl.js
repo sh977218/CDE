@@ -1,4 +1,4 @@
-function FormListCtrl($scope, $http, $controller) {
+function FormListCtrl($scope, $controller) {
     $scope.module = "form";    
     $controller('ListCtrl', {$scope: $scope});
 }

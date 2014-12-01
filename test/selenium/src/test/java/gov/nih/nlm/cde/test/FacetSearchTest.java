@@ -11,19 +11,30 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class FacetSearchTest extends NlmCdeBaseTest {
+
+    public void clickIfDisplayed(String id) {
+        List<WebElement> elts = driver.findElements(By.id(id));
+        for (int i = 0; i < elts.size(); i++) {
+            if (elts.get(i).isDisplayed()) {
+                elts.get(i).click();
+                i = elts.size();
+            }
+        }
+    }
+    
     @Test
     public void stewardFacets() {
         goToCdeSearch();
-        Assert.assertTrue(textPresent("GRDR (75)"));
+        textPresent("GRDR (75)");
     }
 
     @Test
     public void statusFacets() {
         goToCdeSearch();
-        Assert.assertTrue(textPresent("Qualified (4"));
+        textPresent("Qualified (94");
         findElement(By.id("li-blank-caBIG")).click();
         findElement(By.cssSelector("i.fa-check-square-o"));
-        Assert.assertTrue(textPresent("Qualified (1"));
+        textPresent("Qualified (1");
     }
 
     @Test
@@ -34,26 +45,12 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Traumatic Brain Injury")).click();
         findElement(By.id("li-blank-Acute Hospitalized")).click();
         hangon(1);
-        List<WebElement> elts = driver.findElements(By.id("li-blank-Classification"));
-        for (int i = 0; i < elts.size(); i++) {
-            if (elts.get(i).isDisplayed()) {
-                elts.get(i).click();
-                i = elts.size();
-            }
-        }
+        clickIfDisplayed("li-blank-Classification");
         findElement(By.id("li-blank-Basic")).click();
-        Assert.assertTrue(textPresent("9 results for"));
-        Assert.assertTrue(textPresent("Traffic accident other party role type"));
+        textPresent("88 results for");
         findElement(By.id("li-checked-Acute Hospitalized")).click();
-        Assert.assertTrue(textPresent("24 results for"));
-        elts = driver.findElements(By.id("li-blank-Assessments and Examinations"));
-        for (int i = 0; i < elts.size(); i++) {
-            if (elts.get(i).isDisplayed()) {
-                elts.get(i).click();
-                i = elts.size();
-            }
-        }
-        Assert.assertTrue(textPresent("8 results for"));
+        textPresent("1174 results for");
+        textPresent("Epidemiology (11");
         findElement(By.id("li-checked-Disease")).click();
     }
     
@@ -63,7 +60,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("Study");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("Candidate (10)"));
+        textPresent("Candidate (10)");
         findElement(By.id("li-blank-Candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText("Intervention Trial Study Protocol Document Classification ")));
 
@@ -95,7 +92,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         scrollToTop();
         
         findElement(By.id("resetSearch")).click();
-        Assert.assertTrue(textPresent("Qualified (4"));
+        Assert.assertTrue(textPresent("Qualified (94"));
         findElement(By.name("ftsearch")).sendKeys("Immunology");
         findElement(By.cssSelector("i.fa-search")).click();
         Assert.assertTrue(textPresent("Immunology Gonorrhea Assay Laboratory Finding Result"));
@@ -106,11 +103,11 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("Image");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("caBIG (8)"));
+        textPresent("caBIG (8)");
         findElement(By.id("li-blank-caBIG")).click();
-        Assert.assertTrue(textPresent("Generic Image"));
+        textPresent("Generic Image");
 
-        Assert.assertTrue(textPresent("8 results for"));
+        textPresent("8 results for");
         List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 8);
 
@@ -118,30 +115,30 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("Radiograph Evidence Type"));
         
         findElement(By.id("li-blank-Generic Image")).click();
-        Assert.assertTrue(textPresent("genericimage (2)"));
+        textPresent("genericimage (2)");
         findElement(By.id("li-blank-gov.nih.nci.ivi.genericimage")).click();
-        Assert.assertTrue(textPresent("2 results for"));
+        textPresent("2 results for");
         
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);
         
         // Now test unclicking everything
         findElement(By.id("li-checked-Generic Image")).click();
-        Assert.assertTrue(textPresent("8 results for"));
+        textPresent("8 results for");
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 8);
         
-        Assert.assertTrue(textPresent("Generic Image (2)"));
+        textPresent("Generic Image (2)");
         findElement(By.id("li-blank-Generic Image")).click();
         
-        Assert.assertTrue(textPresent("2 results for"));
+        textPresent("2 results for");
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);
         
         findElement(By.id("li-checked-caBIG")).click();
-        Assert.assertTrue(textPresent("9 results for"));
-        linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 9);
+        textPresent("92 results for");
+
+    
     }
     
     @Test
@@ -151,129 +148,14 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("editStatus")).click();
         modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
-        Assert.assertTrue(textPresent("Standard elements cannot be edited by their stewards"));
+        textPresent("Standard elements cannot be edited by their stewards");
         modalHere();
         findElement(By.id("saveRegStatus")).click();
-        hangon(1);
+        hangon(2);
         goToCdeSearch();  
-        Assert.assertTrue(textPresent("Preferred Standard"));
+        textPresent("Preferred Standard");
         findElement(By.id("li-blank-Preferred Standard")).click();
-        hangon(2);
-        Assert.assertTrue(textPresent("Noncompliant Reason Text"));
+        textPresent("Noncompliant Reason Text");
     }
     
-    @Test
-    public void ownerAndAdminCanSeeLowStatus() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        String cdeName = "Low Status Cde";
-        new CdeCreateTest().createBasicCde(cdeName, "Low Stat Definition", "0.1", "CTEP", "DISEASE", "Lung");
-        goToCdeSearch();
-        findElement(By.id("li-blank-Incomplete")).click();
-        Assert.assertTrue(textPresent(cdeName));
-        
-        mustBeLoggedInAs(cabigAdmin_username, password);
-        goToCdeSearch();
-        hangon(1);
-        if (textPresentTrueFalse("Incomplete (")) {
-            findElement(By.id("li-blank-Incomplete")).click();
-            Assert.assertTrue(textNotPresent(cdeName));
-        }
-        
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeSearch();
-        findElement(By.id("li-blank-Incomplete")).click();
-        Assert.assertTrue(textPresent(cdeName));
-
-        mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName(cdeName);
-        findElement(By.id("editStatus")).click();
-        modalHere();
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Candidate");
-        findElement(By.id("saveRegStatus")).click();
-        hangon(3);
-
-        goToCdeSearch();
-        findElement(By.id("li-blank-Candidate")).click();
-        Assert.assertTrue(textPresent(cdeName));
-        
-        mustBeLoggedInAs(cabigAdmin_username, password);
-        goToCdeSearch();
-        hangon(1);
-        if (textPresentTrueFalse("Candidate (")) {
-            findElement(By.id("li-blank-Candidate")).click();
-            Assert.assertTrue(textNotPresent(cdeName));
-        }
-        
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeSearch();
-        findElement(By.id("ftsearch-input")).sendKeys(cdeName);
-        findElement(By.cssSelector("i.fa-search")).click();
-        hangon(1);
-        findElement(By.id("li-blank-Candidate")).click();
-        Assert.assertTrue(textPresent(cdeName));
-        
-    }
-    
-    @Test
-    public void infoBarClassification() {
-        goToCdeSearch();
-        findElement(By.id("resetSearch")).click();
-        hangon(.5);
-        findElement(By.id("li-blank-NINDS")).click();
-        findElement(By.id("li-blank-Disease")).click();
-        findElement(By.id("li-blank-Amyotrophic Lateral Sclerosis")).click();
-        findElement(By.id("li-blank-Assessments and Examinations")).click();
-        findElement(By.id("li-blank-Physical/Neurological Examination")).click();
-        Assert.assertTrue(textPresent( "NINDS : Disease : Amyotrophic Lateral Sclerosis : Assessments and Examinations : Physical/Neurological Examination" ));
-        findElement(By.id("resetSearch")).click();
-        Assert.assertTrue(textPresent( "All Classifications" ));
-    }
-    
-    @Test
-    public void infoBarStatus() {
-        goToCdeSearch();
-        findElement(By.id("resetSearch")).click();
-        hangon(2);
-        findElement(By.id("li-blank-Qualified")).click();
-        findElement(By.id("li-blank-Recorded")).click();
-        Assert.assertTrue(textPresent( "Qualified, Recorded" ));
-        scrollToTop();
-        findElement(By.id("resetSearch")).click();
-        Assert.assertTrue(textPresent( "All Status" ));
-    }
-    
-        
-    @Test
-    public void infoBarTerms() {
-        goToCdeSearch();
-        findElement(By.id("resetSearch")).click();
-        findElement(By.name("ftsearch")).sendKeys("blah blah blah");
-        findElement(By.cssSelector("i.fa-search")).click();
-        hangon(.5);
-        scrollToTop();
-        Assert.assertTrue(textPresent( "blah blah blah" ));
-        findElement(By.id("resetSearch")).click();
-        Assert.assertTrue(textPresent( "All Terms" ));
-    }
-    
-    @Test
-    public void hoverOverClassifications() {
-        goToCdeSearch();
-        hoverOverElement(findElement(By.linkText("CDEs")));
-        Assert.assertTrue(textNotPresent("Albert Einstein Cancer Center"));
-        hoverOverElement(findElement(By.id("classifications-text-AECC")));
-        Assert.assertTrue(textPresent("Albert Einstein Cancer Center"));
-        hoverOverElement(findElement(By.id("classifications-text-caBIG")));
-        Assert.assertTrue(textNotPresent("Albert Einstein Cancer Center"));
-    }
-    
-    @Test
-    public void lowStatusFilter() {
-        mustBeLoggedInAs(acrin_username, password);
-        goToCdeSearch();
-        textPresent("ACRIN (3)");
-        logout();
-        goToCdeSearch();
-        textNotPresent("ACRIN (3");
-    }
 }

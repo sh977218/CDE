@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
@@ -173,7 +174,8 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.name("search")).clear();            
         findElement(By.name("search")).sendKeys("nlm");
         findElement(By.id("search.submit")).click();
-        hangon(.5);
+
+        wait.until(ExpectedConditions.textToBePresentInElement(findElement(By.id("dd_username_0")), "nlm"));
         Assert.assertEquals("nlm", findElement(By.id("dd_username_0")).getText());
         Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\"]", findElement(By.id("dd_orgAdmin_0")).getText());
         Assert.assertEquals("true", findElement(By.id("dd_siteAdmin_0")).getText());

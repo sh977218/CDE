@@ -1,0 +1,16 @@
+<div class="modal-header">
+    <h4>Create new article</h4>
+</div>
+<form name="saveArticle" role="form">
+<div class="modal-body">
+    <div class="form-group">
+        <label for="changeNote">Key</label>
+        <input class="form-control" name="key" type="text" ng-model="elt.key" required></input>
+    </div>  
+    
+</div>
+<div class="modal-footer">
+    <button class="btn cancel" ng-click="cancelSave()">Cancel</button>
+    <button class="btn btn-warning" ng-click="ok()" ng-disabled="isClean() || saveArticle.$invalid" id="confirmNewArticle">Save</button>
+</div>
+</form>

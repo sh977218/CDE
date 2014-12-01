@@ -26,10 +26,7 @@ public class CdeStewardTest extends NlmCdeBaseTest {
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
         findElement(By.id("elt.stewardOrg.name.ok")).click();
         Assert.assertTrue(textPresent("NINDS"));
-        findElement(By.id("openSave")).click();
-        modalHere();
-        findElement(By.name("version")).sendKeys(".1");
-        saveCde();
+        newCdeVersion();
         Assert.assertEquals("NINDS", findElement(By.id("dd_general_steward")).getText());
         findElement(By.linkText("History")).click();
         findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
@@ -54,10 +51,7 @@ public class CdeStewardTest extends NlmCdeBaseTest {
         hangon(.5);
         findElement(By.id("elt.stewardOrg.name.ok")).click();
         Assert.assertTrue(textPresent("CTEP"));
-        findElement(By.id("openSave")).click();
-        modalHere();
-        findElement(By.name("version")).sendKeys(".1");
-        saveCde();
+        newCdeVersion();
         Assert.assertEquals("CTEP", findElement(By.id("dd_general_steward")).getText());
         
         hoverOverElement(findElement(By.linkText("CTEP")));

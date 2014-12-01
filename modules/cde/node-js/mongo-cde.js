@@ -80,8 +80,14 @@ exports.desByConcept = function (concept, callback) {
     });
 };
 
-exports.deByTinyIdAndVersion = function(tinyId, version, callback) {
+exports.byTinyIdAndVersion = function(tinyId, version, callback) {
     DataElement.findOne({'tinyId': tinyId, "version": version}).exec(function (err, de) {
+       callback("", de); 
+    });
+};
+
+exports.eltByTinyId = function(tinyId, callback) {
+    DataElement.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, de) {
        callback("", de); 
     });
 };
@@ -260,7 +266,6 @@ exports.update = function(elt, user, callback, special) {
         newDe.property = elt.property;
         newDe.properties = elt.properties;
         newDe.valueDomain = elt.valueDomain;
-        newDe.attachments = elt.attachments;
         newDe.ids = elt.ids;
         newDe.classification = elt.classification;
         newDe.stewardOrg.name = elt.stewardOrg.name;

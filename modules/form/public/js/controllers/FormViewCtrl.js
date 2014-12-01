@@ -1,4 +1,4 @@
-function FormViewCtrl($scope, $routeParams, $http, Form, isAllowedModel) {
+function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http) {
     $scope.module = "form";
     $scope.baseLink = '#/formView?_id=';
     $scope.addCdeMode = false;
@@ -74,6 +74,43 @@ function FormViewCtrl($scope, $routeParams, $http, Form, isAllowedModel) {
              return $scope.elt.classification;
          }
     };
+
+    $scope.openAddClassificationModal = function () {
+        var modalInstance = $modal.open({
+          templateUrl: '/template/system/addClassification',
+          controller: ClassifyFormCdesModalCtrl,
+          resolve: {
+                myOrgs: function() {
+                    return $scope.myOrgs;
+                }
+                , cde: function() {
+                    return $scope.elt;
+                }
+                , addClassification: function() {
+                    return {
+                        addClassification: function(newClassification) {
+                            var ids = [];
+                            var getChildren = function(element) {
+                                if (element.question && element.question.cde) {                                    
+                                    ids.push({id: element.question.cde.tinyId, version: element.question.cde.version});
+                                    return;
+                                }  
+                                else element.formElements.forEach(function(e) {
+                                    getChildren(e);
+                                });
+                            };
+                            getChildren($scope.elt);
+                            BulkClassification.classifyTinyidList(ids, newClassification, function(res) {
+                                $scope.addAlert("success", "CDEs classified!");              
+                            });                 
+                        }
+                    };
+                }
+            }          
+        });
+
+    }; 
+
     
     $scope.checkForArchivedCdes = function() {
         var checkArray = [];
@@ -113,8 +150,6 @@ function FormViewCtrl($scope, $routeParams, $http, Form, isAllowedModel) {
             }
         });
     };
-    
-
 
     $scope.updateSkipLogic = function(section) {
         if (!section.skipLogic) return;
@@ -138,5 +173,4 @@ function FormViewCtrl($scope, $routeParams, $http, Form, isAllowedModel) {
         }
         if (languageMode == 'conjuction') return ["AND", "OR"];
     };
-
 }

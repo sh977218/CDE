@@ -18,7 +18,7 @@ public class CompareTest extends NlmCdeBaseTest{
     public void emptyList() {
         goToCdeSearch();
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
-        openCdeInList("Prognostic");
+        openCdeInList("sedation status");
         findElement(By.id("compare_0")).click();
         Assert.assertTrue(textPresent("Quick Board ( 1 )"));      
     }
@@ -34,6 +34,8 @@ public class CompareTest extends NlmCdeBaseTest{
     
     @Test
     public void Compare3Then2Elements() {
+        resizeWindow(1524, 1150);
+
         String cde1 = "Assessment of Motor and Process Skills Assessment Complete Indicator";
         String cde2 = "EuroQOL Complete Indicator";
         String cde3 = "Administration Route of Administration java.lang.String";
@@ -52,8 +54,7 @@ public class CompareTest extends NlmCdeBaseTest{
         findElement(By.id("remove_2")).click();
         
         findElement(By.id("qb.compare")).click();
-        scrollTo("500");
-        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-valid")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-6-valid")));
         textPresent("an observational assessment that is used to measure");        

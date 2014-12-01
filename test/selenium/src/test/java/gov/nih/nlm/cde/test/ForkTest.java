@@ -21,9 +21,7 @@ public class ForkTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='nameEdit']//i")).click();
         findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys(toAdd);
         findElement(By.xpath("//div[@id='nameEdit']//button[text() = ' Confirm']")).click();
-        findElement(By.id("openSave")).click();
-        findElement(By.name("version")).sendKeys(".1");
-        saveCde();
+        newCdeVersion();
     }
     
     @Test
@@ -53,6 +51,7 @@ public class ForkTest extends NlmCdeBaseTest {
         findElement(By.linkText("Forks")).click();
         findElement(By.id("accept_fork_0")).click();
         textPresent("Fork merged");
+        hangon(2);
         
         Assert.assertEquals("Adverse Event Ongoing Event Indicator - ST FORKED", findElement(By.id("dd_general_name")).getText());
         Assert.assertEquals("Standard", findElement(By.id("dd_status")).getText());
@@ -61,9 +60,7 @@ public class ForkTest extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("\"Adverse Event Ongoing Event Indicator\"");
         findElement(By.cssSelector("i.fa-search")).click();
         textPresent("1 results for");
-        textPresent("Adverse Event Ongoing Event Indicator - ST FORKED");       
-
-        
+        textPresent("Adverse Event Ongoing Event Indicator - ST FORKED");               
     }
     
     @Test

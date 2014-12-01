@@ -1,9 +1,10 @@
 package gov.nih.nlm.form.test;
 
+import gov.nih.nlm.cde.test.ClassificationTest;
 import org.testng.annotations.Test;
 import org.openqa.selenium.By;
 
-public class FormClassificationTest extends BaseFormTest{            
+public class FormClassificationTest extends BaseFormTest {            
     @Test
     public void formClassificationLink() {
         goToFormByName("Skin Cancer Patient");
@@ -21,6 +22,70 @@ public class FormClassificationTest extends BaseFormTest{
     public void addClassification() {
         mustBeLoggedInAs("ninds", "pass");
         goToFormByName("Traumatic Brain Injury - Adverse Events");
-        addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
-    }    
+        new ClassificationTest().addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
+    }  
+    
+    @Test
+    public void classifyFormCdes() {
+        resizeWindow(1024, 1300);        
+        mustBeLoggedInAs("ninds", "pass");
+        
+        //Create a new form
+        String formName = "Central Nervous System Malign Neoplasm";
+        String formDef = "Symptoms, onset, treatment.";
+        String formV = "0.1alpha";        
+        createForm(formName, formDef, formV, "NINDS");
+        new SectionTest().addSection("Patient Information", null);
+        new SectionTest().addSection("Diagnostic Methods", null);
+        findElement(By.id("startAddingQuestions")).click();
+        String cde1 = "Informed consent type",
+                cde2 = "Person Birth Date",
+                cde3 = "Imaging contrast agent name";
+        
+        
+        new QuestionTest().addQuestionToSection(cde1, 0);
+        new QuestionTest().addQuestionToSection(cde2, 0);
+        new QuestionTest().addQuestionToSection(cde3, 1); 
+        hangon(2);
+        findElement(By.id("startAddingQuestions")).click();
+        textPresent(cde3);       
+        saveForm();
+        
+        //Modify one of them                        
+        goToCdeByName(cde3);
+        findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
+        findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
+        newCdeVersion();
+        textPresent("[def change number 1]");        
+        
+        //Classify All
+        goToFormByName(formName);
+        findElement(By.linkText("Form Description")).click();
+        findElement(By.id("classifyAllCdes")).click();
+        findElement(By.cssSelector("[id='addClassification-Disease'] span.fake-link")).click();        
+        findElement(By.cssSelector("[id='addClassification-Headache'] span.fake-link")).click();
+        findElement(By.cssSelector("[id='addClassification-Classification'] span.fake-link")).click();        
+        findElement(By.cssSelector("[id='addClassification-Supplemental'] button")).click();        
+        
+        // Verify
+        goToCdeByName(cde1);
+        findElement(By.linkText("Classification")).click();
+        textPresent("Headache");
+        textPresent("Supplemental");
+        goToCdeByName(cde2);
+        findElement(By.linkText("Classification")).click();
+        textPresent("Headache");
+        textPresent("Supplemental");
+        
+        goToCdeByName(cde3);
+        findElement(By.linkText("Classification")).click();
+        textPresent("Headache");
+        textPresent("Supplemental");
+        findElement(By.linkText("History")).click();
+        findElement(By.id("prior-0")).click();
+        findElement(By.linkText("Classification")).click();
+        textPresent("Headache");
+        textPresent("Supplemental");
+    }     
 }

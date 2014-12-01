@@ -15,6 +15,7 @@ var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui
         when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
         when('/boardList', {controller: BoardListCtrl, templateUrl: '/boardList'}).
         when('/cdeSearchExport', {controller: DEListCtrl, templateUrl: '/exportCdeSearch'}).
+        when('/boardExport/:boardId', {controller: ExportCtrl, templateUrl: '/cde/public/html/boardExport.html'}).
         when('/inbox', {controller: InboxCtrl, templateUrl: '/mail/template/inbox'}).
         when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
         when('/quickBoard', {controller: QuickBoardCtrl, templateUrl: '/quickBoard'}).

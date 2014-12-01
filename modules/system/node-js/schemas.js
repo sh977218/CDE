@@ -45,6 +45,7 @@ schemas.userSchema = mongoose.Schema ({
     , quota: Number
     , viewHistory: [String]
     , knownIPs: [String]
+    , roles: [String]
 });
 
 schemas.orgSchema.set('collection', 'orgs');
@@ -76,7 +77,7 @@ schemas.attachmentSchema = mongoose.Schema({
 }, {_id: false});
 
 schemas.registrationStateSchema = {
-    registrationStatus: String
+    registrationStatus: {type: String, index: true}
     , effectiveDate: Date
     , untilDate: Date
     , administrativeNote: String
@@ -91,7 +92,12 @@ schemas.commentSchema = {
     , user: String
     , username: String
     , created: Date
-}
+};
 
+schemas.helpItemSchema = mongoose.Schema({
+    permalink: String
+    , title: String
+    , tags: [String]
+});
 
 module.exports = schemas;

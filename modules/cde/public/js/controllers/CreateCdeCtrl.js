@@ -51,7 +51,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
     };
     
     $scope.classificationToFilter = function() {
-         if ($scope.elt != null) {
+         if ($scope.elt) {
              return $scope.elt.classification;
          } 
     };    
@@ -131,5 +131,22 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
         modalInstance.result.then(function () {
         });
     };
+    
+    $scope.showRemoveClassificationModal = function(orgName, pathArray) {
+        var modalInstance = $modal.open({
+            templateUrl: '/template/system/removeClassificationModal',
+            controller: RemoveClassificationModalCtrl,
+            resolve: {
+                classifName: function() {
+                    return pathArray[pathArray.length-1];
+                }
+            }
+        });
+
+        modalInstance.result.then(function () {
+            $scope.removeClassification(orgName, pathArray);
+        });
+    };
+
     
 }

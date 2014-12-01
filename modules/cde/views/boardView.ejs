@@ -1,6 +1,17 @@
 <h3><center>{{board.name}}<center></h3>
-            
+
+<div class="container-fluid searchInfo">
+    <a href="#/boardExport/{{board._id}}" ng-show="totalItems>0" class="btn btn-default pull-right">
+        <i class="fa fa-table"></i>
+        Grid View
+    </a>
+    <button ng-show="totalItems>0" ng-click="openCloseAllSwitch(cdes, 'list');" class="btn btn-default btn-checkbox pull-right" id="openAllCb">
+        <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
+        <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
+    </button>
+</div>
+
 <div ng-include="'/template/cde/cdeAccordionList'" ng-init="ejsPage = 'board';"></div>
 
-<pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems" page="currentPage"></pagination>
+<pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems" page="currentPage" max-size="10"></pagination>
  

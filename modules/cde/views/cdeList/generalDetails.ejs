@@ -1,24 +1,46 @@
-<h4><strong>General Details</strong></h4>    
-<dl class="dl-horizontal">
-    <dt>Name: </dt>
-    <dd id="dd_general_name" ng-bind-html="cde.primaryNameCopy">    
-    </dd>    
-    <dt>Steward: </dt>
-    <dd ng-bind-html="cde.stewardOrg.name"></dd>        
-    <dt>Definition: </dt><dd id="dd_def" ng-bind-html="cde.primaryDefinitionCopy | placeholdEmpty"></dd>
-    <dt>Used By: </dt>
-    <dd id="dd_usedBy">
-        <span ng-switch="cde.classification.length > 0">
-            <span ng-switch-when="false">None</span>
-            <span ng-switch-default>
-                <span ng-repeat="cl in cde.classification">{{cl.stewardOrg.name}} </span>
+<h4><strong>General Details</strong></h4>
+<table class="table table-border table-responsive accordionlist">
+    <tr>
+        <th>Name:</th>
+        <td id="dd_general_name" ng-bind-html="cde.primaryNameCopy"></td>
+    </tr>
+    <tr>
+        <th>Steward:</th>
+        <td ng-bind-html="cde.stewardOrg.name"></td>
+    </tr>
+    <tr>
+        <th>Definition:</th>
+        <td id="dd_def" ng-bind-html="cde.primaryDefinitionCopy | placeholdEmpty"></td>
+    </tr>
+    <tr>
+        <th>Used By:</th>
+        <td id="dd_usedBy">
+            <span ng-switch="cde.classification.length > 0">
+                <span ng-switch-when="false">None</span>
+                <span ng-switch-default>
+                    <span ng-repeat="cl in cde.classification">{{cl.stewardOrg.name}} </span>
+                </span>
             </span>
-        </span>
-        </dd>
-    <dt>Unit of Measure: </dt>
-    <dd id="dd_uom">{{cde.valueDomain.uom | placeholdEmpty}}</dd>   
-    <dt ng-show="cde.origin">Origin: </dt><dd>{{cde.origin}}</dd>
-    <dt ng-show="cde.source">Source: </dt><dd>{{cde.source}}</dd>
-    <dt id="dt_status">Status: </dt><dd id="dd_status">{{cde.registrationState.registrationStatus}}</dd>
-    <dt ng-show="cde.views">Views: </dt><dd id="dd_views">{{cde.views}}</dd>
-</dl>
+        </td>
+    </tr>
+    <tr>
+        <th>Unit of Measure:</th>
+        <td id="dd_uom">{{cde.valueDomain.uom | placeholdEmpty}}</td>
+    </tr>
+    <tr>
+        <th ng-show="cde.origin">Origin:</th>
+        <td>{{cde.origin}}</td>
+    </tr>
+    <tr>
+        <th ng-show="cde.source">Source:</th>
+        <td>{{cde.source}}</td>
+    </tr>
+    <tr>
+        <th id="dt_status">Status:</th>
+        <td id="dd_status">{{cde.registrationState.registrationStatus}}</td>
+    </tr>
+    <tr>
+        <th ng-show="cde.views">Views:</th>
+        <td id="dd_views">{{cde.views}}</td>
+    </tr>
+</table>
