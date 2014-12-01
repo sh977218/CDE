@@ -63,6 +63,7 @@ var config = {
     }
     , modules: {
         forms: true
+        , article: true
     } 
     , status: {
         timeouts: { 

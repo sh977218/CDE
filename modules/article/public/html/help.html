@@ -1,0 +1,26 @@
+<div class="container-fluid">
+    <button ng-if="isDocumentationEditor()" class="btn btn-default" ng-click="openNewArticleModal()" id="addNewArticle"><i class="fa fa-plus"></i> Add New</button>
+    <div ng-switch="editMode">
+        <div ng-switch-default>
+            <button ng-if="isDocumentationEditor()" class="btn btn-default" ng-click="edit()" id="editArticle"><i class="fa fa-pencil"></i> Edit</button>
+            <div ng-bind-html="elt.body"></div>
+        </div> 
+        <div ng-switch-when="true">
+            <button class="btn btn-default btn-danger" ng-click="cancel()" id='cancelSave'><i class="fa fa-times"></i> Cancel</button>
+            <button class="btn btn-default btn-success" ng-click="save()" id='saveArticle'><i class="fa fa-floppy-o"></i> Save</button>
+            <hr/>
+            <div text-angular ng-model="elt.body" ta-toolbar-group-class="btn-group" ></div>
+        </div>
+    </div>
+</div>
+    
+<hr/>
+<div tabset ng-if="isDocumentationEditor()">
+   <div tab heading="Attachments">
+        <div ng-include="'/system/public/html/attachments.html'"></div>
+   </div>
+   <div tab heading="History">
+        <div ng-include="'/article/public/html/articleHistory.html'"></div>
+   </div>
+</div>
+

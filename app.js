@@ -118,6 +118,9 @@ try {
 
     var formModule = require(path.join(__dirname, './modules/form/node-js/app.js'));
     formModule.init(app, daoManager);
+
+    var articleModule = require(path.join(__dirname, './modules/article/node-js/app.js'));
+    articleModule.init(app, daoManager);
 } catch (e) {
     console.log(e.stack);
     process.exit();

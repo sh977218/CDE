@@ -45,6 +45,7 @@ schemas.userSchema = mongoose.Schema ({
     , quota: Number
     , viewHistory: [String]
     , knownIPs: [String]
+    , roles: [String]
 });
 
 schemas.orgSchema.set('collection', 'orgs');
@@ -92,5 +93,11 @@ schemas.commentSchema = {
     , username: String
     , created: Date
 };
+
+schemas.helpItemSchema = mongoose.Schema({
+    permalink: String
+    , title: String
+    , tags: [String]
+});
 
 module.exports = schemas;
