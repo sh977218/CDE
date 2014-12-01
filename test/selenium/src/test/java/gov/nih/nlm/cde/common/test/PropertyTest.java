@@ -62,7 +62,7 @@ public abstract class PropertyTest extends CommonTest {
         findElement(By.linkText("Properties")).click();
         findElement(By.xpath("//dd[@id='dd_prop_value_0']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//dd[@id='dd_prop_value_0']//button[@btn-radio=\"'html'\"]")).click();
-        findElement(By.xpath("//dd[@id='dd_prop_value_0']//div[@id='taTextElement']")).sendKeys(" Hello From Selenium  ");
+        findElement(By.xpath("//dd[@id='dd_prop_value_0']//div[@contenteditable='true']")).sendKeys(" Hello From Selenium  ");
         findElement(By.xpath("//dd[@id='dd_prop_value_0']//button[@class='fa fa-check']")).click();
         textPresent("Hello From Selenium");
     }

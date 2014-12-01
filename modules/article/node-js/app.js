@@ -43,23 +43,6 @@ exports.init = function(app) {
         }
     });
   
-
-exports.removeAttachment = function(req, res, dao) {
-    auth.checkOwnership(dao, req.body.id, req, function(err, elt) {
-        if (err) {
-            return res.send(err);
-        }
-        elt.attachments.splice(req.body.index, 1);
-        elt.save(function(err) {
-            if (err) {
-                res.send("error: " + err);
-            } else {
-                res.send(elt);
-            }
-        });
-    });
-};
-  
     app.post('/attachments/article/add', function(req, res) {
         if (authorization.isDocumentationEditor(req)) {
             mongo.byId(req.body.id, function(err, elt) {

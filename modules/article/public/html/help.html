@@ -1,14 +1,14 @@
 <!--<div class="container-fluid" ng-include="'/help/public/html/' + help.destination + '.html'"></div>-->
 <div class="container-fluid">
-    <button ng-if="isDocumentationEditor()" class="btn btn-default" ng-click="openNewArticleModal()"><i class="fa fa-plus"></i> Add New</button>
+    <button ng-if="isDocumentationEditor()" class="btn btn-default" ng-click="openNewArticleModal()" id="addNewArticle"><i class="fa fa-plus"></i> Add New</button>
     <div ng-switch="editMode">
         <div ng-switch-default>
-            <button ng-if="isDocumentationEditor()" class="btn btn-default" ng-click="edit()"><i class="fa fa-pencil"></i> Edit</button>
+            <button ng-if="isDocumentationEditor()" class="btn btn-default" ng-click="edit()" id="editArticle"><i class="fa fa-pencil"></i> Edit</button>
             <div ng-bind-html="elt.body"></div>
         </div> 
         <div ng-switch-when="true">
-            <button class="btn btn-default btn-danger" ng-click="cancel()"><i class="fa fa-times"></i> Cancel</button>
-            <button class="btn btn-default btn-success" ng-click="save()"><i class="fa fa-floppy-o"></i> Save</button>
+            <button class="btn btn-default btn-danger" ng-click="cancel()" id='cancelSave'><i class="fa fa-times"></i> Cancel</button>
+            <button class="btn btn-default btn-success" ng-click="save()" id='saveArticle'><i class="fa fa-floppy-o"></i> Save</button>
             <hr/>
             <div text-angular ng-model="elt.body" ta-toolbar-group-class="btn-group" ></div>
         </div>
