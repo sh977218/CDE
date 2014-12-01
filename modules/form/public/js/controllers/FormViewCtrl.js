@@ -119,6 +119,7 @@ function FormViewCtrl($scope, $routeParams, $http, Form, isAllowedModel) {
     $scope.updateSkipLogic = function(section) {
         if (!section.skipLogic) return;
         section.skipLogic.condition = "'" + section.skipLogic.condition1 + "' " + section.skipLogic.condition2 + " '" + section.skipLogic.condition3+ "'";
+        $scope.stageElt();
     };
   
     $scope.languageOptions = function(languageMode, previousLevel, questionName) {
@@ -131,7 +132,8 @@ function FormViewCtrl($scope, $routeParams, $http, Form, isAllowedModel) {
                 return q.label.trim() === questionName.trim()
             });
             if (questions.length<=0) return; 
-            var answers = questions[0].question.answers
+            var question = questions[0];
+            var answers = question.question.answers
             return answers.map(function(a) {return a.permissibleValue;});
         }
         if (languageMode == 'conjuction') return ["AND", "OR"];
