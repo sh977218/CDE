@@ -33,9 +33,9 @@ exports.init = function(app) {
                     else res.send(newArticle);
                 });
             } else {
-                mongo.update(req.body, function(err, nbAffected) {
+                mongo.update(req.body, function(err, newArticle) {
                     if (err) res.send(400);
-                    else res.send("OK");                
+                    else res.send(newArticle);                
                 });
             }
         } else {
