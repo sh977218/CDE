@@ -37,6 +37,8 @@ cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$m
     
     $scope.save = function() {
         $http.post("/article/key/" + $scope.elt.key, $scope.elt).then(function(result) {
+            $scope.elt = result.data;
+            $scope.originalBody = $scope.elt.body;
             $scope.addAlert("success", "Saved.");
             delete $scope.editMode;
         });
