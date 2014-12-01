@@ -58,6 +58,10 @@ cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$m
         modalInstance.result.then(function (newelt) {
             $window.location.href = "/#/help/" + newelt.key;
             $scope.addAlert("success", "Saved.");
+        }, function(reason) {
+            if (reason !== undefined) {
+                $scope.addAlert("danger", reason);
+            }
         });          
     };
 
@@ -77,12 +81,12 @@ cdeApp.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', f
                     $modalInstance.close(newArticle);
                 }).
                 error(function() {
-                    $scope.addAlert("Duplicate key.");
+                    $modalInstance.dismiss("Duplicate key.");
                 });
     };
 
     $scope.cancelSave = function() {
-        $modalInstance.dismiss('cancel');
+        $modalInstance.dismiss();
     };
 
 }]);
