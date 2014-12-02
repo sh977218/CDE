@@ -1,4 +1,4 @@
-<div class="panel panel-default" id="section_view_{{$index}}">    
+<div class="panel panel-default section_view" id="section_view_{{$index}}">    
     <div class="panel-heading">        
         <h4>
             <i ng-if="canCurate" class="fa fa-arrows section-move-handle" style="float: left;"></i>
@@ -11,9 +11,9 @@
                     <dt>Skip Logic </dt>
 
                     <dd ng-show="previousLevel">
-                        <select ng-model="section.skipLogic.condition1" ng-change="updateSkipLogic(section)" ng-options="name for name in [].concat(languageOptions('question',previousLevel))"></select>
-                        <select ng-model="section.skipLogic.condition2" ng-change="updateSkipLogic(section)" ng-options="name for name in [].concat(languageOptions('operator',previousLevel))"></select>
-                        <select ng-model="section.skipLogic.condition3" ng-change="updateSkipLogic(section)" ng-options="name for name in [].concat(languageOptions('answer',previousLevel, section.skipLogic.condition1))"></select>                                              
+                        <select class="skipLogicSelectQuestion" ng-model="section.skipLogic.condition1" ng-change="updateSkipLogic(section)" ng-options="name for name in [].concat(languageOptions('question',previousLevel))"></select>
+                        equals to 
+                        <select class="skipLogicSelectAnswer" ng-model="section.skipLogic.condition3" ng-change="updateSkipLogic(section)" ng-options="name for name in [].concat(languageOptions('answer',previousLevel, section.skipLogic.condition1))"></select>                                              
                     </dd>
 
                     <dt>Cardinality: </dt>

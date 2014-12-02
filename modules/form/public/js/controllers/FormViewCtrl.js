@@ -153,7 +153,7 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
 
     $scope.updateSkipLogic = function(section) {
         if (!section.skipLogic) return;
-        section.skipLogic.condition = "'" + section.skipLogic.condition1 + "' " + section.skipLogic.condition2 + " '" + section.skipLogic.condition3+ "'";
+        section.skipLogic.condition = "'" + section.skipLogic.condition1 + "' = '" + section.skipLogic.condition3+ "'";
         $scope.stageElt();
     };
   
@@ -169,7 +169,7 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
             if (questions.length<=0) return; 
             var question = questions[0];
             var answers = question.question.answers
-            return answers.map(function(a) {return a.permissibleValue;});
+            return answers.map(function(a) {return a.valueMeaningName;});
         }
         if (languageMode == 'conjuction') return ["AND", "OR"];
     };
