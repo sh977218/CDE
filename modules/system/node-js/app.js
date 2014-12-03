@@ -154,9 +154,7 @@ exports.init = function(app) {
     });
 
     app.get('/siteadmins', function(req, res) {
-        var ip = req.ip;
-        console.log(JSON.stringify(req.headers));
-        console.log(req.headers['X-Real-IP']  + " " + req.connection.remoteAddress);
+        var ip = req.remoteAddress || req.ip;
         if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
             mongo_data_system.siteadmins(function(err, users) {
                 res.send(users);
