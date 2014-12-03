@@ -38,6 +38,13 @@
                             <i ng-click="removeElt(elt, $index)" class="fa fa-trash-o" id="removeElt-{{$index}}"></i>
                         </div>                    
                     </dd>
+                    <dt ng-hide="$first && $last">Move:</dt>
+                    <dd>
+                        <div ng-show="canCurate">
+                            <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}" ng-hide="$first" ></i>
+                            <i ng-click="moveElt($index, 1)" class="fa fa-arrow-down" id="moveEltDown-{{$index}}" ng-hide="$last" ></i>
+                        </div>
+                    </dd>                    
                 </dl>
             </div>
         </div>

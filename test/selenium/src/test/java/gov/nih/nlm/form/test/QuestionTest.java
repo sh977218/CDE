@@ -301,7 +301,7 @@ public class QuestionTest extends BaseFormTest {
         Assert.assertTrue(driver.findElements(By.xpath("//*[text()=\"Treatment Details\"]")).size() == 1); 
         findElement(By.xpath("//*[text()=\" Add One\"]")).click();
         Assert.assertTrue(driver.findElements(By.xpath("//*[text()=\"Treatment Details\"]")).size() == 2);              
-        switchTab(0);
+        switchTabAndClose(0);
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());        
     }
     
