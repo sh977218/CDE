@@ -13,7 +13,6 @@ var MongoLogger = winston.transports.MongoLogger = function (options) {
 util.inherits(MongoLogger, winston.Transport);
 
 MongoLogger.prototype.log = function (level, msg, meta, callback) {
-    console.log(msg);
     try {
         var logEvent = JSON.parse(msg);
         logEvent.level = level;
