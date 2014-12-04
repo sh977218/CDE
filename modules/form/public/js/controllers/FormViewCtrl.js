@@ -156,11 +156,57 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
         section.skipLogic.condition = "'" + section.skipLogic.condition1 + "' = '" + section.skipLogic.condition3+ "'";
         $scope.stageElt();
     };
-  
+
+    var tokenSplitter = function(str) {
+        var tokens = [];
+        if (!str) {
+            tokens.unmatched = str;
+            return tokens;
+        }
+        str = str.trim();
+        var res = str.match(/^"([^"]+)"/);
+        if (!res) {
+            tokens.unmatched = str;
+            return tokens;
+        }
+        var t = res[0];
+        str = str.substring(t.length).trim();
+        t = t.substring(1, t.length - 1);
+        tokens.push(t);
+        res = str.match(/^=/);
+        if (!res) {
+            tokens.unmatched = str;
+            return tokens;
+        }
+        t = res[0];
+        tokens.push(t);
+        str = str.substring(t.length).trim();
+        res = str.match(/^".+"/);
+        if (!res) {
+            tokens.unmatched = str;
+            return tokens;
+        }
+        t = res[0];
+        t = t.substring(1, t.length - 1);
+        tokens.push(t);
+
+        tokens.unmatched = str;
+        return tokens; 
+    };
+    
+    $scope.getCurrentOptions = function(currentContent, previousQuestions) {
+        var filterFunc = function(e1) {return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1};
+        var tokens = tokenSplitter(currentContent);
+        if (tokens.length === 0) return $scope.languageOptions("question", previousQuestions).filter(filterFunc);
+        if (tokens.length === 1) return $scope.languageOptions("operator", previousQuestions).map(function(e1) {return currentContent + " " + e1;});
+        if (tokens.length === 2) return $scope.languageOptions("answer", previousQuestions, null, tokens[0]).filter(filterFunc).map(function(e1) {return "\"" + tokens[0] + "\" " + tokens[1] + " " + e1;});
+    };
+    
+      
     $scope.languageOptions = function(languageMode, previousLevel, index, questionName) {
         if (!previousLevel) return;
-        if (languageMode == 'question') return previousLevel.filter(function(q, i){return q.elementType === "question" && i!=index;}).map(function(q){return q.label;});
-        if (languageMode == 'operator') return ["=", "<", ">"];
+        if (languageMode == 'question') return previousLevel.filter(function(q, i){return q.elementType === "question" && i!=index;}).map(function(q){return '"' + q.label + '" ';});
+        if (languageMode == 'operator') return ["= ", "< ", "> "];
         if (languageMode == 'answer') {
             var questions = previousLevel.filter(function(q) {
                 if (q.label && questionName)
@@ -169,7 +215,7 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
             if (questions.length<=0) return; 
             var question = questions[0];
             var answers = question.question.answers
-            return answers.map(function(a) {return a.valueMeaningName;});
+            return answers.map(function(a) {return '"' + a.valueMeaningName + '"';});
         }
         if (languageMode == 'conjuction') return ["AND", "OR"];
     };

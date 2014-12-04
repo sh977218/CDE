@@ -98,9 +98,9 @@ function FormRenderCtrl($scope, $http, $location, $window) {
             var secondRule = /OR.+/.exec(rule)[0].substr(3,100);            
             return $scope.evaluateSkipLogic(firstRule, formElements) || $scope.evaluateSkipLogic(secondRule, formElements);
         }        
-        var question = /^'[^']+'/.exec(rule)[0].substr(1,100).slice(0,-1);
+        var question = /^"[^""]+"/.exec(rule)[0].substr(1,100).slice(0,-1);
         var operator = /=|<|>/.exec(rule)[0];
-        var expectedAnswer = /'[^']+'$/.exec(rule)[0].substr(1,100).slice(0,-1);
+        var expectedAnswer = /"[^""]+"$/.exec(rule)[0].substr(1,100).slice(0,-1);
         var realAnswer = formElements.filter(function(element) {
             if (element.elementType !== 'question') return;
             if (element.label !== question) return;
