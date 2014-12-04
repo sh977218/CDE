@@ -159,12 +159,12 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
   
     $scope.languageOptions = function(languageMode, previousLevel, questionName) {
         if (!previousLevel) return;
-        if (languageMode == 'question') return previousLevel.filter(function(q){return q.elementType === "question";}).map(function(q){return q.label;});
+        if (languageMode == 'question') return previousLevel.filter(function(q, i){return q.elementType === "question" && i!=questionName;}).map(function(q){return q.label;});
         if (languageMode == 'operator') return ["=", "<", ">"];
         if (languageMode == 'answer') {
             var questions = previousLevel.filter(function(q) {
                 if (q.label && questionName)
-                return q.label.trim() === questionName.trim()
+                return q.label.trim() === questionName.trim();
             });
             if (questions.length<=0) return; 
             var question = questions[0];

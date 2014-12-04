@@ -8,12 +8,13 @@
                 <dl class="dl-horizontal">
                     <dt>Instructions: </dt>
                     <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
-                    <dt>Skip Logic </dt>
+                    <dt>Show if: </dt>
 
                     <dd ng-show="previousLevel">
+                        Answer to question 
                         <select class="skipLogicSelectQuestion" ng-model="section.skipLogic.condition1" ng-change="updateSkipLogic(section)" ng-options="name for name in [].concat(languageOptions('question',previousLevel))"></select>
-                        equals to 
-                        <select class="skipLogicSelectAnswer" ng-model="section.skipLogic.condition3" ng-change="updateSkipLogic(section)" ng-options="name for name in [].concat(languageOptions('answer',previousLevel, section.skipLogic.condition1))"></select>                                              
+                        is 
+                        <select class="skipLogicSelectAnswer" ng-model="section.skipLogic.condition3" ng-change="updateSkipLogic(section)" ng-options="name for name in [].concat(languageOptions('answer',previousLevel, null, section.skipLogic.condition1))"></select>                                              
                     </dd>
 
                     <dt>Cardinality: </dt>
@@ -52,7 +53,7 @@
     <div class="panel-body">
         <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">
             <div ng-repeat="(questionIndex, formElement) in section.formElements" id="question_{{$index}}">
-                <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formViewQuestion.html'" ng-init="question = formElement;"></div>
+                <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formViewQuestion.html'" ng-init="previousLevel = section.formElements; question = formElement;"></div>
                 <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'" ng-init="previousLevel = section.formElements; section = formElement;"></div>
             </div>
         </div>
