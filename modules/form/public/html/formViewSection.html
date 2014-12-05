@@ -1,10 +1,11 @@
 <div class="panel panel-default section_view" id="section_view_{{$index}}">    
     <div class="panel-heading">        
         <h4>
-            <i ng-if="canCurate" class="fa fa-arrows section-move-handle" style="float: left;"></i>
-            <strong><div id="section_title_{{$index}}" inline-edit model="section.label" is-allowed="canCurate" on-ok="stageElt()"></div></strong></h4>
+            <i ng-if="canCurate" class="fa fa-arrows section-move-handle" style="float: left;margin-right: 5px"></i>
+            <strong><div id="section_title_{{$index}}" inline-edit model="section.label" is-allowed="canCurate" on-ok="stageElt()"></div></strong>
+        </h4>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <dl class="dl-horizontal">
                     <dt>Instructions: </dt>
                     <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
@@ -12,10 +13,6 @@
                     
                     <dd ng-show="previousLevel">
                         <input type="text" ng-change="stageElt(elt)" ng-model="section.skipLogic.condition" typeahead="opt for opt in getCurrentOptions($viewValue, previousLevel)" typeahead-min-length="0" class="form-control"/>
-<!--                        Answer to question 
-                        <select class="skipLogicSelectQuestion form-control" ng-model="section.skipLogic.condition1" ng-change="updateSkipLogic(section)" ng-options="name for name in [].concat(languageOptions('question',previousLevel))"></select>
-                        is 
-                        <select class="skipLogicSelectAnswer form-control" ng-model="section.skipLogic.condition3" ng-change="updateSkipLogic(section)" ng-options="name for name in [].concat(languageOptions('answer',previousLevel, null, section.skipLogic.condition1))"></select>                                              -->
                     </dd>
 
                     <dt>Cardinality: </dt>
@@ -31,23 +28,8 @@
                         </span>
                     </dd>
                 </dl>
-            </div>
-            <div class="col-sm-6">
-                <dl ng-show="canCurate" class="dl-horizontal">
-                    <dt>Delete:</dt>
-                    <dd>
-                        <div>
-                            <i ng-click="removeElt(elt, $index)" class="fa fa-trash-o" id="removeElt-{{$index}}"></i>
-                        </div>                    
-                    </dd>
-                    <dt ng-hide="$first && $last">Move:</dt>
-                    <dd>
-                        <div ng-show="canCurate">
-                            <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}" ng-hide="$first" ></i>
-                            <i ng-click="moveElt($index, 1)" class="fa fa-arrow-down" id="moveEltDown-{{$index}}" ng-hide="$last" ></i>
-                        </div>
-                    </dd>                    
-                </dl>
+                <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeElt(elt, $index)" title="Remove Section" ng-show="canCurate" id="removeElt-{{$index}}"></i>
+
             </div>
         </div>
     </div>
