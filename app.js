@@ -84,7 +84,12 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-var logFormat = {remoteAddr: ":remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
+var logFormat = {remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
+
+express.logger.token('real-remote-addr', function(req) {
+  if (req._remoteAddress) return req._remoteAddress;
+  if (req.ip) return req.ip;
+});
 
 app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream}));
 
