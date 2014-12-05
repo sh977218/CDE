@@ -89,14 +89,28 @@ var doNextForm = function(result) {
                 elem.where("source").equals("NINDS Variable Name").where("id").equals(elts[j].dataElement[0].name[0]);
             }).exec(function (err, result) {
                 if (result.length > 0) {
-                    newForm.formElements[0].formElements.push({
+                    var question = {
                         elementType: "question"
                         , label: result[0].naming[0].designation
                         , cardinality: "0.1"
                         , question: {
-                            cde: {tinyId: result[0].tinyId, version: "" + result[0].version}
+                            cde: {tinyId: result[0].tinyId, version: "" + result[0].version, permissibleValues: []}
+                            , datatype: result[0].valueDomain.datatype
+                            , required: false 
+                            , uoms: []
+                            , answers: []
                         }
-                    });
+                    };
+                    if (result[0].valueDomain.uom) {
+                        question.question.uoms.push(result[0].valueDomain.uom);
+                    }
+                    if (result[0].valueDomain.permissibleValues.length > 0) {
+                        result[0].valueDomain.permissibleValues.forEach(function(pv) {
+                            question.question.answers.push(pv); 
+                            question.question.cde.permissibleValues.push(pv);
+                        });
+                    }
+                    newForm.formElements[0].formElements.push(question);            
                 } else {
                     console.log("CDE: " + elt.dataElement[0].name[0] + " not found");
                 }

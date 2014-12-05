@@ -253,7 +253,6 @@ a.paginate_button {
     -webkit-transform: none !important;
     transform: none !important;
 }
-/***********************************/
 
 dt.formViewDetails {
     width: auto;
@@ -349,7 +348,6 @@ dd.formViewDetails {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
-/*************************/
 
 .panel.panel-default.ng-isolate-scope{
     overflow: visible;
@@ -369,6 +367,7 @@ dd.formViewDetails {
 .table.accordionlist>tbody>tr>th {
     text-align: right;
     padding-right: 5px;
+}
 
 .section-move-handle {
     float: left;
@@ -384,3 +383,9 @@ dd.formViewDetails {
 .form-inline .form-group.long-field input {
     width: 800px !important;
 }
+
+.ta-scroll-window {
+    max-height: 700px;
+}
+
+
