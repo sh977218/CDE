@@ -4,7 +4,6 @@
             <i ng-if="canCurate" class="fa fa-arrows question-move-handle"></i>
             <span ng-bind-html="question.label | placeholdEmpty" id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></span>
             <span ng-if="question.question.cde.outdated"> (Outdated)</span>
-            <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeQuestion(section, $index)" title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>
         </div>
         <div class="row questionAccordionContent">
             <div class="col-md-6">
@@ -32,12 +31,12 @@
                                id="editQuestion"></i> {{cardinalityOptions[question.cardinality]}}
                         </span>
                     </dd>    
-                    <dd ng-show="previousLevel">
+<!--                    <dd ng-show="previousLevel">
                         Answer to question 
                         <select class="skipLogicSelectQuestion" ng-model="section.skipLogic.condition1" ng-change="updateSkipLogic(section)" ng-options="name for name in [].concat(languageOptions('question',previousLevel,$index))"></select>
                         is 
                         <select class="skipLogicSelectAnswer" ng-model="section.skipLogic.condition3" ng-change="updateSkipLogic(section)" ng-options="name for name in [].concat(languageOptions('answer',previousLevel, null, section.skipLogic.condition1))"></select>                                              
-                    </dd>                    
+                    </dd>                    -->
                     <dt>Datatype: </dt>
                     <dd id="dd_datatype_{{$index}}">{{question.question.datatype | placeholdEmpty }}</dd>
                     <dt ng-show="question.question.datatype === 'Value List'">Multiple Selections: </dt>
