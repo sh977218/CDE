@@ -38,7 +38,7 @@ def contextWhiteList = ['NIDA', 'PhenX'];
 for (int i  = 0; i < deList.DataElement.size(); i++) {
     def cadsrDE = deList.DataElement[i];
     def String workflowStatus = "";
-
+  
     if (cadsrDE.WORKFLOWSTATUS.text().equals('DRAFT NEW')) {
         workflowStatus = 'Candidate';
     } else if (cadsrDE.WORKFLOWSTATUS.text().equals('DRAFT MOD')) {
@@ -205,7 +205,8 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
             && csi.ClassificationSchemeItemName.text()!=""
             && csi.ClassificationSchemeItemName.text()!=null) {
                 // only load allowed classifications
-                if (contextWhiteList.contains(ctx) || (testMode && !contextIgnoreList.contains(ctx))) {
+//                if (contextWhiteList.contains(ctx) || (testMode && !contextIgnoreList.contains(ctx))) {
+                if (testMode && !contextIgnoreList.contains(ctx)) {
                     def list = classificationsArrayMap.get(ctx);
                     if (!list) { 
                         list = [];
@@ -240,10 +241,12 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     if (testMode) {
         deColl.insert(newDE);
     } else {
-        // If not classified, don't load
-        // if Standard, load anyway
-        if ((newDE.get("classification") != null && newDE.get("classification").size() > 0) || "Standard".equals(cadsrDE.REGISTRATIONSTATUS.text())) {
-            deColl.insert(newDE);
+        if (!cadsrDE.LONGNAME.text().contains("java.lang")) {
+            // If not classified, don't load
+            // if Standard, load anyway
+//            if ((newDE.get("classification") != null && newDE.get("classification").size() > 0) || "Standard".equals(cadsrDE.REGISTRATIONSTATUS.text())) {
+                deColl.insert(newDE);
+//            }
         }
     }
 }
