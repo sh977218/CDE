@@ -210,26 +210,23 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
                     $scope.aggregations.flatClassification = [];
                 }
                 
+                $scope.aggregations = $scope.filterOutWorkingGroups($scope.aggregations);
+                
                 OrgHelpers.addLongNameToOrgs($scope.aggregations.lowRegStatusOrCurator_filter.orgs.buckets, $rootScope.orgsDetailedInfo);
              });
         });  
     };   
     
-    $scope.showOrgInClassificationFilter = function(orgName) {
-        if(OrgHelpers.orgIsWorkingGroupOf(orgName, $rootScope.orgsDetailedInfo)) {
-            if($scope.isSiteAdmin()) return true;
-            
-            for(var i=0; i<$scope.myOrgs.length; i++) {
-                if(orgName===$scope.myOrgs[i]) {
-                    return true;
-                }                
-            }
-            
-            return false;
-        }
-        
-        return true;
-    };
+    $scope.filterOutWorkingGroups = function(aggregations) {
+        aggregations.lowRegStatusOrCurator_filter.orgs.buckets = aggregations.lowRegStatusOrCurator_filter.orgs.buckets.filter(function(bucket) {
+            var isWorkingGroup = typeof($rootScope.orgsDetailedInfo[bucket.key].workingGroupOf) === "undefined";
+            var userIsWorkingGroupCurator = $scope.myOrgs.indexOf(bucket.key) > -1;
+            if (isWorkingGroup) var userIsCuratorOfParentOrg = $scope.myOrgs.indexOf($rootScope.orgsDetailedInfo[bucket.key].workingGroupOf) > -1;
+            return isWorkingGroup || userIsWorkingGroupCurator || userIsCuratorOfParentOrg || $scope.user.siteAdmin;
+        });
+        return aggregations;
+    };    
+
 
     $scope.showPinAllModal = function() {
         var modalInstance = $modal.open({
