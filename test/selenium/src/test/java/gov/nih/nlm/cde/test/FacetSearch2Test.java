@@ -85,7 +85,7 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         findElement(By.id("li-checked-Qualified")).click();
         textNotPresent(", Qualified");
         findElement(By.id("li-blank-Recorded")).click();
-        textPresent( "Qualified, Recorded" );
+        textPresent( "Standard, Recorded" );
         scrollToTop();
         findElement(By.id("resetSearch")).click();
         textPresent( "results for All Classifications | All Terms | Preferred Standard, Standard, Qualified" );

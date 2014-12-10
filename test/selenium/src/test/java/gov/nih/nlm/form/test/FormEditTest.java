@@ -46,23 +46,17 @@ public class FormEditTest extends BaseFormTest {
         searchForm("FormSearchTest");
         textPresent("Skin Cancer Patient");
         textPresent("Traumatic Brain Injury - Adverse Events");
+        textNotPresent("Vision Deficit Report");        
+        textPresent(", Qualified");      
+        findElement(By.id("li-checked-Recorded")).click();
         textPresent("Vision Deficit Report");        
-        textPresent("Qualified");      
         findElement(By.id("status-text-Qualified")).click(); 
-        textPresent("Skin Cancer Patient");
-        textPresent("Traumatic Brain Injury - Adverse Events");        
+        textPresent("Vision Deficit Report");        
+        textNotPresent("Skin Cancer Patient");
         textNotPresent("Vision Deficit Report");   
         findElement(By.id("status-text-Qualified")).click();     
         textPresent("Skin Cancer Patient");
         textPresent("Traumatic Brain Injury - Adverse Events");        
-        textPresent("Vision Deficit Report");
-        findElement(By.id("status-text-Recorded")).click();  
-        textNotPresent("Skin Cancer Patient");
-        textNotPresent("Traumatic Brain Injury - Adverse Events");
-        textPresent("Vision Deficit Report");    
-        findElement(By.id("status-text-Recorded")).click();  
-        textPresent("Skin Cancer Patient");
-        textPresent("Traumatic Brain Injury - Adverse Events");
         textPresent("Vision Deficit Report");
     }    
     
