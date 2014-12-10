@@ -40,13 +40,13 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     def String workflowStatus = "";
   
     if (cadsrDE.WORKFLOWSTATUS.text().equals('DRAFT NEW')) {
-        workflowStatus = 'Candidate';
+        workflowStatus = 'Incomplete';
     } else if (cadsrDE.WORKFLOWSTATUS.text().equals('DRAFT MOD')) {
-        workflowStatus = 'Recorded';            
+        workflowStatus = 'Candidate';            
     } else if (cadsrDE.WORKFLOWSTATUS.text().equals('RELEASED')) {
-        workflowStatus = 'Qualified';                        
+        workflowStatus = 'Recorded';                        
     } else if (cadsrDE.WORKFLOWSTATUS.text().equals('APPRVD FOR TRIAL USE')) {
-        workflowStatus = 'Standard';            
+        workflowStatus = 'Qualified';            
     }
     
     if ("Standard".equals(cadsrDE.REGISTRATIONSTATUS.text())) {

@@ -10,14 +10,14 @@
                 <i tabindex="0" ng-show="user._id && ejsPage==='board'" class="fa fa-thumb-tack fa-rotate-90 hand-cursor" ng-click="unpin(board.pins[$index])" title="unPin from Board" id="unpin_{{$index}}" role="link"> </i>          
                 <i tabindex="0" ng-show="showCompareButton(cde) && cPage!=='forms'" class="fa fa-plus hand-cursor" ng-click="accordionIconAction(cde,'addToQuickBoard',$event)" title="Add to Quick Board" id="addToCompare_{{$index}}" role="link"></i>
                 <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-hide="ejsPage!='quickboard'" ng-click="removeDE($index)" title="remove" id="remove_{{$index}}" role="link"></i>
-                <!--<small class="matched-by" ng-show="cde.highlight.matchedBy">Matched by: <strong><span ng-bind-html="cde.highlight.matchedBy"></span></strong></small>-->
+                <small class="matched-by" ng-show="cde.highlight.matchedBy">Matched by: <strong><span ng-bind-html="cde.highlight.matchedBy"></span></strong></small>
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <!--<%- include cdeList/generalDetails.ejs %>-->
+                    <%- include cdeList/generalDetails.ejs %>
                 </div>
                 <div class="col-md-4">
-                    <!--<%- include cdeList/valueDomain.ejs %>-->
+                    <%- include cdeList/valueDomain.ejs %>
                 </div>
                 <div class="col-md-2">
                     <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment" ng-src="/data/{{attachment.fileid}}"  class='cdeAttachmentThumbnail' /> 
