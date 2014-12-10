@@ -47,14 +47,23 @@ public class SkipLogicTest extends BaseFormTest {
                 
         switchTabAndClose(0);
         
-//        findElement(By.id("startAddingQuestions")).click(); 
-//        questionTest.addQuestionToSection("Patient Race Category", 0);
-//        findElement(By.id("startAddingQuestions")).click();
-//        findElement(By.xpath("//span[text()=\"Patient Race Category\" and@id=\"question_accordion_0_1\"]")).click();
+        new SectionTest().addSection("Patient Medical History", null);  
+        findElement(By.id("startAddingQuestions")).click(); 
+        questionTest.addQuestionToSection("Medical history condition type", 1);
+        questionTest.addQuestionToSection("Medical history assessment indicator", 1);
+        findElement(By.id("startAddingQuestions")).click();
+
+        findElement(By.xpath("//span[text()=\"Medical history assessment indicator\" and@id=\"question_accordion_1_0\"]")).click();
+        findElement(By.cssSelector(".section_view .skipLogicCondition")).sendKeys("\"Patient Gender Category\" = \"Female Gender\"");
 //        //new Select(findElement(By.xpath("//*[@id=\"question_1\"]//select[contains(@class, 'skipLogicSelectQuestion')]"))).selectByValue("Patient Gender Category");
 //        //new Select(findElement(By.xpath("//*[@id=\"question_1\"]//select[contains(@class, 'skipLogicSelectAnswer')]"))).selectByValue("Female Gender");
 //        findElement(By.xpath("//*[@id=\\\"question_1\\\"]//select[contains(@class, 'skipLogicSelectQuestion')]")).click();
-//        saveForm(); 
+        saveForm(); 
+        findElement(By.id("formPreview")).click();
+        switchTab(1);
+        textNotPresent("Patient Race Category");
+        new Select(findElement(By.xpath("//div[label[text()=\"Patient Gender Category\"]]/following-sibling::div//select"))).selectByValue("Female Gender");
+        textPresent("Patient Race Category");        
         
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());        
     }

@@ -38,6 +38,9 @@
                         is 
                         <select class="skipLogicSelectAnswer" ng-model="section.skipLogic.condition3" ng-change="updateSkipLogic(section)" ng-options="name for name in [].concat(languageOptions('answer',previousLevel, null, section.skipLogic.condition1))"></select>                                              
                     </dd>                    -->
+                    <dd ng-show="parent">
+                        <input type="text" ng-change="stageElt(elt)" ng-model="question.skipLogic.condition" typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question)" typeahead-min-length="0" class="form-control skipLogicCondition"/>
+                    </dd>
                     <dt>Datatype: </dt>
                     <dd id="dd_datatype_{{$index}}">{{question.question.datatype | placeholdEmpty }}</dd>
                     <dt ng-show="question.question.datatype === 'Value List'">Multiple Selections: </dt>

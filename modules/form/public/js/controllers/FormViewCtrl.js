@@ -194,8 +194,10 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
         return tokens; 
     };
     
-    $scope.getCurrentOptions = function(currentContent, previousQuestions) {
-        var filterFunc = function(e1) {return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1};
+    $scope.getCurrentOptions = function(currentContent, previousQuestions, thisQuestion) {
+        var filterFunc = function(e1) {
+            return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1 && e1.trim().toLowerCase().replace(/"/g,"") !== thisQuestion.label.trim().toLowerCase().replace(/"/g,"");
+        };
         var tokens = tokenSplitter(currentContent);
         if (tokens.length === 0) return $scope.languageOptions("question", previousQuestions).filter(filterFunc);
         if (tokens.length === 1) return $scope.languageOptions("operator", previousQuestions).map(function(e1) {return currentContent + " " + e1;});
