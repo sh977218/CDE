@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class FacetSearch2Test extends NlmCdeBaseTest {
    
-    private FacetSearchTest facetSearchTest = new FacetSearchTest();
+    private final FacetSearchTest facetSearchTest = new FacetSearchTest();
     
     @Test
     public void ownerAndAdminCanSeeLowStatus() {
@@ -80,14 +80,15 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
     public void infoBarStatus() {
         goToCdeSearch();
         findElement(By.id("resetSearch")).click();
+        textPresent(", Qualified");
         hangon(2);
-        findElement(By.id("li-blank-Qualified")).click();
-        textPresent("| Qualified");
+        findElement(By.id("li-checked-Qualified")).click();
+        textNotPresent(", Qualified");
         findElement(By.id("li-blank-Recorded")).click();
         textPresent( "Qualified, Recorded" );
         scrollToTop();
         findElement(By.id("resetSearch")).click();
-        textPresent( "All Status" );
+        textPresent( "results for All Classifications | All Terms | Preferred Standard, Standard, Qualified" );
     }
     
         

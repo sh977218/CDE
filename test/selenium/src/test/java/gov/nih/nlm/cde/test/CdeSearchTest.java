@@ -262,15 +262,16 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
         findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
         hangon(1);
-        findElement(By.xpath("//i[@id=\"li-blank-Qualified\"]")).click();
-        textPresent("| Qualified");
+        textPresent("results for CTEP : CATEGORY | All Terms | Preferred Standard, Standard, Qualified");
+        findElement(By.xpath("//i[@id=\"li-checked-Qualified\"]")).click();
+        textPresent("results for CTEP : CATEGORY | All Terms | Preferred Standard, Standard");
         findElement(By.name("ftsearch")).sendKeys("name");
         findElement(By.id("search.submit")).click();     
-        textPresent("results for CTEP : CATEGORY | name | Qualified");
+        textPresent("0 results for CTEP : CATEGORY | name | Preferred Standard, Standard");
         findElement(By.linkText("Forms")).click();     
         textNotPresent("CATEGORY");
         findElement(By.linkText("CDEs")).click();     
-        textPresent("results for CTEP : CATEGORY | name | Qualified");
+        textPresent("0 results for CTEP : CATEGORY | name | Preferred Standard, Standard");
     }
     
 }

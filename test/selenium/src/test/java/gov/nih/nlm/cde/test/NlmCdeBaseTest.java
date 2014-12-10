@@ -246,20 +246,11 @@ public class NlmCdeBaseTest {
         goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
-        findElement(By.cssSelector("i.fa-search")).click();
-        
-        try {
-            shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), "1 results for"));
-            textPresent(name);
-            findElement(By.id("acc_link_0")).click();
-            hangon(1);
-        } catch (Exception e) {
-            findElement(By.id("status-text-Recorded")).click();
-            textPresent("1 results for");
-            textPresent(name);
-            findElement(By.id("acc_link_0")).click();
-            hangon(1);            
-        }
+        findElement(By.cssSelector("i.fa-search")).click();   
+        textPresent("1 results for");
+        textPresent(name);
+        findElement(By.id("acc_link_0")).click();
+        hangon(1);            
     }
 
     protected void openFormInList(String name) {
