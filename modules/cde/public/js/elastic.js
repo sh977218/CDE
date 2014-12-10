@@ -98,22 +98,12 @@ angular.module('resources')
             
             queryStuff.query.bool.must = [];
 
-//            var script = 
-//            "var csScore = function(doc) {" + 
-//                "if (doc['classification']) {" +  
-//                    "var size = doc['classification'].length;" + 
-//                    "if (size > 10) {return 2.1;} " +
-//                    "else {return 0.1 + 0.2 * size;} " + 
-//                "} else {return .1;}" + 
-//            "};" + 
-//            "(_score + (6 - doc['registrationState.registrationStatusSortOrder'])) * csScore(doc)";
-
             var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
 
             queryStuff.query.bool.must.push({
                 dis_max: {
                     queries: [
-                        {function_score: {script_score: {script: script, lang: "js"}}}
+                        {function_score: {script_score: {script: script}}}
                     ]
                 }
             });
