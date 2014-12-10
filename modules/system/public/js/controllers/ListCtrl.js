@@ -30,6 +30,9 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
     $scope.registrationStatuses = $scope.cache.get($scope.getCacheName("registrationStatuses"));
     if ($scope.registrationStatuses === undefined) {
         $scope.registrationStatuses = JSON.parse(JSON.stringify(regStatusShared.statusList));
+        for (var i in $scope.registrationStatuses) {
+            $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
+        }
     }   
 
     $scope.searchForm.ftsearch = $scope.cache.get($scope.getCacheName("ftsearch")); 
@@ -69,7 +72,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
         delete $scope.selectedOrg;
         $scope.selectedElements = [];
         for (var i in $scope.registrationStatuses) {
-            $scope.registrationStatuses[i].selected = false;
+            $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
         }
         $scope.cache.remove($scope.getCacheName("selectedOrg"));
         $scope.cache.remove($scope.getCacheName("selectedElements"));  
@@ -186,20 +189,10 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
                    $scope.registrationStatuses[j].count = 0; 
                 }
                 if ($scope.aggregations.statuses !== undefined) {
-                    for (var i = 0; i < $scope.registrationStatuses.length; i++) {
-                        var statusFound = false;
+                    for (var i = 0; i < $scope.registrationStatuses.length; i++) {   
                         for (var j = 0; j < $scope.aggregations.statuses.buckets.length; j++) {
                             if ($scope.aggregations.statuses.buckets[j].key === $scope.registrationStatuses[i].name) {
-                                statusFound = true;
-                                
                                 $scope.registrationStatuses[i].count = $scope.aggregations.statuses.buckets[j].lowRegStatusOrCurator_filter.doc_count;
-                            }
-                        }
-                        if (!statusFound) {
-                            if ($scope.registrationStatuses[i].selected) {
-                                $scope.registrationStatuses[i].selected = false;
-                                $scope.reload();
-                                return;
                             }
                         }
                     }

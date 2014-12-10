@@ -101,7 +101,7 @@
         </div>
         <div ng-class="{'col-xs-9' : filterMode===true, 'col-xs-12' : filterMode===false}">
             <span ng-hide="cdes.length >= 0"><h1 class="pl130"><i class="fa fa-spinner fa-spin"></i> Searching...</h1></span>
-            <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found.</h4></span>
+            <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found. Try other criterias or selecting more statuses</h4></span>
             <div id="accordionList" ng-include="'/template/'+module+'/'+module+'AccordionList'"></div>
             <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="searchForm.currentPage"></pagination>
         </div>

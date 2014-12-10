@@ -65,11 +65,16 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         newDE.put("origin", origin); 
     }
     
+    def stewardOrg = "NCI";
+    if (cadsrDE.CONTEXTNAME.text().equals("NIDA")) {
+        stewardOrg = "NIDA";
+    }
+    
     def vd = new BasicDBObject("datatype": cadsrDE.VALUEDOMAIN[0].Datatype.text());
     vd.put("name", cadsrDE.VALUEDOMAIN[0].LongName.text());
     newDE.put("valueDomain", vd);
     newDE.put("registrationState", new BasicDBObject("registrationStatus": workflowStatus));
-    newDE.put("stewardOrg", new BasicDBObject("name", cadsrDE.CONTEXTNAME.text()));
+    newDE.put("stewardOrg", new BasicDBObject("name", stewardOrg ));
     
     BasicDBObject defaultName = new BasicDBObject();
     defaultName.put("designation", cadsrDE.LONGNAME.text());
@@ -196,35 +201,46 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         def csi = cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM[csi_i];
         def ctx = csi.ClassificationScheme[0].ContextName.text();
 
-        // if caBIG > PhenX, replace with PhenX
-        if (ctx.equals("caBIG") && "PhenX".equals(csi.ClassificationScheme[0].PreferredName.text().trim())) {
-            ctx = 'PhenX';
-        }
         if (csi.ClassificationScheme[0].PreferredName.text()!=""
             && csi.ClassificationScheme[0].PreferredName.text()!=null
             && csi.ClassificationSchemeItemName.text()!=""
             && csi.ClassificationSchemeItemName.text()!=null) {
+            // 
+            
+            def classifToAdd;
+            
+            // for cabig > phenx give ownership to phenX
+            if (ctx.equals("caBIG") && "PhenX".equals(csi.ClassificationScheme[0].PreferredName.text().trim())) {
+                classifToAdd = classifications.buildMultiLevelClassif("PhenX", "PhenX", csi.ClassificationSchemeItemName.text());
+            } else {
+                classifToAdd = classifications.buildMultiLevelClassif(stewardOrg, ctx, csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());            
+            }
+
+            classifications.addClassifToDe(classifToAdd, newDE);
+            classifications.addClassifToOrg(classifToAdd);
+
+            
                 // only load allowed classifications
 //                if (contextWhiteList.contains(ctx) || (testMode && !contextIgnoreList.contains(ctx))) {
-                if (testMode || !contextIgnoreList.contains(ctx)) {
-                    def list = classificationsArrayMap.get(ctx);
-                    if (!list) { 
-                        list = [];
-                        classificationsArrayMap.put(ctx,list);
-                    }                
-                    classifications.classify(list, ctx, csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());       
-                }
+//                if (testMode || !contextIgnoreList.contains(ctx)) {
+//                    def list = classificationsArrayMap.get(ctx);
+//                    if (!list) { 
+//                        list = [];
+//                        classificationsArrayMap.put(ctx,list);
+//                    }                
+//                    classifications.classify(list, ctx, csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());       
+//                }
         }
     }
     
-    for (steward in classificationsArrayMap) {
-        def list = steward.value;
-        def stewardClassification = classifications.buildStewardClassifictions(list, steward.key);
-        def classifs = newDE.get("classification");
-        if (!classifs) classifs=[];
-        classifs.add(stewardClassification);   
-        newDE.append("classification",classifs);
-    }
+//    for (steward in classificationsArrayMap) {
+//        def list = steward.value;
+//        def stewardClassification = classifications.buildStewardClassifictions(list, steward.key);
+//        def classifs = newDE.get("classification");
+//        if (!classifs) classifs=[];
+//        classifs.add(stewardClassification);   
+//        newDE.append("classification",classifs);
+//    }
 
 
     
