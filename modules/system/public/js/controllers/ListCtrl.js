@@ -161,6 +161,10 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
         return result;
     };    
     
+    $scope.getUsedBy = function(elt) {
+        return elt.classification.filter(function(c) {return !OrgHelpers.orgIsWorkingGroupOf(c.stewardOrg.name, $scope.orgsDetailedInfo);}).map(function(e) {return e.stewardOrg.name;});
+    };
+    
     $scope.reload = function() {
         if (!$scope.userLoaded) return;
         $scope.accordionListStyle = "semi-transparent";
@@ -171,6 +175,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
             Elastic.generalSearchQuery(query, $scope.module,  function(result) {
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
+                $scope.cdes.forEach(function(elt) {elt.usedBy = $scope.getUsedBy(elt);});
                 $scope.accordionListStyle = "";
                 $scope.openCloseAll($scope.cdes, "list");
                 $scope.totalItems = result.totalNumber;

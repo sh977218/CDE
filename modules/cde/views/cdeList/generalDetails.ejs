@@ -18,7 +18,7 @@
             <span ng-switch="cde.classification.length > 0">
                 <span ng-switch-when="false">None</span>
                 <span ng-switch-default>
-                    <span ng-repeat="cl in cde.classification">{{cl.stewardOrg.name}} </span>
+                    <span ng-repeat="ub in cde.usedBy">{{ub}} </span>
                 </span>
             </span>
         </td>

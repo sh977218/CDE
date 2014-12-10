@@ -206,7 +206,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
             && csi.ClassificationSchemeItemName.text()!=null) {
                 // only load allowed classifications
 //                if (contextWhiteList.contains(ctx) || (testMode && !contextIgnoreList.contains(ctx))) {
-                if (testMode && !contextIgnoreList.contains(ctx)) {
+                if (testMode || !contextIgnoreList.contains(ctx)) {
                     def list = classificationsArrayMap.get(ctx);
                     if (!list) { 
                         list = [];
