@@ -16,6 +16,8 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         new CdeCreateTest().createBasicCde(cdeName, "Low Stat Definition", "0.1", "CTEP", "DISEASE", "Lung");
         goToCdeSearch();
         findElement(By.id("li-blank-Incomplete")).click();
+        findElement(By.id("li-checked-Standard")).click();
+        findElement(By.id("li-blank-Qualified")).click();
         textPresent(cdeName);
         
         mustBeLoggedInAs(cabigAdmin_username, password);
@@ -23,12 +25,16 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         hangon(1);
         if (textPresentTrueFalse("Incomplete (")) {
             findElement(By.id("li-blank-Incomplete")).click();
+            findElement(By.id("li-checked-Qualified")).click();
+            findElement(By.id("li-checked-Standard")).click();
             textNotPresent(cdeName);
         }
         
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         findElement(By.id("li-blank-Incomplete")).click();
+        findElement(By.id("li-checked-Qualified")).click();
+        findElement(By.id("li-checked-Standard")).click();
         textPresent(cdeName);
 
         mustBeLoggedInAs(ctepCurator_username, password);
@@ -41,6 +47,8 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
 
         goToCdeSearch();
         findElement(By.id("li-blank-Candidate")).click();
+        findElement(By.id("li-checked-Standard")).click();
+        findElement(By.id("li-checked-Qualified")).click();
         textPresent(cdeName);
         
         mustBeLoggedInAs(cabigAdmin_username, password);
@@ -57,6 +65,8 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-search")).click();
         hangon(1);
         findElement(By.id("li-blank-Candidate")).click();
+        findElement(By.id("li-checked-Standard")).click();
+        findElement(By.id("li-checked-Qualified")).click();
         textPresent(cdeName);
         
     }
