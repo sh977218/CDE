@@ -295,12 +295,12 @@ public class QuestionTest extends BaseFormTest {
         // Add 2nd Section
         addQuestionToSection("Smoking History Ind", 0);
         addQuestionToSection("First-Line Therapy Chemotherapy Regimen Name", 1);             
-        WebElement sourceElt = findElement(By.xpath("//div[@id=\"section_view_1\"]/div/h4/i"));
-        WebElement targetElt = findElement(By.id("section_drop_area_0"));
+        WebElement sourceElt = findElement(By.xpath("//div[@id=\"section_view_1\"]//i[contains(@class,\"section-move-handle\")]"));
+        WebElement targetElt = findElement(By.xpath("//div[@id=\"section_drop_area_0\"]//*[@id=\"question_accordion_0_0\"]"));
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
         hangon(1);
         
-        String cardXPath = "//*[@class='dragQuestions ng-pristine ng-valid ui-sortable']//dd[@id='dd_card_0']";
+        String cardXPath = "//*[contains(@class,'dragQuestions')]//dd[@id='dd_card_0']";
         Assert.assertEquals("Exactly 1", findElement(By.xpath(cardXPath)).getText().trim());
         findElement(By.xpath(cardXPath + "//i")).click();
         new Select(findElement(By.xpath(cardXPath + "//select"))).selectByVisibleText("1 or more");
@@ -309,7 +309,7 @@ public class QuestionTest extends BaseFormTest {
         saveForm();        
         goToFormByName(formName);
         findElement(By.linkText("Form Description")).click();        
-        findElement(By.xpath("//div[@id=\"section_drop_area_0\"]//div[@id=\"section_drop_area_0\"]//span[text()=\"First-Line Therapy Chemotherapy Regimen Name\"]")); 
+        findElement(By.xpath("//div[@id=\"section_drop_area_0\"]//div[@id=\"section_drop_area_child\"]//span[text()=\"First-Line Therapy Chemotherapy Regimen Name\"]")); 
         
         findElement(By.id("formPreview")).click();
         switchTab(1);

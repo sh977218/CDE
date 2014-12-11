@@ -59,7 +59,7 @@ public class SkipLogicTest extends BaseFormTest {
         textNotPresent("Person Birth Date");
         new Select(findElement(By.xpath("//div[label[text()=\"Patient Gender Category\"]]/following-sibling::div//select"))).selectByValue("Female Gender");
         textPresent("Person Birth Date");        
-        
+        switchTabAndClose(0); 
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());        
     }
     
