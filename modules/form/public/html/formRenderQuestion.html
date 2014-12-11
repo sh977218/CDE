@@ -1,4 +1,4 @@
-<div class="col-md-3">
+<div ng-show="evaluateSkipLogic(question.skipLogic.condition, formElements)" class="col-md-3">
   <label>{{question.label}}</label>                      
 </div>
 <div ng-switch="question.question.datatype" class="col-md-9">

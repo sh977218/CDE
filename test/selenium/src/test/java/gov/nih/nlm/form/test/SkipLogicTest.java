@@ -29,6 +29,7 @@ public class SkipLogicTest extends BaseFormTest {
 
         // Add 2nd Section
         questionTest.addQuestionToSection("Patient Gender Category", 0);
+        questionTest.addQuestionToSectionSafe("Person Birth Date", 0);
         questionTest.addQuestionToSection("Breast Carcinoma Estrogen Receptor Status", 1);             
         WebElement sourceElt = findElement(By.cssSelector("#section_view_1 .section-move-handle"));
         WebElement targetElt = findElement(By.id("section_drop_area_0"));
@@ -45,25 +46,19 @@ public class SkipLogicTest extends BaseFormTest {
         new Select(findElement(By.xpath("//div[label[text()=\"Patient Gender Category\"]]/following-sibling::div//select"))).selectByValue("Female Gender");
         textPresent("Female Patient Screening");
                 
-        switchTabAndClose(0);
+        switchTabAndClose(0);       
         
-        new SectionTest().addSection("Patient Medical History", null);  
         findElement(By.id("startAddingQuestions")).click(); 
-        questionTest.addQuestionToSection("Medical history condition type", 1);
-        questionTest.addQuestionToSection("Medical history assessment indicator", 1);
         findElement(By.id("startAddingQuestions")).click();
 
-        findElement(By.xpath("//span[text()=\"Medical history assessment indicator\" and@id=\"question_accordion_1_0\"]")).click();
-        findElement(By.cssSelector(".section_view .skipLogicCondition")).sendKeys("\"Patient Gender Category\" = \"Female Gender\"");
-//        //new Select(findElement(By.xpath("//*[@id=\"question_1\"]//select[contains(@class, 'skipLogicSelectQuestion')]"))).selectByValue("Patient Gender Category");
-//        //new Select(findElement(By.xpath("//*[@id=\"question_1\"]//select[contains(@class, 'skipLogicSelectAnswer')]"))).selectByValue("Female Gender");
-//        findElement(By.xpath("//*[@id=\\\"question_1\\\"]//select[contains(@class, 'skipLogicSelectQuestion')]")).click();
+        findElement(By.xpath("//span[text()=\"Person Birth Date\" and@id=\"question_accordion_0_0\"]")).click();
+        findElement(By.xpath("//*[@class=\"formQuestion_Person Birth Date\"]//*[contains(@class,'skipLogicCondition ')]")).sendKeys("\"Patient Gender Category\" = \"Female Gender\"");
         saveForm(); 
         findElement(By.id("formPreview")).click();
         switchTab(1);
-        textNotPresent("Patient Race Category");
+        textNotPresent("Person Birth Date");
         new Select(findElement(By.xpath("//div[label[text()=\"Patient Gender Category\"]]/following-sibling::div//select"))).selectByValue("Female Gender");
-        textPresent("Patient Race Category");        
+        textPresent("Person Birth Date");        
         
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());        
     }

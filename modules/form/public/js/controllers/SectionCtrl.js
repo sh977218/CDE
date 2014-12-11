@@ -19,6 +19,10 @@ function SectionCtrl($scope, $modal, $timeout, $http) {
     $scope.sortableOptionsSections = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
+        , receive: function(e, ui) {
+            if (!ui.item.sortable.moved) return ui.item.sortable.cancel();
+            if (ui.item.sortable.moved.tinyId || ui.item.sortable.moved.elementType === "question") ui.item.sortable.cancel();
+        }
     };        
 
     $scope.sortableOptions = {
