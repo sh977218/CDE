@@ -267,6 +267,7 @@ public class NlmCdeBaseTest {
         goToSearch(type);
         if (status != null) {
             findElement(By.id("li-blank-" + status)).click();
+            hangon(1);
         }        
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");

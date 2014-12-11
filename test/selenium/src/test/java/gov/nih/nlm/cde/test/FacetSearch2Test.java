@@ -33,7 +33,9 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         findElement(By.id("li-blank-Incomplete")).click();
+        hangon(1);
         findElement(By.id("li-checked-Qualified")).click();
+        hangon(1);
         findElement(By.id("li-checked-Standard")).click();
         textPresent(cdeName);
 
