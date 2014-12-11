@@ -12,7 +12,14 @@ public abstract class PropertyTest extends CommonTest {
         findElement(By.id("addProperty")).click();
         modalHere();
         findElement(By.name("key")).sendKeys(checkString);
-        Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
+        try {
+            Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
+        } catch (Exception e) {
+            System.out.println("Re-typing autocomplete text");
+            findElement(By.name("key")).clear();
+            findElement(By.name("key")).sendKeys(checkString); 
+            Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
+        }
         goHome();
     }
     

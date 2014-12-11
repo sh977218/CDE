@@ -240,14 +240,12 @@ public class NlmCdeBaseTest {
         try {
             openEltInList(name, type, status);
             findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
-            Assert.assertTrue(textPresent("Classification"));
-            Assert.assertTrue(textPresent(name));
         } catch (Exception e) {
             hangon(1);
             findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
-            Assert.assertTrue(textPresent("Classification"));
-            Assert.assertTrue(textPresent(name));
         }
+        textPresent("Classification");
+        textPresent(name);
     }
 
     protected void openCdeInList(String name) {
