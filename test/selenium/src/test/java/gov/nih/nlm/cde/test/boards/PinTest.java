@@ -91,6 +91,7 @@ public class PinTest extends BoardTest {
         findElement(By.id("li-blank-General (For all diseases)")).click();
         findElement(By.id("li-blank-Classification")).click();
         findElement(By.id("li-blank-Core")).click();
+        hangon(1);
         findElement(By.id("pinAll")).click();
         findElement(By.linkText("Cerebral Palsy > Public Review")).click();
         modalGone();

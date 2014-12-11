@@ -6,6 +6,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.openqa.selenium.Dimension;
 
 public class OrgAdminTest extends NlmCdeBaseTest {
 
@@ -87,6 +88,8 @@ public class OrgAdminTest extends NlmCdeBaseTest {
     
     @Test
     public void cdesTransferSteward() {
+        Dimension currentWindowSize = getWindowSize();
+        resizeWindow(1524, 1150);            
         mustBeLoggedInAs(transferStewardUser_username, password);
         
         // create 2 cdes
@@ -132,6 +135,7 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
         findElement(By.linkText("CDE & Form Management")).click();
+        scrollTo("0");
         
         new Select(findElement(By.name("transferSteward_from"))).selectByVisibleText(org1);
         new Select(findElement(By.name("transferSteward_to"))).selectByVisibleText("LCC");
@@ -150,6 +154,7 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         findElement(By.id("transferStewardButton")).click();
         textPresent("8 CDEs transferred.");
         textPresent("2 forms transferred.");
+        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());  
     }
     
 }

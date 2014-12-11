@@ -56,7 +56,7 @@ done
 
 if [ "$curl_res" == "$target" ] 
 then
-    gradle -b test/selenium/build.gradle -PtestUrl=http://localhost:3001 -PforkNb=12 -Ptimeout=8 -Pbrowser=chrome clean test & 
+    gradle -b test/selenium/build.gradle -PtestUrl=http://localhost:3001 -PforkNb=8 -Ptimeout=8 -Pbrowser=chrome clean test & 
     #gradle -b test/selenium/build.gradle -PtestUrl=http://localhost:3001  -Pbrowser=chrome -PforkNb=12 -Ptimeout=8 clean test --tests gov.nih.nlm.cde.test.MergeTest* &
     export NODE_ENV=test
     node $NODE_LOC/app > test-console.out
