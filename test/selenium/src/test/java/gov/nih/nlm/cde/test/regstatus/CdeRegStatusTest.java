@@ -83,6 +83,8 @@ public class CdeRegStatusTest extends RegStatusTest {
         closeAlert();
         hangon(1);
         goToSearchByMenu();
+        findElement(By.id("showHideFilters")).click();
+        findElement(By.id("li-blank-Standard")).click();
         hangon(1);
         Assert.assertTrue(textPresent("4 results for"));
     }
