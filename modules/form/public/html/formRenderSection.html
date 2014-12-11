@@ -13,7 +13,7 @@
     </div>
     <div class="panel-body">
       <div ng-repeat="formElement in section.formElements track by $index" class="row">
-            <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'" ng-init="question = formElement;"></div>
+            <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'" ng-init="formElements = section.formElements; question = formElement;"></div>
             <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'" ng-init="formElements = section.formElements; section = formElement;"></div>          
       </div>
     </div>
