@@ -62,9 +62,12 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         textPresent("Candidate (10)");
         findElement(By.id("li-checked-Qualified")).click();
+        hangon(1);
         findElement(By.id("li-checked-Standard")).click();
+        hangon(1);
         try {
             findElement(By.id("li-checked-Preferred Standard")).click();
+            hangon(1);
         } catch (Exception e) {}
 
         findElement(By.id("li-blank-Candidate")).click();
