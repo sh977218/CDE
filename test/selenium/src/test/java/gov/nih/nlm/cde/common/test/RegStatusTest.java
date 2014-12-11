@@ -8,7 +8,7 @@ public abstract class RegStatusTest extends CommonTest {
  
     public void changeRegistrationStatus(String eltName, String user, String from, String to) {
         mustBeLoggedInAs(user, password);
-        goToEltByName(eltName);
+        goToEltByName(eltName, from);
         textPresent(from);
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(to);

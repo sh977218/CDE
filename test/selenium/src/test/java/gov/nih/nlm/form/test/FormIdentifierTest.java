@@ -17,7 +17,7 @@ public class FormIdentifierTest extends IdentifiersTest {
     
     @Test
     public void addRemoveFormId() {
-        addRemoveId("Vision Deficit Report");
+        addRemoveId("Vision Deficit Report", "Recorded");
     }
     
     

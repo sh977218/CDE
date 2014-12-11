@@ -23,12 +23,12 @@ public class CdeCommentTest extends CommentTest {
 
     @Test
     public void orgAdminCanRemoveCdeComment() {
-        orgAdminCanRemoveComment("Genbank");
+        orgAdminCanRemoveComment("Genbank", null);
     }
 
     @Test
     public void siteAdminCanRemoveCdeComment() {
-        siteAdminCanRemoveComment("Genbank");
+        siteAdminCanRemoveComment("Genbank", null);
     }
 
 }

@@ -22,12 +22,12 @@ public class FormPropertyTest extends PropertyTest {
 
     @Test
     public void addRemoveFormProperty() {
-        addRemoveProperty("Form Property Test");
+        addRemoveProperty("Form Property Test", "Recorded");
     }
     
     @Test
     public void richPropText() {
-        richText("Form Rich Text Property Test");
+        richText("Form Rich Text Property Test", "Recorded");
     }
     
 }

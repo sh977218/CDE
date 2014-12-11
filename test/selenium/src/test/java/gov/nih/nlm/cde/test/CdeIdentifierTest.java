@@ -7,7 +7,7 @@ public class CdeIdentifierTest extends IdentifiersTest {
     
     @Test
     public void addRemoveCdeId() {
-        addRemoveId("Intravesical Protocol Agent Administered Specify");
+        addRemoveId("Intravesical Protocol Agent Administered Specify", null);
     }
     
     @Override

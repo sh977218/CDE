@@ -59,7 +59,7 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
         
         new CdeRegStatusTest().changeRegistrationStatus("Test CDE for Test Working Group", ctepCurator_username, "Incomplete", "Recorded");
 
-        goToCdeByName("Test CDE for Test Working Group");
+        goToCdeByName("Test CDE for Test Working Group", "Recorded");
         findElement(By.linkText("Classification")).click();
         new ClassificationTest().addClassificationMethod(new String[]{"Test Working Group", classification, subClassification});
                 

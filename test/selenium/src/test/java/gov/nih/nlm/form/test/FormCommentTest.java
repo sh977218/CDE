@@ -22,12 +22,12 @@ public class FormCommentTest extends CommentTest {
 
     @Test
     public void orgAdminCanRemoveFormComment() {
-        orgAdminCanRemoveComment("Form Comment Test");
+        orgAdminCanRemoveComment("Form Comment Test", "Recorded");
     }
 
     @Test
     public void siteAdminCanRemoveFormComment() {
-        siteAdminCanRemoveComment("Form Property Test");
+        siteAdminCanRemoveComment("Form Property Test", "Recorded");
     }
 
 }
