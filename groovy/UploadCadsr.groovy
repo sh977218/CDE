@@ -218,32 +218,9 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
 
             classifications.addClassifToDe(classifToAdd, newDE);
             classifications.addClassifToOrg(classifToAdd);
-
-            
-                // only load allowed classifications
-//                if (contextWhiteList.contains(ctx) || (testMode && !contextIgnoreList.contains(ctx))) {
-//                if (testMode || !contextIgnoreList.contains(ctx)) {
-//                    def list = classificationsArrayMap.get(ctx);
-//                    if (!list) { 
-//                        list = [];
-//                        classificationsArrayMap.put(ctx,list);
-//                    }                
-//                    classifications.classify(list, ctx, csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());       
-//                }
         }
     }
-    
-//    for (steward in classificationsArrayMap) {
-//        def list = steward.value;
-//        def stewardClassification = classifications.buildStewardClassifictions(list, steward.key);
-//        def classifs = newDE.get("classification");
-//        if (!classifs) classifs=[];
-//        classifs.add(stewardClassification);   
-//        newDE.append("classification",classifs);
-//    }
-
-
-    
+        
     def usedByOrgs = [];    
     for (int ani = 0; ani < cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.size(); ani++) {
         def an = cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM[ani];
@@ -258,11 +235,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         deColl.insert(newDE);
     } else {
         if (!cadsrDE.LONGNAME.text().contains("java.lang")) {
-            // If not classified, don't load
-            // if Standard, load anyway
-//            if ((newDE.get("classification") != null && newDE.get("classification").size() > 0) || "Standard".equals(cadsrDE.REGISTRATIONSTATUS.text())) {
-                deColl.insert(newDE);
-//            }
+            deColl.insert(newDE);
         }
     }
 }

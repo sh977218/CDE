@@ -3,8 +3,6 @@
 import com.mongodb.*;
 import com.mongodb.util.JSON;
 
-//@Field DBCollection orgColl = db.getCollection("orgs");
-
 public class Classifications {
     DBCollection orgColl;
     public Classifications(DBCollection org){
@@ -71,39 +69,6 @@ public class Classifications {
         orgColl.update(new BasicDBObject("name", newClassif.get("stewardOrg").get("name")), foundOrg);
     };
 
-//    def buildClassif = {conceptSystem, concept, stewardOrgName ->
-//        def newClassif = new BasicDBObject();
-//        newClassif.put("conceptSystem", conceptSystem)
-//        newClassif.put("concept", concept)
-//        newClassif.put("stewardOrg", new BasicDBObject("name", stewardOrgName));
-//        newClassif;
-//    }
-
-
-//    def classify (ArrayList<BasicDBObject> classificationArray, String stewardOrgName, String conceptSystem, String concept) {
-//        def classif = buildClassif(conceptSystem, concept, stewardOrgName);
-//        saveClassif(classif);
-//        def conceptObj = new BasicDBObject();
-//        conceptObj.put("name",concept);  
-//        conceptObj.put("elements",[]); 
-//        def existed = false;
-//        for (int i=0; i<classificationArray.size(); i++) {
-//            def classification = classificationArray.get(i);
-//            if (classification.get("name")==conceptSystem) {
-//                def elements = classification.get("elements");
-//                elements.add(conceptObj);
-//                classification.put("elements",elements);
-//                existed = true;            
-//            }
-//        }
-//        if (!existed) {
-//            def conceptSystemObj =  new BasicDBObject();
-//            conceptSystemObj.put("name", conceptSystem);
-//            conceptSystemObj.put("elements", [conceptObj]);
-//            classificationArray.add(conceptSystemObj);
-//        }
-//    }
-    
     def BasicDBObject buildStewardClassifictions (ArrayList<BasicDBObject> stewardClassificationsArray, String stewardOrgName){
         def stewardClassification = new BasicDBObject();
         stewardClassification.put("stewardOrg", new BasicDBObject("name", stewardOrgName));
