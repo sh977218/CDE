@@ -1,13 +1,20 @@
-<div class="panel panel-default" id="section_view_{{$index}}">    
-    <div class="panel-heading">        
-        <h4>
-            <i ng-if="canCurate" class="fa fa-arrows section-move-handle" style="float: left;"></i>
-            <strong><div id="section_title_{{$index}}" inline-edit model="section.label" is-allowed="canCurate" on-ok="stageElt()"></div></strong></h4>
+<div class="panel panel-default section_view" id="section_view_{{$index}}">    
+    <div class="panel-heading">                     
+        <h4>  
+            <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeElt(parent, $index)" title="Remove Section" ng-show="canCurate" id="removeElt-{{$index}}"></i>  
+            <strong><i ng-if="canCurate" class="fa fa-arrows section-move-handle"></i><div id="section_title_{{$index}}" inline-edit model="section.label" is-allowed="canCurate" on-ok="stageElt()"></div></strong>
+        </h4>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <dl class="dl-horizontal">
                     <dt>Instructions: </dt>
                     <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
+                    <dt>Show if: </dt>
+                    
+                    <dd ng-show="parent">
+                        <input type="text" ng-change="stageElt(elt)" ng-model="section.skipLogic.condition" typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements)" typeahead-min-length="0" class="form-control skipLogicCondition"/>
+                    </dd>
+
                     <dt>Cardinality: </dt>
                     <dd id="dd_card_{{$index}}">
                         <span ng-show="editCardMode">
@@ -38,14 +45,14 @@
                         </div>
                     </dd>
                 </dl>
-            </div>
+            </div>           
         </div>
     </div>
     <div class="panel-body">
-        <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions" id="section_drop_area_{{$index}}">
+        <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions" id="{{!isSubSection?'section_drop_area_'+$index:'section_drop_area_child'}}">
             <div ng-repeat="(questionIndex, formElement) in section.formElements" id="question_{{$index}}">
-                <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formViewQuestion.html'" ng-init="question = formElement;"></div>
-                <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'" ng-init="section = formElement;"></div>
+                <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formViewQuestion.html'" ng-init="parent = section; question = formElement;"></div>
+                <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'" ng-init="parent = section; section = formElement;isSubSection = true;"></div>
             </div>
         </div>
         <div ng-show="section.formElements.length === 0">

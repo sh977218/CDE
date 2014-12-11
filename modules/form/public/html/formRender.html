@@ -41,7 +41,7 @@
             <h2>{{myForm.naming[0].designation}}</h2>
             <form name="sectionLabel" role="form" class="form-inline">      
                 <div ng-repeat="formElement in myForm.formElements track by $index" class="row">
-                    <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'" ng-init="question = formElement;"></div>
+                    <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'" ng-init="question = formElement;  formElements = myForm.formElements;"></div>
                     <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'" ng-init="section = formElement; formElements = myForm.formElements;"></div>
                 </div>
             </form>

@@ -16,6 +16,7 @@ var questionSchema =  {
 };
 
 var sectionSchema = {    
+
 };
 
 var formElementSchema = new Schema({
@@ -28,7 +29,12 @@ var formElementSchema = new Schema({
     , section: sectionSchema
     , question: questionSchema
     , formElements: [formElementSchema]
+    , skipLogic: {
+        action: {type: String, enum: ['show', 'enable']} 
+        , condition: String
+    }
 }, {_id: false});
+
 
 exports.formSchema = new Schema({
     tinyId: String
