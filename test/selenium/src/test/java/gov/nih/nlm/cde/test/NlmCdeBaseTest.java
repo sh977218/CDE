@@ -251,9 +251,14 @@ public class NlmCdeBaseTest {
     }
 
     protected void openCdeInList(String name) {
-        openEltInList(name, "cde");
+        openCdeInList(name, null);
     }
 
+    protected void openCdeInList(String name, String status) {
+        openEltInList(name, "cde", status);
+    }
+
+    
     protected void openEltInList(String name, String type) {
         openEltInList(name, type, null);
     }

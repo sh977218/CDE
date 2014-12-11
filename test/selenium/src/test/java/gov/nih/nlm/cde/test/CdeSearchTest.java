@@ -51,7 +51,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void vdInstruction() {
-        goToCdeByName("Participant Identifier Source");
+        goToCdeByName("Participant Identifier Source", "Recorded");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertEquals("One of \"GUID\" or \"Source Registry Specific Identifier\"", findElement(By.id("dd_vd_def")).getText());
     }
