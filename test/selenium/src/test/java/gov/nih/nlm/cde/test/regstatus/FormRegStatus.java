@@ -6,8 +6,8 @@ import org.testng.annotations.Test;
 public class FormRegStatus extends RegStatusTest {
 
     @Override
-    public void goToEltByName(String name) {
-        goToFormByName(name);
+    public void goToEltByName(String name, String status) {
+        goToFormByName(name, status);
     }
 
     @Override

@@ -224,9 +224,14 @@ public class NlmCdeBaseTest {
     }
 
     protected void goToFormByName(String name) {
-        goToElementByName(name, "form");
+        goToFormByName(name, null);
     }
 
+    protected void goToFormByName(String name, String status) {
+        goToElementByName(name, "form", status);
+    }
+
+    
     protected void goToElementByName(String name, String type) {
         goToElementByName(name, type, null);
     }

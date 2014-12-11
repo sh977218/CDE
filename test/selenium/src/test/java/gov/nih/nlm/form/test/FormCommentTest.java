@@ -6,8 +6,8 @@ import org.testng.annotations.Test;
 public class FormCommentTest extends CommentTest {
 
     @Override
-    public void goToEltByName(String name) {
-        goToFormByName(name);
+    public void goToEltByName(String name, String status) {
+        goToFormByName(name, status);
     }
 
     @Override

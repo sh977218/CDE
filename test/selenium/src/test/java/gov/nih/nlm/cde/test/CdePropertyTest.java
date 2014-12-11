@@ -6,8 +6,8 @@ import org.testng.annotations.Test;
 public class CdePropertyTest extends PropertyTest {
    
     @Override
-    public void goToEltByName(String name) {
-        goToCdeByName(name);
+    public void goToEltByName(String name, String status) {
+        goToCdeByName(name, status);
     }
 
     @Override

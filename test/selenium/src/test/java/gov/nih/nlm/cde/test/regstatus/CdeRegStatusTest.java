@@ -71,7 +71,8 @@ public class CdeRegStatusTest extends RegStatusTest {
         hangon(3);
         findElement(By.linkText("CDEs")).click();
         showSearchFilters();
-        findElement(By.id("li-blank-Preferred Standard")).click();
+        findElement(By.id("li-checked-Standard")).click();
+        findElement(By.id("li-checked-Qualified")).click();
         Assert.assertTrue(textPresent("1 results for"));
         findElement(By.xpath("//i[@title='View Full Detail']")).click();
         hangon(0.5);
@@ -84,14 +85,13 @@ public class CdeRegStatusTest extends RegStatusTest {
         goToSearchByMenu();
         hangon(1);
         Assert.assertTrue(textPresent("4 results for"));
-        Assert.assertTrue(textNotPresent("Preferred Standard"));
     }
 
     @Override
-    public void goToEltByName(String name) {
-        goToCdeByName(name);
+    public void goToEltByName(String name, String status) {
+        goToCdeByName(name, status);
     }
-
+    
     @Override
     public void goToEltSearch() {
         goToCdeSearch();

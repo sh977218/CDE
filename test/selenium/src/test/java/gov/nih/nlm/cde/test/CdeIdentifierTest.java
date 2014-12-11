@@ -11,8 +11,8 @@ public class CdeIdentifierTest extends IdentifiersTest {
     }
     
     @Override
-    public void goToEltByName(String name) {
-        goToCdeByName(name);
+    public void goToEltByName(String name, String status) {
+        goToCdeByName(name, status);
     }
 
     @Override

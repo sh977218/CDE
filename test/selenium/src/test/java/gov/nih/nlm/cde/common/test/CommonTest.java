@@ -10,7 +10,10 @@ import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 
 
 public abstract class CommonTest extends NlmCdeBaseTest {
-    public abstract void goToEltByName(String name);
+    public void goToEltByName(String name) {
+        goToElementByName(name, null);
+    }
+    public abstract void goToEltByName(String name, String status);
     
     public abstract void goToEltSearch();
 
