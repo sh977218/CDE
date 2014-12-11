@@ -38,7 +38,7 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         textPresent(cdeName);
 
         mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName(cdeName);
+        goToCdeByName(cdeName, "Incomplete");
         findElement(By.id("editStatus")).click();
         modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Candidate");
@@ -67,8 +67,7 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Candidate")).click();
         findElement(By.id("li-checked-Standard")).click();
         findElement(By.id("li-checked-Qualified")).click();
-        textPresent(cdeName);
-        
+        textPresent(cdeName);        
     }
     
     @Test

@@ -61,19 +61,22 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys("Study");
         findElement(By.id("search.submit")).click();
         textPresent("Candidate (10)");
-        findElement(By.id("li-blank-Candidate")).click();
         findElement(By.id("li-checked-Qualified")).click();
         findElement(By.id("li-checked-Standard")).click();
         try {
             findElement(By.id("li-checked-Preferred Standard")).click();
         } catch (Exception e) {}
+
+        findElement(By.id("li-blank-Candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText("Intervention Trial Study Protocol Document Classification ")));
 
         textPresent("10 results ");
         findElement(By.id("li-blank-caBIG")).click();
 
         textPresent("9 results");
-        
+
+        findElement(By.id("li-checked-Candidate")).click();
+
         wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.partialLinkText("Work Or Study Difficulty With Homework ")));
         hangon(1);

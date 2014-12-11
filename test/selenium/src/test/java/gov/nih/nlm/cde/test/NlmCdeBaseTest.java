@@ -217,7 +217,10 @@ public class NlmCdeBaseTest {
     }
 
     protected void goToCdeByName(String name) {
-        goToElementByName(name, "cde");
+        goToCdeByName(name, null);
+    }
+    protected void goToCdeByName(String name, String status) {
+        goToElementByName(name, "cde", status);
     }
 
     protected void goToFormByName(String name) {
@@ -225,8 +228,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void goToElementByName(String name, String type) {
+        goToElementByName(name, type, null);
+    }
+    
+    protected void goToElementByName(String name, String type, String status) {
         try {
-            openEltInList(name, type);
+            openEltInList(name, type, status);
             findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
             Assert.assertTrue(textPresent("Classification"));
             Assert.assertTrue(textPresent(name));
@@ -243,7 +250,14 @@ public class NlmCdeBaseTest {
     }
 
     protected void openEltInList(String name, String type) {
+        openEltInList(name, type, null);
+    }
+    
+    protected void openEltInList(String name, String type, String status) {
         goToSearch(type);
+        if (status != null) {
+            findElement(By.id("li-blank-" + status)).click();
+        }        
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();   
