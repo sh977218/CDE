@@ -9,15 +9,6 @@ exports.findForms = function(req, res) {
 };
 
 exports.save = function(req, res) {
-    // The following function fixes an issue of mongoose not enforcing object schema
-    var removeSections = function(section) {
-        if (section.skipLogic) {
-            delete section.skipLogic.condition1;
-            delete section.skipLogic.condition3;
-        }
-        if (section.formElements) section.formElements.forEach(function(s) {removeSections(s)});
-    };
-    removeSections(req.body);
     adminSvc.save(req, res, mongo_data);
 };
 
