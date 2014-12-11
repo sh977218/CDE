@@ -53,7 +53,7 @@ public class FormEditTest extends BaseFormTest {
         findElement(By.id("li-checked-Qualified")).click(); 
         textPresent("Vision Deficit Report");        
         textNotPresent("Skin Cancer Patient");
-        textNotPresent("Vision Deficit Report");   
+        textNotPresent("Traumatic Brain Injury - Adverse Events");
         findElement(By.id("li-blank-Qualified")).click();     
         textPresent("Skin Cancer Patient");
         textPresent("Traumatic Brain Injury - Adverse Events");        

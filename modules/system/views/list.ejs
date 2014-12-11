@@ -91,7 +91,7 @@
             <strong ng-show="aggregations.statuses.buckets">Status</strong> 
             <ul class="fa-ul">
                 <li tabindex="0" ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
-                    <span class="hand-cursor" ng-show="t.count > 0" tooltip-html-unsafe="{{t.help}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
+                    <span class="hand-cursor" ng-show="['Incomplete', 'Retired', 'Candidate'].indexOf(t.name) < 0 ||  t.count > 0" tooltip-html-unsafe="{{t.help}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.name}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
                         <small id="status-text-{{t.name}}"> {{t.name}} ({{t.count}})</small>

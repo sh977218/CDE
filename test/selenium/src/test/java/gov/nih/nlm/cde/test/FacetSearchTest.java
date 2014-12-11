@@ -73,7 +73,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-caBIG")).click();
 
         textPresent("9 results");
-        findElement(By.id("li-checked-Candidate")).click();
+        
         wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.partialLinkText("Work Or Study Difficulty With Homework ")));
         hangon(1);
