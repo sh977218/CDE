@@ -1,10 +1,10 @@
-<div accordion close-others="false" id="" ng-class="accordionListStyle" >
+<div accordion close-others="false" id="" ng-class="accordionListStyle" class="formQuestion_{{question.label}}">
     <div accordion-group is-open="" >
         <div accordion-heading>
             <i ng-if="canCurate" class="fa fa-arrows question-move-handle"></i>
             <span ng-bind-html="question.label | placeholdEmpty" id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></span>
             <span ng-if="question.question.cde.outdated"> (Outdated)</span>
-            <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeQuestion(section, $index)" title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>
+            <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeQuestion(parent, $index)" title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>
         </div>
         <div class="row questionAccordionContent">
             <div class="col-md-6">
@@ -32,6 +32,9 @@
                                id="editQuestion"></i> {{cardinalityOptions[question.cardinality]}}
                         </span>
                     </dd>    
+                    <dd ng-show="parent">
+                        <input type="text" ng-change="stageElt(elt)" ng-model="question.skipLogic.condition" typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question)" typeahead-min-length="0" class="form-control skipLogicCondition"/>
+                    </dd>
                     <dt>Datatype: </dt>
                     <dd id="dd_datatype_{{$index}}">{{question.question.datatype | placeholdEmpty }}</dd>
                     <dt ng-show="question.question.datatype === 'Value List'">Multiple Selections: </dt>
