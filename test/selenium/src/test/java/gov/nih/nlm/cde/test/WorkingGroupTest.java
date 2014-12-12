@@ -50,8 +50,7 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
         // Create CDE owned by newly created working group
         String name = "Test CDE for Test Working Group";
         String definition = "Let this test pass please!!!";
-        String version = "1.0";
-        fillOutBasicCreateFields(name, definition, version, "CTEP", classification, subClassification);
+        fillOutBasicCreateFields(name, definition, "CTEP", classification, subClassification);
         modalGone();
         textPresent(classification);
         textPresent(subClassification);
@@ -82,7 +81,7 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
     @Test
     public void wgRegStatus() {
         mustBeLoggedInAs(wguser_username, password);
-        new CdeCreateTest().createBasicCde("WG Test CDE", "Def", null, "WG-TEST", "WG Classif", "WG Sub Classif");
+        new CdeCreateTest().createBasicCde("WG Test CDE", "Def", "WG-TEST", "WG Classif", "WG Sub Classif");
         findElement(By.id("editStatus")).click();
         List<WebElement> options = new Select(driver.findElement(By.name("registrationStatus"))).getOptions();
         for (WebElement option : options) {
