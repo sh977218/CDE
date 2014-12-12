@@ -8,9 +8,9 @@ import org.testng.annotations.Test;
 
 public class CdeCreateTest extends NlmCdeBaseTest {
    
-    public void createBasicCde(String name, String definition, String version, String org, String classification, String subclassification) {
+    public void createBasicCde(String name, String definition, String org, String classification, String subclassification) {
         goToCdeSearch();
-        fillOutBasicCreateFields(name, definition, version, org, classification, subclassification);
+        fillOutBasicCreateFields(name, definition, org, classification, subclassification);
         findElement(By.id("submit")).click();
         hangon(1);
     }    
@@ -45,8 +45,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         String name = "Abracadabra";
         String definition = "Definition for testUser CDE 1";
-        String version = "1.0alpha1";
-        fillOutBasicCreateFields(name, definition, version, "CTEP", "Submission and Reporting", "Breast Cancer Data Mart");
+        fillOutBasicCreateFields(name, definition, "CTEP", "Submission and Reporting", "Breast Cancer Data Mart");
 
         Assert.assertTrue(textPresent("Submission and Reporting"));
         Assert.assertTrue(textPresent("Breast Cancer Data Mart"));
@@ -76,13 +75,13 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Headache"));   
 
         findElement(By.linkText("Identifiers")).click();
-        Assert.assertEquals(version, findElement(By.id("dd_version_nlm")).getText());        
+        Assert.assertEquals("", findElement(By.id("dd_version_nlm")).getText());        
     }
     
     @Test
     public void testAlignmentForMissingFields() {
         mustBeLoggedInAs(ctepCurator_username, password);
-        createBasicCde("AlignmentCDE", "Definition for alignment cde", null, "CTEP", "DISEASE", "Brain");
+        createBasicCde("AlignmentCDE", "Definition for alignment cde", "CTEP", "DISEASE", "Brain");
 
         goToCdeSearch();
         openCdeInList("AlignmentCDE", "Incomplete");

@@ -191,14 +191,11 @@ public class NlmCdeBaseTest {
         closeAlert();
     }
 
-    protected void fillOutBasicCreateFields(String name, String definition, String version, String org, String classification, String subClassification) {
+    protected void fillOutBasicCreateFields(String name, String definition, String org, String classification, String subClassification) {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
         findElement(By.name("elt.designation")).sendKeys(name);
         findElement(By.name("elt.definition")).sendKeys(definition);
-        if (version != null) {
-            findElement(By.name("elt.version")).sendKeys(version);
-        }
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(org);
 
         classify(org, classification, subClassification);

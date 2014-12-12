@@ -389,11 +389,11 @@ module.exports = function(grunt) {
                     'css/bootstrap.min.css': 'bootstrap/dist/css/bootstrap.min.css',
                     'css/font-awesome.min.css': 'font-awesome/css/font-awesome.min.css',
                     'css/select2.css': 'select2/select2.css',
+                    'css/select2.png': 'select2/select2.png',
                     'css/selectize.default.css': 'selectize/dist/css/selectize.default.css',
                     'css/textAngular.css': 'textAngular/src/textAngular.css'
                 }
             },
-            // Copy entire folders
             bootstrapFont: {
                 files: {
                     'modules/cde/public/assets/fonts': 'bootstrap/dist/fonts/*'
