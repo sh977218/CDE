@@ -44,7 +44,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         }
         
         findElement(By.linkText("Identifiers")).click();
-        Assert.assertTrue(textPresent("3157849"));
+        textPresent("3157849");
         Assert.assertEquals("1", findElement(By.id("dd_version_nlm")).getText());                
         
     } 
@@ -54,6 +54,15 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         goToCdeByName("Participant Identifier Source");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertEquals("One of \"GUID\" or \"Source Registry Specific Identifier\"", findElement(By.id("dd_vd_def")).getText());
+    }
+    
+    @Test
+    public void searchBySteward() {
+        goToCdeSearch();
+        findElement(By.name("ftsearch")).sendKeys("steward:CIP");
+        findElement(By.id("search.submit")).click();
+        textPresent("1 results for");
+        textPresent("Smoking Status");
     }
     
     
@@ -76,13 +85,13 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     public void viewIncrement() {
         goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
         // wait for text to be here.
-        Assert.assertTrue(textPresent("Someone who gives blood"));
+        textPresent("Someone who gives blood");
         // do it twice to get at least one view
         goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
-        Assert.assertTrue(textPresent("Someone who gives blood"));
+        textPresent("Someone who gives blood");
         int nbOfViews = Integer.valueOf(findElement(By.id("dd_views")).getText());
         goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
-        Assert.assertTrue(textPresent("Someone who gives blood"));
+        textPresent("Someone who gives blood");
         int newNbOfViews = Integer.valueOf(findElement(By.id("dd_views")).getText());
         Assert.assertEquals(newNbOfViews, nbOfViews + 1);
     }
@@ -93,7 +102,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         findElement(By.linkText("Concepts")).click();
         findElement(By.linkText("Change")).click();
         hangon(2);
-        Assert.assertTrue(textPresent("Specimen Inflammation Change Type"));
+        textPresent("Specimen Inflammation Change Type");
     }
     
     @Test 
@@ -101,17 +110,17 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("Biomarker Gene");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("Biomarker Gene"));
+        textPresent("Biomarker Gene");
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(linkList.size() > 10);
 
         findElement(By.name("ftsearch")).clear();
         findElement(By.name("ftsearch")).sendKeys("\"Biomarker Gene\"");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("caBIG (1)"));
+        textPresent("caBIG (1)");
         
-        Assert.assertTrue(textPresent("Biomarker Gene"));
-        Assert.assertTrue(textPresent("1 results for"));
+        textPresent("Biomarker Gene");
+        textPresent("1 results for");
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 1);
     }
