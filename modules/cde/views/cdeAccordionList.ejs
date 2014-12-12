@@ -3,7 +3,6 @@
         <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
             <div accordion-heading>
                 <i ng-show="addCdeMode" class="fa fa-arrows question-move-handle"></i>
-                {{ cde.score }}
                 <span tabindex="0" role="link" ng-bind-html="cde.primaryNameCopy" id="acc_link_{{$index}}" class="hand-cursor"></span>
                 <i tabindex="0" ng-show="!openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(cde,'view',$event)" title="View Full Detail" role="link"></i>
                 <i tabindex="0" ng-show="openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(cde,'viewNewTab',$event)" title="View Full Detail" role="link"></i>

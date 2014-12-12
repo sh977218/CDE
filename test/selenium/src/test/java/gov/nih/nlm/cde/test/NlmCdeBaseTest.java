@@ -375,7 +375,7 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/#/" + type + "/search");
         findElement(By.name("ftsearch"));
         showSearchFilters();
-        Assert.assertTrue(textPresent("Qualified ("));
+        Assert.assertTrue(textPresent("NINDS ("));
     }
 
     protected void goToSearchByMenu() {
