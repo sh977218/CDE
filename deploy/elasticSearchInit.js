@@ -4,7 +4,11 @@ exports.createIndexJson = {
     "mappings" : {
         "dataelement" : {
             "properties" : {
-                "stewardOrg.name" : { "type" : "string", "index" : "not_analyzed" }
+                "stewardOrg": {
+                    "properties": {
+                        "name" : { "type" : "string", "index" : "not_analyzed" }
+                    }
+                }
                 , "flatClassifications": { "type" : "string", "index" : "not_analyzed", "index_name": "flatClassification"}
                 , "classification.stewardOrg.name": { "type" : "string", "index" : "not_analyzed" }
                 , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
@@ -43,6 +47,7 @@ var riverFunction =
     flattenClassification(ctx.document); \
     ctx.document.flatClassifications = flatArray; \
     ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
+    ctx.document.steward = ctx.document.stewardOrg.name;\
     ctx.document.primaryNameCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].designation):'';\
     ctx.document.primaryDefinitionCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].definition):'';\
     var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0}; \
