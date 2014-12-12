@@ -13,7 +13,7 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
     public void ownerAndAdminCanSeeLowStatus() {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Low Status Cde";
-        new CdeCreateTest().createBasicCde(cdeName, "Low Stat Definition", "0.1", "CTEP", "DISEASE", "Lung");
+        new CdeCreateTest().createBasicCde(cdeName, "Low Stat Definition", "CTEP", "DISEASE", "Lung");
         goToCdeSearch();
         findElement(By.id("li-blank-Incomplete")).click();
         findElement(By.id("li-checked-Standard")).click();

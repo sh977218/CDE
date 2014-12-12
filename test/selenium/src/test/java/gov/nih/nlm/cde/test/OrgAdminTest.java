@@ -95,11 +95,10 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         // create 2 cdes
         String cde1 = "Transfer Steward Test CDE 1";
         String definition1 = "Definition for Transfer Steward Test CDE 1";
-        String version1 = "1.0";
         String org1 = "PS&CC";
         String class1 = "caSEER";
         String subclass1 = "com.imsweb.caseer";
-        fillOutBasicCreateFields(cde1, definition1, version1, org1, class1, subclass1);
+        fillOutBasicCreateFields(cde1, definition1, org1, class1, subclass1);
         Assert.assertTrue(textPresent(class1));
         Assert.assertTrue(textPresent(subclass1));
         findElement(By.id("submit")).click();
@@ -107,10 +106,9 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         
         String cde2 = "Transfer Steward Test CDE 2";
         String definition2 = "Definition for Transfer Steward Test CDE 2";
-        String version2 = "2.0";
         String class2 = class1;
         String subclass2 = subclass1;
-        fillOutBasicCreateFields(cde2, definition2, version2, org1, class2, subclass2);
+        fillOutBasicCreateFields(cde2, definition2, org1, class2, subclass2);
         Assert.assertTrue(textPresent(class2));
         Assert.assertTrue(textPresent(subclass2));
         findElement(By.id("submit")).click();
