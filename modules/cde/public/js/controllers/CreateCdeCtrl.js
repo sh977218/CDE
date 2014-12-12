@@ -8,7 +8,12 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
         $scope.showSuggestions();
     }); 
         
-    $scope.elt = { classification: []}; 
+    $scope.elt = { classification: [], stewardOrg: {}}; 
+    
+    if ($scope.myOrgs.length === 1) {
+        $scope.elt.stewardOrg.name = $scope.myOrgs[0];
+    }
+    
     $scope.save = function() {
         $scope.elt.naming = [];
         $scope.elt.naming.push({
