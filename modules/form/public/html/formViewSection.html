@@ -55,7 +55,7 @@
                 <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'" ng-init="parent = section; section = formElement;isSubSection = true;"></div>
             </div>
         </div>
-        <div ng-show="section.formElements.length === 0">
+        <div ng-show="canCurate && section.formElements.length === 0">
             <i class="fa fa-exclamation-triangle"></i> To add questions, search for and drag them here.
             <button id="startAddingQuestions_section_{{sectionIndex}}" ng-show="elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-sm">
                 <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
