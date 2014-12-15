@@ -38,6 +38,7 @@ public abstract class IdentifiersTest extends CommonTest {
         findElement(By.name("version")).sendKeys("MyVersion3");
         findElement(By.id("createId")).click();
         Assert.assertTrue(textPresent("Identifier Added"));
+        closeAlert();
         modalGone();
 
         //remove MyOrigin2

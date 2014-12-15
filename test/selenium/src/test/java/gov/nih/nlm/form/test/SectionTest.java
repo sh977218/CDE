@@ -53,6 +53,7 @@ public class SectionTest extends BaseFormTest {
     
     void addSection(String title, String card) {
         int nbOfSections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_view')]")).size();
+        scrollTo("0");
         findElement(By.linkText("Form Description")).click();
 
         findElement(By.id("addSection")).click();
