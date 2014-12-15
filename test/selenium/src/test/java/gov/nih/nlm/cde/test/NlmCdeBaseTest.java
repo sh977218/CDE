@@ -361,6 +361,7 @@ public class NlmCdeBaseTest {
         return true;
     }
 
+    @BeforeMethod
     protected void goHome() {
         driver.get(baseUrl + "/gonowhere");
         driver.get(baseUrl + "/");
