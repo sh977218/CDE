@@ -1,4 +1,6 @@
 function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, GetOrgsDetailedInfo) {
+
+    console.log("HELLO");
     // Global variables
     var GLOBALS = {
         max_quickboard_cdes : 10
