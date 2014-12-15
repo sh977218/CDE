@@ -83,6 +83,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void viewIncrement() {
+        goHome();
         goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
         // wait for text to be here.
         textPresent("Someone who gives blood");

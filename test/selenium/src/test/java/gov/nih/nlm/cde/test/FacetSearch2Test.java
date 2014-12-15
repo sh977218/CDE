@@ -16,7 +16,9 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         new CdeCreateTest().createBasicCde(cdeName, "Low Stat Definition", "CTEP", "DISEASE", "Lung");
         goToCdeSearch();
         findElement(By.id("li-blank-Incomplete")).click();
+        hangon(1);
         findElement(By.id("li-checked-Standard")).click();
+        hangon(1);
         findElement(By.id("li-checked-Qualified")).click();
         textPresent(cdeName);
         

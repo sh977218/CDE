@@ -207,7 +207,7 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
       
     $scope.languageOptions = function(languageMode, previousLevel, index, questionName) {
         if (!previousLevel) return;
-        if (languageMode == 'question') return previousLevel.filter(function(q, i){return q.elementType === "question" && i!=index;}).map(function(q){return '"' + q.label + '" ';});
+        if (languageMode == 'question') return previousLevel.filter(function(q, i){return q.elementType === "question" && i != index;}).map(function(q){return '"' + q.label + '" ';});
         if (languageMode == 'operator') return ["= ", "< ", "> "];
         if (languageMode == 'answer') {
             var questions = previousLevel.filter(function(q) {

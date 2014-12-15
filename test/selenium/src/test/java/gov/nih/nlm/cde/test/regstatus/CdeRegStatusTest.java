@@ -83,8 +83,10 @@ public class CdeRegStatusTest extends RegStatusTest {
         closeAlert();
         hangon(1);
         findElement(By.linkText("CDEs")).click();
-        if (!findElement(By.id("li-blank-Standard")).isDisplayed());
+        if (!findElement(By.id("li-blank-Standard")).isDisplayed()) {
+            System.out.println("clicking show / hide");
             findElement(By.id("showHideFilters")).click();
+        }
         findElement(By.id("li-blank-Standard")).click();
         hangon(1);
         textPresent("4 results for");
