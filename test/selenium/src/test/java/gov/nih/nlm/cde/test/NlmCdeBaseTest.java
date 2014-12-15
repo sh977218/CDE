@@ -106,6 +106,8 @@ public class NlmCdeBaseTest {
 
         wait = new WebDriverWait(driver, defaultTimeout, 200);
         shortWait = new WebDriverWait(driver, 2);
+        
+        resizeWindow(1280, 800);
     }
 
     protected void resizeWindow(int width, int height) {
