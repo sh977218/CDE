@@ -220,15 +220,22 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
             classifications.addClassifToOrg(classifToAdd);
         }
     }
-        
-    def usedByOrgs = [];    
-    for (int ani = 0; ani < cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.size(); ani++) {
-        def an = cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM[ani];
-        if (an.AlternateNameType.text().equals("USED_BY")) {
-            usedByOrgs.add(an.AlternateName.text());
-        }
-    }
-    newDE.append("usedByOrgs", usedByOrgs);
+  
+    BasicDBObject cadsrContext = new BasicDBObject();
+    cadsrContext.put("key", "caDSR_Context");
+    cadsrContext.put("value", cadsrDE.CONTEXTNAME.text());
+    def props = [];
+    props.add(cadsrContext);
+    newDE.put("properties", props);
+    
+//    def usedByOrgs = [];    
+//    for (int ani = 0; ani < cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.size(); ani++) {
+//        def an = cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM[ani];
+//        if (an.AlternateNameType.text().equals("USED_BY")) {
+//            usedByOrgs.add(an.AlternateName.text());
+//        }
+//    }
+//    newDE.append("usedByOrgs", usedByOrgs);
     
     
     if (testMode) {

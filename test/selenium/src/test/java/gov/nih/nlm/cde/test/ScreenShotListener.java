@@ -60,7 +60,6 @@ public class ScreenShotListener extends TestListenerAdapter {
         for (LogEntry entry : logEntries) {
             sb.append(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage() + "\n");
         }
-        System.out.println("done - size:  " + sb.length());
         if (sb.length() > 0) {
             try {
                 FileUtils.writeStringToFile(new File("build/consolelogs/" + methodName + "_" + formater.format(calendar.getTime()) + ".txt"), sb.toString());
