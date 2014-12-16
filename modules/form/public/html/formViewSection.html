@@ -9,11 +9,13 @@
                 <dl class="dl-horizontal">
                     <dt>Instructions: </dt>
                     <dd id="dd_section_instructions_{{$index}}"><div inline-edit model="section.instructions" is-allowed="canCurate" on-ok="stageElt()"> </div></dd>
-                    <dt>Show if: </dt>
-                    
-                    <dd ng-show="parent">
-                        <input type="text" ng-change="stageElt(elt)" ng-model="section.skipLogic.condition" typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements)" typeahead-min-length="0" class="form-control skipLogicCondition"/>
-                    </dd>
+                    <span ng-if="parent">
+                        <dt>Show if: </dt>
+
+                        <dd ng-show="parent">
+                            <input type="text" ng-change="stageElt(elt)" ng-model="section.skipLogic.condition" typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements)" typeahead-min-length="0" class="form-control skipLogicCondition"/>
+                        </dd>
+                    </span>
 
                     <dt>Cardinality: </dt>
                     <dd id="dd_card_{{$index}}">
