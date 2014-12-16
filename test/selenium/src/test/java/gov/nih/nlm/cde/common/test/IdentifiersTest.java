@@ -37,7 +37,7 @@ public abstract class IdentifiersTest extends CommonTest {
         findElement(By.name("id")).sendKeys("MyId3");
         findElement(By.name("version")).sendKeys("MyVersion3");
         findElement(By.id("createId")).click();
-        Assert.assertTrue(textPresent("Identifier Added"));
+        textPresent("Identifier Added");
         closeAlert();
         modalGone();
 

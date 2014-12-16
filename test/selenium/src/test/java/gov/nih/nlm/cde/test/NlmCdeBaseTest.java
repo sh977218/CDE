@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
@@ -85,10 +86,12 @@ public class NlmCdeBaseTest {
             default:
                 caps = DesiredCapabilities.chrome();
         }
-        caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
-        LoggingPreferences logPrefs = new LoggingPreferences();
-        logPrefs.enable(LogType.BROWSER, Level.ALL);
-        caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+        
+        
+//        caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
+        LoggingPreferences loggingprefs = new LoggingPreferences();
+        loggingprefs.enable(LogType.BROWSER, Level.ALL);
+        caps.setCapability(CapabilityType.LOGGING_PREFS, loggingprefs);        
 
         switch (browser) {
             case "firefox":
@@ -358,6 +361,7 @@ public class NlmCdeBaseTest {
         return true;
     }
 
+    @BeforeMethod
     protected void goHome() {
         driver.get(baseUrl + "/gonowhere");
         driver.get(baseUrl + "/");
@@ -377,7 +381,7 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/#/" + type + "/search");
         findElement(By.name("ftsearch"));
         showSearchFilters();
-        Assert.assertTrue(textPresent("NINDS ("));
+        textPresent("NINDS (");
     }
 
     protected void goToSearchByMenu() {

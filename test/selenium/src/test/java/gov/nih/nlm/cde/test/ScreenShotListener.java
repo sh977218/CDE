@@ -55,7 +55,7 @@ public class ScreenShotListener extends TestListenerAdapter {
     }
     
     private void saveLogs(String methodName) {
-        LogEntries logEntries = driver.manage().logs().get(LogType.CLIENT);
+        LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER);
         StringBuilder sb = new StringBuilder();
         for (LogEntry entry : logEntries) {
             sb.append(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage() + "\n");
@@ -64,6 +64,7 @@ public class ScreenShotListener extends TestListenerAdapter {
             try {
                 FileUtils.writeStringToFile(new File("build/consolelogs/" + methodName + "_" + formater.format(calendar.getTime()) + ".txt"), sb.toString());
             } catch (IOException e1) {
+                System.out.println(e1);
                 e1.printStackTrace();
             }
         }        

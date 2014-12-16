@@ -23,10 +23,10 @@ exports.everythingOk = function() {
 };
 
 exports.assembleErrorMessage = function(statusReport) {
-    if (!statusReport.up) return "ElasticSearch service is not responding. ES service might be not running.";
-    if (!statusReport.results) return "ElasticSearch service is not returning any results. Index might be empty.";
-    if (!statusReport.sync) return "ElasticSearch index is completely different from MongoDB. Data might be reingested but ES not updated.";
-    if (!statusReport.updating) return "ElasticSearch service does not reflect modifications in MongoDB. River plugin might be out of order.";
+    if (!statusReport.elastic.up) return "ElasticSearch service is not responding. ES service might be not running.";
+    if (!statusReport.elastic.results) return "ElasticSearch service is not returning any results. Index might be empty.";
+    if (!statusReport.elastic.sync) return "ElasticSearch index is completely different from MongoDB. Data might be reingested but ES not updated.";
+    if (!statusReport.elastic.updating) return "ElasticSearch service does not reflect modifications in MongoDB. River plugin might be out of order.";
 };
 
 exports.status = function(req, res) {    

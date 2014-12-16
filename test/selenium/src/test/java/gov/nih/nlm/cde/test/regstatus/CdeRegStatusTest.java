@@ -58,11 +58,11 @@ public class CdeRegStatusTest extends RegStatusTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         findElement(By.id("li-blank-PBTC")).click();
-        Assert.assertTrue(textPresent("4 results for"));
+        textPresent("4 results for");
         String viewing = findElement(By.id("acc_link_0")).getText();
         findElement(By.xpath("//span[@id='acc_link_0']/../i[@title='View Full Detail']")).click();
-        Assert.assertTrue(textPresent("More Like This"));
-        Assert.assertTrue(textPresent(viewing));
+        textPresent("More Like This");
+        textPresent(viewing);
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         modalHere();
@@ -82,11 +82,14 @@ public class CdeRegStatusTest extends RegStatusTest {
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
         hangon(1);
-        goToSearchByMenu();
-        findElement(By.id("showHideFilters")).click();
+        findElement(By.linkText("CDEs")).click();
+        if (!findElement(By.id("li-blank-Standard")).isDisplayed()) {
+            System.out.println("clicking show / hide");
+            findElement(By.id("showHideFilters")).click();
+        }
         findElement(By.id("li-blank-Standard")).click();
         hangon(1);
-        Assert.assertTrue(textPresent("4 results for"));
+        textPresent("4 results for");
     }
 
     @Override
