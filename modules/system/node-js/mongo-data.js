@@ -53,7 +53,7 @@ exports.orgNames = function(callback) {
 };
 
 exports.userByName = function(name, callback) {
-    User.findOne({'username': name}).exec(function (err, u) {
+    User.findOne({'username': new RegExp('^'+name+'$', "i")}).exec(function (err, u) {
        callback("", u); 
     });
 };
