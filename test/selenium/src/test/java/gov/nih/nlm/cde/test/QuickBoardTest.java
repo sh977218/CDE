@@ -3,7 +3,6 @@ package gov.nih.nlm.cde.test;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -144,8 +143,8 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         findElement(By.linkText("Quick Board ( 2 )")).click();
         
         findElement(By.id("qb.openCloseAll")).click();
-        Assert.assertTrue(textPresent("caBIG AECC LCC USC/NCCC"));
-        Assert.assertTrue(textPresent("SPOREs CCR"));
+        Assert.assertTrue(textPresent("AJCC Based:"));
+        Assert.assertTrue(textPresent("Value used as a Standard Deviation"));
 
         findElement(By.id("qb.empty")).click();
         Assert.assertTrue( textPresent( "Quick Board ( empty )" ) );

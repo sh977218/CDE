@@ -38,15 +38,15 @@ def contextWhiteList = ['NIDA', 'PhenX'];
 for (int i  = 0; i < deList.DataElement.size(); i++) {
     def cadsrDE = deList.DataElement[i];
     def String workflowStatus = "";
-
+  
     if (cadsrDE.WORKFLOWSTATUS.text().equals('DRAFT NEW')) {
-        workflowStatus = 'Candidate';
+        workflowStatus = 'Incomplete';
     } else if (cadsrDE.WORKFLOWSTATUS.text().equals('DRAFT MOD')) {
-        workflowStatus = 'Recorded';            
+        workflowStatus = 'Candidate';            
     } else if (cadsrDE.WORKFLOWSTATUS.text().equals('RELEASED')) {
-        workflowStatus = 'Qualified';                        
+        workflowStatus = 'Recorded';                        
     } else if (cadsrDE.WORKFLOWSTATUS.text().equals('APPRVD FOR TRIAL USE')) {
-        workflowStatus = 'Standard';            
+        workflowStatus = 'Qualified';            
     }
     
     if ("Standard".equals(cadsrDE.REGISTRATIONSTATUS.text())) {
@@ -65,11 +65,16 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         newDE.put("origin", origin); 
     }
     
+    def stewardOrg = "NCI";
+    if (cadsrDE.CONTEXTNAME.text().equals("NIDA")) {
+        stewardOrg = "NIDA";
+    }
+    
     def vd = new BasicDBObject("datatype": cadsrDE.VALUEDOMAIN[0].Datatype.text());
     vd.put("name", cadsrDE.VALUEDOMAIN[0].LongName.text());
     newDE.put("valueDomain", vd);
     newDE.put("registrationState", new BasicDBObject("registrationStatus": workflowStatus));
-    newDE.put("stewardOrg", new BasicDBObject("name", cadsrDE.CONTEXTNAME.text()));
+    newDE.put("stewardOrg", new BasicDBObject("name", stewardOrg ));
     
     BasicDBObject defaultName = new BasicDBObject();
     defaultName.put("designation", cadsrDE.LONGNAME.text());
@@ -196,53 +201,47 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         def csi = cadsrDE.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM[csi_i];
         def ctx = csi.ClassificationScheme[0].ContextName.text();
 
-        // if caBIG > PhenX, replace with PhenX
-        if (ctx.equals("caBIG") && "PhenX".equals(csi.ClassificationScheme[0].PreferredName.text().trim())) {
-            ctx = 'PhenX';
-        }
         if (csi.ClassificationScheme[0].PreferredName.text()!=""
             && csi.ClassificationScheme[0].PreferredName.text()!=null
             && csi.ClassificationSchemeItemName.text()!=""
             && csi.ClassificationSchemeItemName.text()!=null) {
-                // only load allowed classifications
-                if (contextWhiteList.contains(ctx) || (testMode && !contextIgnoreList.contains(ctx))) {
-                    def list = classificationsArrayMap.get(ctx);
-                    if (!list) { 
-                        list = [];
-                        classificationsArrayMap.put(ctx,list);
-                    }                
-                    classifications.classify(list, ctx, csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());       
-                }
+            // 
+            
+            def classifToAdd;
+            
+            // for cabig > phenx give ownership to phenX
+            if (ctx.equals("caBIG") && "PhenX".equals(csi.ClassificationScheme[0].PreferredName.text().trim())) {
+                classifToAdd = classifications.buildMultiLevelClassif("PhenX", "PhenX", csi.ClassificationSchemeItemName.text());
+            } else {
+                classifToAdd = classifications.buildMultiLevelClassif(stewardOrg, ctx, csi.ClassificationScheme[0].PreferredName.text(), csi.ClassificationSchemeItemName.text());            
+            }
+
+            classifications.addClassifToDe(classifToAdd, newDE);
+            classifications.addClassifToOrg(classifToAdd);
         }
     }
+  
+    BasicDBObject cadsrContext = new BasicDBObject();
+    cadsrContext.put("key", "caDSR_Context");
+    cadsrContext.put("value", cadsrDE.CONTEXTNAME.text());
+    def props = [];
+    props.add(cadsrContext);
+    newDE.put("properties", props);
     
-    for (steward in classificationsArrayMap) {
-        def list = steward.value;
-        def stewardClassification = classifications.buildStewardClassifictions(list, steward.key);
-        def classifs = newDE.get("classification");
-        if (!classifs) classifs=[];
-        classifs.add(stewardClassification);   
-        newDE.append("classification",classifs);
-    }
-
-
-    
-    def usedByOrgs = [];    
-    for (int ani = 0; ani < cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.size(); ani++) {
-        def an = cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM[ani];
-        if (an.AlternateNameType.text().equals("USED_BY")) {
-            usedByOrgs.add(an.AlternateName.text());
-        }
-    }
-    newDE.append("usedByOrgs", usedByOrgs);
+//    def usedByOrgs = [];    
+//    for (int ani = 0; ani < cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.size(); ani++) {
+//        def an = cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM[ani];
+//        if (an.AlternateNameType.text().equals("USED_BY")) {
+//            usedByOrgs.add(an.AlternateName.text());
+//        }
+//    }
+//    newDE.append("usedByOrgs", usedByOrgs);
     
     
     if (testMode) {
         deColl.insert(newDE);
     } else {
-        // If not classified, don't load
-        // if Standard, load anyway
-        if ((newDE.get("classification") != null && newDE.get("classification").size() > 0) || "Standard".equals(cadsrDE.REGISTRATIONSTATUS.text())) {
+        if (!cadsrDE.LONGNAME.text().contains("java.lang")) {
             deColl.insert(newDE);
         }
     }

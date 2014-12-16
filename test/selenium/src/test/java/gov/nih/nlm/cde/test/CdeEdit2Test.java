@@ -55,7 +55,7 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         findElement(By.xpath("//label[text()=\"Version\"]/following-sibling::textarea")).sendKeys("Version 1"); 
         findElement(By.xpath("//div[@id=\"newIdModalFooter\"]//button[text()=\"Save\"]")).click();
         modalGone();
-        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");   
+        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "Recorded");   
         findElement(By.linkText("History")).click();
         findElement(By.xpath("//table[@id = 'historyTable']//tr[4]//td[4]/a")).click();
         Assert.assertTrue(textPresent("Identifiers:"));        

@@ -61,6 +61,15 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys("Study");
         findElement(By.id("search.submit")).click();
         textPresent("Candidate (10)");
+        findElement(By.id("li-checked-Qualified")).click();
+        hangon(1);
+        findElement(By.id("li-checked-Standard")).click();
+        hangon(1);
+        try {
+            findElement(By.id("li-checked-Preferred Standard")).click();
+            hangon(1);
+        } catch (Exception e) {}
+
         findElement(By.id("li-blank-Candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText("Intervention Trial Study Protocol Document Classification ")));
 
@@ -68,7 +77,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-caBIG")).click();
 
         textPresent("9 results");
+
         findElement(By.id("li-checked-Candidate")).click();
+
         wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.partialLinkText("Work Or Study Difficulty With Homework ")));
         hangon(1);
@@ -154,8 +165,8 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         hangon(2);
         goToCdeSearch();  
         textPresent("Preferred Standard");
-        findElement(By.id("li-blank-Preferred Standard")).click();
-        textPresent("Noncompliant Reason Text");
+        findElement(By.id("li-checked-Preferred Standard")).click();
+        textNotPresent("Noncompliant Reason Text");
     }
     
 }

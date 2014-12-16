@@ -13,6 +13,7 @@ public class FormClassificationTest extends BaseFormTest {
         textPresent("Headache");
         textPresent("Participant/Subject History and Family History");          
         findElement(By.linkText("Participant/Subject History and Family History")).click();
+        findElement(By.id("li-blank-Recorded")).click();
         textPresent("Participant/Subject History and Family History");   
         textPresent("Skin Cancer Patient");
         textPresent("Vision Deficit Report");               
@@ -60,7 +61,7 @@ public class FormClassificationTest extends BaseFormTest {
         textPresent("[def change number 1]");        
         
         //Classify All
-        goToFormByName(formName);
+        goToFormByName(formName, "Incomplete");
         findElement(By.linkText("Form Description")).click();
         findElement(By.id("classifyAllCdes")).click();
         findElement(By.cssSelector("[id='addClassification-Disease'] span.fake-link")).click();        

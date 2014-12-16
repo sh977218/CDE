@@ -91,7 +91,7 @@
             <strong ng-show="aggregations.statuses.buckets">Status</strong> 
             <ul class="fa-ul">
                 <li tabindex="0" ng-repeat="t in registrationStatuses" style="margin-right: -20px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
-                    <span class="hand-cursor" ng-show="t.count > 0" tooltip-html-unsafe="{{t.help}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
+                    <span class="hand-cursor" ng-show="['Incomplete', 'Retired', 'Candidate'].indexOf(t.name) < 0 ||  t.count > 0" tooltip-html-unsafe="{{t.help}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                         <i ng-switch-default class="fa-li fa fa-square-o" id="li-blank-{{t.name}}" ></i>
                         <i ng-switch-when="true" class="fa-li fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
                         <small id="status-text-{{t.name}}"> {{t.name}} ({{t.count}})</small>
@@ -101,7 +101,7 @@
         </div>
         <div ng-class="{'col-xs-9' : filterMode===true, 'col-xs-12' : filterMode===false}">
             <span ng-hide="cdes.length >= 0"><h1 class="pl130"><i class="fa fa-spinner fa-spin"></i> Searching...</h1></span>
-            <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found.</h4></span>
+            <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found. Try other criterias or selecting more statuses</h4></span>
             <div id="accordionList" ng-include="'/template/'+module+'/'+module+'AccordionList'"></div>
             <pagination ng-show="totalItems > 0" align="center" direction-links="true" max-size="10" total-items="totalItems" items-per-page="20" page="searchForm.currentPage"></pagination>
         </div>

@@ -307,7 +307,7 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.xpath(cardXPath + "//button[text() = ' Confirm']")).click();
         
         saveForm();        
-        goToFormByName(formName);
+        goToFormByName(formName, "Incomplete");
         findElement(By.linkText("Form Description")).click();        
         findElement(By.xpath("//div[@id=\"section_drop_area_0\"]//div[@id=\"section_drop_area_child\"]//span[text()=\"First-Line Therapy Chemotherapy Regimen Name\"]")); 
         

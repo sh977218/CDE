@@ -76,7 +76,7 @@
                         <div inline-edit id="orgUri-{{c.name}}" model="c.uri" is-allowed="true" on-ok="updateOrg(c)"></div>
                     </td>
                     <td>
-                        {{c.workingGroupOf}}
+                        <div inline-edit id="orgWg-{{c.name}}" typeahead-source="orgNames" model="c.workingGroupOf" is-allowed="true" on-ok="updateOrg(c)"></div>
                     </td>
                 </tr>
             </table>

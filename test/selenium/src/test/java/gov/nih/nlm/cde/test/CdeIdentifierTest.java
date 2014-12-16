@@ -7,12 +7,12 @@ public class CdeIdentifierTest extends IdentifiersTest {
     
     @Test
     public void addRemoveCdeId() {
-        addRemoveId("Intravesical Protocol Agent Administered Specify");
+        addRemoveId("Intravesical Protocol Agent Administered Specify", null);
     }
     
     @Override
-    public void goToEltByName(String name) {
-        goToCdeByName(name);
+    public void goToEltByName(String name, String status) {
+        goToCdeByName(name, status);
     }
 
     @Override

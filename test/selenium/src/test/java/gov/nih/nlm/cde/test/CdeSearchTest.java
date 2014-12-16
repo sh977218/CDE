@@ -13,18 +13,19 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void cdeFullDetail() {
+        goHome();
         goToCdeByName("Genotype Therapy Basis Mutation");
-        Assert.assertTrue(textPresent("Genotype Therapy Basis Mutation Analysis Indicator"));
-        Assert.assertTrue(textPresent("Text descriptor to indicate whether "
-                + "genotype directed therapy was based on mutation testing"));
-        Assert.assertTrue(textPresent("Qualified"));
+        textPresent("Genotype Therapy Basis Mutation Analysis Indicator");
+        textPresent("Text descriptor to indicate whether "
+                + "genotype directed therapy was based on mutation testing");
+        textPresent("Qualified");
         findElement(By.linkText("Permissible Values")).click();
-        Assert.assertTrue(textPresent("Unknown"));
+        textPresent("Unknown");
         findElement(By.linkText("Concepts")).click();
-        Assert.assertTrue(textPresent("Mutation Analysis"));
-        Assert.assertTrue(textPresent("C18302"));
+        textPresent("Mutation Analysis");
+        textPresent("C18302");
         findElement(By.linkText("History")).click();
-        Assert.assertTrue(textPresent("This Data Element has no history"));
+        textPresent("This Data Element has no history");
         findElement(By.linkText("Classification")).click();
         WebElement csDl = findElement(By.id("repeatCs"));
         List<WebElement> csElements = csDl.findElements(By.cssSelector("#repeatCs ul li"));
@@ -51,13 +52,15 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void vdInstruction() {
-        goToCdeByName("Participant Identifier Source");
+        goHome();
+        goToCdeByName("Participant Identifier Source", "Recorded");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertEquals("One of \"GUID\" or \"Source Registry Specific Identifier\"", findElement(By.id("dd_vd_def")).getText());
     }
     
     @Test
     public void searchBySteward() {
+        goHome();
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("steward:CIP");
         findElement(By.id("search.submit")).click();
@@ -83,6 +86,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void viewIncrement() {
+        goHome();
         goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
         // wait for text to be here.
         textPresent("Someone who gives blood");
@@ -187,99 +191,6 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     private void matchedByNotVisibleIfPrimaryName() {
         List<WebElement> linkList = driver.findElements(By.xpath("//span[text()='Classification']"));
         Assert.assertEquals(linkList.size(), 0);  
-    }
-    
-    @Test 
-    public void searchHighlightDefinition() {
-        goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("\"graded scale\"");
-        findElement(By.id("search.submit")).click();    
-        Assert.assertTrue(textPresent("| \"graded scale"));
-        Assert.assertTrue(driver.findElements(By.xpath("//span[text()=\"Definition\"]")).size() > 5); 
-    }
-    
-    @Test 
-    public void searchHighlightPv() {
-        goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("myopathic");
-        findElement(By.id("search.submit")).click();    
-        Assert.assertTrue(textPresent("| myopathic"));
-        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Permissible Values\"]")).size(), 2);
-    }
-   
-    @Test 
-    public void searchHighlightClassif() {
-        goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("finasteride");
-        findElement(By.id("search.submit")).click();    
-        Assert.assertTrue(textPresent("| finasteride"));
-        Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Classification\"]")).size(), 6);
-    }
-    
-    @Test
-    public void sdcView() {
-        String cdeName = "Anal Endoscopy Diagnostic Procedure Performed Other Specify Text";
-        openCdeInList(cdeName);
-        findElement(By.linkText("SDC View")).click();
-        textPresent(cdeName);
-        Assert.assertTrue(findElement(By.id("dd_scopedId")).getText().trim().startsWith("cde.nlm.nih.gov/"));
-        Assert.assertEquals("1", findElement(By.id("dd_version")).getText());
-        Assert.assertEquals("Anal Endoscopy Diagnostic Procedure Performed Other Specify Text", findElement(By.id("dd_name")).getText());
-        Assert.assertEquals("Specify", findElement(By.id("dd_prefQ")).getText());
-        Assert.assertEquals("N/A", findElement(By.id("dd_altQ")).getText());
-        Assert.assertEquals("The free text field used to describe the results of the anascopy.", findElement(By.id("dd_def")).getText());
-        Assert.assertEquals("Anal Endoscopy Diagnostic Procedure Performed", findElement(By.id("dd_dec")).getText());
-        Assert.assertEquals("DCP", findElement(By.id("dd_ctx")).getText());
-        Assert.assertEquals("DCP", findElement(By.id("dd_ctxName")).getText());
-        Assert.assertEquals("N/A", findElement(By.id("dd_adminStatus")).getText());
-        Assert.assertEquals("Qualified", findElement(By.id("dd_regStatus")).getText());
-        Assert.assertEquals("N/A", findElement(By.id("dd_updated")).getText());
-        Assert.assertEquals("N/A", findElement(By.id("dd_subOrg")).getText());
-        Assert.assertEquals("N/A", findElement(By.id("dd_subOrgName")).getText());
-        Assert.assertEquals("DCP", findElement(By.id("dd_stewOrg")).getText());
-        Assert.assertEquals("DCP", findElement(By.id("dd_stewOrgName")).getText());
-        Assert.assertEquals("DCP:Division of Cancer Prevention", findElement(By.id("dd_origin")).getText());
-        Assert.assertEquals("Other Specify Text", findElement(By.id("dd_vd")).getText());
-        Assert.assertEquals("CHARACTER", findElement(By.id("dd_datatype")).getText());
-        Assert.assertEquals("enumerated", findElement(By.id("dd_type")).getText());
-    }
-    
-    @Test
-    public void StandardStatusWarningCheck() {
-        // Check that a none Standard or Preferred Standard CDE doesn't have warning message when not logged in
-        goToCdeByName("Specimen Collection Sampling Number");
-        textNotPresent("Note: You may not edit this CDE because it is standard.");
-
-        // Check that a Standard CDE doesn't have warning message when viewed by none owner
-        goToCdeByName("Adverse Event Ongoing Event Indicator");
-        textNotPresent("Note: You may not edit this CDE because it is standard.");
-        
-        // Check that a Standard CDE doesn't have warning message when viewed by site admin
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName("Adverse Event Ongoing Event Indicator");
-        textNotPresent("Note: You may not edit this CDE because it is standard.");
-        
-        // Check that a Standard CDE have warning message
-        mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName("Person Birth Date");
-        textPresent("Note: You may not edit this CDE because it is standard.");
-    }
-    
-    @Test
-    public void saveSearchState() {
-        goToCdeSearch();
-        findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
-        findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
-        hangon(1);
-        findElement(By.xpath("//i[@id=\"li-blank-Qualified\"]")).click();
-        textPresent("| Qualified");
-        findElement(By.name("ftsearch")).sendKeys("name");
-        findElement(By.id("search.submit")).click();     
-        textPresent("results for CTEP : CATEGORY | name | Qualified");
-        findElement(By.linkText("Forms")).click();     
-        textNotPresent("CATEGORY");
-        findElement(By.linkText("CDEs")).click();     
-        textPresent("results for CTEP : CATEGORY | name | Qualified");
     }
     
 }

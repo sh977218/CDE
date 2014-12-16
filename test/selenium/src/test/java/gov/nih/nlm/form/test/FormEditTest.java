@@ -34,7 +34,7 @@ public class FormEditTest extends BaseFormTest {
         findElement(By.cssSelector(".fa-check")).click();
         newCdeVersion();
         
-        goToFormByName(formName);
+        goToFormByName(formName, "Incomplete");
         findElement(By.linkText("Form Description")).click();
         textPresent("Some CDEs in this form have newer version");
         textPresent("Cytogenetics Karyotype Mutation Abnormality Cell Count (Outdated)");
@@ -46,23 +46,17 @@ public class FormEditTest extends BaseFormTest {
         searchForm("FormSearchTest");
         textPresent("Skin Cancer Patient");
         textPresent("Traumatic Brain Injury - Adverse Events");
+        textNotPresent("Vision Deficit Report");        
+        textPresent(", Qualified");      
+        findElement(By.id("li-blank-Recorded")).click();
         textPresent("Vision Deficit Report");        
-        textPresent("Qualified");      
-        findElement(By.id("status-text-Qualified")).click(); 
-        textPresent("Skin Cancer Patient");
-        textPresent("Traumatic Brain Injury - Adverse Events");        
-        textNotPresent("Vision Deficit Report");   
-        findElement(By.id("status-text-Qualified")).click();     
-        textPresent("Skin Cancer Patient");
-        textPresent("Traumatic Brain Injury - Adverse Events");        
-        textPresent("Vision Deficit Report");
-        findElement(By.id("status-text-Recorded")).click();  
+        findElement(By.id("li-checked-Qualified")).click(); 
+        textPresent("Vision Deficit Report");        
         textNotPresent("Skin Cancer Patient");
         textNotPresent("Traumatic Brain Injury - Adverse Events");
-        textPresent("Vision Deficit Report");    
-        findElement(By.id("status-text-Recorded")).click();  
+        findElement(By.id("li-blank-Qualified")).click();     
         textPresent("Skin Cancer Patient");
-        textPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Traumatic Brain Injury - Adverse Events");        
         textPresent("Vision Deficit Report");
     }    
     

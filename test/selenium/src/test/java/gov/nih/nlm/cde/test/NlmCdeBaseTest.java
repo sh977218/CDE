@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
@@ -85,10 +86,12 @@ public class NlmCdeBaseTest {
             default:
                 caps = DesiredCapabilities.chrome();
         }
-        caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
-        LoggingPreferences logPrefs = new LoggingPreferences();
-        logPrefs.enable(LogType.BROWSER, Level.ALL);
-        caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+        
+        
+//        caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
+        LoggingPreferences loggingprefs = new LoggingPreferences();
+        loggingprefs.enable(LogType.BROWSER, Level.ALL);
+        caps.setCapability(CapabilityType.LOGGING_PREFS, loggingprefs);        
 
         switch (browser) {
             case "firefox":
@@ -106,6 +109,8 @@ public class NlmCdeBaseTest {
 
         wait = new WebDriverWait(driver, defaultTimeout, 200);
         shortWait = new WebDriverWait(driver, 2);
+        
+        resizeWindow(1280, 800);
     }
 
     protected void resizeWindow(int width, int height) {
@@ -214,40 +219,63 @@ public class NlmCdeBaseTest {
     }
 
     protected void goToCdeByName(String name) {
-        goToElementByName(name, "cde");
+        goToCdeByName(name, null);
+    }
+    protected void goToCdeByName(String name, String status) {
+        goToElementByName(name, "cde", status);
     }
 
     protected void goToFormByName(String name) {
-        goToElementByName(name, "form");
+        goToFormByName(name, null);
     }
 
+    protected void goToFormByName(String name, String status) {
+        goToElementByName(name, "form", status);
+    }
+
+    
     protected void goToElementByName(String name, String type) {
+        goToElementByName(name, type, null);
+    }
+    
+    protected void goToElementByName(String name, String type, String status) {
         try {
-            openEltInList(name, type);
+            openEltInList(name, type, status);
             findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
-            Assert.assertTrue(textPresent("Classification"));
-            Assert.assertTrue(textPresent(name));
         } catch (Exception e) {
             hangon(1);
             findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
-            Assert.assertTrue(textPresent("Classification"));
-            Assert.assertTrue(textPresent(name));
         }
+        textPresent("Classification");
+        textPresent(name);
     }
 
     protected void openCdeInList(String name) {
-        openEltInList(name, "cde");
+        openCdeInList(name, null);
     }
 
+    protected void openCdeInList(String name, String status) {
+        openEltInList(name, "cde", status);
+    }
+
+    
     protected void openEltInList(String name, String type) {
+        openEltInList(name, type, null);
+    }
+    
+    protected void openEltInList(String name, String type, String status) {
         goToSearch(type);
+        if (status != null) {
+            findElement(By.id("li-blank-" + status)).click();
+            hangon(2);
+        }        
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
-        findElement(By.cssSelector("i.fa-search")).click();
+        findElement(By.cssSelector("i.fa-search")).click();   
         textPresent("1 results for");
         textPresent(name);
         findElement(By.id("acc_link_0")).click();
-        hangon(1);
+        hangon(1);            
     }
 
     protected void openFormInList(String name) {
@@ -319,7 +347,7 @@ public class NlmCdeBaseTest {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(where), text));
         return true;
     }
-
+    
     public boolean textPresent(String text) {
         return textPresent(text, "BODY");
     }
@@ -333,6 +361,7 @@ public class NlmCdeBaseTest {
         return true;
     }
 
+    @BeforeMethod
     protected void goHome() {
         driver.get(baseUrl + "/gonowhere");
         driver.get(baseUrl + "/");
@@ -352,7 +381,7 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/#/" + type + "/search");
         findElement(By.name("ftsearch"));
         showSearchFilters();
-        Assert.assertTrue(textPresent("Qualified ("));
+        textPresent("NINDS (");
     }
 
     protected void goToSearchByMenu() {

@@ -6,8 +6,8 @@ import org.testng.annotations.Test;
 public class FormCommentTest extends CommentTest {
 
     @Override
-    public void goToEltByName(String name) {
-        goToFormByName(name);
+    public void goToEltByName(String name, String status) {
+        goToFormByName(name, status);
     }
 
     @Override
@@ -22,12 +22,12 @@ public class FormCommentTest extends CommentTest {
 
     @Test
     public void orgAdminCanRemoveFormComment() {
-        orgAdminCanRemoveComment("Form Comment Test");
+        orgAdminCanRemoveComment("Form Comment Test", "Recorded");
     }
 
     @Test
     public void siteAdminCanRemoveFormComment() {
-        siteAdminCanRemoveComment("Form Property Test");
+        siteAdminCanRemoveComment("Form Property Test", "Recorded");
     }
 
 }

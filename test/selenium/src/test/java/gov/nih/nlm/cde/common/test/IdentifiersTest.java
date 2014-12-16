@@ -7,9 +7,9 @@ import org.openqa.selenium.WebElement;
 
 public abstract class IdentifiersTest extends CommonTest {
     
-    public void addRemoveId(String eltName) {
+    public void addRemoveId(String eltName, String status) {
         mustBeLoggedInAs(ctepCurator_username, password);
-        goToEltByName(eltName);
+        goToEltByName(eltName, status);
         findElement(By.linkText("Identifiers")).click();
         findElement(By.id("addId")).click();
         modalHere();
@@ -37,7 +37,8 @@ public abstract class IdentifiersTest extends CommonTest {
         findElement(By.name("id")).sendKeys("MyId3");
         findElement(By.name("version")).sendKeys("MyVersion3");
         findElement(By.id("createId")).click();
-        Assert.assertTrue(textPresent("Identifier Added"));
+        textPresent("Identifier Added");
+        closeAlert();
         modalGone();
 
         //remove MyOrigin2
@@ -51,7 +52,7 @@ public abstract class IdentifiersTest extends CommonTest {
             }
         }
         
-        goToEltByName(eltName);
+        goToEltByName(eltName, status);
         findElement(By.linkText("Identifiers")).click();
         Assert.assertTrue(textPresent("MyOrigin1"));
         Assert.assertTrue(textPresent("MyId1"));

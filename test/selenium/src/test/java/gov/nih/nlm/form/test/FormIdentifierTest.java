@@ -6,8 +6,8 @@ import org.testng.annotations.Test;
 public class FormIdentifierTest extends IdentifiersTest {
     
     @Override
-    public void goToEltByName(String name) {
-        goToFormByName(name);
+    public void goToEltByName(String name, String status) {
+        goToFormByName(name, status);
     }
     
     @Override
@@ -17,7 +17,7 @@ public class FormIdentifierTest extends IdentifiersTest {
     
     @Test
     public void addRemoveFormId() {
-        addRemoveId("Vision Deficit Report");
+        addRemoveId("Vision Deficit Report", "Recorded");
     }
     
     

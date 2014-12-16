@@ -23,10 +23,8 @@ public class SectionTest extends BaseFormTest {
         Assert.assertTrue(textPresent(formDef));
         Assert.assertTrue(textPresent(formV));
         
-        gotoPublicForms();
-        searchForm("Create Form Test Name");
-        findElement(By.linkText("Create Form Test Name")).click();
-        Assert.assertTrue(textPresent("Fill out carefully!"));        
+        goToFormByName("Create Form Test Name", "Incomplete");
+        textPresent("Fill out carefully!");        
     }
     
     @Test
@@ -35,28 +33,27 @@ public class SectionTest extends BaseFormTest {
         searchForm("FormSearchTest");
         textPresent("Skin Cancer Patient");
         textPresent("Traumatic Brain Injury - Adverse Events");
-        textPresent("Vision Deficit Report");        
-        textPresent("Qualified");      
-        findElement(By.id("status-text-Qualified")).click(); 
+        textNotPresent("Vision Deficit Report");        
+        textPresent(", Qualified");      
+        findElement(By.id("li-blank-Recorded")).click(); 
         textPresent("Skin Cancer Patient");
         textPresent("Traumatic Brain Injury - Adverse Events");        
-        textNotPresent("Vision Deficit Report");   
-        findElement(By.id("status-text-Qualified")).click();     
-        textPresent("Skin Cancer Patient");
-        textPresent("Traumatic Brain Injury - Adverse Events");        
+        textPresent("Vision Deficit Report");   
+        findElement(By.id("li-checked-Qualified")).click();     
+        textNotPresent("Skin Cancer Patient");
+        textNotPresent("Traumatic Brain Injury - Adverse Events");        
         textPresent("Vision Deficit Report");
-        findElement(By.id("status-text-Recorded")).click();  
+        findElement(By.id("li-checked-Recorded")).click();  
+        textPresent("0 results for");
+        findElement(By.id("li-blank-Recorded")).click();  
         textNotPresent("Skin Cancer Patient");
         textNotPresent("Traumatic Brain Injury - Adverse Events");
-        textPresent("Vision Deficit Report");    
-        findElement(By.id("status-text-Recorded")).click();  
-        textPresent("Skin Cancer Patient");
-        textPresent("Traumatic Brain Injury - Adverse Events");
         textPresent("Vision Deficit Report");
     }    
     
     void addSection(String title, String card) {
         int nbOfSections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_view')]")).size();
+        scrollToTop();
         findElement(By.linkText("Form Description")).click();
 
         findElement(By.id("addSection")).click();
@@ -191,11 +188,8 @@ public class SectionTest extends BaseFormTest {
         mustBeLoggedInAs(ninds_username, password);
         String formName = "Form Permission Test";
         
-        gotoPublicForms();
-        searchForm(formName);
-        findElement(By.linkText(formName)).click();
-        hangon(1);
-        findElement(By.id("openEltInCurrentTab_0")).click();
+        goToFormByName(formName, "Recorded");
+        findElement(By.linkText("Form Description")).click();
         
         String sec1 = "test permission section";
         addSection(sec1, "0 or more");
@@ -203,10 +197,8 @@ public class SectionTest extends BaseFormTest {
         saveForm();
         
         mustBeLoggedInAs(ctepCurator_username, password);
-        gotoPublicForms();
-        searchForm(formName);
-        findElement(By.linkText(formName)).click();
-        findElement(By.id("openEltInCurrentTab_0")).click();
+        goToFormByName(formName, "Recorded");
+        findElement(By.linkText("Form Description")).click();
         textNotPresent("Delete");
         textNotPresent("Add Section");
         textNotPresent("Show Question Search Area");

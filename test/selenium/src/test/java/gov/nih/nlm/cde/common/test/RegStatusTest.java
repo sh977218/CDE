@@ -8,7 +8,7 @@ public abstract class RegStatusTest extends CommonTest {
  
     public void changeRegistrationStatus(String eltName, String user, String from, String to) {
         mustBeLoggedInAs(user, password);
-        goToEltByName(eltName);
+        goToEltByName(eltName, from);
         textPresent(from);
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(to);
@@ -29,7 +29,7 @@ public abstract class RegStatusTest extends CommonTest {
         findElement(By.name("unresolvedIssue")).sendKeys("Unresolved Issue 1");
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
-        goToEltByName(eltName);
+        goToEltByName(eltName, "Recorded");
         textPresent("Recorded");
         findElement(By.linkText("Status")).click();
         textPresent("Recorded");
