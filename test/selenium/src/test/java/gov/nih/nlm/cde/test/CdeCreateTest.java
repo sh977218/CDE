@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ctepCurator_username;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -21,22 +22,22 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         goHome();
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
-        Assert.assertTrue(textPresent("Please enter a name"));
+        textPresent("Please enter a name");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
         findElement(By.name("elt.designation")).sendKeys("abc");
-        Assert.assertTrue(textPresent("Please enter a definition"));
+        textPresent("Please enter a definition");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
         findElement(By.name("elt.definition")).sendKeys("abc");
-        Assert.assertTrue(textPresent("Please select a steward"));
+        textPresent("Please select a steward");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
-        Assert.assertTrue(textPresent("Please select at least one classification"));
+        textPresent("Please select at least one classification");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
         classify("CTEP", "DISEASE", "Gynecologic");
-        Assert.assertTrue(textPresent("Please select at least one classification owned by NINDS"));
+        textPresent("Please select at least one classification owned by NINDS");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
         classify("NINDS", "Population", "Adult");
-        Assert.assertTrue(textNotPresent("Please"));
+        textNotPresent("Please");
         Assert.assertTrue(findElement(By.id("submit")).isEnabled());
     }
     
@@ -47,15 +48,15 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         String definition = "Definition for testUser CDE 1";
         fillOutBasicCreateFields(name, definition, "CTEP", "Submission and Reporting", "Breast Cancer Data Mart");
 
-        Assert.assertTrue(textPresent("Submission and Reporting"));
-        Assert.assertTrue(textPresent("Breast Cancer Data Mart"));
+        textPresent("Submission and Reporting");
+        textPresent("Breast Cancer Data Mart");
 
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("Select One");
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
         
         classify("NINDS", "Disease", "Traumatic Brain Injury");
         modalGone();
-        Assert.assertTrue(textPresent("Traumatic Brain Injury"));
+        textPresent("Traumatic Brain Injury");
         
         deleteClassification("classification-Disease,Traumatic Brain Injury");
 
@@ -64,15 +65,15 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         findElement(By.id("submit")).click();
         hangon(1);
 
-        Assert.assertTrue(textPresent(definition));
+        textPresent(definition);
 
         findElement(By.linkText("Classification")).click();
         
-        Assert.assertTrue(textPresent("Submission and Reporting"));
-        Assert.assertTrue(textPresent("Breast Cancer Data Mart"));        
+        textPresent("Submission and Reporting");
+        textPresent("Breast Cancer Data Mart");        
         
-        Assert.assertTrue(textPresent("Disease"));
-        Assert.assertTrue(textPresent("Headache"));   
+        textPresent("Disease");
+        textPresent("Headache");   
 
         findElement(By.linkText("Identifiers")).click();
         Assert.assertEquals("", findElement(By.id("dd_version_nlm")).getText());        
@@ -83,11 +84,10 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         createBasicCde("AlignmentCDE", "Definition for alignment cde", "CTEP", "DISEASE", "Brain");
 
-        goToCdeSearch();
         openCdeInList("AlignmentCDE", "Incomplete");
         Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
         findElement(By.linkText("View Full Detail")).click();
-        Assert.assertTrue(textPresent("ctepCurator"));
+        textPresent("ctepCurator");
         Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
     }
 

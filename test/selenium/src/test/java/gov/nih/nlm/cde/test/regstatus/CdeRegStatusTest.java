@@ -72,8 +72,9 @@ public class CdeRegStatusTest extends RegStatusTest {
         findElement(By.linkText("CDEs")).click();
         showSearchFilters();
         findElement(By.id("li-checked-Standard")).click();
+        hangon(2);
         findElement(By.id("li-checked-Qualified")).click();
-        Assert.assertTrue(textPresent("1 results for"));
+        textPresent("1 results for");
         findElement(By.xpath("//i[@title='View Full Detail']")).click();
         hangon(0.5);
         findElement(By.xpath("//i[@id='editStatus']")).click();

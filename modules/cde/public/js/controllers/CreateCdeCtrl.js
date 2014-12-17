@@ -8,7 +8,12 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
         $scope.showSuggestions();
     }); 
         
-    $scope.elt = { classification: []}; 
+    $scope.elt = { classification: [], stewardOrg: {}}; 
+    
+    if ($scope.myOrgs.length === 1) {
+        $scope.elt.stewardOrg.name = $scope.myOrgs[0];
+    }
+    
     $scope.save = function() {
         $scope.elt.naming = [];
         $scope.elt.naming.push({
@@ -31,7 +36,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
             return "Please enter a name for the new CDE";
         } else if (!$scope.elt.definition) {
             return "Please enter a definition for the new CDE";
-        } else if (!$scope.elt.stewardOrg) {
+        } else if (!$scope.elt.stewardOrg.name) {
             return "Please select a steward for the new CDE";
         }
         if ($scope.elt.classification.length === 0) {

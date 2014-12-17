@@ -95,7 +95,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-CTEP")).click();
         // next line should make it wait.
         findElement(By.cssSelector("i.fa-check-square-o"));
-        hangon(1);
+        hangon(2);
         findElement(By.linkText("Next")).click();
         Assert.assertTrue(textPresent("OPEN to Rave Standard "));
         findElement(By.cssSelector("i.fa-check-square-o"));
