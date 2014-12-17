@@ -1,5 +1,5 @@
 <div accordion close-others="false">
-    <div accordion-group ng-repeat="form in (cdes+mltCdes)" is-open="form.isOpen">
+    <div accordion-group ng-repeat="form in cdes track by $index" is-open="form.isOpen">
         <div accordion-heading>
             <span ng-bind-html="form.naming[0].designation" id="acc_link_{{$index}}" class="hand-cursor"></span>            
         </div>
