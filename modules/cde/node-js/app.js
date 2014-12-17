@@ -117,6 +117,10 @@ exports.init = function(app, daoManager) {
             });
         }
     });
+    
+    app.post('/debytinyid/:tinyId/:version?', function(req, res) {
+        return cdesvc.save(req, res);
+    });    
 
     app.post('/dataelement', function (req, res) {
         return cdesvc.save(req, res);
