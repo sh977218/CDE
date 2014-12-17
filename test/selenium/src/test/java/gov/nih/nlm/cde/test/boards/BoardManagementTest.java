@@ -57,8 +57,8 @@ public class BoardManagementTest extends BoardTest {
             if (boardName.equals(name)) {
                 findElement(By.id("publicIcon_" + i)).click();
                 findElement(By.id("confirmChangeStatus_" + i)).click();
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("privateIcon_" + i)));
             }
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("privateIcon_" + i)));
         }
         
         logout();

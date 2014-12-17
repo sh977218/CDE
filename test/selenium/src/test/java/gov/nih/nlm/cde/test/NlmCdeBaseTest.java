@@ -58,6 +58,7 @@ public class NlmCdeBaseTest {
     protected static String docEditor = "docEditor";
     protected static String classificationMgtUser_username = "classificationMgtUser";
     protected static String transferStewardUser_username = "transferStewardUser";
+    protected static String createUser_username = "createUser";
 
     protected static String password = "pass";
 
@@ -378,6 +379,7 @@ public class NlmCdeBaseTest {
 
     protected void goToSearch(String type) {
         driver.get(baseUrl + "/gonowhere");
+        textPresent("Nothing here");
         driver.get(baseUrl + "/#/" + type + "/search");
         findElement(By.name("ftsearch"));
         showSearchFilters();
