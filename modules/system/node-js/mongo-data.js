@@ -80,7 +80,8 @@ exports.userById = function(id, callback) {
 };
 
 exports.addUser = function(user, callback) {
-    var newUser = new User(user.toLowerCase());
+    user.username = user.username.toLowerCase();
+    var newUser = new User(user);
     newUser.save(function() {
         callback(newUser);
     });
