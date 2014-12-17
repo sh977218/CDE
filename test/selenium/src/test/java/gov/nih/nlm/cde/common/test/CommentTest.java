@@ -24,17 +24,17 @@ public abstract class CommentTest extends CommonTest {
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("My First Comment!"));
     }
 
-    public void orgAdminCanRemoveComment(String eltName) {        
+    public void orgAdminCanRemoveComment(String eltName, String status) {        
         mustBeLoggedInAs(test_username, test_password);
         String commentText = "Inappropriate Comment";
-        goToEltByName(eltName);
+        goToEltByName(eltName, status);
         findElement(By.linkText("Discussions")).click();
         findElement(By.name("commentTextArea")).sendKeys(commentText);
         findElement(By.name("postComment")).click();
         Assert.assertTrue(textPresent("Comment added"));
         logout();
         loginAs(cabigAdmin_username, password);
-        goToEltByName(eltName);
+        goToEltByName(eltName, status);
         findElement(By.linkText("Discussions")).click();
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
         for (int i = 0; i < length; i++) {
@@ -48,17 +48,17 @@ public abstract class CommentTest extends CommonTest {
         }
     }
 
-    public void siteAdminCanRemoveComment(String eltName) {        
+    public void siteAdminCanRemoveComment(String eltName, String status) {        
         mustBeLoggedInAs(test_username, test_password);
         String commentText = "Another Inappropriate Comment";
-        goToEltByName(eltName);
+        goToEltByName(eltName, status);
         findElement(By.linkText("Discussions")).click();
         findElement(By.name("commentTextArea")).sendKeys(commentText);
         findElement(By.name("postComment")).click();
         Assert.assertTrue(textPresent("Comment added"));
         logout();
         loginAs(nlm_username, nlm_password);
-        goToEltByName(eltName);
+        goToEltByName(eltName, status);
         findElement(By.linkText("Discussions")).click();
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
         for (int i = 0; i < length; i++) {

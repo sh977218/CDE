@@ -6,8 +6,8 @@ import org.testng.annotations.Test;
 public class CdePropertyTest extends PropertyTest {
    
     @Override
-    public void goToEltByName(String name) {
-        goToCdeByName(name);
+    public void goToEltByName(String name, String status) {
+        goToCdeByName(name, status);
     }
 
     @Override
@@ -22,12 +22,12 @@ public class CdePropertyTest extends PropertyTest {
     
     @Test
     public void addRemoveCdeProperty() {
-        addRemoveProperty("Aromatase Inhibitor Most Recent Received Text");
+        addRemoveProperty("Aromatase Inhibitor Most Recent Received Text", null);
     }
     
     @Test
     public void richPropText() {
-        richText("Imaging diffusion sixth b value");
+        richText("Imaging diffusion sixth b value", null);
     }
     
 }

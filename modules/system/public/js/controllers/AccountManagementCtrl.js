@@ -36,10 +36,11 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
     $scope.getOrgs = function() {
         return $http.get("/managedOrgs").then(function(response) {
             $scope.orgs = response.data.orgs;
+            $scope.orgNames = $scope.orgs.map(function(o) {return o.name;});
         });
     };
     $scope.getOrgs(); 
-
+    
     // Retrieve all orgs and users who are admins of each org
     $scope.getOrgAdmins = function() {
         return $http.get("/orgAdmins").then(function(response) {

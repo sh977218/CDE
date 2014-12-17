@@ -32,11 +32,9 @@ fi
 mongo test test/data/testForms.js
 mongo cde-logs-test deploy/logInit.js
 
-mongorestore -d test -c dataelements test/data/nindsDump/test/dataelements.bson
+mongorestore -d test -c dataelements test/data/cdedump/dataelements.bson
 mongorestore -d test -c forms test/data/nindsDump/test/forms.bson
-
-groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml localhost test test 
-groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx localhost test 
+mongorestore --drop -d test -c orgs test/data/cdedump/orgs.bson
 
 mongo test test/createLargeBoard.js
 

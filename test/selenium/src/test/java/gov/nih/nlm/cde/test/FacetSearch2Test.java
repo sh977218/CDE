@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class FacetSearch2Test extends NlmCdeBaseTest {
    
-    private FacetSearchTest facetSearchTest = new FacetSearchTest();
+    private final FacetSearchTest facetSearchTest = new FacetSearchTest();
     
     @Test
     public void ownerAndAdminCanSeeLowStatus() {
@@ -16,6 +16,10 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         new CdeCreateTest().createBasicCde(cdeName, "Low Stat Definition", "CTEP", "DISEASE", "Lung");
         goToCdeSearch();
         findElement(By.id("li-blank-Incomplete")).click();
+        hangon(2);
+        findElement(By.id("li-checked-Standard")).click();
+        hangon(2);
+        findElement(By.id("li-checked-Qualified")).click();
         textPresent(cdeName);
         
         mustBeLoggedInAs(cabigAdmin_username, password);
@@ -23,16 +27,22 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         hangon(1);
         if (textPresentTrueFalse("Incomplete (")) {
             findElement(By.id("li-blank-Incomplete")).click();
+            findElement(By.id("li-checked-Qualified")).click();
+            findElement(By.id("li-checked-Standard")).click();
             textNotPresent(cdeName);
         }
         
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         findElement(By.id("li-blank-Incomplete")).click();
+        hangon(1);
+        findElement(By.id("li-checked-Qualified")).click();
+        hangon(1);
+        findElement(By.id("li-checked-Standard")).click();
         textPresent(cdeName);
 
         mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName(cdeName);
+        goToCdeByName(cdeName, "Incomplete");
         findElement(By.id("editStatus")).click();
         modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Candidate");
@@ -41,6 +51,10 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
 
         goToCdeSearch();
         findElement(By.id("li-blank-Candidate")).click();
+        hangon(2);
+        findElement(By.id("li-checked-Standard")).click();
+        hangon(2);
+        findElement(By.id("li-checked-Qualified")).click();
         textPresent(cdeName);
         
         mustBeLoggedInAs(cabigAdmin_username, password);
@@ -57,8 +71,9 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-search")).click();
         hangon(1);
         findElement(By.id("li-blank-Candidate")).click();
-        textPresent(cdeName);
-        
+        findElement(By.id("li-checked-Standard")).click();
+        findElement(By.id("li-checked-Qualified")).click();
+        textPresent(cdeName);        
     }
     
     @Test
@@ -80,14 +95,15 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
     public void infoBarStatus() {
         goToCdeSearch();
         findElement(By.id("resetSearch")).click();
+        textPresent(", Qualified");
         hangon(2);
-        findElement(By.id("li-blank-Qualified")).click();
-        textPresent("| Qualified");
+        findElement(By.id("li-checked-Qualified")).click();
+        textNotPresent(", Qualified");
         findElement(By.id("li-blank-Recorded")).click();
-        textPresent( "Qualified, Recorded" );
+        textPresent( "Standard, Recorded" );
         scrollToTop();
         findElement(By.id("resetSearch")).click();
-        textPresent( "All Status" );
+        textPresent( "results for All Classifications | All Terms | Preferred Standard, Standard, Qualified" );
     }
     
         

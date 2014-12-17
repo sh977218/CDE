@@ -1,6 +1,5 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.cde.common.test.RegStatusTest;
 import gov.nih.nlm.cde.test.regstatus.CdeRegStatusTest;
 import java.util.List;
 import org.openqa.selenium.By;
@@ -59,7 +58,7 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
         
         new CdeRegStatusTest().changeRegistrationStatus("Test CDE for Test Working Group", ctepCurator_username, "Incomplete", "Recorded");
 
-        goToCdeByName("Test CDE for Test Working Group");
+        goToCdeByName("Test CDE for Test Working Group", "Recorded");
         findElement(By.linkText("Classification")).click();
         new ClassificationTest().addClassificationMethod(new String[]{"Test Working Group", classification, subClassification});
                 

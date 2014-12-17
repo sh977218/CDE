@@ -2,7 +2,7 @@
 
 mongo nlmcde deploy/dbInit.js
 
-find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec groovy -cp ./groovy/ groovy/UploadCadsr {} \;
+find ../nlm-seed/ExternalCDEs/caDSR/xml_cde_2014113104239/*.xml -exec groovy -cp ./groovy/ groovy/UploadCadsr {} MONGO_HOST MONGO_DB live \;
 
 find ../nlm-seed/ExternalCDEs/Vsac/*.xml -exec node ingester/uploadVsac {} \;
 

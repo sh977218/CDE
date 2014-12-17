@@ -86,7 +86,6 @@ var deJsonSchema = {
     , cadsrRegStatus: String
     , registrationState: sharedSchemas.registrationStateSchema
     , classification: [sharedSchemas.classificationSchema]
-    , formUsageCounter: Number
     , properties: [
         {key: String, value: String, valueFormat: String}
     ]
@@ -98,7 +97,6 @@ var deJsonSchema = {
     , isFork: Boolean
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
-    , usedByOrgs: [String]
 };
 
 var pinSchema = mongoose.Schema ({

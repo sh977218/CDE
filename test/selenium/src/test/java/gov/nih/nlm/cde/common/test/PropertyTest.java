@@ -12,13 +12,20 @@ public abstract class PropertyTest extends CommonTest {
         findElement(By.id("addProperty")).click();
         modalHere();
         findElement(By.name("key")).sendKeys(checkString);
-        Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
+        try {
+            Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
+        } catch (Exception e) {
+            System.out.println("Re-typing autocomplete text");
+            findElement(By.name("key")).clear();
+            findElement(By.name("key")).sendKeys(checkString); 
+            Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
+        }
         goHome();
     }
     
-    public void addRemoveProperty(String eltName) {
+    public void addRemoveProperty(String eltName, String status) {
         mustBeLoggedInAs(ctepCurator_username, password);
-        goToEltByName(eltName);
+        goToEltByName(eltName, status);
         findElement(By.linkText("Properties")).click();
         findElement(By.id("addProperty")).click();
         modalHere();
@@ -46,7 +53,7 @@ public abstract class PropertyTest extends CommonTest {
         findElement(By.id("confirmRemoveProperty-1")).click();
         Assert.assertTrue(textPresent("Property Removed"));
         
-        goToEltByName(eltName);
+        goToEltByName(eltName, status);
         findElement(By.linkText("Properties")).click();
         Assert.assertTrue(textPresent("MyKey1"));
         Assert.assertTrue(textPresent("MyKey3"));
@@ -56,9 +63,9 @@ public abstract class PropertyTest extends CommonTest {
         Assert.assertTrue(textNotPresent("MyValue2"));     
     }
     
-    public void richText(String eltName) {
+    public void richText(String eltName, String status) {
         mustBeLoggedInAs(ninds_username, password);
-        goToEltByName(eltName);
+        goToEltByName(eltName, status);
         findElement(By.linkText("Properties")).click();
         findElement(By.xpath("//dd[@id='dd_prop_value_0']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//dd[@id='dd_prop_value_0']//button[@btn-radio=\"'html'\"]")).click();
