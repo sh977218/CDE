@@ -135,6 +135,8 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
     };
     console.log("create ..." + created_i);
     var mc = mongoCollection;
+    console.log("mc1" + JSON.stringify(mc));
+
     mc.create(fakeCde, {_id: null, username: ""}, function(err, mongoCde) {
         console.log("created!" + created_i++);
         setTimeout(function() {
