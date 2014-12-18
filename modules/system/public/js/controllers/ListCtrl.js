@@ -40,11 +40,12 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;   
     }
     
+//    $scope.altClassificationFilterMode = false;
     $scope.selectedOrg = $scope.cache.get($scope.getCacheName("selectedOrg"));    
     $scope.selectedElements = $scope.cache.get($scope.getCacheName("selectedElements"));
     if (!$scope.selectedElements) {
         $scope.selectedElements = [];
-    }       
+    }
     
     $scope.totalItems = $scope.cache.get($scope.getCacheName("totalItems"));
 
@@ -215,7 +216,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
                 $scope.aggregations = $scope.filterOutWorkingGroups($scope.aggregations);
                 
                 OrgHelpers.addLongNameToOrgs($scope.aggregations.lowRegStatusOrCurator_filter.orgs.buckets, $rootScope.orgsDetailedInfo);
-             });
+            });
         });  
     };   
     
