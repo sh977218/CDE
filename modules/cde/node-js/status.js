@@ -162,7 +162,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
     });
 };
 
-var lauch_i = 0;
+var launch_i = 0;
 setInterval(function() {
     console.log("launch " + launch_i++);
     status.checkElastic(elastic.elasticCdeUri, mongo);
