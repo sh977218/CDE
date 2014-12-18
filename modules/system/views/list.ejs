@@ -18,9 +18,8 @@
 </div>
 <hr class="searchInfoHr"/>
 <div class="container-fluid searchInfo">
-    <!--<span class="pt8 pb8 ib"><strong>{{totalItems}}</strong> results for <span class="label label-success">{{selectedOrg?getSelectedClassifications():'All Classifications'}}</span> and <span class="label label-success">{{selectedOrg?getSelectedClassifications():'All Classifications'}} <i class="fa fa-times hand-cursor dark-icon pl5"></i></span> | <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> | {{getSelectedStatuses()?getSelectedStatuses():'All Status'}}</span>-->
+    <span class="pt8 pb8 ib"><strong>{{totalItems}}</strong> results for <span class="label label-success">{{selectedOrg?getSelectedClassifications():'All Classifications'}}</span> and <span class="label label-success">{{selectedOrg?getSelectedClassifications():'All Classifications'}} <i class="fa fa-times hand-cursor dark-icon pl5"></i></span> | <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> | {{getSelectedStatuses()?getSelectedStatuses():'All Status'}}</span>
 
-    <span class="pt8 pb8 ib"><strong>{{totalItems}}</strong> results for {{selectedOrg?getSelectedClassifications():'All Classifications'}} | <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> | {{getSelectedStatuses()?getSelectedStatuses():'All Status'}}</span>
     <a href="#/cdeSearchExport" ng-show="totalItems>0 && cPage !== 'forms'">
         <button id="gridView" value="Grid View" class="btn btn-default pull-right">
             <i class="fa fa-table"></i>
