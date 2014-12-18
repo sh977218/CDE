@@ -9,7 +9,6 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
     
 
     if (!$scope.searchForm) $scope.searchForm = {};
-    $scope.registrationStatuses = [];
 
     $scope.hideShowFilter = function() {
         $scope.filterMode = !$scope.filterMode;
@@ -27,8 +26,10 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
         return "search." + $scope.module + "." + name;
     };    
 
-    if ($scope.cache.get($scope.getCacheName("registrationStatuses"))) $scope.registrationStatuses = $scope.cache.get($scope.getCacheName("registrationStatuses"));
-    if ($scope.registrationStatuses === undefined) {
+    if ($scope.cache.get($scope.cache.get($scope.getCacheName("registrationStatuses")))) {
+        $scope.registrationStatuses = $scope.cache.get($scope.getCacheName("registrationStatuses"));
+    }
+    if (!$scope.registrationStatuses) {
         $scope.registrationStatuses = JSON.parse(JSON.stringify(regStatusShared.statusList));
         for (var i in $scope.registrationStatuses) {
             $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
