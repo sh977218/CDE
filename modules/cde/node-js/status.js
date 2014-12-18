@@ -134,7 +134,8 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
         }]
     };
     console.log("create ..." + created_i);
-    mongoCollection.create(fakeCde, {_id: null, username: ""}, function(err, mongoCde) {
+    var mc = mongoCollection;
+    mc.create(fakeCde, {_id: null, username: ""}, function(err, mongoCde) {
         console.log("created!" + created_i++);
         setTimeout(function() {
             request.get(elasticUrl + "_search?q=NLM_APP_Status_Report_"+seed, function (error, response, bodyStr) {
@@ -150,7 +151,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                         statusReport.elastic.updating = true;                        
                     }
                     try {
-                        mongoCollection.DataElement.remove({"naming.designation":"NLM_APP_Status_Report_" + seed}).exec();
+                        mc.DataElement.remove({"naming.designation":"NLM_APP_Status_Report_" + seed}).exec();
                     } catch(e) {
                         console.log("\n\n\n\n Cannot delete data element \n\n\n");
                         console.log(e.toString());
