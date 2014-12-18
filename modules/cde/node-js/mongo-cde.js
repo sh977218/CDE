@@ -21,6 +21,7 @@ var connection = null;
 var iConnectionEstablisherCde = new connectionEstablisher(mongoUri, 'CDE');
 iConnectionEstablisherCde.connect(function(conn) {
     DataElement = conn.model('DataElement', schemas.dataElementSchema);
+    exports.DataElement = DataElement;
     PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
     Message = conn.model('Message', schemas.message); 
     User = conn.model('User', schemas_system.userSchema);
@@ -28,8 +29,6 @@ iConnectionEstablisherCde.connect(function(conn) {
 });
 
 var mongo_data = this;
-
-exports.DataElement = DataElement;
 
 exports.boardsByUserId = function(userId, callback) {
     PinningBoard.find({"owner.userId": userId}).exec(function (err, result) {
