@@ -151,6 +151,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                         statusReport.elastic.updating = true;                        
                     }
                     try {
+                        console.log(JSON.stringify(mc));
                         mc.DataElement.remove({"naming.designation":"NLM_APP_Status_Report_" + seed}).exec();
                     } catch(e) {
                         console.log("\n\n\n\n Cannot delete data element \n\n\n");
