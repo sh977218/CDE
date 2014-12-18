@@ -26,7 +26,8 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
         return "search." + $scope.module + "." + name;
     };    
 
-    if ($scope.cache.get($scope.cache.get($scope.getCacheName("registrationStatuses")))) {
+    console.log($scope.cache.get($scope.getCacheName("registrationStatuses")))
+    if ($scope.cache.get($scope.getCacheName("registrationStatuses"))) {
         $scope.registrationStatuses = $scope.cache.get($scope.getCacheName("registrationStatuses"));
     }
     if (!$scope.registrationStatuses) {
