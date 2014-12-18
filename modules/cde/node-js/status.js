@@ -122,7 +122,7 @@ status.checkElasticSync = function(body, statusReport, mongoCollection) {
         }
     });
 };
-
+var created_i = 0;
 status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoCollection) {
     var seed = Math.floor(Math.random()*100000);
     var fakeCde = {
@@ -133,7 +133,9 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                 , definition: "NLM_APP_Status_Report_" + seed
         }]
     };
+    console.log("create ..." + created_i);
     mongoCollection.create(fakeCde, {_id: null, username: ""}, function(err, mongoCde) {
+        console.log("created!" + created_i++);
         setTimeout(function() {
             request.get(elasticUrl + "_search?q=NLM_APP_Status_Report_"+seed, function (error, response, bodyStr) {
                 var body = JSON.parse(bodyStr);
@@ -159,7 +161,9 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
     });
 };
 
+var lauch_i = 0;
 setInterval(function() {
+    console.log("launch " + launch_i++);
     status.checkElastic(elastic.elasticCdeUri, mongo);
 }, config.status.timeouts.statusCheck);    
 
