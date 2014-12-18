@@ -40,6 +40,11 @@
             <div tab heading="{{tabs['ids'].heading}}" active="tabs['ids'].active">
                 <div ng-include="'/system/public/html/identifiers.html'"></div>
             </div>
+ <% if (config.modules.forms) { %>
+            <div tab heading="{{tabs['forms'].heading}}" active="tabs['forms'].active">
+                <div ng-include="'/cde/public/html/forms.html'"></div>
+            </div>
+<% } %>
             <div tab heading="{{tabs['discussions'].heading}}">
                 <div ng-include="'/system/public/html/comments.html'"></div>
             </div>
