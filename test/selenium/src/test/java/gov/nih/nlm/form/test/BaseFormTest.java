@@ -8,9 +8,7 @@ import org.testng.Assert;
 public class BaseFormTest extends NlmCdeBaseTest {
     
     protected void gotoPublicForms() {
-        goHome();
         findElement(By.linkText("Forms")).click();    
-        findElement(By.id("resetSearch")).click();
         showSearchFilters();
     }
     
