@@ -15,6 +15,7 @@ exports.send = function(msg, cb) {
     mongo_data_system.siteadmins(function(err, users) {
         mailOptions.to = users.filter(function(a){return typeof(a.email)!=="undefined";}).map(function(a) {return a.email;}).join(",");
         mailOptions.text = msg;
+        console.log(JSON.stringify (config))
         console.log(JSON.stringify(mailOptions));
         transporter.sendMail(mailOptions, function(error, info){
             if(error){
