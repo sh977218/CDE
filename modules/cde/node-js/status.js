@@ -31,7 +31,8 @@ exports.assembleErrorMessage = function(statusReport) {
 
 exports.status = function(req, res) {    
     if (status.everythingOk()) {
-        res.send("ALL SERVICES UP");        
+        res.send("ALL SERVICES UP");   
+        status.restartAttempted = false; 
     } else {
         var msg = status.assembleErrorMessage(status.statusReport);
         res.send("ERROR: " + msg);        
@@ -46,10 +47,10 @@ status.delayReports = function() {
 };
 
 exports.evaluateResult = function(statusReport) {
-//    if (process.uptime()<config.status.timeouts.minUptime) return;
-//    if (status.everythingOk()) return;
-//    if (status.reportSent) return;    
-//    if (!status.restartAttempted) status.tryRestart();    
+    if (process.uptime()<config.status.timeouts.minUptime) return;
+    if (status.everythingOk()) return;
+    if (status.reportSent) return;    
+    if (!status.restartAttempted) status.tryRestart();    
     var msg = status.assembleErrorMessage(status.statusReport);
     email.send(msg, function(err) {
         if (!err) status.delayReports();
