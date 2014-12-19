@@ -46,10 +46,10 @@ status.delayReports = function() {
 };
 
 exports.evaluateResult = function(statusReport) {
-    if (process.uptime()<config.status.timeouts.minUptime) return;
-    if (status.everythingOk()) return;
-    if (status.reportSent) return;    
-    if (!status.restartAttempted) status.tryRestart();    
+//    if (process.uptime()<config.status.timeouts.minUptime) return;
+//    if (status.everythingOk()) return;
+//    if (status.reportSent) return;    
+//    if (!status.restartAttempted) status.tryRestart();    
     var msg = status.assembleErrorMessage(status.statusReport);
     email.send(msg, function(err) {
         if (!err) status.delayReports();
@@ -122,7 +122,6 @@ status.checkElasticSync = function(body, statusReport, mongoCollection) {
         }
     });
 };
-var created_i = 0;
 status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoCollection) {
     var seed = Math.floor(Math.random()*100000);
     var fakeCde = {
@@ -133,12 +132,9 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                 , definition: "NLM_APP_Status_Report_" + seed
         }]
     };
-    console.log("create ..." + created_i);
     var mc = mongoCollection;
-    console.log("mc1" + JSON.stringify(mc));
 
     mc.create(fakeCde, {_id: null, username: ""}, function(err, mongoCde) {
-        console.log("created!" + created_i++);
         setTimeout(function() {
             request.get(elasticUrl + "_search?q=NLM_APP_Status_Report_"+seed, function (error, response, bodyStr) {
                 var body = JSON.parse(bodyStr);
@@ -153,7 +149,6 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                         statusReport.elastic.updating = true;                        
                     }
                     try {
-                        console.log(JSON.stringify(mc));
                         mc.DataElement.remove({"naming.designation":"NLM_APP_Status_Report_" + seed}).exec();
                     } catch(e) {
                         console.log("\n\n\n\n Cannot delete data element \n\n\n");
@@ -165,9 +160,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
     });
 };
 
-var launch_i = 0;
 setInterval(function() {
-    console.log("launch " + launch_i++);
     status.checkElastic(elastic.elasticCdeUri, mongo);
 }, config.status.timeouts.statusCheck);    
 
