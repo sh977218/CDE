@@ -24,7 +24,9 @@ angular.module('resources')
                 , isSiteAdmin: scope.isSiteAdmin()
                 , myOrgs: scope.myOrgs
                 , selectedOrg: scope.selectedOrg
+                , selectedOrgAlt: scope.selectedOrgAlt
                 , selectedElements: this.getSelectedElements(scope)
+                , selectedElementsAlt: this.getSelectedElementsAlt(scope)
                 , filter: scope.filter
                 , currentPage: scope.searchForm.currentPage
             };
@@ -32,7 +34,10 @@ angular.module('resources')
         }
         , getSelectedElements: function(scope) {
             return scope.selectedElements?scope.selectedElements:[];
-        }        
+        }
+        , getSelectedElementsAlt: function(scope) {
+            return scope.selectedElementsAlt?scope.selectedElementsAlt:[];
+        }
         , getSize: function(settings) {
             return settings.resultPerPage?settings.resultPerPage:20;
         }
@@ -50,6 +55,14 @@ angular.module('resources')
                     flatSelection = flatSelection + settings.selectedElements[i];
                 } 
                 return flatSelection;
+            };
+            this.flattenSelectionAlt = function(upTo) {
+                var flatSelectionAlt = "";
+                for (var i = 0; i < settings.selectedElementsAlt.length && i < upTo; i++) {
+                    if (flatSelectionAlt !== "") flatSelectionAlt = flatSelectionAlt + ";";
+                    flatSelectionAlt = flatSelectionAlt + settings.selectedElementsAlt[i];
+                } 
+                return flatSelectionAlt;
             };
             this.escapeRegExp = function(str) {
                 return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -148,7 +161,11 @@ angular.module('resources')
                 queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
             }
             
-
+            var flatSelectionAlt = queryBuilder.flattenSelectionAlt(1000);
+            if (flatSelectionAlt !== "") {
+                queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
+            }
+            
             queryStuff.aggregations = {
                 lowRegStatusOrCurator_filter: {                
                     "filter": {
@@ -198,7 +215,26 @@ angular.module('resources')
                         flatClassification: flatClassification
                     }
                 };
-                
+            }
+            
+            if (settings.selectedOrgAlt !== undefined) {
+                var flatClassificationAlt = {
+                    terms: {
+                        size: 500,
+                        field: "flatClassification"
+                    }
+                };
+                if (flatSelectionAlt === "") {
+                    flatClassificationAlt.terms.include = settings.selectedOrgAlt + ";[^;]+";
+                } else {
+                    flatClassificationAlt.terms.include = settings.selectedOrgAlt + ';' + queryBuilder.escapeRegExp(flatSelectionAlt) + ";[^;]+";
+                }
+                queryStuff.aggregations.filteredFlatClassificationAlt = {
+                    filter: {or: lowRegStatusOrCuratorFilter}
+                    , aggs: {
+                        flatClassificationAlt: flatClassificationAlt
+                    }
+                };
             }        
 
 

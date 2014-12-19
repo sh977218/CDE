@@ -389,4 +389,10 @@ dd.formViewDetails {
     max-height: 700px;
 }
 
+.dark-icon {
+    color: black;
+}
 
+.dark-icon:hover {
+    color: white;
+}
