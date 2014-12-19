@@ -46,7 +46,7 @@ status.delayReports = function() {
     }, config.status.timeouts.emailSendPeriod);
 };
 
-exports.evaluateResult = function(statusReport) {
+exports.evaluateResult = function() {
     if (process.uptime()<config.status.timeouts.minUptime) return;
     if (status.everythingOk()) return;
     if (status.reportSent) return;    
@@ -81,7 +81,7 @@ status.checkElastic = function(elasticUrl, mongoCollection) {
         } catch(e) {
             
         }
-        status.evaluateResult(status.statusReport);
+        status.evaluateResult();
     });    
 };
 
