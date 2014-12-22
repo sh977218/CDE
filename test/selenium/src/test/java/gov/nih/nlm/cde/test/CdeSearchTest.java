@@ -159,7 +159,11 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         goToCdeByName(cdeSource);
         findElement(By.linkText("More Like This")).click();
         for (String tCde : cdeTargets) {
-            Assert.assertTrue(textPresent(tCde));
+            try {
+                Assert.assertTrue(textPresent(tCde));
+            } catch( Exception e ) {
+                Assert.assertTrue(textPresent(tCde));
+            }
         }
     }
     

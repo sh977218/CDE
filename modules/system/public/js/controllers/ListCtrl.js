@@ -95,6 +95,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
         delete $scope.selectedOrgAlt;
         $scope.selectedElements = [];
         $scope.selectedElementsAlt = [];
+        $scope.altClassificationFilterMode = false;
         for (var i in $scope.registrationStatuses) {
             $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
         }

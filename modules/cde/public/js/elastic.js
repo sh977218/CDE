@@ -58,10 +58,12 @@ angular.module('resources')
             };
             this.flattenSelectionAlt = function(upTo) {
                 var flatSelectionAlt = "";
-                for (var i = 0; i < settings.selectedElementsAlt.length && i < upTo; i++) {
-                    if (flatSelectionAlt !== "") flatSelectionAlt = flatSelectionAlt + ";";
-                    flatSelectionAlt = flatSelectionAlt + settings.selectedElementsAlt[i];
-                } 
+                if(settings.selectedElementsAlt) {
+                    for (var i = 0; i < settings.selectedElementsAlt.length && i < upTo; i++) {
+                        if (flatSelectionAlt !== "") flatSelectionAlt = flatSelectionAlt + ";";
+                        flatSelectionAlt = flatSelectionAlt + settings.selectedElementsAlt[i];
+                    }
+                }
                 return flatSelectionAlt;
             };
             this.escapeRegExp = function(str) {

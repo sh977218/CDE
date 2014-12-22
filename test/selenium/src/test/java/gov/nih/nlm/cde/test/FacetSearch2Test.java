@@ -86,7 +86,7 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Amyotrophic Lateral Sclerosis")).click();
         facetSearchTest.clickIfDisplayed("li-blank-Classification");
         facetSearchTest.clickIfDisplayed("li-blank-Core");
-        textPresent( "NINDS : Disease : Amyotrophic Lateral Sclerosis : Classification : Core" );
+        textPresent( "NINDS > Disease > Amyotrophic Lateral Sclerosis > Classification > Core" );
         findElement(By.id("resetSearch")).click();
         textPresent( "All Classifications" );
     }
@@ -103,7 +103,7 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         textPresent( "Standard, Recorded" );
         scrollToTop();
         findElement(By.id("resetSearch")).click();
-        textPresent( "results for All Classifications | All Terms | Preferred Standard, Standard, Qualified" );
+        textPresent( "results for All Terms | All Classifications | Preferred Standard, Standard, Qualified" );
     }
     
         
@@ -139,6 +139,35 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         logout();
         goToCdeSearch();
         textNotPresent("ACRIN (3");
-    }    
+    }
     
+    @Test
+    public void twoClassificationSearch() {
+        goToCdeSearch();
+        findElement(By.id("resetSearch")).click();
+        hangon(.5);
+        findElement(By.id("li-blank-NINDS")).click();
+        findElement(By.id("li-blank-Disease")).click();
+        findElement(By.id("li-blank-Epilepsy")).click();
+        textPresent( "NINDS > Disease > Epilepsy" );
+        
+        findElement(By.id("altClassificationFilterModeToggle")).click();
+        textPresent( "and All Classifications" );
+        findElement(By.id("li-blank-NINDS")).click();
+        findElement(By.id("li-blank-Domain")).click();
+        findElement(By.id("li-blank-Assessments and Examinations")).click();
+        textPresent( "and NINDS > Domain > Assessments and Examinations" );
+        textPresent( "Imaging Diagnostics (80)" );
+        
+        findElement(By.id("li-blank-Imaging Diagnostics")).click();
+        textPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
+        
+        findElement(By.id("removeAltClassificationFilterMode")).click();
+        textNotPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
+        textPresent( "NINDS (867)" );
+        
+        findElement(By.id("resetSearch")).click();
+        hangon(.5);
+        textPresent( "All Terms | All Classifications | Preferred Standard, Standard, Qualified" );
+    }
 }
