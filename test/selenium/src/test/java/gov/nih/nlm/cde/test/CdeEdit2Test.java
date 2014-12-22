@@ -81,4 +81,21 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         textNotPresent("<b>bold</b>");        
     }    
 
+    
+    @Test
+    public void editCdeByTinyId() {
+        mustBeLoggedInAs("ninds", "pass");
+        String cdeName = "Left Lymph Node Positive Total Count";
+        driver.get(baseUrl + "/#/deview?tinyId=SPFteb8X6aB");
+        findElement(By.cssSelector("i.fa-edit")).click();
+        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
+        findElement(By.cssSelector(".fa-check")).click();
+        newCdeVersion("Change note for change number 1");
+        driver.get(baseUrl + "/#/deview?tinyId=SPFteb8X6aB");
+        Assert.assertTrue(textPresent("General Details"));
+        Assert.assertTrue(textPresent("[name change number 1]"));
+              
+    }    
+    
+    
 }
