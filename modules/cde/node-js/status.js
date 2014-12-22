@@ -126,12 +126,12 @@ status.checkElasticSync = function(body, statusReport, mongoCollection) {
 status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoCollection) {
     var seed = Math.floor(Math.random()*100000);
     var fakeCde = {
-        archived: true
-        , stewardOrg: {name: ""}
+        stewardOrg: {name: ""}
         , naming: [{
                 designation: "NLM_APP_Status_Report_" + seed
                 , definition: "NLM_APP_Status_Report_" + seed
         }]
+        , registrationState: {registrationStatus: "Retired"}
     };
 
     mongoCollection.create(fakeCde, {_id: null, username: ""}, function(err, mongoCde) {
