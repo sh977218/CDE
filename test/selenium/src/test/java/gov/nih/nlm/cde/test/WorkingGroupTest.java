@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 public class WorkingGroupTest extends NlmCdeBaseTest {
     
-    /*@Test
+    @Test
     public void addOrgWithWorkingGroupOf() {
         // Create working group
         mustBeLoggedInAs(nlm_username, nlm_password);
@@ -100,23 +100,46 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
         goToCdeByName("Specimen Block Received Count");
         findElement(By.linkText("Classification")).click();  
         textNotPresent("WG Sub Classif");
-    }*/    
+    }    
     
     @Test
-    public void wgClassificationsInvisible() {
+    public void wgSeesOtherWg() {
         mustBeLoggedInAs("nindsWg1User", "pass");
-        goToCdeByName("Specify other disorder type");
+        goToCdeByName("Brief Pain Inventory (BPI) - pain general activity interference scale");
         findElement(By.linkText("Classification")).click();
         new ClassificationTest().addClassificationMethod(new String[]{"NINDS-WG-1", "WG1 Classif", "WG1 Sub Classif"});
         textPresent("WG1 Sub Classif");
         logout();
         
         mustBeLoggedInAs("nindsWg2User", "pass");
-        goToCdeByName("Urinary tract impairment unrelate injury indicator");
+        goToCdeByName("Urinary tract surgical procedure indicator");
         findElement(By.linkText("Classification")).click();
-        new ClassificationTest().addClassificationMethod(new String[]{"NINDS-WG-2", "WG1 Classif", "WG1 Sub Classif"});
+        new ClassificationTest().addClassificationMethod(new String[]{"NINDS-WG-2", "WG2 Classif", "WG2 Sub Classif"});
         textPresent("WG2 Sub Classif");
-        logout();        
+        
+        //ANONYMOUS
+        logout();           
+        goToCdeSearch();
+        textNotPresent("NINDS-WG-1");
+        textNotPresent("NINDS-WG-2");
+        
+        //CTEP
+        mustBeLoggedInAs("ctepCurator", "pass");        
+        goToCdeSearch();        
+        textNotPresent("NINDS-WG-1");
+        textNotPresent("NINDS-WG-2");        
+        
+        //NINDS-WG-1
+        mustBeLoggedInAs("nindsWg1User", "pass");
+        goToCdeSearch();        
+        textPresent("NINDS-WG-1");
+        textPresent("NINDS-WG-2");
+        
+        //NINDS-WG-2
+        mustBeLoggedInAs("nindsWg2User", "pass");
+        goToCdeSearch();        
+        textPresent("NINDS-WG-1");
+        textPresent("NINDS-WG-2");        
 
     }       
 }

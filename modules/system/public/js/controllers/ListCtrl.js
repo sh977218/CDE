@@ -222,10 +222,20 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
     
     $scope.filterOutWorkingGroups = function(aggregations) {
         aggregations.lowRegStatusOrCurator_filter.orgs.buckets = aggregations.lowRegStatusOrCurator_filter.orgs.buckets.filter(function(bucket) {
-            var isWorkingGroup = typeof($rootScope.orgsDetailedInfo[bucket.key].workingGroupOf) === "undefined";
+            var parentOrgOfThisClass = $rootScope.orgsDetailedInfo[bucket.key].workingGroupOf;
+            var isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";
             var userIsWorkingGroupCurator = $scope.myOrgs.indexOf(bucket.key) > -1;
-            if (isWorkingGroup) var userIsCuratorOfParentOrg = $scope.myOrgs.indexOf($rootScope.orgsDetailedInfo[bucket.key].workingGroupOf) > -1;
-            return isWorkingGroup || userIsWorkingGroupCurator || userIsCuratorOfParentOrg || $scope.user.siteAdmin;
+            if (!isNotWorkingGroup) var userIsCuratorOfParentOrg = $scope.myOrgs.indexOf(parentOrgOfThisClass) > -1;
+            if (!isNotWorkingGroup) {
+                var isSisterOfWg = false;                
+                var userWgsParentOrgs = $scope.myOrgs.filter(function(org) {return $rootScope.orgsDetailedInfo[org].workingGroupOf;})
+                                        .map(function(org) {return $rootScope.orgsDetailedInfo[org].workingGroupOf});
+                userWgsParentOrgs.forEach(function(parentOrg){
+                    if (parentOrg===parentOrgOfThisClass) isSisterOfWg = true;
+                });
+                
+            }
+            return isNotWorkingGroup || userIsWorkingGroupCurator || userIsCuratorOfParentOrg || isSisterOfWg || $scope.user.siteAdmin;
         });
         return aggregations;
     };    
