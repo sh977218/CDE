@@ -21,7 +21,9 @@ var cdesvc = require('./cdesvc')
 ;
 
 exports.init = function(app, daoManager) {
-    
+
+    var viewConfig = {modules: config.modules};
+
     daoManager.registerDao(mongo_data);
 
     app.use("/cde/public", express.static(path.join(__dirname, '../public')));
@@ -55,7 +57,7 @@ exports.init = function(app, daoManager) {
     });
 
     app.get('/deview', function(req, res) {
-        res.render("deview");
+        res.render("deview", 'cde', {config: viewConfig});
     });
 
     app.get('/myboards', function(req, res) {

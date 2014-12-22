@@ -31,7 +31,8 @@ exports.assembleErrorMessage = function(statusReport) {
 
 exports.status = function(req, res) {    
     if (status.everythingOk()) {
-        res.send("ALL SERVICES UP");        
+        res.send("ALL SERVICES UP");   
+        status.restartAttempted = false; 
     } else {
         var msg = status.assembleErrorMessage(status.statusReport);
         res.send("ERROR: " + msg);        
@@ -45,7 +46,7 @@ status.delayReports = function() {
     }, config.status.timeouts.emailSendPeriod);
 };
 
-exports.evaluateResult = function(statusReport) {
+exports.evaluateResult = function() {
     if (process.uptime()<config.status.timeouts.minUptime) return;
     if (status.everythingOk()) return;
     if (status.reportSent) return;    
@@ -80,7 +81,7 @@ status.checkElastic = function(elasticUrl, mongoCollection) {
         } catch(e) {
             
         }
-        status.evaluateResult(status.statusReport);
+        status.evaluateResult();
     });    
 };
 
@@ -122,17 +123,17 @@ status.checkElasticSync = function(body, statusReport, mongoCollection) {
         }
     });
 };
-
 status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoCollection) {
     var seed = Math.floor(Math.random()*100000);
     var fakeCde = {
-        archived: true
-        , stewardOrg: {name: ""}
+        stewardOrg: {name: ""}
         , naming: [{
                 designation: "NLM_APP_Status_Report_" + seed
                 , definition: "NLM_APP_Status_Report_" + seed
         }]
+        , registrationState: {registrationStatus: "Retired"}
     };
+
     mongoCollection.create(fakeCde, {_id: null, username: ""}, function(err, mongoCde) {
         setTimeout(function() {
             request.get(elasticUrl + "_search?q=NLM_APP_Status_Report_"+seed, function (error, response, bodyStr) {

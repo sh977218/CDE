@@ -8,8 +8,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
     },0);
     
 
-    $scope.searchForm = {};
-    $scope.registrationStatuses = [];
+    if (!$scope.searchForm) $scope.searchForm = {};
 
     $scope.hideShowFilter = function() {
         $scope.filterMode = !$scope.filterMode;
@@ -27,17 +26,22 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
         return "search." + $scope.module + "." + name;
     };    
 
-    $scope.registrationStatuses = $scope.cache.get($scope.getCacheName("registrationStatuses"));
-    if ($scope.registrationStatuses === undefined) {
+    console.log($scope.cache.get($scope.getCacheName("registrationStatuses")))
+    if ($scope.cache.get($scope.getCacheName("registrationStatuses"))) {
+        $scope.registrationStatuses = $scope.cache.get($scope.getCacheName("registrationStatuses"));
+    }
+    if (!$scope.registrationStatuses) {
         $scope.registrationStatuses = JSON.parse(JSON.stringify(regStatusShared.statusList));
         for (var i in $scope.registrationStatuses) {
             $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
         }
     }   
 
-    $scope.searchForm.ftsearch = $scope.cache.get($scope.getCacheName("ftsearch")); 
-    $scope.currentSearchTerm = $scope.searchForm.ftsearch;   
-   
+    if ($scope.cache.get($scope.getCacheName("ftsearch"))) {
+        $scope.searchForm.ftsearch = $scope.cache.get($scope.getCacheName("ftsearch")); 
+        $scope.currentSearchTerm = $scope.searchForm.ftsearch;   
+    }
+    
     $scope.selectedOrg = $scope.cache.get($scope.getCacheName("selectedOrg"));    
     $scope.selectedElements = $scope.cache.get($scope.getCacheName("selectedElements"));
     if (!$scope.selectedElements) {
