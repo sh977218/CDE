@@ -79,8 +79,6 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
     @Test
     public void infoBarClassification() {
         goToCdeSearch();
-        findElement(By.id("resetSearch")).click();
-        hangon(.5);
         findElement(By.id("li-blank-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
         findElement(By.id("li-blank-Amyotrophic Lateral Sclerosis")).click();
@@ -94,7 +92,6 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
     @Test
     public void infoBarStatus() {
         goToCdeSearch();
-        findElement(By.id("resetSearch")).click();
         textPresent(", Qualified");
         hangon(2);
         findElement(By.id("li-checked-Qualified")).click();
@@ -110,7 +107,6 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
     @Test
     public void infoBarTerms() {
         goToCdeSearch();
-        findElement(By.id("resetSearch")).click();
         findElement(By.name("ftsearch")).sendKeys("blah blah blah");
         findElement(By.cssSelector("i.fa-search")).click();
         hangon(.5);
@@ -144,8 +140,6 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
     @Test
     public void twoClassificationSearch() {
         goToCdeSearch();
-        findElement(By.id("resetSearch")).click();
-        hangon(.5);
         findElement(By.id("li-blank-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
         findElement(By.id("li-blank-Epilepsy")).click();
