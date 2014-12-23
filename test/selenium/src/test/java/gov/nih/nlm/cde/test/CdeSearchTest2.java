@@ -12,7 +12,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("\"graded scale\"");
         findElement(By.id("search.submit")).click();    
-        Assert.assertTrue(textPresent("| \"graded scale"));
+        Assert.assertTrue(textPresent("for \"graded scale\" |"));
         Assert.assertTrue(driver.findElements(By.xpath("//span[text()=\"Definition\"]")).size() > 5); 
     }
     
@@ -21,7 +21,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("myopathic");
         findElement(By.id("search.submit")).click();    
-        Assert.assertTrue(textPresent("| myopathic"));
+        Assert.assertTrue(textPresent("for myopathic |"));
         Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Permissible Values\"]")).size(), 2);
     }
    
@@ -30,7 +30,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("finasteride");
         findElement(By.id("search.submit")).click();    
-        Assert.assertTrue(textPresent("| finasteride"));
+        Assert.assertTrue(textPresent("for finasteride |"));
         Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Classification\"]")).size(), 6);
     }
     
@@ -89,17 +89,17 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
         findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
         hangon(1);
-        textPresent("results for CTEP : CATEGORY | All Terms | Preferred Standard, Standard, Qualified");
+        textPresent("results for All Terms | CTEP > CATEGORY | Preferred Standard, Standard, Qualified");
         findElement(By.xpath("//i[@id=\"li-checked-Qualified\"]")).click();
         scrollToTop();
-        textPresent("results for CTEP : CATEGORY | All Terms | Preferred Standard, Standard");
+        textPresent("results for All Terms | CTEP > CATEGORY | Preferred Standard, Standard");
         findElement(By.name("ftsearch")).sendKeys("name");
         findElement(By.id("search.submit")).click();     
-        textPresent("0 results for CTEP : CATEGORY | name | Preferred Standard, Standard");
+        textPresent("0 results for name | CTEP > CATEGORY | Preferred Standard, Standard");
         findElement(By.linkText("Forms")).click();     
         textNotPresent("CATEGORY");
         findElement(By.linkText("CDEs")).click();     
-        textPresent("0 results for CTEP : CATEGORY | name | Preferred Standard, Standard");
+        textPresent("0 results for name | CTEP > CATEGORY | Preferred Standard, Standard");
     }
       
 }
