@@ -241,13 +241,16 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
     };
     
     $scope.reload = function() {
+        var timestamp = new Date().getTime();
         if (!$scope.userLoaded) return;
+        $scope.lastQueryTimeStamp = timestamp;        
         $scope.accordionListStyle = "semi-transparent";
         $scope.filter = Elastic.buildElasticQueryPre($scope);
         var settings = Elastic.buildElasticQuerySettings($scope);
         Elastic.buildElasticQuery(settings, function(query) {
             $scope.query = query;
             Elastic.generalSearchQuery(query, $scope.module,  function(result) {
+                if(timestamp < $scope.lastQueryTimeStamp) return;
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
                 $scope.cdes.forEach(function(elt) {elt.usedBy = $scope.getUsedBy(elt);});
