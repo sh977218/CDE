@@ -71,6 +71,7 @@ public class MergeTest extends NlmCdeBaseTest {
         findElement(By.id("sendMergeRequest")).click();
         modalHere();
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
+        hangon(0.5);
         findElement(By.cssSelector("#confirmNewVersion")).click(); 
         hangon(5);
         findElement(By.linkText("Naming")).click();
