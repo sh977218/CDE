@@ -290,18 +290,26 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
                     $scope.aggregations.flatClassificationAlt = [];
                 }
                 
-                $scope.aggregations = $scope.filterOutWorkingGroups($scope.aggregations);
-
+                $scope.filterOutWorkingGroups($scope.aggregations);
                 OrgHelpers.addLongNameToOrgs($scope.aggregations.lowRegStatusOrCurator_filter.orgs.buckets, OrgHelpers.orgsDetailedInfo);
              });
         });  
     };   
     
     $scope.filterOutWorkingGroups = function(aggregations) {
-        aggregations.lowRegStatusOrCurator_filter.orgs.buckets = aggregations.lowRegStatusOrCurator_filter.orgs.buckets.filter(function(bucket) {
-            return OrgHelpers.showWorkingGroup(bucket.key, $scope.myOrgs) || $scope.user.siteAdmin;
-        });
-        return aggregations;
+        this.setAggregations = function() {
+            aggregations.lowRegStatusOrCurator_filter.orgs.buckets = aggregations.lowRegStatusOrCurator_filter.orgs.buckets.filter(function(bucket) {
+                return OrgHelpers.showWorkingGroup(bucket.key, $scope.myOrgs) || $scope.user.siteAdmin;
+            });
+            $scope.aggregations = aggregations;            
+        };
+        if (!OrgHelpers.isInitialized()) {
+            var filterOutWorkingGroups = this;
+            OrgHelpers.getOrgsDetailedInfoAPI(function() {
+                filterOutWorkingGroups.setAggregations();
+            });
+        } 
+        this.setAggregations();
     };    
 
 
