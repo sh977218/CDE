@@ -50,7 +50,7 @@ angular.module('resources')
                 console.log('ERROR - getOrgsDetailedInfoAPI(): Error retrieving list of orgs detailed info');
             });
         }    
-        , hideWorkingGroup: function(orgToHide, myOrgs) {
+        , showWorkingGroup: function(orgToHide, myOrgs) {
             var OrgHelpers = this;
             var parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide].workingGroupOf;
             var isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";

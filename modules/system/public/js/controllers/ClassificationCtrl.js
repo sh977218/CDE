@@ -41,7 +41,7 @@ function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification, Org
     };     
 
     $scope.hideWorkingGroups = function(stewardClassifications) {
-        return !(OrgHelpers.hideWorkingGroup(stewardClassifications.stewardOrg.name, $scope.myOrgs) || $scope.user.siteAdmin);
+        return !(OrgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, $scope.myOrgs) || $scope.user.siteAdmin);
     };
     
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
