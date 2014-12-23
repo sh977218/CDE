@@ -19,7 +19,7 @@ public class ClassificationMgt2Test extends NlmCdeBaseTest {
         closeAlert();
         findElement(By.xpath("//li[@id=\"classification-Disease,Duchenne Muscular Dystrophy/Becker Muscular Dystrophy\"]//a[contains(@class, 'classifyAll')]")).click();
         findElement(By.xpath("//div[@id='addClassificationModalBody']//span[text()='Classification Transfer']")).click();
-        findElement(By.xpath("//div[@id='addClassification-Child Classification']//button")).click();        
+        findElement(By.xpath("//div[@id='addClassification-Child Classification']//button")).click();
         textPresent("Elements classified");        
         goToCdeByName("Gastrointestinal therapy water flush status");
         findElement(By.linkText("Classification")).click();
