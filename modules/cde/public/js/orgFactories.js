@@ -51,7 +51,6 @@ angular.module('resources')
                 });
                 if (cb) cb();
             }).error(function() {
-                console.log('ERROR - getOrgsDetailedInfoAPI(): Error retrieving list of orgs detailed info');
             });
         }    
         , showWorkingGroup: function(orgToHide, myOrgs) {
