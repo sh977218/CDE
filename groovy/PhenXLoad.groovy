@@ -23,11 +23,12 @@ DBCollection deColl = db.getCollection("dataelements");
 def webClient = new WebClient();
 
 if (args.contains("--protIds")) {
-    def startUrl = "file:///usr/nlm/cde/code/nlm-seed/phenxtoolkit_report_112113.html";
+    def startUrl = "https://www.phenxtoolkit.org/index.php?pageLink=browse.measures&tree=off";
     def startPage = webClient.getPage(startUrl);
 
-    def allTables = startPage.getByXPath("//table");
-    def totalSize = allTables.size();
+    def allIds = startPage.getByXPath("//span[@class='browseid']/text()");
+//    def allTables = startPage.getByXPath("//table");
+    def totalSize = allIds.size();
     def count = 0;
     for (def table : allTables) {
         println (count++ / totalSize*100) 
