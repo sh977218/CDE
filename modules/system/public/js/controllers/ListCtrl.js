@@ -169,7 +169,9 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
     
     $scope.getUsedBy = function(elt) {
         if (elt.classification)
-            return elt.classification.filter(function(c) {return !OrgHelpers.orgIsWorkingGroupOf(c.stewardOrg.name, $scope.orgsDetailedInfo);}).map(function(e) {return e.stewardOrg.name;});
+            return elt.classification.filter(function(c) {
+                return OrgHelpers.hideWorkingGroup(c.stewardOrg.name, $scope.myOrgs);
+            }).map(function(e) {return e.stewardOrg.name;});
         else return [];
     };
     
