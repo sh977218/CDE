@@ -1,4 +1,4 @@
-function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, GetOrgsDetailedInfo) {
+function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers) {
 
     // Global variables
     var GLOBALS = {
@@ -223,9 +223,9 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     });
 
     // Retrieves orgs details from database at an interval
-    GetOrgsDetailedInfo.getOrgsDetailedInfoAPI();
+    OrgHelpers.getOrgsDetailedInfoAPI();
     $interval(function() {
-        GetOrgsDetailedInfo.getOrgsDetailedInfoAPI();
+        OrgHelpers.getOrgsDetailedInfoAPI();
     }, GLOBALS.getOrgsInterval);
 
 }

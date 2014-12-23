@@ -39,10 +39,9 @@ function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification, Org
             $scope.addAlert("success", "Classification Deleted");
         });
     };     
-  
+
     $scope.hideWorkingGroups = function(stewardClassifications) {
-        var isWg = OrgHelpers.orgIsWorkingGroupOf(stewardClassifications.stewardOrg.name, $scope.orgsDetailedInfo);
-        return isWg && !($scope.myOrgs.indexOf(stewardClassifications.stewardOrg.name)>=0);
+        return !(OrgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, $scope.myOrgs) || $scope.user.siteAdmin);
     };
     
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {

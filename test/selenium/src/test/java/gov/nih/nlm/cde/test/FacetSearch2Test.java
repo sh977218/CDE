@@ -139,11 +139,12 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
     
     @Test
     public void twoClassificationSearch() {
+        logout();
         goToCdeSearch();
         findElement(By.id("li-blank-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
-        findElement(By.id("li-blank-Epilepsy")).click();
-        textPresent( "NINDS > Disease > Epilepsy" );
+        findElement(By.id("li-blank-Neuromuscular Disease")).click();
+        textPresent( "NINDS > Disease > Neuromuscular Disease" );
         
         findElement(By.id("altClassificationFilterModeToggle")).click();
         textPresent( "and All Classifications" );
@@ -151,14 +152,14 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Domain")).click();
         findElement(By.id("li-blank-Assessments and Examinations")).click();
         textPresent( "and NINDS > Domain > Assessments and Examinations" );
-        textPresent( "Imaging Diagnostics (80)" );
+        textPresent( "Imaging Diagnostics (236)" );
         
         findElement(By.id("li-blank-Imaging Diagnostics")).click();
         textPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
         
         findElement(By.id("removeAltClassificationFilterMode")).click();
         textNotPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
-        textPresent( "NINDS (867)" );
+        textPresent( "NINDS (1005)" );
         
         findElement(By.id("resetSearch")).click();
         hangon(.5);
