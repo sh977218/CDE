@@ -84,7 +84,7 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
     
     @Test
     public void editCdeByTinyId() {
-        mustBeLoggedInAs("ninds", "pass");
+        mustBeLoggedInAs(ninds_username, password);
         String cdeName = "Left Lymph Node Positive Total Count";
         driver.get(baseUrl + "/#/deview?tinyId=SPFteb8X6aB");
         findElement(By.cssSelector("i.fa-edit")).click();
@@ -92,8 +92,8 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         findElement(By.cssSelector(".fa-check")).click();
         newCdeVersion("Change note for change number 1");
         driver.get(baseUrl + "/#/deview?tinyId=SPFteb8X6aB");
-        Assert.assertTrue(textPresent("General Details"));
-        Assert.assertTrue(textPresent("[name change number 1]"));
+        textPresent("General Details");
+        textPresent("[name change number 1]");
               
     }    
     
