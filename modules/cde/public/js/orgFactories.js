@@ -1,7 +1,7 @@
 angular.module('resources')
 .factory('OrgHelpers', function ($http) {
     return {    
-        orgsDetailedInfo: []
+        orgsDetailedInfo: {}
         , addLongNameToOrgs : function(buckets) {
             if(this.orgsDetailedInfo) {
                 for(var i=0; i<buckets.length; i++) {
@@ -51,6 +51,7 @@ angular.module('resources')
             });
         }    
         , showWorkingGroup: function(orgToHide, myOrgs) {
+            if (Object.keys(this.orgsDetailedInfo).length === 0) return true;
             var OrgHelpers = this;
             var parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide].workingGroupOf;
             var isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";
