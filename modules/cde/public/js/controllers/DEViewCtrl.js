@@ -11,6 +11,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     $scope.pVTypeaheadCodeSystemNameList = [];
     $scope.pvLimit = 30;    
     $scope.showValidationIcons = false;
+    $scope.classifSubEltPage = '/template/system/classif-sub-elements';
     
     $scope.canCurate = false;
     

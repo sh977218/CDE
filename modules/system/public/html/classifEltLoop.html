@@ -1,0 +1,9 @@
+<div ng-include="classifSubEltPage"></div>
+
+<ul class="fa-ul">
+    <li ng-repeat="elt in elt.elements | orderBy:'name'"        
+        id="classification-{{pathArray.join()}}">
+        <div ng-include="'/system/public/html/classifEltLoop.html'" ng-init="pathArray=pathArray.slice(0); pathArray.push(elt.name)"></div>   
+    </li>
+</ul>
+
