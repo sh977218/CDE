@@ -43,7 +43,6 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
             isAllowedModel.setDisplayStatusWarning($scope);
             isAllowedModel.setCanDoNonCuration($scope);
             $scope.checkForArchivedCdes();
-            window.form = form;
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
