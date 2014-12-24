@@ -43,6 +43,8 @@ public class AttachmentsTest extends NlmCdeBaseTest {
 
         addAttachment();
         
+        hangon(2);
+        
         openFormInList(formName);
 
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
