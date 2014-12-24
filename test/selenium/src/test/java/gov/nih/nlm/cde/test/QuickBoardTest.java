@@ -159,6 +159,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent("Quick Board ( 2 )");
     
         findElement(By.linkText("Quick Board ( 2 )")).click();
+        textNotPresent("Loading...");
         
         Assert.assertFalse( findElement(By.id("qb.accordion")).isEnabled() );
         Assert.assertTrue( findElement(By.id("qb.gridview")).isEnabled() );
