@@ -1,4 +1,4 @@
-<span role="button" title="{{elt.name}}" tabindex="0" id="classification-{{elt.name}}" class="name" ng:class="($parent.$parent.$parent.$index===undefined) ? 'first-level-classification' : ''">
+<span role="button" title="{{elt.name}}" tabindex="0" id="classification-{{elt.name}}" class="name" ng:class="pathArray.length===1 ? 'first-level-classification' : ''">
     <span class="name">{{elt.name}}</span>
 </span>
 
