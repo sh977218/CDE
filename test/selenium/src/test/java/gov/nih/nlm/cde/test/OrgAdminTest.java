@@ -28,7 +28,7 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         findElement(By.linkText("Account Management")).click();
         findElement(By.linkText("Organizations Curators")).click();       
         new Select(findElement(By.name("newOrgCuratorOrgName"))).selectByVisibleText("caBIG");
-        findElement(By.name("newOrgCuratorUsername")).sendKeys("use");
+        findElement(By.name("newOrgCuratorUsername")).sendKeys("user1");
         Assert.assertEquals(findElement(By.xpath("//form[@id='newOrgCuratorForm']/div[1]/ul/li[1]/a")).getText(), "user1");
         findElement(By.xpath("//form[@id='newOrgCuratorForm']/div[1]/ul/li[1]/a")).click();
         findElement(By.id("newOrgCuratorSubmit")).click();
@@ -52,7 +52,7 @@ public class OrgAdminTest extends NlmCdeBaseTest {
 
         findElement(By.linkText("Organizations Admins")).click();       
         new Select(findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText("caBIG");
-        findElement(By.id("newOrgAdminUsername")).sendKeys("use");
+        findElement(By.id("newOrgAdminUsername")).sendKeys("user1");
         Assert.assertEquals(findElement(By.xpath("//form[@id='newOrgAdminForm']/div[1]/ul/li[1]/a")).getText(), "user1");
         findElement(By.xpath("//form[@id='newOrgAdminForm']/div[1]/ul/li[1]/a")).click();
         findElement(By.id("newOrgAdminSubmit")).click();

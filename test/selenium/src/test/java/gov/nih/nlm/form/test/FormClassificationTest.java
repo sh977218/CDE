@@ -21,7 +21,7 @@ public class FormClassificationTest extends BaseFormTest {
     
     @Test
     public void addClassification() {
-        mustBeLoggedInAs("ninds", "pass");
+        mustBeLoggedInAs(ninds_username, password);
         goToFormByName("Traumatic Brain Injury - Adverse Events");
         new ClassificationTest().addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
     }  
@@ -29,7 +29,7 @@ public class FormClassificationTest extends BaseFormTest {
     @Test
     public void classifyFormCdes() {
         resizeWindow(1024, 1300);        
-        mustBeLoggedInAs("ninds", "pass");
+        mustBeLoggedInAs(ninds_username, password);
         
         //Create a new form
         String formName = "Central Nervous System Malign Neoplasm";
