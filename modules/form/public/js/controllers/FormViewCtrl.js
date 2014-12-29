@@ -208,7 +208,11 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
     $scope.languageOptions = function(languageMode, previousLevel, index, questionName) {
         if (!previousLevel) return;
         if (languageMode == 'question') return previousLevel.filter(function(q, i){
-            return q.elementType === "question" && i != index && q.question.answers.length>0;
+            //Will assemble a list of questions
+            if (i == index) return false; //Exclude myself            
+            if (q.elementType !== "question") return false; //This element is not a question, ignore
+            if (!q.question.answers || q.question.answers.length===0) return false; //This question has no permissible answers, ignore
+            return  true;
         }).map(function(q){
             return '"' + q.label + '" ';
         });
