@@ -68,7 +68,7 @@ public class CdeRegStatusTest extends RegStatusTest {
         modalHere();
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
-        hangon(3);
+        hangon(5);
         findElement(By.linkText("CDEs")).click();
         showSearchFilters();
         findElement(By.id("li-checked-Standard")).click();
