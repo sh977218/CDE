@@ -64,8 +64,6 @@ doPage = {thisFile ->
                 loincId = allTds[2].getTextContent();
             } 
         }
-//        def cdeTitle = standardsDiv.getByXPath("p/table/tbody/tr[2]/td[1]")[0];
-//        def loincTitle = div.getByXPath("p/table/tbody/tr[3]/td[1]")[0];
     }
     
     def protocolText = page.getByXPath("//div[@id='element_PROTOCOL_TEXT']")[0].asXml().replace("<div style=\"display:block\" id=\"element_PROTOCOL_TEXT\">\n  ", "")
@@ -115,35 +113,7 @@ doPage = {thisFile ->
             }
             
         }
-    }
-    
-//    DBObject newDE = new BasicDBObject();
-//    
-//    def concepts = new ArrayList();
-//    def loincConcept = new BasicDBObject();
-//    loincConcept.append("name", div.getByXPath("p/table/tbody/tr[3]/td[2]")[0].getTextContent());
-//    loincConcept.append("origin", "LOINC");
-//    loincConcept.append("originId", div.getByXPath("p/table/tbody/tr[3]/td[3]")[0].getTextContent());
-//    concepts.add(loincConcept);
-//
-//    newDE.append("\$set", new BasicDBObject().append("dataElementConcept.concepts", concepts));
-//
-//    newDE.append("\$set", new BasicDBObject().append("property.concepts", []));
-//    newDE.append("\$set", new BasicDBObject().append("objectClass.concepts", []));
-//
-//    def protText = page.getByXPath("//div[@id='element_PROTOCOL_TEXT']")[0].asXml();
-//    newDE.append("\$set", new BasicDBObject().append("protocolText", 
-//        protText.replace("<div style=\"display:block\" id=\"element_PROTOCOL_TEXT\">\n  ", "").replace("</div>\n", "")
-//            .replace("toolkit_content/thumb", "https://www.phenxtoolkit.org/toolkit_content/thumb")
-//            .replace("toolkit_content/report", "https://www.phenxtoolkit.org/toolkit_content/report")                    
-//            ));        
-//
-//    def protDesc = page.getByXPath("//div[@id='element_DESCRIPTION']/p")[0].getTextContent();
-//    
-//    newDE.append("\$set", new BasicDBObject().append("protocolDescription", phenXObj.get("protocolDescription")));        
-//    newDE.append("\$set", new BasicDBObject().append("registrationState.registrationStatus", "Standard"));
-//    
-//    deColl.insert(newDE);
+    }    
 }
 
 def baseFolder = new File(baseFileDir);
