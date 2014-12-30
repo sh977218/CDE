@@ -28,10 +28,20 @@ DBCollection deColl = db.getCollection("dataelements");
 DBCollection orgColl = db.getCollection("orgs");
 DBCollection cacheColl = db.getCollection("phenxcache");
 
-def webClient = new WebClient();
+
+addProperty = {match, key, value ->
+    BasicDBObject newProp = new BasicDBObject("key", key);
+    newProp.put("value", value);
+    newProp.put("valueFormat", "html");
+    DBObject updateQuery = new BasicDBObject("\$push", new BasicDBObject("properties", newProp));
+    deColl.update(match, updateQuery);
+}
 
 doPage = {thisFile ->
 
+    def webClient = new WebClient();
+
+    
     def url = "file:///" + thisFile.canonicalPath;
     println "processing : " + url;
     
@@ -39,11 +49,8 @@ doPage = {thisFile ->
     println url;
     
     def page = webClient.getPage(url);
-    pageAsString = page.asXml();
     
-    final HtmlDivision standardsDiv = page.getHtmlElementById("element_STANDARDS");
-
-    def allTrs = standardsDiv.getByXPath("p/table/tbody/tr");
+    def allTrs = page.getByXPath("//div[@id='element_STANDARDS']/p/table/tbody/tr");
 
     def cadsrIds = [];
     def loincId = "";
@@ -67,6 +74,9 @@ doPage = {thisFile ->
                 .replace("toolkit_content/report", "https://www.phenxtoolkit.org/toolkit_content/report")                    
                 ;
     def protocolDescription = page.getByXPath("//div[@id='element_DESCRIPTION']/p")[0].getTextContent();
+    def specificInstruction = page.getByXPath("//div[@id='element_SPECIFIC_INSTRUCTIONS']/p")[0].getTextContent();
+    def selectionRationale = page.getByXPath("//div[@id='element_SELECTION_RATIONALE']/p")[0].getTextContent();
+    def requirements = page.getByXPath("//div[@id='element_REQUIREMENTS']/p")[0].getTextContent();
     
     if (cadsrIds.size() != 1) println "caDSR IDS: " + cadsrIds.size()
     
@@ -80,19 +90,30 @@ doPage = {thisFile ->
         eleMatch.put("source", "caDSR");
         eleMatch.put("id", thisId);
         BasicDBObject idMatch = new BasicDBObject("ids", new BasicDBObject("\$elemMatch", eleMatch))
-//        .append("source", "caDSR");
+            .append("source", "caDSR");
         
         def existingCde = deColl.findOne(idMatch);
         
         if (existingCde == null) {
             println "missing CDE";
         } else {
-            println "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ GO ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" + existingCde.tinyId;
-            BasicDBObject newProp = new BasicDBObject("key", "PhenX_Protocol_Text");
-            newProp.put("value", protocolText);
-            newProp.put("valueFormat", "html");
-            DBObject updateQuery = new BasicDBObject("\$push", new BasicDBObject("properties", newProp));
-            deColl.update(idMatch, updateQuery);
+            
+            println "******************************* " + existingCde.get("tinyId");
+            
+            addProperty(idMatch, "PhenX Protocol Text", protocolText);
+            addProperty(idMatch, "PhenX Protocol Description", protocolDescription);
+            addProperty(idMatch, "PhenX Specific Instruction", specificInstruction);
+            addProperty(idMatch, "PhenX Selection Rationale", selectionRationale);
+            addProperty(idMatch, "PhenX Requirements", requirements);
+            
+            // if there are more than one caDSR ID, LOINC ID mapping is to panel, so we can't map to LOINC element
+            if (cadsrIds.size == 1) {
+                BasicDBObject newId = new BasicDBObject("source", "LOINC");
+                newId.put("id", loincId);
+                DBObject updateQuery = new BasicDBObject("\$push", new BasicDBObject("ids", newId));
+                deColl.update(idMatch, updateQuery);
+            }
+            
         }
     }
     
@@ -128,7 +149,7 @@ doPage = {thisFile ->
 def baseFolder = new File(baseFileDir);
 files = baseFolder.listFiles();
 for (def thisFile : files) {
-    if (thisFile.canonicalPath.contains("browse.protocoldetails"))
+    if (thisFile.canonicalPath.contains("browse.protocoldetails") && !thisFile.canonicalPath.contains("tree=off"))
     doPage(thisFile);
 }   
 
