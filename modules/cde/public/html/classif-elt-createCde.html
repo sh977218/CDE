@@ -1,0 +1,10 @@
+<span role="button" title="{{elt.name}}" tabindex="0" id="classification-{{elt.name}}" class="name" ng:class="pathArray.length===1 ? 'first-level-classification' : ''">
+    <span class="name">{{elt.name}}</span>
+</span>
+
+<span>
+    <a ng-click="showRemoveClassificationModal(orgName, pathArray)" 
+       class="fa fa-trash-o hand-cursor" 
+       title="Remove">
+    </a>
+</span>

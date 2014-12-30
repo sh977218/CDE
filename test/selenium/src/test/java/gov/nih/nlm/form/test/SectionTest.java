@@ -78,6 +78,7 @@ public class SectionTest extends BaseFormTest {
         createForm(formName, "Form def", "1.0", "CTEP");
 
         findElement(By.linkText("Form Description")).click();
+        
         addSection("Section 1", "0 or more");
         addSection("Section 2", "1 or more");
         addSection("Section 3", null);

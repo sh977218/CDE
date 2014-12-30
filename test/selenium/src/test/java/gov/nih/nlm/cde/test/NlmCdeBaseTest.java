@@ -491,7 +491,13 @@ public class NlmCdeBaseTest {
     }
 
     public void scrollTo(String y) {
-        ((JavascriptExecutor) driver).executeScript("scroll(0," + y + ");");
+        ((JavascriptExecutor) driver).executeScript("scroll(0," + y + ");", "");
+    }
+    
+    public void scrollToViewById(String id) {
+        JavascriptExecutor je = (JavascriptExecutor) driver;
+        WebElement element = driver.findElement(By.id(id));
+        je.executeScript("arguments[0].scrollIntoView(true);",element);
     }
 
     public void hoverOverElement(WebElement ele) {

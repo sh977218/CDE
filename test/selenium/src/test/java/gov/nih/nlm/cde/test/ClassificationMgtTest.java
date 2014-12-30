@@ -108,14 +108,14 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     @Test
     public void renameClassification() {
         mustBeLoggedInAs(ninds_username, password);
-        gotoClassifMgt(); 
-        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()='Spinal Cord Injury']]/span/a")).click();
+        gotoClassifMgt();
+        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury']/div/div/span/a[1]")).click();
         modalHere();
         findElement(By.id("renameClassifInput")).clear();
         textPresent("Name is required");
         findElement(By.id("cancelRename")).click();
         modalGone();
-        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury'][//span[text()='Spinal Cord Injury']]/span/a")).click();
+        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury']/div/div/span/a[1]")).click();
         modalHere();
         findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
         findElement(By.id("renameClassifInput")).sendKeys("ies;");
@@ -125,7 +125,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         modalGone();
         findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification"));
         findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification,Supplemental"));
-        findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/a/span")).click();      
+        findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/div/div/a")).click();
         hangon(1);
         Assert.assertTrue(textPresent("Spinal Cord Injuries"));
     }
