@@ -4,6 +4,7 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
     $scope.addCdeMode = false;
     $scope.openCdeInNewTab = true;
     $scope.dragEnabled = true;
+    $scope.classifSubEltPage = '/template/system/classif-sub-elements';
     
     $scope.tabs = {
         general: {heading: "General Details"},
@@ -207,18 +208,27 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
       
     $scope.languageOptions = function(languageMode, previousLevel, index, questionName) {
         if (!previousLevel) return;
-        if (languageMode == 'question') return previousLevel.filter(function(q, i){return q.elementType === "question" && i != index;}).map(function(q){return '"' + q.label + '" ';});
+        if (languageMode == 'question') return previousLevel.filter(function(q, i){
+            //Will assemble a list of questions
+            if (i == index) return false; //Exclude myself            
+            if (q.elementType !== "question") return false; //This element is not a question, ignore
+            if (!q.question.answers || q.question.answers.length===0) return false; //This question has no permissible answers, ignore
+            return  true;
+        }).map(function(q){
+            return '"' + q.label + '" ';
+        });
         if (languageMode == 'operator') return ["= ", "< ", "> "];
         if (languageMode == 'answer') {
             var questions = previousLevel.filter(function(q) {
                 if (q.label && questionName)
                 return q.label.trim() === questionName.trim();
             });
-            if (questions.length<=0) return; 
+            if (questions.length<=0) return []; 
             var question = questions[0];
-            var answers = question.question.answers
+            var answers = question.question.answers;
             return answers.map(function(a) {return '"' + a.valueMeaningName + '"';});
         }
         if (languageMode == 'conjuction') return ["AND", "OR"];
+        return [];
     };
 }

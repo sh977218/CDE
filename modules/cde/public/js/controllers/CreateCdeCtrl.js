@@ -3,7 +3,9 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
     $scope.currentPage = 1;
     $scope.totalItems = 0;
     $scope.resultPerPage = 20;
+    $scope.module = "cde";
     $scope.searchForm = {};
+    $scope.classifSubEltPage = '/cde/public/html/classif-elt-createCde.html';
     $scope.$watch('currentPage', function() {
         $scope.showSuggestions();
     }); 
