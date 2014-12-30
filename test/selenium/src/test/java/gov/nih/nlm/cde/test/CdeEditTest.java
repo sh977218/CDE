@@ -24,9 +24,9 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#dd_uom .fa-check")).click();
         newCdeVersion("Change note for change number 1");
         goToCdeByName(cdeName);
-        Assert.assertTrue(textPresent("[name change number 1]"));
-        Assert.assertTrue(textPresent("[def change number 1]"));
-        Assert.assertTrue(textPresent("myUom"));
+        textPresent("[name change number 1]");
+        textPresent("[def change number 1]");
+        textPresent("myUom");
         // test that label and its value are aligned. 
         Assert.assertEquals(findElement(By.id("dt_updated")).getLocation().y, findElement(By.id("dd_updated")).getLocation().y);
 
@@ -48,6 +48,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.id("prior-0")).click();
         textPresent("1");
         textPresent("Warning: this data element is archived.");
+        
+        findElement(By.linkText("view the current version here")).click();
+        textPresent("[name change number 1]");
+        textPresent("[def change number 1]");
+        textPresent("myUom");
+        
     }
     
     @Test
