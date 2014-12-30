@@ -4,9 +4,17 @@
     </span>
 </a>
 
-<span ng-show="myOrg">
+<span >
+    <a title="Edit" 
+       ng-click="showRenameDialog(orgName, pathArray)" 
+       class="fa fa-pencil hand-cursor" >
+    </a>
     <a ng-click="showRemoveClassificationModal(orgName, pathArray)" 
        class="fa fa-trash-o hand-cursor" 
        title="Remove">
+    </a>
+    <a title="Reclassify"
+       class="fa fa-retweet hand-cursor classifyAll" 
+       ng-click="showClassifyEntireSearchModal(orgName, pathArray);">
     </a>    
 </span>
