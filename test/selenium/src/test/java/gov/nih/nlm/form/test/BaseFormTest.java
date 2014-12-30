@@ -13,7 +13,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
     
     protected void saveForm() {
-        scrollToTop();
+        scrollToViewById("openSaveBottom");
         findElement(By.id("openSaveBottom")).click();
         findElement(By.name("version")).sendKeys("1");
         findElement(By.id("confirmNewVersion")).click();  

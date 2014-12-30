@@ -4,6 +4,7 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
     $scope.addCdeMode = false;
     $scope.openCdeInNewTab = true;
     $scope.dragEnabled = true;
+    $scope.classifSubEltPage = '/template/system/classif-sub-elements';
     
     $scope.tabs = {
         general: {heading: "General Details"},
