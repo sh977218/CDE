@@ -49,7 +49,8 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Basic")).click();
         textPresent("88 results for");
         findElement(By.id("li-checked-Acute Hospitalized")).click();
-        textPresent("1174 results for");
+        textPresent("117");
+        textPresent("Mild TBI (117");
         textPresent("Epidemiology (11");
         findElement(By.id("li-checked-Disease")).click();
     }

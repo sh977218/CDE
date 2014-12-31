@@ -1,36 +1,32 @@
 <div ng-controller="SaveCdeCtrl">
-
-<div ng-repeat="namePair in elt.naming">
-    <div class="row">
-        <div class="col-md-1 text-right" ng-show="canCurate && elt.naming.length > 1">
-            <div class="row">
-                <i tabindex="0" title="Remove Naming" role="link" ng-click="removeNamePair($index)" class="fa fa-trash-o" id="removeNaming-{{$index}}"></i>
+    <br/>
+    <div ng-repeat="namePair in elt.naming">
+        <div class="row">
+            <div class="col-md-1 text-right">
+                <i ng-if="canCurate && elt.naming.length > 1" tabindex="0" title="Remove Naming" role="link" ng-click="removeNamePair($index)" class="fa fa-trash-o" id="removeNaming-{{$index}}"></i>
+            </div>
+            <div class="col-md-11">
+                <div class="row">
+                    <div class="col-md-1"><strong>Name:</strong></div>
+                    <div class="col-md-11" id="dd_name_{{$index}}"><span inline-edit id="nameEdit" model="namePair.designation" is-allowed="canCurate" on-ok="stageNewName(namePair)"></span></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1"><strong>Definition:</strong></div>
+                    <div class="col-md-11" id="dd_def_{{$index}}"><span inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="namePair.definition" is-allowed="canCurate" def-format="namePair.definitionFormat" on-ok="stageNewName(namePair)"></span></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1"><strong>Context:</strong></div>
+                    <div class="col-md-11" id="dd_context_{{$index}}"><span inline-edit id="nameEdit" model="namePair.context.contextName" is-allowed="canCurate" on-ok="stageNewName(namePair)"></span></div>
+                </div>
             </div>
         </div>
-        <div class="col-md-11">
-            <dl class="dl-horizontal">
-                <dt>Name: </dt> 
-                <dd id="dd_name_{{$index}}">
-                    <div inline-edit id="nameEdit" model="namePair.designation" is-allowed="canCurate" on-ok="stageNewName(namePair)"> </div>
-                </dd>
-                <dt>Definition: </dt>
-                <dd id="dd_def_{{$index}}">
-                    <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="namePair.definition" is-allowed="canCurate" def-format="namePair.definitionFormat" on-ok="stageNewName(namePair)"> </div>
-                </dd>
-                <dt>Context: </dt> 
-                <dd id="dd_context_{{$index}}">
-                    <div inline-edit id="nameEdit" model="namePair.context.contextName" is-allowed="canCurate" on-ok="stageNewName(namePair)"> </div>
-                </dd>
-            </dl>
-        </div>
+        <hr/>
     </div>
-    <hr/>
-</div>
 
-<button ng-show="canCurate" class="btn btn-small btn-default" value="add" ng-click="openNewNamePair()" id="addNamePair"><i class="fa fa-plus"> </i> Add Naming</button>
+    <button ng-show="canCurate" class="btn btn-small btn-default" value="add" ng-click="openNewNamePair()" id="addNamePair"><i class="fa fa-plus"> </i> Add Naming</button>
 
-<script type="text/ng-template" id="newNamePairModalContent.html">
-    <%- include newNamePairModal.ejs %>
-</script>
+    <script type="text/ng-template" id="newNamePairModalContent.html">
+        <%- include newNamePairModal.ejs %>
+    </script>
 
 </div>

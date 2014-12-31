@@ -52,9 +52,9 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
         // Can't edit naming
         findElement(By.linkText("Naming")).click();
-        Assert.assertFalse(driver.findElements(By.xpath("//dd[@id='dd_name_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
-        Assert.assertFalse(driver.findElements(By.xpath("//dd[@id='dd_def_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
-        Assert.assertFalse(driver.findElements(By.xpath("//dd[@id='dd_context_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.xpath("//div[@id='dd_name_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.xpath("//div[@id='dd_def_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.xpath("//div[@id='dd_context_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
 
         // Can edit classifications
         findElement(By.linkText("Classification")).click();
