@@ -358,10 +358,15 @@ public class NlmCdeBaseTest {
     }
 
     public boolean textNotPresent(String text) {
-        wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text)));
+        return textNotPresent(text, By.cssSelector("BODY"));
+    }
+
+    public boolean textNotPresent(String text, By by) {
+        wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElementLocated(by, text)));
         return true;
     }
 
+    
     @BeforeMethod
     protected void goHome() {
         driver.get(baseUrl + "/gonowhere");
