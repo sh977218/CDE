@@ -358,10 +358,15 @@ public class NlmCdeBaseTest {
     }
 
     public boolean textNotPresent(String text) {
-        wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text)));
+        return textNotPresent(text, By.cssSelector("BODY"));
+    }
+
+    public boolean textNotPresent(String text, By by) {
+        wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElementLocated(by, text)));
         return true;
     }
 
+    
     @BeforeMethod
     protected void goHome() {
         driver.get(baseUrl + "/gonowhere");
@@ -443,6 +448,7 @@ public class NlmCdeBaseTest {
         findElement(By.name("ftsearch")).clear();        
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
+        textPresent("1 results for");
         textPresent(cdeName, "#acc_link_0");
         findElement(By.id("addToCompare_0")).click();
         hangon(.5);
@@ -451,12 +457,12 @@ public class NlmCdeBaseTest {
 
     public void addToCompare(String cdeName1, String cdeName2) {
         goToCdeSearch();
-        Assert.assertTrue(textPresent("Quick Board ( empty )"));
+        textPresent("Quick Board ( empty )");
         addToQuickBoard(cdeName1);
         addToQuickBoard(cdeName2);
         findElement(By.linkText("Quick Board ( 2 )")).click();
-        Assert.assertTrue(textPresent(cdeName1));
-        Assert.assertTrue(textPresent(cdeName2));
+        textPresent(cdeName1);
+        textPresent(cdeName2);
         findElement(By.id("qb.compare")).click();
     }
 
