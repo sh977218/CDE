@@ -62,12 +62,11 @@
                 <div><strong>Answer List:</strong></div>
                 <div class="panel-body">
                     <ui-select multiple ng-model="question.question.answers" theme="select2" ng-disabled="!canCurate" style="min-width: 125px">
-                        <ui-select-match placeholder="Select answers...">{{$item.permissibleValue}}</ui-select-match>
+                        <ui-select-match placeholder="Select answers...">{{$item.valueMeaningName}}</ui-select-match>
                         <ui-select-choices repeat="pv in question.question.cde.permissibleValues | filter:$select.search track by pv.permissibleValue">
-                          {{pv.permissibleValue}}
+                          {{pv.valueMeaningName}}
                         </ui-select-choices>
                     </ui-select>
-
                 </div>
             </div>
         </div>
