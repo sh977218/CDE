@@ -36,12 +36,12 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         findElement(By.linkText("Classifications")).click();
         hangon(1);
         new Select(findElement(By.cssSelector("select"))).selectByValue("caBIG");
-        Assert.assertTrue(textPresent("gov.nih.nci.cananolab.domain.characterization.invitro"));
-        Assert.assertTrue(textNotPresent("Common Terminology Criteria for Adverse Events v3.0"));
-        hangon(1);
+        textPresent("gov.nih.nci.cananolab.domain.characterization.invitro");
+        textNotPresent("Common Terminology Criteria for Adverse Events v3.0");
+        hangon(3);
         new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
-        Assert.assertTrue(textPresent("Common Terminology Criteria for Adverse Events v3.0"));
-        Assert.assertTrue(textNotPresent("gov.nih.nci.cananolab.domain.characterization.invitro"));        
+        textPresent("Common Terminology Criteria for Adverse Events v3.0");
+        textNotPresent("gov.nih.nci.cananolab.domain.characterization.invitro");        
     }
     
     @Test
