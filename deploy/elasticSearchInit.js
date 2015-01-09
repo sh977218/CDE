@@ -15,6 +15,22 @@ exports.createIndexJson = {
                 , "source" : { "type" : "string", "index" : "not_analyzed" }
                 , "origin" : { "type" : "string", "index" : "not_analyzed" }
                 , "valueDomain.permissibleValues.valueMeaningCodeSystem": { "type" : "string", "index" : "not_analyzed" }
+                , "properties": {
+                    "type" : "nested",
+                    "include_in_parent": true,
+                    "properties": {
+                        "key" : {"type": "string" },
+                        "value"  : {"type": "string" }
+                    }
+                }, "ids": {
+                    "type" : "nested",
+                    "include_in_parent": true,
+                    "properties": {
+                        "source" : {"type": "string" },
+                        "id"  : {"type": "string" },
+                        "version"  : {"type": "string" }
+                    }
+                }
             }
         }
     }
@@ -57,6 +73,18 @@ var riverFunction =
         if (size > 10) {ctx.document.classificationBoost = 2.1;} \
         else {ctx.document.classificationBoost = 0.1 + 0.2 * size;} \
     } else {ctx.document.classificationBoost = .1;}\
+    ctx.document.flatIds = [];\
+    if (ctx.document.ids) {\
+        for (var i=0; i < ctx.document.ids.length; i++) {\
+            ctx.document.flatIds.push(ctx.document.ids[i].source + ' ' + ctx.document.ids[i].id + ' ' + ctx.document.ids[i].version);\
+        }\
+    }\
+    ctx.document.flatProperties = [];\
+    if (ctx.document.properties) {\
+        for (var i=0; i < ctx.document.properties.length; i++) {\
+            ctx.document.flatProperties.push(ctx.document.properties[i].key + ' ' + ctx.document.properties[i].value);\
+        }\
+    }\
     if (ctx.document.archived) {ctx.deleted = true;}\
     ";
 
@@ -85,7 +113,22 @@ exports.createFormIndexJson = {
                 , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
                 , "source" : { "type" : "string", "index" : "not_analyzed" }
                 , "origin" : { "type" : "string", "index" : "not_analyzed" }
-            }
+                , "properties": {
+                    "type" : "nested",
+                    "include_in_parent": true,
+                    "properties": {
+                        "key" : {"type": "string" },
+                        "value"  : {"type": "string" }
+                    }
+                }, "ids": {
+                    "type" : "nested",
+                    "include_in_parent": true,
+                    "properties": {
+                        "source" : {"type": "string" },
+                        "id"  : {"type": "string" },
+                        "version"  : {"type": "string" }
+                    }
+                }            }
         }
     }
 };

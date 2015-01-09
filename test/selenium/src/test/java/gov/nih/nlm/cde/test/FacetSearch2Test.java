@@ -159,7 +159,7 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         
         findElement(By.id("removeAltClassificationFilterMode")).click();
         textNotPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
-        textPresent( "NINDS (1005)" );
+        textPresent( "NINDS (100" );
         
         findElement(By.id("resetSearch")).click();
         hangon(.5);
