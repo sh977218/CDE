@@ -6,14 +6,22 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.openqa.selenium.support.ui.Select;
 
 public class ClassificationTest extends NlmCdeBaseTest {  
    public void addClassificationMethod(String[] categories) {
         findElement(By.linkText("Classification")).click();
         findElement(By.id("addClassification")).click();
         modalHere();
-        findElement(By.id("classifySlectOrg-" + categories[0])).click();
+//        findElement(By.id("classifySlectOrg-" + categories[0])).click();
 
+        try {
+            new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
+        } catch(Exception e) {
+            // Uncomment to debug
+//            System.out.println("Dropdown to select org doesn't exist!");
+        }
+        
         // Ensures that tree of classifications have finished loading.
         Assert.assertTrue(textPresent(categories[1]));
 
@@ -52,7 +60,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
                 closeAlert();
             }
         }
-        findElement(By.xpath("//button[text() = 'Done']")).click();
+        findElement(By.xpath("//button[text() = 'Close']")).click();
         modalGone();
     }
     

@@ -1,18 +1,47 @@
- function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, Organization, myOrgs, cde, addClassification, localStorageService) {
-    $scope.classificationType = "elt";
-    $scope.myOrgs = myOrgs; 
-    $scope.newClassification = { orgName: myOrgs[0], categories: [], cdeId: cde._id };
+function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, myOrgs, cde, orgName, pathArray, addClassification, localStorageService) {
+    $scope.viewType = {
+        byClassTree : true
+        , byRecentlyAdded : false
+    };
+    
+    $scope.showByClassTreeView = function() {
+        $scope.viewType.byClassTree = true;
+        $scope.viewType.byRecentlyAdded = false;
+    };
+    
+    $scope.showByRecentlyAddedView = function() {
+        $scope.viewType.byClassTree = false;
+        $scope.viewType.byRecentlyAdded = true;
+    };
+    
+    $scope.myOrgs = myOrgs;
+    $scope.orgName = orgName;
+    $scope.path = (orgName ? $scope.path = ClassificationPathBuilder.constructPath(orgName, pathArray) : undefined);
+
     $scope.classTree = ClassificationTree;
     
     $scope.selectOrg = function(name) {
-        ClassificationTree.wipeRest($scope.newClassification, 0);
-        Organization.getByName(name, function(result) {
-             $scope.org = result.data;
-        });          
+        if(name) {
+            $scope.newClassification.orgName = name;
+            ClassificationTree.wipeRest($scope.newClassification, 0);
+            Organization.getByName(name, function(result) {
+                 $scope.org = result.data;
+            });
+        } else {
+            $scope.org = '';
+        }
     };
-    $scope.selectOrg($scope.newClassification.orgName);
-    $scope.$watch('newClassification.orgName', function() {$scope.selectOrg($scope.newClassification.orgName);}, true);
-     
+
+    if(myOrgs && myOrgs.length===1) {
+        $scope.newClassification = { orgName: myOrgs[0], categories: [], cdeId: cde._id };
+        $scope.selectOrg(myOrgs[0]);
+    } else if(orgName) {
+        $scope.newClassification = { orgName: orgName, categories: [], cdeId: cde._id };
+        $scope.selectOrg(orgName);
+    } else {
+        $scope.newClassification = { orgName: undefined, categories: [], cdeId: cde._id };        
+    }
+
     $scope.close = function () {
         $modalInstance.close();
     };
@@ -20,7 +49,7 @@
     $scope.addClassification = function (lastLeafName) {        
         var deepCopy = {
             orgName: $scope.newClassification.orgName
-            , categories: $scope.newClassification.categories.map(function(cat){return cat})     
+            , categories: $scope.newClassification.categories.map(function(cat){return cat;})     
             , cdeId: cde._id
         };
         deepCopy.categories.push(lastLeafName);        
@@ -44,7 +73,7 @@
             }
         } catch (e) {
             localStorageService.remove("classificationHistory");
-        } 
+        }
     }
 
     $scope.insertToClassificationHistory = function(classification) {
@@ -56,7 +85,7 @@
             $scope.defaultClassificationsHistory.length = 5;
         }
         localStorageService.set("classificationHistory", $scope.defaultClassificationsHistory);        
-    };  
+    };
     
     $scope.classificationListContains = function(classificationList, classification) {
         for (var i = 0; i < classificationList.length; i++) {
@@ -65,7 +94,6 @@
             }
         }
         return false;
-    };    
-    
-    
+    };
+
 }

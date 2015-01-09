@@ -96,7 +96,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
 
     $scope.openSelectDefaultClassificationModal = function () {
         var modalInstance = $modal.open({
-            templateUrl: '/template/system/addClassification',
+            templateUrl: '/template/system/classifyCde',
             controller: AddClassificationModalCtrl,
             resolve: {
                 myOrgs: function() {
@@ -104,6 +104,12 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
                 }
                 , cde: function() {
                     return $scope.elt;
+                }
+                , orgName: function() {
+                    return $scope.elt.stewardOrg.name;
+                } 
+                , pathArray: function() {
+                    return undefined;
                 }
                 , addAlert: function() {
                     return $scope.addAlert;

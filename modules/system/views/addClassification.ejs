@@ -1,59 +1,16 @@
 <div class="modal-header" id="addClassificationModalHeader">
-    <h4>Add Classification</h4>
+    <h3>Add New Classification Under:</h3>
+    <p>{{path}}</p>
 </div>
-
-<div>
-    <h5 style="margin-left: 10px">Last Selected:</h5>
-    <div ng-repeat="defaultClassification in defaultClassificationsHistory" class="row">
-        <ol ng-show="defaultClassification" class="breadcrumb col-md-8 col-md-offset-1" >
-            <li>{{defaultClassification.orgName}}</li>
-            <li ng-repeat="cat in defaultClassification.categories">{{cat}}</li>
-        </ol>
-        <button ng-click="selectPriorClassification(defaultClassification)" type="button" class="btn btn-default btn-xs"><i class="fa fa-plus"></i> Add</button>
-    </div>
-</div>
-
-<div ng-if="org" class="modal-body" id="addClassificationModalBody">
-    <div ng-if="classificationType=='elt'" ng-include="'selectOrg.html'"></div>
-    <div ng-if="classificationType=='org'" ng-click="classTree.wipeRest(newClassification,0)"><span class="fake-link">{{org.name}}</span></div>        
-    <div ng-repeat="cat in newClassification.categories" ng-click="classTree.wipeRest(newClassification, $index+1)" style="margin-left: {{10+10*$index}}px">
-        <span class="fake-link">{{cat}}</span>
-    </div>
-    <div ng-repeat="cat in classTree.getCategories(org, newClassification, newClassification.categories.length) | orderBy:'name'" style="margin-left: {{10+10*newClassification.categories.length}}px" id="addClassification-{{cat.name}}">
-
-        > <span ng-if="classificationType=='org' || cat.elements.length>0" ng-click="newClassification.categories.push(cat.name)" class="fake-link">{{cat.name}}</span>
-        <span ng-if="classificationType=='elt' && (cat.elements.length==0 || !cat.elements)" class="fake-link">{{cat.name}}</span>
-
-        <span ng-if="classificationType=='elt'" ng-include="'classify.html'" ng-init="lastLeafName = cat.name"></span>
-    </div> 
-    <div ng-if="classificationType=='org'">
-        <form class="form-inline" name="newClassifForm" role="form">
-            <span class="input-group input-group-sm" id="addNewClassifToOrgName" style="margin-left: {{10+10*newClassification.categories.length}}px;">
-                <fieldset>
-                    <div class="form-group">
-                        <input ng-model="parentScope.newClassifName" id="addNewCatName" name="cName" class="form-control" required ng-pattern="/^[^;]+$/">
-                    </div>
-                </fieldset>
-                <div class="input-group-btn">
-                    <button class="btn btn-small" id="addClassificationButton" ng-click="addClassification()" ng-disabled="!parentScope.newClassifName">
-                    <i class="fa fa-plus"></i> Add</button>      
-                </div>
-            </span> 
-        </form>
-        <div ng-show="newClassifForm.cName.$error.required">Name is required</div>             
-        <div ng-show="newClassifForm.cName.$error.pattern">Name may not contain <strong>;</strong></div>             
-    </div>
+<div class="modal-body" id="addClassificationModalBody">
+    <form role="form" name="newClassifForm" class="form-inline pt20" novalidate>
+        <div class="form-group">
+            <input ng-model="parentScope.newClassifName" id="addNewCatName" name="cName" class="form-control" required ng-pattern="/^[^;]+$/">
+        </div>
+        <button type="submit" class="btn btn-success" id="addNewCatButton" ng-click="addClassification()" ng-disabled="newClassifForm.cName.$error.pattern || newClassifForm.cName.$invalid">Add</button>
+        <div ng-show="newClassifForm.cName.$error.pattern" class="error-block">May not contain ; character</div>
+    </form>
 </div>
 <div class="modal-footer" id="addClassificationModalFooter">
-    <button class="btn done" ng-click="close()">Done</button>
+    <button class="btn btn-default done" ng-click="close()">Close</button>
 </div>
-
-<script type="text/ng-template" id="selectOrg.html">
-    <div class="btn-group" id="classifyCdeSelectOrg">
-        <label ng-click="classTree.wipeRest(newClassification, 0)" ng-repeat="o in myOrgs" class="btn btn-default btn-sm" ng-model="newClassification.orgName" btn-radio="o" id="classifySlectOrg-{{o}}">{{o}}</label>
-    </div>
-</script>
-
-<script type="text/ng-template" id="classify.html">
-    <button ng-click="addClassification(lastLeafName)" type="button" class="btn btn-default btn-xs"><i class="fa fa-plus"></i> Add</button>
-</script>

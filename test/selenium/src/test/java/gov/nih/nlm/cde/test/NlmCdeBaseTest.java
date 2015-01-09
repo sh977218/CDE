@@ -161,7 +161,18 @@ public class NlmCdeBaseTest {
     protected void classify(String org, String classification, String subClassification) {
         findElement(By.id("selectDefault")).click();
         modalHere();
-        findElement(By.id("classifySlectOrg-" + org)).click();
+//        findElement(By.id("classifySlectOrg-" + org)).click();
+        
+        try {
+            new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
+        } catch(Exception e) {
+            // Uncomment to debug
+//            System.out.println("Dropdown to select org doesn't exist!");
+        }
+        
+        // Ensures that tree of classifications have finished loading.
+        Assert.assertTrue(textPresent(classification));
+        
         hangon(1);
         findElement(By.cssSelector("[id='addClassification-" + classification + "'] span.fake-link")).click();
         findElement(By.cssSelector("[id='addClassification-" + subClassification + "'] button")).click();
@@ -175,26 +186,45 @@ public class NlmCdeBaseTest {
         findElement(By.linkText("Classifications")).click();
     }
 
-    protected void createClassificationName(String[] categories) {
+    protected void createClassificationName(String org, String[] categories) {
         scrollToTop();
-        findElement(By.id("addClassification")).click();
-        modalHere();
-        for (int i = 0; i < categories.length - 1; i++) {
-            findElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link")).click();
-        }
-        findElement(By.id("addNewCatName")).sendKeys(categories[categories.length - 1]);
-        findElement(By.id("addClassificationButton")).click();
-        modalGone();
-        String selector = "";
-        for (int i = 0; i < categories.length; i++) {
-            selector += categories[i];
-            if (i < categories.length - 1) {
-                selector += ",";
+//        findElement(By.id("addClassification")).click();
+//        modalHere();
+//        for (int i = 0; i < categories.length - 1; i++) {
+//            findElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link")).click();
+//        }
+//        findElement(By.id("addNewCatName")).sendKeys(categories[categories.length - 1]);
+//        findElement(By.id("addClassificationButton")).click();
+//        modalGone();
+        
+        String addSelector = "";
+        for (int i = 0; i < categories.length-1; i++) {
+            addSelector += categories[i];
+            if (i < categories.length - 2) {
+                addSelector += ",";
             }
         }
-
-        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-" + selector + "'] .name")).getText().equals(categories[categories.length - 1]));
+        
+        String compareSelector = "";
+        for (int i = 0; i < categories.length; i++) {
+            compareSelector += categories[i];
+            if (i < categories.length - 1) {
+                compareSelector += ",";
+            }
+        }
+        
+        if(categories.length==1) {
+            findElement(By.xpath("//h4[@id='org-" + org + "']/a")).click();
+        } else if(categories.length==2){
+            findElement(By.xpath("//span[@id='classification-" + addSelector + "']/../../span/a[@title='Add Child Classification']")).click();
+        } else {
+            findElement(By.xpath("//*[@id='classification-" + addSelector + "']/div/div/span/a[@title='Add Child Classification']")).click();
+        }
+        modalHere();
+        findElement(By.id("addNewCatName")).sendKeys(categories[categories.length - 1]);
+        findElement(By.id("addNewCatButton")).click();
         closeAlert();
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-" + compareSelector + "'] .name")).getText().equals(categories[categories.length - 1]));
     }
 
     protected void fillOutBasicCreateFields(String name, String definition, String org, String classification, String subClassification) {
