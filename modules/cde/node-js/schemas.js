@@ -92,6 +92,9 @@ var deJsonSchema = {
     , ids: [
         {source: String, id: String, version: String, _id: false}
     ]
+    , mappingSpecifications: [
+        {content: String, spec_type: String, script: String}
+    ]
     , comments: [sharedSchemas.commentSchema]
     , archived: Boolean
     , isFork: Boolean
