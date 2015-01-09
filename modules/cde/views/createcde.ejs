@@ -26,10 +26,10 @@
             </div>
 
             <div class="form-group" ng-show="elt.stewardOrg.name">
-                <label for="selectDefault">Default Classifications</label>
+                <label for="selectDefault">Classifications</label>
                 <div ng-include="'/template/system/classificationBody'">
                 </div>
-                <button class="btn btn-default btn-small" ng-click="openSelectDefaultClassificationModal()" id="selectDefault">Select</button>
+                <button class="btn btn-default btn-small" ng-click="openSelectDefaultClassificationModal()" id="selectDefault">Classify this {{module | uppercase}}</button>
             </div>           
             <br />
 

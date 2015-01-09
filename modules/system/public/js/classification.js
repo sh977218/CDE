@@ -55,5 +55,19 @@ angular.module('classification', ['ngResource'])
         }
     };
 })
+.factory('ClassificationPathBuilder', function() {
+    return {
+        constructPath: function(org, pathArray) {
+            var tempPath = org;
+        
+            if(pathArray && pathArray.length>0) {
+                for(var i=0; i<pathArray.length; i++) {
+                    tempPath += ' / ' + pathArray[i];
+                }
+            }
 
+            return tempPath;
+        }
+    };
+})
 ;

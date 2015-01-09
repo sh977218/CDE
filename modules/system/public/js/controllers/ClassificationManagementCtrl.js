@@ -1,7 +1,6 @@
 function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, $timeout, Elastic) {
     $scope.module = "cde";
     $scope.classifSubEltPage = '/system/public/html/classif-elt-mgt.html';
-
     
     $scope.$watch("userLoaded", function() {
         if ($scope.myOrgs.length > 0)  {
@@ -36,14 +35,17 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
         });
     };
     
-    $scope.openAddClassificationModal = function () {
+    $scope.openAddClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: '/template/system/addClassification',
             controller: AddClassificationToOrgModalCtrl,
             resolve: {
                 org: function() {
-                    return $scope.org;
-                }                 
+                    return orgName;
+                } ,
+                pathArray: function() {
+                    return pathArray;
+                }
             }
         });
 
@@ -101,14 +103,23 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
 
     $scope.showClassifyEntireSearchModal = function (orgName, pathArray) {
         var modalInstance = $modal.open({
-          templateUrl: '/template/system/addClassification',
+          templateUrl: '/template/system/classifyCde',
           controller: AddClassificationModalCtrl,
           resolve: {
-                myOrgs: function() {
+                module: function() {
+                    return $scope.module;
+                }
+                , myOrgs: function() {
                     return $scope.myOrgs;
                 }
                 , cde: function() {
                     return {_id:null};
+                }
+                , orgName: function() {
+                    return orgName;
+                } 
+                , pathArray: function() {
+                    return pathArray;
                 }
                 , addClassification: function() {
                     return {
@@ -124,9 +135,6 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
             }          
         });
 
-        modalInstance.result.then(function () {
-            $scope.reload($routeParams);
-        });
     };       
 
     $scope.classifyEntireSearch = function(oldClassification, newClassification) {  
