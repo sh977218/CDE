@@ -1,4 +1,4 @@
-var MappingSpecificationsCtrl = function ($scope, $modal, $window, $timeout) {
+var MappingSpecificationsCtrl = function ($scope, $modal, $window) {
     $scope.openNewMappingSpecification = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newMappingSpecificationModalContent.html',
@@ -6,9 +6,6 @@ var MappingSpecificationsCtrl = function ($scope, $modal, $window, $timeout) {
           resolve: {
               elt: function() {
                   return $scope.elt;
-              },
-              module: function() {
-                  return $scope.module;
               }
           }
         });
@@ -25,11 +22,9 @@ var MappingSpecificationsCtrl = function ($scope, $modal, $window, $timeout) {
             if ($scope.elt.unsaved) {
                 $scope.addAlert("info", "Mapping Specification added. Save to confirm.");
             } else {
-                console.log($scope.elt)
                 $scope.elt.$save(function (newElt) {
-                    $window.location.href = $scope.baseLink + newElt._id + "&tab=properties";  
+                    $window.location.href = $scope.baseLink + newElt._id + "&tab=mappingSpecifications";  
                     $scope.addAlert("success", "Mapping Specification Added"); 
-                console.log($scope.elt)
                 });
             }
         });
@@ -41,7 +36,7 @@ var MappingSpecificationsCtrl = function ($scope, $modal, $window, $timeout) {
             $scope.addAlert("info", "Mapping Specification removed. Save to confirm.");
         } else {
             $scope.elt.$save(function (newElt) {
-                $window.location.href = $scope.baseLink + newElt._id + "&tab=properties";  
+                $window.location.href = $scope.baseLink + newElt._id + "&tab=mappingSpecifications";  
                 $scope.addAlert("success", "Mapping Specification Removed"); 
             });
         }
@@ -49,15 +44,15 @@ var MappingSpecificationsCtrl = function ($scope, $modal, $window, $timeout) {
 
 };
 
-function NewMappingSpecificationModalCtrl($scope, $modalInstance, $http, module, elt) {
+function NewMappingSpecificationModalCtrl($scope, $modalInstance, $http, elt) {
     $scope.elt = elt;
     $scope.newMappingSpecification = {};
     $scope.autocompleteList = [];
     
-    $http.get("/" + module + "/mappingSpecifications/types").then(function(result) {
+    $http.get("/cde/mappingSpecifications/types").then(function(result) {
         $scope.typeAutocompleteList = result.data;
     });
-    $http.get("/" + module + "/mappingSpecifications/contents").then(function(result) {
+    $http.get("/cde/mappingSpecifications/contents").then(function(result) {
         $scope.contentAutocompleteList = result.data;
     });
 

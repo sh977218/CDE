@@ -36,8 +36,6 @@
             </div>
             <div tab heading="{{tabs['properties'].heading}}" active="tabs['properties'].active">
                 <div ng-include="'/system/public/html/properties.html'"></div>
-                <hr/>
-                <div ng-include="'/cde/public/html/mappingSpecifications.html'"></div>
             </div>
             <div tab heading="{{tabs['ids'].heading}}" active="tabs['ids'].active">
                 <div ng-include="'/system/public/html/identifiers.html'"></div>
@@ -47,6 +45,9 @@
                 <div ng-include="'/cde/public/html/forms.html'"></div>
             </div>
 <% } %>
+            <div tab heading="{{tabs['mappingSpecifications'].heading}}" active="tabs['mappingSpecifications'].active">
+                <div ng-include="'/cde/public/html/mappingSpecifications.html'"></div>
+            </div>
             <div tab heading="{{tabs['discussions'].heading}}">
                 <div ng-include="'/system/public/html/comments.html'"></div>
             </div>

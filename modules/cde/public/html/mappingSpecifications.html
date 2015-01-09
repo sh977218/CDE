@@ -1,5 +1,9 @@
 <div ng-controller="MappingSpecificationsCtrl">
 
+<h4>Mapping Specifications</h4>    
+<div ng-if="elt.mappingSpecifications.length === 0">There are no mapping specifications.</div>
+
+    
 <div ng-repeat="ms in elt.mappingSpecifications">
     <div class="row">
         <div class="col-md-1 text-right" ng-show="canCurate && elt.mappingSpecifications.length > 0">
@@ -35,11 +39,11 @@
         <div class="modal-body" id="newMappingSpecificationModalBody">
             <div class="form-group">
                 <label for="newMappingSpecification.content">Content: </label>
-                <input class="form-control" ng-model="newMappingSpecification.content" id="newMappingSpecification.content" Placeholder="Content" required/>
+                <input class="form-control" ng-model="newMappingSpecification.content" typeahead="k for k in contentAutocompleteList | filter:$viewValue | limitTo:8" id="newMappingSpecification.content" Placeholder="Content" required/>
             </div>    
             <div class="form-group">
                 <label for="newMappingSpecification.type">Type: </label>
-                <input class="form-control" ng-model="newMappingSpecification.spec_type" id="newMappingSpecification.type" Placeholder="Type" required/>
+                <input class="form-control" ng-model="newMappingSpecification.spec_type" typeahead="k for k in typeAutocompleteList | filter:$viewValue | limitTo:8" id="newMappingSpecification.type" Placeholder="Type" required/>
             </div>    
             <div class="form-group">
                 <label for="newMappingSpecification.script">Script: </label>
