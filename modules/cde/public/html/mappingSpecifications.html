@@ -1,0 +1,56 @@
+<div ng-controller="MappingSpecificationsCtrl">
+
+<div ng-repeat="ms in elt.mappingSpecifications">
+    <div class="row">
+        <div class="col-md-1 text-right" ng-show="canCurate && elt.mappingSpecifications.length > 0">
+            <div class="row">
+                <span ng-show="showDelete">
+                    Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeMappingSpecification($index)" id="confirmRemoveMappingSpecification-{{$index}}" title="OK" href=""></a>
+                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
+                </span>
+                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeMappingSpecification-{{$index}}" title="Remove" href=""></a>
+            </div>
+        </div>
+        <div class="col-md-11">
+            <dl class="dl-horizontal">
+                <dt>Content: </dt> 
+                <dd id="dd_ms_content_{{$index}}">{{ms.content | placeholdEmpty}}</dd>
+                <dt>Type: </dt>                
+                <dd id="dd_ms_type_{{$index}}">{{ms.spec_type | placeholdEmpty}}</dd>
+                <dt>Script: </dt>                
+                <dd id="dd_ms_script_{{$index}}">{{ms.script | placeholdEmpty}}</dd>
+            </dl>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<button ng-show="canCurate" class="btn btn-small btn-default" value="add" ng-click="openNewMappingSpecification()" id="addMappingSpecification"><i class="fa fa-plus"> </i> Add Mapping Specification</button>
+
+<script type="text/ng-template" id="newMappingSpecificationModalContent.html">
+    <div class="modal-header" id="newMappingSpecificationModalHeader">
+        <h4>Add Mapping Specification</h4>
+    </div>
+    <form name="form" role="form">
+        <div class="modal-body" id="newMappingSpecificationModalBody">
+            <div class="form-group">
+                <label for="newMappingSpecification.content">Content: </label>
+                <input class="form-control" ng-model="newMappingSpecification.content" id="newMappingSpecification.content" Placeholder="Content" required/>
+            </div>    
+            <div class="form-group">
+                <label for="newMappingSpecification.type">Type: </label>
+                <input class="form-control" ng-model="newMappingSpecification.spec_type" id="newMappingSpecification.type" Placeholder="Type" required/>
+            </div>    
+            <div class="form-group">
+                <label for="newMappingSpecification.script">Script: </label>
+                <input class="form-control" ng-model="newMappingSpecification.script" id="newMappingSpecification.script" Placeholder="Script" required/>
+            </div>    
+        </div>
+        <div class="modal-footer" id="newMappingSpecificationModalFooter">
+            <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
+            <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid" id="createMappingSpecification">Save</button>
+        </div>
+    </form>
+</script>
+
+</div>
