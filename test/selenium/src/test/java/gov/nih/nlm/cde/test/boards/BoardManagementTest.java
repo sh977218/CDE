@@ -58,6 +58,7 @@ public class BoardManagementTest extends BoardTest {
                 findElement(By.id("publicIcon_" + i)).click();
                 findElement(By.id("confirmChangeStatus_" + i)).click();
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("privateIcon_" + i)));
+                i = length;
             }
         }
         
