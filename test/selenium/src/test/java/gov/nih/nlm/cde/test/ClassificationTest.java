@@ -13,7 +13,6 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.linkText("Classification")).click();
         findElement(By.id("addClassification")).click();
         modalHere();
-//        findElement(By.id("classifySlectOrg-" + categories[0])).click();
 
         try {
             new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);

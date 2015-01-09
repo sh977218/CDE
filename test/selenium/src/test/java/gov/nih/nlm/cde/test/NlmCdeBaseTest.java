@@ -161,13 +161,12 @@ public class NlmCdeBaseTest {
     protected void classify(String org, String classification, String subClassification) {
         findElement(By.id("selectDefault")).click();
         modalHere();
-//        findElement(By.id("classifySlectOrg-" + org)).click();
         
         try {
             new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
         } catch(Exception e) {
             // Uncomment to debug
-//            System.out.println("Dropdown to select org doesn't exist!");
+            System.out.println("Dropdown to select org doesn't exist!");
         }
         
         // Ensures that tree of classifications have finished loading.
@@ -188,14 +187,6 @@ public class NlmCdeBaseTest {
 
     protected void createClassificationName(String org, String[] categories) {
         scrollToTop();
-//        findElement(By.id("addClassification")).click();
-//        modalHere();
-//        for (int i = 0; i < categories.length - 1; i++) {
-//            findElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link")).click();
-//        }
-//        findElement(By.id("addNewCatName")).sendKeys(categories[categories.length - 1]);
-//        findElement(By.id("addClassificationButton")).click();
-//        modalGone();
         
         String addSelector = "";
         for (int i = 0; i < categories.length-1; i++) {
