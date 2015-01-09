@@ -7,39 +7,34 @@ import org.openqa.selenium.WebElement;
 
 public abstract class IdentifiersTest extends CommonTest {
     
-    public void addRemoveId(String eltName, String status) {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        goToEltByName(eltName, status);
+    protected void addId(String source, String id, String version) {
         findElement(By.linkText("Identifiers")).click();
         findElement(By.id("addId")).click();
         modalHere();
-        findElement(By.name("source")).sendKeys("MyOrigin1");
-        findElement(By.name("id")).sendKeys("MyId1");
-        findElement(By.name("version")).sendKeys("MyVersion1");
-        findElement(By.id("createId")).click();
-        Assert.assertTrue(textPresent("Identifier Added"));
-        closeAlert();
-        modalGone();
-        
-        scrollTo( "2000" );
-        findElement(By.id("addId")).click();
-        modalHere();
-        findElement(By.name("source")).sendKeys("MyOrigin2");
-        findElement(By.name("id")).sendKeys("MyId2");
-        findElement(By.id("createId")).click();
-        Assert.assertTrue(textPresent("Identifier Added"));
-        modalGone();
-        
-        scrollTo( "2000" );
-        findElement(By.id("addId")).click();
-        modalHere();
-        findElement(By.name("source")).sendKeys("MyOrigin3");
-        findElement(By.name("id")).sendKeys("MyId3");
-        findElement(By.name("version")).sendKeys("MyVersion3");
+        findElement(By.name("source")).sendKeys(source);
+        findElement(By.name("id")).sendKeys(id);
+        if (version != null)
+            findElement(By.name("version")).sendKeys(version);
         findElement(By.id("createId")).click();
         textPresent("Identifier Added");
         closeAlert();
-        modalGone();
+        modalGone();        
+    }
+    
+
+    public void addRemoveId(String eltName, String status) {
+        mustBeLoggedInAs(ctepCurator_username, password);
+        goToEltByName(eltName, status);
+        
+        addId("MyOrigin1", "MyId1", "MyVersion1");
+        
+        scrollTo("0");
+ 
+        addId("MyOrigin2", "MyId2", null);
+        
+        scrollTo( "0" );
+
+        addId("MyOrigin3", "MyId3", "MyVersion3");
 
         //remove MyOrigin2
         List<WebElement> ddElts = driver.findElements(By.xpath("//dd[starts-with(@id, 'dd_id_origin')]"));
@@ -54,14 +49,14 @@ public abstract class IdentifiersTest extends CommonTest {
         
         goToEltByName(eltName, status);
         findElement(By.linkText("Identifiers")).click();
-        Assert.assertTrue(textPresent("MyOrigin1"));
-        Assert.assertTrue(textPresent("MyId1"));
-        Assert.assertTrue(textPresent("MyVersion1"));
-        Assert.assertTrue(textPresent("MyOrigin3"));
-        Assert.assertTrue(textPresent("MyId3"));
-        Assert.assertTrue(textPresent("MyVersion3"));
-        Assert.assertTrue(textNotPresent("MyOrigin2"));
-        Assert.assertTrue(textNotPresent("MyId2"));
+        textPresent("MyOrigin1");
+        textPresent("MyId1");
+        textPresent("MyVersion1");
+        textPresent("MyOrigin3");
+        textPresent("MyId3");
+        textPresent("MyVersion3");
+        textNotPresent("MyOrigin2");
+        textNotPresent("MyId2");
         
     }
         
