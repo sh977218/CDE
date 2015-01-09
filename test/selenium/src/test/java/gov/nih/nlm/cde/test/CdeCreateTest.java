@@ -33,8 +33,8 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
         textPresent("Please select at least one classification");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
-//        classify("CTEP", "Disease", "Gynecologic");
-//        textPresent("Please select at least one classification owned by NINDS");
+        classify("CTEP", "DISEASE", "Gynecologic");
+        textPresent("Please select at least one classification owned by NINDS");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
         classify("NINDS", "Population", "Adult");
         textNotPresent("Please");

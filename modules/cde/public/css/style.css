@@ -397,3 +397,7 @@ dd.formViewDetails {
 .dark-icon:hover {
     color: white;
 }
+
+button#selectDefault {
+    margin-left: 0;
+}

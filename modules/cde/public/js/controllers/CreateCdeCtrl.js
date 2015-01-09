@@ -99,14 +99,17 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
             templateUrl: '/template/system/classifyCde',
             controller: AddClassificationModalCtrl,
             resolve: {
-                myOrgs: function() {
+                module: function() {
+                    return $scope.module;
+                }
+                , myOrgs: function() {
                     return $scope.myOrgs;
                 }
                 , cde: function() {
                     return $scope.elt;
                 }
                 , orgName: function() {
-                    return $scope.elt.stewardOrg.name;
+                    return undefined;
                 } 
                 , pathArray: function() {
                     return undefined;

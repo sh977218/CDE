@@ -6,7 +6,10 @@ function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification, Org
           templateUrl: '/template/system/classifyCde',
           controller: AddClassificationModalCtrl,
           resolve: {
-                myOrgs: function() {
+                module: function() {
+                    return $scope.module;
+                }
+                , myOrgs: function() {
                     return $scope.myOrgs;
                 }
                 , cde: function() {

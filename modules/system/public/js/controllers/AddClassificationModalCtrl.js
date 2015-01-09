@@ -1,4 +1,4 @@
-function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, myOrgs, cde, orgName, pathArray, addClassification, localStorageService) {
+function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, module, myOrgs, cde, orgName, pathArray, addClassification, localStorageService) {
     $scope.viewType = {
         byClassTree : true
         , byRecentlyAdded : false
@@ -14,6 +14,7 @@ function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, 
         $scope.viewType.byRecentlyAdded = true;
     };
     
+    $scope.module = module;
     $scope.myOrgs = myOrgs;
     $scope.orgName = orgName;
     $scope.path = (orgName ? $scope.path = ClassificationPathBuilder.constructPath(orgName, pathArray) : undefined);
@@ -35,9 +36,6 @@ function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, 
     if(myOrgs && myOrgs.length===1) {
         $scope.newClassification = { orgName: myOrgs[0], categories: [], cdeId: cde._id };
         $scope.selectOrg(myOrgs[0]);
-    } else if(orgName) {
-        $scope.newClassification = { orgName: orgName, categories: [], cdeId: cde._id };
-        $scope.selectOrg(orgName);
     } else {
         $scope.newClassification = { orgName: undefined, categories: [], cdeId: cde._id };        
     }
