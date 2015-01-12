@@ -1,5 +1,8 @@
 <div ng-controller="PropertiesCtrl">
 
+<h4>Properties</h4>    
+<div ng-if="elt.properties.length === 0">There are no properties.</div>
+
 <div ng-repeat="prop in elt.properties">
     <div class="row">
         <div class="col-md-1 text-right" ng-show="canCurate && elt.properties.length > 0">
