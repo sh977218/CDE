@@ -18,7 +18,7 @@ public class CdeMappingSpecificationTest extends NlmCdeBaseTest {
     }
     
     @Test
-    public void addRemoveCdeProperty() {
+    public void addRemoveMappingSpecification() {
         mustBeLoggedInAs(ninds_username, password);
         String cdeName = "Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Hallucinogen problem frequency";
 
