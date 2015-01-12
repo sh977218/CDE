@@ -265,6 +265,7 @@ exports.update = function(elt, user, callback, special) {
         newDe.property = elt.property;
         newDe.properties = elt.properties;
         newDe.valueDomain = elt.valueDomain;
+        newDe.mappingSpecifications = elt.mappingSpecifications;
         newDe.ids = elt.ids;
         newDe.classification = elt.classification;
         newDe.stewardOrg.name = elt.stewardOrg.name;
@@ -386,6 +387,12 @@ exports.archiveCde = function(cde, callback) {
             callback("", cde);
         });
     });
+};
+
+exports.getDistinct = function(what, callback) {
+    DataElement.distinct(what).exec(function (err, result) {
+        callback(err, result);
+    });    
 };
 
 exports.allPropertiesKeys = function(callback) {

@@ -1,9 +1,10 @@
-function AddClassificationToOrgModalCtrl($scope, $modalInstance, ClassificationTree, org) {
-    $scope.classificationType = "org";
-    $scope.org = org;
-    $scope.newClassification = { categories: [] };
+function AddClassificationToOrgModalCtrl($scope, $modalInstance, ClassificationPathBuilder, org, pathArray) {
+    $scope.path = ClassificationPathBuilder.constructPath(org, pathArray);
+    
+    $scope.newClassification = {orgName: org, categories: (pathArray ? pathArray : [])};
+    $scope.newClassificationValue = '';
+    
     $scope.parentScope = {newClassifName: ""};
-    $scope.classTree = ClassificationTree;
      
     $scope.close = function () {
         $modalInstance.close();
@@ -12,8 +13,6 @@ function AddClassificationToOrgModalCtrl($scope, $modalInstance, ClassificationT
     $scope.addClassification = function () {
         $scope.newClassification.categories.push($scope.parentScope.newClassifName);
         $modalInstance.close($scope.newClassification);
-    };    
-  
+    };
+    
 }
-
-

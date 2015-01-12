@@ -11,11 +11,12 @@ import org.testng.annotations.Test;
 public class ClassificationMgt2Test extends NlmCdeBaseTest {
     @Test
     public void reclassify() {
+        String org = "NINDS";
         mustBeLoggedInAs(ninds_username, password);
         gotoClassifMgt(); 
-        createClassificationName(new String[]{"Classification Transfer"});
+        createClassificationName(org, new String[]{"Classification Transfer"});
         closeAlert();
-        createClassificationName(new String[]{"Classification Transfer","Child Classification"});
+        createClassificationName(org, new String[]{"Classification Transfer","Child Classification"});
         closeAlert();
         findElement(By.xpath("//li[@id=\"classification-Disease,Duchenne Muscular Dystrophy/Becker Muscular Dystrophy\"]//a[contains(@class, 'classifyAll')]")).click();
         findElement(By.xpath("//div[@id='addClassificationModalBody']//span[text()='Classification Transfer']")).click();
@@ -40,14 +41,14 @@ public class ClassificationMgt2Test extends NlmCdeBaseTest {
         
         // Check icons appear on classification management page
         gotoClassifMgt();
-        List<WebElement> icons = driver.findElements(By.xpath("//a[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
+        List<WebElement> icons = driver.findElements(By.xpath("//i[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
         Assert.assertTrue(icons.size() > 1);
         
         // Check icons don't appear on CDE detail page
         String cdeName = "Brief Symptom Inventory-18 (BSI18)- Anxiety raw score";
         goToCdeByName(cdeName);
         findElement(By.linkText("Classification")).click();
-        icons = driver.findElements(By.xpath("//a[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
+        icons = driver.findElements(By.xpath("//i[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
         Assert.assertTrue(icons.isEmpty());
     }    
 }

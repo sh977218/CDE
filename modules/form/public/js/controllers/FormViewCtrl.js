@@ -78,7 +78,7 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
 
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
-          templateUrl: '/template/system/addClassification',
+          templateUrl: '/template/system/classifyForm',
           controller: ClassifyFormCdesModalCtrl,
           resolve: {
                 myOrgs: function() {

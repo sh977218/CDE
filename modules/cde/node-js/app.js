@@ -452,7 +452,24 @@ exports.init = function(app, daoManager) {
     app.get('/cde/properties/keys', function(req, res) {
         adminItemSvc.allPropertiesKeys(req, res, mongo_data);
     });
-    
+
+    app.get('/cde/mappingSpecifications/types', function(req, res) {
+        mongo_data.getDistinct("mappingSpecifications.spec_type", function(err, types) {
+            if (err) res.send(500, "Unexpected Error");
+            else {
+                res.send(types);
+            }
+        });
+    });
+
+    app.get('/cde/mappingSpecifications/contents', function(req, res) {
+        mongo_data.getDistinct("mappingSpecifications.content", function(err, contents) {
+            if (err) res.send(500, "Unexpected Error");
+            else {
+                res.send(contents);
+            }
+        });
+    });    
     app.get('/archivedCdes/:cdeArray', function(req, res) {
         mongo_data.archivedCdes(req.params.cdeArray, function(err, resultCdes) {
             if (err) {

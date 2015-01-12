@@ -68,12 +68,13 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     
     @Test
     public void addNestedClassification() {
+        String org = "NINDS";
         mustBeLoggedInAs(ninds_username, password);
         gotoClassifMgt();
         Assert.assertTrue(textPresent("Headache"));
-        createClassificationName(new String[]{"Domain","Assessments and Examinations","Imaging Diagnostics","MRI"});
+        createClassificationName(org, new String[]{"Domain","Assessments and Examinations","Imaging Diagnostics","MRI"});
         modalGone();
-        createClassificationName(new String[]{"Domain","Assessments and Examinations","Imaging Diagnostics","MRI","Contrast T1"});
+        createClassificationName(org, new String[]{"Domain","Assessments and Examinations","Imaging Diagnostics","MRI","Contrast T1"});
         modalGone();
     }
     
@@ -87,22 +88,23 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     
     @Test
     public void addDeleteClassificationMgt() {
+        String org = "NINDS";
         mustBeLoggedInAs(ninds_username, password);
-        gotoClassifMgt();  
-        createClassificationName(new String[]{"_a"});        
-        createClassificationName(new String[]{"_a"});
+        gotoClassifMgt();
+        createClassificationName(org, new String[]{"_a"});        
+        createClassificationName(org, new String[]{"_a"});
         List<WebElement> linkList = driver.findElements(By.xpath("//span[text()=\"_a\"]"));
         Assert.assertTrue(linkList.size() == 1);
-        createClassificationName(new String[]{"_a","_a_a"});        
-        createClassificationName(new String[]{"_a","_a_a"});
+        createClassificationName(org, new String[]{"_a","_a_a"});        
+        createClassificationName(org, new String[]{"_a","_a_a"});
         linkList = driver.findElements(By.xpath("//span[text()=\"_a_a\"]"));
         Assert.assertTrue(linkList.size() == 1);        
-        createClassificationName(new String[]{"_a","_a_a","_a_a_a"});
-        createClassificationName(new String[]{"_a","_a_b"});
-        createClassificationName(new String[]{"_a","_a_c"});          
+        createClassificationName(org, new String[]{"_a","_a_a","_a_a_a"});
+        createClassificationName(org, new String[]{"_a","_a_b"});
+        createClassificationName(org, new String[]{"_a","_a_c"});          
         deleteClassification("classification-_a,_a_a");
         checkElementDoesNotExistByCSS("[id='okRemoveClassificationModal']");
-        scrollTo("0");
+        scrollToTop();
     }
     
     @Test
