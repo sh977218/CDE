@@ -1,4 +1,4 @@
-function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
+function AccountManagementCtrl($scope, $http, $timeout, $window, AccountManagement) {
     $scope.admin = {};
     $scope.newOrg = {};
     $scope.orgAdmin = {};
@@ -103,6 +103,12 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
     };
 
     $scope.removeOrgAdmin = function(orgName, userId) {
+        if ($scope.user._id === userId) {
+            var answer = confirm("Please confirm that you want to remove yourself from the list of admins. You will be redirected to the home page. ");
+            if (!answer) {
+                return;
+            }            
+        }
         AccountManagement.removeOrgAdmin({
             orgName: orgName
             , userId: userId
@@ -111,8 +117,11 @@ function AccountManagementCtrl($scope, $http, $timeout, AccountManagement) {
                 $scope.addAlert("success", res);
                 $scope.orgAdmins = $scope.getOrgAdmins();
                 $scope.myOrgAdmins = $scope.getMyOrgAdmins();
-            }
-        
+                
+                if ($scope.user._id === userId) {
+                    $window.location.href = "/";
+                }
+            }        
         );
     };
 

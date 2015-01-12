@@ -5,16 +5,16 @@
 </a>
 
 <span >
-    <a title="Edit" 
-       ng-click="showRenameDialog(orgName, pathArray)" 
-       class="fa fa-pencil hand-cursor" >
-    </a>
-    <a ng-click="showRemoveClassificationModal(orgName, pathArray)" 
-       class="fa fa-trash-o hand-cursor" 
-       title="Remove">
-    </a>
+    <a title="Edit"
+       class="hand-cursor"
+       ng-click="showRenameDialog(orgName, pathArray)"><i class="fa fa-pencil"></i></a>
+    <a title="Remove"
+       class="hand-cursor"
+       ng-click="showRemoveClassificationModal(orgName, pathArray)"><i class="fa fa-trash-o"></i></a>
     <a title="Reclassify"
-       class="fa fa-retweet hand-cursor classifyAll" 
-       ng-click="showClassifyEntireSearchModal(orgName, pathArray);">
-    </a>    
+       class="hand-cursor classifyAll"
+       ng-click="showClassifyEntireSearchModal(orgName, pathArray);"><i class="fa fa-retweet"></i></a>
+    <a title="Add Child Classification"
+       class="hand-cursor" 
+       ng-click="openAddClassificationModal(orgName, pathArray)"><i class="fa fa-share fa-rotate-180"></i></a>
 </span>

@@ -41,9 +41,9 @@ public class WorkingGroupTest extends NlmCdeBaseTest {
         findElement(By.linkText("Magnetic Resonance Imaging (MRI)"));
         findElement(By.linkText("Under Review"));
         findElement(By.linkText("6701"));
-        createClassificationName(new String[]{classification});
+        createClassificationName(orgWG, new String[]{classification});
         modalGone();
-        createClassificationName(new String[]{classification, subClassification});
+        createClassificationName(orgWG, new String[]{classification, subClassification});
         modalGone();
                 
         // Create CDE owned by newly created working group

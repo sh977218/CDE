@@ -6,6 +6,11 @@
     if (myOrgs.length === 1) {
         $scope.selection.org = myOrgs[0];
     }
+    
+    if (myOrgs.length === 1) {
+        $scope.selection.org = myOrgs[0];
+    }
+
      
     $scope.doFork = function () {
       $modalInstance.close({org: $scope.selection.org, changeNote: $scope.selection.changeNote});
