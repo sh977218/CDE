@@ -2,8 +2,8 @@ var mongoUri = "mongodb://localhost/test";
 var serverUrl = "http://localhost:3001/";
 var deViewQueryUri = "#/deview?cdeId=";
 var listOfDeTinyIds = [];
-var numberOfDataElementsToQuery = 10000;
-var testPeriod = 1000;
+var numberOfDataElementsToQuery = 100;
+var testPeriod = 5000;
 
 var request = require('request')
     , mongoose = require('mongoose');
