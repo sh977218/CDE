@@ -2,7 +2,8 @@ var mongoUri = "mongodb://localhost/test";
 var serverUrl = "http://localhost:3001/";
 var deViewQueryUri = "#/deview?cdeId=";
 var listOfDeTinyIds = [];
-var numberOfDataElementsToQuery = 1000;
+var numberOfDataElementsToQuery = 10000;
+var testPeriod = 1000;
 
 var request = require('request')
     , mongoose = require('mongoose');
@@ -22,17 +23,30 @@ simpleDataElement.find({},"tinyId",function (err, dataelements) {
 });
 
 var runTest = function() {
+    setInterval(function() {
+        runQueries();
+    },testPeriod);
+};
+
+var runQueries = function() {
     listOfDeTinyIds.sort(function() {return .5 - Math.random();}).slice(0, numberOfDataElementsToQuery).forEach(function(deId) {
-        performRequest(deId, function(body) {
-            console.log("DE Retrieved " + deId + " content: " + body.slice(0,20).replace(/\n/g,''));
+        performRequest(deId, function(durationMs, body) {
+            console.log("DE Retrieved"
+                + ", duration: " + durationMs
+                + ", tinyId: " + deId 
+                + " content: " + body.slice(0,20).replace(/\n/g,'')
+            );
         });
     });
 };
 
 var performRequest = function(tinyId, cb) {
+    var startTime = new Date().getTime();
     request(serverUrl + deViewQueryUri + tinyId, function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            cb(body);
+            var endTime = new Date().getTime();
+            var durationMs = endTime - startTime;
+            cb(durationMs, body);
         }
     })    
 };
