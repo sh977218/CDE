@@ -22,7 +22,7 @@ simpleDataElement.find({},"tinyId",function (err, dataelements) {
 });
 
 var runTest = function() {
-    listOfDeTinyIds.slice(0, numberOfDataElementsToQuery).forEach(function(deId) {
+    listOfDeTinyIds.sort(function() {return .5 - Math.random();}).slice(0, numberOfDataElementsToQuery).forEach(function(deId) {
         performRequest(deId, function(body) {
             console.log("DE Retrieved " + deId + " content: " + body.slice(0,20).replace(/\n/g,''));
         });
