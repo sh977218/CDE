@@ -24,6 +24,7 @@ simpleDataElement.find({},"tinyId",function (err, dataelements) {
 
 var runTest = function() {
     setInterval(function() {
+        console.log("\n\n-----------------------------\nQuery Load: ");
         runQueries();
     },testPeriod);
 };
