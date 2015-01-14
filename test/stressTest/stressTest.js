@@ -3,6 +3,7 @@ var serverUrl = "http://localhost:3001/";
 var deViewQueryUri = "#/deview?cdeId=";
 var listOfDeTinyIds = [];
 var numberOfUsers = 10;
+var percentNewUsers = 10;
 var testPeriod = 30000;
 var waitFromHomeToList = 2000;
 var waitFromListToDetail = 2000;
@@ -83,7 +84,8 @@ var performRequest = function(location, cb) {
         , headers: {            
         }
     };    
-    if (location.etag) options.headers['If-None-Match'] = location.etag;
+    var isNewUser = Math.random()*100 < percentNewUsers;
+    if (location.etag && !isNewUser) options.headers['If-None-Match'] = location.etag;
     request(options, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var endTime = new Date().getTime();
