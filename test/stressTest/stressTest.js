@@ -2,8 +2,10 @@ var mongoUri = "mongodb://localhost/test";
 var serverUrl = "http://localhost:3001/";
 var deViewQueryUri = "#/deview?cdeId=";
 var listOfDeTinyIds = [];
-var numberOfDataElementsToQuery = 100;
-var testPeriod = 5000;
+var numberOfUsers = 100;
+var testPeriod = 30000;
+var waitFromHomeToList = 2000;
+var waitFromListToDetail = 2000;
 
 var request = require('request')
     , mongoose = require('mongoose');
@@ -25,21 +27,40 @@ simpleDataElement.find({},"tinyId",function (err, dataelements) {
 var runTest = function() {
     setInterval(function() {
         console.log("\n\n-----------------------------\nQuery Load: ");
-        runQueries();
+        releaseUsers();
     },testPeriod);
 };
 
-var runQueries = function() {
-    listOfDeTinyIds.sort(function() {return .5 - Math.random();}).slice(0, numberOfDataElementsToQuery).forEach(function(deId) {
-        performRequest(serverUrl + deViewQueryUri + deId.tinyId, function(durationMs, body) {
-            console.log("DE Retrieved"
-                + ", duration: " + durationMs
-                + ", tinyId: " + deId 
-                + " content: " + body.slice(0,20).replace(/\n/g,'')
-            );
-        });
-    });
+var releaseUsers = function() {
+    for (var user=0; user<numberOfUsers; user++ ) {
+        var delayedStart = Math.random() * testPeriod;
+        setTimeout(function() {
+            viewHomePage(user);
+        }, delayedStart);
+        setTimeout(function() {
+            viewListPage(user);
+        }, delayedStart + waitFromHomeToList);
+        setTimeout(function() {
+            viewDetailPage(user);
+        }, delayedStart + waitFromHomeToList + waitFromListToDetail);        
+    };
 };
+
+var viewHomePage = function(user) {console.log("user #"+user+"viewing homepage");};
+var viewListPage = function(user) {console.log("user #"+user+"viewing list page");};
+var viewDetailPage = function(user) {console.log("user #"+user+"viewing detail page");};
+
+//var runQueries = function() {
+//    listOfDeTinyIds.sort(function() {return .5 - Math.random();}).slice(0, numberOfDataElementsToQuery).forEach(function(deId) {
+//        performRequest(serverUrl + deViewQueryUri + deId.tinyId, function(durationMs, body) {
+//            console.log("DE Retrieved"
+//                + ", duration: " + durationMs
+//                + ", tinyId: " + deId 
+//                + " content: " + body.slice(0,20).replace(/\n/g,'')
+//            );
+//        });
+//    });
+//};
 
 var performRequest = function(uri, cb) {
     var startTime = new Date().getTime();
