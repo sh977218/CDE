@@ -2,12 +2,13 @@ var mongoUri = "mongodb://localhost/test";
 var serverUrl = "http://localhost:3001/";
 var deViewQueryUri = "#/deview?cdeId=";
 var listOfDeTinyIds = [];
-var numberOfUsers = 10;
+var numberOfUsers = 1;
 var percentNewUsers = 10;
 var testPeriod = 30000;
 var waitFromHomeToList = 2000;
 var waitFromListToDetail = 2000;
 var responseLengthToCompare = 300;
+var nrOfCdesInDb = 40000;
 
 var request = require('request');
 
@@ -30,13 +31,28 @@ var queriesViewHomepage = [
     , {uri: 'cde/public/assets/js/jquery-1.11.1.min.js', etag: null}
     , {uri: 'cde/public/assets/js/ng-grid-2.0.7.min.js', etag: null}
     , {uri: 'cde/public/assets/js/textAngular-rangy.min.js', etag: null}
-    , {uri: 'cde/public/assets/js/textAngular-sanitize.min.js', etag: null}
-    
+    , {uri: 'cde/public/assets/js/textAngular-sanitize.min.js', etag: null}    
     , {uri: 'systemAlert', etag: null}
     , {uri: 'user/me', etag: null}
     , {uri: 'listOrgsDetailedInfo', etag: null}
     , {uri: 'template/system/list', etag: null}
     , {uri: 'template/cde/cdeAccordionList', etag: null}
+];
+
+var queriesListPage = [
+    {uri: 'template/cde/cdeAccordionList', etag: null}
+    , {uri: 'template/cde/cdeAccordionList', etag: null}
+    , {uri: 'cde/public/assets/fonts/glyphicons-halflings-regular.woff', etag: null}
+];
+
+var queriesDetailPage = [
+    {uri: 'dataelement/', etag: null, isApi: true}
+    , {uri: 'moreLikeCde/', etag: null, isApi: true}
+    //, {uri: 'deBoards/tYAa6S8P7wC', etag: null}
+    , {uri: 'permissibleValueCodeSystemList', etag: null}
+    , {uri: 'priorcdes/', etag: null, isApi: true}
+    , {uri: 'forks/', etag: null, isApi: true}
+    , {uri: 'systemAlert', etag: null}
 ];
 
 /*mongoose.connect(mongoUri);
@@ -52,6 +68,8 @@ simpleDataElement.find({},"tinyId",function (err, dataelements) {
     console.log("Data Elements received.");
     runTest();
 });*/
+
+var curentCde = null;
 
 var runTest = function() {
     var _runTest = function() {
@@ -84,6 +102,7 @@ var performRequest = function(location, cb) {
         , headers: {            
         }
     };    
+    if (location.isApi) options.url += curentCde._id;
     var isNewUser = Math.random()*100 < percentNewUsers;
     if (location.etag && !isNewUser) options.headers['If-None-Match'] = location.etag;
     request(options, function (error, response, body) {
@@ -122,15 +141,28 @@ var queryElastic = function(elasticQuery, cb) {
         if (!error && response.statusCode == 200) {
             var endTime = new Date().getTime();
             var durationMs = endTime - startTime;
-            cb(durationMs, JSON.stringify(body), 'elasticSearch/cde');
+            try {
+                curentCde = JSON.parse(body).cdes[0];
+            } catch(err){
+                console.log(err);
+            }
+            cb(durationMs, body, 'elasticSearch/cde');
         }
     });    
 };
 
-var viewListPage = function() {
+var viewListPage = function() {    
     console.log("user viewing list page");
+    queriesListPage.forEach(function(location) {
+        performRequest(location, printQueryOutput);
+    });   
+    
+    
     var term = Math.random().toString(36).substring(7);
-    var emptyQuery = {"query":{"size":20,"query":{"bool":{"must_not":[{"term":{"registrationState.registrationStatus":"Retired"}},{"term":{"registrationState.administrativeStatus":"retire"}},{"term":{"archived":"true"}},{"term":{"isFork":"true"}}],"must":[{"dis_max":{"queries":[{"function_score":{"script_score":{"script":"(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value"}}}]}}]}},"aggregations":{"lowRegStatusOrCurator_filter":{"filter":{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]},"aggs":{"orgs":{"terms":{"field":"classification.stewardOrg.name","size":40,"order":{"_term":"desc"}}}}},"statuses":{"terms":{"field":"registrationState.registrationStatus"},"aggregations":{"lowRegStatusOrCurator_filter":{"filter":{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]}}}}},"filter":{"and":[{"or":[{"term":{"registrationState.registrationStatus":"Preferred Standard"}},{"term":{"registrationState.registrationStatus":"Standard"}},{"term":{"registrationState.registrationStatus":"Qualified"}}]},{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]}]},"from":null,"highlight":{"order":"score","fields":{"*":{"pre_tags":["<strong>"],"post_tags":["</strong>"],"content":{"fragment_size":1000}}}}}};
+    var from = Math.random()*nrOfCdesInDb;
+    var emptyQuery = {"query":{"size":20,"query":{"bool":{"must_not":[{"term":{"registrationState.registrationStatus":"Retired"}},{"term":{"registrationState.administrativeStatus":"retire"}},{"term":{"archived":"true"}},{"term":{"isFork":"true"}}],"must":[{"dis_max":{"queries":[{"function_score":{"script_score":{"script":"(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value"}}}]}}]}},"aggregations":{"lowRegStatusOrCurator_filter":{"filter":{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]},"aggs":{"orgs":{"terms":{"field":"classification.stewardOrg.name","size":40,"order":{"_term":"desc"}}}}},"statuses":{"terms":{"field":"registrationState.registrationStatus"},"aggregations":{"lowRegStatusOrCurator_filter":{"filter":{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]}}}}},"filter":{"and":[{"or":[{"term":{"registrationState.registrationStatus":"Preferred Standard"}},{"term":{"registrationState.registrationStatus":"Standard"}},{"term":{"registrationState.registrationStatus":"Qualified"}}]},{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]}]}
+        ,"from":from
+            ,"highlight":{"order":"score","fields":{"*":{"pre_tags":["<strong>"],"post_tags":["</strong>"],"content":{"fragment_size":1000}}}}}};
     var termQuery = {"query":{"size":20,"query":{"bool":{"must_not":[{"term":{"registrationState.registrationStatus":"Retired"}},{"term":{"registrationState.administrativeStatus":"retire"}},{"term":{"archived":"true"}},{"term":{"isFork":"true"}}],"must":[{"dis_max":{"queries":[{"function_score":{"script_score":{"script":"(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value"},"query":{
         "query_string":{"query":term}
             }}},{"function_score":{"script_score":{"script":"(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value"},"query":{"query_string":{"fields":["naming.designation^5","naming.definition^2"],
@@ -141,8 +173,12 @@ var viewListPage = function() {
     queryElastic(emptyQuery, printQueryOutput);
     queryElastic(termQuery, printQueryOutput);
 };
+
 var viewDetailPage = function() {
     console.log("user viewing detail page");
+    queriesDetailPage.forEach(function(location) {
+        performRequest(location, printQueryOutput);
+    });      
 };
 
 //var runQueries = function() {
