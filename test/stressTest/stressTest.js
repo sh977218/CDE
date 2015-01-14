@@ -31,7 +31,7 @@ var runTest = function() {
 
 var runQueries = function() {
     listOfDeTinyIds.sort(function() {return .5 - Math.random();}).slice(0, numberOfDataElementsToQuery).forEach(function(deId) {
-        performRequest(deId, function(durationMs, body) {
+        performRequest(serverUrl + deViewQueryUri + deId.tinyId, function(durationMs, body) {
             console.log("DE Retrieved"
                 + ", duration: " + durationMs
                 + ", tinyId: " + deId 
@@ -41,9 +41,9 @@ var runQueries = function() {
     });
 };
 
-var performRequest = function(tinyId, cb) {
+var performRequest = function(uri, cb) {
     var startTime = new Date().getTime();
-    request(serverUrl + deViewQueryUri + tinyId, function (error, response, body) {
+    request(uri, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var endTime = new Date().getTime();
             var durationMs = endTime - startTime;
@@ -51,3 +51,5 @@ var performRequest = function(tinyId, cb) {
         }
     })    
 };
+
+//"{""query"":{""size"":20,""query"":{""bool"":{""must_not"":[{""term"":{""registrationState.registrationStatus"":""Retired""}},{""term"":{""registrationState.administrativeStatus"":""retire""}},{""term"":{""archived"":""true""}},{""term"":{""isFork"":""true""}}],""must"":[{""dis_max"":{""queries"":[{""function_score"":{""script_score"":{""script"":""(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value""}}}]}}]}},""aggregations"":{""lowRegStatusOrCurator_filter"":{""filter"":{""or"":[{""range"":{""registrationState.registrationStatusSortOrder"":{""lte"":3}}}]},""aggs"":{""orgs"":{""terms"":{""field"":""classification.stewardOrg.name"",""size"":40,""order"":{""_term"":""desc""}}}}},""statuses"":{""terms"":{""field"":""registrationState.registrationStatus""},""aggregations"":{""lowRegStatusOrCurator_filter"":{""filter"":{""or"":[{""range"":{""registrationState.registrationStatusSortOrder"":{""lte"":3}}}]}}}}},""filter"":{""and"":[{""or"":[{""term"":{""registrationState.registrationStatus"":""Preferred Standard""}},{""term"":{""registrationState.registrationStatus"":""Standard""}},{""term"":{""registrationState.registrationStatus"":""Qualified""}}]},{""or"":[{""range"":{""registrationState.registrationStatusSortOrder"":{""lte"":3}}}]}]},""from"":null,""highlight"":{""order"":""score"",""fields"":{""*"":{""pre_tags"":[""<strong>""],""post_tags"":[""</strong>""],""content"":{""fragment_size"":1000}}}}}}"
