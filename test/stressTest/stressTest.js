@@ -7,6 +7,7 @@ var percentNewUsers = 10;
 var testPeriod = 30000;
 var waitFromHomeToList = 2000;
 var waitFromListToDetail = 2000;
+var responseLengthToCompare = 300;
 
 var request = require('request');
 
@@ -35,7 +36,6 @@ var queriesViewHomepage = [
     , {uri: 'user/me', etag: null}
     , {uri: 'listOrgsDetailedInfo', etag: null}
     , {uri: 'template/system/list', etag: null}
-    //, {uri: 'elasticSearch/cde', etag: null}
     , {uri: 'template/cde/cdeAccordionList', etag: null}
 ];
 
@@ -91,25 +91,55 @@ var performRequest = function(location, cb) {
             var endTime = new Date().getTime();
             var durationMs = endTime - startTime;
             if (response.headers.etag) location.etag = response.headers.etag;
-            cb(durationMs, body);
+            if (location.response) {
+                if (!location.response.substr(0,responseLengthToCompare) == body.substr(0,responseLengthToCompare)) throw new Error('Response from server does not match previous!')
+            } else {
+                location.response = body.substr(0,responseLengthToCompare);
+            }
+            cb(durationMs, body, location.uri.substr(-30,30));
         }
-    })    
+    });   
+};
+
+var printQueryOutput = function(durationMs, body, uri) {
+    console.log("Opened Page"
+        + ", duration: " + durationMs
+        + " page: " + uri
+        + " content: " + body.slice(0,20).replace(/\n/g,'')
+    );
 };
 
 var viewHomePage = function() {
     console.log("user viewing homepage");
     queriesViewHomepage.forEach(function(location) {
-        performRequest(location, function(durationMs, body) {
-            console.log("Opened Page"
-                + ", duration: " + durationMs
-                + " content: " + body.slice(0,20).replace(/\n/g,'')
-            );
-        });
+        performRequest(location, printQueryOutput);
     });
+};
+
+var queryElastic = function(elasticQuery, cb) {
+    var startTime = new Date().getTime();
+    request.post(serverUrl + 'elasticSearch/cde', elasticQuery, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            var endTime = new Date().getTime();
+            var durationMs = endTime - startTime;
+            cb(durationMs, JSON.stringify(body), 'elasticSearch/cde');
+        }
+    });    
 };
 
 var viewListPage = function() {
     console.log("user viewing list page");
+    var term = Math.random().toString(36).substring(7);
+    var emptyQuery = {"query":{"size":20,"query":{"bool":{"must_not":[{"term":{"registrationState.registrationStatus":"Retired"}},{"term":{"registrationState.administrativeStatus":"retire"}},{"term":{"archived":"true"}},{"term":{"isFork":"true"}}],"must":[{"dis_max":{"queries":[{"function_score":{"script_score":{"script":"(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value"}}}]}}]}},"aggregations":{"lowRegStatusOrCurator_filter":{"filter":{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]},"aggs":{"orgs":{"terms":{"field":"classification.stewardOrg.name","size":40,"order":{"_term":"desc"}}}}},"statuses":{"terms":{"field":"registrationState.registrationStatus"},"aggregations":{"lowRegStatusOrCurator_filter":{"filter":{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]}}}}},"filter":{"and":[{"or":[{"term":{"registrationState.registrationStatus":"Preferred Standard"}},{"term":{"registrationState.registrationStatus":"Standard"}},{"term":{"registrationState.registrationStatus":"Qualified"}}]},{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]}]},"from":null,"highlight":{"order":"score","fields":{"*":{"pre_tags":["<strong>"],"post_tags":["</strong>"],"content":{"fragment_size":1000}}}}}};
+    var termQuery = {"query":{"size":20,"query":{"bool":{"must_not":[{"term":{"registrationState.registrationStatus":"Retired"}},{"term":{"registrationState.administrativeStatus":"retire"}},{"term":{"archived":"true"}},{"term":{"isFork":"true"}}],"must":[{"dis_max":{"queries":[{"function_score":{"script_score":{"script":"(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value"},"query":{
+        "query_string":{"query":term}
+            }}},{"function_score":{"script_score":{"script":"(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value"},"query":{"query_string":{"fields":["naming.designation^5","naming.definition^2"],
+        "query":term
+            }},"boost":"2"}},{"function_score":{"script_score":{"script":"(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value"},"query":{"query_string":{"fields":["naming.designation^5","naming.definition^2"],
+        "query":"\""+term+"\"~4"
+            }}}}]}}]}},"aggregations":{"lowRegStatusOrCurator_filter":{"filter":{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]},"aggs":{"orgs":{"terms":{"field":"classification.stewardOrg.name","size":40,"order":{"_term":"desc"}}}}},"statuses":{"terms":{"field":"registrationState.registrationStatus"},"aggregations":{"lowRegStatusOrCurator_filter":{"filter":{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]}}}}},"filter":{"and":[{"or":[{"term":{"registrationState.registrationStatus":"Preferred Standard"}},{"term":{"registrationState.registrationStatus":"Standard"}},{"term":{"registrationState.registrationStatus":"Qualified"}},{"term":{"registrationState.registrationStatus":"Recorded"}}]},{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]}]},"from":null,"highlight":{"order":"score","fields":{"*":{"pre_tags":["<strong>"],"post_tags":["</strong>"],"content":{"fragment_size":1000}}}}}};    
+    queryElastic(emptyQuery, printQueryOutput);
+    queryElastic(termQuery, printQueryOutput);
 };
 var viewDetailPage = function() {
     console.log("user viewing detail page");
@@ -141,4 +171,4 @@ var viewDetailPage = function() {
 runTest();
 
 
-//"{""query"":{""size"":20,""query"":{""bool"":{""must_not"":[{""term"":{""registrationState.registrationStatus"":""Retired""}},{""term"":{""registrationState.administrativeStatus"":""retire""}},{""term"":{""archived"":""true""}},{""term"":{""isFork"":""true""}}],""must"":[{""dis_max"":{""queries"":[{""function_score"":{""script_score"":{""script"":""(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value""}}}]}}]}},""aggregations"":{""lowRegStatusOrCurator_filter"":{""filter"":{""or"":[{""range"":{""registrationState.registrationStatusSortOrder"":{""lte"":3}}}]},""aggs"":{""orgs"":{""terms"":{""field"":""classification.stewardOrg.name"",""size"":40,""order"":{""_term"":""desc""}}}}},""statuses"":{""terms"":{""field"":""registrationState.registrationStatus""},""aggregations"":{""lowRegStatusOrCurator_filter"":{""filter"":{""or"":[{""range"":{""registrationState.registrationStatusSortOrder"":{""lte"":3}}}]}}}}},""filter"":{""and"":[{""or"":[{""term"":{""registrationState.registrationStatus"":""Preferred Standard""}},{""term"":{""registrationState.registrationStatus"":""Standard""}},{""term"":{""registrationState.registrationStatus"":""Qualified""}}]},{""or"":[{""range"":{""registrationState.registrationStatusSortOrder"":{""lte"":3}}}]}]},""from"":null,""highlight"":{""order"":""score"",""fields"":{""*"":{""pre_tags"":[""<strong>""],""post_tags"":[""</strong>""],""content"":{""fragment_size"":1000}}}}}}"
+//"{"query":{"size":20,"query":{"bool":{"must_not":[{"term":{"registrationState.registrationStatus":"Retired"}},{"term":{"registrationState.administrativeStatus":"retire"}},{"term":{"archived":"true"}},{"term":{"isFork":"true"}}],"must":[{"dis_max":{"queries":[{"function_score":{"script_score":{"script":"(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value"}}}]}}]}},"aggregations":{"lowRegStatusOrCurator_filter":{"filter":{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]},"aggs":{"orgs":{"terms":{"field":"classification.stewardOrg.name","size":40,"order":{"_term":"desc"}}}}},"statuses":{"terms":{"field":"registrationState.registrationStatus"},"aggregations":{"lowRegStatusOrCurator_filter":{"filter":{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]}}}}},"filter":{"and":[{"or":[{"term":{"registrationState.registrationStatus":"Preferred Standard"}},{"term":{"registrationState.registrationStatus":"Standard"}},{"term":{"registrationState.registrationStatus":"Qualified"}}]},{"or":[{"range":{"registrationState.registrationStatusSortOrder":{"lte":3}}}]}]},"from":null,"highlight":{"order":"score","fields":{"*":{"pre_tags":["<strong>"],"post_tags":["</strong>"],"content":{"fragment_size":1000}}}}}}"
