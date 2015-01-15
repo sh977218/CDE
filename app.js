@@ -108,14 +108,10 @@ setTimeout(function() {
 
 app.use(function(req, res, next) {
     connections++;
-    
-    console.log(connections);
-    if (connections > config.maxLogsPerMinute) {
-        console.log("Too many users, not logging;");
+    if (connections > config.maxLogsPerMinute) {        
         next();
         return;
     }
-    console.log(expressLogger);
     expressLogger(req, res, next);    
 });
 
