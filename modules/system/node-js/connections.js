@@ -20,7 +20,7 @@ var connectionEstablisher = function(uri, type) {
         conn.on('disconnected', function () {
             console.log('MongoDB ' + _type + ' disconnected!, reconnecting in 2 seconds');
             setTimeout(function() {
-                conn = mongoose.createConnection(uri,driverSettings);
+                conn = mongoose.createConnection(uri);
                 connect(openCb);
             }, 2 * 1000);
         });

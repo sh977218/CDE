@@ -17,7 +17,7 @@ var express = require('express')
   , domain = require('domain').create()
 ;
 
-require('log-buffer');
+//require('log-buffer');
 
 passport.serializeUser(function(user, done) {
     done(null, user._id);
@@ -102,7 +102,7 @@ express.logger.token('real-remote-addr', function(req) {
 var expressLogger = express.logger({format: JSON.stringify(logFormat), stream: winstonStream});
 
 var connections = 0;
-setTimeout(function() {
+setInterval(function() {
     connections = 0;
 }, 60000);
 
