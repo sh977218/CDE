@@ -99,8 +99,6 @@ express.logger.token('real-remote-addr', function(req) {
   if (req.ip) return req.ip;
 });
 
-//app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream}));
-
 var expressLogger = express.logger({format: JSON.stringify(logFormat), stream: winstonStream});
 
 var connections = 0;

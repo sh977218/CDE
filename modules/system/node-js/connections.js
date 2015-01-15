@@ -1,11 +1,9 @@
 var mongoose = require('mongoose');
 
-var driverSettings = {server:{poolSize:20}};
-
 var connectionEstablisher = function(uri, type) {
     this.uri = uri;
     var _type = type;
-    var conn = mongoose.createConnection(uri,driverSettings);
+    var conn = mongoose.createConnection(uri);
     this.connect = function (openCb) {
         console.log("connecting to : " + uri);
         conn.once('open', function () {
