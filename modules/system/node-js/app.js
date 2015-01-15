@@ -27,8 +27,6 @@ exports.init = function(app) {
     
     var viewConfig = {modules: config.modules};
 
-    app.use("/system/public", express.static(path.join(__dirname, '../public')));
-    
     app.get('/template/:module/:template', function(req, res) {        
         res.render(req.params.template, req.params.module);
     });		

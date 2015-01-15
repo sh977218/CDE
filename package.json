@@ -38,6 +38,7 @@
     "grunt-attention": "*",
     "grunt-available-tasks": "*",
     "grunt-useref": "*",
+    "log-buffer": "*",
     "chalk": "*",
     "shortid": "2.0.1",
     "nodemailer": "1.3.0",

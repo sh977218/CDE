@@ -74,6 +74,7 @@ var config = {
         }    
     }
     , account: 'CDE Account <cdeuser@nlm.nih.gov>'    
+    , maxLogsPerMinute: 600
 };
 
 module.exports = config;

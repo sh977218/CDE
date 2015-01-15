@@ -1,14 +1,13 @@
-var mongoUri = "mongodb://localhost/test";
-var serverUrl = "http://localhost:3001/";
+var serverUrl =  "http://localhost:3001/";
 var deViewQueryUri = "#/deview?cdeId=";
 var listOfDeTinyIds = [];
-var numberOfUsers = 10;
+var numberOfUsers = 165;
 var percentNewUsers = 10;
 var testPeriod = 10000;
 var waitFromHomeToList = 2000;
 var waitFromListToDetail = 2000;
 var responseLengthToCompare = 300;
-var nrOfCdesInDb = 40000;
+var nrOfCdesInDb = 10000;
 
 var request = require('request');
 require('log-buffer');
@@ -89,7 +88,7 @@ var performRequest = function(location, cb) {
         , headers: {            
         }
     };    
-    if (location.isApi) options.url += curentCde._id;
+    if (location.isApi && curentCde) options.url += curentCde._id;
     var isNewUser = Math.random()*100 < percentNewUsers;
     if (location.etag && !isNewUser) options.headers['If-None-Match'] = location.etag;
     request(options, function (error, response, body) {
