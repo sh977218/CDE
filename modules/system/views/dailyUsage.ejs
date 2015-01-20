@@ -9,6 +9,9 @@
     </div>
     <div class="row">
         <div class="col-md-1">
+            Date
+        </div>        
+        <div class="col-md-1">
             Days Ago
         </div>
         <div class="col-md-1">
@@ -23,7 +26,12 @@
     </div>    
     <div class="row" ng-repeat="entry in dailyUsage | limitTo:entryLimit">
         <div class="col-md-1">
-            {{entry._id.daysAgo}}
+            {{entry._id.year}}
+            {{entry._id.month}}
+            {{entry._id.dayOfMonth}}
+        </div>        
+        <div class="col-md-1">
+            {{entry.daysAgo}}
         </div>
         <div class="col-md-1">
             {{entry.number}}
