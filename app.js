@@ -17,7 +17,7 @@ var express = require('express')
   , domain = require('domain').create()
 ;
 
-//require('log-buffer');
+require('log-buffer');
 
 passport.serializeUser(function(user, done) {
     done(null, user._id);
