@@ -85,8 +85,8 @@ app.use(function(req, res, next) {
 app.use("/cde/public", express.static(path.join(__dirname,'/modules/cde/public')));
 app.use("/system/public", express.static(path.join(__dirname,'/modules/system/public')));
 
-if (config.modules.forms) app.use("/form/public", express.static(path.join(__dirname,'/modules/form/public')));
-if (config.modules.article) app.use("/article/public", express.static(path.join(__dirname,'/modules/article/public')));
+app.use("/form/public", express.static(path.join(__dirname,'/modules/form/public')));
+app.use("/article/public", express.static(path.join(__dirname,'/modules/article/public')));
 
 app.use(flash());
 app.use(passport.initialize());
