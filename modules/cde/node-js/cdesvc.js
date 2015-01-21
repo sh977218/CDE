@@ -219,9 +219,7 @@ exports.diff = function(req, res) {
     }
 };
 
-exports.hideProprietaryPvs = function(cdes, user) {  
-    throw new Error("Cannot hide values of null object.");
-    
+exports.hideProprietaryPvs = function(cdes, user) {         
     this.hiddenFieldMessage = 'Login to see the value.';
     this.systemWhitelist = [
         "LOINC"
