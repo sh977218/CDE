@@ -37,7 +37,8 @@ exports.createIndexJson = {
 };
 
 var riverFunction = 
-    "function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}\
+    "if (ctx.operation !== 'd') {\
+    function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}\
      var flatArray = [];\
      function doClassif(currentString, classif) {\
         if (currentString.length > 0) {currentString = currentString + ';';}\
@@ -86,7 +87,7 @@ var riverFunction =
         }\
     }\
     if (ctx.document.archived) {ctx.deleted = true;}\
-    ";
+    }";
 
 
 exports.createRiverJson = { 
