@@ -70,7 +70,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         stewardOrg = "NIDA";
     }
     
-    def datatype = cadsrDE.VALUEDOMAIN[0].Datatype.text();
+    def datatype = cadsrDE.VALUEDOMAIN[0].Datatype.text().trim();
  
     if (datatype.equals("CHARACTER")) datatype = "Text";
     if (datatype.equals("NUMBER")) datatype = "Float";
@@ -81,7 +81,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     
     
     
-    def vd = new BasicDBObject("datatype": cadsrDE.VALUEDOMAIN[0].Datatype.text());
+    def vd = new BasicDBObject("datatype", datatype);
     vd.put("name", cadsrDE.VALUEDOMAIN[0].LongName.text());
     
     
@@ -167,6 +167,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
             }
         }    
     }
+    newDE.put("naming", naming);
     
     def refDocs = [];
     for (int rdi = 0; rdi < cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.size(); rdi++) {
@@ -176,7 +177,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
             refDoc.put("text", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentText.text());
         }
         refDoc.put("docType", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentType.text());
-        if ("English".equals(cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].Language.text())) {
+        if ("ENGLISH".equals(cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].Language.text())) {
             refDoc.put("languageCode", "EN-US"); 
         } else {
            refDoc.put("languageCode", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].Language.text()); 
@@ -187,9 +188,10 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         if (cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].URL.text().length() > 0) {
             refDoc.put("url", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].URL.text()); 
         }
+        refDocs.add(refDoc);
     }
+    newDE.put("referenceDocuments", refDocs)
     
-    newDE.put("naming", naming);
 
     BasicDBObject cadsrID = new BasicDBObject();
     cadsrID.put("source", 'caDSR');
@@ -296,6 +298,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     BasicDBObject cadsrDatatype = new BasicDBObject();
     cadsrDatatype.put("key", "caDSR_Datatype");
     cadsrDatatype.put("value", cadsrDE.VALUEDOMAIN[0].Datatype.text());
+    props.add(cadsrDatatype);
     
     newDE.put("properties", props);
 
