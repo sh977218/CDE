@@ -267,9 +267,11 @@ exports.init = function(app, daoManager) {
     });
 
     app.post('/elasticSearch/cde', function(req, res) {
+        var d = new Date().getTime();
        return elastic.elasticsearch(req.body.query, function(result) {
            result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
            res.send(result);
+           console.log(new Date().getTime() - d);
        });
     });
 
