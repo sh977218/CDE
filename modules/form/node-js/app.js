@@ -4,6 +4,7 @@ var express = require('express')
   , sharedElastic = require('../../system/node-js/elastic.js')
   , mongo_data = require('./mongo-form')
   , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
+  , config = require('config')
 ;
 
 exports.init = function(app, daoManager) {
@@ -14,7 +15,7 @@ exports.init = function(app, daoManager) {
     app.post('/form', formCtrl.save);
     app.get('/form/:id', formCtrl.formById);
 
-    if (config.modules.form.attachments) {
+    if (config.modules.forms.attachments) {
         app.post('/attachments/form/setDefault', function(req, res) {
             adminItemSvc.setAttachmentDefault(req, res, mongo_data);
         });
@@ -36,7 +37,7 @@ exports.init = function(app, daoManager) {
        }); 
     });    
 
-    if (config.modules.form.comments) {
+    if (config.modules.forms.comments) {
         app.post('/comments/form/add', function(req, res) {
             adminItemSvc.addComment(req, res, mongo_data);
         });
