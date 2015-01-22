@@ -58,7 +58,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     newDE.put("tinyId", idUtils.generateID()); 
     newDE.put("imported", new Date()); 
     newDE.put("source", 'caDSR'); 
-    newDE.put("version", cadsrDE.VERSION.text());
+    newDE.put("version", 1);
     
     def origin = cadsrDE.ORIGIN.text();
     if (origin != null && origin.length() > 0) {
@@ -70,10 +70,53 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         stewardOrg = "NIDA";
     }
     
+    def datatype = cadsrDE.VALUEDOMAIN[0].Datatype.text();
+ 
+    if (datatype.equals("CHARACTER")) datatype = "Text";
+    if (datatype.equals("NUMBER")) datatype = "Float";
+    if (datatype.equals("ALPHANUMERIC")) datatype = "Text";
+    if (datatype.equals("TIME")) datatype = "Time";
+    if (datatype.equals("DATE")) datatype = "Date";
+    if (datatype.equals("DATETIME")) datatype = "Date/Time";
+    
+    
+    
     def vd = new BasicDBObject("datatype": cadsrDE.VALUEDOMAIN[0].Datatype.text());
     vd.put("name", cadsrDE.VALUEDOMAIN[0].LongName.text());
+    
+    
+    if (datatype.equals("Float")) {
+        BasicDBObject datatypeFloat = new BasicDBObject();
+
+        if (cadsrDE.VALUEDOMAIN[0].MaximumValue.text().length() > 0) {   
+            datatypeFloat.put("maxValue", cadsrDE.VALUEDOMAIN[0].MaximumValue.text())
+        }
+        if (cadsrDE.VALUEDOMAIN[0].MinimumValue.text().length() > 0) {   
+            datatypeFloat.put("minValue", cadsrDE.VALUEDOMAIN[0].MaximumValue.text())
+        }
+        if (cadsrDE.VALUEDOMAIN[0].DecimalPlace.text().length() > 0) {   
+            datatypeFloat.put("precision", cadsrDE.VALUEDOMAIN[0].DecimalPlace.text())
+        }
+        vd.put("datatypeFloat", datatypeFloat);
+    }
+
+    if (datatype.equals("Text")) {
+        BasicDBObject datatypeText = new BasicDBObject();
+        if (cadsrDE.VALUEDOMAIN[0].MaximumLength.text().length() > 0) {   
+            datatypeText.put("maxLength", cadsrDE.VALUEDOMAIN[0].MaximumLength.text())
+        }
+        if (cadsrDE.VALUEDOMAIN[0].MinimumLength.text().length() > 0) {   
+            datatypeText.put("minLength", cadsrDE.VALUEDOMAIN[0].MinimumLength.text())
+        }
+        vd.put("datatypeText", datatypeText);
+
+        
+    }
+    
+    
     newDE.put("valueDomain", vd);
-    newDE.put("registrationState", new BasicDBObject("registrationStatus": workflowStatus));
+    newDE.put("registrationState", new BasicDBObject("registrationStatus", workflowStatus));
+    newDE.get("registrationState").put("administrativeStatus", cadsrDE.WORKFLOWSTATUS.text());
     newDE.put("stewardOrg", new BasicDBObject("name", stewardOrg ));
     
     BasicDBObject defaultName = new BasicDBObject();
@@ -125,6 +168,27 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         }    
     }
     
+    def refDocs = [];
+    for (int rdi = 0; rdi < cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.size(); rdi++) {
+        BasicDBObject refDoc = new BasicDBObject();
+        refDoc.put("title", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].Name.text());
+        if (cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentText.text().length() > 0) {
+            refDoc.put("text", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentText.text());
+        }
+        refDoc.put("docType", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentType.text());
+        if ("English".equals(cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].Language.text())) {
+            refDoc.put("languageCode", "EN-US"); 
+        } else {
+           refDoc.put("languageCode", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].Language.text()); 
+        }
+        if (cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].OrganizationName.text().length() > 0) {
+            refDoc.put("providerOrg", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].OrganizationName.text()); 
+        }
+        if (cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].URL.text().length() > 0) {
+            refDoc.put("url", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].URL.text()); 
+        }
+    }
+    
     newDE.put("naming", naming);
 
     BasicDBObject cadsrID = new BasicDBObject();
@@ -138,6 +202,8 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     
     if (cadsrDE.VALUEDOMAIN[0].ValueDomainType.text().equals("Enumerated")) {
         newDE.get("valueDomain").put("datatype", 'Value List');
+        BasicDBObject datatypeValueList = new BasicDBObject("datatype", datatype);
+        newDE.get("valueDomain").put("datatypeValueList", datatypeValueList);
     }
         
     if (cadsrDE.VALUEDOMAIN[0].UnitOfMeasure[0].text() != null && cadsrDE.VALUEDOMAIN[0].UnitOfMeasure[0].text().length() > 0) {
@@ -226,17 +292,13 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     cadsrContext.put("value", cadsrDE.CONTEXTNAME.text());
     def props = [];
     props.add(cadsrContext);
+    
+    BasicDBObject cadsrDatatype = new BasicDBObject();
+    cadsrDatatype.put("key", "caDSR_Datatype");
+    cadsrDatatype.put("value", cadsrDE.VALUEDOMAIN[0].Datatype.text());
+    
     newDE.put("properties", props);
-    
-//    def usedByOrgs = [];    
-//    for (int ani = 0; ani < cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.size(); ani++) {
-//        def an = cadsrDE.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM[ani];
-//        if (an.AlternateNameType.text().equals("USED_BY")) {
-//            usedByOrgs.add(an.AlternateName.text());
-//        }
-//    }
-//    newDE.append("usedByOrgs", usedByOrgs);
-    
+
     
     if (testMode) {
         deColl.insert(newDE);
