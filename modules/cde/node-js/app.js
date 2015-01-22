@@ -26,8 +26,6 @@ exports.init = function(app, daoManager) {
 
     daoManager.registerDao(mongo_data);
 
-    app.use("/cde/public", express.static(path.join(__dirname, '../public')));
-
     app.get('/quickBoard', function(req, res) {
       res.render('quickBoard');
     });

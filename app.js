@@ -17,6 +17,8 @@ var express = require('express')
   , domain = require('domain').create()
 ;
 
+require('log-buffer');
+
 passport.serializeUser(function(user, done) {
     done(null, user._id);
 });
@@ -80,6 +82,12 @@ app.use(function(req, res, next) {
    }
 });
 
+app.use("/cde/public", express.static(path.join(__dirname,'/modules/cde/public')));
+app.use("/system/public", express.static(path.join(__dirname,'/modules/system/public')));
+
+app.use("/form/public", express.static(path.join(__dirname,'/modules/form/public')));
+app.use("/article/public", express.static(path.join(__dirname,'/modules/article/public')));
+
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
@@ -91,7 +99,22 @@ express.logger.token('real-remote-addr', function(req) {
   if (req.ip) return req.ip;
 });
 
-app.use(express.logger({format: JSON.stringify(logFormat), stream: winstonStream}));
+var expressLogger = express.logger({format: JSON.stringify(logFormat), stream: winstonStream});
+
+var connections = 0;
+setInterval(function() {
+    connections = 0;
+}, 60000);
+
+app.use(function(req, res, next) {
+    var maxLogsPerMinute = config.maxLogsPerMinute || 1000;
+    connections++;
+    if (connections > maxLogsPerMinute) {        
+        next();
+        return;
+    }
+    expressLogger(req, res, next);    
+});
 
 app.use(app.router);
 

@@ -7,7 +7,7 @@
             </div>
         </form>
     </div>
-    <div class="row">
+    <div class="row">       
         <div class="col-md-1">
             Days Ago
         </div>
@@ -21,9 +21,9 @@
             Known Usernames
         </div>
     </div>    
-    <div class="row" ng-repeat="entry in dailyUsage | limitTo:entryLimit">
+    <div class="row" ng-repeat="entry in dailyUsage | limitTo:entryLimit">    
         <div class="col-md-1">
-            {{entry._id.daysAgo}}
+            {{entry.daysAgo}}
         </div>
         <div class="col-md-1">
             {{entry.number}}

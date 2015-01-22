@@ -134,7 +134,6 @@ exports.addComment = function(req, res, dao) {
                             res.send(err);
                             return;
                         } else {
-                            console.log("sending");
                             return res.send({message: "Comment added", elt: elt});
                         }
                     });
