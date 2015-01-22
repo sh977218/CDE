@@ -107,8 +107,9 @@ setInterval(function() {
 }, 60000);
 
 app.use(function(req, res, next) {
+    var maxLogsPerMinute = config.maxLogsPerMinute || 1000;
     connections++;
-    if (connections > config.maxLogsPerMinute) {        
+    if (connections > maxLogsPerMinute) {        
         next();
         return;
     }
