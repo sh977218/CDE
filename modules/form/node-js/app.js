@@ -14,17 +14,19 @@ exports.init = function(app, daoManager) {
     app.post('/form', formCtrl.save);
     app.get('/form/:id', formCtrl.formById);
 
-    app.post('/attachments/form/setDefault', function(req, res) {
-        adminItemSvc.setAttachmentDefault(req, res, mongo_data);
-    });
-    
-    app.post('/attachments/form/add', function(req, res) {
-        adminItemSvc.addAttachment(req, res, mongo_data);
-    });
+    if (config.modules.form.attachments) {
+        app.post('/attachments/form/setDefault', function(req, res) {
+            adminItemSvc.setAttachmentDefault(req, res, mongo_data);
+        });
 
-    app.post('/attachments/form/remove', function(req, res) {
-        adminItemSvc.removeAttachment(req, res, mongo_data);
-    });
+        app.post('/attachments/form/add', function(req, res) {
+            adminItemSvc.addAttachment(req, res, mongo_data);
+        });
+
+        app.post('/attachments/form/remove', function(req, res) {
+            adminItemSvc.removeAttachment(req, res, mongo_data);
+        });
+    }
     
     app.get('/formById/:id/:type', formCtrl.formById);
     
@@ -34,13 +36,15 @@ exports.init = function(app, daoManager) {
        }); 
     });    
 
-    app.post('/comments/form/add', function(req, res) {
-        adminItemSvc.addComment(req, res, mongo_data);
-    });
+    if (config.modules.form.comments) {
+        app.post('/comments/form/add', function(req, res) {
+            adminItemSvc.addComment(req, res, mongo_data);
+        });
 
-    app.post('/comments/form/remove', function(req, res) {
-        adminItemSvc.removeComment(req, res, mongo_data);
-    });
+        app.post('/comments/form/remove', function(req, res) {
+            adminItemSvc.removeComment(req, res, mongo_data);
+        });
+    }
 
     app.get('/form/properties/keys', function(req, res) {
         adminItemSvc.allPropertiesKeys(req, res, mongo_data);
