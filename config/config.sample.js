@@ -62,8 +62,16 @@ var config = {
         , testsToRun: '--tests gov.nih.nlm.cde.test.*'
     }
     , modules: {
-        forms: true
+        forms: {
+            attachments: true
+            , comments: true            
+        }
         , article: true
+        , cde: {
+            attachments: true
+            , comments: true
+            , highlight: true
+        }
     } 
     , status: {
         timeouts: { 
