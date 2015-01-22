@@ -7,8 +7,7 @@ var  path = require('path')
 ;
 
 exports.init = function(app) {    
-    app.use("/article/public", express.static(path.join(__dirname, '../public')));
-    
+
     app.get("/article/key/:key", function(req, res) {
         mongo.byKey(req.params.key, function(err, result) {
             if (err) res.send(404);
