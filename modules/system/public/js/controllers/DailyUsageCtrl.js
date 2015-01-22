@@ -39,9 +39,4 @@ function DailyUsageCtrl($scope, $http) {
         diffDays = Math.floor(diffDays);
         return diffDays;
     };
-    
-    $scope.milisecondsToDays = function(miliseconds) {
-        console.log(miliseconds);
-        return Math.floor(miliseconds / (1000 * 60 * 60 * 24));
-    };
 }
