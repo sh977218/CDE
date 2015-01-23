@@ -7,7 +7,12 @@ var elasticCdeUri = sharedElastic.elasticCdeUri;
 var elasticFormUri = sharedElastic.elasticFormUri;
 
 exports.elasticsearch = function (query, cb) {
-    if (!config.modules.cde.highlight) delete query["highlight"];
+    if (!config.modules.cde.highlight) {
+        Object.keys(query.highlight.fields).forEach(function(field){
+            if (field == "primaryNameCopy" || field == "primaryDefinitionCopy") return;
+            else delete query.highlight.fields[field];
+        });
+    }
     sharedElastic.elasticsearch(query, 'cde', cb);
 };
 

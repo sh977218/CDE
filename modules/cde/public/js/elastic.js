@@ -262,46 +262,46 @@ angular.module('resources')
             var from = (settings.currentPage - 1) * settings.resultPerPage;
             queryStuff.from = from;
             
-//            queryStuff.highlight = {
-//                "order" : "score"
-//                , "pre_tags" : ["<strong>"]
-//                , "post_tags" : ["</strong>"]
-//                , "fields" : {
-//                    "stewardOrgCopy.name" : {}
-//                    , "primaryNameCopy": {}
-//                    , "primaryDefinitionCopy": {}
-//                    , "naming.designation": {}
-//                    , "naming.definition": {}
-//                    , "dataElementConcept.concepts.name": {}
-//                    , "dataElementConcept.concepts.origin": {}
-//                    , "dataElementConcept.concepts.originId": {}
-//                    , "property.concepts.name": {}
-//                    , "property.concepts.origin": {}
-//                    , "property.concepts.originId": {}
-//                    , "objectClass.concepts.name": {}
-//                    , "objectClass.concepts.origin": {}
-//                    , "objectClass.concepts.originId": {}                    
-//                    , "valueDomain.datatype": {}
-//                    , "flatProperties": {}
-//                    , "flatIds": {}
-//                    , "classification.stewardOrg.name": {}
-//                    , "classification.elements.name": {}
-//                    , "classification.elements.elements.name": {}
-//                    , "classification.elements.elements.elements.name": {}
-//                    
-//                }
-//            };
-            
             queryStuff.highlight = {
                 "order" : "score"
+                , "pre_tags" : ["<strong>"]
+                , "post_tags" : ["</strong>"]
                 , "fields" : {
-                    "*" : {
-                        "pre_tags" : ["<strong>"]
-                        , "post_tags" : ["</strong>"]
-                        , "content": {"fragment_size" : 1000}
-                    }
+                    "stewardOrgCopy.name" : {}
+                    , "primaryNameCopy": {}
+                    , "primaryDefinitionCopy": {}
+                    , "naming.designation": {}
+                    , "naming.definition": {}
+                    , "dataElementConcept.concepts.name": {}
+                    , "dataElementConcept.concepts.origin": {}
+                    , "dataElementConcept.concepts.originId": {}
+                    , "property.concepts.name": {}
+                    , "property.concepts.origin": {}
+                    , "property.concepts.originId": {}
+                    , "objectClass.concepts.name": {}
+                    , "objectClass.concepts.origin": {}
+                    , "objectClass.concepts.originId": {}                    
+                    , "valueDomain.datatype": {}
+                    , "flatProperties": {}
+                    , "flatIds": {}
+                    , "classification.stewardOrg.name": {}
+                    , "classification.elements.name": {}
+                    , "classification.elements.elements.name": {}
+                    , "classification.elements.elements.elements.name": {}
+                    
                 }
             };
+            
+//            queryStuff.highlight = {
+//                "order" : "score"
+//                , "fields" : {
+//                    "*" : {
+//                        "pre_tags" : ["<strong>"]
+//                        , "post_tags" : ["</strong>"]
+//                        , "content": {"fragment_size" : 1000}
+//                    }
+//                }
+//            };
             
             return callback({query: queryStuff});
         }              
