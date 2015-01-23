@@ -25,7 +25,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("java.lang.Date"));
     }  
     
-    @Test
+//    @Test
     public void multiValue() {              
         String cdeName = "Cambridge-Hopkins Restless Legs Syndrome Diagnostic Questionnaire (CH-RLSQ) - feeling most occur time";
         openCdeInList(cdeName);
@@ -50,7 +50,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.elementSelectionStateToBe(findElement(By.id("multipleValues_input")), true));
     }
     
-    @Test
+//    @Test
     public void otherPleaseSpecifyAndListDatatype() {
         mustBeLoggedInAs(ninds_username, password);        
         String cdeName = "Structured Clinical Interview for Pathological Gambling (SCI-PG) - withdrawal value";
