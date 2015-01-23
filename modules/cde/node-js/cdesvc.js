@@ -219,10 +219,7 @@ exports.diff = function(req, res) {
     }
 };
 
-exports.hideProprietaryPvs = function(cdes, user) {  
-    var d = new Date().getTime();
-//    throw new Error("Cannot hide values of null object.");
-    
+exports.hideProprietaryPvs = function(cdes, user) {      
     this.hiddenFieldMessage = 'Login to see the value.';
     this.systemWhitelist = [
         "LOINC"
@@ -265,6 +262,5 @@ exports.hideProprietaryPvs = function(cdes, user) {
     cdes.forEach(function(cde) {
         self.checkCde(cde);
     }); 
-    console.log("time in prop pv: " + (new Date().getTime() - d));
     return cdes;
 };

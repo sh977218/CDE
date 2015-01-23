@@ -10,14 +10,7 @@ exports.elasticsearch = function (query, type, cb) {
     if (type === "cde") url = exports.elasticCdeUri;
     if (type === "form") url = exports.elasticFormUri;
     
-    var d = new Date().getTime();
-    
-    var body = JSON.stringify(query);
-    console.log("stringify: " + (new Date().getTime() - d))
-
-    
     request.post(url + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
-        console.log("in ES: " + (new Date().getTime() - d))
         if (!error && response.statusCode === 200) {
         var resp = JSON.parse(body);
         var result = {cdes: []
@@ -32,8 +25,6 @@ exports.elasticsearch = function (query, type, cb) {
             result.cdes.push(thisCde);
         }
         result.aggregations = resp.aggregations;
-        console.log("after process: " + (new Date().getTime() - d))
-    
         cb(result);
      } else {
          console.log("es error: " + error + " response: " + response.statusCode);
