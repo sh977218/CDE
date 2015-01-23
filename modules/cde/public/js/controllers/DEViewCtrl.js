@@ -159,7 +159,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
                 $scope.diff.version = "Before: " + diffResult.before.version + " -- After: " + diffResult.after.version;
             }
             if (diffResult.before.stewardOrg) {
-                console.log("set")
                 $scope.diff.stewardOrg = "Before: " + diffResult.before.stewardOrg.name + " -- After: " + diffResult.after.stewardOrg.name;
             }
             if (diffResult.before.datatype || diffResult.after.datatype) {

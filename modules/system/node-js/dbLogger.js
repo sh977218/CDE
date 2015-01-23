@@ -61,14 +61,12 @@ exports.getLogs = function(inQuery, callback) {
 
 exports.usageByDay = function(callback) {
     LogModel.aggregate(
-        {$match: {date: {$exists: true}}},
-        {$group : {_id: {ip: "$remoteAddr", daysAgo: {$subtract: [{$dayOfYear: new Date()}, {$dayOfYear: "$date"}]}}, number: {$sum: 1}}},
-        {$sort: {"_id.daysAgo": 1}}
+        {$match: {date: {$exists: true}}}
+        , {$group : {_id: {ip: "$remoteAddr", year: {$year: "$date"}, month: {$month: "$date"}, dayOfMonth: {$dayOfMonth: "$date"}}, number: {$sum: 1}}}
         , function (err, result) {
             callback(result);
         }
     );
 };
 
-    
 

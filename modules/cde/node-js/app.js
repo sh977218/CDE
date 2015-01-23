@@ -26,8 +26,6 @@ exports.init = function(app, daoManager) {
 
     daoManager.registerDao(mongo_data);
 
-    app.use("/cde/public", express.static(path.join(__dirname, '../public')));
-
     app.get('/quickBoard', function(req, res) {
       res.render('quickBoard');
     });
@@ -279,25 +277,30 @@ exports.init = function(app, daoManager) {
         });
     });  
 
-    app.post('/attachments/cde/add', function(req, res) {
-        adminItemSvc.addAttachment(req, res, mongo_data);
-    });
+    if (config.modules.cde.attachments) {
+        app.post('/attachments/cde/add', function(req, res) {        
+            adminItemSvc.addAttachment(req, res, mongo_data);
+        });
 
-    app.post('/attachments/cde/remove', function(req, res) {
-        adminItemSvc.removeAttachment(req, res, mongo_data);
-    });
+        app.post('/attachments/cde/remove', function(req, res) {
+            adminItemSvc.removeAttachment(req, res, mongo_data);
+        });
+        
+        app.post('/attachments/cde/setDefault', function(req, res) {
+            adminItemSvc.setAttachmentDefault(req, res, mongo_data);
+        });        
+    }
     
-    app.post('/comments/cde/add', function(req, res) {
-        adminItemSvc.addComment(req, res, mongo_data);
-    });
+    if (config.modules.cde.comments) {
+        app.post('/comments/cde/add', function(req, res) {
+            adminItemSvc.addComment(req, res, mongo_data);
+        });
 
-    app.post('/comments/cde/remove', function(req, res) {
-        adminItemSvc.removeComment(req, res, mongo_data);
-    });
-    
-    app.post('/attachments/cde/setDefault', function(req, res) {
-        adminItemSvc.setAttachmentDefault(req, res, mongo_data);
-    });
+        app.post('/comments/cde/remove', function(req, res) {
+            adminItemSvc.removeComment(req, res, mongo_data);
+        });
+    }
+
 
     app.get('/userTotalSpace/:uname', function(req, res) {
        return mongo_data.userTotalSpace(req.params.uname, function(space) {

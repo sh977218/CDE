@@ -62,8 +62,16 @@ var config = {
         , testsToRun: '--tests gov.nih.nlm.cde.test.*'
     }
     , modules: {
-        forms: true
+        forms: {
+            attachments: true
+            , comments: true            
+        }
         , article: true
+        , cde: {
+            attachments: true
+            , comments: true
+            , highlight: true
+        }
     } 
     , status: {
         timeouts: { 
@@ -74,6 +82,7 @@ var config = {
         }    
     }
     , account: 'CDE Account <cdeuser@nlm.nih.gov>'    
+    , maxLogsPerMinute: 1000
 };
 
 module.exports = config;

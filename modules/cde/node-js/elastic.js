@@ -7,6 +7,7 @@ var elasticCdeUri = sharedElastic.elasticCdeUri;
 var elasticFormUri = sharedElastic.elasticFormUri;
 
 exports.elasticsearch = function (query, cb) {
+    if (!config.modules.cde.highlight) delete query["highlight"];
     sharedElastic.elasticsearch(query, 'cde', cb);
 };
 

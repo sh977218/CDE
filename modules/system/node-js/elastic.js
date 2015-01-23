@@ -9,11 +9,7 @@ exports.elasticsearch = function (query, type, cb) {
     var url = null;
     if (type === "cde") url = exports.elasticCdeUri;
     if (type === "form") url = exports.elasticFormUri;
-    var startTime = new Date().getTime();
-    console.log(JSON.stringify(query));
     request.post(url + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
-        var endTime = new Date().getTime();
-        console.log("request.post took "+(endTime-startTime));
         if (!error && response.statusCode === 200) {
         var resp = JSON.parse(body);
         var result = {cdes: []
