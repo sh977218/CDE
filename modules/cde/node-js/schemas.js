@@ -75,9 +75,6 @@ var deJsonSchema = {
         }
         , datatypeValueList: {
             datatype: String
-            , multi: Boolean
-            , otherPleaseSpecify: Boolean
-            , otherPleaseSpecifyText: String
         }
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
     }
@@ -100,6 +97,9 @@ var deJsonSchema = {
     , isFork: Boolean
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
+    , referenceDocuments: [
+        {docType: String, text: String, uri: String, providerOrg: String, title: String, languageCode: String}
+    ]
 };
 
 var pinSchema = mongoose.Schema ({
