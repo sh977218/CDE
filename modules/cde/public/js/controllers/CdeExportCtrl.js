@@ -33,7 +33,7 @@ function CdeExportCtrl($scope, Elastic) {
                 thisCde.ids = ids;
                 $scope.gridCdes.push(thisCde);
             }
-            $scope.exportStr();
+            $scope.exportStr($scope.gridCdes);
         });
     });
 
