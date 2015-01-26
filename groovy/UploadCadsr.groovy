@@ -306,8 +306,8 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
     if (testMode) {
         deColl.insert(newDE);
     } else {
-        if (!cadsrDE.LONGNAME.text().contains("java.lang")) {
+//        if (!cadsrDE.LONGNAME.text().contains("java.lang")) {
             deColl.insert(newDE);
-        }
+//        }
     }
 }
