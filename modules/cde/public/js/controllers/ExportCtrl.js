@@ -32,8 +32,8 @@ function ExportCtrl($scope, $window, CsvDownload) {
         }
     };
 
-    $scope.exportStr = function() {
-        $scope.encodedStr = "data:text/csv;charset=utf-8," + encodeURIComponent($scope.columnNames() + CsvDownload.export($scope.gridCdes));
+    $scope.exportStr = function(gridCdes) {
+        $scope.encodedStr = "data:text/csv;charset=utf-8," + encodeURIComponent($scope.columnNames() + CsvDownload.export(gridCdes));
     };
 
 }
