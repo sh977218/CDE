@@ -1,7 +1,7 @@
-var serverUrl =  "http://cde-dev.nlm.nih.gov/";
+var serverUrl =  "http://localhost:3001/";
 var deViewQueryUri = "#/deview?cdeId=";
 var listOfDeTinyIds = [];
-var numberOfUsers = 80;
+var numberOfUsers = 350 ;
 var percentNewUsers = 10;
 var testPeriod = 10000;
 var waitFromHomeToList = 2000;
