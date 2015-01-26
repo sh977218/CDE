@@ -126,7 +126,7 @@ status.checkElasticSync = function(body, statusReport, mongoCollection) {
 status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoCollection) {
     var seed = Math.floor(Math.random()*100000);
     var fakeCde = {
-        stewardOrg: {name: ""}
+        stewardOrg: {name: "FAKE"}
         , naming: [{
                 designation: "NLM_APP_Status_Report_" + seed
                 , definition: "NLM_APP_Status_Report_" + seed

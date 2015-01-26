@@ -264,14 +264,44 @@ angular.module('resources')
             
             queryStuff.highlight = {
                 "order" : "score"
+                , "pre_tags" : ["<strong>"]
+                , "post_tags" : ["</strong>"]
                 , "fields" : {
-                    "*" : {
-                        "pre_tags" : ["<strong>"]
-                        , "post_tags" : ["</strong>"]
-                        , "content": {"fragment_size" : 1000}
-                    }
+                    "stewardOrgCopy.name" : {}
+                    , "primaryNameCopy": {}
+                    , "primaryDefinitionCopy": {}
+                    , "naming.designation": {}
+                    , "naming.definition": {}
+                    , "dataElementConcept.concepts.name": {}
+                    , "dataElementConcept.concepts.origin": {}
+                    , "dataElementConcept.concepts.originId": {}
+                    , "property.concepts.name": {}
+                    , "property.concepts.origin": {}
+                    , "property.concepts.originId": {}
+                    , "objectClass.concepts.name": {}
+                    , "objectClass.concepts.origin": {}
+                    , "objectClass.concepts.originId": {}                    
+                    , "valueDomain.datatype": {}
+                    , "flatProperties": {}
+                    , "flatIds": {}
+                    , "classification.stewardOrg.name": {}
+                    , "classification.elements.name": {}
+                    , "classification.elements.elements.name": {}
+                    , "classification.elements.elements.elements.name": {}
+                    
                 }
             };
+            
+//            queryStuff.highlight = {
+//                "order" : "score"
+//                , "fields" : {
+//                    "*" : {
+//                        "pre_tags" : ["<strong>"]
+//                        , "post_tags" : ["</strong>"]
+//                        , "content": {"fragment_size" : 1000}
+//                    }
+//                }
+//            };
             
             return callback({query: queryStuff});
         }              
@@ -325,10 +355,10 @@ angular.module('resources')
             if (matched.indexOf("classification.")>-1) field = "Classification";
             if (matched.indexOf(".concepts.")>-1) field = "Concepts";
             if (matched.substr(0,11) === "valueDomain") field = "Permissible Values";
-            if (matched.substr(0,10) === "properties") field = "Properties";
+            if (matched.substr(0,15) === "flatProperties") field = "Properties";
             if (matched === "naming.designation") field = "Alternative Name";
             if (matched  === "stewardOrgCopy.name") field = "Steward";
-            if (matched  === "ids.id") field = "Identifier";
+            if (matched  === "flatIds") field = "Identifier";
             cde.highlight.matchedBy = field;
         }
     };

@@ -173,7 +173,9 @@ exports.byId = function(cdeId, callback) {
 };
 
 exports.incDeView = function(cde) {
-    DataElement.update({_id: cde._id}, {$inc: {views: 1}}).exec();
+    if (cde && cde._id) {
+        DataElement.update({_id: cde._id}, {$inc: {views: 1}}).exec();
+    }
 };
 
 exports.boardById = function(boardId, callback) {
