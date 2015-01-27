@@ -4,7 +4,7 @@ var  path = require('path')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , authorization = require('../../system/node-js/authorization')
-    , authorizationShared = require('../../system/shared/authorization')
+    , authorizationShared = require('../../system/shared/authorizationShared')
 ;
 
 exports.init = function(app) {    
