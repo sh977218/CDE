@@ -4,6 +4,7 @@ var  path = require('path')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , authorization = require('../../system/node-js/authorization')
+    , authorizationShared = require('../../system/shared/authorization')
 ;
 
 exports.init = function(app) {    
@@ -25,7 +26,7 @@ exports.init = function(app) {
     });
     
     app.post("/article/key/:key", function(req, res) {
-        if (authorization.isDocumentationEditor(req)) {
+        if (authorizationShared.hasRole(req.user, "DocumentationEditor")) {
             if (!req.body.key) {
                 mongo.newArticle(req.params.key, function(err, newArticle) {
                     if (err) res.send(400);
@@ -43,7 +44,7 @@ exports.init = function(app) {
     });
   
     app.post('/attachments/article/add', function(req, res) {
-        if (authorization.isDocumentationEditor(req)) {
+        if (authorizationShared.hasRole(req.user, "DocumentationEditor")) {
             mongo.byId(req.body.id, function(err, elt) {
                 if (err) res.send(404);
                 else {
@@ -56,7 +57,7 @@ exports.init = function(app) {
     });
 
     app.post('/attachments/article/remove', function(req, res) {
-        if (authorization.isDocumentationEditor(req)) {
+        if (authorizationShared.hasRole(req.user, "DocumentationEditor")) {
             mongo.byId(req.body.id, function(err, elt) {
                 if (err) res.send(404);
                 else {

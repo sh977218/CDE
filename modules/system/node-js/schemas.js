@@ -45,7 +45,8 @@ schemas.userSchema = mongoose.Schema ({
     , quota: Number
     , viewHistory: [String]
     , knownIPs: [String]
-    , roles: [String]
+    //, roles: [String]
+    , roles: [{ type: String, enum: ["DocumentationEditor","BoardPublisher"] }]
 });
 
 schemas.orgSchema.set('collection', 'orgs');

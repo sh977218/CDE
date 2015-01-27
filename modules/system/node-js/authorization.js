@@ -1,3 +1,5 @@
+require("../shared/authorization");
+
 function isCuratorOrAdmin(req, elt) {
     return (req.user.orgAdmin && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0)
            || (req.user.orgCurator && req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0);
@@ -28,10 +30,4 @@ exports.isSiteOrgAdmin = function(req) {
     }
     
     return false;
-};
-
-exports.isDocumentationEditor = function(req) {
-    if (!req.user) return false;
-    if (req.user.siteAdmin) return true;
-    if (req.user.roles && req.user.roles.indexOf('DocumentationEditor') > -1) return true;
 };

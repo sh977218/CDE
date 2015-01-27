@@ -164,7 +164,7 @@ exports.init = function(app, daoManager) {
             size = req.params.size;
         }
         if (size > 500) {
-            return res.send(403, "Request too large")
+            return res.send(403, "Request too large");
         }
         mongo_data.boardById(req.params.boardId, function (err, board) {
             if (board) {
