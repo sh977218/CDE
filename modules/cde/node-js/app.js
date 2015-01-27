@@ -190,6 +190,13 @@ exports.init = function(app, daoManager) {
     });
 
     app.post('/board', function(req, res) {
+        var checkPublicBoard = function(user, shareStatus) {
+            var isPublic = shareStatus === "Public";
+            var orgAdmin = user.orgAdmin && user.orgAdmin.length > 0;
+            if (isPublic && !orgAdmin) {
+                return res.send(404, "You must be a curator");
+            }                
+        };
         if (req.isAuthenticated()) {
             var board = req.body;
             if (!board._id) {
@@ -197,9 +204,10 @@ exports.init = function(app, daoManager) {
                 board.owner = {
                     userId: req.user._id
                     , username: req.user.username
-                };
+                };            
+                checkPublicBoard(req.user, req.body.shareStatus);
                 return mongo_data.newBoard(board, function(err, newBoard) {
-                   res.send(newBoard); 
+                   return res.send();
                 });
             } else  {
                 mongo_data.boardById(board._id, function(err, b) {
@@ -207,6 +215,7 @@ exports.init = function(app, daoManager) {
                     b.name = board.name;
                     b.description = board.description;
                     b.shareStatus = board.shareStatus;
+                    checkPublicBoard(req.user, b.shareStatus);
                     return mongo_data.save(b, function(err) {
                         if (err) console.log(err);
                         res.send(b);
