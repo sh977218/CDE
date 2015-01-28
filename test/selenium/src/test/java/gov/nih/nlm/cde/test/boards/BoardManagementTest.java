@@ -12,10 +12,7 @@ public class BoardManagementTest extends BoardTest {
     public void boardPublisher() {
         mustBeLoggedInAs("boardPublisherTest", password);
         createBoard("IsItPublic", "A board that we try to make public");
-        
-        // test for failure
-        makePublic("IsItPublic");
-        
+        makePublic("IsItPublic", "You don't have permission to make boards public!");        
         mustBeLoggedInAs(nlm_username, nlm_password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Site Management")).click();
@@ -30,12 +27,7 @@ public class BoardManagementTest extends BoardTest {
         
         mustBeLoggedInAs("boardPublisherTest", password);
         gotoMyBoards();
-        
-        //test for success
-        
-        makePublic("You don't have permission to make boards public!");
-
-        
+        makePublic("IsItPublic");
     }
     
     @Test

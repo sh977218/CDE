@@ -70,7 +70,8 @@ public class BoardTest extends NlmCdeBaseTest {
         modalHere();        
         findElement(By.linkText(boardName)).click();
         modalGone();
-        Assert.assertTrue(textPresent("Added to Board"));    
+        Assert.assertTrue(textPresent("Added to Board"));  
+        closeAlert();
     }
     
     protected void goToBoard(String boardName) {
