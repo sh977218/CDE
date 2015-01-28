@@ -11,6 +11,6 @@ exports.hasRole = function(user, role) {
 exports.isCuratorOf = function(user, orgName) {
     if (!user) return false;
     if (user.siteAdmin) return true;
-    return (req.user.orgAdmin && req.user.orgAdmin.indexOf(orgName) < 0)
-        || (req.user.orgCurator && req.user.orgCurator.indexOf(orgName) < 0);
+    return (user.orgAdmin && user.orgAdmin.indexOf(orgName) < 0)
+        || (user.orgCurator && user.orgCurator.indexOf(orgName) < 0);
 };

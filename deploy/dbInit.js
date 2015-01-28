@@ -19,10 +19,10 @@ db.users.insert({username: 'user1', password: 'pass', quota: 1073741824, viewHis
 db.users.insert({username: 'reguser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'createUser', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: [], email: "test@example.com"});
-db.users.insert({username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'boarduser1', password: 'pass', quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'boarduser2', password: 'pass', quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: [], email: "test@example.com", roles: ["BoardPublisher"]});
+db.users.insert({username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]});
+db.users.insert({username: 'boarduser1', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]});
+db.users.insert({username: 'boarduser2', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]});
 db.users.insert({username: 'pinuser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boarduserEdit', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'historyuser', password: 'pass', quota: 1073741824, viewHistory: []});

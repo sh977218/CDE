@@ -53,16 +53,16 @@ angular.module('resources')
             }).error(function() {
             });
         }    
-        , showWorkingGroup: function(orgToHide, myOrgs) {
+        , showWorkingGroup: function(orgToHide, user) {
             if (!this.isInitialized()) return true;
             var OrgHelpers = this;
             var parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide].workingGroupOf;
             var isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";
-            var userIsWorkingGroupCurator = myOrgs.indexOf(orgToHide) > -1;
-            if (!isNotWorkingGroup) var userIsCuratorOfParentOrg = myOrgs.indexOf(parentOrgOfThisClass) > -1;
+            var userIsWorkingGroupCurator = exports.isCuratorOf(user, orgToHide);//myOrgs.indexOf(orgToHide) > -1;
+            if (!isNotWorkingGroup) var userIsCuratorOfParentOrg = exports.isCuratorOf(user, parentOrgOfThisClass);//myOrgs.indexOf(parentOrgOfThisClass) > -1;
             if (!isNotWorkingGroup) {
                 var isSisterOfWg = false;                
-                var userWgsParentOrgs = myOrgs.filter(function(org) {return OrgHelpers.orgsDetailedInfo[org].workingGroupOf;})
+                var userWgsParentOrgs = user.myOrgs.filter(function(org) {return OrgHelpers.orgsDetailedInfo[org].workingGroupOf;})
                                         .map(function(org) {return OrgHelpers.orgsDetailedInfo[org].workingGroupOf});
                 userWgsParentOrgs.forEach(function(parentOrg){
                     if (parentOrg===parentOrgOfThisClass) isSisterOfWg = true;

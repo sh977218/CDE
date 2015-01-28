@@ -77,23 +77,10 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     $scope.isSiteAdmin = function() {
         return $scope.user !== undefined && $scope.user.siteAdmin;
     };
-    
-//    $scope.isDocumentationEditor = function() {
-//        if (!$scope.user) return false;
-//        if ($scope.user.siteAdmin) return true;
-//        if ($scope.user.roles && $scope.user.roles.indexOf('DocumentationEditor') > -1) return true;
-//    };
 
     $scope.isDocumentationEditor = function() {
         return exports.hasRole($scope.user, "DocumentationEditor");
     };
-
-    //TODO: Share code between front-end & back-end
-    //$scope.hasRole = function(user, role) {
-    //    if (!user) return false;
-    //    if (user.siteAdmin) return true;
-    //    if (user.roles && user.roles.indexOf(role) > -1) return true;
-    //};
 
     $scope.setMyOrgs = function() {
         if ($scope.user && $scope.user.orgAdmin) {
