@@ -12,7 +12,7 @@
     $scope.updateRoles = function(user) {
         $timeout(function() {
             $http.post("/updateUserRoles", user).then(function (res) {
-                $scope.addAlert("success", "Roles Saved.");
+                $scope.addAlert("success", "Roles saved.");
             });}
         , 0);
     };

@@ -21,9 +21,16 @@ public class BoardManagementTest extends BoardTest {
         findElement(By.linkText("Users")).click();
         
         findElement(By.name("searchUsers")).sendKeys("boardPublisherTest");
+        findElement(By.id("searchUsersSubmit")).click();
+        findElement(By.xpath("//div[@id='user_roles_0']//input")).sendKeys("boardp");
+        findElement(By.xpath("//div[@id='user_roles_0']//li/div/span")).click();
+        textPresent("Roles saved");
+        closeAlert();
         
         mustBeLoggedInAs("boardPublisherTest", password);
-
+        gotoMyBoards();
+        
+        //test for success
 
         
     }
