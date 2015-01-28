@@ -22,6 +22,7 @@ angular.module('classification', ['ngResource'])
 .factory("ClassificationTree", function() {
     return {
         getCategories: function(org, newClassification, level) {
+            if (!org) return [];
             var elt = org.classifications;
             var selectedLast = false;
             for (var i = 0; i < level; i++) { 
