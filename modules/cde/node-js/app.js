@@ -18,6 +18,7 @@ var cdesvc = require('./cdesvc')
   , sdc = require("./sdc.js")
   , status = require('./status')
   , appSystem = require('../../system/node-js/app.js')
+  , authorizationShared = require("../../system/shared/authorizationShared")
 ;
 
 exports.init = function(app, daoManager) {
