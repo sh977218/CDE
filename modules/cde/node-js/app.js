@@ -192,7 +192,7 @@ exports.init = function(app, daoManager) {
     app.post('/board', function(req, res) {
         var checkPublicBoard = function(user, shareStatus) {
             var isPublic = shareStatus === "Public";
-            var orgAdmin = user.orgAdmin && user.orgAdmin.length > 0;
+            var isAllowed = authorizationShared.hasRole(req.user, "BoardPublisher");
             if (isPublic && !orgAdmin) {
                 return res.send(404, "You must be a curator");
             }                
