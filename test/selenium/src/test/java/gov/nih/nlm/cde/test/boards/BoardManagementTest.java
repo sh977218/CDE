@@ -14,6 +14,7 @@ public class BoardManagementTest extends BoardTest {
         createBoard("IsItPublic", "A board that we try to make public");
         
         // test for failure
+        makePublic("IsItPublic");
         
         mustBeLoggedInAs(nlm_username, nlm_password);
         findElement(By.id("username_link")).click();
@@ -31,6 +32,8 @@ public class BoardManagementTest extends BoardTest {
         gotoMyBoards();
         
         //test for success
+        
+        makePublic("You don't have permission to make boards public!");
 
         
     }

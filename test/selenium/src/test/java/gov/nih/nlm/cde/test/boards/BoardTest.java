@@ -7,6 +7,10 @@ import org.testng.Assert;
 public class BoardTest extends NlmCdeBaseTest {
     
     protected void makePublic(String boardName) {
+        makePublic(boardName, "Saved");
+    }
+    
+    protected void makePublic(String boardName, String response) {
         gotoMyBoards();
         Assert.assertTrue(textPresent(boardName));
         int length = driver.findElements(By.linkText("View Board")).size();
@@ -15,7 +19,7 @@ public class BoardTest extends NlmCdeBaseTest {
             if (boardName.equals(name)) {
                 findElement(By.id("privateIcon_" + i)).click();
                 findElement(By.id("confirmChangeStatus_" + i)).click();
-                textPresent("Saved");
+                textPresent(response);
                 closeAlert();
                 hangon(2);
                 return;
