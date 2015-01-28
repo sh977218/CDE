@@ -28,7 +28,7 @@ function MyBoardsCtrl($scope, $modal, $http, Board) {
             $scope.addAlert("success", "Saved");
             $scope.loadBoards();
         }).error(function(response){
-            $scope.addAlert("danger", "Not completed!");
+            $scope.addAlert("danger", response);
             $scope.loadBoards();
         });
     };

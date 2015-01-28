@@ -60,7 +60,7 @@ angular.module('resources')
             var isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";
             var userIsWorkingGroupCurator = exports.isCuratorOf(user, orgToHide);
             if (!isNotWorkingGroup) var userIsCuratorOfParentOrg = exports.isCuratorOf(user, parentOrgOfThisClass);
-            if (!isNotWorkingGroup) {
+            if (!isNotWorkingGroup && user.myOrgs) {
                 var isSisterOfWg = false;                
                 var userWgsParentOrgs = user.myOrgs.filter(function(org) {return OrgHelpers.orgsDetailedInfo[org].workingGroupOf;})
                                         .map(function(org) {return OrgHelpers.orgsDetailedInfo[org].workingGroupOf});
