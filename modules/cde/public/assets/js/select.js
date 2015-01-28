@@ -654,7 +654,12 @@
                           resultMultiple.unshift(list[p]);
                           return true;
                       }
-                  }
+                  } else {
+                    if (result == value){
+                      resultMultiple.unshift(list[p]);
+                      return true;
+                    }
+                  }                  
                 }
                 return false;
               };
