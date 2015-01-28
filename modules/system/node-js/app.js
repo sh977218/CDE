@@ -295,6 +295,18 @@ exports.init = function(app) {
         }
     });    
 
+    app.post('/updateUserRoles', function(req, res) {  
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            usersrvc.updateUserRoles(req.body, function(err) {
+                if (err) res.send(500);
+                else res.send(200);
+            });
+        } else {
+            res.send(403, "You are not authorized.");                    
+        }
+    });    
+
+
     app.get('/siteaccountmanagement', exports.nocacheMiddleware, function(req, res) {
         var ip = req.ip;
         if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {

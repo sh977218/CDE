@@ -9,6 +9,26 @@ import org.testng.annotations.Test;
 public class BoardManagementTest extends BoardTest {
     
     @Test
+    public void boardPublisher() {
+        mustBeLoggedInAs("boardPublisherTest", password);
+        createBoard("IsItPublic", "A board that we try to make public");
+        
+        // test for failure
+        
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Site Management")).click();
+        findElement(By.linkText("Users")).click();
+        
+        findElement(By.name("searchUsers")).sendKeys("boardPublisherTest");
+        
+        mustBeLoggedInAs("boardPublisherTest", password);
+
+
+        
+    }
+    
+    @Test
     public void publicVsPrivateBoards() {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Public Board";
