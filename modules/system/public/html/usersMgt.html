@@ -1,0 +1,53 @@
+<div ng-controller="UsersMgtCtrl">
+    
+    <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
+        <input name="searchUsers" type="text" class="form-control" placeholder="enter user name" ng-model="search.username" typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100" typeahead-min-length="3" required>
+        <button type="submit" class="btn btn-success" id="newOrgAdminSubmit" ng-click="searchUsers()" ng-disabled="">Search</button>
+    </form>
+    
+    <div ng-repeat="u in foundUsers">
+        <div class="row">
+            <div class="col-md-2"><strong>Username:</strong></div>
+            <div class="col-md-10">{{u.username}}</div>            
+        </div>
+
+        <div class="row">
+        <div class="col-md-2"><strong>Last Login:</strong> </div>
+        <div class="col-md-10">{{u.lastLogin}}</div>
+        </div>
+        
+        <div class="row">
+        <div class="col-md-2"><strong>Org Curator:</strong> </div>
+        <div class="col-md-10">{{u.orgCurator}}</div>
+        </div>
+        
+        <div class="row">
+        <div class="col-md-2"><strong>Org Admin: </strong> </div>
+        <div class="col-md-10">{{u.orgAdmin}}</div>
+        </div>
+    
+        <div class="row">
+        <div class="col-md-2"><strong>Site Admin: </strong> </div>
+        <div class="col-md-10">{{u.siteAdmin}}</div>
+        </div>
+        
+        <div class="row">
+        <div class="col-md-2"><strong>Roles: </strong> </div>
+        <div class="col-md-10">
+            <ui-select multiple ng-model="u.roles" theme="select2" style="min-width: 300px">
+                <ui-select-match placeholder="Select answers...">{{$item}}</ui-select-match>
+                <ui-select-choices repeat="role in rolesEnum | filter:$select.search">
+                  {{role}}
+                </ui-select-choices>
+            </ui-select>        
+        </div>
+        </div>
+        
+        <div class="row">
+        <div class="col-md-2"><strong>Known IPs</strong> </div>
+        <div class="col-md-10">{{u.knownIps}}</div>
+        </div>
+        
+    <hr/>
+</div>
+</div>
