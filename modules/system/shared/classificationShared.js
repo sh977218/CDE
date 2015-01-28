@@ -73,7 +73,7 @@ exports.treeChildren = function(tree, path, cb) {
     tree.elements.forEach(function(element) {
         var newpath = path.slice(0);
         newpath.push(element.name);
-        if (element.elements.length>0) {
+        if (element.elements && element.elements.length>0) {
             classification.treeChildren(element, newpath, cb);
         } else {
             cb(newpath);

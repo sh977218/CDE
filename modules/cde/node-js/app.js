@@ -18,6 +18,7 @@ var cdesvc = require('./cdesvc')
   , sdc = require("./sdc.js")
   , status = require('./status')
   , appSystem = require('../../system/node-js/app.js')
+  , authorizationShared = require("../../system/shared/authorizationShared")
 ;
 
 exports.init = function(app, daoManager) {
@@ -193,7 +194,7 @@ exports.init = function(app, daoManager) {
         var checkPublicBoard = function(user, shareStatus) {
             var isPublic = shareStatus === "Public";
             var isAllowed = authorizationShared.hasRole(req.user, "BoardPublisher");
-            if (isPublic && !orgAdmin) {
+            if (isPublic && !isAllowed) {
                 return res.send(404, "You must be a curator");
             }                
         };

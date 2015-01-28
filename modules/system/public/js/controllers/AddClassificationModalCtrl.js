@@ -65,7 +65,8 @@ function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, 
     if (histStore !== null) {
         try {
             for (var i = 0; i < histStore.length; i++) {
-                if ($scope.myOrgs.indexOf(histStore[i].orgName) > -1) {
+                //if ($scope.myOrgs.indexOf(histStore[i].orgName) > -1) {
+                if (exports.isCuratorOf($scope.user, histStore[i].orgName)) {
                     $scope.defaultClassificationsHistory.push(histStore[i]);
                 }
             }
