@@ -1,5 +1,7 @@
 if (typeof(exports)==="undefined") exports = {};
 
+exports.rolesEnum = ["DocumentationEditor","BoardPublisher"];
+
 exports.hasRole = function(user, role) {
     if (!user) return false;
     if (user.siteAdmin) return true;
