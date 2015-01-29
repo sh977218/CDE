@@ -191,13 +191,8 @@ exports.init = function(app, daoManager) {
     });
 
     app.post('/board', function(req, res, next) {
-        var checkPublicBoard = function(user, shareStatus) {
-            var isPublic = shareStatus === "Public";
-            var isAllowed = authorizationShared.hasRole(req.user, "BoardPublisher");
-            if (isPublic && !isAllowed) {                
-                return false;
-            }                
-            return true;
+        var checkUnauthorizedPublishing = function(user, shareStatus) {
+            return shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher")
         };
         if (req.isAuthenticated()) {
             var board = req.body;
@@ -207,7 +202,7 @@ exports.init = function(app, daoManager) {
                     userId: req.user._id
                     , username: req.user.username
                 };            
-                if (!checkPublicBoard(req.user, req.body.shareStatus)) return res.send(403, "You don't have permission to make boards public!");
+                if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) return res.send(403, "You don't have permission to make boards public!");
                 else return mongo_data.newBoard(board, function(err, newBoard) {
                    return res.send();
                 });
@@ -217,7 +212,7 @@ exports.init = function(app, daoManager) {
                     b.name = board.name;
                     b.description = board.description;
                     b.shareStatus = board.shareStatus;
-                    if (!checkPublicBoard(req.user, b.shareStatus)) return res.send(403, "You don't have permission to make boards public!");
+                    if (checkUnauthorizedPublishing(req.user, b.shareStatus)) return res.send(403, "You don't have permission to make boards public!");
                     return mongo_data.save(b, function(err) {
                         if (err) console.log(err);
                         res.send(b);
