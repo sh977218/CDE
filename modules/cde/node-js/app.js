@@ -214,15 +214,15 @@ exports.init = function(app, daoManager) {
                         });                        
                     },
                     function(callback){
-                        mongo_data.nrBoardsByUserId(req.user._id, function(err, boards) {
-                            callback(err, boards);
+                        mongo_data.nbBoardsByUserId(req.user._id, function(err, nbBoards) {
+                            callback(err, nbBoards);
                         });
                     }
                 ],
                 // optional callback
                 function(err, results){
-                    if (results[1]<51) return res.send(results[0]);
-                    mongo_data.removeBoard(results[0]);
+                    if (results[1]<5) return res.send(results[0]);
+                    mongo_data.removeBoard(results[0]._id);
                     res.send(403, "You have too many boards!");
                 });
 

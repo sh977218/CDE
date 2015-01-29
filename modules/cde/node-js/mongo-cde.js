@@ -36,9 +36,9 @@ exports.boardsByUserId = function(userId, callback) {
     });
 };
 
-exports.nrBoardsByUserId = function(userId, callback) {
+exports.nbBoardsByUserId = function(userId, callback) {
     PinningBoard.count({"owner.userId": userId}).exec(function (err, result) {
-        callback(result); 
+        callback(err, result); 
     });
 };
 

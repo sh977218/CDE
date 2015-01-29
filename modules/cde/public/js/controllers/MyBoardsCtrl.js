@@ -45,6 +45,8 @@ function MyBoardsCtrl($scope, $modal, $http, Board) {
             Board.save(newBoard, function(res) {
                 $scope.addAlert("success", "Board created.");
                 $scope.loadBoards();
+            }, function(message){
+                $scope.addAlert("danger", message.data);
             });
         });
     };
