@@ -18,7 +18,7 @@ var express = require('express')
   , ipfilter = require('express-ipfilter')
 ;
 
-require('log-buffer');
+require('log-buffer')(config.logBufferSize || 4096);
 
 passport.serializeUser(function(user, done) {
     done(null, user._id);
@@ -68,32 +68,32 @@ var expressSettings = {
     , cookie: {httpOnly: true, secure: config.proxy}
 };
 
+var getRealIp = function(req) {
+  if (req._remoteAddress) return req._remoteAddress;
+  if (req.ip) return req.ip;
+};
+
+
 var blackIps = [];
 app.use(ipfilter(blackIps));
+var banEndsWith = config.banEndsWith || [];
+var banStartsWith = config.banStartsWith || [];
 
-var banEndsWith = [".php", ".cfm", ".jsp", ".asp", ".do"];
-//var banStartsWith = ["/admin/", "/cgi-bin"];
-
-var banEndsWithArray = [];
-banEndsWith.forEach(function (ban) {
-   var size = ban.length;
-   if (!banEndsWithArray[size]) {
-       banEndsWithArray[size] = [];
-   }
-   banEndsWithArray[size].push(ban);
-});
-
-app.use(function(req, res, next) {
-    banEndsWithArray.forEach(function(banArray, index) {
-        if (banArray) {
-            var lastChars = req.originalUrl.substr(req.originalUrl.length - index, index);
-            if (banArray.indexOf(lastChars) > -1) {
-                // he is making an illegal request, ban him. 
-                blackIps.push(getRealIp());
-            }
+app.use(function banHackers(req, res, next) {
+    banEndsWith.forEach(function(ban) {
+        if(req.originalUrl.slice(-(ban.length))  === ban) {
+            blackIps.push(getRealIp(req));
         }
     });
-    
+    banStartsWith.forEach(function(ban) {
+        if(req.originalUrl.substr(0, ban.length) === ban) {
+            blackIps.push(getRealIp(req));
+        }
+    });
+    next();
+});    
+
+app.use(function preventSessionCreation(req, res, next) {
     this.isFile = function(req) {
         if (req.originalUrl.substr(req.originalUrl.length-3,3) === ".js") return true;
         if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".css") return true;
@@ -120,11 +120,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 var logFormat = {remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
-
-var getRealIp = function(req) {
-  if (req._remoteAddress) return req._remoteAddress;
-  if (req.ip) return req.ip;
-};
 
 express.logger.token('real-remote-addr', function(req) {
     return getRealIp(req);
