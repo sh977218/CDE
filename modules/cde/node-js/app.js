@@ -19,6 +19,7 @@ var cdesvc = require('./cdesvc')
   , status = require('./status')
   , appSystem = require('../../system/node-js/app.js')
   , authorizationShared = require("../../system/shared/authorizationShared")
+  , async = require("async")
 ;
 
 exports.init = function(app, daoManager) {
@@ -203,9 +204,28 @@ exports.init = function(app, daoManager) {
                     , username: req.user.username
                 };            
                 if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) return res.send(403, "You don't have permission to make boards public!");
-                else return mongo_data.newBoard(board, function(err, newBoard) {
-                   return res.send();
+//                else return mongo_data.newBoard(board, function(err, newBoard) {
+//                   return res.send();
+//                });
+                async.parallel([
+                    function(callback){
+                        mongo_data.newBoard(board, function(err, newBoard) {
+                           callback(err, newBoard);
+                        });                        
+                    },
+                    function(callback){
+                        mongo_data.nrBoardsByUserId(req.user._id, function(err, boards) {
+                            callback(err, boards);
+                        });
+                    }
+                ],
+                // optional callback
+                function(err, results){
+                    if (results[1]<51) return res.send(results[0]);
+                    mongo_data.removeBoard(results[0]);
+                    res.send(403, "You have too many boards!");
                 });
+
             } else  {
                 mongo_data.boardById(board._id, function(err, b) {
                     if (err) console.log(err);

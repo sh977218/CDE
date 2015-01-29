@@ -36,6 +36,12 @@ exports.boardsByUserId = function(userId, callback) {
     });
 };
 
+exports.nrBoardsByUserId = function(userId, callback) {
+    PinningBoard.count({"owner.userId": userId}).exec(function (err, result) {
+        callback(result); 
+    });
+};
+
 exports.publicBoardsByDeTinyId = function(tinyId, callback) {
     PinningBoard.find({"pins.deTinyId": tinyId, "shareStatus": "Public"}).exec(function (err, result) {
         callback(result); 
