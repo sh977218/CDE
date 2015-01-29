@@ -77,7 +77,7 @@ function AttachmentsCtrl($scope, $rootScope, $http, $timeout) {
     };
     
     $scope.setDefault = function(index) {
-        if (!$scope.canDoNonCuration) return;
+        if (!$scope.canCurate) return;
         $timeout(function () {
             $http.post("/attachments/" + $scope.module + "/setDefault", 
             {

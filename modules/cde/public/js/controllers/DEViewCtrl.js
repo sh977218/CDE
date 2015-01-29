@@ -68,7 +68,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
                 });
             };
             isAllowedModel.setCanCurate($scope);
-            isAllowedModel.setCanDoNonCuration($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
             $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
         });

@@ -42,7 +42,6 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
             $scope.elt = form;
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
-            isAllowedModel.setCanDoNonCuration($scope);
             $scope.checkForArchivedCdes();
         });
         if (route.tab) {

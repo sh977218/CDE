@@ -19,10 +19,10 @@ db.users.insert({username: 'user1', password: 'pass', quota: 1073741824, viewHis
 db.users.insert({username: 'reguser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'createUser', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: [], email: "test@example.com"});
-db.users.insert({username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'boarduser1', password: 'pass', quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'boarduser2', password: 'pass', quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: [], email: "test@example.com", roles: ["BoardPublisher"]});
+db.users.insert({username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]});
+db.users.insert({username: 'boarduser1', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]});
+db.users.insert({username: 'boarduser2', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]});
 db.users.insert({username: 'pinuser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boarduserEdit', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'historyuser', password: 'pass', quota: 1073741824, viewHistory: []});
@@ -39,6 +39,7 @@ db.users.insert({username: 'transferStewardUser', password: 'pass', orgAdmin: ["
 db.users.insert({username: 'docEditor', password: 'pass', orgAdmin: [], roles: ['DocumentationEditor'], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'nindsWg1User', password: 'pass', orgAdmin: [], orgCurator: ["NINDS-WG-1"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'nindsWg2User', password: 'pass', orgAdmin: [], orgCurator: ["NINDS-WG-2"], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'boardPublisherTest', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
 
 //db.orgs.insert({name: "NINDS-WG-1", workingGroupOf: "NINDS", classifications: [{name: "WG1 Classif", elements: [{name: "WG1 Sub Classif"}]}]});
 //db.orgs.insert({name: "NINDS-WG-2", workingGroupOf: "NINDS", classifications: [{name: "WG2 Classif", elements: [{name: "WG2 Sub Classif"}]}]});

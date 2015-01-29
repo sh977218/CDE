@@ -1,14 +1,14 @@
 <div class="container">
     <tabset class="pt40 pb40">
-        <tab heading="Broadcast">
+        <div tab heading="Broadcast">
             <form name="form" role="form" class="form-inline pt40 pb40" novalidate>
                 <div class="form-group long-field" ng-class="{error: form.version.$invalid}">
                    <input class="form-control" name="message" type="text" ng-model="broadcast.message" placeholder="Broadcast a message to all users..."/>
                 </div>
                 <button class="btn btn-warning" ng-click="saveMessage()" id="saveMessage">Broadcast</button>
             </form>
-        </tab>
-        <tab heading="Site Admins">
+        </div>
+        <div tab heading="Site Admins">
             <form name="form" role="form" class="form-inline pt40 pb40" novalidate>
                 Make
                 <div class="form-group">
@@ -30,8 +30,8 @@
                     </td>
                 </tr>
             </table>
-        </tab>
-        <tab heading="Organizations">
+        </div>
+        <div tab heading="Organizations">
             <form class="form-inline pt40 pb40" role="form" id="addOrgForm" name="addOrgForm" novalidate>
                 <div class="form-group">
                     <input type="text" class="form-control" id="newOrgName" name="newOrgName" placeholder="Organization Name" ng-model="newOrg.name" required>
@@ -80,8 +80,8 @@
                     </td>
                 </tr>
             </table>
-        </tab>
-        <tab heading="Organizations Admins">
+        </div>
+        <div tab heading="Organizations Admins">
             <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
                 Make
                 <div class="form-group">
@@ -111,6 +111,9 @@
                     </td>
                 </tr>
             </table>
-        </tab>
+        </div>
+        <div tab heading="Users">
+            <div ng-include="'/system/public/html/usersMgt.html'"></div>
+        </div>
     </tabset>
 </div>   

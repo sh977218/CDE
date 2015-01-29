@@ -1,16 +1,12 @@
-function isCuratorOrAdmin(req, elt) {
-    return (req.user.orgAdmin && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0)
-           || (req.user.orgCurator && req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0);
-};
-    
+var authorizationShared = require('../shared/authorizationShared');
+
 exports.checkOwnership = function(dao, id, req, cb) {
     if (req.isAuthenticated()) {
         dao.byId(id, function (err, elt) {
             if (err || !elt) {
                 return cb("Element does not exist.", null);
             }
-            if (!req.user || !isCuratorOrAdmin(req, elt)
-               ) {
+            if (!authorizationShared.isCuratorOf(req.user,elt.stewardOrg.name)) {
                 return cb("You do not own this element.", null);
             } else {
                 cb(null, elt);
@@ -25,13 +21,6 @@ exports.checkOwnership = function(dao, id, req, cb) {
 exports.isSiteOrgAdmin = function(req) {
     if(req.isAuthenticated() && (req.user.siteAdmin || (req.user.orgAdmin && req.user.orgAdmin.length >= 0))) {
         return true;
-    }
-    
+    }    
     return false;
-};
-
-exports.isDocumentationEditor = function(req) {
-    if (!req.user) return false;
-    if (req.user.siteAdmin) return true;
-    if (req.user.roles && req.user.roles.indexOf('DocumentationEditor') > -1) return true;
 };

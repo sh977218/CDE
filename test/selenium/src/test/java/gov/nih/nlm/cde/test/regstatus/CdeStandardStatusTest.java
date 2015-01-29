@@ -65,9 +65,9 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         Assert.assertFalse(driver.findElements(By.id("ocConceptRemove-0")).get(0).isDisplayed());
         Assert.assertFalse(driver.findElements(By.id("propConceptRemove-0")).get(0).isDisplayed());
 
-        // Can add Attachments
+        // Can't add Attachments
         findElement(By.linkText("Attachments")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("i.fa-upload")));
+        Assert.assertFalse(driver.findElements(By.cssSelector("i.fa-upload")).get(0).isDisplayed());
     }
     
     

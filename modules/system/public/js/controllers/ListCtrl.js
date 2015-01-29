@@ -237,7 +237,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
     $scope.getUsedBy = function(elt) {
         if (elt.classification)
             return elt.classification.filter(function(c) {
-                return OrgHelpers.showWorkingGroup(c.stewardOrg.name, $scope.myOrgs);
+                return OrgHelpers.showWorkingGroup(c.stewardOrg.name, $scope.user);
             }).map(function(e) {return e.stewardOrg.name;});
         else return [];
     };
@@ -302,7 +302,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
     $scope.filterOutWorkingGroups = function(aggregations) {
         this.setAggregations = function() {
             aggregations.lowRegStatusOrCurator_filter.orgs.buckets = aggregations.lowRegStatusOrCurator_filter.orgs.buckets.filter(function(bucket) {
-                return OrgHelpers.showWorkingGroup(bucket.key, $scope.myOrgs) || $scope.user.siteAdmin;
+                return OrgHelpers.showWorkingGroup(bucket.key, $scope.user) || $scope.user.siteAdmin;
             });
             $scope.aggregations = aggregations;            
         };

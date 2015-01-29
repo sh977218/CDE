@@ -1,4 +1,5 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose')
+    , authorizationShared = require('../shared/authorizationShared');
 
 var schemas = {};
 
@@ -45,7 +46,7 @@ schemas.userSchema = mongoose.Schema ({
     , quota: Number
     , viewHistory: [String]
     , knownIPs: [String]
-    , roles: [String]
+    , roles: [{ type: String, enum: authorizationShared.rolesEnum }]
 });
 
 schemas.orgSchema.set('collection', 'orgs');
