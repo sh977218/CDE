@@ -9,7 +9,7 @@
 
             <ul class="fa-ul">
                 <li ng-include="'/system/public/html/classifEltLoop.html'"
-                    ng-init="myOrg = isCuratorOf(user, stewardClassifications.stewardOrg.name); orgName = stewardClassifications.stewardOrg.name; pathArray = pathArray.slice(0); classificationPage='deview'"
+                    ng-init="myOrg = myOrgs.indexOf(stewardClassifications.stewardOrg.name) >= 0; orgName = stewardClassifications.stewardOrg.name; pathArray = pathArray.slice(0); classificationPage='deview'"
                     id="classification-{{pathArray.join()}}">
                 </li>
             </ul>
