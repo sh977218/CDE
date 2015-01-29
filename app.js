@@ -15,6 +15,7 @@ var express = require('express')
   , logging = require('./modules/system/node-js/logging.js')
   , daoManager = require('./modules/system/node-js/moduleDaoManager.js')
   , domain = require('domain').create()
+  , ipfilter = require('express-ipfilter')
 ;
 
 require('log-buffer');
@@ -60,13 +61,39 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser("Jk87fhK"));
 
+
 var expressSettings = {
     secret: "Kfji76R"
     , proxy: config.proxy
     , cookie: {httpOnly: true, secure: config.proxy}
 };
 
+var blackIps = [];
+app.use(ipfilter(blackIps));
+
+var banEndsWith = [".php", ".cfm", ".jsp", ".asp", ".do"];
+//var banStartsWith = ["/admin/", "/cgi-bin"];
+
+var banEndsWithArray = [];
+banEndsWith.forEach(function (ban) {
+   var size = ban.length;
+   if (!banEndsWithArray[size]) {
+       banEndsWithArray[size] = [];
+   }
+   banEndsWithArray[size].push(ban);
+});
+
 app.use(function(req, res, next) {
+    banEndsWithArray.forEach(function(banArray, index) {
+        if (banArray) {
+            var lastChars = req.originalUrl.substr(req.originalUrl.length - index, index);
+            if (banArray.indexOf(lastChars) > -1) {
+                // he is making an illegal request, ban him. 
+                blackIps.push(getRealIp());
+            }
+        }
+    });
+    
     this.isFile = function(req) {
         if (req.originalUrl.substr(req.originalUrl.length-3,3) === ".js") return true;
         if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".css") return true;
@@ -94,9 +121,13 @@ app.use(passport.session());
 
 var logFormat = {remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
 
-express.logger.token('real-remote-addr', function(req) {
+var getRealIp = function(req) {
   if (req._remoteAddress) return req._remoteAddress;
   if (req.ip) return req.ip;
+};
+
+express.logger.token('real-remote-addr', function(req) {
+    return getRealIp(req);
 });
 
 var expressLogger = express.logger({format: JSON.stringify(logFormat), stream: winstonStream});
