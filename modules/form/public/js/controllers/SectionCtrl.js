@@ -54,7 +54,7 @@ function SectionCtrl($scope, $modal, $timeout, $http) {
                         $http.get("debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
                             result.data.valueDomain.permissibleValues.forEach(function(pv) {
                                 question.question.answers.push(pv); 
-                                question.question.cde.permissibleValues .push(pv);  
+                                question.question.cde.permissibleValues.push(pv);  
                             });
                         });
                     } else {

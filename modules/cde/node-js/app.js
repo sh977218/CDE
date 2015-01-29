@@ -18,6 +18,7 @@ var cdesvc = require('./cdesvc')
   , sdc = require("./sdc.js")
   , status = require('./status')
   , appSystem = require('../../system/node-js/app.js')
+  , authorizationShared = require("../../system/shared/authorizationShared")
 ;
 
 exports.init = function(app, daoManager) {
@@ -164,7 +165,7 @@ exports.init = function(app, daoManager) {
             size = req.params.size;
         }
         if (size > 500) {
-            return res.send(403, "Request too large")
+            return res.send(403, "Request too large");
         }
         mongo_data.boardById(req.params.boardId, function (err, board) {
             if (board) {
@@ -189,7 +190,15 @@ exports.init = function(app, daoManager) {
         });
     });
 
-    app.post('/board', function(req, res) {
+    app.post('/board', function(req, res, next) {
+        var checkPublicBoard = function(user, shareStatus) {
+            var isPublic = shareStatus === "Public";
+            var isAllowed = authorizationShared.hasRole(req.user, "BoardPublisher");
+            if (isPublic && !isAllowed) {                
+                return false;
+            }                
+            return true;
+        };
         if (req.isAuthenticated()) {
             var board = req.body;
             if (!board._id) {
@@ -197,9 +206,10 @@ exports.init = function(app, daoManager) {
                 board.owner = {
                     userId: req.user._id
                     , username: req.user.username
-                };
-                return mongo_data.newBoard(board, function(err, newBoard) {
-                   res.send(newBoard); 
+                };            
+                if (!checkPublicBoard(req.user, req.body.shareStatus)) return res.send(403, "You don't have permission to make boards public!");
+                else return mongo_data.newBoard(board, function(err, newBoard) {
+                   return res.send();
                 });
             } else  {
                 mongo_data.boardById(board._id, function(err, b) {
@@ -207,6 +217,7 @@ exports.init = function(app, daoManager) {
                     b.name = board.name;
                     b.description = board.description;
                     b.shareStatus = board.shareStatus;
+                    if (!checkPublicBoard(req.user, b.shareStatus)) return res.send(403, "You don't have permission to make boards public!");
                     return mongo_data.save(b, function(err) {
                         if (err) console.log(err);
                         res.send(b);

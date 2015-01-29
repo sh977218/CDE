@@ -66,11 +66,6 @@ cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$m
             }
         });          
     };
-
-    $scope.canDoNonCuration = function() {
-        $scope.isDocumentationEditor();
-    };
-
 }]);
 
 cdeApp.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', function($scope, $modalInstance, $http) {

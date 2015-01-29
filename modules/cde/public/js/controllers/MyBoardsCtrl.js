@@ -24,8 +24,11 @@ function MyBoardsCtrl($scope, $modal, $http, Board) {
         
     $scope.save = function(board) {
         delete board.editMode; 
-        $http.post("/board", board).then(function(response) {
+        $http.post("/board", board).success(function(response) {
             $scope.addAlert("success", "Saved");
+            $scope.loadBoards();
+        }).error(function(response){
+            $scope.addAlert("danger", response);
             $scope.loadBoards();
         });
     };

@@ -16,7 +16,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         Assert.assertTrue(driver.findElements(By.xpath("//span[text()=\"Definition\"]")).size() > 5); 
     }
     
-    @Test 
+    /*@Test 
     public void searchHighlightPv() {
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("myopathic");
@@ -32,7 +32,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();    
         Assert.assertTrue(textPresent("for finasteride |"));
         Assert.assertEquals(driver.findElements(By.xpath("//span[text()=\"Classification\"]")).size(), 6);
-    }
+    }*/
     
     @Test
     public void sdcView() {

@@ -12,6 +12,17 @@ exports.isAdminOf = function(user, orgName){
     return user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
 };   
 
+exports.updateUserRoles = function(user, cb) {
+    mongo_data.userByName(user.username, function(err, found) {
+        if (err) {
+            cb(err);
+            return;
+        }
+        found.roles = user.roles;
+        found.save(function() {cb();});
+    });
+};
+
 exports.addSiteAdmin = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {
         if (!found) {

@@ -117,7 +117,7 @@ cdeApp.factory('isAllowedModel', function () {
                 return false;
             }
             if ($scope.myOrgs) {
-                return $scope.myOrgs.indexOf(CuratedItem.stewardOrg.name) > -1;
+                return exports.isCuratorOf($scope.user, CuratedItem.stewardOrg.name);
             } else {
                 return false;
             }
@@ -150,35 +150,13 @@ cdeApp.factory('isAllowedModel', function () {
             return false;
         } else {
             if ($scope.myOrgs) {
-                return ($scope.myOrgs.indexOf(CuratedItem.stewardOrg.name) > -1) && (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard");
+                return exports.isCuratorOf($scope.user, CuratedItem.stewardOrg.name) && (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard");
             } else {
                 return false;
             }
         }
     };
 
-    isAllowedModel.setCanDoNonCuration = function($scope) {
-        isAllowedModel.runWhenInitialized($scope, function() {
-            $scope.canDoNonCuration = isAllowedModel.isAllowedNonCuration($scope, $scope.elt);
-        });    
-    }; 
-
-    isAllowedModel.isAllowedNonCuration = function ($scope, curatedItem) {
-        if (!curatedItem) return false;
-        if (curatedItem.archived) {
-            return false;
-        } else {
-            if ($scope.user && $scope.user.siteAdmin) {
-                return true;
-            } else {   
-                if ($scope.myOrgs) {
-                    return $scope.myOrgs.indexOf(curatedItem.stewardOrg.name) > -1;
-                } else {
-                    return false;
-                }
-            }
-        }
-    };
     return isAllowedModel;
 });
 
