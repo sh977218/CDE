@@ -192,6 +192,7 @@ exports.init = function(app, daoManager) {
     });
 
     app.post('/board', function(req, res, next) {
+        var boardQuota = config.boardQuota || 50;
         var checkUnauthorizedPublishing = function(user, shareStatus) {
             return shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher")
         };
@@ -204,9 +205,6 @@ exports.init = function(app, daoManager) {
                     , username: req.user.username
                 };            
                 if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) return res.send(403, "You don't have permission to make boards public!");
-//                else return mongo_data.newBoard(board, function(err, newBoard) {
-//                   return res.send();
-//                });
                 async.parallel([
                     function(callback){
                         mongo_data.newBoard(board, function(err, newBoard) {
@@ -219,9 +217,8 @@ exports.init = function(app, daoManager) {
                         });
                     }
                 ],
-                // optional callback
                 function(err, results){
-                    if (results[1]<5) return res.send(results[0]);
+                    if (results[1]<boardQuota) return res.send(results[0]);
                     mongo_data.removeBoard(results[0]._id);
                     res.send(403, "You have too many boards!");
                 });

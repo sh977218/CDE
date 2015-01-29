@@ -36,15 +36,19 @@ public class BoardTest extends NlmCdeBaseTest {
     protected void gotoPublicBoards() {
         findElement(By.linkText("Boards")).click();
         findElement(By.linkText("Public Boards")).click();    
-    }           
-  
+    }     
+    
     protected void createBoard(String name, String description) {
+        createBoard(name, description, "Board created.");
+    }
+  
+    protected void createBoard(String name, String description, String response) {
         gotoMyBoards();
         findElement(By.id("addBoard")).click();
         findElement(By.name("name")).sendKeys(name);
         findElement(By.name("description")).sendKeys(description);
         findElement(By.id("createBoard")).click();
-        textPresent("Board created.");
+        textPresent(response);
         closeAlert();
         hangon(1);
     }

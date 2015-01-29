@@ -40,6 +40,7 @@ db.users.insert({username: 'docEditor', password: 'pass', orgAdmin: [], roles: [
 db.users.insert({username: 'nindsWg1User', password: 'pass', orgAdmin: [], orgCurator: ["NINDS-WG-1"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'nindsWg2User', password: 'pass', orgAdmin: [], orgCurator: ["NINDS-WG-2"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boardPublisherTest', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'boardBot', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
 
 //db.orgs.insert({name: "NINDS-WG-1", workingGroupOf: "NINDS", classifications: [{name: "WG1 Classif", elements: [{name: "WG1 Sub Classif"}]}]});
 //db.orgs.insert({name: "NINDS-WG-2", workingGroupOf: "NINDS", classifications: [{name: "WG2 Classif", elements: [{name: "WG2 Sub Classif"}]}]});
