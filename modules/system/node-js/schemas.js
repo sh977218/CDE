@@ -46,7 +46,6 @@ schemas.userSchema = mongoose.Schema ({
     , quota: Number
     , viewHistory: [String]
     , knownIPs: [String]
-    //, roles: [String]
     , roles: [{ type: String, enum: authorizationShared.rolesEnum }]
 });
 

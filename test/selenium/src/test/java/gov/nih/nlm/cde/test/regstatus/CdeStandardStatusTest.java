@@ -67,7 +67,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
         // Can't add Attachments
         findElement(By.linkText("Attachments")).click();
-        Assert.assertFalse(driver.findElements(By.cssSelector("i.fa-upload")));
+        Assert.assertFalse(driver.findElements(By.cssSelector("i.fa-upload")).get(0).isDisplayed());
     }
     
     
