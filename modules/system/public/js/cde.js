@@ -157,28 +157,6 @@ cdeApp.factory('isAllowedModel', function () {
         }
     };
 
-    isAllowedModel.setCanDoNonCuration = function($scope) {
-        isAllowedModel.runWhenInitialized($scope, function() {
-            $scope.canDoNonCuration = isAllowedModel.isAllowedNonCuration($scope, $scope.elt);
-        });    
-    }; 
-
-    isAllowedModel.isAllowedNonCuration = function ($scope, curatedItem) {
-        if (!curatedItem) return false;
-        if (curatedItem.archived) {
-            return false;
-        } else {
-            if ($scope.user && $scope.user.siteAdmin) {
-                return true;
-            } else {   
-                if ($scope.myOrgs) {
-                    return exports.isCuratorOf($scope.user, curatedItem.stewardOrg.name);
-                } else {
-                    return false;
-                }
-            }
-        }
-    };
     return isAllowedModel;
 });
 

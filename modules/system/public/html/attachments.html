@@ -10,13 +10,13 @@
                     Attachments smaller than 500k can be marked as default 
                 </span>
                 <span ng-switch-when="false">
-                    <input type="checkbox" id="defaultCb" ng-model="attachment.isDefault" ng-change="setDefault($index)" ng-disabled="!canDoNonCuration" />
+                    <input type="checkbox" id="defaultCb" ng-model="attachment.isDefault" ng-change="setDefault($index)" ng-disabled="!canCurate" />
                     <label for="defaultCb" id="defaultCbLabel">Should this image be displayed in search results?</label>
                 </span>
             </span>
             </dd>
-            <dt ng-show="canDoNonCuration">Actions: </dt>
-            <dd ng-show="canDoNonCuration">
+            <dt ng-show="canCurate">Actions: </dt>
+            <dd ng-show="canCurate">
                 <span ng-show="showDelete">
                     Confirm Delete <i class="fa fa-check" ng-click="showDelete = false; removeAttachment($index)" id="confirmRemove-{{$index}}"></i>
                     <i class="fa fa-times" ng-click="showDelete = false"></i>
@@ -36,7 +36,7 @@
 
     <hr/>
     
-    <div ng-show="canDoNonCuration">
+    <div ng-show="canCurate">
         <div>{{message}}</div>
         <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files</label>
         <input type="file" style="display: none" ng-model="currentFile" id="fileToUpload" onchange="angular.element(this).scope().setFiles(this)" />

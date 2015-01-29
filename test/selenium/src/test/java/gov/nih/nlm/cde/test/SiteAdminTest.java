@@ -163,22 +163,23 @@ public class SiteAdminTest extends NlmCdeBaseTest {
     public void browseUsers() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         findElement(By.id("username_link")).click();
-        findElement(By.linkText("Audit")).click();
-        findElement(By.name("search")).sendKeys("cabig");
-        findElement(By.id("search.submit")).click();
-        hangon(.5);
-        Assert.assertEquals("cabigAdmin", findElement(By.id("dd_username_0")).getText());
-        Assert.assertEquals("[\"caBIG\"]", findElement(By.id("dd_orgAdmin_0")).getText());
-        Assert.assertEquals("N/A", findElement(By.id("dd_siteAdmin_0")).getText());
+        findElement(By.linkText("Site Management")).click();
+        findElement(By.linkText("Users")).click();
+        findElement(By.name("searchUsers")).sendKeys("cabig");
+        findElement(By.id("searchUsersSubmit")).click();
+        
+        Assert.assertEquals("cabigAdmin", findElement(By.id("user_username")).getText());
+        Assert.assertEquals("[\"caBIG\"]", findElement(By.id("user_orgadmin")).getText());
+        Assert.assertEquals("N/A", findElement(By.id("user_siteadmin")).getText());
 
-        findElement(By.name("search")).clear();            
-        findElement(By.name("search")).sendKeys("nlm");
-        findElement(By.id("search.submit")).click();
+        findElement(By.name("searchUsers")).clear();            
+        findElement(By.name("searchUsers")).sendKeys("nlm");
+        findElement(By.id("searchUsersSubmit")).click();
 
         wait.until(ExpectedConditions.textToBePresentInElement(findElement(By.id("dd_username_0")), "nlm"));
-        Assert.assertEquals("nlm", findElement(By.id("dd_username_0")).getText());
-        Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\"]", findElement(By.id("dd_orgAdmin_0")).getText());
-        Assert.assertEquals("true", findElement(By.id("dd_siteAdmin_0")).getText());
+        Assert.assertEquals("nlm", findElement(By.id("user_username")).getText());
+        Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\"]", findElement(By.id("user_orgadmin")).getText());
+        Assert.assertEquals("true", findElement(By.id("user_siteadmin")).getText());
     }
     
 }

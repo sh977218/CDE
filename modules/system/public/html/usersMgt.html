@@ -8,7 +8,7 @@
     <div ng-repeat="u in foundUsers">
         <div class="row">
             <div class="col-md-2"><strong>Username:</strong></div>
-            <div class="col-md-10">{{u.username}}</div>            
+            <div id="user_username" class="col-md-10">{{u.username}}</div>            
         </div>
 
         <div class="row">
@@ -18,17 +18,17 @@
         
         <div class="row">
         <div class="col-md-2"><strong>Org Curator:</strong> </div>
-        <div class="col-md-10">{{u.orgCurator}}</div>
+        <div id="user_curator" class="col-md-10">{{u.orgCurator}}</div>
         </div>
         
         <div class="row">
         <div class="col-md-2"><strong>Org Admin: </strong> </div>
-        <div class="col-md-10">{{u.orgAdmin}}</div>
+        <div id="user_orgadmin" class="col-md-10">{{u.orgAdmin}}</div>
         </div>
     
         <div class="row">
         <div class="col-md-2"><strong>Site Admin: </strong> </div>
-        <div class="col-md-10">{{u.siteAdmin}}</div>
+        <div id="user_siteadmin" class="col-md-10">{{u.siteAdmin}}</div>
         </div>
         
         <div class="row">
