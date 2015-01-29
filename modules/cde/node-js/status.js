@@ -124,19 +124,18 @@ status.checkElasticSync = function(body, statusReport, mongoCollection) {
     });
 };
 status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoCollection) {
-    var seed = Math.floor(Math.random()*100000);
     var fakeCde = {
         stewardOrg: {name: "FAKE"}
         , naming: [{
-                designation: "NLM_APP_Status_Report_" + seed
-                , definition: "NLM_APP_Status_Report_" + seed
+                designation: "NLM_APP_Status_Report"
+                , definition: "NLM_APP_Status_Report"
         }]
         , registrationState: {registrationStatus: "Retired"}
     };
 
     mongoCollection.create(fakeCde, {_id: null, username: ""}, function(err, mongoCde) {
         setTimeout(function() {
-            request.get(elasticUrl + "_search?q=NLM_APP_Status_Report_"+seed, function (error, response, bodyStr) {
+            request.get(elasticUrl + "_search?q=" + mongoCde.tinyId, function (error, response, bodyStr) {
                 var body = JSON.parse(bodyStr);
                 if (body.hits.hits.length <= 0) {
                     statusReport.elastic.updating = false;      
@@ -148,13 +147,11 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                     } else {
                         statusReport.elastic.updating = true;                        
                     }
-                    try {
-                        mongoCollection.DataElement.remove({"naming.designation":"NLM_APP_Status_Report_" + seed}).exec();
-                    } catch(e) {
-                        console.log("\n\n\n\n Cannot delete data element \n\n\n");
-                        console.log(e.toString());
-                    }
                 }
+                mongoCollection.DataElement.remove({"tinyId": mongoCde.tinyId}).exec(function(err){
+                    console.log("\n\n\n\n Cannot delete data element \n\n\n");
+                    console.log(e.toString());                        
+                });
             });            
         }, config.status.timeouts.dummyElementCheck);
     });
