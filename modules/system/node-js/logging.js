@@ -33,18 +33,27 @@ var expressLoggerCnf = {
         json: true
     })]
 };
-if (config.expressToStdout) expressLoggerCnf.transports.push(new winston.transports.Console({
-    level: 'verbose',
-    colorize: true,
-    timestamp: true
-}));
 
-exports.expressLogger = new (winston.Logger)(expressLoggerCnf);//expressToStdout
-
-exports.expressErrorLogger = new (winston.Logger)({
+var expressErrorLoggerCnf = {
   transports: [
     new winston.transports.MongoLogger({
         json: true
     })
   ]
-});
+};
+
+if (config.expressToStdout) {
+    expressLoggerCnf.transports.push(new winston.transports.Console({
+        level: 'verbose',
+        colorize: true,
+        timestamp: true
+    }));
+    expressErrorLoggerCnf.transports.push(new winston.transports.Console({
+        level: 'verbose',
+        colorize: true,
+        timestamp: true
+    }));
+}
+exports.expressLogger = new (winston.Logger)(expressLoggerCnf);
+
+exports.expressErrorLogger = new (winston.Logger)(expressErrorLoggerCnf);
