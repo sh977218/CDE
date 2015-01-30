@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -105,8 +106,13 @@ public class ForkTest extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("\"Other Group Patient Identifier Number\"");
         findElement(By.cssSelector("i.fa-search")).click();
         textPresent("1 results for");
-        textPresent("Other Group Patient Identifier Number - FORK");       
-        
+        try {
+            textPresent("Other Group Patient Identifier Number - FORK");       
+        } catch(TimeoutException e) {
+            findElement(By.cssSelector("i.fa-search")).click();
+            textPresent("1 results for");
+            textPresent("Other Group Patient Identifier Number - FORK");                   
+        }
     }
     
 }

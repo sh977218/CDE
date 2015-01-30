@@ -4,6 +4,8 @@ var config = {
         licenseCode: "NLM-4110134256"
     }
     , internalIP: "130.14."
+    , banEndsWith: [".php", ".cfm", ".jsp", ".asp", ".do", ".aspx"]
+    , banStartsWith: ["/admin/", "/cgi-bin"]
     , vsac: {
         username: 'user'
         , password: 'pass'
