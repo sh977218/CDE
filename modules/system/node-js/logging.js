@@ -2,6 +2,7 @@ var winston = require('winston')
   , util = require('util')
   , dbLogger = require('./dbLogger.js')
   , helper = require('./helper.js')
+  , config = require('config')
 ;
 
 var MongoLogger = winston.transports.MongoLogger = function (options) {
@@ -27,52 +28,23 @@ MongoLogger.prototype.log = function (level, msg, meta, callback) {
   
 exports.MongoLogger = MongoLogger;
 
-exports.expressLogger = new (winston.Logger)({
-  transports: [
-    new winston.transports.File({
-      json: true,
-      colorize: true
-      , level: 'verbose'
-      , filename: helper.GLOBALS.logdir + "/expressLog.log"
-      , maxsize: 10000000
-      , maxFiles: 10
-    })
-    , new winston.transports.Console(
-        {
-            level: 'verbose',
-            colorize: true,
-            timestamp: true
-        }) 
-    , new winston.transports.MongoLogger({
+var expressLoggerCnf = {
+  transports: [ new winston.transports.MongoLogger({
         json: true
-    })  ]
-});
+    })]
+};
+if (config.expressToStdout) expressLoggerCnf.transports.push(new winston.transports.Console({
+    level: 'verbose',
+    colorize: true,
+    timestamp: true
+}));
+
+exports.expressLogger = new (winston.Logger)(expressLoggerCnf);//expressToStdout
 
 exports.expressErrorLogger = new (winston.Logger)({
   transports: [
-    new winston.transports.File({
-      json: true,
-      colorize: true
-      , level: 'warn'
-      , filename: helper.GLOBALS.logdir + "/expressErrorLog.log"
-      , maxsize: 10000000
-      , maxFiles: 10
-    })
-    , new winston.transports.MongoLogger({
+    new winston.transports.MongoLogger({
         json: true
-    })
-  ]
-});
-
-exports.processLogger = new (winston.Logger)({
-  transports: [
-    new winston.transports.File({
-      json: true,
-      colorize: true
-      , level: 'error'
-      , filename: helper.GLOBALS.logdir + "/nodeErrorLog.log"
-      , maxsize: 10000000
-      , maxFiles: 10
     })
   ]
 });
