@@ -37,6 +37,7 @@ mongorestore -d test -c forms test/data/nindsDump/test/forms.bson
 mongorestore --drop -d test -c orgs test/data/cdedump/orgs.bson
 
 mongo test test/createLargeBoard.js
+mongo test test/createManyBoards.js
 
 target='{"count":9575,"_shards":{"total":1,"successful":1,"failed":0}}'
 #wait for full
