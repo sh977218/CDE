@@ -52,5 +52,5 @@ if (config.expressToStdout) {
     expressErrorLoggerCnf.transports.push(new winston.transports.Console(consoleLogCnf));
 }
 exports.expressLogger = new (winston.Logger)(expressLoggerCnf);
-
 exports.expressErrorLogger = new (winston.Logger)(expressErrorLoggerCnf);
+exports.processLogger = new (winston.Logger)(expressErrorLoggerCnf);
