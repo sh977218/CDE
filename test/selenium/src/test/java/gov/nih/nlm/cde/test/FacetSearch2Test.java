@@ -157,7 +157,7 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Imaging Diagnostics")).click();
         textPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
         
-        gotoMyBoards();
+        findElement(By.linkText("Boards")).click();
         findElement(By.linkText("CDEs")).click();
         textPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
         
