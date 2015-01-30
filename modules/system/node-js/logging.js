@@ -43,16 +43,13 @@ var expressErrorLoggerCnf = {
 };
 
 if (config.expressToStdout) {
-    expressLoggerCnf.transports.push(new winston.transports.Console({
+    var consoleLogCnf = {
         level: 'verbose',
         colorize: true,
         timestamp: true
-    }));
-    expressErrorLoggerCnf.transports.push(new winston.transports.Console({
-        level: 'verbose',
-        colorize: true,
-        timestamp: true
-    }));
+    };
+    expressLoggerCnf.transports.push(new winston.transports.Console(consoleLogCnf));
+    expressErrorLoggerCnf.transports.push(new winston.transports.Console(consoleLogCnf));
 }
 exports.expressLogger = new (winston.Logger)(expressLoggerCnf);
 
