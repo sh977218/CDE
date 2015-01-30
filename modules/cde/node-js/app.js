@@ -19,6 +19,7 @@ var cdesvc = require('./cdesvc')
   , status = require('./status')
   , appSystem = require('../../system/node-js/app.js')
   , authorizationShared = require("../../system/shared/authorizationShared")
+  , async = require("async")
 ;
 
 exports.init = function(app, daoManager) {
@@ -191,6 +192,7 @@ exports.init = function(app, daoManager) {
     });
 
     app.post('/board', function(req, res, next) {
+        var boardQuota = config.boardQuota || 50;
         var checkUnauthorizedPublishing = function(user, shareStatus) {
             return shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher")
         };
@@ -203,9 +205,24 @@ exports.init = function(app, daoManager) {
                     , username: req.user.username
                 };            
                 if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) return res.send(403, "You don't have permission to make boards public!");
-                else return mongo_data.newBoard(board, function(err, newBoard) {
-                   return res.send();
+                async.parallel([
+                    function(callback){
+                        mongo_data.newBoard(board, function(err, newBoard) {
+                           callback(err, newBoard);
+                        });                        
+                    },
+                    function(callback){
+                        mongo_data.nbBoardsByUserId(req.user._id, function(err, nbBoards) {
+                            callback(err, nbBoards);
+                        });
+                    }
+                ],
+                function(err, results){
+                    if (results[1]<boardQuota) return res.send(results[0]);
+                    mongo_data.removeBoard(results[0]._id);
+                    res.send(403, "You have too many boards!");
                 });
+
             } else  {
                 mongo_data.boardById(board._id, function(err, b) {
                     if (err) console.log(err);

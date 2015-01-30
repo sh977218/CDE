@@ -103,4 +103,12 @@ public class BoardManagement2Test  extends BoardTest {
         goToBoard("Large Board");
         findElement(By.linkText("10")).click();
     }     
+    
+    @Test
+    public void tooManyBoards() {
+        mustBeLoggedInAs("boardBot", password);
+        gotoMyBoards();
+        createBoard("BoardBots successfull board", "This board should be created!");
+        createBoard("Failboard!", "This board will disappear!", "You have too many boards!");
+    }      
 }
