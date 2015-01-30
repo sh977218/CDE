@@ -15,9 +15,10 @@ var express = require('express')
   , logging = require('./modules/system/node-js/logging.js')
   , daoManager = require('./modules/system/node-js/moduleDaoManager.js')
   , domain = require('domain').create()
+  , ipfilter = require('express-ipfilter')
 ;
 
-require('log-buffer');
+require('log-buffer')(config.logBufferSize || 4096);
 
 passport.serializeUser(function(user, done) {
     done(null, user._id);
@@ -60,13 +61,39 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser("Jk87fhK"));
 
+
 var expressSettings = {
     secret: "Kfji76R"
     , proxy: config.proxy
     , cookie: {httpOnly: true, secure: config.proxy}
 };
 
-app.use(function(req, res, next) {
+var getRealIp = function(req) {
+  if (req._remoteAddress) return req._remoteAddress;
+  if (req.ip) return req.ip;
+};
+
+
+var blackIps = [];
+app.use(ipfilter(blackIps));
+var banEndsWith = config.banEndsWith || [];
+var banStartsWith = config.banStartsWith || [];
+
+app.use(function banHackers(req, res, next) {
+    banEndsWith.forEach(function(ban) {
+        if(req.originalUrl.slice(-(ban.length))  === ban) {
+            blackIps.push(getRealIp(req));
+        }
+    });
+    banStartsWith.forEach(function(ban) {
+        if(req.originalUrl.substr(0, ban.length) === ban) {
+            blackIps.push(getRealIp(req));
+        }
+    });
+    next();
+});    
+
+app.use(function preventSessionCreation(req, res, next) {
     this.isFile = function(req) {
         if (req.originalUrl.substr(req.originalUrl.length-3,3) === ".js") return true;
         if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".css") return true;
@@ -95,8 +122,7 @@ app.use(passport.session());
 var logFormat = {remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
 
 express.logger.token('real-remote-addr', function(req) {
-  if (req._remoteAddress) return req._remoteAddress;
-  if (req.ip) return req.ip;
+    return getRealIp(req);
 });
 
 var expressLogger = express.logger({format: JSON.stringify(logFormat), stream: winstonStream});
