@@ -170,13 +170,13 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         
         Assert.assertEquals("cabigAdmin", findElement(By.id("user_username")).getText());
         Assert.assertEquals("[\"caBIG\"]", findElement(By.id("user_orgadmin")).getText());
-        Assert.assertEquals("N/A", findElement(By.id("user_siteadmin")).getText());
+        Assert.assertEquals("", findElement(By.id("user_siteadmin")).getText());
 
         findElement(By.name("searchUsers")).clear();            
         findElement(By.name("searchUsers")).sendKeys("nlm");
         findElement(By.id("searchUsersSubmit")).click();
 
-        wait.until(ExpectedConditions.textToBePresentInElement(findElement(By.id("dd_username_0")), "nlm"));
+        wait.until(ExpectedConditions.textToBePresentInElement(findElement(By.id("user_username")), "nlm"));
         Assert.assertEquals("nlm", findElement(By.id("user_username")).getText());
         Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\"]", findElement(By.id("user_orgadmin")).getText());
         Assert.assertEquals("true", findElement(By.id("user_siteadmin")).getText());

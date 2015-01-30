@@ -30,13 +30,13 @@ public class BaseFormTest extends NlmCdeBaseTest {
     protected void gotoFormCreate() {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("Form")).click();
+        textPresent("Create New Form");
     }
 
     public void createForm(String name, String definition, String version, String org) {
         gotoFormCreate();
-        Assert.assertTrue(textPresent("Create New Form"));
-        fillInput("Name", name);
-        fillInput("Description", definition);
+        findElement(By.id("formName")).sendKeys(name);
+        findElement(By.id("formDefinition")).sendKeys(definition);
         if (version != null) {
             fillInput("Version", version);
         }
