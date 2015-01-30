@@ -1,4 +1,4 @@
-var fs = require('fs')
+var fs = require('fs');
 var https = require('https');
 
 var promisDir = process.argv[2];
