@@ -145,16 +145,16 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                 if (body.hits.hits.length <= 0) {
                     statusReport.elastic.updating = false;    
                     console.log("Error in STATUS: No data elements received from ElasticSearch.");
-                    console.log(response);
-                    console.log(body);
+                        console.log("\nResponse:\n"+JSON.stringify(response));
+                        console.log("\Body:\n"+JSON.stringify(body));  
                 } else {
                     statusReport.elastic.updating = true; 
                     var elasticCde = body.hits.hits[0]._source;
                     if (mongoCde.tinyId !== elasticCde.tinyId) {
                         statusReport.elastic.updating = false;  
                         console.log("Error in STATUS: CDE does not match.");
-                        console.log(response);
-                        console.log(body);                        
+                        console.log("\nResponse:\n"+JSON.stringify(response));
+                        console.log("\Body:\n"+JSON.stringify(body));                        
                     } else {
                         statusReport.elastic.updating = true;                        
                     }
