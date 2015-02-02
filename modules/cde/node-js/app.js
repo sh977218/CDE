@@ -103,7 +103,7 @@ exports.init = function(app, daoManager) {
     });
 
     app.get('/dataelement/:id', function(req, res) {
-        x.doThis();
+                    x.doThis();                    
         cdesvc.show(req, function(result) {
             res.send(cdesvc.hideProprietaryPvs(result, req.user));
         });

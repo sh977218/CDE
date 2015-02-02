@@ -59,7 +59,7 @@ exports.ticketValidate = function( tkt, cb ) {
     });
     
     req.on('error', function (e) {
-        logging.expressErrorLogger.error('getTgt: ERROR with request: ' + e);
+        logging.errorLogger.error('getTgt: ERROR with request: ' + e);
     });
     
     req.on("timeout", function() { 

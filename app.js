@@ -37,11 +37,13 @@ var app = express();
 app.use(auth.ticketAuth);
 
 process.on('uncaughtException', function (err) {
-  logging.processLogger.error('Caught exception: ' + err.stack);
+    logging.errorLogger.error('Caught exception: ' + err.stack);
+    console.log(err);
 });
 
 domain.on('error', function(err){
-    console.log(err); 
+    logging.errorLogger.error('Caught exception: ' + err.stack);
+    console.log(err);
 });
 
 var winstonStream = {
@@ -145,8 +147,7 @@ app.use(function(req, res, next) {
 app.use(app.router);
 
 app.use(function(err, req, res, next){
-    var str = JSON.stringify({msg: err.stack});
-    logging.expressErrorLogger.error(str);
+    logging.errorLogger.error(err.stack);
     console.log(err.stack);
     if (err.status === 403) {
         res.send(403, "Unauthorized");

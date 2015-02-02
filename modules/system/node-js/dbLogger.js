@@ -27,7 +27,7 @@ logSchema.index({referrer: 1});
 
 var logErrorSchema = new mongoose.Schema(
 {
-    msg: String
+    stack: String
     , date: Date
 }, { safe: {w: 0}, capped: 5368709120});
 
@@ -50,8 +50,7 @@ exports.log = function(message, callback) {
 };
 
 exports.logError = function(message, callback) {   
-    message.date = new Date();
-    var logEvent = new LogErrorModel(message);
+    var logEvent = new LogErrorModel({stack: message, date: new Date()});
     logEvent.save(function(err) {
         if (err) console.log ("ERROR: " + err);
         callback(err); 
