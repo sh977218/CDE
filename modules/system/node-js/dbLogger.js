@@ -78,6 +78,16 @@ exports.getLogs = function(inQuery, callback) {
     });
 };
 
+exports.getErrors = function(params, callback) {
+    LogErrorModel
+            .find()
+            .sort('-date')
+            .limit(params.limit)
+            .exec(function(err, logs){
+        callback(err, logs);
+    });
+};
+
 exports.usageByDay = function(callback) {
     LogModel.aggregate(
         {$match: {date: {$exists: true}}}

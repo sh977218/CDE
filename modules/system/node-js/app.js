@@ -470,4 +470,15 @@ exports.init = function(app) {
         }
     });
     
+    app.post('/getErrors', function(req, res) {
+        if(req.isAuthenticated() && req.user.siteAdmin) {
+            console.log(req.params);
+            dbLogger.getErrors(req.body, function(err, result) {
+                res.send(result);                
+            });
+        } else {
+            res.send(403, "Not Authorized");
+        }
+    });    
+    
 };
