@@ -1,5 +1,5 @@
 var fs = require('fs');
-var https = require('https');
+var request = require('request');
 
 var promisDir = process.argv[2];
 var allFiles = promisDir + "/allForms.json";
@@ -13,24 +13,18 @@ fs.readFile(allFiles, function(err, data) {
     var allForms = JSON.parse(data);
     allForms.Form.forEach(function(form) {
         var options = {
-            hostname: 'www.assessmentcenter.net',
+            url: 'https://www.assessmentcenter.net' + '/ac_api/2012-01/Forms/' + form.OID + '.json',
             port: 443,
-            path: '/ac_api/2012-01/Forms/' + form.OID + '.json',
-            method: 'GET',
             headers: header
         };
 
         console.log(form.Name);
  
-        var req = https.request(options, function (res) {
+        var req = request(options, function (err, res, body) {
             console.log("statusCode: ", res.statusCode);
-            console.log("headers: ", res.headers);
-
-            res.on('data', function (d) {
-                fs.writeFile(promisDir + "/forms/" + form.OID + ".json", d);
-            });
+            fs.writeFile(promisDir + "/forms/" + form.OID + ".json", {name: form.Name, content: body});
         });
-        req.end();
     });
     
 });
+
