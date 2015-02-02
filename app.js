@@ -37,12 +37,12 @@ var app = express();
 app.use(auth.ticketAuth);
 
 process.on('uncaughtException', function (err) {
-    logging.errorLogger.error('Caught exception: ' + err.stack);
+    logging.errorLogger.error(err.stack, {origin: "uncaughtException"});
     console.log(err);
 });
 
 domain.on('error', function(err){
-    logging.errorLogger.error('Caught exception: ' + err.stack);
+    logging.errorLogger.error(err.stack, {origin: "error"});
     console.log(err);
 });
 
@@ -147,7 +147,7 @@ app.use(function(req, res, next) {
 app.use(app.router);
 
 app.use(function(err, req, res, next){
-    logging.errorLogger.error(err.stack);
+    logging.errorLogger.error(err.stack, {origin: "Express Error Logger"});
     console.log(err.stack);
     if (err.status === 403) {
         res.send(403, "Unauthorized");

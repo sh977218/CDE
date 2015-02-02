@@ -20,19 +20,6 @@ var MongoErrorLogger = winston.transports.MongoErrorLogger = function (options) 
 util.inherits(MongoLogger, winston.Transport);
 util.inherits(MongoErrorLogger, winston.Transport);
 
-//MongoLogger.prototype.log = function (level, msg, meta, callback) {
-//    try {
-//        var logEvent = JSON.parse(msg);
-//        logEvent.level = level;
-//        dbLogger.log(logEvent, function (err) {
-//            if (err) console.log("CANNOT LOG: " + err);
-//            callback(null, true);    
-//        });
-//    } catch (e) {
-//        console.log("unable to log error to DB: " + msg);
-//    }
-//};
-
 MongoLogger.prototype.log = function (level, msg, meta, callback) {
     try {
         var logEvent = JSON.parse(msg);
@@ -50,7 +37,8 @@ exports.MongoLogger = MongoLogger;
 
 MongoErrorLogger.prototype.log = function (level, msg, meta, callback) {
     try {
-        dbLogger.logError(msg, function (err) {
+        var message = {message: msg, origin: meta.origin}
+        dbLogger.logError(message, function (err) {
             if (err) console.log("CANNOT LOG: " + err);
             callback(null, true);    
         });
