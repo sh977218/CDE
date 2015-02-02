@@ -136,21 +136,34 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
     mongoCollection.create(fakeCde, {_id: null, username: ""}, function(err, mongoCde) {
         setTimeout(function() {
             request.get(elasticUrl + "_search?q=" + mongoCde.tinyId, function (error, response, bodyStr) {
+                if (error || response.statusCode !== 200) {
+                    console.log("Error in STATUS: Negative response from ElasticSearch.");
+                    console.log(error);
+                    console.log(response);
+                }
                 var body = JSON.parse(bodyStr);
                 if (body.hits.hits.length <= 0) {
-                    statusReport.elastic.updating = false;      
+                    statusReport.elastic.updating = false;    
+                    console.log("Error in STATUS: No data elements received from ElasticSearch.");
+                    console.log(response);
+                    console.log(body);
                 } else {
                     statusReport.elastic.updating = true; 
                     var elasticCde = body.hits.hits[0]._source;
                     if (mongoCde.tinyId !== elasticCde.tinyId) {
-                        statusReport.elastic.updating = false;    
+                        statusReport.elastic.updating = false;  
+                        console.log("Error in STATUS: CDE does not match.");
+                        console.log(response);
+                        console.log(body);                        
                     } else {
                         statusReport.elastic.updating = true;                        
                     }
                 }
                 mongoCollection.DataElement.remove({"tinyId": mongoCde.tinyId}).exec(function(err){
-                    console.log("\n\n\n\n Cannot delete data element \n\n\n");
-                    console.log(e.toString());                        
+                    if (err) {
+                        console.log("Error in STATUS: Cannot delete data element.");
+                        console.log(err);                              
+                    }                  
                 });
             });            
         }, config.status.timeouts.dummyElementCheck);
