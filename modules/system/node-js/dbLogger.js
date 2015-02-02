@@ -82,6 +82,7 @@ exports.getErrors = function(params, callback) {
     LogErrorModel
             .find()
             .sort('-date')
+            .skip(params.skip)
             .limit(params.limit)
             .exec(function(err, logs){
         callback(err, logs);
