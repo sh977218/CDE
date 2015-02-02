@@ -31,6 +31,7 @@ exports.createIndexJson = {
                         "version"  : {"type": "string" }
                     }
                 }
+                , "tinyId" : { "type" : "string", "index" : "not_analyzed" }
             }
         }
     }

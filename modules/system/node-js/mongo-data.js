@@ -8,6 +8,7 @@ var schemas = require('./schemas')
     , connHelper = require('./connections')
     , express = require('express')
     , MongoStore = require('./assets/connect-mongo.js')(express)
+    , shortid = require("shortid")
     ;
 
 var conn;
@@ -249,4 +250,8 @@ exports.getAllUsernames = function(callback) {
     User.find({}, {username: true, _id: false}).exec(function(err, usernames) {
         callback(err, usernames);
     });
+};
+
+exports.generateTinyId = function() {
+    return shortid.generate().replace(/-/g,"_");
 };
