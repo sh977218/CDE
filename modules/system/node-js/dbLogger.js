@@ -30,6 +30,7 @@ var logErrorSchema = new mongoose.Schema(
     message: String
     , date: Date
     , origin: String
+    , stack: String
 }, { safe: {w: 0}, capped: 5368709120});
 
 var connectionEstablisher = connHelper.connectionEstablisher;
