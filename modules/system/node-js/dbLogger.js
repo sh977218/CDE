@@ -31,6 +31,13 @@ var logErrorSchema = new mongoose.Schema(
     , date: Date
     , origin: String
     , stack: String
+    , request: {
+        url: String
+        , method: String
+        , params: String
+        , body: String
+        , username: String
+    }
 }, { safe: {w: 0}, capped: 5368709120});
 
 var connectionEstablisher = connHelper.connectionEstablisher;
