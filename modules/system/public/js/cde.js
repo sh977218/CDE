@@ -238,3 +238,16 @@ angular.module("template/tabs/tab.html", []).run(["$templateCache", function($te
 	    "</li>\n" +
 	    "");
 	}]);
+    
+cdeApp.factory('$exceptionHandler', function($injector) {
+    return function(exception) {
+        var http;
+        if (!http) { http = $injector.get('$http'); }
+        try {
+            http.post('/logClientException', {stack: exception.stack, message: exception.message, name: exception.name});
+        } catch (e) {
+            
+        }
+        throw exception;
+    };
+});    

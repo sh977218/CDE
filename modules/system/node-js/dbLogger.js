@@ -6,6 +6,7 @@ var mongoose = require('mongoose')
 var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
 var LogModel;
 var LogErrorModel;
+var ClientErrorModel;
 
 // w = 0 means write very fast. It's ok if it fails.   
 // capped means no more than 5 gb for that collection.
@@ -40,12 +41,22 @@ var logErrorSchema = new mongoose.Schema(
     }
 }, { safe: {w: 0}, capped: 5368709120});
 
+var clientErrorSchema= new mongoose.Schema(
+{
+    message: String
+    , date: Date
+    , origin: String
+    , name: String
+    , stack: String
+}, { safe: {w: 0}, capped: 5368709120});
+
 var connectionEstablisher = connHelper.connectionEstablisher;
 
 var iConnectionEstablisherLog = new connectionEstablisher(mongoLogUri, 'Logs');
 iConnectionEstablisherLog.connect(function(conn) {
     LogModel = conn.model('DbLogger', logSchema);
     LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
+    ClientErrorModel = conn.model('DbClientErrorLogger', logErrorSchema);
 });
 
 exports.log = function(message, callback) {    
@@ -61,6 +72,15 @@ exports.log = function(message, callback) {
 exports.logError = function(message, callback) {   
     message.date = new Date();
     var logEvent = new LogErrorModel(message);
+    logEvent.save(function(err) {
+        if (err) console.log ("ERROR: " + err);
+        callback(err); 
+    });
+};
+
+exports.logClientError = function(exc, callback) {   
+    exc.date = new Date();
+    var logEvent = new ClientErrorModel(exc);
     logEvent.save(function(err) {
         if (err) console.log ("ERROR: " + err);
         callback(err); 
@@ -85,8 +105,19 @@ exports.getLogs = function(inQuery, callback) {
     });
 };
 
-exports.getErrors = function(params, callback) {
+exports.getServerErrors = function(params, callback) {
     LogErrorModel
+            .find()
+            .sort('-date')
+            .skip(params.skip)
+            .limit(params.limit)
+            .exec(function(err, logs){
+        callback(err, logs);
+    });
+};
+
+exports.getClientErrors = function(params, callback) {
+    ClientErrorModel
             .find()
             .sort('-date')
             .skip(params.skip)

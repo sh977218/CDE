@@ -2,6 +2,10 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
     $scope.filterMode = true;
     
     $timeout(function(){
+        write.somehwere();
+    },1000);    
+    
+    $timeout(function(){
         if($scope.isScreenSizeXsSm) {
             $scope.filterMode = false;
         }
