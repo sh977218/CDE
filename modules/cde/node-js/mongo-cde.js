@@ -228,9 +228,11 @@ exports.save = function(mongooseObject, callback) {
 
 exports.create = function(cde, user, callback) {
     var newDe = new DataElement(cde);
-    newDe.registrationState = {
-        registrationStatus: "Incomplete"
-    };
+    if (!newDe.registrationState || !newDe.registrationState.registrationStatus) {
+        newDe.registrationState = {
+            registrationStatus: "Incomplete"
+        };
+    }
     newDe.created = Date.now();
     newDe.createdBy.userId = user._id;
     newDe.createdBy.username = user.username;
