@@ -31,6 +31,7 @@ var logErrorSchema = new mongoose.Schema(
     , date: Date
     , origin: String
     , stack: String
+    , details: String
     , request: {
         url: String
         , method: String

@@ -102,7 +102,7 @@ exports.init = function(app, daoManager) {
         adminItemSvc.forkRoot(req, res, mongo_data);
     });
 
-    app.get('/dataelement/:id', function(req, res) {   
+    app.get('/dataelement/:id', function(req, res) {  
         cdesvc.show(req, function(result) {
             res.send(cdesvc.hideProprietaryPvs(result, req.user));
         });
@@ -226,6 +226,7 @@ exports.init = function(app, daoManager) {
             } else  {
                 mongo_data.boardById(board._id, function(err, b) {
                     if (err) console.log(err);
+                    logging.errorLogger.error("Board not found", {origin: "cde.app.", details: "err " + err}); 
                     b.name = board.name;
                     b.description = board.description;
                     b.shareStatus = board.shareStatus;

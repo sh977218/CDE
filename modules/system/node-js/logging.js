@@ -41,9 +41,10 @@ MongoErrorLogger.prototype.log = function (level, msg, meta, callback) {
             message: msg
             , origin: meta.origin
             , stack: meta.stack
-            , request: meta.request               
+            , request: meta.request    
+            , details: meta.details
             
-        }
+        };
         dbLogger.logError(message, function (err) {
             if (err) console.log("CANNOT LOG: " + err);
             callback(null, true);    
