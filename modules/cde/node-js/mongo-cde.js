@@ -229,7 +229,7 @@ exports.save = function(mongooseObject, callback) {
 
 exports.create = function(cde, user, callback) {
     var newDe = new DataElement(cde);
-    if (!newDe.registrationState) {
+    if (!newDe.registrationState || !newDe.registrationState.registrationStatus) {
         newDe.registrationState = {
             registrationStatus: "Incomplete"
         };
