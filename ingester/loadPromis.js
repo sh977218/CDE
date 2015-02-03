@@ -14,6 +14,17 @@ if (!promisDir) {
     process.exit(1);
 }
 
+var cdeArray = new function() {
+    this.cdearray = [];
+    this.findDuplicate = function(name) {
+        var duplicates = this.cdearray.filter(function(cde){
+            return cde.naming[0].designation === name;
+        });
+        if (duplicates.length > 0) return duplicates[0];
+        else return false;
+    };
+};
+
 var doFile = function(file, cb) {
     fs.readFile(promisDir + "/forms/" + file, function(err, formData) {
         if (err) console.log("err " + err);
@@ -22,7 +33,6 @@ var doFile = function(file, cb) {
         console.log("Form: " + form.name);
         var classifs = form.name.split(" - ");
         classificationShared.addCategory(fakeTree, ["Forms", classifs[0], classifs[1]]);
-        cb();
         form.content.Items.forEach(function(item) {
             var cde = {
                 stewardOrg: {name: "PROMIS"},
@@ -49,47 +59,35 @@ var doFile = function(file, cb) {
                 }
             });
 
-            mongo_cde.query({"naming.designation": cde.naming[0].designation}, function(err, foundCdes) {
-                if (foundCdes.length > 0) {
-                    console.log("reusing CDE " + cde.naming[0].designation);
-                    foundCdes[0].classification[0].elements[0].elements.push({name: form.name, elements: []});
-                    foundCdes[0].save(function(err) {
-                        if (err) { 
-                            console.log("Unable to update CDE");
-                            process.exit(1);
+            var duplicate = cdeArray.findDuplicate(cde.naming[0].designation);
+            
+            if (duplicate) {
+                duplicate.classification[0].elements[0].elements.push({name: form.name, elements: []});
+            } else {
+                cde.classification = [];    
+                cde.classification.push({
+                    stewardOrg : {
+                        name : "PROMIS"
+                    },
+                    elements : [ 
+                        {
+                            name : "Forms",
+                            elements : [ 
+                                {
+                                    name : classifs[0]
+                                    , elements: [{name: classifs[1]}]
+                                }
+                            ]
                         }
-                    });
-                } else {
-                    cde.classification = [];    
-                    cde.classification.push({
-                        stewardOrg : {
-                            name : "PROMIS"
-                        },
-                        elements : [ 
-                            {
-                                name : "Forms",
-                                elements : [ 
-                                    {
-                                        name : form.name
-                                    }
-                                ]
-                            }
-                        ]
-                    });
-
-                    mongo_cde.create(cde, {username: 'loader'}, function(err, newCde) {
-                       if (err) {
-                           console.log("unable to create CDE. " + err);
-                       } else {
-
-                       }
-                    });
-                }
-            });
-
+                    ]                
+                });
+                cdeArray.cdearray.push(cde);
+            }
         });
-    });
-};
+        cb();
+    });    
+ };
+
 
 var fakeTree = {};
 
@@ -112,8 +110,17 @@ mongo_data_system.orgByName("PROMIS", function(stewardOrg) {
         stewardOrg.classifications = fakeTree.elements;
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
-            process.exit(0);
         });        
+        async.each(cdeArray.cdearray, function(cde, cb) {
+            mongo_cde.create(cde, {username: 'loader'}, function(err, newCde) {
+               if (err) {
+                   console.log("unable to create CDE. " + err);
+               }
+               cb();
+            });                        
+        }, function(err) {
+           process.exit(0); 
+        });
     });    
 });
 });
