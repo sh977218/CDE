@@ -61,7 +61,7 @@ exports.boardList = function(from, limit, searchOptions, callback) {
     PinningBoard.find(searchOptions).exec(function (err, boards) {
         // TODO Next line throws "undefined is not a function.why?
         PinningBoard.find(searchOptions).count(searchOptions).exec(function (err, count) {
-            callback("",{
+            callback(err,{
                     boards: boards
                     , page: Math.ceil(from / limit)
                     , pages: Math.ceil(count / limit)
@@ -86,13 +86,13 @@ exports.desByConcept = function (concept, callback) {
 
 exports.byTinyIdAndVersion = function(tinyId, version, callback) {
     DataElement.findOne({'tinyId': tinyId, "version": version}).exec(function (err, de) {
-       callback("", de); 
+       callback(err, de); 
     });
 };
 
 exports.eltByTinyId = function(tinyId, callback) {
     DataElement.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, de) {
-       callback("", de); 
+       callback(err, de); 
     });
 };
 
@@ -109,7 +109,7 @@ exports.cdesByIdList = function(idList, callback) {
         .slice('valueDomain.permissibleValues', 10)
         .exec(function(err, cdes) {
             cdes.forEach(mongo_data.formatCde);
-            callback("", cdes); 
+            callback(err, cdes); 
     });
 };
 
@@ -119,7 +119,7 @@ exports.cdesByTinyIdList = function(idList, callback) {
             .slice('valueDomain.permissibleValues', 10)
             .exec(function(err, cdes) {
                 cdes.forEach(mongo_data.formatCde);
-                callback("", cdes); 
+                callback(err, cdes); 
     });
 };
 
@@ -128,7 +128,7 @@ exports.priorCdes = function(cdeId, callback) {
         if (dataElement !== null) {
             return DataElement.find({}, "naming source sourceId registrationState stewardOrg updated updatedBy createdBy tinyId version views changeNote")
                     .where("_id").in(dataElement.history).exec(function(err, cdes) {
-                callback("", cdes);
+                callback(err, cdes);
             });
         } else {
             
@@ -154,7 +154,7 @@ exports.acceptFork = function(fork, orig, callback) {
 exports.isForkOf = function(tinyId, callback) {
     return DataElement.find({tinyId: tinyId})
         .where("archived").equals(null).where("isFork").equals(null).exec(function(err, cdes) {
-            callback("", cdes);
+            callback(err, cdes);
     });
 };
 
@@ -166,14 +166,15 @@ exports.forks = function(cdeId, callback) {
                     callback("", cdes);
             });
         } else {
-            callback("", []);
+            callback(err, []);
         }
     });
 };
 
 exports.byId = function(cdeId, callback) {
     DataElement.findOne({'_id': cdeId}, function(err, cde) {
-        callback("", cde);
+        if (!cde) err = "Cannot find CDE";
+        callback(err, cde);
     });
 };
 
@@ -185,13 +186,14 @@ exports.incDeView = function(cde) {
 
 exports.boardById = function(boardId, callback) {
     PinningBoard.findOne({'_id': boardId}, function (err, b) {
-        callback("", b);
+        if (!b) err = "Cannot find board";
+        callback(err, b);
     });
 };
 
 exports.removeBoard = function (boardId, callback) {
     PinningBoard.remove({'_id': boardId}, function (err) {
-        callback();
+        callback(err);
     });
 };
 //TODO: Consider moving

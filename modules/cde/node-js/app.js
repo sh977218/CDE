@@ -225,14 +225,16 @@ exports.init = function(app, daoManager) {
 
             } else  {
                 mongo_data.boardById(board._id, function(err, b) {
-                    if (err) console.log(err);
-                    logging.errorLogger.error("Board not found", {origin: "cde.app.", details: "err " + err}); 
+                    if (err) {
+                        logging.errorLogger.error("Cannot find board by id", {origin: "cde.app.board", details: "board._id "+board._id, err: err}); 
+                        res.send(404, "Cannot find board.");
+                    }                     
                     b.name = board.name;
                     b.description = board.description;
                     b.shareStatus = board.shareStatus;
                     if (checkUnauthorizedPublishing(req.user, b.shareStatus)) return res.send(403, "You don't have permission to make boards public!");
                     return mongo_data.save(b, function(err) {
-                        if (err) console.log(err);
+                        if (err) logging.errorLogger.error("Cannot save board", {origin: "cde.app.board", details: "board._id "+board._id, err: err}); 
                         res.send(b);
                     });                
                 });
