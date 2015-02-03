@@ -63,7 +63,7 @@ exports.logError = function(message, callback) {
     message.date = new Date();
     var logEvent = new LogErrorModel(message);
     logEvent.save(function(err) {
-        if (err) console.log ("ERROR: " + err);
+        if (err) console.log ("ERROR: ");
         callback(err); 
     });
 };
