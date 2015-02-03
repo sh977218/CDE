@@ -63,6 +63,8 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
     $scope.selectedElementsAlt = $scope.cache.get($scope.getCacheName("selectedElementsAlt"));
     if (!$scope.selectedElementsAlt) {
         $scope.selectedElementsAlt = [];
+    } else {
+        $timeout($scope.toggleAltClassificationFilterMode, 0);
     }
     
     $scope.totalItems = $scope.cache.get($scope.getCacheName("totalItems"));

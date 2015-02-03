@@ -149,8 +149,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                     }
                 }
                 mongoCollection.DataElement.remove({"tinyId": mongoCde.tinyId}).exec(function(err){
-                    console.log("\n\n\n\n Cannot delete data element \n\n\n");
-                    console.log(e.toString());                        
+                    logging.errorLogger.error("Cannot delete .." + err.stack, {origin: "Status"});
                 });
             });            
         }, config.status.timeouts.dummyElementCheck);

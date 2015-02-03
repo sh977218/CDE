@@ -102,7 +102,7 @@ exports.init = function(app, daoManager) {
         adminItemSvc.forkRoot(req, res, mongo_data);
     });
 
-    app.get('/dataelement/:id', function(req, res) {
+    app.get('/dataelement/:id', function(req, res) {   
         cdesvc.show(req, function(result) {
             res.send(cdesvc.hideProprietaryPvs(result, req.user));
         });

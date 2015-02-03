@@ -5,6 +5,7 @@ var mongoose = require('mongoose')
     
 var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
 var LogModel;
+var LogErrorModel;
 
 // w = 0 means write very fast. It's ok if it fails.   
 // capped means no more than 5 gb for that collection.
@@ -24,11 +25,27 @@ logSchema.index({httpStatus: 1});
 logSchema.index({date: 1});
 logSchema.index({referrer: 1});
 
+var logErrorSchema = new mongoose.Schema(
+{
+    message: String
+    , date: Date
+    , origin: String
+    , stack: String
+    , request: {
+        url: String
+        , method: String
+        , params: String
+        , body: String
+        , username: String
+    }
+}, { safe: {w: 0}, capped: 5368709120});
+
 var connectionEstablisher = connHelper.connectionEstablisher;
 
 var iConnectionEstablisherLog = new connectionEstablisher(mongoLogUri, 'Logs');
 iConnectionEstablisherLog.connect(function(conn) {
     LogModel = conn.model('DbLogger', logSchema);
+    LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
 });
 
 exports.log = function(message, callback) {    
@@ -39,6 +56,15 @@ exports.log = function(message, callback) {
             callback(err); 
         });
     }
+};
+
+exports.logError = function(message, callback) {   
+    message.date = new Date();
+    var logEvent = new LogErrorModel(message);
+    logEvent.save(function(err) {
+        if (err) console.log ("ERROR: " + err);
+        callback(err); 
+    });
 };
 
 exports.getLogs = function(inQuery, callback) {
@@ -56,6 +82,17 @@ exports.getLogs = function(inQuery, callback) {
     
     query.sort("-date").limit(10000).exec(function(err, logs) {
         callback(err, logs);  
+    });
+};
+
+exports.getErrors = function(params, callback) {
+    LogErrorModel
+            .find()
+            .sort('-date')
+            .skip(params.skip)
+            .limit(params.limit)
+            .exec(function(err, logs){
+        callback(err, logs);
     });
 };
 
