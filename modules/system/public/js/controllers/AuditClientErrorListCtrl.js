@@ -1,9 +1,9 @@
-function AuditErrorListCtrl($scope, $http){
+function AuditClientErrorListCtrl($scope, $http){
     $scope.errors = [];
     $scope.skip = 0;
     $scope.limit = 10;
     $scope.fetchErrors = function(skip, limit){
-        $http.post("/getServerErrors", {skip: skip, limit: limit}).success(function(result){
+        $http.post("/getClientErrors", {skip: skip, limit: limit}).success(function(result){
             $scope.errors = result;
         });
     };
