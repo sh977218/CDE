@@ -1,8 +1,12 @@
 var fs = require('fs'),
     https = require('https'),
     mongo_cde = require('../modules/cde/node-js/mongo-cde'),
-    config = require('config')
-    ;
+    config = require('config'),
+    classificationShared = require('../modules/system/shared/classificationShared'),
+    mongo_data_system = require('../modules/system/node-js/mongo-data'),
+    Q = require('q'),
+    async = require ('async')
+        ;
 
 var promisDir = process.argv[2];
 if (!promisDir) {
@@ -10,51 +14,109 @@ if (!promisDir) {
     process.exit(1);
 }
 
+var doFile = function(file, cb) {
+    fs.readFile(promisDir + "/forms/" + file, function(err, formData) {
+        if (err) console.log("err " + err);
+        var form = JSON.parse(formData);
+        //each item is a CDE
+        console.log("Form: " + form.name);
+        var classifs = form.name.split(" - ");
+        classificationShared.addCategory(fakeTree, ["Forms", classifs[0], classifs[1]]);
+        cb();
+        form.content.Items.forEach(function(item) {
+            var cde = {
+                stewardOrg: {name: "PROMIS"},
+                source: "PROMIS",
+                naming: [
+                    {designation: "", definition: "N/A"}
+                ],
+                ids: [{source: 'PROMIS', id: item.ID}],
+                valueDomain: {datatype: "Text"},
+                registrationState: {registrationStatus: "Qualified"}
+            };
+            item.Elements.forEach(function(element) {
+                if (!element.Map) {
+                    cde.naming[0].designation = cde.naming[0].designation + " " + element.Description;
+                    cde.naming[0].designation = cde.naming[0].designation.trim();
+                } else {
+                    if (cde.valueDomain.datatype !== 'Value List') {
+                        cde.valueDomain.datatype = 'Value List';
+                        cde.valueDomain.permissibleValues = [];
+                    }
+                    element.Map.forEach(function(map) {
+                        cde.valueDomain.permissibleValues.push({permissibleValue: map.Value, valueMeaningName: map.Description});                         
+                    });
+                }
+            });
+
+            mongo_cde.query({"naming.designation": cde.naming[0].designation}, function(err, foundCdes) {
+                if (foundCdes.length > 0) {
+                    console.log("reusing CDE " + cde.naming[0].designation);
+                    foundCdes[0].classification[0].elements[0].elements.push({name: form.name, elements: []});
+                    foundCdes[0].save(function(err) {
+                        if (err) { 
+                            console.log("Unable to update CDE");
+                            process.exit(1);
+                        }
+                    });
+                } else {
+                    cde.classification = [];    
+                    cde.classification.push({
+                        stewardOrg : {
+                            name : "PROMIS"
+                        },
+                        elements : [ 
+                            {
+                                name : "Forms",
+                                elements : [ 
+                                    {
+                                        name : form.name
+                                    }
+                                ]
+                            }
+                        ]
+                    });
+
+                    mongo_cde.create(cde, {username: 'loader'}, function(err, newCde) {
+                       if (err) {
+                           console.log("unable to create CDE. " + err);
+                       } else {
+
+                       }
+                    });
+                }
+            });
+
+        });
+    });
+};
+
+var fakeTree = {};
+
 setTimeout(function() {
 fs.readdir(promisDir + "/forms", function(err, files) {
     if (err) {
         console.log("Cant read form dir." + err);
         process.exit(1);
     }
-    files.forEach(function(file) {
-        console.log("file: " + file);
-        fs.readFile(promisDir + "/forms/" + file, function(err, formData) {
-            if (err) console.log("err " + err);
-            var form = JSON.parse(formData);
-            //each item is a CDE
-            form.Items.forEach(function(item) {
-                var cde = {
-                    stewardOrg: {name: "PROMIS"},
-                    source: "PROMIS",
-                    naming: [
-                        {designation: "", definition: "N/A"}
-                    ],
-                    ids: [{source: 'PROMIS', id: item.ID}],
-                    valueDomain: {datatype: "Text"}
-                };
-                item.Elements.forEach(function(element) {
-                    if (!element.Map) {
-                        cde.naming[0].designation = cde.naming[0].designation + " " + element.Description;
-                        cde.naming[0].designation = cde.naming[0].designation.trim();
-                    } else {
-                        if (cde.valueDomain.datatype !== 'Value List') {
-                            cde.valueDomain.datatype = 'Value List';
-                            cde.valueDomain.permissibleValues = [];
-                        }
-                        element.Map.forEach(function(map) {
-                            cde.valueDomain.permissibleValues.push({permissibleValue: map.Value, valueMeaningName: map.Description});                         
-                        });
-                    }
-                });
-                mongo_cde.create(cde, {username: 'loader'}, function(err, newCde) {
-                   if (err) {
-                       console.log("unable to create CDE. " + err);
-                   } else {
-                       console.log("created cde");
-                   }
-                });
-            });
-        });
-    });
+    
+mongo_data_system.orgByName("PROMIS", function(stewardOrg) {
+    fakeTree = {elements: stewardOrg.classifications};
+    console.log("FAKETREE: ");
+    console.log(fakeTree);
+    async.each(files, function(file, cb){
+        doFile(file, function(){
+            cb();
+        });        
+    }, function(err){
+        stewardOrg.classifications = fakeTree.elements;
+        stewardOrg.markModified("classifications");
+        stewardOrg.save(function (err) {
+            process.exit(0);
+        });        
+    });    
 });
-}, 5000);
+});
+}, 2000);
+
+

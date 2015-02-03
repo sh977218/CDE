@@ -52,12 +52,6 @@ exports.userTotalSpace = function(name, callback) {
     mongo_data_system.userTotalSpace(DataElement, name, callback);
 };
 
-exports.deCount = function (callback) {
-    DataElement.find().count().exec(function (err, count) {
-        callback(count);
-    });
-};
-
 exports.boardList = function(from, limit, searchOptions, callback) {
     PinningBoard.find(searchOptions).exec(function (err, boards) {
         // TODO Next line throws "undefined is not a function.why?
@@ -229,9 +223,11 @@ exports.save = function(mongooseObject, callback) {
 
 exports.create = function(cde, user, callback) {
     var newDe = new DataElement(cde);
-    newDe.registrationState = {
-        registrationStatus: "Incomplete"
-    };
+    if (!newDe.registrationState) {
+        newDe.registrationState = {
+            registrationStatus: "Incomplete"
+        };
+    }
     newDe.created = Date.now();
     newDe.createdBy.userId = user._id;
     newDe.createdBy.username = user.username;

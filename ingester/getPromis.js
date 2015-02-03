@@ -22,7 +22,7 @@ fs.readFile(allFiles, function(err, data) {
  
         var req = request(options, function (err, res, body) {
             console.log("statusCode: ", res.statusCode);
-            fs.writeFile(promisDir + "/forms/" + form.OID + ".json", {name: form.Name, content: body});
+            fs.writeFile(promisDir + "/forms/" + form.OID + ".json", "{\"name\": \"" + form.Name + "\", \"content\":" + body + "}");
         });
     });
     

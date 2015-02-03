@@ -17,6 +17,12 @@ exports.save = function(req, res, dao) {
                         && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0
                         && !req.user.siteAdmin) {
                     res.send(403, "not authorized");
+                } else if (elt.registrationState && elt.registrationState.registationStatus) {
+                    if ((elt.registrationState.registrationStatus !== "Standard" && elt.registrationState.registrationStatus !== " Preferred Standard")
+                            && !req.user.siteAdmin)
+                        {
+                            return res.send(403, "Not authorized");
+                        }
                 } else {
                     return dao.create(elt, req.user, function(err, savedItem) {
                         res.send(savedItem);
