@@ -4,6 +4,7 @@ var mongoose = require('mongoose')
     , schemas_system = require('../../system/node-js/schemas') 
     , mongo_data_system = require('../../system/node-js/mongo-data') 
     , connHelper = require('../../system/node-js/connections')
+    , logging = require('../../system/node-js/logging')
 ;
 
 exports.name = "CDEs";
@@ -285,19 +286,19 @@ exports.update = function(elt, user, callback, special) {
         }
 
         if (newDe.naming.length < 1) {
-            console.log("Cannot save without names");
+            logging.errorLogger.error("Error: Cannot save CDE without names", {origin: "cde.mongo-cde.update.1", details: "elt "+JSON.stringify(elt)});
             callback("Cannot save without names");
         }
 
         dataElement.save(function(err) {
             if (err) {
-                console.log(err);
+                logging.errorLogger.error("Error: Cannot save CDE", {origin: "cde.mongo-cde.update.2", details: "err "+err});
             } else {
                 newDe.save(function(err) {
                     if (err) {
-                        console.log(err);
+                        logging.errorLogger.error("Error: Cannot save CDE", {origin: "cde.mongo-cde.update.3", details: "err "+err});
                     }
-                    callback("", newDe);
+                    callback(err, newDe);
                 });
             }
         });
