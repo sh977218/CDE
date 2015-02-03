@@ -11,7 +11,14 @@ var MongoLogger = winston.transports.MongoLogger = function (options) {
     this.level = options.level || 'info';
 };
 
+var MongoErrorLogger = winston.transports.MongoErrorLogger = function (options) {
+    this.name = 'mongoErrorLogger';
+    this.json = true;
+    this.level = options.level || 'error';
+};
+
 util.inherits(MongoLogger, winston.Transport);
+util.inherits(MongoErrorLogger, winston.Transport);
 
 MongoLogger.prototype.log = function (level, msg, meta, callback) {
     try {
@@ -28,6 +35,26 @@ MongoLogger.prototype.log = function (level, msg, meta, callback) {
   
 exports.MongoLogger = MongoLogger;
 
+MongoErrorLogger.prototype.log = function (level, msg, meta, callback) {
+    try {
+        var message = {
+            message: msg
+            , origin: meta.origin
+            , stack: meta.stack
+            , request: meta.request               
+            
+        }
+        dbLogger.logError(message, function (err) {
+            if (err) console.log("CANNOT LOG: " + err);
+            callback(null, true);    
+        });
+    } catch (e) {
+        console.log("unable to log error to DB: " + msg);
+    }
+};
+
+exports.MongoErrorLogger = MongoErrorLogger;
+
 var expressLoggerCnf = {
   transports: [ new winston.transports.MongoLogger({
         json: true
@@ -36,7 +63,7 @@ var expressLoggerCnf = {
 
 var expressErrorLoggerCnf = {
   transports: [
-    new winston.transports.MongoLogger({
+    new winston.transports.MongoErrorLogger({
         json: true
     })
   ]
@@ -52,5 +79,4 @@ if (config.expressToStdout) {
     expressErrorLoggerCnf.transports.push(new winston.transports.Console(consoleLogCnf));
 }
 exports.expressLogger = new (winston.Logger)(expressLoggerCnf);
-exports.expressErrorLogger = new (winston.Logger)(expressErrorLoggerCnf);
-exports.processLogger = new (winston.Logger)(expressErrorLoggerCnf);
+exports.errorLogger = new (winston.Logger)(expressErrorLoggerCnf);
