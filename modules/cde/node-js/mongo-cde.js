@@ -3,7 +3,6 @@ var mongoose = require('mongoose')
     , schemas = require('./schemas')
     , schemas_system = require('../../system/node-js/schemas') 
     , mongo_data_system = require('../../system/node-js/mongo-data') 
-    , shortid = require("shortid") 
     , connHelper = require('../../system/node-js/connections')
 ;
 
@@ -235,7 +234,7 @@ exports.create = function(cde, user, callback) {
     newDe.created = Date.now();
     newDe.createdBy.userId = user._id;
     newDe.createdBy.username = user.username;
-    newDe.tinyId = shortid.generate();
+    newDe.tinyId = mongo_data_system.generateTinyId();
     newDe.save(function (err) {
         callback(err, newDe);
     });    
