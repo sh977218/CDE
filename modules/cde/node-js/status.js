@@ -3,6 +3,7 @@ var config = require('config')
     , mongo = require('./mongo-cde')
     , elastic = require('../../system/node-js/elastic')
     , email = require('../../system/node-js/email')
+    , logging = require('../../system/node-js/logging.js')    
 ;
 
 var status = this;
@@ -136,20 +137,27 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
     mongoCollection.create(fakeCde, {_id: null, username: ""}, function(err, mongoCde) {
         setTimeout(function() {
             request.get(elasticUrl + "_search?q=" + mongoCde.tinyId, function (error, response, bodyStr) {
+                if (error || response.statusCode !== 200) {
+                    logging.errorLogger.error("Error in STATUS: Negative response from ElasticSearch.\nResponse:\n"+JSON.stringify(response)+"\nBody:\n"+JSON.stringify(body), {origin: "status"}); 
+                }
                 var body = JSON.parse(bodyStr);
                 if (body.hits.hits.length <= 0) {
-                    statusReport.elastic.updating = false;      
+                    statusReport.elastic.updating = false;    
+                    logging.errorLogger.error("Error in STATUS: No data elements received from ElasticSearch.\nResponse:\n"+JSON.stringify(response)+"\nBody:\n"+JSON.stringify(body), {origin: "status"}); 
                 } else {
                     statusReport.elastic.updating = true; 
                     var elasticCde = body.hits.hits[0]._source;
                     if (mongoCde.tinyId !== elasticCde.tinyId) {
-                        statusReport.elastic.updating = false;    
+                        statusReport.elastic.updating = false;   
+                        logging.errorLogger.error("Error in STATUS: CDE do not match.\nResponse:\n"+JSON.stringify(response)+"\nBody:\n"+JSON.stringify(body), {origin: "status"});
                     } else {
                         statusReport.elastic.updating = true;                        
                     }
                 }
                 mongoCollection.DataElement.remove({"tinyId": mongoCde.tinyId}).exec(function(err){
-                    logging.errorLogger.error("Cannot delete .." + err.stack, {origin: "Status"});
+                    if (err) {
+                        logging.errorLogger.error("Cannot delete .." + err.stack, {origin: "Status"});                            
+                    }                  
                 });
             });            
         }, config.status.timeouts.dummyElementCheck);
