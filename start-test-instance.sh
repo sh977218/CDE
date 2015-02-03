@@ -34,7 +34,7 @@ mongo cde-logs-test deploy/logInit.js
 
 mongorestore -d test -c dataelements test/data/cdedump/dataelements.bson
 mongorestore -d test -c forms test/data/nindsDump/test/forms.bson
-mongorestore --drop -d test -c orgs test/data/cdedump/orgs.bson
+mongoimport --drop -d test -c orgs test/data/cdedump/orgs.bson
 
 mongo test test/createLargeBoard.js
 mongo test test/createManyBoards.js

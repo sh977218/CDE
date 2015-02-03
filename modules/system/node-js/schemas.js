@@ -78,7 +78,7 @@ schemas.attachmentSchema = mongoose.Schema({
 }, {_id: false});
 
 schemas.registrationStateSchema = {
-    registrationStatus: {type: String, index: true}
+    registrationStatus: {type: String}
     , effectiveDate: Date
     , untilDate: Date
     , administrativeNote: String
