@@ -4,7 +4,6 @@ var fs = require('fs'),
     config = require('config'),
     classificationShared = require('../modules/system/shared/classificationShared'),
     mongo_data_system = require('../modules/system/node-js/mongo-data'),
-    Q = require('q'),
     async = require ('async')
         ;
 
