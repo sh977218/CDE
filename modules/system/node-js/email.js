@@ -1,6 +1,7 @@
 var nodemailer = require('nodemailer')
     , config = require('config')
-    , mongo_data_system = require('./mongo-data');
+    , mongo_data_system = require('./mongo-data')
+    , logging = require('../../system/node-js/logging');
     
 var transporter = nodemailer.createTransport();    
 
@@ -17,7 +18,7 @@ exports.send = function(msg, cb) {
         mailOptions.text = msg;
         transporter.sendMail(mailOptions, function(error, info){
             if(error){
-                console.log(error);
+                logging.errorLogger.error("Error: Cannot send email", {origin: "system.email.send", details: "mailOptions "+mailOptions+", error "+error+", info"+info});
             }else{
                 console.log('Message sent: ' + info.response);
             }
