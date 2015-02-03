@@ -344,6 +344,13 @@ exports.init = function(app, daoManager) {
        }); 
     });
 
+    app.get('/deCount', function(req, res) {
+       mongo_data.deCount(function (result) {
+           console.log(result);
+           res.send({count: result});
+       });
+    });
+
     var fetchRemoteData = function() {
         vsac.getTGT(function(tgt) {
             console.log("Got TGT");
