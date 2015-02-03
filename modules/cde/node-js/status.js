@@ -137,24 +137,18 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
         setTimeout(function() {
             request.get(elasticUrl + "_search?q=" + mongoCde.tinyId, function (error, response, bodyStr) {
                 if (error || response.statusCode !== 200) {
-                    console.log("Error in STATUS: Negative response from ElasticSearch.");
-                    console.log(error);
-                    console.log(response);
+                    logging.errorLogger.error("Error in STATUS: Negative response from ElasticSearch.\nResponse:\n"+JSON.stringify(response)+"\nBody:\n"+JSON.stringify(body), {origin: "status"}); 
                 }
                 var body = JSON.parse(bodyStr);
                 if (body.hits.hits.length <= 0) {
                     statusReport.elastic.updating = false;    
-                    console.log("Error in STATUS: No data elements received from ElasticSearch.");
-                        console.log("\nResponse:\n"+JSON.stringify(response));
-                        console.log("\Body:\n"+JSON.stringify(body));  
+                    logging.errorLogger.error("Error in STATUS: No data elements received from ElasticSearch.\nResponse:\n"+JSON.stringify(response)+"\nBody:\n"+JSON.stringify(body), {origin: "status"}); 
                 } else {
                     statusReport.elastic.updating = true; 
                     var elasticCde = body.hits.hits[0]._source;
                     if (mongoCde.tinyId !== elasticCde.tinyId) {
-                        statusReport.elastic.updating = false;  
-                        console.log("Error in STATUS: CDE does not match.");
-                        console.log("\nResponse:\n"+JSON.stringify(response));
-                        console.log("\Body:\n"+JSON.stringify(body));                        
+                        statusReport.elastic.updating = false;   
+                        logging.errorLogger.error("Error in STATUS: CDE do not match.\nResponse:\n"+JSON.stringify(response)+"\nBody:\n"+JSON.stringify(body), {origin: "status"});
                     } else {
                         statusReport.elastic.updating = true;                        
                     }
