@@ -3,6 +3,7 @@ var config = require('config')
     , mongo = require('./mongo-cde')
     , elastic = require('../../system/node-js/elastic')
     , email = require('../../system/node-js/email')
+    , logging = require('../../system/node-js/logging.js')    
 ;
 
 var status = this;
