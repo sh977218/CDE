@@ -1,9 +1,23 @@
 (function(){
+    var handleError = function(message, name, stack) {
+        try {
+            var req = new XMLHttpRequest();
+            var data = {
+                message:message
+                , name: name
+                , stack: stack
+            };
+            req.open("post", "logClientException", true);
+            req.setRequestHeader('Content-type', 'application/json');
+            req.send(JSON.stringify(data)); 
+        } catch() {}
+    }; 
     window.onerror = function (msg, url, line) {
-        console.log("onerror");
+        handleError(msg);
     };
 
-    window.addEventListener('error', function (evt) {
-        console.log("caught via addEventListener");
+    window.addEventListener('error', function (evt) {        
+        handleError(evt.error.message, evt.error.message, evt.error.stack);
     });    
 })();
+
