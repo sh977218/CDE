@@ -1,7 +1,8 @@
 var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select']).
     config(function($routeProvider) {
         $routeProvider.
-        when('/', {controller: HomeCtrl, templateUrl:'/home'}).
+        when('/', {redirectTo: '/cde/search'}).        
+        when('/home', {controller: HomeCtrl, templateUrl:'/home'}).
         when('/cde/search', {controller: DEListCtrl, templateUrl: 'template/system/list'}).
         when('/login', {controller: AuthCtrl, templateUrl:'/login'}).
         when('/signup', {controller: AuthCtrl, templateUrl:'/signup'}).

@@ -30,7 +30,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button")).click();
         closeAlert();
         findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
-        hangon(1);
+        hangon(1.5);
         findElement(By.linkText("Classification")).click();
         String selector = "";
         for (int i = 1; i < categories.length; i++) {

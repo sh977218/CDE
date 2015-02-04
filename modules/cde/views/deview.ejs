@@ -25,7 +25,7 @@
             <div tab heading="{{tabs['naming'].heading}}">
                 <%- include deNaming.ejs %>
             </div>
-            <div tab heading="{{tabs['classification'].heading}}">
+            <div tab heading="{{tabs['classification'].heading}}" id="classificationTab">
                 <%- include ../../system/views/elementClassification.ejs %>
             </div>
             <div tab heading="{{tabs['concepts'].heading}}">
@@ -53,7 +53,7 @@
                     <div ng-include="'/system/public/html/comments.html'"></div>
                 </div>
             <% } %>
-            <div tab heading="{{tabs['boards'].heading}}">
+            <div tab heading="{{tabs['boards'].heading}}" id="boards_tab">
                 <h4>Boards this Data Element is in</h4>
                 <%- include listOfBoards.ejs %>
             </div>
