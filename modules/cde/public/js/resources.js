@@ -148,6 +148,14 @@ angular.module('resources', ['ngResource'])
             }            
         };
     })    
+    .factory("TourContent", function() {
+        return {
+            steps: []
+//            , setSteps: function(ps) {
+//                pageSpecific = ps;
+//            }
+        };
+    })
     .directive('ngVersionAvailable', ['$http', function($http) {
       return {
         require: 'ngModel',
@@ -164,5 +172,6 @@ angular.module('resources', ['ngResource'])
           });
         }
       };
-    }]);    
-    ;
+    }])
+;    
+    

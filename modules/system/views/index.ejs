@@ -13,6 +13,7 @@
         <link href="/cde/public/assets/css/bootstrap.min.css" rel="stylesheet">
         <link href="/cde/public/assets/css/font-awesome.min.css" rel="stylesheet">
         <link href="/cde/public/assets/css/ng-grid.min.css" rel="stylesheet" type="text/css" />
+        <link href="/cde/public/assets/css/bootstrap-tour.css" rel="stylesheet" type="text/css" />
 
         <link href="/cde/public/assets/css/select2.css" rel="stylesheet">
         <link href="/cde/public/assets/css/selectize.default.css" rel="stylesheet">
@@ -92,13 +93,14 @@
                                     )
                                 </a>                          
                             </li>
-                            <% if (config.modules.article) { %>
                             <li ng-class="{ active: isPageActive('/help')}">
-                                <a class="navbar-link" href="#/help/index">
-                                    Help
-                                </a>                          
+                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#" id="dropdownMenu_help" tabindex="-1" alt="Help" title="Help" aria-label="Help">Help<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu_help" tabindex="0">
+                                    <li><a href="#/home">About</a></li>
+                                    <% if (config.modules.article) { %><li><a href="#/help/index">User Guide</a></li><% } %>
+                                    <li ng-controller="TakeATourCtrl"><a ng-click="restartTour()">Take a tour</a></li>
+                                </ul>                                                     
                             </li>
-                            <% } %>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li ng-class="{ active: isPageActive('/login')}" ng-show='!user._id'><a href="#/login" id="login_link" tabindex="0" alt="Log in" aria-label="Log in">Log In</a></li>
@@ -185,6 +187,7 @@
         <script src="/cde/public/assets/js/sortable.js"></script>
         <script src="/cde/public/assets/js/scrollfix.js"></script>        
         <script src="/cde/public/assets/js/select.js"></script>        
+        <script src="/cde/public/assets/js/bootstrap-tour.js"></script>        
         <!-- endbuild -->
 
         <%- include includeFrontEndJS.ejs %>
