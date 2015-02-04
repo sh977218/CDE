@@ -152,9 +152,6 @@ angular.module('resources', ['ngResource'])
         return {
             stop: null 
             , steps: []
-//            , setSteps: function(ps) {
-//                pageSpecific = ps;
-//            }
         };
     })
     .directive('ngVersionAvailable', ['$http', function($http) {

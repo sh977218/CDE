@@ -7,6 +7,7 @@ exports.actions = {
 };
 
 exports.findSteward = function(de, orgName) {
+    if (!de) return null;
     for (var i = 0; i < de.classification.length; i++) {
         if (de.classification[i].stewardOrg.name === orgName) {
             return {index:i, object: de.classification[i]};
