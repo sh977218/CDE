@@ -1,4 +1,4 @@
-function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, CdeDiff, isAllowedModel, OrgHelpers, $rootScope) {
+function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, CdeDiff, isAllowedModel, OrgHelpers, $rootScope, TourContent) {
     $scope.module = 'cde';
     $scope.baseLink = '#/deview?cdeId=';
     $scope.eltLoaded = false;
@@ -340,4 +340,112 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             $scope.pVTypeaheadCodeSystemNameList = response.data;
         });
     };
+  
+    TourContent.steps = [     
+        {
+            element: "a:contains('General Details')"
+            , title: "General Details"
+            , content: "This section shows an overview of the CDE attributes."
+        }
+        , {
+              element: "a:contains('Permissible Values')"
+              , title: "Permissible Values"
+              , placement: "bottom"
+              , content: "Click here to see what type of value are allowed by this CDE."
+          }
+        , {
+              element: "#dd_valueType"
+              , placement: "top"
+              , title: "Value Type"
+              , content: "If the value type is 'Value List', then this CDE accepts values from a list. Date, free text, integer are other possibilities. "
+          }
+        , {
+              element: "a:contains('Naming')"
+              , title: "Names"
+              , placement: "bottom"
+              , content: "Any CDE may have multiple names, often given within a particular context."
+          }    
+        , {
+              element: "#classificationTab"
+              , title: "Classifications"
+              , placement: "bottom"
+              , content: "Classifications describe the way in which an organization may use a CDE. Any CDE can have hundreds of classification. Classifications are defined by steward. A steward may decide to reuse a CDE by adding his own classification to it."
+          }    
+        , {
+              element: "a:contains('Concepts')"
+              , title: "Concepts"
+              , placement: "bottom"
+              , content: "Data Elements are sometimes described by one or more concepts. These concepts can come from any terminology, for example LOINC."
+          }    
+        , {
+              element: "a:contains('Status')"
+              , title: "Status"
+              , placement: "bottom"
+              , content: "This section shows the status of the CDE, and optionally dates and/or administrative status."
+          }    
+        , {
+              element: "a:contains('Properties')"
+              , title: "Properties"
+              , placement: "bottom"
+              , content: "This sections show attributes of the CDE that are not common across CDEs. Steward may choose to store properties that are required for their process."
+          }              
+        , {
+              element: "a:contains('Identifiers')"
+              , title: "Identifiers"
+              , placement: "bottom"
+              , content: "CDE may be identified multiple times across CDE users. When a group uses a CDE by a particular unique (scoped) identifier, it may be stored here."
+          }              
+        , {
+              element: "a:contains('Linked Forms')"
+              , title: "Forms"
+              , placement: "bottom"
+              , content: "If a the CDE is used in a Form, it will be displayed here. "
+          }              
+        , {
+              element: "a:contains('Mappings')"
+              , title: "Mappings"
+              , content: "This section supports mapping CDE to external exchange mechanism such as FIHR or CCDA"
+              , placement: "bottom"
+          }              
+        , {
+              element: "a:contains('Discussions')"
+              , title: "Discussions"
+              , content: "In this section, registered users are able to post comments on any given CDEs. "
+              , placement: "bottom"
+          }              
+        , {
+              element: "#boards_tab"
+              , title: "Boards"
+              , content: "If a CDE is used in a public board, the board will be shown in this section."
+              , placement: "bottom"
+          }              
+        , {
+              element: "a:contains('Attachments')"
+              , title: "Attachments"
+              , content: "If a file is attached to a CDE, it can be view or downloaded here."
+              , placement: "bottom"
+          }              
+        , {
+              element: "a:contains('More Like This')"
+              , title: "More Like This"
+              , content: "This section lists CDEs that are most similar to the CDE currently viewed."
+              , placement: "bottom"
+          }              
+        , {
+              element: "a:contains('History')"
+              , title: "History"
+              , content: "This section shows all prior states of the CDE."
+              , placement: "bottom"
+          }              
+        , {
+              element: "a:contains('Forks')"
+              , title: "Forks"
+              , content: "When a steward does not own a CDE, he may choose to create a fork of it. This will allow him to work on the CDE and request that the changes be accepted. If accepted, the forked CDE will become the new CDE."
+              , placement: "bottom"
+          }              
+
+    ];
+    
+    
+    
 }
