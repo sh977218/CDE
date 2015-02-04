@@ -10,7 +10,7 @@
             req.open("post", "logClientException", true);
             req.setRequestHeader('Content-type', 'application/json');
             req.send(JSON.stringify(data)); 
-        } catch() {}
+        } catch(e) {}
     }; 
     window.onerror = function (msg, url, line) {
         handleError(msg);
