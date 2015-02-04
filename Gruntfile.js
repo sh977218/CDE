@@ -361,7 +361,8 @@ module.exports = function(grunt) {
                     'js/angular-animate.min.js': 'angular-animate/angular-animate.min.js',
                     'js/textAngular.min.js': 'textAngular/dist/textAngular.min.js',
                     'js/textAngular-rangy.min.js': 'textAngular/dist/textAngular-rangy.min.js',
-                    'js/textAngular-sanitize.min.js': 'textAngular/dist/textAngular-sanitize.min.js'
+                    'js/textAngular-sanitize.min.js': 'textAngular/dist/textAngular-sanitize.min.js',
+                    'js/bootstrap-tour.min.js': 'bootstrap-tour/build/js/bootstrap-tour.min.js'
                 }
             },
             map: {
@@ -391,7 +392,8 @@ module.exports = function(grunt) {
                     'css/select2.css': 'select2/select2.css',
                     'css/select2.png': 'select2/select2.png',
                     'css/selectize.default.css': 'selectize/dist/css/selectize.default.css',
-                    'css/textAngular.css': 'textAngular/src/textAngular.css'
+                    'css/textAngular.css': 'textAngular/src/textAngular.css',
+                    'css/bootstrap-tour.min.css': 'bootstrap-tour/build/css/bootstrap-tour.min.css'
                 }
             },
             bootstrapFont: {
