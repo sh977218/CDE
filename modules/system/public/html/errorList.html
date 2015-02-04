@@ -2,10 +2,7 @@
     <caption>Logged Errors, showing from {{skip}} to {{skip + limit}}</caption>
     <thead>
         <tr>
-            <th>Date</th>
-            <th>Logger</th>                
-            <th>Stack</th>
-            <th>Request</th>
+            <th ng-repeat="field in fields">{{field}}</th>
         </tr>
     </thead>
     <tbody>{{'/system/public/html/'+errorType+'ErrorList.html'}}
