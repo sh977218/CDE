@@ -1,0 +1,42 @@
+package gov.nih.nlm.cde.test;
+
+import com.jayway.restassured.RestAssured;
+import static com.jayway.restassured.RestAssured.*;
+import com.jayway.restassured.http.ContentType;
+import org.openqa.selenium.By;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+public class LogErrorsTest extends NlmCdeBaseTest {
+    @Test
+    public void logServerErrors() {        
+        String response = get(baseUrl+"/testClientSideErrorLogExpress").asString();
+        Assert.assertEquals( "received", response );
+        response = get(baseUrl+"/testClientSideErrorLogExpress").asString();
+        Assert.assertEquals( "received", response );
+
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Audit")).click();
+        
+        findElement(By.linkText("Server Errors")).click();        
+        
+        textPresent("ReferenceError: trigger is not defined");
+        textPresent("/testClientSideErrorLogExpress");
+        textPresent("app.express.error");
+    }  
+    
+    @Test
+    public void logClientErrors() {        
+        driver.get(baseUrl + "#/triggerClientException");
+
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Audit")).click();
+        
+        findElement(By.linkText("Client Errors")).click();       
+        
+        textPresent("ReferenceError: trigger is not defined at new TriggerClientExceptionCtrl ");
+        textPresent("trigger is not defined");
+    }    
+}

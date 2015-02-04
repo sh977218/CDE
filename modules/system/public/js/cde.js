@@ -23,6 +23,7 @@ var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui
         when('/form/search', {controller: FormListCtrl, templateUrl: '/template/system/list'}).
         when('/createForm', {controller: CreateFormCtrl, templateUrl: '/template/form/createForm'}).
         when('/formView', {controller: FormViewCtrl, templateUrl: '/template/form/formView'}).
+        when('/triggerClientException', {controller: TriggerClientExceptionCtrl, templateUrl: '/template/system/triggerClientException'}).
         otherwise({redirectTo:'/'});
     })
     .directive('inlineEdit', function() {

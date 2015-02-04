@@ -495,6 +495,18 @@ exports.init = function(app) {
         dbLogger.logClientError(req.body, function(err, result) {
             res.send(result);                
         });
-    });     
+    });  
+    
+    app.get('/testClientSideErrorLogExpress', function(req, res) {
+        res.send("received");
+        trigger.error();
+    });   
+    
+    app.get('/testClientSideErrorLogMongoose', function(req, res) {
+        mongo_data_system.orgByName("none", function (result) {
+            res.send("received");
+            trigger.error();
+        });
+    });    
     
 };
