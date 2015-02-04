@@ -102,7 +102,7 @@ exports.init = function(app, daoManager) {
         adminItemSvc.forkRoot(req, res, mongo_data);
     });
 
-    app.get('/dataelement/:id', function(req, res) {   
+    app.get('/dataelement/:id', function(req, res) {  
         cdesvc.show(req, function(result) {
             res.send(cdesvc.hideProprietaryPvs(result, req.user));
         });
@@ -225,13 +225,16 @@ exports.init = function(app, daoManager) {
 
             } else  {
                 mongo_data.boardById(board._id, function(err, b) {
-                    if (err) console.log(err);
+                    if (err) {
+                        logging.errorLogger.error("Cannot find board by id", {origin: "cde.app.board", request: logging.generateErrorLogRequest(req), details: "board._id "+board._id}); 
+                        return res.send(404, "Cannot find board.");
+                    }                     
                     b.name = board.name;
                     b.description = board.description;
                     b.shareStatus = board.shareStatus;
                     if (checkUnauthorizedPublishing(req.user, b.shareStatus)) return res.send(403, "You don't have permission to make boards public!");
                     return mongo_data.save(b, function(err) {
-                        if (err) console.log(err);
+                        if (err) logging.errorLogger.error("Cannot save board", {origin: "cde.app.board", request: logging.generateErrorLogRequest(req), details: "board._id "+board._id}); 
                         res.send(b);
                     });                
                 });
@@ -346,7 +349,6 @@ exports.init = function(app, daoManager) {
 
     app.get('/deCount', function(req, res) {
        mongo_data.deCount(function (result) {
-           console.log(result);
            res.send({count: result});
        });
     });
@@ -424,7 +426,7 @@ exports.init = function(app, daoManager) {
     app.post('/retireCde', function (req, res) {
         req.params.type = "received";
         mongo_data.byId(req.body._id, function(err, cde) {
-            if (err != "") res.send(404, err);
+            if (err) res.send(404, err);
             if (!cde.registrationState.administrativeStatus === "Retire Candidate") return res.send(409, "CDE is not a Retire Candidate");
             cde.registrationState.registrationStatus = "Retired";
             delete cde.registrationState.administrativeStatus;
@@ -496,10 +498,10 @@ exports.init = function(app, daoManager) {
             }
         });
     });    
-    app.get('/archivedCdes/:cdeArray', function(req, res) {
+    app.get('/archivedCdes/:cdeArray', function(req, res) {        
         mongo_data.archivedCdes(req.params.cdeArray, function(err, resultCdes) {
             if (err) {
-                console.log(err);
+                logging.errorLogger.error("Error: Cannot find archived cdes", {origin: "cde.app.archivedCdes"}, req); 
                 res.send(500, "Unexpected Error");
             } else res.send(resultCdes);
         });

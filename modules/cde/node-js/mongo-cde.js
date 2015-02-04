@@ -4,6 +4,7 @@ var mongoose = require('mongoose')
     , schemas_system = require('../../system/node-js/schemas') 
     , mongo_data_system = require('../../system/node-js/mongo-data') 
     , connHelper = require('../../system/node-js/connections')
+    , logging = require('../../system/node-js/logging')
 ;
 
 exports.name = "CDEs";
@@ -61,7 +62,7 @@ exports.boardList = function(from, limit, searchOptions, callback) {
     PinningBoard.find(searchOptions).exec(function (err, boards) {
         // TODO Next line throws "undefined is not a function.why?
         PinningBoard.find(searchOptions).count(searchOptions).exec(function (err, count) {
-            callback("",{
+            callback(err,{
                     boards: boards
                     , page: Math.ceil(from / limit)
                     , pages: Math.ceil(count / limit)
@@ -86,13 +87,13 @@ exports.desByConcept = function (concept, callback) {
 
 exports.byTinyIdAndVersion = function(tinyId, version, callback) {
     DataElement.findOne({'tinyId': tinyId, "version": version}).exec(function (err, de) {
-       callback("", de); 
+       callback(err, de); 
     });
 };
 
 exports.eltByTinyId = function(tinyId, callback) {
     DataElement.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, de) {
-       callback("", de); 
+       callback(err, de); 
     });
 };
 
@@ -109,7 +110,7 @@ exports.cdesByIdList = function(idList, callback) {
         .slice('valueDomain.permissibleValues', 10)
         .exec(function(err, cdes) {
             cdes.forEach(mongo_data.formatCde);
-            callback("", cdes); 
+            callback(err, cdes); 
     });
 };
 
@@ -119,7 +120,7 @@ exports.cdesByTinyIdList = function(idList, callback) {
             .slice('valueDomain.permissibleValues', 10)
             .exec(function(err, cdes) {
                 cdes.forEach(mongo_data.formatCde);
-                callback("", cdes); 
+                callback(err, cdes); 
     });
 };
 
@@ -128,7 +129,7 @@ exports.priorCdes = function(cdeId, callback) {
         if (dataElement !== null) {
             return DataElement.find({}, "naming source sourceId registrationState stewardOrg updated updatedBy createdBy tinyId version views changeNote")
                     .where("_id").in(dataElement.history).exec(function(err, cdes) {
-                callback("", cdes);
+                callback(err, cdes);
             });
         } else {
             
@@ -154,7 +155,7 @@ exports.acceptFork = function(fork, orig, callback) {
 exports.isForkOf = function(tinyId, callback) {
     return DataElement.find({tinyId: tinyId})
         .where("archived").equals(null).where("isFork").equals(null).exec(function(err, cdes) {
-            callback("", cdes);
+            callback(err, cdes);
     });
 };
 
@@ -166,14 +167,15 @@ exports.forks = function(cdeId, callback) {
                     callback("", cdes);
             });
         } else {
-            callback("", []);
+            callback(err, []);
         }
     });
 };
 
 exports.byId = function(cdeId, callback) {
     DataElement.findOne({'_id': cdeId}, function(err, cde) {
-        callback("", cde);
+        if (!cde) err = "Cannot find CDE";
+        callback(err, cde);
     });
 };
 
@@ -185,13 +187,14 @@ exports.incDeView = function(cde) {
 
 exports.boardById = function(boardId, callback) {
     PinningBoard.findOne({'_id': boardId}, function (err, b) {
-        callback("", b);
+        if (!b) err = "Cannot find board";
+        callback(err, b);
     });
 };
 
 exports.removeBoard = function (boardId, callback) {
     PinningBoard.remove({'_id': boardId}, function (err) {
-        callback();
+        callback(err);
     });
 };
 //TODO: Consider moving
@@ -285,19 +288,19 @@ exports.update = function(elt, user, callback, special) {
         }
 
         if (newDe.naming.length < 1) {
-            console.log("Cannot save without names");
+            logging.errorLogger.error("Error: Cannot save CDE without names", {origin: "cde.mongo-cde.update.1", details: "elt "+JSON.stringify(elt)});
             callback("Cannot save without names");
         }
 
         dataElement.save(function(err) {
             if (err) {
-                console.log(err);
+                logging.errorLogger.error("Error: Cannot save CDE", {origin: "cde.mongo-cde.update.2", details: "err "+err});
             } else {
                 newDe.save(function(err) {
                     if (err) {
-                        console.log(err);
+                        logging.errorLogger.error("Error: Cannot save CDE", {origin: "cde.mongo-cde.update.3", details: "err "+err});
                     }
-                    callback("", newDe);
+                    callback(err, newDe);
                 });
             }
         });

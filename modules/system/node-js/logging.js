@@ -35,21 +35,20 @@ MongoLogger.prototype.log = function (level, msg, meta, callback) {
   
 exports.MongoLogger = MongoLogger;
 
-MongoErrorLogger.prototype.log = function (level, msg, meta, callback) {
+MongoErrorLogger.prototype.log = function (level, msg, meta, cb) {
     try {
         var message = {
             message: msg
             , origin: meta.origin
-            , stack: meta.stack
-            , request: meta.request               
-            
-        }
+            , stack: meta.stack   
+            , details: meta.details            
+        };
+        if (meta.request) message.request = exports.generateErrorLogRequest(meta.request);
         dbLogger.logError(message, function (err) {
-            if (err) console.log("CANNOT LOG: " + err);
-            callback(null, true);    
+            if (err) console.log("CANNOT LOG: ");  
         });
     } catch (e) {
-        console.log("unable to log error to DB: " + msg);
+        console.log("unable to log error to DB: ");
     }
 };
 
@@ -80,3 +79,22 @@ if (config.expressToStdout) {
 }
 exports.expressLogger = new (winston.Logger)(expressLoggerCnf);
 exports.errorLogger = new (winston.Logger)(expressErrorLoggerCnf);
+
+exports.generateErrorLogRequest = function (req) {
+    var url, method, params, body, username; 
+    try {
+        url = req.url;
+        method = req.method;
+        body = JSON.stringify(req.body);
+        if (req.user) username = req.user.username;
+    } catch (e){
+        
+    }
+    return {
+        url: url
+        , method: method
+        , params: params
+        , body: body
+        , username: username
+    };
+};
