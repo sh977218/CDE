@@ -150,7 +150,8 @@ angular.module('resources', ['ngResource'])
     })    
     .factory("TourContent", function() {
         return {
-            steps: []
+            stop: null 
+            , steps: []
 //            , setSteps: function(ps) {
 //                pageSpecific = ps;
 //            }

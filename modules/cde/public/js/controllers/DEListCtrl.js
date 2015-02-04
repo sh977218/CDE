@@ -25,7 +25,7 @@
               , content: "This menu will take you to the Form search page"
           }
         , {
-              element: "a:contains('Boards')"
+              element: "#boardsMenu"
               , title: "Boards"
               , content: "Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them."
           }
@@ -62,7 +62,7 @@
               , content: "This button will take you to the full detail of this CDE."
           }
           , {
-              element: "i.fa-eye"
+              element: ".fa-eye:first"
               , title: "View full detail"
               , content: "Click the eye to see the full detail of this data element"
           }
@@ -109,5 +109,9 @@
             content: "By default, CDEs in Recorded status are hidden. You can enable this checkbox to make them appear. "      
           }
     ];
+    
+    $scope.$on("$destroy", function handler() {
+        TourContent.stop();
+    });    
     
 }

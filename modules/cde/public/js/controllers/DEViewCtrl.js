@@ -446,6 +446,9 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
 
     ];
     
+    $scope.$on("$destroy", function handler() {
+        TourContent.stop();
+    });    
     
     
 }
