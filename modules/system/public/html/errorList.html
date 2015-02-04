@@ -1,0 +1,17 @@
+<table class="table">
+    <caption>Logged Errors, showing from {{skip}} to {{skip + limit}}</caption>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Logger</th>                
+            <th>Stack</th>
+            <th>Request</th>
+        </tr>
+    </thead>
+    <tbody>{{'/system/public/html/'+errorType+'ErrorList.html'}}
+        <tr ng-repeat="err in errors"  ng-include="'/system/public/html/'+errorType+'ErrorList.html'">
+        </tr>
+    </tbody>
+</table>
+<button class="btn btn-default" type="submit" ng-click="loadNewer()">Newer</button>
+<button class="btn btn-default" type="submit" ng-click="loadOlder()">Older</button>

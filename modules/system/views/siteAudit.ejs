@@ -6,9 +6,13 @@
         <%- include dailyUsage.ejs %>
     </div>
     <div tab heading="Server Errors">
-        <div ng-include="'/system/public/html/serverErrorList.html'"></div>
+        <div class="table" ng-controller="AuditServerErrorListCtrl">
+            <div ng-include="'/system/public/html/errorList.html'"></div>
+        </div>
     </div>    
     <div tab heading="Client Errors">
-        <div ng-include="'/system/public/html/clientErrorList.html'"></div>
+        <div class="table" ng-controller="AuditClientErrorListCtrl">
+            <div ng-include="'/system/public/html/errorList.html'"></div>
+        </div>
     </div>        
 </div>

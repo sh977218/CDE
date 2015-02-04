@@ -1,29 +1,10 @@
-<div class="table" ng-controller="AuditServerErrorListCtrl">
-    <table class="table">
-        <caption>Logged Errors, showing from {{skip}} to {{skip + limit}}</caption>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Logger</th>                
-                <th>Stack</th>
-                <th>Request</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="err in errors">
-                <td>{{err.date | date:'MM/dd/yyyy @ h:mma'}}</td>
-                <td>{{err.origin}}</td>
-                <td>{{err.stack}}</td>
-                <td>
-                    User: {{err.request.username}}<br>
-                    URL:&nbsp;{{err.request.url}}<br>
-                    Method: {{err.request.method}}<br>
-                    Params: {{err.request.params}}<br>
-                    Body: {{err.request.body}}<br>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <button class="btn btn-default" type="submit" ng-click="loadNewer()">Newer</button>
-    <button class="btn btn-default" type="submit" ng-click="loadOlder()">Older</button>
-</div>
+<td>{{err.date | date:'MM/dd/yyyy @ h:mma'}}</td>
+<td>{{err.origin}}</td>
+<td>{{err.stack}}</td>
+<td>
+    User: {{err.request.username}}<br>
+    URL:&nbsp;{{err.request.url}}<br>
+    Method: {{err.request.method}}<br>
+    Params: {{err.request.params}}<br>
+    Body: {{err.request.body}}<br>
+</td>

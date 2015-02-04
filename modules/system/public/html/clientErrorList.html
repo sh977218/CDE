@@ -1,23 +1,4 @@
-<div class="table" ng-controller="AuditClientErrorListCtrl">
-    <table class="table">
-        <caption>Logged Errors, showing from {{skip}} to {{skip + limit}}</caption>
-        <thead>
-            <tr>
-                <th>Date</th>      
-                <th>Name</th>
-                <th>Message</th>                
-                <th>Stack</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="err in errors">
-                <td>{{err.date | date:'MM/dd/yyyy @ h:mma'}}</td>
-                <td>{{err.name}}</td>
-                <td>{{err.message}}</td>
-                <td>{{err.stack}}</td>
-            </tr>
-        </tbody>
-    </table>
-    <button class="btn btn-default" type="submit" ng-click="loadNewer()">Newer</button>
-    <button class="btn btn-default" type="submit" ng-click="loadOlder()">Older</button>
-</div>
+<td>{{err.date | date:'MM/dd/yyyy @ h:mma'}}</td>
+<td>{{err.name}}</td>
+<td>{{err.message}}</td>
+<td>{{err.stack}}</td>
