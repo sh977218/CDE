@@ -52,7 +52,7 @@ exports.save = function(req, res, dao) {
                         } else {
                             mongo_data_system.orgByName(item.stewardOrg.name, function(org) {
                                 var allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
-                                if (org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
+                                if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
                                     res.send(403, "Not authorized");
                                 } else {
                                     return dao.update(elt, req.user, function(err, response) {

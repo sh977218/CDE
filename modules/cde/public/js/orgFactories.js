@@ -56,7 +56,7 @@ angular.module('resources')
         , showWorkingGroup: function(orgToHide, user) {
             if (!this.isInitialized()) return true;
             var OrgHelpers = this;
-            var parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide].workingGroupOf;
+            var parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide] && this.orgsDetailedInfo[orgToHide].workingGroupOf;
             var isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";
             var userIsWorkingGroupCurator = exports.isCuratorOf(user, orgToHide);
             if (!isNotWorkingGroup) var userIsCuratorOfParentOrg = exports.isCuratorOf(user, parentOrgOfThisClass);

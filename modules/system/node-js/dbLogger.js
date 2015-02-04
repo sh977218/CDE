@@ -31,6 +31,7 @@ var logErrorSchema = new mongoose.Schema(
     , date: Date
     , origin: String
     , stack: String
+    , details: String
     , request: {
         url: String
         , method: String
@@ -62,7 +63,7 @@ exports.logError = function(message, callback) {
     message.date = new Date();
     var logEvent = new LogErrorModel(message);
     logEvent.save(function(err) {
-        if (err) console.log ("ERROR: " + err);
+        if (err) console.log ("ERROR: ");
         callback(err); 
     });
 };
