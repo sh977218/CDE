@@ -24,6 +24,7 @@ var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui
         when('/form/search', {controller: FormListCtrl, templateUrl: '/template/system/list'}).
         when('/createForm', {controller: CreateFormCtrl, templateUrl: '/template/form/createForm'}).
         when('/formView', {controller: FormViewCtrl, templateUrl: '/template/form/formView'}).
+        when('/triggerClientException', {controller: TriggerClientExceptionCtrl, templateUrl: '/template/system/triggerClientException'}).
         otherwise({redirectTo:'/'});
     })
     .directive('inlineEdit', function() {
@@ -239,3 +240,16 @@ angular.module("template/tabs/tab.html", []).run(["$templateCache", function($te
 	    "</li>\n" +
 	    "");
 	}]);
+    
+cdeApp.factory('$exceptionHandler', function($injector) {
+    return function(exception) {
+        var http;
+        if (!http) { http = $injector.get('$http'); }
+        try {
+            http.post('/logClientException', {stack: exception.stack, message: exception.message, name: exception.name});
+        } catch (e) {
+            
+        }
+        throw exception;
+    };
+});    

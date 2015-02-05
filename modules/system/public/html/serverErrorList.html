@@ -1,0 +1,11 @@
+<td>{{err.date | date:'MM/dd/yyyy @ h:mma'}}</td>
+<td>{{err.origin}}</td>
+<td>{{err.stack}}</td>
+<td>
+    User: {{err.request.username}}<br>
+    URL:&nbsp;{{err.request.url}}<br>
+    Method: {{err.request.method}}<br>
+    Params: {{err.request.params}}<br>
+    Body: {{err.request.body}}<br>
+    Details: {{err.request.details}}<br>
+</td>

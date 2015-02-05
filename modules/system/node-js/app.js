@@ -470,14 +470,43 @@ exports.init = function(app) {
         }
     });
     
-    app.post('/getErrors', function(req, res) {
+    app.post('/getServerErrors', function(req, res) {
         if(req.isAuthenticated() && req.user.siteAdmin) {
-            dbLogger.getErrors(req.body, function(err, result) {
+            dbLogger.getServerErrors(req.body, function(err, result) {
                 res.send(result);                
             });
         } else {
             res.send(403, "Not Authorized");
         }
+    }); 
+    
+    app.post('/getClientErrors', function(req, res) {
+        if(req.isAuthenticated() && req.user.siteAdmin) {
+            dbLogger.getClientErrors(req.body, function(err, result) {
+                res.send(result);                
+            });
+        } else {
+            res.send(403, "Not Authorized");
+        }
+    });   
+    
+    
+    app.post('/logClientException', function(req, res) {
+        dbLogger.logClientError(req.body, function(err, result) {
+            res.send(result);                
+        });
+    });  
+    
+    app.get('/testClientSideErrorLogExpress', function(req, res) {
+        res.send("received");
+        trigger.error();
+    });   
+    
+    app.get('/testClientSideErrorLogMongoose', function(req, res) {
+        mongo_data_system.orgByName("none", function (result) {
+            res.send("received");
+            trigger.error();
+        });
     });    
     
 };
