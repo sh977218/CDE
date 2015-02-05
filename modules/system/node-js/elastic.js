@@ -25,17 +25,22 @@ exports.elasticsearch = function (query, type, cb) {
                 result.cdes.push(thisCde);
             }
             result.aggregations = resp.aggregations;
-            cb(result);
+            cb(null, result);
         } else {
-            var querystr = "cannot stringify query";
-            var response;
-            var body;
-            try {
-                querystr = JSON.stringify(query);
-                response  = JSON.stringify(response);
-                body  = JSON.stringify(body);
-            } catch (e){}
-            logging.errorLogger.error("Error: ElasticSearch Error", {origin: "system.elastic.elasticsearch", details: "query "+querystr+", response "+response+", body "+body});
+            if (response.statusCode === 400) {
+                cb("Invalid Query");
+            } else {
+                var querystr = "cannot stringify query";
+                var body;
+                try {
+                    querystr = JSON.stringify(query);
+                    body  = JSON.stringify(body);
+                } catch (e){}
+                logging.errorLogger.error("Error: ElasticSearch Error", 
+                    {origin: "system.elastic.elasticsearch", stack: new Error().stack,
+                        details: "query " + querystr + ", body " + body});
+                cb("Server Error");
+            }
         } 
     });  
 };

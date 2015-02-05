@@ -1,4 +1,4 @@
-function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screenSize, $timeout) {
+function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout) {
     $scope.filterMode = true;
     
     $timeout(function(){
@@ -253,7 +253,12 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
         var settings = Elastic.buildElasticQuerySettings($scope);
         Elastic.buildElasticQuery(settings, function(query) {
             $scope.query = query;
-            Elastic.generalSearchQuery(query, $scope.module,  function(result) {
+            Elastic.generalSearchQuery(query, $scope.module,  function(err, result) {
+                if (err) {
+                    $scope.accordionListStyle = "";
+                    $scope.addAlert("danger", "There was a problem with your query");
+                    return;
+                }
                 if(timestamp < $scope.lastQueryTimeStamp) return;
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;

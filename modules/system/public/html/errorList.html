@@ -5,8 +5,8 @@
             <th ng-repeat="field in fields">{{field}}</th>
         </tr>
     </thead>
-    <tbody>{{'/system/public/html/'+errorType+'ErrorList.html'}}
-        <tr ng-repeat="err in errors"  ng-include="'/system/public/html/'+errorType+'ErrorList.html'">
+    <tbody>
+        <tr ng-repeat="err in errors"  ng-include="'/system/public/html/' + errorType + 'ErrorList.html'">
         </tr>
     </tbody>
 </table>

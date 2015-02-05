@@ -307,10 +307,14 @@ angular.module('resources')
         }              
         , generalSearchQuery: function(query, type, cb) {          
             var elastic = this; 
-            $http.post("/elasticSearch/" + type, query).then(function (response) {
-                elastic.highlightResults(response.data.cdes);
-                cb(response.data);
-            });
+            $http.post("/elasticSearch/" + type, query)
+                    .success(function (response) {
+                        elastic.highlightResults(response.cdes);
+                        cb(null, response);
+                    })
+                    .error(function(response) {
+                        cb("Error");
+                    });
         } 
         , highlightResults: function(cdes) {
             var elastic = this;

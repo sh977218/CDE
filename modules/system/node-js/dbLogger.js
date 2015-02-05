@@ -13,23 +13,18 @@ var ClientErrorModel;
 var logSchema = new mongoose.Schema(
 {
     level: String
-    , remoteAddr: String
+    , remoteAddr: {type: String, index: true}
     , url: String
     , method: String
     , httpStatus: String
-    , date: Date
+    , date: {type: String, index: true}
     , referrer: String
-}, { safe: {w: 0}, capped: 5368709120});
-logSchema.index({remoteAddr: 1});
-logSchema.index({url: 1});
-logSchema.index({httpStatus: 1});
-logSchema.index({date: 1});
-logSchema.index({referrer: 1});
+}, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
 var logErrorSchema = new mongoose.Schema(
 {
     message: String
-    , date: Date
+    , date: {type: String, index: true}
     , origin: String
     , stack: String
     , details: String
@@ -40,16 +35,16 @@ var logErrorSchema = new mongoose.Schema(
         , body: String
         , username: String
     }
-}, { safe: {w: 0}, capped: 5368709120});
+}, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
 var clientErrorSchema= new mongoose.Schema(
 {
     message: String
-    , date: Date
+    , date: {type: String, index: true}
     , origin: String
     , name: String
     , stack: String
-}, { safe: {w: 0}, capped: 5368709120});
+}, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
 var connectionEstablisher = connHelper.connectionEstablisher;
 

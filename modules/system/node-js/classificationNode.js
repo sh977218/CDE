@@ -53,6 +53,7 @@ exports.cdeClassification = function(body, action, cb) {
                     };                    
                     
                     if (stewardOrg.workingGroupOf) classifOrg.workingGroup = true;
+                    if (!cde.classification) cde.classification = [];
                     cde.classification.push(classifOrg);
                     steward = classificationShared.findSteward(cde, body.orgName);  
                     classify(steward, cde);
@@ -122,7 +123,7 @@ exports.classifyEntireSearch = function(req, cb) {
         };          
         classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);  
     };
-    elastic.elasticsearch(req.query, req.itemType, function(result) {   
+    elastic.elasticsearch(req.query, req.itemType, function(err, result) {   
         var ids = result.cdes.map(function(cde) {return cde._id;});    
         adminItemSvc.bulkAction(ids, action, cb);
     });

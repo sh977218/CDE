@@ -288,17 +288,17 @@ exports.update = function(elt, user, callback, special) {
         }
 
         if (newDe.naming.length < 1) {
-            logging.errorLogger.error("Error: Cannot save CDE without names", {origin: "cde.mongo-cde.update.1", details: "elt "+JSON.stringify(elt)});
+            logging.errorLogger.error("Error: Cannot save CDE without names", {origin: "cde.mongo-cde.update.1", stack: new Error().stack, details: "elt "+JSON.stringify(elt)});
             callback("Cannot save without names");
         }
 
         dataElement.save(function(err) {
             if (err) {
-                logging.errorLogger.error("Error: Cannot save CDE", {origin: "cde.mongo-cde.update.2", details: "err "+err});
+                logging.errorLogger.error("Error: Cannot save CDE", {origin: "cde.mongo-cde.update.2", stack: new Error().stack, details: "err "+err});
             } else {
                 newDe.save(function(err) {
                     if (err) {
-                        logging.errorLogger.error("Error: Cannot save CDE", {origin: "cde.mongo-cde.update.3", details: "err "+err});
+                        logging.errorLogger.error("Error: Cannot save CDE", {origin: "cde.mongo-cde.update.3", stack: new Error().stack, details: "err "+err});
                     }
                     callback(err, newDe);
                 });

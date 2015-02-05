@@ -188,6 +188,15 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(usedBy.contains("CIP"));
     }
     
+    @Test
+    public void badESQuery() {
+        goToCdeSearch();
+        findElement(By.id("ftsearch-input")).clear();
+        findElement(By.id("ftsearch-input")).sendKeys("+-aaa");
+        findElement(By.cssSelector("i.fa-search")).click();   
+        textPresent("There was a problem with your query");
+    }
+    
     private void matchedByNotVisibleIfPrimaryName() {
         List<WebElement> linkList = driver.findElements(By.xpath("//span[text()='Classification']"));
         Assert.assertEquals(linkList.size(), 0);  

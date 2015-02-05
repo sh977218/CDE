@@ -5,7 +5,10 @@ function CdeExportCtrl($scope, Elastic) {
         query.query.size = 1000;
         delete query.query.aggregations;
         delete query.query.from;
-        Elastic.generalSearchQuery(query, "cde", function(result) {
+        Elastic.generalSearchQuery(query, "cde", function(err, result) {
+            if (err) {
+                return $scope.addAlert("There was a problem with your query");
+            }
             $scope.gridCdes = [];
             var list = result.cdes;
             for (var i in list) {
