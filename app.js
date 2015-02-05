@@ -148,7 +148,7 @@ app.use(function(err, req, res, next){
     var meta = {
         stack: err.stack
         , origin: "app.express.error"
-        , request: {username: req.user.username, method: req.method, url: req.url, params: req.params, body: req.body}
+        , request: {username: req.user?req.user.username:null, method: req.method, url: req.url, params: req.params, body: req.body}
     }; 
     logging.errorLogger.error("Error: Express Default Error Handler", meta);
     if (err.status === 403) {
