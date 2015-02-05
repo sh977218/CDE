@@ -1,0 +1,3 @@
+function TriggerClientExceptionCtrl() {
+    trigger.error();
+}
