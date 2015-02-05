@@ -226,7 +226,7 @@ exports.init = function(app, daoManager) {
             } else  {
                 mongo_data.boardById(board._id, function(err, b) {
                     if (err) {
-                        logging.errorLogger.error("Cannot find board by id", {origin: "cde.app.board", request: logging.generateErrorLogRequest(req), details: "board._id "+board._id}); 
+                        logging.errorLogger.error("Cannot find board by id", {origin: "cde.app.board", stack: new Error().stack, request: logging.generateErrorLogRequest(req), details: "board._id "+board._id}); 
                         return res.send(404, "Cannot find board.");
                     }                     
                     b.name = board.name;
@@ -234,7 +234,7 @@ exports.init = function(app, daoManager) {
                     b.shareStatus = board.shareStatus;
                     if (checkUnauthorizedPublishing(req.user, b.shareStatus)) return res.send(403, "You don't have permission to make boards public!");
                     return mongo_data.save(b, function(err) {
-                        if (err) logging.errorLogger.error("Cannot save board", {origin: "cde.app.board", request: logging.generateErrorLogRequest(req), details: "board._id "+board._id}); 
+                        if (err) logging.errorLogger.error("Cannot save board", {origin: "cde.app.board", stack: new Error().stack, request: logging.generateErrorLogRequest(req), details: "board._id "+board._id}); 
                         res.send(b);
                     });                
                 });
@@ -502,7 +502,7 @@ exports.init = function(app, daoManager) {
     app.get('/archivedCdes/:cdeArray', function(req, res) {        
         mongo_data.archivedCdes(req.params.cdeArray, function(err, resultCdes) {
             if (err) {
-                logging.errorLogger.error("Error: Cannot find archived cdes", {origin: "cde.app.archivedCdes"}, req); 
+                logging.errorLogger.error("Error: Cannot find archived cdes", {origin: "cde.app.archivedCdes", stack: new Error().stack}, req); 
                 res.send(500, "Unexpected Error");
             } else res.send(resultCdes);
         });

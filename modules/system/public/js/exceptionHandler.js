@@ -12,9 +12,9 @@
             req.send(JSON.stringify(data)); 
         } catch(e) {}
     }; 
-    window.onerror = function (msg, url, line) {
-        handleError(msg);
-    };
+//    window.onerror = function (msg, url, line) {
+//        handleError(msg);
+//    };
 
     window.addEventListener('error', function (evt) {        
         handleError(evt.error.message, evt.error.message, evt.error.stack);

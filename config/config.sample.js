@@ -46,6 +46,7 @@ var config = {
         , dbname: "test"
         , log: {
             uri: "mongodb://localhost/cde-logs-test"
+            , cappedCollectionSizeMB: 1024*1024*250
         }, local: {
             uri: "mongodb://localhost/local"
         }

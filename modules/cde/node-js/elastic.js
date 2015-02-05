@@ -59,7 +59,7 @@ exports.morelike = function(id, callback) {
             }
             callback(result);
         } else {
-            logging.errorLogger.error("Error: More Like This", {origin: "cde.elastic.morelike", details: "mltConfUri "+mltConfUri+", error "+error+", respone"+JSON.stringify(error)});
+            logging.errorLogger.error("Error: More Like This", {origin: "cde.elastic.morelike", stack: new Error().stack, details: "mltConfUri "+mltConfUri+", error "+error+", respone"+JSON.stringify(error)});
             callback("Error");
         }        
     }); 
@@ -83,7 +83,7 @@ exports.DataElementDistinct = function(field, cb) {
             var list = resp.aggregations.aggregationsName.buckets.map(function(b) {return b.key;});
             cb(list);
         } else {
-            logging.errorLogger.error("Error DataElementDistinct", {origin: "cde.elastic.DataElementDistinct", details: "query "+JSON.stringify(distinctQuery)+"error "+error+"respone"+JSON.stringify(response)});
+            logging.errorLogger.error("Error DataElementDistinct", {origin: "cde.elastic.DataElementDistinct", stack: new Error().stack, details: "query "+JSON.stringify(distinctQuery)+"error "+error+"respone"+JSON.stringify(response)});
         } 
     });           
 };

@@ -37,7 +37,7 @@ exports.elasticsearch = function (query, type, cb) {
                     body  = JSON.stringify(body);
                 } catch (e){}
                 logging.errorLogger.error("Error: ElasticSearch Error", 
-                    {origin: "system.elastic.elasticsearch", 
+                    {origin: "system.elastic.elasticsearch", stack: new Error().stack,
                         details: "query " + querystr + ", body " + body});
                 cb("Server Error");
             }

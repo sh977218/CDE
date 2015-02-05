@@ -40,7 +40,7 @@ MongoErrorLogger.prototype.log = function (level, msg, meta, cb) {
         var message = {
             message: msg
             , origin: meta.origin
-            , stack: meta.stack   
+            , stack: meta.stack || new Error().stack  
             , details: meta.details            
         };
         if (meta.request) message.request = exports.generateErrorLogRequest(meta.request);
