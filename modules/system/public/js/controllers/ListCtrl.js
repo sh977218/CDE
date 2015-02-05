@@ -336,9 +336,9 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $rootScope, $http, screen
                 , itemType: $scope.module
             };
             $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
-                $scope.addAlert("success", "Elements classified.");  
+                $scope.addAlert("success", "All elements pinned.");  
             }).error(function() {
-                $scope.addAlert("danger", "Elements were not classified completely!");  
+                $scope.addAlert("danger", "Not all elements were not pinned!");  
             });  
         }, function () {
         });        
