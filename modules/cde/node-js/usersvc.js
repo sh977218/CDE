@@ -49,7 +49,7 @@ exports.removePinFromBoard = function(req, res) {
 };
 
 exports.pinAllToBoard = function(req, res) {
-    elastic.elasticsearch(req.body.query, function(result) {
+    elastic.elasticsearch(req.body.query, function(err, result) {
         var ids = result.cdes.map(function(cde) {return cde.tinyId;});        
         var boardId = req.body.board._id;
         mongo_data.boardById(boardId, function(err, board) {

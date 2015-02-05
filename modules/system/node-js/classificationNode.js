@@ -122,7 +122,7 @@ exports.classifyEntireSearch = function(req, cb) {
         };          
         classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);  
     };
-    elastic.elasticsearch(req.query, req.itemType, function(result) {   
+    elastic.elasticsearch(req.query, req.itemType, function(err, result) {   
         var ids = result.cdes.map(function(cde) {return cde._id;});    
         adminItemSvc.bulkAction(ids, action, cb);
     });
