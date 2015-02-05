@@ -18,7 +18,7 @@ exports.send = function(msg, cb) {
         mailOptions.text = msg;
         transporter.sendMail(mailOptions, function(error, info){
             if(error){
-                logging.errorLogger.error("Error: Cannot send email", {origin: "system.email.send", details: "mailOptions "+JSON.stringify(mailOptions)+", error "+error+", info"+info});
+                logging.errorLogger.error("Error: Cannot send email", {origin: "system.email.send", stack: new Error().stack, details: "mailOptions "+JSON.stringify(mailOptions)+", error "+error+", info"+info});
             }else{
                 console.log('Message sent: ' + info.response);
             }
