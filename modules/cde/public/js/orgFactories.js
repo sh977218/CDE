@@ -66,9 +66,9 @@ angular.module('resources')
                 if (!user.orgCurator) user.orgCurator = [];
                 var myOrgs = [].concat(user.orgAdmin, user.orgCurator);
                 var userWgsParentOrgs = myOrgs.filter(function(org) {
-                    return OrgHelpers.orgsDetailedInfo[org].workingGroupOf;
+                    return OrgHelpers.orgsDetailedInfo[org] && OrgHelpers.orgsDetailedInfo[org].workingGroupOf;
                 }).map(function(org) {
-                    return OrgHelpers.orgsDetailedInfo[org].workingGroupOf
+                    return OrgHelpers.orgsDetailedInfo[org].workingGroupOf;
                 });
                 userWgsParentOrgs.forEach(function(parentOrg){
                     if (parentOrg===parentOrgOfThisClass) isSisterOfWg = true;

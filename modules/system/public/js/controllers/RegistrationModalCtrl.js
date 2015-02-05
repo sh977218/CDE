@@ -3,7 +3,7 @@ var RegistrationModalCtrl = function($scope, $modalInstance, $http, elt, siteAdm
     $scope.validRegStatuses = ['Incomplete', 'Candidate', 'Retired'];
     
     $http.get('/org/' + $scope.elt.stewardOrg.name).then(function(res) {
-       if (!res.data.workingGroupOf || res.data.workingGroupOf.length() === "") {
+       if (!res.data.workingGroupOf || res.data.workingGroupOf.length < 1) {
            $scope.validRegStatuses = $scope.validRegStatuses.concat(['Recorded', 'Qualified']);
            if (siteAdmin) {
                $scope.validRegStatuses = $scope.validRegStatuses.concat(['Standard', 'Preferred Standard']);
