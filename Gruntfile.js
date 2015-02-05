@@ -362,7 +362,7 @@ module.exports = function(grunt) {
                     'js/textAngular.min.js': 'textAngular/dist/textAngular.min.js',
                     'js/textAngular-rangy.min.js': 'textAngular/dist/textAngular-rangy.min.js',
                     'js/textAngular-sanitize.min.js': 'textAngular/dist/textAngular-sanitize.min.js',
-                    'js/bootstrap-tour.min.js': 'bootstrap-tour/build/js/bootstrap-tour.min.js'
+                    'js/bootstrap-tour.js': 'bootstrap-tour/build/js/bootstrap-tour.js'
                 }
             },
             map: {
