@@ -266,7 +266,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     
     $scope.loadValueSet = function() {
         var dec = $scope.elt.dataElementConcept;
-        if (dec != null && dec.conceptualDomain != null && dec.conceptualDomain.vsac !=  null) {
+        if (dec && dec.conceptualDomain && dec.conceptualDomain.vsac) {
             $scope.vsacValueSet = [];
             $http({method: "GET", url: "/vsacBridge/" + dec.conceptualDomain.vsac.id}).
              error(function(data, status) {
@@ -306,11 +306,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
     // could prob. merge this into load value set.
     $scope.canLinkPvFunc = function() {
         var dec = $scope.elt.dataElementConcept;
-        $scope.canLinkPv = ($scope.canCurate &&
-                dec !== null &&
-                dec.conceptualDomain !== null &&
-                dec.conceptualDomain.vsac !== null &&
-                dec.conceptualDomain.vsac.id !== null);
+        $scope.canLinkPv = ($scope.canCurate && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
     };   
     
     $scope.loadMlt = function() {
