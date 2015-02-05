@@ -53,6 +53,7 @@ exports.cdeClassification = function(body, action, cb) {
                     };                    
                     
                     if (stewardOrg.workingGroupOf) classifOrg.workingGroup = true;
+                    if (!cde.classification) cde.classification = [];
                     cde.classification.push(classifOrg);
                     steward = classificationShared.findSteward(cde, body.orgName);  
                     classify(steward, cde);
