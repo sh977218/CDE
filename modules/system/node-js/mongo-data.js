@@ -90,7 +90,7 @@ exports.addUser = function(user, callback) {
 
 exports.siteadmins = function(callback) {
     User.find({'siteAdmin': true}).select('username email').exec(function (err, users) {
-        callback("", users);
+        callback(err, users);
     });
 };
 
