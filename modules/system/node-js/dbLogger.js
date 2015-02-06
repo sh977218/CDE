@@ -52,7 +52,7 @@ var iConnectionEstablisherLog = new connectionEstablisher(mongoLogUri, 'Logs');
 iConnectionEstablisherLog.connect(function(conn) {
     LogModel = conn.model('DbLogger', logSchema);
     LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
-    ClientErrorModel = conn.model('DbClientErrorLogger', logErrorSchema);
+    ClientErrorModel = conn.model('DbClientErrorLogger', clientErrorSchema);
 });
 
 exports.log = function(message, callback) {    

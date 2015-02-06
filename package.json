@@ -21,7 +21,7 @@
     "mongodb": "1.4.7",
     "request": "2.36.0",
     "winston": "0.7.3",
-    "gridfs-stream": "0.5.1",
+    "gridfs-stream": "0.5.3",
     "crypto": "0.0.3",
     "http": ">=0.0.0",
     "querystring": "0.2.0",
