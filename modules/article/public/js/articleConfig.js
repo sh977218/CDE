@@ -17,6 +17,10 @@ cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$m
         function ($routeParams, $http, $scope, $window, $modal) {
 
 
+    $scope.canCurate = function() {
+        return $scope.isDocumentationEditor();
+    };
+
     $scope.module = "article";
     this.destination = $routeParams.helpPage;
     $scope.elt = {};
