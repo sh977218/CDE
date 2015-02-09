@@ -496,12 +496,12 @@ exports.init = function(app) {
         });
     });  
     
-    app.get('/testClientSideErrorLogExpress', function(req, res) {
+    app.get('/triggerServerErrorExpress', function(req, res) {
         res.send("received");
         trigger.error();
     });   
     
-    app.get('/testClientSideErrorLogMongoose', function(req, res) {
+    app.get('/triggerServerErrorMongoose', function(req, res) {
         mongo_data_system.orgByName("none", function (result) {
             res.send("received");
             trigger.error();

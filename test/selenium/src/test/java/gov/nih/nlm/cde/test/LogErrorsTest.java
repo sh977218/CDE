@@ -10,9 +10,9 @@ import org.testng.annotations.Test;
 public class LogErrorsTest extends NlmCdeBaseTest {
     @Test
     public void logServerErrors() {        
-        String response = get(baseUrl+"/testClientSideErrorLogExpress").asString();
+        String response = get(baseUrl+"/triggerServerErrorExpress").asString();
         Assert.assertEquals( "received", response );
-        response = get(baseUrl+"/testClientSideErrorLogExpress").asString();
+        response = get(baseUrl+"/triggerServerErrorMongoose").asString();
         Assert.assertEquals( "received", response );
 
         mustBeLoggedInAs(nlm_username, nlm_password);
@@ -23,6 +23,7 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         
         textPresent("ReferenceError: trigger is not defined");
         textPresent("/testClientSideErrorLogExpress");
+        textPresent("/triggerServerErrorMongoose");
         textPresent("app.express.error");
     }  
     
