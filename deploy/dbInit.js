@@ -15,7 +15,7 @@ var defaultBoard = {
 
 db.users.insert({username: 'nlm', password: 'nlm', siteAdmin: true, orgAdmin: ["caBIG","CTEP","NINDS","ACRIN","PS&CC"], viewHistory: []});
 db.users.insert({username: 'cabigAdmin', password: 'pass', orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'user1', password: 'pass', quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'userToPromote', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'reguser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'createUser', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
