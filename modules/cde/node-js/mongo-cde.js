@@ -86,7 +86,7 @@ exports.desByConcept = function (concept, callback) {
 };
 
 exports.byTinyIdAndVersion = function(tinyId, version, callback) {
-    DataElement.findOne({'tinyId': tinyId, "version": version}).exec(function (err, de) {
+    DataElement.findOne({'tinyId': tinyId, "version": version, archived: null}).exec(function (err, de) {
        callback(err, de); 
     });
 };
