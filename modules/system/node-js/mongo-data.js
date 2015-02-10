@@ -205,7 +205,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
 exports.getFile = function(res, id) {
     gfs.exist({ _id: id }, function (err, found) {
         if (err || !found) {
-            res.send(404, "File not found.");
+            res.status(404).send("File not found.");
             return logging.errorLogger.error("File not found.", {origin: "system.mongo.getFile", stack: new Error().stack, details: "fileid "+id});
         }
         gfs.createReadStream({ _id: id }).pipe(res);        

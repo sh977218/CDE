@@ -166,9 +166,9 @@ app.use(function(err, req, res, next){
     }; 
     logging.errorLogger.error("Error: Express Default Error Handler", meta);
     if (err.status === 403) {
-        res.send(403, "Unauthorized");
+        res.status(403).send("Unauthorized");
     } else {
-        res.send(500, 'Something broke!');
+        res.status(500).send('Something broke!');
     }
 });
 

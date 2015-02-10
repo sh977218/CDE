@@ -57,7 +57,7 @@ exports.transferSteward = function(req, res) {
             });
         });
     } else {
-        res.send(400, "Please login first.");
+        res.status(400).send("Please login first.");
     }
 };
 
