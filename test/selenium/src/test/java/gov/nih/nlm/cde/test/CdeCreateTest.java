@@ -84,7 +84,11 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         createBasicCde("AlignmentCDE", "Definition for alignment cde", "CTEP", "DISEASE", "Brain");
 
-        openCdeInList("AlignmentCDE", "Incomplete");
+        try {
+            openCdeInList("AlignmentCDE", "Incomplete");
+        } catch (Exception e) {
+            openCdeInList("AlignmentCDE", "Incomplete");
+        }
         Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
         findElement(By.linkText("View Full Detail")).click();
         textPresent("ctepCurator");
