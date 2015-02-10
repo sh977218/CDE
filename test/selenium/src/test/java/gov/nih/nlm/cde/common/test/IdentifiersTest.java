@@ -43,6 +43,7 @@ public abstract class IdentifiersTest extends CommonTest {
                 findElement(By.id("removeId-" + i)).click();
                 findElement(By.id("confirmRemoveId-" + i)).click();
                 Assert.assertTrue(textPresent("Identifier Removed"));
+                closeAlert();
                 i = ddElts.size();
             }
         }

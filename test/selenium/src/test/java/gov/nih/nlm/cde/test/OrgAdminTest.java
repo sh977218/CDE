@@ -28,18 +28,18 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         findElement(By.linkText("Account Management")).click();
         findElement(By.linkText("Organizations Curators")).click();       
         new Select(findElement(By.name("newOrgCuratorOrgName"))).selectByVisibleText("caBIG");
-        findElement(By.name("newOrgCuratorUsername")).sendKeys("user1");
-        Assert.assertEquals(findElement(By.xpath("//form[@id='newOrgCuratorForm']/div[1]/ul/li[1]/a")).getText(), "user1");
+        findElement(By.name("newOrgCuratorUsername")).sendKeys("userToPromote");
+        Assert.assertEquals(findElement(By.xpath("//form[@id='newOrgCuratorForm']/div[1]/ul/li[1]/a")).getText(), "userToPromote");
         findElement(By.xpath("//form[@id='newOrgCuratorForm']/div[1]/ul/li[1]/a")).click();
         findElement(By.id("newOrgCuratorSubmit")).click();
         Assert.assertTrue(textPresent("Organization Curator Added"));
-        Assert.assertTrue(textPresent("user1"));
+        Assert.assertTrue(textPresent("userToPromote"));
         int orgLength = driver.findElements(By.xpath("//td[starts-with(@id, 'existingOrgCuratorOrgName-')]")).size();
         for (int i = 0; i < orgLength; i++) {
             if ("caBIG".equals(findElement(By.xpath("//td[@id='existingOrgCuratorOrgName-caBIG']")).getText())) {
                 int userLength = driver.findElements(By.xpath("//span[starts-with(@id, 'existingOrgCuratorUsername-" + i + "-')]")).size();
                 for (int j = 0; j < userLength; j++) {
-                    if ("user1".equals(findElement(By.xpath("//span[@id='existingOrgCuratorUsername-" + i + "-" + j + "']")).getText())) {
+                    if ("userToPromote".equals(findElement(By.xpath("//span[@id='existingOrgCuratorUsername-" + i + "-" + j + "']")).getText())) {
                         findElement(By.xpath("//i[@id='removeOrgCuratorUsername-" + i + "-" + j + "']")).click();
                         j = userLength;
                         i = orgLength;
@@ -48,22 +48,22 @@ public class OrgAdminTest extends NlmCdeBaseTest {
             }
         }
         textPresent("Organization Curator Removed");
-        Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("user1"));
+        Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("userToPromote"));
 
         findElement(By.linkText("Organizations Admins")).click();       
         new Select(findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText("caBIG");
-        findElement(By.id("newOrgAdminUsername")).sendKeys("user1");
-        Assert.assertEquals(findElement(By.xpath("//form[@id='newOrgAdminForm']/div[1]/ul/li[1]/a")).getText(), "user1");
+        findElement(By.id("newOrgAdminUsername")).sendKeys("userToPromote");
+        Assert.assertEquals(findElement(By.xpath("//form[@id='newOrgAdminForm']/div[1]/ul/li[1]/a")).getText(), "userToPromote");
         findElement(By.xpath("//form[@id='newOrgAdminForm']/div[1]/ul/li[1]/a")).click();
         findElement(By.id("newOrgAdminSubmit")).click();
         textPresent("Organization Administrator Added");
-        textPresent("user1");
+        textPresent("userToPromote");
         orgLength = driver.findElements(By.xpath("//td[starts-with(@id, 'existingOrgAdminOrgName-')]")).size();
         for (int i = 0; i < orgLength; i++) {
             if ("caBIG".equals(findElement(By.xpath("//td[@id='existingOrgAdminOrgName-caBIG']")).getText())) {
                 int userLength = driver.findElements(By.xpath("//span[starts-with(@id, 'existingOrgAdminUsername-" + i + "-')]")).size();
                 for (int j = 0; j < userLength; j++) {
-                    if ("user1".equals(findElement(By.xpath("//span[@id='existingOrgAdminUsername-" + i + "-" + j + "']")).getText())) {
+                    if ("userToPromote".equals(findElement(By.xpath("//span[@id='existingOrgAdminUsername-" + i + "-" + j + "']")).getText())) {
                         findElement(By.xpath("//i[@id='removeOrgAdminUsername-" + i + "-" + j + "']")).click();
                         j = userLength;
                         i = orgLength;
@@ -72,7 +72,7 @@ public class OrgAdminTest extends NlmCdeBaseTest {
             }
         }
         textPresent("Organization Administrator Removed");
-        Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("user1"));
+        Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("userToPromote"));
     }
     
     @Test
