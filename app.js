@@ -66,7 +66,7 @@ app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ic
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(methodOverride());
-app.use(cookieParser("Jk87fhK"));
+app.use(cookieParser());
 
 
 var expressSettings = {
