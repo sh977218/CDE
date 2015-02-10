@@ -3,7 +3,7 @@
 # Location of node. For dev testing use '.'  for prod testing use 'build'
 NODE_LOC='.'
 
-gradle -b test/selenium/build.gradle -PtestUrl=http://localhost:3001 -PforkNb=8 -Ptimeout=8 -Pbrowser=chrome clean compileTest &
+gradle -b test/selenium/build.gradle -PhubUrl=any -PtestUrl=any -PforkNb=any -Ptimeout=any -Pbrowser=any clean compileTest &
 
 mongo test deploy/dbInit.js
 
