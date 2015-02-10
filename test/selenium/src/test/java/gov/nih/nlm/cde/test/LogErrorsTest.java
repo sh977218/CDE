@@ -22,9 +22,9 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         findElement(By.linkText("Server Errors")).click();        
         
         textPresent("ReferenceError: trigger is not defined");
-        textPresent("/testClientSideErrorLogExpress");
-        textPresent("/triggerServerErrorMongoose");
+        textPresent("/triggerServerErrorExpress");
         textPresent("app.express.error");
+        textPresent("app.domain.error");
     }  
     
     @Test
