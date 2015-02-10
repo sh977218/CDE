@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.openqa.selenium.*;
@@ -17,8 +18,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.support.ui.Select;
@@ -97,12 +96,13 @@ public class NlmCdeBaseTest {
         caps.setCapability(CapabilityType.LOGGING_PREFS, loggingprefs);        
 
         caps.setBrowserName(browser);
-
-
-        baseUrl = "http://130.14.160.123:3001";
-        String hubUrl = "http://localhost:4444/wd/hub";
+        baseUrl = System.getProperty("testUrl");
+        String hubUrl = System.getProperty("hubUrl");
+        System.out.println("hub" + hubUrl);
+        System.out.println("test" + baseUrl);
+        
         try {
-            driver = new RemoteWebDriver(new URL(nodeURL), capabilities);
+            driver = new RemoteWebDriver(new URL(hubUrl), caps);
         } catch (MalformedURLException ex) {
             Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
         }
