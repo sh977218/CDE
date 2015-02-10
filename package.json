@@ -51,6 +51,7 @@
     "async": "0.9.0",
     "grunt-bower-install-simple": "1.0.3",
     "grunt-bowercopy": "1.1.0",
-    "express-ipfilter": "0.0.18"
+    "express-ipfilter": "0.0.18",
+    "multer": "0.1.7"
   }
 }

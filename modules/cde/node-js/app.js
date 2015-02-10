@@ -20,6 +20,7 @@ var cdesvc = require('./cdesvc')
   , appSystem = require('../../system/node-js/app.js')
   , authorizationShared = require("../../system/shared/authorizationShared")
   , async = require("async")
+  , multer  = require('multer')
 ;
 
 exports.init = function(app, daoManager) {
@@ -305,7 +306,8 @@ exports.init = function(app, daoManager) {
     });  
 
     if (config.modules.cde.attachments) {
-        app.post('/attachments/cde/add', function(req, res) {        
+        app.post('/attachments/cde/add', multer(),function(req, res) {  
+            console.log(req.body.id);
             adminItemSvc.addAttachment(req, res, mongo_data);
         });
 
