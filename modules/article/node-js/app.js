@@ -5,6 +5,7 @@ var  path = require('path')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , authorization = require('../../system/node-js/authorization')
     , authorizationShared = require('../../system/shared/authorizationShared')
+    , multer  = require('multer')
 ;
 
 exports.init = function(app) {    
@@ -43,7 +44,7 @@ exports.init = function(app) {
         }
     });
   
-    app.post('/attachments/article/add', function(req, res) {
+    app.post('/attachments/article/add', multer(), function(req, res) {
         if (authorizationShared.hasRole(req.user, "DocumentationEditor")) {
             mongo.byId(req.body.id, function(err, elt) {
                 if (err) res.status(404).end();

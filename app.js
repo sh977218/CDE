@@ -72,8 +72,8 @@ app.use(cookieParser());
 var expressSettings = {
     secret: "Kfji76R"
     , proxy: config.proxy
-    , resave: true
-    , saveUninitialized: true
+    , resave: false
+    , saveUninitialized: false
     , cookie: {httpOnly: true, secure: config.proxy}
 };
 
@@ -101,13 +101,6 @@ app.use(function banHackers(req, res, next) {
     });
     next();
 });    
-
-//app.use(session({
-//  secret: 'keyboard cat',
-//  resave: false,
-//  saveUninitialized: true,
-//  cookie: { secure: true }
-//}));
 
 app.use(function preventSessionCreation(req, res, next) {
     this.isFile = function(req) {
@@ -158,19 +151,19 @@ app.use(function(req, res, next) {
     expressLogger(req, res, next);    
 });
 
-app.use(function(err, req, res, next){
-    var meta = {
-        stack: err.stack
-        , origin: "app.express.error"
-        , request: {username: req.user?req.user.username:null, method: req.method, url: req.url, params: req.params, body: req.body}
-    }; 
-    logging.errorLogger.error("Error: Express Default Error Handler", meta);
-    if (err.status === 403) {
-        res.status(403).send("Unauthorized");
-    } else {
-        res.status(500).send('Something broke!');
-    }
-});
+//app.use(function(err, req, res, next){
+//    var meta = {
+//        stack: err.stack
+//        , origin: "app.express.error"
+//        , request: {username: req.user?req.user.username:null, method: req.method, url: req.url, params: req.params, body: req.body}
+//    }; 
+//    logging.errorLogger.error("Error: Express Default Error Handler", meta);
+//    if (err.status === 403) {
+//        res.status(403).send("Unauthorized");
+//    } else {
+//        res.status(500).send('Something broke!');
+//    }
+//});
 
 app.set('views', path.join(__dirname, './modules'));
 
@@ -197,7 +190,19 @@ try {
     process.exit();
 }
 
-
+app.use(function(err, req, res, next){
+    var meta = {
+        stack: err.stack
+        , origin: "app.express.error"
+        , request: {username: req.user?req.user.username:null, method: req.method, url: req.url, params: req.params, body: req.body}
+    }; 
+    logging.errorLogger.error("Error: Express Default Error Handler", meta);
+    if (err.status === 403) {
+        res.status(403).send("Unauthorized");
+    } else {
+        res.status(500).send('Something broke!');
+    }
+});
 
 
 
