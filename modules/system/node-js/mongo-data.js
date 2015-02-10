@@ -9,6 +9,7 @@ var schemas = require('./schemas')
     , express = require('express')
     , MongoStore = require('./assets/connect-mongo.js')(express)
     , shortid = require("shortid")
+    , logging = require('../../system/node-js/logging.js')
     ;
 
 var conn;
@@ -90,7 +91,7 @@ exports.addUser = function(user, callback) {
 
 exports.siteadmins = function(callback) {
     User.find({'siteAdmin': true}).select('username email').exec(function (err, users) {
-        callback("", users);
+        callback(err, users);
     });
 };
 
@@ -200,8 +201,14 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     fs.createReadStream(file.path).pipe(writestream);
 };
 
-exports.getFile = function(callback, res, id) {
-    gfs.createReadStream({ _id: id }).pipe(res);
+exports.getFile = function(res, id) {
+    gfs.exist({ _id: id }, function (err, found) {
+        if (err || !found) {
+            res.send(404, "File not found.");
+            return logging.errorLogger.error("File not found.", {origin: "system.mongo.getFile", stack: new Error().stack, details: "fileid "+id});
+        }
+        gfs.createReadStream({ _id: id }).pipe(res);        
+    });        
 };
 
 exports.updateOrg = function(org, res) {

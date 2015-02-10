@@ -59,7 +59,7 @@ exports.morelike = function(id, callback) {
             }
             callback(result);
         } else {
-            logging.errorLogger.error("Error: More Like This", {origin: "cde.elastic.morelike", stack: new Error().stack, details: "mltConfUri "+mltConfUri+", error "+error+", respone"+JSON.stringify(error)});
+            logging.errorLogger.error("Error: More Like This", {origin: "cde.elastic.morelike", stack: new Error().stack, details: "mltConfUri " + mltConfUri + ", error: " + error + ", response: " + JSON.stringify(response)});
             callback("Error");
         }        
     }); 

@@ -1,6 +1,7 @@
 var mongoose = require('mongoose')
     , config = require('config')
     , connHelper = require('./connections')
+    , logging = require('./logging')
     ;
     
 var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
@@ -17,14 +18,14 @@ var logSchema = new mongoose.Schema(
     , url: String
     , method: String
     , httpStatus: String
-    , date: {type: String, index: true}
+    , date: {type: Date, index: true}
     , referrer: String
 }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
 var logErrorSchema = new mongoose.Schema(
 {
     message: String
-    , date: {type: String, index: true}
+    , date: {type: Date, index: true}
     , origin: String
     , stack: String
     , details: String
@@ -40,7 +41,7 @@ var logErrorSchema = new mongoose.Schema(
 var clientErrorSchema= new mongoose.Schema(
 {
     message: String
-    , date: {type: String, index: true}
+    , date: {type: Date, index: true}
     , origin: String
     , name: String
     , stack: String
@@ -52,7 +53,7 @@ var iConnectionEstablisherLog = new connectionEstablisher(mongoLogUri, 'Logs');
 iConnectionEstablisherLog.connect(function(conn) {
     LogModel = conn.model('DbLogger', logSchema);
     LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
-    ClientErrorModel = conn.model('DbClientErrorLogger', logErrorSchema);
+    ClientErrorModel = conn.model('DbClientErrorLogger', clientErrorSchema);
 });
 
 exports.log = function(message, callback) {    
@@ -128,6 +129,7 @@ exports.usageByDay = function(callback) {
         {$match: {date: {$exists: true}}}
         , {$group : {_id: {ip: "$remoteAddr", year: {$year: "$date"}, month: {$month: "$date"}, dayOfMonth: {$dayOfMonth: "$date"}}, number: {$sum: 1}}}
         , function (err, result) {
+            if (err || !result) logging.errorLogger.error("Error: Cannot retrieve logs", {origin: "system.dblogger.usageByDay", stack: new Error().stack, details: "err "+err});
             callback(result);
         }
     );

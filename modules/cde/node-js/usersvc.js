@@ -41,9 +41,9 @@ exports.removePinFromBoard = function(req, res) {
                     return board.save(function (err, b) {
                         res.send("Removed");
                     });
-                }
-                res.send("Nothing removed");
+                }                
             }
+            res.send("Nothing removed");
         }
     });
 };
