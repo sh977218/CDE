@@ -1,12 +1,12 @@
 package gov.nih.nlm.cde.test;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
@@ -24,6 +24,8 @@ import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.TimeoutException;
 import java.util.Random;
+import java.util.logging.Logger;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -89,22 +91,24 @@ public class NlmCdeBaseTest {
         }
         
         
-//        caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
+        caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
         LoggingPreferences loggingprefs = new LoggingPreferences();
         loggingprefs.enable(LogType.BROWSER, Level.ALL);
         caps.setCapability(CapabilityType.LOGGING_PREFS, loggingprefs);        
 
-        switch (browser) {
-            case "firefox":
-                driver = new FirefoxDriver(caps);
-                break;
-            case "chrome":
-                driver = new ChromeDriver(caps);
-                break;
-            case "ie":
-                driver = new InternetExplorerDriver(caps);
-                break;
+        caps.setBrowserName(browser);
+
+
+        baseUrl = "http://130.14.160.123:3001";
+        String hubUrl = "http://localhost:4444/wd/hub";
+        try {
+            driver = new RemoteWebDriver(new URL(nodeURL), capabilities);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+
+        
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
