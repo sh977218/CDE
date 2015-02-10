@@ -8,6 +8,11 @@ var express = require('express')
   , crypto = require('crypto')
   , fs = require('fs')
   , config = require('config')  
+  , bodyParser = require('body-parser')
+  , cookieParser = require('cookie-parser')
+  , session = require('express-session')
+  , methodOverride = require('method-override')
+  , morganLogger = require('morgan')
 ;
 
 var app = express();
@@ -17,11 +22,11 @@ app.set('port', config.vsac.port || 4000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(express.cookieParser('your secret here'));
-app.use(express.session({ secret: 'omgnodeworks' }));
+app.use(morganLogger('dev'));
+app.use(bodyParser);
+app.use(methodOverride());
+app.use(cookieParser('your secret here'));
+app.use(session({ secret: 'omgnodeworks' }));
 
 app.get('/vsac/ws/Ticket', function(req, res) {
     res.send("MOCKticket.");

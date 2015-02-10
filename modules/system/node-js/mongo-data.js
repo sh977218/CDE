@@ -7,7 +7,8 @@ var schemas = require('./schemas')
     , conn = mongoose.createConnection(mongoUri)
     , connHelper = require('./connections')
     , express = require('express')
-    , MongoStore = require('./assets/connect-mongo.js')(express)
+    , session = require('express-session')
+    , MongoStore = require('connect-mongo')(session)
     , shortid = require("shortid")
     , logging = require('../../system/node-js/logging.js')
     ;
@@ -27,8 +28,8 @@ iConnectionEstablisherSys.connect(function(resCon) {
     Org = conn.model('Org', schemas.orgSchema);
     User = conn.model('User', schemas.userSchema);
     gfs = Grid(conn.db, mongoose.mongo);
-    sessionStore = new MongoStore({
-        mongoose_connection: resCon  
+    sessionStore = new MongoStore({ 
+        mongooseConnection: resCon  
     });
     exports.sessionStore = sessionStore;
 });

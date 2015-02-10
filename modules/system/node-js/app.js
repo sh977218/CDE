@@ -11,6 +11,7 @@ var passport = require('passport')
   , classificationNode = require('./classificationNode')
   , adminItemSvc = require("./adminItemSvc")       
   , auth = require( './authorization' )
+  , csrf = require('csurf')
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -68,16 +69,16 @@ exports.init = function(app) {
         });
     });
 
-    app.get('/loginText', express.csrf(), function(req, res, next) {
+    app.get('/loginText', csrf(), function(req, res, next) {
         var token = req.csrfToken();
         res.render("loginText", "system", {csrftoken: token});
     });
 
-    app.get('/csrf', express.csrf(), function(req, res) {
+    app.get('/csrf', csrf(), function(req, res) {
         res.send(req.csrfToken());
     });
 
-    app.post('/login', express.csrf(), function(req, res, next) {
+    app.post('/login', csrf(), function(req, res, next) {
         // Regenerate is used so appscan won't complain
         req.session.regenerate(function(err) {  
             passport.authenticate('local', function(err, user, info) {
