@@ -110,8 +110,8 @@ exports.init = function(app, daoManager) {
 
     app.get('/debytinyid/:tinyId/:version?', function(req, res) {
         if (!req.params.version) {
-            mongo_data.cdesByTinyIdList([req.params.tinyId], function(err, cdes) {
-                res.send(cdesvc.hideProprietaryPvs(cdes[0], req.user));
+            mongo_data.eltByTinyId(req.params.tinyId, function(err, cdes) {
+                res.send(cdesvc.hideProprietaryPvs(cdes, req.user));
             }); 
         } else {
             mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, de) {
