@@ -90,7 +90,6 @@ public class NlmCdeBaseTest {
         }
         
         
-        caps.setCapability("chrome.switches", Arrays.asList("--enable-logging", "--v=1"));
         LoggingPreferences loggingprefs = new LoggingPreferences();
         loggingprefs.enable(LogType.BROWSER, Level.ALL);
         caps.setCapability(CapabilityType.LOGGING_PREFS, loggingprefs);        
@@ -98,8 +97,6 @@ public class NlmCdeBaseTest {
         caps.setBrowserName(browser);
         baseUrl = System.getProperty("testUrl");
         String hubUrl = System.getProperty("hubUrl");
-        System.out.println("hub" + hubUrl);
-        System.out.println("test" + baseUrl);
         
         try {
             driver = new RemoteWebDriver(new URL(hubUrl), caps);
