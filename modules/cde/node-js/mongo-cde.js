@@ -86,14 +86,14 @@ exports.desByConcept = function (concept, callback) {
 };
 
 exports.byTinyIdAndVersion = function(tinyId, version, callback) {
-    DataElement.findOne({'tinyId': tinyId, "version": version}).exec(function (err, de) {
-       callback(err, de); 
+    DataElement.find({'tinyId': tinyId, "version": version}).sort({"updated":-1}).limit(1).exec(function (err, des) {
+        callback(err, des[0]); 
     });
 };
 
 exports.eltByTinyId = function(tinyId, callback) {
     DataElement.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, de) {
-       callback(err, de); 
+        callback(err, de); 
     });
 };
 

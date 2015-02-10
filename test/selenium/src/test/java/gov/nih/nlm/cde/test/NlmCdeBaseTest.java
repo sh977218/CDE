@@ -269,9 +269,12 @@ public class NlmCdeBaseTest {
         try {
             openEltInList(name, type, status);
             findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+            textNotPresent("is archived");
         } catch (Exception e) {
             hangon(1);
+            openEltInList(name, type, status);
             findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+            textNotPresent("is archived");
         }
         textPresent("Classification");
         textPresent(name);
