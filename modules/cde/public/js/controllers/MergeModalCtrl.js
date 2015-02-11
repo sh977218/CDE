@@ -11,11 +11,11 @@ function MergeModalCtrl($scope, $modalInstance, cdes, retiredIndex, user) {
             , properties: false            
             , attachments: false
         }
-        , states: [{
-            action: "Filed"
-            , date: new Date()
-            , comment: "cmnt"
-        }]
+//        , states: [{
+//            action: "Filed"
+//            , date: new Date()
+//            , comment: "cmnt"
+//        }]
     };
     $scope.cancel = function() {
         $modalInstance.dismiss('cancel');

@@ -267,6 +267,11 @@ exports.generateTinyId = function() {
 
 exports.createMessage = function(msg, cb) {
     var message = new Message(msg);
+    message.states = [{
+        action: "Filed"
+        , date: new Date()
+        , comment: "cmnt"
+    }];    
     message.save(function() {
         cb();
     });
@@ -298,7 +303,7 @@ exports.getMessages = function(req, callback) {
                         ]
                     },
                     {
-                        "typeRequest.states.0.action": "Filed"
+                        "states.0.action": "Filed"
                     }
                 ]
             };            
@@ -333,7 +338,7 @@ exports.getMessages = function(req, callback) {
                         ]
                     },
                     {
-                        "typeRequest.states.0.action": "Approved"
+                        "states.0.action": "Approved"
                     }
                 ]
             };             

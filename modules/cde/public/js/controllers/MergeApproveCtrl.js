@@ -22,7 +22,7 @@ function MergeApproveCtrl($scope, $modal, Mail, MergeCdes) {
         });
     };
     $scope.closeMessage = function(message) {
-        message.typeRequest.states.unshift({
+        message.states.unshift({
             "action" : "Approved",
             "date" : new Date(),
             "comment" : ""

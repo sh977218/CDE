@@ -113,11 +113,6 @@ var requestSchema = {
         , properties: Boolean
         , classifications: Boolean
     }
-    , states: [{
-        action: String
-        , date: Date
-        , comment: String
-    }]
 };
 
 var commentApprovalSchema = {
@@ -132,6 +127,11 @@ schemas.message = mongoose.Schema ({
     , type: String
     , typeRequest: requestSchema
     , typeCommentApproval: commentApprovalSchema
+    , states: [{
+        action: String
+        , date: Date
+        , comment: String
+    }]    
 });
 
 schemas.message.set('collection', 'messages');
