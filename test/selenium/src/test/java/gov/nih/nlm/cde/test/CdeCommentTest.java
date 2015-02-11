@@ -16,7 +16,7 @@ public class CdeCommentTest extends CommentTest {
     }
     
     
-    /*@Test
+    @Test
     public void cdeComments() {
         comments("Hospital Confidential Institution Referred From");
     }
@@ -29,7 +29,7 @@ public class CdeCommentTest extends CommentTest {
     @Test
     public void siteAdminCanRemoveCdeComment() {
         siteAdminCanRemoveComment("Genbank", null);
-    }*/
+    }
     
     @Test
     public void approvingComments() {

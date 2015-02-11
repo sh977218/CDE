@@ -86,11 +86,6 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
             typeRequest: {
                 source: {id: $scope.elt._id}
                 , destination: {tinyId: $scope.elt.tinyId}
-//                , states: [{
-//                    action: "Filed"
-//                    , date: new Date()
-//                    , comment: "Please review this fork"
-//                }]
             }
         };
         $http.post('/mail/messages/new', message)

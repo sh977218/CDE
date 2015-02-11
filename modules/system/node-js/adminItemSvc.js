@@ -125,7 +125,7 @@ exports.removeAttachment = function(req, res, dao) {
 
 exports.addComment = function(req, res, dao) {
     if (req.isAuthenticated()) {
-        dao.byId(req.body.eltId, function(err, elt) {
+        dao.eltByTinyId(req.body.element.tinyId, function(err, elt) {
             if (!elt || err) {
                 res.send(404, "Element does not exist.");
             } else {
@@ -135,10 +135,22 @@ exports.addComment = function(req, res, dao) {
                     , created: new Date().toJSON()
                     , text: req.body.comment
                 };
-                if (!authorizationShared.hasRole(req.user, "CommentAuthor")) {
+                if (!authorizationShared.hasRole(req.user, "CommentEditor")) {
                     comment.pendingApproval = true;
                     var message = {
-                        
+                        recipient: {recipientType: "group", name: "CommentCurator"}
+                        , author: {authorType: "user", name: req.user.username}
+                        , date: new Date()
+                        , type: "CommentApproval"
+                        , typeCommentApproval: {
+                            element: {tinyId: req.body.element.tinyId}
+                            , comment: {index: elt.comments.length}
+                        }
+                        , states: [{
+                            action: String
+                            , date: Date
+                            , comment: String
+                        }]                          
                     };
                     mongo_data_system.createMessage(message);
                 }
@@ -160,7 +172,7 @@ exports.addComment = function(req, res, dao) {
 
 exports.removeComment = function(req, res, dao) {
     if (req.isAuthenticated()) {
-        dao.byId(req.body.eltId, function (err, elt) {
+        dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
             if (err) {
                 res.send(404, "Element does not exist.");
             }

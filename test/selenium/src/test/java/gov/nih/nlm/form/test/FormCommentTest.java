@@ -17,7 +17,7 @@ public class FormCommentTest extends CommentTest {
     
     @Test
     public void formComments() {
-        comments("Skin Cancer Patient");
+        comments("Risk Factor Questionnaire (RFQ) - Physical Activity and Sleep");
     }
 
     @Test

@@ -11,7 +11,8 @@ function CommentsCtrl($scope, $http) {
     $scope.addComment = function() {  
         $http.post("/comments/" + $scope.module + "/add", {
             comment: $scope.comment.content
-            , eltId: $scope.elt._id
+            //, eltId: $scope.elt._id
+            , element: {tinyId: $scope.elt.tinyId}
         }).then(function(res) {
               $scope.addAlert("success", res.data.message);  
               $scope.elt = res.data.elt;
@@ -22,7 +23,8 @@ function CommentsCtrl($scope, $http) {
     $scope.removeComment = function(commentId) {
         $http.post("/comments/" + $scope.module + "/remove", {
             commentId: commentId
-            , eltId: $scope.elt._id 
+            //, eltId: $scope.elt._id 
+            , element: {tinyId: $scope.elt.tinyId}
         }).then(function (res) {
             $scope.addAlert("success", res.data.message);
             $scope.elt = res.data.elt;
