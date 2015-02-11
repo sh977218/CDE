@@ -16,12 +16,12 @@ exports.save = function(req, res, dao) {
                 if (req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0
                         && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0
                         && !req.user.siteAdmin) {
-                    res.send(403, "not authorized");
+                    res.status(403).send("not authorized");
                 } else if (elt.registrationState && elt.registrationState.registationStatus) {
                     if ((elt.registrationState.registrationStatus !== "Standard" && elt.registrationState.registrationStatus !== " Preferred Standard")
                             && !req.user.siteAdmin)
                         {
-                            return res.send(403, "Not authorized");
+                            return res.status(403).send("Not authorized");
                         }
                 } else {
                     return dao.create(elt, req.user, function(err, savedItem) {
@@ -37,23 +37,23 @@ exports.save = function(req, res, dao) {
                 if (req.user.orgCurator.indexOf(item.stewardOrg.name) < 0
                         && req.user.orgAdmin.indexOf(item.stewardOrg.name) < 0
                         && !req.user.siteAdmin) {
-                    res.send(403, "Not authorized");
+                    res.status(403).send("Not authorized");
                 } else {
                     if ((item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard")
                             && !req.user.siteAdmin) {
-                        res.send(403, "This record is already standard.");
+                        res.status(403).send("This record is already standard.");
                     } else {
                         if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") &&
                                 (item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard")
                                 && !req.user.siteAdmin
                                 )
                         {
-                            res.send(403, "Not authorized");
+                            res.status(403).send("Not authorized");
                         } else {
                             mongo_data_system.orgByName(item.stewardOrg.name, function(org) {
                                 var allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
                                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
-                                    res.send(403, "Not authorized");
+                                    res.status(403).send("Not authorized");
                                 } else {
                                     return dao.update(elt, req.user, function(err, response) {
                                         res.send(response);
@@ -66,7 +66,7 @@ exports.save = function(req, res, dao) {
             });
         }
     } else {
-        res.send(403, "You are not authorized to do this.");
+        res.status(403).send("You are not authorized to do this.");
     }
 };
 
@@ -126,7 +126,7 @@ exports.addComment = function(req, res, dao) {
     if (req.isAuthenticated()) {
         dao.byId(req.body.eltId, function(err, elt) {
             if (!elt || err) {
-                res.send(404, "Element does not exist.");
+                res.status(404).send("Element does not exist.");
             } else {
                 mongo_data_system.userById(req.user._id, function(err, user) {
                     elt.comments.push({
@@ -155,7 +155,7 @@ exports.removeComment = function(req, res, dao) {
     if (req.isAuthenticated()) {
         dao.byId(req.body.eltId, function (err, elt) {
             if (err) {
-                res.send(404, "Element does not exist.");
+                res.status(404).send("Element does not exist.");
             }
             elt.comments.forEach(function(comment, i){
                 if (comment._id == req.body.commentId) {
@@ -199,7 +199,7 @@ exports.acceptFork = function(req, res, dao) {
                     if (req.user.orgCurator.indexOf(orig.stewardOrg.name) < 0
                             && req.user.orgAdmin.indexOf(orig.stewardOrg.name) < 0
                             && !req.user.siteAdmin) {
-                        res.send(403, "not authorized");
+                        res.status(403).send("not authorized");
                     } else {
                         if ((orig.registrationState.registrationStatus === "Standard" || orig.registrationState.registrationStatus === "Preferred Standard")
                                 && !req.user.siteAdmin) {
@@ -210,7 +210,7 @@ exports.acceptFork = function(req, res, dao) {
                                     && !req.user.siteAdmin
                                     )
                             {
-                                res.send(403, "not authorized");
+                                res.status(403).send("not authorized");
                             } else {
                                 return dao.acceptFork(fork, orig, function(err, response) {
                                     res.send(response);
@@ -222,7 +222,7 @@ exports.acceptFork = function(req, res, dao) {
             });
         }
     } else {
-        res.send(403, "You are not authorized to do this.");
+        res.status(403).send("You are not authorized to do this.");
     } 
 };
 
@@ -238,7 +238,7 @@ exports.fork = function(req, res, dao) {
                 if (req.user.orgCurator.length < 0
                         && req.user.orgAdmin.length < 0
                         && !req.user.siteAdmin) {
-                    res.send(403, "not authorized");
+                    res.status(403).send("not authorized");
                 } else {
                     item.stewardOrg.name = req.body.org;
                     item.changeNote = req.body.changeNote;
@@ -249,7 +249,7 @@ exports.fork = function(req, res, dao) {
             });
         }
     } else {
-        res.send(403, "You are not authorized to do this.");
+        res.status(403).send("You are not authorized to do this.");
     }
 };
 
@@ -282,7 +282,7 @@ exports.bulkAction = function(ids, action, cb) {
 
 exports.allPropertiesKeys = function(req, res, dao) {
     dao.allPropertiesKeys(function(err, keys) {
-        if (err) res.send(500, "Unexpected Error");
+        if (err) res.status(500).send("Unexpected Error");
         else {
             res.send(keys);
         }

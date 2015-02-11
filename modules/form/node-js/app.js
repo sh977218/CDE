@@ -5,6 +5,7 @@ var express = require('express')
   , mongo_data = require('./mongo-form')
   , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
   , config = require('config')
+  , multer  = require('multer')
 ;
 
 exports.init = function(app, daoManager) {
@@ -20,7 +21,7 @@ exports.init = function(app, daoManager) {
             adminItemSvc.setAttachmentDefault(req, res, mongo_data);
         });
 
-        app.post('/attachments/form/add', function(req, res) {
+        app.post('/attachments/form/add', multer(), function(req, res) {
             adminItemSvc.addAttachment(req, res, mongo_data);
         });
 
@@ -33,7 +34,7 @@ exports.init = function(app, daoManager) {
     
     app.post('/elasticSearch/form', function(req, res) {
        sharedElastic.elasticsearch(req.body.query, 'form', function(err, result) {
-           if (err) return res.send(400)
+           if (err) return res.status(400).end();
            res.send(result);
        }); 
     });    

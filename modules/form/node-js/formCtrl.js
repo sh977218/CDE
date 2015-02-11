@@ -17,7 +17,7 @@ exports.formById = function(req, res) {
         if (form) {
             res.send(form);
         } else {
-            res.send(404);
+            res.status(404).end();
         }
     });    
 };
