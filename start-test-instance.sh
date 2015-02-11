@@ -3,7 +3,7 @@
 # Location of node. For dev testing use '.'  for prod testing use 'build'
 NODE_LOC='.'
 
-gradle -b test/selenium/build.gradle -PtestUrl=http://localhost:3001 -PforkNb=8 -Ptimeout=8 -Pbrowser=chrome clean compileTest &
+gradle -b test/selenium/build.gradle -PhubUrl=any -PtestUrl=any -PforkNb=8 -Ptimeout=8 -Pbrowser=any clean compileTest &
 
 mongo test deploy/dbInit.js
 
@@ -57,7 +57,7 @@ done
 
 if [ "$curl_res" == "$target" ] 
 then
-    gradle -b test/selenium/build.gradle -PtestUrl=http://localhost:3001 -PforkNb=8 -Ptimeout=8 -Pbrowser=chrome test & 
+    gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=$NB_OF_FORKS -Ptimeout=8 -Pbrowser=chrome test & 
     #gradle -b test/selenium/build.gradle -PtestUrl=http://localhost:3001  -Pbrowser=chrome -PforkNb=12 -Ptimeout=8 test --tests gov.nih.nlm.cde.test.MergeTest* &
     export NODE_ENV=test
     node $NODE_LOC/app > test-console.out

@@ -160,7 +160,7 @@ public class MiscTests extends NlmCdeBaseTest {
         findElement(By.xpath("//button[@data-role='next']")).click();
         textPresent("If a the CDE is used in a Form, it will ");
         findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("This section supports mapping CDE to external exchange");
+        textPresent("This section supports mapping of a CDE to external resources such as C-CDA document templates.");
         findElement(By.xpath("//button[@data-role='next']")).click();
         textPresent("registered users are able to post");
         findElement(By.xpath("//button[@data-role='next']")).click();
@@ -172,7 +172,7 @@ public class MiscTests extends NlmCdeBaseTest {
         findElement(By.xpath("//button[@data-role='next']")).click();
         textPresent("shows all prior states of the CDE");
         findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("steward does not own a CDE, he may choose to create a fork of it");
+        textPresent("would like to propose a change to an existing CDE, he may create a fork");
         findElement(By.xpath("//button[@data-role='end']")).click();
     }
     

@@ -7,7 +7,8 @@ var schemas = require('./schemas')
     , conn = mongoose.createConnection(mongoUri)
     , connHelper = require('./connections')
     , express = require('express')
-    , MongoStore = require('./assets/connect-mongo.js')(express)
+    , session = require('express-session')
+    , MongoStore = require('connect-mongo')(session)
     , shortid = require("shortid")
     , logging = require('../../system/node-js/logging.js')
     ;
@@ -29,8 +30,8 @@ iConnectionEstablisherSys.connect(function(resCon) {
     User = conn.model('User', schemas.userSchema);
     Message = conn.model('Message', schemas.message);
     gfs = Grid(conn.db, mongoose.mongo);
-    sessionStore = new MongoStore({
-        mongoose_connection: resCon  
+    sessionStore = new MongoStore({ 
+        mongooseConnection: resCon  
     });
     exports.sessionStore = sessionStore;
 });
@@ -177,7 +178,7 @@ exports.userTotalSpace = function(Model, name, callback) {
 
 exports.addAttachment = function(file, user, comment, elt, cb) {
     var writestream = gfs.createWriteStream({
-        filename: file.name
+        filename: file.originalname
         , mode: 'w'
         , content_type: file.type
     });
@@ -185,7 +186,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     writestream.on('close', function (newfile) {
         elt.attachments.push({
             fileid: newfile._id
-            , filename: file.name
+            , filename: file.originalname
             , filetype: file.type
             , uploadDate: Date.now()
             , comment: comment 
@@ -206,7 +207,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
 exports.getFile = function(res, id) {
     gfs.exist({ _id: id }, function (err, found) {
         if (err || !found) {
-            res.send(404, "File not found.");
+            res.status(404).send("File not found.");
             return logging.errorLogger.error("File not found.", {origin: "system.mongo.getFile", stack: new Error().stack, details: "fileid "+id});
         }
         gfs.createReadStream({ _id: id }).pipe(res);        
@@ -285,31 +286,103 @@ exports.updateMessage = function(msg, cb) {
     });    
 };
 
+//exports.getMessages = function(req, callback) {
+//   switch (req.params.type) {
+//       case "received":
+//            var authorRecipient = {
+//                $and: [
+//                    {
+//                        $or: [
+//                            {
+//                                "recipient.recipientType": "stewardOrg"
+//                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+//                            }
+//                            , {
+//                                "recipient.recipientType": "user"
+//                                , "recipient.name": req.user.username
+//                            }
+//                        ]
+//                    },
+//                    {
+//                        "states.0.action": "Filed"
+//                    }
+//                ]
+//            };            
+//            break;
+//        case "sent":
+//            var authorRecipient = {
+//                $or: [
+//                    {
+//                        "author.authorType":"stewardOrg"
+//                        , "author.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+//                    }
+//                    , {
+//                        "author.authorType":"user"
+//                        , "author.name": req.user.username
+//                    }
+//                ]
+//            };
+//            break; 
+//        case "archived":
+//            var authorRecipient = {
+//                $and: [
+//                    {
+//                        $or: [
+//                            {
+//                                "recipient.recipientType": "stewardOrg"
+//                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+//                            }
+//                            , {
+//                                "recipient.recipientType": "user"
+//                                , "recipient.name": req.user.username
+//                            }
+//                        ]
+//                    },
+//                    {
+//                        "states.0.action": "Approved"
+//                    }
+//                ]
+//            };             
+//            break;
+//    }
+//    if (!authorRecipient) {
+//        callback("Type not specified!");
+//        return;
+//    }
+//    
+//    Message.find(authorRecipient).where().exec(function(err, result) {
+//        if (!err) callback(null, result);
+//        else callback(err);
+//    });
+//};
+
 exports.getMessages = function(req, callback) {
-   switch (req.params.type) {
-       case "received":
-            var authorRecipient = {
-                $and: [
+    var authorRecipient = {
+        "$and": [
+            {
+                "$or": [
                     {
-                        $or: [
-                            {
-                                "recipient.recipientType": "stewardOrg"
-                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
-                            }
-                            , {
-                                "recipient.recipientType": "user"
-                                , "recipient.name": req.user.username
-                            }
-                        ]
-                    },
-                    {
-                        "states.0.action": "Filed"
+                        "recipient.recipientType": "stewardOrg"
+                        , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                    }
+                    , {
+                        "recipient.recipientType": "user"
+                        , "recipient.name": req.user.username
                     }
                 ]
-            };            
+            },
+            {
+                "states.0.action": null
+            }
+        ]
+    };      
+    
+   switch (req.params.type) {
+       case "received":
+            authorRecipient["$and"][1]["states.0.action"] = "Filed";
             break;
         case "sent":
-            var authorRecipient = {
+            authorRecipient = {
                 $or: [
                     {
                         "author.authorType":"stewardOrg"
@@ -323,25 +396,7 @@ exports.getMessages = function(req, callback) {
             };
             break; 
         case "archived":
-            var authorRecipient = {
-                $and: [
-                    {
-                        $or: [
-                            {
-                                "recipient.recipientType": "stewardOrg"
-                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
-                            }
-                            , {
-                                "recipient.recipientType": "user"
-                                , "recipient.name": req.user.username
-                            }
-                        ]
-                    },
-                    {
-                        "states.0.action": "Approved"
-                    }
-                ]
-            };             
+            authorRecipient["$and"][1]["states.0.action"] = "Approved";            
             break;
     }
     if (!authorRecipient) {

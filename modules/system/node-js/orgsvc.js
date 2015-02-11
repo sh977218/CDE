@@ -52,12 +52,12 @@ exports.transferSteward = function(req, res) {
                 }
                 
                 if(results.length===daoManager.getDaoList().length) {
-                    return res.send(hasError===true ? 400 : 200, concatResultsMessages(results) );                    
+                    return res.status(hasError===true ? 400 : 200).send(concatResultsMessages(results) );                    
                 }
             });
         });
     } else {
-        res.send(400, "Please login first.");
+        res.status(400).send("Please login first.");
     }
 };
 

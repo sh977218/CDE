@@ -11,6 +11,7 @@ var passport = require('passport')
   , classificationNode = require('./classificationNode')
   , adminItemSvc = require("./adminItemSvc")       
   , auth = require( './authorization' )
+  , csrf = require('csurf')
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -61,32 +62,32 @@ exports.init = function(app) {
         mongo_data_system.listOrgsDetailedInfo(function(err, orgs) {
             if (err) {
                 logging.expressErrorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}));
-                res.send(403, 'Failed to get list of orgs detailed info.');
+                res.status(403).send('Failed to get list of orgs detailed info.');
             } else {
                 res.send(orgs);
             }   
         });
     });
 
-    app.get('/loginText', express.csrf(), function(req, res, next) {
+    app.get('/loginText', csrf(), function(req, res, next) {
         var token = req.csrfToken();
         res.render("loginText", "system", {csrftoken: token});
     });
 
-    app.get('/csrf', express.csrf(), function(req, res) {
+    app.get('/csrf', csrf(), function(req, res) {
         res.send(req.csrfToken());
     });
 
-    app.post('/login', express.csrf(), function(req, res, next) {
+    app.post('/login', csrf(), function(req, res, next) {
         // Regenerate is used so appscan won't complain
         req.session.regenerate(function(err) {  
             passport.authenticate('local', function(err, user, info) {
-                if (err) { return res.send(403); }
+                if (err) { return res.status(403).end(); }
                 if (!user) { 
-                    return res.send(403, info.message);
+                    return res.status(403).send(info.message);
                 }
                 req.logIn(user, function(err) {
-                    if (err) { return res.send(403); }
+                    if (err) { return res.status(403).end(); }
                     req.session.passport = {user: req.user._id};
                     return res.send("OK");
                 });
@@ -100,7 +101,7 @@ exports.init = function(app) {
 
     app.get('/logout', function(req, res) {
         if (!req.session) {
-            return res.send(403);
+            return res.status(403).end();
         } 
         req.session.destroy(function (err) {
             req.logout();
@@ -120,7 +121,7 @@ exports.init = function(app) {
                 }
             });
         } else {
-            res.send(403, "You are not authorized.");                    
+            res.status(403).send("You are not authorized.");                    
         }
     });
     
@@ -130,7 +131,7 @@ exports.init = function(app) {
                 res.send(result);
             });
         } else {
-            res.send(403, "You are not authorized.");                    
+            res.status(403).send("You are not authorized.");                    
         }        
     });
 
@@ -147,7 +148,7 @@ exports.init = function(app) {
                 res.send(result);
             });
         } else {
-            res.send(403, "You are not authorized.");                    
+            res.status(403).send("You are not authorized.");                    
         }         
     });
 
@@ -158,7 +159,7 @@ exports.init = function(app) {
                 res.send(users);
             });
         } else {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
         }
     }); 
 
@@ -170,7 +171,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             orgsvc.addOrg(req, res);
         } else {
-            res.send(403, "You are not authorized.");                    
+            res.status(403).send("You are not authorized.");                    
         }
     });
 
@@ -178,7 +179,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             orgsvc.updateOrg(req, res);
         } else {
-            res.send(403, "You are not authorized to update this organization.");                    
+            res.status(403).send("You are not authorized to update this organization.");                    
         }
     });
     
@@ -194,15 +195,15 @@ exports.init = function(app) {
     
     app.post('/user/me', function(req, res) {
         if (!req.user) {
-            res.send(403, "Not authorized");
+            res.status(403).send("Not authorized");
         } else {
             if (req.user._id.toString() !== req.body._id) {
-                res.send(403, "Not authorized");
+                res.status(403).send("Not authorized");
             } else {
                 mongo_data_system.userById(req.user._id, function(err, user) {
                     user.email = req.body.email;
                     user.save(function(err, u) {
-                        if (err) res.send(500, "Unable to save");
+                        if (err) res.status(500).send("Unable to save");
                         res.send("OK");
                     });
                 });
@@ -214,7 +215,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             usersrvc.addSiteAdmin(req, res);
         } else {
-            res.send(403, "You are not authorized.");                    
+            res.status(403).send("You are not authorized.");                    
         }
     });
 
@@ -222,7 +223,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             usersrvc.removeSiteAdmin(req, res);
         } else {
-            res.send(403, "You are not authorized.");                    
+            res.status(403).send("You are not authorized.");                    
         }
     });
 
@@ -243,7 +244,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
             usersrvc.addOrgAdmin(req, res);
         } else {
-            res.send(403, "You are not authorized.");                    
+            res.status(403).send("You are not authorized.");                    
         }
     });
 
@@ -256,7 +257,7 @@ exports.init = function(app) {
                 && req.user && req.user.siteAdmin) {
             res.render('siteAudit', 'system'); //TODO: REMOVE DEPENDENCY
         } else {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
         }
     });
 
@@ -267,7 +268,7 @@ exports.init = function(app) {
                 res.send({users: users});
             });
         } else {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
         }
     });
 
@@ -275,7 +276,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {        
             usersrvc.removeOrgAdmin(req, res);
         } else {
-            res.send(403, "You are not authorized.");                    
+            res.status(403).send("You are not authorized.");                    
         }
     });
 
@@ -283,7 +284,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
             usersrvc.addOrgCurator(req, res);
         } else {
-            res.send(403, "You are not authorized.");                    
+            res.status(403).send("You are not authorized.");                    
         }
     });
 
@@ -291,18 +292,18 @@ exports.init = function(app) {
         if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
             usersrvc.removeOrgCurator(req, res);
         } else {
-            res.send(403, "You are not authorized.");                    
+            res.status(403).send("You are not authorized.");                    
         }
     });    
 
     app.post('/updateUserRoles', function(req, res) {  
         if (req.isAuthenticated() && req.user.siteAdmin) {
             usersrvc.updateUserRoles(req.body, function(err) {
-                if (err) res.send(500);
-                else res.send(200);
+                if (err) res.status(500).end();
+                else res.status(200).end();
             });
         } else {
-            res.send(403, "You are not authorized.");                    
+            res.status(403).send("You are not authorized.");                    
         }
     });    
 
@@ -312,7 +313,7 @@ exports.init = function(app) {
         if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
             res.render('siteaccountmanagement', "system");
         } else {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
         }
     });
 
@@ -326,7 +327,7 @@ exports.init = function(app) {
 
     app.post('/classification/elt', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
             return;
         }      
         classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
@@ -341,21 +342,21 @@ exports.init = function(app) {
     
     app.delete('/classification/elt', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
             return;
         }  
         classificationNode.cdeClassification(req.query, classificationShared.actions.delete, function(err) {
             if (!err) { 
-                res.send(); 
+                res.end(); 
             } else {
-                res.send(202, {error: {message: "Classification does not exists."}});
+                res.status(202).send({error: {message: "Classification does not exists."}});
             }
         });
     });  
     
     app.delete('/classification/org', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
-            res.send(403);
+            res.status(403).end();
             return;
         }  
         classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function(err, org) {
@@ -365,7 +366,7 @@ exports.init = function(app) {
 
     app.post('/classification/org', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.send(403);
+            res.status(403).end();
             return;
         }      
         classificationNode.addOrgClassification(req.body, function(err, org) {
@@ -375,23 +376,23 @@ exports.init = function(app) {
 
     app.post('/classification/rename', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
             return;
         }      
         classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function(err, org) {
             if (!err) res.send(org);
-            else res.send(202, {error: {message: "Classification does not exists."}});
+            else res.status(202).send({error: {message: "Classification does not exists."}});
         });
     });    
  
     app.post('/classifyEntireSearch', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
             return;
         }      
         classificationNode.classifyEntireSearch(req.body, function(err) {
-            if (!err) res.send();
-            else res.send(202, {error: {message: err}});
+            if (!err) res.end();
+            else res.status(202).send({error: {message: err}});
         });        
     });
 
@@ -401,7 +402,7 @@ exports.init = function(app) {
     
     app.post('/classification/bulk/tinyid', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.classification.orgName)) {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
             return;
         }        
         var action = function(elt, actionCallback) {
@@ -418,22 +419,22 @@ exports.init = function(app) {
                 return e.id;
             });
             adminItemSvc.bulkAction(elts, action, function(err) {
-                if (!err) res.send();
-                else res.send(202, {error: {message: err}});
+                if (!err) res.end();
+                else res.status(202).send({error: {message: err}});
             });                
         });        
     });    
 
     app.get('/rsStatus', function(req, res) {
         mongo_data_system.rsStatus(function(err, st) {
-            if (err) res.send(500, err);
+            if (err) res.status(500).end(err);
             else res.send(st);
         });
     });
 
     app.get('/rsConf', function(req, res) {
         mongo_data_system.rsConf(function(err, doc) {
-            if (err) res.send(500, err);
+            if (err) res.status(500).end(err);
             else res.send(doc);
         });
     });
@@ -442,22 +443,22 @@ exports.init = function(app) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             var force = req.body.force === true;
             mongo_data_system.switchToReplSet(config.nccsPrimaryRepl, force, function(err, doc) {
-                if (err) res.send(500, err);
+                if (err) res.status(500).end(err);
                 else res.send(doc);
             });
         } else {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
         }
     });
 
     app.post('/occsPrimary', function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             mongo_data_system.switchToReplSet(config.occsPrimaryRepl, false, function(err, doc) {
-                if (err) res.send(500, err);
+                if (err) res.status(500).end(err);
                 else res.send(doc);
             });
         } else {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
         }
     });
     
@@ -465,7 +466,7 @@ exports.init = function(app) {
         if(auth.isSiteOrgAdmin(req)) {
             usersrvc.getAllUsernames(req, res);
         } else {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
         }
     });
     
@@ -475,7 +476,7 @@ exports.init = function(app) {
                 res.send(result);                
             });
         } else {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
         }
     }); 
     
@@ -485,7 +486,7 @@ exports.init = function(app) {
                 res.send(result);                
             });
         } else {
-            res.send(403, "Not Authorized");
+            res.status(403).send("Not Authorized");
         }
     });   
     

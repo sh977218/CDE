@@ -395,7 +395,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         , {
               element: "a:contains('Mappings')"
               , title: "Mappings"
-              , content: "This section supports mapping CDE to external exchange mechanism such as FIHR or CCDA"
+              , content: "This section supports mapping of a CDE to external resources such as C-CDA document templates."
               , placement: "bottom"
           }              
         , {
@@ -431,7 +431,7 @@ function DEViewCtrl($scope, $routeParams, $window, $http, $timeout, DataElement,
         , {
               element: "a:contains('Forks')"
               , title: "Forks"
-              , content: "When a steward does not own a CDE, he may choose to create a fork of it. This will allow him to work on the CDE and request that the changes be accepted. If accepted, the forked CDE will become the new CDE."
+              , content: "When a user other than the steward would like to propose a change to an existing CDE, he may create a fork for the CDE. Forked version notifies CDE steward of proposed change.  If steward accepts change, forked CDE will become new CDE."
               , placement: "bottom"
           }              
 

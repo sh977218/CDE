@@ -67,7 +67,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         findElement(By.linkText("Attachments")).click();
         textPresent("Upload more files");
         ((JavascriptExecutor) driver).executeScript("$(\"input[type='file']\").show();");
-        findElement(By.id("fileToUpload")).sendKeys(System.getProperty("user.dir") + "/data/glass.jpg");
+        findElement(By.id("fileToUpload")).sendKeys("S:/CDE/data/glass.jpg");
         findElement(By.id("doUploadButton")).click();
 
         Assert.assertEquals("1.38 kB", findElement(By.id("dd_attach_size_0")).getText());
