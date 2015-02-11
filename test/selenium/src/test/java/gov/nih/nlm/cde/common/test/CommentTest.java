@@ -5,13 +5,21 @@ import org.testng.Assert;
 
 public abstract class CommentTest extends CommonTest {
     
+    public void gotoComments(){
+        findElement(By.linkText("Discussions")).click();
+    }
+    
+    public void addComment(String text){
+        gotoComments();
+        findElement(By.name("commentTextArea")).sendKeys(text);
+        findElement(By.name("postComment")).click();
+        Assert.assertTrue(textPresent("Comment added"));    
+    }
+    
     public void comments(String eltName) {
         mustBeLoggedInAs(test_username, test_password);
         goToEltByName(eltName);
-        findElement(By.linkText("Discussions")).click();
-        findElement(By.name("commentTextArea")).sendKeys("My First Comment!");
-        findElement(By.name("postComment")).click();
-        Assert.assertTrue(textPresent("Comment added"));
+        addComment("My First Comment!");
         Assert.assertTrue(textPresent("testuser"));
         Assert.assertTrue(textPresent("My First Comment!"));
         findElement(By.name("commentTextArea")).sendKeys("another comment");
@@ -28,10 +36,7 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(test_username, test_password);
         String commentText = "Inappropriate Comment";
         goToEltByName(eltName, status);
-        findElement(By.linkText("Discussions")).click();
-        findElement(By.name("commentTextArea")).sendKeys(commentText);
-        findElement(By.name("postComment")).click();
-        Assert.assertTrue(textPresent("Comment added"));
+        addComment(commentText);
         logout();
         loginAs(cabigAdmin_username, password);
         goToEltByName(eltName, status);
@@ -52,10 +57,7 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(test_username, test_password);
         String commentText = "Another Inappropriate Comment";
         goToEltByName(eltName, status);
-        findElement(By.linkText("Discussions")).click();
-        findElement(By.name("commentTextArea")).sendKeys(commentText);
-        findElement(By.name("postComment")).click();
-        Assert.assertTrue(textPresent("Comment added"));
+        addComment(commentText);
         logout();
         loginAs(nlm_username, nlm_password);
         goToEltByName(eltName, status);
@@ -70,6 +72,20 @@ public abstract class CommentTest extends CommonTest {
                 Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(commentText) < 0);
             }
         }
+    }    
+    
+    public void approvingComments(String eltName, String status) {
+        String commentText = "Extremely Inappropriate Comment";
+        String censoredText = "pending approval";
+        mustBeLoggedInAs(anonymousCommentUser_username, anonymousCommentUser_password);
+        goToEltByName(eltName, status);
+        addComment(commentText);
+        logout();
+        goToEltByName(eltName, status);
+        gotoComments();
+        textNotPresent(commentText);
+        textPresent(censoredText);
+        
     }
     
 }

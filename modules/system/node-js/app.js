@@ -506,6 +506,43 @@ exports.init = function(app) {
             res.send("received");
             trigger.error();
         });
+    });   
+    
+    app.post('/mail/messages/new', function(req, res) {
+        if (req.isAuthenticated()) {
+            var message = req.body;
+            if (message.author.authorType === "user") {
+                message.author.name = req.user.username;
+            }
+            message.date = new Date();
+            mongo_data_system.createMessage(message, function() {
+              res.send();
+            });
+        } else {
+            res.send(401, "Not Authorized");
+        }
+    });
+
+    app.post('/mail/messages/update', function(req, res) {
+        mongo_data_system.updateMessage(req.body, function(err) {
+            if (err) {
+                res.statusCode = 404;
+                res.send("Error while updating the message");
+            } else {
+                res.send();
+            }
+        });
+    });
+
+    app.get('/mail/template/inbox', function(req, res) {
+        res.render("inbox"); 
+    });
+
+    app.post('/mail/messages/:type', function(req, res) {
+        mongo_data_system.getMessages(req, function(err, messages) {
+            if (err) res.send(404, err);
+            else res.send(messages);
+        });
     });    
     
 };

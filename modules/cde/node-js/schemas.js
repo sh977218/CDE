@@ -124,31 +124,6 @@ schemas.managedContextSchema = mongoose.Schema ({
    name: String 
 });
 
-var requestSchema = {
-    source: {tinyId: String, id: String}
-    , destination: {tinyId: String}
-    , mergeFields: {
-        ids: Boolean
-        , naming: Boolean
-        , attachments: Boolean
-        , properties: Boolean
-        , classifications: Boolean
-    }
-    , states: [{
-        action: String
-        , date: Date
-        , comment: String
-    }]
-};
-
-schemas.message = mongoose.Schema ({
-    recipient: {recipientType: String, name: String},
-    author: {authorType: String, name: String},
-    date: Date,
-    type: String,
-    typeRequest: requestSchema
-});
-
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 
 
 schemas.pinningBoardSchema.pre('save', function(next) {
@@ -157,8 +132,6 @@ schemas.pinningBoardSchema.pre('save', function(next) {
 });
 
 schemas.dataElementSchema.set('collection', 'dataelements');
-
 schemas.pinningBoardSchema.set('collection', 'pinningBoards');
-schemas.message.set('collection', 'messages');
 
 module.exports = schemas;

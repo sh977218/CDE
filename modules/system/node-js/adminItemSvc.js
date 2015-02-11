@@ -3,6 +3,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , classificationNode = require('./classificationNode')
     , async = require('async')
     , auth = require('./authorization.js')
+    , authorizationShared = require('../../system/shared/authorizationShared')
 ;
 
 
@@ -128,21 +129,27 @@ exports.addComment = function(req, res, dao) {
             if (!elt || err) {
                 res.send(404, "Element does not exist.");
             } else {
-                mongo_data_system.userById(req.user._id, function(err, user) {
-                    elt.comments.push({
-                        user: user._id
-                        , username: user.username
-                        , created: new Date().toJSON()
-                        , text: req.body.comment
-                    });
-                    elt.save(function(err) {
-                        if (err) {
-                            res.send(err);
-                            return;
-                        } else {
-                            return res.send({message: "Comment added", elt: elt});
-                        }
-                    });
+                var comment = {
+                    user: req.user._id
+                    , username: req.user.username
+                    , created: new Date().toJSON()
+                    , text: req.body.comment
+                };
+                if (!authorizationShared.hasRole(req.user, "CommentAuthor")) {
+                    comment.pendingApproval = true;
+                    var message = {
+                        
+                    };
+                    mongo_data_system.createMessage(message);
+                }
+                elt.comments.push(comment);
+                elt.save(function(err) {
+                    if (err) {
+                        res.send(err);
+                        return;
+                    } else {
+                        return res.send({message: "Comment added", elt: elt});
+                    }
                 });
             }
         });
@@ -287,4 +294,11 @@ exports.allPropertiesKeys = function(req, res, dao) {
             res.send(keys);
         }
     });
+};
+
+exports.hideUnapprovedComments = function(adminItem) {
+    adminItem.comments.forEach(function(c) {
+        if (c.pendingApproval) c.text = "This comment is pending approval.";
+    });
+    return adminItem;
 };

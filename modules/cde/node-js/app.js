@@ -20,6 +20,7 @@ var cdesvc = require('./cdesvc')
   , appSystem = require('../../system/node-js/app.js')
   , authorizationShared = require("../../system/shared/authorizationShared")
   , async = require("async")
+  , mongo_system = require('../../system/node-js/mongo-data')
 ;
 
 exports.init = function(app, daoManager) {
@@ -104,7 +105,9 @@ exports.init = function(app, daoManager) {
 
     app.get('/dataelement/:id', function(req, res) {  
         cdesvc.show(req, function(result) {
-            res.send(cdesvc.hideProprietaryPvs(result, req.user));
+            var cde = cdesvc.hideProprietaryPvs(result, req.user);
+            cde = adminItemSvc.hideUnapprovedComments(cde);
+            res.send(cde);
         });
     });
 
@@ -385,43 +388,6 @@ exports.init = function(app, daoManager) {
 
     app.get('/permissibleValueCodeSystemList', function(req, res) {
         res.send(elastic.pVCodeSystemList);
-    });
-
-    app.post('/mail/messages/new', function(req, res) {
-        if (req.isAuthenticated()) {
-            var message = req.body;
-            if (message.author.authorType === "user") {
-                message.author.name = req.user.username;
-            }
-            message.date = new Date();
-            mongo_data.createMessage(message, function() {
-              res.send();
-            });
-        } else {
-            res.send(401, "Not Authorized");
-        }
-    });
-
-    app.post('/mail/messages/update', function(req, res) {
-        mongo_data.updateMessage(req.body, function(err) {
-            if (err) {
-                res.statusCode = 404;
-                res.send("Error while updating the message");
-            } else {
-                res.send();
-            }
-        });
-    });
-
-    app.get('/mail/template/inbox', function(req, res) {
-        res.render("inbox"); 
-    });
-
-    app.post('/mail/messages/:type', function(req, res) {
-        mongo_data.getMessages(req, function(err, messages) {
-            if (err) res.send(404, err);
-            else res.send(messages);
-        });
     });
 
     app.post('/retireCde', function (req, res) {

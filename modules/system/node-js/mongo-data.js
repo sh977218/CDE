@@ -19,6 +19,7 @@ var User;
 var gfs;
 var connectionEstablisher = connHelper.connectionEstablisher;
 var sessionStore;
+var Message;
 
 var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');
 iConnectionEstablisherSys.connect(function(resCon) {
@@ -26,6 +27,7 @@ iConnectionEstablisherSys.connect(function(resCon) {
     conn = resCon;
     Org = conn.model('Org', schemas.orgSchema);
     User = conn.model('User', schemas.userSchema);
+    Message = conn.model('Message', schemas.message);
     gfs = Grid(conn.db, mongoose.mongo);
     sessionStore = new MongoStore({
         mongoose_connection: resCon  
@@ -261,4 +263,89 @@ exports.getAllUsernames = function(callback) {
 
 exports.generateTinyId = function() {
     return shortid.generate().replace(/-/g,"_");
+};
+
+exports.createMessage = function(msg, cb) {
+    var message = new Message(msg);
+    message.save(function() {
+        cb();
+    });
+};
+
+exports.updateMessage = function(msg, cb) {
+    var id = msg._id;
+    delete msg._id;
+    Message.update({_id: id}, msg).exec(function(err) {
+        cb(err);
+    });    
+};
+
+exports.getMessages = function(req, callback) {
+   switch (req.params.type) {
+       case "received":
+            var authorRecipient = {
+                $and: [
+                    {
+                        $or: [
+                            {
+                                "recipient.recipientType": "stewardOrg"
+                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                            }
+                            , {
+                                "recipient.recipientType": "user"
+                                , "recipient.name": req.user.username
+                            }
+                        ]
+                    },
+                    {
+                        "typeRequest.states.0.action": "Filed"
+                    }
+                ]
+            };            
+            break;
+        case "sent":
+            var authorRecipient = {
+                $or: [
+                    {
+                        "author.authorType":"stewardOrg"
+                        , "author.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                    }
+                    , {
+                        "author.authorType":"user"
+                        , "author.name": req.user.username
+                    }
+                ]
+            };
+            break; 
+        case "archived":
+            var authorRecipient = {
+                $and: [
+                    {
+                        $or: [
+                            {
+                                "recipient.recipientType": "stewardOrg"
+                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                            }
+                            , {
+                                "recipient.recipientType": "user"
+                                , "recipient.name": req.user.username
+                            }
+                        ]
+                    },
+                    {
+                        "typeRequest.states.0.action": "Approved"
+                    }
+                ]
+            };             
+            break;
+    }
+    if (!authorRecipient) {
+        callback("Type not specified!");
+        return;
+    }
+    
+    Message.find(authorRecipient).where().exec(function(err, result) {
+        if (!err) callback(null, result);
+        else callback(err);
+    });
 };

@@ -93,6 +93,7 @@ schemas.commentSchema = {
     , user: String
     , username: String
     , created: Date
+    , pendingApproval: Boolean
 };
 
 schemas.helpItemSchema = mongoose.Schema({
@@ -100,5 +101,39 @@ schemas.helpItemSchema = mongoose.Schema({
     , title: String
     , tags: [String]
 });
+
+
+var requestSchema = {
+    source: {tinyId: String, id: String}
+    , destination: {tinyId: String}
+    , mergeFields: {
+        ids: Boolean
+        , naming: Boolean
+        , attachments: Boolean
+        , properties: Boolean
+        , classifications: Boolean
+    }
+    , states: [{
+        action: String
+        , date: Date
+        , comment: String
+    }]
+};
+
+var commentApprovalSchema = {
+    element: {tinyId: String}
+    , comment: {index: Number}
+};
+
+schemas.message = mongoose.Schema ({
+    recipient: {recipientType: String, name: String}
+    , author: {authorType: String, name: String}
+    , date: Date
+    , type: String
+    , typeRequest: requestSchema
+    , typeCommentApproval: commentApprovalSchema
+});
+
+schemas.message.set('collection', 'messages');
 
 module.exports = schemas;
