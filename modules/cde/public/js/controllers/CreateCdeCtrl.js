@@ -6,10 +6,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
     $scope.module = "cde";
     $scope.searchForm = {};
     $scope.classifSubEltPage = '/cde/public/html/classif-elt-createCde.html';
-    $scope.$watch('currentPage', function() {
-        $scope.showSuggestions();
-    }); 
-        
+
     $scope.elt = { classification: [], stewardOrg: {}}; 
     
     if ($scope.myOrgs.length === 1) {
@@ -92,7 +89,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
                     $scope.totalItems = result.totalNumber;
                 });
             });
-        }, 1000);
+        }, 0);
     };
 
     $scope.openSelectDefaultClassificationModal = function () {
@@ -164,6 +161,5 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
             $scope.removeClassification(orgName, pathArray);
         });
     };
-
     
 }
