@@ -9,13 +9,18 @@ var express = require('express')
   , LocalStrategy = require('passport-local').Strategy
   , mongo_data_system = require('./modules/system/node-js/mongo-data')
   , config = require('config')
-  , MongoStore = require('./modules/system/node-js/assets/connect-mongo.js')(express)
+  , session = require('express-session')
+  , MongoStore = require('connect-mongo')(session)
   , favicon = require('serve-favicon')
   , auth = require( './modules/system/node-js/authentication' )//TODO: MOVE TO SYSTEM
   , logging = require('./modules/system/node-js/logging.js')
   , daoManager = require('./modules/system/node-js/moduleDaoManager.js')
   , domain = require('domain').create()
   , ipfilter = require('express-ipfilter')
+  , bodyParser = require('body-parser')
+  , cookieParser = require('cookie-parser')
+  , methodOverride = require('method-override')
+  , morganLogger = require('morgan')  
 ;
 
 require('log-buffer')(config.logBufferSize || 4096);
@@ -57,14 +62,18 @@ app.set('trust proxy', true);
 
 app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ico')));//TODO: MOVE TO SYSTEM
 
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(express.cookieParser("Jk87fhK"));
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(methodOverride());
+app.use(cookieParser());
 
 
 var expressSettings = {
     secret: "Kfji76R"
     , proxy: config.proxy
+    , resave: false
+    , saveUninitialized: false
     , cookie: {httpOnly: true, secure: config.proxy}
 };
 
@@ -102,7 +111,7 @@ app.use(function preventSessionCreation(req, res, next) {
     };
     if ((req.cookies['connect.sid'] || req.originalUrl === "/login") && !this.isFile(req)) {
         expressSettings.store = mongo_data_system.sessionStore;
-        var initExpressSession = express.session(expressSettings);
+        var initExpressSession = session(expressSettings);
         initExpressSession(req, res, next);
    } else {
        next();
@@ -121,11 +130,11 @@ app.use(passport.session());
 
 var logFormat = {remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
 
-express.logger.token('real-remote-addr', function(req) {
+morganLogger.token('real-remote-addr', function(req) {
     return getRealIp(req);
 });
 
-var expressLogger = express.logger({format: JSON.stringify(logFormat), stream: winstonStream});
+var expressLogger = morganLogger(JSON.stringify(logFormat), {stream: winstonStream});
 
 var connections = 0;
 setInterval(function() {
@@ -140,22 +149,6 @@ app.use(function(req, res, next) {
         return;
     }
     expressLogger(req, res, next);    
-});
-
-app.use(app.router);
-
-app.use(function(err, req, res, next){
-    var meta = {
-        stack: err.stack
-        , origin: "app.express.error"
-        , request: {username: req.user?req.user.username:null, method: req.method, url: req.url, params: req.params, body: req.body}
-    }; 
-    logging.errorLogger.error("Error: Express Default Error Handler", meta);
-    if (err.status === 403) {
-        res.send(403, "Unauthorized");
-    } else {
-        res.send(500, 'Something broke!');
-    }
 });
 
 app.set('views', path.join(__dirname, './modules'));
@@ -183,7 +176,19 @@ try {
     process.exit();
 }
 
-
+app.use(function(err, req, res, next){
+    var meta = {
+        stack: err.stack
+        , origin: "app.express.error"
+        , request: {username: req.user?req.user.username:null, method: req.method, url: req.url, params: req.params, body: req.body}
+    }; 
+    logging.errorLogger.error("Error: Express Default Error Handler", meta);
+    if (err.status === 403) {
+        res.status(403).send("Unauthorized");
+    } else {
+        res.status(500).send('Something broke!');
+    }
+});
 
 
 

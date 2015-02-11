@@ -15,7 +15,7 @@ exports.moveClassifications = function(request, cb) {
             destination = cde[0];            
         }
         if (!usersvc.isCuratorOf(request.user, source.stewardOrg.name)) {
-            res.send(403);
+            res.status(403).end();
             return;
         }              
         classificationShared.transferClassifications(source, destination);

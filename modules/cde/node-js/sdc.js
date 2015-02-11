@@ -52,10 +52,10 @@ var sdcExport = function(req, res, cde) {
 exports.byId = function (req, res) {
     mongo_data.byId(req.params.id, function(err, cde) {
         if (err) {
-            return res.send(500, "Error");
+            return res.status(500).send("Error");
         };
         if (!cde) {
-            return res.send(404, "No such Element");
+            return res.status(404).send("No such Element");
         };
         sdcExport(req, res, cde); 
     });
@@ -64,10 +64,10 @@ exports.byId = function (req, res) {
 exports.byTinyIdVersion = function (req, res) {
     mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, cde) {
         if (err) {
-            return res.send(500, "Error");
+            return res.status(500).send("Error");
         };
         if (!cde) {
-            return res.send(404, "No such Element");
+            return res.status(404).send("No such Element");
         };
         sdcExport(req, res, cde); 
     });
