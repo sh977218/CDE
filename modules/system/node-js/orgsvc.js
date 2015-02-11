@@ -52,7 +52,7 @@ exports.transferSteward = function(req, res) {
                 }
                 
                 if(results.length===daoManager.getDaoList().length) {
-                    return res.send(hasError===true ? 400 : 200, concatResultsMessages(results) );                    
+                    return res.status(hasError===true ? 400 : 200).send(concatResultsMessages(results) );                    
                 }
             });
         });
