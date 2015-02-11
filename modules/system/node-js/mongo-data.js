@@ -176,7 +176,7 @@ exports.userTotalSpace = function(Model, name, callback) {
 
 exports.addAttachment = function(file, user, comment, elt, cb) {
     var writestream = gfs.createWriteStream({
-        filename: file.name
+        filename: file.originalname
         , mode: 'w'
         , content_type: file.type
     });
@@ -184,7 +184,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     writestream.on('close', function (newfile) {
         elt.attachments.push({
             fileid: newfile._id
-            , filename: file.name
+            , filename: file.originalname
             , filetype: file.type
             , uploadDate: Date.now()
             , comment: comment 

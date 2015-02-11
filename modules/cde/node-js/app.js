@@ -307,7 +307,6 @@ exports.init = function(app, daoManager) {
 
     if (config.modules.cde.attachments) {
         app.post('/attachments/cde/add', multer(),function(req, res) {  
-            console.log(req.body.id);
             adminItemSvc.addAttachment(req, res, mongo_data);
         });
 
