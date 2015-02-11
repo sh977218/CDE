@@ -266,14 +266,14 @@ exports.generateTinyId = function() {
 };
 
 exports.createMessage = function(msg, cb) {
-    var message = new Message(msg);
-    message.states = [{
+    msg.states = [{
         action: "Filed"
         , date: new Date()
         , comment: "cmnt"
-    }];    
+    }];      
+    var message = new Message(msg);  
     message.save(function() {
-        cb();
+        if (cb) cb();
     });
 };
 

@@ -24,7 +24,7 @@ function InboxCtrl($scope, Mail, CdeList) {
            var cdesKeyValuePair = {};
            result.map(function(cde) { cdesKeyValuePair[cde.tinyId] = cde; });
            $scope.mail[type].map(function(message) {
-               if (message.type!=="Merge Request") return;
+               if (message.type!=="MergeRequest") return;
                message.typeRequest.source.object = cdesKeyValuePair[message.typeRequest.source.tinyId];
                message.typeRequest.destination.object = cdesKeyValuePair[message.typeRequest.destination.tinyId];
            });

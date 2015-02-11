@@ -53,7 +53,7 @@ angular.module('resources')
                 recipient: {recipientType: "stewardOrg", name: dat.recipient},
                 author: {authorType: "user", name: dat.author},
                 date: new Date(),
-                type: "Merge Request",
+                type: "MergeRequest",
                 typeRequest: dat.mergeRequest
             };
             Mail.sendMessage(message, success);
