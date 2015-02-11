@@ -286,76 +286,6 @@ exports.updateMessage = function(msg, cb) {
     });    
 };
 
-//exports.getMessages = function(req, callback) {
-//   switch (req.params.type) {
-//       case "received":
-//            var authorRecipient = {
-//                $and: [
-//                    {
-//                        $or: [
-//                            {
-//                                "recipient.recipientType": "stewardOrg"
-//                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
-//                            }
-//                            , {
-//                                "recipient.recipientType": "user"
-//                                , "recipient.name": req.user.username
-//                            }
-//                        ]
-//                    },
-//                    {
-//                        "states.0.action": "Filed"
-//                    }
-//                ]
-//            };            
-//            break;
-//        case "sent":
-//            var authorRecipient = {
-//                $or: [
-//                    {
-//                        "author.authorType":"stewardOrg"
-//                        , "author.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
-//                    }
-//                    , {
-//                        "author.authorType":"user"
-//                        , "author.name": req.user.username
-//                    }
-//                ]
-//            };
-//            break; 
-//        case "archived":
-//            var authorRecipient = {
-//                $and: [
-//                    {
-//                        $or: [
-//                            {
-//                                "recipient.recipientType": "stewardOrg"
-//                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
-//                            }
-//                            , {
-//                                "recipient.recipientType": "user"
-//                                , "recipient.name": req.user.username
-//                            }
-//                        ]
-//                    },
-//                    {
-//                        "states.0.action": "Approved"
-//                    }
-//                ]
-//            };             
-//            break;
-//    }
-//    if (!authorRecipient) {
-//        callback("Type not specified!");
-//        return;
-//    }
-//    
-//    Message.find(authorRecipient).where().exec(function(err, result) {
-//        if (!err) callback(null, result);
-//        else callback(err);
-//    });
-//};
-
 exports.getMessages = function(req, callback) {
     var authorRecipient = {
         "$and": [
@@ -377,7 +307,15 @@ exports.getMessages = function(req, callback) {
         ]
     };      
     
-   switch (req.params.type) {
+    req.user.roles.forEach(function(r){
+        var roleFilter = {
+            "recipient.recipientType": "role"
+            , "recipient.name": r
+        };        
+        authorRecipient["$and"][0]["$or"].push(roleFilter);
+    });
+    
+    switch (req.params.type) {
        case "received":
             authorRecipient["$and"][1]["states.0.action"] = "Filed";
             break;
