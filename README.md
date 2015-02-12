@@ -9,13 +9,13 @@
     * Gradle
     * Groovy
     * Mongodb - 2.6.7
-    * ElasticSearch 1.4.2
+    * ElasticSearch 1.4.3
     * Elastic River for MongoDB - 2.0.5
 
 **ElasticSearch** should be installed with the river for mongo plugin.
 
 ```sh
-$> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.2.tar.gz
+$> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.3.tar.gz
 ```
 
 configure **elascticsearch.yml** 
