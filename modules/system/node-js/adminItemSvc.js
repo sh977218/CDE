@@ -6,6 +6,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , authorizationShared = require('../../system/shared/authorizationShared')
 ;
 
+var commentPendingApprovalText = "This comment is pending approval.";
 
 exports.save = function(req, res, dao) {
     var elt = req.body;
@@ -160,6 +161,7 @@ exports.addComment = function(req, res, dao) {
                         res.send(err);
                         return;
                     } else {
+                        elt = exports.hideUnapprovedComments(elt);
                         return res.send({message: "Comment added", elt: elt});
                     }
                 });
@@ -310,7 +312,7 @@ exports.allPropertiesKeys = function(req, res, dao) {
 
 exports.hideUnapprovedComments = function(adminItem) {
     adminItem.comments.forEach(function(c) {
-        if (c.pendingApproval) c.text = "This comment is pending approval.";
+        if (c.pendingApproval) c.text = commentPendingApprovalText;
     });
     return adminItem;
 };

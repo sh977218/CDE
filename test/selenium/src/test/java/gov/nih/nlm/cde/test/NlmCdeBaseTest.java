@@ -62,6 +62,8 @@ public class NlmCdeBaseTest {
     protected static String createUser_username = "createUser";
     protected static String anonymousCommentUser_username = "anonymousCommentUser";
     protected static String anonymousCommentUser_password = "pass";
+    protected static String commentEditor_username = "commentEditor";
+    protected static String commentEditor_password = "pass";    
 
     protected static String password = "pass";
 
@@ -582,4 +584,10 @@ public class NlmCdeBaseTest {
         closeAlert();
     }
 
+    
+    protected void gotoInbox(){
+        findElement(By.id("username_link")).click();  
+        findElement(By.linkText("Inbox")).click();    
+    }    
+    
 }

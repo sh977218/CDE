@@ -225,5 +225,9 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     $interval(function() {
         OrgHelpers.getOrgsDetailedInfoAPI();
     }, GLOBALS.getOrgsInterval);
+    
+    $scope.inboxVisible = function() {
+        return isOrgCurator()||isOrgAdmin()||exports.hasRole($scope.user, "CommentEditor");
+    };
 
 }

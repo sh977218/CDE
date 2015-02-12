@@ -80,11 +80,18 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(anonymousCommentUser_username, anonymousCommentUser_password);
         goToEltByName(eltName, status);
         addComment(commentText);
+        textNotPresent(commentText);
+        textPresent(censoredText);        
         logout();
         goToEltByName(eltName, status);
         gotoComments();
         textNotPresent(commentText);
         textPresent(censoredText);
+        
+        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
+        gotoInbox();
+        findElement(By.cssSelector(".accordion-toggle")).click();  
+    
         
     }
     

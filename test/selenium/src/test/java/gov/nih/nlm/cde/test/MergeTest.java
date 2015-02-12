@@ -26,11 +26,6 @@ public class MergeTest extends NlmCdeBaseTest {
         hangon(1);
     }
     
-    private void gotoInbox(){
-        findElement(By.id("username_link")).click();  
-        findElement(By.linkText("Inbox")).click();    
-    }
-    
     private void acceptMergeRequest() {
         mustBeLoggedInAs(ctepCurator_username, password);
         gotoInbox();

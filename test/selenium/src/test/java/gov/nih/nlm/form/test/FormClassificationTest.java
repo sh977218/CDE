@@ -38,6 +38,7 @@ public class FormClassificationTest extends BaseFormTest {
         createForm(formName, formDef, formV, "NINDS");
         new SectionTest().addSection("Patient Information", null);
         new SectionTest().addSection("Diagnostic Methods", null);
+        scrollTo("0");
         findElement(By.id("startAddingQuestions")).click();
         String cde1 = "Informed consent type",
                 cde2 = "Person Birth Date",
