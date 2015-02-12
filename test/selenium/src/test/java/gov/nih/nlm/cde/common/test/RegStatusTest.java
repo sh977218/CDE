@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.common.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
@@ -14,6 +15,26 @@ public abstract class RegStatusTest extends CommonTest {
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(to);
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
+    }
+    
+    public void cancelRegStatus(String eltName, String user) {
+        mustBeLoggedInAs(user, password);
+        goToEltByName(eltName);
+        textPresent("Qualified");
+        findElement(By.id("editStatus")).click();
+        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
+        findElement(By.id("cancelRegStatus")).click();
+        Assert.assertEquals(findElement(By.id("dd_status")).getText(), "Qualified");
+    }
+
+    public void cantEditStatusIfPendingChanges(String eltName, String user) {
+        mustBeLoggedInAs(user, password);
+        goToEltByName(eltName);
+        textPresent("Qualified");
+        findElement(By.cssSelector("i.fa-edit")).click();
+        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
+        findElement(By.cssSelector(".fa-check")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editStatus")));
     }
     
     public void changeRegistrationStatus(String eltName, String user) {
