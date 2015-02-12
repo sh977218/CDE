@@ -8,14 +8,14 @@
     * Node.js 0.10.x
     * Gradle
     * Groovy
-    * Mongodb - 2.4.9
-    * ElasticSearch 1.1.1
-    * Elastic River for MongoDB - 1.7.3
+    * Mongodb - 2.6.7
+    * ElasticSearch 1.4.2
+    * Elastic River for MongoDB - 2.0.5
 
 **ElasticSearch** should be installed with the river for mongo plugin.
 
 ```sh
-$> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.1.tar.gz
+$> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.2.tar.gz
 ```
 
 configure **elascticsearch.yml** 
@@ -30,9 +30,12 @@ configure **elascticsearch.yml**
     * node.data: true
     * index.number_of_shards: 1
     * index.number_of_replicas: 0
+    * script.disable_dynamic: false
+    * script.groovy.sandbox.enabled: false
+    * script.js.sandbox.enabled: true
 
 ```sh
-$> bin/plugin --install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/1.7.3
+$> ./bin/plugin --install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/2.0.5
 ```
 
 Versions numbers should match per river plugin doc. 
@@ -40,14 +43,14 @@ Versions numbers should match per river plugin doc.
 Install javascript plugin
 
 ```sh
-$> bin/plugin -install elasticsearch/elasticsearch-lang-javascript/1.4.0
+$> ./bin/plugin --install elasticsearch/elasticsearch-lang-javascript/2.3.1
 ```
 
 
 Install mapper attachment plugin
 
 ```sh
-$> bin/plugin -install elasticsearch/elasticsearch-mapper-attachments/1.6.0
+$> ./bin/plugin --install elasticsearch/elasticsearch-mapper-attachments/2.4.1
 ```
 
 **Note:** Get the latest version of the plugins at: http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/modules-plugins.html

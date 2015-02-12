@@ -21,7 +21,6 @@ var app = express();
 app.set('port', config.vsac.port || 4000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-app.use(express.favicon());
 app.use(morganLogger('dev'));
 app.use(bodyParser);
 app.use(methodOverride());
