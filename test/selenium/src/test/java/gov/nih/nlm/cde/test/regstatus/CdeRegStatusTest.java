@@ -39,6 +39,16 @@ public class CdeRegStatusTest extends RegStatusTest {
     }
     
     @Test
+    public void cancelRegStatus() {
+        
+    }
+    
+    @Test
+    public void cantEditStatusIfPendingChanges() {
+        
+    }
+    
+    @Test
     public void changeRegistrationStatus() {
         changeRegistrationStatus("Investigator Identifier java.lang.Integer", cabigAdmin_username);
     }
