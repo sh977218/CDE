@@ -19,6 +19,16 @@ public class FormRegStatus extends RegStatusTest {
     public void changeRegistrationStatus() {
         changeRegistrationStatus("Form Status Test", ctepCurator_username);
     }
+    
+    @Test
+    public void cancelRegStatus() {
+        cancelRegStatus("Laboratory Tests", ninds_username);
+    }   
+    
+    @Test
+    public void cantEditStatusIfPendingChanges() {
+        cantEditStatusIfPendingChanges("Laboratory Tests", ninds_username);        
+    }
         
     @Test
     public void retire() {
