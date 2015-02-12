@@ -227,7 +227,8 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     }, GLOBALS.getOrgsInterval);
     
     $scope.inboxVisible = function() {
-        return isOrgCurator()||isOrgAdmin()||exports.hasRole($scope.user, "CommentEditor");
+        //aaa();
+        return $scope.isOrgCurator()||$scope.isOrgAdmin()||exports.hasRole($scope.user, "CommentEditor");
     };
 
 }
