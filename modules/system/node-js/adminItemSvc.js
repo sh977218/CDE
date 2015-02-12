@@ -136,10 +136,10 @@ exports.addComment = function(req, res, dao) {
                     , created: new Date().toJSON()
                     , text: req.body.comment
                 };
-                if (!authorizationShared.hasRole(req.user, "CommentEditor")) {
+                if (!authorizationShared.hasRole(req.user, "CommentAuthor")) {
                     comment.pendingApproval = true;
                     var message = {
-                        recipient: {recipientType: "role", name: "CommentCurator"}
+                        recipient: {recipientType: "role", name: "CommentEditor"}
                         , author: {authorType: "user", name: req.user.username}
                         , date: new Date()
                         , type: "CommentApproval"

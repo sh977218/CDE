@@ -298,7 +298,7 @@ exports.getMessages = function(req, callback) {
                     , {
                         "recipient.recipientType": "user"
                         , "recipient.name": req.user.username
-                    }
+                    }                   
                 ]
             },
             {
