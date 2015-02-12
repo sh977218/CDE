@@ -374,13 +374,13 @@ public class NlmCdeBaseTest {
         Sleeper.sleepTight((long) (i * 1000));
     }
 
-    public boolean textPresent(String text, String where) {
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(where), text));
+    public boolean textPresent(String text, By by) {
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
         return true;
     }
     
     public boolean textPresent(String text) {
-        return textPresent(text, "BODY");
+        return textPresent(text, By.cssSelector("BODY"));
     }
 
     public boolean textPresentTrueFalse(String text) {
@@ -479,7 +479,7 @@ public class NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results for");
-        textPresent(cdeName, "#acc_link_0");
+        textPresent(cdeName, By.cssSelector("#acc_link_0"));
         findElement(By.id("addToCompare_0")).click();
         hangon(.5);
         findElement(By.name("ftsearch")).clear();
