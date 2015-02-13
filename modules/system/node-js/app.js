@@ -535,10 +535,6 @@ exports.init = function(app) {
         });
     });
 
-    app.get('/mail/template/inbox', function(req, res) {
-        res.render("inbox"); 
-    });
-
     app.post('/mail/messages/:type', function(req, res) {
         mongo_data_system.getMessages(req, function(err, messages) {
             if (err) res.send(404, err);
