@@ -243,8 +243,11 @@ angular.module("template/tabs/tab.html", []).run(["$templateCache", function($te
 
 cdeApp.config(function($provide) {
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector', function($delegate, $injector) {
+        var previousException; 
         return function(exception, cause) {
             $delegate(exception, cause);
+            if (previousException && exception.toString() === previousException.toString()) return;   
+            previousException = exception;            
             var http;
             if (!http) { http = $injector.get('$http'); }
             try {
