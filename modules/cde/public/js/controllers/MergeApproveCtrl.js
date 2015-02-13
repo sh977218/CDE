@@ -1,4 +1,5 @@
 function MergeApproveCtrl($scope, $modal, Mail, MergeCdes) {
+    
     $scope.showMergeApproveDialog = function(message) {
         var modalInstance = $modal.open({
             templateUrl: '/system/public/html/saveModal.html'

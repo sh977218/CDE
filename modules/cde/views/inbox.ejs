@@ -6,7 +6,8 @@
                 {{message.date | date : medium}} | {{message.type}} | {{message.typeRequest.destination.object.naming[0].designation}} | {{message.author.name}}
             </accordion-heading>
 
-            <div ng-include="'/cde/public/html/mergeRequestMessage.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
+            <div ng-if="message.type=='MergeRequest'" ng-include="'/cde/public/html/mergeRequestMessage.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
+            <div ng-if="message.type=='CommentApproval'" ng-include="'/system/public/html/messages/commentApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
 
             <span ng-show="type==mailTypeReceived">
                 <button ng-controller="MergeApproveCtrl" ng-click="showMergeApproveDialog(message)" ng-class="{disabled: message.states[0].action==='Approved'}" class="btn btn-sm btn-default" type="button" >Approve & Merge</button>
