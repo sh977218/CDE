@@ -149,8 +149,8 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     public Object[][] getMoreLikeThisData() {
         return new Object[][] {
             { "Patient Gender Category", new String[] {"Person Gender Text Type", "Patient Gender Code"} },
-            { "Laboratory Procedure Oncotype DX Breast Cancer Assay Result Indicator", 
-                new String[] {"Laboratory Procedure Hematocrit Outcome Status Indicator", "Laboratory Procedure Basophil Outcome Status Indicator"} },
+            { "Ethnicity USA category", 
+                new String[] {"Ethnicity USA maternal category", "Ethnicity USA paternal category"} },
         };
     }
     

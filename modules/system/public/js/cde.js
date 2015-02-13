@@ -103,7 +103,7 @@ cdeApp.filter('bytes', function() {
     };
 });
 
-cdeApp.factory('isAllowedModel', function () {
+cdeApp.factory('isAllowedModel', function ($timeout) {
     var isAllowedModel = {
     };
     
