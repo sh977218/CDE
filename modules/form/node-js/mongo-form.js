@@ -105,7 +105,8 @@ exports.byTinyIdAndVersion = function(tinyId, version, callback) {
 };
 
 exports.eltByTinyId = function(tinyId, callback) {
+    if (!tinyId) callback("tinyId is undefined!", null); 
     Form.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, elt) {
-       callback("", elt); 
+       callback(err, elt); 
     });
 };

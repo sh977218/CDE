@@ -10,9 +10,14 @@ function InboxCtrl($scope, Mail, CdeList) {
             $scope.fetchMRCdes(type);
         });
     };
-    $scope.getMail($scope.mailTypeReceived);
-    $scope.getMail($scope.mailTypeSent);
-    $scope.getMail($scope.mailTypeArchived);
+    
+    $scope.getAllMail = function() {
+        $scope.getMail($scope.mailTypeReceived);
+        $scope.getMail($scope.mailTypeSent);
+        $scope.getMail($scope.mailTypeArchived);        
+    };
+    
+    $scope.getAllMail();
     
     $scope.fetchMRCdes = function(type) {           
         var tinyIdList = $scope.mail[type].map(function(m) {if (m.typeRequest) return m.typeRequest.source.tinyId;});
@@ -29,5 +34,19 @@ function InboxCtrl($scope, Mail, CdeList) {
                message.typeRequest.destination.object = cdesKeyValuePair[message.typeRequest.destination.tinyId];
            });
         });
-    };
+    };    
+    
+    $scope.closeMessage = function(message) {
+        message.states.unshift({
+            "action" : "Approved",
+            "date" : new Date(),
+            "comment" : ""
+        });
+        Mail.updateMessage(message, function() {
+            $scope.addAlert("success", "Message moved to archived.");   
+            $scope.getAllMail();
+        }, function () {
+            $scope.addAlert("danger", "Message couldn't be retired.");        
+        });        
+    };     
 }

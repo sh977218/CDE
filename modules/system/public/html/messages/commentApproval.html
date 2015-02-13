@@ -15,6 +15,6 @@
 
 
 <span ng-show="type==mailTypeReceived">
-    <button class="approveComment btn btn-sm btn-default" ng-controller="ApproveCommentCtrl" ng-click="approveComment(message.typeCommentApproval)" ng-class="{disabled: message.states[0].action==='Approved'}" type="button" >Approve Comment</button>
+    <button class="approveComment btn btn-sm btn-default" ng-controller="ApproveCommentCtrl" ng-click="approveComment(message)" ng-class="{disabled: message.states[0].action==='Approved'}" type="button" >Approve Comment</button>
     <span ng-show="message.states[0].action==='Approved'">Approved on {{ message.states[0].date | date:medium }}</span>
 </span>

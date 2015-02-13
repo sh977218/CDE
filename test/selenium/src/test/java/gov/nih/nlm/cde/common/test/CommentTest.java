@@ -92,15 +92,23 @@ public abstract class CommentTest extends CommonTest {
         gotoInbox();
         textPresent("Comment Approval");
         findElement(By.cssSelector(".accordion-toggle")).click();        
-        textPresent(commentText);
-        textPresent(eltName);
 
-        findElement(By.cssSelector(".linkToElt")).click();
+        String preClass = "";
+        try {
+            textPresent(eltName);
+        } catch (Exception e) {
+            preClass = "accordion:nth-child(2) ";
+            findElement(By.cssSelector(preClass+".accordion-toggle")).click();
+            textPresent(commentText);
+        }
+        
+        findElement(By.cssSelector(preClass+".linkToElt")).click();
         switchTab(1);
         textPresent(eltName);
         switchTabAndClose(0);        
 
-        findElement(By.cssSelector(".approveComment")).click(); 
+        findElement(By.cssSelector(preClass+".approveComment")).click();
+
         textPresent("Comment approved");
         logout();
         goToEltByName(eltName, status);
