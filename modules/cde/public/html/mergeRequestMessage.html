@@ -1,4 +1,4 @@
-<h4>{{message.type}}</h4> 
+<h4>{{message.type | camelCaseToHuman}}</h4> 
 <div ng-show="message.typeRequest.source.object._id">
     <a target="_blank" href="#/deview?cdeId={{message.typeRequest.source.object._id}}">{{message.typeRequest.source.object.naming[0].designation}}</a> [{{ message.typeRequest.source.object.stewardOrg.name }}]
     <br><i class="fa fa-arrow-down"></i><br>
@@ -80,3 +80,8 @@
         </div>                  
     </div>            
 </div>
+
+<span ng-show="type==mailTypeReceived">
+    <button ng-controller="MergeApproveCtrl" ng-click="showMergeApproveDialog(message)" ng-class="{disabled: message.states[0].action==='Approved'}" class="btn btn-sm btn-default" type="button" >Approve & Merge</button>
+    <span ng-show="message.states[0].action==='Approved'">Approved on {{ message.states[0].date | date:medium }}</span>
+</span>

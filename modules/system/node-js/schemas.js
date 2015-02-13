@@ -116,8 +116,12 @@ var requestSchema = {
 };
 
 var commentApprovalSchema = {
-    element: {tinyId: String}
-    , comment: {index: Number}
+    element: {
+        tinyId: String
+        , name: String
+        , eltType: {type: String, enum: ["cde", "form"]}
+    }
+    , comment: {index: Number, text: String}
 };
 
 schemas.message = mongoose.Schema ({

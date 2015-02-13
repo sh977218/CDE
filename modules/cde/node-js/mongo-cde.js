@@ -7,6 +7,7 @@ var mongoose = require('mongoose')
     , logging = require('../../system/node-js/logging')
 ;
 
+exports.type = "cde";
 exports.name = "CDEs";
         
 var mongoUri = config.mongoUri;

@@ -47,6 +47,10 @@ exports.init = function(app, daoManager) {
         app.post('/comments/form/remove', function(req, res) {
             adminItemSvc.removeComment(req, res, mongo_data);
         });
+        
+        app.post('/comments/form/approve', function(req, res) {
+            adminItemSvc.approveComment(req, res, mongo_data);
+        });          
     }
 
     app.get('/form/properties/keys', function(req, res) {

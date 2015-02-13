@@ -5,6 +5,7 @@ var mongoose = require('mongoose')
     , connHelper = require('../../system/node-js/connections')
     ;
 
+exports.type = "form";
 exports.name = "forms";
 
 var mongoUri = config.mongoUri;

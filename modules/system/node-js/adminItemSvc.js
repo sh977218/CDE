@@ -144,8 +144,8 @@ exports.addComment = function(req, res, dao) {
                         , date: new Date()
                         , type: "CommentApproval"
                         , typeCommentApproval: {
-                            element: {tinyId: req.body.element.tinyId}
-                            , comment: {index: elt.comments.length}
+                            element: {tinyId: req.body.element.tinyId, name: elt.naming[0].designation, eltType: dao.type}
+                            , comment: {index: elt.comments.length, text: req.body.comment}
                         }
                         , states: [{
                             action: String
@@ -201,6 +201,27 @@ exports.removeComment = function(req, res, dao) {
     } else {
         res.send("You are not authorized.");                   
     }
+};
+
+exports.approveComment = function(req, res, dao){
+    if (!req.isAuthenticated() || !authorizationShared.hasRole(req.user, "CommentEditor")) {
+        res.status(403).send("You are not authorized to approve a comment.");
+    }
+    dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
+        if (err || !elt) {
+            res.status(404).send("Cannot find element by tiny id.");
+            logging.errorLogger.error("Error: Cannot find element by tiny id.", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req); 
+        }
+        elt.comments[req.body.comment.index].pendingApproval = false;
+        delete elt.comments[req.body.comment.index].pendingApproval;
+        elt.save(function(err){
+            if (err || !elt) {
+                res.status(404).send("Cannot save element.");
+                logging.errorLogger.error("Error: Cannot save element.", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req); 
+            }   
+            res.send("Comment approved!");
+        });
+    });
 };
 
 exports.acceptFork = function(req, res, dao) {

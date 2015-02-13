@@ -1,18 +1,15 @@
 <div class="container-fluid">
     <script type='text/ng-template' id="mailTemplate">
-    <accordion ng-repeat="message in mail[type]" close-others="oneAtATime">
+    <accordion ng-repeat="message in mail[type] | orderBy: 'date' : true" close-others="oneAtATime">
         <accordion-group>
             <accordion-heading>
-                {{message.date | date : medium}} | {{message.type}} | {{message.typeRequest.destination.object.naming[0].designation}} | {{message.author.name}}
+                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} <span ng-if="message.type=='MergeRequest'">| {{message.typeRequest.destination.object.naming[0].designation}}</span> | {{message.author.name}}
             </accordion-heading>
 
             <div ng-if="message.type=='MergeRequest'" ng-include="'/cde/public/html/mergeRequestMessage.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
             <div ng-if="message.type=='CommentApproval'" ng-include="'/system/public/html/messages/commentApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
 
-            <span ng-show="type==mailTypeReceived">
-                <button ng-controller="MergeApproveCtrl" ng-click="showMergeApproveDialog(message)" ng-class="{disabled: message.states[0].action==='Approved'}" class="btn btn-sm btn-default" type="button" >Approve & Merge</button>
-                <span ng-show="message.states[0].action==='Approved'">Approved on {{ message.states[0].date | date:medium }}</span>
-            </span>
+
         </accordion-group>
     </accordion>
     </script>

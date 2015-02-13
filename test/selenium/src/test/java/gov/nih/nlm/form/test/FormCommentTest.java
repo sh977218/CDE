@@ -30,4 +30,8 @@ public class FormCommentTest extends CommentTest {
         siteAdminCanRemoveComment("Form Property Test", "Recorded");
     }
 
+    @Test
+    public void approvingCommentsForm() {
+        approvingComments("Vital Signs and Tests", null);
+    }  
 }

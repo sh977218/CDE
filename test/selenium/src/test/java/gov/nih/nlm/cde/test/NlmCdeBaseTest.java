@@ -588,6 +588,7 @@ public class NlmCdeBaseTest {
     protected void gotoInbox(){
         findElement(By.id("username_link")).click();  
         findElement(By.linkText("Inbox")).click();    
+        hangon(0.5);
     }    
     
 }

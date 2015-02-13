@@ -32,7 +32,7 @@ public class CdeCommentTest extends CommentTest {
     }
     
     @Test
-    public void approvingComments() {
+    public void approvingCommentsCde() {
         approvingComments("Imaging phase encode direction text", null);
     }    
 

@@ -330,6 +330,10 @@ exports.init = function(app, daoManager) {
         app.post('/comments/cde/remove', function(req, res) {
             adminItemSvc.removeComment(req, res, mongo_data);
         });
+        
+        app.post('/comments/cde/approve', function(req, res) {
+            adminItemSvc.approveComment(req, res, mongo_data);
+        });        
     }
 
 

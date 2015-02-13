@@ -75,7 +75,7 @@ public abstract class CommentTest extends CommonTest {
     }    
     
     public void approvingComments(String eltName, String status) {
-        String commentText = "Extremely Inappropriate Comment";
+        String commentText = "Very Innocent Comment";
         String censoredText = "pending approval";
         mustBeLoggedInAs(anonymousCommentUser_username, anonymousCommentUser_password);
         goToEltByName(eltName, status);
@@ -90,9 +90,23 @@ public abstract class CommentTest extends CommonTest {
         
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         gotoInbox();
-        findElement(By.cssSelector(".accordion-toggle")).click();  
-    
-        
+        textPresent("Comment Approval");
+        findElement(By.cssSelector(".accordion-toggle")).click();        
+        textPresent(commentText);
+        textPresent(eltName);
+
+        findElement(By.cssSelector(".linkToElt")).click();
+        switchTab(1);
+        textPresent(eltName);
+        switchTabAndClose(0);        
+
+        findElement(By.cssSelector(".approveComment")).click(); 
+        textPresent("Comment approved");
+        logout();
+        goToEltByName(eltName, status);
+        gotoComments();
+        textNotPresent(censoredText);
+        textPresent(commentText);
     }
     
 }

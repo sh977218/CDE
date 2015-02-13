@@ -1,4 +1,4 @@
-var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select']).
+var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman']).
     config(function($routeProvider) {
         $routeProvider.
         when('/', {redirectTo: '/cde/search'}).        
