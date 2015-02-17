@@ -165,7 +165,7 @@ cdeApp.factory('isAllowedModel', function (userResource) {
     };
     
     isAllowedModel.runWhenInitialized = function($scope, toRun) {
-        userResource.getPromise.then(toRun);
+        userResource.getPromise().then(toRun);
     };
     
     isAllowedModel.setDisplayStatusWarning = function($scope) {
