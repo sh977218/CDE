@@ -1,4 +1,4 @@
-function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers) {
+function MainCtrl($scope, $modal, userResourcePromise, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers) {
 
     // Global variables
     var GLOBALS = {
@@ -62,12 +62,12 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     
     $scope.boards = [];
 
-    $scope.loadBoards = function() {
-        if ($scope.user && $scope.user._id) {
+    $scope.loadBoards = function() {    
+        userResourcePromise.getPromise().then(function() {
             $http.get("/boards/" + $scope.user._id).then(function (response) {
                 $scope.boards = response.data;
             }); 
-        }        
+        });        
     };
 
 //    $scope.loadUser();    
