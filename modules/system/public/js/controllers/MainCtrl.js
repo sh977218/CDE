@@ -7,7 +7,10 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
     };
     
     $scope.resultPerPage = 20;
-    
+
+    userResource.getPromise().then(function() {
+        $scope.user = userResource.user;
+    });
 //    $scope.loadUser = function() {
 //        Myself.get(function(u) {
 //            $scope.user = u;
