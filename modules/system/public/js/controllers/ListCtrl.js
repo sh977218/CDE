@@ -236,7 +236,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userReso
     $scope.getUsedBy = function(elt) {
         if (elt.classification)
             return elt.classification.filter(function(c) {
-                return OrgHelpers.showWorkingGroup(c.stewardOrg.name, $scope.user);
+                return OrgHelpers.showWorkingGroup(c.stewardOrg.name, userResource.user);
             }).map(function(e) {return e.stewardOrg.name;});
         else return [];
     };

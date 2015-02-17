@@ -13,10 +13,10 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
     });
 //    $scope.loadUser = function() {
 //        Myself.get(function(u) {
-//            $scope.user = u;
+//            userResource.user = u;
 //            $scope.setMyOrgs(); 
 //            $scope.loadBoards();
-//            $scope.userLoaded = true;
+//            userResource.userLoaded = true;
 //            $scope.loggedIn = true;
 //            $scope.callWhenUserLoaded.forEach(function(toCall) {
 //                toCall();
@@ -60,26 +60,26 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
 
     $scope.loadBoards = function() {    
         userResource.getPromise().then(function() {
-            $http.get("/boards/" + $scope.user._id).then(function (response) {
+            $http.get("/boards/" + userResource.user._id).then(function (response) {
                 $scope.boards = response.data;
             }); 
         });        
     };
     
     $scope.isOrgCurator = function() {        
-        return $scope.isOrgAdmin() || ($scope.user && ($scope.user.orgCurator && $scope.user.orgCurator.length > 0));  
+        return $scope.isOrgAdmin() || (userResource.user && (userResource.user.orgCurator && userResource.user.orgCurator.length > 0));  
     };
     
     $scope.isOrgAdmin = function() {
-        return $scope.user && (($scope.user.siteAdmin === true) || ($scope.user.orgAdmin && $scope.user.orgAdmin.length > 0));  
+        return userResource.user && ((userResource.user.siteAdmin === true) || (userResource.user.orgAdmin && userResource.user.orgAdmin.length > 0));  
     };
     
     $scope.isSiteAdmin = function() {
-        return $scope.user !== undefined && $scope.user.siteAdmin;
+        return userResource.user !== undefined && userResource.user.siteAdmin;
     };
 
     $scope.isDocumentationEditor = function() {
-        return exports.hasRole($scope.user, "DocumentationEditor");
+        return exports.hasRole(userResource.user, "DocumentationEditor");
     }
     
     // quickBoard contains an array of CDE IDs
