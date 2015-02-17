@@ -1,15 +1,15 @@
-function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, $timeout, Elastic) {
+function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResourcePromise) {
     $scope.module = "cde";
     $scope.classifSubEltPage = '/system/public/html/classif-elt-mgt.html';
-    
-    
-    
-    $scope.$watch("userLoaded", function() {
+        
+    userResourcePromise.getPromise().then(function(){
         if ($scope.myOrgs.length > 0)  {
             $scope.orgToManage = $scope.myOrgs[0];
             $scope.updateOrg();
-        }        
+        }             
     });
+    
+    
     
     $scope.org = {};
     

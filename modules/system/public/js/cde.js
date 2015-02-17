@@ -103,31 +103,37 @@ cdeApp.filter('bytes', function() {
     };
 });
 
-cdeApp.factory('userResource', function(Myself) {
-    var userResource = {};
-
-    userResource.callWhenUserLoaded = [];
-    
-    userResource.callMeWhenUserLoaded = function(me) {
-        if (userResource.userLoaded) {
-            me();
+cdeApp.factory('userResourcePromise', function(Myself) {
+    var userResourcePromise = this;
+    this.user = null;
+    this.promise = new Promise(function(resolve, reject){
+        Myself.get(function(u) {
+            userResourcePromise.user = u;
+            userResourcePromise.setMyOrgs();
+            resolve();
+        });         
+    });    
+    this.getPromise = function(){
+        return userResourcePromise.promise;
+    };
+    this.setMyOrgs = function() {
+        if (userResourcePromise.user && userResourcePromise.user.orgAdmin) {
+            // clone orgAdmin array
+            userResourcePromise.myOrgs = userResourcePromise.user.orgAdmin.slice(0);
+            for (var i = 0; i < userResourcePromise.user.orgCurator.length; i++) {
+                if (userResourcePromise.myOrgs.indexOf(userResourcePromise.user.orgCurator[i]) < 0) {
+                    userResourcePromise.myOrgs.push(userResourcePromise.user.orgCurator[i]);
+                }
+            }
         } else {
-            userResource.callWhenUserLoaded.push(me);
+            userResourcePromise.myOrgs = [];
         }
     };
+    
 
-    userResource.loadUser = function() {
-        Myself.get(function(u) {
-            userResource.user = u;
-            userResource,userLoaded = true;
-            userResource.callWhenUserLoaded.forEach(function(toCall) {
-                toCall();
-            });
-        });
-    };
-
-    return userResource;
+    return this;
 });
+
 
 cdeApp.factory('isAllowedModel', function ($timeout) {
     var isAllowedModel = {
