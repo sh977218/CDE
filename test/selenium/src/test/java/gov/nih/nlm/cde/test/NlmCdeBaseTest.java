@@ -128,7 +128,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void mustBeLoggedInAs(String username, String password) {
-        hangon(.5);
+        hangon(2);
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
             loginAs(username, password);

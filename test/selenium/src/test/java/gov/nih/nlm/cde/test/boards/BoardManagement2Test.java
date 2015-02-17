@@ -16,7 +16,8 @@ public class BoardManagement2Test  extends BoardTest {
         findElement(By.id("name_confirm_0")).click();
 
         Assert.assertTrue(textPresent("Saved"));
-        hangon(0.5);
+
+        Assert.assertTrue(textPresent("Edit Board -- Name Edited"));
 
         findElement(By.id("desc_edit_0")).click();
         findElement(By.id("desc_input_0")).sendKeys(" -- Desc Edited");

@@ -7,9 +7,10 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     };
     
     $scope.resultPerPage = 20;
+    $scope.loggedIn = false;
     
     $scope.isLoggedIn = function() {
-        return typeof($scope.user._id)!=="undefined";
+        return $scope.loggedIn;
     };
     
     $scope.loadUser = function(callback) {
@@ -18,6 +19,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
             $scope.setMyOrgs(); 
             $scope.loadBoards();
             $scope.userLoaded = true;
+            $scope.loggedIn = true;
             callback();
         });
     };
