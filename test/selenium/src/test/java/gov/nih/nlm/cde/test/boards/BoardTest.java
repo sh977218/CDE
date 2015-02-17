@@ -17,6 +17,7 @@ public class BoardTest extends NlmCdeBaseTest {
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
             if (boardName.equals(name)) {
+                scrollTo(name);
                 findElement(By.id("privateIcon_" + i)).click();
                 findElement(By.id("confirmChangeStatus_" + i)).click();
                 textPresent(response);
