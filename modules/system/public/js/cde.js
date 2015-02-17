@@ -104,29 +104,29 @@ cdeApp.filter('bytes', function() {
 });
 
 cdeApp.factory('userResource', function(Myself) {
-    var userResourcePromise = this;
+    var userResource = this;
     this.user = null;
     this.promise = new Promise(function(resolve, reject){
         Myself.get(function(u) {
-            userResourcePromise.user = u;
-            userResourcePromise.setMyOrgs();
+            userResource.user = u;
+            userResource.setMyOrgs();
             resolve();
         });         
     });    
     this.getPromise = function(){
-        return userResourcePromise.promise;
+        return userResource.promise;
     };
     this.setMyOrgs = function() {
-        if (userResourcePromise.user && userResourcePromise.user.orgAdmin) {
+        if (userResource.user && userResource.user.orgAdmin) {
             // clone orgAdmin array
-            userResourcePromise.myOrgs = userResourcePromise.user.orgAdmin.slice(0);
-            for (var i = 0; i < userResourcePromise.user.orgCurator.length; i++) {
-                if (userResourcePromise.myOrgs.indexOf(userResourcePromise.user.orgCurator[i]) < 0) {
-                    userResourcePromise.myOrgs.push(userResourcePromise.user.orgCurator[i]);
+            userResource.myOrgs = userResource.user.orgAdmin.slice(0);
+            for (var i = 0; i < userResource.user.orgCurator.length; i++) {
+                if (userResource.myOrgs.indexOf(userResource.user.orgCurator[i]) < 0) {
+                    userResource.myOrgs.push(userResource.user.orgCurator[i]);
                 }
             }
         } else {
-            userResourcePromise.myOrgs = [];
+            userResource.myOrgs = [];
         }
     };
     

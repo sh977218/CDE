@@ -1,8 +1,8 @@
-function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResourcePromise) {
+function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource) {
     $scope.module = "cde";
     $scope.classifSubEltPage = '/system/public/html/classif-elt-mgt.html';
         
-    userResourcePromise.getPromise().then(function(){
+    userResource.getPromise().then(function(){
         if ($scope.myOrgs.length > 0)  {
             $scope.orgToManage = $scope.myOrgs[0];
             $scope.updateOrg();
