@@ -77,7 +77,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userReso
         $scope.reload();
     });
 
-    userResource.getPromise().then($scope.reload());
+    userResource.getPromise().then(function(){$scope.reload()});
     
     $scope.addStatusFilter = function(t) {
         t.selected = !t.selected;
