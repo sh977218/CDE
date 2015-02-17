@@ -114,7 +114,7 @@ cdeApp.factory('userResource', function(Myself) {
         });         
     });    
     this.getPromise = function(){
-        return userResourcePromise.promise;
+        return userResource.promise;
     };
     this.setMyOrgs = function() {
         if (userResource.user && userResource.user.orgAdmin) {
