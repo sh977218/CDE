@@ -306,7 +306,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userReso
     $scope.filterOutWorkingGroups = function(aggregations) {
         this.setAggregations = function() {
             aggregations.lowRegStatusOrCurator_filter.orgs.buckets = aggregations.lowRegStatusOrCurator_filter.orgs.buckets.filter(function(bucket) {
-                return OrgHelpers.showWorkingGroup(bucket.key, $scope.user) || $scope.user.siteAdmin;
+                return OrgHelpers.showWorkingGroup(bucket.key, userResource.user) || userResource.user.siteAdmin;
             });
             $scope.aggregations = aggregations;            
         };

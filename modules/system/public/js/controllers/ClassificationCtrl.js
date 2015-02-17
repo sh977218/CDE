@@ -1,4 +1,4 @@
-function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification, OrgHelpers) {
+function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification, OrgHelpers, userResource) {
     $scope.initCache(); 
     
     $scope.openAddClassificationModal = function () {
@@ -50,7 +50,7 @@ function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification, Org
     };     
 
     $scope.hideWorkingGroups = function(stewardClassifications) {
-        return !(OrgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, $scope.user) || $scope.user.siteAdmin);
+        return !(OrgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user) || $scope.user.siteAdmin);
     };
     
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
