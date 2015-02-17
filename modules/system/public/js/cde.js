@@ -150,7 +150,7 @@ cdeApp.factory('isAllowedModel', function (userResource) {
             if (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard") {
                 return false;
             }
-            if ($scope.myOrgs) {
+            if (userResource.userOrgs) {
                 return exports.isCuratorOf($scope.user, CuratedItem.stewardOrg.name);
             } else {
                 return false;
@@ -176,11 +176,11 @@ cdeApp.factory('isAllowedModel', function (userResource) {
     
     isAllowedModel.displayStatusWarning = function($scope, CuratedItem) {
         if(!CuratedItem) return false;
-        if(CuratedItem.archived || $scope.user.siteAdmin) {
+        if(CuratedItem.archived || userResource.user.siteAdmin) {
             return false;
         } else {
-            if ($scope.myOrgs) {
-                return exports.isCuratorOf($scope.user, CuratedItem.stewardOrg.name) && (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard");
+            if (userResource.userOrgs) {
+                return exports.isCuratorOf(userResource.user, CuratedItem.stewardOrg.name) && (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard");
             } else {
                 return false;
             }

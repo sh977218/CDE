@@ -1,4 +1,4 @@
-function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http) {
+function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource) {
     $scope.module = "form";
     $scope.baseLink = '#/formView?_id=';
     $scope.addCdeMode = false;
@@ -80,8 +80,8 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
           templateUrl: '/template/system/classifyForm',
           controller: ClassifyFormCdesModalCtrl,
           resolve: {
-                myOrgs: function() {
-                    return $scope.myOrgs;
+                userOrgs: function() {
+                    return userResource.userOrgs;
                 }
                 , cde: function() {
                     return $scope.elt;
