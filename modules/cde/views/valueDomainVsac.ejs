@@ -3,11 +3,11 @@
     <h4>VSAC Value Set</h4>
     <dl class="dl-horizontal" ng-show="vsacMappingExists()" ng-include="'vsacHeader.html'"></dl>
     <div ng-hide="vsacMappingExists()">No Value Set specified.</div>
-    <div ng-show="isLoggedIn()" ng-controller="SaveCdeCtrl"  ng-include="'vsacAddMapping.html'"></div>
+    <div ng-show="user._id" ng-controller="SaveCdeCtrl"  ng-include="'vsacAddMapping.html'"></div>
     <hr/>
-    <div ng-show="vsacMappingExists()&&isLoggedIn()" ng-include="'vsacTable.html'"></div>
-    <div ng-show="vsacMappingExists()&&!isLoggedIn()">Please log in to see VSAC mapping.</div>
-    <a class="btn btn-small btn-default" ng-show="vsacMappingExists() && canCurate && !allVsacMatch()&&isLoggedIn()" ng-click="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
+    <div ng-show="vsacMappingExists() && user._id" ng-include="'vsacTable.html'"></div>
+    <div ng-show="vsacMappingExists() && !user._id">Please log in to see VSAC mapping.</div>
+    <a class="btn btn-small btn-default" ng-show="vsacMappingExists() && canCurate && !allVsacMatch()" ng-click="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
     </div>
 </script>
 

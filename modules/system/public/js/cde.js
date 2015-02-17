@@ -135,7 +135,7 @@ cdeApp.factory('userResource', function(Myself) {
 });
 
 
-cdeApp.factory('isAllowedModel', function ($timeout) {
+cdeApp.factory('isAllowedModel', function (userResource) {
     var isAllowedModel = {
     };
     
@@ -165,11 +165,7 @@ cdeApp.factory('isAllowedModel', function ($timeout) {
     };
     
     isAllowedModel.runWhenInitialized = function($scope, toRun) {
-        if (!$scope.userLoaded) {
-            $timeout(isAllowedModel.runWhenInitialized($scope, toRun), 1000);
-        } else {
-            toRun($scope);
-        }                
+        userResource.getPromise.then(toRun);
     };
     
     isAllowedModel.setDisplayStatusWarning = function($scope) {

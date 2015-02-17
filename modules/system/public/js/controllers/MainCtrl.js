@@ -7,13 +7,6 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
     };
     
     $scope.resultPerPage = 20;
-    $scope.loggedIn = false;
-    
-    $scope.isLoggedIn = function() {
-        return $scope.loggedIn;
-    };
-    
-
     
 //    $scope.loadUser = function() {
 //        Myself.get(function(u) {
@@ -69,8 +62,6 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
             }); 
         });        
     };
-
-//    $scope.loadUser();    
     
     $scope.isOrgCurator = function() {        
         return $scope.isOrgAdmin() || ($scope.user && ($scope.user.orgCurator && $scope.user.orgCurator.length > 0));  
