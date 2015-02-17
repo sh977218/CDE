@@ -13,14 +13,18 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         return $scope.loggedIn;
     };
     
-    $scope.loadUser = function(callback) {
+
+    
+    $scope.loadUser = function() {
         Myself.get(function(u) {
             $scope.user = u;
             $scope.setMyOrgs(); 
             $scope.loadBoards();
             $scope.userLoaded = true;
             $scope.loggedIn = true;
-            callback();
+            $scope.callWhenUserLoaded.forEach(function(toCall) {
+                toCall();
+            });
         });
     };
     
@@ -66,7 +70,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
         }        
     };
 
-    $scope.loadUser(function(){});    
+    $scope.loadUser();    
     
     $scope.isOrgCurator = function() {        
         return $scope.isOrgAdmin() || ($scope.user && ($scope.user.orgCurator && $scope.user.orgCurator.length > 0));  

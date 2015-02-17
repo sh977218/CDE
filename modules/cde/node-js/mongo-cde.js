@@ -173,6 +173,7 @@ exports.forks = function(cdeId, callback) {
 };
 
 exports.byId = function(cdeId, callback) {
+    if (!cdeId) callback("Not found", null);
     DataElement.findOne({'_id': cdeId}, function(err, cde) {
         if (!cde) err = "Cannot find CDE";
         callback(err, cde);

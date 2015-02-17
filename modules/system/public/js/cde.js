@@ -103,6 +103,32 @@ cdeApp.filter('bytes', function() {
     };
 });
 
+cdeApp.factory('userResource', function(Myself) {
+    var userResource = {};
+
+    userResource.callWhenUserLoaded = [];
+    
+    userResource.callMeWhenUserLoaded = function(me) {
+        if (userResource.userLoaded) {
+            me();
+        } else {
+            userResource.callWhenUserLoaded.push(me);
+        }
+    };
+
+    userResource.loadUser = function() {
+        Myself.get(function(u) {
+            userResource.user = u;
+            userResource,userLoaded = true;
+            userResource.callWhenUserLoaded.forEach(function(toCall) {
+                toCall();
+            });
+        });
+    };
+
+    return userResource;
+});
+
 cdeApp.factory('isAllowedModel', function ($timeout) {
     var isAllowedModel = {
     };

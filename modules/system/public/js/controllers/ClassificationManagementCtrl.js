@@ -2,6 +2,8 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
     $scope.module = "cde";
     $scope.classifSubEltPage = '/system/public/html/classif-elt-mgt.html';
     
+    
+    
     $scope.$watch("userLoaded", function() {
         if ($scope.myOrgs.length > 0)  {
             $scope.orgToManage = $scope.myOrgs[0];
