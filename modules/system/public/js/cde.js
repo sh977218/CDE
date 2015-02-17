@@ -144,14 +144,14 @@ cdeApp.factory('isAllowedModel', function (userResource) {
         if (CuratedItem.archived) {
             return false;
         }
-        if ($scope.user.siteAdmin) {
+        if (userResource.user.siteAdmin) {
             return true;
         } else {   
             if (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard") {
                 return false;
             }
             if (userResource.userOrgs) {
-                return exports.isCuratorOf($scope.user, CuratedItem.stewardOrg.name);
+                return exports.isCuratorOf(userResource.user, CuratedItem.stewardOrg.name);
             } else {
                 return false;
             }
