@@ -10,7 +10,7 @@ function AuthCtrl($scope, Auth, $window, $http, userResource) {
     
     $scope.login = function() {
         Auth.login({
-                username: userResource.username,
+                username: $scope.username,
                 password: $scope.password,
                 _csrf: $scope.csrf
             },
