@@ -10,6 +10,7 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
 
     userResource.getPromise().then(function() {
         $scope.user = userResource.user;
+        $scope.myOrgs = userResource.userOrgs;
     });
 //    $scope.loadUser = function() {
 //        Myself.get(function(u) {
