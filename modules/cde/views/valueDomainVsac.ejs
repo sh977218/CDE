@@ -7,7 +7,7 @@
     <hr/>
     <div ng-show="vsacMappingExists() && user._id" ng-include="'vsacTable.html'"></div>
     <div ng-show="vsacMappingExists() && !user._id">Please log in to see VSAC mapping.</div>
-    <a class="btn btn-small btn-default" ng-show="vsacMappingExists() && canCurate && !allVsacMatch()&&isLoggedIn()" ng-click="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
+    <a class="btn btn-small btn-default" ng-show="vsacMappingExists() && canCurate && !allVsacMatch()" ng-click="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
     </div>
 </script>
 
