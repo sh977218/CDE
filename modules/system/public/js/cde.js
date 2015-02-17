@@ -109,24 +109,24 @@ cdeApp.factory('userResource', function(Myself) {
     this.promise = new Promise(function(resolve, reject){
         Myself.get(function(u) {
             userResource.user = u;
-            userResource.setMyOrgs();
+            userResource.setOrganizations();
             resolve();
         });         
     });    
     this.getPromise = function(){
         return userResource.promise;
     };
-    this.setMyOrgs = function() {
+    this.setOrganizations = function() {
         if (userResource.user && userResource.user.orgAdmin) {
             // clone orgAdmin array
-            userResource.myOrgs = userResource.user.orgAdmin.slice(0);
+            userResource.userOrgs = userResource.user.orgAdmin.slice(0);
             for (var i = 0; i < userResource.user.orgCurator.length; i++) {
-                if (userResource.myOrgs.indexOf(userResource.user.orgCurator[i]) < 0) {
-                    userResource.myOrgs.push(userResource.user.orgCurator[i]);
+                if (userResource.userOrgs.indexOf(userResource.user.orgCurator[i]) < 0) {
+                    userResource.userOrgs.push(userResource.user.orgCurator[i]);
                 }
             }
         } else {
-            userResource.myOrgs = [];
+            userResource.userOrgs = [];
         }
     };
     

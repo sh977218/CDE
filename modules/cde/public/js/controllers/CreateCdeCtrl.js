@@ -1,4 +1,4 @@
-function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) {
+function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic, userResource) {
     $scope.openCdeInNewTab = true;
     $scope.currentPage = 1;
     $scope.totalItems = 0;
@@ -9,8 +9,8 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
 
     $scope.elt = { classification: [], stewardOrg: {}}; 
     
-    if ($scope.myOrgs.length === 1) {
-        $scope.elt.stewardOrg.name = $scope.myOrgs[0];
+    if (userResource.userOrgs.length === 1) {
+        $scope.elt.stewardOrg.name = userResource.userOrgs[0];
     }
     
     $scope.save = function() {
@@ -100,8 +100,8 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic) 
                 module: function() {
                     return $scope.module;
                 }
-                , myOrgs: function() {
-                    return $scope.myOrgs;
+                , organizations: function() {
+                    return userResource.userOrgs;
                 }
                 , cde: function() {
                     return $scope.elt;

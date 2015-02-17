@@ -86,21 +86,7 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
 
     $scope.isDocumentationEditor = function() {
         return exports.hasRole($scope.user, "DocumentationEditor");
-    };
-
-    $scope.setMyOrgs = function() {
-        if ($scope.user && $scope.user.orgAdmin) {
-            // clone orgAdmin array
-            $scope.myOrgs = $scope.user.orgAdmin.slice(0);
-            for (var i = 0; i < $scope.user.orgCurator.length; i++) {
-                if ($scope.myOrgs.indexOf($scope.user.orgCurator[i]) < 0) {
-                    $scope.myOrgs.push($scope.user.orgCurator[i]);
-                }
-            }
-        } else {
-            $scope.myOrgs = [];
-        }
-    };
+    }
     
     // quickBoard contains an array of CDE IDs
     $scope.quickBoard = [];

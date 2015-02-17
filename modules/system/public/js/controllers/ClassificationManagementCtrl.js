@@ -3,8 +3,8 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
     $scope.classifSubEltPage = '/system/public/html/classif-elt-mgt.html';
         
     userResource.getPromise().then(function(){
-        if ($scope.myOrgs.length > 0)  {
-            $scope.orgToManage = $scope.myOrgs[0];
+        if (userResource.userOrgs.length > 0)  {
+            $scope.orgToManage = userResource.userOrgs[0];
             $scope.updateOrg();
         }             
     });
@@ -112,7 +112,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
                     return $scope.module;
                 }
                 , myOrgs: function() {
-                    return $scope.myOrgs;
+                    return userResource.userOrgs;
                 }
                 , cde: function() {
                     return {_id:null};
