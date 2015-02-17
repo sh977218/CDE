@@ -100,7 +100,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic, 
                 module: function() {
                     return $scope.module;
                 }
-                , organizations: function() {
+                , myOrgs: function() {
                     return userResource.userOrgs;
                 }
                 , cde: function() {

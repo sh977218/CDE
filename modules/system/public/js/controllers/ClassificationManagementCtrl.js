@@ -5,6 +5,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
     userResource.getPromise().then(function(){
         if (userResource.userOrgs.length > 0)  {
             $scope.orgToManage = userResource.userOrgs[0];
+            $scope.userOrgs = userResource.userOrgs;
             $scope.updateOrg();
         }             
     });
