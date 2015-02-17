@@ -1,4 +1,4 @@
-function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout) {
+function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource) {
     $scope.filterMode = true;
     
     $timeout(function(){
@@ -77,10 +77,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout) {
         $scope.reload();
     });
 
-    $scope.$watch('userLoaded', function() {
-        $scope.reload();        
-    });
-
+    userResource.getPromise().then($scope.reload());
     
     $scope.addStatusFilter = function(t) {
         t.selected = !t.selected;
@@ -246,7 +243,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout) {
     
     $scope.reload = function() {
         var timestamp = new Date().getTime();
-        if (!$scope.userLoaded) return;
+        if (!userResource.user) return;
         $scope.lastQueryTimeStamp = timestamp;        
         $scope.accordionListStyle = "semi-transparent";
         $scope.filter = Elastic.buildElasticQueryPre($scope);
