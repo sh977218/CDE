@@ -1,5 +1,6 @@
  function AddForkModalCtrl($scope, $modalInstance, userResource) {
     $scope.selection = {}; 
+    $scope.myOrgs = userResource.myOrgs;
     
     if (userResource.userOrgs.length === 1) {
         $scope.selection.org = userResource.userOrgs[0];
