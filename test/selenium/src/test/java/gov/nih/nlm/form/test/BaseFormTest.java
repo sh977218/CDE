@@ -9,7 +9,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     protected void startAddingQuestions() {
         scrollTo("0");
-        startAddingQuestions();
+        findElement(By.id("startAddingQuestions")).click();
     }
     
     protected void gotoPublicForms() {
