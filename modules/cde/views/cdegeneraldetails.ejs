@@ -9,7 +9,7 @@
     <dt>Steward: </dt>
     <dd id="dd_general_steward">
         <span ng-show="editDtMode">
-            <select id="elt.stewardOrg.name" ng-model="elt.stewardOrg.name" ng-options="myOrg for myOrg in userResource.userOrgs"></select>
+            <select id="elt.stewardOrg.name" ng-model="elt.stewardOrg.name" ng-options="myOrg for myOrg in myOrgs"></select>
             <i id="elt.stewardOrg.name.ok" class="fa fa-check" ng-click="editDtMode = false; stageElt(elt)"></i>&nbsp;&nbsp;<i id="elt.stewardOrg.name.cancel" class="fa fa-times" ng-click="elt.stewardOrg.name = oldStewardName; editDtMode = false;"></i>
         </span>
         <span ng-hide="editDtMode"><i tabindex="0" title="Edit Steward" role="link" ng-show="canCurate" class="fa fa-edit" ng-click="oldStewardName = elt.stewardOrg.name; editDtMode = true" id="dd_edit_steward" ></i> <a tabindex="0" tooltip-html-unsafe="{{orgDetailsInfoHtml}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">{{elt.stewardOrg.name}}</a></span>
