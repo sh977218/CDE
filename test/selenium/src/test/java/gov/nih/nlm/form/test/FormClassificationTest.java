@@ -38,7 +38,7 @@ public class FormClassificationTest extends BaseFormTest {
         createForm(formName, formDef, formV, "NINDS");
         new SectionTest().addSection("Patient Information", null);
         new SectionTest().addSection("Diagnostic Methods", null);
-        findElement(By.id("startAddingQuestions")).click();
+        startAddingQuestions();
         String cde1 = "Informed consent type",
                 cde2 = "Person Birth Date",
                 cde3 = "Imaging contrast agent name";
@@ -48,7 +48,7 @@ public class FormClassificationTest extends BaseFormTest {
         new QuestionTest().addQuestionToSection(cde2, 0);
         new QuestionTest().addQuestionToSection(cde3, 1); 
         hangon(2);
-        findElement(By.id("startAddingQuestions")).click();
+        startAddingQuestions();
         textPresent(cde3);       
         saveForm();
         

@@ -18,7 +18,7 @@ public class FormEditTest extends BaseFormTest {
 
         createForm(formName, formDef, null, "CTEP");
         new SectionTest().addSection("Any Section Name", "0 or more");
-        findElement(By.id("startAddingQuestions")).click();
+        startAddingQuestions();
 
         questionTest.addQuestionToSection("Noncompliant Reason Text", 0);
         questionTest.addQuestionToSection("Cytogenetics Karyotype Mutation Abnormality Cell Count", 0);

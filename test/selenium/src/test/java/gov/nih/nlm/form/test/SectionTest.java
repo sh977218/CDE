@@ -158,7 +158,7 @@ public class SectionTest extends BaseFormTest {
         textPresent(sec2);
         
         textPresent("Show Question Search Area");
-        findElement(By.id("startAddingQuestions")).click();
+        startAddingQuestions();
         textPresent("Hide Question Search Area");
         textPresent("results for");
         

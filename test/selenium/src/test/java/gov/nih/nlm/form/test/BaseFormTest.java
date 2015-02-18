@@ -6,6 +6,11 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 public class BaseFormTest extends NlmCdeBaseTest {
+
+    protected void startAddingQuestions() {
+        scrollTo("0");
+        startAddingQuestions();
+    }
     
     protected void gotoPublicForms() {
         findElement(By.linkText("Forms")).click();    

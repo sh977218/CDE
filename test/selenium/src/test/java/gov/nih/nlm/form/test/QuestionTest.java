@@ -62,7 +62,7 @@ public class QuestionTest extends BaseFormTest {
         
         new SectionTest().addSection("Patient Information", null);
         
-        findElement(By.id("startAddingQuestions")).click();
+        startAddingQuestions();
 
         // Check status facet.
         findElement(By.id("resetSearch")).click();
@@ -154,7 +154,7 @@ public class QuestionTest extends BaseFormTest {
         
         driver.get(newFormUrl);
         findElement(By.linkText("Form Description")).click();
-        findElement(By.id("startAddingQuestions")).click();    
+        startAddingQuestions();    
 
         // Add 2nd Section
         new SectionTest().addSection("Smoking Status", null);
@@ -171,7 +171,7 @@ public class QuestionTest extends BaseFormTest {
 
         Assert.assertTrue(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
 
-        findElement(By.id("startAddingQuestions")).click();
+        startAddingQuestions();
 
         WebElement sourceElt = findElement(By.xpath("//div[@id='section_drop_area_1']//div[@id='question_0']//i[@class='fa fa-arrows question-move-handle ng-scope']"));
         WebElement targetElt = findElement(By.id("section_drop_area_0"));
@@ -211,7 +211,7 @@ public class QuestionTest extends BaseFormTest {
 
         new SectionTest().addSection("Answer List Section", null);
         
-        findElement(By.id("startAddingQuestions")).click();
+        startAddingQuestions();
         addQuestionToSection("Patient Gender Category", 0);
         findElement(By.id("question_accordion_0_0")).click();
         hangon(1);
@@ -252,7 +252,7 @@ public class QuestionTest extends BaseFormTest {
 
         new SectionTest().addSection("Basic Section", null);
         
-        findElement(By.id("startAddingQuestions")).click();
+        startAddingQuestions();
         addQuestionToSection("Patient Gender Category", 0);
 
         findElement(By.id("question_accordion_0_0")).click();
@@ -290,7 +290,7 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.linkText("Form Description")).click();        
         new SectionTest().addSection("Medical History", null);  
         new SectionTest().addSection("Treatment Details", null);
-        findElement(By.id("startAddingQuestions")).click();          
+        startAddingQuestions();          
 
         // Add 2nd Section
         addQuestionToSection("Smoking History Ind", 0);

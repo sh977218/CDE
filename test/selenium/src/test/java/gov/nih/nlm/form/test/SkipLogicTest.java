@@ -25,7 +25,7 @@ public class SkipLogicTest extends BaseFormTest {
         findElement(By.linkText("Form Description")).click();        
         new SectionTest().addSection("Patient Demographics", null);  
         new SectionTest().addSection("Female Patient Screening", null);
-        findElement(By.id("startAddingQuestions")).click();          
+        startAddingQuestions();          
 
         // Add 2nd Section
         questionTest.addQuestionToSection("Patient Gender Category", 0);
@@ -48,8 +48,8 @@ public class SkipLogicTest extends BaseFormTest {
                 
         switchTabAndClose(0);       
         
-        findElement(By.id("startAddingQuestions")).click(); 
-        findElement(By.id("startAddingQuestions")).click();
+        startAddingQuestions(); 
+        startAddingQuestions();
 
         findElement(By.xpath("//span[text()=\"Person Birth Date\" and@id=\"question_accordion_0_0\"]")).click();
         findElement(By.xpath("//*[@class=\"formQuestion_Person Birth Date\"]//*[contains(@class,'skipLogicCondition ')]")).sendKeys("\"Patient Gender Category\" = \"Female Gender\"");
