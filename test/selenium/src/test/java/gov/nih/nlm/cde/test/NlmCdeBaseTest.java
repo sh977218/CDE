@@ -124,12 +124,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void mustBeLoggedInAs(String username, String password) {
-        hangon(2);
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
             loginAs(username, password);
         } else {
-            WebElement unameLink = driver.findElements(By.id("username_link")).get(0);
+            WebElement unameLink = findElement(By.id("username_link"));
+            System.out.println("uname link: " + unameLink.getText());
             if (!unameLink.getText().equals(username)) {
                 logout();
                 loginAs(username, password);
@@ -396,6 +396,7 @@ public class NlmCdeBaseTest {
     @BeforeMethod
     protected void goHome() {
         driver.get(baseUrl + "/gonowhere");
+        textPresent("Nothing here");
         driver.get(baseUrl + "/#/home");
         findElement(By.id("selectOrgDropdown"));
     }
@@ -422,23 +423,13 @@ public class NlmCdeBaseTest {
     }
 
     protected void logout() {
-        try {
-            findElement(By.id("username_link")).click();
-            findElement(By.linkText("Log Out")).click();
-            findElement(By.linkText("Log In"));
-        } catch (TimeoutException e) {
-
-        }
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Log Out")).click();
+        findElement(By.linkText("Log In"));
     }
 
     protected void loginAs(String username, String password) {
-        goToCdeSearch();
-        try {
-            findElement(By.linkText("Log In")).click();
-        } catch (NoSuchElementException e) {
-            logout();
-            findElement(By.linkText("Log In")).click();
-        }
+        findElement(By.linkText("Log In")).click();
         hangon(1);
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);

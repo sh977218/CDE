@@ -103,9 +103,6 @@ angular.module('resources', ['ngResource'])
     .factory('CdesForApproval', function($resource) {
         return $resource('/cdesforapproval');
     })
-    .factory('Myself', function($resource) {
-        return $resource('/user/me');
-    })
     .factory('ViewingHistory', function($resource) {
         return $resource('/viewingHistory/:start', {start: '@start'}, 
             {'getCdes': {method: 'GET', isArray: true}});
@@ -153,6 +150,41 @@ angular.module('resources', ['ngResource'])
             stop: null 
             , steps: []
         };
+    })
+    .factory('userResource', function($http) {
+        var userResource = this;
+        this.user = null;
+        this.promise = new Promise(function(resolve, reject){
+            $http.get('/user/me').then(function(response) {
+                var u = response.data;
+                if (u == "Not logged in.") {
+                    userResource.user = {visitor: true};
+                } else {
+                    userResource.user = u;
+                    userResource.setOrganizations();
+                }
+                resolve();
+            });         
+        });    
+        this.getPromise = function(){
+            return userResource.promise;
+        };
+        this.setOrganizations = function() {
+            if (userResource.user && userResource.user.orgAdmin) {
+                // clone orgAdmin array
+                userResource.userOrgs = userResource.user.orgAdmin.slice(0);
+                for (var i = 0; i < userResource.user.orgCurator.length; i++) {
+                    if (userResource.userOrgs.indexOf(userResource.user.orgCurator[i]) < 0) {
+                        userResource.userOrgs.push(userResource.user.orgCurator[i]);
+                    }
+                }
+            } else {
+                userResource.userOrgs = [];
+            }
+        };
+
+
+        return this;
     })
     .directive('ngVersionAvailable', ['$http', function($http) {
       return {

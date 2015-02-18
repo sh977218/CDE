@@ -12,18 +12,6 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
         $scope.user = userResource.user;
         $scope.myOrgs = userResource.userOrgs;
     });
-//    $scope.loadUser = function() {
-//        Myself.get(function(u) {
-//            userResource.user = u;
-//            $scope.setMyOrgs(); 
-//            $scope.loadBoards();
-//            userResource.userLoaded = true;
-//            $scope.loggedIn = true;
-//            $scope.callWhenUserLoaded.forEach(function(toCall) {
-//                toCall();
-//            });
-//        });
-//    };
     
     $scope.checkSystemAlert = function() {
         $http.get('/systemAlert').then(function (response) {

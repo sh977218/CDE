@@ -103,38 +103,6 @@ cdeApp.filter('bytes', function() {
     };
 });
 
-cdeApp.factory('userResource', function(Myself) {
-    var userResource = this;
-    this.user = null;
-    this.promise = new Promise(function(resolve, reject){
-        Myself.get(function(u) {
-            userResource.user = u;
-            userResource.setOrganizations();
-            resolve();
-        });         
-    });    
-    this.getPromise = function(){
-        return userResource.promise;
-    };
-    this.setOrganizations = function() {
-        if (userResource.user && userResource.user.orgAdmin) {
-            // clone orgAdmin array
-            userResource.userOrgs = userResource.user.orgAdmin.slice(0);
-            for (var i = 0; i < userResource.user.orgCurator.length; i++) {
-                if (userResource.userOrgs.indexOf(userResource.user.orgCurator[i]) < 0) {
-                    userResource.userOrgs.push(userResource.user.orgCurator[i]);
-                }
-            }
-        } else {
-            userResource.userOrgs = [];
-        }
-    };
-    
-
-    return this;
-});
-
-
 cdeApp.factory('isAllowedModel', function (userResource) {
     var isAllowedModel = {
     };
