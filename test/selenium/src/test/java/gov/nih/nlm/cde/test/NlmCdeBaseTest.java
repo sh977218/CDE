@@ -124,12 +124,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void mustBeLoggedInAs(String username, String password) {
+        driver.findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
             loginAs(username, password);
         } else {
             WebElement unameLink = findElement(By.id("username_link"));
-            System.out.println("uname link: " + unameLink.getText());
             if (!unameLink.getText().equals(username)) {
                 logout();
                 loginAs(username, password);

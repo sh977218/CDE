@@ -24,6 +24,31 @@
 
         <link rel='stylesheet' href='/cde/public/assets/css/textAngular.css'>
 
+        <!-- build:js /cde/public/assets/js/resource.concat.min.js -->
+        <script src="/cde/public/assets/js/jquery.min.js"></script>
+        <script src="/cde/public/assets/js/jquery-ui.min.js"></script>        
+        <script src="/cde/public/assets/js/angular.min.js"></script>
+        <script src="/cde/public/assets/js/angular-route.min.js"></script>
+        <script src="/cde/public/assets/js/angular-resource.min.js"></script>
+        <script src="/cde/public/assets/js/angular-sanitize.min.js"></script>
+        <script src="/cde/public/assets/js/angular-animate.min.js"></script>
+
+        <script src="/cde/public/assets/js/bootstrap.js"></script>
+        <script src="/cde/public/assets/js/ng-grid-2.0.7.min.js"></script>
+
+        <script src='/cde/public/assets/js/textAngular-rangy.min.js'></script>
+        <script src='/cde/public/assets/js/textAngular-sanitize.min.js'></script>
+        <script src='/cde/public/assets/js/textAngular.min.js'></script>
+
+        <script src="/cde/public/assets/js/angular-local-storage.js"></script> 
+        <script src="/cde/public/assets/js/ui-bootstrap-tpls.js"></script>
+        <script src="/cde/public/assets/js/diff_match_patch.js"></script>
+        <script src="/cde/public/assets/js/match-media.js"></script>
+        <script src="/cde/public/assets/js/sortable.js"></script>
+        <script src="/cde/public/assets/js/scrollfix.js"></script>        
+        <script src="/cde/public/assets/js/select.js"></script>        
+        <script src="/cde/public/assets/js/bootstrap-tour.js"></script>        
+        <!-- endbuild -->
         
         <!--[if lte IE 9]>
           <script>
@@ -102,9 +127,9 @@
                                 </ul>                                                     
                             </li>
                         </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li ng-class="{ active: isPageActive('/login')}" ng-show="user.visitor"><a href="#/login" id="login_link" tabindex="0" title="Log in" aria-label="Log in">Log In</a></li>
-                            <li ng-show="user._id" tabindex="0">
+                        <ul class="nav navbar-nav navbar-right" data-userloaded="loaded-{{user.userLoaded}}">
+                            <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="user.visitor"><a href="#/login" id="login_link" tabindex="0" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a></li>
+                            <li class="login" ng-show="user._id" tabindex="0">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="username_link" tabindex="-1" title="{{user.username}}" aria-label="{{user.username}}"><span ng-bind="user.username"></span><span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="username_link" tabindex="0">
                                     <li ng-show='user._id'><a href="#/profile">Profile</a></li>
@@ -163,32 +188,6 @@
             </footer>
         </div>
         
-        <!-- build:js /cde/public/assets/js/resource.concat.min.js -->
-        <script src="/cde/public/assets/js/jquery.min.js"></script>
-        <script src="/cde/public/assets/js/jquery-ui.min.js"></script>        
-        <script src="/cde/public/assets/js/angular.min.js"></script>
-        <script src="/cde/public/assets/js/angular-route.min.js"></script>
-        <script src="/cde/public/assets/js/angular-resource.min.js"></script>
-        <script src="/cde/public/assets/js/angular-sanitize.min.js"></script>
-        <script src="/cde/public/assets/js/angular-animate.min.js"></script>
-
-        <script src="/cde/public/assets/js/bootstrap.js"></script>
-        <script src="/cde/public/assets/js/ng-grid-2.0.7.min.js"></script>
-
-        <script src='/cde/public/assets/js/textAngular-rangy.min.js'></script>
-        <script src='/cde/public/assets/js/textAngular-sanitize.min.js'></script>
-        <script src='/cde/public/assets/js/textAngular.min.js'></script>
-
-        <script src="/cde/public/assets/js/angular-local-storage.js"></script> 
-        <script src="/cde/public/assets/js/ui-bootstrap-tpls.js"></script>
-        <script src="/cde/public/assets/js/diff_match_patch.js"></script>
-        <script src="/cde/public/assets/js/match-media.js"></script>
-        <script src="/cde/public/assets/js/sortable.js"></script>
-        <script src="/cde/public/assets/js/scrollfix.js"></script>        
-        <script src="/cde/public/assets/js/select.js"></script>        
-        <script src="/cde/public/assets/js/bootstrap-tour.js"></script>        
-        <!-- endbuild -->
-
         <%- include includeFrontEndJS.ejs %>
         <%- include ../../cde/views/includeFrontEndJS.ejs %>
         <%- include ../../form/views/includeFrontEndJS.ejs %>

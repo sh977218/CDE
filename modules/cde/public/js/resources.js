@@ -158,10 +158,11 @@ angular.module('resources', ['ngResource'])
             $http.get('/user/me').then(function(response) {
                 var u = response.data;
                 if (u == "Not logged in.") {
-                    userResource.user = {visitor: true};
+                    userResource.user = {visitor: true, userLoaded: true};
                 } else {
                     userResource.user = u;
                     userResource.setOrganizations();
+                    userResource.user.userLoaded = true;
                 }
                 resolve();
             });         
