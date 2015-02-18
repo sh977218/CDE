@@ -10,13 +10,14 @@ public class BoardManagement2Test  extends BoardTest {
         mustBeLoggedInAs(boarduserEdit_username, password);
         createBoard("Edit Board", "Test");
         gotoMyBoards();
-        String mod = findElement(By.id("dd_mod")).getText();
+        String modified = findElement(By.id("dd_mod")).getText();
         findElement(By.id("name_edit_0")).click();
         findElement(By.id("name_input_0")).sendKeys(" -- Name Edited");
         findElement(By.id("name_confirm_0")).click();
 
-        Assert.assertTrue(textPresent("Saved"));
-        Assert.assertTrue(textPresent("Edit Board -- Name Edited"));
+        textPresent("Saved");
+        closeAlert();
+        textPresent("Edit Board -- Name Edited");
         
         findElement(By.id("desc_edit_0")).click();
         findElement(By.id("desc_input_0")).sendKeys(" -- Desc Edited");
@@ -24,8 +25,8 @@ public class BoardManagement2Test  extends BoardTest {
         
         goToCdeSearch();
         gotoMyBoards();
-        Assert.assertTrue(textPresent("-- Name Edited"));
-        Assert.assertTrue(textPresent("-- Desc Edited"));
+        textPresent("-- Name Edited");
+        textPresent("-- Desc Edited");
         
         Assert.assertNotEquals(mod + " --- " + findElement(By.id("dd_mod")).getText(), mod, findElement(By.id("dd_mod")).getText());
         
