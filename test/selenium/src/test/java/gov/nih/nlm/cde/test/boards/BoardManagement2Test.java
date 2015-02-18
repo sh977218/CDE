@@ -28,7 +28,7 @@ public class BoardManagement2Test  extends BoardTest {
         textPresent("-- Name Edited");
         textPresent("-- Desc Edited");
         
-        Assert.assertNotEquals(mod + " --- " + findElement(By.id("dd_mod")).getText(), mod, findElement(By.id("dd_mod")).getText());
+        Assert.assertNotEquals(modified + " --- " + findElement(By.id("dd_mod")).getText(), modified, findElement(By.id("dd_mod")).getText());
         
         removeBoard("Edit Board -- Name Edited");
     }

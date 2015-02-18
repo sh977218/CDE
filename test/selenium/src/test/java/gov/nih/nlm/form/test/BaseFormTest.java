@@ -8,7 +8,7 @@ import org.testng.Assert;
 public class BaseFormTest extends NlmCdeBaseTest {
 
     protected void startAddingQuestions() {
-        scrollTo("0");
+        scrollToTop();
         startAddingQuestions();
     }
     
