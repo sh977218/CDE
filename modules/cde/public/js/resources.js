@@ -151,24 +151,24 @@ angular.module('resources', ['ngResource'])
             , steps: []
         };
     })
-    .factory('userResource', function($http) {
+    .factory('userResource', function($http, $q) {
         var userResource = this;
         this.user = null;
-        this.promise = new Promise(function(resolve, reject){
-            $http.get('/user/me').then(function(response) {
-                var u = response.data;
-                if (u == "Not logged in.") {
-                    userResource.user = {visitor: true, userLoaded: true};
-                } else {
-                    userResource.user = u;
-                    userResource.setOrganizations();
-                    userResource.user.userLoaded = true;
-                }
-                resolve();
-            });         
+        this.deferred = $q.defer();
+        
+        $http.get('/user/me').then(function(response) {
+            var u = response.data;
+            if (u == "Not logged in.") {
+                userResource.user = {visitor: true, userLoaded: true};
+            } else {
+                userResource.user = u;
+                userResource.setOrganizations();
+                userResource.user.userLoaded = true;
+            }
+            userResource.deferred.resolve();
         });    
         this.getPromise = function(){
-            return userResource.promise;
+            return userResource.deferred.promise;
         };
         this.setOrganizations = function() {
             if (userResource.user && userResource.user.orgAdmin) {
