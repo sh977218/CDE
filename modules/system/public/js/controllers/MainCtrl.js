@@ -13,6 +13,12 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
         $scope.myOrgs = userResource.userOrgs;
     });
     
+    $scope.loadMyBoards = function () {
+        $http.get("/boards/" + userResource.user._id).then(function (response) {
+            $scope.boards = response.data;
+        });         
+    };    
+    
     $scope.checkSystemAlert = function() {
         $http.get('/systemAlert').then(function (response) {
            if (response.data.length > 0) {
@@ -49,9 +55,7 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
 
    
     userResource.getPromise().then(function() {
-        $http.get("/boards/" + userResource.user._id).then(function (response) {
-            $scope.boards = response.data;
-        }); 
+        $scope.loadMyBoards();
     });        
     
     $scope.isOrgCurator = function() {        
@@ -118,7 +122,7 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
             $http.put("/pincde/" + cde.tinyId + "/" + selectedBoard._id).then(function(response) {
                 if (response.status==200) {
                     $scope.addAlert("success", response.data);
-                    $scope.loadBoards();
+                    $scope.loadMyBoards();
                 } else
                     $scope.addAlert("warning", response.data);
             }, function (response){
