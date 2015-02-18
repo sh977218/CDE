@@ -47,13 +47,12 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
     
     $scope.boards = [];
 
-    $scope.loadBoards = function() {    
-        userResource.getPromise().then(function() {
-            $http.get("/boards/" + userResource.user._id).then(function (response) {
-                $scope.boards = response.data;
-            }); 
-        });        
-    };
+   
+    userResource.getPromise().then(function() {
+        $http.get("/boards/" + userResource.user._id).then(function (response) {
+            $scope.boards = response.data;
+        }); 
+    });        
     
     $scope.isOrgCurator = function() {        
         return $scope.isOrgAdmin() || (userResource.user && (userResource.user.orgCurator && userResource.user.orgCurator.length > 0));  
