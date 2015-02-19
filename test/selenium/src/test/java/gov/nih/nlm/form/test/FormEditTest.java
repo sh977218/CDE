@@ -35,8 +35,8 @@ public class FormEditTest extends BaseFormTest {
         newCdeVersion();
         
         goToFormByName(formName, "Incomplete");
-        findElement(By.linkText("Form Description")).click();
         textPresent("Some CDEs in this form have newer version");
+        findElement(By.linkText("Form Description")).click();
         textPresent("Cytogenetics Karyotype Mutation Abnormality Cell Count (Outdated)");
     }
 

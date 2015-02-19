@@ -12,6 +12,7 @@ public abstract class CommentTest extends CommonTest {
     public void addComment(String text){
         gotoComments();
         findElement(By.name("commentTextArea")).sendKeys(text);
+        hangon(1);
         findElement(By.name("postComment")).click();
         Assert.assertTrue(textPresent("Comment added"));    
     }

@@ -16,7 +16,7 @@ exports.formById = function(req, res) {
     var type = req.query.type === 'tinyId'?'eltByTinyId':'byId';
     mongo_data[type](req.params.id, function(err, form) {
         if (form) {
-            form = adminSvc.hideUnapprovedComments(form);
+            adminSvc.hideUnapprovedComments(form);
             res.send(form);
         } else {
             res.status(404).end();

@@ -161,7 +161,7 @@ exports.addComment = function(req, res, dao) {
                         res.send(err);
                         return;
                     } else {
-                        elt = exports.hideUnapprovedComments(elt);
+                        exports.hideUnapprovedComments(elt);
                         return res.send({message: "Comment added", elt: elt});
                     }
                 });
@@ -335,5 +335,4 @@ exports.hideUnapprovedComments = function(adminItem) {
     adminItem.comments.forEach(function(c) {
         if (c.pendingApproval) c.text = commentPendingApprovalText;
     });
-    return adminItem;
 };

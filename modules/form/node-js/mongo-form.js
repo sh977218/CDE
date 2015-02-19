@@ -33,6 +33,7 @@ exports.findForms = function(request, callback) {
         };
     }
     Form.find(criteria).where("archived").equals(null).exec(function (err, forms) {
+        forms.forEach(adminItemSvc.hideUnapprovedComments);
         callback(err, forms);
     });
 };
@@ -47,6 +48,7 @@ exports.update = function(form, user, callback) {
         userId: user._id
         , username: user.username
     }; 
+    adminItemSvc.hideUnapprovedComments(form);
     newForm.save(function(err) {
         Form.update({_id: origId}, {archived: true}, function(nbUpdated) {
             callback(err, newForm);        
@@ -73,6 +75,7 @@ exports.create = function(form, user, callback) {
 
 exports.byId = function(id, callback) {
     Form.findById(id, function(err, form) {
+        adminItemSvc.hideUnapprovedComments(form);
         callback(err, form);
     });     
 };
@@ -101,7 +104,7 @@ exports.transferSteward = function(from, to, callback) {
 
 exports.byTinyIdAndVersion = function(tinyId, version, callback) {
     Form.findOne({'tinyId': tinyId, "version": version}).exec(function (err, elt) {
-        elt = adminItemSvc.hideUnapprovedComments(elt);
+        adminItemSvc.hideUnapprovedComments(elt);
         callback("", elt); 
     });
 };
@@ -109,7 +112,7 @@ exports.byTinyIdAndVersion = function(tinyId, version, callback) {
 exports.eltByTinyId = function(tinyId, callback) {
     if (!tinyId) callback("tinyId is undefined!", null); 
     Form.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, elt) {
-        elt = adminItemSvc.hideUnapprovedComments(elt);
+        adminItemSvc.hideUnapprovedComments(elt);
         callback(err, elt); 
     });
 };

@@ -12,7 +12,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         goToCdeSearch();
         fillOutBasicCreateFields(name, definition, org, classification, subclassification);
         findElement(By.id("submit")).click();
-        hangon(2);
+        hangon(4);
     }    
 
     @Test

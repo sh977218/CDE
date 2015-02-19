@@ -86,6 +86,7 @@ exports.desByConcept = function (concept, callback) {
 
 exports.byTinyIdAndVersion = function(tinyId, version, callback) {
     DataElement.find({'tinyId': tinyId, "version": version}).sort({"updated":-1}).limit(1).exec(function (err, des) {
+        adminItemSvc.hideUnapprovedComments(des[0]);
         callback(err, des[0]); 
     });
 };
@@ -93,6 +94,7 @@ exports.byTinyIdAndVersion = function(tinyId, version, callback) {
 exports.eltByTinyId = function(tinyId, callback) {
     if (!tinyId) callback("tinyId is undefined!", null); 
     DataElement.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, de) {
+        adminItemSvc.hideUnapprovedComments(de);
         callback(err, de); 
     });
 };
@@ -120,6 +122,7 @@ exports.cdesByTinyIdList = function(idList, callback) {
             .slice('valueDomain.permissibleValues', 10)
             .exec(function(err, cdes) {
                 cdes.forEach(mongo_data.formatCde);
+                cdes.forEach(adminItemSvc.hideUnapprovedComments);
                 callback(err, cdes); 
     });
 };
@@ -306,6 +309,7 @@ exports.update = function(elt, user, callback, special) {
                     if (err) {
                         logging.errorLogger.error("Error: Cannot save CDE", {origin: "cde.mongo-cde.update.3", stack: new Error().stack, details: "err "+err});
                     }
+                    adminItemSvc.hideUnapprovedComments(newDe);
                     callback(err, newDe);
                 });
             }

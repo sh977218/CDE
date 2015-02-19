@@ -68,6 +68,7 @@ exports.init = function(app, daoManager) {
 
     app.post('/cdesByTinyIdList', function(req, res) {
         mongo_data.cdesByTinyIdList(req.body, function(err, cdes) {
+            cdes.forEach(adminItemSvc.hideUnapprovedComments);
             res.send(cdes);
         });
     });
@@ -107,7 +108,7 @@ exports.init = function(app, daoManager) {
     app.get('/dataelement/:id', function(req, res) {  
         cdesvc.show(req, function(result) {
             var cde = cdesvc.hideProprietaryPvs(result, req.user);
-            cde = adminItemSvc.hideUnapprovedComments(cde);
+            adminItemSvc.hideUnapprovedComments(cde);
             res.send(cde);
         });
     });
