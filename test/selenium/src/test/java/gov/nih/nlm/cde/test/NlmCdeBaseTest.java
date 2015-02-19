@@ -491,7 +491,7 @@ public class NlmCdeBaseTest {
     }
 
     public void scrollToTop() {
-        scrollTo("0");
+        scrollToTop();
     }
 
     protected boolean checkElementDoesNotExistByCSS(String selector) {
@@ -520,8 +520,11 @@ public class NlmCdeBaseTest {
         return elementVisible;
     }
 
-    public void scrollTo(String y) {
-        ((JavascriptExecutor) driver).executeScript("scroll(0," + y + ");", "");
+    public void scrollTo(Integer y) {
+        String jsScroll = "scroll(0," + Integer.toString(y) + ");";
+        String jqueryScroll = "$(window).scrollTop("+Integer.toString(y)+");";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+        ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
     
     public void scrollToViewById(String id) {

@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.Select;
 public class BaseFormTest extends NlmCdeBaseTest {
 
     protected void startAddingQuestions() {
-        scrollTo("0");
+        scrollToTop();
         findElement(By.id("startAddingQuestions")).click();
     }
     
