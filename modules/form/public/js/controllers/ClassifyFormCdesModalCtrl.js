@@ -1,7 +1,6 @@
-function ClassifyFormCdesModalCtrl($scope, myOrgs, ClassificationTree, Organization, $modalInstance, addClassification) {
+function ClassifyFormCdesModalCtrl($scope, userOrgs, ClassificationTree, Organization, $modalInstance, addClassification) {
     $scope.classificationType = "elt";
-    $scope.myOrgs = myOrgs; 
-    $scope.newClassification = { orgName: myOrgs[0], categories: [], formId: 0 };
+    $scope.newClassification = { orgName: userOrgs[0], categories: [], formId: 0 };
     $scope.classTree = ClassificationTree;
     
     $scope.selectOrg = function(name) {

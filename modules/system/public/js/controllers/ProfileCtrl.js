@@ -1,11 +1,11 @@
-function ProfileCtrl($scope, ViewingHistory, $timeout, $http) {               
+function ProfileCtrl($scope, ViewingHistory, $timeout, $http, userResource) {               
     ViewingHistory.getCdes({start: 0}, function(cdes) {
         $scope.cdes = cdes;
     });
         
     $scope.saveProfile = function() {
         $timeout(function() {
-            $http.post('/user/me', $scope.user).then(function(res) {
+            $http.post('/user/me', userResource.user).then(function(res) {
                 if (res.status === 200) {
                     $scope.addAlert("success", "Saved");
                 } else {
@@ -16,11 +16,11 @@ function ProfileCtrl($scope, ViewingHistory, $timeout, $http) {
     };
     
     $scope.hasQuota = true;
-    if(!$scope.user.quota) {
+    if(!userResource.user.quota) {
         $scope.hasQuota = false;
     }
     
-    $scope.orgCurator = $scope.user.orgCurator.toString().replace(/,/g,', ');
+    $scope.orgCurator = userResource.user.orgCurator.toString().replace(/,/g,', ');
     
-    $scope.orgAdmin = $scope.user.orgAdmin.toString().replace(/,/g,', ');
+    $scope.orgAdmin = userResource.user.orgAdmin.toString().replace(/,/g,', ');
 }

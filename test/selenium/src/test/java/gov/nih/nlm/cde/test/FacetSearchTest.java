@@ -163,7 +163,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textPresent("Standard elements cannot be edited by their stewards");
         modalHere();
         findElement(By.id("saveRegStatus")).click();
-        hangon(2);
+        hangon(4);
         goToCdeSearch();  
         textPresent("Preferred Standard");
         findElement(By.id("li-checked-Preferred Standard")).click();

@@ -84,21 +84,24 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(linkList.size(), 12);                
     }
     
+
+    
     @Test
     public void viewIncrement() {
         goHome();
         goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
-        // wait for text to be here.
         textPresent("Someone who gives blood");
-        // do it twice to get at least one view
+        textNotPresent("Views");        
         goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
         textPresent("Someone who gives blood");
+        goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
+        textPresent("Someone who gives blood");        
+        goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
+        textPresent("Someone who gives blood"); 
         int nbOfViews = Integer.valueOf(findElement(By.id("dd_views")).getText());
-        goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
-        textPresent("Someone who gives blood");
-        int newNbOfViews = Integer.valueOf(findElement(By.id("dd_views")).getText());
-        Assert.assertEquals(newNbOfViews, nbOfViews + 1);
-    }
+        textPresent("Views");        
+        Assert.assertEquals(nbOfViews, 3);
+    }   
         
     @Test
     public void relatedConcepts() {

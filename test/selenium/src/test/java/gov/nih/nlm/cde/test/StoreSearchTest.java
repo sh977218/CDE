@@ -28,7 +28,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         hangon(1);
         findElement(By.xpath("//li[a = 'CDEs']")).click();
         hangon(1);
-        scrollTo("4000");
+        scrollTo(4000);
         hangon(1);
         WebElement elt = findElement(By.xpath("//li[a = '2']"));
         Assert.assertTrue(elt.getAttribute("ng-class").contains("active"));

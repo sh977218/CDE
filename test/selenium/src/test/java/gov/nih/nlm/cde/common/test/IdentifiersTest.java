@@ -28,11 +28,11 @@ public abstract class IdentifiersTest extends CommonTest {
         
         addId("MyOrigin1", "MyId1", "MyVersion1");
         
-        scrollTo("0");
+        scrollToTop();
  
         addId("MyOrigin2", "MyId2", null);
         
-        scrollTo( "0" );
+        scrollToTop();
 
         addId("MyOrigin3", "MyId3", "MyVersion3");
 

@@ -1,4 +1,4 @@
-function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers) {
+function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers) {
 
     // Global variables
     var GLOBALS = {
@@ -7,22 +7,17 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     };
     
     $scope.resultPerPage = 20;
-    $scope.loggedIn = false;
+
+    userResource.getPromise().then(function() {
+        $scope.user = userResource.user;
+        $scope.myOrgs = userResource.userOrgs;
+    });
     
-    $scope.isLoggedIn = function() {
-        return $scope.loggedIn;
-    };
-    
-    $scope.loadUser = function(callback) {
-        Myself.get(function(u) {
-            $scope.user = u;
-            $scope.setMyOrgs(); 
-            $scope.loadBoards();
-            $scope.userLoaded = true;
-            $scope.loggedIn = true;
-            callback();
-        });
-    };
+    $scope.loadMyBoards = function () {
+        $http.get("/boards/" + userResource.user._id).then(function (response) {
+            $scope.boards = response.data;
+        });         
+    };    
     
     $scope.checkSystemAlert = function() {
         $http.get('/systemAlert').then(function (response) {
@@ -58,45 +53,26 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
     
     $scope.boards = [];
 
-    $scope.loadBoards = function() {
-        if ($scope.user && $scope.user._id) {
-            $http.get("/boards/" + $scope.user._id).then(function (response) {
-                $scope.boards = response.data;
-            }); 
-        }        
-    };
-
-    $scope.loadUser(function(){});    
+   
+    userResource.getPromise().then(function() {
+        $scope.loadMyBoards();
+    });        
     
     $scope.isOrgCurator = function() {        
-        return $scope.isOrgAdmin() || ($scope.user && ($scope.user.orgCurator && $scope.user.orgCurator.length > 0));  
+        return $scope.isOrgAdmin() || (userResource.user && (userResource.user.orgCurator && userResource.user.orgCurator.length > 0));  
     };
     
     $scope.isOrgAdmin = function() {
-        return $scope.user && (($scope.user.siteAdmin === true) || ($scope.user.orgAdmin && $scope.user.orgAdmin.length > 0));  
+        return userResource.user && ((userResource.user.siteAdmin === true) || (userResource.user.orgAdmin && userResource.user.orgAdmin.length > 0));  
     };
     
     $scope.isSiteAdmin = function() {
-        return $scope.user !== undefined && $scope.user.siteAdmin;
+        return userResource.user !== undefined && userResource.user.siteAdmin;
     };
 
     $scope.isDocumentationEditor = function() {
-        return exports.hasRole($scope.user, "DocumentationEditor");
-    };
-
-    $scope.setMyOrgs = function() {
-        if ($scope.user && $scope.user.orgAdmin) {
-            // clone orgAdmin array
-            $scope.myOrgs = $scope.user.orgAdmin.slice(0);
-            for (var i = 0; i < $scope.user.orgCurator.length; i++) {
-                if ($scope.myOrgs.indexOf($scope.user.orgCurator[i]) < 0) {
-                    $scope.myOrgs.push($scope.user.orgCurator[i]);
-                }
-            }
-        } else {
-            $scope.myOrgs = [];
-        }
-    };
+        return exports.hasRole(userResource.user, "DocumentationEditor");
+    }
     
     // quickBoard contains an array of CDE IDs
     $scope.quickBoard = [];
@@ -146,7 +122,7 @@ function MainCtrl($scope, $modal, Myself, $http, $location, $anchorScroll, $time
             $http.put("/pincde/" + cde.tinyId + "/" + selectedBoard._id).then(function(response) {
                 if (response.status==200) {
                     $scope.addAlert("success", response.data);
-                    $scope.loadBoards();
+                    $scope.loadMyBoards();
                 } else
                     $scope.addAlert("warning", response.data);
             }, function (response){

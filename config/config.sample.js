@@ -88,6 +88,7 @@ var config = {
     , maxLogsPerMinute: 1000
     , expressToStdout: false
     , logBufferSize: 1000
+    , viewsIncrementTreshold: 3
 };
 
 module.exports = config;

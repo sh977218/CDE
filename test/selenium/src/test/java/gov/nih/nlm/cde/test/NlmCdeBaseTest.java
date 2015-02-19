@@ -52,6 +52,7 @@ public class NlmCdeBaseTest {
     protected static String wguser_username = "wguser";
     protected static String reguser_username = "reguser";
     protected static String boarduser1_username = "boarduser1";
+    protected static String boardSearchUser_username = "boardsearchuser";
     protected static String boarduser2_username = "boarduser2";
     protected static String boarduserEdit_username = "boarduserEdit";
     protected static String boardUser = "boarduser";
@@ -128,12 +129,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void mustBeLoggedInAs(String username, String password) {
-        hangon(2);
+        driver.findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
             loginAs(username, password);
         } else {
-            WebElement unameLink = driver.findElements(By.id("username_link")).get(0);
+            WebElement unameLink = findElement(By.id("username_link"));
             if (!unameLink.getText().equals(username)) {
                 logout();
                 loginAs(username, password);
@@ -270,15 +271,17 @@ public class NlmCdeBaseTest {
         try {
             openEltInList(name, type, status);
             findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+            textPresent("Classification");
+            textPresent(name);
             textNotPresent("is archived");
         } catch (Exception e) {
             hangon(1);
             openEltInList(name, type, status);
             findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+            textPresent("Classification");
+            textPresent(name);
             textNotPresent("is archived");
         }
-        textPresent("Classification");
-        textPresent(name);
     }
 
     protected void openCdeInList(String name) {
@@ -306,7 +309,14 @@ public class NlmCdeBaseTest {
         textPresent("1 results for");
         textPresent(name);
         findElement(By.id("acc_link_0")).click();
-        hangon(1);            
+        hangon(1);         
+        
+        try {
+            findElement(By.id("openEltInCurrentTab_0"));
+        } catch(Exception e) {
+            findElement(By.id("acc_link_0")).click();
+            findElement(By.id("openEltInCurrentTab_0"));
+        }
     }
 
     protected void openFormInList(String name) {
@@ -400,6 +410,7 @@ public class NlmCdeBaseTest {
     @BeforeMethod
     protected void goHome() {
         driver.get(baseUrl + "/gonowhere");
+        textPresent("Nothing here");
         driver.get(baseUrl + "/#/home");
         findElement(By.id("selectOrgDropdown"));
     }
@@ -426,23 +437,13 @@ public class NlmCdeBaseTest {
     }
 
     protected void logout() {
-        try {
-            findElement(By.id("username_link")).click();
-            findElement(By.linkText("Log Out")).click();
-            findElement(By.linkText("Log In"));
-        } catch (TimeoutException e) {
-
-        }
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Log Out")).click();
+        findElement(By.linkText("Log In"));
     }
 
     protected void loginAs(String username, String password) {
-        goToCdeSearch();
-        try {
-            findElement(By.linkText("Log In")).click();
-        } catch (NoSuchElementException e) {
-            logout();
-            findElement(By.linkText("Log In")).click();
-        }
+        findElement(By.linkText("Log In")).click();
         hangon(1);
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
@@ -497,7 +498,7 @@ public class NlmCdeBaseTest {
     }
 
     public void scrollToTop() {
-        scrollTo("0");
+        scrollTo(0);
     }
 
     protected boolean checkElementDoesNotExistByCSS(String selector) {
@@ -526,8 +527,11 @@ public class NlmCdeBaseTest {
         return elementVisible;
     }
 
-    public void scrollTo(String y) {
-        ((JavascriptExecutor) driver).executeScript("scroll(0," + y + ");", "");
+    public void scrollTo(Integer y) {
+        String jsScroll = "scroll(0," + Integer.toString(y) + ");";
+        String jqueryScroll = "$(window).scrollTop("+Integer.toString(y)+");";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+        ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
     
     public void scrollToViewById(String id) {
