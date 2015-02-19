@@ -37,8 +37,7 @@ public class BoardManagement2Test  extends BoardTest {
     
     @Test
     public void searchBoard() {
-        hangon(.5);
-        mustBeLoggedInAs(boardUser, password);
+        mustBeLoggedInAs(boardSearchUser_username, password);
         String pubBlood = "Public Blood Board";
         String privBlood = "Private Blood Board";
         String pubSmoking = "Public Smoking Board";

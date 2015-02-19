@@ -52,6 +52,7 @@ public class NlmCdeBaseTest {
     protected static String wguser_username = "wguser";
     protected static String reguser_username = "reguser";
     protected static String boarduser1_username = "boarduser1";
+    protected static String boardSearchUser_username = "boarduserEdit";
     protected static String boarduser2_username = "boarduser2";
     protected static String boarduserEdit_username = "boarduserEdit";
     protected static String boardUser = "boarduser";
