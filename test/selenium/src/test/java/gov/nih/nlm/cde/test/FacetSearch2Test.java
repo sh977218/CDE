@@ -148,6 +148,7 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         
         findElement(By.id("altClassificationFilterModeToggle")).click();
         textPresent( "and All Classifications" );
+        hangon(1);
         findElement(By.id("li-blank-NINDS")).click();
         findElement(By.id("li-blank-Domain")).click();
         findElement(By.id("li-blank-Assessments and Examinations")).click();
