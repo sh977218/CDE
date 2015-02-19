@@ -304,7 +304,12 @@ public class NlmCdeBaseTest {
         findElement(By.id("acc_link_0")).click();
         hangon(1);         
         
-        
+        try {
+            findElement(By.id("openEltInCurrentTab_0"));
+        } catch(Exception e) {
+            findElement(By.id("acc_link_0")).click();
+            findElement(By.id("openEltInCurrentTab_0"));
+        }
     }
 
     protected void openFormInList(String name) {
