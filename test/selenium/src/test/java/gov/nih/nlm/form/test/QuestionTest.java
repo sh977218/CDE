@@ -161,6 +161,7 @@ public class QuestionTest extends BaseFormTest {
 
         addQuestionToSection("Smoking History Ind", 1);
         findElement(By.id("question_accordion_1_0")).click();
+        hangon(1);
         Assert.assertEquals("Value List", findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_datatype_0']")).getText().trim());
         Assert.assertFalse(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
         findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).click();
