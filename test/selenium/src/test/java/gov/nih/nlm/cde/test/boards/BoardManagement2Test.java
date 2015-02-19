@@ -19,6 +19,8 @@ public class BoardManagement2Test  extends BoardTest {
         closeAlert();
         textPresent("Edit Board -- Name Edited");
         
+        hangon(1);
+        
         findElement(By.id("desc_edit_0")).click();
         findElement(By.id("desc_input_0")).sendKeys(" -- Desc Edited");
         findElement(By.id("desc_confirm_0")).click();
