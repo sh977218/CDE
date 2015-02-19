@@ -10,7 +10,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class CdeSearchTest extends NlmCdeBaseTest {
-    /*
+    
     @Test
     public void cdeFullDetail() {
         goHome();
@@ -84,7 +84,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(linkList.size(), 12);                
     }
     
-*/
+
     
     @Test
     public void viewIncrement() {
@@ -102,7 +102,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textPresent("Views");        
         Assert.assertEquals(nbOfViews, 3);
     }   
-        /*
+        
     @Test
     public void relatedConcepts() {
         goToCdeByName("Patient Visual Change Chief Complaint Indicator");
@@ -198,7 +198,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("+-aaa");
         findElement(By.cssSelector("i.fa-search")).click();   
         textPresent("There was a problem with your query");
-    }*/
+    }
     
     private void matchedByNotVisibleIfPrimaryName() {
         List<WebElement> linkList = driver.findElements(By.xpath("//span[text()='Classification']"));
