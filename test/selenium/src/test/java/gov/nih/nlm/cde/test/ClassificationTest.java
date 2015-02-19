@@ -14,15 +14,10 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.id("addClassification")).click();
         modalHere();
 
-        try {
-            new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
-        } catch(Exception e) {
-            // Uncomment to debug
-//            System.out.println("Dropdown to select org doesn't exist!");
-        }
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         
         // Ensures that tree of classifications have finished loading.
-        Assert.assertTrue(textPresent(categories[1]));
+        textPresent(categories[1]);
 
         for (int i = 1; i < categories.length - 1; i++) {
             findElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link")).click();
@@ -30,7 +25,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button")).click();
         closeAlert();
         findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
-        hangon(1.5);
+        hangon(3);
         findElement(By.linkText("Classification")).click();
         String selector = "";
         for (int i = 1; i < categories.length; i++) {
@@ -55,7 +50,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         for (WebElement prior : priorClassifs) {
             if (prior.getText().contains("Myasthenia Gravis") && prior.getText().contains("Supplemental")) {
                 prior.findElement(By.tagName("button")).click();
-                Assert.assertTrue(textPresent("Classification Already Exists"));
+                textPresent("Classification Already Exists");
                 closeAlert();
             }
         }
@@ -111,9 +106,9 @@ public class ClassificationTest extends NlmCdeBaseTest {
     public void checkDuplicatesClassification() {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Product Problem Discover Performed Observation Outcome Identifier ISO21090.II.v1.0");
-        Assert.assertTrue( textNotPresent( "Disease" ) );
+        textNotPresent( "Disease" ) ;
         addClassificationMethod(new String[]{"NINDS","Disease"});
-        Assert.assertTrue( textPresent( "Disease" ) );
+        textPresent( "Disease" ) ;
         addClassificationMethod(new String[]{"NINDS","Disease"});
         List<WebElement> linkList = driver.findElements(By.cssSelector("li[id$='Disease']"));
         Assert.assertTrue(linkList.size() == 1);

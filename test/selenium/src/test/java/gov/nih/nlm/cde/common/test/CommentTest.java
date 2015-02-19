@@ -10,8 +10,9 @@ public abstract class CommentTest extends CommonTest {
         goToEltByName(eltName);
         findElement(By.linkText("Discussions")).click();
         findElement(By.name("commentTextArea")).sendKeys("My First Comment!");
+        hangon(1);
         findElement(By.name("postComment")).click();
-        Assert.assertTrue(textPresent("Comment added"));
+        textPresent("Comment added");
         Assert.assertTrue(textPresent("testuser"));
         Assert.assertTrue(textPresent("My First Comment!"));
         findElement(By.name("commentTextArea")).sendKeys("another comment");
