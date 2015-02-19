@@ -267,15 +267,17 @@ public class NlmCdeBaseTest {
         try {
             openEltInList(name, type, status);
             findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+            textPresent("Classification");
+            textPresent(name);
             textNotPresent("is archived");
         } catch (Exception e) {
             hangon(1);
             openEltInList(name, type, status);
             findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+            textPresent("Classification");
+            textPresent(name);
             textNotPresent("is archived");
         }
-        textPresent("Classification");
-        textPresent(name);
     }
 
     protected void openCdeInList(String name) {
