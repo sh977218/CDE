@@ -494,7 +494,7 @@ public class NlmCdeBaseTest {
     }
 
     public void scrollToTop() {
-        scrollToTop();
+        scrollTo(0);
     }
 
     protected boolean checkElementDoesNotExistByCSS(String selector) {
