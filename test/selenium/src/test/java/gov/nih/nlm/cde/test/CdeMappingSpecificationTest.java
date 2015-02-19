@@ -36,6 +36,9 @@ public class CdeMappingSpecificationTest extends NlmCdeBaseTest {
         textPresent("Mapping Specification Added");
         closeAlert();
         
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Mappings")).click();
+        
         findElement(By.id("addMappingSpecification")).click();
         
         findElement(By.id("newMappingSpecification.content")).sendKeys("Content");

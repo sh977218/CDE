@@ -164,7 +164,9 @@ public class QuestionTest extends BaseFormTest {
         hangon(1);
         Assert.assertEquals("Value List", findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_datatype_0']")).getText().trim());
         Assert.assertFalse(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
+        startAddingQuestions();    
         findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).click();
+        startAddingQuestions();    
         saveForm();
         
         findElement(By.linkText("Form Description")).click();
