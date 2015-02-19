@@ -42,13 +42,14 @@ public abstract class RegStatusTest extends CommonTest {
     public void retire(String eltName, String user) {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
-        Assert.assertTrue(textPresent("Qualified"));        
+        textPresent("Qualified");        
         findElement(By.id("editStatus")).click();
         modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
-        Assert.assertTrue(textPresent("Retired elements are not returned in searches"));
+        textPresent("Retired elements are not returned in searches");
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
+        hangon(2);
         goToEltSearch();
         findElement(By.name("ftsearch")).sendKeys("Alkaline");
         findElement(By.id("search.submit")).click();
