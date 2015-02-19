@@ -302,7 +302,9 @@ public class NlmCdeBaseTest {
         textPresent("1 results for");
         textPresent(name);
         findElement(By.id("acc_link_0")).click();
-        hangon(1);            
+        hangon(1);         
+        
+        
     }
 
     protected void openFormInList(String name) {

@@ -180,9 +180,14 @@ exports.byId = function(cdeId, callback) {
     });
 };
 
-exports.incDeView = function(cde) {
-    if (cde && cde._id) {
-        DataElement.update({_id: cde._id}, {$inc: {views: 1}}).exec();
+var viewedCdes = {};
+var treshold = config.viewsIncrementTreshold || 50;
+exports.incDeView = function(cde) {    
+    if (!viewedCdes[cde._id]) viewedCdes[cde._id] = 0;
+    viewedCdes[cde._id]++;
+    if (viewedCdes[cde._id]>=treshold && cde && cde._id) {
+        viewedCdes[cde._id] = 0;
+        DataElement.update({_id: cde._id}, {$inc: {views: treshold}}).exec();
     }
 };
 
