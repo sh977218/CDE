@@ -3,6 +3,7 @@ var mongoose = require('mongoose')
     , schemas = require('./schemas')
     , mongo_data_system = require('../../system/node-js/mongo-data') //TODO: USE DEPENDENCY INJECTION
     , connHelper = require('../../system/node-js/connections')
+    , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     ;
 
 exports.type = "form";
@@ -100,13 +101,15 @@ exports.transferSteward = function(from, to, callback) {
 
 exports.byTinyIdAndVersion = function(tinyId, version, callback) {
     Form.findOne({'tinyId': tinyId, "version": version}).exec(function (err, elt) {
-       callback("", elt); 
+        elt = adminItemSvc.hideUnapprovedComments(elt);
+        callback("", elt); 
     });
 };
 
 exports.eltByTinyId = function(tinyId, callback) {
     if (!tinyId) callback("tinyId is undefined!", null); 
     Form.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, elt) {
-       callback(err, elt); 
+        elt = adminItemSvc.hideUnapprovedComments(elt);
+        callback(err, elt); 
     });
 };
