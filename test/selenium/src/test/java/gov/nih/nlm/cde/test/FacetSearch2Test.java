@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ctepCurator_username;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
@@ -122,7 +123,14 @@ public class FacetSearch2Test extends NlmCdeBaseTest {
         hoverOverElement(findElement(By.linkText("CDEs")));
         textNotPresent("Albert Einstein Cancer Center");
         hoverOverElement(findElement(By.id("classifications-text-AECC")));
-        textPresent("Albert Einstein Cancer Center");
+        try {
+            textPresent("Albert Einstein Cancer Center");
+        } catch (TimeoutException e) {
+            hoverOverElement(findElement(By.linkText("CDEs")));
+            hangon(1);
+            hoverOverElement(findElement(By.id("classifications-text-AECC")));
+            textPresent("Albert Einstein Cancer Center");            
+        }
         hoverOverElement(findElement(By.id("classifications-text-caBIG")));
         textNotPresent("Albert Einstein Cancer Center");
     }
