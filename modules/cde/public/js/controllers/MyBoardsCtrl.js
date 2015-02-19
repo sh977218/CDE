@@ -1,6 +1,4 @@
 function MyBoardsCtrl($scope, $modal, $http, Board) {
-    var MyBoardsCtrl = this;
-    
     $scope.removeBoard = function(index) {
         $http['delete']("/board/" + $scope.boards[index]._id).then(function (response) {
             $scope.addAlert("success", "Board removed");
@@ -27,7 +25,7 @@ function MyBoardsCtrl($scope, $modal, $http, Board) {
         delete board.editMode; 
         $http.post("/board", board).success(function(response) {
             $scope.addAlert("success", "Saved");
-            MyBoardsCtrl.loadMyBoards();
+            $scope.loadMyBoards();
         }).error(function(response){
             $scope.addAlert("danger", response);
             $scope.loadMyBoards();
