@@ -14,7 +14,12 @@ public class ClassificationTest extends NlmCdeBaseTest {
         findElement(By.id("addClassification")).click();
         modalHere();
 
+        try {
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
+        } catch(Exception e) {
+            // Uncomment to debug
+//            System.out.println("Dropdown to select org doesn't exist!");
+        }
         
         // Ensures that tree of classifications have finished loading.
         textPresent(categories[1]);
