@@ -41,7 +41,8 @@ public class MergeTest extends NlmCdeBaseTest {
         hangon(3); 
     }    
     
-    private void checkResult() {        
+    private void checkResult() {     
+        findElement(By.cssSelector(".accordion-toggle")).click(); 
         if (!browser.equals("ie")) {
             findElement(By.linkText("Smoking History Ind")).click(); 
             switchTabAndClose(1);
