@@ -28,7 +28,8 @@ public class MergeTest extends NlmCdeBaseTest {
     
     private void gotoInbox(){
         findElement(By.id("username_link")).click();  
-        findElement(By.linkText("Inbox")).click();    
+        findElement(By.linkText("Inbox")).click();
+        hangon(1);
     }
     
     private void acceptMergeRequest() {
