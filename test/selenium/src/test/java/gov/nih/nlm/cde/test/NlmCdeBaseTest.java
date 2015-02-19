@@ -229,6 +229,7 @@ public class NlmCdeBaseTest {
     protected void fillOutBasicCreateFields(String name, String definition, String org, String classification, String subClassification) {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
+        textPresent("Create Data Element");
         findElement(By.name("elt.designation")).sendKeys(name);
         findElement(By.name("elt.definition")).sendKeys(definition);
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(org);

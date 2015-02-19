@@ -12,7 +12,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         goToCdeSearch();
         fillOutBasicCreateFields(name, definition, org, classification, subclassification);
         findElement(By.id("submit")).click();
-        hangon(4);
+        hangon(6);
     }    
 
     @Test
@@ -82,7 +82,6 @@ public class CdeCreateTest extends NlmCdeBaseTest {
     public void testAlignmentForMissingFields() {
         mustBeLoggedInAs(ctepCurator_username, password);
         createBasicCde("AlignmentCDE", "Definition for alignment cde", "CTEP", "DISEASE", "Brain");
-
         try {
             openCdeInList("AlignmentCDE", "Incomplete");
         } catch (Exception e) {
