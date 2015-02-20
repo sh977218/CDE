@@ -12,7 +12,7 @@ public class BoardTest extends NlmCdeBaseTest {
     
     protected void makePublic(String boardName, String response) {
         gotoMyBoards();
-        Assert.assertTrue(textPresent(boardName));
+        textPresent(boardName);
         int length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
@@ -71,7 +71,6 @@ public class BoardTest extends NlmCdeBaseTest {
         goToCdeSearch();
         openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
-        modalHere();        
         findElement(By.linkText(boardName)).click();
         modalGone();
         Assert.assertTrue(textPresent("Added to Board"));  

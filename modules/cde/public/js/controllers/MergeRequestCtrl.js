@@ -1,4 +1,4 @@
-function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, MergeCdes, isAllowedModel) {
+function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, MergeCdes, isAllowedModel, userResource) {
     $scope.openMergeModal = function(retiredIndex) {
         $scope.retiredIndex = retiredIndex;
         var modalInstance = $modal.open({
@@ -7,7 +7,7 @@ function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, Me
             resolve: {
                 cdes: function() {return $scope.cdes;},
                 retiredIndex: function() {return $scope.retiredIndex;},
-                user: function() {return $scope.user;}
+                user: function() {return userResource.user;}
             }
         });        
         
@@ -56,7 +56,7 @@ function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, Me
                 elt: function() {
                     return mergeRequest.destination.object;
                 }, user: function() {
-                    return $scope.user;
+                    return userResource.user;
                 }
             }
         });              

@@ -22,6 +22,7 @@ db.users.insert({username: 'createUser', password: 'pass', orgCurator: ["CTEP"],
 db.users.insert({username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: [], email: "test@example.com", roles: ["BoardPublisher"]});
 db.users.insert({username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]});
 db.users.insert({username: 'boarduser1', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]});
+db.users.insert({username: 'boardsearchuser', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]});
 db.users.insert({username: 'boarduser2', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]});
 db.users.insert({username: 'pinuser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boarduserEdit', password: 'pass', quota: 1073741824, viewHistory: []});

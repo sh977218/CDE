@@ -1,8 +1,9 @@
 package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.testng.Assert;
+
 import org.testng.annotations.Test;
 
 public class CdeMappingSpecificationTest extends NlmCdeBaseTest {
@@ -36,11 +37,19 @@ public class CdeMappingSpecificationTest extends NlmCdeBaseTest {
         textPresent("Mapping Specification Added");
         closeAlert();
         
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Mappings")).click();
         findElement(By.id("addMappingSpecification")).click();
-        
         findElement(By.id("newMappingSpecification.content")).sendKeys("Content");
-        findElement(By.xpath("//li/a/strong[contains(text(), 'Content')]"));
-    
+        try {
+            findElement(By.xpath("//li/a/strong[contains(text(), 'Content')]"));
+        } catch (TimeoutException e) {
+            goToCdeByName(cdeName);
+            findElement(By.linkText("Mappings")).click();
+            findElement(By.id("addMappingSpecification")).click();
+            findElement(By.id("newMappingSpecification.content")).sendKeys("Content");            
+        }
+            
         findElement(By.id("cancelCreate")).click();
         modalGone();
 

@@ -75,29 +75,27 @@ public class CdeRegStatusTest extends RegStatusTest {
         textPresent(viewing);
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
-        modalHere();
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
-        hangon(5);
+        waitForESUpdate();
         findElement(By.linkText("CDEs")).click();
         showSearchFilters();
         findElement(By.id("li-checked-Standard")).click();
         hangon(2);
         findElement(By.id("li-checked-Qualified")).click();
         textPresent("1 results for");
-        findElement(By.xpath("//i[@title='View Full Detail']")).click();
+        clickElement(By.xpath("//i[@title='View Full Detail']"));
         hangon(0.5);
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
-        modalHere();
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
         hangon(1);
         findElement(By.linkText("CDEs")).click();
         if (!findElement(By.id("li-blank-Standard")).isDisplayed()) {
-            System.out.println("clicking show / hide");
             findElement(By.id("showHideFilters")).click();
         }
+        hangon(1);
         findElement(By.id("li-blank-Standard")).click();
         hangon(1);
         textPresent("4 results for");

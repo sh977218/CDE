@@ -133,7 +133,7 @@ public class OrgAdminTest extends NlmCdeBaseTest {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
         findElement(By.linkText("CDE & Form Management")).click();
-        scrollTo("0");
+        scrollToTop();
         
         new Select(findElement(By.name("transferSteward_from"))).selectByVisibleText(org1);
         new Select(findElement(By.name("transferSteward_to"))).selectByVisibleText("LCC");

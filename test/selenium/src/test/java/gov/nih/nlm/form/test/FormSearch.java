@@ -21,7 +21,7 @@ public class FormSearch extends BaseFormTest {
 
         new SectionTest().addSection("Answer List Section", null);
         
-        findElement(By.id("startAddingQuestions")).click();
+        startAddingQuestions();
         new QuestionTest().addQuestionToSection(cdeName, 0);
         saveForm();
         

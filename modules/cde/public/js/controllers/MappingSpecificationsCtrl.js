@@ -47,7 +47,8 @@ var MappingSpecificationsCtrl = function ($scope, $modal, $window) {
 function NewMappingSpecificationModalCtrl($scope, $modalInstance, $http, elt) {
     $scope.elt = elt;
     $scope.newMappingSpecification = {};
-    $scope.autocompleteList = [];
+    $scope.contentAutocompleteList = [];
+    $scope.typeAutocompleteList = [];
     
     $http.get("/cde/mappingSpecifications/types").then(function(result) {
         $scope.typeAutocompleteList = result.data;

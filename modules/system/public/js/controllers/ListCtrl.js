@@ -1,4 +1,4 @@
-function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout) {
+function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource) {
     $scope.filterMode = true;
     
     $timeout(function(){
@@ -77,10 +77,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout) {
         $scope.reload();
     });
 
-    $scope.$watch('userLoaded', function() {
-        $scope.reload();        
-    });
-
+    userResource.getPromise().then(function(){$scope.reload()});
     
     $scope.addStatusFilter = function(t) {
         t.selected = !t.selected;
@@ -239,14 +236,14 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout) {
     $scope.getUsedBy = function(elt) {
         if (elt.classification)
             return elt.classification.filter(function(c) {
-                return OrgHelpers.showWorkingGroup(c.stewardOrg.name, $scope.user);
+                return OrgHelpers.showWorkingGroup(c.stewardOrg.name, userResource.user);
             }).map(function(e) {return e.stewardOrg.name;});
         else return [];
     };
     
     $scope.reload = function() {
         var timestamp = new Date().getTime();
-        if (!$scope.userLoaded) return;
+        if (!userResource.user) return;
         $scope.lastQueryTimeStamp = timestamp;        
         $scope.accordionListStyle = "semi-transparent";
         $scope.filter = Elastic.buildElasticQueryPre($scope);
@@ -309,7 +306,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout) {
     $scope.filterOutWorkingGroups = function(aggregations) {
         this.setAggregations = function() {
             aggregations.lowRegStatusOrCurator_filter.orgs.buckets = aggregations.lowRegStatusOrCurator_filter.orgs.buckets.filter(function(bucket) {
-                return OrgHelpers.showWorkingGroup(bucket.key, $scope.user) || $scope.user.siteAdmin;
+                return OrgHelpers.showWorkingGroup(bucket.key, userResource.user) || userResource.user.siteAdmin;
             });
             $scope.aggregations = aggregations;            
         };

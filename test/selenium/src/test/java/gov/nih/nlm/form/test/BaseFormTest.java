@@ -3,9 +3,13 @@ package gov.nih.nlm.form.test;
 import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 
 public class BaseFormTest extends NlmCdeBaseTest {
+
+    protected void startAddingQuestions() {
+        scrollToTop();
+        findElement(By.id("startAddingQuestions")).click();
+    }
     
     protected void gotoPublicForms() {
         findElement(By.linkText("Forms")).click();    
