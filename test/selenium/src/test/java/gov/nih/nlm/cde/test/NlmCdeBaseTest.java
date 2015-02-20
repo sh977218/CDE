@@ -300,7 +300,7 @@ public class NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-search")).click();   
         textPresent("1 results for");
         textPresent(name);
-        findElement(By.id("acc_link_0")).click();
+        clickElement(By.id("acc_link_0"));
         hangon(1);         
         
         try {
