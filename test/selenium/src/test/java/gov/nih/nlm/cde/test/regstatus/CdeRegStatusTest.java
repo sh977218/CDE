@@ -74,7 +74,7 @@ public class CdeRegStatusTest extends RegStatusTest {
         hangon(2);
         findElement(By.id("li-checked-Qualified")).click();
         textPresent("1 results for");
-        findElement(By.xpath("//i[@title='View Full Detail']")).click();
+        clickElement(By.xpath("//i[@title='View Full Detail']"));
         hangon(0.5);
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
