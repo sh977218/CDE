@@ -59,7 +59,7 @@ exports.orgNames = function(callback) {
 
 exports.userByName = function(name, callback) {
     User.findOne({'username': new RegExp('^'+name+'$', "i")}).exec(function (err, u) {
-       callback("", u); 
+       callback(err, u); 
     });
 };
 
@@ -68,7 +68,7 @@ exports.usersByPartialName = function(name, callback) {
         for (var i = 0; i < users.length; i++) {
             delete users[i].password;
         }
-        callback("", users); 
+        callback(err, users); 
     });
 };
 
@@ -345,5 +345,14 @@ exports.getMessages = function(req, callback) {
     Message.find(authorRecipient).where().exec(function(err, result) {
         if (!err) callback(null, result);
         else callback(err);
+    });
+};
+
+exports.addUserRole = function(request, cb) {
+    exports.userByName(request.username, function(err, u){
+        u.roles.push(request.role);
+        u.save(function(err, u){
+            if(cb) cb(err, u);
+        });
     });
 };

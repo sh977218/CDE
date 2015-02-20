@@ -12,6 +12,7 @@ var passport = require('passport')
   , adminItemSvc = require("./adminItemSvc")       
   , auth = require( './authorization' )
   , csrf = require('csurf')
+   , authorizationShared = require("../../system/shared/authorizationShared")
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -541,5 +542,14 @@ exports.init = function(app) {
             else res.send(messages);
         });
     });    
+    
+    app.post('/addUserRole', function(req, res) {
+        if (authorizationShared.hasRole(req.user, "CommentReviewer")) {
+            mongo_data_system.addUserRole(req.body, function(err, u) {
+                if (err) res.send(404, err);
+                else res.send("Role added.");
+            });
+        }
+    });       
     
 };
