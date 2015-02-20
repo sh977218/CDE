@@ -451,8 +451,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
-        findElement(By.id("login_button")).click();
-        hangon(1);
+        clickElement(By.id("login_button"));
         // Assumption is that this comes from a CSRF error. So reload the whole page if it fails. 
         try {
             findElement(By.linkText(username));
@@ -465,7 +464,7 @@ public class NlmCdeBaseTest {
                 findElement(By.id("uname")).sendKeys(username);
                 findElement(By.id("passwd")).clear();
                 findElement(By.id("passwd")).sendKeys(password);
-                findElement(By.id("login_button")).click();
+                clickElement(By.id("login_button"));
                 findElement(By.linkText(username));
             }
         }
@@ -477,7 +476,6 @@ public class NlmCdeBaseTest {
     }
 
     public void addToQuickBoard(String cdeName) {
-//        scrollToTop();
         findElement(By.name("ftsearch")).clear();        
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
