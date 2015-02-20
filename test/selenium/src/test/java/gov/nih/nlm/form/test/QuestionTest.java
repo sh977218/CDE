@@ -84,7 +84,6 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.id("question_accordion_0_0")).click();
         
         findElement(By.xpath("//dd[@id='dd_question_title_0']//i")).click();
-        modalHere();
         findElement(By.xpath("//div[@id='q_select_name_3']//button")).click();
         hangon(1);
         Assert.assertEquals("Date of Birth", findElement(By.id("dd_question_title_0")).getText());

@@ -15,7 +15,6 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         
         findElement(By.linkText("Naming")).click();
         findElement(By.xpath("//button[text()=\" Add Naming\"]")).click();
-        modalHere();
         findElement(By.xpath("//label[text()=\"Name\"]/following-sibling::input")).sendKeys("Alternative Name 1");
         findElement(By.xpath("//label[text()=\"Definition\"]/following-sibling::textarea")).sendKeys("Alternative Definition 1");
         findElement(By.xpath("//div[@id='newConceptModalFooter']//button[text()=\"Save\"]")).click();
@@ -37,7 +36,6 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         
         goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");            
         findElement(By.xpath("//i[@id='editStatus']")).click();
-        modalHere();
         new Select(findElement(By.xpath("//label[text()=\"Registration Status\"]/following-sibling::select"))).selectByValue("Recorded");
         findElement(By.xpath("//div[@id=\"regStatusModalFooter\"]//button[text()=\"Save\"]")).click();
         modalGone();
@@ -49,7 +47,6 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         findElement(By.linkText("Identifiers")).click();
         closeAlert();
         findElement(By.xpath("//button[text()=\" Add Identifier\"]")).click();
-        modalHere();
         findElement(By.xpath("//label[text()=\"Source\"]/following-sibling::input")).sendKeys("Origin 1");
         findElement(By.xpath("//label[text()=\"Identifier\"]/following-sibling::textarea")).sendKeys("Identifier 1");    
         findElement(By.xpath("//label[text()=\"Version\"]/following-sibling::textarea")).sendKeys("Version 1"); 

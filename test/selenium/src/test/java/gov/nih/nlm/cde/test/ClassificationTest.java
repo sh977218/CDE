@@ -12,7 +12,6 @@ public class ClassificationTest extends NlmCdeBaseTest {
    public void addClassificationMethod(String[] categories) {
         findElement(By.linkText("Classification")).click();
         findElement(By.id("addClassification")).click();
-        modalHere();
 
         try {
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
@@ -50,7 +49,6 @@ public class ClassificationTest extends NlmCdeBaseTest {
         hangon(1);
         addClassificationMethod(new String[]{"NINDS","Domain","Treatment/Intervention Data","Therapies"});
         findElement(By.id("addClassification")).click(); 
-        modalHere();
         List<WebElement> priorClassifs = driver.findElements(By.xpath("//div[ol]"));
         for (WebElement prior : priorClassifs) {
             if (prior.getText().contains("Myasthenia Gravis") && prior.getText().contains("Supplemental")) {

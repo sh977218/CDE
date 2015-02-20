@@ -10,7 +10,6 @@ public abstract class PropertyTest extends CommonTest {
         goToEltByName(eltName);
         findElement(By.linkText("Properties")).click();
         findElement(By.id("addProperty")).click();
-        modalHere();
         findElement(By.name("key")).sendKeys(checkString);
         try {
             Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
@@ -28,21 +27,18 @@ public abstract class PropertyTest extends CommonTest {
         goToEltByName(eltName, status);
         findElement(By.linkText("Properties")).click();
         findElement(By.id("addProperty")).click();
-        modalHere();
         findElement(By.name("key")).sendKeys("MyKey1");
         findElement(By.name("value")).sendKeys("MyValue1");
         findElement(By.id("createProperty")).click();
         Assert.assertTrue(textPresent("Property Added"));
         modalGone();
         findElement(By.id("addProperty")).click();
-        modalHere();
         findElement(By.name("key")).sendKeys("MyKey2");
         findElement(By.name("value")).sendKeys("MyValue2");
         findElement(By.id("createProperty")).click();
         Assert.assertTrue(textPresent("Property Added"));
         modalGone();
         findElement(By.id("addProperty")).click();
-        modalHere();
         findElement(By.name("key")).sendKeys("MyKey3");
         findElement(By.name("value")).sendKeys("MyValue3");
         findElement(By.id("createProperty")).click();

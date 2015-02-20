@@ -145,7 +145,6 @@ public class BoardManagementTest extends BoardTest {
         goToCdeSearch();
         openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
-        modalHere();
         Assert.assertTrue(textPresent("Create a board now"));
         findElement(By.id("cancelSelect")).click();
         modalGone();

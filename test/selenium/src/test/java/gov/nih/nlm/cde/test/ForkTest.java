@@ -7,10 +7,9 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ForkTest extends NlmCdeBaseTest {
-    
+
     private void addFork(String changeNote, String org) {
         findElement(By.id("openCreateFork")).click();
-        modalHere();
         findElement(By.name("selection.changeNote")).sendKeys(changeNote);
         new Select(driver.findElement(By.id("selection.org"))).selectByVisibleText(org);
         findElement(By.id("submit")).click();
@@ -52,10 +51,11 @@ public class ForkTest extends NlmCdeBaseTest {
         findElement(By.linkText("Forks")).click();
         findElement(By.id("accept_fork_0")).click();
         textPresent("Fork merged");
-        hangon(2);
-        
+
         Assert.assertEquals("Adverse Event Ongoing Event Indicator - ST FORKED", findElement(By.id("dd_general_name")).getText());
         Assert.assertEquals("Standard", findElement(By.id("dd_status")).getText());
+
+        waitForESUpdate();
 
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("\"Adverse Event Ongoing Event Indicator\"");

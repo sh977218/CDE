@@ -71,7 +71,6 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Administration, Management Performed Study Activity Variance Reason ISO21090.ST.v1.0");
         findElement(By.id("editStatus")).click();
-        modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         findElement(By.id("saveRegStatus")).click();
         Assert.assertTrue(textPresent("Saved"));

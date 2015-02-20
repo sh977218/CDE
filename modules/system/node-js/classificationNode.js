@@ -42,6 +42,7 @@ exports.cdeClassification = function(body, action, cb) {
     };
     daoManager.getDaoList().forEach(function(dao) {
         var  findElements = function(err, cde) {
+            if (!cde) return;
             var steward = classificationShared.findSteward(cde, body.orgName);
             if (!steward) {
                 mongo_data_system.orgByName(body.orgName, function(stewardOrg) {
