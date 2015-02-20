@@ -101,7 +101,7 @@ public class ForkTest extends NlmCdeBaseTest {
 
         Assert.assertEquals("Other Group Patient Identifier Number - FORKED", findElement(By.id("dd_general_name")).getText());
 
-        hangon(2);
+        waitForESUpdate();
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("\"Other Group Patient Identifier Number\"");
         findElement(By.cssSelector("i.fa-search")).click();
