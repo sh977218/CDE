@@ -3,11 +3,9 @@ package gov.nih.nlm.cde.test;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
@@ -21,7 +19,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.TimeoutException;
 import java.util.Random;
 import java.util.logging.Logger;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -52,6 +49,7 @@ public class NlmCdeBaseTest {
     protected static String wguser_username = "wguser";
     protected static String reguser_username = "reguser";
     protected static String boarduser1_username = "boarduser1";
+    protected static String boardSearchUser_username = "boardsearchuser";
     protected static String boarduser2_username = "boarduser2";
     protected static String boarduserEdit_username = "boarduserEdit";
     protected static String boardUser = "boarduser";
@@ -124,12 +122,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void mustBeLoggedInAs(String username, String password) {
-        hangon(.5);
+        driver.findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
             loginAs(username, password);
         } else {
-            WebElement unameLink = driver.findElements(By.id("username_link")).get(0);
+            WebElement unameLink = findElement(By.id("username_link"));
             if (!unameLink.getText().equals(username)) {
                 logout();
                 loginAs(username, password);
@@ -162,7 +160,6 @@ public class NlmCdeBaseTest {
 
     protected void classify(String org, String classification, String subClassification) {
         findElement(By.id("selectDefault")).click();
-        modalHere();
         
         try {
             new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
@@ -213,7 +210,6 @@ public class NlmCdeBaseTest {
         } else {
             findElement(By.xpath("//*[@id='classification-" + addSelector + "']/div/div/span/a[@title='Add Child Classification']")).click();
         }
-        modalHere();
         findElement(By.id("addNewCatName")).sendKeys(categories[categories.length - 1]);
         findElement(By.id("addNewCatButton")).click();
         closeAlert();
@@ -223,6 +219,7 @@ public class NlmCdeBaseTest {
     protected void fillOutBasicCreateFields(String name, String definition, String org, String classification, String subClassification) {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
+        textPresent("Create Data Element");
         findElement(By.name("elt.designation")).sendKeys(name);
         findElement(By.name("elt.definition")).sendKeys(definition);
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(org);
@@ -266,15 +263,17 @@ public class NlmCdeBaseTest {
         try {
             openEltInList(name, type, status);
             findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+            textPresent("Classification");
+            textPresent(name);
             textNotPresent("is archived");
         } catch (Exception e) {
             hangon(1);
             openEltInList(name, type, status);
             findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+            textPresent("Classification");
+            textPresent(name);
             textNotPresent("is archived");
         }
-        textPresent("Classification");
-        textPresent(name);
     }
 
     protected void openCdeInList(String name) {
@@ -301,8 +300,15 @@ public class NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-search")).click();   
         textPresent("1 results for");
         textPresent(name);
-        findElement(By.id("acc_link_0")).click();
-        hangon(1);            
+        clickElement(By.id("acc_link_0"));
+        hangon(1);         
+        
+        try {
+            findElement(By.id("openEltInCurrentTab_0"));
+        } catch(Exception e) {
+            findElement(By.id("acc_link_0")).click();
+            findElement(By.id("openEltInCurrentTab_0"));
+        }
     }
 
     protected void openFormInList(String name) {
@@ -319,15 +325,26 @@ public class NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }
+    
+    protected void clickElement(By by) {
+        try {
+            findElement(by).click();
+        } catch(StaleElementReferenceException e) {
+            hangon(2);
+            findElement(by).click();
+        }
+    }    
 
     @AfterTest
     public void endSession() {
         driver.quit();
     }
 
-    public void modalHere() {
-    }
 
+    public void waitForESUpdate() {
+        hangon(10);
+    }
+    
     /*
      * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
      */
@@ -350,7 +367,6 @@ public class NlmCdeBaseTest {
     
     protected void newCdeVersion(String changeNote) {
         findElement(By.id("openSave")).click();
-        modalHere();
         if (changeNote != null) {
             findElement(By.name("changeNote")).clear();
             findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
@@ -370,13 +386,13 @@ public class NlmCdeBaseTest {
         Sleeper.sleepTight((long) (i * 1000));
     }
 
-    public boolean textPresent(String text, String where) {
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(where), text));
+    public boolean textPresent(String text, By by) {
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
         return true;
     }
     
     public boolean textPresent(String text) {
-        return textPresent(text, "BODY");
+        return textPresent(text, By.cssSelector("BODY"));
     }
 
     public boolean textPresentTrueFalse(String text) {
@@ -396,6 +412,7 @@ public class NlmCdeBaseTest {
     @BeforeMethod
     protected void goHome() {
         driver.get(baseUrl + "/gonowhere");
+        textPresent("Nothing here");
         driver.get(baseUrl + "/#/home");
         findElement(By.id("selectOrgDropdown"));
     }
@@ -422,44 +439,39 @@ public class NlmCdeBaseTest {
     }
 
     protected void logout() {
-        try {
-            findElement(By.id("username_link")).click();
-            findElement(By.linkText("Log Out")).click();
-            findElement(By.linkText("Log In"));
-        } catch (TimeoutException e) {
-
-        }
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Log Out")).click();
+        findElement(By.linkText("Log In"));
     }
 
-    protected void loginAs(String username, String password) {
-        goToCdeSearch();
-        try {
-            findElement(By.linkText("Log In")).click();
-        } catch (NoSuchElementException e) {
-            logout();
-            findElement(By.linkText("Log In")).click();
-        }
+    private void loginSequence(String username, String password) {
+        findElement(By.linkText("Log In")).click();
         hangon(1);
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
-        findElement(By.id("login_button")).click();
-        hangon(1);
+        clickElement(By.id("login_button"));        
+    }
+    
+    protected void loginAs(String username, String password) {
+        loginSequence(username, password);
         // Assumption is that this comes from a CSRF error. So reload the whole page if it fails. 
         try {
             findElement(By.linkText(username));
         } catch (Exception e) {
             if (driver.findElements(By.id("login_button")).size() > 0) {
                 driver.get(baseUrl);
-                findElement(By.linkText("Log In")).click();
-                System.out.println("Re-clicking Log In");
-                findElement(By.id("uname")).clear();
-                findElement(By.id("uname")).sendKeys(username);
-                findElement(By.id("passwd")).clear();
-                findElement(By.id("passwd")).sendKeys(password);
-                findElement(By.id("login_button")).click();
-                findElement(By.linkText(username));
+                loginSequence(username, password);
+                try { 
+                    findElement(By.linkText(username));
+                } catch (Exception e2) {
+                    if (driver.findElements(By.id("login_button")).size() > 0) {
+                        driver.get(baseUrl);
+                        loginSequence(username, password);
+                        findElement(By.linkText(username));
+                    }
+                }
             }
         }
     }
@@ -470,12 +482,11 @@ public class NlmCdeBaseTest {
     }
 
     public void addToQuickBoard(String cdeName) {
-//        scrollToTop();
         findElement(By.name("ftsearch")).clear();        
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results for");
-        textPresent(cdeName, "#acc_link_0");
+        textPresent(cdeName, By.cssSelector("#acc_link_0"));
         findElement(By.id("addToCompare_0")).click();
         hangon(.5);
         findElement(By.name("ftsearch")).clear();
@@ -493,7 +504,7 @@ public class NlmCdeBaseTest {
     }
 
     public void scrollToTop() {
-        scrollTo("0");
+        scrollTo(0);
     }
 
     protected boolean checkElementDoesNotExistByCSS(String selector) {
@@ -522,8 +533,11 @@ public class NlmCdeBaseTest {
         return elementVisible;
     }
 
-    public void scrollTo(String y) {
-        ((JavascriptExecutor) driver).executeScript("scroll(0," + y + ");", "");
+    public void scrollTo(Integer y) {
+        String jsScroll = "scroll(0," + Integer.toString(y) + ");";
+        String jqueryScroll = "$(window).scrollTop("+Integer.toString(y)+");";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+        ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
     
     public void scrollToViewById(String id) {
@@ -574,7 +588,6 @@ public class NlmCdeBaseTest {
     
     protected void deleteClassification(String classificationId) {
         driver.findElement(By.cssSelector("[id='"+classificationId+"'] [title=\"Remove\"]")).click();
-        modalHere();
         driver.findElement(By.cssSelector("[id='okRemoveClassificationModal']")).click();
         modalGone();
         closeAlert();

@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ctepCurator_username;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -13,7 +12,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         goToCdeSearch();
         fillOutBasicCreateFields(name, definition, org, classification, subclassification);
         findElement(By.id("submit")).click();
-        hangon(1);
+        hangon(6);
     }    
 
     @Test
@@ -83,7 +82,6 @@ public class CdeCreateTest extends NlmCdeBaseTest {
     public void testAlignmentForMissingFields() {
         mustBeLoggedInAs(ctepCurator_username, password);
         createBasicCde("AlignmentCDE", "Definition for alignment cde", "CTEP", "DISEASE", "Brain");
-
         try {
             openCdeInList("AlignmentCDE", "Incomplete");
         } catch (Exception e) {

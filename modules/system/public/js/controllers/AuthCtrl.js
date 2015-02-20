@@ -1,4 +1,4 @@
-function AuthCtrl($scope, Auth, $window, $http) {
+function AuthCtrl($scope, Auth, $window, $http, userResource) {
     
     $scope.getCsrf = function() {
         $http.get('/csrf').then(function(res) {

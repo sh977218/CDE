@@ -87,6 +87,7 @@ var config = {
     , account: 'CDE Account <cdeuser@nlm.nih.gov>'    
     , maxLogsPerMinute: 1000
     , expressToStdout: false
+    , viewsIncrementTreshold: 3
 };
 
 module.exports = config;

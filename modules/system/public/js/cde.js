@@ -103,7 +103,7 @@ cdeApp.filter('bytes', function() {
     };
 });
 
-cdeApp.factory('isAllowedModel', function () {
+cdeApp.factory('isAllowedModel', function (userResource) {
     var isAllowedModel = {
     };
     
@@ -112,14 +112,14 @@ cdeApp.factory('isAllowedModel', function () {
         if (CuratedItem.archived) {
             return false;
         }
-        if ($scope.user.siteAdmin) {
+        if (userResource.user.siteAdmin) {
             return true;
         } else {   
             if (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard") {
                 return false;
             }
-            if ($scope.myOrgs) {
-                return exports.isCuratorOf($scope.user, CuratedItem.stewardOrg.name);
+            if (userResource.userOrgs) {
+                return exports.isCuratorOf(userResource.user, CuratedItem.stewardOrg.name);
             } else {
                 return false;
             }
@@ -133,11 +133,7 @@ cdeApp.factory('isAllowedModel', function () {
     };
     
     isAllowedModel.runWhenInitialized = function($scope, toRun) {
-        if (!$scope.userLoaded) {
-            $timeout(isAllowedModel.runWhenInitialized($scope, toRun), 1000);
-        } else {
-            toRun($scope);
-        }                
+        userResource.getPromise().then(toRun);
     };
     
     isAllowedModel.setDisplayStatusWarning = function($scope) {
@@ -148,11 +144,11 @@ cdeApp.factory('isAllowedModel', function () {
     
     isAllowedModel.displayStatusWarning = function($scope, CuratedItem) {
         if(!CuratedItem) return false;
-        if(CuratedItem.archived || $scope.user.siteAdmin) {
+        if(CuratedItem.archived || userResource.user.siteAdmin) {
             return false;
         } else {
-            if ($scope.myOrgs) {
-                return exports.isCuratorOf($scope.user, CuratedItem.stewardOrg.name) && (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard");
+            if (userResource.userOrgs) {
+                return exports.isCuratorOf(userResource.user, CuratedItem.stewardOrg.name) && (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard");
             } else {
                 return false;
             }
@@ -243,8 +239,11 @@ angular.module("template/tabs/tab.html", []).run(["$templateCache", function($te
 
 cdeApp.config(function($provide) {
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector', function($delegate, $injector) {
+        var previousException; 
         return function(exception, cause) {
             $delegate(exception, cause);
+            if (previousException && exception.toString() === previousException.toString()) return;   
+            previousException = exception;            
             var http;
             if (!http) { http = $injector.get('$http'); }
             try {

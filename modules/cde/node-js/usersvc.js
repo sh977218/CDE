@@ -57,7 +57,6 @@ exports.pinAllToBoard = function(req, res) {
             if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
                 return res.send("You must own a board to edit it.");
             } else {        
-                res.send("OK");
                 ids.forEach(function(id){
                     var pin = {
                         pinnedDate: Date.now()

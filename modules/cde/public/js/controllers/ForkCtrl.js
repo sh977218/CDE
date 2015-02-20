@@ -1,4 +1,4 @@
-function ForkCtrl($scope, $http, $modal, $window) {
+function ForkCtrl($scope, $http, $modal, $window, userResource) {
     
     var getForks = function() {
         $http.get("/forks/" + $scope.elt._id).then(function(result) {
@@ -28,7 +28,7 @@ function ForkCtrl($scope, $http, $modal, $window) {
             templateUrl: '/cde/public/html/addFork.html',
             controller: AddForkModalCtrl,
             resolve: {
-                myOrgs: function() {return $scope.myOrgs}
+                userResource: function() {return userResource}
             }
         });
 

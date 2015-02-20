@@ -42,13 +42,13 @@ public abstract class RegStatusTest extends CommonTest {
     public void retire(String eltName, String user) {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
-        Assert.assertTrue(textPresent("Qualified"));        
+        textPresent("Qualified");        
         findElement(By.id("editStatus")).click();
-        modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
-        Assert.assertTrue(textPresent("Retired elements are not returned in searches"));
+        textPresent("Retired elements are not returned in searches");
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
+        hangon(2);
         goToEltSearch();
         findElement(By.name("ftsearch")).sendKeys("Alkaline");
         findElement(By.id("search.submit")).click();
@@ -60,14 +60,13 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltByName(eltName);
         textPresent("Qualified");
         findElement(By.id("editStatus")).click();
-        modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         textPresent("Standard elements cannot be edited by their stewards");
-        modalHere();
-        findElement(By.id("saveRegStatus")).click();
+        findElement(By.id("saveRegStatus")).click();        
         closeAlert();
+        waitForESUpdate();
         goToEltByName(eltName);
-        Assert.assertTrue(textPresent("Standard"));
+        textPresent("Standard");
     }
     
     

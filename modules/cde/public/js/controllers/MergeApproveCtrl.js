@@ -1,4 +1,4 @@
-function MergeApproveCtrl($scope, $modal, Mail, MergeCdes) {
+function MergeApproveCtrl($scope, $modal, Mail, MergeCdes, userResource) {
     $scope.showMergeApproveDialog = function(message) {
         var modalInstance = $modal.open({
             templateUrl: '/system/public/html/saveModal.html'
@@ -7,7 +7,7 @@ function MergeApproveCtrl($scope, $modal, Mail, MergeCdes) {
                 elt: function() {
                     return message.typeRequest.destination.object;
                 } , user: function() {
-                    return $scope.user;
+                    return userResource.user;
                 } 
             }
         });           

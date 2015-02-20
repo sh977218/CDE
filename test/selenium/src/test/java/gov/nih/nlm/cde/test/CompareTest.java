@@ -73,9 +73,10 @@ public class CompareTest extends NlmCdeBaseTest{
         findElement(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")).click();
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")));
         findElement(By.linkText("Quick Board ( 2 )")).click();
-        findElement(By.id("qb.compare")).click();
-        Assert.assertTrue(textPresent("in CTC category Blood/Bone Marrow"));
-        Assert.assertTrue(textPresent("CTC Adverse Event Platelets Grade"));
+        hangon(2);
+        clickElement(By.id("qb.compare"));
+        textPresent("in CTC category Blood/Bone Marrow");
+        textPresent("CTC Adverse Event Platelets Grade");
     }
     
     @Test

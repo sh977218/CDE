@@ -18,7 +18,6 @@ public class MergeTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
         addToCompare("Smoking Cessation Other Method Specify Text", "Smoking History Ind");
         findElement(By.linkText("Retire & Merge")).click();  
-        modalHere();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Smoking Cessation Other Method Specify Text")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Smoking History Ind")));
         checkEverything();
@@ -28,7 +27,8 @@ public class MergeTest extends NlmCdeBaseTest {
     
     private void gotoInbox(){
         findElement(By.id("username_link")).click();  
-        findElement(By.linkText("Inbox")).click();    
+        findElement(By.linkText("Inbox")).click();
+        hangon(1);
     }
     
     private void acceptMergeRequest() {
@@ -65,11 +65,9 @@ public class MergeTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         addToCompare("Common Toxicity Criteria Adverse Event Colitis Grade", "Common Toxicity Criteria Adverse Event Hypophosphatemia Grade");
         findElement(By.id("retireMerge-0")).click(); 
-        modalHere();
         Assert.assertTrue(textPresent("Common Toxicity Criteria Adverse Event Colitis Grade"));
         checkEverything();
         findElement(By.id("sendMergeRequest")).click();
-        modalHere();
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
         hangon(0.5);
         findElement(By.cssSelector("#confirmNewVersion")).click(); 
@@ -87,7 +85,6 @@ public class MergeTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
         addToCompare("Diagnosis Change Date java.util.Date", "Form Element End Date java.util.Date");
         findElement(By.linkText("Retire & Merge")).click();  
-        modalHere();    
         Assert.assertTrue(textPresent("Diagnosis Change Date"));
         Assert.assertTrue(textPresent("Form Element End Date"));
         findElement(By.cssSelector("[ng-click='sendMergeRequest()']")).click();

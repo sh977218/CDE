@@ -28,7 +28,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         hangon(1);
         findElement(By.xpath("//li[a = 'CDEs']")).click();
         hangon(1);
-        scrollTo("4000");
+        scrollTo(4000);
         hangon(1);
         WebElement elt = findElement(By.xpath("//li[a = '2']"));
         Assert.assertTrue(elt.getAttribute("ng-class").contains("active"));
@@ -71,7 +71,6 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Administration, Management Performed Study Activity Variance Reason ISO21090.ST.v1.0");
         findElement(By.id("editStatus")).click();
-        modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         findElement(By.id("saveRegStatus")).click();
         Assert.assertTrue(textPresent("Saved"));
