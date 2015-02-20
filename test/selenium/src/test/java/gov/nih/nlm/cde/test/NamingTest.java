@@ -15,7 +15,6 @@ public class NamingTest extends NlmCdeBaseTest {
         findElement(By.linkText("Naming")).click();
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeNaming-0")));
         findElement(By.id("addNamePair")).click();
-        modalHere();
         findElement(By.name("designation")).sendKeys("New Name");
         findElement(By.name("definition")).sendKeys("New Definition");
         findElement(By.id("createNamePair")).click();

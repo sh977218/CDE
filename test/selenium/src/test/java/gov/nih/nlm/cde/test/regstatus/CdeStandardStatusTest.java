@@ -25,7 +25,6 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(regStatus);
-        modalHere();
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
         hangon(1);

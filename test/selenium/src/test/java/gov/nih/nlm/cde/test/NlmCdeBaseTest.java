@@ -3,11 +3,9 @@ package gov.nih.nlm.cde.test;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
@@ -21,7 +19,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.TimeoutException;
 import java.util.Random;
 import java.util.logging.Logger;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -168,7 +165,6 @@ public class NlmCdeBaseTest {
 
     protected void classify(String org, String classification, String subClassification) {
         findElement(By.id("selectDefault")).click();
-        modalHere();
         
         try {
             new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
@@ -219,7 +215,6 @@ public class NlmCdeBaseTest {
         } else {
             findElement(By.xpath("//*[@id='classification-" + addSelector + "']/div/div/span/a[@title='Add Child Classification']")).click();
         }
-        modalHere();
         findElement(By.id("addNewCatName")).sendKeys(categories[categories.length - 1]);
         findElement(By.id("addNewCatButton")).click();
         closeAlert();
@@ -335,15 +330,26 @@ public class NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }
+    
+    protected void clickElement(By by) {
+        try {
+            findElement(by).click();
+        } catch(StaleElementReferenceException e) {
+            hangon(2);
+            findElement(by).click();
+        }
+    }    
 
     @AfterTest
     public void endSession() {
         driver.quit();
     }
 
-    public void modalHere() {
-    }
 
+    public void waitForESUpdate() {
+        hangon(10);
+    }
+    
     /*
      * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
      */
@@ -366,7 +372,6 @@ public class NlmCdeBaseTest {
     
     protected void newCdeVersion(String changeNote) {
         findElement(By.id("openSave")).click();
-        modalHere();
         if (changeNote != null) {
             findElement(By.name("changeNote")).clear();
             findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
@@ -451,8 +456,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
-        findElement(By.id("login_button")).click();
-        hangon(1);
+        clickElement(By.id("login_button"));
         // Assumption is that this comes from a CSRF error. So reload the whole page if it fails. 
         try {
             findElement(By.linkText(username));
@@ -465,7 +469,7 @@ public class NlmCdeBaseTest {
                 findElement(By.id("uname")).sendKeys(username);
                 findElement(By.id("passwd")).clear();
                 findElement(By.id("passwd")).sendKeys(password);
-                findElement(By.id("login_button")).click();
+                clickElement(By.id("login_button"));
                 findElement(By.linkText(username));
             }
         }
@@ -477,7 +481,6 @@ public class NlmCdeBaseTest {
     }
 
     public void addToQuickBoard(String cdeName) {
-//        scrollToTop();
         findElement(By.name("ftsearch")).clear();        
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
@@ -584,7 +587,6 @@ public class NlmCdeBaseTest {
     
     protected void deleteClassification(String classificationId) {
         driver.findElement(By.cssSelector("[id='"+classificationId+"'] [title=\"Remove\"]")).click();
-        modalHere();
         driver.findElement(By.cssSelector("[id='okRemoveClassificationModal']")).click();
         modalGone();
         closeAlert();

@@ -63,8 +63,7 @@ function QuickBoardCtrl($scope, CdeList) {
         } else {
             $scope.viewType.accordion = false;
             $scope.viewType.grid = false;
-            $scope.viewType.sidebyside = true;
-            
+            $scope.viewType.sidebyside = true;      
         }
     };
     

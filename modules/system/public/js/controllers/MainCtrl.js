@@ -72,7 +72,7 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
 
     $scope.isDocumentationEditor = function() {
         return exports.hasRole(userResource.user, "DocumentationEditor");
-    }
+    };
     
     // quickBoard contains an array of CDE IDs
     $scope.quickBoard = [];
