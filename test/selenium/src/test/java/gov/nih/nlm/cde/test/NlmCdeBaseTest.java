@@ -444,28 +444,34 @@ public class NlmCdeBaseTest {
         findElement(By.linkText("Log In"));
     }
 
-    protected void loginAs(String username, String password) {
+    private void loginSequence(String username, String password) {
         findElement(By.linkText("Log In")).click();
         hangon(1);
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
-        clickElement(By.id("login_button"));
+        clickElement(By.id("login_button"));        
+    }
+    
+    protected void loginAs(String username, String password) {
+        loginSequence(username, password);
         // Assumption is that this comes from a CSRF error. So reload the whole page if it fails. 
         try {
             findElement(By.linkText(username));
         } catch (Exception e) {
             if (driver.findElements(By.id("login_button")).size() > 0) {
                 driver.get(baseUrl);
-                findElement(By.linkText("Log In")).click();
-                System.out.println("Re-clicking Log In");
-                findElement(By.id("uname")).clear();
-                findElement(By.id("uname")).sendKeys(username);
-                findElement(By.id("passwd")).clear();
-                findElement(By.id("passwd")).sendKeys(password);
-                clickElement(By.id("login_button"));
-                findElement(By.linkText(username));
+                loginSequence(username, password);
+                try { 
+                    findElement(By.linkText(username));
+                } catch (Exception e2) {
+                    if (driver.findElements(By.id("login_button")).size() > 0) {
+                        driver.get(baseUrl);
+                        loginSequence(username, password);
+                        findElement(By.linkText(username));
+                    }
+                }
             }
         }
     }
