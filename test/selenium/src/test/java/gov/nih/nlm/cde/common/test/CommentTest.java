@@ -110,12 +110,13 @@ public abstract class CommentTest extends CommonTest {
         switchTab(1);
         textPresent(eltName);
         switchTabAndClose(0);        
-
-        findElement(By.cssSelector(preClass+".approveComment")).click();
-        textPresent("Comment approved");
         
         findElement(By.cssSelector(".authorizeUser")).click();     
-        textPresent("Role added");
+        textPresent("Role added");        
+
+        findElement(By.cssSelector(preClass+".approveComment")).click();
+        textPresent("Comment approved");  
+
         
         logout();
         goToEltByName(eltName, status);
