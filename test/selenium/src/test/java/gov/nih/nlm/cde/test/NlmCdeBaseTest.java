@@ -380,11 +380,15 @@ public class NlmCdeBaseTest {
         hangon(1);
         findElement(By.name("version")).sendKeys(".1");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("confirmNewVersion")));
-//        textNotPresent("This version number has already been used");
         findElement(By.id("confirmNewVersion")).click();
+        try{
+            textPresent("Saved.");
+        } catch(Exception e){
+            findElement(By.id("confirmNewVersion")).click();
+            textPresent("Saved.");
+        }        
         closeAlert();
-        // wait for ES to refresh.
-        hangon(3);
+
     }
 
     public void hangon(double i) {

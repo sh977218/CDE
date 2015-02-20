@@ -181,16 +181,16 @@ exports.removeOrgAdmin = function(req, res) {
 };
 
 exports.addOrgCurator = function(req, res) {
-    mongo_data.userByName(req.body.username, function(err, found) {
-        if (!found) {
+    mongo_data.userByName(req.body.username, function(err, user) {
+        if (!user) {
             res.send("Unknown Username");
         } else {
-            if (found.orgCurator.indexOf(req.body.org) > -1) {
+            if (user.orgCurator.indexOf(req.body.org) > -1) {
                 res.send("User is already a Curator for this Organization");
             } else {
-                found.orgCurator.push(req.body.org);
+                user.orgCurator.push(req.body.org);
                 if (authorizationShared.hasRole(user, "CommentReviewer")) user.roles.push("CommentReviewer");
-                found.save(function () {
+                user.save(function () {
                     res.send("Organization Curator Added");
                 });
             }
