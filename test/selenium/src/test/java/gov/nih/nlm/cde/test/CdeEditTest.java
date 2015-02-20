@@ -65,14 +65,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.linkText("Concepts")).click();
 
         findElement(By.id("addConcept")).click();
-        modalHere();
         findElement(By.name("name")).sendKeys("DEC1");
         findElement(By.name("codeId")).sendKeys("DEC_CODE_111");
         findElement(By.id("createConcept")).click();
         hangon(2);
         shortWait.until(ExpectedConditions.elementToBeClickable(By.id("addConcept")));
         findElement(By.id("addConcept")).click();
-        modalHere();
         findElement(By.name("name")).sendKeys("OC1");
         findElement(By.name("codeId")).sendKeys("OC_CODE_111");
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Class");
@@ -80,7 +78,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         hangon(2);
 
         findElement(By.id("addConcept")).click();
-        modalHere();
         findElement(By.name("name")).sendKeys("Prop1");
         findElement(By.name("codeId")).sendKeys("Prop_CODE_111");
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Property");
@@ -122,7 +119,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.linkText("Properties")).click();
 
         findElement(By.id("addProperty")).click();
-        modalHere();
         findElement(By.name("key")).sendKeys("MyKey2");
         findElement(By.name("value")).sendKeys("MyValue2");
         findElement(By.id("createProperty")).click();
@@ -136,7 +132,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
         findElement(By.linkText("Identifiers")).click();
         findElement(By.id("addId")).click();
-        modalHere();
         findElement(By.name("source")).sendKeys("MyOrigin1");
         findElement(By.name("id")).sendKeys("MyId1");
         findElement(By.name("version")).sendKeys("MyVersion1");

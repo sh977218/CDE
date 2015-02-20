@@ -4,7 +4,7 @@
     </h1>
 
     <select class="form-control" ng-model="orgToManage" name="orgToManage" required ng-change="updateOrg()">
-        <option ng-repeat="o in myOrgs" ng-value="o">{{o}}</option>
+        <option ng-repeat="o in userOrgs" ng-value="o">{{o}}</option>
     </select>
     <br/>
     <div id="classMgt">

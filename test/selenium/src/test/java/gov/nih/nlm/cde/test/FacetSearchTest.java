@@ -95,10 +95,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("li-blank-CTEP")).click();
         // next line should make it wait.
-        findElement(By.cssSelector("i.fa-check-square-o"));
-        hangon(2);
+        textPresent("OPEN to Rave");
+        hangon(1);
         findElement(By.linkText("Next")).click();
-        Assert.assertTrue(textPresent("OPEN to Rave Standard "));
+        textPresent("OPEN to Rave Standard ");
         findElement(By.cssSelector("i.fa-check-square-o"));
         
         scrollToTop();
@@ -158,12 +158,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Noncompliant Reason Text");
         findElement(By.id("editStatus")).click();
-        modalHere();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         textPresent("Standard elements cannot be edited by their stewards");
-        modalHere();
         findElement(By.id("saveRegStatus")).click();
-        hangon(2);
+        waitForESUpdate();
         goToCdeSearch();  
         textPresent("Preferred Standard");
         findElement(By.id("li-checked-Preferred Standard")).click();

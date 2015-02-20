@@ -176,7 +176,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.name("searchUsers")).sendKeys("nlm");
         findElement(By.id("searchUsersSubmit")).click();
 
-        wait.until(ExpectedConditions.textToBePresentInElement(findElement(By.id("user_username")), "nlm"));
+        textPresent("nlm", By.id("user_username"));
         Assert.assertEquals("nlm", findElement(By.id("user_username")).getText());
         Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\"]", findElement(By.id("user_orgadmin")).getText());
         Assert.assertEquals("true", findElement(By.id("user_siteadmin")).getText());

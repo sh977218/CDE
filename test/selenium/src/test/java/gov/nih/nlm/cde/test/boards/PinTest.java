@@ -51,7 +51,6 @@ public class PinTest extends BoardTest {
         goToCdeSearch();
         openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
-        modalHere();
         findElement(By.linkText(boardName)).click();
         
         Assert.assertTrue(textPresent("Already added"));

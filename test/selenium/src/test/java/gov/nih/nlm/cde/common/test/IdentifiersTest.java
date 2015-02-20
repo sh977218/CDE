@@ -10,7 +10,6 @@ public abstract class IdentifiersTest extends CommonTest {
     protected void addId(String source, String id, String version) {
         findElement(By.linkText("Identifiers")).click();
         findElement(By.id("addId")).click();
-        modalHere();
         findElement(By.name("source")).sendKeys(source);
         findElement(By.name("id")).sendKeys(id);
         if (version != null)
@@ -18,7 +17,7 @@ public abstract class IdentifiersTest extends CommonTest {
         findElement(By.id("createId")).click();
         textPresent("Identifier Added");
         closeAlert();
-        modalGone();        
+        waitForESUpdate();
     }
     
 
@@ -28,11 +27,11 @@ public abstract class IdentifiersTest extends CommonTest {
         
         addId("MyOrigin1", "MyId1", "MyVersion1");
         
-        scrollTo("0");
+        scrollToTop();
  
         addId("MyOrigin2", "MyId2", null);
         
-        scrollTo( "0" );
+        scrollToTop();
 
         addId("MyOrigin3", "MyId3", "MyVersion3");
 

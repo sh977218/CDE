@@ -21,16 +21,11 @@ public class BoardViewTest extends BoardTest {
         String boardName = "Test Board";
         createBoard(boardName, "Test");
 
-        attachToBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
-        findElement(By.linkText(boardName)).click();
-        attachToBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
-        findElement(By.linkText(boardName)).click();
-        attachToBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
-        findElement(By.linkText(boardName)).click();
-        attachToBoard("Prior BMSCT Administered Indicator");
-        findElement(By.linkText(boardName)).click();
-        attachToBoard("Generalized Activities of Daily Living Pain Restricted Scale");
-        findElement(By.linkText(boardName)).click();
+        attachToBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage", boardName);        
+        attachToBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value", boardName);
+        attachToBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count", boardName);
+        attachToBoard("Prior BMSCT Administered Indicator", boardName);
+        attachToBoard("Generalized Activities of Daily Living Pain Restricted Scale", boardName);
         closeAlert();
         hangon(1);
         goToBoard(boardName);
@@ -39,9 +34,10 @@ public class BoardViewTest extends BoardTest {
         
     }
 
-    public void attachToBoard(String cdeName) {
+    public void attachToBoard(String cdeName, String boardName) {
         openCdeInList(cdeName);
         findElement(By.xpath("//a[@id='pin_0']")).click();
         hangon(1);
+        findElement(By.linkText(boardName)).click();
     }
 }

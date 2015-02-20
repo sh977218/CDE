@@ -18,7 +18,7 @@ public class FormEditTest extends BaseFormTest {
 
         createForm(formName, formDef, null, "CTEP");
         new SectionTest().addSection("Any Section Name", "0 or more");
-        findElement(By.id("startAddingQuestions")).click();
+        startAddingQuestions();
 
         questionTest.addQuestionToSection("Noncompliant Reason Text", 0);
         questionTest.addQuestionToSection("Cytogenetics Karyotype Mutation Abnormality Cell Count", 0);
@@ -35,8 +35,8 @@ public class FormEditTest extends BaseFormTest {
         newCdeVersion();
         
         goToFormByName(formName, "Incomplete");
-        findElement(By.linkText("Form Description")).click();
         textPresent("Some CDEs in this form have newer version");
+        findElement(By.linkText("Form Description")).click();
         textPresent("Cytogenetics Karyotype Mutation Abnormality Cell Count (Outdated)");
     }
 

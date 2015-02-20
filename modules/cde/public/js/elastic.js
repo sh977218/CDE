@@ -1,5 +1,5 @@
 angular.module('resources')
-.factory('Elastic', function($http) {
+.factory('Elastic', function($http, userResource) {
     return {
         buildElasticQueryPre: function (scope) {
             var regStatuses = scope.registrationStatuses;
@@ -22,7 +22,7 @@ angular.module('resources')
                 resultPerPage: scope.resultPerPage
                 , searchTerm: scope.searchForm.ftsearch
                 , isSiteAdmin: scope.isSiteAdmin()
-                , myOrgs: scope.myOrgs
+                , userOrgs: userResource.userOrgs
                 , selectedOrg: scope.selectedOrg
                 , selectedOrgAlt: scope.selectedOrgAlt
                 , selectedElements: this.getSelectedElements(scope)
@@ -104,9 +104,9 @@ angular.module('resources')
                 
             var lowRegStatusOrCuratorFilter = [];
             lowRegStatusOrCuratorFilter.push({range: {"registrationState.registrationStatusSortOrder": {lte: registrationStatusSortOrderLte}}});
-            if (settings.myOrgs !== undefined) {
-                 for (var i = 0; i < settings.myOrgs.length; i++) {
-                     lowRegStatusOrCuratorFilter.push({term: {"stewardOrg.name": settings.myOrgs[i]}});
+            if (settings.userOrgs !== undefined) {
+                 for (var i = 0; i < settings.userOrgs.length; i++) {
+                     lowRegStatusOrCuratorFilter.push({term: {"stewardOrg.name": settings.userOrgs[i]}});
                  }
             }
             settings.filter.and.push({or: lowRegStatusOrCuratorFilter});

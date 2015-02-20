@@ -1,11 +1,11 @@
-function CommentsCtrl($scope, $http) {
+function CommentsCtrl($scope, $http, userResource) {
     $scope.comment = {};
         
     $scope.canRemoveComment = function(com) {
-        return (($scope.user._id) && 
-                ($scope.user._id === com.user ||
-                ($scope.user.orgAdmin.indexOf($scope.elt.stewardOrg.name) > -1) ||
-                $scope.user.siteAdmin ) );
+        return ((userResource.user._id) && 
+                (userResource.user._id === com.user ||
+                (userResource.user.orgAdmin.indexOf($scope.elt.stewardOrg.name) > -1) ||
+                userResource.user.siteAdmin ) );
     };
     
     $scope.addComment = function() {  

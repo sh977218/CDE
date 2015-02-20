@@ -1,11 +1,10 @@
 function MyBoardsCtrl($scope, $modal, $http, Board) {
-    
     $scope.removeBoard = function(index) {
         $http['delete']("/board/" + $scope.boards[index]._id).then(function (response) {
             $scope.addAlert("success", "Board removed");
             $scope.boards.splice(index, 1);
         });
-    };    
+    };        
     
     $scope.cancelSave = function(board) {
         delete board.editMode;
@@ -26,10 +25,10 @@ function MyBoardsCtrl($scope, $modal, $http, Board) {
         delete board.editMode; 
         $http.post("/board", board).success(function(response) {
             $scope.addAlert("success", "Saved");
-            $scope.loadBoards();
+            $scope.loadMyBoards();
         }).error(function(response){
             $scope.addAlert("danger", response);
-            $scope.loadBoards();
+            $scope.loadMyBoards();
         });
     };
         
@@ -44,7 +43,7 @@ function MyBoardsCtrl($scope, $modal, $http, Board) {
             newBoard.shareStatus = "Private";
             Board.save(newBoard, function(res) {
                 $scope.addAlert("success", "Board created.");
-                $scope.loadBoards();
+                $scope.loadMyBoards();
             }, function(message){
                 $scope.addAlert("danger", message.data);
             });

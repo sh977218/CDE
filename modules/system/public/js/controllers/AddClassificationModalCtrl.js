@@ -1,4 +1,4 @@
-function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, module, myOrgs, cde, orgName, pathArray, addClassification, localStorageService) {
+function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, module, myOrgs, cde, orgName, pathArray, addClassification, localStorageService, userResource) {
     $scope.viewType = {
         byClassTree : true
         , byRecentlyAdded : false
@@ -65,7 +65,7 @@ function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, 
     if (histStore !== null) {
         try {
             for (var i = 0; i < histStore.length; i++) {
-                if (exports.isCuratorOf($scope.user, histStore[i].orgName)) {
+                if (exports.isCuratorOf(userResource.user, histStore[i].orgName)) {
                     $scope.defaultClassificationsHistory.push(histStore[i]);
                 }
             }

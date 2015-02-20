@@ -3,7 +3,6 @@ package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ctepCurator_username;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -68,7 +67,7 @@ public class PvTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
-        Assert.assertTrue(textPresent("Right Middle Abdomen"));
+        textPresent("Right Middle Abdomen");
         findElement(By.id("pvRemove-8")).click();
         findElement(By.id("addPv")).click();
         findElement(By.xpath("//td[@id='pv-10']//i")).click();
@@ -77,14 +76,14 @@ public class PvTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#pv-10 .fa-check")).click();
         
         findElement(By.cssSelector("#pv-10 [typeahead-source=\"pVTypeaheadCodeSystemNameList\"] .fa-edit")).click();
-        Assert.assertTrue(textPresent("Confirm"));
+        textPresent("Confirm");
         findElement(By.xpath("//td[@id='pvCodeSystem-10']//input")).sendKeys("N");
-        Assert.assertTrue(textPresent("NCI Thesaurus"));
+        textPresent("NCI Thesaurus");
         newCdeVersion();
         textPresent("Qualified");
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
-        Assert.assertTrue(textPresent("New PV"));
+        textPresent("New PV");
         Assert.assertEquals(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Right Middle Abdomen"), -1);
     }
     

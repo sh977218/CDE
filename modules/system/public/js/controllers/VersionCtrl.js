@@ -1,4 +1,4 @@
-function VersionCtrl($scope, $modal, $window) { 
+function VersionCtrl($scope, $modal, $window, userResource) { 
 
     $scope.stageElt = function(elt) {
         elt.unsaved = true;
@@ -13,7 +13,7 @@ function VersionCtrl($scope, $modal, $window) {
                   return elt;
               }
               , user: function() {
-                  return $scope.user;
+                  return userResource.user;
               }
               , redirectBaseLink: function() {
                   return redirectBaseLink;
