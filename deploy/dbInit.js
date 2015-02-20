@@ -43,10 +43,8 @@ db.users.insert({username: 'nindsWg2User', password: 'pass', orgAdmin: [], orgCu
 db.users.insert({username: 'boardPublisherTest', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boardBot', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'anonymousCommentUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'anonymousFormCommentUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'commentEditor', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["CommentReviewer"]});
-
-//db.orgs.insert({name: "NINDS-WG-1", workingGroupOf: "NINDS", classifications: [{name: "WG1 Classif", elements: [{name: "WG1 Sub Classif"}]}]});
-//db.orgs.insert({name: "NINDS-WG-2", workingGroupOf: "NINDS", classifications: [{name: "WG2 Classif", elements: [{name: "WG2 Sub Classif"}]}]});
 
 db.articles.insert({key: "testAdminCanEdit", body: "Admin can edit this."});
 db.articles.insert({key: "testEdits", body: "Testing edits"});

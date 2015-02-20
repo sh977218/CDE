@@ -77,10 +77,10 @@ public abstract class CommentTest extends CommonTest {
         }
     }    
     
-    public void approvingComments(String eltName, String status) {
+    public void approvingComments(String eltName, String status, String user) {
         String commentText = "Very Innocent Comment";
         String censoredText = "pending approval";
-        mustBeLoggedInAs(anonymousCommentUser_username, anonymousCommentUser_password);
+        mustBeLoggedInAs(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
         hangon(2);
         addComment(commentText);
@@ -124,7 +124,7 @@ public abstract class CommentTest extends CommonTest {
         textNotPresent(censoredText);
         textPresent(commentText);
         
-        mustBeLoggedInAs(anonymousCommentUser_username, anonymousCommentUser_password);
+        mustBeLoggedInAs(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
         hangon(2);
         addComment("OK comment.");
