@@ -22,7 +22,7 @@ public class FormCommentTest extends CommentTest {
 
     @Test
     public void orgAdminCanRemoveFormComment() {
-        orgAdminCanRemoveComment("VA Toxicity Scale", null);
+        orgAdminCanRemoveComment("Form Comment Test", null);
     }
 
     @Test

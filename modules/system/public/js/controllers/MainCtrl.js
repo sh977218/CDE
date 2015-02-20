@@ -206,7 +206,7 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
     
     $scope.inboxVisible = function() {
         //aaa();
-        return $scope.isOrgCurator()||$scope.isOrgAdmin()||exports.hasRole($scope.user, "CommentEditor");
+        return $scope.isOrgCurator()||$scope.isOrgAdmin()||exports.hasRole($scope.user, "CommentReviewer");
     };
 
 }

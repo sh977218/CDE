@@ -139,7 +139,7 @@ exports.addComment = function(req, res, dao) {
                 if (!authorizationShared.hasRole(req.user, "CommentAuthor")) {
                     comment.pendingApproval = true;
                     var message = {
-                        recipient: {recipientType: "role", name: "CommentEditor"}
+                        recipient: {recipientType: "role", name: "CommentReviewer"}
                         , author: {authorType: "user", name: req.user.username}
                         , date: new Date()
                         , type: "CommentApproval"
@@ -204,7 +204,7 @@ exports.removeComment = function(req, res, dao) {
 };
 
 exports.approveComment = function(req, res, dao){
-    if (!req.isAuthenticated() || !authorizationShared.hasRole(req.user, "CommentEditor")) {
+    if (!req.isAuthenticated() || !authorizationShared.hasRole(req.user, "CommentReviewer")) {
         res.status(403).send("You are not authorized to approve a comment.");
     }
     dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {

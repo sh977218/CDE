@@ -23,7 +23,7 @@ public class CdeCommentTest extends CommentTest {
 
     @Test
     public void orgAdminCanRemoveCdeComment() {
-        orgAdminCanRemoveComment("Genbank", null);
+        orgAdminCanRemoveComment("Local Excision Colorectal Lateral Surgical Margin Identifier java.lang.Long", null);
     }
 
     @Test

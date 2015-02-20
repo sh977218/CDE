@@ -80,6 +80,7 @@ public abstract class CommentTest extends CommonTest {
         String censoredText = "pending approval";
         mustBeLoggedInAs(anonymousCommentUser_username, anonymousCommentUser_password);
         goToEltByName(eltName, status);
+        hangon(2);
         addComment(commentText);
         textNotPresent(commentText);
         textPresent(censoredText);        

@@ -1,5 +1,6 @@
 var mongo_data = require('./mongo-data')
-  , daoManager = require('./moduleDaoManager')
+    , daoManager = require('./moduleDaoManager')
+    , authorizationShared = require('../../system/shared/authorizationShared')  
     ;
     
 exports.isCuratorOf = function(user, orgName){
@@ -144,15 +145,16 @@ exports.orgAdmins = function(req, res) {
 };
 
 exports.addOrgAdmin = function(req, res) {
-    mongo_data.userByName(req.body.username, function(err, found) {
-        if (!found) {
+    mongo_data.userByName(req.body.username, function(err, user) {
+        if (!user) {
             res.send("Unknown Username");
         } else {
-            if (found.orgAdmin.indexOf(req.body.org) > -1) {
+            if (user.orgAdmin.indexOf(req.body.org) > -1) {
                 res.send("User is already an Administrator for this Organization");
             } else {
-                found.orgAdmin.push(req.body.org);
-                found.save(function () {
+                if (authorizationShared.hasRole(user, "CommentReviewer")) user.roles.push("CommentReviewer");
+                user.orgAdmin.push(req.body.org);
+                user.save(function () {
                     res.send("Organization Administrator Added");
                 });
             }
@@ -187,6 +189,7 @@ exports.addOrgCurator = function(req, res) {
                 res.send("User is already a Curator for this Organization");
             } else {
                 found.orgCurator.push(req.body.org);
+                if (authorizationShared.hasRole(user, "CommentReviewer")) user.roles.push("CommentReviewer");
                 found.save(function () {
                     res.send("Organization Curator Added");
                 });
