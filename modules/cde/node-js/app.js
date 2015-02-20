@@ -115,11 +115,13 @@ exports.init = function(app, daoManager) {
 
     app.get('/debytinyid/:tinyId/:version?', function(req, res) {
         if (!req.params.version) {
-            mongo_data.eltByTinyId(req.params.tinyId, function(err, cdes) {
-                res.send(cdesvc.hideProprietaryPvs(cdes, req.user));
+            mongo_data.eltByTinyId(req.params.tinyId, function(err, cde) {
+                exports.hideUnapprovedComments(cde);
+                res.send(cdesvc.hideProprietaryPvs(cde, req.user));
             }); 
         } else {
             mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, de) {
+                exports.hideUnapprovedComments(de);
                 res.send(cdesvc.hideProprietaryPvs(de, req.user));
             });
         }
@@ -353,6 +355,7 @@ exports.init = function(app, daoManager) {
 
     app.post('/desByConcept', function(req, res) {
        mongo_data.desByConcept(req.body, function(result) {
+           result.forEach(exports.hideUnapprovedComments);
            res.send(cdesvc.hideProprietaryPvs(result, req.user));
        }); 
     });

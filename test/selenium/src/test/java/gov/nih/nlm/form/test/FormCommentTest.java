@@ -27,7 +27,7 @@ public class FormCommentTest extends CommentTest {
 
     @Test
     public void siteAdminCanRemoveFormComment() {
-        siteAdminCanRemoveComment("ER Destination", null);
+        siteAdminCanRemoveComment("STOP Questionnaire", null);
     }
 
     @Test

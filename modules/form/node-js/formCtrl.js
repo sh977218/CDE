@@ -4,6 +4,7 @@ var mongo_data = require('./mongo-form')
 
 exports.findForms = function(req, res) {
     mongo_data.findForms(req.body.criteria, function(err, forms) {
+        forms.forEach(exports.hideUnapprovedComments);
         res.send(forms);
     });
 };

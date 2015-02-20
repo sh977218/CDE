@@ -102,7 +102,14 @@ public class BoardManagementTest extends BoardTest {
         removeBoard("Remove me board");
         goToCdeSearch();
         gotoMyBoards();
-        Assert.assertTrue(textNotPresent("Not a very useful"));
+        try{
+            Assert.assertTrue(textNotPresent("Not a very useful"));
+        } catch (Exception e){
+            removeBoard("Remove me board");
+            goToCdeSearch();
+            gotoMyBoards();       
+            Assert.assertTrue(textNotPresent("Not a very useful"));
+        }
     }
     
     @Test

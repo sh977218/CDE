@@ -91,7 +91,7 @@ exports.setAttachmentDefault = function(req, res, dao) {
             }
         });
     });
-}
+};
 
 exports.addAttachment = function(req, res, dao) {
     auth.checkOwnership(dao, req.body.id, req, function(err, elt) {
@@ -332,6 +332,7 @@ exports.allPropertiesKeys = function(req, res, dao) {
 };
 
 exports.hideUnapprovedComments = function(adminItem) {
+    if (!adminItem || !adminItem.comments) return;
     adminItem.comments.forEach(function(c) {
         if (c.pendingApproval) c.text = commentPendingApprovalText;
     });

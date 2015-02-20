@@ -87,13 +87,7 @@ public abstract class CommentTest extends CommonTest {
         goToEltByName(eltName, status);
         gotoComments();
         textNotPresent(commentText);
-        textPresent(censoredText);
-        
-        logout();
-        goToEltByName(eltName, status);
-        gotoComments();
-        textNotPresent(commentText);
-        textPresent(censoredText);        
+        textPresent(censoredText);      
         
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         gotoInbox();
