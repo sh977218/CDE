@@ -64,10 +64,10 @@ public class FormClassificationTest extends BaseFormTest {
         goToFormByName(formName, "Incomplete");
         findElement(By.linkText("Form Description")).click();
         findElement(By.id("classifyAllCdes")).click();
-        findElement(By.cssSelector("[id='addClassification-Disease'] span.fake-link")).click();        
-        findElement(By.cssSelector("[id='addClassification-Headache'] span.fake-link")).click();
-        findElement(By.cssSelector("[id='addClassification-Classification'] span.fake-link")).click();        
-        findElement(By.cssSelector("[id='addClassification-Supplemental'] button")).click();        
+        clickElement(By.cssSelector("[id='addClassification-Disease'] span.fake-link"));        
+        clickElement(By.cssSelector("[id='addClassification-Headache'] span.fake-link"));
+        clickElement(By.cssSelector("[id='addClassification-Classification'] span.fake-link"));        
+        clickElement(By.cssSelector("[id='addClassification-Supplemental'] button"));        
         
         // Verify
         goToCdeByName(cde1);

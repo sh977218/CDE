@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class WorkingGroupTest2  extends NlmCdeBaseTest {
+
     @Test
     public void wgSeesOtherWg() {
         mustBeLoggedInAs("nindsWg1User", "pass");
