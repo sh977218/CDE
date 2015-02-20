@@ -112,13 +112,24 @@ public abstract class CommentTest extends CommonTest {
         switchTabAndClose(0);        
 
         findElement(By.cssSelector(preClass+".approveComment")).click();
-
         textPresent("Comment approved");
+        
+        findElement(By.cssSelector(".authorizeUser")).click();     
+        textPresent("Role added");
+        
         logout();
         goToEltByName(eltName, status);
         gotoComments();
         textNotPresent(censoredText);
         textPresent(commentText);
+        
+        mustBeLoggedInAs(anonymousCommentUser_username, anonymousCommentUser_password);
+        goToEltByName(eltName, status);
+        hangon(2);
+        addComment("OK comment.");
+        textNotPresent(censoredText);
+        textPresent("OK comment.");        
+        
     }
     
 }
