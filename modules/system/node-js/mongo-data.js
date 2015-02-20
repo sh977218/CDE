@@ -11,6 +11,7 @@ var schemas = require('./schemas')
     , MongoStore = require('connect-mongo')(session)
     , shortid = require("shortid")
     , logging = require('../../system/node-js/logging.js')
+    , email = require('../../system/node-js/email')
     ;
 
 var conn;
@@ -275,6 +276,7 @@ exports.createMessage = function(msg, cb) {
     var message = new Message(msg);  
     message.save(function() {
         if (cb) cb();
+        if (msg.recipient.recipientType==="role") email.emailUsersByRole("You have a pending message in NLM CDE application.", msg.recipient.name);
     });
 };
 
@@ -355,4 +357,10 @@ exports.addUserRole = function(request, cb) {
             if(cb) cb(err, u);
         });
     });
+};
+
+exports.usersByRole = function(role, cb) {
+    User.find({roles:role}).exec(function(err, users) {
+        cb(err, users);
+    });    
 };
