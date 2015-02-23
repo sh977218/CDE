@@ -191,7 +191,6 @@ exports.init = function(app) {
     });
     
     app.get('/user/me', function(req, res) {
-        console.log("called /user/me");
         if (!req.user) {
             res.send("Not logged in.");
         } else {
