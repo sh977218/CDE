@@ -80,6 +80,7 @@ public class CdeRegStatusTest extends RegStatusTest {
         waitForESUpdate();
         findElement(By.linkText("CDEs")).click();
         showSearchFilters();
+        hangon(1);
         findElement(By.id("li-checked-Standard")).click();
         hangon(2);
         findElement(By.id("li-checked-Qualified")).click();
