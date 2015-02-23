@@ -39,6 +39,16 @@ public class CdeRegStatusTest extends RegStatusTest {
     }
     
     @Test
+    public void cancelRegStatus() {
+        cancelRegStatus("Form Form Element Administered Item Modified By java.lang.String", cabigAdmin_username);
+    }   
+    
+    @Test
+    public void cantEditStatusIfPendingChanges() {
+        cantEditStatusIfPendingChanges("Form Form Element Administered Item Modified By java.lang.String", cabigAdmin_username);        
+    }
+    
+    @Test
     public void changeRegistrationStatus() {
         changeRegistrationStatus("Investigator Identifier java.lang.Integer", cabigAdmin_username);
     }
@@ -70,6 +80,7 @@ public class CdeRegStatusTest extends RegStatusTest {
         waitForESUpdate();
         findElement(By.linkText("CDEs")).click();
         showSearchFilters();
+        hangon(1);
         findElement(By.id("li-checked-Standard")).click();
         hangon(2);
         findElement(By.id("li-checked-Qualified")).click();

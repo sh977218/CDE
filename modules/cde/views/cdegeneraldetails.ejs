@@ -33,7 +33,7 @@
     </dd> 
     <dt ng-show="elt.origin">Origin: </dt><dd>{{elt.origin}}</dd>
     <dt ng-show="elt.source">Source: </dt><dd>{{elt.source}}</dd>
-    <dt id="dt_status">Status: </dt><dd id="dd_status" ng-controller="RegistrationCtrl"><i tabindex="0" title="Edit Status" role="link" id="editStatus" ng-show="canCurate" class="fa fa-edit" ng-click="openRegStatusUpdate()"></i> {{elt.registrationState.registrationStatus}}</dd>
+    <dt id="dt_status">Status: </dt><dd id="dd_status" ng-controller="RegistrationCtrl"><i tabindex="0" title="Edit Status" role="link" id="editStatus" ng-show="canCurate && !elt.unsaved" class="fa fa-edit" ng-click="openRegStatusUpdate()"></i> {{elt.registrationState.registrationStatus}}</dd>
     <dt ng-show="elt.views">Views: </dt><dd id="dd_views">{{elt.views}}</dd>
 </dl>
 
