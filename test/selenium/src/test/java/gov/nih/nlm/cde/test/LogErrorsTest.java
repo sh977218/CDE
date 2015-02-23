@@ -30,7 +30,7 @@ public class LogErrorsTest extends NlmCdeBaseTest {
     @Test
     public void logClientErrors() {        
         driver.get(baseUrl + "#/triggerClientException");
-        textPresent("An exception has been trigger");
+        textPresent("An exception in your browser has been triggered");
         hangon(1);
 
         mustBeLoggedInAs(nlm_username, nlm_password);
