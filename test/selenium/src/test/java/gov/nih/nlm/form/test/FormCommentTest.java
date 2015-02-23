@@ -17,7 +17,7 @@ public class FormCommentTest extends CommentTest {
     
     @Test
     public void formComments() {
-        comments("Skin Cancer Patient");
+        comments("Risk Factor Questionnaire (RFQ) - Physical Activity and Sleep");
     }
 
     @Test
@@ -27,7 +27,11 @@ public class FormCommentTest extends CommentTest {
 
     @Test
     public void siteAdminCanRemoveFormComment() {
-        siteAdminCanRemoveComment("Form Property Test", "Recorded");
+        siteAdminCanRemoveComment("STOP Questionnaire", null);
     }
 
+    @Test
+    public void approvingCommentsForm() {
+        approvingComments("Vital Signs and Tests", null, anonymousFormCommentUser_username);
+    }  
 }

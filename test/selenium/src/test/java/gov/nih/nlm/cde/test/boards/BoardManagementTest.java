@@ -94,5 +94,21 @@ public class BoardManagementTest extends BoardTest {
         removeBoard(boardName);
     }
         
+  
+   
+    @Test
+    public void iHaveNoBoard() {
+        mustBeLoggedInAs(boarduser2_username, password);
+        String cdeName = "Specimen Array";
+
+        goToCdeSearch();
+        openCdeInList(cdeName);
+        findElement(By.id("pin_0")).click();
+        Assert.assertTrue(textPresent("Create a board now"));
+        findElement(By.id("cancelSelect")).click();
+        modalGone();
+    }
+    
+
        
 }

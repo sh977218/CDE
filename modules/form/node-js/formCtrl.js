@@ -4,6 +4,7 @@ var mongo_data = require('./mongo-form')
 
 exports.findForms = function(req, res) {
     mongo_data.findForms(req.body.criteria, function(err, forms) {
+        forms.forEach(exports.hideUnapprovedComments);
         res.send(forms);
     });
 };
@@ -13,8 +14,10 @@ exports.save = function(req, res) {
 };
 
 exports.formById = function(req, res) {
-    mongo_data.byId(req.params.id, function(err, form) {
+    var type = req.query.type === 'tinyId'?'eltByTinyId':'byId';
+    mongo_data[type](req.params.id, function(err, form) {
         if (form) {
+            adminSvc.hideUnapprovedComments(form);
             res.send(form);
         } else {
             res.status(404).end();

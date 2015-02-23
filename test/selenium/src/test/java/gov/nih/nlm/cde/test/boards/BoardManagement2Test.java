@@ -5,7 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class BoardManagement2Test  extends BoardTest {
- 
+
     @Test
     public void cdeBoards() {
         hangon(.5);

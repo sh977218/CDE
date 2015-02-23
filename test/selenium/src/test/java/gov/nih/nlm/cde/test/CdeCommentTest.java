@@ -23,12 +23,17 @@ public class CdeCommentTest extends CommentTest {
 
     @Test
     public void orgAdminCanRemoveCdeComment() {
-        orgAdminCanRemoveComment("Genbank", null);
+        orgAdminCanRemoveComment("Local Excision Colorectal Lateral Surgical Margin Identifier java.lang.Long", null);
     }
 
     @Test
     public void siteAdminCanRemoveCdeComment() {
         siteAdminCanRemoveComment("Genbank", null);
     }
+    
+    @Test
+    public void approvingCommentsCde() {
+        approvingComments("Imaging phase encode direction text", null, anonymousCommentUser_username);
+    }    
 
 }

@@ -31,6 +31,7 @@ public class BoardTest extends NlmCdeBaseTest {
     protected void gotoMyBoards() {
         findElement(By.linkText("Boards")).click();
         findElement(By.linkText("My Boards")).click();
+        hangon(0.5);
     }
     
     protected void gotoPublicBoards() {

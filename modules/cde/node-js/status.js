@@ -53,7 +53,7 @@ exports.evaluateResult = function() {
     if (status.reportSent) return;    
     if (!status.restartAttempted) status.tryRestart();    
     var msg = status.assembleErrorMessage(status.statusReport);
-    email.send(msg, function(err) {
+    email.emailAdmins(msg, function(err) {
         if (!err) status.delayReports();
     });
 };

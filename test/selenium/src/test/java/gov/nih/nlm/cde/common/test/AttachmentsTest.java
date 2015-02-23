@@ -21,6 +21,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         goToCdeByName("Alcohol use frequency");
 
         addAttachment();
+        hangon(5);
 
         openCdeInList(cdeName);
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
@@ -43,7 +44,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
 
         addAttachment();
         
-        hangon(2);
+        hangon(5);
         
         openFormInList(formName);
 

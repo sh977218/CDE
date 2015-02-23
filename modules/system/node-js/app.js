@@ -12,6 +12,7 @@ var passport = require('passport')
   , adminItemSvc = require("./adminItemSvc")       
   , auth = require( './authorization' )
   , csrf = require('csurf')
+   , authorizationShared = require("../../system/shared/authorizationShared")
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -507,6 +508,55 @@ exports.init = function(app) {
             res.send("received");
             trigger.error();
         });
+    });   
+    
+    app.post('/mail/messages/new', function(req, res) {
+        if (req.isAuthenticated()) {
+            var message = req.body;
+            if (message.author.authorType === "user") {
+                message.author.name = req.user.username;
+            }
+            message.date = new Date();
+            mongo_data_system.createMessage(message, function() {
+              res.send();
+            });
+        } else {
+            res.send(401, "Not Authorized");
+        }
+    });
+
+    app.post('/mail/messages/update', function(req, res) {
+        mongo_data_system.updateMessage(req.body, function(err) {
+            if (err) {
+                res.statusCode = 404;
+                res.send("Error while updating the message");
+            } else {
+                res.send();
+            }
+        });
+    });
+
+    app.post('/mail/messages/:type', function(req, res) {
+        mongo_data_system.getMessages(req, function(err, messages) {
+            if (err) res.status(404).send(err);
+            else res.send(messages);
+        });
     });    
+    
+    app.post('/addUserRole', function(req, res) {
+        if (authorizationShared.hasRole(req.user, "CommentReviewer")) {
+            mongo_data_system.addUserRole(req.body, function(err, u) {
+                if (err) res.status(404).send(err);
+                else res.send("Role added.");
+            });
+        }
+    });       
+    
+    app.get('/mailStatus', function(req, res){
+        if (!req.user) res.status(403).send("You are not authorized.");
+        mongo_data_system.mailStatus(req.user, function(err, result){
+            res.send({count: result});
+        });
+    });
     
 };

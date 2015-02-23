@@ -1,3 +1,3 @@
-function TriggerClientExceptionCtrl() {
+function TriggerClientExceptionCtrl($scope) {
     trigger.error();
 }

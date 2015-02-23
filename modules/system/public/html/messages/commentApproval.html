@@ -1,0 +1,20 @@
+<h4>{{message.type | camelCaseToHuman}}</h4> 
+
+    <dl class="dl-horizontal">
+        <dt>User</dt>
+        <dd>{{message.author.name}} <button class="btn btn-xs btn-default authorizeUser" ng-controller="ApproveCommentCtrl" ng-click="openAuthorizeUserModal(message)" type="button" >Authorize User Permanently</button></dd>  
+    </dl>    
+    <dl class="dl-horizontal">
+        <dt>Comment</dt>
+        <dd>{{message.typeCommentApproval.comment.text}}</dd>
+    </dl> 
+    <dl class="dl-horizontal">
+        <dt>Data Element</dt>
+        <dd><a target="_blank" class="linkToElt" href="/#/{{message.typeCommentApproval.element.eltType==='cde'?'deview':'formView'}}?tinyId={{message.typeCommentApproval.element.tinyId}}">{{message.typeCommentApproval.element.name}}</a></dd>
+    </dl>     
+
+
+<span ng-show="type==mailTypeReceived">
+    <button class="approveComment btn btn-sm btn-default" ng-controller="ApproveCommentCtrl" ng-click="approveComment(message)" ng-class="{disabled: message.states[0].action==='Approved'}" type="button" >Approve Comment</button>
+    <span ng-show="message.states[0].action==='Approved'">Approved on {{ message.states[0].date | date:medium }}</span>
+</span>

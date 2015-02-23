@@ -5,14 +5,15 @@ var mongoose = require('mongoose')
     , mongo_data_system = require('../../system/node-js/mongo-data') 
     , connHelper = require('../../system/node-js/connections')
     , logging = require('../../system/node-js/logging')
+    , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
 ;
 
+exports.type = "cde";
 exports.name = "CDEs";
         
 var mongoUri = config.mongoUri;
 var DataElement;
 var PinningBoard;
-var Message;
 var User;
 
 var connectionEstablisher = connHelper.connectionEstablisher;
@@ -23,7 +24,6 @@ iConnectionEstablisherCde.connect(function(conn) {
     DataElement = conn.model('DataElement', schemas.dataElementSchema);
     exports.DataElement = DataElement;
     PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
-    Message = conn.model('Message', schemas.message); 
     User = conn.model('User', schemas_system.userSchema);
     connection = conn;
 });
@@ -53,7 +53,7 @@ exports.userTotalSpace = function(name, callback) {
 };
 
 exports.deCount = function (callback) {
-    DataElement.find().count().exec(function (err, count) {
+    DataElement.find({"archived":null}).count().exec(function (err, count) {
         callback(count);
     });
 };
@@ -92,6 +92,7 @@ exports.byTinyIdAndVersion = function(tinyId, version, callback) {
 };
 
 exports.eltByTinyId = function(tinyId, callback) {
+    if (!tinyId) callback("tinyId is undefined!", null); 
     DataElement.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, de) {
         callback(err, de); 
     });
@@ -305,96 +306,11 @@ exports.update = function(elt, user, callback, special) {
                 newDe.save(function(err) {
                     if (err) {
                         logging.errorLogger.error("Error: Cannot save CDE", {origin: "cde.mongo-cde.update.3", stack: new Error().stack, details: "err "+err});
-                    }
+                    }                    
                     callback(err, newDe);
                 });
             }
         });
-    });
-};
-
-exports.createMessage = function(msg, cb) {
-    var message = new Message(msg);
-    message.save(function() {
-        cb();
-    });
-};
-
-exports.updateMessage = function(msg, cb) {
-    var id = msg._id;
-    delete msg._id;
-    Message.update({_id: id}, msg).exec(function(err) {
-        cb(err);
-    });    
-};
-
-exports.getMessages = function(req, callback) {
-   switch (req.params.type) {
-       case "received":
-            var authorRecipient = {
-                $and: [
-                    {
-                        $or: [
-                            {
-                                "recipient.recipientType": "stewardOrg"
-                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
-                            }
-                            , {
-                                "recipient.recipientType": "user"
-                                , "recipient.name": req.user.username
-                            }
-                        ]
-                    },
-                    {
-                        "typeRequest.states.0.action": "Filed"
-                    }
-                ]
-            };            
-            break;
-        case "sent":
-            var authorRecipient = {
-                $or: [
-                    {
-                        "author.authorType":"stewardOrg"
-                        , "author.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
-                    }
-                    , {
-                        "author.authorType":"user"
-                        , "author.name": req.user.username
-                    }
-                ]
-            };
-            break; 
-        case "archived":
-            var authorRecipient = {
-                $and: [
-                    {
-                        $or: [
-                            {
-                                "recipient.recipientType": "stewardOrg"
-                                , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
-                            }
-                            , {
-                                "recipient.recipientType": "user"
-                                , "recipient.name": req.user.username
-                            }
-                        ]
-                    },
-                    {
-                        "typeRequest.states.0.action": "Approved"
-                    }
-                ]
-            };             
-            break;
-    }
-    if (!authorRecipient) {
-        callback("Type not specified!");
-        return;
-    }
-    
-    Message.find(authorRecipient).where().exec(function(err, result) {
-        if (!err) callback(null, result);
-        else callback(err);
     });
 };
 

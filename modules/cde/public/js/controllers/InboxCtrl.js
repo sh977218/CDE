@@ -10,13 +10,18 @@ function InboxCtrl($scope, Mail, CdeList) {
             $scope.fetchMRCdes(type);
         });
     };
-    $scope.getMail($scope.mailTypeReceived);
-    $scope.getMail($scope.mailTypeSent);
-    $scope.getMail($scope.mailTypeArchived);
+    
+    $scope.getAllMail = function() {
+        $scope.getMail($scope.mailTypeReceived);
+        $scope.getMail($scope.mailTypeSent);
+        $scope.getMail($scope.mailTypeArchived);        
+    };
+    
+    $scope.getAllMail();
     
     $scope.fetchMRCdes = function(type) {           
-        var tinyIdList = $scope.mail[type].map(function(m) {return m.typeRequest.source.tinyId;});
-        tinyIdList = tinyIdList.concat($scope.mail[type].map(function(m) {return m.typeRequest.destination.tinyId;}));
+        var tinyIdList = $scope.mail[type].map(function(m) {if (m.typeRequest) return m.typeRequest.source.tinyId;});
+        tinyIdList = tinyIdList.concat($scope.mail[type].map(function(m) {if (m.typeRequest) return m.typeRequest.destination.tinyId;}));
         CdeList.byTinyIdList(tinyIdList, function(result) {
            if (!result) {
                return;
@@ -24,10 +29,24 @@ function InboxCtrl($scope, Mail, CdeList) {
            var cdesKeyValuePair = {};
            result.map(function(cde) { cdesKeyValuePair[cde.tinyId] = cde; });
            $scope.mail[type].map(function(message) {
-               if (message.type!=="Merge Request") return;
+               if (message.type!=="MergeRequest") return;
                message.typeRequest.source.object = cdesKeyValuePair[message.typeRequest.source.tinyId];
                message.typeRequest.destination.object = cdesKeyValuePair[message.typeRequest.destination.tinyId];
            });
         });
-    };
+    };    
+    
+    $scope.closeMessage = function(message) {
+        message.states.unshift({
+            "action" : "Approved",
+            "date" : new Date(),
+            "comment" : ""
+        });
+        Mail.updateMessage(message, function() {
+            $scope.addAlert("success", "Message moved to archived.");   
+            $scope.getAllMail();
+        }, function () {
+            $scope.addAlert("danger", "Message couldn't be retired.");        
+        });        
+    };     
 }
