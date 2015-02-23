@@ -11,6 +11,7 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
     userResource.getPromise().then(function() {
         $scope.user = userResource.user;
         $scope.myOrgs = userResource.userOrgs;
+        $scope.checkMail();
     });
     
     $scope.loadMyBoards = function () {
@@ -203,5 +204,17 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
     $interval(function() {
         OrgHelpers.getOrgsDetailedInfoAPI();
     }, GLOBALS.getOrgsInterval);
-
+    
+    $scope.inboxVisible = function() {
+        return $scope.isOrgCurator()||$scope.isOrgAdmin()||exports.hasRole($scope.user, "CommentReviewer");
+    };
+    
+    $scope.checkMail = function(){
+        if (!$scope.inboxVisible()) return false;
+        $http.get('/mailStatus').success(function(data){
+            if (data.count>0) $scope.userHasMail = true;
+        });
+        
+    };
+    
 }

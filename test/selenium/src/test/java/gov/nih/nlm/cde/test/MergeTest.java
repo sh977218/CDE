@@ -25,11 +25,6 @@ public class MergeTest extends NlmCdeBaseTest {
         hangon(1);
     }
     
-    private void gotoInbox(){
-        findElement(By.id("username_link")).click();  
-        findElement(By.linkText("Inbox")).click();
-        hangon(1);
-    }
     
     private void acceptMergeRequest() {
         mustBeLoggedInAs(ctepCurator_username, password);
@@ -46,7 +41,8 @@ public class MergeTest extends NlmCdeBaseTest {
         hangon(3); 
     }    
     
-    private void checkResult() {        
+    private void checkResult() {     
+        findElement(By.cssSelector(".accordion-toggle")).click(); 
         if (!browser.equals("ie")) {
             findElement(By.linkText("Smoking History Ind")).click(); 
             switchTabAndClose(1);

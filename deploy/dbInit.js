@@ -13,13 +13,13 @@ var defaultBoard = {
     , pins: []
 };
 
-db.users.insert({username: 'nlm', password: 'nlm', siteAdmin: true, orgAdmin: ["caBIG","CTEP","NINDS","ACRIN","PS&CC"], viewHistory: []});
+db.users.insert({username: 'nlm', password: 'nlm', siteAdmin: true, orgAdmin: ["caBIG","CTEP","NINDS","ACRIN","PS&CC"], viewHistory: [], email: "admin@email.com"});
 db.users.insert({username: 'cabigAdmin', password: 'pass', orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'userToPromote', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'reguser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'createUser', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: [], email: "test@example.com", roles: ["BoardPublisher"]});
+db.users.insert({username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: [], email: "test@example.com", roles: ["BoardPublisher", "CommentAuthor"]});
 db.users.insert({username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]});
 db.users.insert({username: 'boarduser1', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]});
 db.users.insert({username: 'boardsearchuser', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]});
@@ -42,9 +42,9 @@ db.users.insert({username: 'nindsWg1User', password: 'pass', orgAdmin: [], orgCu
 db.users.insert({username: 'nindsWg2User', password: 'pass', orgAdmin: [], orgCurator: ["NINDS-WG-2"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boardPublisherTest', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boardBot', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
-
-//db.orgs.insert({name: "NINDS-WG-1", workingGroupOf: "NINDS", classifications: [{name: "WG1 Classif", elements: [{name: "WG1 Sub Classif"}]}]});
-//db.orgs.insert({name: "NINDS-WG-2", workingGroupOf: "NINDS", classifications: [{name: "WG2 Classif", elements: [{name: "WG2 Sub Classif"}]}]});
+db.users.insert({username: 'anonymousCommentUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'anonymousFormCommentUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'commentEditor', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["CommentReviewer"], email: "admin@email.com"});
 
 db.articles.insert({key: "testAdminCanEdit", body: "Admin can edit this."});
 db.articles.insert({key: "testEdits", body: "Testing edits"});

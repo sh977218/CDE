@@ -1,4 +1,4 @@
-var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select']).
+var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman']).
     config(function($routeProvider) {
         $routeProvider.
         when('/', {redirectTo: '/cde/search'}).        
@@ -17,7 +17,7 @@ var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui
         when('/boardList', {controller: BoardListCtrl, templateUrl: '/boardList'}).
         when('/cdeSearchExport', {controller: DEListCtrl, templateUrl: '/exportCdeSearch'}).
         when('/boardExport/:boardId', {controller: ExportCtrl, templateUrl: '/cde/public/html/boardExport.html'}).
-        when('/inbox', {controller: InboxCtrl, templateUrl: '/mail/template/inbox'}).
+        when('/inbox', {controller: InboxCtrl, templateUrl: '/system/public/html/inbox.html'}).
         when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
         when('/quickBoard', {controller: QuickBoardCtrl, templateUrl: '/quickBoard'}).
         when('/sdcview', {controller: SDCViewCtrl, templateUrl: '/sdcView'}).
@@ -239,11 +239,11 @@ angular.module("template/tabs/tab.html", []).run(["$templateCache", function($te
 
 cdeApp.config(function($provide) {
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector', function($delegate, $injector) {
-        var previousException; 
+        var previousException;
         return function(exception, cause) {
-            $delegate(exception, cause);
+            $delegate(exception, cause);            
             if (previousException && exception.toString() === previousException.toString()) return;   
-            previousException = exception;            
+            previousException = exception;
             var http;
             if (!http) { http = $injector.get('$http'); }
             try {

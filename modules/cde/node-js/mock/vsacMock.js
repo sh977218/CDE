@@ -25,7 +25,7 @@ app.use(morganLogger('dev'));
 app.use(bodyParser.json());
 app.use(methodOverride());
 app.use(cookieParser('your secret here'));
-app.use(session({ secret: 'omgnodeworks' }));
+app.use(session({ secret: 'omgnodeworks', resave: false, saveUninitialized: false}));
 
 app.get('/vsac/ws/Ticket', function(req, res) {
     res.send("MOCKticket.");

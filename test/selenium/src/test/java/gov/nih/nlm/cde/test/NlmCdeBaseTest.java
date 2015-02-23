@@ -58,6 +58,11 @@ public class NlmCdeBaseTest {
     protected static String classificationMgtUser_username = "classificationMgtUser";
     protected static String transferStewardUser_username = "transferStewardUser";
     protected static String createUser_username = "createUser";
+    protected static String anonymousCommentUser_username = "anonymousCommentUser";
+    protected static String anonymousFormCommentUser_username = "anonymousFormCommentUser";
+    protected static String anonymousCommentUser_password = "pass";
+    protected static String commentEditor_username = "commentEditor";
+    protected static String commentEditor_password = "pass";    
 
     protected static String password = "pass";
 
@@ -122,6 +127,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void mustBeLoggedInAs(String username, String password) {
+        goHome();
         driver.findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
@@ -375,11 +381,15 @@ public class NlmCdeBaseTest {
         hangon(1);
         findElement(By.name("version")).sendKeys(".1");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("confirmNewVersion")));
-//        textNotPresent("This version number has already been used");
         findElement(By.id("confirmNewVersion")).click();
+        try{
+            textPresent("Saved.");
+        } catch(Exception e){
+            findElement(By.id("confirmNewVersion")).click();
+            textPresent("Saved.");
+        }        
         closeAlert();
-        // wait for ES to refresh.
-        hangon(3);
+
     }
 
     public void hangon(double i) {
@@ -593,4 +603,11 @@ public class NlmCdeBaseTest {
         closeAlert();
     }
 
+    
+    protected void gotoInbox(){
+        findElement(By.id("username_link")).click();  
+        findElement(By.linkText("Inbox")).click();    
+        hangon(0.5);
+    }    
+    
 }

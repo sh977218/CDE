@@ -11,6 +11,7 @@ var schemas = require('./schemas')
     , MongoStore = require('connect-mongo')(session)
     , shortid = require("shortid")
     , logging = require('../../system/node-js/logging.js')
+    , email = require('../../system/node-js/email')
     ;
 
 var conn;
@@ -20,6 +21,7 @@ var User;
 var gfs;
 var connectionEstablisher = connHelper.connectionEstablisher;
 var sessionStore;
+var Message;
 
 var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');
 iConnectionEstablisherSys.connect(function(resCon) {
@@ -27,6 +29,7 @@ iConnectionEstablisherSys.connect(function(resCon) {
     conn = resCon;
     Org = conn.model('Org', schemas.orgSchema);
     User = conn.model('User', schemas.userSchema);
+    Message = conn.model('Message', schemas.message);
     gfs = Grid(conn.db, mongoose.mongo);
     sessionStore = new MongoStore({ 
         mongooseConnection: resCon  
@@ -57,7 +60,7 @@ exports.orgNames = function(callback) {
 
 exports.userByName = function(name, callback) {
     User.findOne({'username': new RegExp('^'+name+'$', "i")}).exec(function (err, u) {
-       callback("", u); 
+       callback(err, u); 
     });
 };
 
@@ -66,7 +69,7 @@ exports.usersByPartialName = function(name, callback) {
         for (var i = 0; i < users.length; i++) {
             delete users[i].password;
         }
-        callback("", users); 
+        callback(err, users); 
     });
 };
 
@@ -262,4 +265,108 @@ exports.getAllUsernames = function(callback) {
 
 exports.generateTinyId = function() {
     return shortid.generate().replace(/-/g,"_");
+};
+
+exports.createMessage = function(msg, cb) {
+    msg.states = [{
+        action: "Filed"
+        , date: new Date()
+        , comment: "cmnt"
+    }];      
+    var message = new Message(msg);  
+    message.save(function() {
+        if (cb) cb();
+        if (msg.recipient.recipientType==="role") email.emailUsersByRole("You have a pending message in NLM CDE application.", msg.recipient.name);
+    });
+};
+
+exports.updateMessage = function(msg, cb) {
+    var id = msg._id;
+    delete msg._id;
+    Message.update({_id: id}, msg).exec(function(err) {
+        cb(err);
+    });    
+};
+
+exports.getMessages = function(req, callback) {
+    var authorRecipient = {
+        "$and": [
+            {
+                "$or": [
+                    {
+                        "recipient.recipientType": "stewardOrg"
+                        , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                    }
+                    , {
+                        "recipient.recipientType": "user"
+                        , "recipient.name": req.user.username
+                    }                   
+                ]
+            },
+            {
+                "states.0.action": null
+            }
+        ]
+    };      
+    
+    req.user.roles.forEach(function(r){
+        var roleFilter = {
+            "recipient.recipientType": "role"
+            , "recipient.name": r
+        };        
+        authorRecipient["$and"][0]["$or"].push(roleFilter);
+    });
+    
+    switch (req.params.type) {
+       case "received":
+            authorRecipient["$and"][1]["states.0.action"] = "Filed";
+            break;
+        case "sent":
+            authorRecipient = {
+                $or: [
+                    {
+                        "author.authorType":"stewardOrg"
+                        , "author.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                    }
+                    , {
+                        "author.authorType":"user"
+                        , "author.name": req.user.username
+                    }
+                ]
+            };
+            break; 
+        case "archived":
+            authorRecipient["$and"][1]["states.0.action"] = "Approved";            
+            break;
+    }
+    if (!authorRecipient) {
+        callback("Type not specified!");
+        return;
+    }
+    
+    Message.find(authorRecipient).where().exec(function(err, result) {
+        if (!err) callback(null, result);
+        else callback(err);
+    });
+};
+
+exports.addUserRole = function(request, cb) {
+    exports.userByName(request.username, function(err, u){
+        u.roles.push(request.role);
+        u.save(function(err, u){
+            if(cb) cb(err, u);
+        });
+    });
+};
+
+exports.usersByRole = function(role, cb) {
+    User.find({roles:role}).exec(function(err, users) {
+        cb(err, users);
+    });    
+};
+
+exports.mailStatus = function(user, cb){
+    exports.getMessages({user:user, params: {type:"received"}}, function(err, mail){
+        cb(err, mail.length);
+    });
 };

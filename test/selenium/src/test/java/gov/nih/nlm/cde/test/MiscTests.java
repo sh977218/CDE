@@ -137,7 +137,6 @@ public class MiscTests extends NlmCdeBaseTest {
         findElement(By.id("showHideFilters"));
     }
     
-
     @Test
     public void deViewTour() {
         mustBeLoggedOut();
@@ -145,37 +144,32 @@ public class MiscTests extends NlmCdeBaseTest {
         findElement(By.linkText("Help")).click();
         findElement(By.linkText("Take a tour")).click();
         textPresent("an overview of the CDE attributes");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("to see what type of value are allowed");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("may have multiple names, often given");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("describe the way in which an organization may use a CDE");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("are sometimes described by one or more concepts");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("show attributes of the CDE that");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("may be identified multiple times across CDE users");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("If a the CDE is used in a Form, it will ");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("This section supports mapping of a CDE to external resources such as C-CDA document templates.");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("registered users are able to post");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("is used in a public board, the");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("If a file is attached to a CDE, it can");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("This section lists CDEs that are most similar");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("shows all prior states of the CDE");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("would like to propose a change to an existing CDE, he may create a fork");
+        getNext("to see what type of value are allowed");
+        getNext("may have multiple names, often given");
+        getNext("describe the way in which an organization may use a CDE");
+        getNext("are sometimes described by one or more concepts");
+        getNext("show attributes of the CDE that");
+        getNext("may be identified multiple times across CDE users");
+        getNext("If a the CDE is used in a Form, it will ");
+        getNext("This section supports mapping of a CDE to external resources such as C-CDA document templates.");
+        getNext("registered users are able to post");
+        getNext("is used in a public board, the");
+        getNext("If a file is attached to a CDE, it can");
+        getNext("This section lists CDEs that are most similar");
+        getNext("shows all prior states of the CDE");
+        getNext("would like to propose a change to an existing CDE, he may create a fork");
         findElement(By.xpath("//button[@data-role='end']")).click();
-    }
+    }    
     
+    private void getNext(String expectedText) {
+        try {
+            findElement(By.xpath("//button[@data-role='next']")).click();
+            textPresent(expectedText);
+        } catch(Exception e){
+            findElement(By.xpath("//button[@data-role='next']")).click();
+            textPresent(expectedText);            
+        }
+    }
     
     @Test
     public void listTour() {
@@ -184,41 +178,24 @@ public class MiscTests extends NlmCdeBaseTest {
         findElement(By.linkText("Help")).click();
         findElement(By.linkText("Take a tour")).click();
         textPresent("Welcome to the NIH");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("back to the CDE search page");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("take you to the Form search page");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("Boards allow registered users to group CDEs");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("The quick board is emptied when the");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("more documentation about this site or start this tour again");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("For example, search for");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("a combination of most relevant and higher status CDEs first");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent(" to view the CDE summary");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("Click the eye to see the full detail");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("The plus sign will add a CDE");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("view shows all search results (max 1000)");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("If your screen is small and the");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("tree to filter results by context, domain,");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("You can add a second classification ");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("See which filter are applied");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("Restrict search to one or more ");
-        findElement(By.xpath("//button[@data-role='next']")).click();
-        textPresent("By default, CDEs in Recorded status");
+        getNext("back to the CDE search page");
+        getNext("take you to the Form search page");
+        getNext("Boards allow registered users to group CDEs");
+        getNext("The quick board is emptied when the");
+        getNext("more documentation about this site or start this tour again");
+        getNext("For example, search for");
+        getNext("a combination of most relevant and higher status CDEs first");
+        getNext(" to view the CDE summary");
+        getNext("Click the eye to see the full detail");
+        getNext("The plus sign will add a CDE");
+        getNext("view shows all search results (max 1000)");
+        getNext("If your screen is small and the");
+        getNext("tree to filter results by context, domain,");
+        getNext("You can add a second classification ");
+        getNext("See which filter are applied");
+        getNext("Restrict search to one or more ");
+        getNext("By default, CDEs in Recorded status");
         findElement(By.xpath("//button[@data-role='end']")).click();
-    }
+    }    
     
 }

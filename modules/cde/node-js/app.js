@@ -20,6 +20,7 @@ var cdesvc = require('./cdesvc')
   , appSystem = require('../../system/node-js/app.js')
   , authorizationShared = require("../../system/shared/authorizationShared")
   , async = require("async")
+  , mongo_system = require('../../system/node-js/mongo-data')
   , multer  = require('multer')
 ;
 
@@ -67,6 +68,7 @@ exports.init = function(app, daoManager) {
 
     app.post('/cdesByTinyIdList', function(req, res) {
         mongo_data.cdesByTinyIdList(req.body, function(err, cdes) {
+            cdes.forEach(adminItemSvc.hideUnapprovedComments);
             res.send(cdes);
         });
     });
@@ -105,17 +107,21 @@ exports.init = function(app, daoManager) {
 
     app.get('/dataelement/:id', function(req, res) {  
         cdesvc.show(req, function(result) {
-            res.send(cdesvc.hideProprietaryPvs(result, req.user));
+            var cde = cdesvc.hideProprietaryPvs(result, req.user);
+            adminItemSvc.hideUnapprovedComments(cde);
+            res.send(cde);
         });
     });
 
     app.get('/debytinyid/:tinyId/:version?', function(req, res) {
         if (!req.params.version) {
-            mongo_data.eltByTinyId(req.params.tinyId, function(err, cdes) {
-                res.send(cdesvc.hideProprietaryPvs(cdes, req.user));
+            mongo_data.eltByTinyId(req.params.tinyId, function(err, cde) {
+                adminItemSvc.hideUnapprovedComments(cde);
+                res.send(cdesvc.hideProprietaryPvs(cde, req.user));
             }); 
         } else {
             mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, de) {
+                adminItemSvc.hideUnapprovedComments(de);
                 res.send(cdesvc.hideProprietaryPvs(de, req.user));
             });
         }
@@ -327,6 +333,10 @@ exports.init = function(app, daoManager) {
         app.post('/comments/cde/remove', function(req, res) {
             adminItemSvc.removeComment(req, res, mongo_data);
         });
+        
+        app.post('/comments/cde/approve', function(req, res) {
+            adminItemSvc.approveComment(req, res, mongo_data);
+        });        
     }
 
 
@@ -345,6 +355,7 @@ exports.init = function(app, daoManager) {
 
     app.post('/desByConcept', function(req, res) {
        mongo_data.desByConcept(req.body, function(result) {
+           result.forEach(adminItemSvc.hideUnapprovedComments);
            res.send(cdesvc.hideProprietaryPvs(result, req.user));
        }); 
     });
@@ -386,43 +397,6 @@ exports.init = function(app, daoManager) {
 
     app.get('/permissibleValueCodeSystemList', function(req, res) {
         res.send(elastic.pVCodeSystemList);
-    });
-
-    app.post('/mail/messages/new', function(req, res) {
-        if (req.isAuthenticated()) {
-            var message = req.body;
-            if (message.author.authorType === "user") {
-                message.author.name = req.user.username;
-            }
-            message.date = new Date();
-            mongo_data.createMessage(message, function() {
-              res.end();
-            });
-        } else {
-            res.status(403).send("Not Authorized");
-        }
-    });
-
-    app.post('/mail/messages/update', function(req, res) {
-        mongo_data.updateMessage(req.body, function(err) {
-            if (err) {
-                res.statusCode = 404;
-                res.send("Error while updating the message");
-            } else {
-                res.end();
-            }
-        });
-    });
-
-    app.get('/mail/template/inbox', function(req, res) {
-        res.render("inbox"); 
-    });
-
-    app.post('/mail/messages/:type', function(req, res) {
-        mongo_data.getMessages(req, function(err, messages) {
-            if (err) res.status(404).send(err);
-            else res.send(messages);
-        });
     });
 
     app.post('/retireCde', function (req, res) {
