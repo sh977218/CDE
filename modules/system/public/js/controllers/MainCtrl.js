@@ -205,8 +205,13 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
     }, GLOBALS.getOrgsInterval);
     
     $scope.inboxVisible = function() {
-        //aaa();
         return $scope.isOrgCurator()||$scope.isOrgAdmin()||exports.hasRole($scope.user, "CommentReviewer");
+    };
+    
+    $scope.checkMail = function(){
+        if (!$scope.inboxVisible()) return false;
+
+        $scope.userHasMail = true;
     };
 
 }

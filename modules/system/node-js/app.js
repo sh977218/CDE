@@ -552,4 +552,11 @@ exports.init = function(app) {
         }
     });       
     
+    app.get('/hasMail/:username', function(req, res){
+        if (req.username !== req.params.username) res.send(403, "You are not authorized.");
+        mongo_data_system.hasMail(req.username, function(err, result){
+            res.send(result);
+        });
+    });
+    
 };

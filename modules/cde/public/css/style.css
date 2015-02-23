@@ -406,3 +406,12 @@ button#selectDefault {
   display: none !important;
 }
 
+.nav.navbar-nav.navbar-right {
+    position: relative!important;
+}
+
+#incomingMessage {
+    position: absolute;
+    top: 19px;
+    left: -18px;
+}

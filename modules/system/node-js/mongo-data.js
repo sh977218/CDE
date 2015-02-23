@@ -364,3 +364,9 @@ exports.usersByRole = function(role, cb) {
         cb(err, users);
     });    
 };
+
+exports.hasMail = function(username, cb){
+    exports.userByName(username, function(user){
+        
+    });
+};
