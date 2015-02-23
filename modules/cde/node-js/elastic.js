@@ -26,10 +26,7 @@ var mltConf = {
         "valueDomain.permissibleValues.valueMeaningCode",
         "property.concepts.name",
         "property.concepts.originId"
-    ],
-    "min_term_freq" : 1,
-    "min_doc_freq" : 1,
-    "min_word_length" : 2
+    ]
 };    
 
 
@@ -59,27 +56,25 @@ exports.morelike = function(id, callback) {
               }
            },
            "filter": {
-              "and": [
-                 {
-                    "type": {
-                       "value": "blog"
+              bool: {
+                    must_not: [{
+                        term: {
+                            "registrationState.registrationStatus": "Retired"
+                        }
                     }
-                 },
-                 {
-                    "terms": {
-                       "authorId": [
-                          "120",
-                          "123"
-                       ]
-                    }
-                 }
-              ]
+                    ,{
+                        term: {
+                            "isFork": "true"
+                        }                    
+                    } 
+                    ]
+                }
            }
          }
-         } 
-        
-    }
-    request.get(elasticCdeUri + "dataelement/" + id + "/_mlt?" + mltConfUri, function (error, response, body) {
+        }  
+    };
+    
+    request.post(elasticCdeUri + "_search", {body: JSON.stringify(mltPost)}, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var resp = JSON.parse(body);
             var result = {cdes: []
@@ -95,7 +90,7 @@ exports.morelike = function(id, callback) {
             }
             callback(result);
         } else {
-            logging.errorLogger.error("Error: More Like This", {origin: "cde.elastic.morelike", stack: new Error().stack, details: "mltConfUri " + mltConfUri + ", error: " + error + ", response: " + JSON.stringify(response)});
+            logging.errorLogger.error("Error: More Like This", {origin: "cde.elastic.morelike", stack: new Error().stack, details: "Error: " + error + ", response: " + JSON.stringify(response)});
             callback("Error");
         }        
     }); 
