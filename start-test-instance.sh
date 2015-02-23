@@ -44,11 +44,11 @@ mongo test test/createManyBoards.js
 target='{"count":9575,"_shards":{"total":5,"successful":5,"failed":0}}'
 #wait for full
 COUNTER=0
-while [ $COUNTER -lt 60 ]; do
+while [ $COUNTER -lt 45 ]; do
     curl_res=$(curl http://localhost:9200/cdetest/_count)
     if [ "$curl_res" == "$target" ] 
     then
-        COUNTER=60
+        COUNTER=45
     else 
         sleep 1
         let COUNTER=COUNTER+1

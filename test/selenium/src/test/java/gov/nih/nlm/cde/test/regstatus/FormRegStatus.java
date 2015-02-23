@@ -22,12 +22,12 @@ public class FormRegStatus extends RegStatusTest {
     
     @Test
     public void cancelRegStatus() {
-        cancelRegStatus("Laboratory Tests", ninds_username);
+        cancelRegStatus("Supplemental Laboratory Tests", ninds_username);
     }   
     
     @Test
     public void cantEditStatusIfPendingChanges() {
-        cantEditStatusIfPendingChanges("Laboratory Tests", ninds_username);        
+        cantEditStatusIfPendingChanges("Supplemental Laboratory Tests", ninds_username);        
     }
         
     @Test
