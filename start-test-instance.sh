@@ -7,7 +7,7 @@ gradle -b test/selenium/build.gradle -PhubUrl=any -PtestUrl=any -PforkNb=8 -Ptim
 
 mongo test deploy/dbInit.js
 
-target='{"count":0,"_shards":{"total":5,"successful":5,"failed":0}}'
+target='{"count":0,"_shards":{"total":1,"successful":1,"failed":0}}'
 #wait for empty
 COUNTER=0
 while [ $COUNTER -lt 60 ]; do
@@ -41,7 +41,7 @@ mongoimport --drop -d test -c orgs test/data/cdedump/orgs.bson
 mongo test test/createLargeBoard.js
 mongo test test/createManyBoards.js
 
-target='{"count":9575,"_shards":{"total":5,"successful":5,"failed":0}}'
+target='{"count":9575,"_shards":{"total":1,"successful":1,"failed":0}}'
 #wait for full
 COUNTER=0
 while [ $COUNTER -lt 45 ]; do

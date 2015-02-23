@@ -31,7 +31,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
-        findElement(By.cssSelector("i.fa-edit")).click();
+        findElement(By.xpath("//div[@id='nameEdit']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector(".fa-check")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editStatus")));
