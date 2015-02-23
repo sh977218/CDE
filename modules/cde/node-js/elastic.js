@@ -42,7 +42,43 @@ function jsonToUri(object){
 exports.morelike = function(id, callback) {
     var from = 0;
     var limit = 20;
-    var mltConfUri = jsonToUri(mltConf);
+    var mltPost = {
+       "query": {
+        "filtered": {
+           "query": {
+              "more_like_this": {
+                 "fields": mltConf.mlt_fields,
+                 "docs": [
+                    {
+                       "_id": id
+                    }
+                 ],
+                "min_term_freq" : 1,
+                "min_doc_freq" : 1,
+                "min_word_length" : 2
+              }
+           },
+           "filter": {
+              "and": [
+                 {
+                    "type": {
+                       "value": "blog"
+                    }
+                 },
+                 {
+                    "terms": {
+                       "authorId": [
+                          "120",
+                          "123"
+                       ]
+                    }
+                 }
+              ]
+           }
+         }
+         } 
+        
+    }
     request.get(elasticCdeUri + "dataelement/" + id + "/_mlt?" + mltConfUri, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var resp = JSON.parse(body);
