@@ -93,7 +93,8 @@ public abstract class CommentTest extends CommonTest {
         textPresent(censoredText);      
         
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
-        gotoInbox();
+        findElement(By.id("incomingMessage")).click();        
+        //gotoInbox();
         textPresent("Comment Approval");
         findElement(By.cssSelector(".accordion-toggle")).click();        
 
