@@ -1,18 +1,18 @@
 var passport = require('passport')
-  , mongo_data_system = require('./mongo-data')
-  , config = require('config')
-  , dbLogger = require('./dbLogger.js')
-  , logging = require('./logging.js')
-  , orgsvc = require('./orgsvc')
-  , usersrvc = require('./usersrvc')
-  , express = require('express')
-  , path = require('path')
-  , classificationShared = require('../shared/classificationShared.js')
-  , classificationNode = require('./classificationNode')
-  , adminItemSvc = require("./adminItemSvc")       
-  , auth = require( './authorization' )
-  , csrf = require('csurf')
-   , authorizationShared = require("../../system/shared/authorizationShared")
+    , mongo_data_system = require('./mongo-data')
+    , config = require('config')
+    , dbLogger = require('./dbLogger.js')
+    , logging = require('./logging.js')
+    , orgsvc = require('./orgsvc')
+    , usersrvc = require('./usersrvc')
+    , express = require('express')
+    , path = require('path')
+    , classificationShared = require('../shared/classificationShared.js')
+    , classificationNode = require('./classificationNode')
+    , adminItemSvc = require("./adminItemSvc")       
+    , auth = require( './authorization' )
+    , csrf = require('csurf')
+    , authorizationShared = require("../../system/shared/authorizationShared")
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -25,6 +25,12 @@ exports.nocacheMiddleware = function(req, res, next) {
 };
 
 exports.init = function(app) {
+    app.use(function(req, res, next) {   
+        if (req.headers['user-agent'].indexOf("MSIE")>=0) exports.nocacheMiddleware(req, res, next);
+        else next();
+    });
+    
+    
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
     
     var viewConfig = {modules: config.modules};
@@ -185,6 +191,7 @@ exports.init = function(app) {
     });
     
     app.get('/user/me', function(req, res) {
+        console.log("called /user/me");
         if (!req.user) {
             res.send("Not logged in.");
         } else {

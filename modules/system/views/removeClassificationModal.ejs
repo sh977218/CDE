@@ -3,6 +3,10 @@
 </div>
 <div class="modal-body">
     <br/>You are about to delete <strong>{{classifName}}</strong>. Are you sure?
+    <br/>This will affect the following CDEs: 
+    <span role="button" title="OtherClinical Data" tabindex="0" ng-click="searchByClassification(orgName, pathArray, module)" id="classification-OtherClinical Data" class="name hand-cursor" ng:class="pathArray.length===1 ? 'first-level-classification' : ''">
+        <span class="name ng-binding">OtherClinical Data</span>
+    </span>
 </div>
 <div class="modal-footer" id="removeClassificationModalFooter">
     <button class="btn btn-default" ng-click="cancel()" id="cancelRemoveClassificationModal">Cancel</button>    
