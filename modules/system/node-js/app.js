@@ -538,7 +538,7 @@ exports.init = function(app) {
 
     app.post('/mail/messages/:type', function(req, res) {
         mongo_data_system.getMessages(req, function(err, messages) {
-            if (err) res.send(404, err);
+            if (err) res.status(404).send(err);
             else res.send(messages);
         });
     });    
@@ -546,7 +546,7 @@ exports.init = function(app) {
     app.post('/addUserRole', function(req, res) {
         if (authorizationShared.hasRole(req.user, "CommentReviewer")) {
             mongo_data_system.addUserRole(req.body, function(err, u) {
-                if (err) res.send(404, err);
+                if (err) res.status(404).send(err);
                 else res.send("Role added.");
             });
         }
