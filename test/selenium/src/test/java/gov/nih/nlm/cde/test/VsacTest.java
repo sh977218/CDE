@@ -79,6 +79,7 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.linkText("Update O.I.D")).click();
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
         findElement(By.id("vsacIdCheck")).click();
+        closeAlert();
         
         Assert.assertTrue(textPresent("20121025"));
                 

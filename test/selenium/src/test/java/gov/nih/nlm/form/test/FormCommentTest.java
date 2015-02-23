@@ -14,24 +14,4 @@ public class FormCommentTest extends CommentTest {
     public void goToEltSearch() {
         goToFormSearch();
     }
-    
-    @Test
-    public void formComments() {
-        comments("Risk Factor Questionnaire (RFQ) - Physical Activity and Sleep");
-    }
-
-    @Test
-    public void orgAdminCanRemoveFormComment() {
-        orgAdminCanRemoveComment("Form Comment Test", "Recorded");
-    }
-
-    @Test
-    public void siteAdminCanRemoveFormComment() {
-        siteAdminCanRemoveComment("STOP Questionnaire", null);
-    }
-
-    @Test
-    public void approvingCommentsForm() {
-        approvingComments("Vital Signs and Tests", null, anonymousFormCommentUser_username);
-    }  
 }
