@@ -11,6 +11,7 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
     userResource.getPromise().then(function() {
         $scope.user = userResource.user;
         $scope.myOrgs = userResource.userOrgs;
+        $scope.checkMail();
     });
     
     $scope.loadMyBoards = function () {
@@ -210,8 +211,10 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
     
     $scope.checkMail = function(){
         if (!$scope.inboxVisible()) return false;
-
-        $scope.userHasMail = true;
+        $http.get('/mailStatus').success(function(data){
+            if (data.count>0) $scope.userHasMail = true;
+        });
+        
     };
-
+    
 }

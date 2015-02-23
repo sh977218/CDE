@@ -365,8 +365,8 @@ exports.usersByRole = function(role, cb) {
     });    
 };
 
-exports.hasMail = function(username, cb){
-    exports.userByName(username, function(user){
-        
+exports.mailStatus = function(user, cb){
+    exports.getMessages({user:user, params: {type:"received"}}, function(err, mail){
+        cb(err, mail.length);
     });
 };
