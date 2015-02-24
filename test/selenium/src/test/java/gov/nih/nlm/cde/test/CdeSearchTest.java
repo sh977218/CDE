@@ -6,7 +6,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class CdeSearchTest extends NlmCdeBaseTest {
@@ -146,24 +145,6 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(linkList.size() > 10);
         Assert.assertTrue(textPresent("ISO21090.ST"));
   
-    }
-
-    @DataProvider(name = "moreLikeThisDP")
-    public Object[][] getMoreLikeThisData() {
-        return new Object[][] {
-            { "Patient Gender Category", new String[] {"Person Gender Text Type", "Patient Gender Code"} },
-            { "Ethnicity USA category", 
-                new String[] {"Ethnicity USA maternal category", "Ethnicity USA paternal category"} },
-        };
-    }
-    
-    @Test(dataProvider = "moreLikeThisDP")
-    public void moreLikeThis(String cdeSource, String[] cdeTargets){
-        goToCdeByName(cdeSource);
-        findElement(By.linkText("More Like This")).click();
-        for (String tCde : cdeTargets) {
-            Assert.assertTrue(textPresent(tCde));
-        }
     }
     
     @Test
