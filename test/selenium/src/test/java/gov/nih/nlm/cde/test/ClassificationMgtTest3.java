@@ -26,7 +26,7 @@ public class ClassificationMgtTest3 extends NlmCdeBaseTest {
         createClassificationName(org, new String[]{"_a","_a_a","_a_a_a"});
         createClassificationName(org, new String[]{"_a","_a_b"});
         createClassificationName(org, new String[]{"_a","_a_c"});          
-        deleteClassification("classification-_a,_a_a");
+        deleteMgtClassification("classification-_a,_a_a", "_a_a");
         checkElementDoesNotExistByCSS("[id='okRemoveClassificationModal']");
         scrollToTop();
     }

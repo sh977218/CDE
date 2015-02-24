@@ -154,6 +154,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic, 
                 classifName: function() {
                     return pathArray[pathArray.length-1];
                 }
+                , pathArray: function() {return pathArray;}
             }
         });
 

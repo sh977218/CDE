@@ -80,9 +80,9 @@ public class MergeTest extends NlmCdeBaseTest {
     public void mergeMineTheirsClassificationsOnly() {
         mustBeLoggedInAs(cabigAdmin_username, password);
         addToCompare("Diagnosis Change Date java.util.Date", "Form Element End Date java.util.Date");
+        hangon(1);
         findElement(By.linkText("Retire & Merge")).click();  
-        Assert.assertTrue(textPresent("Diagnosis Change Date"));
-        Assert.assertTrue(textPresent("Form Element End Date"));
+        Assert.assertTrue(textPresent("Fields to be Imported"));
         findElement(By.cssSelector("[ng-click='sendMergeRequest()']")).click();
         hangon(1);
         findElement(By.linkText("Classification")).click();

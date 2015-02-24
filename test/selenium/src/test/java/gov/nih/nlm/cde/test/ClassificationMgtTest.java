@@ -19,7 +19,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     }    
 
     private void deleteNestedClassifTree() {
-        deleteClassification("classification-Disease,Epilepsy");
+        deleteMgtClassification("classification-Disease,Epilepsy","Epilepsy");
         Assert.assertTrue(textNotPresent("Epilepsy"));
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
@@ -82,5 +82,4 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Headache"));
 
     }
-    
 }
