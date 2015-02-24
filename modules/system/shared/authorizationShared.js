@@ -14,3 +14,13 @@ exports.isCuratorOf = function(user, orgName) {
     return (user.orgAdmin && user.orgAdmin.indexOf(orgName) >= 0)
         || (user.orgCurator && user.orgCurator.indexOf(orgName) >= 0);
 };
+    
+exports.isOrgCurator = function(user) {     
+    if (!user) return false;
+    return exports.isOrgAdmin(user) || (user.orgCurator && user.orgCurator.length > 0);  
+};
+
+exports.isOrgAdmin = function(user) {
+    if (!user) return false;
+    return user.siteAdmin === true || (user.orgAdmin && user.orgAdmin.length > 0);  
+};
