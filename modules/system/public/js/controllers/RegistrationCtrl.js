@@ -1,4 +1,4 @@
- function RegistrationCtrl($scope, $modal, $window, $http) {   
+ function RegistrationCtrl($scope, $modal, $window) {   
      
     $scope.openRegStatusUpdate = function () {
         var modalInstance = $modal.open({
@@ -18,6 +18,7 @@
             $window.location.href = $scope.baseLink + newElt._id;  
             $scope.addAlert("success", "Saved");
          }, function () {
+             $scope.revert($scope.elt);
         });                    
     };
     

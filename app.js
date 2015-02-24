@@ -177,6 +177,7 @@ try {
 }
 
 app.use(function(err, req, res, next){
+    if (req && req.body && req.body.password) req.body.password = "";
     var meta = {
         stack: err.stack
         , origin: "app.express.error"
