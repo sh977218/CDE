@@ -22,7 +22,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
     }    
 
     private void deleteNestedClassifTree() {
-        deleteClassification("classification-Disease,Epilepsy");
+        deleteMgtClassification("classification-Disease,Epilepsy","Epilepsy");
         Assert.assertTrue(textNotPresent("Epilepsy"));
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
@@ -102,7 +102,7 @@ public class ClassificationMgtTest extends NlmCdeBaseTest {
         createClassificationName(org, new String[]{"_a","_a_a","_a_a_a"});
         createClassificationName(org, new String[]{"_a","_a_b"});
         createClassificationName(org, new String[]{"_a","_a_c"});          
-        deleteClassification("classification-_a,_a_a");
+        deleteMgtClassification("classification-_a,_a_a","_a_a");
         checkElementDoesNotExistByCSS("[id='okRemoveClassificationModal']");
         scrollToTop();
     }

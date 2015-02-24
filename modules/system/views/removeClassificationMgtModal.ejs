@@ -1,0 +1,23 @@
+<div class="modal-header">
+    <h4>Remove Classification</h4>
+</div>
+<div class="modal-body">
+    You are about to delete the following classification: 
+    <br>
+    <br>
+    <div class="panel panel-default">
+        <div class="panel-body">
+              <span ng-repeat='c in pathArray'> <span ng-hide='$index===0'>></span> <span ng-hide='$index===pathArray.length-1'>{{c}}</span> <strong ng-show='$index===pathArray.length-1'>{{c}}</strong> </span>
+        </div>
+    </div>
+
+    <br/>This will affect multiple CDEs.
+    <br/>Are you sure you want to proceed?
+    <br/>
+    <br/>Please confirm your decision by typing the name of the classification: 
+    <input id="removeClassificationUserTyped" ng-model="userTyped.name" ng-change="checkUserTypedName()" class="form-control" placeholder="{{classifName}}">
+</div>
+<div class="modal-footer" id="removeClassificationModalFooter">
+    <button class="btn btn-default" ng-click="cancel()" id="cancelRemoveClassificationModal">Cancel</button>    
+    <button ng-disabled="!userTypedCorrectName" class="btn btn-danger" ng-click="ok()" id="okRemoveClassificationModal">OK</button>
+</div>

@@ -90,12 +90,13 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
     
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
-            templateUrl: '/template/system/removeClassificationModal',
+            templateUrl: '/template/system/removeClassificationMgtModal',
             controller: RemoveClassificationModalCtrl,
             resolve: {
                 classifName: function() {
                     return pathArray[pathArray.length-1];
                 }
+                , pathArray: function() {return pathArray;}
             }
         });
 

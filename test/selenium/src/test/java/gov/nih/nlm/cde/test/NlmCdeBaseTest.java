@@ -602,6 +602,14 @@ public class NlmCdeBaseTest {
         modalGone();
         closeAlert();
     }
+    
+    protected void deleteMgtClassification(String classificationId, String classifName) {
+        driver.findElement(By.cssSelector("[id='"+classificationId+"'] [title=\"Remove\"]")).click();
+        driver.findElement(By.id("removeClassificationUserTyped")).sendKeys(classifName);        
+        driver.findElement(By.cssSelector("[id='okRemoveClassificationModal']")).click();
+        modalGone();
+        closeAlert();
+    }    
 
     
     protected void gotoInbox(){

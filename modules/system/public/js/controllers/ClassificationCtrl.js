@@ -61,6 +61,7 @@ function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification, Org
                 classifName: function() {
                     return pathArray[pathArray.length-1];
                 }
+                , pathArray: function() {return pathArray;}
             }
         });
 
