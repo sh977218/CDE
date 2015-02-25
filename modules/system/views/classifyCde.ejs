@@ -37,7 +37,7 @@
             <button ng-init="lastLeafName = cat.name" ng-click="addClassification(lastLeafName)" type="button" class="btn btn-default btn-xs"><i class="fa fa-plus"></i> Classify</button>
         </div> 
     </div>
-    <div ng-show="viewType.byRecentlyAdded">
+    <div ng-show="viewType.byRecentlyAdded" id="viewType.byRecentlyAdded">
         <h5>Select from recently used classifications...</h5>
         <br/>
         <div ng-repeat="defaultClassification in defaultClassificationsHistory" class="row">

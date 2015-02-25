@@ -15,7 +15,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         hangon(6);
     }    
 
-    @Test
+    /*@Test
     public void createCdeValidationErrors() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         goHome();
@@ -32,13 +32,13 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
         textPresent("Please select at least one classification");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
-        classify("CTEP", "DISEASE", "Gynecologic");
+        addClassificationMethod(new String[]{"CTEP", "DISEASE", "Gynecologic"});
         textPresent("Please select at least one classification owned by NINDS");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
-        classify("NINDS", "Population", "Adult");
+        addClassificationMethod(new String[]{"NINDS", "Population", "Adult"});
         textNotPresent("Please");
         Assert.assertTrue(findElement(By.id("submit")).isEnabled());
-    }
+    }*/
     
     @Test
     public void createCde() {
@@ -52,15 +52,17 @@ public class CdeCreateTest extends NlmCdeBaseTest {
 
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("Select One");
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
-        
-        classify("NINDS", "Disease", "Traumatic Brain Injury");
+
+        addClassificationMethod(new String[]{"NINDS", "Disease", "Traumatic Brain Injury"});
         modalGone();
         textPresent("Traumatic Brain Injury");
         
         deleteClassification("classification-Disease,Traumatic Brain Injury");
 
-        classify("NINDS", "Disease", "Headache");
-   
+        addClassificationMethod(new String[]{"NINDS", "Disease", "Headache"});        
+        
+        checkRecentlyUsedClassifications(new String[]{"NINDS", "Disease", "Headache"});
+        
         findElement(By.id("submit")).click();
         hangon(1);
 
@@ -78,7 +80,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         Assert.assertEquals("", findElement(By.id("dd_version_nlm")).getText());        
     }
     
-    @Test
+    /*@Test
     public void testAlignmentForMissingFields() {
         mustBeLoggedInAs(ctepCurator_username, password);
         createBasicCde("AlignmentCDE", "Definition for alignment cde", "CTEP", "DISEASE", "Brain");
@@ -109,6 +111,6 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         hangon(3);
         Assert.assertTrue(textPresent("Possible Matches"));
         Assert.assertTrue(textPresent("Smoking History Ind"));
-    }
+    }*/
     
 }

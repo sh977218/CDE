@@ -9,42 +9,12 @@ import org.testng.annotations.Test;
 import org.openqa.selenium.support.ui.Select;
 
 public class ClassificationTest extends NlmCdeBaseTest {  
-   public void addClassificationMethod(String[] categories) {
-        findElement(By.linkText("Classification")).click();
-        findElement(By.id("addClassification")).click();
-
-        try {
-        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
-        } catch(Exception e) {
-            // Uncomment to debug
-//            System.out.println("Dropdown to select org doesn't exist!");
-        }
-        
-        // Ensures that tree of classifications have finished loading.
-        textPresent(categories[1]);
-
-        for (int i = 1; i < categories.length - 1; i++) {
-            findElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link")).click();
-        }
-        findElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button")).click();
-        closeAlert();
-        findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
-        hangon(3);
-        findElement(By.linkText("Classification")).click();
-        String selector = "";
-        for (int i = 1; i < categories.length; i++) {
-            selector += categories[i];
-            if (i < categories.length - 1) {
-                selector += ",";
-            }
-        }
-        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-" + selector + "'] .name")).getText().equals(categories[categories.length - 1]));
-    }
     
     @Test
     public void addClassification() {
         mustBeLoggedInAs("classificationMgtUser", "pass");
         goToCdeByName("Surgical Procedure Other Anatomic Site Performed Indicator");
+        findElement(By.linkText("Classification")).click();
         addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Classification","Supplemental"});
         hangon(1);
         addClassificationMethod(new String[]{"NINDS","Domain","Treatment/Intervention Data","Therapies"});
@@ -109,6 +79,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
     public void checkDuplicatesClassification() {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Product Problem Discover Performed Observation Outcome Identifier ISO21090.II.v1.0");
+        findElement(By.linkText("Classification")).click();
         textNotPresent( "Disease" ) ;
         addClassificationMethod(new String[]{"NINDS","Disease"});
         textPresent( "Disease" ) ;

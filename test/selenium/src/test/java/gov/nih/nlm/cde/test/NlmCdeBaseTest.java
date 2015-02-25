@@ -164,26 +164,48 @@ public class NlmCdeBaseTest {
         }
     }
 
-    protected void classify(String org, String classification, String subClassification) {
-        findElement(By.id("selectDefault")).click();
-        
-        try {
-            new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
-        } catch(Exception e) {
-            // Uncomment to debug
-            System.out.println("Dropdown to select org doesn't exist!");
-        }
-        
-        // Ensures that tree of classifications have finished loading.
-        Assert.assertTrue(textPresent(classification));
-        
-        hangon(1);
-        findElement(By.cssSelector("[id='addClassification-" + classification + "'] span.fake-link")).click();
-        findElement(By.cssSelector("[id='addClassification-" + subClassification + "'] button")).click();
-        findElement(By.cssSelector(".modal-dialog .done")).click();
-        modalGone();
-    }
+   public void addClassificationMethod(String[] categories) {                
+        findElement(By.id("addClassification")).click();
 
+        try {
+            new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
+        } catch(Exception e) {
+
+        }
+
+        textPresent(categories[1]);
+
+        for (int i = 1; i < categories.length - 1; i++) {
+            findElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link")).click();
+        }
+        findElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button")).click();
+        try {
+            closeAlert();
+        } catch(Exception e) {
+        
+        }
+        findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
+        hangon(3);        
+        String selector = "";
+        for (int i = 1; i < categories.length; i++) {
+            selector += categories[i];
+            if (i < categories.length - 1) {
+                selector += ",";
+            }
+        }
+        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-" + selector + "'] .name")).getText().equals(categories[categories.length - 1]));
+    }    
+   
+    public void checkRecentlyUsedClassifications(String[] categories) {
+        findElement(By.id("addClassification")).click();
+        findElement(By.id("addClass.byRecentlyAdded")).click();
+        for (int i = 0; i < categories.length; i++) {
+            textPresent(categories[i], By.id("viewType.byRecentlyAdded"));
+        }        
+        findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
+        modalGone();   
+    }
+        
     protected void gotoClassifMgt() {
         findElement(By.id("username_link")).click();
         hangon(.5);
@@ -229,8 +251,7 @@ public class NlmCdeBaseTest {
         findElement(By.name("elt.designation")).sendKeys(name);
         findElement(By.name("elt.definition")).sendKeys(definition);
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(org);
-
-        classify(org, classification, subClassification);
+        addClassificationMethod(new String[]{org, classification, subClassification});
     }
 
     protected void mustBeLoggedOut() {
