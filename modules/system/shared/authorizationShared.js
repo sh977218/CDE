@@ -24,3 +24,7 @@ exports.isOrgAdmin = function(user) {
     if (!user) return false;
     return user.siteAdmin === true || (user.orgAdmin && user.orgAdmin.length > 0);  
 };
+
+exports.canComment = function(user) {
+    return exports.hasRole(user, "CommentAuthor") || exports.isOrgCurator(user)
+};

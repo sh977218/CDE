@@ -136,7 +136,7 @@ exports.addComment = function(req, res, dao) {
                     , created: new Date().toJSON()
                     , text: req.body.comment
                 };
-                if (!authorizationShared.hasRole(req.user, "CommentAuthor")&&!authorizationShared.isOrgCurator(req.user)) {
+                if (!authorizationShared.canComment(req.user)) {
                     comment.pendingApproval = true;
                     var message = {
                         recipient: {recipientType: "role", name: "CommentReviewer"}
