@@ -112,11 +112,11 @@ public abstract class CommentTest extends CommonTest {
         textPresent(eltName);
         switchTabAndClose(0);        
         
-        findElement(By.cssSelector(".authorizeUser")).click();    
+        findElement(By.cssSelector(preClass+".authorizeUser")).click();    
         findElement(By.id("authorizeUserOK")).click();   
-        modalGone();
-        
-        textPresent("Role added");        
+        modalGone();        
+        textPresent("Role added");   
+        closeAlert();
 
         findElement(By.cssSelector(preClass+".approveComment")).click();
         textPresent("Comment approved");  
@@ -133,7 +133,14 @@ public abstract class CommentTest extends CommonTest {
         hangon(2);
         addComment("OK comment.");
         textNotPresent(censoredText);
-        textPresent("OK comment.");        
+        textPresent("OK comment.");     
+        
+        mustBeLoggedInAs(ninds_username, password);
+        goToEltByName(eltName, status);
+        hangon(2);
+        addComment("Curator's comment.");
+        textNotPresent(censoredText);
+        textPresent("Curator's comment.");         
         
     }
     
