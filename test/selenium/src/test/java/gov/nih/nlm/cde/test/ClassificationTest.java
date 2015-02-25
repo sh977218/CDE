@@ -16,6 +16,7 @@ public class ClassificationTest extends NlmCdeBaseTest {
         goToCdeByName("Surgical Procedure Other Anatomic Site Performed Indicator");
         findElement(By.linkText("Classification")).click();
         addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Classification","Supplemental"});
+        checkRecentlyUsedClassifications(new String[]{"NINDS","Disease","Myasthenia Gravis","Classification","Supplemental"});
         hangon(1);
         addClassificationMethod(new String[]{"NINDS","Domain","Treatment/Intervention Data","Therapies"});
         findElement(By.id("addClassification")).click(); 

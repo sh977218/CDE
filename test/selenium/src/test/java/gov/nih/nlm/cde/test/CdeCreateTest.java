@@ -15,7 +15,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         hangon(6);
     }    
 
-    /*@Test
+    @Test
     public void createCdeValidationErrors() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         goHome();
@@ -38,7 +38,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         addClassificationMethod(new String[]{"NINDS", "Population", "Adult"});
         textNotPresent("Please");
         Assert.assertTrue(findElement(By.id("submit")).isEnabled());
-    }*/
+    }
     
     @Test
     public void createCde() {
@@ -80,7 +80,7 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         Assert.assertEquals("", findElement(By.id("dd_version_nlm")).getText());        
     }
     
-    /*@Test
+    @Test
     public void testAlignmentForMissingFields() {
         mustBeLoggedInAs(ctepCurator_username, password);
         createBasicCde("AlignmentCDE", "Definition for alignment cde", "CTEP", "DISEASE", "Brain");
@@ -111,6 +111,6 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         hangon(3);
         Assert.assertTrue(textPresent("Possible Matches"));
         Assert.assertTrue(textPresent("Smoking History Ind"));
-    }*/
+    }
     
 }
