@@ -26,7 +26,7 @@ exports.nocacheMiddleware = function(req, res, next) {
 
 exports.init = function(app) {
     app.use(function(req, res, next) {   
-        if (req.headers['user-agent'].indexOf("MSIE")>=0) exports.nocacheMiddleware(req, res, next);
+        if (req && req.headers['user-agent'] && req.headers['user-agent'].indexOf("MSIE")>=0) exports.nocacheMiddleware(req, res, next);
         else next();
     });
     
