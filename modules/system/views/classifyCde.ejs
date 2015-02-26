@@ -26,7 +26,7 @@
             </select>
         </div>
         
-        <div class="fake-link" ng-click="resetTree()"><strong>{{org.name}}</strong></div>
+        <div id="resetTree" class="fake-link" ng-click="resetTree()"><strong>{{org.name}}</strong></div>
         <div ng-repeat="cat in newClassification.categories" ng-click="classTree.wipeRest(newClassification, $index+1)" style="margin-left: {{10+10*$index}}px">
             <i class="fa fa-chevron-down"></i> <span class="fake-link">{{cat}}</span>
         </div>
