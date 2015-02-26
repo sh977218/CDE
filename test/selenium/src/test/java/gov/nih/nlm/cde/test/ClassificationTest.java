@@ -8,7 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.openqa.selenium.support.ui.Select;
 
-public class ClassificationTest extends NlmCdeBaseTest {  
+public class ClassificationTest extends BaseClassificationTest {  
     
     @Test
     public void addClassification() {

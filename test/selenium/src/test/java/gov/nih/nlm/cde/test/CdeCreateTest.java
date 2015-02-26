@@ -6,7 +6,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class CdeCreateTest extends NlmCdeBaseTest {
+public class CdeCreateTest extends BaseClassificationTest {
    
     public void createBasicCde(String name, String definition, String org, String classification, String subclassification) {
         goToCdeSearch();
