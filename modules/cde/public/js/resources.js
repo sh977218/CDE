@@ -205,10 +205,3 @@ angular.module('resources', ['ngResource'])
       };
     }])
 ;    
-
-cdeApp.config(['$controllerProvider', function($controllerProvider) {
-  // this option might be handy for migrating old apps, but please don't use it
-  // in new ones!
-  $controllerProvider.allowGlobals();
-}]);
-    
