@@ -138,25 +138,25 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
         setTimeout(function() {
             request.get(elasticUrl + "_search?q=" + mongoCde.tinyId, function (error, response, bodyStr) {
                 if (error || response.statusCode !== 200) {
-                    logging.errorLogger.error("Error in STATUS: Negative response from ElasticSearch", {origin: "cde.status.checkElasticUpdating", stack: new Error().stack, details: "bodyStr " + bodyStr + ", error "+error}); 
+                    logging.errorLogger.error("Error in STATUS: Negative response from ElasticSearch", {origin: "cde.status.checkElasticUpdating", stack: new Error().stack, details: {bodyStr: bodyStr, error:error}}); 
                 }
                 var body = JSON.parse(bodyStr);
                 if (body.hits.hits.length <= 0) {
                     statusReport.elastic.updating = false;    
-                    logging.errorLogger.error("Error in STATUS: No data elements received from ElasticSearch", {origin: "cde.status.checkElasticUpdating", stack: new Error().stack, details: body}); 
+                    logging.errorLogger.error("Error in STATUS: No data elements received from ElasticSearch", {origin: "cde.status.checkElasticUpdating", stack: new Error().stack, details: {bodyStr: bodyStr}}); 
                 } else {
                     statusReport.elastic.updating = true; 
                     var elasticCde = body.hits.hits[0]._source;
                     if (mongoCde.tinyId !== elasticCde.tinyId) {
                         statusReport.elastic.updating = false;   
-                        logging.errorLogger.error("Error in STATUS: CDE do not match", {origin: "cde.status.checkElasticUpdating",  stack: new Error().stack, details: "elasticCde " + JSON.stringify(elasticCde) + ", mongoCde "+JSON.stringify(mongoCde)});
+                        logging.errorLogger.error("Error in STATUS: CDE do not match", {origin: "cde.status.checkElasticUpdating",  stack: new Error().stack, details: {elasticCde: elasticCde, mongoCde: mongoCde}});
                     } else {
                         statusReport.elastic.updating = true;                        
                     }
                 }
                 mongoCollection.DataElement.remove({"tinyId": mongoCde.tinyId}).exec(function(err){
                     if (err) {
-                        logging.errorLogger.error("Cannot delete dataelement", {origin: "cde.status.checkElasticUpdating",  stack: new Error().stack, details: "err "+err});                            
+                        logging.errorLogger.error("Cannot delete dataelement", {origin: "cde.status.checkElasticUpdating",  stack: new Error().stack, details: {tinyId: mongoCde.tinyId, err: err}});                            
                     }                  
                 });
             });            
