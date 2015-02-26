@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class WorkingGroupTest3 extends NlmCdeBaseTest {
+public class WorkingGroupTest3 extends BaseClassificationTest {
 
    @Test
     public void wgRegStatus() {
