@@ -8,7 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.openqa.selenium.Dimension;
 
-public class OrgAdminTest extends NlmCdeBaseTest {
+public class OrgAdminTest extends BaseClassificationTest {
 
     @Test
     public void orgAdminCanEditHisCdes() {

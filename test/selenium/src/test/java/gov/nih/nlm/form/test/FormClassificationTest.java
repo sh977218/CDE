@@ -23,6 +23,7 @@ public class FormClassificationTest extends BaseFormTest {
     public void addClassification() {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("Traumatic Brain Injury - Adverse Events");
+        findElement(By.linkText("Classification")).click();
         new ClassificationTest().addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
     }  
     

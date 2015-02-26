@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class ClassificationMgtTest3 extends NlmCdeBaseTest {
+public class ClassificationMgtTest3 extends BaseClassificationTest {
     
     @Test
     public void addDeleteClassificationMgt() {

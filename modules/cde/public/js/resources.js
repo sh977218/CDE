@@ -205,4 +205,3 @@ angular.module('resources', ['ngResource'])
       };
     }])
 ;    
-    

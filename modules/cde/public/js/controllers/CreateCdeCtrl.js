@@ -134,8 +134,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic, 
                             var deepCopy = {
                                 orgName: newClassification.orgName
                                 , categories: []
-                            };
-                            newClassification.categories.pop();    
+                            };                            
                         }
                     };
                 }                

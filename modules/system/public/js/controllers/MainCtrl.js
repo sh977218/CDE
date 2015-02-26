@@ -58,13 +58,13 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
     userResource.getPromise().then(function() {
         $scope.loadMyBoards();
     });        
-    
+
     $scope.isOrgCurator = function() {        
-        return $scope.isOrgAdmin() || (userResource.user && (userResource.user.orgCurator && userResource.user.orgCurator.length > 0));  
+        return exports.isOrgCurator(userResource.user);  
     };
     
     $scope.isOrgAdmin = function() {
-        return userResource.user && ((userResource.user.siteAdmin === true) || (userResource.user.orgAdmin && userResource.user.orgAdmin.length > 0));  
+        return exports.isOrgAdmin(userResource.user);  
     };
     
     $scope.isSiteAdmin = function() {
