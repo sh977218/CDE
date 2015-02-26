@@ -14,6 +14,10 @@ function AddClassificationModalCtrl($scope, $timeout, $modalInstance, Classifica
         $scope.viewType.byRecentlyAdded = true;
     };
     
+    $scope.resetTree = function() {
+        $scope.newClassification.categories = [];
+    };
+    
     $scope.module = module;
     $scope.myOrgs = myOrgs;
     $scope.orgName = orgName;
