@@ -5,7 +5,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class ClassificationMgtTest extends NlmCdeBaseTest {
+public class ClassificationMgtTest extends BaseClassificationTest {
     private void searchNestedClassifiedCdes() {
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("classification.elements.elements.name:Epilepsy");
