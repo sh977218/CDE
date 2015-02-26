@@ -35,23 +35,6 @@ MongoLogger.prototype.log = function (level, msg, meta, callback) {
   
 exports.MongoLogger = MongoLogger;
 
-//MongoErrorLogger.prototype.log = function (level, msg, meta, cb) {
-//    try {
-//        var message = {
-//            message: msg
-//            , origin: meta.origin
-//            , stack: meta.stack || new Error().stack  
-//            , details: meta.details            
-//        };
-//        if (meta.request) message.request = exports.generateErrorLogRequest(meta.request);
-//        dbLogger.logError(message, function (err) {
-//            if (err) console.log("CANNOT LOG: ");  
-//        });
-//    } catch (e) {
-//        console.log("unable to log error to DB: ");
-//    }
-//};
-
 MongoErrorLogger.prototype.log = function (level, msg, meta, cb) {
     processDetails = function(details){
         if (typeof details === "string") return details;
