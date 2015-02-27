@@ -1,4 +1,4 @@
-var walker = require('walk').walk('./modules/system/public/js/controllers', { followLinks: false })
+var walker = require('walk').walk('./modules/cde/public/js/controllers', { followLinks: false })
     , fs = require('fs')
     
 ;
