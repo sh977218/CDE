@@ -1,4 +1,4 @@
-angular.module('resources')
+angular.module('resourcesCde', ['ngResource'])
     .factory('BoardSearch', function($resource) {
         return $resource('/listboards');
     })
