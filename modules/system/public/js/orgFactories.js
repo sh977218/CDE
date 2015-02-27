@@ -1,4 +1,4 @@
-angular.module('resources')
+angular.module('resources', ['ngResource'])
 .factory('OrgHelpers', function ($http) {
     return {    
         orgsDetailedInfo: {}
