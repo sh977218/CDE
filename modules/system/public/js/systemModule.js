@@ -1,29 +1,41 @@
-var cdeAppSystem = angular.module('cdeAppSystem', ['ElasticSearchResource', 'resourcesSystem', 'cdeAppForm', 'cdeAppCde', 'OrgFactories','classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman']).
+var systemModule = angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule','OrgFactories','classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman']).
     config(function($routeProvider) {
         $routeProvider.
         when('/', {redirectTo: '/cde/search'}).        
         when('/home', {controller: HomeCtrl, templateUrl:'/home'}).
+
+
+
+
+        
+        
+
+        //cde
         when('/cde/search', {controller: DEListCtrl, templateUrl: 'template/system/list'}).
-        when('/login', {controller: AuthCtrl, templateUrl:'/login'}).
-        when('/signup', {controller: AuthCtrl, templateUrl:'/signup'}).
-        when('/createCde', {controller: CreateCdeCtrl, templateUrl:'/createcde'}).
-        when('/deview', {controller: DEViewCtrl, templateUrl: '/deview'}).
-        when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
-        when('/orgaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/orgaccountmanagement'}).
-        when('/classificationmanagement', {controller: ClassificationManagementCtrl, templateUrl: '/template/system/classificationManagement'}).
-        when('/profile', {controller: ProfileCtrl, templateUrl: '/profile'}).
-        when('/myboards', {controller: MyBoardsCtrl, templateUrl: '/myboards'}).
-        when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
-        when('/boardList', {controller: BoardListCtrl, templateUrl: '/boardList'}).
-        when('/cdeSearchExport', {controller: DEListCtrl, templateUrl: '/exportCdeSearch'}).
-        when('/boardExport/:boardId', {controller: ExportCtrl, templateUrl: '/cde/public/html/boardExport.html'}).
-        when('/inbox', {controller: InboxCtrl, templateUrl: '/system/public/html/inbox.html'}).
-        when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
         when('/quickBoard', {controller: QuickBoardCtrl, templateUrl: '/quickBoard'}).
         when('/sdcview', {controller: SDCViewCtrl, templateUrl: '/sdcView'}).
+        when('/boardExport/:boardId', {controller: ExportCtrl, templateUrl: '/cde/public/html/boardExport.html'}).
+        when('/cdeSearchExport', {controller: DEListCtrl, templateUrl: '/exportCdeSearch'}).
+        when('/myboards', {controller: MyBoardsCtrl, templateUrl: '/myboards'}).
+        when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
+        when('/boardList', {controller: BoardListCtrl, templateUrl: '/boardList'}).   
+        when('/createCde', {controller: CreateCdeCtrl, templateUrl:'/createcde'}).
+        when('/deview', {controller: DEViewCtrl, templateUrl: '/deview'}).        
+        
+        //form
         when('/form/search', {controller: FormListCtrl, templateUrl: '/template/system/list'}).
         when('/createForm', {controller: CreateFormCtrl, templateUrl: '/template/form/createForm'}).
         when('/formView', {controller: FormViewCtrl, templateUrl: '/template/form/formView'}).
+        
+        //system
+        when('/login', {controller: AuthCtrl, templateUrl:'/login'}).
+        when('/signup', {controller: AuthCtrl, templateUrl:'/signup'}).
+        when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).        
+        when('/inbox', {controller: InboxCtrl, templateUrl: '/system/public/html/inbox.html'}).
+        when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
+        when('/orgaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/orgaccountmanagement'}).
+        when('/classificationmanagement', {controller: ClassificationManagementCtrl, templateUrl: '/template/system/classificationManagement'}).
+        when('/profile', {controller: ProfileCtrl, templateUrl: '/profile'}).                  
         when('/triggerClientException', {controller: TriggerClientExceptionCtrl, templateUrl: '/template/system/triggerClientException'}).
         otherwise({redirectTo:'/'});
     })
@@ -83,7 +95,7 @@ var cdeAppSystem = angular.module('cdeAppSystem', ['ElasticSearchResource', 'res
         };
     });
 
-cdeAppSystem.filter('placeholdEmpty', function() {
+systemModule.filter('placeholdEmpty', function() {
     return function(input) {
         if (!(input === undefined || input === null || input === "")) {
             return input;
@@ -93,7 +105,7 @@ cdeAppSystem.filter('placeholdEmpty', function() {
     };
 });
 
-cdeAppSystem.filter('bytes', function() {
+systemModule.filter('bytes', function() {
     return function(bytes, precision) {
             if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
             if (typeof precision === 'undefined') precision = 1;
@@ -103,7 +115,7 @@ cdeAppSystem.filter('bytes', function() {
     };
 });
 
-cdeAppSystem.factory('isAllowedModel', function (userResource) {
+systemModule.factory('isAllowedModel', function (userResource) {
     var isAllowedModel = {
     };
     
@@ -158,7 +170,7 @@ cdeAppSystem.factory('isAllowedModel', function (userResource) {
     return isAllowedModel;
 });
 
-cdeAppSystem.directive('diff', function () {
+systemModule.directive('diff', function () {
     return {
         restrict: 'AE'
         , scope: {
@@ -182,11 +194,11 @@ cdeAppSystem.directive('diff', function () {
     };
 });
 
-cdeAppSystem.config(['$compileProvider', function($compileProvider) {
+systemModule.config(['$compileProvider', function($compileProvider) {
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }]);
 
-cdeAppSystem.config(function($provide) {
+systemModule.config(function($provide) {
     $provide.decorator('uiSortableDirective', function($delegate) {
         var directive = $delegate[0];
         var link = directive.link;
@@ -237,7 +249,7 @@ angular.module("template/tabs/tab.html", []).run(["$templateCache", function($te
 	    "");
 	}]);
 
-cdeAppSystem.config(function($provide) {
+systemModule.config(function($provide) {
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector', function($delegate, $injector) {
         var previousException;
         return function(exception, cause) {

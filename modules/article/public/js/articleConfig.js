@@ -1,4 +1,4 @@
-cdeAppSystem.config(['$routeProvider',
+angular.module('articleModule', ['ngRoute']).config(
   function($routeProvider) {
     $routeProvider
       .when('/help/:helpPage', {
@@ -11,9 +11,8 @@ cdeAppSystem.config(['$routeProvider',
         controller: 'ArticleCtrl',
         controllerAs: 'article'
       });
-}]);
-
-cdeAppSystem.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$modal', 
+})
+.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$modal', 
         function ($routeParams, $http, $scope, $window, $modal) {
 
 
@@ -70,9 +69,9 @@ cdeAppSystem.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window
             }
         });          
     };
-}]);
+}])
 
-cdeAppSystem.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', function($scope, $modalInstance, $http) {
+.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', function($scope, $modalInstance, $http) {
 
     $scope.elt = {};
 
@@ -90,9 +89,9 @@ cdeAppSystem.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$ht
         $modalInstance.dismiss();
     };
 
-}]);
+}])
 
-cdeAppSystem.controller('ArticleCtrl', ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
+.controller('ArticleCtrl', ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
     this.destination = $routeParams.id;
     $scope.elt = {};
     $scope.elt.body = "<div ng-if='!elt'><h1 class='pt60 pb40 text-center'><i class='fa fa-spinner fa-spin'></i> Loading...</h1></div>";

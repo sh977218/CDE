@@ -1,4 +1,4 @@
-angular.module('cdeAppCde', ['resourcesCde', 'CdeMerge']);
+angular.module('cdeModule', ['resourcesCde', 'CdeMerge']);
 
 angular.module('resourcesCde', ['ngResource'])
     .factory('BoardSearch', function($resource) {
