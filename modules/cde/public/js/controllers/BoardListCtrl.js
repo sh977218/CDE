@@ -1,4 +1,4 @@
-systemModule.controller('BoardListCtrl', ['$scope', 'BoardSearch', function($scope, BoardSearch) {   
+angular.module('cdeModule').controller('BoardListCtrl', ['$scope', 'BoardSearch', function($scope, BoardSearch) {   
     $scope.search = {name: ""};
     $scope.currentPage = 1;
     $scope.pageSize = 10;

@@ -1,4 +1,4 @@
-systemModule.controller('ConceptsCtrl', ['$scope', '$modal', '$http', function($scope, $modal, $http) {
+angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$modal', '$http', function($scope, $modal, $http) {
     $scope.openNewConcept = function () {
         $modal.open({
           templateUrl: 'newConceptModalContent.html',

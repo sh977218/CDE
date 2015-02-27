@@ -1,4 +1,4 @@
- systemModule.controller('DEListCtrl', ['$scope', '$controller', 'TourContent', function($scope, $controller, TourContent) {
+angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', 'TourContent', function($scope, $controller, TourContent) {
     $scope.module = "cde";         
     $scope.dragSortableOptions = {
         connectWith: ".dragQuestions"

@@ -1,4 +1,4 @@
-systemModule.controller('MergeRequestCtrl', ['$scope', '$modal', '$window', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel', 'userResource', function($scope, $modal, $window, MergeRequest, DataElement, MergeCdes, isAllowedModel, userResource) {
+angular.module('cdeModule').controller('MergeRequestCtrl', ['$scope', '$modal', '$window', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel', 'userResource', function($scope, $modal, $window, MergeRequest, DataElement, MergeCdes, isAllowedModel, userResource) {
     $scope.openMergeModal = function(retiredIndex) {
         $scope.retiredIndex = retiredIndex;
         var modalInstance = $modal.open({

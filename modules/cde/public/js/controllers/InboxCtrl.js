@@ -1,4 +1,4 @@
-systemModule.controller('InboxCtrl', ['$scope', 'Mail', 'CdeList', function($scope, Mail, CdeList) {
+angular.module('cdeModule').controller('InboxCtrl', ['$scope', 'Mail', 'CdeList', function($scope, Mail, CdeList) {
     $scope.mailTypeReceived = "received";
     $scope.mailTypeSent = "sent";
     $scope.mailTypeArchived = "archived";

@@ -1,4 +1,4 @@
-systemModule.controller('MyBoardsCtrl', ['$scope', '$modal', '$http', 'Board', function($scope, $modal, $http, Board) {
+angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$modal', '$http', 'Board', function($scope, $modal, $http, Board) {
     $scope.removeBoard = function(index) {
         $http['delete']("/board/" + $scope.boards[index]._id).then(function (response) {
             $scope.addAlert("success", "Board removed");

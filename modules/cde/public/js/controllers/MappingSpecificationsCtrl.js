@@ -1,4 +1,4 @@
-systemModule.controller('MappingSpecificationsCtrl', ['$scope', '$modal', '$window', function($scope, $modal, $window) {
+angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '$modal', '$window', function($scope, $modal, $window) {
     $scope.openNewMappingSpecification = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newMappingSpecificationModalContent.html',
@@ -42,9 +42,9 @@ systemModule.controller('MappingSpecificationsCtrl', ['$scope', '$modal', '$wind
         }
     };
 
-};
+}]);
 
-function NewMappingSpecificationModalCtrl($scope, $modalInstance, $http, elt) {
+systemModule.controller('NewMappingSpecificationModalCtrl', ['$scope', '$modalInstance', '$http', 'elt', function($scope, $modalInstance, $http, elt) {
     $scope.elt = elt;
     $scope.newMappingSpecification = {};
     $scope.contentAutocompleteList = [];
@@ -64,5 +64,4 @@ function NewMappingSpecificationModalCtrl($scope, $modalInstance, $http, elt) {
     $scope.cancelCreate = function() {
         $modalInstance.dismiss("Cancel");
     };
-};
-]);
+}]);

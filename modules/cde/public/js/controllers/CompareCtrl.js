@@ -1,4 +1,4 @@
-systemModule.controller('CompareCtrl', ['$scope', 'CdeList', function($scope, CdeList) {
+angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'CdeList', function($scope, CdeList) {
     $scope.compareView = true;
     $scope.pvLimit = 30;
     
@@ -57,5 +57,4 @@ systemModule.controller('CompareCtrl', ['$scope', 'CdeList', function($scope, Cd
            });
         }
     }; 
-};
-]);
+}]);

@@ -1,4 +1,4 @@
-systemModule.controller('SaveCdeCtrl', ['$scope', '$modal', function($scope, $modal) {
+angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$modal', function($scope, $modal) {
     $scope.checkVsacId = function(elt) {
         $scope.loadValueSet();
         elt.unsaved = true;
@@ -114,5 +114,4 @@ systemModule.controller('SaveCdeCtrl', ['$scope', '$modal', function($scope, $mo
         $scope.stageElt($scope.elt);          
     };
     
-};
-]);
+}]);

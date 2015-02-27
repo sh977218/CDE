@@ -1,4 +1,4 @@
-systemModule.controller('BoardViewCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
+angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
     $scope.cdes = [];
         
     $scope.$watch('currentPage', function() {

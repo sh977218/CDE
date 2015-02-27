@@ -1,4 +1,4 @@
-systemModule.controller('LinkedFormsCtrl', ['$scope', '$controller', function($scope, $controller) {
+angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', '$controller', function($scope, $controller) {
     $scope.module = "form";   
 
     $scope.searchForm = {ftsearch: '"' + $scope.elt.tinyId + '"'};

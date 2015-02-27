@@ -1,4 +1,4 @@
-systemModule.controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'CdeDiff', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, CdeDiff, isAllowedModel, OrgHelpers, $rootScope, TourContent) {
+angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'CdeDiff', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, CdeDiff, isAllowedModel, OrgHelpers, $rootScope, TourContent) {
     $scope.module = 'cde';
     $scope.baseLink = '#/deview?cdeId=';
     $scope.eltLoaded = false;

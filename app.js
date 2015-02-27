@@ -161,7 +161,7 @@ express.response.render = function(view, module, msg) {
 
 try {
     var cdeModule = require(path.join(__dirname, './modules/cde/node-js/app.js'));
-    cdeModule.init(app, daoManager);
+    angular.module('cdeModule').init(app, daoManager);
 
     var systemModule = require(path.join(__dirname, './modules/system/node-js/app.js'));
     systemModule.init(app, daoManager);

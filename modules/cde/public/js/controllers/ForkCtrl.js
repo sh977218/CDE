@@ -1,4 +1,4 @@
-systemModule.controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', function($scope, $http, $modal, $window, userResource) {
+angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', function($scope, $http, $modal, $window, userResource) {
     
     var getForks = function() {
         $http.get("/forks/" + $scope.elt._id).then(function(result) {

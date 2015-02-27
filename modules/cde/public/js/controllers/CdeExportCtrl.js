@@ -1,4 +1,4 @@
-systemModule.controller('CdeExportCtrl', ['$scope', 'Elastic', function($scope, Elastic) {
+angular.module('cdeModule').controller('CdeExportCtrl', ['$scope', 'Elastic', function($scope, Elastic) {
     $scope.filter = Elastic.buildElasticQueryPre($scope);
     var settings = Elastic.buildElasticQuerySettings($scope);
     Elastic.buildElasticQuery(settings, function(query) {
