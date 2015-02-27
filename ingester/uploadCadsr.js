@@ -95,7 +95,7 @@ var doFile = function (cadsrFile, fileCb) {
             , properties: [
                 {key: "caDSR_Context", value: de.CONTEXTNAME[0]}
                 , {key: "caDSR_Datatype", value: de.VALUEDOMAIN[0].Datatype[0]}
-                , {key: "caDSR_Original", value: builder.buildObject(de).toString()}
+//                , {key: "caDSR_Original", value: builder.buildObject(de).toString()}
             ]
             };
             if (cde.registrationState.registrationStatus === "Application" || cde.registrationState.registrationStatus === "Proposed") {
