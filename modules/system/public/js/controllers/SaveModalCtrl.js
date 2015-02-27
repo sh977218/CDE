@@ -1,4 +1,4 @@
-var SaveModalCtrl = function($scope, $modalInstance, elt) {
+function SaveModalCtrl($scope, $modalInstance, elt) {
     $scope.elt = elt;
 
     $scope.ok = function() {

@@ -1,4 +1,4 @@
-var MappingSpecificationsCtrl = function ($scope, $modal, $window) {
+function MappingSpecificationsCtrl($scope, $modal, $window) {
     $scope.openNewMappingSpecification = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newMappingSpecificationModalContent.html',

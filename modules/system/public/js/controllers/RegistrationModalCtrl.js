@@ -1,4 +1,4 @@
-var RegistrationModalCtrl = function($scope, $modalInstance, $http, elt, siteAdmin) {
+function RegistrationModalCtrl($scope, $modalInstance, $http, elt, siteAdmin) {
     $scope.elt = elt;
     $scope.validRegStatuses = ['Incomplete', 'Candidate', 'Retired'];
     

@@ -1,4 +1,4 @@
-var PropertiesCtrl = function ($scope, $modal, $window, $timeout) {
+function PropertiesCtrl($scope, $modal, $window, $timeout) {
     $scope.openNewProperty = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newPropertyModalContent.html',

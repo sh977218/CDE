@@ -1,4 +1,4 @@
-var IdsCtrl = function ($scope, $modal, $window) {
+function IdsCtrl($scope, $modal, $window) {
     $scope.openNewId = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newIdModalContent.html',
@@ -34,7 +34,7 @@ var IdsCtrl = function ($scope, $modal, $window) {
             });        
         }
     };
-};
+}
 
 function NewIdModalCtrl($scope, $modalInstance, elt) {
     $scope.elt = elt;
