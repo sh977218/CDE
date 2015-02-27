@@ -165,9 +165,9 @@ var doFile = function (cadsrFile, fileCb) {
             }
             
             
-            if (de.VALUEDOMAIN[0].ValueDomainType === 'Enumerated') {
+            if (de.VALUEDOMAIN[0].ValueDomainType[0] === 'Enumerated') {
                 cde.valueDomain.datatype = "Value List";
-                cde.valueDomain.datatypeValueList = {datatype: dev.VALUEDOMAIN[0].Datatype[0]};
+                cde.valueDomain.datatypeValueList = {datatype: de.VALUEDOMAIN[0].Datatype[0]};
             }
             
             if (de.VALUEDOMAIN[0].UnitOfMeasure[0].length > 0) {
