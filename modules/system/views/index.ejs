@@ -84,11 +84,11 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li ng-class="{ active: isPageActive('/cde/search')}"><a href="/#/cde/search">CDEs</a></li>
+                            <li data-toggle="collapse" data-target=".navbar-collapse" ng-class="{ active: isPageActive('/cde/search')}"><a href="/#/cde/search">CDEs</a></li>
                                                        
-                            <% if (config.modules.forms) { %><li ng-class="{ active: isPageActive('/form/search')}"><a href="/#/form/search">Forms</a></li> <% } %>
+                            <% if (config.modules.forms) { %><li data-toggle="collapse" data-target=".navbar-collapse" ng-class="{ active: isPageActive('/form/search')}"><a href="/#/form/search">Forms</a></li> <% } %>
                             
-                            <li ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' class="dropdown" tabindex="0">    
+                            <li data-toggle="collapse" data-target=".navbar-collapse" ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' class="dropdown" tabindex="0">    
                                 <a class="dropdown-toggle" data-toggle="dropdown-c" href="#" id="dropdownMenu1" tabindex="-1" title="Boards" aria-label="Boards">Boards<span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="group" aria-labelledby="dropdownMenu1" tabindex="0" aria-expanded="true">
                                     <li><a href="#/boardList">Public Boards</a></li>                                    
@@ -96,11 +96,11 @@
                                 </ul>
                             </li>   
                            
-                            <li ng-class="{ active: isPageActive('/boardList')}" ng-show='!user._id' class="dropdown">    
+                            <li data-toggle="collapse" data-target=".navbar-collapse" ng-class="{ active: isPageActive('/boardList')}" ng-show='!user._id' class="dropdown">    
                                 <a href="#/boardList" id="boardsMenu">Boards</a>
                             </li>                            
                             
-                            <li ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}" ng-show='isOrgCurator()' class="dropdown" tabindex="0">    
+                            <li data-toggle="collapse" data-target=".navbar-collapse" ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}" ng-show='isOrgCurator()' class="dropdown" tabindex="0">    
                                 <a class="dropdown-toggle" data-toggle="dropdown-c" href="#" id="dropdownMenu2" tabindex="-1" title="Create" aria-label="Create">Create<span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2" tabindex="0">
                                     <li><a href="#/createCde">CDE</a></li>
@@ -108,7 +108,7 @@
                                 </ul>
                             </li>                            
                             
-                            <li ng-class="{ active: isPageActive('/quickBoard')}">
+                            <li data-toggle="collapse" data-target=".navbar-collapse" ng-class="{ active: isPageActive('/quickBoard')}">
                                 <a class="navbar-link" href="#/quickBoard">
                                     Quick Board (
                                         <span ng-switch="quickBoard.length">
@@ -119,7 +119,7 @@
                                     )
                                 </a>                          
                             </li>
-                            <li ng-class="{ active: isPageActive('/help')}">
+                            <li data-toggle="collapse" data-target=".navbar-collapse" ng-class="{ active: isPageActive('/help')}">
                                 <a class="dropdown-toggle" data-toggle="dropdown-c" href="#" id="dropdownMenu_help" tabindex="-1" title="Help" aria-label="Help">Help<span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu_help" tabindex="0">
                                     <li><a href="#/home">About</a></li>
@@ -130,17 +130,17 @@
                         </ul>
                         <ul class="nav navbar-nav navbar-right" data-userloaded="loaded-{{user.userLoaded}}">
                             <a ng-cloak ng-if="userHasMail" title="New messages" href="#/inbox"><i id="incomingMessage" class="fa fa-envelope text-danger"></i></a>
-                            <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="user.visitor"><a href="#/login" id="login_link" tabindex="0" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a></li>
+                            <li data-toggle="collapse" data-target=".navbar-collapse" class="login" ng-class="{ active: isPageActive('/login')}" ng-show="user.visitor"><a href="#/login" id="login_link" tabindex="0" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a></li>
                             <li class="login" ng-show="user._id" tabindex="0">                                                               
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="username_link" tabindex="-1" title="{{user.username}}" aria-label="{{user.username}}"><span ng-bind="user.username"></span><span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="username_link" tabindex="0">
-                                    <li ng-show='user._id'><a href="#/profile">Profile</a></li>
-                                    <li ng-show='inboxVisible()'><a href="#/inbox">Inbox</a></li>
-                                    <li ng-show="isOrgCurator()"><a href="#/classificationmanagement">Classifications</a></li>
-                                    <li ng-show="isOrgAdmin() && !user.siteAdmin"><a href="#/orgaccountmanagement">Account Management</a></li>
-                                    <li ng-show='user._id && user.siteAdmin'><a href="#/siteaccountmanagement">Site Management</a></li>
-                                    <li ng-show='user._id && user.siteAdmin'><a href="#/siteAudit">Audit</a></li>
-                                    <li ng-show='user._id'><a href="/logout">Log Out</a></li>                                         
+                                    <li data-toggle="collapse" data-target=".navbar-collapse" ng-show='user._id'><a href="#/profile">Profile</a></li>
+                                    <li data-toggle="collapse" data-target=".navbar-collapse" ng-show='inboxVisible()'><a href="#/inbox">Inbox</a></li>
+                                    <li data-toggle="collapse" data-target=".navbar-collapse" ng-show="isOrgCurator()"><a href="#/classificationmanagement">Classifications</a></li>
+                                    <li data-toggle="collapse" data-target=".navbar-collapse" ng-show="isOrgAdmin() && !user.siteAdmin"><a href="#/orgaccountmanagement">Account Management</a></li>
+                                    <li data-toggle="collapse" data-target=".navbar-collapse" ng-show='user._id && user.siteAdmin'><a href="#/siteaccountmanagement">Site Management</a></li>
+                                    <li data-toggle="collapse" data-target=".navbar-collapse" ng-show='user._id && user.siteAdmin'><a href="#/siteAudit">Audit</a></li>
+                                    <li data-toggle="collapse" data-target=".navbar-collapse" ng-show='user._id'><a href="/logout">Log Out</a></li>                                         
                                 </ul>
                             </li>
                         </ul>
