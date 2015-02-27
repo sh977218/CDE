@@ -1,4 +1,4 @@
-angular.module('resources')
+angular.module('resources', ['ngResource'])
 .factory('Elastic', function($http, userResource) {
     return {
         buildElasticQueryPre: function (scope) {

@@ -1,6 +1,6 @@
 //TODO - refactor all CDE related services into one factory
 // with prospective methods.
-angular.module('resources', ['ngResource'])
+angular.module('resources')
     .factory('BoardSearch', function($resource) {
         return $resource('/listboards');
     })
