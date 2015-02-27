@@ -1,4 +1,4 @@
-cdeApp.config(['$routeProvider',
+cdeAppSystem.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider
       .when('/help/:helpPage', {
@@ -13,7 +13,7 @@ cdeApp.config(['$routeProvider',
       });
 }]);
 
-cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$modal', 
+cdeAppSystem.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$modal', 
         function ($routeParams, $http, $scope, $window, $modal) {
 
 
@@ -72,7 +72,7 @@ cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$m
     };
 }]);
 
-cdeApp.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', function($scope, $modalInstance, $http) {
+cdeAppSystem.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', function($scope, $modalInstance, $http) {
 
     $scope.elt = {};
 
@@ -92,19 +92,16 @@ cdeApp.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', f
 
 }]);
 
-cdeApp.controller('ArticleCtrl', ['$routeParams', '$http', '$scope', 
-function ($routeParams, $http, $scope) {
-
+cdeAppSystem.controller('ArticleCtrl', ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
     this.destination = $routeParams.id;
     $scope.elt = {};
     $scope.elt.body = "<div ng-if='!elt'><h1 class='pt60 pb40 text-center'><i class='fa fa-spinner fa-spin'></i> Loading...</h1></div>";
     $http.get("/article/id/" + this.destination).
-            success(function (result) {
-                $scope.elt = result;
-            }).
-            error(function (result) {
-                $scope.elt = {body: "<h1>404 - Page Not Found. You have reached the unreachable.</h1>"};
-            });
-    
+        success(function (result) {
+            $scope.elt = result;
+        }).
+        error(function (result) {
+            $scope.elt = {body: "<h1>404 - Page Not Found. You have reached the unreachable.</h1>"};
+        });    
 }]);
 

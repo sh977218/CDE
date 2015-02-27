@@ -1,4 +1,4 @@
-cdeApp.controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$modal', function($scope, $http, Mail, $modal) {
+cdeAppSystem.controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$modal', function($scope, $http, Mail, $modal) {
     $scope.approveComment = function(msg) {
         $http.post('/comments/'+msg.typeCommentApproval.element.eltType+'/approve', msg.typeCommentApproval).
             success(function(data, status, headers, config) {
@@ -36,7 +36,7 @@ cdeApp.controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$modal', fu
     
 }]);
 
-cdeApp.controller('ApproveUserModalCtrl', function ($scope, $modalInstance) {
+cdeAppSystem.controller('ApproveUserModalCtrl', function ($scope, $modalInstance) {
     $scope.ok = function () {
         $modalInstance.close();
     };

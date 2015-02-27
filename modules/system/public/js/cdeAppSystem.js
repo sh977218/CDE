@@ -1,4 +1,4 @@
-var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman']).
+var cdeAppSystem = angular.module('cdeAppSystem', ['resources', 'classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman']).
     config(function($routeProvider) {
         $routeProvider.
         when('/', {redirectTo: '/cde/search'}).        
@@ -83,7 +83,7 @@ var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui
         };
     });
 
-cdeApp.filter('placeholdEmpty', function() {
+cdeAppSystem.filter('placeholdEmpty', function() {
     return function(input) {
         if (!(input === undefined || input === null || input === "")) {
             return input;
@@ -93,7 +93,7 @@ cdeApp.filter('placeholdEmpty', function() {
     };
 });
 
-cdeApp.filter('bytes', function() {
+cdeAppSystem.filter('bytes', function() {
     return function(bytes, precision) {
             if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
             if (typeof precision === 'undefined') precision = 1;
@@ -103,7 +103,7 @@ cdeApp.filter('bytes', function() {
     };
 });
 
-cdeApp.factory('isAllowedModel', function (userResource) {
+cdeAppSystem.factory('isAllowedModel', function (userResource) {
     var isAllowedModel = {
     };
     
@@ -158,7 +158,7 @@ cdeApp.factory('isAllowedModel', function (userResource) {
     return isAllowedModel;
 });
 
-cdeApp.directive('diff', function () {
+cdeAppSystem.directive('diff', function () {
     return {
         restrict: 'AE'
         , scope: {
@@ -182,11 +182,11 @@ cdeApp.directive('diff', function () {
     };
 });
 
-cdeApp.config(['$compileProvider', function($compileProvider) {
+cdeAppSystem.config(['$compileProvider', function($compileProvider) {
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }]);
 
-cdeApp.config(function($provide) {
+cdeAppSystem.config(function($provide) {
     $provide.decorator('uiSortableDirective', function($delegate) {
         var directive = $delegate[0];
         var link = directive.link;
@@ -237,7 +237,7 @@ angular.module("template/tabs/tab.html", []).run(["$templateCache", function($te
 	    "");
 	}]);
 
-cdeApp.config(function($provide) {
+cdeAppSystem.config(function($provide) {
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector', function($delegate, $injector) {
         var previousException;
         return function(exception, cause) {
