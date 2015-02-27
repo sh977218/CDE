@@ -6,7 +6,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class CdeCreateTest extends NlmCdeBaseTest {
+public class CdeCreateTest extends BaseClassificationTest {
    
     public void createBasicCde(String name, String definition, String org, String classification, String subclassification) {
         goToCdeSearch();
@@ -32,10 +32,10 @@ public class CdeCreateTest extends NlmCdeBaseTest {
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
         textPresent("Please select at least one classification");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
-        classify("CTEP", "DISEASE", "Gynecologic");
+        addClassificationMethod(new String[]{"CTEP", "DISEASE", "Gynecologic"});
         textPresent("Please select at least one classification owned by NINDS");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
-        classify("NINDS", "Population", "Adult");
+        addClassificationMethod(new String[]{"NINDS", "Population", "Adult"});
         textNotPresent("Please");
         Assert.assertTrue(findElement(By.id("submit")).isEnabled());
     }
@@ -52,15 +52,17 @@ public class CdeCreateTest extends NlmCdeBaseTest {
 
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("Select One");
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
-        
-        classify("NINDS", "Disease", "Traumatic Brain Injury");
+
+        addClassificationMethod(new String[]{"NINDS", "Disease", "Traumatic Brain Injury"});
         modalGone();
         textPresent("Traumatic Brain Injury");
         
         deleteClassification("classification-Disease,Traumatic Brain Injury");
 
-        classify("NINDS", "Disease", "Headache");
-   
+        addClassificationMethod(new String[]{"NINDS", "Disease", "Headache"});        
+        
+        checkRecentlyUsedClassifications(new String[]{"NINDS", "Disease", "Headache"});
+        
         findElement(By.id("submit")).click();
         hangon(1);
 

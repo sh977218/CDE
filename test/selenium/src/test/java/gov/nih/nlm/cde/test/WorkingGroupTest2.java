@@ -3,7 +3,7 @@ package gov.nih.nlm.cde.test;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class WorkingGroupTest2  extends NlmCdeBaseTest {
+public class WorkingGroupTest2  extends BaseClassificationTest {
 
     @Test
     public void wgSeesOtherWg() {

@@ -188,21 +188,20 @@ angular.module('resources', ['ngResource'])
         return this;
     })
     .directive('ngVersionAvailable', ['$http', function($http) {
-      return {
-        require: 'ngModel',
-        link: function(scope, ele, attrs, ctrl) {
-          scope.$watch(attrs.ngModel, function() {
-                $http({
-                  method: 'GET',
-                  url: '/debytinyid/' + scope.elt.tinyId + "/" + scope.elt.version
-                }).success(function(data, status, headers, cfg) {
-                  ctrl.$setValidity('unique', data === "");
-                }).error(function(data, status, headers, cfg) {
-                  ctrl.$setValidity('unique', false);
+        return {
+            require: 'ngModel',
+            link: function(scope, ele, attrs, ctrl) {
+                scope.$watch(attrs.ngModel, function() {
+                    $http({
+                        method: 'GET',
+                        url: '/debytinyid/' + scope.elt.tinyId + "/" + scope.elt.version
+                    }).success(function(data, status, headers, cfg) {
+                        ctrl.$setValidity('unique', data === "");
+                    }).error(function(data, status, headers, cfg) {
+                        ctrl.$setValidity('unique', false);
+                    });
                 });
-          });
-        }
-      };
+            }
+        };
     }])
 ;    
-    

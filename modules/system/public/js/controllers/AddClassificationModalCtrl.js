@@ -1,4 +1,4 @@
-function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, module, myOrgs, cde, orgName, pathArray, addClassification, localStorageService, userResource) {
+function AddClassificationModalCtrl($scope, $timeout, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, module, myOrgs, cde, orgName, pathArray, addClassification, localStorageService, userResource) {
     $scope.viewType = {
         byClassTree : true
         , byRecentlyAdded : false
@@ -53,6 +53,7 @@ function AddClassificationModalCtrl($scope, $modalInstance, ClassificationTree, 
         deepCopy.categories.push(lastLeafName);        
         addClassification.addClassification(deepCopy);        
         $scope.insertToClassificationHistory(deepCopy);
+        $timeout(deepCopy.categories.pop, 0);    
     };     
     
     $scope.selectPriorClassification = function (classif) {

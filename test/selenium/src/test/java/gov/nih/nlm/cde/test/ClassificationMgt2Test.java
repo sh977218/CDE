@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class ClassificationMgt2Test extends NlmCdeBaseTest {
+public class ClassificationMgt2Test extends BaseClassificationTest {
     @Test
     public void reclassify() {
         String org = "NINDS";
