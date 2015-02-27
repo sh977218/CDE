@@ -1,4 +1,4 @@
-systemModule.controller('VersionCtrl', ['$scope', '$modal', '$window', 'userResource', function($scope, $modal, $window, userResource) { 
+angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$window', 'userResource', function($scope, $modal, $window, userResource) { 
 
     $scope.stageElt = function(elt) {
         elt.unsaved = true;

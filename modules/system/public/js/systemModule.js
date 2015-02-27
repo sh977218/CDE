@@ -1,17 +1,17 @@
-var systemModule = angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule','OrgFactories','classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman']).
+angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule','OrgFactories','classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman']).
     config(function($routeProvider) {
         $routeProvider.
         when('/', {redirectTo: '/cde/search'}).        
-        when('/home', {controller: HomeCtrl, templateUrl:'/home'}).
-        when('/login', {controller: AuthCtrl, templateUrl:'/login'}).
-        when('/signup', {controller: AuthCtrl, templateUrl:'/signup'}).
-        when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).        
-        when('/inbox', {controller: InboxCtrl, templateUrl: '/system/public/html/inbox.html'}).
-        when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
-        when('/orgaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/orgaccountmanagement'}).
-        when('/classificationmanagement', {controller: ClassificationManagementCtrl, templateUrl: '/template/system/classificationManagement'}).
-        when('/profile', {controller: ProfileCtrl, templateUrl: '/profile'}).                  
-        when('/triggerClientException', {controller: TriggerClientExceptionCtrl, templateUrl: '/template/system/triggerClientException'}).
+        when('/home', {controller: 'HomeCtrl', templateUrl:'/home'}).
+        when('/login', {controller: 'AuthCtrl', templateUrl:'/login'}).
+        when('/signup', {controller: 'AuthCtrl', templateUrl:'/signup'}).
+        when('/siteAudit', {controller: 'SiteAuditCtrl', templateUrl: '/siteaudit'}).        
+        when('/inbox', {controller: 'InboxCtrl', templateUrl: '/system/public/html/inbox.html'}).
+        when('/siteaccountmanagement', {controller: 'AccountManagementCtrl', templateUrl: '/siteaccountmanagement'}).
+        when('/orgaccountmanagement', {controller: 'AccountManagementCtrl', templateUrl: '/orgaccountmanagement'}).
+        when('/classificationmanagement', {controller: 'ClassificationManagementCtrl', templateUrl: '/template/system/classificationManagement'}).
+        when('/profile', {controller: 'ProfileCtrl', templateUrl: '/profile'}).                  
+        when('/triggerClientException', {controller: 'TriggerClientExceptionCtrl', templateUrl: '/template/system/triggerClientException'}).
         otherwise({redirectTo:'/'});
     })
     .directive('inlineEdit', function() {
@@ -70,7 +70,7 @@ var systemModule = angular.module('systemModule', ['ElasticSearchResource', 'res
         };
     });
 
-systemModule.filter('placeholdEmpty', function() {
+angular.module('systemModule').filter('placeholdEmpty', function() {
     return function(input) {
         if (!(input === undefined || input === null || input === "")) {
             return input;
@@ -80,7 +80,7 @@ systemModule.filter('placeholdEmpty', function() {
     };
 });
 
-systemModule.filter('bytes', function() {
+angular.module('systemModule').filter('bytes', function() {
     return function(bytes, precision) {
             if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
             if (typeof precision === 'undefined') precision = 1;
@@ -90,7 +90,7 @@ systemModule.filter('bytes', function() {
     };
 });
 
-systemModule.factory('isAllowedModel', function (userResource) {
+angular.module('systemModule').factory('isAllowedModel', function (userResource) {
     var isAllowedModel = {
     };
     
@@ -145,7 +145,7 @@ systemModule.factory('isAllowedModel', function (userResource) {
     return isAllowedModel;
 });
 
-systemModule.directive('diff', function () {
+angular.module('systemModule').directive('diff', function () {
     return {
         restrict: 'AE'
         , scope: {
@@ -169,11 +169,11 @@ systemModule.directive('diff', function () {
     };
 });
 
-systemModule.config(['$compileProvider', function($compileProvider) {
+angular.module('systemModule').config(['$compileProvider', function($compileProvider) {
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }]);
 
-systemModule.config(function($provide) {
+angular.module('systemModule').config(function($provide) {
     $provide.decorator('uiSortableDirective', function($delegate) {
         var directive = $delegate[0];
         var link = directive.link;
@@ -224,7 +224,7 @@ angular.module("template/tabs/tab.html", []).run(["$templateCache", function($te
 	    "");
 	}]);
 
-systemModule.config(function($provide) {
+angular.module('systemModule').config(function($provide) {
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector', function($delegate, $injector) {
         var previousException;
         return function(exception, cause) {

@@ -1,4 +1,4 @@
-systemModule.controller('AuthCtrl', ['$scope', 'Auth', '$window', '$http', 'userResource', function($scope, Auth, $window, $http, userResource) {
+angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$window', '$http', 'userResource', function($scope, Auth, $window, $http, userResource) {
     
     $scope.getCsrf = function() {
         $http.get('/csrf').then(function(res) {

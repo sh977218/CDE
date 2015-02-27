@@ -1,4 +1,4 @@
-systemModule.controller('IdsCtrl', ['$scope', '$modal', '$window', function($scope, $modal, $window) {
+angular.module('systemModule').controller('IdsCtrl', ['$scope', '$modal', '$window', function($scope, $modal, $window) {
     $scope.openNewId = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newIdModalContent.html',
@@ -36,7 +36,7 @@ systemModule.controller('IdsCtrl', ['$scope', '$modal', '$window', function($sco
     };
 }]);
 
-systemModule.controller('NewIdModalCtrl', ['$scope', '$modalInstance', 'elt', function($scope, $modalInstance, elt) {
+angular.module('systemModule').controller('NewIdModalCtrl', ['$scope', '$modalInstance', 'elt', function($scope, $modalInstance, elt) {
     $scope.elt = elt;
     $scope.newId = {};
 

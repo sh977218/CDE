@@ -1,4 +1,4 @@
- systemModule.controller('UsersMgtCtrl', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+ angular.module('systemModule').controller('UsersMgtCtrl', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
     $scope.search = {username: ""};
 
     $scope.searchUsers = function() {

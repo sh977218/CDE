@@ -1,4 +1,4 @@
-systemModule.controller('DailyUsageCtrl', ['$scope', '$http', function($scope, $http) {
+angular.module('systemModule').controller('DailyUsageCtrl', ['$scope', '$http', function($scope, $http) {
     
     $scope.entryLimit = 50;
     

@@ -1,4 +1,4 @@
-systemModule.controller('PropertiesCtrl', ['$scope', '$modal', '$window', '$timeout', function($scope, $modal, $window, $timeout) {
+angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal', '$window', '$timeout', function($scope, $modal, $window, $timeout) {
     $scope.openNewProperty = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newPropertyModalContent.html',
@@ -58,7 +58,7 @@ systemModule.controller('PropertiesCtrl', ['$scope', '$modal', '$window', '$time
 
 }]);
 
-systemModule.controller('NewPropertyModalCtrl', ['$scope', '$modalInstance', '$http','module', 'elt', function($scope, $modalInstance, $http, module, elt) {
+angular.module('systemModule').controller('NewPropertyModalCtrl', ['$scope', '$modalInstance', '$http','module', 'elt', function($scope, $modalInstance, $http, module, elt) {
     $scope.elt = elt;
     $scope.newProperty = {};
     $scope.autocompleteList = [];

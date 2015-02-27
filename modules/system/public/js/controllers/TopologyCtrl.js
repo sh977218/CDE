@@ -1,4 +1,4 @@
-systemModule.controller('TopologyCtrl', ['$scope', '$http', function($scope, $http) {
+angular.module('systemModule').controller('TopologyCtrl', ['$scope', '$http', function($scope, $http) {
 
     $scope.textContent = "No Content"
 

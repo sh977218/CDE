@@ -164,7 +164,7 @@ try {
     angular.module('cdeModule').init(app, daoManager);
 
     var systemModule = require(path.join(__dirname, './modules/system/node-js/app.js'));
-    systemModule.init(app, daoManager);
+    angular.module('systemModule').init(app, daoManager);
 
     var formModule = require(path.join(__dirname, './modules/form/node-js/app.js'));
     formModule.init(app, daoManager);

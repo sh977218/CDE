@@ -1,4 +1,4 @@
-systemModule.controller('ClassificationManagementCtrl', ['$scope', '$http', '$modal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', function($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource) {
+angular.module('systemModule').controller('ClassificationManagementCtrl', ['$scope', '$http', '$modal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', function($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource) {
     $scope.module = "cde";
     $scope.classifSubEltPage = '/system/public/html/classif-elt-mgt.html';
         
@@ -176,7 +176,7 @@ systemModule.controller('ClassificationManagementCtrl', ['$scope', '$http', '$mo
     };    
 }]);
 
-systemModule.controller('RenameClassificationModalCtrl', ['$scope', '$modalInstance', 'classifName', function($scope, $modalInstance, classifName) {
+angular.module('systemModule').controller('RenameClassificationModalCtrl', ['$scope', '$modalInstance', 'classifName', function($scope, $modalInstance, classifName) {
     $scope.classifName = classifName;
     $scope.close = function(newname) {
         $modalInstance.close(newname);

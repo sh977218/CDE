@@ -1,4 +1,4 @@
-systemModule.controller('AuditCtrl', ['$scope', function($scope) {
+angular.module('systemModule').controller('AuditCtrl', ['$scope', function($scope) {
     $scope.openHistory = function () {
         var modalInstance = $modal.open({
           templateUrl: 'saveCdeModalContent.html',

@@ -23,7 +23,7 @@ angular.module('cdeModule').controller('MergeApproveCtrl', ['$scope', '$modal', 
     }; 
 }]);
 
-systemModule.controller('MergeApproveModalCtrl', ['$scope', '$modalInstance', 'elt', 'user', function($scope, $modalInstance, elt, user) {
+angular.module('systemModule').controller('MergeApproveModalCtrl', ['$scope', '$modalInstance', 'elt', 'user', function($scope, $modalInstance, elt, user) {
     $scope.elt = elt;
     $scope.user = user;
     $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Retired'];

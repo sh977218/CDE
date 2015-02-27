@@ -1,4 +1,4 @@
-systemModule.controller('AuditErrorListCtrl', ['$scope', '$http', function($scope, $http) {
+angular.module('systemModule').controller('AuditErrorListCtrl', ['$scope', '$http', function($scope, $http) {
     $scope.errors = [];
     $scope.skip = 0;
     $scope.limit = 10;

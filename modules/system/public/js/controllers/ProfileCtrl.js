@@ -1,4 +1,4 @@
-systemModule.controller('ProfileCtrl', ['$scope', 'ViewingHistory', '$timeout', '$http', 'userResource', function($scope, ViewingHistory, $timeout, $http, userResource) {               
+angular.module('systemModule').controller('ProfileCtrl', ['$scope', 'ViewingHistory', '$timeout', '$http', 'userResource', function($scope, ViewingHistory, $timeout, $http, userResource) {               
     ViewingHistory.getCdes({start: 0}, function(cdes) {
         $scope.cdes = cdes;
     });

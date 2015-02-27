@@ -1,4 +1,4 @@
-systemModule.controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$modal', function($scope, $http, Mail, $modal) {
+angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$modal', function($scope, $http, Mail, $modal) {
     $scope.approveComment = function(msg) {
         $http.post('/comments/'+msg.typeCommentApproval.element.eltType+'/approve', msg.typeCommentApproval).
             success(function(data, status, headers, config) {
@@ -36,7 +36,7 @@ systemModule.controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$moda
     
 }]);
 
-systemModule.controller('ApproveUserModalCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+angular.module('systemModule').controller('ApproveUserModalCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
     $scope.ok = function () {
         $modalInstance.close();
     };

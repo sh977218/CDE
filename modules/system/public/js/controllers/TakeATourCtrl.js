@@ -1,4 +1,4 @@
-systemModule.controller('TakeATourCtrl', ['$scope', 'TourContent', function($scope, TourContent) {  
+angular.module('systemModule').controller('TakeATourCtrl', ['$scope', 'TourContent', function($scope, TourContent) {  
     
     TourContent.stop = function() {
         if ($scope.tour)

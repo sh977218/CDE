@@ -1,2 +1,2 @@
- systemModule.controller('SiteAuditCtrl ', ['$scope', function($scope) {
+ angular.module('systemModule').controller('SiteAuditCtrl ', ['$scope', function($scope) {
  }]);
