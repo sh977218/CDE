@@ -1,9 +1,9 @@
-var walker = require('walk').walk('./modules/cde/public/js/controllers', { followLinks: false })
+var walker = require('walk').walk('./modules/form/public/js/controllers', { followLinks: false })
     , fs = require('fs')
     
 ;
 
-var moduleName = "systemModule";
+var moduleName = "angular.module('formModule')";
 
 walker.on('file', function(root, stat, next) {
     var filePath = root + '/' + stat.name;

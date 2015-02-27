@@ -1,4 +1,4 @@
-function ClassifyFormCdesModalCtrl($scope, userOrgs, ClassificationTree, Organization, $modalInstance, addClassification) {
+angular.module('formModule').controller('ClassifyFormCdesModalCtrl', ['$scope', 'userOrgs', 'ClassificationTree', 'Organization', '$modalInstance', 'addClassification', function($scope, userOrgs, ClassificationTree, Organization, $modalInstance, addClassification) {
     $scope.classificationType = "elt";
     $scope.newClassification = { orgName: userOrgs[0], categories: [], formId: 0 };
     $scope.classTree = ClassificationTree;
@@ -25,4 +25,4 @@ function ClassifyFormCdesModalCtrl($scope, userOrgs, ClassificationTree, Organiz
         deepCopy.categories.push(lastLeafName);        
         addClassification.addClassification(deepCopy);        
     };      
-}
+}]);

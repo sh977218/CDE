@@ -1,4 +1,4 @@
-function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource) {
+angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource', function($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource) {
     $scope.module = "form";
     $scope.baseLink = '#/formView?_id=';
     $scope.addCdeMode = false;
@@ -230,4 +230,4 @@ function FormViewCtrl($scope, $routeParams, Form, isAllowedModel, $modal, BulkCl
         if (languageMode == 'conjuction') return ["AND", "OR"];
         return [];
     };
-}
+}]);
