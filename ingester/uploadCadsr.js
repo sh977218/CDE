@@ -11,9 +11,9 @@ var fs = require('fs'),
 
 var parser = new xml2js.Parser();
 
-var cadsrFile = process.argv[2];
-if (!cadsrFile) {
-    console.log("missing cadsrFile arg");
+var cadsrFolder = process.argv[2];
+if (!cadsrFolder) {
+    console.log("missing cadsrFolder arg");
     process.exit(1);
 }
 
@@ -41,29 +41,38 @@ setTimeout(function() {
     mongo_data_system.orgByName("NCI", function(stewardOrg) {
         nciOrg = stewardOrg; 
         if (!nciOrg) {
-            console.log("init NCI")
             nciOrg = {name: "NCI", classifications: []};
         }
     });
-}, 100);
+}, 1000);
 
-setTimeout(function() {
-    fs.readdir(promisDir + "/forms", function(err, files) {
-        if (err) {
-            console.log("Cant read form dir." + err);
-            process.exit(1);
-        }
-        async.each(files, function(cadsrFile, cb) {
-            doFile(cadsrFile, cb);
-        }, function(err) {
-            console.log("All files finished.");
+//setTimeout(function() {
+    if (fs.lstatSync(cadsrFolder).isDirectory()) {
+        fs.readdir(cadsrFolder, function(err, files) {
+            if (err) {
+                console.log("Cant read folder dir." + err);
+                process.exit(1);
+            }
+            async.eachSeries(files, function(cadsrFile, cb) {
+                doFile(cadsrFolder + cadsrFile, cb);
+            }, function(err) {
+                console.log("All files finished.");
+                process.exit(0);
+            });
+        });
+
+    } else {
+        doFile(cadsrFolder, function() {
+            console.log("single file done");
             process.exit(0);
         });
-    });
-}, 2000);
+    }
+    
+//}, 2000);
 
-var doFile = function (casdrFile, fileCb) {
-    fs.readFile(cadsrFile, function(err, data) {
+var doFile = function (cadsrFile, fileCb) {
+  console.log("starting " + cadsrFile);
+  fs.readFile(cadsrFile, function(err, data) {
     parser.parseString(data, function (err, result) {
         async.each(result.DataElementsList.DataElement, function(de, cb){
             var cde = {
