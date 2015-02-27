@@ -11,6 +11,7 @@ var fs = require('fs'),
         ;
 
 var parser = new xml2js.Parser();
+var builder = new xml2js.Builder();
 
 //  for f in $(find ../nlm-seed/ExternalCDEs/caDSR/xml_cde_20151510354/  -name *.xml); do  node ingester/uploadCadsr.js $f ; done
 
@@ -91,6 +92,11 @@ var doFile = function (cadsrFile, fileCb) {
                     , id: de.PUBLICID[0]
                     , version: de.VERSION[0]
                 }]
+            , properties: [
+                {key: "caDSR_Context", value: de.CONTEXTNAME[0]}
+                , {key: "caDSR_Datatype", value: de.VALUEDOMAIN[0].Datatype[0]}
+                , {key: "caDSR_Original", value: builder.buildObject(de).toString()}
+            ]
             };
             if (cde.registrationState.registrationStatus === "Application" || cde.registrationState.registrationStatus === "Proposed") {
                 cde.registrationState.registrationStatus = "Recorded";
@@ -234,7 +240,7 @@ var doFile = function (cadsrFile, fileCb) {
 
             
             
-            mongo_cde.create(cde, {username: 'loader'}, function(err, newCde) {
+            mongo_cde.create(cde, {username: 'batchloader'}, function(err, newCde) {
                if (err) {
                    console.log("unable to create CDE. " + JSON.stringify(cde) );
                    console.log(err);
