@@ -8,6 +8,7 @@ var fs = require('fs'),
     , xml2js = require('xml2js')
     , shortid = require('shortid')
     , cadsrClassifs = require('./cadsrClassifs')
+    , Readable = require('stream').Readable
         ;
 
 var parser = new xml2js.Parser();
@@ -92,11 +93,11 @@ var doFile = function (cadsrFile, fileCb) {
                     , id: de.PUBLICID[0]
                     , version: de.VERSION[0]
                 }]
-            , properties: [
-                {key: "caDSR_Context", value: de.CONTEXTNAME[0]}
-                , {key: "caDSR_Datatype", value: de.VALUEDOMAIN[0].Datatype[0]}
-                , {key: "caDSR_Original", value: builder.buildObject(de).toString()}
-            ]
+                , attachments: []
+                , properties: [
+                    {key: "caDSR_Context", value: de.CONTEXTNAME[0]}
+                    , {key: "caDSR_Datatype", value: de.VALUEDOMAIN[0].Datatype[0]}
+                ]
             };
             if (cde.registrationState.registrationStatus === "Application" || cde.registrationState.registrationStatus === "Proposed") {
                 cde.registrationState.registrationStatus = "Recorded";
@@ -246,9 +247,20 @@ var doFile = function (cadsrFile, fileCb) {
                    console.log(err);
                    process.exit(1);
                } else {
-                   
+                   var stream = new Readable();
+                   var origXml = builder.buildObject(de).toString();
+                   stream.push(origXml);
+                   stream.push(null)
+                   mongo_data_system.addAttachment(
+                    {originalname: cde.ids[0].id + "v" + cde.ids[0].version + ".xml", type: "application/xml", size: origXml.length, stream: stream},
+                    {_id: null, username: "batchloader"}, "Original XML File", newCde, function() {
+                        console.log("attachment added");
+                         cb();
+                     });
+                     setTimeout(function() {
+                        stream.emit('close'); 
+                     }, 500)
                }
-               cb();
             });              
         }, function(err){
             fileCb();
