@@ -364,7 +364,8 @@ module.exports = function(grunt) {
                     'js/textAngular-sanitize.min.js': 'textAngular/dist/textAngular-sanitize.min.js',
                     'js/bootstrap-tour.js': 'bootstrap-tour/build/js/bootstrap-tour.js',
                     'js/bootstrap.js': 'bootstrap/dist/js/bootstrap.js',
-                    'js/camelCaseToHuman.js': 'angularjs-camelCase-human/camelCaseToHuman.js'
+                    'js/camelCaseToHuman.js': 'angularjs-camelCase-human/camelCaseToHuman.js',
+                    'js/ui-bootstrap-tpls.js': 'angular-ui-bootstrap-bower/ui-bootstrap-tpls.js'
                 }
             },
             map: {
