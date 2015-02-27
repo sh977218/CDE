@@ -2,7 +2,7 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal',
     $scope.openNewProperty = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newPropertyModalContent.html',
-          controller: NewPropertyModalCtrl,
+          controller: 'NewPropertyModalCtrl',
           resolve: {
               elt: function() {
                   return $scope.elt;

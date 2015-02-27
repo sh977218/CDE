@@ -4,7 +4,7 @@ angular.module('systemModule').controller('ClassificationCtrl', ['$scope', '$mod
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
           templateUrl: '/template/system/classifyCde',
-          controller: AddClassificationModalCtrl,
+          controller: 'AddClassificationModalCtrl',
           resolve: {
                 module: function() {
                     return $scope.module;
@@ -56,7 +56,7 @@ angular.module('systemModule').controller('ClassificationCtrl', ['$scope', '$mod
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: '/template/system/removeClassificationModal',
-            controller: RemoveClassificationModalCtrl,
+            controller: 'RemoveClassificationModalCtrl',
             resolve: {
                 classifName: function() {
                     return pathArray[pathArray.length-1];

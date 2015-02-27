@@ -7,7 +7,7 @@ angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$
     $scope.openSave = function (elt, redirectBaseLink) {
         var modalInstance = $modal.open({
           templateUrl: '/system/public/html/saveModal.html',
-          controller: SaveModalCtrl,
+          controller: 'SaveModalCtrl',
           resolve: {
               elt: function() {
                   return elt;

@@ -2,7 +2,7 @@ angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '
     $scope.openNewMappingSpecification = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newMappingSpecificationModalContent.html',
-          controller: NewMappingSpecificationModalCtrl,
+          controller: 'NewMappingSpecificationModalCtrl',
           resolve: {
               elt: function() {
                   return $scope.elt;

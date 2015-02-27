@@ -41,7 +41,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
     $scope.openAddClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: '/template/system/addClassification',
-            controller: AddClassificationToOrgModalCtrl,
+            controller: 'AddClassificationToOrgModalCtrl',
             resolve: {
                 org: function() {
                     return orgName;
@@ -71,7 +71,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
     $scope.showRenameDialog = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: 'renameClassificationModal.html',
-            controller: RenameClassificationModalCtrl,
+            controller: 'RenameClassificationModalCtrl',
             resolve: {
                 classifName: function() {
                     return pathArray[pathArray.length-1];
@@ -91,7 +91,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: '/template/system/removeClassificationMgtModal',
-            controller: RemoveClassificationModalCtrl,
+            controller: 'RemoveClassificationModalCtrl',
             resolve: {
                 classifName: function() {
                     return pathArray[pathArray.length-1];
@@ -108,7 +108,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
     $scope.showClassifyEntireSearchModal = function (orgName, pathArray) {
         var modalInstance = $modal.open({
           templateUrl: '/template/system/classifyCde',
-          controller: AddClassificationModalCtrl,
+          controller: 'AddClassificationModalCtrl',
           resolve: {
                 module: function() {
                     return $scope.module;

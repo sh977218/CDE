@@ -121,7 +121,7 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
     $scope.openAddToForm = function (cde) {
         $modal.open({
           templateUrl: 'addToFormModalContent.html',
-          controller: AddToFormModalCtrl,
+          controller: 'AddToFormModalCtrl',
           resolve: {
               cde: function() {
                   return cde;
@@ -323,7 +323,7 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
     $scope.showPinAllModal = function() {
         var modalInstance = $modal.open({
           templateUrl: '/cde/public/html/selectBoardModal.html',
-          controller: SelectBoardModalCtrl,
+          controller: 'SelectBoardModalCtrl',
           resolve: {
             boards: function () {
               return $scope.boards;

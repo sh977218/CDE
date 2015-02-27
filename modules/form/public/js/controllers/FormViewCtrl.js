@@ -78,7 +78,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
           templateUrl: '/template/system/classifyForm',
-          controller: ClassifyFormCdesModalCtrl,
+          controller: 'ClassifyFormCdesModalCtrl',
           resolve: {
                 userOrgs: function() {
                     return userResource.userOrgs;

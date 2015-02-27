@@ -91,7 +91,7 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$modal', funct
     $scope.openNewNamePair = function () {
         $modal.open({
           templateUrl: 'newNamePairModalContent.html',
-          controller: NewNamePairModalCtrl,
+          controller: 'NewNamePairModalCtrl',
           resolve: {
               cde: function() {
                   return $scope.elt;

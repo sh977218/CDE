@@ -73,7 +73,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
     $scope.openNameSelect = function(question) {
         var modalInstance = $modal.open({
           templateUrl: '/form/public/html/selectQuestionName.html',
-          controller: SelectQuestionNameModalCtrl,
+          controller: 'SelectQuestionNameModalCtrl',
           resolve: {
                 cde: function() {
                   return question.question.cde;

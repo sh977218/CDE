@@ -3,7 +3,7 @@
     $scope.openRegStatusUpdate = function () {
         var modalInstance = $modal.open({
           templateUrl: '/system/public/html/regStatusUpdateModal.html',
-          controller: RegistrationModalCtrl,
+          controller: 'RegistrationModalCtrl',
           resolve: {
               elt: function() {
                   return $scope.elt;

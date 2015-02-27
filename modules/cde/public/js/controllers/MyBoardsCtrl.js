@@ -35,7 +35,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$modal', '$ht
     $scope.openNewBoard = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newBoardModalContent.html',
-          controller: NewBoardModalCtrl,
+          controller: 'NewBoardModalCtrl',
           resolve: {
           }
         });

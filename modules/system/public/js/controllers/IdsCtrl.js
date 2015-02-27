@@ -2,7 +2,7 @@ angular.module('systemModule').controller('IdsCtrl', ['$scope', '$modal', '$wind
     $scope.openNewId = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newIdModalContent.html',
-          controller: NewIdModalCtrl,
+          controller: 'NewIdModalCtrl',
           resolve: {
               elt: function() {
                   return $scope.elt;

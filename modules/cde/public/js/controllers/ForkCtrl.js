@@ -26,7 +26,7 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
     $scope.openAddFork = function() {
         var modalInstance = $modal.open({
             templateUrl: '/cde/public/html/addFork.html',
-            controller: AddForkModalCtrl,
+            controller: 'AddForkModalCtrl',
             resolve: {
                 userResource: function() {return userResource}
             }

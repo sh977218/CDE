@@ -5,7 +5,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         when('/home', {controller: 'HomeCtrl', templateUrl:'/home'}).
         when('/login', {controller: 'AuthCtrl', templateUrl:'/login'}).
         when('/signup', {controller: 'AuthCtrl', templateUrl:'/signup'}).
-        when('/siteAudit', {controller: 'SiteAuditCtrl', templateUrl: '/siteaudit'}).        
+        when('/siteAudit', {templateUrl: '/siteaudit'}).        
         when('/inbox', {controller: 'InboxCtrl', templateUrl: '/system/public/html/inbox.html'}).
         when('/siteaccountmanagement', {controller: 'AccountManagementCtrl', templateUrl: '/siteaccountmanagement'}).
         when('/orgaccountmanagement', {controller: 'AccountManagementCtrl', templateUrl: '/orgaccountmanagement'}).

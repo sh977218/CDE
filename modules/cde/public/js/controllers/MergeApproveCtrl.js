@@ -2,7 +2,7 @@ angular.module('cdeModule').controller('MergeApproveCtrl', ['$scope', '$modal', 
     $scope.showMergeApproveDialog = function(message) {
         var modalInstance = $modal.open({
             templateUrl: '/system/public/html/saveModal.html'
-            , controller: MergeApproveModalCtrl
+            , controller: 'MergeApproveModalCtrl'
             , resolve: {
                 elt: function() {
                     return message.typeRequest.destination.object;

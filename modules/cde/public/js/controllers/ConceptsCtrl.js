@@ -2,7 +2,7 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$modal', '$ht
     $scope.openNewConcept = function () {
         $modal.open({
           templateUrl: 'newConceptModalContent.html',
-          controller: NewConceptModalCtrl,
+          controller: 'NewConceptModalCtrl',
           resolve: {
               cde: function() {
                   return $scope.elt;
