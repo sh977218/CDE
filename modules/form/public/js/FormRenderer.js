@@ -1,9 +1,8 @@
-var formApp = angular.module('FormRenderer', ['ui.bootstrap']);
-formApp.config(['$compileProvider', function($compileProvider) {
+angular.module('FormRenderer', ['ui.bootstrap'])
+.config(['$compileProvider', function($compileProvider) {
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
-}]);
-
-function FormRenderCtrl($scope, $http, $location, $window) {
+}])
+.controller('FormRenderCtrl', ['$scope', '$http', '$location', '$window', function ($scope, $http, $location, $window) {
    
     $scope.reload = function(id) {
         $http.get('/form/' + id).then(function(result) {
@@ -111,4 +110,4 @@ function FormRenderCtrl($scope, $http, $location, $window) {
         if (operator === '>') return parseInt(realAnswer) > parseInt(expectedAnswer);
     };
 
-}
+}]);
