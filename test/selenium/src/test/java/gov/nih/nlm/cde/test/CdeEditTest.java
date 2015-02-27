@@ -141,8 +141,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         closeAlert();
         findElement(By.id("removeId-1")).click();
         findElement(By.id("confirmRemoveId-1")).click();
-        Assert.assertTrue(textPresent("Identifier removed. Save to confirm."));
-        
+        Assert.assertTrue(textPresent("Identifier removed. Save to confirm."));        
     }
     
     
