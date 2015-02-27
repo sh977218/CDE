@@ -3,31 +3,6 @@ var systemModule = angular.module('systemModule', ['ElasticSearchResource', 'res
         $routeProvider.
         when('/', {redirectTo: '/cde/search'}).        
         when('/home', {controller: HomeCtrl, templateUrl:'/home'}).
-
-
-
-
-        
-        
-
-        //cde
-        when('/cde/search', {controller: DEListCtrl, templateUrl: 'template/system/list'}).
-        when('/quickBoard', {controller: QuickBoardCtrl, templateUrl: '/quickBoard'}).
-        when('/sdcview', {controller: SDCViewCtrl, templateUrl: '/sdcView'}).
-        when('/boardExport/:boardId', {controller: ExportCtrl, templateUrl: '/cde/public/html/boardExport.html'}).
-        when('/cdeSearchExport', {controller: DEListCtrl, templateUrl: '/exportCdeSearch'}).
-        when('/myboards', {controller: MyBoardsCtrl, templateUrl: '/myboards'}).
-        when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
-        when('/boardList', {controller: BoardListCtrl, templateUrl: '/boardList'}).   
-        when('/createCde', {controller: CreateCdeCtrl, templateUrl:'/createcde'}).
-        when('/deview', {controller: DEViewCtrl, templateUrl: '/deview'}).        
-        
-        //form
-        when('/form/search', {controller: FormListCtrl, templateUrl: '/template/system/list'}).
-        when('/createForm', {controller: CreateFormCtrl, templateUrl: '/template/form/createForm'}).
-        when('/formView', {controller: FormViewCtrl, templateUrl: '/template/form/formView'}).
-        
-        //system
         when('/login', {controller: AuthCtrl, templateUrl:'/login'}).
         when('/signup', {controller: AuthCtrl, templateUrl:'/signup'}).
         when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).        

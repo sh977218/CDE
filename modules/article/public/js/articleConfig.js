@@ -72,9 +72,7 @@ angular.module('articleModule', ['ngRoute']).config(
 }])
 
 .controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', function($scope, $modalInstance, $http) {
-
     $scope.elt = {};
-
     $scope.ok = function() {
         $http.post("/article/key/" + $scope.elt.key, {}).
                 success(function(newArticle) {                      
@@ -84,7 +82,6 @@ angular.module('articleModule', ['ngRoute']).config(
                     $modalInstance.dismiss("Duplicate key.");
                 });
     };
-
     $scope.cancelSave = function() {
         $modalInstance.dismiss();
     };
