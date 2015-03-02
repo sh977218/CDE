@@ -88,9 +88,9 @@
                                                        
                             <% if (config.modules.forms) { %><li ng-class="{ active: isPageActive('/form/search')}"><a href="/#/form/search">Forms</a></li> <% } %>
                             
-                            <li ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' class="dropdown" tabindex="0">    
-                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#" id="dropdownMenu1" tabindex="-1" title="Boards" aria-label="Boards">Boards<span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="group" aria-labelledby="dropdownMenu1" tabindex="0" aria-expanded="true">
+                            <li dropdown ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' tabindex="0">    
+                                <a dropdown-toggle class="dropdown-toggle" href="#" id="dropdownMenu1" tabindex="-1" title="Boards" aria-label="Boards">Boards<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu" aria-labelledby="dropdownMenu1" tabindex="0" aria-expanded="true">
                                     <li><a href="#/boardList">Public Boards</a></li>                                    
                                     <li><a href="#/myboards">My Boards</a></li>
                                 </ul>
@@ -100,9 +100,9 @@
                                 <a href="#/boardList" id="boardsMenu">Boards</a>
                             </li>                            
                             
-                            <li ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}" ng-show='isOrgCurator()' class="dropdown" tabindex="0">    
-                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#" id="dropdownMenu2" tabindex="-1" title="Create" aria-label="Create">Create<span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2" tabindex="0">
+                            <li dropdown ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}" ng-show='isOrgCurator()' tabindex="0">    
+                                <a dropdown-toggle  class="dropdown-toggle" href="#" id="dropdownMenu2" tabindex="-1" title="Create" aria-label="Create">Create<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu" aria-labelledby="dropdownMenu2" tabindex="0">
                                     <li><a href="#/createCde">CDE</a></li>
                                     <% if (config.modules.forms) { %><li><a href="#/createForm">Form</a></li><% } %>
                                 </ul>
@@ -119,9 +119,9 @@
                                     )
                                 </a>                          
                             </li>
-                            <li ng-class="{ active: isPageActive('/help')}">
-                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#" id="dropdownMenu_help" tabindex="-1" title="Help" aria-label="Help">Help<span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu_help" tabindex="0">
+                            <li dropdown ng-class="{ active: isPageActive('/help')}">
+                                <a dropdown-toggle class="dropdown-toggle" href="#" id="dropdownMenu_help" tabindex="-1" title="Help" aria-label="Help">Help<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu" aria-labelledby="dropdownMenu_help" tabindex="0">
                                     <li><a href="#/home">About</a></li>
                                     <% if (config.modules.article) { %><li><a href="#/help/index">User Guide</a></li><% } %>
                                     <li ng-controller="TakeATourCtrl"><a ng-click="restartTour()">Take a tour</a></li>
