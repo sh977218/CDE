@@ -137,7 +137,7 @@ var doFile = function (cadsrFile, fileCb) {
             cde.referenceDocuments = [];
             if (de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM) {
                 de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.forEach(function(refDoc) {
-                    if (["Preferred Question Text", "Alternate Question Text"].indexOf(refDoc.DocumentType[0]) > 1) {
+                    if (["Preferred Question Text", "Alternate Question Text"].indexOf(refDoc.DocumentType[0]) > -1) {
                         cde.naming.push({
                             designation: refDoc.DocumentText[0]
                             , definition: refDoc.Name[0]
