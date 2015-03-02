@@ -326,7 +326,7 @@ public class NlmCdeBaseTest {
             textPresent("Saved.");
         }        
         closeAlert();
-
+        modalGone();
     }
 
     public void hangon(double i) {
