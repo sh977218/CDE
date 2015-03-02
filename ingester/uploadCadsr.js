@@ -75,6 +75,7 @@ var doFile = function (cadsrFile, fileCb) {
                 , valueDomain: {
                     datatype: de.VALUEDOMAIN[0].Datatype[0]
                     , name: de.VALUEDOMAIN[0].LongName[0]
+                    , definition: de.VALUEDOMAIN[0].PreferredDefinition[0]
                 }
                 , stewardOrg: {name: "NCI"}
                 , naming: [
@@ -105,6 +106,20 @@ var doFile = function (cadsrFile, fileCb) {
             if (de.ORIGIN[0] && de.ORIGIN[0].length > 0) {
                 cde.origin = de.ORIGIN[0];
             }
+            
+            
+            if (de.ALTERNATENAMELIST && de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM) {
+                de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.forEach(function(altName) {
+                    if (["USED_BY"].indexOf(altName.AlternateNameType[0] > -1)) {
+                        return;
+                    }
+                    cde.properties.push({
+                        key: altName.AlternateNameType[0]
+                        , value: altName.AlternateName[0]
+                    });
+                });
+            }
+                
             if (datatypeMapping[cde.valueDomain.datatype]) {
                 cde.valueDomain.datatype = datatypeMapping[cde.valueDomain.datatype];
             }
@@ -162,8 +177,7 @@ var doFile = function (cadsrFile, fileCb) {
                         cde.referenceDocuments.push(newRefDoc);
                     }
                 });
-            }
-            
+            }            
             
             if (de.VALUEDOMAIN[0].ValueDomainType[0] === 'Enumerated') {
                 cde.valueDomain.datatype = "Value List";
