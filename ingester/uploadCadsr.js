@@ -103,12 +103,25 @@ var doFile = function (cadsrFile, fileCb) {
             if (cde.registrationState.registrationStatus === "Application" || cde.registrationState.registrationStatus === "Proposed") {
                 cde.registrationState.registrationStatus = "Recorded";
             } 
-            if (!cde.registrationState.registrationStatus) {
+            if (cde.registrationState.registrationStatus['$']) {
                 cde.registrationState.registrationStatus = "Recorded";
             }
             if (de.ORIGIN[0] && de.ORIGIN[0].length > 0) {
                 cde.origin = de.ORIGIN[0];
             }
+            
+            if (de.ALTERNATENAMELIST[0] && de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.length > 0) {
+                de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.forEach(function(altName) {
+                    if (["USED_BY"].indexOf(altName.AlternateNameType[0]) > -1) {
+                        return;
+                    }
+                    cde.properties.push({
+                        key: altName.AlternateNameType[0]
+                        , value: altName.AlternateName[0]
+                    });
+                });
+            }
+                
             if (datatypeMapping[cde.valueDomain.datatype]) {
                 cde.valueDomain.datatype = datatypeMapping[cde.valueDomain.datatype];
             }
