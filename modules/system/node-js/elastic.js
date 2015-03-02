@@ -20,7 +20,9 @@ exports.elasticsearch = function (query, type, cb) {
                 thisCde.score = resp.hits.hits[i]._score;
                 if (thisCde.valueDomain && thisCde.valueDomain.permissibleValues.length > 10) {
                     thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
-                } 
+                }
+                thisCde.properties = [];
+                thisCde.flatProperties = [];
                 thisCde.highlight = resp.hits.hits[i].highlight;
                 result.cdes.push(thisCde);
             }

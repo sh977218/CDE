@@ -189,6 +189,7 @@ app.use(function(err, req, res, next){
     } else {
         res.status(500).send('Something broke!');
     }
+    next();
 });
 
 

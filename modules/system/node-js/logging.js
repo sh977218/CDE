@@ -36,12 +36,31 @@ MongoLogger.prototype.log = function (level, msg, meta, callback) {
 exports.MongoLogger = MongoLogger;
 
 MongoErrorLogger.prototype.log = function (level, msg, meta, cb) {
+    processDetails = function(details){
+        if (typeof details === "string") return details;
+        if (typeof details !== "object") return "Error in logger: Cannot process details.";
+        Object.keys(details).map(function(name){
+            var value = details[name];
+            if (typeof value === "string") return name + "=" + value;
+            else if (typeof value === "object" && typeof value.toString === "function") return name + "=" + value.toString();
+            else if (typeof value === "object" && typeof value.name !== "undefined") return name + "=" + value.name;
+            else {
+                try {
+                    var valueStr = JSON.stringify(value);
+                    return name + "=" + valueStr;
+                } catch(e){
+                    return "Error in logger: Cannot process details.";
+                }
+            }
+        });
+        
+    };
     try {
         var message = {
             message: msg
             , origin: meta.origin
             , stack: meta.stack || new Error().stack  
-            , details: meta.details            
+            , details: processDetails(meta.details)
         };
         if (meta.request) message.request = exports.generateErrorLogRequest(meta.request);
         dbLogger.logError(message, function (err) {

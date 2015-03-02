@@ -158,8 +158,7 @@ for (int i  = 0; i < deList.DataElement.size(); i++) {
         }
         if ("Alternate Question Text".equals(cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentType.text())) {
             if (!altQs.contains(cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].Name.text())) {
-                BasicDBObject quesText = new BasicDBObject();
-                quesText.put("designation", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentText.text());
+                BasicDBObject quesText = new Basiuplo.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentText.text());
                 quesText.put("definition", cadsrDE.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM[rdi].DocumentText.text());
                 quesText.put("languageCode", "EN-US"); 
                 quesText.put("context", altQContext);

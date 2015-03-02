@@ -36,6 +36,21 @@ exports.modifyCategory = function(tree, fields, action, cb) {
     }
 };
 
+exports.classifyItem = function(item, orgName, classifPath, cb) {
+    var steward = exports.findSteward(item, orgName);
+    if (!steward) {
+        item.classification.push({
+            stewardOrg: {
+                name: orgName
+            }
+            , elements: []
+        });
+        steward = exports.findSteward(item, orgName);
+    }  
+    for (var i=1; i <= classifPath.length; i++){
+        exports.addCategory(steward.object, classifPath.slice(0,i));
+    }  
+};
 
 exports.addCategory = function(tree, fields, cb) {
     var classification = this;

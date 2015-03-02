@@ -118,19 +118,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic, 
                 , addClassification: function() {
                     return {
                         addClassification: function(newClassification) {
-                            var steward = exports.findSteward($scope.elt, newClassification.orgName);
-                            if (!steward) {
-                                $scope.elt.classification.push({
-                                    stewardOrg: {
-                                        name: newClassification.orgName
-                                    }
-                                    , elements: []
-                                });
-                                steward = exports.findSteward($scope.elt, newClassification.orgName);
-                            }  
-                            for (var i=1; i<=newClassification.categories.length; i++){
-                                exports.addCategory(steward.object, newClassification.categories.slice(0,i));
-                            }
+                            exports.classifyItem($scope.elt, newClassification.orgName, newClassification.categories);
                             var deepCopy = {
                                 orgName: newClassification.orgName
                                 , categories: []
