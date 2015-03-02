@@ -21,7 +21,6 @@ public class BoardManagement4Test extends BoardTest {
     public void cdeNumbIncrement() {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Number Increment Board";
-        goToCdeSearch();
         createBoard(boardName, "Number Increment Definition");
         gotoMyBoards(); 
         WebElement numElt = null;

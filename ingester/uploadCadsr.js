@@ -97,9 +97,13 @@ var doFile = function (cadsrFile, fileCb) {
                 , properties: [
                     {key: "caDSR_Context", value: de.CONTEXTNAME[0]}
                     , {key: "caDSR_Datatype", value: de.VALUEDOMAIN[0].Datatype[0]}
+                    , {key: "caDSR_Short_Name", value: de.PREFERREDNAME[0]}
                 ]
             };
             if (cde.registrationState.registrationStatus === "Application" || cde.registrationState.registrationStatus === "Proposed") {
+                cde.registrationState.registrationStatus = "Recorded";
+            } 
+            if (!cde.registrationState.registrationStatus) {
                 cde.registrationState.registrationStatus = "Recorded";
             }
             if (de.ORIGIN[0] && de.ORIGIN[0].length > 0) {
@@ -133,10 +137,10 @@ var doFile = function (cadsrFile, fileCb) {
             cde.referenceDocuments = [];
             if (de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM) {
                 de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.forEach(function(refDoc) {
-                    if (["Preferred Question Text", "Alternate Question Text"].indexOf(refDoc.DocumentType[0]) > 0) {
+                    if (["Preferred Question Text", "Alternate Question Text"].indexOf(refDoc.DocumentType[0]) > 1) {
                         cde.naming.push({
-                            designation: refDoc.Name[0]
-                            , definition: refDoc.DocumentText[0]
+                            designation: refDoc.DocumentText[0]
+                            , definition: refDoc.Name[0]
                             , languageCode: "EN-US"
                             , context: {
                                 contextName: refDoc.DocumentType[0], 
