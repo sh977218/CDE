@@ -18,26 +18,11 @@ public class QuestionTest extends BaseFormTest {
         hangon(1);
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
-        textPresent("1 results");
+        textPresent("1 results");        
+        textPresent(cdeName, By.id("accordionList"));
         
         WebElement sourceElt = findElement(By.xpath("//div[@id='accordionList']//i[@class=\"fa fa-arrows question-move-handle ng-scope\"]"));
         WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumber));
-        
-        Assert.assertTrue(sourceElt.isDisplayed());
-        Assert.assertTrue(targetElt.isDisplayed());
-        
-        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
-    }
-    
-    public void addQuestionToSectionSafe(String cdeName, int sectionNumber) {
-        findElement(By.id("resetSearch")).click();
-        hangon(1);
-        findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
-        findElement(By.id("search.submit")).click();
-        textPresent("1 results");
-        
-        WebElement sourceElt = findElement(By.xpath("//div[@id='accordionList']//i[@class=\"fa fa-arrows question-move-handle ng-scope\"]"));
-        WebElement targetElt = findElement(By.xpath("//*[text()=\"Patient Gender Category\"]"));
         
         Assert.assertTrue(sourceElt.isDisplayed());
         Assert.assertTrue(targetElt.isDisplayed());
