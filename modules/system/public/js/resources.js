@@ -86,7 +86,7 @@ angular.module('resourcesSystem', ['ngResource'])
         $http.get('/user/me').then(function(response) {
             var u = response.data;
             if (u == "Not logged in.") {
-                userResource.user = {visitor: true, userLoaded: true};
+                userResource.user = {userLoaded: true};
             } else {
                 userResource.user = u;
                 userResource.setOrganizations();
