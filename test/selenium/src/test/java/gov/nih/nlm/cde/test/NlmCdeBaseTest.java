@@ -261,7 +261,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
         textPresent("1 results for");
-        textPresent(cdeName, By.id("accordionList"));
+        textPresent(name, By.id("accordionList"));
         findElement(By.id("acc_link_0")).click();
     }
 
@@ -360,9 +360,15 @@ public class NlmCdeBaseTest {
     @BeforeMethod
     protected void goHome() {
         driver.get(baseUrl + "/gonowhere");
-        textPresent("Nothing here");
+        try {
+            textPresent("Nothing here");
+        } catch (Exception e) {
+            driver.get(baseUrl + "/gonowhere");
+            textPresent("Nothing here");
+        } 
         driver.get(baseUrl + "/#/home");
         findElement(By.id("selectOrgDropdown"));
+        hangon(1);
     }
 
     protected void goToCdeSearch() {
