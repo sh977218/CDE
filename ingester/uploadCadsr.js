@@ -9,6 +9,7 @@ var fs = require('fs'),
     , shortid = require('shortid')
     , cadsrClassifs = require('./cadsrClassifs')
     , Readable = require('stream').Readable
+    , entities = require("entities")
         ;
 
 var parser = new xml2js.Parser();
@@ -80,8 +81,8 @@ var doFile = function (cadsrFile, fileCb) {
                 , stewardOrg: {name: "NCI"}
                 , naming: [
                     {
-                        designation: de.LONGNAME[0]
-                        , definition: de.PREFERREDDEFINITION[0]
+                        designation: entities.decodeXML(de.LONGNAME[0])
+                        , definition: entities.decodeXML(de.PREFERREDDEFINITION[0])
                         , languageCode: "EN-US"
                         , context: {
                             contextName: "Health", 
@@ -98,24 +99,27 @@ var doFile = function (cadsrFile, fileCb) {
                 , properties: [
                     {key: "caDSR_Context", value: de.CONTEXTNAME[0]}
                     , {key: "caDSR_Datatype", value: de.VALUEDOMAIN[0].Datatype[0]}
+                    , {key: "caDSR_Short_Name", value: de.PREFERREDNAME[0]}
                 ]
             };
             if (cde.registrationState.registrationStatus === "Application" || cde.registrationState.registrationStatus === "Proposed") {
+                cde.registrationState.registrationStatus = "Recorded";
+            } 
+            if (cde.registrationState.registrationStatus['$']) {
                 cde.registrationState.registrationStatus = "Recorded";
             }
             if (de.ORIGIN[0] && de.ORIGIN[0].length > 0) {
                 cde.origin = de.ORIGIN[0];
             }
             
-            
-            if (de.ALTERNATENAMELIST && de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM) {
+            if (de.ALTERNATENAMELIST[0] && de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.length > 0) {
                 de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.forEach(function(altName) {
-                    if (["USED_BY"].indexOf(altName.AlternateNameType[0] > -1)) {
+                    if (["USED_BY"].indexOf(altName.AlternateNameType[0]) > -1) {
                         return;
                     }
                     cde.properties.push({
                         key: altName.AlternateNameType[0]
-                        , value: altName.AlternateName[0]
+                        , value: entities.decodeXML(altName.AlternateName[0])
                     });
                 });
             }
@@ -148,10 +152,10 @@ var doFile = function (cadsrFile, fileCb) {
             cde.referenceDocuments = [];
             if (de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM) {
                 de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.forEach(function(refDoc) {
-                    if (["Preferred Question Text", "Alternate Question Text"].indexOf(refDoc.DocumentType[0]) > 0) {
+                    if (["Application Standard Question Text", "Preferred Question Text", "Alternate Question Text"].indexOf(refDoc.DocumentType[0]) > -1) {
                         cde.naming.push({
-                            designation: refDoc.Name[0]
-                            , definition: refDoc.DocumentText[0]
+                            designation: entities.decodeXML(refDoc.DocumentText[0])
+                            , definition: entities.decodeXML(refDoc.Name[0])
                             , languageCode: "EN-US"
                             , context: {
                                 contextName: refDoc.DocumentType[0], 
@@ -160,12 +164,12 @@ var doFile = function (cadsrFile, fileCb) {
                         });
                     } else {
                         var newRefDoc = {
-                            title: refDoc.Name[0], 
+                            title: entities.decodeXML(refDoc.Name[0]), 
                             docType: refDoc.DocumentType[0],
                             languageCode: refDoc.Language[0]
                         };
                         if (refDoc.DocumentText[0].length > 0) {
-                            newRefDoc.text = refDoc.DocumentText[0];
+                            newRefDoc.text = entities.decodeXML(refDoc.DocumentText[0]);
                         }
                         if (newRefDoc.languageCode === 'ENGLISH') newRefDoc.languageCode = "EN-US";
                         if (refDoc.OrganizationName[0].length > 0) {
@@ -192,18 +196,27 @@ var doFile = function (cadsrFile, fileCb) {
                 de.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM.forEach(function(pv) {
                     var newPv = 
                     {
-                        permissibleValue: pv.VALIDVALUE[0], 
-                        valueMeaningName: pv.VALUEMEANING[0], 
+                        permissibleValue: entities.decodeXML(pv.VALIDVALUE[0]), 
+                        valueMeaningName: entities.decodeXML(pv.VALUEMEANING[0])
                     };
                     if (!pv.MEANINGCONCEPTS[0]['$']) {
-                        newPv.valueMeaningCode = pv.MEANINGCONCEPTS[0]
+                        newPv.valueMeaningCode = pv.MEANINGCONCEPTS[0];
                     }
                     cde.valueDomain.permissibleValues.push(newPv);
     //                if (pv.MEANINGCONCEPTS[0].length > 0) {
     //                    newPv.valueMeaningCodeSystem
     //                }
                 });
+                cde.valueDomain.permissibleValues.sort(function(pv1, pv2) {
+                    if (pv1.permissibleValue === pv2.permissibleValue) return 0;
+                    if (pv1.permissibleValue > pv2.permissibleValue) return 1;
+                    if (pv1.permissibleValue < pv2.permissibleValue) return -1;
+                });
             }
+            
+            
+            
+            
             cde.objectClass = {concepts: []};
             if (de.DATAELEMENTCONCEPT[0].ObjectClass[0].ConceptDetails[0].ConceptDetails_ITEM) {
                 de.DATAELEMENTCONCEPT[0].ObjectClass[0].ConceptDetails[0].ConceptDetails_ITEM.forEach(function(con){
@@ -264,7 +277,7 @@ var doFile = function (cadsrFile, fileCb) {
                    var stream = new Readable();
                    var origXml = builder.buildObject(de).toString();
                    stream.push(origXml);
-                   stream.push(null)
+                   stream.push(null);
                    mongo_data_system.addAttachment(
                     {originalname: cde.ids[0].id + "v" + cde.ids[0].version + ".xml", type: "application/xml", size: origXml.length, stream: stream},
                     {_id: null, username: "batchloader"}, "Original XML File", newCde, function() {
@@ -272,7 +285,7 @@ var doFile = function (cadsrFile, fileCb) {
                      });
                      setTimeout(function() {
                         stream.emit('close'); 
-                     }, 500)
+                     }, 500);
                }
             });              
         }, function(err){
