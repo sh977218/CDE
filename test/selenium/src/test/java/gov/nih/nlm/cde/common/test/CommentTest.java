@@ -115,10 +115,9 @@ public abstract class CommentTest extends CommonTest {
         findElement(By.cssSelector(preClass+".authorizeUser")).click();    
         findElement(By.id("authorizeUserOK")).click();   
 
-        modalGone();
-
         textPresent("Role added");   
         closeAlert();
+        modalGone();
 
         findElement(By.cssSelector(preClass+".approveComment")).click();
         textPresent("Comment approved");  
