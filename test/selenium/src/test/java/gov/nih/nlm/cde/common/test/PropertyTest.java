@@ -38,16 +38,18 @@ public abstract class PropertyTest extends CommonTest {
         findElement(By.id("createProperty")).click();
         Assert.assertTrue(textPresent("Property Added"));
         modalGone();
+        hangon(1);
         findElement(By.id("addProperty")).click();
         findElement(By.name("key")).sendKeys("MyKey3");
         findElement(By.name("value")).sendKeys("MyValue3");
         findElement(By.id("createProperty")).click();
         Assert.assertTrue(textPresent("Property Added"));
         modalGone();
+        hangon(1);
 
         findElement(By.id("removeProperty-1")).click();
         findElement(By.id("confirmRemoveProperty-1")).click();
-        Assert.assertTrue(textPresent("Property Removed"));
+        textPresent("Property Removed");
         
         goToEltByName(eltName, status);
         findElement(By.linkText("Properties")).click();

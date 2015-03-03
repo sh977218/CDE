@@ -202,7 +202,11 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
         });
     });
     
-    fs.createReadStream(file.path).pipe(writestream);
+    if (file.stream) {
+       file.stream.pipe(writestream);
+    } else {
+        fs.createReadStream(file.path).pipe(writestream);
+    }
 };
 
 exports.getFile = function(res, id) {

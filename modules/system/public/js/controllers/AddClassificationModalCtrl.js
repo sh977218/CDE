@@ -56,8 +56,7 @@ angular.module('systemModule').controller('AddClassificationModalCtrl', ['$scope
         };
         deepCopy.categories.push(lastLeafName);        
         addClassification.addClassification(deepCopy);        
-        $scope.insertToClassificationHistory(deepCopy);
-        $timeout(deepCopy.categories.pop, 0);    
+        $scope.insertToClassificationHistory(deepCopy); 
     };     
     
     $scope.selectPriorClassification = function (classif) {

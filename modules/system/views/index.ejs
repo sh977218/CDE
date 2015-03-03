@@ -99,7 +99,7 @@
                             <li ng-class="{ active: isPageActive('/boardList')}" ng-show='!user._id' class="dropdown">    
                                 <a href="#/boardList" id="boardsMenu">Boards</a>
                             </li>                            
-                            
+
                             <li dropdown ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}" ng-show='isOrgCurator()' tabindex="0">    
                                 <a dropdown-toggle  class="dropdown-toggle" href="#" id="dropdownMenu2" tabindex="-1" title="Create" aria-label="Create">Create<span class="caret"></span></a>
                                 <ul role="menu" class="dropdown-menu" aria-labelledby="dropdownMenu2" tabindex="0">
@@ -129,8 +129,8 @@
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right" data-userloaded="loaded-{{user.userLoaded}}">
-                            <a ng-cloak ng-if="userHasMail" title="New messages" href="#/inbox"><i id="incomingMessage" class="fa fa-envelope text-danger"></i></a>
-                            <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id"><a href="#/login" id="login_link" tabindex="0" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a></li>
+                            <a ng-cloak ng-if="userHasMail" title="New messages" href="#/inbox"><i id="incomingMessage" class="fa fa-envelope text-danger"></i></a> 
+                           <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id"><a href="#/login" id="login_link" tabindex="0" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a></li>
                             <li dropdown class="login" ng-show="user._id" tabindex="0">                                                               
                                 <a dropdown-toggle class="dropdown-toggle" href="#" id="username_link" tabindex="-1" title="{{user.username}}" aria-label="{{user.username}}"><span ng-bind="user.username"></span><span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="username_link" tabindex="0">
@@ -150,7 +150,7 @@
             
             <!-- Alerts area -->
             <div class="navbar-fixed-bottom">
-                <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
             </div>
             
             <!-- Main content area -->

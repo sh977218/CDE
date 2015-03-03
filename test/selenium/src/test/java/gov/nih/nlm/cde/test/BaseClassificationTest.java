@@ -1,15 +1,12 @@
 package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
-import java.util.List;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.testng.Assert;
-import org.testng.annotations.Test;
 import org.openqa.selenium.support.ui.Select;
 
 public class BaseClassificationTest extends NlmCdeBaseTest {  
-   public void addClassificationMethod(String[] categories) {                
+   public void addClassificationMethod(String[] categories) {     
         findElement(By.id("addClassification")).click();
 
         try {
