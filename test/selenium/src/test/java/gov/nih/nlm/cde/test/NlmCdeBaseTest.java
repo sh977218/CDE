@@ -261,6 +261,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
         textPresent("1 results for");
+        textPresent(cdeName, By.id("accordionList"));
         findElement(By.id("acc_link_0")).click();
     }
 
