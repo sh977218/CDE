@@ -38,7 +38,7 @@ public class MergeTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
         hangon(2);
         findElement(By.cssSelector("#confirmNewVersion")).click();         
-        hangon(3); 
+        hangon(6); 
     }    
     
     private void checkResult() {     
@@ -65,7 +65,7 @@ public class MergeTest extends NlmCdeBaseTest {
         checkEverything();
         findElement(By.id("sendMergeRequest")).click();
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
-        hangon(1);
+        hangon(3);
         findElement(By.cssSelector("#confirmNewVersion")).click(); 
         hangon(5);
         findElement(By.linkText("Naming")).click();

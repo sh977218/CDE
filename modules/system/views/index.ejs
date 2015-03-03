@@ -89,8 +89,8 @@
                             <% if (config.modules.forms) { %><li ng-class="{ active: isPageActive('/form/search')}"><a href="/#/form/search">Forms</a></li> <% } %>
                             
                             <li dropdown ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' tabindex="0">    
-                                <a dropdown-toggle class="dropdown-toggle" href="#" id="dropdownMenu1" tabindex="-1" title="Boards" aria-label="Boards">Boards<span class="caret"></span></a>
-                                <ul role="menu" class="dropdown-menu" aria-labelledby="dropdownMenu1" tabindex="0" aria-expanded="true">
+                                <a dropdown-toggle class="dropdown-toggle" href="#" id="boardsMenu" tabindex="-1" title="Boards" aria-label="Boards">Boards<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu" aria-labelledby="boardsMenu" tabindex="0" aria-expanded="true">
                                     <li><a href="#/boardList">Public Boards</a></li>                                    
                                     <li><a href="#/myboards">My Boards</a></li>
                                 </ul>
