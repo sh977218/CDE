@@ -181,8 +181,7 @@ var doFile = function (cadsrFile, fileCb) {
                         cde.referenceDocuments.push(newRefDoc);
                     }
                 });
-            }
-            
+            }            
             
             if (de.VALUEDOMAIN[0].ValueDomainType[0] === 'Enumerated') {
                 cde.valueDomain.datatype = "Value List";
@@ -278,7 +277,7 @@ var doFile = function (cadsrFile, fileCb) {
                    var stream = new Readable();
                    var origXml = builder.buildObject(de).toString();
                    stream.push(origXml);
-                   stream.push(null)
+                   stream.push(null);
                    mongo_data_system.addAttachment(
                     {originalname: cde.ids[0].id + "v" + cde.ids[0].version + ".xml", type: "application/xml", size: origXml.length, stream: stream},
                     {_id: null, username: "batchloader"}, "Original XML File", newCde, function() {
@@ -286,7 +285,7 @@ var doFile = function (cadsrFile, fileCb) {
                      });
                      setTimeout(function() {
                         stream.emit('close'); 
-                     }, 500)
+                     }, 500);
                }
             });              
         }, function(err){

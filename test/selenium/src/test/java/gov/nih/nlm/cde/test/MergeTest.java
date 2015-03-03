@@ -61,19 +61,19 @@ public class MergeTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         addToCompare("Common Toxicity Criteria Adverse Event Colitis Grade", "Common Toxicity Criteria Adverse Event Hypophosphatemia Grade");
         findElement(By.id("retireMerge-0")).click(); 
-        Assert.assertTrue(textPresent("Common Toxicity Criteria Adverse Event Colitis Grade"));
+        textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
         checkEverything();
         findElement(By.id("sendMergeRequest")).click();
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
-        hangon(0.5);
+        hangon(1);
         findElement(By.cssSelector("#confirmNewVersion")).click(); 
         hangon(5);
         findElement(By.linkText("Naming")).click();
-        Assert.assertTrue(textPresent("Common Toxicity Criteria Adverse Event Colitis Grade"));
+        textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
         findElement(By.linkText("Classification")).click();
-        Assert.assertTrue(textPresent("Common Terminology Criteria for Adverse Events v3.0"));
+        textPresent("Common Terminology Criteria for Adverse Events v3.0");
         findElement(By.linkText("Identifiers")).click();
-        Assert.assertTrue(textPresent("2005490"));        
+        textPresent("2005490");        
     }    
     
     @Test
