@@ -96,8 +96,8 @@
                                 </ul>
                             </li>   
                            
-                            <li ng-class="{ active: isPageActive('/boardList')}" ng-show='!user._id' class="dropdown">    
-                                <a href="#/boardList" id="boardsMenu">Boards</a>
+                            <li id="boardsLink" ng-class="{ active: isPageActive('/boardList')}" ng-show='!user._id'>    
+                                <a href="#/boardList">Boards</a>
                             </li>                            
 
                             <li dropdown ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}" ng-show='isOrgCurator()' tabindex="0">    

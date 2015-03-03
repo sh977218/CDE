@@ -30,6 +30,11 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
               , content: "Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them."
           }
         , {
+              element: "#boardsLink"
+              , title: "Boards"
+              , content: "Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them."
+          }                  
+        , {
               element: "a:contains('Quick Board (')"
               , title: "Quick Board"
               , content: "The quick board is is a volatile board for doing quick comparisons or CDE downloads. The quick board is emptied when the page is refreshed."
