@@ -128,7 +128,12 @@ public class NlmCdeBaseTest {
 
     protected void mustBeLoggedInAs(String username, String password) {
         goHome();
-        driver.findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
+        try {
+            driver.findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
+        } catch (Exception e) {
+            hangon(2);
+            driver.findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
+        }
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
             loginAs(username, password);
@@ -293,7 +298,8 @@ public class NlmCdeBaseTest {
      * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
      */
     public void modalGone() {
-        hangon(2);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".modal")));
+        hangon(1);
     }
 
     public void closeAlert() {
