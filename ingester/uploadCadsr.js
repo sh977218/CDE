@@ -128,24 +128,24 @@ var doFile = function (cadsrFile, fileCb) {
                 cde.valueDomain.datatype = datatypeMapping[cde.valueDomain.datatype];
             }
             if (cde.valueDomain.datatype === 'Float') {
-                cde.datatypeFloat = {};
+                cde.valueDomain.datatypeFloat = {};
                 if (de.VALUEDOMAIN[0].MaximumValue[0].length > 0) {
-                    cde.datatypeFloat.maxValue = de.VALUEDOMAIN[0].MaximumValue[0];
+                    cde.valueDomain.datatypeFloat.maxValue = de.VALUEDOMAIN[0].MaximumValue[0];
                 } 
                 if (de.VALUEDOMAIN[0].MinimumValue[0].length > 0) {
-                    cde.datatypeFloat.minValue = de.VALUEDOMAIN[0].MinimumValue[0];
+                    cde.valueDomain.datatypeFloat.minValue = de.VALUEDOMAIN[0].MinimumValue[0];
                 } 
                 if (de.VALUEDOMAIN[0].DecimalPlace[0].length > 0) {
-                    cde.datatypeFloat.precision = de.VALUEDOMAIN[0].DecimalPlace[0];
+                    cde.valueDomain.datatypeFloat.precision = de.VALUEDOMAIN[0].DecimalPlace[0];
                 } 
             }
             if (cde.valueDomain.datatype === 'Text') {
-                cde.datatypeText = {};
+                cde.valueDomain.datatypeText = {};
                 if (de.VALUEDOMAIN[0].MaximumLength[0].length > 0) {
-                    cde.datatypeText.maxLength = de.VALUEDOMAIN[0].MaximumLength[0];
+                    cde.valueDomain.datatypeText.maxLength = de.VALUEDOMAIN[0].MaximumLength[0];
                 } 
                 if (de.VALUEDOMAIN[0].MinimumLength[0].length > 0) {
-                    cde.datatypeText.minLength = de.VALUEDOMAIN[0].MinimumLength[0];
+                    cde.valueDomain.datatypeText.minLength = de.VALUEDOMAIN[0].MinimumLength[0];
                 }             
             }
             
