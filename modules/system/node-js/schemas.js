@@ -12,6 +12,7 @@ exports.permissibleValueSchema = mongoose.Schema({
     permissibleValue: String
     , valueMeaningName: String
     , valueMeaningCode: String
+    , valueMeaningDefinition: String
     , codeSystemName: String
     , codeSystemVersion: String
 }, {_id: false});
