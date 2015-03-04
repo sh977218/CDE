@@ -239,6 +239,7 @@ angular.module('systemModule').config(function($provide) {
             var http;
             if (!http) { http = $injector.get('$http'); }
             try {
+                if (exception.message.indexOf("[$compile:tpload]")>-1) return;
                 http.post('/logClientException', {stack: exception.stack, message: exception.message, name: exception.name});
             } catch (e) {
 
