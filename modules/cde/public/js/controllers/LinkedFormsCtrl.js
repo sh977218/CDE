@@ -1,4 +1,4 @@
-function LinkedFormsCtrl($scope, $controller) {
+angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', '$controller', function($scope, $controller) {
     $scope.module = "form";   
 
     $scope.searchForm = {ftsearch: '"' + $scope.elt.tinyId + '"'};
@@ -7,3 +7,4 @@ function LinkedFormsCtrl($scope, $controller) {
     $controller('ListCtrl', {$scope: $scope});
     
 }
+]);

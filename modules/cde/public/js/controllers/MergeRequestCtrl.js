@@ -1,9 +1,9 @@
-function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, MergeCdes, isAllowedModel, userResource) {
+angular.module('cdeModule').controller('MergeRequestCtrl', ['$scope', '$modal', '$window', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel', 'userResource', function($scope, $modal, $window, MergeRequest, DataElement, MergeCdes, isAllowedModel, userResource) {
     $scope.openMergeModal = function(retiredIndex) {
         $scope.retiredIndex = retiredIndex;
         var modalInstance = $modal.open({
             templateUrl: 'mergeModal.html',
-            controller: MergeModalCtrl,
+            controller: 'MergeModalCtrl',
             resolve: {
                 cdes: function() {return $scope.cdes;},
                 retiredIndex: function() {return $scope.retiredIndex;},
@@ -51,7 +51,7 @@ function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, Me
     $scope.showVersioning = function(mergeRequest, callback) {
         var modalInstance = $modal.open({
             templateUrl: '/system/public/html/saveModal.html'
-            , controller: MergeApproveModalCtrl
+            , controller: 'MergeApproveModalCtrl'
             , resolve: {
                 elt: function() {
                     return mergeRequest.destination.object;
@@ -63,3 +63,4 @@ function MergeRequestCtrl($scope, $modal, $window, MergeRequest, DataElement, Me
         modalInstance.result.then(callback);       
     };      
 }
+]);

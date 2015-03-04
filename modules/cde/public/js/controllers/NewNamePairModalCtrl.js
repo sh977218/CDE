@@ -1,4 +1,4 @@
-function NewNamePairModalCtrl($scope, $modalInstance, cde) {
+angular.module('cdeModule').controller('NewNamePairModalCtrl', ['$scope', '$modalInstance', 'cde', function($scope, $modalInstance, cde) {
     $scope.newNamePair = {
         "languageCode" : "EN-US"
         , context: {
@@ -17,4 +17,4 @@ function NewNamePairModalCtrl($scope, $modalInstance, cde) {
         cde.unsaved = true;
         $modalInstance.close();
     };
-};
+}]);

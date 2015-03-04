@@ -1,4 +1,4 @@
-angular.module('resources')
+angular.module('CdeMerge', [])
 .factory('MergeCdes', function(DataElement, CDE, CdeClassificationTransfer) {
     var service = this;
     service.approveMergeMessage = function(message) { 

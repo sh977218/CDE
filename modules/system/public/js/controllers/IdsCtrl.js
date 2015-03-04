@@ -1,8 +1,8 @@
-var IdsCtrl = function ($scope, $modal, $window) {
+angular.module('systemModule').controller('IdsCtrl', ['$scope', '$modal', '$window', function($scope, $modal, $window) {
     $scope.openNewId = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newIdModalContent.html',
-          controller: NewIdModalCtrl,
+          controller: 'NewIdModalCtrl',
           resolve: {
               elt: function() {
                   return $scope.elt;
@@ -34,9 +34,9 @@ var IdsCtrl = function ($scope, $modal, $window) {
             });        
         }
     };
-};
+}]);
 
-function NewIdModalCtrl($scope, $modalInstance, elt) {
+angular.module('systemModule').controller('NewIdModalCtrl', ['$scope', '$modalInstance', 'elt', function($scope, $modalInstance, elt) {
     $scope.elt = elt;
     $scope.newId = {};
 
@@ -47,4 +47,4 @@ function NewIdModalCtrl($scope, $modalInstance, elt) {
     $scope.cancelCreate = function() {
         $modalInstance.dismiss("Cancel");
     };
-};
+}]);

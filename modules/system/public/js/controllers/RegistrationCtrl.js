@@ -1,9 +1,9 @@
- function RegistrationCtrl($scope, $modal, $window) {   
+ angular.module('systemModule').controller('RegistrationCtrl', ['$scope', '$modal', '$window', function($scope, $modal, $window) {   
      
     $scope.openRegStatusUpdate = function () {
         var modalInstance = $modal.open({
           templateUrl: '/system/public/html/regStatusUpdateModal.html',
-          controller: RegistrationModalCtrl,
+          controller: 'RegistrationModalCtrl',
           resolve: {
               elt: function() {
                   return $scope.elt;
@@ -23,4 +23,4 @@
     };
     
  }
- 
+ ]);

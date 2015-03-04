@@ -1,4 +1,4 @@
-var RegistrationModalCtrl = function($scope, $modalInstance, $http, elt, siteAdmin) {
+angular.module('systemModule').controller('RegistrationModalCtrl', ['$scope', '$modalInstance', '$http', 'elt', 'siteAdmin', function($scope, $modalInstance, $http, elt, siteAdmin) {
     $scope.elt = elt;
     $scope.validRegStatuses = ['Incomplete', 'Candidate', 'Retired'];
     
@@ -29,4 +29,4 @@ var RegistrationModalCtrl = function($scope, $modalInstance, $http, elt, siteAdm
         $modalInstance.dismiss('cancel');
     };
     
-};
+}]);

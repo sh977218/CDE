@@ -1,4 +1,4 @@
-function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource) {
+angular.module('systemModule').controller('ClassificationManagementCtrl', ['$scope', '$http', '$modal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', function($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource) {
     $scope.module = "cde";
     $scope.classifSubEltPage = '/system/public/html/classif-elt-mgt.html';
         
@@ -41,7 +41,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
     $scope.openAddClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: '/template/system/addClassification',
-            controller: AddClassificationToOrgModalCtrl,
+            controller: 'AddClassificationToOrgModalCtrl',
             resolve: {
                 org: function() {
                     return orgName;
@@ -71,7 +71,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
     $scope.showRenameDialog = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: 'renameClassificationModal.html',
-            controller: RenameClassificationModalCtrl,
+            controller: 'RenameClassificationModalCtrl',
             resolve: {
                 classifName: function() {
                     return pathArray[pathArray.length-1];
@@ -91,7 +91,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: '/template/system/removeClassificationMgtModal',
-            controller: RemoveClassificationModalCtrl,
+            controller: 'RemoveClassificationModalCtrl',
             resolve: {
                 classifName: function() {
                     return pathArray[pathArray.length-1];
@@ -108,7 +108,7 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
     $scope.showClassifyEntireSearchModal = function (orgName, pathArray) {
         var modalInstance = $modal.open({
           templateUrl: '/template/system/classifyCde',
-          controller: AddClassificationModalCtrl,
+          controller: 'AddClassificationModalCtrl',
           resolve: {
                 module: function() {
                     return $scope.module;
@@ -174,11 +174,11 @@ function ClassificationManagementCtrl($scope, $http, $modal, OrgClassification, 
             });
         }); 
     };    
-}
+}]);
 
-function RenameClassificationModalCtrl($scope, $modalInstance, classifName) {
+angular.module('systemModule').controller('RenameClassificationModalCtrl', ['$scope', '$modalInstance', 'classifName', function($scope, $modalInstance, classifName) {
     $scope.classifName = classifName;
     $scope.close = function(newname) {
         $modalInstance.close(newname);
     };  
-}
+}]);

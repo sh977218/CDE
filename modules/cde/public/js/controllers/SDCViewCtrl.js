@@ -1,4 +1,4 @@
-function SDCViewCtrl($scope, $routeParams, $http) {
+angular.module('cdeModule').controller('SDCViewCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
     
     var load = function(cdeId, cb) {
         if (cdeId) {
@@ -11,4 +11,4 @@ function SDCViewCtrl($scope, $routeParams, $http) {
     load($routeParams.cdeId);
     
     
-};
+}]);

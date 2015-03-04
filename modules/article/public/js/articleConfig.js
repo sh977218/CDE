@@ -1,4 +1,4 @@
-cdeApp.config(['$routeProvider',
+angular.module('articleModule', ['ngRoute']).config(
   function($routeProvider) {
     $routeProvider
       .when('/help/:helpPage', {
@@ -11,9 +11,8 @@ cdeApp.config(['$routeProvider',
         controller: 'ArticleCtrl',
         controllerAs: 'article'
       });
-}]);
-
-cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$modal', 
+})
+.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$modal', 
         function ($routeParams, $http, $scope, $window, $modal) {
 
 
@@ -70,12 +69,10 @@ cdeApp.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$m
             }
         });          
     };
-}]);
+}])
 
-cdeApp.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', function($scope, $modalInstance, $http) {
-
+.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', function($scope, $modalInstance, $http) {
     $scope.elt = {};
-
     $scope.ok = function() {
         $http.post("/article/key/" + $scope.elt.key, {}).
                 success(function(newArticle) {                      
@@ -85,26 +82,22 @@ cdeApp.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', f
                     $modalInstance.dismiss("Duplicate key.");
                 });
     };
-
     $scope.cancelSave = function() {
         $modalInstance.dismiss();
     };
 
-}]);
+}])
 
-cdeApp.controller('ArticleCtrl', ['$routeParams', '$http', '$scope', 
-function ($routeParams, $http, $scope) {
-
+.controller('ArticleCtrl', ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
     this.destination = $routeParams.id;
     $scope.elt = {};
     $scope.elt.body = "<div ng-if='!elt'><h1 class='pt60 pb40 text-center'><i class='fa fa-spinner fa-spin'></i> Loading...</h1></div>";
     $http.get("/article/id/" + this.destination).
-            success(function (result) {
-                $scope.elt = result;
-            }).
-            error(function (result) {
-                $scope.elt = {body: "<h1>404 - Page Not Found. You have reached the unreachable.</h1>"};
-            });
-    
+        success(function (result) {
+            $scope.elt = result;
+        }).
+        error(function (result) {
+            $scope.elt = {body: "<h1>404 - Page Not Found. You have reached the unreachable.</h1>"};
+        });    
 }]);
 

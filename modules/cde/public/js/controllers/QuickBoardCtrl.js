@@ -1,4 +1,4 @@
-function QuickBoardCtrl($scope, CdeList) {
+angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', function($scope, CdeList) {
     
     $scope.viewType = {
         accordion : true
@@ -94,4 +94,4 @@ function QuickBoardCtrl($scope, CdeList) {
         });
     }
     
-};
+}]);

@@ -1,4 +1,4 @@
-function LogCtrl($scope, $http, CsvDownload) {
+angular.module('systemModule').controller('LogCtrl', ['$scope', '$http', 'CsvDownload', function($scope, $http, CsvDownload) {
         
     $scope.gridLogEvents = [];
     $scope.gridOptions = {
@@ -48,3 +48,4 @@ function LogCtrl($scope, $http, CsvDownload) {
         });
     };    
 }
+]);

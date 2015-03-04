@@ -1,30 +1,17 @@
-var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman']).
+angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule','OrgFactories','classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman']).
     config(function($routeProvider) {
         $routeProvider.
         when('/', {redirectTo: '/cde/search'}).        
-        when('/home', {controller: HomeCtrl, templateUrl:'/home'}).
-        when('/cde/search', {controller: DEListCtrl, templateUrl: 'template/system/list'}).
-        when('/login', {controller: AuthCtrl, templateUrl:'/login'}).
-        when('/signup', {controller: AuthCtrl, templateUrl:'/signup'}).
-        when('/createCde', {controller: CreateCdeCtrl, templateUrl:'/createcde'}).
-        when('/deview', {controller: DEViewCtrl, templateUrl: '/deview'}).
-        when('/siteaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/siteaccountmanagement'}).
-        when('/orgaccountmanagement', {controller: AccountManagementCtrl, templateUrl: '/orgaccountmanagement'}).
-        when('/classificationmanagement', {controller: ClassificationManagementCtrl, templateUrl: '/template/system/classificationManagement'}).
-        when('/profile', {controller: ProfileCtrl, templateUrl: '/profile'}).
-        when('/myboards', {controller: MyBoardsCtrl, templateUrl: '/myboards'}).
-        when('/board/:boardId', {controller: BoardViewCtrl, templateUrl: '/board'}).
-        when('/boardList', {controller: BoardListCtrl, templateUrl: '/boardList'}).
-        when('/cdeSearchExport', {controller: DEListCtrl, templateUrl: '/exportCdeSearch'}).
-        when('/boardExport/:boardId', {controller: ExportCtrl, templateUrl: '/cde/public/html/boardExport.html'}).
-        when('/inbox', {controller: InboxCtrl, templateUrl: '/system/public/html/inbox.html'}).
-        when('/siteAudit', {controller: SiteAuditCtrl, templateUrl: '/siteaudit'}).
-        when('/quickBoard', {controller: QuickBoardCtrl, templateUrl: '/quickBoard'}).
-        when('/sdcview', {controller: SDCViewCtrl, templateUrl: '/sdcView'}).
-        when('/form/search', {controller: FormListCtrl, templateUrl: '/template/system/list'}).
-        when('/createForm', {controller: CreateFormCtrl, templateUrl: '/template/form/createForm'}).
-        when('/formView', {controller: FormViewCtrl, templateUrl: '/template/form/formView'}).
-        when('/triggerClientException', {controller: TriggerClientExceptionCtrl, templateUrl: '/template/system/triggerClientException'}).
+        when('/home', {controller: 'HomeCtrl', templateUrl:'/home'}).
+        when('/login', {controller: 'AuthCtrl', templateUrl:'/login'}).
+        when('/signup', {controller: 'AuthCtrl', templateUrl:'/signup'}).
+        when('/siteAudit', {templateUrl: '/siteaudit'}).        
+        when('/inbox', {controller: 'InboxCtrl', templateUrl: '/system/public/html/inbox.html'}).
+        when('/siteaccountmanagement', {controller: 'AccountManagementCtrl', templateUrl: '/siteaccountmanagement'}).
+        when('/orgaccountmanagement', {controller: 'AccountManagementCtrl', templateUrl: '/orgaccountmanagement'}).
+        when('/classificationmanagement', {controller: 'ClassificationManagementCtrl', templateUrl: '/template/system/classificationManagement'}).
+        when('/profile', {controller: 'ProfileCtrl', templateUrl: '/profile'}).                  
+        when('/triggerClientException', {controller: 'TriggerClientExceptionCtrl', templateUrl: '/template/system/triggerClientException'}).
         otherwise({redirectTo:'/'});
     })
     .directive('inlineEdit', function() {
@@ -83,7 +70,7 @@ var cdeApp = angular.module('cde', ['resources', 'classification', 'ngGrid', 'ui
         };
     });
 
-cdeApp.filter('placeholdEmpty', function() {
+angular.module('systemModule').filter('placeholdEmpty', function() {
     return function(input) {
         if (!(input === undefined || input === null || input === "")) {
             return input;
@@ -93,7 +80,7 @@ cdeApp.filter('placeholdEmpty', function() {
     };
 });
 
-cdeApp.filter('bytes', function() {
+angular.module('systemModule').filter('bytes', function() {
     return function(bytes, precision) {
             if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
             if (typeof precision === 'undefined') precision = 1;
@@ -103,7 +90,7 @@ cdeApp.filter('bytes', function() {
     };
 });
 
-cdeApp.factory('isAllowedModel', function (userResource) {
+angular.module('systemModule').factory('isAllowedModel', function (userResource) {
     var isAllowedModel = {
     };
     
@@ -158,7 +145,7 @@ cdeApp.factory('isAllowedModel', function (userResource) {
     return isAllowedModel;
 });
 
-cdeApp.directive('diff', function () {
+angular.module('systemModule').directive('diff', function () {
     return {
         restrict: 'AE'
         , scope: {
@@ -182,11 +169,11 @@ cdeApp.directive('diff', function () {
     };
 });
 
-cdeApp.config(['$compileProvider', function($compileProvider) {
+angular.module('systemModule').config(['$compileProvider', function($compileProvider) {
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }]);
 
-cdeApp.config(function($provide) {
+angular.module('systemModule').config(function($provide) {
     $provide.decorator('uiSortableDirective', function($delegate) {
         var directive = $delegate[0];
         var link = directive.link;
@@ -216,28 +203,33 @@ angular.module("template/accordion/accordion-group.html", []).run(["$templateCac
 	}]);
 
 angular.module("template/pagination/pager.html", []).run(["$templateCache", function($templateCache) {
-	  $templateCache.put("template/pagination/pager.html",
-	    "<ul class=\"pager\">\n" +
-	    "  <li ng-repeat=\"page in pages\" ng-class=\"{disabled: page.disabled, previous: page.previous, next: page.next}\"><a tabindex=\"0\" ng-click=\"selectPage(page.number)\">{{page.text}}</a></li>\n" +
-	    "</ul>");
-	}]);
+  $templateCache.put("template/pagination/pager.html",
+    "<ul class=\"pager\">\n" +
+    "  <li ng-class=\"{disabled: noPrevious(), previous: align}\"><a href tabindex=\"0\" ng-click=\"selectPage(page - 1)\">{{getText('previous')}}</a></li>\n" +
+    "  <li ng-class=\"{disabled: noNext(), next: align}\"><a href ng-click=\"selectPage(page + 1)\">{{getText('next')}}</a></li>\n" +
+    "</ul>");
+}]);
 
 angular.module("template/pagination/pagination.html", []).run(["$templateCache", function($templateCache) {
-	  $templateCache.put("template/pagination/pagination.html",
-	    "<ul class=\"pagination\">\n" +
-	    "  <li ng-repeat=\"page in pages\" ng-class=\"{active: page.active, disabled: page.disabled}\"><a tabindex=\"0\" ng-click=\"selectPage(page.number)\">{{page.text}}</a></li>\n" +
-	    "</ul>");
-	}]);
+  $templateCache.put("template/pagination/pagination.html",
+    "<ul class=\"pagination\">\n" +
+    "  <li ng-if=\"boundaryLinks\" ng-class=\"{disabled: noPrevious()}\"><a href tabindex=\"0\" ng-click=\"selectPage(1)\">{{getText('first')}}</a></li>\n" +
+    "  <li ng-if=\"directionLinks\" ng-class=\"{disabled: noPrevious()}\"><a href tabindex=\"0\" ng-click=\"selectPage(page - 1)\">{{getText('previous')}}</a></li>\n" +
+    "  <li ng-repeat=\"page in pages track by $index\" ng-class=\"{active: page.active}\"><a href tabindex=\"0\" ng-click=\"selectPage(page.number)\">{{page.text}}</a></li>\n" +
+    "  <li ng-if=\"directionLinks\" ng-class=\"{disabled: noNext()}\"><a href tabindex=\"0\" ng-click=\"selectPage(page + 1)\">{{getText('next')}}</a></li>\n" +
+    "  <li ng-if=\"boundaryLinks\" ng-class=\"{disabled: noNext()}\"><a href tabindex=\"0\" ng-click=\"selectPage(totalPages)\">{{getText('last')}}</a></li>\n" +
+    "</ul>");
+}]);
 
 angular.module("template/tabs/tab.html", []).run(["$templateCache", function($templateCache) {
-	  $templateCache.put("template/tabs/tab.html",
-	    "<li ng-class=\"{active: active, disabled: disabled}\">\n" +
-	    "  <a tabindex=\"0\" ng-click=\"select()\" tab-heading-transclude>{{heading}}</a>\n" +
-	    "</li>\n" +
-	    "");
-	}]);
+  $templateCache.put("template/tabs/tab.html",
+    "<li ng-class=\"{active: active, disabled: disabled}\">\n" +
+    "  <a href ng-click=\"select()\" tabindex=\"0\" tab-heading-transclude>{{heading}}</a>\n" +
+    "</li>\n" +
+    "");
+}]);
 
-cdeApp.config(function($provide) {
+angular.module('systemModule').config(function($provide) {
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector', function($delegate, $injector) {
         var previousException;
         return function(exception, cause) {
@@ -247,6 +239,7 @@ cdeApp.config(function($provide) {
             var http;
             if (!http) { http = $injector.get('$http'); }
             try {
+                if (exception.message.indexOf("[$compile:tpload]")>-1) return;
                 http.post('/logClientException', {stack: exception.stack, message: exception.message, name: exception.name});
             } catch (e) {
 

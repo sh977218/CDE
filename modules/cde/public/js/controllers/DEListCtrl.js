@@ -1,4 +1,4 @@
- function DEListCtrl($scope, $controller, TourContent) {
+angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', 'TourContent', function($scope, $controller, TourContent) {
     $scope.module = "cde";         
     $scope.dragSortableOptions = {
         connectWith: ".dragQuestions"
@@ -29,6 +29,11 @@
               , title: "Boards"
               , content: "Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them."
           }
+        , {
+              element: "#boardsLink"
+              , title: "Boards"
+              , content: "Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them."
+          }                  
         , {
               element: "a:contains('Quick Board (')"
               , title: "Quick Board"
@@ -115,3 +120,4 @@
     });    
     
 }
+]);

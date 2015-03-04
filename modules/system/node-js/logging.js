@@ -38,7 +38,7 @@ exports.MongoLogger = MongoLogger;
 MongoErrorLogger.prototype.log = function (level, msg, meta, cb) {
     processDetails = function(details){
         if (typeof details === "string") return details;
-        if (typeof details !== "object") return "Error in logger: Cannot process details.";
+        if (typeof details !== "object") return "Error in logger: Cannot process details. Not an Object.";
         Object.keys(details).map(function(name){
             var value = details[name];
             if (typeof value === "string") return name + "=" + value;
@@ -49,7 +49,7 @@ MongoErrorLogger.prototype.log = function (level, msg, meta, cb) {
                     var valueStr = JSON.stringify(value);
                     return name + "=" + valueStr;
                 } catch(e){
-                    return "Error in logger: Cannot process details.";
+                    return "Error in logger: Cannot process details. Cannot parse JSON.";
                 }
             }
         });

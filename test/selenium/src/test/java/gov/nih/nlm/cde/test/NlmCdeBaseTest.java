@@ -128,7 +128,12 @@ public class NlmCdeBaseTest {
 
     protected void mustBeLoggedInAs(String username, String password) {
         goHome();
-        driver.findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
+        try {
+            driver.findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
+        } catch (Exception e) {
+            hangon(2);
+            driver.findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
+        }
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
             loginAs(username, password);
@@ -261,6 +266,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();
         textPresent("1 results for");
+        textPresent(name, By.id("accordionList"));
         findElement(By.id("acc_link_0")).click();
     }
 
@@ -292,7 +298,8 @@ public class NlmCdeBaseTest {
      * TODO - Find a better way than to wait. I can't find out how to wait for modal to be gone reliably. 
      */
     public void modalGone() {
-        hangon(2);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".modal")));
+        hangon(1);
     }
 
     public void closeAlert() {
@@ -359,9 +366,15 @@ public class NlmCdeBaseTest {
     @BeforeMethod
     protected void goHome() {
         driver.get(baseUrl + "/gonowhere");
-        textPresent("Nothing here");
+        try {
+            textPresent("Nothing here");
+        } catch (Exception e) {
+            driver.get(baseUrl + "/gonowhere");
+            textPresent("Nothing here");
+        } 
         driver.get(baseUrl + "/#/home");
         findElement(By.id("selectOrgDropdown"));
+        hangon(1);
     }
 
     protected void goToCdeSearch() {

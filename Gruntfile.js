@@ -364,7 +364,8 @@ module.exports = function(grunt) {
                     'js/textAngular-sanitize.min.js': 'textAngular/dist/textAngular-sanitize.min.js',
                     'js/bootstrap-tour.js': 'bootstrap-tour/build/js/bootstrap-tour.js',
                     'js/bootstrap.js': 'bootstrap/dist/js/bootstrap.js',
-                    'js/camelCaseToHuman.js': 'angularjs-camelCase-human/camelCaseToHuman.js'
+                    'js/camelCaseToHuman.js': 'angularjs-camelCase-human/camelCaseToHuman.js',
+                    'js/ui-bootstrap-tpls.js': 'angular-ui-bootstrap-bower/ui-bootstrap-tpls.js'
                 }
             },
             map: {
@@ -542,6 +543,7 @@ module.exports = function(grunt) {
     grunt.registerTask('buildVersion',['shell:version','persistVersion']);
     grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
     grunt.registerTask('tests',['prompt:testsLocation','do-test','clearQueue']);
+    grunt.registerTask('bower',['bower-install-simple','bowercopy']);
     grunt.registerTask('refreplace-concat-minify', 'Run reference replacement, concatenation, minification build directory', ['useref', 'concat', 'uglify', 'cssmin']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
         grunt.task.run('npm-install');

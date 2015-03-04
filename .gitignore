@@ -57,6 +57,7 @@ modules/cde/public/assets/js/bootstrap-tour.min.js
 modules/cde/public/assets/js/camelCaseToHuman.js
 modules/cde/public/assets/js/bootstrap.js
 modules/cde/public/assets/js/bootstrap-tour.js
+modules/cde/public/assets/js/ui-bootstrap-tpls.js
 
 # OS generated files #
 ######################

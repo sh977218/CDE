@@ -1,4 +1,4 @@
-function AttachmentsCtrl($scope, $rootScope, $http, $timeout) {
+angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootScope', '$http', '$timeout', function($scope, $rootScope, $http, $timeout) {
     $scope.setFiles = function(element) {
         $scope.$apply(function($scope) {
           // Turn the FileList object into an Array
@@ -90,6 +90,4 @@ function AttachmentsCtrl($scope, $rootScope, $http, $timeout) {
             });
         }, 0);
     };
- };
- 
- 
+}]);
