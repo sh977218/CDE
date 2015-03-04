@@ -142,10 +142,10 @@ var doFile = function (cadsrFile, fileCb) {
             if (cde.valueDomain.datatype === 'Text') {
                 cde.datatypeText = {};
                 if (de.VALUEDOMAIN[0].MaximumLength[0].length > 0) {
-                    cde.datatypeText.maxValue = de.VALUEDOMAIN[0].MaximumLength[0];
+                    cde.datatypeText.maxLength = de.VALUEDOMAIN[0].MaximumLength[0];
                 } 
                 if (de.VALUEDOMAIN[0].MinimumLength[0].length > 0) {
-                    cde.datatypeText.minValue = de.VALUEDOMAIN[0].MinimumLength[0];
+                    cde.datatypeText.minLength = de.VALUEDOMAIN[0].MinimumLength[0];
                 }             
             }
             
@@ -197,7 +197,8 @@ var doFile = function (cadsrFile, fileCb) {
                     var newPv = 
                     {
                         permissibleValue: entities.decodeXML(pv.VALIDVALUE[0]), 
-                        valueMeaningName: entities.decodeXML(pv.VALUEMEANING[0])
+                        valueMeaningName: entities.decodeXML(pv.VALUEMEANING[0]),
+                        valueMeaningDefinition: entities.decodeXML(pv.MEANINGDESCRIPTION[0])
                     };
                     if (!pv.MEANINGCONCEPTS[0]['$']) {
                         newPv.valueMeaningCode = pv.MEANINGCONCEPTS[0];
