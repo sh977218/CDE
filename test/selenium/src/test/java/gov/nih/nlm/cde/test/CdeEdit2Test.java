@@ -30,21 +30,24 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         newCdeVersion();
         
         findElement(By.linkText("History")).click();
-        //findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
         showHistoryDiff(0);
-        Assert.assertTrue(textPresent("Naming"));
-        Assert.assertTrue(textPresent("LOINC"));
-        Assert.assertTrue(textPresent("Code Name 1"));
+        confirmFieldName("Concepts");
+        confirmNewValue("LOINC");
+        confirmNewValue("Code Name 1");
+        confirmNewValue("Code ID 1");
+        
+        confirmFieldName("Naming");
+        confirmNewValue("Alternative Name 1");
+        confirmNewValue("Alternative Definition 1");
+
         
         goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");            
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(findElement(By.xpath("//label[text()=\"Registration Status\"]/following-sibling::select"))).selectByValue("Recorded");
         findElement(By.xpath("//div[@id=\"regStatusModalFooter\"]//button[text()=\"Save\"]")).click();
         modalGone();
-        findElement(By.linkText("History")).click();
-
-        findElement(By.xpath("//table[@id = 'historyTable']//tr[3]//td[4]/a")).click();
-        Assert.assertTrue(textPresent("Registration State:"));
+        
+        checkInHistory("Registration State", "Qualified", "Recorded");
 
         findElement(By.linkText("Identifiers")).click();
         closeAlert();
@@ -56,8 +59,12 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         modalGone();
         goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "Recorded");   
         findElement(By.linkText("History")).click();
-        findElement(By.xpath("//table[@id = 'historyTable']//tr[4]//td[4]/a")).click();
-        Assert.assertTrue(textPresent("Identifiers:"));        
+        showHistoryDiff(0);
+        confirmFieldName("Identifiers");        
+        confirmNewValue("Origin 1");
+        confirmNewValue("Identifier 1");
+        confirmNewValue("Version 1");
+        
     }        
     
     @Test

@@ -38,19 +38,17 @@ public class CdeEditTest extends NlmCdeBaseTest {
         textPresent(cdeName);
         textPresent("Change note for change number 1");
         hangon(1);
-        //findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
         showHistoryDiff(0);
         textPresent(cdeName + "[name change number 1]");
         textPresent("the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]");
         
-        confirmCdeModification("Name", cdeName, cdeName + "[name change number 1]");
-        confirmCdeModification("Definition", "the free text field to specify the other type of mediastinal lymph node dissection.", "the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]");        
-        textNotPresent("Permissible Values");
+        confirmCdeModification("Primary Name", cdeName, cdeName + "[name change number 1]");
+        confirmCdeModification("Primary Definition", "the free text field to specify the other type of mediastinal lymph node dissection.", "the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]");        
         
         
         // View Prior Version
         findElement(By.linkText("History")).click();
-        findElement(By.id("prior-0")).click();
+        showHistoryFull(1);
         textPresent("1");
         textPresent("Warning: this data element is archived.");
         

@@ -5,10 +5,13 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
     CdeDiffCtrl.pathFieldMap = {
         1: [
             {fieldName: "Naming", path: ["naming"]}
-            , {fieldName: "Properties", path: ["naming"]}
+            , {fieldName: "Properties", path: ["properties"]}
+            , {fieldName: "Identifiers", path: ["ids"]}
         ]
         , 2: [
             {fieldName: "Concepts", path: ["dataElementConcept", "concepts"]}
+            , {fieldName: "Registration State", path: ["registrationState", "registrationStatus"]}
+            , {fieldName: "Steward Organization", path: ["stewardOrg", "name"]}
         ]        
         , 3: [
             {fieldName: "Alternative Name", path: ["naming",-1,"designation"]}

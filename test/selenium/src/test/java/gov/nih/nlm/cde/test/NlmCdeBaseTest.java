@@ -569,10 +569,10 @@ public class NlmCdeBaseTest {
     }    
     
     protected void showHistoryDiff(Integer prev){
-        findElement(By.xpath("//table[@id = 'historyTable']//tr["+prev+1+"]//td[4]/a")).click();
+        findElement(By.xpath("//table[@id = 'historyTable']//tr["+(prev+1)+"]//td[4]/a")).click();
     }
     protected void showHistoryFull(Integer prev){
-        findElement(By.xpath("//table[@id = 'historyTable']//tr["+prev+1+"]//td[5]/a")).click();
+        findElement(By.xpath("//table[@id = 'historyTable']//tr["+(prev+1)+"]//td[5]/a")).click();
     }   
     
     protected void confirmCdeModification(String field, String oldValue, String newValue){
@@ -583,15 +583,22 @@ public class NlmCdeBaseTest {
     
     protected void confirmFieldName(String fieldName){
         //Assert.assertEquals(findElement(By.cssSelector("#modificationsList .fieldName")).getText(), fieldName);
-        textPresent(fieldName, By.cssSelector("#modificationsList .fieldName"));
+        textPresent(fieldName, By.cssSelector("#modificationsList"));
     }
     protected void confirmPreviousValue(String value){
         //Assert.assertEquals(findElement(By.cssSelector("#modificationsList .previousValue")).getText(), value);
-        textPresent(value, By.cssSelector("#modificationsList .previousValue"));
+        textPresent(value, By.cssSelector("#modificationsList"));
         
     }    
     protected void confirmNewValue(String value){
         //Assert.assertEquals(findElement(By.cssSelector("#modificationsList .newValue")).getText(), value);
-        textPresent(value, By.cssSelector("#modificationsList .newValue"));
+        textPresent(value, By.cssSelector("#modificationsList"));
     }        
+    
+    protected void checkInHistory(String field, String oldValue, String newValue){
+        findElement(By.linkText("History")).click();
+        hangon(1);
+        showHistoryDiff(0);        
+        confirmCdeModification(field, oldValue, newValue); 
+    }
 }
