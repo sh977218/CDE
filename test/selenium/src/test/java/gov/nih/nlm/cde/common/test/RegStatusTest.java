@@ -25,6 +25,7 @@ public abstract class RegStatusTest extends CommonTest {
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
         findElement(By.id("cancelRegStatus")).click();
         modalGone();
+        hangon(3);
         Assert.assertEquals(findElement(By.id("dd_status")).getText(), "Qualified");
     }
 
