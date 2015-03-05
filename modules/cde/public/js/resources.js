@@ -37,7 +37,7 @@ angular.module('resourcesCde', ['ngResource'])
         {'getCdes': {method: 'GET', isArray: true}});
 })
 .factory('CdeDiff', function($resource) {
-    return $resource('/cdediff/:deId', {deId: '@deId'});
+    return $resource('/cdediff/:deId', {deId: '@deId'}, {get: {isArray: true}});
 })           
 .factory("LinkToVsac", function($resource) {
     return $resource(

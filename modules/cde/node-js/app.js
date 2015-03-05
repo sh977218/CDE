@@ -294,7 +294,16 @@ exports.init = function(app, daoManager) {
     });
 
     app.get('/cdediff/:deId', function(req, res) {
-       return cdesvc.diff(req, res); 
+        if (!req.params.deId) res.status(404).send("Please specify CDE id.");
+        mongo_data.byId(req.params.deId, function (err, dataElement) {
+            if (err) return res.status(404).send("Cannot retrieve DataElement.");
+            if (!dataElement.history || dataElement.history.length < 1) return res.status(403).send("This DE has no prior versions.");
+            mongo_data.byId(dataElement.history[dataElement.history.length - 1], function (err, priorDe) {
+                var diff = cdesvc.diff(dataElement, priorDe); 
+                console.log(JSON.stringify(diff));
+                res.send(diff);
+            });
+        });        
     });
 
     app.post('/elasticSearch/cde', function(req, res) {

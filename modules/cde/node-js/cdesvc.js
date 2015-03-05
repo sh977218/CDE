@@ -4,6 +4,7 @@ var express = require('express')
   , mongo_data = require('./mongo-cde')
   , logging = require('../../system/node-js/logging.js') //TODO: USE DEPENDENCY INJECTION
   , adminSvc = require('../../system/node-js/adminItemSvc.js')
+  , deepDiff = require('deep-diff')
   ;
 
 var cdesvc = this;
@@ -134,89 +135,21 @@ function arrayEquals(arr1, arr2) {
     return true;
 }
 
-exports.setDiff2 = function(dataElement, priorDe, property, diff) {
-    if (!arrayEquals(dataElement[property.first][property.second], priorDe[property.first][property.second])) {
-        diff.before[property.first] = {};
-        diff.after[property.first] = {};
-        diff.before[property.first][property.second] = priorDe[property.first][property.second];
-        diff.after[property.first][property.second] = dataElement[property.first][property.second];                             
-    }    
-};
-
-exports.diff = function(req, res) {
-    if (req.params.deId === "undefined") {
-        res.send("Please specify an identifier as input.");
-    } else {
-        mongo_data.byId(req.params.deId, function (err, dataElement) {
-           if (err) {
-               res.send("Error: " + err);
-           } else {
-               if (!dataElement) {
-                   res.send("Cannot retrieve element with this ID.");
-               } else {
-                   if (dataElement.history.length > 0) {
-                       mongo_data.byId(dataElement.history[dataElement.history.length - 1], function (err, priorDe) {
-                           var diff = {};
-                           diff.before = {};
-                           diff.after = {};
-                           
-                           if (dataElement.naming[0].designation !== priorDe.naming[0].designation) {
-                               diff.before.primaryName = priorDe.naming[0].designation;
-                               diff.after.primaryName = dataElement.naming[0].designation;
-                           }
-                           if (dataElement.naming[0].definition !== priorDe.naming[0].definition) {
-                               diff.before.primaryDefinition = priorDe.naming[0].definition;
-                               diff.after.primaryDefinition = dataElement.naming[0].definition;
-                           }
-                           if (!arrayEquals(priorDe.naming.slice(), dataElement.naming.slice())) {
-                               diff.before.naming = priorDe.naming;
-                               diff.after.naming = dataElement.naming;
-                           }                           
-                           if (dataElement.version !== priorDe.version) {
-                               diff.before.version = priorDe.version;
-                               diff.after.version = dataElement.version;
-                           }
-                           if (dataElement.stewardOrg.name !== priorDe.stewardOrg.name) {
-                               diff.before.stewardOrg = priorDe.stewardOrg;
-                               diff.after.stewardOrg = dataElement.stewardOrg;
-                           }
-                           if (dataElement.valueDomain.uom !== priorDe.valueDomain.uom) {
-                               diff.before.uom = priorDe.valueDomain.uom;
-                               if (!diff.before.uom) {diff.before.uom = "None Specified";}
-                               diff.after.uom = dataElement.valueDomain.uom;
-                               if (!diff.after.uom) {diff.after.uom = "None Specified";}
-                           }
-                           if (dataElement.valueDomain.datatype !== priorDe.valueDomain.datatype) {
-                               diff.before.datatype = priorDe.valueDomain.datatype;
-                               if (!diff.before.datatype) {diff.before.datatype = "None Specified";}
-                               diff.after.datatype = dataElement.valueDomain.datatype;
-                               if (!diff.after.datatype) {diff.after.datatype = "None Specified";}
-                           }
-                           if (!arrayEquals(dataElement.valueDomain.permissibleValues, priorDe.valueDomain.permissibleValues)) {
-                               diff.before.permissibleValues = priorDe.valueDomain.permissibleValues;
-                               diff.after.permissibleValues = dataElement.valueDomain.permissibleValues;                              
-                           }
-                           if (JSON.stringify(dataElement.registrationState) !== JSON.stringify(priorDe.registrationState)) {
-                               diff.before.registrationState = priorDe.registrationState;
-                               diff.after.registrationState = dataElement.registrationState;
-                           }                           
-                           cdesvc.setDiff2(dataElement, priorDe, {first: "property", second: "concepts"}, diff);                           
-                           cdesvc.setDiff2(dataElement, priorDe, {first: "objectClass", second: "concepts"}, diff);
-                           cdesvc.setDiff2(dataElement, priorDe, {first: "dataElementConcept", second: "concepts"}, diff);    
-                           if (JSON.stringify(dataElement.ids) !== JSON.stringify(priorDe.ids)) {
-                               diff.before.ids = priorDe.ids;
-                               diff.after.ids = dataElement.ids;                               
-                           }
-                           res.send(diff);
-                           
-                       });
-                   } else {
-                       res.send("This element has no history");
-                   }
-               }
-           }
-        });
-    }
+exports.diff = function(newCde, oldCde) {
+  if (newCde.toObject) var newCdeObj = newCde.toObject();
+  else var newCdeObj = newCde;
+  if (oldCde.toObject) var oldCdeObj = oldCde.toObject();
+  else var oldCdeObj = oldCde;
+  [newCdeObj, oldCdeObj].forEach(function(cde){
+      delete cde._id;
+      delete cde.updated;
+      delete cde.updatedBy;
+      delete cde.version;
+      delete cde.archived;
+      delete cde.history;
+      delete cde.__v;
+  });  
+  return deepDiff(newCdeObj, oldCdeObj);
 };
 
 exports.hideProprietaryPvs = function(cdes, user) {      

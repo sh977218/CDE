@@ -271,6 +271,7 @@ public class NlmCdeBaseTest {
 
     protected WebElement findElement(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+        hangon(0.5);
         return driver.findElement(by);
     }
     
