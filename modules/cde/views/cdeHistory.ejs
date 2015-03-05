@@ -23,7 +23,7 @@
                 <td>{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma' || "First Version"}}</td>
                 <td>{{priorCde.updatedBy.username || "First Version"}}</td>
                 <td>{{priorCde.changeNote}}</td>
-                <td><a class="fa fa-eye" ng-show="priorCde.updated" ng-click="viewDiff(priorCde)"> View</a></td>
+                <td><a class="fa fa-eye" ng-show="priorCde.updated" ng-click="viewDiff(priorCde)"> View</a><span ng-show="!priorCde.updated">First Version</span></td>
                 <td><a href="#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye"> View</a></td>
             </tr>
         </tbody>
@@ -61,14 +61,16 @@
                 <thead>
                     <tr>
                         <th>Field</th>
+                        <th>Type of Modification</th>
                         <th>New Value</th>
                         <th>Previous Value</th>
                     </tr>
                 </thead>
                 <tr ng-repeat="m in modifications">
                     <td>{{m.fieldName}}</td>
-                    <td>{{m.lhs}}</td>
-                    <td>{{m.rhs}}</td>
+                    <td>{{m.modificationType}}</td>
+                    <td>{{m.newValue}}</td>
+                    <td>{{m.previousValue}}</td>
                 </tr>
             </table>
          
