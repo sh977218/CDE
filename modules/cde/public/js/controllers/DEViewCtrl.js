@@ -122,8 +122,10 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
     
     $scope.viewDiff = function (elt) {        
         CdeDiff.get({deId: elt._id}, function(diffResult) {
-            $scope.diff = {};
-            $scope.diff.naming = "Modified";
+            diffResult.forEach(function(change){
+                if (change.path[0]==="naming" && change.path[1]===0 && change.path[2]==="designation") change.fieldName = "Primary Name";
+            });
+            $scope.diff = diffResult;
         });
     };
 

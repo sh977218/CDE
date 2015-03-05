@@ -33,7 +33,7 @@
     </div>
     <div class="col-md-6">
         <dl>
-            <dt ng-show="diff.primaryName">Primary Name: </dt><dd><span ng-bind-html="diff.primaryName"></span></dd>
+            <!--dt ng-show="diff.primaryName">Primary Name: </dt><dd><span ng-bind-html="diff.primaryName"></span></dd>
             <dt ng-show="diff.primaryDefinition">Primary Definition: </dt><dd><span ng-bind-html="diff.primaryDefinition"></span></dd>
             <dt ng-show="diff.stewardOrg">Steward: </dt><dd><span ng-bind-html="diff.stewardOrg"></span></dd>
             <dt ng-show="diff.version">Version: </dt><dd><span ng-bind-html="diff.version"></span></dd>
@@ -54,7 +54,14 @@
             <dd ng-show="diff.registrationState"><span ng-bind-html="diff.registrationState"></span></dd>
             
             <dt ng-show="diff.ids">Identifiers: </dt>
-            <dd ng-show="diff.ids"><span ng-bind-html="diff.ids"></span></dd>            
+            <dd ng-show="diff.ids"><span ng-bind-html="diff.ids"></span></dd-->   
+            
+            <span ng-repeat="d in diff">
+                <dt>Field: {{d.fieldName}}</dt>
+                <dd>New Value: {{d.lhs}}</dd>
+                <dd>Previous Value: {{d.rhs}}</dd>
+            </span>
+         
         </dl>
     </div>
 </div>

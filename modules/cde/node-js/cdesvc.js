@@ -148,6 +148,8 @@ exports.diff = function(newCde, oldCde) {
       delete cde.archived;
       delete cde.history;
       delete cde.__v;
+      delete cde.views;
+      delete cde.comments;
   });  
   return deepDiff(newCdeObj, oldCdeObj);
 };
