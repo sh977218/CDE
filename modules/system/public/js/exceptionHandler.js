@@ -1,6 +1,7 @@
 (function(){
     var handleError = function(message, name, stack) {
         try {
+            if (message.indexOf("[$compile:tpload]")>-1) return;
             var req = new XMLHttpRequest();
             var data = {
                 message:message

@@ -1,4 +1,4 @@
-function TakeATourCtrl($scope, TourContent) {  
+angular.module('systemModule').controller('TakeATourCtrl', ['$scope', 'TourContent', function($scope, TourContent) {  
     
     TourContent.stop = function() {
         if ($scope.tour)
@@ -17,3 +17,4 @@ function TakeATourCtrl($scope, TourContent) {
     
 
 }
+]);

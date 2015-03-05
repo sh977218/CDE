@@ -1,4 +1,4 @@
-function DailyUsageCtrl($scope, $http) {
+angular.module('systemModule').controller('DailyUsageCtrl', ['$scope', '$http', function($scope, $http) {
     
     $scope.entryLimit = 50;
     
@@ -40,3 +40,4 @@ function DailyUsageCtrl($scope, $http) {
         return diffDays;
     };
 }
+]);

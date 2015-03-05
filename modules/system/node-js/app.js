@@ -102,7 +102,7 @@ exports.init = function(app) {
         });
     });
     
-    app.get('/login', exports.nocacheMiddleware, function(req, res) {
+    app.get('/login', function(req, res) {
         res.render('login', "system");
     });
 

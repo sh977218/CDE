@@ -1,4 +1,4 @@
-function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource) {
+angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource) {
     $scope.filterMode = true;
     
     $timeout(function(){
@@ -121,7 +121,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userReso
     $scope.openAddToForm = function (cde) {
         $modal.open({
           templateUrl: 'addToFormModalContent.html',
-          controller: AddToFormModalCtrl,
+          controller: 'AddToFormModalCtrl',
           resolve: {
               cde: function() {
                   return cde;
@@ -323,7 +323,7 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userReso
     $scope.showPinAllModal = function() {
         var modalInstance = $modal.open({
           templateUrl: '/cde/public/html/selectBoardModal.html',
-          controller: SelectBoardModalCtrl,
+          controller: 'SelectBoardModalCtrl',
           resolve: {
             boards: function () {
               return $scope.boards;
@@ -346,3 +346,4 @@ function ListCtrl($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userReso
         });        
     };
 }
+]);

@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:ng="http://angularjs.org" ng-app="cde" id="ng-app" lang="en">
+<html xmlns:ng="http://angularjs.org" ng-app="systemModule" id="ng-app" lang="en">
     <head>        
         <title>NIH CDE Repository</title>
         <meta name="site-version" content="<%- include version.ejs %>">
@@ -88,21 +88,21 @@
                                                        
                             <% if (config.modules.forms) { %><li ng-class="{ active: isPageActive('/form/search')}"><a href="/#/form/search">Forms</a></li> <% } %>
                             
-                            <li ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' class="dropdown" tabindex="0">    
-                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#" id="dropdownMenu1" tabindex="-1" title="Boards" aria-label="Boards">Boards<span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="group" aria-labelledby="dropdownMenu1" tabindex="0" aria-expanded="true">
+                            <li dropdown ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' tabindex="0">    
+                                <a dropdown-toggle class="dropdown-toggle" href="#" id="boardsMenu" tabindex="-1" title="Boards" aria-label="Boards">Boards<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu" aria-labelledby="boardsMenu" tabindex="0" aria-expanded="true">
                                     <li><a href="#/boardList">Public Boards</a></li>                                    
                                     <li><a href="#/myboards">My Boards</a></li>
                                 </ul>
                             </li>   
                            
-                            <li ng-class="{ active: isPageActive('/boardList')}" ng-show='!user._id' class="dropdown">    
-                                <a href="#/boardList" id="boardsMenu">Boards</a>
+                            <li id="boardsLink" ng-class="{ active: isPageActive('/boardList')}" ng-show='!user._id'>    
+                                <a href="#/boardList">Boards</a>
                             </li>                            
-                            
-                            <li ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}" ng-show='isOrgCurator()' class="dropdown" tabindex="0">    
-                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#" id="dropdownMenu2" tabindex="-1" title="Create" aria-label="Create">Create<span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2" tabindex="0">
+
+                            <li dropdown ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}" ng-show='isOrgCurator()' tabindex="0">    
+                                <a dropdown-toggle  class="dropdown-toggle" href="#" id="dropdownMenu2" tabindex="-1" title="Create" aria-label="Create">Create<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu" aria-labelledby="dropdownMenu2" tabindex="0">
                                     <li><a href="#/createCde">CDE</a></li>
                                     <% if (config.modules.forms) { %><li><a href="#/createForm">Form</a></li><% } %>
                                 </ul>
@@ -119,9 +119,9 @@
                                     )
                                 </a>                          
                             </li>
-                            <li ng-class="{ active: isPageActive('/help')}">
-                                <a class="dropdown-toggle" data-toggle="dropdown-c" href="#" id="dropdownMenu_help" tabindex="-1" title="Help" aria-label="Help">Help<span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu_help" tabindex="0">
+                            <li dropdown ng-class="{ active: isPageActive('/help')}">
+                                <a dropdown-toggle class="dropdown-toggle" href="#" id="dropdownMenu_help" tabindex="-1" title="Help" aria-label="Help">Help<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu" aria-labelledby="dropdownMenu_help" tabindex="0">
                                     <li><a href="#/home">About</a></li>
                                     <% if (config.modules.article) { %><li><a href="#/help/index">User Guide</a></li><% } %>
                                     <li ng-controller="TakeATourCtrl"><a ng-click="restartTour()">Take a tour</a></li>
@@ -129,10 +129,10 @@
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right" data-userloaded="loaded-{{user.userLoaded}}">
-                            <a ng-cloak ng-if="userHasMail" title="New messages" href="#/inbox"><i id="incomingMessage" class="fa fa-envelope text-danger"></i></a>
-                            <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="user.visitor"><a href="#/login" id="login_link" tabindex="0" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a></li>
-                            <li class="login" ng-show="user._id" tabindex="0">                                                               
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="username_link" tabindex="-1" title="{{user.username}}" aria-label="{{user.username}}"><span ng-bind="user.username"></span><span class="caret"></span></a>
+                            <a ng-cloak ng-if="userHasMail" title="New messages" href="#/inbox"><i id="incomingMessage" class="fa fa-envelope text-danger"></i></a> 
+                           <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id"><a href="#/login" id="login_link" tabindex="0" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a></li>
+                            <li dropdown class="login" ng-show="user._id" tabindex="0">                                                               
+                                <a dropdown-toggle class="dropdown-toggle" href="#" id="username_link" tabindex="-1" title="{{user.username}}" aria-label="{{user.username}}"><span ng-bind="user.username"></span><span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="username_link" tabindex="0">
                                     <li ng-show='user._id'><a href="#/profile">Profile</a></li>
                                     <li ng-show='inboxVisible()'><a href="#/inbox">Inbox</a></li>
@@ -150,7 +150,7 @@
             
             <!-- Alerts area -->
             <div class="navbar-fixed-bottom">
-                <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
             </div>
             
             <!-- Main content area -->

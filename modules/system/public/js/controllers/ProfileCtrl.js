@@ -1,4 +1,4 @@
-function ProfileCtrl($scope, ViewingHistory, $timeout, $http, userResource) {               
+angular.module('systemModule').controller('ProfileCtrl', ['$scope', 'ViewingHistory', '$timeout', '$http', 'userResource', function($scope, ViewingHistory, $timeout, $http, userResource) {               
     ViewingHistory.getCdes({start: 0}, function(cdes) {
         $scope.cdes = cdes;
     });
@@ -23,4 +23,4 @@ function ProfileCtrl($scope, ViewingHistory, $timeout, $http, userResource) {
     $scope.orgCurator = userResource.user.orgCurator.toString().replace(/,/g,', ');
     
     $scope.orgAdmin = userResource.user.orgAdmin.toString().replace(/,/g,', ');
-}
+}]);

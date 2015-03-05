@@ -1,4 +1,4 @@
-function AuditErrorListCtrl($scope, $http){
+angular.module('systemModule').controller('AuditErrorListCtrl', ['$scope', '$http', function($scope, $http) {
     $scope.errors = [];
     $scope.skip = 0;
     $scope.limit = 10;
@@ -18,4 +18,4 @@ function AuditErrorListCtrl($scope, $http){
         $scope.fetchErrors($scope.skip, $scope.limit);
     };
     
-}
+}]);

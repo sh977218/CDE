@@ -1,4 +1,4 @@
-function ExportCtrl($scope, $window, CsvDownload) {
+angular.module('cdeModule').controller('ExportCtrl', ['$scope', '$window', 'CsvDownload', function($scope, $window, CsvDownload) {
     $scope.gridCdes = [];
 
     $scope.gridOptions = {
@@ -37,3 +37,4 @@ function ExportCtrl($scope, $window, CsvDownload) {
     };
 
 }
+]);

@@ -1,4 +1,4 @@
-function ForkCtrl($scope, $http, $modal, $window, userResource) {
+angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', function($scope, $http, $modal, $window, userResource) {
     
     var getForks = function() {
         $http.get("/forks/" + $scope.elt._id).then(function(result) {
@@ -26,7 +26,7 @@ function ForkCtrl($scope, $http, $modal, $window, userResource) {
     $scope.openAddFork = function() {
         var modalInstance = $modal.open({
             templateUrl: '/cde/public/html/addFork.html',
-            controller: AddForkModalCtrl,
+            controller: 'AddForkModalCtrl',
             resolve: {
                 userResource: function() {return userResource}
             }
@@ -38,4 +38,4 @@ function ForkCtrl($scope, $http, $modal, $window, userResource) {
             });
         });
     };
-}
+}]);

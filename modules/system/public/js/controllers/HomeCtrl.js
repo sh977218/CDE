@@ -1,4 +1,4 @@
-function HomeCtrl($scope, $http, $location) {
+angular.module('systemModule').controller('HomeCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
     // Declare variables that will be used. Not needed but makes the code clear to understand.
     $scope.ALLORGS = 'All Classifications';
     $scope.orgList = [];
@@ -50,3 +50,4 @@ function HomeCtrl($scope, $http, $location) {
     $scope.getOrgList();
     
 }
+]);

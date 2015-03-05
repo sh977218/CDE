@@ -1,4 +1,4 @@
-function NewBoardModalCtrl($scope, $modalInstance) {
+angular.module('cdeModule').controller('NewBoardModalCtrl', ['$scope', '$modalInstance', function($scope, $modalInstance) {
     $scope.newBoard = {};
     
     $scope.cancelCreate = function() {
@@ -9,3 +9,4 @@ function NewBoardModalCtrl($scope, $modalInstance) {
         $modalInstance.close($scope.newBoard);
     };
 }
+]);

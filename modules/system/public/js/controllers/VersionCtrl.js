@@ -1,4 +1,4 @@
-function VersionCtrl($scope, $modal, $window, userResource) { 
+angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$window', 'userResource', function($scope, $modal, $window, userResource) { 
 
     $scope.stageElt = function(elt) {
         elt.unsaved = true;
@@ -7,7 +7,7 @@ function VersionCtrl($scope, $modal, $window, userResource) {
     $scope.openSave = function (elt, redirectBaseLink) {
         var modalInstance = $modal.open({
           templateUrl: '/system/public/html/saveModal.html',
-          controller: SaveModalCtrl,
+          controller: 'SaveModalCtrl',
           resolve: {
               elt: function() {
                   return elt;
@@ -28,3 +28,4 @@ function VersionCtrl($scope, $modal, $window, userResource) {
 
 }
 
+]);

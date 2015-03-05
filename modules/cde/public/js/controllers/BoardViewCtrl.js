@@ -1,4 +1,4 @@
-function BoardViewCtrl($scope, $routeParams, $http) {
+angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
     $scope.cdes = [];
         
     $scope.$watch('currentPage', function() {
@@ -42,3 +42,4 @@ function BoardViewCtrl($scope, $routeParams, $http) {
     $scope.reload();
     
 }
+]);

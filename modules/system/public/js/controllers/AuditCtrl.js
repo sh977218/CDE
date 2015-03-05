@@ -1,8 +1,8 @@
-function AuditCtrl($scope) {
+angular.module('systemModule').controller('AuditCtrl', ['$scope', '$modal', function($scope, $modal) {
     $scope.openHistory = function () {
         var modalInstance = $modal.open({
           templateUrl: 'saveCdeModalContent.html',
-          controller: SaveCdeModalCtrl,
+          controller: 'SaveCdeModalCtrl',
           resolve: {
               cdeId: function() {
                   return $scope.cde_id;
@@ -15,3 +15,4 @@ function AuditCtrl($scope) {
         });
     };    
 }
+]);

@@ -1,4 +1,4 @@
-function CreateFormCtrl($scope, Form, $window) {
+angular.module('formModule').controller('CreateFormCtrl', ['$scope', 'Form', '$window', function($scope, Form, $window) {
     $scope.newForm = {stewardOrg:{}, naming: []};
     $scope.validationErrors = function() {
         if (!$scope.newForm.designation) {
@@ -25,4 +25,4 @@ function CreateFormCtrl($scope, Form, $window) {
             $scope.addAlert("success", "Form created.");
         });
     };
-}
+}]);

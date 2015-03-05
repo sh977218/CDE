@@ -1,0 +1,1 @@
+angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute']);

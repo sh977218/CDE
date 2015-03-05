@@ -1,4 +1,4 @@
-function MergeModalCtrl($scope, $modalInstance, cdes, retiredIndex, user) {
+angular.module('cdeModule').controller('MergeModalCtrl', ['$scope', '$modalInstance', 'cdes', 'retiredIndex', 'user', function($scope, $modalInstance, cdes, retiredIndex, user) {
     $scope.source = cdes[retiredIndex];
     $scope.target = cdes[(retiredIndex + 1) % 2];
     $scope.mergeRequest = {
@@ -28,3 +28,4 @@ function MergeModalCtrl($scope, $modalInstance, cdes, retiredIndex, user) {
         };
     };
 }
+]);

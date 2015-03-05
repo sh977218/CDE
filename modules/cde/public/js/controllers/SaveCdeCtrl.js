@@ -1,4 +1,4 @@
-function SaveCdeCtrl($scope, $modal) {
+angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$modal', function($scope, $modal) {
     $scope.checkVsacId = function(elt) {
         $scope.loadValueSet();
         elt.unsaved = true;
@@ -91,7 +91,7 @@ function SaveCdeCtrl($scope, $modal) {
     $scope.openNewNamePair = function () {
         $modal.open({
           templateUrl: 'newNamePairModalContent.html',
-          controller: NewNamePairModalCtrl,
+          controller: 'NewNamePairModalCtrl',
           resolve: {
               cde: function() {
                   return $scope.elt;
@@ -114,4 +114,4 @@ function SaveCdeCtrl($scope, $modal) {
         $scope.stageElt($scope.elt);          
     };
     
-};
+}]);

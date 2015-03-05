@@ -1,10 +1,10 @@
-function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification, OrgHelpers, userResource) {
+angular.module('systemModule').controller('ClassificationCtrl', ['$scope', '$modal', '$routeParams', 'CdeClassification', 'OrgHelpers', 'userResource', function($scope, $modal, $routeParams, CdeClassification, OrgHelpers, userResource) {
     $scope.initCache(); 
     
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
           templateUrl: '/template/system/classifyCde',
-          controller: AddClassificationModalCtrl,
+          controller: 'AddClassificationModalCtrl',
           resolve: {
                 module: function() {
                     return $scope.module;
@@ -56,7 +56,7 @@ function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification, Org
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: '/template/system/removeClassificationModal',
-            controller: RemoveClassificationModalCtrl,
+            controller: 'RemoveClassificationModalCtrl',
             resolve: {
                 classifName: function() {
                     return pathArray[pathArray.length-1];
@@ -69,4 +69,4 @@ function ClassificationCtrl($scope, $modal, $routeParams, CdeClassification, Org
             $scope.removeClassification(orgName, pathArray);
         });
     };
- }
+ }]);

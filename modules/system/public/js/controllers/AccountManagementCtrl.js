@@ -1,4 +1,4 @@
-function AccountManagementCtrl($scope, $http, $timeout, $window, AccountManagement, userResource) {
+angular.module('systemModule').controller('AccountManagementCtrl', ['$scope', '$http', '$timeout', '$window', 'AccountManagement', 'userResource', function($scope, $http, $timeout, $window, AccountManagement, userResource) {
     $scope.admin = {};
     $scope.newOrg = {};
     $scope.orgAdmin = {};
@@ -222,3 +222,4 @@ function AccountManagementCtrl($scope, $http, $timeout, $window, AccountManageme
     };
     $scope.getAllUsernames();
 }
+]);

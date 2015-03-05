@@ -1,4 +1,4 @@
-function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic, userResource) {
+angular.module('cdeModule').controller('CreateCdeCtrl', ['$scope', '$window', '$timeout', '$modal', 'DataElement', 'Elastic', 'userResource', function($scope, $window, $timeout, $modal, DataElement, Elastic, userResource) {
     $scope.openCdeInNewTab = true;
     $scope.currentPage = 1;
     $scope.totalItems = 0;
@@ -95,7 +95,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic, 
     $scope.openSelectDefaultClassificationModal = function () {
         var modalInstance = $modal.open({
             templateUrl: '/template/system/classifyCde',
-            controller: AddClassificationModalCtrl,
+            controller: 'AddClassificationModalCtrl',
             resolve: {
                 module: function() {
                     return $scope.module;
@@ -136,7 +136,7 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic, 
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: '/template/system/removeClassificationModal',
-            controller: RemoveClassificationModalCtrl,
+            controller: 'RemoveClassificationModalCtrl',
             resolve: {
                 classifName: function() {
                     return pathArray[pathArray.length-1];
@@ -151,3 +151,4 @@ function CreateCdeCtrl($scope, $window, $timeout, $modal, DataElement, Elastic, 
     };
     
 }
+]);

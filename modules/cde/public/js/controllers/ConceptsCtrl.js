@@ -1,8 +1,8 @@
-function ConceptsCtrl($scope, $modal, $http) {
+angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$modal', '$http', function($scope, $modal, $http) {
     $scope.openNewConcept = function () {
         $modal.open({
           templateUrl: 'newConceptModalContent.html',
-          controller: NewConceptModalCtrl,
+          controller: 'NewConceptModalCtrl',
           resolve: {
               cde: function() {
                   return $scope.elt;
@@ -38,3 +38,4 @@ function ConceptsCtrl($scope, $modal, $http) {
             });
     };
 }
+]);

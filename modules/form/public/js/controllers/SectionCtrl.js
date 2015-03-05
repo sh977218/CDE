@@ -1,4 +1,4 @@
-function SectionCtrl($scope, $modal, $timeout, $http) {
+angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$timeout', '$http', function($scope, $modal, $timeout, $http) {
         
     $scope.cardinalityOptions = 
     {
@@ -73,7 +73,7 @@ function SectionCtrl($scope, $modal, $timeout, $http) {
     $scope.openNameSelect = function(question) {
         var modalInstance = $modal.open({
           templateUrl: '/form/public/html/selectQuestionName.html',
-          controller: SelectQuestionNameModalCtrl,
+          controller: 'SelectQuestionNameModalCtrl',
           resolve: {
                 cde: function() {
                   return question.question.cde;
@@ -121,4 +121,4 @@ function SectionCtrl($scope, $modal, $timeout, $http) {
         $scope.stageElt();
     };
 
-}
+}]);

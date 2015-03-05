@@ -1,4 +1,4 @@
-var SaveModalCtrl = function($scope, $modalInstance, elt) {
+angular.module('systemModule').controller('SaveModalCtrl', ['$scope', '$modalInstance', 'elt', function($scope, $modalInstance, elt) {
     $scope.elt = elt;
 
     $scope.ok = function() {
@@ -14,3 +14,4 @@ var SaveModalCtrl = function($scope, $modalInstance, elt) {
 }
 
 
+]);

@@ -1,4 +1,4 @@
-function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers) {
+angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory', '$interval', '$window', 'screenSize', 'OrgHelpers', function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers) {
 
     // Global variables
     var GLOBALS = {
@@ -111,7 +111,7 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
     $scope.openPinModal = function (cde) {
         var modalInstance = $modal.open({
           templateUrl: '/cde/public/html/selectBoardModal.html',
-          controller: SelectBoardModalCtrl,
+          controller: 'SelectBoardModalCtrl',
           resolve: {
             boards: function () {
               return $scope.boards;
@@ -218,3 +218,4 @@ function MainCtrl($scope, $modal, userResource, $http, $location, $anchorScroll,
     };
     
 }
+]);

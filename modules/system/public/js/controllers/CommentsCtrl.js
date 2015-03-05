@@ -1,4 +1,4 @@
-function CommentsCtrl($scope, $http, userResource) {
+angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'userResource', function($scope, $http, userResource) {
     $scope.comment = {};
         
     $scope.canRemoveComment = function(com) {
@@ -29,3 +29,4 @@ function CommentsCtrl($scope, $http, userResource) {
         });
     };
 }
+]);

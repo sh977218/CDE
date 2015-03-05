@@ -1,4 +1,4 @@
- function AddForkModalCtrl($scope, $modalInstance, userResource) {
+angular.module('cdeModule').controller('AddForkModalCtrl', ['$scope', '$modalInstance', 'userResource', function($scope, $modalInstance, userResource) {
     $scope.selection = {}; 
     $scope.myOrgs = userResource.userOrgs;
     
@@ -18,6 +18,4 @@
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
     };
-}
- 
-
+}]);
