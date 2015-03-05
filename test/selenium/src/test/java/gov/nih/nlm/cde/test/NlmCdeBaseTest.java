@@ -568,4 +568,30 @@ public class NlmCdeBaseTest {
         hangon(0.5);
     }    
     
+    protected void showHistoryDiff(Integer prev){
+        findElement(By.xpath("//table[@id = 'historyTable']//tr["+prev+1+"]//td[4]/a")).click();
+    }
+    protected void showHistoryFull(Integer prev){
+        findElement(By.xpath("//table[@id = 'historyTable']//tr["+prev+1+"]//td[5]/a")).click();
+    }   
+    
+    protected void confirmCdeModification(String field, String oldValue, String newValue){
+        confirmFieldName(field);
+        confirmPreviousValue(oldValue);
+        confirmNewValue(newValue);
+    }
+    
+    protected void confirmFieldName(String fieldName){
+        //Assert.assertEquals(findElement(By.cssSelector("#modificationsList .fieldName")).getText(), fieldName);
+        textPresent(fieldName, By.cssSelector("#modificationsList .fieldName"));
+    }
+    protected void confirmPreviousValue(String value){
+        //Assert.assertEquals(findElement(By.cssSelector("#modificationsList .previousValue")).getText(), value);
+        textPresent(value, By.cssSelector("#modificationsList .previousValue"));
+        
+    }    
+    protected void confirmNewValue(String value){
+        //Assert.assertEquals(findElement(By.cssSelector("#modificationsList .newValue")).getText(), value);
+        textPresent(value, By.cssSelector("#modificationsList .newValue"));
+    }        
 }

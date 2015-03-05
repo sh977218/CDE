@@ -150,8 +150,9 @@ exports.diff = function(newCde, oldCde) {
       delete cde.__v;
       delete cde.views;
       delete cde.comments;
+      delete cde.usedByOrgs;
   });  
-  return deepDiff(newCdeObj, oldCdeObj);
+  return deepDiff(oldCdeObj, newCdeObj);
 };
 
 exports.hideProprietaryPvs = function(cdes, user) {      

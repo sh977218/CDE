@@ -24,9 +24,10 @@ public class PvTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("added to pv"));
         findElement(By.linkText("History")).click();
         hangon(1);
-        findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
-        Assert.assertTrue(textPresent("Permissible Values:"));
-        Assert.assertTrue(textPresent("Modified"));
+        //findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
+        showHistoryDiff(0);        
+        confirmCdeModification("Permissible Values", "Indeterminate", "Indeterminate added to pv");
+        
     }    
     
     @Test

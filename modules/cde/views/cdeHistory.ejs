@@ -56,7 +56,7 @@
             <dt ng-show="diff.ids">Identifiers: </dt>
             <dd ng-show="diff.ids"><span ng-bind-html="diff.ids"></span></dd-->   
             
-            <table class="table">
+            <table id="modificationsList" class="table">
                 <caption>List of Modifications</caption>
                 <thead>
                     <tr>
@@ -67,10 +67,10 @@
                     </tr>
                 </thead>
                 <tr ng-repeat="m in modifications">
-                    <td>{{m.fieldName}}</td>
+                    <td class="fieldName">{{m.fieldName}}</td>
                     <td>{{m.modificationType}}</td>
-                    <td>{{m.newValue}}</td>
-                    <td>{{m.previousValue}}</td>
+                    <td class="newValue">{{m.newValue}}</td>
+                    <td class="previousValue">{{m.previousValue}}</td>
                 </tr>
             </table>
          

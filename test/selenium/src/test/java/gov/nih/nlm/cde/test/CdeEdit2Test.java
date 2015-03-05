@@ -30,9 +30,11 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         newCdeVersion();
         
         findElement(By.linkText("History")).click();
-        findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
-        Assert.assertTrue(textPresent("Naming:"));
-        Assert.assertTrue(textPresent("Added: LOINC, Code Name 1, Code ID 1;"));
+        //findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
+        showHistoryDiff(0);
+        Assert.assertTrue(textPresent("Naming"));
+        Assert.assertTrue(textPresent("LOINC"));
+        Assert.assertTrue(textPresent("Code Name 1"));
         
         goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");            
         findElement(By.xpath("//i[@id='editStatus']")).click();
