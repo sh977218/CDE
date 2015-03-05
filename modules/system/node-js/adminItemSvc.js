@@ -284,7 +284,7 @@ exports.fork = function(req, res, dao) {
                 } else {
                     item.stewardOrg.name = req.body.org;
                     item.changeNote = req.body.changeNote;
-                    return dao.fork(item, req.user, function(err, response) {
+                    return dao.fork(item.toObject(), req.user, function(err, response) {
                         if (!err) res.send(response);
                         else res.status(403).send(err);
                     });

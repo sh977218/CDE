@@ -6,7 +6,7 @@ var mongoose = require('mongoose')
     , connHelper = require('../../system/node-js/connections')
     , logging = require('../../system/node-js/logging')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
-    //, deepCopy = require('deep-copy')
+    , deepCopy = require('deep-copy')
 ;
 
 exports.type = "cde";
@@ -263,7 +263,7 @@ exports.fork = function(elt, user, callback) {
 
 exports.update = function(elt, user, callback, special) {
     return DataElement.findById(elt._id, function(err, dataElement) {
-        elt._id = null;
+        delete elt._id;
         if (!elt.history) elt.history = [];
         elt.history.push(dataElement._id);
         elt.updated = new Date().toJSON();
