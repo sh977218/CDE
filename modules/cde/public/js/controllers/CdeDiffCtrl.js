@@ -9,7 +9,9 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Identifiers", path: ["ids"]}
         ]
         , 2: [
-            {fieldName: "Concepts", path: ["dataElementConcept", "concepts"]}
+            {fieldName: "Concepts - Property", path: ["property", "concepts"]}
+            , {fieldName: "Concepts - Object Class", path: ["objectClass", "concepts"]}
+            , {fieldName: "Concepts - Data Element", path: ["dataElementConcept", "concepts"]}
             , {fieldName: "Registration State", path: ["registrationState", "registrationStatus"]}
             , {fieldName: "Steward Organization", path: ["stewardOrg", "name"]}
         ]        
@@ -21,6 +23,9 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
         ]
         , 4: [
             {fieldName: "Permissible Values", path: ["valueDomain", "permissibleValues", -1, "permissibleValue"]}
+            , {fieldName: "Concepts - Data Element - Name", path: ["dataElementConcept", "concepts", -1, "name"]}
+            , {fieldName: "Concepts - Data Element - Origin", path: ["dataElementConcept", "concepts", -1, "origin"]}
+            , {fieldName: "Concepts - Data Element - Origin ID", path: ["dataElementConcept", "concepts", -1, "originId"]}
         ]
     };
     
