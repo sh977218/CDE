@@ -1,5 +1,5 @@
 <h4>History</h4>
-<div class="row">
+<div class="row"  ng-controller="CdeDiffCtrl">
     <div class="col-md-6">
     <table ng-show="priorCdes.length > 0" class="table" id="historyTable">
         <thead>
@@ -56,11 +56,6 @@
             <dt ng-show="diff.ids">Identifiers: </dt>
             <dd ng-show="diff.ids"><span ng-bind-html="diff.ids"></span></dd-->   
             
-            <span ng-repeat="d in modifications">
-                <dt>Field: {{d.fieldName}}</dt>
-                <dd>New Value: {{d.lhs}}</dd>
-                <dd>Previous Value: {{d.rhs}}</dd>
-            </span>
             <table class="table">
                 <caption>List of Modifications</caption>
                 <thead>
@@ -71,9 +66,9 @@
                     </tr>
                 </thead>
                 <tr ng-repeat="m in modifications">
-                    <dt>{{m.fieldName}}</dt>
-                    <dd>{{m.lhs}}</dd>
-                    <dd>{{m.rhs}}</dd>
+                    <td>{{m.fieldName}}</td>
+                    <td>{{m.lhs}}</td>
+                    <td>{{m.rhs}}</td>
                 </tr>
             </table>
          

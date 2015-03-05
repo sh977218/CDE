@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'CdeDiff', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, CdeDiff, isAllowedModel, OrgHelpers, $rootScope, TourContent) {
+angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, isAllowedModel, OrgHelpers, $rootScope, TourContent) {
     $scope.module = 'cde';
     $scope.baseLink = '#/deview?cdeId=';
     $scope.eltLoaded = false;
@@ -120,14 +120,6 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
         return missingInA;
     };
     
-    $scope.viewDiff = function (elt) {        
-        CdeDiff.get({deId: elt._id}, function(diffResult) {
-            diffResult.forEach(function(change){
-                if (change.path[0]==="naming" && change.path[1]===0 && change.path[2]==="designation") change.fieldName = "Primary Name";
-            });
-            $scope.modifications = diffResult;
-        });
-    };
 
 //    $scope.setDiff2 = function(diffResult, property) {
 //        if ((diffResult.before[property.first] && diffResult.before[property.first][property.second]) || (diffResult.after[property.first]&& diffResult.after[property.first][property.second])) {
