@@ -19,7 +19,7 @@
                 <td><a class="fa fa-eye" ng-click="viewDiff(elt)"> View</a></td>
                 <td>Currently Viewing</td>
             </tr>
-            <tr ng-repeat="priorCde in priorCdes | orderBy:'updated':reverse">
+            <tr ng-repeat="priorCde in priorCdes | orderBy:[nullsToBottom,'-updated']">
                 <td>{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma' || "First Version"}}</td>
                 <td>{{priorCde.updatedBy.username || "First Version"}}</td>
                 <td>{{priorCde.changeNote}}</td>
