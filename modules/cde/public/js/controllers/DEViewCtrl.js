@@ -125,7 +125,7 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
             diffResult.forEach(function(change){
                 if (change.path[0]==="naming" && change.path[1]===0 && change.path[2]==="designation") change.fieldName = "Primary Name";
             });
-            $scope.diff = diffResult;
+            $scope.modifications = diffResult;
         });
     };
 

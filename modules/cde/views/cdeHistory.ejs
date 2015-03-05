@@ -1,30 +1,30 @@
 <h4>History</h4>
 <div class="row">
     <div class="col-md-6">
-    <table ng-show="priorCdes.length > 0" class="table-bordered table-condensed table-striped" id="historyTable">
+    <table ng-show="priorCdes.length > 0" class="table" id="historyTable">
         <thead>
             <tr>
                 <td>Updated at</td>
                 <td>Updated by</td>
                 <td>Change Note</td>
-                <td>Diff</td>
+                <td>Modifications since Previous Version</td>
                 <td>See Full</td>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="priorCde in priorCdes">
-                <td>{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
-                <td>{{priorCde.updatedBy.username}}</td>
-                <td>{{priorCde.changeNote}}</td>
-                <td><a class="fa fa-eye" ng-show="priorCde.updated" ng-click="viewDiff(priorCde)"> View</a></td>
-                <td><a href="#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye"> View</a></td>
-            </tr>
             <tr>
                 <td>{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
                 <td>{{elt.updatedBy.username}}</td>
                 <td>{{elt.changeNote}}</td>
                 <td><a class="fa fa-eye" ng-click="viewDiff(elt)"> View</a></td>
-                <td></td>
+                <td>Currently Viewing</td>
+            </tr>
+            <tr ng-repeat="priorCde in priorCdes | orderBy:'updated':reverse">
+                <td>{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma' || "First Version"}}</td>
+                <td>{{priorCde.updatedBy.username || "First Version"}}</td>
+                <td>{{priorCde.changeNote}}</td>
+                <td><a class="fa fa-eye" ng-show="priorCde.updated" ng-click="viewDiff(priorCde)"> View</a></td>
+                <td><a href="#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye"> View</a></td>
             </tr>
         </tbody>
 
@@ -56,11 +56,26 @@
             <dt ng-show="diff.ids">Identifiers: </dt>
             <dd ng-show="diff.ids"><span ng-bind-html="diff.ids"></span></dd-->   
             
-            <span ng-repeat="d in diff">
+            <span ng-repeat="d in modifications">
                 <dt>Field: {{d.fieldName}}</dt>
                 <dd>New Value: {{d.lhs}}</dd>
                 <dd>Previous Value: {{d.rhs}}</dd>
             </span>
+            <table class="table">
+                <caption>List of Modifications</caption>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>New Value</th>
+                        <th>Previous Value</th>
+                    </tr>
+                </thead>
+                <tr ng-repeat="m in modifications">
+                    <dt>{{m.fieldName}}</dt>
+                    <dd>{{m.lhs}}</dd>
+                    <dd>{{m.rhs}}</dd>
+                </tr>
+            </table>
          
         </dl>
     </div>
