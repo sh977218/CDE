@@ -29,17 +29,11 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         
         newCdeVersion();
         
-        findElement(By.linkText("History")).click();
-        showHistoryDiff(0);
-        confirmFieldName("Concepts");
-        confirmNewValue("LOINC");
-        confirmNewValue("Code Name 1");
-        confirmNewValue("Code ID 1");
         
-        confirmFieldName("Naming");
-        confirmNewValue("Alternative Name 1");
-        confirmNewValue("Alternative Definition 1");
-
+        checkInHistory("Concepts", "", "Code Name 1");
+        checkInHistory("Concepts", "", "Code ID 1");
+        checkInHistory("Naming", "", "Alternative Name 1");
+        checkInHistory("Naming", "", "Alternative Definition 1");
         
         goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");            
         findElement(By.xpath("//i[@id='editStatus']")).click();
@@ -57,14 +51,10 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         findElement(By.xpath("//label[text()=\"Version\"]/following-sibling::textarea")).sendKeys("Version 1"); 
         findElement(By.xpath("//div[@id=\"newIdModalFooter\"]//button[text()=\"Save\"]")).click();
         modalGone();
-        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "Recorded");   
-        findElement(By.linkText("History")).click();
-        showHistoryDiff(0);
-        confirmFieldName("Identifiers");        
-        confirmNewValue("Origin 1");
-        confirmNewValue("Identifier 1");
-        confirmNewValue("Version 1");
-        
+        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "Recorded");           
+        checkInHistory("Identifiers", "", "Origin 1");
+        checkInHistory("Identifiers", "", "Identifier 1");
+        checkInHistory("Identifiers", "", "Version 1");
     }        
     
     @Test

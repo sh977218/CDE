@@ -95,6 +95,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("OC_CODE_111"));
         Assert.assertTrue(textPresent("Prop_CODE_111"));
         
+        checkInHistory("Concepts", "", "DEC_CODE_111");
+        checkInHistory("Concepts", "", "OC_CODE_111");
+        checkInHistory("Concepts", "", "Prop_CODE_111");
+        
+        findElement(By.linkText("Concepts")).click();
+        
         findElement(By.id("decConceptRemove-0")).click();
         findElement(By.id("ocConceptRemove-1")).click();
         findElement(By.id("propConceptRemove-3")).click();
@@ -105,6 +111,10 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("DEC1"));
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("OC1"));
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("PROP1"));
+        
+        checkInHistory("Concepts", "DEC_CODE_111", "");
+        checkInHistory("Concepts", "OC_CODE_111", "");
+        checkInHistory("Concepts", "Prop_CODE_111", "");        
     }
     
     @Test

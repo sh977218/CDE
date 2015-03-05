@@ -60,7 +60,7 @@ public class PvTest extends NlmCdeBaseTest {
     }    
     
     @Test
-    public void addRemovePv() {
+    public void addPv() {
         String cdeName = "Surgical Procedure Hand Laparoscopic Port Anatomic Site";
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
@@ -84,8 +84,7 @@ public class PvTest extends NlmCdeBaseTest {
         textPresent("New PV");
         Assert.assertEquals(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Right Middle Abdomen"), -1);
         
-        checkInHistory("Permissible Values", "", "Right Middle Abdomen");
-       
+        checkInHistory("Permissible Values", "", "Right Middle Abdomen");       
     }
     
     @Test
