@@ -56,7 +56,10 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Attachments - File ID", path: ["attachments", -1, "fileid"]}
             , {fieldName: "Attachments - Filename", path: ["attachments", -1, "filename"]}
             , {fieldName: "Attachments - Upload Date", path: ["attachments", -1, "uploadDate"]}
-            , {fieldName: "Attachments - File Size", path: ["attachments", -1, "filesize"]}           
+            , {fieldName: "Attachments - File Size", path: ["attachments", -1, "filesize"]} 
+            , {fieldName: "Mapping Specifications - Content", path: ["mappingSpecifications", -1, "content"]}
+            , {fieldName: "Mapping Specifications - Type", path: ["mappingSpecifications", -1, "spec_type"]}
+            , {fieldName: "Mapping Specifications - Script", path: ["mappingSpecifications", -1, "script"]}           
         ]
         , 4: [
             {fieldName: "Permissible Values", path: ["valueDomain", "permissibleValues", -1, "permissibleValue"]}
