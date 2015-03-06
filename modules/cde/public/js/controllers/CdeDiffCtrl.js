@@ -24,12 +24,11 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Permissible Values - Value List", path: ["valueDomain", "datatypeValueList"]} 
             , {fieldName: "Unit of Measure", path: ["valueDomain", "uom"]} 
             , {fieldName: "Permissible Values - VSAC Mapping", path: ["dataElementConcept", "conceptualDomain"]} 
-
-            
+            , {fieldName: "Permissible Values - Externaly Defined", path: ["valueDomain", "datatypeExternallyDefined"]} 
         ]        
         , 3: [
-            {fieldName: "Alternative Name", path: ["naming",-1,"designation"]}
-            , {fieldName: "Alternative Definition", path: ["naming",-1,"definition"]}        
+            {fieldName: "Naming - Other Name", path: ["naming",-1,"designation"]}
+            , {fieldName: "Naming - Other Definition", path: ["naming",-1,"definition"]}        
             , {fieldName: "Primary Name", path: ["naming",0,"designation"]}
             , {fieldName: "Primary Definition", path: ["naming",0,"definition"]}
             , {fieldName: "Permissible Values - Text - Regular Expression", path: ["valueDomain", "datatypeText", "regex"]}
