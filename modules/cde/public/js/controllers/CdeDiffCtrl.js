@@ -47,6 +47,10 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Concepts - Data Element - Name", path: ["dataElementConcept", "concepts", -1, "name"]}
             , {fieldName: "Concepts - Data Element - Origin", path: ["dataElementConcept", "concepts", -1, "origin"]}
             , {fieldName: "Concepts - Data Element - Origin ID", path: ["dataElementConcept", "concepts", -1, "originId"]}
+            , {fieldName: "Permissible Values - Code Name", path: ["valueDomain", "permissibleValues", -1, "valueMeaningName"]}
+            , {fieldName: "Permissible Values - Value", path: ["valueDomain", "permissibleValues", -1, "permissibleValue"]}
+            , {fieldName: "Permissible Values - Code", path: ["valueDomain", "permissibleValues", -1, "valueMeaningCode"]}         
+            , {fieldName: "Permissible Values - Code System", path: ["valueDomain", "permissibleValues", -1, "codeSystemName"]}
         ]
     };
     
@@ -67,7 +71,7 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
     $scope.viewDiff = function (elt) {        
         CdeDiff.get({deId: elt._id}, function(diffResult) {
             diffResult = diffResult.filter(function(change) {
-                return change.path.length !== 4 && change.path[3] !== "isValid";
+                return change.path[3] !== "isValid";
             });
             diffResult.forEach(function(change){
                 this.stringify = function(obj) {
@@ -78,8 +82,8 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
                 };
                 if (change.kind==="E") {
                     change.modificationType = "Modified Field";
-                    change.newValue = change.lhs;
-                    change.previousValue = change.rhs;
+                    change.newValue = change.rhs;
+                    change.previousValue = change.lhs;
                 }
                 if (change.kind==="N") {
                     change.modificationType = "New Item";
