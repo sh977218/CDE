@@ -25,6 +25,10 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Unit of Measure", path: ["valueDomain", "uom"]} 
             , {fieldName: "Permissible Values - VSAC Mapping", path: ["dataElementConcept", "conceptualDomain"]} 
             , {fieldName: "Permissible Values - Externaly Defined", path: ["valueDomain", "datatypeExternallyDefined"]} 
+            , {fieldName: "Permissible Values" , path: ["valueDomain", "permissibleValues"]} 
+            , {fieldName: "Permissible Values - Float" , path: ["valueDomain", "datatypeFloat"]} 
+            
+            
         ]        
         , 3: [
             {fieldName: "Naming - Other Name", path: ["naming",-1,"designation"]}
@@ -40,7 +44,10 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Permissible Values - Date - Format", path: ["valueDomain", "datatypeDate", "format"]}     
             , {fieldName: "Permissible Values - Value List - Datatype", path: ["valueDomain", "datatypeValueList", "datatype"]}   
             , {fieldName: "Permissible Values - Properties - Value", path: ["properties", -1, "value"]}   
-            , {fieldName: "Naming - Other Definition - Format", path: ["naming", -1, "definitionFormat"]} 
+            , {fieldName: "Naming - Other Definition - Format", path: ["naming", -1, "definitionFormat"]}            
+            , {fieldName: "Permissible Values - Float - Minimum Value", path: ["valueDomain", "datatypeFloat", "minValue"]}
+            , {fieldName: "Permissible Values - Float - Maximum Value", path: ["valueDomain", "datatypeFloat", "maxValue"]}
+            , {fieldName: "Permissible Values - Float - Precision", path: ["valueDomain", "datatypeFloat", "precision"]}
         ]
         , 4: [
             {fieldName: "Permissible Values", path: ["valueDomain", "permissibleValues", -1, "permissibleValue"]}
@@ -51,6 +58,10 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Permissible Values - Value", path: ["valueDomain", "permissibleValues", -1, "permissibleValue"]}
             , {fieldName: "Permissible Values - Code", path: ["valueDomain", "permissibleValues", -1, "valueMeaningCode"]}         
             , {fieldName: "Permissible Values - Code System", path: ["valueDomain", "permissibleValues", -1, "codeSystemName"]}
+            , {fieldName: "Naming - Primary Name - Context", path: ["naming", 1, "context", "contextName"]}
+            , {fieldName: "Naming - Other Name - Context", path: ["naming", -1, "context", "contextName"]}
+            
+            
         ]
     };
     
