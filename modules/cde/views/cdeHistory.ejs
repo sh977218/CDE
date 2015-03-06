@@ -21,8 +21,8 @@
                 <td>Currently Viewing</td>
             </tr>
             <tr ng-repeat="priorCde in priorCdes | orderBy:[nullsToBottom,'-updated']">
-                <td>{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma' || "First Version"}}</td>
-                <td>{{priorCde.updatedBy.username || "First Version"}}</td>
+                <td>{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+                <td>{{priorCde.updatedBy.username || priorCde.createdBy || "Imported"}}</td>
                 <td>{{priorCde.changeNote}}</td>
                 <td><a class="fa fa-eye" ng-show="priorCde.updated" ng-click="viewDiff(priorCde)"> View</a><span ng-show="!priorCde.updated">First Version</span></td>
                 <td><a href="#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye"> View</a></td>
