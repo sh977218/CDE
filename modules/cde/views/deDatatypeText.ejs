@@ -30,7 +30,7 @@
   <dd>
      <span ng-show="editRuleMode">
         <input ng-model="elt.valueDomain.datatypeText.rule" />
-        <i class="fa fa-check" ng-click="editRuleMode = false; stageElt(elt)" id="confirmRegex"> OK</i>
+        <i class="fa fa-check" ng-click="editRuleMode = false; stageElt(elt)" id="confirmRule"> OK</i>
         <i class="fa fa-times" ng-click="editRuleMode = false"> Cancel</i>
      </span>
      <span ng-hide="editRuleMode"><i ng-show="canCurate" class="fa fa-pencil" ng-click="editRuleMode = true"></i> {{elt.valueDomain.datatypeText.rule | placeholdEmpty}}</span>
