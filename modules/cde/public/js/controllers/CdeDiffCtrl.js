@@ -7,6 +7,8 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             {fieldName: "Naming", path: ["naming"]}
             , {fieldName: "Properties", path: ["properties"]}
             , {fieldName: "Identifiers", path: ["ids"]}
+            , {fieldName: "Mapping Specifications", path: ["mappingSpecifications"]}
+            , {fieldName: "Attachments", path: ["attachments"]}
         ]
         , 2: [
             {fieldName: "Concepts - Property", path: ["property", "concepts"]}
@@ -19,7 +21,9 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Permissible Values - Integer", path: ["valueDomain", "datatypeInteger"]}
             , {fieldName: "Permissible Values - Date", path: ["valueDomain", "datatypeDate"]} 
             , {fieldName: "Permissible Values - Value List", path: ["valueDomain", "datatypeValueList"]} 
-            //
+            , {fieldName: "Unit of Measure", path: ["valueDomain", "uom"]} 
+            , {fieldName: "Permissible Values - VSAC Mapping", path: ["dataElementConcept", "conceptualDomain"]} 
+
             
         ]        
         , 3: [
@@ -34,8 +38,8 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Permissible Values - Integer - Maximum Value", path: ["valueDomain", "datatypeInteger", "maxValue"]}
             , {fieldName: "Permissible Values - Integer - Minimum Value", path: ["valueDomain", "datatypeInteger", "minValue"]}     
             , {fieldName: "Permissible Values - Date - Format", path: ["valueDomain", "datatypeDate", "format"]}     
-            , {fieldName: "Permissible Values - Value List - Datatype", path: ["valueDomain", "datatypeValueList", "datatype"]}             
-            
+            , {fieldName: "Permissible Values - Value List - Datatype", path: ["valueDomain", "datatypeValueList", "datatype"]}   
+            , {fieldName: "Permissible Values - Properties - Value", path: ["properties", -1, "value"]}   
         ]
         , 4: [
             {fieldName: "Permissible Values", path: ["valueDomain", "permissibleValues", -1, "permissibleValue"]}
@@ -84,7 +88,11 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
                 if (change.kind==="A" && change.item.kind==="D") {
                     change.modificationType = "Item Deleted";
                     change.newValue = this.stringify(change.item.lhs);
-                }                            
+                }               
+                if (change.path[0] === "classification") {
+                    change.fieldName = "Classification";
+                    return;
+                }
                 CdeDiffCtrl.pathFieldMap[change.path.length].forEach(function(pathPair){
                     if (CdeDiffCtrl.comparePaths(pathPair.path, change.path)) change.fieldName = pathPair.fieldName;
                 });
