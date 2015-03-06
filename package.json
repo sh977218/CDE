@@ -37,7 +37,7 @@
     "async": "0.9.0",
     "express-ipfilter": "0.0.19",
     "multer": "0.1.7",     
-    "deep-copy": "1.0.0", 
+    "deep-diff": "0.3.0", 
     "grunt-bower-install-simple": "1.0.3",
     "grunt-bowercopy": "1.1.0",   
     "config": "*",
