@@ -581,16 +581,13 @@ public class NlmCdeBaseTest {
     }
     
     protected void confirmFieldName(String fieldName){
-        //Assert.assertEquals(findElement(By.cssSelector("#modificationsList .fieldName")).getText(), fieldName);
         textPresent(fieldName, By.cssSelector("#modificationsList"));
     }
     protected void confirmPreviousValue(String value){
-        //Assert.assertEquals(findElement(By.cssSelector("#modificationsList .previousValue")).getText(), value);
         textPresent(value, By.cssSelector("#modificationsList"));
         
     }    
     protected void confirmNewValue(String value){
-        //Assert.assertEquals(findElement(By.cssSelector("#modificationsList .newValue")).getText(), value);
         textPresent(value, By.cssSelector("#modificationsList"));
     }        
     
