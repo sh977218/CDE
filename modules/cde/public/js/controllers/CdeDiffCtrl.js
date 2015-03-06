@@ -98,10 +98,15 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             diffResult.forEach(function(change){
                 this.stringify = function(obj) {
                     if (typeof obj === "string") return obj;
+                    if (typeof obj === "number") return obj;
                     return Object.keys(obj).map(function(f){
                         return f + ": " + obj[f];
                     }).join(", ");                    
                 };
+                this.stringifyClassif = function(obj) {
+                    if (obj && obj.elements) return " > " + obj.name + this.stringifyClassif(obj.elements[0]);
+                    else return "";
+                };                
                 if (change.kind==="E") {
                     change.modificationType = "Modified Field";
                     change.newValue = change.rhs;
@@ -125,6 +130,8 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
                 }                   
                 if (change.path[0] === "classification") {
                     change.fieldName = "Classification";
+                    if (change.item.lhs) change.newValue = this.stringifyClassif(change.item.lhs);
+                    if (change.item.rhs) change.newValue = this.stringifyClassif(change.item.rhs);
                     return;
                 }
                 CdeDiffCtrl.pathFieldMap[change.path.length].forEach(function(pathPair){
