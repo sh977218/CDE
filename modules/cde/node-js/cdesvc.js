@@ -144,7 +144,6 @@ exports.diff = function(newCde, oldCde) {
       delete cde._id;
       delete cde.updated;
       delete cde.updatedBy;
-      delete cde.version;
       delete cde.archived;
       delete cde.history;
       delete cde.__v;

@@ -9,6 +9,7 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Identifiers", path: ["ids"]}
             , {fieldName: "Mapping Specifications", path: ["mappingSpecifications"]}
             , {fieldName: "Attachments", path: ["attachments"]}
+            , {fieldName: "Version", path: ["version"]}
         ]
         , 2: [
             {fieldName: "Concepts - Property", path: ["property", "concepts"]}
