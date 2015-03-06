@@ -40,6 +40,7 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Permissible Values - Date - Format", path: ["valueDomain", "datatypeDate", "format"]}     
             , {fieldName: "Permissible Values - Value List - Datatype", path: ["valueDomain", "datatypeValueList", "datatype"]}   
             , {fieldName: "Permissible Values - Properties - Value", path: ["properties", -1, "value"]}   
+            , {fieldName: "Naming - Other Definition - Format", path: ["naming", -1, "definitionFormat"]} 
         ]
         , 4: [
             {fieldName: "Permissible Values", path: ["valueDomain", "permissibleValues", -1, "permissibleValue"]}
@@ -65,6 +66,9 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
         
     $scope.viewDiff = function (elt) {        
         CdeDiff.get({deId: elt._id}, function(diffResult) {
+            diffResult = diffResult.filter(function(change) {
+                return change.path.length !== 4 && change.path[3] !== "isValid";
+            });
             diffResult.forEach(function(change){
                 this.stringify = function(obj) {
                     if (typeof obj === "string") return obj;
