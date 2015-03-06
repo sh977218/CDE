@@ -31,7 +31,11 @@ public class BoardViewTest extends BoardTest {
         goToBoard(boardName);
         findElement(By.linkText("Grid View")).click();
         Assert.assertEquals(driver.findElements(By.cssSelector("div.ngRow")).size(), 5);
-        
+        textPresent("Fluorescence in situ");
+        textPresent("pN0, pN1, NX");
+        textPresent("ALK Standard");
+        textPresent("Indicator of Yes or No");
+        textPresent("CTEP");
     }
 
     public void attachToBoard(String cdeName, String boardName) {

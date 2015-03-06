@@ -10,12 +10,12 @@ angular.module('cdeModule').controller('BoardExportCtrl', ['$scope', '$http', '$
                     for (var j = 0; j < respCdes.length; j++) {
                         if (pins[i].deTinyId === respCdes[j].tinyId) {
                             pins[i].cde = respCdes[j];                    
-                            $scope.gridCdes.push(respCdes[j]);
+                            $scope.gridCdes.push($scope.cdeToExportCde(respCdes[j]));
                         }
                     }
                 }
                 if ($scope.gridCdes.length === 500) {
-                    $scope.addAlert("info", "500 documents returned");   
+                    $scope.addAlert("info", "limit of 500 documents returned");   
                 }
             }
         }).
