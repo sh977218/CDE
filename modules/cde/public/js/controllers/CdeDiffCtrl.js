@@ -48,6 +48,11 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Permissible Values - Float - Minimum Value", path: ["valueDomain", "datatypeFloat", "minValue"]}
             , {fieldName: "Permissible Values - Float - Maximum Value", path: ["valueDomain", "datatypeFloat", "maxValue"]}
             , {fieldName: "Permissible Values - Float - Precision", path: ["valueDomain", "datatypeFloat", "precision"]}
+            , {fieldName: "Properties - Value - Format", path: ["properties", -1, "valueFormat"]}
+            , {fieldName: "Properties - Key", path: ["properties", -1, "key"]}
+            , {fieldName: "Identifiers - Source", path: ["ids", -1, "source"]}
+            , {fieldName: "Identifiers - ID", path: ["ids", -1, "id"]}
+            , {fieldName: "Identifiers - Version", path: ["ids", -1, "version"]}            
         ]
         , 4: [
             {fieldName: "Permissible Values", path: ["valueDomain", "permissibleValues", -1, "permissibleValue"]}
@@ -60,6 +65,8 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Permissible Values - Code System", path: ["valueDomain", "permissibleValues", -1, "codeSystemName"]}
             , {fieldName: "Naming - Primary Name - Context", path: ["naming", 1, "context", "contextName"]}
             , {fieldName: "Naming - Other Name - Context", path: ["naming", -1, "context", "contextName"]}
+            , {fieldName: "Properties - Object Class - Name", path: ["objectClass", "concepts", -1, "name"]}
+            
             
             
         ]
@@ -107,7 +114,11 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
                 if (change.kind==="A" && change.item.kind==="D") {
                     change.modificationType = "Item Deleted";
                     change.newValue = this.stringify(change.item.lhs);
-                }               
+                }            
+                if (change.kind==="D") {
+                    change.modificationType = "Item Deleted";
+                    change.previousValue = this.stringify(change.lhs);
+                }                   
                 if (change.path[0] === "classification") {
                     change.fieldName = "Classification";
                     return;
