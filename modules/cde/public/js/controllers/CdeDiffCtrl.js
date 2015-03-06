@@ -52,7 +52,11 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Properties - Key", path: ["properties", -1, "key"]}
             , {fieldName: "Identifiers - Source", path: ["ids", -1, "source"]}
             , {fieldName: "Identifiers - ID", path: ["ids", -1, "id"]}
-            , {fieldName: "Identifiers - Version", path: ["ids", -1, "version"]}            
+            , {fieldName: "Identifiers - Version", path: ["ids", -1, "version"]}  
+            , {fieldName: "Attachments - File ID", path: ["attachments", -1, "fileid"]}
+            , {fieldName: "Attachments - Filename", path: ["attachments", -1, "filename"]}
+            , {fieldName: "Attachments - Upload Date", path: ["attachments", -1, "uploadDate"]}
+            , {fieldName: "Attachments - File Size", path: ["attachments", -1, "filesize"]}           
         ]
         , 4: [
             {fieldName: "Permissible Values", path: ["valueDomain", "permissibleValues", -1, "permissibleValue"]}
