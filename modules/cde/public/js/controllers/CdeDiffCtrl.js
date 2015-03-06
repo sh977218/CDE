@@ -14,6 +14,9 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Concepts - Data Element", path: ["dataElementConcept", "concepts"]}
             , {fieldName: "Registration State", path: ["registrationState", "registrationStatus"]}
             , {fieldName: "Steward Organization", path: ["stewardOrg", "name"]}
+            , {fieldName: "Permissible Values - Value Type", path: ["valueDomain", "datatype"]}
+            , {fieldName: "Permissible Values - Text", path: ["valueDomain", "datatypeText"]}
+            
         ]        
         , 3: [
             {fieldName: "Alternative Name", path: ["naming",-1,"designation"]}
@@ -56,6 +59,10 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
                     change.newValue = change.lhs;
                     change.previousValue = change.rhs;
                 }
+                if (change.kind==="N") {
+                    change.modificationType = "New Item";
+                    change.newValue = this.stringify(change.rhs); 
+                }                
                 if (change.kind==="A" && change.item.kind==="N") {
                     change.modificationType = "New Item";
                     change.newValue = this.stringify(change.item.rhs);                  
