@@ -17,7 +17,9 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Permissible Values - Value Type", path: ["valueDomain", "datatype"]}
             , {fieldName: "Permissible Values - Text", path: ["valueDomain", "datatypeText"]}
             , {fieldName: "Permissible Values - Integer", path: ["valueDomain", "datatypeInteger"]}
-            , {fieldName: "Permissible Values - Date", path: ["valueDomain", "datatypeDate"]}              
+            , {fieldName: "Permissible Values - Date", path: ["valueDomain", "datatypeDate"]} 
+            , {fieldName: "Permissible Values - Value List", path: ["valueDomain", "datatypeValueList"]} 
+            //
             
         ]        
         , 3: [
@@ -32,7 +34,7 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
             , {fieldName: "Permissible Values - Integer - Maximum Value", path: ["valueDomain", "datatypeInteger", "maxValue"]}
             , {fieldName: "Permissible Values - Integer - Minimum Value", path: ["valueDomain", "datatypeInteger", "minValue"]}     
             , {fieldName: "Permissible Values - Date - Format", path: ["valueDomain", "datatypeDate", "format"]}     
-            
+            , {fieldName: "Permissible Values - Value List - Datatype", path: ["valueDomain", "datatypeValueList", "datatype"]}             
             
         ]
         , 4: [
