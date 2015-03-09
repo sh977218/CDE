@@ -12,7 +12,7 @@
        <label for="version">Choose a new version</label>
        <input class="form-control" name="version" type="text" ng-model="elt.version" ng-version-available ng-pattern="/^[A-z0-9-=.]+$/"></input>
        <span ng-show="saveForm.version.$error.unique" class="help-inline">This version number has already been used</span>
-        <span ng-show="saveForm.version.$error.pattern" class="help-inline">Version number cannot include characters other than letters, numbers, -, = and .</span>
+       <span ng-show="saveForm.version.$error.pattern" class="help-inline">Version number cannot include characters other than letters, numbers, -, = and .</span>
     </div>
 </div>
 <div class="modal-footer">

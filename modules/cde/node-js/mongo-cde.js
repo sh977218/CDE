@@ -6,6 +6,7 @@ var mongoose = require('mongoose')
     , connHelper = require('../../system/node-js/connections')
     , logging = require('../../system/node-js/logging')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
+    , deepCopy = require('deep-copy')
 ;
 
 exports.type = "cde";
@@ -262,32 +263,16 @@ exports.fork = function(elt, user, callback) {
 
 exports.update = function(elt, user, callback, special) {
     return DataElement.findById(elt._id, function(err, dataElement) {
-        var jsonDe = JSON.parse(JSON.stringify(dataElement));
-        delete jsonDe._id;
-        var newDe = new DataElement(jsonDe);
-        newDe.history.push(dataElement._id);
-        newDe.naming = elt.naming;
-        newDe.version = elt.version;
-        newDe.changeNote = elt.changeNote;
-        newDe.updated = new Date().toJSON();
-        newDe.updatedBy.userId = user._id;
-        newDe.updatedBy.username = user.username;
-        newDe.registrationState.registrationStatus = elt.registrationState.registrationStatus;
-        newDe.registrationState.effectiveDate = elt.registrationState.effectiveDate;
-        newDe.registrationState.untilDate = elt.registrationState.untilDate;
-        newDe.registrationState.administrativeNote = elt.registrationState.administrativeNote;
-        newDe.registrationState.unresolvedIssue = elt.registrationState.unresolvedIssue;
-        newDe.registrationState.administrativeStatus = elt.registrationState.administrativeStatus;
-        newDe.registrationState.replacedBy = elt.registrationState.replacedBy;
-        newDe.dataElementConcept = elt.dataElementConcept;
-        newDe.objectClass = elt.objectClass;
-        newDe.property = elt.property;
-        newDe.properties = elt.properties;
-        newDe.valueDomain = elt.valueDomain;
-        newDe.mappingSpecifications = elt.mappingSpecifications;
-        newDe.ids = elt.ids;
-        newDe.classification = elt.classification;
-        newDe.stewardOrg.name = elt.stewardOrg.name;
+        delete elt._id;
+        if (!elt.history) elt.history = [];
+        elt.history.push(dataElement._id);
+        elt.updated = new Date().toJSON();
+        elt.updatedBy = {};
+        elt.updatedBy.userId = user._id;
+        elt.updatedBy.username = user.username;        
+        elt.comments = dataElement.comments;
+        var newDe = new DataElement(elt);
+        
         dataElement.archived = true;
 
         if (special) {

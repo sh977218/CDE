@@ -247,10 +247,9 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.cssSelector("i.fa-search")).click();   
         textPresent("1 results for");
-        textPresent(name);
-        clickElement(By.id("acc_link_0"));
+        textPresent(name, By.id("accordionList"));        
         hangon(1);         
-        
+        clickElement(By.id("acc_link_0"));        
         try {
             findElement(By.id("openEltInCurrentTab_0"));
         } catch(Exception e) {
@@ -568,4 +567,34 @@ public class NlmCdeBaseTest {
         hangon(0.5);
     }    
     
+    protected void showHistoryDiff(Integer prev){
+        findElement(By.xpath("//table[@id = 'historyTable']//tr["+(prev+1)+"]//td[4]/a")).click();
+    }
+    protected void showHistoryFull(Integer prev){
+        findElement(By.xpath("//table[@id = 'historyTable']//tr["+(prev+1)+"]//td[5]/a")).click();
+    }   
+    
+    protected void confirmCdeModification(String field, String oldValue, String newValue){
+        confirmFieldName(field);
+        confirmPreviousValue(oldValue);
+        confirmNewValue(newValue);
+    }
+    
+    protected void confirmFieldName(String fieldName){
+        textPresent(fieldName, By.cssSelector("#modificationsList"));
+    }
+    protected void confirmPreviousValue(String value){
+        textPresent(value, By.cssSelector("#modificationsList"));
+        
+    }    
+    protected void confirmNewValue(String value){
+        textPresent(value, By.cssSelector("#modificationsList"));
+    }        
+    
+    protected void checkInHistory(String field, String oldValue, String newValue){
+        findElement(By.linkText("History")).click();
+        hangon(1);
+        showHistoryDiff(0);        
+        confirmCdeModification(field, oldValue, newValue); 
+    }
 }

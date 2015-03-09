@@ -86,16 +86,15 @@ schemas.registrationStateSchema = {
     , unresolvedIssue: String
     , administrativeStatus: String
     , replacedBy: {tinyId: String} 
-    , _id: false
 };
 
-schemas.commentSchema = {
+schemas.commentSchema = mongoose.Schema({
     text: String
     , user: String
     , username: String
     , created: Date
     , pendingApproval: Boolean
-};
+}, {_id: false});
 
 schemas.helpItemSchema = mongoose.Schema({
     permalink: String

@@ -28,9 +28,7 @@ public class CdeStewardTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("NINDS"));
         newCdeVersion();
         Assert.assertEquals("NINDS", findElement(By.id("dd_general_steward")).getText());
-        findElement(By.linkText("History")).click();
-        findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
-        textPresent("Before: CTEP -- After: NINDS");
+        checkInHistory("Steward", "CTEP", "NINDS");
     }
     
     @Test

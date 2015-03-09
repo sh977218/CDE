@@ -22,11 +22,9 @@ public class PvTest extends NlmCdeBaseTest {
         newCdeVersion("Changed PV");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertTrue(textPresent("added to pv"));
-        findElement(By.linkText("History")).click();
-        hangon(1);
-        findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
-        Assert.assertTrue(textPresent("Permissible Values:"));
-        Assert.assertTrue(textPresent("Modified"));
+        
+        checkInHistory("Permissible Values", "Indeterminate", "Indeterminate added to pv");
+        
     }    
     
     @Test
@@ -62,7 +60,7 @@ public class PvTest extends NlmCdeBaseTest {
     }    
     
     @Test
-    public void addRemovePv() {
+    public void addPv() {
         String cdeName = "Surgical Procedure Hand Laparoscopic Port Anatomic Site";
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
@@ -85,6 +83,8 @@ public class PvTest extends NlmCdeBaseTest {
         findElement(By.linkText("Permissible Values")).click();
         textPresent("New PV");
         Assert.assertEquals(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Right Middle Abdomen"), -1);
+        
+        checkInHistory("Permissible Values", "", "Right Middle Abdomen");       
     }
     
     @Test
@@ -100,6 +100,9 @@ public class PvTest extends NlmCdeBaseTest {
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertEquals(findElement(By.id("pvCode-1")).getText(), "C25229");
         Assert.assertEquals(findElement(By.id("pvCode-7")).getText(), "C25594,C48046,C13717");
+        
+        checkInHistory("Permissible Values", "C25229", "C25594,C48046,C13717");
+        checkInHistory("Permissible Values", "C25594,C48046,C13717", "C25229");
     }
     
 }
