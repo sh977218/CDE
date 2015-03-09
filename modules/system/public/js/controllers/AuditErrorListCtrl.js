@@ -4,11 +4,13 @@ angular.module('systemModule').controller('AuditErrorListCtrl', ['$scope', '$htt
     $scope.limit = 10;
     
     
-    $scope.promise = new $q(function(resolve, reject) {
-        $scope.resolve = resolve;
-    });
+    
+    $scope.promise = null;
     
     $scope.fetchErrors = function(skip, limit){
+        $scope.promise = new $q(function(resolve, reject) {
+            $scope.resolve = resolve;
+        });        
         $http.post($scope.api, {skip: skip, limit: limit}).success(function(result){
             $scope.records = result;
             $scope.resolve();
