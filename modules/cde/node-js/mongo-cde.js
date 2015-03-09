@@ -377,3 +377,13 @@ exports.saveModification = function(oldDe, newDe, user) {
     var auditItem = new CdeAudit(message);
     auditItem.save();
 };
+
+exports.getCdeAuditLog = function(params, callback){
+    CdeAudit.find()
+            .sort('-date')
+            .skip(params.skip)
+            .limit(params.limit)
+            .exec(function(err, logs){
+        callback(err, logs);
+    });    
+};
