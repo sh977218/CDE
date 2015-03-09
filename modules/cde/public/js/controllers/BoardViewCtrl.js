@@ -34,7 +34,6 @@ angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams
     };
         
     $scope.unpin = function(pin) {
-        console.log( pin);
         $http['delete']("/pincde/" + pin._id + "/" + $scope.board._id).then(function(response) {
             $scope.reload();
         });
