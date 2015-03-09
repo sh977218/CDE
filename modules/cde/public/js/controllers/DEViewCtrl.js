@@ -379,15 +379,6 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
     $scope.$on("$destroy", function handler() {
         TourContent.stop();
     });    
-    
-    $scope.viewDiff = function (elt) {        
-        CdeDiff.get({deId: elt._id}, function(diffResult) {
-            diffResult = diffResult.filter(function(change) {
-                return change.path[3] !== "isValid";
-            });
-            //diffResult.forEach($scope.makeHumanReadable);
-            $scope.cdeDiff = diffResult;
-        });
-    };    
+  
     
 }]);
