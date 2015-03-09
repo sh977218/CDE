@@ -5,8 +5,7 @@ angular.module('systemModule').controller('AuditLogCtrl', ['$scope', '$controlle
         $scope.records.forEach(function(rec){
             rec.diff.forEach(function(d){
                 CdeDiffPopulate.makeHumanReadable(d);
-            });
-            
+            });            
         });
     });
 }]);
