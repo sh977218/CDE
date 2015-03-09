@@ -59,7 +59,9 @@ exports.ticketValidate = function( tkt, cb ) {
     });
     
     req.on('error', function (e) {
+        console.log("ticketValidate Error: " + e)
         logging.errorLogger.error('getTgt: ERROR with request: ' + e);
+//        logging.errorLogger.error("getTgt: ERROR with request", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req);                
     });
     
     req.on("timeout", function() { 
@@ -169,15 +171,15 @@ exports.ticketAuth = function(req, res, next){
     // Check for presence of url param 'ticket'
     if(!req.query.ticket || req.query.ticket.length<=0) {
         next();
-    }    
-    else auth.ticketValidate(req.query.ticket, function(err, username) {
+    } else auth.ticketValidate(req.query.ticket, function(err, username) {
         if(err) {
             next(); 
             return; 
+        } else {
+            auth.findAddUserLocally(username, req, function(user) {
+                if (user) req.user = user;
+                next();
+            });
         }
-        auth.findAddUserLocally(username, req, function(user) {
-            if (user) req.user = user;
-            next();
-        });
     });    
 };

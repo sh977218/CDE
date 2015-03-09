@@ -31,7 +31,6 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
     mongo_data_system.userById(id, function(err, user){
-        console.log("user: " + user.username + " " + user.orgAdmin);  
         done(err, user);
     });
 });
@@ -42,10 +41,12 @@ var app = express();
 app.use(auth.ticketAuth);
 
 process.on('uncaughtException', function (err) {
+    console.log("ERROR1: " + err);
     logging.errorLogger.error("Error: Uncaught Exception", {stack: err.stack, origin: "app.process.uncaughtException"});
 });
 
 domain.on('error', function(err){
+    console.log("ERROR2: " + err);
     logging.errorLogger.error("Error: Domain Error", {stack: err.stack, origin: "app.domain.error"});
 });
 
@@ -177,6 +178,7 @@ try {
 }
 
 app.use(function(err, req, res, next){
+    console.log("ERROR3: " + err);
     if (req && req.body && req.body.password) req.body.password = "";
     var meta = {
         stack: err.stack

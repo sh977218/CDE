@@ -106,8 +106,6 @@ public class NlmCdeBaseTest {
         } catch (MalformedURLException ex) {
             Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-
         
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
@@ -128,12 +126,8 @@ public class NlmCdeBaseTest {
 
     protected void mustBeLoggedInAs(String username, String password) {
         goHome();
-        try {
-            driver.findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
-        } catch (Exception e) {
-            hangon(2);
-            driver.findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
-        }
+        findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
+        
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
             loginAs(username, password);
@@ -324,6 +318,7 @@ public class NlmCdeBaseTest {
         // assumption is that text is sent before JS can load. So wait 1 sec.
         hangon(1);
         findElement(By.name("version")).sendKeys(".1");
+        textNotPresent("has already been used");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("confirmNewVersion")));
         findElement(By.id("confirmNewVersion")).click();
         try{
@@ -404,36 +399,10 @@ public class NlmCdeBaseTest {
         findElement(By.linkText("Log In"));
     }
 
-    private void loginSequence(String username, String password) {
-        findElement(By.linkText("Log In")).click();
-        hangon(1);
-        findElement(By.id("uname")).clear();
-        findElement(By.id("uname")).sendKeys(username);
-        findElement(By.id("passwd")).clear();
-        findElement(By.id("passwd")).sendKeys(password);
-        clickElement(By.id("login_button"));        
-    }
     
     protected void loginAs(String username, String password) {
-        loginSequence(username, password);
-        // Assumption is that this comes from a CSRF error. So reload the whole page if it fails. 
-        try {
-            findElement(By.linkText(username));
-        } catch (Exception e) {
-            if (driver.findElements(By.id("login_button")).size() > 0) {
-                driver.get(baseUrl);
-                loginSequence(username, password);
-                try { 
-                    findElement(By.linkText(username));
-                } catch (Exception e2) {
-                    if (driver.findElements(By.id("login_button")).size() > 0) {
-                        driver.get(baseUrl);
-                        loginSequence(username, password);
-                        findElement(By.linkText(username));
-                    }
-                }
-            }
-        }
+        findElement(By.id("login_link")).click();
+        enterUsernamePasswordSubmit(username, password, username);
     }
 
     private boolean isWindows() {
@@ -517,7 +486,8 @@ public class NlmCdeBaseTest {
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
-        findElement(By.cssSelector("button.btn")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("login_button")));
+        findElement(By.id("login_button")).click();
         textPresent(checkText);
     }
 
