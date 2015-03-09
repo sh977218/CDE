@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('AuditLogCtrl', ['$scope', '$http', function($scope, $http) {
-    $scope.api = "/getClientErrors"; 
+angular.module('systemModule').controller('AuditLogCtrl', ['$scope', '$controller', function($scope, $controller) {
+    $scope.api = "/getCdeAuditLog"; 
     $controller('AuditErrorListCtrl', {$scope: $scope});  
 }]);

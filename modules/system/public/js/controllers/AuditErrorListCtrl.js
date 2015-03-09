@@ -1,10 +1,10 @@
 angular.module('systemModule').controller('AuditErrorListCtrl', ['$scope', '$http', function($scope, $http) {
-    $scope.errors = [];
+    $scope.records = [];
     $scope.skip = 0;
     $scope.limit = 10;
     $scope.fetchErrors = function(skip, limit){
         $http.post($scope.api, {skip: skip, limit: limit}).success(function(result){
-            $scope.errors = result;
+            $scope.records = result;
         });
     };
     $scope.fetchErrors($scope.skip, $scope.limit);
