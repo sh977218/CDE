@@ -243,14 +243,7 @@ public class NlmCdeBaseTest {
         textPresent("1 results for");
         textPresent(name, By.id("acc_link_0"));
         clickElement(By.id("acc_link_0"));
-        hangon(1);         
-        clickElement(By.id("acc_link_0"));        
-        try {
-            findElement(By.id("openEltInCurrentTab_0"));
-        } catch(Exception e) {
-            findElement(By.id("acc_link_0")).click();
-            findElement(By.id("openEltInCurrentTab_0"));
-        }
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("openEltInCurrentTab_0")));
     }
 
     protected void openFormInList(String name) {
@@ -488,7 +481,14 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).sendKeys(password);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("login_button")));
         findElement(By.id("login_button")).click();
-        textPresent(checkText);
+        try {
+            textPresent(checkText);
+            // Assumption is that UMLS sometimes throws an error on login. With a socket hangup. login fails, we retry.
+        } catch (TimeoutException e) {
+            System.out.println("Login failed. Re-trying");
+            findElement(By.id("login_button")).click();
+            textPresent(checkText);            
+        }
     }
 
     protected void switchTabAndClose(int i) {

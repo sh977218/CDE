@@ -26,6 +26,7 @@ public abstract class RegStatusTest extends CommonTest {
         findElement(By.id("cancelRegStatus")).click();
         modalGone();
         textPresent("Qualified", By.id("dd_status"));
+    }
 
     public void cantEditStatusIfPendingChanges(String eltName, String user) {
         mustBeLoggedInAs(user, password);

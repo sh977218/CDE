@@ -59,8 +59,8 @@ exports.ticketValidate = function( tkt, cb ) {
     });
     
     req.on('error', function (e) {
-        console.log("ticketValidate Error: " + e)
         logging.errorLogger.error('getTgt: ERROR with request: ' + e);
+        return cb(e);
 //        logging.errorLogger.error("getTgt: ERROR with request", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req);                
     });
     
