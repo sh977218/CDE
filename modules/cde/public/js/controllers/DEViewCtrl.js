@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, isAllowedModel, OrgHelpers, $rootScope, TourContent) {
+angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff) {
     $scope.module = 'cde';
     $scope.baseLink = '#/deview?cdeId=';
     $scope.eltLoaded = false;
@@ -380,6 +380,14 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
         TourContent.stop();
     });    
     
+    $scope.viewDiff = function (elt) {        
+        CdeDiff.get({deId: elt._id}, function(diffResult) {
+            diffResult = diffResult.filter(function(change) {
+                return change.path[3] !== "isValid";
+            });
+            //diffResult.forEach($scope.makeHumanReadable);
+            $scope.cdeDiff = diffResult;
+        });
+    };    
     
-}
-]);
+}]);

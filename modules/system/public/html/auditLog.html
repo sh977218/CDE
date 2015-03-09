@@ -1,6 +1,24 @@
-<div ng-repeat="edit in records">
+<div ng-repeat="edit in records" ng-controller="CdeDiffCtrl">
     {{edit.adminItem.name}}
+    <span ng-click="viewDiff(edit.adminItem)">aaa</span>
+    <div ng-include="'/cde/public/html/cdeDiff.html'">
+        
+    </div>
 </div>        
 
+  <accordion>
+    <accordion-group ng-repeat="edit in records">
+        <accordion-heading >
+           {{edit.adminItem.name}}
+        </accordion-heading>
+        <span ng-controller="CdeDiffCtrl">
+            <div ng-include="'/cde/public/html/cdeDiff.html'">
+        </span>
+    </accordion-group>
+  </accordion>
 
-<div ng-include="'/cde/public/html/cdeDiff.html'"></div>
+
+
+
+<button class="btn btn-default" type="submit" ng-click="loadNewer()">Newer</button>
+<button class="btn btn-default" type="submit" ng-click="loadOlder()">Older</button>

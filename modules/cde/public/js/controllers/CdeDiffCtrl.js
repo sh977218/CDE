@@ -1,7 +1,5 @@
 angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', function($scope, CdeDiff) {
     var CdeDiffCtrl = this;
-    
-    // Put general (-1) rules first, specific rules secondly
     CdeDiffCtrl.pathFieldMap = {
         1: [
             {fieldName: "Naming", path: ["naming"]}
@@ -92,56 +90,49 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', func
         });
         return equal;
     };
-        
-    $scope.viewDiff = function (elt) {        
-        CdeDiff.get({deId: elt._id}, function(diffResult) {
-            diffResult = diffResult.filter(function(change) {
-                return change.path[3] !== "isValid";
-            });
-            diffResult.forEach(function(change){
-                this.stringify = function(obj) {
-                    if (typeof obj === "string") return obj;
-                    if (typeof obj === "number") return obj;
-                    return Object.keys(obj).map(function(f){
-                        return f + ": " + obj[f];
-                    }).join(", ");                    
-                };
-                this.stringifyClassif = function(obj) {
-                    if (obj && obj.elements) return " > " + obj.name + this.stringifyClassif(obj.elements[0]);
-                    else return "";
-                };                
-                if (change.kind==="E") {
-                    change.modificationType = "Modified Field";
-                    change.newValue = change.rhs;
-                    change.previousValue = change.lhs;
-                }
-                if (change.kind==="N") {
-                    change.modificationType = "New Item";
-                    change.newValue = this.stringify(change.rhs);
-                }                
-                if (change.kind==="A" && change.item.kind==="N") {
-                    change.modificationType = "New Item";
-                    change.newValue = this.stringify(change.item.rhs);                  
-                }
-                if (change.kind==="A" && change.item.kind==="D") {
-                    change.modificationType = "Item Deleted";
-                    change.newValue = this.stringify(change.item.lhs);
-                }            
-                if (change.kind==="D") {
-                    change.modificationType = "Item Deleted";
-                    change.previousValue = this.stringify(change.lhs);
-                }                   
-                if (change.path[0] === "classification") {
-                    change.fieldName = "Classification";
-                    if (change.item.lhs) change.newValue = this.stringifyClassif(change.item.lhs);
-                    if (change.item.rhs) change.newValue = this.stringifyClassif(change.item.rhs);
-                    return;
-                }
-                CdeDiffCtrl.pathFieldMap[change.path.length].forEach(function(pathPair){
-                    if (CdeDiffCtrl.comparePaths(pathPair.path, change.path)) change.fieldName = pathPair.fieldName;
-                });
-            });
-            $scope.modifications = diffResult;
+    
+    $scope.makeHumanReadable = function(change){
+        if (!change) return;
+        this.stringify = function(obj) {
+            if (typeof obj === "string") return obj;
+            if (typeof obj === "number") return obj;
+            return Object.keys(obj).map(function(f){
+                return f + ": " + obj[f];
+            }).join(", ");                    
+        };
+        this.stringifyClassif = function(obj) {
+            if (obj && obj.elements) return " > " + obj.name + this.stringifyClassif(obj.elements[0]);
+            else return "";
+        };                
+        if (change.kind==="E") {
+            change.modificationType = "Modified Field";
+            change.newValue = change.rhs;
+            change.previousValue = change.lhs;
+        }
+        if (change.kind==="N") {
+            change.modificationType = "New Item";
+            change.newValue = this.stringify(change.rhs);
+        }                
+        if (change.kind==="A" && change.item.kind==="N") {
+            change.modificationType = "New Item";
+            change.newValue = this.stringify(change.item.rhs);                  
+        }
+        if (change.kind==="A" && change.item.kind==="D") {
+            change.modificationType = "Item Deleted";
+            change.newValue = this.stringify(change.item.lhs);
+        }            
+        if (change.kind==="D") {
+            change.modificationType = "Item Deleted";
+            change.previousValue = this.stringify(change.lhs);
+        }                   
+        if (change.path[0] === "classification") {
+            change.fieldName = "Classification";
+            if (change.item.lhs) change.newValue = this.stringifyClassif(change.item.lhs);
+            if (change.item.rhs) change.newValue = this.stringifyClassif(change.item.rhs);
+            return;
+        }
+        CdeDiffCtrl.pathFieldMap[change.path.length].forEach(function(pathPair){
+            if (CdeDiffCtrl.comparePaths(pathPair.path, change.path)) change.fieldName = pathPair.fieldName;
         });
-    };
+    };        
 }]);
