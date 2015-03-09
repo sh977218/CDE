@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'CdeDiff', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, CdeDiff, isAllowedModel, OrgHelpers, $rootScope, TourContent) {
+angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, isAllowedModel, OrgHelpers, $rootScope, TourContent) {
     $scope.module = 'cde';
     $scope.baseLink = '#/deview?cdeId=';
     $scope.eltLoaded = false;
@@ -118,67 +118,6 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
             return listB.filter(function(pva){return JSON.stringify(pva)===JSON.stringify(pvb);}).length===0;
         });
         return missingInA;
-    };
-
-    $scope.setDiff2 = function(diffResult, property) {
-        if ((diffResult.before[property.first] && diffResult.before[property.first][property.second]) || (diffResult.after[property.first]&& diffResult.after[property.first][property.second])) {
-            $scope.diff[property.first] = {};
-            $scope.diff[property.first][property.second] = {
-                removed: $scope.compareLists(diffResult.before[property.first][property.second], diffResult.after[property.first][property.second])
-                , added: $scope.compareLists(diffResult.after[property.first][property.second], diffResult.before[property.first][property.second])
-            };              
-        }        
-    };    
-    
-    $scope.showDiff = function(diff, fields) {
-        return diff[fields.first][fields.second].removed.length>0 || diff[fields.first][fields.second].added.length>0;
-    };    
-    
-    $scope.viewDiff = function (elt) {
-        var dmp = new diff_match_patch();
-        
-        CdeDiff.get({deId: elt._id}, function(diffResult) {
-            $scope.diff = {};
-            if (diffResult.before.primaryName) {
-                var d = dmp.diff_main(diffResult.before.primaryName, diffResult.after.primaryName);
-                dmp.diff_cleanupSemantic(d);
-                $scope.diff.primaryName = dmp.diff_prettyHtml(d);
-            }
-            if (diffResult.before.primaryDefinition) {
-                var d = dmp.diff_main(diffResult.before.primaryDefinition, diffResult.after.primaryDefinition);
-                dmp.diff_cleanupSemantic(d);
-                $scope.diff.primaryDefinition = dmp.diff_prettyHtml(d);
-            }            
-            if (diffResult.before.version) {
-                $scope.diff.version = "Before: " + diffResult.before.version + " -- After: " + diffResult.after.version;
-            }
-            if (diffResult.before.stewardOrg) {
-                $scope.diff.stewardOrg = "Before: " + diffResult.before.stewardOrg.name + " -- After: " + diffResult.after.stewardOrg.name;
-            }
-            if (diffResult.before.datatype || diffResult.after.datatype) {
-                $scope.diff.datatype = "Before: " + diffResult.before.datatype + " -- After: " + diffResult.after.datatype;
-            }
-            if (diffResult.before.uom) {
-                var d = dmp.diff_main(diffResult.before.uom, diffResult.after.uom);
-                dmp.diff_cleanupSemantic(d);
-                $scope.diff.uom = dmp.diff_prettyHtml(d);
-            }
-            if (diffResult.before.permissibleValues || diffResult.after.permissibleValues) {
-                $scope.diff.permissibleValues = "Modified";
-            }
-            if (diffResult.before.naming || diffResult.after.naming) {
-                $scope.diff.naming = "Modified";
-            }      
-            if (diffResult.before.registrationState || diffResult.after.registrationState) {
-                $scope.diff.registrationState = "Modified";
-            }                
-            $scope.setDiff2(diffResult, {first: "property", second: "concepts"});       
-            $scope.setDiff2(diffResult, {first: "objectClass", second: "concepts"});       
-            $scope.setDiff2(diffResult, {first: "dataElementConcept", second: "concepts"});      
-            if (diffResult.before.ids || diffResult.after.ids) {
-                $scope.diff.ids = "Modified";
-            }             
-        });
     };
     
     $scope.isPvInVSet = function(pv, callback) {

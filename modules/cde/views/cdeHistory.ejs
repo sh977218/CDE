@@ -1,61 +1,55 @@
 <h4>History</h4>
-<div class="row">
-    <div class="col-md-6">
-    <table ng-show="priorCdes.length > 0" class="table-bordered table-condensed table-striped" id="historyTable">
+<div class="row"  ng-controller="CdeDiffCtrl">
+    <div class="col-md-5">
+    <table ng-show="priorCdes.length > 0" class="table" id="historyTable">
+        <caption>List of previous versions</caption>
         <thead>
             <tr>
-                <td>Updated at</td>
-                <td>Updated by</td>
-                <td>Change Note</td>
-                <td>Diff</td>
-                <td>See Full</td>
+                <th>Updated at</th>
+                <th>Updated by</th>
+                <th>Change Note</th>
+                <th>Modifications since Previous Version</th>
+                <th>See Full</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="priorCde in priorCdes">
-                <td>{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
-                <td>{{priorCde.updatedBy.username}}</td>
-                <td>{{priorCde.changeNote}}</td>
-                <td><a class="fa fa-eye" ng-show="priorCde.updated" ng-click="viewDiff(priorCde)"> View</a></td>
-                <td><a href="#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye"> View</a></td>
-            </tr>
             <tr>
                 <td>{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
                 <td>{{elt.updatedBy.username}}</td>
                 <td>{{elt.changeNote}}</td>
                 <td><a class="fa fa-eye" ng-click="viewDiff(elt)"> View</a></td>
-                <td></td>
+                <td>Currently Viewing</td>
+            </tr>
+            <tr ng-repeat="priorCde in priorCdes | orderBy:[nullsToBottom,'-updated']">
+                <td>{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+                <td>{{priorCde.updatedBy.username || priorCde.createdBy || "Imported"}}</td>
+                <td>{{priorCde.changeNote}}</td>
+                <td><a class="fa fa-eye" ng-show="priorCde.updated" ng-click="viewDiff(priorCde)"> View</a><span ng-show="!priorCde.updated">First Version</span></td>
+                <td><a href="#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye"> View</a></td>
             </tr>
         </tbody>
 
     </table>
     <div ng-show="priorCdes.length == 0">This Data Element has no history</div>
     </div>
-    <div class="col-md-6">
-        <dl>
-            <dt ng-show="diff.primaryName">Primary Name: </dt><dd><span ng-bind-html="diff.primaryName"></span></dd>
-            <dt ng-show="diff.primaryDefinition">Primary Definition: </dt><dd><span ng-bind-html="diff.primaryDefinition"></span></dd>
-            <dt ng-show="diff.stewardOrg">Steward: </dt><dd><span ng-bind-html="diff.stewardOrg"></span></dd>
-            <dt ng-show="diff.version">Version: </dt><dd><span ng-bind-html="diff.version"></span></dd>
-            <dt ng-show="diff.uom">Unit of Measure: </dt><dd><span ng-bind-html="diff.uom"></span></dd>
-            <dt ng-show="diff.datatype">Datatype: </dt><dd><span ng-bind-html="diff.datatype"></span></dd>
-            <dt ng-show="diff.permissibleValues">Permissible Values: </dt><dd><span ng-bind-html="diff.permissibleValues"></span></dd>
-            <dt ng-show="diff.naming">Naming: </dt><dd><span ng-bind-html="diff.naming"></span></dd>
-            <dt ng-show="diff.property.concepts.removed.length>0 || diff.property.concepts.added.length>0">Concepts (Property): </dt>
-            <dd diff ng-show="diff.property.concepts.removed.length>0 || diff.property.concepts.added.length>0" values="diff.property.concepts"></dd>
-            
-            <dt ng-show="diff.objectClass.concepts.removed.length>0 || diff.objectClass.concepts.added.length>0">Concepts (Class): </dt>
-            <dd diff ng-show="diff.objectClass.concepts.removed.length>0 || diff.objectClass.concepts.added.length>0" values="diff.objectClass.concepts"></dd>
-
-            <dt ng-show="diff.dataElementConcept.concepts.removed.length>0 || diff.dataElementConcept.concepts.added.length>0">Concepts (Data Element): </dt>
-            <dd diff ng-show="diff.dataElementConcept.concepts.removed.length>0 || diff.dataElementConcept.concepts.added.length>0" values="diff.dataElementConcept.concepts"></dd> 
-            
-            <dt ng-show="diff.registrationState">Registration State: </dt>
-            <dd ng-show="diff.registrationState"><span ng-bind-html="diff.registrationState"></span></dd>
-            
-            <dt ng-show="diff.ids">Identifiers: </dt>
-            <dd ng-show="diff.ids"><span ng-bind-html="diff.ids"></span></dd>            
-        </dl>
+    <div class="col-md-7">
+            <table ng-show="modifications" id="modificationsList" class="table">
+                <caption>List of Modifications</caption>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type of Modification</th>
+                        <th>New Value</th>
+                        <th>Previous Value</th>
+                    </tr>
+                </thead>
+                <tr ng-repeat="m in modifications">
+                    <td class="fieldName">{{m.fieldName}}</td>
+                    <td>{{m.modificationType}}</td>
+                    <td class="newValue">{{m.newValue}}</td>
+                    <td class="previousValue">{{m.previousValue}}</td>
+                </tr>
+            </table>
     </div>
 </div>
 

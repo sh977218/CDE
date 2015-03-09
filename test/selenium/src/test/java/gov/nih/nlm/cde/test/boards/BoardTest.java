@@ -45,7 +45,9 @@ public class BoardTest extends NlmCdeBaseTest {
   
     protected void createBoard(String name, String description, String response) {
         gotoMyBoards();
+        hangon(1);
         findElement(By.id("addBoard")).click();
+        hangon(0.5);
         findElement(By.name("name")).sendKeys(name);
         findElement(By.name("description")).sendKeys(description);
         findElement(By.id("createBoard")).click();

@@ -84,13 +84,13 @@ var deJsonSchema = {
     , registrationState: sharedSchemas.registrationStateSchema
     , classification: [sharedSchemas.classificationSchema]
     , properties: [
-        {key: String, value: String, valueFormat: String}
+        {key: String, value: String, valueFormat: String, _id: false}
     ]
     , ids: [
         {source: String, id: String, version: String, _id: false}
     ]
     , mappingSpecifications: [
-        {content: String, spec_type: String, script: String}
+        {content: String, spec_type: String, script: String, _id: false}
     ]
     , comments: [sharedSchemas.commentSchema]
     , archived: Boolean
@@ -98,7 +98,7 @@ var deJsonSchema = {
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
     , referenceDocuments: [
-        {docType: String, text: String, uri: String, providerOrg: String, title: String, languageCode: String}
+        {docType: String, text: String, uri: String, providerOrg: String, title: String, languageCode: String, _id: false}
     ]
 };
 
@@ -106,7 +106,7 @@ var pinSchema = mongoose.Schema ({
    name: String
    , pinnedDate: Date
    , deTinyId: String
-});
+}, {_id: false});
 
 schemas.pinningBoardSchema = mongoose.Schema ({
    name: String
@@ -118,10 +118,6 @@ schemas.pinningBoardSchema = mongoose.Schema ({
        userId: mongoose.Schema.Types.ObjectId
         , username: String}
    , pins: [pinSchema]
-});
-
-schemas.managedContextSchema = mongoose.Schema ({
-   name: String 
 });
 
 schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 

@@ -29,20 +29,19 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         
         newCdeVersion();
         
-        findElement(By.linkText("History")).click();
-        findElement(By.xpath("//table[@id = 'historyTable']//tr[2]//td[4]/a")).click();
-        Assert.assertTrue(textPresent("Naming:"));
-        Assert.assertTrue(textPresent("Added: LOINC, Code Name 1, Code ID 1;"));
+        
+        checkInHistory("Concepts", "", "Code Name 1");
+        checkInHistory("Concepts", "", "Code ID 1");
+        checkInHistory("Naming", "", "Alternative Name 1");
+        checkInHistory("Naming", "", "Alternative Definition 1");
         
         goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");            
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(findElement(By.xpath("//label[text()=\"Registration Status\"]/following-sibling::select"))).selectByValue("Recorded");
         findElement(By.xpath("//div[@id=\"regStatusModalFooter\"]//button[text()=\"Save\"]")).click();
         modalGone();
-        findElement(By.linkText("History")).click();
-
-        findElement(By.xpath("//table[@id = 'historyTable']//tr[3]//td[4]/a")).click();
-        Assert.assertTrue(textPresent("Registration State:"));
+        
+        checkInHistory("Registration State", "Qualified", "Recorded");
 
         findElement(By.linkText("Identifiers")).click();
         closeAlert();
@@ -52,10 +51,10 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         findElement(By.xpath("//label[text()=\"Version\"]/following-sibling::textarea")).sendKeys("Version 1"); 
         findElement(By.xpath("//div[@id=\"newIdModalFooter\"]//button[text()=\"Save\"]")).click();
         modalGone();
-        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "Recorded");   
-        findElement(By.linkText("History")).click();
-        findElement(By.xpath("//table[@id = 'historyTable']//tr[4]//td[4]/a")).click();
-        Assert.assertTrue(textPresent("Identifiers:"));        
+        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "Recorded");           
+        checkInHistory("Identifiers", "", "Origin 1");
+        checkInHistory("Identifiers", "", "Identifier 1");
+        checkInHistory("Identifiers", "", "Version 1");
     }        
     
     @Test
