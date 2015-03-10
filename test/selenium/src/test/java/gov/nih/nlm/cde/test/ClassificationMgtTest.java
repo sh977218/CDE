@@ -1,5 +1,7 @@
 package gov.nih.nlm.cde.test;
 
+import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
+import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -20,7 +22,7 @@ public class ClassificationMgtTest extends BaseClassificationTest {
 
     private void deleteNestedClassifTree() {
         deleteMgtClassification("classification-Disease,Epilepsy","Epilepsy");
-        Assert.assertTrue(textNotPresent("Epilepsy"));
+        textNotPresent("Epilepsy");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations,Imaging Diagnostics']");
@@ -37,7 +39,9 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         textNotPresent("Common Terminology Criteria for Adverse Events v3.0");
         hangon(3);
         new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
+        driver.manage().timeouts().implicitlyWait(defaultTimeout * 2, TimeUnit.SECONDS);
         textPresent("Common Terminology Criteria for Adverse Events v3.0");
+        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         textNotPresent("gov.nih.nci.cananolab.domain.characterization.invitro");        
     }
     
@@ -45,9 +49,9 @@ public class ClassificationMgtTest extends BaseClassificationTest {
     public void removeClassificationMgt() {
         mustBeLoggedInAs(ninds_username, password);
         searchNestedClassifiedCdes();
-        Assert.assertTrue(textPresent("NINDS (8"));
+        textPresent("NINDS (8");
         searchNestedClassifiedForms();
-        Assert.assertTrue(textPresent("NINDS (40)"));
+        textPresent("NINDS (40)");
         gotoClassifMgt();
         
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] .name")).getText().equals("Epilepsy"));

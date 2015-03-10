@@ -91,7 +91,7 @@ exports.init = function(app) {
             passport.authenticate('local', function(err, user, info) {
                 if (err) { return res.status(403).end(); }
                 if (!user) { 
-                    return res.status(403).send(info.message);
+                    return res.status(403).send();
                 }
                 req.logIn(user, function(err) {
                     if (err) { return res.status(403).end(); }

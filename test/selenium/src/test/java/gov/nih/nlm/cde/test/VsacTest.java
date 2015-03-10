@@ -81,7 +81,7 @@ public class VsacTest extends NlmCdeBaseTest {
         findElement(By.id("vsacIdCheck")).click();
         closeAlert();
         
-        Assert.assertTrue(textPresent("20121025"));
+        textPresent("20121025");
                 
         newCdeVersion();
         
