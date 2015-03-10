@@ -25,8 +25,7 @@ public abstract class RegStatusTest extends CommonTest {
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
         findElement(By.id("cancelRegStatus")).click();
         modalGone();
-        hangon(3);
-        Assert.assertEquals(findElement(By.id("dd_status")).getText(), "Qualified");
+        textPresent("Qualified", By.id("dd_status"));
     }
 
     public void cantEditStatusIfPendingChanges(String eltName, String user) {
