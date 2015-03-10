@@ -54,12 +54,7 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "Recorded");           
         checkInHistory("Identifiers", "", "Origin 1");
         checkInHistory("Identifiers", "", "Identifier 1");
-        checkInHistory("Identifiers", "", "Version 1");
-        
-        openCdeAudit("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");
-        textPresent("Origin 1");
-        textPresent("Identifier 1");
-        textPresent("Version 1");        
+        checkInHistory("Identifiers", "", "Version 1");     
     }        
     
     @Test

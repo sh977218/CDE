@@ -578,12 +578,11 @@ public class NlmCdeBaseTest {
             hangon(1);
             try {
                 wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("accordion"), cdeName));
-                System.out.println("shortWait.until OK");
                 break;
             } catch(Exception e){
-                
+                findElement(By.id("older")).click();
             }            
-            findElement(By.id("older")).click();
+            
         }
         findElement(By.xpath("//accordion//span[contains(text(),'"+cdeName+"')]")).click();       
     }
