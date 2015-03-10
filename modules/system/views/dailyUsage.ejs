@@ -8,30 +8,36 @@
         </form>
     </div>
     <div class="row">       
-        <div class="col-md-1">
+        <div class="col-md-2">
             Days Ago
         </div>
-        <div class="col-md-1">
+        <div class="col-md-2">
+            Last Date
+        </div>
+        <div class="col-md-2">
             Hits
         </div>
-        <div class="col-md-1">
+        <div class="col-md-3">
             IP
         </div>
-        <div class="col-md-1">
+        <div class="col-md-3">
             Known Usernames
         </div>
     </div>    
     <div class="row" ng-repeat="entry in dailyUsage | limitTo:entryLimit">    
-        <div class="col-md-1">
+        <div class="col-md-2">
             {{entry.daysAgo}}
         </div>
-        <div class="col-md-1">
+        <div class="col-md-2">
+            {{entry.latest | date : 'short'}}
+        </div>
+        <div class="col-md-2">
             {{entry.number}}
         </div>
-        <div class="col-md-1">
+        <div class="col-md-3">
             {{entry._id.ip}}
         </div>
-        <div class="col-md-1" ng-switch="entry.usernames.length > 0">
+        <div class="col-md-3" ng-switch="entry.usernames.length > 0">
             <span ng-switch-when="true">
                 <span ng-repeat="u in entry.usernames">{{u.username}} </span>
             </span>

@@ -7,10 +7,8 @@ angular.module('systemModule').controller('LogCtrl', ['$scope', '$http', 'CsvDow
         , enableRowReordering: true
         , enableCellSelection: true
     };
-    
-    $scope.reset = function() {
-       $scope.search = {}; 
-    };
+
+    $scope.search = {};
     
     $scope.downloadCsv = function() {
        CsvDownload.export($scope.gridLogEvents); 
@@ -18,18 +16,8 @@ angular.module('systemModule').controller('LogCtrl', ['$scope', '$http', 'CsvDow
     
     $scope.searchLogs = function () {
         $scope.gridLogEvents = [];
-        var query = {};
-        if ($scope.search.ip !== undefined) {
-            query.remoteAddr = $scope.search.ip;        
-        }
-        if ($scope.search.fromDate !== undefined) {
-            query.fromDate = $scope.search.fromDate;
-        };
-        if ($scope.search.toDate !== undefined) {
-            query.toDate = $scope.search.toDate;
-        };
-        
-        $http.post("/logs", {query: query}).then(function (res) {
+
+        $http.post("/logs", {query: $scope.search}).then(function (res) {
             if (res.data.error !== undefined) {
                 $scope.addAlert("danger", res.data.error);
             }
