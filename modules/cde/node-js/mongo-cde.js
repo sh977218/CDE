@@ -284,11 +284,12 @@ exports.update = function(elt, user, callback, special) {
             callback("Cannot save without names");
         }
 
-        dataElement.save(function(err) {
+        newDe.save(function(err) {
             if (err) {
                 logging.errorLogger.error("Error: Cannot save CDE", {origin: "cde.mongo-cde.update.2", stack: new Error().stack, details: "err "+err});
+                callback(err);
             } else {
-                newDe.save(function(err) {
+                dataElement.save(function(err) {
                     if (err) {
                         logging.errorLogger.error("Error: Cannot save CDE", {origin: "cde.mongo-cde.update.3", stack: new Error().stack, details: "err "+err});
                     }                    

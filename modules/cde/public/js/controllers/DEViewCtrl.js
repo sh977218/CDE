@@ -104,8 +104,10 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
     };
    
     $scope.save = function() {
-        $scope.elt.$save(function (elt) {
+        $scope.elt.$save({}, function (elt, headers) {
             $window.location.href = "/#/deview?cdeId=" + elt._id;
+        }, function(resp) {
+            $scope.addAlert("danger", "Unable to save element. This issue has been reported.");
         });
     }; 
     

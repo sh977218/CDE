@@ -1,11 +1,6 @@
 <dl class="dl-horizontal">
   <dt>Date Format: </dt>
   <dd>
-     <span ng-show="editFormatMode">
-        <input ng-model="elt.valueDomain.datatypeDate.format" />
-        <i class="fa fa-check" ng-click="editFormatMode = false; stageElt(elt)" id="confirmFormat"> OK</i>
-        <i class="fa fa-times" ng-click="editFormatMode = false"> Cancel</i>
-     </span>
-     <span ng-hide="editFormatMode"><i ng-show="canCurate" class="fa fa-pencil" ng-click="editFormatMode = true"></i> {{elt.valueDomain.datatypeDate.format | placeholdEmpty}}</span>
+    <div inline-edit id="dateFormat" model="elt.valueDomain.datatypeDate.format" is-allowed="canCurate" on-ok="stageElt(elt)" />
   </dd>
 </dl>

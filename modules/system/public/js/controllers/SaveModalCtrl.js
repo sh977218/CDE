@@ -2,8 +2,11 @@ angular.module('systemModule').controller('SaveModalCtrl', ['$scope', '$modalIns
     $scope.elt = elt;
 
     $scope.ok = function() {
-        $scope.elt.$save(function(newelt) {                      
+        $scope.elt.$save({}, 
+        function(newelt) {                      
             $modalInstance.close(newelt);
+        }, function(resp) {
+            $modalInstance.dismiss("Unable to save this element. This issue has been reported. ");
         });
     };
 
