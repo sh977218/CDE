@@ -122,9 +122,9 @@ public class CdeEditTest extends NlmCdeBaseTest {
         checkInHistory("Concepts", "Prop_CODE_111", "");      
         
         openCdeAudit(cdeName);
-        checkInHistory("Concepts", "DEC_CODE_111", "");
-        checkInHistory("Concepts", "OC_CODE_111", "");
-        checkInHistory("Concepts", "Prop_CODE_111", "");          
+        confirmCdeModification("Concepts", "DEC_CODE_111", "");
+        confirmCdeModification("Concepts", "OC_CODE_111", "");
+        confirmCdeModification("Concepts", "Prop_CODE_111", "");          
     }
     
     @Test

@@ -603,15 +603,15 @@ public class NlmCdeBaseTest {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Audit")).click();
         findElement(By.linkText("CDE Audit Log")).click();        
-        try {
-            textPresent(cdeName);
-        } catch (Exception e){
-            findElement(By.id("older")).click();      
+        for(Integer i = 0; i<10; i++){
+            hangon(1);
             try {
-                textPresent(cdeName);
-            } catch (Exception exc){
-                findElement(By.id("older")).click();      
+                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("accordion"), cdeName));
+                break;
+            } catch(Exception e){
+                
             }            
+            findElement(By.id("older")).click();
         }
         findElement(By.xpath("//accordion//span[contains(text(),'"+cdeName+"')]")).click();       
     }
