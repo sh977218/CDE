@@ -577,7 +577,8 @@ public class NlmCdeBaseTest {
         for(Integer i = 0; i<10; i++){
             hangon(1);
             try {
-                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("accordion"), cdeName));
+                wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("accordion"), cdeName));
+                System.out.println("shortWait.until OK");
                 break;
             } catch(Exception e){
                 
