@@ -24,8 +24,8 @@ public class BoardManagement2Test  extends BoardTest {
         goToCdeByName("Biomarker Outcome");
         findElement(By.xpath("//li[@heading='Boards']/a")).click();
         
-        Assert.assertTrue(textPresent(board1));
-        Assert.assertTrue(textNotPresent(board2));
+        textPresent(board1);
+        textNotPresent(board2);
 
         makePublic(board2);
 
@@ -33,8 +33,8 @@ public class BoardManagement2Test  extends BoardTest {
         goToCdeByName("Biomarker Outcome");
         findElement(By.xpath("//li[@heading='Boards']/a")).click();
         
-        Assert.assertTrue(textPresent(board1));
-        Assert.assertTrue(textPresent(board2));
+        textPresent(board1);
+        textPresent(board2);
         
         removeBoard(board1);
         removeBoard(board2);

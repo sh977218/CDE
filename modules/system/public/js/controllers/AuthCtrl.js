@@ -1,9 +1,12 @@
-angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$window', '$http', 'userResource', function($scope, Auth, $window, $http, userResource) {
+angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$window', '$http', function($scope, Auth, $window, $http) {
     
     $scope.getCsrf = function() {
+        delete $scope.csrf;
+        
         $http.get('/csrf').then(function(res) {
             $scope.csrf = res.data;
         });
+
     };
     
     $scope.getCsrf();
