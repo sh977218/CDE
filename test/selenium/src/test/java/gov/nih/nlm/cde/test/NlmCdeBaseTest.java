@@ -597,4 +597,22 @@ public class NlmCdeBaseTest {
         showHistoryDiff(0);        
         confirmCdeModification(field, oldValue, newValue); 
     }
+    
+    protected void openCdeAudit(String cdeName){
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Audit")).click();
+        findElement(By.linkText("CDE Audit Log")).click();        
+        try {
+            textPresent(cdeName);
+        } catch (Exception e){
+            findElement(By.id("older")).click();      
+            try {
+                textPresent(cdeName);
+            } catch (Exception exc){
+                findElement(By.id("older")).click();      
+            }            
+        }
+        findElement(By.xpath("//accordion//span[contains(text(),'"+cdeName+"')]")).click();       
+    }
 }

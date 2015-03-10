@@ -57,6 +57,11 @@ public class CdeEditTest extends NlmCdeBaseTest {
         textPresent("[def change number 1]");
         textPresent("myUom");
         
+        openCdeAudit(cdeName);
+        confirmCdeModification("Primary Name", cdeName, cdeName + "[name change number 1]");
+        confirmCdeModification("Primary Definition", "the free text field to specify the other type of mediastinal lymph node dissection.", "the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]");        
+        
+         
     }
     
     @Test
@@ -114,7 +119,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
         
         checkInHistory("Concepts", "DEC_CODE_111", "");
         checkInHistory("Concepts", "OC_CODE_111", "");
-        checkInHistory("Concepts", "Prop_CODE_111", "");        
+        checkInHistory("Concepts", "Prop_CODE_111", "");      
+        
+        openCdeAudit(cdeName);
+        checkInHistory("Concepts", "DEC_CODE_111", "");
+        checkInHistory("Concepts", "OC_CODE_111", "");
+        checkInHistory("Concepts", "Prop_CODE_111", "");          
     }
     
     @Test

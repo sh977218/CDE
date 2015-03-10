@@ -55,6 +55,11 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         checkInHistory("Identifiers", "", "Origin 1");
         checkInHistory("Identifiers", "", "Identifier 1");
         checkInHistory("Identifiers", "", "Version 1");
+        
+        openCdeAudit("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");
+        checkInHistory("Identifiers", "", "Origin 1");
+        checkInHistory("Identifiers", "", "Identifier 1");
+        checkInHistory("Identifiers", "", "Version 1");        
     }        
     
     @Test

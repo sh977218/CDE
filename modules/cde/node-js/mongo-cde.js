@@ -354,7 +354,7 @@ exports.archivedCdes = function(cdeArray, callback) {
 };
 
 exports.saveModification = function(oldDe, newDe, user) {
-    var diff = cdesvc.diff(oldDe, newDe);
+    var diff = cdesvc.diff(newDe, oldDe);
     var message = {
         date: new Date()
         , user: {
