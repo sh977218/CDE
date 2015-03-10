@@ -22,5 +22,8 @@
     <div class="row">
         <div id="logGridView" class="gridStyle" ng-grid="gridOptions"></div>
         <a class="btn btn-mini fa fa-external-link" ng-click="downloadCsv()" id="exportLink"> Export</a>    
-    </div>    
+    </div> 
+    <div class="row">
+        <pagination align="center" direction-links="true" items-per-page="itemsPerPage" total-items="totalItems" ng-model="search.currentPage" max-size="10" ng-change="pageChanged()"></pagination>
+    </div>
 </div>

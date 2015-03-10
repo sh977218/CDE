@@ -1,5 +1,4 @@
- 
-<div ng-controller="DailyUsageCtrl" class="container-fluid">
+ <div ng-controller="DailyUsageCtrl" class="container-fluid">
     <div class="row">
         <form class="form-search">
             <div class="form-group col-md-3" >
@@ -8,7 +7,7 @@
         </form>
     </div>
     <div class="row">       
-        <div class="col-md-2">
+        <div class="col-md-1">
             Days Ago
         </div>
         <div class="col-md-2">
@@ -20,12 +19,13 @@
         <div class="col-md-3">
             IP
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             Known Usernames
         </div>
-    </div>    
+    </div>
+    <hr/>
     <div class="row" ng-repeat="entry in dailyUsage | limitTo:entryLimit">    
-        <div class="col-md-2">
+        <div class="col-md-1">
             {{entry.daysAgo}}
         </div>
         <div class="col-md-2">
@@ -35,9 +35,9 @@
             {{entry.number}}
         </div>
         <div class="col-md-3">
-            {{entry._id.ip}}
+            <a class="hand-cursor" ng-click="showLogsForIP(entry._id.ip)">{{entry._id.ip}}</a>
         </div>
-        <div class="col-md-3" ng-switch="entry.usernames.length > 0">
+        <div class="col-md-4" ng-switch="entry.usernames.length > 0">
             <span ng-switch-when="true">
                 <span ng-repeat="u in entry.usernames">{{u.username}} </span>
             </span>
