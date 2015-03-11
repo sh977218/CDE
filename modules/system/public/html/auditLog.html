@@ -1,4 +1,4 @@
-Showing CDE modifications from {{skip}} to {{skip + limit}}.
+From {{skip}} to {{skip + limit}}.
 
 <accordion>
     <accordion-group ng-repeat="edit in records">
@@ -16,7 +16,7 @@ Showing CDE modifications from {{skip}} to {{skip + limit}}.
           <dt>CDE - Previous Version</dt>
           <dd><a target="_blank" href="/#/deview?cdeId={{edit.previousItem._id}}">{{edit.previousItem.name}}</a></dd>
         </dl>           
-        <div ng-include="'/cde/public/html/cdeDiff.html'" ng-init="cdeDiff=edit.diff"></div>
+        <div ng-include="'/'+module+'/public/html/cdeDiff.html'" ng-init="cdeDiff=edit.diff"></div>
     </accordion-group>
 </accordion>
 
