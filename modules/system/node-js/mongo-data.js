@@ -181,7 +181,10 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     var writestream = gfs.createWriteStream({
         filename: file.originalname
         , mode: 'w'
-        , content_type: file.type
+        , content_type: file.type 
+        , metadata: {
+            status: "uploaded"
+        }
     });
 
     writestream.on('close', function (newfile) {
@@ -195,11 +198,12 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
                 userId: user._id
                 , username: user.username
             }
-            , filesize: file.size
+            , filesize: file.size          
         });
         elt.save(function() {
             cb();
         });
+      
     });
     
     if (file.stream) {
@@ -215,9 +219,14 @@ exports.getFile = function(res, id) {
             res.status(404).send("File not found.");
             return logging.errorLogger.error("File not found.", {origin: "system.mongo.getFile", stack: new Error().stack, details: "fileid "+id});
         }
-        gfs.createReadStream({ _id: id }).pipe(res);        
+        gfs.findOne({ _id: id}, function (err, file) {
+            if (file.metadata.status === "approved") gfs.createReadStream({ _id: id }).pipe(res);
+            else res.status(401).send("This file has not been approved yet.");
+        });
+                
     });        
 };
+
 
 exports.updateOrg = function(org, res) {
     var id = org._id;
