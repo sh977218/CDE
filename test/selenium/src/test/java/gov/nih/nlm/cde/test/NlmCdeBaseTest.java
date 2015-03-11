@@ -357,8 +357,8 @@ public class NlmCdeBaseTest {
     
     @BeforeMethod
     protected void goHome() {
-        driver.get(baseUrl + "/gonowhere");
-        textPresent("Nothing here");
+//        driver.get(baseUrl + "/gonowhere");
+//        textPresent("Nothing here");
 
         driver.get(baseUrl + "/#/home");
         findElement(By.id("selectOrgDropdown"));

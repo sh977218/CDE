@@ -86,25 +86,7 @@ angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'user
     $scope.emptyQuickBoard = function() {
         $scope.quickBoard = [];
     };
-    
-    
-    $scope.accordionIconAction = function (elt, action, event) {
-        switch (action) {
-            case "view":
-                $scope.$broadcast('viewElement', elt);
-            break;
-            case "openPinModal":
-                $scope.openPinModal(elt);
-            break;
-            case "addToQuickBoard":
-                $scope.addToQuickBoard(elt);
-            break;
-            case "viewNewTab":
-                $scope.viewNewTab(elt);
-            break;    
-        }        
-    };
-    
+           
     $scope.openPinModal = function (cde) {
         var modalInstance = $modal.open({
           templateUrl: '/cde/public/html/selectBoardModal.html',

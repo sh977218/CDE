@@ -20,7 +20,7 @@ public class CompareTest extends NlmCdeBaseTest{
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
         openCdeInList("Sedation status");
         findElement(By.id("compare_0")).click();
-        Assert.assertTrue(textPresent("Quick Board ( 1 )"));      
+        textPresent("Quick Board ( 1 )");      
     }
     
     @Test

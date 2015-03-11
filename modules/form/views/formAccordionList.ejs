@@ -1,6 +1,6 @@
 <div accordion close-others="false">
     <div accordion-group ng-repeat="form in cdes track by $index" is-open="form.isOpen">
-        <div accordion-heading>
+        <div accordion-heading ng-controller="AccordionCtrl">
             <span ng-bind-html="form.naming[0].designation" id="acc_link_{{$index}}" class="hand-cursor"></span>  
             <i tabindex="0" class="fa fa-eye hand-cursor" ng-click="view(form,$event)" title="View Full Detail" role="link" id="eyeLink_{{$index}}"></i>
         </div>

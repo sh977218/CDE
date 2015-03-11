@@ -128,7 +128,7 @@ exports.init = function(app) {
                 }
             });
         } else {
-            res.status(403).send("You are not authorized.");                    
+            res.status(401).send();
         }
     });
     
@@ -138,7 +138,7 @@ exports.init = function(app) {
                 res.send(result);
             });
         } else {
-            res.status(403).send("You are not authorized.");                    
+            res.status(401).send();
         }        
     });
 
@@ -155,7 +155,7 @@ exports.init = function(app) {
                 res.send(result);
             });
         } else {
-            res.status(403).send("You are not authorized.");                    
+            res.status(401).send();
         }         
     });
 
@@ -166,7 +166,7 @@ exports.init = function(app) {
                 res.send(users);
             });
         } else {
-            res.status(403).send("Not Authorized");
+            res.status(401).send();
         }
     }); 
 
@@ -178,7 +178,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             orgsvc.addOrg(req, res);
         } else {
-            res.status(403).send("You are not authorized.");                    
+            res.status(401).send();
         }
     });
 
@@ -186,7 +186,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             orgsvc.updateOrg(req, res);
         } else {
-            res.status(403).send("You are not authorized to update this organization.");                    
+            res.status(401).send();
         }
     });
     
@@ -202,10 +202,10 @@ exports.init = function(app) {
     
     app.post('/user/me', function(req, res) {
         if (!req.user) {
-            res.status(403).send("Not authorized");
+            res.status(401).send();
         } else {
             if (req.user._id.toString() !== req.body._id) {
-                res.status(403).send("Not authorized");
+                res.status(401).send();
             } else {
                 mongo_data_system.userById(req.user._id, function(err, user) {
                     user.email = req.body.email;
@@ -222,7 +222,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             usersrvc.addSiteAdmin(req, res);
         } else {
-            res.status(403).send("You are not authorized.");                    
+            res.status(401).send();
         }
     });
 
@@ -230,7 +230,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             usersrvc.removeSiteAdmin(req, res);
         } else {
-            res.status(403).send("You are not authorized.");                    
+            res.status(401).send();
         }
     });
 
@@ -251,7 +251,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
             usersrvc.addOrgAdmin(req, res);
         } else {
-            res.status(403).send("You are not authorized.");                    
+            res.status(401).send();
         }
     });
 
@@ -264,7 +264,7 @@ exports.init = function(app) {
                 && req.user && req.user.siteAdmin) {
             res.render('siteAudit', 'system'); //TODO: REMOVE DEPENDENCY
         } else {
-            res.status(403).send("Not Authorized");
+            res.status(401).send();
         }
     });
 
@@ -275,7 +275,7 @@ exports.init = function(app) {
                 res.send({users: users});
             });
         } else {
-            res.status(403).send("Not Authorized");
+            res.status(401).send();
         }
     });
 
@@ -283,7 +283,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {        
             usersrvc.removeOrgAdmin(req, res);
         } else {
-            res.status(403).send("You are not authorized.");                    
+            res.status(401).send();
         }
     });
 
@@ -291,7 +291,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
             usersrvc.addOrgCurator(req, res);
         } else {
-            res.status(403).send("You are not authorized.");                    
+            res.status(401).send();
         }
     });
 
@@ -299,7 +299,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
             usersrvc.removeOrgCurator(req, res);
         } else {
-            res.status(403).send("You are not authorized.");                    
+            res.status(401).send();
         }
     });    
 
@@ -310,7 +310,7 @@ exports.init = function(app) {
                 else res.status(200).end();
             });
         } else {
-            res.status(403).send("You are not authorized.");                    
+            res.status(401).send();
         }
     });    
 
@@ -320,7 +320,7 @@ exports.init = function(app) {
         if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
             res.render('siteaccountmanagement', "system");
         } else {
-            res.status(403).send("Not Authorized");
+            res.status(401).send();
         }
     });
 
@@ -334,7 +334,7 @@ exports.init = function(app) {
 
     app.post('/classification/elt', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.status(403).send("Not Authorized");
+            res.status(401).send();
             return;
         }      
         classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
@@ -349,7 +349,7 @@ exports.init = function(app) {
     
     app.delete('/classification/elt', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
-            res.status(403).send("Not Authorized");
+            res.status(401).send();
             return;
         }  
         classificationNode.cdeClassification(req.query, classificationShared.actions.delete, function(err) {
@@ -383,7 +383,7 @@ exports.init = function(app) {
 
     app.post('/classification/rename', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.status(403).send("Not Authorized");
+            res.status(401).send();
             return;
         }      
         classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function(err, org) {
@@ -394,7 +394,7 @@ exports.init = function(app) {
  
     app.post('/classifyEntireSearch', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
-            res.status(403).send("Not Authorized");
+            res.status(401).send();
             return;
         }      
         classificationNode.classifyEntireSearch(req.body, function(err) {
@@ -454,7 +454,7 @@ exports.init = function(app) {
                 else res.send(doc);
             });
         } else {
-            res.status(403).send("Not Authorized");
+            res.status(401).send();
         }
     });
 
@@ -465,7 +465,7 @@ exports.init = function(app) {
                 else res.send(doc);
             });
         } else {
-            res.status(403).send("Not Authorized");
+            res.status(401).send();
         }
     });
     
@@ -473,7 +473,7 @@ exports.init = function(app) {
         if(auth.isSiteOrgAdmin(req)) {
             usersrvc.getAllUsernames(req, res);
         } else {
-            res.status(403).send("Not Authorized");
+            res.status(401).send();
         }
     });
     
@@ -483,7 +483,7 @@ exports.init = function(app) {
                 res.send(result);                
             });
         } else {
-            res.status(403).send("Not Authorized");
+            res.status(401).send();
         }
     }); 
     
@@ -493,7 +493,7 @@ exports.init = function(app) {
                 res.send(result);                
             });
         } else {
-            res.status(403).send("Not Authorized");
+            res.status(401).send();
         }
     });   
     
@@ -527,19 +527,23 @@ exports.init = function(app) {
               res.send();
             });
         } else {
-            res.send(401, "Not Authorized");
+            res.status(401).send();
         }
     });
 
     app.post('/mail/messages/update', function(req, res) {
-        mongo_data_system.updateMessage(req.body, function(err) {
-            if (err) {
-                res.statusCode = 404;
-                res.send("Error while updating the message");
-            } else {
-                res.send();
-            }
-        });
+        if (req.isAuthenticated()) {
+            mongo_data_system.updateMessage(req.body, function(err) {
+                if (err) {
+                    res.statusCode = 404;
+                    res.send("Error while updating the message");
+                } else {
+                    res.send();
+                }
+            });
+        } else {
+            res.status(401).send();
+        }
     });
 
     app.post('/mail/messages/:type', function(req, res) {

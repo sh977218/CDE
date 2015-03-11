@@ -1,13 +1,6 @@
 angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource) {
     $scope.filterMode = true;
 
-    $scope.interruptOpenAccordion = function(event) {
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-    };
-    
     $timeout(function(){
         if($scope.isScreenSizeXsSm) {
             $scope.filterMode = false;
