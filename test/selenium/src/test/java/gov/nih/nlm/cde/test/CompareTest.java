@@ -73,6 +73,8 @@ public class CompareTest extends NlmCdeBaseTest{
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")));
         findElement(By.linkText("Quick Board ( 2 )")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("qb.compare")));
+        // IDK why sometimes the following click doesn't seem to work. Wait above should be enough, but no.
+        hangon(1);
         clickElement(By.id("qb.compare"));
         textPresent("in CTC category Blood/Bone Marrow");
         textPresent("CTC Adverse Event Platelets Grade");

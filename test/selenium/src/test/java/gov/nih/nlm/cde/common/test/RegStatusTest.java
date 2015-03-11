@@ -36,6 +36,8 @@ public abstract class RegStatusTest extends CommonTest {
         findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector(".fa-check")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editStatus")));
+        findElement(By.id("discardChanges")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("discardChanges")));        
     }
     
     public void changeRegistrationStatus(String eltName, String user) {
