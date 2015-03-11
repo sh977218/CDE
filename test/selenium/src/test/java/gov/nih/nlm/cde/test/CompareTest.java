@@ -24,7 +24,7 @@ public class CompareTest extends NlmCdeBaseTest{
     }
     
     @Test
-    public void Compare2Elements() {
+    public void compare2Elements() {
         goToCdeSearch();
         addToCompare("Person Gender Text Type", "Patient Gender Category");
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
@@ -33,7 +33,7 @@ public class CompareTest extends NlmCdeBaseTest{
     }
     
     @Test
-    public void Compare3Then2Elements() {
+    public void compare3Then2Elements() {
         resizeWindow(1524, 1150);
 
         String cde1 = "Assessment of Motor and Process Skills Assessment Complete Indicator";

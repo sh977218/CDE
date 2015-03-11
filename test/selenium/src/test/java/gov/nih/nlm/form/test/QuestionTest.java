@@ -28,6 +28,7 @@ public class QuestionTest extends BaseFormTest {
         Assert.assertTrue(targetElt.isDisplayed());
         
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+        hangon(2);
     }    
     
     public void addQuestionToSectionSafe(String cdeName, int sectionNumber) {

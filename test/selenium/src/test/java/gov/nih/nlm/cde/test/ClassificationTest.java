@@ -38,7 +38,7 @@ public class ClassificationTest extends BaseClassificationTest {
             selector += categories[i];
             if (i<categories.length-1) selector += ",";
         }
-        Assert.assertTrue(findElement(By.id("classification-"+selector)).getText().contains(categories[categories.length-1])); 
+        textPresent(categories[categories.length-1], By.id("classification-"+selector)); 
         deleteClassification("classification-"+selector);
         driver.navigate().refresh();
         findElement(By.linkText("Classification")).click();
