@@ -36,6 +36,8 @@ public abstract class RegStatusTest extends CommonTest {
         findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector(".fa-check")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editStatus")));
+        findElement(By.id("discardChanges")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("discardChanges")));        
     }
     
     public void changeRegistrationStatus(String eltName, String user) {
@@ -74,7 +76,8 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltSearch();
         findElement(By.name("ftsearch")).sendKeys("Alkaline");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(eltName));
+        hangon(2);
+        Assert.assertTrue(!driver.findElement(By.id("accordionList")).getText().contains(eltName));
     }
 
     public void nlmPromotesToStandard(String eltName) {

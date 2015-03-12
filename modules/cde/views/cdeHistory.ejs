@@ -33,23 +33,7 @@
     <div ng-show="priorCdes.length == 0">This Data Element has no history</div>
     </div>
     <div class="col-md-7">
-            <table ng-show="modifications" id="modificationsList" class="table">
-                <caption>List of Modifications</caption>
-                <thead>
-                    <tr>
-                        <th>Field</th>
-                        <th>Type of Modification</th>
-                        <th>New Value</th>
-                        <th>Previous Value</th>
-                    </tr>
-                </thead>
-                <tr ng-repeat="m in modifications">
-                    <td class="fieldName">{{m.fieldName}}</td>
-                    <td>{{m.modificationType}}</td>
-                    <td class="newValue">{{m.newValue}}</td>
-                    <td class="previousValue">{{m.previousValue}}</td>
-                </tr>
-            </table>
+        <div ng-include="'/cde/public/html/cdeDiff.html'"></div>
     </div>
 </div>
 

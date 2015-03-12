@@ -130,4 +130,26 @@ schemas.pinningBoardSchema.pre('save', function(next) {
 schemas.dataElementSchema.set('collection', 'dataelements');
 schemas.pinningBoardSchema.set('collection', 'pinningBoards');
 
+schemas.cdeAuditSchema = mongoose.Schema({
+    date: Date
+    , user: {
+        username: String
+    }
+    , adminItem: {
+        tinyId: String
+        , version: String
+        , _id: mongoose.Schema.Types.ObjectId
+        , name: String
+    }
+    , previousItem: {
+        tinyId: String
+        , version: String
+        , _id: mongoose.Schema.Types.ObjectId
+        , name: String
+    }
+    , diff: Object
+}, { strict: false}); 
+
+schemas.cdeAuditSchema.set('collection', 'cdeAudit');
+
 module.exports = schemas;

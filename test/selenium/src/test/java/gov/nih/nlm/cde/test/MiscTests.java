@@ -81,7 +81,6 @@ public class MiscTests extends NlmCdeBaseTest {
 
         // Provide fake ticket and make sure user info is retrieved
         response = get(baseUrl+"/user/me?ticket=valid").asString();
-        //System.out.println(response);
         get(baseUrl+"/user/me?ticket=valid").then().assertThat().contentType(ContentType.JSON);
         Assert.assertTrue( response.contains("_id") );
         Assert.assertTrue( response.contains("ninds") );
@@ -104,7 +103,6 @@ public class MiscTests extends NlmCdeBaseTest {
         
         // Make sure ticket validation times out
         String response = get(baseUrl+"/user/me?ticket=timeout4").asString();
-        //System.out.println(response);
         Assert.assertEquals( "Not logged in.", response );
         
         // Make sure ticket validation doesn't times out

@@ -204,15 +204,15 @@ public class NlmCdeBaseTest {
     
     protected void goToElementByName(String name, String type, String status) {
         try {
-            openEltInList(name, type, status);
-            findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+            searchElt(name, type, status);
+            clickElement(By.id("eyeLink_0"));
             textPresent("Classification");
             textPresent(name);
             textNotPresent("is archived");
         } catch (Exception e) {
             hangon(1);
-            openEltInList(name, type, status);
-            findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+            searchElt(name, type, status);
+            clickElement(By.id("eyeLink_0"));
             textPresent("Classification");
             textPresent(name);
             textNotPresent("is archived");
@@ -232,7 +232,7 @@ public class NlmCdeBaseTest {
         openEltInList(name, type, null);
     }
     
-    protected void openEltInList(String name, String type, String status) {
+    public void searchElt(String name, String type, String status) {
         goToSearch(type);
         if (status != null) {
             findElement(By.id("li-blank-" + status)).click();
@@ -240,9 +240,13 @@ public class NlmCdeBaseTest {
         }        
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
-        findElement(By.cssSelector("i.fa-search")).click();   
+        findElement(By.id("search.submit")).click();   
         textPresent("1 results for");
         textPresent(name, By.id("acc_link_0"));
+    }
+    
+    protected void openEltInList(String name, String type, String status) {
+        searchElt(name, type, status);
         clickElement(By.id("acc_link_0"));
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openEltInCurrentTab_0")));
     }
@@ -352,18 +356,21 @@ public class NlmCdeBaseTest {
     }
 
     
-    @BeforeMethod
+    @AfterMethod
     protected void goHome() {
+        // gonowhere gets rid of possible alert.
         driver.get(baseUrl + "/gonowhere");
+        textPresent("Nothing here");
+
         try {
-            textPresent("Nothing here");
-        } catch (Exception e) {
-            driver.get(baseUrl + "/gonowhere");
-            textPresent("Nothing here");
-        } 
-        driver.get(baseUrl + "/#/home");
-        findElement(By.id("selectOrgDropdown"));
-        hangon(1);
+            driver.get(baseUrl + "/#/home");
+            findElement(By.id("selectOrgDropdown"));
+        } catch (TimeoutException e) {
+            // Sometimes home page does not load. A real Bug CDE-521
+            driver.get(baseUrl + "/#/home");
+            findElement(By.id("selectOrgDropdown"));
+        }
+        
     }
 
     protected void goToCdeSearch() {
@@ -391,6 +398,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Log Out")).click();
         findElement(By.linkText("Log In"));
+        textPresent("Please Log In");
     }
 
     
@@ -568,5 +576,23 @@ public class NlmCdeBaseTest {
         hangon(1);
         showHistoryDiff(0);        
         confirmCdeModification(field, oldValue, newValue); 
+    }
+    
+    protected void openCdeAudit(String cdeName){
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Audit")).click();
+        findElement(By.linkText("CDE Audit Log")).click();        
+        for(Integer i = 0; i<10; i++){
+            hangon(1);
+            try {
+                wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("accordion"), cdeName));
+                break;
+            } catch(Exception e){
+                findElement(By.id("older")).click();
+            }            
+            
+        }
+        findElement(By.xpath("//accordion//span[contains(text(),'"+cdeName+"')]")).click();       
     }
 }

@@ -75,3 +75,4 @@ Thumbs.db
 .nide
 /test/selenium/.nb-gradle/private/
 /bin
+.idea

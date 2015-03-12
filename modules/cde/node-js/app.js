@@ -226,7 +226,7 @@ exports.init = function(app, daoManager) {
                 ],
                 function(err, results){
                     if (results[1]<boardQuota) return res.send(results[0]);
-                    mongo_data.removeBoard(results[0]._id, function() {});
+                    mongo_data.removeBoard(results[0]._id);
                     res.status(403).send("You have too many boards!");
                 });
 
@@ -490,5 +490,15 @@ exports.init = function(app, daoManager) {
             } else res.send(resultCdes);
         });
     });
+    
+    app.post('/getCdeAuditLog', function(req, res) {
+        if(req.isAuthenticated() && req.user.siteAdmin) {
+            mongo_data.getCdeAuditLog(req.body, function(err, result) {
+                res.send(result);                
+            });
+        } else {
+            res.status(401).send("Not Authorized");
+        }
+    });     
 
 };

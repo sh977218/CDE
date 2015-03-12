@@ -86,28 +86,7 @@ angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'user
     $scope.emptyQuickBoard = function() {
         $scope.quickBoard = [];
     };
-    
-    $scope.accordionIconAction = function (elt, action, event) {
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        switch (action) {
-            case "view":
-                $scope.view(elt);
-            break;
-            case "openPinModal":
-                $scope.openPinModal(elt);
-            break;
-            case "addToQuickBoard":
-                $scope.addToQuickBoard(elt);
-            break;
-            case "viewNewTab":
-                $scope.viewNewTab(elt);
-            break;    
-        }        
-    };
-    
+           
     $scope.openPinModal = function (cde) {
         var modalInstance = $modal.open({
           templateUrl: '/cde/public/html/selectBoardModal.html',
@@ -133,14 +112,6 @@ angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'user
         });
     };
         
-    $scope.view = function(cde) {       
-        $location.url("deview?cdeId=" + cde._id);
-    };    
-    
-    $scope.viewNewTab = function(cde) {       
-        $window.open("#/deview?cdeId=" + cde._id);
-    };            
-
     $scope.showCompareButton = function(cde) {
         return $scope.quickBoard.length < GLOBALS.max_quickboard_cdes &&
                cde !== undefined &&
