@@ -3,7 +3,7 @@
         <form class="form-search">
             <div class="form-group col-md-3">
                 <label for="ip">Remote Address</label>
-                <input name="ip" type="text" ng-model="search.ip" class="search-query form-control" placeholder="IP Address"/>  
+                <input name="ip" type="text" ng-model="search.remoteAddr" class="search-query form-control" placeholder="IP Address"/>  
             </div>
 
             <div class="form-group col-md-3" >
@@ -16,12 +16,14 @@
             </div>
             <div class="form-group col-md-3" >
                 <button id="search.submit" type="submit" ng-click="searchLogs()" class="btn btn-default">Search</button>
-                <br><button id="search.reset" type="submit" ng-click="reset()" class="btn btn-default">Reset</button>
             </div>
         </form>
     </div>
     <div class="row">
         <div id="logGridView" class="gridStyle" ng-grid="gridOptions"></div>
         <a class="btn btn-mini fa fa-external-link" ng-click="downloadCsv()" id="exportLink"> Export</a>    
-    </div>    
+    </div> 
+    <div class="row">
+        <pagination align="center" direction-links="true" items-per-page="itemsPerPage" total-items="totalItems" ng-model="search.currentPage" max-size="10" ng-change="pageChanged()"></pagination>
+    </div>
 </div>

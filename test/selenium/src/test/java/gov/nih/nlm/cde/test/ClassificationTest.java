@@ -33,13 +33,12 @@ public class ClassificationTest extends BaseClassificationTest {
     }
     
     private void removeClassificationMethod(String[] categories) {
-        findElement(By.linkText("Classification")).click();
         String selector = "";        
         for (int i=0; i<categories.length; i++) {
             selector += categories[i];
             if (i<categories.length-1) selector += ",";
         }
-        Assert.assertTrue(driver.findElement(By.id("classification-"+selector)).getText().contains(categories[categories.length-1])); 
+        textPresent(categories[categories.length-1], By.id("classification-"+selector)); 
         deleteClassification("classification-"+selector);
         driver.navigate().refresh();
         findElement(By.linkText("Classification")).click();
