@@ -329,7 +329,7 @@ exports.init = function(app) {
     });    
         
     app.get('/data/:imgtag', function(req, res) {
-        mongo_data_system.getFile(res, req.params.imgtag);
+        mongo_data_system.getFile(req.user, req.params.imgtag, res);
     });    
 
     app.post('/classification/elt', function(req, res) {
