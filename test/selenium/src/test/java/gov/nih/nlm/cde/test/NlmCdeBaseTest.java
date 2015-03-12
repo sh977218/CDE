@@ -397,6 +397,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Log Out")).click();
         findElement(By.linkText("Log In"));
+        textPresent("Please Log In");
     }
 
     
