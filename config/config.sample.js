@@ -67,13 +67,14 @@ var config = {
     , modules: {
         forms: {
             attachments: true
-            , comments: true            
+            , comments: true          
         }
         , article: true
         , cde: {
             attachments: true
             , comments: true
             , highlight: true
+            , audit: true
         }
     } 
     , status: {

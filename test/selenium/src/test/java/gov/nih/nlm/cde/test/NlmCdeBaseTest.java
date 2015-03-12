@@ -397,6 +397,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Log Out")).click();
         findElement(By.linkText("Log In"));
+        textPresent("Please Log In");
     }
 
     
@@ -574,5 +575,23 @@ public class NlmCdeBaseTest {
         hangon(1);
         showHistoryDiff(0);        
         confirmCdeModification(field, oldValue, newValue); 
+    }
+    
+    protected void openCdeAudit(String cdeName){
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Audit")).click();
+        findElement(By.linkText("CDE Audit Log")).click();        
+        for(Integer i = 0; i<10; i++){
+            hangon(1);
+            try {
+                wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("accordion"), cdeName));
+                break;
+            } catch(Exception e){
+                findElement(By.id("older")).click();
+            }            
+            
+        }
+        findElement(By.xpath("//accordion//span[contains(text(),'"+cdeName+"')]")).click();       
     }
 }

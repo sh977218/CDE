@@ -1,0 +1,17 @@
+<table ng-show="cdeDiff" id="modificationsList" class="table">
+    <caption>List of Modifications</caption>
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Type of Modification</th>
+            <th>New Value</th>
+            <th>Previous Value</th>
+        </tr>
+    </thead>
+    <tr ng-repeat="d in cdeDiff">
+        <td class="fieldName">{{d.fieldName}}</td>
+        <td>{{d.modificationType}}</td>
+        <td class="newValue">{{d.newValue}}</td>
+        <td class="previousValue">{{d.previousValue}}</td>
+    </tr>
+</table>

@@ -490,5 +490,15 @@ exports.init = function(app, daoManager) {
             } else res.send(resultCdes);
         });
     });
+    
+    app.post('/getCdeAuditLog', function(req, res) {
+        if(req.isAuthenticated() && req.user.siteAdmin) {
+            mongo_data.getCdeAuditLog(req.body, function(err, result) {
+                res.send(result);                
+            });
+        } else {
+            res.status(401).send("Not Authorized");
+        }
+    });     
 
 };

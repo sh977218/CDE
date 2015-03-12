@@ -76,7 +76,8 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltSearch();
         findElement(By.name("ftsearch")).sendKeys("Alkaline");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(eltName));
+        hangon(2);
+        Assert.assertTrue(!driver.findElement(By.id("accordionList")).getText().contains(eltName));
     }
 
     public void nlmPromotesToStandard(String eltName) {

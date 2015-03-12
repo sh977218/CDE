@@ -262,7 +262,7 @@ exports.init = function(app) {
     app.get('/siteaudit', function(req, res) {
         if (app.isLocalIp(req.ip) 
                 && req.user && req.user.siteAdmin) {
-            res.render('siteAudit', 'system'); //TODO: REMOVE DEPENDENCY
+            res.render('siteAudit', 'system', {config: viewConfig}); 
         } else {
             res.status(401).send();
         }
