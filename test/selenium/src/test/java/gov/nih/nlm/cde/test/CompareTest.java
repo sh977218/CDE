@@ -20,11 +20,11 @@ public class CompareTest extends NlmCdeBaseTest{
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
         openCdeInList("Sedation status");
         findElement(By.id("compare_0")).click();
-        Assert.assertTrue(textPresent("Quick Board ( 1 )"));      
+        textPresent("Quick Board ( 1 )");      
     }
     
     @Test
-    public void Compare2Elements() {
+    public void compare2Elements() {
         goToCdeSearch();
         addToCompare("Person Gender Text Type", "Patient Gender Category");
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
@@ -33,7 +33,7 @@ public class CompareTest extends NlmCdeBaseTest{
     }
     
     @Test
-    public void Compare3Then2Elements() {
+    public void compare3Then2Elements() {
         resizeWindow(1524, 1150);
 
         String cde1 = "Assessment of Motor and Process Skills Assessment Complete Indicator";
@@ -73,6 +73,8 @@ public class CompareTest extends NlmCdeBaseTest{
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")));
         findElement(By.linkText("Quick Board ( 2 )")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("qb.compare")));
+        // IDK why sometimes the following click doesn't seem to work. Wait above should be enough, but no.
+        hangon(1);
         clickElement(By.id("qb.compare"));
         textPresent("in CTC category Blood/Bone Marrow");
         textPresent("CTC Adverse Event Platelets Grade");

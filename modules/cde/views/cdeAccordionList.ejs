@@ -1,11 +1,11 @@
 <div accordion close-others="false" id="accordionList" ng-class="accordionListStyle" >
     <div ui-sortable="dragSortableOptions" ng-model="cdes">
-        <div accordion-group ng-repeat="cde in (cdes+mltCdes)" is-open="cde.isOpen">
-            <div accordion-heading>
+        <div accordion-group ng-repeat="cde in cdes track by cde._id" is-open="cde.isOpen">
+            <div accordion-heading ng-controller="AccordionCtrl" >
                 <i ng-show="addCdeMode" class="fa fa-arrows question-move-handle"></i>
                 <span tabindex="0" role="link" ng-bind-html="cde.primaryNameCopy" id="acc_link_{{$index}}" class="hand-cursor"></span>
-                <i tabindex="0" ng-show="!openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(cde,'view',$event)" title="View Full Detail" role="link"></i>
-                <i tabindex="0" ng-show="openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="accordionIconAction(cde,'viewNewTab',$event)" title="View Full Detail" role="link"></i>
+                <i tabindex="0" ng-show="!openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="view(cde, $event)" title="View Full Detail" role="link" id="eyeLink_{{$index}}"></i>
+                <i tabindex="0" ng-show="openCdeInNewTab" class="fa fa-eye hand-cursor" ng-click="viewNewTab(cde, $event)" title="View Full Detail" role="link"></i>
                 <i tabindex="0" ng-show="user._id && ejsPage!=='board' && cPage!=='forms'" class="fa fa-thumb-tack hand-cursor" ng-click="accordionIconAction(cde,'openPinModal',$event)" title="Attach to Board" role="link"> </i>
                 <i tabindex="0" ng-show="user._id && ejsPage==='board'" class="fa fa-thumb-tack fa-rotate-90 hand-cursor" ng-click="unpin(board.pins[$index])" title="unPin from Board" id="unpin_{{$index}}" role="link"> </i>          
                 <i tabindex="0" ng-show="showCompareButton(cde) && cPage!=='forms'" class="fa fa-plus hand-cursor" ng-click="accordionIconAction(cde,'addToQuickBoard',$event)" title="Add to Quick Board" id="addToCompare_{{$index}}" role="link"></i>

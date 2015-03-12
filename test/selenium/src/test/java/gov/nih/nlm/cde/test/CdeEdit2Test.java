@@ -1,9 +1,10 @@
 package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ctepCurator_username;
+import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CdeEdit2Test extends NlmCdeBaseTest {
@@ -111,6 +112,10 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         textNotPresent(validationError);
         findElement(By.name("version")).sendKeys("123#abc");
         textPresent(validationError);
+        findElement(By.id("cancelSaveModal")).click();
+        modalGone();
+        findElement(By.id("discardChanges")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("discardChanges")));          
     }   
     
 }

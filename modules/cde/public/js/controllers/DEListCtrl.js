@@ -1,5 +1,7 @@
-angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', 'TourContent', function($scope, $controller, TourContent) {
-    $scope.module = "cde";         
+angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', 'TourContent', '$location', '$window',
+        function($scope, $controller, TourContent, $location, $window) {
+    $scope.module = "cde";        
+
     $scope.dragSortableOptions = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
