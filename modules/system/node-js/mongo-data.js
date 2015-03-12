@@ -12,6 +12,7 @@ var schemas = require('./schemas')
     , shortid = require("shortid")
     , logging = require('../../system/node-js/logging.js')
     , email = require('../../system/node-js/email')
+    , adminItemSvc = require('./adminItemSvc')
     ;
 
 var conn;
@@ -188,7 +189,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     });
 
     writestream.on('close', function (newfile) {
-        elt.attachments.push({
+        var fileMetadata = {
             fileid: newfile._id
             , filename: file.originalname
             , filetype: file.type
@@ -199,11 +200,12 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
                 , username: user.username
             }
             , filesize: file.size          
-        });
+        };
+        elt.attachments.push(fileMetadata);
         elt.save(function() {
             cb();
         });
-      
+        adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", fileMetadata);      
     });
     
     if (file.stream) {

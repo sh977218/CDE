@@ -21,6 +21,10 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         goToCdeByName("Alcohol use frequency");
 
         addAttachment();
+        checkAttachmentNotReviewed();
+        reviewAttachment();
+
+
         hangon(5);
 
         openCdeInList(cdeName);
@@ -43,6 +47,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         goToFormByName(formName);
 
         addAttachment();
+        checkAttachmentNotReviewed();
         
         hangon(5);
         
@@ -78,4 +83,16 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         closeAlert();        
     }
     
+    private void checkAttachmentNotReviewed() {
+        findElement(By.cssSelector(".viewAttachmentLink")).click();
+        switchTab(1);
+        textPresent("This file has not been approved yet.");
+        switchTabAndClose(0);        
+    }
+
+    private void reviewAttachment() {
+        mustBeLoggedInAs(attachmentReviewer_username, password);       
+        gotoInbox();
+    }    
+
 }

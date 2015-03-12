@@ -123,6 +123,9 @@ var commentApprovalSchema = {
     }
     , comment: {index: Number, text: String}
 };
+var attachmentApprovalSchema = {
+    
+};
 
 schemas.message = mongoose.Schema ({
     recipient: {
@@ -131,9 +134,10 @@ schemas.message = mongoose.Schema ({
     }
     , author: {authorType: String, name: String}
     , date: Date
-    , type: {type: String, enum: ["MergeRequest", "CommentApproval"]}
+    , type: {type: String, enum: ["MergeRequest", "CommentApproval", "AttachmentApproval"]}
     , typeRequest: requestSchema
     , typeCommentApproval: commentApprovalSchema
+    , typeAttachmentApproval: attachmentApprovalSchema
     , states: [{
         action: {type: String, enum: ["Approved", "Filed"]}
         , date: Date
