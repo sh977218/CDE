@@ -1,14 +1,13 @@
 <table class="table">
-    <caption>Logged Errors, showing from {{skip}} to {{skip + limit}}</caption>
     <thead>
         <tr>
             <th ng-repeat="field in fields">{{field}}</th>
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="err in errors"  ng-include="'/system/public/html/' + errorType + 'ErrorList.html'">
+        <tr ng-repeat="err in records"  ng-include="'/system/public/html/' + errorType + 'ErrorList.html'">
         </tr>
     </tbody>
 </table>
-<button class="btn btn-default" type="submit" ng-click="loadNewer()">Newer</button>
-<button class="btn btn-default" type="submit" ng-click="loadOlder()">Older</button>
+
+<pagination total-items="1000" ng-model="currentPage" ng-change="gotoPage(currentPage)" max-size="10"></pagination>

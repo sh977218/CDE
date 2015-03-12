@@ -1,0 +1,21 @@
+<accordion>
+    <accordion-group ng-repeat="edit in records">
+        <accordion-heading >
+            {{edit.adminItem.name}}
+            <span class="matched-by">{{edit.date | date : 'MMM d, y, h:mm a' }}</span>
+        </accordion-heading>
+        <dl class="dl-horizontal">
+          <dt>User</dt>
+          <dd>{{edit.user.username}}</dd>
+          <dt>Date</dt>
+          <dd>{{edit.date | date : 'MMM d, y, h:mm a'}}</dd>
+          <dt>CDE - New Version</dt>
+          <dd><a target="_blank" href="/#/deview?cdeId={{edit.adminItem._id}}">{{edit.adminItem.name}}</a></dd>
+          <dt>CDE - Previous Version</dt>
+          <dd><a target="_blank" href="/#/deview?cdeId={{edit.previousItem._id}}">{{edit.previousItem.name}}</a></dd>
+        </dl>           
+        <div ng-include="'/'+module+'/public/html/cdeDiff.html'" ng-init="cdeDiff=edit.diff"></div>
+    </accordion-group>
+</accordion>
+
+<pagination total-items="1000" ng-model="currentPage" ng-change="gotoPageLocal(currentPage)" max-size="10"></pagination>

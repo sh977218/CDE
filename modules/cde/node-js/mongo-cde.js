@@ -7,6 +7,7 @@ var mongoose = require('mongoose')
     , logging = require('../../system/node-js/logging')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , deepCopy = require('deep-copy')
+    , cdesvc = require("./cdesvc")
 ;
 
 exports.type = "cde";
@@ -16,6 +17,8 @@ var mongoUri = config.mongoUri;
 var DataElement;
 var PinningBoard;
 var User;
+var PinningBoard;
+var CdeAudit;
 
 var connectionEstablisher = connHelper.connectionEstablisher;
 var connection = null;
@@ -26,6 +29,7 @@ iConnectionEstablisherCde.connect(function(conn) {
     exports.DataElement = DataElement;
     PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
     User = conn.model('User', schemas_system.userSchema);
+    CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
     connection = conn;
 });
 
@@ -293,6 +297,7 @@ exports.update = function(elt, user, callback, special) {
                         logging.errorLogger.error("Error: Cannot save CDE", {origin: "cde.mongo-cde.update.3", stack: new Error().stack, details: "err "+err});
                     }                    
                     callback(err, newDe);
+                    exports.saveModification(dataElement, newDe, user);
                 });
             }
         });
@@ -346,4 +351,39 @@ exports.archivedCdes = function(cdeArray, callback) {
     connection.db.eval(evalF, {array: JSON.parse(cdeArray)}, function(err, result) {
         callback(err, result);
     });
+};
+
+exports.saveModification = function(oldDe, newDe, user) {
+    var diff = cdesvc.diff(newDe, oldDe);
+    var message = {
+        date: new Date()
+        , user: {
+            username: user.username
+        }
+        , adminItem: {
+            tinyId: newDe.tinyId
+            , version: newDe.version
+            , _id: newDe._id
+            , name: newDe.naming[0].designation
+        }
+        , previousItem: {
+            tinyId: oldDe.tinyId
+            , version: oldDe.version
+            , _id: oldDe._id
+            , name: oldDe.naming[0].designation
+        }
+        , diff: diff
+    };    
+    var auditItem = new CdeAudit(message);
+    auditItem.save();
+};
+
+exports.getCdeAuditLog = function(params, callback){
+    CdeAudit.find()
+            .sort('-date')
+            .skip(params.skip)
+            .limit(params.limit)
+            .exec(function(err, logs){
+        callback(err, logs);
+    });    
 };

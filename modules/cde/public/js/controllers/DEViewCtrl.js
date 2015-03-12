@@ -1,5 +1,4 @@
-angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', '$q'
-        , function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, isAllowedModel, OrgHelpers, $rootScope, TourContent, $q) {
+angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q', function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff, $q) {
     $scope.module = 'cde';
     $scope.baseLink = '#/deview?cdeId=';
     $scope.eltLoaded = false;
@@ -375,7 +374,6 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
     $scope.$on("$destroy", function handler() {
         TourContent.stop();
     });    
+  
     
-    
-}
-]);
+}]);
