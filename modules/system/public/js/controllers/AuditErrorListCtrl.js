@@ -1,10 +1,6 @@
 angular.module('systemModule').controller('AuditErrorListCtrl', ['$scope', '$http', '$q', function($scope, $http, $q) {
     $scope.records = [];
-    $scope.skip = 0;
-    $scope.limit = 10;
-    
-    
-    
+    var itemsPerPage = 10;    
     $scope.promise = null;
     
     $scope.fetchErrors = function(skip, limit){
@@ -16,15 +12,12 @@ angular.module('systemModule').controller('AuditErrorListCtrl', ['$scope', '$htt
             $scope.resolve();
         });
     };
-    $scope.fetchErrors($scope.skip, $scope.limit);
-    
-    $scope.loadNewer = function(){
-        if ($scope.skip>=$scope.limit) $scope.skip -= $scope.limit;
-        $scope.fetchErrors($scope.skip, $scope.limit);
-    };
-    $scope.loadOlder = function(){
-        $scope.skip += $scope.limit;
-        $scope.fetchErrors($scope.skip, $scope.limit);
-    };
+    $scope.fetchErrors(0, itemsPerPage);
+
+    $scope.gotoPage = function(page){
+        $scope.fetchErrors(itemsPerPage * (page-1), itemsPerPage);
+    };    
+
+    $scope.currentPage = 1;
     
 }]);

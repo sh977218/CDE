@@ -497,7 +497,7 @@ exports.init = function(app, daoManager) {
                 res.send(result);                
             });
         } else {
-            res.status(403).send("Not Authorized");
+            res.status(401).send("Not Authorized");
         }
     });     
 

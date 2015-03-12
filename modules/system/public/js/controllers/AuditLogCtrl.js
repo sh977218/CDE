@@ -10,14 +10,10 @@ angular.module('systemModule').controller('AuditLogCtrl', ['$scope', '$controlle
             });
         });        
     };
-    $scope.registerPopulator();
-    
-    $scope.loadNewerLocal = function(){        
-        $scope.loadNewer();
-        $scope.registerPopulator();
+    $scope.registerPopulator(); 
+
+    $scope.gotoPageLocal = function(page){
+        $scope.gotoPage(page);
+        $scope.registerPopulator();           
     };
-    $scope.loadOlderLocal = function(){        
-        $scope.loadOlder();
-        $scope.registerPopulator();
-    };    
 }]);

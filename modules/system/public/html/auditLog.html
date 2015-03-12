@@ -1,5 +1,3 @@
-From {{skip}} to {{skip + limit}}.
-
 <accordion>
     <accordion-group ng-repeat="edit in records">
         <accordion-heading >
@@ -20,5 +18,4 @@ From {{skip}} to {{skip + limit}}.
     </accordion-group>
 </accordion>
 
-<button class="btn btn-default" type="submit" ng-click="loadNewerLocal()">Newer</button>
-<button class="btn btn-default" type="submit" ng-click="loadOlderLocal()" id="older">Older</button>
+<pagination total-items="1000" ng-model="currentPage" ng-change="gotoPageLocal(currentPage)" max-size="10"></pagination>

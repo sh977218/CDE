@@ -1,5 +1,4 @@
 <table class="table">
-    <caption>Logged Errors, showing from {{skip}} to {{skip + limit}}</caption>
     <thead>
         <tr>
             <th ng-repeat="field in fields">{{field}}</th>
@@ -10,5 +9,5 @@
         </tr>
     </tbody>
 </table>
-<button class="btn btn-default" type="submit" ng-click="loadNewer()">Newer</button>
-<button class="btn btn-default" type="submit" ng-click="loadOlder()">Older</button>
+
+<pagination total-items="1000" ng-model="currentPage" ng-change="gotoPage(currentPage)" max-size="10"></pagination>
