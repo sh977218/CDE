@@ -147,4 +147,20 @@ schemas.message = mongoose.Schema ({
 
 schemas.message.set('collection', 'messages');
 
+schemas.fs_files = mongoose.Schema({
+    "_id" : mongoose.Schema.Types.ObjectId
+    , "filename" : String
+    , "contentType" : String
+    , "length" : Number
+    , "chunkSize" : Number
+    , "uploadDate" : Date
+    , "aliases" : String
+    , "metadata" : {
+        "status" : String
+    }
+    , "md5" : String
+});
+
+schemas.fs_files.set('collection', 'fs.files');
+
 module.exports = schemas;

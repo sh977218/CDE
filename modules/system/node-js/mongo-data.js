@@ -24,6 +24,7 @@ var gfs;
 var connectionEstablisher = connHelper.connectionEstablisher;
 var sessionStore;
 var Message;
+var fs_files;
 
 var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');
 iConnectionEstablisherSys.connect(function(resCon) {
@@ -37,6 +38,7 @@ iConnectionEstablisherSys.connect(function(resCon) {
         mongooseConnection: resCon  
     });
     exports.sessionStore = sessionStore;
+    fs_files = conn.model('fs_files', schemas.fs_files);
 });
 
 var iConnectionEstablisherLocal = new connectionEstablisher(config.database.local.uri, 'LOCAL');
@@ -214,6 +216,23 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     } else {
         fs.createReadStream(file.path).pipe(writestream);
     }
+};
+
+// exports.approveAttachment = function(id, cb) {
+//     // gfs.findOne({ _id: id}, function (err, file) {
+//     //    file.metadata.status = "approved";
+//     //    file.save(function(err){
+//     //         if (cb) cb();
+//     //    });
+//     // });
+//     gfs.collections.update({_id: id}, {$set: {"metadata.status":"approved"}}, cb);
+    
+// };
+
+exports.approveAttachment = function(id, cb) {
+    fs_files.update({_id: id}, {$set: {"metadata.status":"approved"}}).exec(function(err) {
+        if (cb) cb(err);
+    });
 };
 
 exports.getFile = function(user, id, res) {

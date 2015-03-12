@@ -568,5 +568,13 @@ exports.init = function(app) {
             res.send({count: result});
         });
     });
+
+    app.post('/attachment/approve', function(req, res){
+        if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) res.status(403).send("You are not authorized.");
+        mongo_data_system.approveAttachment(req.body.fileid, function(err, result){
+            if (err) res.status(404).send("Unable to approve attachment");
+            else res.send();
+        });
+    });    
     
 };
