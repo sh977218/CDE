@@ -67,8 +67,7 @@ var config = {
     , modules: {
         forms: {
             attachments: true
-            , comments: true
-            , audit: false            
+            , comments: true          
         }
         , article: true
         , cde: {
