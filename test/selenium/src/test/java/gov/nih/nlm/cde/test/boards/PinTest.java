@@ -70,10 +70,10 @@ public class PinTest extends BoardTest {
         createBoard("Unpin Board", "test");
         pinTo(cdeName, "Unpin Board");
         goToBoard("Unpin Board");
-        Assert.assertTrue(textPresent(cdeName));
+        textPresent(cdeName);
         findElement(By.id("unpin_0")).click();
         goToBoard("Unpin Board");
-        Assert.assertTrue(textNotPresent(cdeName));
+        textNotPresent(cdeName);
         
         removeBoard("Unpin Board");
     }

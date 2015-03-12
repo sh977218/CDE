@@ -30,6 +30,9 @@ exports.elasticsearch = function (query, type, cb) {
             cb(null, result);
         } else {
             if (response.statusCode === 400) {
+                logging.errorLogger.error("Error: ElasticSearch Error", 
+                    {origin: "system.elastic.elasticsearch", stack: new Error().stack,
+                        details: {body: JSON.stringify(query)}});
                 cb("Invalid Query");
             } else {
                 var querystr = "cannot stringify query";

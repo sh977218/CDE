@@ -1,6 +1,5 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.cde.test.regstatus.FormRegStatus;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -12,14 +11,13 @@ import org.openqa.selenium.Dimension;
 
 public class QuestionTest extends BaseFormTest {
     
-    
     public void addQuestionToSection(String cdeName, int sectionNumber) {
         findElement(By.id("resetSearch")).click();
         hangon(1);
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results");        
-        textPresent(cdeName, By.id("accordionList"));
+        textPresent(cdeName, By.id("acc_link_0"));
         
         WebElement sourceElt = findElement(By.xpath("//div[@id='accordionList']//i[@class=\"fa fa-arrows question-move-handle ng-scope\"]"));
         WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumber));
@@ -28,6 +26,7 @@ public class QuestionTest extends BaseFormTest {
         Assert.assertTrue(targetElt.isDisplayed());
         
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+        hangon(2);
     }    
     
     public void addQuestionToSectionSafe(String cdeName, int sectionNumber) {
@@ -36,6 +35,7 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results");
+        textPresent(cdeName, By.id("accordionList"));
         
         WebElement sourceElt = findElement(By.xpath("//div[@id='accordionList']//i[@class=\"fa fa-arrows question-move-handle ng-scope\"]"));
         WebElement targetElt = findElement(By.xpath("//*[text()=\"Patient Gender Category\"]"));

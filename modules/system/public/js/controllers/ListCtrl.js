@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource) {
     $scope.filterMode = true;
-    
+
     $timeout(function(){
         if($scope.isScreenSizeXsSm) {
             $scope.filterMode = false;
@@ -254,6 +254,7 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
                 if (err) {
                     $scope.accordionListStyle = "";
                     $scope.addAlert("danger", "There was a problem with your query");
+                    $scope.cdes = []; 
                     return;
                 }
                 if(timestamp < $scope.lastQueryTimeStamp) return;

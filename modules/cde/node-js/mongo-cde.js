@@ -202,7 +202,7 @@ exports.boardById = function(boardId, callback) {
 
 exports.removeBoard = function (boardId, callback) {
     PinningBoard.remove({'_id': boardId}, function (err) {
-        callback(err);
+        if (callback) callback(err);
     });
 };
 //TODO: Consider moving

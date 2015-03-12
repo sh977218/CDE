@@ -20,11 +20,11 @@ public class CompareTest extends NlmCdeBaseTest{
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
         openCdeInList("Sedation status");
         findElement(By.id("compare_0")).click();
-        Assert.assertTrue(textPresent("Quick Board ( 1 )"));      
+        textPresent("Quick Board ( 1 )");      
     }
     
     @Test
-    public void Compare2Elements() {
+    public void compare2Elements() {
         goToCdeSearch();
         addToCompare("Person Gender Text Type", "Patient Gender Category");
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
@@ -33,7 +33,7 @@ public class CompareTest extends NlmCdeBaseTest{
     }
     
     @Test
-    public void Compare3Then2Elements() {
+    public void compare3Then2Elements() {
         resizeWindow(1524, 1150);
 
         String cde1 = "Assessment of Motor and Process Skills Assessment Complete Indicator";
@@ -45,9 +45,9 @@ public class CompareTest extends NlmCdeBaseTest{
         addToQuickBoard(cde2);
         addToQuickBoard(cde3);
         findElement(By.linkText("Quick Board ( 3 )")).click();
-        Assert.assertTrue(textPresent(cde1));
-        Assert.assertTrue(textPresent(cde2));
-        Assert.assertTrue(textPresent(cde3));
+        textPresent(cde1);
+        textPresent(cde2);
+        textPresent(cde3);
         findElement(By.id("qb.compare")).click();
         textPresent("You may only compare 2 CDEs side by side.");
         closeAlert();
@@ -66,14 +66,15 @@ public class CompareTest extends NlmCdeBaseTest{
         goToCdeByName("Common Toxicity Criteria Adverse Event Iron Excess Grade");
         findElement(By.linkText("More Like This")).click();
         findElement(By.id("compareMe")).click();
-        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compareMe")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compareMe")));
         findElement(By.linkText("Common Toxicity Criteria Adverse Event Platelet Count Grade")).click();
-        hangon(.5);
-        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")));
         findElement(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")).click();
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")));
         findElement(By.linkText("Quick Board ( 2 )")).click();
-        hangon(2);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("qb.compare")));
+        // IDK why sometimes the following click doesn't seem to work. Wait above should be enough, but no.
+        hangon(1);
         clickElement(By.id("qb.compare"));
         textPresent("in CTC category Blood/Bone Marrow");
         textPresent("CTC Adverse Event Platelets Grade");

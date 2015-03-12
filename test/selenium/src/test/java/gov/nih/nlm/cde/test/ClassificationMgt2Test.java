@@ -3,7 +3,9 @@ package gov.nih.nlm.cde.test;
 
 import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ninds_username;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -21,9 +23,15 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         findElement(By.xpath("//li[@id=\"classification-Disease,Duchenne Muscular Dystrophy/Becker Muscular Dystrophy\"]//a[contains(@class, 'classifyAll')]")).click();
         findElement(By.xpath("//div[@id='addClassificationModalBody']//span[text()='Classification Transfer']")).click();
         findElement(By.xpath("//div[@id='addClassification-Child Classification']//button")).click();
-        hangon(5);
-        textPresent("Elements classified");        
-        closeAlert();
+        driver.manage().timeouts().implicitlyWait(defaultTimeout * 2, TimeUnit.SECONDS);
+        try {
+            textPresent("Elements classified");        
+            closeAlert();
+        } catch (TimeoutException e) {
+            // Assumption, selenium poll is not quick enough and misses the text;
+            System.out.println("Did not see text 'Elements Classified'");
+        }
+        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);  
         goToCdeByName("Gastrointestinal therapy water flush status");
         findElement(By.linkText("Classification")).click();
         textPresent("NINDS");

@@ -148,6 +148,7 @@ public class MiscTests extends NlmCdeBaseTest {
         getNext("may have multiple names, often given");
         getNext("describe the way in which an organization may use a CDE");
         getNext("are sometimes described by one or more concepts");
+        getNext("shows the status of the CDE");
         getNext("show attributes of the CDE that");
         getNext("may be identified multiple times across CDE users");
         getNext("If a the CDE is used in a Form, it will ");
@@ -162,13 +163,8 @@ public class MiscTests extends NlmCdeBaseTest {
     }    
     
     private void getNext(String expectedText) {
-        try {
-            findElement(By.xpath("//button[@data-role='next']")).click();
-            textPresent(expectedText);
-        } catch(Exception e){
-            findElement(By.xpath("//button[@data-role='next']")).click();
-            textPresent(expectedText);            
-        }
+        findElement(By.xpath("//button[@data-role='next']")).click();
+        textPresent(expectedText);
     }
     
     @Test

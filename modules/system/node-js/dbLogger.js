@@ -85,6 +85,9 @@ exports.logClientError = function(exc, callback) {
 };
 
 exports.getLogs = function(inQuery, callback) {
+    var logSize = 500;
+    var skip = inQuery.currentPage * logSize;
+    delete inQuery.currentPage;
     var fromDate = inQuery.fromDate;
     delete inQuery.fromDate;
     var toDate = inQuery.toDate;
@@ -96,9 +99,10 @@ exports.getLogs = function(inQuery, callback) {
     if (toDate !== undefined) {
         query.where("date").lte(toDate);
     }
-    
-    query.sort("-date").limit(10000).exec(function(err, logs) {
-        callback(err, logs);  
+    LogModel.count({}, function(err, count) {
+        query.sort("-date").limit(logSize).skip(skip).exec(function(err, logs) {
+            callback(err, {count: count, itemsPerPage: logSize, logs: logs});  
+        });        
     });
 };
 
@@ -127,7 +131,7 @@ exports.getClientErrors = function(params, callback) {
 exports.usageByDay = function(callback) {
     LogModel.aggregate(
         {$match: {date: {$exists: true}}}
-        , {$group : {_id: {ip: "$remoteAddr", year: {$year: "$date"}, month: {$month: "$date"}, dayOfMonth: {$dayOfMonth: "$date"}}, number: {$sum: 1}}}
+        , {$group : {_id: {ip: "$remoteAddr", year: {$year: "$date"}, month: {$month: "$date"}, dayOfMonth: {$dayOfMonth: "$date"}}, number: {$sum: 1}, latest: {$max: "$date"}}}
         , function (err, result) {
             if (err || !result) logging.errorLogger.error("Error: Cannot retrieve logs", {origin: "system.dblogger.usageByDay", stack: new Error().stack, details: "err "+err});
             callback(result);

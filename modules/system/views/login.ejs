@@ -9,7 +9,7 @@
         <input id="passwd" type="password" class="form-control" title="password" placeholder="Password" ng-model="password" autocomplete="off"/>
         <input type="hidden" name="_csrf" ng-model="csrf">
         
-        <button class="btn btn-lg btn-primary btn-block" type="submit" id="login_button">Log In</button>
+        <button ng-disabled="!csrf" class="btn btn-lg btn-primary btn-block" type="submit" id="login_button">Log In</button>
         <p>Forgot your <a href="https://uts.nlm.nih.gov/license.html#emailUsername" class="vsloginLink" target="_blank"><span>username</span></a> or <a href="https://uts.nlm.nih.gov/license.html#emailTemporaryPassword" target="_blank"><span  class="vsloginLink">password</span></a>?</p>
     </form>
 </div>

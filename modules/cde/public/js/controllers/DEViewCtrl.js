@@ -1,11 +1,11 @@
-angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, isAllowedModel, OrgHelpers, $rootScope, TourContent) {
+angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', '$q'
+        , function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, isAllowedModel, OrgHelpers, $rootScope, TourContent, $q) {
     $scope.module = 'cde';
     $scope.baseLink = '#/deview?cdeId=';
     $scope.eltLoaded = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;
     $scope.vsacValueSet = [];
-    $scope.mltCdes = [];
     $scope.boards = [];
     $scope.pVTypeheadVsacNameList = [];
     $scope.pVTypeaheadCodeSystemNameList = [];
@@ -33,6 +33,10 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
         history: {heading: "History"},
         forks: {heading: "Forks"}
     };
+    $scope.resolveCdeLoaded = null;
+    $scope.cdeLoadedPromise = $q(function(resolve, reject) {
+        $scope.resolveCdeLoaded = resolve;
+    });
     
     $scope.$on('$locationChangeStart', function( event ) {
         if ($scope.elt.unsaved) {
@@ -55,7 +59,7 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
             $scope.elt = de;        
             $scope.loadValueSet();
             $scope.canLinkPvFunc();
-            $scope.loadMlt();
+            $scope.loadMlt;           
             $scope.loadBoards();
             if ($scope.elt.dataElementConcept) $scope.showValidationIcons = $scope.elt.dataElementConcept.conceptualDomain != null && $scope.elt.dataElementConcept.conceptualDomain.vsac.id != null;
             $scope.getPVTypeaheadCodeSystemNameList();
@@ -70,6 +74,7 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
             $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
+            $scope.resolveCdeLoaded();
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
@@ -244,16 +249,7 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
         var dec = $scope.elt.dataElementConcept;
         $scope.canLinkPv = ($scope.canCurate && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
     };   
-    
-    $scope.loadMlt = function() {
-        $http({method: "GET", url: "/moreLikeCde/" + $scope.elt._id}).
-             error(function(data, status) {
-             }).
-             success(function(data, status) {
-                 $scope.mltCdes = data.cdes;
-             })
-        ;
-    };
+   
     
     $scope.loadBoards = function() {
         $http.get("/deBoards/" + $scope.elt.tinyId).then(function(response) {

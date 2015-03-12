@@ -33,13 +33,12 @@ public class ClassificationTest extends BaseClassificationTest {
     }
     
     private void removeClassificationMethod(String[] categories) {
-        findElement(By.linkText("Classification")).click();
         String selector = "";        
         for (int i=0; i<categories.length; i++) {
             selector += categories[i];
             if (i<categories.length-1) selector += ",";
         }
-        Assert.assertTrue(driver.findElement(By.id("classification-"+selector)).getText().contains(categories[categories.length-1])); 
+        textPresent(categories[categories.length-1], By.id("classification-"+selector)); 
         deleteClassification("classification-"+selector);
         driver.navigate().refresh();
         findElement(By.linkText("Classification")).click();
@@ -75,20 +74,7 @@ public class ClassificationTest extends BaseClassificationTest {
         Assert.assertTrue(textPresent("NINDS (10"));
         Assert.assertTrue(textPresent("Imaging Diagnostics"));
     }
-    
-    @Test
-    public void checkDuplicatesClassification() {
-        mustBeLoggedInAs(ninds_username, password);
-        goToCdeByName("Product Problem Discover Performed Observation Outcome Identifier ISO21090.II.v1.0");
-        findElement(By.linkText("Classification")).click();
-        textNotPresent( "Disease" ) ;
-        addClassificationMethod(new String[]{"NINDS","Disease"});
-        textPresent( "Disease" ) ;
-        addClassificationMethod(new String[]{"NINDS","Disease"});
-        List<WebElement> linkList = driver.findElements(By.cssSelector("li[id$='Disease']"));
-        Assert.assertTrue(linkList.size() == 1);
-    }
-    
+
     // Feature is Temporarily Disabled
     //@Test
     public void classifyEntireSearch() {
@@ -112,24 +98,5 @@ public class ClassificationTest extends BaseClassificationTest {
         textPresent("Adult");        
     }    
     
-    @Test
-    public void navigateThroughClassiftree() {
-        mustBeLoggedInAs(classificationMgtUser_username, password);
-        goToCdeByName("McGill Quality of Life Questionnaire (MQOL) - two day total life quality score");
-        findElement(By.linkText("Classification")).click();
-        findElement(By.id("addClassification")).click(); 
-        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("NINDS");
-        textPresent("Domain", By.id("addClassificationModalBody"));
-        textPresent("Population", By.id("addClassificationModalBody"));
-        textNotPresent("Amyotrophic Lateral Sclerosis", By.id("addClassificationModalBody"));
-        findElement(By.cssSelector("[id='addClassification-Disease'] span.fake-link")).click();
-        textPresent("Amyotrophic Lateral Sclerosis", By.id("addClassificationModalBody"));
-        textNotPresent("Domain", By.id("addClassificationModalBody"));
-        textNotPresent("Population", By.id("addClassificationModalBody"));
-        findElement(By.id("resetTree")).click();
-        textPresent("Domain", By.id("addClassificationModalBody"));
-        textPresent("Population", By.id("addClassificationModalBody"));
-        textNotPresent("Amyotrophic Lateral Sclerosis", By.id("addClassificationModalBody"));       
-    }
 
 }

@@ -25,8 +25,7 @@ public abstract class RegStatusTest extends CommonTest {
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
         findElement(By.id("cancelRegStatus")).click();
         modalGone();
-        hangon(3);
-        Assert.assertEquals(findElement(By.id("dd_status")).getText(), "Qualified");
+        textPresent("Qualified", By.id("dd_status"));
     }
 
     public void cantEditStatusIfPendingChanges(String eltName, String user) {
@@ -37,6 +36,8 @@ public abstract class RegStatusTest extends CommonTest {
         findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector(".fa-check")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editStatus")));
+        findElement(By.id("discardChanges")).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("discardChanges")));        
     }
     
     public void changeRegistrationStatus(String eltName, String user) {
