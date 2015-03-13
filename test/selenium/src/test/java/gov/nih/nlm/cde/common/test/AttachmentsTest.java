@@ -31,6 +31,8 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
         findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();    
         
+        mustBeLoggedInAs(ninds_username, password);
+        goToCdeByName(cdeName);
         removeAttachment();
     }
     
@@ -48,6 +50,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
 
         addAttachment();
         checkAttachmentNotReviewed();
+        reviewAttachment();
         
         hangon(5);
         
@@ -56,6 +59,8 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
         findElement(By.linkText("View Full Detail")).click();
         
+        mustBeLoggedInAs(ninds_username, password);
+        goToCdeByName(formName);
         removeAttachment();
     }
 
@@ -93,6 +98,66 @@ public class AttachmentsTest extends NlmCdeBaseTest {
     private void reviewAttachment() {
         mustBeLoggedInAs(attachmentReviewer_username, password);       
         gotoInbox();
-    }    
+
+
+        textPresent("Attachment Approval");
+        findElement(By.cssSelector(".accordion-toggle")).click();        
+
+        String preClass = "";
+        try {
+            textPresent("glass.jpg");
+        } catch (Exception e) {
+            preClass = "accordion:nth-child(2) ";
+            findElement(By.cssSelector(preClass+".accordion-toggle")).click();
+            textPresent("glass.jpg");
+        }
+
+        findElement(By.cssSelector(preClass+".approveAttachment")).click();
+        textPresent("Attachment approved");  
+              
+    } 
+
+    private void declineAttachment() {
+        mustBeLoggedInAs(attachmentReviewer_username, password);       
+        gotoInbox();
+
+
+        textPresent("Attachment Approval");
+        findElement(By.cssSelector(".accordion-toggle")).click();        
+
+        String preClass = "";
+        try {
+            textPresent("glass.jpg");
+        } catch (Exception e) {
+            preClass = "accordion:nth-child(2) ";
+            findElement(By.cssSelector(preClass+".accordion-toggle")).click();
+            textPresent("glass.jpg");
+        }
+
+        findElement(By.cssSelector(preClass+".declineAttachment")).click();
+        textPresent("Attachment declined");  
+              
+    }     
+
+    @Test
+    public void declineCdeAttachment() {
+        String cdeName = "Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Sedative sleep pill frequency";        
+        mustBeLoggedInAs(ninds_username, password);
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Attachments")).click();
+
+
+        
+        mustBeLoggedInAs(ninds_username, password);
+        goToCdeByName("Alcohol use frequency");
+
+        addAttachment();
+        checkAttachmentNotReviewed();
+        declineAttachment();
+
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Attachments")).click();
+        textNotPresent("glass.jpg");
+    }   
 
 }

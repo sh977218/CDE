@@ -124,6 +124,10 @@ exports.removeAttachment = function(req, res, dao) {
     });
 };
 
+exports.removeAttachmentLinks = function(id, collection) {
+    collection.update({"attachments.fileid": id}, {$pull: {"attachments": {"fileid": id}}});
+};
+
 exports.createApprovalMessage = function(user, role, type, details){
     var message = {
         recipient: {recipientType: "role", name: role}
@@ -343,4 +347,15 @@ exports.hideUnapprovedComments = function(adminItem) {
     adminItem.comments.forEach(function(c) {
         if (c.pendingApproval) c.text = commentPendingApprovalText;
     });
+};
+
+exports.removeAttachmentLinks = function(id, collection){
+    collection.update(
+    {"attachments.fileid": id}
+    , {
+        $pull: {
+            "attachments": {"fileid": id}
+         }
+    }
+    , {multi:true}).exec();
 };

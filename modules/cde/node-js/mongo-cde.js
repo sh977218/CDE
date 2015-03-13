@@ -387,3 +387,7 @@ exports.getCdeAuditLog = function(params, callback){
         callback(err, logs);
     });    
 };
+
+exports.removeAttachmentLinks = function(id) {
+    adminItemSvc.removeAttachmentLinks(id, DataElement);
+};

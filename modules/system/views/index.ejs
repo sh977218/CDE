@@ -135,7 +135,7 @@
                                 <a dropdown-toggle class="dropdown-toggle" href="#" id="username_link" tabindex="-1" title="{{user.username}}" aria-label="{{user.username}}"><span ng-bind="user.username"></span><span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="username_link" tabindex="0">
                                     <li ng-show='user._id'><a href="#/profile">Profile</a></li>
-                                    <li ><a href="#/inbox">Inbox</a></li>
+                                    <li ng-show='inboxVisible()'><a href="#/inbox">Inbox</a></li>
                                     <li ng-show="isOrgCurator()"><a href="#/classificationmanagement">Classifications</a></li>
                                     <li ng-show="isOrgAdmin() && !user.siteAdmin"><a href="#/orgaccountmanagement">Account Management</a></li>
                                     <li ng-show='user._id && user.siteAdmin'><a href="#/siteaccountmanagement">Site Management</a></li>

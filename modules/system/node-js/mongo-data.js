@@ -14,6 +14,7 @@ var schemas = require('./schemas')
     , email = require('../../system/node-js/email')
     , adminItemSvc = require('./adminItemSvc')
     , authorizationShared = require("../../system/shared/authorizationShared")
+    , daoManager = require('./moduleDaoManager')
     ;
 
 var conn;
@@ -218,19 +219,14 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     }
 };
 
-// exports.approveAttachment = function(id, cb) {
-//     // gfs.findOne({ _id: id}, function (err, file) {
-//     //    file.metadata.status = "approved";
-//     //    file.save(function(err){
-//     //         if (cb) cb();
-//     //    });
-//     // });
-//     gfs.collections.update({_id: id}, {$set: {"metadata.status":"approved"}}, cb);
-    
-// };
+exports.deleteFile = function(id, cb) {
+    gfs.remove({_id: id}, function (err) {
+        if (cb) cb(err);
+    });
+};
 
-exports.approveAttachment = function(id, cb) {
-    fs_files.update({_id: id}, {$set: {"metadata.status":"approved"}}).exec(function(err) {
+exports.alterAttachmentStatus = function(id, status, cb) {
+    fs_files.update({_id: id}, {$set: {"metadata.status": status}}).exec(function(err) {
         if (cb) cb(err);
     });
 };
