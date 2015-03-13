@@ -332,8 +332,17 @@ public class NlmCdeBaseTest {
         Sleeper.sleepTight((long) (i * 1000));
     }
 
+    public void textPresent(String text, By by, int timeout) {
+        driver.manage().timeouts().implicitlyWait(timeout, TimeUnit.SECONDS);
+        textPresent(text, by);
+        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+    };
+
     public boolean textPresent(String text, By by) {
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
+        if (by != null)
+            wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
+        else
+            textPresent(text);
         return true;
     }
     
@@ -490,7 +499,7 @@ public class NlmCdeBaseTest {
         wait.until(ExpectedConditions.elementToBeClickable(By.id("login_button")));
         findElement(By.id("login_button")).click();
         try {
-            textPresent(checkText);
+            textPresent(checkText, null, 12);
             // Assumption is that UMLS sometimes throws an error on login. With a socket hangup. login fails, we retry.
         } catch (TimeoutException e) {
             System.out.println("Login failed. Re-trying. error: " + e.getMessage());

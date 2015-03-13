@@ -5,7 +5,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 import org.openqa.selenium.support.ui.Select;
 
-public class ValueDomain2Test extends NlmCdeBaseTest {    
+public class ValueDomain2Test extends NlmCdeBaseTest {
+
+    private ValueDomainTest vdTest = new ValueDomainTest();
+
     @Test
     public void integerDatatype() {
         mustBeLoggedInAs(ninds_username, password);
@@ -42,7 +45,13 @@ public class ValueDomain2Test extends NlmCdeBaseTest {
         newCdeVersion();
         
         checkInHistory("Permissible Values - Integer - Minimum Value", "123", "789");
-        checkInHistory("Permissible Values - Integer - Maximum Value", "456", "987");                
+        checkInHistory("Permissible Values - Integer - Maximum Value", "456", "987");
+
+        findElement(By.linkText("Permissible Values")).click();
+
+        vdTest.checkInvalidEntry("intMinValue", "ABC");
+        vdTest.checkInvalidEntry("intMaxValue", "ABC");
+
     }      
     
     @Test
