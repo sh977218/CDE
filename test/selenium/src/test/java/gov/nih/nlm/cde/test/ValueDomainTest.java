@@ -1,7 +1,5 @@
 package gov.nih.nlm.cde.test;
 
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ctepCurator_username;
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
@@ -33,17 +31,16 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         String cdeName = "Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Cocaine use frequency";
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));
         findElement(By.id("editDatatype")).click();
         new Select(findElement(By.id("valueTypeSelect"))).selectByVisibleText("Text");
         findElement(By.id("confirmDatatype")).click();
-        
-        findElement(By.cssSelector("dd:nth-of-type(1) .fa-pencil")).click();
-        findElement(By.cssSelector("dd:nth-of-type(2) .fa-pencil")).click();        
-        findElement(By.cssSelector("[ng-show='editMinMode'] input")).sendKeys("789");
-        findElement(By.cssSelector("[ng-show='editMaxMode'] input")).sendKeys("987");        
-        findElement(By.id("confirmMin")).click();
-        findElement(By.id("confirmMax")).click();       
+
+        findElement(By.xpath("//div[@id='textMinLength']//i[@title='Edit']")).click();
+        findElement(By.xpath("//div[@id='textMaxLength']//i[@title='Edit']")).click();
+        findElement(By.xpath("//div[@id='textMinLength']//input")).sendKeys("789");
+        findElement(By.xpath("//div[@id='textMaxLength']//input")).sendKeys("987");
+        findElement(By.cssSelector("#textMinLength .fa-check")).click();
+        findElement(By.cssSelector("#textMaxLength .fa-check")).click();
         newCdeVersion();    
         
         checkInHistory("Permissible Values - Text", "", "789");
@@ -51,25 +48,26 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         checkInHistory("Permissible Values - Value Type", "Value List", "Text");
         
         findElement(By.linkText("Permissible Values")).click();
-        findElement(By.cssSelector("dd:nth-of-type(3) .fa-pencil")).click();
-        findElement(By.cssSelector("dd:nth-of-type(4) .fa-pencil")).click();        
-        findElement(By.cssSelector("[ng-show='editRegexMode'] input")).sendKeys("newre");
-        findElement(By.cssSelector("[ng-show='editRuleMode'] input")).sendKeys("newrule");        
-        findElement(By.id("confirmRegex")).click();
-        findElement(By.id("confirmRule")).click();
-        
-        findElement(By.cssSelector("dd:nth-of-type(1) .fa-pencil")).click();
-        findElement(By.cssSelector("dd:nth-of-type(2) .fa-pencil")).click();        
-        findElement(By.cssSelector("[ng-show='editMinMode'] input")).clear();
-        findElement(By.cssSelector("[ng-show='editMaxMode'] input")).clear();          
-        findElement(By.cssSelector("[ng-show='editMinMode'] input")).sendKeys("123");
-        findElement(By.cssSelector("[ng-show='editMaxMode'] input")).sendKeys("321");        
-        findElement(By.id("confirmMin")).click();
-        findElement(By.id("confirmMax")).click();         
+        findElement(By.xpath("//div[@id='textRegex']//i[@title='Edit']")).click();
+        findElement(By.xpath("//div[@id='textRule']//i[@title='Edit']")).click();
+        findElement(By.xpath("//div[@id='textRule']//input")).sendKeys("newre");
+        findElement(By.xpath("//div[@id='textRegex']//input")).sendKeys("newrule");
+        findElement(By.cssSelector("#textRule .fa-check")).click();
+        findElement(By.cssSelector("#textRegex .fa-check")).click();
+
+        findElement(By.xpath("//div[@id='textMinLength']//i[@title='Edit']")).click();
+        findElement(By.xpath("//div[@id='textMaxLength']//i[@title='Edit']")).click();
+        findElement(By.xpath("//div[@id='textMinLength']//input")).clear();
+        findElement(By.xpath("//div[@id='textMaxLength']//input")).clear();
+        findElement(By.xpath("//div[@id='textMinLength']//input")).sendKeys("123");
+        findElement(By.xpath("//div[@id='textMaxLength']//input")).sendKeys("321");
+        findElement(By.cssSelector("#textMinLength .fa-check")).click();
+        findElement(By.cssSelector("#textMaxLength .fa-check")).click();
+
         
         newCdeVersion();
         
-        checkInHistory("ermissible Values - Text - Regular Expression", "", "newre");
+        checkInHistory("Permissible Values - Text - Regular Expression", "", "newre");
         checkInHistory("Permissible Values - Text - Freetext Rule", "", "newrule");
         checkInHistory("Permissible Values - Text - Maximum Length", "789", "123");
         checkInHistory("Permissible Values - Text - Minimum Length", "987", "321");                

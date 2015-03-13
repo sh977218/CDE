@@ -83,7 +83,7 @@ public class VsacTest extends NlmCdeBaseTest {
         textPresent("20121025");
                 
         newCdeVersion();
-        
+        hangon(1);
         findElement(By.linkText("Permissible Values")).click();   
         findElement(By.id("removeVSButton")).click();
 
