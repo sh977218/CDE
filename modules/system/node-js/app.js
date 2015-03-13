@@ -583,7 +583,7 @@ exports.init = function(app) {
         daoManager.getDaoList().forEach(function(dao) {
             dao.removeAttachmentLinks(req.body.fileid);
         });
-        mongo_data_system.deleteFile(req.body.fileid);
+        mongo_data_system.deleteFileById(req.body.fileid);
         res.send("Attachment declined");
     });
   

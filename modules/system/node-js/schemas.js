@@ -124,7 +124,16 @@ var commentApprovalSchema = {
     , comment: {index: Number, text: String}
 };
 var attachmentApprovalSchema = {
-    
+    fileid: String
+    , filename: String
+    , filetype: String
+    , uploadDate: Date
+    , comment: String 
+    , uploadedBy: {
+        userId: String
+        , username: String
+    }
+    , filesize: Number
 };
 
 schemas.message = mongoose.Schema ({

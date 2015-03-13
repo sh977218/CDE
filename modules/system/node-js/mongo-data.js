@@ -15,6 +15,7 @@ var schemas = require('./schemas')
     , adminItemSvc = require('./adminItemSvc')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
+    , clamav = require('clamav.js')
     ;
 
 var conn;
@@ -182,6 +183,15 @@ exports.userTotalSpace = function(Model, name, callback) {
     });
 };
 
+exports.scanFile = function(file, id) {
+    var fileReadStream = fs.createReadStream(file.path);   
+    clamav.createScanner(3310, '127.0.0.1').scan(fileReadStream, function(err, object, malicious) {
+        if (err) return;
+        if (malicious) return exports.deleteFileById(id);
+        exports.alterAttachmentStatus(id, "scanned");
+    }); 
+};
+
 exports.addAttachment = function(file, user, comment, elt, cb) {
     var writestream = gfs.createWriteStream({
         filename: file.originalname
@@ -209,18 +219,27 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
         elt.save(function() {
             cb();
         });
-        adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", fileMetadata);      
+        adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", fileMetadata);  
+        exports.scanFile(file, newfile._id);       
     });
     
+    //TODO: Remove this fork!
     if (file.stream) {
-       file.stream.pipe(writestream);
+        file.stream.pipe(writestream);
     } else {
         fs.createReadStream(file.path).pipe(writestream);
     }
+    
 };
 
-exports.deleteFile = function(id, cb) {
+exports.deleteFileById = function(id, cb) {
     gfs.remove({_id: id}, function (err) {
+        if (cb) cb(err);
+    });
+};
+
+exports.deleteFileByName = function(filename, cb) {
+    gfs.remove({filename: filename}, function (err) {
         if (cb) cb(err);
     });
 };
