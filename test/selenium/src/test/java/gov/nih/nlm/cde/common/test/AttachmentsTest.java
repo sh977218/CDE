@@ -150,8 +150,6 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         findElement(By.linkText("Attachments")).click();
-
-
         
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Alcohol use frequency");
@@ -164,5 +162,36 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         findElement(By.linkText("Attachments")).click();
         textNotPresent("glass.jpg");
     }   
+
+
+    @Test
+    public void uploadVirusAttachment() {
+        String cdeName = "Skull fracture morphology findings type";
+        
+        mustBeLoggedInAs(ninds_username, password);
+        goToCdeByName(cdeName);
+
+        addAttachment();
+        checkAttachmentNotReviewed();
+        reviewAttachment();
+
+        hangon(5);
+
+        openCdeInList(cdeName);
+        findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
+        findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();    
+
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Attachments")).click();
+        findElement(By.linkText("glass.jpg")).click();
+        switchTab(1);
+        textNotPresent("File not found");
+        textNotPresent("This file has not been approved yet");
+        switchTabAndClose(0);
+        
+        mustBeLoggedInAs(ninds_username, password);
+        goToCdeByName(cdeName);
+        removeAttachment();
+    }    
 
 }

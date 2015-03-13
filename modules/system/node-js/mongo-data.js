@@ -185,7 +185,7 @@ exports.userTotalSpace = function(Model, name, callback) {
 
 exports.scanFile = function(file, id) {
     var fileReadStream = fs.createReadStream(file.path);   
-    clamav.createScanner(3310, '127.0.0.1').scan(fileReadStream, function(err, object, malicious) {
+    clamav.createScanner(config.antivirus.port, config.antivirus.ip).scan(fileReadStream, function(err, object, malicious) {
         if (err) return;
         if (malicious) return exports.deleteFileById(id);
         exports.alterAttachmentStatus(id, "scanned");
