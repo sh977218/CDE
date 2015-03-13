@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import com.jayway.restassured.RestAssured;
 
 public class AttachmentsTest extends NlmCdeBaseTest {
 
@@ -18,18 +19,25 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         textNotPresent("Upload more files");
         
         mustBeLoggedInAs(ninds_username, password);
-        goToCdeByName("Alcohol use frequency");
+        goToCdeByName(cdeName);
 
         addAttachment();
         checkAttachmentNotReviewed();
         reviewAttachment();
-
 
         hangon(5);
 
         openCdeInList(cdeName);
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
         findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();    
+
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Attachments")).click();
+        findElement(By.linkText("glass.jpg")).click();
+        switchTab(1);
+        textNotPresent("File not found");
+        textNotPresent("This file has not been approved yet");
+        switchTabAndClose(0);
         
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
@@ -59,18 +67,15 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
         findElement(By.linkText("View Full Detail")).click();
         
-        mustBeLoggedInAs(ninds_username, password);
-        goToCdeByName(formName);
+        mustBeLoggedInAs(ctepCurator_username, password);
+        goToFormByName(formName);
         removeAttachment();
     }
 
-    private void removeAttachment() {
-    
-        
+    private void removeAttachment() {        
         findElement(By.linkText("Attachments")).click();
         findElement(By.id("removeAttachment-0")).click();
-        findElement(By.id("confirmRemove-0")).click();
-        
+        findElement(By.id("confirmRemove-0")).click();        
         textNotPresent("glass.jpg");
     }
     

@@ -578,20 +578,13 @@ exports.init = function(app) {
         });
     });   
 
-    // app.post('/file/remove', function(req, res){
-    //     if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) res.status(403).send("You are not authorized.");
-    //     mongo_data_system.removeFile(req.body.fileid, function(err, result){
-    //         if (err) res.status(404).send("Unable to remove file");
-    //         else res.send("Attachment removed.");
-    //     });
-    // });  
-
     app.post('/file/remove', function(req, res){
         if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) res.status(403).send("You are not authorized.");
         daoManager.getDaoList().forEach(function(dao) {
             dao.removeAttachmentLinks(req.body.fileid);
         });
         mongo_data_system.deleteFile(req.body.fileid);
+        res.send("Attachment declined");
     });
   
 };
