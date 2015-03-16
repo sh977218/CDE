@@ -13,13 +13,13 @@
                 <small class="matched-by" ng-show="cde.highlight.matchedBy">Matched by: <strong><span ng-bind-html="cde.highlight.matchedBy"></span></strong></small>
             </div>
             <div class="row">
-                <div class="col-lg-5 col-md-5">
+                <div class="col-xs-5">
                     <%- include cdeList/generalDetails.ejs %>
                 </div>
-                <div class="col-lg-4 col-md-4">
+                <div class="col-xs-4" ng-if="cde.valueDomain.datatype === 'Value List'">
                     <%- include cdeList/valueDomain.ejs %>
                 </div>
-                <div class="col-lg-2 col-md-4">
+                <div ng-class="{'col-xs-7': cde.valueDomain.datatype !== 'Value List', 'col-xs-3': cde.valueDomain.datatype === 'Value List'}">
                     <div>
                         <div ng-include="'/cde/public/html/cdeList/idTable.html'"/>
                         <div>
