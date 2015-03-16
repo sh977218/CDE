@@ -89,6 +89,11 @@ app.post('/cas/serviceValidate', function(req, res) {
     }
 });
 
+// Mocks UTS ticket validation process
+app.post('/', function(req, res) {
+  console.log(req.body);
+});
+
 var options = {
   key: fs.readFileSync(path.join(__dirname, './server.key')),
   cert: fs.readFileSync(path.join(__dirname, './server.crt'))

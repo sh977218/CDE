@@ -186,6 +186,7 @@ exports.userTotalSpace = function(Model, name, callback) {
 exports.scanFile = function(file, id) {
     var fileReadStream = fs.createReadStream(file.path);   
     clamav.createScanner(config.antivirus.port, config.antivirus.ip).scan(fileReadStream, function(err, object, malicious) {
+        console.log(err);
         if (err) return;
         if (malicious) return exports.deleteFileById(id);
         exports.alterAttachmentStatus(id, "scanned");
@@ -345,7 +346,7 @@ exports.getMessages = function(req, callback) {
                 "$or": [
                     {
                         "recipient.recipientType": "stewardOrg"
-                        , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                        , "recipient.name": {$in: [].concat(req.user.orgAdmin.concat(req.user.orgCurator))}
                     }
                     , {
                         "recipient.recipientType": "user"
@@ -376,7 +377,7 @@ exports.getMessages = function(req, callback) {
                 $or: [
                     {
                         "author.authorType":"stewardOrg"
-                        , "author.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                        , "author.name": {$in: [].concat(req.user.orgAdmin.concat(req.user.orgCurator))}
                     }
                     , {
                         "author.authorType":"user"

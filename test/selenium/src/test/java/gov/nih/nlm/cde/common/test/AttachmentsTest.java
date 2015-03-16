@@ -164,34 +164,34 @@ public class AttachmentsTest extends NlmCdeBaseTest {
     }   
 
 
-    @Test
-    public void uploadVirusAttachment() {
-        String cdeName = "Skull fracture morphology findings type";
+    // @Test
+    // public void uploadVirusAttachment() {
+    //     String cdeName = "Skull fracture morphology findings type";
         
-        mustBeLoggedInAs(ninds_username, password);
-        goToCdeByName(cdeName);
+    //     mustBeLoggedInAs(ninds_username, password);
+    //     goToCdeByName(cdeName);
 
-        addAttachment();
-        checkAttachmentNotReviewed();
-        reviewAttachment();
+    //     addAttachment();
+    //     checkAttachmentNotReviewed();
+    //     reviewAttachment();
 
-        hangon(5);
+    //     hangon(5);
 
-        openCdeInList(cdeName);
-        findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
-        findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();    
+    //     openCdeInList(cdeName);
+    //     findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
+    //     findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();    
 
-        goToCdeByName(cdeName);
-        findElement(By.linkText("Attachments")).click();
-        findElement(By.linkText("glass.jpg")).click();
-        switchTab(1);
-        textNotPresent("File not found");
-        textNotPresent("This file has not been approved yet");
-        switchTabAndClose(0);
+    //     goToCdeByName(cdeName);
+    //     findElement(By.linkText("Attachments")).click();
+    //     findElement(By.linkText("glass.jpg")).click();
+    //     switchTab(1);
+    //     textNotPresent("File not found");
+    //     textNotPresent("This file has not been approved yet");
+    //     switchTabAndClose(0);
         
-        mustBeLoggedInAs(ninds_username, password);
-        goToCdeByName(cdeName);
-        removeAttachment();
-    }    
+    //     mustBeLoggedInAs(ninds_username, password);
+    //     goToCdeByName(cdeName);
+    //     removeAttachment();
+    // }    
 
 }
