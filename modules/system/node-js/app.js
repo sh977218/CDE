@@ -333,6 +333,13 @@ exports.init = function(app) {
         mongo_data_system.getFile(req.user, req.params.imgtag, res);
     });    
 
+    app.get('/data/status/:imgtag', function(req, res) {
+        mongo_data_system.getFileStatus(req.params.imgtag, function(err, status) {
+            if (err) res.status(404).send();
+            res.send(status);
+        });
+    });        
+
     app.post('/classification/elt', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
             res.status(401).send();

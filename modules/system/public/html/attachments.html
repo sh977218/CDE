@@ -2,7 +2,8 @@
 <div ng-controller="AttachmentsCtrl">    
     <div ng-repeat="attachment in elt.attachments">
         <dl class="dl-horizontal">
-            <dt>Filename: </dt><dd><a class="viewAttachmentLink" href="/data/{{attachment.fileid}}" target="_blank">{{attachment.filename}}</a></dd>
+            <!-- <dt>Filename: </dt><dd><a class="viewAttachmentLink" href="/data/{{attachment.fileid}}" target="_blank">{{attachment.filename}}</a></dd> -->
+            <dt>Filename: </dt><dd><a class="viewAttachmentLink" ng-click="openAttachment(attachment.fileid)" target="_blank">{{attachment.filename}}</a></dd>
             <dt>Default Image: </dt>
             <dd>
             <span ng-switch="attachment.filesize > 512*1024">

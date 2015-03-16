@@ -13,7 +13,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
     public void cdeAttachment() {
         String cdeName = "Alcohol use frequency";
         
-        mustBeLoggedInAs(ctep_fileCurator_username, password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
         findElement(By.linkText("Attachments")).click();
         textNotPresent("Upload more files");
@@ -36,7 +36,6 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         findElement(By.linkText("glass.jpg")).click();
         switchTab(1);
         textNotPresent("File not found");
-        textNotPresent("This file has not been approved yet");
         switchTabAndClose(0);
         
         mustBeLoggedInAs(ninds_username, password);
@@ -53,7 +52,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         findElement(By.linkText("Attachments")).click();
         textNotPresent("Upload more files");        
         
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
 
         addAttachment();
@@ -67,7 +66,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
         findElement(By.linkText("View Full Detail")).click();
         
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
         removeAttachment();
     }
@@ -95,9 +94,8 @@ public class AttachmentsTest extends NlmCdeBaseTest {
     
     private void checkAttachmentNotReviewed() {
         findElement(By.cssSelector(".viewAttachmentLink")).click();
-        switchTab(1);
-        textPresent("This file has not been approved yet.");
-        switchTabAndClose(0);        
+        textPresent("The attachment is not yet aproved.");    
+        closeAlert();
     }
 
     private void reviewAttachment() {
@@ -162,36 +160,5 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         findElement(By.linkText("Attachments")).click();
         textNotPresent("glass.jpg");
     }   
-
-
-    // @Test
-    // public void uploadVirusAttachment() {
-    //     String cdeName = "Skull fracture morphology findings type";
-        
-    //     mustBeLoggedInAs(ninds_username, password);
-    //     goToCdeByName(cdeName);
-
-    //     addAttachment();
-    //     checkAttachmentNotReviewed();
-    //     reviewAttachment();
-
-    //     hangon(5);
-
-    //     openCdeInList(cdeName);
-    //     findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
-    //     findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();    
-
-    //     goToCdeByName(cdeName);
-    //     findElement(By.linkText("Attachments")).click();
-    //     findElement(By.linkText("glass.jpg")).click();
-    //     switchTab(1);
-    //     textNotPresent("File not found");
-    //     textNotPresent("This file has not been approved yet");
-    //     switchTabAndClose(0);
-        
-    //     mustBeLoggedInAs(ninds_username, password);
-    //     goToCdeByName(cdeName);
-    //     removeAttachment();
-    // }    
 
 }

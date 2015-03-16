@@ -254,6 +254,12 @@ exports.getFile = function(user, id, res) {
     });        
 };
 
+exports.getFileStatus = function(id, cb) {
+    gfs.findOne({ _id: id}, function (err, file) {
+        cb(err, file.metadata.status);
+    });    
+};
+
 
 exports.updateOrg = function(org, res) {
     var id = org._id;

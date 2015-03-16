@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootScope', '$http', '$timeout', function($scope, $rootScope, $http, $timeout) {
+angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootScope', '$http', '$timeout', '$window', function($scope, $rootScope, $http, $timeout, $window) {
     $scope.setFiles = function(element) {
         $scope.$apply(function($scope) {
           // Turn the FileList object into an Array
@@ -89,5 +89,13 @@ angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootSc
                 $scope.addAlert("success", "Saved");
             });
         }, 0);
+    };
+
+    $scope.openAttachment = function(id) {
+        $http.get('/data/status/'+id).success(function(data, status) {
+            if (data!=="approved") $scope.addAlert("danger", "This attachment cannot be downloaded because it has not yet been approved.");
+            else $window.open('/data/'+id);
+        });
+        
     };
 }]);
