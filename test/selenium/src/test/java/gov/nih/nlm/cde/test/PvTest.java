@@ -73,7 +73,7 @@ public class PvTest extends NlmCdeBaseTest {
         findElement(By.xpath("//td[@id='pv-10']//input")).sendKeys("New PV");
         findElement(By.cssSelector("#pv-10 .fa-check")).click();
         
-        findElement(By.cssSelector("#pv-10 [typeahead-source=\"pVTypeaheadCodeSystemNameList\"] .fa-edit")).click();
+        findElement(By.xpath("//td[@id='pvCodeSystem-10']//div[@typeahead-source='pVTypeaheadCodeSystemNameList']//i[@class='fa fa-edit']")).click();
         textPresent("Confirm");
         findElement(By.xpath("//td[@id='pvCodeSystem-10']//input")).sendKeys("N");
         textPresent("NCI Thesaurus");

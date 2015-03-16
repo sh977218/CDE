@@ -1,20 +1,10 @@
 <dl class="dl-horizontal">
   <dt>Minimum Value: </dt>
   <dd>
-     <span ng-show="editMinMode">
-        <input ng-model="elt.valueDomain.datatypeInteger.minValue" integer/>
-        <i class="fa fa-check" ng-click="editMinMode = false; stageElt(elt)" id="confirmMin"> OK</i>
-        <i class="fa fa-times" ng-click="editMinMode = false"> Cancel</i>
-     </span>
-     <span ng-hide="editMinMode"><i ng-show="canCurate" class="fa fa-pencil" ng-click="editMinMode = true"></i> {{elt.valueDomain.datatypeInteger.minValue | placeholdEmpty}}</span>
+    <div inline-edit id="intMinValue" model="elt.valueDomain.datatypeInteger.minValue" input-type="'number'" is-allowed="canCurate" on-ok="stageElt(elt)"/>
   </dd>
   <dt>Maximum Value: </dt>
   <dd>
-     <span ng-show="editMaxMode">
-        <input ng-model="elt.valueDomain.datatypeInteger.maxValue" integer/>
-        <i class="fa fa-check" ng-click="editMaxMode = false; stageElt(elt)" id="confirmMax"> OK</i>
-        <i class="fa fa-times" ng-click="editMaxMode = false"> Cancel</i>
-     </span>
-     <span ng-hide="editMaxMode"><i ng-show="canCurate" class="fa fa-pencil" ng-click="editMaxMode = true"></i> {{elt.valueDomain.datatypeInteger.maxValue | placeholdEmpty}}</span>
+    <div inline-edit id="intMaxValue" model="elt.valueDomain.datatypeInteger.maxValue" input-type="'number'" is-allowed="canCurate" on-ok="stageElt(elt)"/>
   </dd>  
 </dl>

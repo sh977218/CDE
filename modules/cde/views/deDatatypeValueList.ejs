@@ -1,18 +1,13 @@
 <dl class="dl-horizontal">
   <dt>Datatype: </dt>
   <dd>
-     <span ng-show="editListTypeMode">
-        <input ng-model="elt.valueDomain.datatypeValueList.datatype" id="listDatatype_input"/>
-        <i class="fa fa-check" ng-click="editListTypeMode = false; stageElt(elt)" id="confirmListType"> OK</i>
-        <i class="fa fa-times" ng-click="editListTypeMode = false"> Cancel</i>
-     </span>
-     <span ng-hide="editListTypeMode"><i ng-show="canCurate" class="fa fa-pencil" ng-click="editListTypeMode = true" id="listDatatype_pencil"></i> {{elt.valueDomain.datatypeValueList.datatype | placeholdEmpty}}</span>
+    <div inline-edit id="listDatatype" model="elt.valueDomain.datatypeValueList.datatype" is-allowed="canCurate" on-ok="stageElt(elt)" />
   </dd>
 </dl>
 <hr/>
 <h4>Permissible Values</h4>
 <div><button ng-show="showValidateButton" ng-click="runManualValidation()">Validate</button></div>
-<div ng-show="elt.valueDomain.permissibleValues.length == 0">No Permissible Values</div>
+<div ng-show="elt.valueDomain.permissibleValues.length === 0">No Permissible Values</div>
 <table ng-show="elt.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped" summary="List of permissible values">
      <thead>
          <tr>
@@ -25,7 +20,7 @@
          </tr>
      </thead>
      <tbody>
-         <tr id="pv-{{$index}}" ng-repeat="pv in elt.valueDomain.permissibleValues | limitTo:pvLimit">
+         <tr id="pvtr-{{$index}}" ng-repeat="pv in elt.valueDomain.permissibleValues | limitTo:pvLimit">
             <td headers="value" id="pv-{{$index}}">
                 <div inline-edit model="pv.permissibleValue" is-allowed="canCurate" on-ok="stageElt(elt);"> </div>
             </td>

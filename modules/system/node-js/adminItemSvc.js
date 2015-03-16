@@ -58,6 +58,7 @@ exports.save = function(req, res, dao) {
                                     res.status(403).send("Not authorized");
                                 } else {
                                     return dao.update(elt, req.user, function(err, response) {
+                                        if (err) res.status(400).send();
                                         res.send(response);
                                     });
                                 }
