@@ -94,11 +94,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
     }
     
     private void checkAttachmentNotReviewed() {     
-        textPresent("cannot be dowloaded");                 
-        findElement(By.cssSelector(".viewAttachmentLink")).click();
-        switchTab(1);
-        textPresent("This file has not been approved yet.");
-        switchTabAndClose(0);        
+        textPresent("cannot be dowloaded");                     
     }
 
     private void reviewAttachment() {
