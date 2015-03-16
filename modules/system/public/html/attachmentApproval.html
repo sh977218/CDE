@@ -16,7 +16,7 @@
     </dl>     
 
 
-<span ng-show="type==mailTypeReceived">
+<span ng-show="type===mailTypeReceived">
     <button class="approveAttachment btn btn-sm btn-default" ng-controller="ApproveAttachmentCtrl" ng-click="approveAttachment(message)" ng-class="{disabled: message.states[0].action==='Approved'}" type="button" >Approve Attachment</button>
     <span ng-show="message.states[0].action==='Approved'">Approved on {{ message.states[0].date | date:medium }}</span>
     <button class="declineAttachment btn btn-sm btn-default" ng-controller="ApproveAttachmentCtrl" ng-click="declineAttachment(message)" ng-class="{disabled: message.states[0].action==='Approved'}" type="button" >Decline Attachment</button>    

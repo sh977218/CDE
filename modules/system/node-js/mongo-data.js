@@ -229,12 +229,6 @@ exports.deleteFileById = function(id, cb) {
     });
 };
 
-exports.deleteFileByName = function(filename, cb) {
-    gfs.remove({filename: filename}, function (err) {
-        if (cb) cb(err);
-    });
-};
-
 exports.alterAttachmentStatus = function(id, status, cb) {
     fs_files.update({_id: id}, {$set: {"metadata.status": status}}).exec(function(err) {
         if (cb) cb(err);
@@ -254,18 +248,11 @@ exports.getFile = function(user, id, res) {
         }
         gfs.findOne({ _id: id}, function (err, file) {
             if (file.metadata.status === "approved" || authorizationShared.hasRole(user, "AttachmentReviewer")) gfs.createReadStream({ _id: id }).pipe(res);
-            else res.status(401).send("This file has not been approved yet.");
+            else res.status(403).send("This file has not been approved yet.");
         });
                 
     });        
 };
-
-exports.getFileStatus = function(id, cb) {
-    gfs.findOne({ _id: id}, function (err, file) {
-        cb(err, file.metadata.status);
-    });    
-};
-
 
 exports.updateOrg = function(org, res) {
     var id = org._id;
