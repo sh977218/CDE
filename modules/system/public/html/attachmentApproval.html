@@ -1,0 +1,23 @@
+<h4>{{message.type | camelCaseToHuman}}</h4> 
+
+    <dl class="dl-horizontal">
+        <dt>User</dt>
+        <dd>{{message.author.name}}
+
+        <dt>File</dt>
+        <dd><a class="viewAttachmentLink" target="_blank" href="/data/{{message.typeAttachmentApproval.fileid}}">{{message.typeAttachmentApproval.filename}}</a></dd>
+
+        <dt>Date</dt>
+        <dd>{{message.typeAttachmentApproval.uploadDate | date : medium }}</dd>        
+
+        <dt>Scanned</dt>
+        <dd>{{message.typeAttachmentApproval.metadata.status }}</dd>   
+
+    </dl>     
+
+
+<span ng-show="type==mailTypeReceived">
+    <button class="approveAttachment btn btn-sm btn-default" ng-controller="ApproveAttachmentCtrl" ng-click="approveAttachment(message)" ng-class="{disabled: message.states[0].action==='Approved'}" type="button" >Approve Attachment</button>
+    <span ng-show="message.states[0].action==='Approved'">Approved on {{ message.states[0].date | date:medium }}</span>
+    <button class="declineAttachment btn btn-sm btn-default" ng-controller="ApproveAttachmentCtrl" ng-click="declineAttachment(message)" ng-class="{disabled: message.states[0].action==='Approved'}" type="button" >Decline Attachment</button>    
+</span>
