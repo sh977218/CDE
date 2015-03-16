@@ -124,18 +124,6 @@ var commentApprovalSchema = {
     }
     , comment: {index: Number, text: String}
 };
-var attachmentApprovalSchema = {
-    fileid: String
-    , filename: String
-    , filetype: String
-    , uploadDate: Date
-    , comment: String 
-    , uploadedBy: {
-        userId: String
-        , username: String
-    }
-    , filesize: Number
-};
 
 schemas.message = mongoose.Schema ({
     recipient: {
@@ -147,7 +135,7 @@ schemas.message = mongoose.Schema ({
     , type: {type: String, enum: ["MergeRequest", "CommentApproval", "AttachmentApproval"]}
     , typeRequest: requestSchema
     , typeCommentApproval: commentApprovalSchema
-    , typeAttachmentApproval: attachmentApprovalSchema
+    , typeAttachmentApproval: schemas.attachmentSchema
     , states: [{
         action: {type: String, enum: ["Approved", "Filed"]}
         , date: Date
