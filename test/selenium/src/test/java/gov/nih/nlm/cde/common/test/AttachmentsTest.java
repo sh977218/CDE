@@ -36,6 +36,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         findElement(By.linkText("glass.jpg")).click();
         switchTab(1);
         textNotPresent("File not found");
+        textNotPresent("This file has not been approved yet");
         switchTabAndClose(0);
         
         mustBeLoggedInAs(ninds_username, password);
@@ -92,10 +93,12 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         closeAlert();        
     }
     
-    private void checkAttachmentNotReviewed() {
+    private void checkAttachmentNotReviewed() {     
+        textPresent("cannot be dowloaded");                 
         findElement(By.cssSelector(".viewAttachmentLink")).click();
-        textPresent("The attachment is not yet aproved.");    
-        closeAlert();
+        switchTab(1);
+        textPresent("This file has not been approved yet.");
+        switchTabAndClose(0);        
     }
 
     private void reviewAttachment() {

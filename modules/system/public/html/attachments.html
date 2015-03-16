@@ -2,8 +2,8 @@
 <div ng-controller="AttachmentsCtrl">    
     <div ng-repeat="attachment in elt.attachments">
         <dl class="dl-horizontal">
-            <!-- <dt>Filename: </dt><dd><a class="viewAttachmentLink" href="/data/{{attachment.fileid}}" target="_blank">{{attachment.filename}}</a></dd> -->
-            <dt>Filename: </dt><dd><a class="viewAttachmentLink" ng-click="openAttachment(attachment.fileid)" target="_blank">{{attachment.filename}}</a></dd>
+            <dt>Filename: </dt><dd><a class="viewAttachmentLink" href="/data/{{attachment.fileid}}" target="_blank" ng-disabled="attachment.pendingApproval">{{attachment.filename}}</a></dd>
+            <span ng-show="attachment.pendingApproval">This attachment cannot be dowloaded because it is pending an approval.</span>
             <dt>Default Image: </dt>
             <dd>
             <span ng-switch="attachment.filesize > 512*1024">
@@ -31,7 +31,7 @@
                 </span>
             </dd>
             <dt>Uploaded date: </dt><dd>{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-            <dt>Uploaded by: </dt><dd>{{attachment.uploadedBy.username}}</dd>
+            <dt>Uploaded by: </dt><dd>{{attachment.uploadedBy.username}}</dd>            
         </dl>
     </div>
 

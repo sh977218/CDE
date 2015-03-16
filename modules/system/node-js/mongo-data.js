@@ -194,7 +194,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     });
 
     writestream.on('close', function (newfile) {
-        var fileMetadata = {
+        var attachment = {
             fileid: newfile._id
             , filename: file.originalname
             , filetype: file.type
@@ -204,13 +204,14 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
                 userId: user._id
                 , username: user.username
             }
-            , filesize: file.size          
+            , filesize: file.size  
+            , pendingApproval: true        
         };
-        elt.attachments.push(fileMetadata);
+        elt.attachments.push(attachment);
         elt.save(function() {
             cb();
         });
-        adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", fileMetadata);        
+        adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", attachment);        
     });
     
     //TODO: Remove this fork!
@@ -238,6 +239,11 @@ exports.alterAttachmentStatus = function(id, status, cb) {
     fs_files.update({_id: id}, {$set: {"metadata.status": status}}).exec(function(err) {
         if (cb) cb(err);
     });
+    if (status === "approved") {
+        daoManager.getDaoList().forEach(function(dao){
+            dao.setAttachmentApproved(id);
+        });    
+    }
 };
 
 exports.getFile = function(user, id, res) {

@@ -115,3 +115,7 @@ exports.eltByTinyId = function(tinyId, callback) {
 exports.removeAttachmentLinks = function(id) {
     adminItemSvc.removeAttachmentLinks(id, Form);
 };
+
+exports.setAttachmentApproved = function(id) {
+    adminItemSvc.setAttachmentApproved(id, Form);
+};

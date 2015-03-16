@@ -76,6 +76,7 @@ schemas.attachmentSchema = mongoose.Schema({
     }
     , filesize: Number
     , isDefault: Boolean
+    , pendingApproval: Boolean
 }, {_id: false});
 
 schemas.registrationStateSchema = {

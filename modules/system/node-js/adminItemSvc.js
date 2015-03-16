@@ -360,3 +360,14 @@ exports.removeAttachmentLinks = function(id, collection){
     }
     , {multi:true}).exec();
 };
+
+exports.setAttachmentApproved = function(id, collection){
+    collection.update(
+    {"attachments.fileid": id}
+    , {
+        $set: {
+            "attachments.$.pendingApproval": null
+         }
+    }
+    , {multi:true}).exec();
+};
