@@ -5,9 +5,9 @@
             <dt>Filename: </dt>
             <dd ng-switch="attachment.pendingApproval">
                 <a class="viewAttachmentLink" href="/data/{{attachment.fileid}}" target="_blank" ng-switch-when="null">{{attachment.filename}}</a>
-                <span ng-switch-default>{{attachment.filename}}</span>
+                <span ng-switch-default>{{attachment.filename}} - This attachment cannot be dowloaded because it is pending an approval.</span>
             </dd>
-            <span ng-show="attachment.pendingApproval">This attachment cannot be dowloaded because it is pending an approval.</span>
+            
             <dt>Default Image: </dt>
             <dd>
             <span ng-switch="attachment.filesize > 512*1024">
