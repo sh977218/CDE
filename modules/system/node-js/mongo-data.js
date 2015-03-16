@@ -183,16 +183,6 @@ exports.userTotalSpace = function(Model, name, callback) {
     });
 };
 
-exports.scanFile = function(file, id) {
-    var fileReadStream = fs.createReadStream(file.path);   
-    clamav.createScanner(config.antivirus.port, config.antivirus.ip).scan(fileReadStream, function(err, object, malicious) {
-        console.log(err);
-        if (err) return;
-        if (malicious) return exports.deleteFileById(id);
-        exports.alterAttachmentStatus(id, "scanned");
-    }); 
-};
-
 exports.addAttachment = function(file, user, comment, elt, cb) {
     var writestream = gfs.createWriteStream({
         filename: file.originalname
@@ -220,8 +210,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
         elt.save(function() {
             cb();
         });
-        adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", fileMetadata);  
-        exports.scanFile(file, newfile._id);       
+        adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", fileMetadata);        
     });
     
     //TODO: Remove this fork!

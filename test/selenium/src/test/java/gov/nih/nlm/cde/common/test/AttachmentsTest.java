@@ -13,7 +13,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
     public void cdeAttachment() {
         String cdeName = "Alcohol use frequency";
         
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToCdeByName(cdeName);
         findElement(By.linkText("Attachments")).click();
         textNotPresent("Upload more files");

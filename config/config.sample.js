@@ -90,10 +90,6 @@ var config = {
     , expressToStdout: false
     , logBufferSize: 1000
     , viewsIncrementTreshold: 3
-    , antivirus: {
-        ip: "127.0.0.1"
-        , port: 3310
-    }
 };
 
 module.exports = config;
