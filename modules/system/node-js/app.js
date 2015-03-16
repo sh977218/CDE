@@ -571,22 +571,22 @@ exports.init = function(app) {
     });       
     
     app.get('/mailStatus', function(req, res){
-        if (!req.user) res.status(403).send("You are not authorized.");
+        if (!req.user) return res.status(401).send();
         mongo_data_system.mailStatus(req.user, function(err, result){
             res.send({count: result});
         });
     });
 
-    app.post('/attachment/approve', function(req, res){
-        if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) res.status(403).send("You are not authorized.");
-        mongo_data_system.alterAttachmentStatus(req.body.fileid, "approved", function(err, result){
-            if (err) res.status(404).send("Unable to approve attachment");
+    app.get('/attachment/approve/:id', function(req, res){
+        if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) return res.status(401).send();
+        mongo_data_system.alterAttachmentStatus(req.params.id, "approved", function(err, result){
+            if (err) res.status(500).send("Unable to approve attachment");
             else res.send("Attachment approved.");
         });
     });   
 
-    app.post('/file/remove', function(req, res){
-        if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) res.status(403).send("You are not authorized.");
+    app.post('/attachment/remove', function(req, res){
+        if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) return res.status(401).send();
         daoManager.getDaoList().forEach(function(dao) {
             dao.removeAttachmentLinks(req.body.fileid);
         });

@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('ApproveAttachmentCtrl', ['$scope', '$http', 'Mail', '$modal', function($scope, $http, Mail, $modal) {
     $scope.approveAttachment = function(msg) {
-        $http.post('/attachment/approve', msg.typeAttachmentApproval).
+        $http.get('/attachment/approve/' + msg.typeAttachmentApproval.fileid).
             success(function(data, status, headers, config) {
                 $scope.addAlert("success", data);
                 $scope.closeMessage(msg);
@@ -10,7 +10,7 @@ angular.module('systemModule').controller('ApproveAttachmentCtrl', ['$scope', '$
             });
     };
     $scope.declineAttachment = function(msg) {
-        $http.post('/file/remove', msg.typeAttachmentApproval).
+        $http.post('/attachment/remove', msg.typeAttachmentApproval).
             success(function(data, status, headers, config) {
                 $scope.addAlert("success", data);
                 $scope.closeMessage(msg);

@@ -25,6 +25,7 @@ public class FormClassificationTest extends BaseFormTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("Traumatic Brain Injury - Adverse Events");
         findElement(By.linkText("Classification")).click();
+        hangon(1);
         new ClassificationTest().addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
     }  
     
