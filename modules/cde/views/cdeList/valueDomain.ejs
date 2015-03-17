@@ -1,8 +1,6 @@
-<h4><strong>Values Allowed</strong></h4>
-<dl class="dl-horizontal">
-  <dt>Value Type: </dt>
-  <dd id="dd_valueType"> {{cde.valueDomain.datatype | placeholdEmpty}} </dd>
-</dl>
+<div ng-switch="cde.valueDomain.datatype">
+    <div ng-switch-when="Value List">
+        <%- include datatypeValueList.ejs %>
+    </div>
+</div>
 
-<%- include valueDomainSwitch.ejs %>
-    

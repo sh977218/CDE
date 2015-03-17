@@ -101,5 +101,13 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         findElement(By.linkText("CDEs")).click();     
         textPresent("0 results for name | CTEP > CATEGORY | Preferred Standard, Standard");
     }
-      
+
+    @Test
+    public void idsInSummary() {
+        openCdeInList("Kidney total glomerular filtration capacity measurement");
+        textPresent("C06137", By.xpath("//table[@summary='Identifiers List']"));
+        textPresent("KidnTotGlomerularFiltCapcMeasr", By.xpath("//table[@summary='Identifiers List']"));
+        textPresent("NINDS Variable Name", By.xpath("//table[@summary='Identifiers List']"));
+    }
+
 }

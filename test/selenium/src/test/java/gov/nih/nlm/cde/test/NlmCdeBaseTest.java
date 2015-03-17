@@ -173,6 +173,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void mustBeLoggedOut() {
+        findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (!loginLinkList.isDisplayed()) {
             logout();
@@ -268,7 +269,12 @@ public class NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }
-    
+
+    public void waitAndClick(By by) {
+        wait.until(ExpectedConditions.elementToBeClickable(by));
+        findElement(by).click();
+    }
+
     protected void clickElement(By by) {
         try {
             findElement(by).click();
@@ -319,8 +325,7 @@ public class NlmCdeBaseTest {
         hangon(1);
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("has already been used");
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("confirmNewVersion")));
-        findElement(By.id("confirmNewVersion")).click();
+        waitAndClick(By.id("confirmNewVersion"));
         try{
             textPresent("Saved.");
         } catch(Exception e){
@@ -499,8 +504,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("login_button")));
-        findElement(By.id("login_button")).click();
+        waitAndClick(By.id("login_button"));
         try {
             textPresent(checkText, null, 12);
             // Assumption is that UMLS sometimes throws an error on login. With a socket hangup. login fails, we retry.
@@ -600,7 +604,7 @@ public class NlmCdeBaseTest {
                 wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("accordion"), cdeName));
                 break;
             } catch(Exception e){
-                findElement(By.id("older")).click();
+                findElement(By.linkText("Next")).click();
             }            
             
         }

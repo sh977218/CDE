@@ -585,12 +585,12 @@ exports.init = function(app) {
         });
     });   
 
-    app.post('/attachment/remove', function(req, res){
+    app.get('/attachment/decline/:id', function(req, res){
         if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) return res.status(401).send();
         daoManager.getDaoList().forEach(function(dao) {
-            dao.removeAttachmentLinks(req.body.fileid);
+            dao.removeAttachmentLinks(req.params.id);
         });
-        mongo_data_system.deleteFileById(req.body.fileid);
+        mongo_data_system.deleteFileById(req.params.id);
         res.send("Attachment declined");
     });
   
