@@ -1,2 +1,6 @@
-<%- include valueDomainSwitch.ejs %>
-    
+<div ng-switch="cde.valueDomain.datatype">
+    <div ng-switch-when="Value List">
+        <%- include datatypeValueList.ejs %>
+    </div>
+</div>
+
