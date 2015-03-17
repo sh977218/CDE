@@ -64,7 +64,7 @@ schemas.namingSchema = mongoose.Schema({
     }
 }, {_id: false});
 
-schemas.attachmentSchema = mongoose.Schema({
+var attachmentSchema = {
     fileid: String
     , filename: String
     , filetype: String
@@ -77,7 +77,9 @@ schemas.attachmentSchema = mongoose.Schema({
     , filesize: Number
     , isDefault: Boolean
     , pendingApproval: Boolean
-}, {_id: false});
+};
+
+schemas.attachmentSchema = mongoose.Schema(attachmentSchema, {_id: false});
 
 schemas.registrationStateSchema = {
     registrationStatus: {type: String}
@@ -135,7 +137,7 @@ schemas.message = mongoose.Schema ({
     , type: {type: String, enum: ["MergeRequest", "CommentApproval", "AttachmentApproval"]}
     , typeRequest: requestSchema
     , typeCommentApproval: commentApprovalSchema
-    , typeAttachmentApproval: schemas.attachmentSchema
+    , typeAttachmentApproval: attachmentSchema
     , states: [{
         action: {type: String, enum: ["Approved", "Filed"]}
         , date: Date
