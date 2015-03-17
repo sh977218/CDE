@@ -183,9 +183,76 @@ exports.userTotalSpace = function(Model, name, callback) {
     });
 };
 
-exports.linkAttachmentToAdminItem = function (newfile, file, user, comment, elt, pendingApproval, cb) {
+// exports.addAttachment = function(file, user, comment, elt, cb) {
+//     var writestream = gfs.createWriteStream({
+//         filename: file.originalname
+//         , mode: 'w'
+//         , content_type: file.type 
+//         , metadata: {
+//             status: "uploaded"
+//         }
+//     });
+
+//     writestream.on('close', function (newfile) {
+//         var attachment = {
+//             fileid: newfile._id
+//             , filename: file.originalname
+//             , filetype: file.type
+//             , uploadDate: Date.now()
+//             , comment: comment 
+//             , uploadedBy: {
+//                 userId: user._id
+//                 , username: user.username
+//             }
+//             , filesize: file.size  
+//             , pendingApproval: true        
+//         };
+//         elt.attachments.push(attachment);
+//         elt.save(function() {
+//             cb();
+//         });
+//         adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", attachment);
+//     });
+    
+//     //TODO: Remove this fork!
+//     if (file.stream) {
+//         file.stream.pipe(writestream);
+//     } else {
+//         fs.createReadStream(file.path).pipe(writestream);
+//     }
+    
+// };
+
+exports.addAttachment = function(file, user, comment, elt, cb) {
+    var linkAttachmentToAdminItem = function(attachment, elt, cb) {
+        elt.attachments.push(attachment);
+        elt.save(function() {
+            cb();
+        });
+    };
+
+    var addNewFile = function(stream, attachment, elt, user, cb) {
+        var writestream = gfs.createWriteStream({
+            filename: attachment.filename
+            , mode: 'w'
+            , content_type: attachment.filetype
+            , metadata: {
+                status: "uploaded"
+            }
+        });
+
+        writestream.on('close', function (newfile) {
+            attachment.fileid = newfile._id;
+            attachment.pendingApproval = true;
+            linkAttachmentToAdminItem(attachment, elt, cb);
+            adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", attachment);
+        });
+
+        stream.pipe(writestream);
+    };    
+
     var attachment = {
-        fileid: newfile._id
+        fileid: null
         , filename: file.originalname
         , filetype: file.type
         , uploadDate: Date.now()
@@ -194,31 +261,17 @@ exports.linkAttachmentToAdminItem = function (newfile, file, user, comment, elt,
             userId: user._id
             , username: user.username
         }
-        , filesize: file.size  
-        , pendingApproval: pendingApproval        
+        , filesize: file.size     
     };
-    elt.attachments.push(attachment);
-    elt.save(function() {
-        cb();
-    });    
-};
 
-exports.addAttachment = function(file, user, comment, elt, cb) {
-    var writestream = gfs.createWriteStream({
-        filename: file.originalname
-        , mode: 'w'
-        , content_type: file.type 
-        , metadata: {
-            status: "uploaded"
+    gfs.findOne({filename: file.originalname}, function (err, f) {
+        if (!f) addNewFile(file.stream, attachment, elt, user, cb); 
+        else {
+            attachment.fileid = f._id;
+            linkAttachmentToAdminItem(attachment, elt, cb);
         }
-    });
-
-    writestream.on('close', function (newfile) {
-        exports.linkAttachmentToAdminItem(newfile, file, user, comment, elt, true, cb);
-        adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", attachment);
-    });
+    });       
     
-    file.stream.pipe(writestream);    
 };
 
 exports.deleteFileById = function(id, cb) {
