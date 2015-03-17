@@ -176,9 +176,9 @@ angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'user
         OrgHelpers.getOrgsDetailedInfoAPI();
     }, GLOBALS.getOrgsInterval);
     
-    $scope.inboxVisible = function() {
-        return $scope.isOrgCurator()||$scope.isOrgAdmin()||exports.hasRole($scope.user, "CommentReviewer");
-    };
+   $scope.inboxVisible = function() {
+       return $scope.isOrgCurator()||$scope.isOrgAdmin()||exports.hasRole($scope.user, "CommentReviewer")||exports.hasRole($scope.user, "AttachmentReviewer");
+   };
     
     $scope.checkMail = function(){
         if (!$scope.inboxVisible()) return false;

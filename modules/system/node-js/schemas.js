@@ -64,7 +64,7 @@ schemas.namingSchema = mongoose.Schema({
     }
 }, {_id: false});
 
-schemas.attachmentSchema = mongoose.Schema({
+var attachmentSchema = {
     fileid: String
     , filename: String
     , filetype: String
@@ -76,7 +76,10 @@ schemas.attachmentSchema = mongoose.Schema({
     }
     , filesize: Number
     , isDefault: Boolean
-}, {_id: false});
+    , pendingApproval: Boolean
+};
+
+schemas.attachmentSchema = mongoose.Schema(attachmentSchema, {_id: false});
 
 schemas.registrationStateSchema = {
     registrationStatus: {type: String}
@@ -131,9 +134,10 @@ schemas.message = mongoose.Schema ({
     }
     , author: {authorType: String, name: String}
     , date: Date
-    , type: {type: String, enum: ["MergeRequest", "CommentApproval"]}
+    , type: {type: String, enum: ["MergeRequest", "CommentApproval", "AttachmentApproval"]}
     , typeRequest: requestSchema
     , typeCommentApproval: commentApprovalSchema
+    , typeAttachmentApproval: attachmentSchema
     , states: [{
         action: {type: String, enum: ["Approved", "Filed"]}
         , date: Date
@@ -142,5 +146,21 @@ schemas.message = mongoose.Schema ({
 });
 
 schemas.message.set('collection', 'messages');
+
+schemas.fs_files = mongoose.Schema({
+    "_id" : mongoose.Schema.Types.ObjectId
+    , "filename" : String
+    , "contentType" : String
+    , "length" : Number
+    , "chunkSize" : Number
+    , "uploadDate" : Date
+    , "aliases" : String
+    , "metadata" : {
+        "status" : String
+    }
+    , "md5" : String
+});
+
+schemas.fs_files.set('collection', 'fs.files');
 
 module.exports = schemas;

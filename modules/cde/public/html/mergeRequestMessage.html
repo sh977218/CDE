@@ -81,7 +81,7 @@
     </div>            
 </div>
 
-<span ng-show="type==mailTypeReceived">
+<span ng-show="type===mailTypeReceived">
     <button ng-controller="MergeApproveCtrl" ng-click="showMergeApproveDialog(message)" ng-class="{disabled: message.states[0].action==='Approved'}" class="btn btn-sm btn-default" type="button" >Approve & Merge</button>
     <span ng-show="message.states[0].action==='Approved'">Approved on {{ message.states[0].date | date:medium }}</span>
 </span>

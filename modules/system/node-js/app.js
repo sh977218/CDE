@@ -13,6 +13,7 @@ var passport = require('passport')
     , auth = require( './authorization' )
     , csrf = require('csurf')
     , authorizationShared = require("../../system/shared/authorizationShared")
+    , daoManager = require('./moduleDaoManager')
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -329,8 +330,15 @@ exports.init = function(app) {
     });    
         
     app.get('/data/:imgtag', function(req, res) {
-        mongo_data_system.getFile(res, req.params.imgtag);
+        mongo_data_system.getFile(req.user, req.params.imgtag, res);
     });    
+
+    app.get('/data/status/:imgtag', function(req, res) {
+        mongo_data_system.getFileStatus(req.params.imgtag, function(err, status) {
+            if (err) res.status(404).send();
+            res.send(status);
+        });
+    });        
 
     app.post('/classification/elt', function(req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
@@ -563,10 +571,27 @@ exports.init = function(app) {
     });       
     
     app.get('/mailStatus', function(req, res){
-        if (!req.user) res.status(403).send("You are not authorized.");
+        if (!req.user) return res.status(401).send();
         mongo_data_system.mailStatus(req.user, function(err, result){
             res.send({count: result});
         });
     });
-    
+
+    app.get('/attachment/approve/:id', function(req, res){
+        if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) return res.status(401).send();
+        mongo_data_system.alterAttachmentStatus(req.params.id, "approved", function(err, result){
+            if (err) res.status(500).send("Unable to approve attachment");
+            else res.send("Attachment approved.");
+        });
+    });   
+
+    app.get('/attachment/decline/:id', function(req, res){
+        if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) return res.status(401).send();
+        daoManager.getDaoList().forEach(function(dao) {
+            dao.removeAttachmentLinks(req.params.id);
+        });
+        mongo_data_system.deleteFileById(req.params.id);
+        res.send("Attachment declined");
+    });
+  
 };

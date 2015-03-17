@@ -12,6 +12,10 @@ var schemas = require('./schemas')
     , shortid = require("shortid")
     , logging = require('../../system/node-js/logging.js')
     , email = require('../../system/node-js/email')
+    , adminItemSvc = require('./adminItemSvc')
+    , authorizationShared = require("../../system/shared/authorizationShared")
+    , daoManager = require('./moduleDaoManager')
+    , clamav = require('clamav.js')
     ;
 
 var conn;
@@ -22,6 +26,7 @@ var gfs;
 var connectionEstablisher = connHelper.connectionEstablisher;
 var sessionStore;
 var Message;
+var fs_files;
 
 var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');
 iConnectionEstablisherSys.connect(function(resCon) {
@@ -35,6 +40,7 @@ iConnectionEstablisherSys.connect(function(resCon) {
         mongooseConnection: resCon  
     });
     exports.sessionStore = sessionStore;
+    fs_files = conn.model('fs_files', schemas.fs_files);
 });
 
 var iConnectionEstablisherLocal = new connectionEstablisher(config.database.local.uri, 'LOCAL');
@@ -181,41 +187,72 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     var writestream = gfs.createWriteStream({
         filename: file.originalname
         , mode: 'w'
-        , content_type: file.type
+        , content_type: file.type 
+        , metadata: {
+            status: "uploaded"
+        }
     });
 
     writestream.on('close', function (newfile) {
-        elt.attachments.push({
+        var attachment = {
             fileid: newfile._id
             , filename: file.originalname
             , filetype: file.type
             , uploadDate: Date.now()
             , comment: comment 
-            , uploadedBy: {
+            , filesize: file.size  
+            , pendingApproval: true        
+        };
+        if (user) { 
+            attachment.uploadedBy = {
                 userId: user._id
                 , username: user.username
             }
-            , filesize: file.size
-        });
+        }
+        elt.attachments.push(attachment);
         elt.save(function() {
             cb();
         });
+        if (user) adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", attachment);        
     });
     
+    //TODO: Remove this fork!
     if (file.stream) {
-       file.stream.pipe(writestream);
+        file.stream.pipe(writestream);
     } else {
         fs.createReadStream(file.path).pipe(writestream);
     }
+    
 };
 
-exports.getFile = function(res, id) {
+exports.deleteFileById = function(id, cb) {
+    gfs.remove({_id: id}, function (err) {
+        if (cb) cb(err);
+    });
+};
+
+exports.alterAttachmentStatus = function(id, status, cb) {
+    fs_files.update({_id: id}, {$set: {"metadata.status": status}}).exec(function(err) {
+        if (cb) cb(err);
+    });
+    if (status === "approved") {
+        daoManager.getDaoList().forEach(function(dao){
+            dao.setAttachmentApproved(id);
+        });    
+    }
+};
+
+exports.getFile = function(user, id, res) {
     gfs.exist({ _id: id }, function (err, found) {
         if (err || !found) {
             res.status(404).send("File not found.");
             return logging.errorLogger.error("File not found.", {origin: "system.mongo.getFile", stack: new Error().stack, details: "fileid "+id});
         }
-        gfs.createReadStream({ _id: id }).pipe(res);        
+        gfs.findOne({ _id: id}, function (err, file) {
+            if (file.metadata.status === "approved" || authorizationShared.hasRole(user, "AttachmentReviewer")) gfs.createReadStream({ _id: id }).pipe(res);
+            else res.status(403).send("This file has not been approved yet.");
+        });
+                
     });        
 };
 
@@ -299,7 +336,7 @@ exports.getMessages = function(req, callback) {
                 "$or": [
                     {
                         "recipient.recipientType": "stewardOrg"
-                        , "recipient.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                        , "recipient.name": {$in: [].concat(req.user.orgAdmin.concat(req.user.orgCurator))}
                     }
                     , {
                         "recipient.recipientType": "user"
@@ -330,7 +367,7 @@ exports.getMessages = function(req, callback) {
                 $or: [
                     {
                         "author.authorType":"stewardOrg"
-                        , "author.name": {$in: req.user.orgAdmin.concat(req.user.orgCurator)}
+                        , "author.name": {$in: [].concat(req.user.orgAdmin.concat(req.user.orgCurator))}
                     }
                     , {
                         "author.authorType":"user"
