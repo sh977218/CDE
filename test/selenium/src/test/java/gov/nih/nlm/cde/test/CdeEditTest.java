@@ -77,8 +77,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("codeId")).sendKeys("DEC_CODE_111");
         findElement(By.id("createConcept")).click();
         hangon(2);
-        shortWait.until(ExpectedConditions.elementToBeClickable(By.id("addConcept")));
-        findElement(By.id("addConcept")).click();
+        waitAndClick(By.id("addConcept"));
         findElement(By.name("name")).sendKeys("OC1");
         findElement(By.name("codeId")).sendKeys("OC_CODE_111");
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Class");

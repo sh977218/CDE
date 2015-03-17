@@ -48,8 +48,8 @@
             </div>    
         </div>
         <div class="modal-footer" id="newPropertyModalFooter">
-            <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
-            <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid" id="createProperty">Save</button>
+            <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>
+            <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid" id="createProperty" type="submit">Save</button>
         </div>
     </form>
 </script>

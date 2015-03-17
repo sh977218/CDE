@@ -71,7 +71,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     @Test
     public void unitOfMeasure() {
         goToCdeByName("Laboratory Procedure Blood");
-        Assert.assertTrue(textPresent("mg/dL"));
+        textPresent("mg/dL");
     }
 
     @Test

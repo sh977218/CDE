@@ -185,6 +185,7 @@ exports.userTotalSpace = function(Model, name, callback) {
 };
 
 exports.addAttachment = function(file, user, comment, elt, cb) {
+
     var linkAttachmentToAdminItem = function(attachment, elt, cb) {
         elt.attachments.push(attachment);
         elt.save(function() {
@@ -218,12 +219,15 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
         , filetype: file.type
         , uploadDate: Date.now()
         , comment: comment 
-        , uploadedBy: {
+        , filesize: file.size     
+    };
+
+    if (user) { 
+        attachment.uploadedBy = {
             userId: user._id
             , username: user.username
         }
-        , filesize: file.size     
-    };
+    }       
 
     gfs.findOne({filename: file.originalname}, function (err, f) {
         if (!f) addNewFile(file.stream, attachment, elt, user, cb); 
