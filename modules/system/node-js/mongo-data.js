@@ -183,6 +183,26 @@ exports.userTotalSpace = function(Model, name, callback) {
     });
 };
 
+exports.linkAttachmentToAdminItem = function (newfile, file, user, comment, elt, pendingApproval, cb) {
+    var attachment = {
+        fileid: newfile._id
+        , filename: file.originalname
+        , filetype: file.type
+        , uploadDate: Date.now()
+        , comment: comment 
+        , uploadedBy: {
+            userId: user._id
+            , username: user.username
+        }
+        , filesize: file.size  
+        , pendingApproval: pendingApproval        
+    };
+    elt.attachments.push(attachment);
+    elt.save(function() {
+        cb();
+    });    
+};
+
 exports.addAttachment = function(file, user, comment, elt, cb) {
     var writestream = gfs.createWriteStream({
         filename: file.originalname
@@ -194,33 +214,11 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     });
 
     writestream.on('close', function (newfile) {
-        var attachment = {
-            fileid: newfile._id
-            , filename: file.originalname
-            , filetype: file.type
-            , uploadDate: Date.now()
-            , comment: comment 
-            , uploadedBy: {
-                userId: user._id
-                , username: user.username
-            }
-            , filesize: file.size  
-            , pendingApproval: true        
-        };
-        elt.attachments.push(attachment);
-        elt.save(function() {
-            cb();
-        });
-        adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", attachment);        
+        exports.linkAttachmentToAdminItem(newfile, file, user, comment, elt, true, cb);
+        adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", attachment);
     });
     
-    //TODO: Remove this fork!
-    if (file.stream) {
-        file.stream.pipe(writestream);
-    } else {
-        fs.createReadStream(file.path).pipe(writestream);
-    }
-    
+    file.stream.pipe(writestream);    
 };
 
 exports.deleteFileById = function(id, cb) {

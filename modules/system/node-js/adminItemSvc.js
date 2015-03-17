@@ -4,6 +4,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , async = require('async')
     , auth = require('./authorization.js')
     , authorizationShared = require('../../system/shared/authorizationShared')
+    , fs = require('fs')
 ;
 
 var commentPendingApprovalText = "This comment is pending approval.";
@@ -101,7 +102,9 @@ exports.addAttachment = function(req, res, dao) {
             if (totalSpace > req.user.quota) {
                 res.send({message: "You have exceeded your quota"});
             } else {
-                mongo_data_system.addAttachment(req.files.uploadedFiles, req.user, "some comment", elt, function() {
+                var file = req.files.uploadedFiles;
+                file.stream = fs.createReadStream(file.path);
+                mongo_data_system.addAttachment(file, req.user, "some comment", elt, function() {
                     res.send(elt);            
                 });                                            
             }
