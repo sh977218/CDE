@@ -24,8 +24,7 @@ angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$
             $window.location.href = redirectBaseLink + newelt._id;  
             $scope.addAlert("success", "Saved.");
         }, function(reason) {
-            $scope.addAlert("danger", reason);
-        });        
+        });
     };
 
 }

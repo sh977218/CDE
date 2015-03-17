@@ -161,7 +161,7 @@ public class MiscTests extends NlmCdeBaseTest {
     }    
     
     private void getNext(String expectedText) {
-        findElement(By.xpath("//button[@data-role='next']")).click();
+        waitAndClick(By.xpath("//button[@data-role='next']"));
         textPresent(expectedText);
     }
     
