@@ -111,3 +111,11 @@ exports.eltByTinyId = function(tinyId, callback) {
         callback(err, elt); 
     });
 };
+
+exports.removeAttachmentLinks = function(id) {
+    adminItemSvc.removeAttachmentLinks(id, Form);
+};
+
+exports.setAttachmentApproved = function(id) {
+    adminItemSvc.setAttachmentApproved(id, Form);
+};

@@ -1,6 +1,6 @@
 if (typeof(exports)==="undefined") exports = {};
 
-exports.rolesEnum = ["DocumentationEditor", "BoardPublisher", "CommentAuthor", "CommentReviewer"];
+exports.rolesEnum = ["DocumentationEditor", "BoardPublisher", "CommentAuthor", "CommentReviewer", "AttachmentReviewer"];
 
 exports.hasRole = function(user, role) {
     if (!user) return false;

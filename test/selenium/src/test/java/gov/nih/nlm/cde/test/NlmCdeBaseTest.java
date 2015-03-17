@@ -63,6 +63,9 @@ public class NlmCdeBaseTest {
     protected static String anonymousCommentUser_password = "pass";
     protected static String commentEditor_username = "commentEditor";
     protected static String commentEditor_password = "pass";    
+    protected static String attachmentReviewer_username = "attachmentReviewer";
+    protected static String ctep_fileCurator_username = "ctep_fileCurator";
+
 
     protected static String password = "pass";
 

@@ -125,6 +125,27 @@ exports.removeAttachment = function(req, res, dao) {
     });
 };
 
+exports.removeAttachmentLinks = function(id, collection) {
+    collection.update({"attachments.fileid": id}, {$pull: {"attachments": {"fileid": id}}});
+};
+
+exports.createApprovalMessage = function(user, role, type, details){
+    var message = {
+        recipient: {recipientType: "role", name: role}
+        , author: {authorType: "user", name: user.username}
+        , date: new Date()
+        , type: type
+        , states: [{
+            action: String
+            , date: new Date()
+            , comment: String
+        }]                          
+    };
+    if (type === "CommentApproval") message.typeCommentApproval = details;
+    if (type === "AttachmentApproval") message.typeAttachmentApproval = details;
+    mongo_data_system.createMessage(message);    
+};
+
 exports.addComment = function(req, res, dao) {
     if (req.isAuthenticated()) {
         dao.eltByTinyId(req.body.element.tinyId, function(err, elt) {
@@ -139,22 +160,11 @@ exports.addComment = function(req, res, dao) {
                 };
                 if (!authorizationShared.canComment(req.user)) {
                     comment.pendingApproval = true;
-                    var message = {
-                        recipient: {recipientType: "role", name: "CommentReviewer"}
-                        , author: {authorType: "user", name: req.user.username}
-                        , date: new Date()
-                        , type: "CommentApproval"
-                        , typeCommentApproval: {
-                            element: {tinyId: req.body.element.tinyId, name: elt.naming[0].designation, eltType: dao.type}
-                            , comment: {index: elt.comments.length, text: req.body.comment}
-                        }
-                        , states: [{
-                            action: String
-                            , date: new Date()
-                            , comment: String
-                        }]                          
+                    var details = {
+                        element: {tinyId: req.body.element.tinyId, name: elt.naming[0].designation, eltType: dao.type}
+                        , comment: {index: elt.comments.length, text: req.body.comment}
                     };
-                    mongo_data_system.createMessage(message);
+                    exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                 }
                 elt.comments.push(comment);
                 elt.save(function(err) {
@@ -338,4 +348,26 @@ exports.hideUnapprovedComments = function(adminItem) {
     adminItem.comments.forEach(function(c) {
         if (c.pendingApproval) c.text = commentPendingApprovalText;
     });
+};
+
+exports.removeAttachmentLinks = function(id, collection){
+    collection.update(
+    {"attachments.fileid": id}
+    , {
+        $pull: {
+            "attachments": {"fileid": id}
+         }
+    }
+    , {multi:true}).exec();
+};
+
+exports.setAttachmentApproved = function(id, collection){
+    collection.update(
+    {"attachments.fileid": id}
+    , {
+        $set: {
+            "attachments.$.pendingApproval": null
+         }
+    }
+    , {multi:true}).exec();
 };

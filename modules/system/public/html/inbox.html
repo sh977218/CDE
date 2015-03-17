@@ -8,6 +8,7 @@
 
             <div ng-if="message.type=='MergeRequest'" ng-include="'/cde/public/html/mergeRequestMessage.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
             <div ng-if="message.type=='CommentApproval'" ng-include="'/system/public/html/messages/commentApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
+            <div ng-if="message.type=='AttachmentApproval'" ng-include="'/system/public/html/attachmentApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
 
 
         </accordion-group>
