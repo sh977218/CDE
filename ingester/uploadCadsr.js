@@ -281,7 +281,7 @@ var doFile = function (cadsrFile, fileCb) {
                    stream.push(null);
                    mongo_data_system.addAttachment(
                     {originalname: cde.ids[0].id + "v" + cde.ids[0].version + ".xml", type: "application/xml", size: origXml.length, stream: stream},
-                    {_id: null, username: "batchloader"}, "Original XML File", newCde, function() {
+                    null, "Original XML File", newCde, function() {
                          cb();
                      });
                      setTimeout(function() {

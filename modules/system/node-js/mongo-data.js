@@ -200,18 +200,20 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
             , filetype: file.type
             , uploadDate: Date.now()
             , comment: comment 
-            , uploadedBy: {
-                userId: user._id
-                , username: user.username
-            }
             , filesize: file.size  
             , pendingApproval: true        
         };
+        if (user) { 
+            attachment.uploadedBy = {
+                userId: user._id
+                , username: user.username
+            }
+        }
         elt.attachments.push(attachment);
         elt.save(function() {
             cb();
         });
-        adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", attachment);        
+        if (user) adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", attachment);        
     });
     
     //TODO: Remove this fork!
