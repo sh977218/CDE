@@ -10,7 +10,7 @@ angular.module('systemModule').controller('ApproveAttachmentCtrl', ['$scope', '$
             });
     };
     $scope.declineAttachment = function(msg) {
-        $http.get('/attachment/decline' + msg.typeAttachmentApproval.fileid).
+        $http.get('/attachment/decline/' + msg.typeAttachmentApproval.fileid).
             success(function(data, status, headers, config) {
                 $scope.addAlert("success", data);
                 $scope.closeMessage(msg);
