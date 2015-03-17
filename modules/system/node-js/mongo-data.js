@@ -16,6 +16,7 @@ var schemas = require('./schemas')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
     , clamav = require('clamav.js')
+    , async = require('async')
     ;
 
 var conn;
@@ -183,46 +184,6 @@ exports.userTotalSpace = function(Model, name, callback) {
     });
 };
 
-// exports.addAttachment = function(file, user, comment, elt, cb) {
-//     var writestream = gfs.createWriteStream({
-//         filename: file.originalname
-//         , mode: 'w'
-//         , content_type: file.type 
-//         , metadata: {
-//             status: "uploaded"
-//         }
-//     });
-
-//     writestream.on('close', function (newfile) {
-//         var attachment = {
-//             fileid: newfile._id
-//             , filename: file.originalname
-//             , filetype: file.type
-//             , uploadDate: Date.now()
-//             , comment: comment 
-//             , uploadedBy: {
-//                 userId: user._id
-//                 , username: user.username
-//             }
-//             , filesize: file.size  
-//             , pendingApproval: true        
-//         };
-//         elt.attachments.push(attachment);
-//         elt.save(function() {
-//             cb();
-//         });
-//         adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", attachment);
-//     });
-    
-//     //TODO: Remove this fork!
-//     if (file.stream) {
-//         file.stream.pipe(writestream);
-//     } else {
-//         fs.createReadStream(file.path).pipe(writestream);
-//     }
-    
-// };
-
 exports.addAttachment = function(file, user, comment, elt, cb) {
     var linkAttachmentToAdminItem = function(attachment, elt, cb) {
         elt.attachments.push(attachment);
@@ -289,6 +250,14 @@ exports.alterAttachmentStatus = function(id, status, cb) {
             dao.setAttachmentApproved(id);
         });    
     }
+};
+
+exports.removeAttachmentIfNotUsed = function(id) {    
+    async.map(daoManager.getDaoList(), function(dao, cb) {
+        dao.fileUsed(id, cb);
+    }, function(err, results){
+        if (results.indexOf(true)===-1) exports.deleteFileById(id);
+    });
 };
 
 exports.getFile = function(user, id, res) {

@@ -3,9 +3,9 @@
     <div ng-repeat="attachment in elt.attachments">
         <dl class="dl-horizontal">
             <dt>Filename: </dt>
-            <dd ng-switch="attachment.pendingApproval">
-                <a class="viewAttachmentLink" href="/data/{{attachment.fileid}}" target="_blank" ng-switch-when="null">{{attachment.filename}}</a>
-                <span ng-switch-default>{{attachment.filename}} - This attachment cannot be dowloaded because it is pending approval.</span>
+            <dd>
+                <a class="viewAttachmentLink" href="/data/{{attachment.fileid}}" target="_blank" ng-if="!attachment.pendingApproval">{{attachment.filename}}</a>
+                <span ng-if="attachment.pendingApproval">{{attachment.filename}} - This attachment cannot be dowloaded because it is pending approval.</span>
             </dd>
             
             <dt>Default Image: </dt>

@@ -117,7 +117,9 @@ exports.removeAttachment = function(req, res, dao) {
         if (err) {
             return res.send(err);
         }
+        var fileid =  elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
+        mongo_data_system.removeAttachmentIfNotUsed(fileid);
         elt.save(function(err) {
             if (err) {
                 res.send("error: " + err);
@@ -368,9 +370,15 @@ exports.setAttachmentApproved = function(id, collection){
     collection.update(
     {"attachments.fileid": id}
     , {
-        $set: {
-            "attachments.$.pendingApproval": null
+        $unset: {
+            "attachments.$.pendingApproval": ""
          }
     }
     , {multi:true}).exec();
+};
+
+exports.fileUsed = function(id, collection, cb) {
+    collection.find({"attachments.fileid": id}).count().exec(function (err, count) {
+        cb(err, count>0);
+    });
 };
