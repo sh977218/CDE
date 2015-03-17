@@ -12,8 +12,7 @@ public class ArticleTest extends NlmCdeBaseTest {
         driver.get(baseUrl + "#/help/bogus");
         findElement(By.id("addNewArticle")).click();
         findElement(By.name("key")).sendKeys(name);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("confirmNewArticle")));
-        findElement(By.id("confirmNewArticle")).click();
+        waitAndClick(By.id("confirmNewArticle"));
         textPresent("Saved.");
         textPresent("has no content");        
     }

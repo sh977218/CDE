@@ -51,8 +51,8 @@
             </div>    
         </div>
         <div class="modal-footer" id="newMappingSpecificationModalFooter">
-            <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate">Cancel</button>
-            <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid" id="createMappingSpecification">Save</button>
+            <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>
+            <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid" id="createMappingSpecification" type="submit">Save</button>
         </div>
     </form>
 </script>
