@@ -45,7 +45,11 @@ exports.init = function(app) {
     });
     
     app.get('/', function(req, res) {
-        res.render('index', 'system', {config: viewConfig});
+        res.render('index', 'system', {config: viewConfig, loggedIn: req.user?true:false});
+    });
+
+    app.get('/home', function(req, res) {
+        res.render('home', 'system');
     });
 
     app.get('/gonowhere', function(req, res) {
@@ -53,7 +57,7 @@ exports.init = function(app) {
     });
 
     app.get('/listOrgs', function(req, res) {
-        mongo_data_system.listOrgs(function(err, orgs) { 
+        mongo_data_system.listOrgs(function(err, orgs) {
             if (err) {
                 res.send("ERROR");
             } else {

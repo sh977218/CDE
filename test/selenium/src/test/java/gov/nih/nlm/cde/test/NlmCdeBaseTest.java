@@ -378,15 +378,9 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/gonowhere");
         textPresent("Nothing here");
 
-        try {
             driver.get(baseUrl + "/#/home");
-            findElement(By.id("selectOrgDropdown"));
-        } catch (TimeoutException e) {
-            // Sometimes home page does not load. A real Bug CDE-521
-            driver.get(baseUrl + "/#/home");
-            findElement(By.id("selectOrgDropdown"));
-        }
-        
+            textPresent("Quick CDE Search");
+
     }
 
     protected void goToCdeSearch() {
