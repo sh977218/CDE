@@ -119,3 +119,7 @@ exports.removeAttachmentLinks = function(id) {
 exports.setAttachmentApproved = function(id) {
     adminItemSvc.setAttachmentApproved(id, Form);
 };
+
+exports.fileUsed = function(id, cb) {
+    adminItemSvc.fileUsed(id, Form, cb);
+};

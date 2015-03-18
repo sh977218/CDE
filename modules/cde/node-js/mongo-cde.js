@@ -392,6 +392,11 @@ exports.getCdeAuditLog = function(params, callback){
 exports.removeAttachmentLinks = function(id) {
     adminItemSvc.removeAttachmentLinks(id, DataElement);
 };
+
 exports.setAttachmentApproved = function(id) {
     adminItemSvc.setAttachmentApproved(id, DataElement);
+};
+
+exports.fileUsed = function(id, cb) {
+    adminItemSvc.fileUsed(id, DataElement, cb);
 };
