@@ -48,10 +48,6 @@ exports.init = function(app) {
         res.render('index', 'system', {config: viewConfig});
     });
 
-    app.get('/home', function(req, res) {
-        res.render('home', 'system');
-    });    
-
     app.get('/gonowhere', function(req, res) {
         res.send("<html><body>Nothing here</body></html>");
     });

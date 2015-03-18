@@ -1,8 +1,8 @@
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule','OrgFactories','classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman']).
     config(function($routeProvider) {
         $routeProvider.
-        when('/', {redirectTo: '/cde/search'}).        
-        when('/home', {controller: 'HomeCtrl', templateUrl:'/home'}).
+        when('/', {redirectTo: '/home'}).
+        when('/home', {controller: 'HomeCtrl', templateUrl:'/system/public/html/home.html'}).
         when('/login', {controller: 'AuthCtrl', templateUrl:'/login'}).
         when('/signup', {controller: 'AuthCtrl', templateUrl:'/signup'}).
         when('/siteAudit', {templateUrl: '/siteaudit'}).        
