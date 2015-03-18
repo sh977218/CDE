@@ -4,6 +4,8 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , async = require('async')
     , auth = require('./authorization.js')
     , authorizationShared = require('../../system/shared/authorizationShared')
+    , fs = require('fs')
+    , md5 = require("md5-file")
 ;
 
 var commentPendingApprovalText = "This comment is pending approval.";
@@ -101,9 +103,15 @@ exports.addAttachment = function(req, res, dao) {
             if (totalSpace > req.user.quota) {
                 res.send({message: "You have exceeded your quota"});
             } else {
-                mongo_data_system.addAttachment(req.files.uploadedFiles, req.user, "some comment", elt, function() {
-                    res.send(elt);            
-                });                                            
+                var file = req.files.uploadedFiles;
+                file.stream = fs.createReadStream(file.path);
+                md5.async(file.path, function (hash) {
+                    file.md5 = hash;
+                    mongo_data_system.addAttachment(file, req.user, "some comment", elt, function() {
+                        res.send(elt);            
+                    });  
+                });                    
+                                          
             }
         });
     });
@@ -114,7 +122,9 @@ exports.removeAttachment = function(req, res, dao) {
         if (err) {
             return res.send(err);
         }
+        var fileid =  elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
+        mongo_data_system.removeAttachmentIfNotUsed(fileid);
         elt.save(function(err) {
             if (err) {
                 res.send("error: " + err);
@@ -365,9 +375,15 @@ exports.setAttachmentApproved = function(id, collection){
     collection.update(
     {"attachments.fileid": id}
     , {
-        $set: {
-            "attachments.$.pendingApproval": null
+        $unset: {
+            "attachments.$.pendingApproval": ""
          }
     }
     , {multi:true}).exec();
+};
+
+exports.fileUsed = function(id, collection, cb) {
+    collection.find({"attachments.fileid": id}).count().exec(function (err, count) {
+        cb(err, count>0);
+    });
 };
