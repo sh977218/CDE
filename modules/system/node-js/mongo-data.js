@@ -228,8 +228,8 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
             , username: user.username
         }
     }       
-
-    gfs.findOne({filename: file.originalname}, function (err, f) {
+    
+    gfs.findOne({md5: file.md5}, function (err, f) {
         if (!f) addNewFile(file.stream, attachment, elt, user, cb); 
         else {
             attachment.fileid = f._id;

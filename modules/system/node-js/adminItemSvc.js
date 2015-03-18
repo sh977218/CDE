@@ -5,6 +5,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , auth = require('./authorization.js')
     , authorizationShared = require('../../system/shared/authorizationShared')
     , fs = require('fs')
+    , md5 = require("md5-file")
 ;
 
 var commentPendingApprovalText = "This comment is pending approval.";
@@ -104,9 +105,13 @@ exports.addAttachment = function(req, res, dao) {
             } else {
                 var file = req.files.uploadedFiles;
                 file.stream = fs.createReadStream(file.path);
-                mongo_data_system.addAttachment(file, req.user, "some comment", elt, function() {
-                    res.send(elt);            
-                });                                            
+                md5.async(file.path, function (hash) {
+                    file.md5 = hash;
+                    mongo_data_system.addAttachment(file, req.user, "some comment", elt, function() {
+                        res.send(elt);            
+                    });  
+                });                    
+                                          
             }
         });
     });
