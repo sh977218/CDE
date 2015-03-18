@@ -95,5 +95,26 @@ var options = {
 };
 
 https.createServer(options, app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+  console.log('VSAC Mock listening on port: ' + app.get('port'));
+});
+
+var net = require('net');
+var server = net.createServer(function(c) { //'connection' listener
+    console.log('Scan connection started');
+    c.on('data', function(data) {
+        if (data.toString().indexOf("VIRUS") > -1) {
+            c.write("stream: A FOUND\n");
+        } else {
+            c.write("stream: OK\n");
+        }
+    });
+    c.on("end", function() {
+        console.log("Scan connection closed");
+    });
+    c.on("error", function(err) {
+        console.log(err);
+    });    
+});
+server.listen(config.antivirus.port, function() { //'listening' listener
+    console.log('ClamAV Fake daemon open on port: ' + config.antivirus.port);
 });

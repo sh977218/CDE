@@ -6,6 +6,8 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , authorizationShared = require('../../system/shared/authorizationShared')
     , fs = require('fs')
     , md5 = require("md5-file")
+    , clamav = require('clamav.js')
+    , config = require('config')
 ;
 
 var commentPendingApprovalText = "This comment is pending approval.";
@@ -96,24 +98,35 @@ exports.setAttachmentDefault = function(req, res, dao) {
     });
 };
 
-exports.addAttachment = function(req, res, dao) {
-    auth.checkOwnership(dao, req.body.id, req, function(err, elt) {
-        if (err) return res.send(err);
-        dao.userTotalSpace(req.user.username, function(totalSpace) {
-            if (totalSpace > req.user.quota) {
-                res.send({message: "You have exceeded your quota"});
-            } else {
-                var file = req.files.uploadedFiles;
-                file.stream = fs.createReadStream(file.path);
-                md5.async(file.path, function (hash) {
-                    file.md5 = hash;
-                    mongo_data_system.addAttachment(file, req.user, "some comment", elt, function() {
-                        res.send(elt);            
-                    });  
-                });                    
-                                          
-            }
-        });
+exports.scanFile = function(path, res, cb) {
+    var stream = fs.createReadStream(path);
+    clamav.createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, function(err, object, malicious) {
+        if (err) return res.status(500).send("Cannot scan attachment. Try again later, please.");
+        if (malicious) return res.status(431).send("The file probably contains a virus.");
+        cb();
+    });    
+};
+
+exports.addAttachment = function(req, res, dao) {   
+    exports.scanFile(req.files.uploadedFiles.path, res, function() {
+        auth.checkOwnership(dao, req.body.id, req, function(err, elt) {
+            if (err) return res.send(err);
+            dao.userTotalSpace(req.user.username, function(totalSpace) {
+                if (totalSpace > req.user.quota) {
+                    res.send({message: "You have exceeded your quota"});
+                } else {
+                    var file = req.files.uploadedFiles;
+                    file.stream = fs.createReadStream(file.path);
+                    md5.async(file.path, function (hash) {
+                        file.md5 = hash;
+                        mongo_data_system.addAttachment(file, req.user, "some comment", elt, function() {
+                            res.send(elt);            
+                        });  
+                    });                    
+                                              
+                }
+            });
+        });        
     });
 };
 
