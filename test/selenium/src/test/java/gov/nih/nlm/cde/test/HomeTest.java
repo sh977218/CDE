@@ -8,7 +8,7 @@ public class HomeTest extends NlmCdeBaseTest {
     @Test
     public void testSearch() {
         goHome();
-        findElement(By.id("searchTerms")).sendKeys("\"Orientation Person");
+        findElement(By.id("searchTerms")).sendKeys("\"Orientation Person\"");
         findElement(By.id("quickSearchButton")).click();
         textPresent("Orientation person result");
     }

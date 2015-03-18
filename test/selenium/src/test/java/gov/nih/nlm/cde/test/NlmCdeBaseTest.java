@@ -378,9 +378,8 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/gonowhere");
         textPresent("Nothing here");
 
-            driver.get(baseUrl + "/#/home");
-            textPresent("Quick CDE Search");
-
+        driver.get(baseUrl + "/#/home");
+        textPresent("has been designed to provide access");
     }
 
     protected void goToCdeSearch() {
