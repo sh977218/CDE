@@ -92,20 +92,6 @@ exports.show = function(req, cb) {
 
 exports.save = function (req, res) {
     adminSvc.save(req, res, mongo_data);
-};  
-
-exports.name_autocomplete = function(name, res) {
-    if (name === "undefined") {
-        res.send("");
-    } else {
-        mongo_data.name_autocomplete(name, function(err, nameList) {
-            if (err) {
-                res.send("ERROR");
-            } else {
-                res.send(nameList);
-            }
-        });
-    }
 };
 
 exports.name_autocomplete_form = function(req, res) {

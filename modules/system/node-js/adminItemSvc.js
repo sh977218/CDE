@@ -1,11 +1,11 @@
 var mongo_data_system = require('../../system/node-js/mongo-data')
-    , classificationShared = require('../shared/classificationShared')
-    , classificationNode = require('./classificationNode')
     , async = require('async')
     , auth = require('./authorization.js')
     , authorizationShared = require('../../system/shared/authorizationShared')
     , fs = require('fs')
     , md5 = require("md5-file")
+    , email = require('../../system/node-js/email')
+    , logging = require('../../system/node-js/logging.js')
 ;
 
 var commentPendingApprovalText = "This comment is pending approval.";
@@ -107,8 +107,9 @@ exports.addAttachment = function(req, res, dao) {
                 file.stream = fs.createReadStream(file.path);
                 md5.async(file.path, function (hash) {
                     file.md5 = hash;
-                    mongo_data_system.addAttachment(file, req.user, "some comment", elt, function() {
-                        res.send(elt);            
+                    mongo_data_system.addAttachment(file, req.user, "some comment", elt, function(attachment, requiresApproval) {
+                        if (requiresApproval) exports.createApprovalMessage(req.user, "AttachmentReviewer", "AttachmentApproval", attachment);
+                        res.send(elt);
                     });  
                 });                    
                                           
@@ -151,9 +152,19 @@ exports.createApprovalMessage = function(user, role, type, details){
             , comment: String
         }]                          
     };
+
+    var emailContent = {
+        subject: "CDE Message Pending"
+        , body: "You have a pending message in NLM CDE application."
+    };
+
     if (type === "CommentApproval") message.typeCommentApproval = details;
     if (type === "AttachmentApproval") message.typeAttachmentApproval = details;
-    mongo_data_system.createMessage(message);    
+
+    mongo_data_system.usersByRole(role, function (err, users) {
+        email.emailUsers(emailContent , users);
+        mongo_data_system.createMessage(message);
+    });
 };
 
 exports.addComment = function(req, res, dao) {
@@ -180,10 +191,9 @@ exports.addComment = function(req, res, dao) {
                 elt.save(function(err) {
                     if (err) {
                         res.send(err);
-                        return;
                     } else {
                         exports.hideUnapprovedComments(elt);
-                        return res.send({message: "Comment added", elt: elt});
+                        res.send({message: "Comment added", elt: elt});
                     }
                 });
             }

@@ -213,6 +213,7 @@ public class NlmCdeBaseTest {
             textPresent(name);
             textNotPresent("is archived");
         } catch (Exception e) {
+            System.out.println("Element is archived. Will retry...");
             hangon(1);
             searchElt(name, type, status);
             clickElement(By.id("eyeLink_0"));
