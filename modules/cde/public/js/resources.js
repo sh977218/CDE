@@ -53,6 +53,15 @@ angular.module('resourcesCde', ['ngResource'])
     return $resource('/board/:id/:start', {id: '@id', start: '@start'}, 
         {'getCdes': {method: 'GET', isArray: true}});
 })
+.factory('CDE', function($http) {
+    return {
+        retire: function(cde, cb) {
+            $http.post("/retireCde", cde).then(function(response) {
+                cb(response.data);
+            });
+        }
+    };
+})
 .directive('ngVersionAvailable', ['$http', function($http) {
     return {
         require: 'ngModel',

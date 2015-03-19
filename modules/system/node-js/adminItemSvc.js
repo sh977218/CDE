@@ -107,8 +107,8 @@ exports.addAttachment = function(req, res, dao) {
                 file.stream = fs.createReadStream(file.path);
                 md5.async(file.path, function (hash) {
                     file.md5 = hash;
-                    mongo_data_system.addAttachment(file, req.user, "some comment", elt, function(elt, requiresApproval) {
-                        if (requiresApproval) exports.createApprovalMessage(req.user, "AttachmentReviewer", "AttachmentApproval");
+                    mongo_data_system.addAttachment(file, req.user, "some comment", elt, function(attachment, requiresApproval) {
+                        if (requiresApproval) exports.createApprovalMessage(req.user, "AttachmentReviewer", "AttachmentApproval", attachment);
                         res.send(elt);
                     });  
                 });                    

@@ -188,7 +188,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     var linkAttachmentToAdminItem = function(attachment, elt, newFileCreated, cb) {
         elt.attachments.push(attachment);
         elt.save(function() {
-            if (cb) cb(elt, newFileCreated);
+            if (cb) cb(attachment, newFileCreated);
         });
     };
 
@@ -337,7 +337,6 @@ exports.createMessage = function(msg, cb) {
     var message = new Message(msg);  
     message.save(function() {
         if (cb) cb();
-
     });
 };
 

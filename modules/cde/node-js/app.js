@@ -393,6 +393,19 @@ exports.init = function(app, daoManager) {
         res.send(elastic.pVCodeSystemList);
     });
 
+    app.post('/retireCde', function (req, res) {
+        req.params.type = "received";
+        mongo_data.byId(req.body._id, function(err, cde) {
+            if (err) res.status(404).send(err);
+            if (!cde.registrationState.administrativeStatus === "Retire Candidate") return res.status(409).send("CDE is not a Retire Candidate");
+            cde.registrationState.registrationStatus = "Retired";
+            delete cde.registrationState.administrativeStatus;
+            cde.save(function() {
+                res.end();
+            });
+        });
+    });
+
     var systemAlert = "";
     app.get("/systemAlert", function(req, res) {
         res.send(systemAlert);
