@@ -102,12 +102,16 @@ var net = require('net');
 var server = net.createServer(function(c) { 
     var malicious = false;
     console.log('Scan connection started');
+    var file = new Buffer(1024*1024*5);
     c.on('data', function(data) {
-        if (data.toString().indexOf("VIRUS") > -1) malicious = true;
+        file += data;
+
         var array = JSON.parse(JSON.stringify(data));
         var last4 = array.slice(-4);
         if (last4.length < 4) return;
         for (var i=0; i<3; i++) if (last4[i]!==0) return;
+
+        if (file.toString().indexOf("VIRUS") > -1) malicious = true;
 
         if (malicious) console.log("stream: A FOUND\n");
         else console.log("stream: OK\n");
