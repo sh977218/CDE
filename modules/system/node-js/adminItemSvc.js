@@ -107,8 +107,9 @@ exports.addAttachment = function(req, res, dao) {
                 file.stream = fs.createReadStream(file.path);
                 md5.async(file.path, function (hash) {
                     file.md5 = hash;
-                    mongo_data_system.addAttachment(file, req.user, "some comment", elt, function() {
-                        res.send(elt);            
+                    mongo_data_system.addAttachment(file, req.user, "some comment", elt, function(elt, requiresApproval) {
+                        if (requiresApproval) exports.createApprovalMessage(req.user, "AttachmentReviewer", "AttachmentApproval");
+                        res.send(elt);
                     });  
                 });                    
                                           
@@ -152,7 +153,7 @@ exports.createApprovalMessage = function(user, role, type, details){
         }]                          
     };
 
-    var email = {
+    var emailContent = {
         subject: "CDE Message Pending"
         , body: "You have a pending message in NLM CDE application."
     };
@@ -161,7 +162,7 @@ exports.createApprovalMessage = function(user, role, type, details){
     if (type === "AttachmentApproval") message.typeAttachmentApproval = details;
 
     mongo_data_system.usersByRole(role, function (err, users) {
-        email.emailUsers(email , users);
+        email.emailUsers(emailContent , users);
         mongo_data_system.createMessage(message);
     });
 };

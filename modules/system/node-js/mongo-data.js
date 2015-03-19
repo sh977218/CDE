@@ -185,10 +185,10 @@ exports.userTotalSpace = function(Model, name, callback) {
 
 exports.addAttachment = function(file, user, comment, elt, cb) {
 
-    var linkAttachmentToAdminItem = function(attachment, elt, cb) {
+    var linkAttachmentToAdminItem = function(attachment, elt, newFileCreated, cb) {
         elt.attachments.push(attachment);
         elt.save(function() {
-            cb();
+            if (cb) cb(elt, newFileCreated);
         });
     };
 
@@ -205,8 +205,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
         writestream.on('close', function (newfile) {
             attachment.fileid = newfile._id;
             attachment.pendingApproval = true;
-            linkAttachmentToAdminItem(attachment, elt, cb);
-            adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", attachment);
+            linkAttachmentToAdminItem(attachment, elt, true, cb);
         });
 
         stream.pipe(writestream);
@@ -229,10 +228,10 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     }       
     
     gfs.findOne({md5: file.md5}, function (err, f) {
-        if (!f) addNewFile(file.stream, attachment, elt, user, cb); 
+        if (!f) addNewFile(file.stream, attachment, elt, user, cb);
         else {
             attachment.fileid = f._id;
-            linkAttachmentToAdminItem(attachment, elt, cb);
+            linkAttachmentToAdminItem(attachment, elt, false, cb);
         }
     });       
     

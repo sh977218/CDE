@@ -53,13 +53,13 @@ exports.evaluateResult = function() {
     if (status.everythingOk()) return;
     if (status.reportSent) return;    
     if (!status.restartAttempted) status.tryRestart();
-    var email = {
+    var emailContent = {
         subject: "Urgent: ElasticSearch issue on " + config.name
         , body: status.assembleErrorMessage(status.statusReport)
     };
 
     mongo_data_system.siteadmins(function(err, users) {
-        email.emailUsers(email, users, function(err) {
+        email.emailUsers(emailContent, users, function(err) {
             if (!err) status.delayReports();
         });
     });
