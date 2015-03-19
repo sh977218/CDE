@@ -139,12 +139,13 @@ exports.removeAttachment = function(req, res, dao) {
         }
         var fileid =  elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
-        mongo_data_system.removeAttachmentIfNotUsed(fileid);
+
         elt.save(function(err) {
             if (err) {
                 res.send("error: " + err);
             } else {
                 res.send(elt);
+                mongo_data_system.removeAttachmentIfNotUsed(fileid);
             }
         });
     });
