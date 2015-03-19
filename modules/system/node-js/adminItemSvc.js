@@ -6,7 +6,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , authorizationShared = require('../../system/shared/authorizationShared')
     , fs = require('fs')
     , md5 = require("md5-file")
-    , clamav = require('clamav')
+    , clamav = require('clamav.js')
     , config = require('config')
     , logging = require('./logging')
 ;

@@ -46,7 +46,7 @@ angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootSc
 
     function uploadComplete(evt) {
         $rootScope.$apply(function() {
-            if (evt.target.status === 500) return $scope.addAlert("danger", evt.target.responseText);
+            if (evt.target.status !== 200) return $scope.addAlert("danger", evt.target.responseText);
             var resp = JSON.parse(evt.target.responseText);
             if (!resp.message) {
                 $scope.elt = JSON.parse(evt.target.responseText);
