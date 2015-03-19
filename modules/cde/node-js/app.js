@@ -1,10 +1,8 @@
 var cdesvc = require('./cdesvc')
   , boardsvc = require('./boardsvc')
   , usersvc = require('./usersvc')
-  , usersvc_system = require('../../system/node-js/usersrvc')
   , mongo_data = require('./mongo-cde')
   , classificationNode = require('./classificationNode')
-  , classificationNode_system = require('../../system/node-js/classificationNode')
   , xml2js = require('xml2js')
   , vsac = require('./vsac-io')
   , config = require('config')
@@ -12,7 +10,6 @@ var cdesvc = require('./cdesvc')
   , helper = require('../../system/node-js/helper.js')
   , logging = require('../../system/node-js/logging.js')
   , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
-  , classificationShared = require('../../system/shared/classificationShared.js')
   , path = require('path')
   , express = require('express')
   , sdc = require("./sdc.js")
@@ -20,7 +17,6 @@ var cdesvc = require('./cdesvc')
   , appSystem = require('../../system/node-js/app.js')
   , authorizationShared = require("../../system/shared/authorizationShared")
   , async = require("async")
-  , mongo_system = require('../../system/node-js/mongo-data')
   , multer  = require('multer')
 ;
 
@@ -70,12 +66,6 @@ exports.init = function(app, daoManager) {
         mongo_data.cdesByTinyIdList(req.body, function(err, cdes) {
             cdes.forEach(adminItemSvc.hideUnapprovedComments);
             res.send(cdes);
-        });
-    });
-
-    app.get('/cdesforapproval', function(req, res) {
-        mongo_data.cdesforapproval(req.user.orgAdmin, function(err, cdes) {
-            res.send(cdesvc.hideProprietaryPvs(cdes, req.user));
         });
     });
 
@@ -283,10 +273,6 @@ exports.init = function(app, daoManager) {
        }
     });
 
-    app.get('/autocomplete/:name', function(req, res) {
-        return cdesvc.name_autocomplete(req.params.name, res);
-    });
-
     app.get('/autocomplete/org/:name', function (req, res) {
         mongo_data.org_autocomplete(req.params.name, function (result) {
             res.send(result);
@@ -307,7 +293,7 @@ exports.init = function(app, daoManager) {
 
     app.post('/elasticSearch/cde', function(req, res) {
        return elastic.elasticsearch(req.body.query, function(err, result) {
-           if (err) {return res.status(400).send("invalid query")};
+           if (err) return res.status(400).send("invalid query");
            result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
            res.send(result);
        });
@@ -411,7 +397,7 @@ exports.init = function(app, daoManager) {
         req.params.type = "received";
         mongo_data.byId(req.body._id, function(err, cde) {
             if (err) res.status(404).send(err);
-            if (!cde.registrationState.administrativeStatus === "Retire Candidate") return res.status(409).send("CDE is not a Retire Candidate");
+            if (!(cde.registrationState.administrativeStatus === "Retire Candidate")) return res.status(409).send("CDE is not a Retire Candidate");
             cde.registrationState.registrationStatus = "Retired";
             delete cde.registrationState.administrativeStatus;
             cde.save(function() {
@@ -432,7 +418,7 @@ exports.init = function(app, daoManager) {
             res.send("OK");
         } else {
             res.status(401).send("Not Authorized");
-        };
+        }
     });
     
     app.get('/sdc/:tinyId/:version', function (req, res) {

@@ -160,12 +160,10 @@ exports.createApprovalMessage = function(user, role, type, details){
     if (type === "CommentApproval") message.typeCommentApproval = details;
     if (type === "AttachmentApproval") message.typeAttachmentApproval = details;
 
-    if (msg.recipient.recipientType==="role") {
-        mongo_data_system.usersByRole(role, function (err, users) {
-            email.emailUsers(email , users);
-            mongo_data_system.createMessage(message);
-        });
-    }
+    mongo_data_system.usersByRole(role, function (err, users) {
+        email.emailUsers(email , users);
+        mongo_data_system.createMessage(message);
+    });
 };
 
 exports.addComment = function(req, res, dao) {
