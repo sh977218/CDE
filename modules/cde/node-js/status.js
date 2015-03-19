@@ -52,10 +52,14 @@ exports.evaluateResult = function() {
     if (process.uptime()<config.status.timeouts.minUptime) return;
     if (status.everythingOk()) return;
     if (status.reportSent) return;    
-    if (!status.restartAttempted) status.tryRestart();    
-    var msg = status.assembleErrorMessage(status.statusReport);
+    if (!status.restartAttempted) status.tryRestart();
+    var email = {
+        subject: "Urgent: ElasticSearch issue on " + config.name
+        , body: status.assembleErrorMessage(status.statusReport)
+    };
+
     mongo_data_system.siteadmins(function(err, users) {
-        email.emailUsers(msg, users, function(err) {
+        email.emailUsers(email, users, function(err) {
             if (!err) status.delayReports();
         });
     });
