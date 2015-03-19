@@ -199,7 +199,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
             , mode: 'w'
             , content_type: attachment.filetype
             , metadata: {
-                status: "uploaded"
+                status: file.scanned ? "scanned" : "uploaded"
             }
         });
 

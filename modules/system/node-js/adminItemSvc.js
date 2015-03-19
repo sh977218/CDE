@@ -102,14 +102,15 @@ exports.setAttachmentDefault = function(req, res, dao) {
 exports.scanFile = function(path, res, cb) {
     var stream = fs.createReadStream(path);
     clamav.createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, function(err, object, malicious) {
-        if (err) return res.status(500).send("Cannot scan attachment. Try again later, please.");
+        if (err) return cb(false);
         if (malicious) return res.status(431).send("The file probably contains a virus.");
-        cb();
+        cb(true);
     });    
 };
 
 exports.addAttachment = function(req, res, dao) {   
-    exports.scanFile(req.files.uploadedFiles.path, res, function() {
+    exports.scanFile(req.files.uploadedFiles.path, res, function(scanned) {
+        req.files.uploadedFiles.scanned = scanned;
         auth.checkOwnership(dao, req.body.id, req, function(err, elt) {
             if (err) return res.send(err);
             dao.userTotalSpace(req.user.username, function(totalSpace) {
