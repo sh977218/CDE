@@ -1,7 +1,7 @@
 var config = require('config')
     , request = require('request')
     , mongo = require('./mongo-cde')
-    , mongo_data_system = require('./mongo-data')
+    , mongo_data_system = require('../../system/node-js/mongo-data')
     , elastic = require('../../system/node-js/elastic')
     , email = require('../../system/node-js/email')
     , logging = require('../../system/node-js/logging.js')
