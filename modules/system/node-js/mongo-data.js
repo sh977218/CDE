@@ -4,7 +4,6 @@ var schemas = require('./schemas')
     , mongoUri = config.mongoUri
     , Grid = require('gridfs-stream')
     , fs = require('fs')
-    , conn = mongoose.createConnection(mongoUri)
     , connHelper = require('./connections')
     , express = require('express')
     , session = require('express-session')
@@ -25,8 +24,8 @@ var Org;
 var User;
 var gfs;
 var connectionEstablisher = connHelper.connectionEstablisher;
-var sessionStore;
 var Message;
+var sessionStore;
 var fs_files;
 
 var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');
@@ -339,7 +338,7 @@ exports.createMessage = function(msg, cb) {
     var message = new Message(msg);  
     message.save(function() {
         if (cb) cb();
-        if (msg.recipient.recipientType==="role") email.emailUsersByRole("You have a pending message in NLM CDE application.", msg.recipient.name);
+
     });
 };
 

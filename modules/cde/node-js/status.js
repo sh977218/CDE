@@ -1,6 +1,7 @@
 var config = require('config')
     , request = require('request')
     , mongo = require('./mongo-cde')
+    , mongo_data_system = require('./mongo-data')
     , elastic = require('../../system/node-js/elastic')
     , email = require('../../system/node-js/email')
     , logging = require('../../system/node-js/logging.js')
@@ -53,8 +54,10 @@ exports.evaluateResult = function() {
     if (status.reportSent) return;    
     if (!status.restartAttempted) status.tryRestart();    
     var msg = status.assembleErrorMessage(status.statusReport);
-    email.emailAdmins(msg, function(err) {
-        if (!err) status.delayReports();
+    mongo_data_system.siteadmins(function(err, users) {
+        email.emailUsers(msg, users, function(err) {
+            if (!err) status.delayReports();
+        });
     });
 };
 
@@ -92,7 +95,6 @@ status.checkElasticUp = function(error, response, statusReport) {
         statusReport.elastic.results = false; 
         statusReport.elastic.sync = false; 
         statusReport.elastic.updating = false; 
-        return;
     } else {
         statusReport.elastic.up = true; 
     }    
@@ -116,12 +118,7 @@ status.checkElasticSync = function(body, statusReport, mongoCollection) {
             statusReport.elastic.updating = false;      
             return;
         }
-        if (elasticElt.tinyId !== elt.tinyId) {
-            statusReport.elastic.sync = false;      
-            return;
-        } else {
-            statusReport.elastic.sync = true; 
-        }
+        statusReport.elastic.sync = elasticElt.tinyId === elt.tinyId;
     });
 };
 status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoCollection) {

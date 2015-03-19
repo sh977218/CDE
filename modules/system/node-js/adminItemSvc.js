@@ -1,11 +1,11 @@
 var mongo_data_system = require('../../system/node-js/mongo-data')
-    , classificationShared = require('../shared/classificationShared')
-    , classificationNode = require('./classificationNode')
     , async = require('async')
     , auth = require('./authorization.js')
     , authorizationShared = require('../../system/shared/authorizationShared')
     , fs = require('fs')
     , md5 = require("md5-file")
+    , email = require('../../system/node-js/email')
+    , logging = require('../../system/node-js/logging.js')
 ;
 
 var commentPendingApprovalText = "This comment is pending approval.";
@@ -151,9 +151,21 @@ exports.createApprovalMessage = function(user, role, type, details){
             , comment: String
         }]                          
     };
+
+    var email = {
+        subject: "CDE Message Pending"
+        , body: "You have a pending message in NLM CDE application."
+    };
+
     if (type === "CommentApproval") message.typeCommentApproval = details;
     if (type === "AttachmentApproval") message.typeAttachmentApproval = details;
-    mongo_data_system.createMessage(message);    
+
+    if (msg.recipient.recipientType==="role") {
+        mongo_data_system.usersByRole(role, function (err, users) {
+            email.emailUsers(email , users);
+            mongo_data_system.createMessage(message);
+        });
+    }
 };
 
 exports.addComment = function(req, res, dao) {
@@ -180,10 +192,9 @@ exports.addComment = function(req, res, dao) {
                 elt.save(function(err) {
                     if (err) {
                         res.send(err);
-                        return;
                     } else {
                         exports.hideUnapprovedComments(elt);
-                        return res.send({message: "Comment added", elt: elt});
+                        res.send({message: "Comment added", elt: elt});
                     }
                 });
             }
