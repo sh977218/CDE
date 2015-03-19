@@ -2,12 +2,13 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , classificationShared = require('../shared/classificationShared')
     , classificationNode = require('./classificationNode')
     , async = require('async')
-    , auth = require('./authorization.js')
+    , auth = require('./authorization')
     , authorizationShared = require('../../system/shared/authorizationShared')
     , fs = require('fs')
     , md5 = require("md5-file")
-    , clamav = require('clamav.js')
+    , clamav = require('clamav')
     , config = require('config')
+    , logging = require('./logging')
 ;
 
 var commentPendingApprovalText = "This comment is pending approval.";
@@ -192,8 +193,7 @@ exports.addComment = function(req, res, dao) {
                 elt.comments.push(comment);
                 elt.save(function(err) {
                     if (err) {
-                        res.send(err);
-                        return;
+                        return res.send(err);
                     } else {
                         exports.hideUnapprovedComments(elt);
                         return res.send({message: "Comment added", elt: elt});

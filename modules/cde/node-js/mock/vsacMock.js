@@ -99,14 +99,21 @@ https.createServer(options, app).listen(app.get('port'), function(){
 });
 
 var net = require('net');
-var server = net.createServer(function(c) { //'connection' listener
+var server = net.createServer(function(c) { 
+    var malicious = false;
     console.log('Scan connection started');
     c.on('data', function(data) {
-        if (data.toString().indexOf("VIRUS") > -1) {
-            c.write("stream: A FOUND\n");
-        } else {
-            c.write("stream: OK\n");
-        }
+        if (data.toString().indexOf("VIRUS") > -1) malicious = true;
+        var array = JSON.parse(JSON.stringify(data));
+        var last4 = array.slice(-4);
+        if (last4.length < 4) return;
+        for (var i=0; i<3; i++) if (last4[i]!==0) return;
+
+        if (malicious) console.log("stream: A FOUND\n");
+        else console.log("stream: OK\n");
+
+        if (malicious) c.write("stream: A FOUND\n");
+        else c.write("stream: OK\n");
     });
     c.on("end", function() {
         console.log("Scan connection closed");
@@ -115,6 +122,6 @@ var server = net.createServer(function(c) { //'connection' listener
         console.log(err);
     });    
 });
-server.listen(config.antivirus.port, function() { //'listening' listener
+server.listen(config.antivirus.port, function() { 
     console.log('ClamAV Fake daemon open on port: ' + config.antivirus.port);
 });
