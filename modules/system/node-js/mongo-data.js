@@ -206,6 +206,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
         writestream.on('close', function (newfile) {
             attachment.fileid = newfile._id;
             attachment.pendingApproval = true;
+            attachment.scanned = file.scanned;
             linkAttachmentToAdminItem(attachment, elt, cb);
             adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", attachment);
         });
@@ -219,7 +220,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
         , filetype: file.type
         , uploadDate: Date.now()
         , comment: comment 
-        , filesize: file.size     
+        , filesize: file.size
     };
 
     if (user) { 

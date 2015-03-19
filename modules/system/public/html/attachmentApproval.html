@@ -11,7 +11,10 @@
         <dd>{{message.typeAttachmentApproval.uploadDate | date : medium }}</dd>        
 
         <dt>Scanned</dt>
-        <dd>{{message.typeAttachmentApproval.metadata.status }}</dd>   
+        <dd>
+            <span ng-if="message.typeAttachmentApproval.scanned">Scanned by ClamAV</span>
+            <span  class="text-danger" ng-if="!message.typeAttachmentApproval.scanned">This file was not scanned by antivirus!</span>
+        </dd>
 
     </dl>     
 
