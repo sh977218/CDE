@@ -69,7 +69,7 @@ exports.init = function(app) {
     app.get('/listOrgsDetailedInfo', function(req, res) {
         mongo_data_system.listOrgsDetailedInfo(function(err, orgs) {
             if (err) {
-                logging.expressErrorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}));
+                logging.errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}));
                 res.status(403).send('Failed to get list of orgs detailed info.');
             } else {
                 res.send(orgs);

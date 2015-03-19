@@ -55,13 +55,13 @@ angular.module('resourcesCde', ['ngResource'])
 })
 .factory('CDE', function($http) {
     return {
-        retire: function(cde, cb) {              
+        retire: function(cde, cb) {
             $http.post("/retireCde", cde).then(function(response) {
                 cb(response.data);
             });
         }
-    }; 
-})      
+    };
+})
 .directive('ngVersionAvailable', ['$http', function($http) {
     return {
         require: 'ngModel',
