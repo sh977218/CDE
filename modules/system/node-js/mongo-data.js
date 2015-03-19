@@ -4,7 +4,6 @@ var schemas = require('./schemas')
     , mongoUri = config.mongoUri
     , Grid = require('gridfs-stream')
     , fs = require('fs')
-    , conn = mongoose.createConnection(mongoUri)
     , connHelper = require('./connections')
     , express = require('express')
     , session = require('express-session')
@@ -25,8 +24,8 @@ var Org;
 var User;
 var gfs;
 var connectionEstablisher = connHelper.connectionEstablisher;
-var sessionStore;
 var Message;
+var sessionStore;
 var fs_files;
 
 var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');
@@ -186,10 +185,10 @@ exports.userTotalSpace = function(Model, name, callback) {
 
 exports.addAttachment = function(file, user, comment, elt, cb) {
 
-    var linkAttachmentToAdminItem = function(attachment, elt, cb) {
+    var linkAttachmentToAdminItem = function(attachment, elt, newFileCreated, cb) {
         elt.attachments.push(attachment);
         elt.save(function() {
-            cb();
+            if (cb) cb(attachment, newFileCreated);
         });
     };
 
@@ -206,8 +205,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
         writestream.on('close', function (newfile) {
             attachment.fileid = newfile._id;
             attachment.pendingApproval = true;
-            linkAttachmentToAdminItem(attachment, elt, cb);
-            adminItemSvc.createApprovalMessage(user, "AttachmentReviewer", "AttachmentApproval", attachment);
+            linkAttachmentToAdminItem(attachment, elt, true, cb);
         });
 
         stream.pipe(writestream);
@@ -230,10 +228,10 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     }       
     
     gfs.findOne({md5: file.md5}, function (err, f) {
-        if (!f) addNewFile(file.stream, attachment, elt, user, cb); 
+        if (!f) addNewFile(file.stream, attachment, elt, user, cb);
         else {
             attachment.fileid = f._id;
-            linkAttachmentToAdminItem(attachment, elt, cb);
+            linkAttachmentToAdminItem(attachment, elt, false, cb);
         }
     });       
     
@@ -339,7 +337,6 @@ exports.createMessage = function(msg, cb) {
     var message = new Message(msg);  
     message.save(function() {
         if (cb) cb();
-        if (msg.recipient.recipientType==="role") email.emailUsersByRole("You have a pending message in NLM CDE application.", msg.recipient.name);
     });
 };
 

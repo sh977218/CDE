@@ -17,7 +17,6 @@ var mongoUri = config.mongoUri;
 var DataElement;
 var PinningBoard;
 var User;
-var PinningBoard;
 var CdeAudit;
 
 var connectionEstablisher = connHelper.connectionEstablisher;
@@ -215,29 +214,21 @@ exports.addToViewHistory = function(cde, user) {
         u.viewHistory.splice(0, 0, cde.tinyId);
         if (u.viewHistory.length > 1000) {
             u.viewHistory.length(1000);
-        };
+        }
         u.save();
-    });
-};
-
-exports.name_autocomplete = function(name, callback) {
-    DataElement.find({}, {"naming.designation": 1}).where("naming").elemMatch(function(elem) {
-        elem.where("designation").equals(new RegExp(name, 'i'));
-    }).limit(20).exec(function(err, result) {
-        callback("", result);
     });
 };
 
 exports.newBoard = function(board, callback) {
     var newBoard = new PinningBoard(board);
     newBoard.save(function(err) {
-        callback("", newBoard);        
+        callback(err, newBoard);
     });
 };
 
 exports.save = function(mongooseObject, callback) {
     mongooseObject.save(function(err) {
-       callback("", mongooseObject); 
+       callback(err, mongooseObject);
     });
 };
 
