@@ -1,6 +1,6 @@
 angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q', function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff, $q) {
     $scope.module = 'cde';
-    $scope.baseLink = '#/deview?cdeId=';
+    $scope.baseLink = '#/deview?tinyId=';
     $scope.eltLoaded = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;
@@ -109,7 +109,8 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
    
     $scope.save = function() {
         $scope.elt.$save({}, function (elt, headers) {
-            $window.location.href = "/#/deview?cdeId=" + elt._id;
+            //$window.location.href = "/#/deview?tinyId=" + elt.tinyId;
+            $scope.elt = elt;
         }, function(resp) {
             $scope.addAlert("danger", "Unable to save element. This issue has been reported.");
         });

@@ -21,7 +21,8 @@ angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$
           }
         });
         modalInstance.result.then(function (newelt) {
-            $window.location.href = redirectBaseLink + newelt._id;  
+            //$window.location.href = redirectBaseLink + newelt.tinyId;
+            $scope.elt = newelt;
             $scope.addAlert("success", "Saved.");
         }, function(reason) {
             $scope.addAlert("danger", reason);

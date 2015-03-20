@@ -26,7 +26,7 @@ angular.module('cdeModule').controller('CreateCdeCtrl', ['$scope', '$window', '$
         delete $scope.elt.designation;
         delete $scope.elt.definition;     
         DataElement.save($scope.elt, function(cde) {
-            $window.location.href = "/#/deview?cdeId=" + cde._id;        
+            $window.location.href = "/#/deview?tinyId=" + cde.tinyId;
         });
     };
     
