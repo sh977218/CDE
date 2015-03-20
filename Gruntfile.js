@@ -359,6 +359,7 @@ module.exports = function(grunt) {
                     'js/angular-resource.min.js': 'angular-resource/angular-resource.min.js',
                     'js/angular-sanitize.min.js': 'angular-sanitize/angular-sanitize.min.js',
                     'js/angular-animate.min.js': 'angular-animate/angular-animate.min.js',
+                    'js/timeAgo.js': 'angular-timeago/src/timeAgo.js',
                     'js/textAngular.min.js': 'textAngular/dist/textAngular.min.js',
                     'js/textAngular-rangy.min.js': 'textAngular/dist/textAngular-rangy.min.js',
                     'js/textAngular-sanitize.min.js': 'textAngular/dist/textAngular-sanitize.min.js',

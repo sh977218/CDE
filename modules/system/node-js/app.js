@@ -160,6 +160,18 @@ exports.init = function(app) {
         }         
     });
 
+    app.get('/serverStatuses', function(req, res) {
+        var ip = req.remoteAddress || req.ip;
+        if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
+            mongo_data_system.getClusterHostStatuses(function(err, statuses) {
+                res.send(statuses);
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
+
+
     app.get('/siteadmins', function(req, res) {
         var ip = req.remoteAddress || req.ip;
         if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {

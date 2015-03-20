@@ -90,14 +90,6 @@ body {
     list-style: none;
 }
 
-#repeatCs > .pull-left, #classMgt {
-    border: 1px solid rgb(220,220,220);
-    border-radius: 5px;
-    margin: 5px;
-    padding: 10px;
-    word-wrap: break-word;
-}
-
 #repeatCm > .pull-left {
     margin: 5px;
     padding: 10px;
@@ -442,4 +434,21 @@ button#selectDefault {
     #quickSearchForm {
         margin: 40px 150px 30px 150px;
     }
+}
+
+.boxed-div {
+    border: 1px solid rgb(220,220,220);
+    border-radius: 5px;
+    margin: 5px;
+    padding: 10px;
+    word-wrap: break-word;
+}
+
+
+.boxed-div {
+    border: 1px solid rgb(220,220,220);
+    border-radius: 5px;
+    margin: 5px;
+    padding: 10px;
+    word-wrap: break-word;
 }

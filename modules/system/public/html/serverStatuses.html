@@ -1,0 +1,26 @@
+<div class="container-fluid" ng-controller="ServerStatusesCtrl" id="serverStatuses">
+    <div class="row">
+        <button class="btn btn-default" type="button" id="refreshServerStatus" ng-click="refreshStatus()">Refresh</button>
+    </div>
+
+    <div class="row">
+        <div ng-repeat="status in statuses" class="pull-left boxed-div">
+            <h4>{{status.hostname}}</h4>
+            <div class="boxed-div">
+                <dl class="dl-horizontal">
+                    <dt>Status: </dt><dd>{{status.nodeStatus}}</dd>
+                    <dt>Last Up: </dt><dd>{{status.lastUpdate | timeAgo}}</dd>
+                </dl>
+                <hr/>
+                <h5>ElasticSearch</h5>
+                <dl class="dl-horizontal">
+                    <dt>Up: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.up?'btn-success':'btn-danger'""><i class="fa" ng-class="status.elastic.up?'fa-check':'fa-times'"/></a></dd>
+                    <dt>Returns Results: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.results?'btn-success':'btn-danger'""><i class="fa" ng-class="status.elastic.results?'fa-check':'fa-times'"/></a></dd>
+                    <dt>Syncing: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.sync?'btn-success':'btn-danger'""><i class="fa" ng-class="status.elastic.sync?'fa-check':'fa-times'"/></a></dd>
+                    <dt>Updating: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.updating?'btn-success':'btn-danger'""><i class="fa" ng-class="status.elastic.updating?'fa-check':'fa-times'"/></a></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -176,5 +176,23 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
 
 setInterval(function() {
     status.checkElastic(elastic.elasticCdeUri, mongo);
-}, config.status.timeouts.statusCheck);    
+}, config.status.timeouts.statusCheck);
+
+setInterval(function() {
+    mongo_data_system.getClusterHostStatus(config.hostname, function(err, record) {
+        if (err) return logging.errorLogger.error("Unable to retrieve state of host in cluster config.", err);
+        if (record) {
+            record.nodeStatus = "Running";
+            record.lastUpdate = new Date();
+            record.elastic = status.statusReport.elastic;
+            record.save(function(err) {
+                if (err) return logging.errorLogger.error("Unable to update state of cluster record.", err);
+            });
+        } else {
+            mongo_data_system.createClusterHostStatus({hostname: config.hostname}, function(err) {
+                if (err) return logging.errorLogger.error("Unable to create new state of cluster record.", err);
+            });
+        }
+    })
+}, config.status.timeouts.clusterStatus * 1000);
 

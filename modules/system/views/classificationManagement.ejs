@@ -7,7 +7,7 @@
         <option ng-repeat="o in userOrgs" ng-value="o">{{o}}</option>
     </select>
     <br/>
-    <div id="classMgt">
+    <div id="classMgt" class="boxed-div">
         <h4 id="org-{{org.name}}">
             {{org.name}}
             <a title="Add Child Classification"
@@ -19,7 +19,7 @@
         <dl id="dl_repeatCs">
             <div id="repeatCs" class="container-fluid">
                 <div id="repeatCm" class="container-fluid">
-                    <div ng-repeat="elt in classificationToFilter()" class="pull-left" ng-init='pathArray = [elt.name]; myOrg = true;'>
+                    <div ng-repeat="elt in classificationToFilter()" class="pull-left boxed-div" ng-init='pathArray = [elt.name]; myOrg = true;'>
                         <div ng-include="'/system/public/html/classifEltLoop.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
                     </div>
                 </div>

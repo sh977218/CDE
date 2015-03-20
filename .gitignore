@@ -56,6 +56,7 @@ modules/cde/public/assets/js/textAngular.min.js
 modules/cde/public/assets/js/bootstrap-tour.min.js
 modules/cde/public/assets/js/camelCaseToHuman.js
 modules/cde/public/assets/js/bootstrap.js
+modules/cde/public/assets/js/timeAgo.js
 modules/cde/public/assets/js/bootstrap-tour.js
 modules/cde/public/assets/js/ui-bootstrap-tpls.js
 
