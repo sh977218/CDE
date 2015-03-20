@@ -17,8 +17,6 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         Assert.assertEquals(linkList.size(), 12);
     }
 
-
-
     @Test
     public void viewIncrement() {
         goHome();
@@ -41,5 +39,27 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         findElement(By.linkText("Change")).click();
         textPresent("Specimen Inflammation Change Type");
         textNotPresent("Patient Visual Change Chief Complaint Indicator", By.cssSelector("accordion"));
+    }
+
+    @Test
+    public void usedBySummary() {
+        goToCdeSearch();
+        openCdeInList("Patient Race Category");
+        String usedBy = findElement(By.id("dd_usedBy")).getText();
+        Assert.assertTrue(usedBy.contains("NIDCR"));
+        Assert.assertTrue(usedBy.contains("PS&CC"));
+        Assert.assertTrue(usedBy.contains("caBIG"));
+        Assert.assertTrue(usedBy.contains("NHLBI"));
+        Assert.assertTrue(usedBy.contains("CCR"));
+        Assert.assertTrue(usedBy.contains("CIP"));
+    }
+
+    @Test
+    public void badESQuery() {
+        goToCdeSearch();
+        findElement(By.id("ftsearch-input")).clear();
+        findElement(By.id("ftsearch-input")).sendKeys("+-aaa");
+        findElement(By.cssSelector("i.fa-search")).click();
+        textPresent("There was a problem with your query");
     }
 }
