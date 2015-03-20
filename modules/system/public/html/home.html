@@ -1,0 +1,57 @@
+<!-- jumbotron -->
+<div class="jumbotron">
+    <div class="container">
+    	<h1>
+            <img class="img-center-responsive" width="700px" alt="National Library of Medicine logo" src="/cde/public/assets/img/nih-cde-logo.png" />
+        </h1>
+
+        <div class="pt20 text-center">
+            <form name="quickSearchForm" id="quickSearchForm" ng-submit="submitForm( quickSearchForm.$valid )" novalidate>
+                <div class="input-group input-group-lg">
+                    <label class="sr-only" for="searchTerms">Search Terms</label>
+                    <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch" ng-maxlength="500" placeholder="Search Common Data Elements">
+
+                    <div class="input-group-btn">
+                        <button name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit" ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid"><i class="fa fa-search"></i><span class="hidden-xs"> Search</span></button>
+                    </div>
+                </div>
+
+                <!-- Error display area -->
+                <span ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><p class="error-block"><small>Query terms must be 500 characters or less.</small></p></span>
+            </form>
+        </div>
+
+        <div class="pt40 hidden-xs">
+            The NIH Common Data Elements (CDE) Repository has been designed to provide access to structured human and machine-readable definitions of data elements 
+            that have been recommended or required by NIH Institutes and Centers and other organizations for use in research 
+            and for other purposes, including those required for 'Meaningful Use' of electronic health records,
+            as established under the HITECH law.
+            <br/><br/>
+            The Repository is a platform for identifying related data elements in use across 
+            diverse areas, for harmonizing data elements, 
+            and for linking CDEs to other existing standards and terminologies, including the value sets in the 
+            Value Set Authority Center (VSAC).
+        </div>
+
+    </div>
+</div>
+
+<div class="container hidden-xs">
+    <div class="row">
+      <div class="col-md-4">
+        <h3>Search</h3>
+        <p>Search for individual data elements, by definition, users or sources. Search for sets of data elements ("boards") identified by a particular group for a particular use (e.g particular research solicitation).</p>
+      </div>
+      <div class="col-md-4">
+        <h3>Compare / Harmonize</h3>
+        <p>
+        Analyze and resolve differences between data elements. Assure that your forms are using variables that will be usable by certified EHRs.
+        </p>
+      </div>
+      <div class="col-md-4">
+        <h3>Create</h3>
+        <p>Draw upon the experience of colleagues and others to design unique data elements and measures.</p>
+      </div>
+    </div>
+    <br/>
+</div>

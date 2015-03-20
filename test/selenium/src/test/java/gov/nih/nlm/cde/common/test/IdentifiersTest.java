@@ -17,7 +17,7 @@ public abstract class IdentifiersTest extends CommonTest {
         findElement(By.id("createId")).click();
         textPresent("Identifier Added");
         closeAlert();
-        waitForESUpdate();
+        hangon(1);
     }
     
 

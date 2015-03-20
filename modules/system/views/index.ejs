@@ -50,7 +50,13 @@
         <script src="/cde/public/assets/js/bootstrap-tour.js"></script>        
         <script src="/cde/public/assets/js/camelCaseToHuman.js"></script>        
         <!-- endbuild -->
-        
+
+        <script type="text/javascript">
+            (function(){
+                window.loggedIn = <%= loggedIn %>;
+            })();
+        </script>
+
         <!--[if lte IE 9]>
           <script>
             document.createElement('inline-edit');
@@ -78,7 +84,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="#">
+                        <a class="navbar-brand" href="/#/home">
                             <img alt="Home" src="/cde/public/assets/img/nih-cde-logo-simple.png" />
                         </a>
                     </div>

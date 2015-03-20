@@ -53,7 +53,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
 
 
         textPresent("Attachment Approval");
-        findElement(By.cssSelector(".accordion-toggle")).click();        
+        findElement(By.xpath("//div[@id='mail_received']//a[1]")).click();
 
         String preClass = "";
         try {
