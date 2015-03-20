@@ -5,7 +5,7 @@ var mongoose = require('mongoose')
 
 var schemas = {};
 
-var conceptSchema = mongoose.Schema({
+var conceptSchema = new mongoose.Schema({
     name: String,
     origin: String,
     originId: String
@@ -102,13 +102,13 @@ var deJsonSchema = {
     ]
 };
 
-var pinSchema = mongoose.Schema ({
+var pinSchema = new mongoose.Schema ({
    name: String
    , pinnedDate: Date
    , deTinyId: String
 });
 
-schemas.pinningBoardSchema = mongoose.Schema ({
+schemas.pinningBoardSchema = new mongoose.Schema ({
    name: String
    , description: String
    , shareStatus: String
@@ -120,7 +120,7 @@ schemas.pinningBoardSchema = mongoose.Schema ({
    , pins: [pinSchema]
 });
 
-schemas.dataElementSchema = mongoose.Schema(deJsonSchema); 
+schemas.dataElementSchema = new mongoose.Schema(deJsonSchema);
 
 schemas.pinningBoardSchema.pre('save', function(next) {
    this.updatedDate = Date.now(); 
@@ -130,7 +130,7 @@ schemas.pinningBoardSchema.pre('save', function(next) {
 schemas.dataElementSchema.set('collection', 'dataelements');
 schemas.pinningBoardSchema.set('collection', 'pinningBoards');
 
-schemas.cdeAuditSchema = mongoose.Schema({
+schemas.cdeAuditSchema = new mongoose.Schema({
     date: Date
     , user: {
         username: String
