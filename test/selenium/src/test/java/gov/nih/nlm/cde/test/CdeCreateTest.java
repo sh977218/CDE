@@ -7,13 +7,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CdeCreateTest extends BaseClassificationTest {
-   
-    public void createBasicCde(String name, String definition, String org, String classification, String subclassification) {
-        goToCdeSearch();
-        fillOutBasicCreateFields(name, definition, org, classification, subclassification);
-        findElement(By.id("submit")).click();
-        hangon(6);
-    }    
 
     @Test
     public void createCdeValidationErrors() {
