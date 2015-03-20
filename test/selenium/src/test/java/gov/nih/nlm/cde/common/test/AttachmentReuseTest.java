@@ -31,6 +31,21 @@ public class AttachmentReuseTest extends BaseAttachmentTest {
         goToCdeByName(cde2);
         checkAttachmentReviewed("painLocation.jpg");
         
-    } 
+    }
+
+    @Test
+    public void uploadMaliciousAttachment() {
+        String cde = "Stasis dilation upper urinary tract indicator";
+        mustBeLoggedInAs(ninds_username, password);
+        goToCdeByName(cde);
+
+        findElement(By.linkText("Attachments")).click();
+        textPresent("Upload more files");
+        ((JavascriptExecutor) driver).executeScript("$(\"input[type='file']\").show();");
+        findElement(By.id("fileToUpload")).sendKeys("S:/CDE/data/fakeVirus.txt");
+        findElement(By.id("doUploadButton")).click();
+        textPresent("The file probably contains a virus");
+        textNotPresent("Filename");
+    }
 
 }

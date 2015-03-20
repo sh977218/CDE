@@ -63,7 +63,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
             findElement(By.cssSelector(preClass+".accordion-toggle")).click();
             textPresent(name);
         }
-
+        textPresent("Scanned");
         findElement(By.cssSelector(preClass+".approveAttachment")).click();
         textPresent("Attachment approved");  
               

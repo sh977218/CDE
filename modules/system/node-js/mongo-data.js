@@ -198,13 +198,14 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
             , mode: 'w'
             , content_type: attachment.filetype
             , metadata: {
-                status: "uploaded"
+                status: file.scanned ? "scanned" : "uploaded"
             }
         });
 
         writestream.on('close', function (newfile) {
             attachment.fileid = newfile._id;
             attachment.pendingApproval = true;
+            attachment.scanned = file.scanned;
             linkAttachmentToAdminItem(attachment, elt, true, cb);
         });
 
@@ -217,7 +218,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
         , filetype: file.type
         , uploadDate: Date.now()
         , comment: comment 
-        , filesize: file.size     
+        , filesize: file.size
     };
 
     if (user) { 

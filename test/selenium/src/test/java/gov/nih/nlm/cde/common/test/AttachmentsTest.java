@@ -70,7 +70,7 @@ public class AttachmentsTest extends BaseAttachmentTest {
         
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
-        removeAttachment();
+        removeAttachment("melanoma.jpg");
     }   
 
     @Test
