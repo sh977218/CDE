@@ -3,7 +3,14 @@ var spawn = require('child_process').spawn,
     http = require('http'),
     config = require('config')
 
-var spawned = spawn('node', ['app'], {stdio: 'inherit'});
+var spawned;
+
+var spawnChild = function() {
+    console.log("spawing");
+    spawned = spawn('node', ['app'], {stdio: 'inherit'});
+}
+
+spawnChild();
 
 var app = express();
 
@@ -15,7 +22,7 @@ app.get('/stop', function(req, res) {
 });
 
 app.get('/start', function(req, res) {
-    spawned = spawn('node', ['app'], {stdio: 'inherit'});
+    spawnChild();
     res.send('OK');
 });
 
