@@ -143,7 +143,7 @@ exports.cdesByTinyIdListInOrder = function(idList, callback) {
 exports.priorCdes = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement !== null) {
-            return DataElement.find({}, "naming source sourceId registrationState stewardOrg updated updatedBy createdBy tinyId version views changeNote")
+            return DataElement.find({}, "updated updatedBy changeNote")
                     .where("_id").in(dataElement.history).exec(function(err, cdes) {
                 callback(err, cdes);
             });
