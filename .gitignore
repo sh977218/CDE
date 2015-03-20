@@ -76,3 +76,4 @@ Thumbs.db
 /test/selenium/.nb-gradle/private/
 /bin
 .idea
+test/selenium/nlm-cde-test.iml
