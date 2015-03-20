@@ -108,11 +108,18 @@ exports.init = function(app, daoManager) {
             mongo_data.eltByTinyId(req.params.tinyId, function(err, cde) {
                 adminItemSvc.hideUnapprovedComments(cde);
                 res.send(cdesvc.hideProprietaryPvs(cde, req.user));
+                if (req.isAuthenticated()) {
+                    mongo_data.addToViewHistory(cde, req.user);
+                };
+                mongo_data.incDeView(cde);
             }); 
         } else {
             mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, de) {
                 adminItemSvc.hideUnapprovedComments(de);
                 res.send(cdesvc.hideProprietaryPvs(de, req.user));
+                if (req.isAuthenticated()) {
+                    mongo_data.addToViewHistory(de, req.user);
+                };
             });
         }
     });
@@ -133,9 +140,9 @@ exports.init = function(app, daoManager) {
             var splicedArray = req.user.viewHistory.splice(req.params.start, 10);
             var idList = [];
             for (var i = 0; i < splicedArray.length; i++) {
-                idList.push(splicedArray[i]);
+                if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
             }
-            mongo_data.cdesByTinyIdList(idList, function(err, cdes) {
+            mongo_data.cdesByTinyIdListInOrder(idList, function(err, cdes) {
                 res.send(cdesvc.hideProprietaryPvs(cdes, req.user));
             });
         }

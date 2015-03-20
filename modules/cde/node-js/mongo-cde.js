@@ -90,14 +90,14 @@ exports.desByConcept = function (concept, callback) {
 };
 
 exports.byTinyIdAndVersion = function(tinyId, version, callback) {
-    DataElement.find({'tinyId': tinyId, "version": version}).sort({"updated":-1}).limit(1).exec(function (err, des) {
+    DataElement.find({'tinyId': tinyId, "version": version, "registrationState.registrationStatus": {$ne: "Retired"}, isFork: null}).sort({"updated":-1}).limit(1).exec(function (err, des) {
         callback(err, des[0]); 
     });
 };
 
 exports.eltByTinyId = function(tinyId, callback) {
     if (!tinyId) callback("tinyId is undefined!", null); 
-    DataElement.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, de) {
+    DataElement.findOne({'tinyId': tinyId, "archived": null, "registrationState.registrationStatus": {$ne: "Retired"}, isFork: null}).exec(function (err, de) {
         callback(err, de); 
     });
 };
@@ -121,12 +121,23 @@ exports.cdesByIdList = function(idList, callback) {
 
 exports.cdesByTinyIdList = function(idList, callback) {
     DataElement.find({'archived':null}).where('tinyId')
-            .in(idList)
-            .slice('valueDomain.permissibleValues', 10)
-            .exec(function(err, cdes) {
-                cdes.forEach(mongo_data.formatCde);
-                callback(err, cdes); 
+        .in(idList)
+        .slice('valueDomain.permissibleValues', 10)
+        .exec(function(err, cdes) {
+            cdes.forEach(mongo_data.formatCde);
+            callback(err, cdes);
     });
+};
+
+exports.cdesByTinyIdListInOrder = function(idList, callback) {
+     exports.cdesByTinyIdList(idList, function(err, cdes) {
+        var reorderedCdes = idList.map(function(id){
+            for (var i=0;i<cdes.length;i++) {
+                if (id===cdes[i].tinyId) return cdes[i];
+            }
+        });
+        callback(err, reorderedCdes);
+     });
 };
 
 exports.priorCdes = function(cdeId, callback) {

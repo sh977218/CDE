@@ -33,7 +33,9 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         assertList.add("GO Trial");
         assertList.add("GO New CDEs");
         assertList.add("C3D");
-        assertList.add("caBIG");  
+        assertList.add("caBIG");
+
+        hangon(5);
 
         List<String> actualList = new ArrayList<>();
         for (WebElement csElt : csElements) {

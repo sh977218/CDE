@@ -30,8 +30,8 @@
             </div>
             <div class="row" >
                 <div class="col-md-12">
-                    <a tabindex="0" ng-show="!openCdeInNewTab" class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" id="openEltInCurrentTab_{{$index}}"><i class="fa fa-eye"></i> View Full Detail</a>
-                    <a tabindex="0" ng-show="openCdeInNewTab" target="_blank" class='btn btn-small btn-default' ng-href="#/deview/?cdeId={{cde._id}}" id="openCdeInNewTab_{{$index}}"><i class="fa fa-eye"></i> View Full Detail</a>
+                    <a tabindex="0" ng-show="!openCdeInNewTab" class='btn btn-small btn-default' ng-href="#/deview/?tinyId={{cde.tinyId}}" id="openEltInCurrentTab_{{$index}}"><i class="fa fa-eye"></i> View Full Detail</a>
+                    <a tabindex="0" ng-show="openCdeInNewTab" target="_blank" class='btn btn-small btn-default' ng-href="#/deview/?tinyId={{cde.tinyId}}" id="openCdeInNewTab_{{$index}}"><i class="fa fa-eye"></i> View Full Detail</a>
                     <a tabindex="0" ng-show="user._id && ejsPage!='board'" class="btn btn-small btn-default" ng-click="openPinModal(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack"></i> Attach to Board</a>
                     <a tabindex="0" ng-show="user._id && ejsPage=='board'" class="btn btn-small btn-default" ng-click="unpin(cde)" id="pin_{{$index}}"><i class="fa fa-thumb-tack fa-rotate-90" title="unPin"></i> Remove from Board</a>
                     <a tabindex="0" ng-show="showCompareButton(cde)" class="btn btn-small btn-default" ng-click="addToQuickBoard(cde)" id="compare_{{$index}}"><i class="fa fa-plus"></i> Add to Quick Board</a>
