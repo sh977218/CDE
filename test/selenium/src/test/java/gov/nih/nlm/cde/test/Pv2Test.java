@@ -26,7 +26,6 @@ public class Pv2Test extends NlmCdeBaseTest {
         findElement(By.xpath("//td[@id='pvCodeSystem-10']//input")).sendKeys("N");
         textPresent("NCI Thesaurus");
         newCdeVersion();
-        textPresent("Qualified");
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         textPresent("New PV");
@@ -45,7 +44,7 @@ public class Pv2Test extends NlmCdeBaseTest {
         findElement(By.id("pvUp-2")).click();
         findElement(By.id("pvDown-6")).click();
         newCdeVersion("Reordered PV");
-        findElement(By.linkText("Permissible Values")).click();
+
         Assert.assertEquals(findElement(By.id("pvCode-1")).getText(), "C25229");
         Assert.assertEquals(findElement(By.id("pvCode-7")).getText(), "C25594,C48046,C13717");
 

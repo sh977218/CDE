@@ -45,7 +45,13 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
             }
         }
     });
-    
+
+    $scope.loadPriorCdes = function() {
+        PriorCdes.getCdes({cdeId: $scope.elt._id}, function(dataElements) {
+            $scope.priorCdes = dataElements;
+        });
+    };
+
     $scope.reload = function(route, cb) {
         var service = DataElement;
         if (route.cdeId) var query = {deId: route.cdeId};
@@ -62,9 +68,7 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
             $scope.loadBoards();
             if ($scope.elt.dataElementConcept) $scope.showValidationIcons = $scope.elt.dataElementConcept.conceptualDomain != null && $scope.elt.dataElementConcept.conceptualDomain.vsac.id != null;
             $scope.getPVTypeaheadCodeSystemNameList();
-            PriorCdes.getCdes({cdeId: de._id}, function(dataElements) {
-                $scope.priorCdes = dataElements;
-            });
+            $scope.loadPriorCdes();
             if ($scope.elt.isFork) {
                 $http.get('/forkroot/' + $scope.elt.tinyId).then(function(result) {
                     $scope.rootFork = result.data;
@@ -109,8 +113,8 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
    
     $scope.save = function() {
         $scope.elt.$save({}, function (elt, headers) {
-            //$window.location.href = "/#/deview?tinyId=" + elt.tinyId;
             $scope.elt = elt;
+            $scope.loadPriorCdes();
         }, function(resp) {
             $scope.addAlert("danger", "Unable to save element. This issue has been reported.");
         });

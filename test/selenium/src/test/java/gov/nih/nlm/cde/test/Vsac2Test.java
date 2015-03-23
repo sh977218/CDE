@@ -21,7 +21,7 @@ public class Vsac2Test extends NlmCdeBaseTest {
 
         newCdeVersion();
         hangon(1);
-        findElement(By.linkText("Permissible Values")).click();
+
         findElement(By.id("removeVSButton")).click();
 
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
@@ -29,7 +29,7 @@ public class Vsac2Test extends NlmCdeBaseTest {
 
         newCdeVersion();
 
-        findElement(By.linkText("Permissible Values")).click();
+
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
     }
 
@@ -56,7 +56,7 @@ public class Vsac2Test extends NlmCdeBaseTest {
         newCdeVersion("Modified VS Codes");
 
         goToCdeByName("Patient Race Category");
-        findElement(By.linkText("Permissible Values")).click();
+
         Assert.assertTrue(textPresent("Other Race Category"));
         Assert.assertTrue(textPresent("2131-1.1"));
         Assert.assertTrue(textPresent("CDCREC.1"));

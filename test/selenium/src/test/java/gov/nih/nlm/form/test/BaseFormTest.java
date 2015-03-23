@@ -24,6 +24,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         textPresent("Saved.");
         closeAlert();
         hangon(1);
+        scrollToTop();
     }
 
     protected void searchForm(String query) {

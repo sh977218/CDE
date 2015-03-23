@@ -148,10 +148,6 @@ public class QuestionTest extends BaseFormTest {
 
         Assert.assertEquals("PBD UOM 1", findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_0']")).getText());
         
-        // check archived can't be edited
-        driver.get(oldFormUrl);
-        textPresent("this form is archived");
-        
         driver.get(newFormUrl);
         findElement(By.linkText("Form Description")).click();
         startAddingQuestions();    
@@ -164,11 +160,11 @@ public class QuestionTest extends BaseFormTest {
         hangon(1);
         Assert.assertEquals("Value List", findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_datatype_0']")).getText().trim());
         Assert.assertFalse(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
-        startAddingQuestions();    
+        startAddingQuestions();
         findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).click();
-        startAddingQuestions();    
+        startAddingQuestions();
         saveForm();
-        
+
         findElement(By.linkText("Form Description")).click();
         findElement(By.id("question_accordion_1_0")).click();
 
@@ -189,12 +185,12 @@ public class QuestionTest extends BaseFormTest {
 
         findElement(By.id("remove_q_0")).click();
         findElement(By.id("remove_q_0")).click();
-        
+
         saveForm();
         findElement(By.linkText("Form Description")).click();
         Assert.assertEquals(0, driver.findElements(By.xpath("//div[@id='section_drop_area_0']//div[starts-with(@id, 'question_')]")).size());
 
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
     }
-    
+
 }

@@ -90,6 +90,7 @@ public class SectionTest extends BaseFormTest {
         Assert.assertEquals("Exactly 1", findElement(By.id("dd_card_2")).getText());
 
         saveForm();
+        scrollToTop();
         findElement(By.linkText("Form Description")).click();
 
         findElement(By.id("moveEltUp-1")).click();

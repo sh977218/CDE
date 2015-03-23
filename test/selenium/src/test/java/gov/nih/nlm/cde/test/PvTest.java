@@ -20,7 +20,7 @@ public class PvTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#pv-0 input")).sendKeys(" added to pv");
         findElement(By.cssSelector("#pv-0 .fa-check")).click();
         newCdeVersion("Changed PV");
-        findElement(By.linkText("Permissible Values")).click();
+
         Assert.assertTrue(textPresent("added to pv"));
         
         checkInHistory("Permissible Values", "Indeterminate", "Indeterminate added to pv");

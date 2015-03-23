@@ -222,13 +222,15 @@ exports.removeBoard = function (boardId, callback) {
 //TODO: Consider moving
 exports.addToViewHistory = function(cde, user) {
     if (!cde || !user) return;
-    User.findOne({'_id': user._id}, function (err, u) {
-        u.viewHistory.splice(0, 0, cde.tinyId);
-        if (u.viewHistory.length > 1000) {
-            u.viewHistory.length(1000);
+    User.update({'_id': user._id}, {
+        $push: {
+            viewHistory: {
+                $each: [cde.tinyId]
+                , $position: 0
+                , $slice: 1000
+            }
         }
-        u.save();
-    });
+    }).exec();
 };
 
 exports.newBoard = function(board, callback) {

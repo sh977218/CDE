@@ -35,7 +35,7 @@ public class VsacTest extends NlmCdeBaseTest {
         
         newCdeVersion("Importing All VSAC Values");
 
-        findElement(By.linkText("Permissible Values")).click(); 
+
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));   
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
@@ -60,7 +60,7 @@ public class VsacTest extends NlmCdeBaseTest {
         // check that version got fetched.
         Assert.assertTrue(textPresent("20121025"));
         newCdeVersion("Adding vsac Id");
-        findElement(By.linkText("Permissible Values")).click();
+
         Assert.assertTrue(textPresent("20121025"));
         Assert.assertTrue(textPresent("2135-2"));
         Assert.assertTrue(textPresent("CDCREC"));
