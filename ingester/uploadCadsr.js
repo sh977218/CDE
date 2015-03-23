@@ -280,7 +280,7 @@ var doFile = function (cadsrFile, fileCb) {
                    stream.push(origXml);
                    stream.push(null);
                    mongo_data_system.addAttachment(
-                    {originalname: cde.ids[0].id + "v" + cde.ids[0].version + ".xml", type: "application/xml", size: origXml.length, stream: stream},
+                    {originalname: cde.ids[0].id + "v" + cde.ids[0].version + ".xml", type: "application/xml", size: origXml.length, stream: stream, ingested: true},
                     null, "Original XML File", newCde, function() {
                          cb();
                      });

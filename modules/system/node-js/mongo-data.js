@@ -193,14 +193,20 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     };
 
     var addNewFile = function(stream, attachment, elt, user, cb) {
-        var writestream = gfs.createWriteStream({
+        var streamDescription = {
             filename: attachment.filename
             , mode: 'w'
             , content_type: attachment.filetype
             , metadata: {
-                status: file.scanned ? "scanned" : "uploaded"
+                status: null
             }
-        });
+        };
+
+        if (file.scanned) streamDescription.metadata.status = "scanned";
+        else streamDescription.metadata.status = "uploaded";
+        if (file.ingested) streamDescription.metadata.status = "approved";
+
+        var writestream = gfs.createWriteStream(streamDescription);
 
         writestream.on('close', function (newfile) {
             attachment.fileid = newfile._id;
