@@ -94,7 +94,7 @@ var deJsonSchema = {
     ]
     , comments: [sharedSchemas.commentSchema]
     , archived: Boolean
-    , isFork: Boolean
+    , forkOf: String
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
     , referenceDocuments: [

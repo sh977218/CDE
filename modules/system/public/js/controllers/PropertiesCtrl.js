@@ -39,6 +39,7 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal',
         } else {
             $scope.elt.$save(function (newElt) {
                 $window.location.href = $scope.baseLink + newElt.tinyId + "&tab=properties";
+                $scope.elt = newElt;
                 $scope.addAlert("success", "Property Removed"); 
             });
         }
@@ -51,6 +52,7 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal',
     $scope.saveProperty = function() {
         $timeout(function() {
             $scope.elt.$save(function (newElt) {
+                $window.location.href = $scope.baseLink + newElt.tinyId + "&tab=properties";
                 $scope.elt = newElt;
             });
         }, 0);

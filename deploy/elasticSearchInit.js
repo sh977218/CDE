@@ -87,6 +87,7 @@ var riverFunction =
             ctx.document.flatProperties.push(ctx.document.properties[i].key + ' ' + ctx.document.properties[i].value);\
         }\
     }\
+    if (ctx.document.forkOf) {ctx.isFork = true;}\
     if (ctx.document.archived) {ctx.deleted = true;}\
     }";
 

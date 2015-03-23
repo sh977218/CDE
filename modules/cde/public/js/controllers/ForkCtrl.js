@@ -18,7 +18,7 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
                 $scope.addAlert("danger", "Unable to accept. This fork may have been updated. Refresh page and try again.");
             } else {
                 $scope.addAlert("success", "Fork merged.")
-                $window.location.href = "/#/deview?cdeId=" + id;
+                $window.location.href = "/#/deview?tinyId=" + result.tinyId;
             }
         });
     };

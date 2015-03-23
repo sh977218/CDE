@@ -90,14 +90,14 @@ exports.desByConcept = function (concept, callback) {
 };
 
 exports.byTinyIdAndVersion = function(tinyId, version, callback) {
-    DataElement.find({'tinyId': tinyId, "version": version, "registrationState.registrationStatus": {$ne: "Retired"}, isFork: null}).sort({"updated":-1}).limit(1).exec(function (err, des) {
+    DataElement.find({'tinyId': tinyId, "version": version, "registrationState.registrationStatus": {$ne: "Retired"}}).sort({"updated":-1}).limit(1).exec(function (err, des) {
         callback(err, des[0]); 
     });
 };
 
 exports.eltByTinyId = function(tinyId, callback) {
     if (!tinyId) callback("tinyId is undefined!", null); 
-    DataElement.findOne({'tinyId': tinyId, "archived": null, "registrationState.registrationStatus": {$ne: "Retired"}, isFork: null}).exec(function (err, de) {
+    DataElement.findOne({'tinyId': tinyId, "archived": null, "registrationState.registrationStatus": {$ne: "Retired"}}).exec(function (err, de) {
         callback(err, de); 
     });
 };
@@ -154,7 +154,8 @@ exports.priorCdes = function(cdeId, callback) {
 };
 
 exports.acceptFork = function(fork, orig, callback) {
-    fork.isFork = undefined;
+    fork.forkOf = undefined;
+    fork.tinyId = orig.tinyId;
     orig.archived = true;
     fork.stewardOrg = orig.stewardOrg;
     fork.registrationState.registrationStatus = orig.registrationState.registrationStatus;
@@ -169,7 +170,7 @@ exports.acceptFork = function(fork, orig, callback) {
 };
 
 exports.isForkOf = function(tinyId, callback) {
-    return DataElement.find({tinyId: tinyId})
+    return DataElement.find({forkOf: tinyId})
         .where("archived").equals(null).where("isFork").equals(null).exec(function(err, cdes) {
             callback(err, cdes);
     });
@@ -178,7 +179,7 @@ exports.isForkOf = function(tinyId, callback) {
 exports.forks = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement !== null) {
-            return DataElement.find({tinyId: dataElement.tinyId, isFork: true}, "naming stewardOrg updated updatedBy createdBy created updated changeNote")
+            return DataElement.find({forkOf: dataElement.tinyId}, "tinyId naming stewardOrg updated updatedBy createdBy created updated changeNote")
                 .where("archived").equals(null).where("registrationState.registrationStatus").ne("Retired").exec(function(err, cdes) {
                     callback("", cdes);
             });
@@ -264,8 +265,9 @@ exports.create = function(cde, user, callback) {
 
 exports.fork = function(elt, user, callback) {
     exports.update(elt, user, callback, function(newDe, dataElement) {
-        newDe.isFork = true;
+        newDe.forkOf = dataElement.tinyId;
         newDe.registrationState.registrationStatus = "Incomplete";
+        newDe.tinyId = mongo_data_system.generateTinyId();
         dataElement.archived = undefined;      
     });
 };

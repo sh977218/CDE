@@ -69,7 +69,7 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
             if ($scope.elt.dataElementConcept) $scope.showValidationIcons = $scope.elt.dataElementConcept.conceptualDomain != null && $scope.elt.dataElementConcept.conceptualDomain.vsac.id != null;
             $scope.getPVTypeaheadCodeSystemNameList();
             $scope.loadPriorCdes();
-            if ($scope.elt.isFork) {
+            if ($scope.elt.forkOf) {
                 $http.get('/forkroot/' + $scope.elt.tinyId).then(function(result) {
                     $scope.rootFork = result.data;
                 });
