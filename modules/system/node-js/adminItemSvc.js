@@ -1,9 +1,13 @@
 var mongo_data_system = require('../../system/node-js/mongo-data')
-    , classificationShared = require('../shared/classificationShared')
-    , classificationNode = require('./classificationNode')
     , async = require('async')
-    , auth = require('./authorization.js')
+    , auth = require('./authorization')
     , authorizationShared = require('../../system/shared/authorizationShared')
+    , fs = require('fs')
+    , md5 = require("md5-file")
+    , clamav = require('clamav.js')
+    , config = require('config')
+    , logging = require('./logging')
+    , email = require('../../system/node-js/email')
 ;
 
 var commentPendingApprovalText = "This comment is pending approval.";
@@ -94,17 +98,36 @@ exports.setAttachmentDefault = function(req, res, dao) {
     });
 };
 
-exports.addAttachment = function(req, res, dao) {
-    auth.checkOwnership(dao, req.body.id, req, function(err, elt) {
-        if (err) return res.send(err);
-        dao.userTotalSpace(req.user.username, function(totalSpace) {
-            if (totalSpace > req.user.quota) {
-                res.send({message: "You have exceeded your quota"});
-            } else {
-                mongo_data_system.addAttachment(req.files.uploadedFiles, req.user, "some comment", elt, function() {
-                    res.send(elt);            
-                });                                            
-            }
+exports.scanFile = function(path, res, cb) {
+    var stream = fs.createReadStream(path);
+    clamav.createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, function(err, object, malicious) {
+        if (err) return cb(false);
+        if (malicious) return res.status(431).send("The file probably contains a virus.");
+        cb(true);
+    });    
+};
+
+exports.addAttachment = function(req, res, dao) {   
+    exports.scanFile(req.files.uploadedFiles.path, res, function(scanned) {
+        req.files.uploadedFiles.scanned = scanned;
+        auth.checkOwnership(dao, req.body.id, req, function(err, elt) {
+            if (err) return res.send(err);
+            dao.userTotalSpace(req.user.username, function(totalSpace) {
+                if (totalSpace > req.user.quota) {
+                    res.send({message: "You have exceeded your quota"});
+                } else {
+                    var file = req.files.uploadedFiles;
+                    file.stream = fs.createReadStream(file.path);
+                    md5.async(file.path, function (hash) {
+                        file.md5 = hash;
+                        mongo_data_system.addAttachment(file, req.user, "some comment", elt, function(attachment, requiresApproval) {
+                            if (requiresApproval) exports.createApprovalMessage(req.user, "AttachmentReviewer", "AttachmentApproval", attachment);
+                            res.send(elt);
+                        });  
+                    });                    
+                                              
+                }
+            });
         });
     });
 };
@@ -114,12 +137,15 @@ exports.removeAttachment = function(req, res, dao) {
         if (err) {
             return res.send(err);
         }
+        var fileid =  elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
+
         elt.save(function(err) {
             if (err) {
                 res.send("error: " + err);
             } else {
                 res.send(elt);
+                mongo_data_system.removeAttachmentIfNotUsed(fileid);
             }
         });
     });
@@ -141,9 +167,19 @@ exports.createApprovalMessage = function(user, role, type, details){
             , comment: String
         }]                          
     };
+
+    var emailContent = {
+        subject: "CDE Message Pending"
+        , body: "You have a pending message in NLM CDE application."
+    };
+
     if (type === "CommentApproval") message.typeCommentApproval = details;
     if (type === "AttachmentApproval") message.typeAttachmentApproval = details;
-    mongo_data_system.createMessage(message);    
+
+    mongo_data_system.usersByRole(role, function (err, users) {
+        email.emailUsers(emailContent , users);
+        mongo_data_system.createMessage(message);
+    });
 };
 
 exports.addComment = function(req, res, dao) {
@@ -170,10 +206,9 @@ exports.addComment = function(req, res, dao) {
                 elt.save(function(err) {
                     if (err) {
                         res.send(err);
-                        return;
                     } else {
                         exports.hideUnapprovedComments(elt);
-                        return res.send({message: "Comment added", elt: elt});
+                        res.send({message: "Comment added", elt: elt});
                     }
                 });
             }
@@ -365,9 +400,15 @@ exports.setAttachmentApproved = function(id, collection){
     collection.update(
     {"attachments.fileid": id}
     , {
-        $set: {
-            "attachments.$.pendingApproval": null
+        $unset: {
+            "attachments.$.pendingApproval": ""
          }
     }
     , {multi:true}).exec();
+};
+
+exports.fileUsed = function(id, collection, cb) {
+    collection.find({"attachments.fileid": id}).count().exec(function (err, count) {
+        cb(err, count>0);
+    });
 };

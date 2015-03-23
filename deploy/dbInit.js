@@ -6,6 +6,8 @@ db.pinningBoards.remove({});
 db.messages.remove({});
 db.sessions.remove({});
 db.articles.remove({});
+db.fs.files.remove({});
+db.fs.chunks.remove({});
 
 var defaultBoard = {
     name: "default"

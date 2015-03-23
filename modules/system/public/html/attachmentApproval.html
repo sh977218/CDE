@@ -1,17 +1,20 @@
 <h4>{{message.type | camelCaseToHuman}}</h4> 
 
     <dl class="dl-horizontal">
-        <dt>User</dt>
+        <dt>User: </dt>
         <dd>{{message.author.name}}
 
-        <dt>File</dt>
+        <dt>File: </dt>
         <dd><a class="viewAttachmentLink" target="_blank" href="/data/{{message.typeAttachmentApproval.fileid}}">{{message.typeAttachmentApproval.filename}}</a></dd>
 
-        <dt>Date</dt>
+        <dt>Date: </dt>
         <dd>{{message.typeAttachmentApproval.uploadDate | date : medium }}</dd>        
 
-        <dt>Scanned</dt>
-        <dd>{{message.typeAttachmentApproval.metadata.status }}</dd>   
+        <dt>Scanned: </dt>
+        <dd>
+            <span ng-if="message.typeAttachmentApproval.scanned">Scanned by ClamAV</span>
+            <span  class="text-danger" ng-if="!message.typeAttachmentApproval.scanned">This file was not scanned by antivirus!</span>
+        </dd>
 
     </dl>     
 

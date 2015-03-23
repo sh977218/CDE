@@ -39,6 +39,8 @@
     "multer": "0.1.7",     
     "deep-diff": "0.3.0", 
     "deep-copy": "1.0.0",
+    "md5-file": "1.1.10",
+    "clamav.js": "0.11.0",
     "grunt-bower-install-simple": "1.0.3",
     "grunt-bowercopy": "1.1.0",   
     "config": "*",

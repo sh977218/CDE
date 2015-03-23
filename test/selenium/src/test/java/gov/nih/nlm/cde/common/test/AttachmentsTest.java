@@ -7,7 +7,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import com.jayway.restassured.RestAssured;
 
-public class AttachmentsTest extends NlmCdeBaseTest {
+public class AttachmentsTest extends BaseAttachmentTest {
 
     @Test
     public void cdeAttachment() {
@@ -22,8 +22,11 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
 
         addAttachment();
+        findElement(By.id("defaultCbLabel")).click();
+        textPresent("Saved");
+        closeAlert();           
         checkAttachmentNotReviewed();
-        reviewAttachment();
+        reviewAttachment("glass.jpg");
 
         hangon(5);
 
@@ -32,12 +35,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();    
 
         goToCdeByName(cdeName);
-        findElement(By.linkText("Attachments")).click();
-        findElement(By.linkText("glass.jpg")).click();
-        switchTab(1);
-        textNotPresent("File not found");
-        textNotPresent("This file has not been approved yet");
-        switchTabAndClose(0);
+        checkAttachmentReviewed("glass.jpg");
         
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
@@ -56,9 +54,12 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
 
-        addAttachment();
+        addAttachment("melanoma.jpg");
+        findElement(By.id("defaultCbLabel")).click();
+        textPresent("Saved");
+        closeAlert();           
         checkAttachmentNotReviewed();
-        reviewAttachment();
+        reviewAttachment("melanoma.jpg");
         
         hangon(5);
         
@@ -69,77 +70,8 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
-        removeAttachment();
-    }
-
-    private void removeAttachment() {        
-        findElement(By.linkText("Attachments")).click();
-        findElement(By.id("removeAttachment-0")).click();
-        findElement(By.id("confirmRemove-0")).click();        
-        textNotPresent("glass.jpg");
-    }
-    
-    private void addAttachment() {
-        findElement(By.linkText("Attachments")).click();
-        textPresent("Upload more files");
-        ((JavascriptExecutor) driver).executeScript("$(\"input[type='file']\").show();");
-        findElement(By.id("fileToUpload")).sendKeys("S:/CDE/data/glass.jpg");
-        findElement(By.id("doUploadButton")).click();
-
-        Assert.assertEquals("1.38 kB", findElement(By.id("dd_attach_size_0")).getText());
-        textPresent("glass.jpg");        
-        findElement(By.id("defaultCbLabel")).click();
-        textPresent("Saved");
-        closeAlert();        
-    }
-    
-    private void checkAttachmentNotReviewed() {     
-        textPresent("cannot be dowloaded");                     
-    }
-
-    private void reviewAttachment() {
-        mustBeLoggedInAs(attachmentReviewer_username, password);       
-        gotoInbox();
-
-
-        textPresent("Attachment Approval");
-        findElement(By.cssSelector(".accordion-toggle")).click();        
-
-        String preClass = "";
-        try {
-            textPresent("glass.jpg");
-        } catch (Exception e) {
-            preClass = "accordion:nth-child(2) ";
-            findElement(By.cssSelector(preClass+".accordion-toggle")).click();
-            textPresent("glass.jpg");
-        }
-
-        findElement(By.cssSelector(preClass+".approveAttachment")).click();
-        textPresent("Attachment approved");  
-              
-    } 
-
-    private void declineAttachment() {
-        mustBeLoggedInAs(attachmentReviewer_username, password);       
-        gotoInbox();
-
-
-        textPresent("Attachment Approval");
-        findElement(By.cssSelector(".accordion-toggle")).click();        
-
-        String preClass = "";
-        try {
-            textPresent("glass.jpg");
-        } catch (Exception e) {
-            preClass = "accordion:nth-child(2) ";
-            findElement(By.cssSelector(preClass+".accordion-toggle")).click();
-            textPresent("glass.jpg");
-        }
-
-        findElement(By.cssSelector(preClass+".declineAttachment")).click();
-        textPresent("Attachment declined");  
-              
-    }     
+        removeAttachment("melanoma.jpg");
+    }   
 
     @Test
     public void declineCdeAttachment() {
@@ -151,7 +83,7 @@ public class AttachmentsTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Alcohol use frequency");
 
-        addAttachment();
+        addAttachment("painLocationInapr.png");
         checkAttachmentNotReviewed();
         declineAttachment();
 

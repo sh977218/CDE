@@ -77,6 +77,7 @@ var attachmentSchema = {
     , filesize: Number
     , isDefault: Boolean
     , pendingApproval: Boolean
+    , scanned: Boolean
 };
 
 schemas.attachmentSchema = mongoose.Schema(attachmentSchema, {_id: false});
