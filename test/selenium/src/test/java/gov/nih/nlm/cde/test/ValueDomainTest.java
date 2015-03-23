@@ -20,7 +20,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.name("datatypeFreeText")).sendKeys("java.lang.Date");
         findElement(By.id("confirmDatatype")).click();
         newCdeVersion();
-        findElement(By.linkText("Permissible Values")).click();        
+
         Assert.assertTrue(textPresent("java.lang.Date"));
         checkInHistory("Permissible Values - Value Type", "", "java.lang.Date");
     }  
@@ -46,7 +46,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         checkInHistory("Permissible Values - Text", "", "789");
         checkInHistory("Permissible Values - Text", "", "987");
         checkInHistory("Permissible Values - Value Type", "Value List", "Text");
-        
+
         findElement(By.linkText("Permissible Values")).click();
         findElement(By.xpath("//div[@id='textRegex']//i[@title='Edit']")).click();
         findElement(By.xpath("//div[@id='textRule']//i[@title='Edit']")).click();
@@ -72,8 +72,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         checkInHistory("Permissible Values - Text - Maximum Length", "789", "123");
         checkInHistory("Permissible Values - Text - Minimum Length", "987", "321");
 
-        findElement(By.linkText("Permissible Values")).click();
 
+        findElement(By.linkText("Permissible Values")).click();
         checkInvalidEntry("textMinLength", "ABC");
         checkInvalidEntry("textMaxLength", "ABC");
 

@@ -16,7 +16,7 @@
                     <td>{{fork.stewardOrg.name}}</td>
                     <td>{{fork.updatedBy.username}}</td>
                     <td>{{fork.changeNote}}</td>
-                    <td><a href="#/deview?cdeId={{fork._id}}" target="_blank" id="fork-{{$index}}" class="fa fa-eye"> View</a></td>
+                    <td><a href="#/deview?tinyId={{fork.tinyId}}" target="_blank" id="fork-{{$index}}" class="fa fa-eye"> View</a></td>
                     <td ng-show="canCurate"><button class="fa fa-check" ng-click="accept(fork._id)" id="accept_fork_{{$index}}"> Accept</button></td>
                 </tr>
             </tbody>

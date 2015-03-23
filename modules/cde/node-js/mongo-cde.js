@@ -90,14 +90,14 @@ exports.desByConcept = function (concept, callback) {
 };
 
 exports.byTinyIdAndVersion = function(tinyId, version, callback) {
-    DataElement.find({'tinyId': tinyId, "version": version}).sort({"updated":-1}).limit(1).exec(function (err, des) {
+    DataElement.find({'tinyId': tinyId, "version": version, "registrationState.registrationStatus": {$ne: "Retired"}}).sort({"updated":-1}).limit(1).exec(function (err, des) {
         callback(err, des[0]); 
     });
 };
 
 exports.eltByTinyId = function(tinyId, callback) {
     if (!tinyId) callback("tinyId is undefined!", null); 
-    DataElement.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, de) {
+    DataElement.findOne({'tinyId': tinyId, "archived": null, "registrationState.registrationStatus": {$ne: "Retired"}}).exec(function (err, de) {
         callback(err, de); 
     });
 };
@@ -121,18 +121,29 @@ exports.cdesByIdList = function(idList, callback) {
 
 exports.cdesByTinyIdList = function(idList, callback) {
     DataElement.find({'archived':null}).where('tinyId')
-            .in(idList)
-            .slice('valueDomain.permissibleValues', 10)
-            .exec(function(err, cdes) {
-                cdes.forEach(mongo_data.formatCde);
-                callback(err, cdes); 
+        .in(idList)
+        .slice('valueDomain.permissibleValues', 10)
+        .exec(function(err, cdes) {
+            cdes.forEach(mongo_data.formatCde);
+            callback(err, cdes);
     });
+};
+
+exports.cdesByTinyIdListInOrder = function(idList, callback) {
+     exports.cdesByTinyIdList(idList, function(err, cdes) {
+        var reorderedCdes = idList.map(function(id){
+            for (var i=0;i<cdes.length;i++) {
+                if (id===cdes[i].tinyId) return cdes[i];
+            }
+        });
+        callback(err, reorderedCdes);
+     });
 };
 
 exports.priorCdes = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement !== null) {
-            return DataElement.find({}, "naming source sourceId registrationState stewardOrg updated updatedBy createdBy tinyId version views changeNote")
+            return DataElement.find({}, "updated updatedBy changeNote")
                     .where("_id").in(dataElement.history).exec(function(err, cdes) {
                 callback(err, cdes);
             });
@@ -143,7 +154,8 @@ exports.priorCdes = function(cdeId, callback) {
 };
 
 exports.acceptFork = function(fork, orig, callback) {
-    fork.isFork = undefined;
+    fork.forkOf = undefined;
+    fork.tinyId = orig.tinyId;
     orig.archived = true;
     fork.stewardOrg = orig.stewardOrg;
     fork.registrationState.registrationStatus = orig.registrationState.registrationStatus;
@@ -157,17 +169,16 @@ exports.acceptFork = function(fork, orig, callback) {
     });
 };
 
-exports.isForkOf = function(tinyId, callback) {
-    return DataElement.find({tinyId: tinyId})
-        .where("archived").equals(null).where("isFork").equals(null).exec(function(err, cdes) {
-            callback(err, cdes);
+exports.isForkOf = function(fork, callback) {
+    return DataElement.findOne({tinyId: fork.forkOf}).where("archived").equals(null).exec(function(err, cde) {
+            callback(err, cde);
     });
 };
 
 exports.forks = function(cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement !== null) {
-            return DataElement.find({tinyId: dataElement.tinyId, isFork: true}, "naming stewardOrg updated updatedBy createdBy created updated changeNote")
+            return DataElement.find({forkOf: dataElement.tinyId}, "tinyId naming stewardOrg updated updatedBy createdBy created updated changeNote")
                 .where("archived").equals(null).where("registrationState.registrationStatus").ne("Retired").exec(function(err, cdes) {
                     callback("", cdes);
             });
@@ -210,13 +221,16 @@ exports.removeBoard = function (boardId, callback) {
 };
 //TODO: Consider moving
 exports.addToViewHistory = function(cde, user) {
-    User.findOne({'_id': user._id}, function (err, u) {
-        u.viewHistory.splice(0, 0, cde.tinyId);
-        if (u.viewHistory.length > 1000) {
-            u.viewHistory.length(1000);
+    if (!cde || !user) return;
+    User.update({'_id': user._id}, {
+        $push: {
+            viewHistory: {
+                $each: [cde.tinyId]
+                , $position: 0
+                , $slice: 1000
+            }
         }
-        u.save();
-    });
+    }).exec();
 };
 
 exports.newBoard = function(board, callback) {
@@ -250,8 +264,9 @@ exports.create = function(cde, user, callback) {
 
 exports.fork = function(elt, user, callback) {
     exports.update(elt, user, callback, function(newDe, dataElement) {
-        newDe.isFork = true;
+        newDe.forkOf = dataElement.tinyId;
         newDe.registrationState.registrationStatus = "Incomplete";
+        newDe.tinyId = mongo_data_system.generateTinyId();
         dataElement.archived = undefined;      
     });
 };

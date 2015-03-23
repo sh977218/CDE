@@ -41,6 +41,7 @@ public class TourTest extends NlmCdeBaseTest {
         findElement(By.linkText("Help")).click();
         findElement(By.linkText("Take a tour")).click();
         textPresent("Welcome to the NIH");
+        hangon(1);
         getNext("back to the CDE search page");
         getNext("take you to the Form search page");
         getNext("Boards allow registered users to group CDEs");
