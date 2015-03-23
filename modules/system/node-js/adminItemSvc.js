@@ -279,11 +279,11 @@ exports.acceptFork = function(req, res, dao) {
                 if (fork.archived === true) {
                     return res.send("Cannot accept an archived element");
                 }
-                dao.isForkOf(fork.tinyId, function(err, origs) {
-                    if (origs.length !== 1) {
+                dao.isForkOf(fork, function(err, orig) {
+
+                    if (!orig) {
                         return res.send("Not a fork");
-                    } 
-                    var orig = origs[0];
+                    }
                     if (req.user.orgCurator.indexOf(orig.stewardOrg.name) < 0
                             && req.user.orgAdmin.indexOf(orig.stewardOrg.name) < 0
                             && !req.user.siteAdmin) {
@@ -311,7 +311,7 @@ exports.acceptFork = function(req, res, dao) {
         }
     } else {
         res.status(403).send("You are not authorized to do this.");
-    } 
+    }
 };
 
 exports.fork = function(req, res, dao) {

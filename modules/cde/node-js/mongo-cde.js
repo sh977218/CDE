@@ -169,10 +169,9 @@ exports.acceptFork = function(fork, orig, callback) {
     });
 };
 
-exports.isForkOf = function(tinyId, callback) {
-    return DataElement.find({forkOf: tinyId})
-        .where("archived").equals(null).where("isFork").equals(null).exec(function(err, cdes) {
-            callback(err, cdes);
+exports.isForkOf = function(fork, callback) {
+    return DataElement.findOne({tinyId: fork.forkOf}).where("archived").equals(null).exec(function(err, cde) {
+            callback(err, cde);
     });
 };
 
