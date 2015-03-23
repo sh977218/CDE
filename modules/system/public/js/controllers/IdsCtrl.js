@@ -16,7 +16,6 @@ angular.module('systemModule').controller('IdsCtrl', ['$scope', '$modal', '$wind
                 $scope.addAlert("info", "Identifier added. Save to confirm.")
             } else {
                 $scope.elt.$save(function(newElt) {
-                    //$window.location.href = $scope.baseLink + newElt.tinyId + "&tab=ids";
                     $scope.elt = newElt;
                     $scope.addAlert("success", "Identifier Added");
                 });
@@ -30,7 +29,6 @@ angular.module('systemModule').controller('IdsCtrl', ['$scope', '$modal', '$wind
             $scope.addAlert("info", "Identifier removed. Save to confirm.")
         } else {
             $scope.elt.$save(function(newElt) {
-                //$window.location.href = $scope.baseLink + newElt.tinyId + "&tab=ids";
                 $scope.elt = newElt;
                 $scope.addAlert("success", "Identifier Removed");
             });        
