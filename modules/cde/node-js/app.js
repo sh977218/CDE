@@ -104,23 +104,18 @@ exports.init = function(app, daoManager) {
     });
 
     app.get('/debytinyid/:tinyId/:version?', function(req, res) {
+        var serveCde = function(err, cde) {
+            adminItemSvc.hideUnapprovedComments(cde);
+            res.send(cdesvc.hideProprietaryPvs(cde, req.user));
+            if (req.isAuthenticated()) {
+                mongo_data.addToViewHistory(cde, req.user);
+            };
+            mongo_data.incDeView(cde);
+        };
         if (!req.params.version) {
-            mongo_data.eltByTinyId(req.params.tinyId, function(err, cde) {
-                adminItemSvc.hideUnapprovedComments(cde);
-                res.send(cdesvc.hideProprietaryPvs(cde, req.user));
-                if (req.isAuthenticated()) {
-                    mongo_data.addToViewHistory(cde, req.user);
-                };
-                mongo_data.incDeView(cde);
-            }); 
+            mongo_data.eltByTinyId(req.params.tinyId, serveCde);
         } else {
-            mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, de) {
-                adminItemSvc.hideUnapprovedComments(de);
-                res.send(cdesvc.hideProprietaryPvs(de, req.user));
-                if (req.isAuthenticated()) {
-                    mongo_data.addToViewHistory(de, req.user);
-                };
-            });
+            mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, serveCde);
         }
     });
     
