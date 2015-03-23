@@ -210,7 +210,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
 
         writestream.on('close', function (newfile) {
             attachment.fileid = newfile._id;
-            attachment.pendingApproval = true;
+            if (!file.ingested) attachment.pendingApproval = true;
             attachment.scanned = file.scanned;
             linkAttachmentToAdminItem(attachment, elt, true, cb);
         });
