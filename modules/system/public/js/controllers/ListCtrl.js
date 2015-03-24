@@ -46,8 +46,8 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         $scope.altClassificationFilterMode = !$scope.altClassificationFilterMode;
         
         if(!$scope.altClassificationFilterMode) {
-            $scope.selectedOrgAlt = undefined;
-            $scope.selectedElementsAlt = [];
+            $scope.classificationFilters[1].org = undefined;
+            $scope.classificationFilters[1].elements = [];
         }
         
         $scope.reload();
