@@ -31,7 +31,6 @@ exports.init = function(app) {
         else next();
     });
     
-    
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
     
     var viewConfig = {modules: config.modules};
@@ -39,6 +38,11 @@ exports.init = function(app) {
     app.get('/template/:module/:template', function(req, res) {        
         res.render(req.params.template, req.params.module, {config: viewConfig});
     });		
+
+    app.get("statusToken", function(req, res) {
+        
+        res.send();
+    });
 
     app.get("/supportedBrowsers", function(req, res) {
        res.render('supportedBrowsers', 'system'); 

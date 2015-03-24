@@ -1,6 +1,6 @@
 angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource', function($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource) {
     $scope.module = "form";
-    $scope.baseLink = '#/formView?_id=';
+    $scope.baseLink = '#/formView?tinyId=';
     $scope.addCdeMode = false;
     $scope.openCdeInNewTab = true;
     $scope.dragEnabled = true;

@@ -25,7 +25,7 @@ angular.module('cdeModule').controller('MergeRequestCtrl', ['$scope', '$modal', 
             } else {
                 var gotoNewElement = function(mr) {
                     MergeCdes.approveMerge(mr.source.object, mr.destination.object, mr.mergeFields, function(cde) {                                        
-                        $window.location.href = "/#/deview?cdeId=" + cde._id;
+                        $window.location.href = "/#/deview?tinyId=" + cde.tinyId;
                         $scope.addAlert("success", "CDEs successfully merged");
                     }); 
                 };

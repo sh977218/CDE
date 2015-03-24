@@ -25,7 +25,7 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal',
                 $scope.addAlert("info", "Property added. Save to confirm.");
             } else {
                 $scope.elt.$save(function (newElt) {
-                    $window.location.href = $scope.baseLink + newElt._id + "&tab=properties";  
+                    $window.location.href = $scope.baseLink + newElt.tinyId + "&tab=properties";
                     $scope.addAlert("success", "Property Added"); 
                 });
             }
@@ -38,7 +38,8 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal',
             $scope.addAlert("info", "Property removed. Save to confirm.");
         } else {
             $scope.elt.$save(function (newElt) {
-                $window.location.href = $scope.baseLink + newElt._id + "&tab=properties";  
+                $window.location.href = $scope.baseLink + newElt.tinyId + "&tab=properties";
+                $scope.elt = newElt;
                 $scope.addAlert("success", "Property Removed"); 
             });
         }
@@ -51,6 +52,7 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal',
     $scope.saveProperty = function() {
         $timeout(function() {
             $scope.elt.$save(function (newElt) {
+                $window.location.href = $scope.baseLink + newElt.tinyId + "&tab=properties";
                 $scope.elt = newElt;
             });
         }, 0);

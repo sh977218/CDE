@@ -21,7 +21,7 @@ angular.module('formModule').controller('CreateFormCtrl', ['$scope', 'Form', '$w
            }
         });
         Form.save($scope.newForm, function(form) {
-            $window.location.href = "/#/formView?_id=" + form._id;    
+            $window.location.href = "/#/formView?tinyId=" + form.tinyId;
             $scope.addAlert("success", "Form created.");
         });
     };

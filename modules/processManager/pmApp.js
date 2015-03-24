@@ -2,8 +2,7 @@ var spawn = require('child_process').spawn,
     express = require('express'),
     http = require('http'),
     config = require('config'),
-    request = require('request')
-
+    request = require('request');
 
 var allHosts = [];
 var getHosts = function() {
@@ -11,21 +10,22 @@ var getHosts = function() {
         if (err) console.log("Error getting server status: " + err);
         try {
             allHosts = JSON.parse(body).map(function (server) {
-                return server.hostname;
+                return {hostname: server.hostname, port: server.port};
             });
             console.log("all hosts: " + allHosts);
         } catch (e) {
             console.log("error retrieving status. " + e);
         }
     });
-}
+};
 
-var tokens = {};
 var getTokens = function() {
-    allHosts.forEach(function(hostname){
-        request("http://" + hostname)
+    allHosts.forEach(function(server){
+        request("http://" + server.hostname + ":" + server.port + "/statusToken", function(error, response, body) {
+            server.token = body;
+        });
     });
-}
+};
 
 var spawned;
 
@@ -35,7 +35,7 @@ var spawnChild = function() {
     setTimeout(function() {
         getHosts();
     }, 5 * 1000)
-}
+};
 
 spawnChild();
 
@@ -66,4 +66,6 @@ setInterval(function() {
 }, (config.pm.serverStatusInterval || 6 * 60) * 60 * 1000);
 
 // get Token at regular interval
-setInterval(function() {}, (congif.pm.tokenInterval || 5) * 60 * 1000)
+setInterval(function() {
+    getTokens();
+}, (congif.pm.tokenInterval || 5) * 60 * 1000);

@@ -179,7 +179,7 @@ setInterval(function() {
 }, config.status.timeouts.statusCheck);
 
 setInterval(function() {
-    mongo_data_system.getClusterHostStatus(config.hostname, function(err, record) {
+    mongo_data_system.getClusterHostStatus({hostname: config.hostname, port: config.port}, function(err, record) {
         if (err) return logging.errorLogger.error("Unable to retrieve state of host in cluster config.", err);
         if (record) {
             record.nodeStatus = "Running";
@@ -189,7 +189,7 @@ setInterval(function() {
                 if (err) return logging.errorLogger.error("Unable to update state of cluster record.", err);
             });
         } else {
-            mongo_data_system.createClusterHostStatus({hostname: config.hostname}, function(err) {
+            mongo_data_system.createClusterHostStatus({hostname: config.hostname, port: config.port}, function(err) {
                 if (err) return logging.errorLogger.error("Unable to create new state of cluster record.", err);
             });
         }

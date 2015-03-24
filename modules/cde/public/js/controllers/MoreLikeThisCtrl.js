@@ -4,7 +4,7 @@ angular.module('cdeModule').controller('MoreLikeThisCtrl',['$scope', '$http', '$
 
     $scope.view = function(cde, event) {
         $scope.interruptEvent(event);
-        $location.url("deview?cdeId=" + cde._id);
+        $location.url("deview?tinyId=" + cde.tinyId);
     };   
 
     $scope.cdes = [];

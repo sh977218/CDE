@@ -3,12 +3,12 @@ var mongoose = require('mongoose')
 
 var schemas = {};
 
-var csEltSchema = mongoose.Schema({
+var csEltSchema = new mongoose.Schema({
     name: String
     , elements: [csEltSchema]
 }, {_id: false});
 
-exports.permissibleValueSchema = mongoose.Schema({
+exports.permissibleValueSchema = new mongoose.Schema({
     permissibleValue: String
     , valueMeaningName: String
     , valueMeaningCode: String
@@ -17,14 +17,13 @@ exports.permissibleValueSchema = mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
-
-exports.classificationSchema = mongoose.Schema({
+exports.classificationSchema = new mongoose.Schema({
     stewardOrg: {name: String}
     , workingGroup: Boolean
     , elements: [csEltSchema]
 }, {_id: false});
 
-schemas.orgSchema = mongoose.Schema ({
+schemas.orgSchema = new mongoose.Schema ({
     name: String
     , longName: String
     , mailAddress: String
@@ -35,7 +34,7 @@ schemas.orgSchema = mongoose.Schema ({
     , workingGroupOf: String
 });
 
-schemas.userSchema = mongoose.Schema ({
+schemas.userSchema = new mongoose.Schema ({
     username: String
     , email: String
     , password: String
@@ -53,7 +52,7 @@ schemas.userSchema = mongoose.Schema ({
 schemas.orgSchema.set('collection', 'orgs');
 schemas.userSchema.set('collection', 'users');
 
-schemas.namingSchema = mongoose.Schema({
+schemas.namingSchema = new mongoose.Schema({
     designation: String
     , definition: String
     , definitionFormat: String
@@ -80,7 +79,7 @@ var attachmentSchema = {
     , scanned: Boolean
 };
 
-schemas.attachmentSchema = mongoose.Schema(attachmentSchema, {_id: false});
+schemas.attachmentSchema = new mongoose.Schema(attachmentSchema, {_id: false});
 
 schemas.registrationStateSchema = {
     registrationStatus: {type: String}
@@ -89,10 +88,10 @@ schemas.registrationStateSchema = {
     , administrativeNote: String
     , unresolvedIssue: String
     , administrativeStatus: String
-    , replacedBy: {tinyId: String} 
+    , replacedBy: {tinyId: String}
 };
 
-schemas.commentSchema = mongoose.Schema({
+schemas.commentSchema = new mongoose.Schema({
     text: String
     , user: String
     , username: String
@@ -100,7 +99,7 @@ schemas.commentSchema = mongoose.Schema({
     , pendingApproval: Boolean
 }, {_id: false});
 
-schemas.helpItemSchema = mongoose.Schema({
+schemas.helpItemSchema = new mongoose.Schema({
     permalink: String
     , title: String
     , tags: [String]
@@ -128,7 +127,7 @@ var commentApprovalSchema = {
     , comment: {index: Number, text: String}
 };
 
-schemas.message = mongoose.Schema ({
+schemas.message = new mongoose.Schema ({
     recipient: {
         recipientType: {type: String, enum: ["user", "stewardOrg", "role"]}
         , name: String
@@ -143,7 +142,7 @@ schemas.message = mongoose.Schema ({
         action: {type: String, enum: ["Approved", "Filed"]}
         , date: Date
         , comment: String
-    }]    
+    }]
 });
 
 schemas.message.set('collection', 'messages');
@@ -161,7 +160,7 @@ schemas.clusterStatus = mongoose.Schema({
     }
 });
 
-schemas.fs_files = mongoose.Schema({
+schemas.fs_files = new mongoose.Schema({
     "_id" : mongoose.Schema.Types.ObjectId
     , "filename" : String
     , "contentType" : String

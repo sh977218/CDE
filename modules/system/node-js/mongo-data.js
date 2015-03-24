@@ -54,18 +54,17 @@ exports.sessionStore = sessionStore;
 
 exports.mongoose_connection = conn;
 
-exports.getClusterHostStatus = function(hostname, callback) {
-    ClusterStatus.findOne({hostname: hostname}).exec(function(err, result) {
+exports.getClusterHostStatus = function(server, callback) {
+    ClusterStatus.findOne({hostname: server.hostname, port: server.port}).exec(function(err, result) {
        callback(err, result);
     });
-}
+};
 
 exports.getClusterHostStatuses = function(callback) {
     ClusterStatus.find().exec(function(err, statuses) {
         callback(err, statuses);
     });
-}
-
+};
 
 exports.createClusterHostStatus = function(status, callback) {
     var s = new ClusterStatus(status);
@@ -74,17 +73,7 @@ exports.createClusterHostStatus = function(status, callback) {
     s.save(function(err) {
         callback(err);
     });
-}
-
-//exports.updateClusterHostStatus = function(status, callback) {
-//    var s = new ClusterStatus(status);
-//    delete s._id;
-//    s.lastUpdate = new Date();
-//    s.save(function(err) {
-//        callback(err);
-//    });
-//}
-
+};
 
 exports.org_autocomplete = function(name, callback) {
     Org.find({"name": new RegExp(name, 'i')}, function(err, orgs) {

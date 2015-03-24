@@ -7,7 +7,7 @@
     <div class="row">
         <div ng-repeat="cde in cdes" class="col-md-6">
             <center>
-                <a class='btn btn-small btn-default fa fa-eye' ng-href="#/deview/?cdeId={{cde._id}}" title="Full Detail for {{cde.naming[0].designation}}"> View Full Detail</a>
+                <a class='btn btn-small btn-default fa fa-eye' ng-href="#/deview/?tinyId={{cde.tinyId}}" title="Full Detail for {{cde.naming[0].designation}}"> View Full Detail</a>
                 <span ng-controller="MergeRequestCtrl">
                     <a class='btn btn-small btn-default fa fa-plus-square' ng-show="isMergeRequestPossible(cde, cdes[($index+1)%2])" ng-click="openMergeModal($index)" title="Merge {{cde.naming[0].designation}}" id="retireMerge-{{$index}}"> Retire & Merge</a>
                     <span ng-show="cde.registrationState.administrativeStatus === 'Retire Candidate'">

@@ -84,6 +84,7 @@ public class QuestionTest2 extends BaseFormTest {
         findElement(By.id("input_otherPleaseSpecify")).click();
         
         saveForm();
+        scrollToTop();
 
         findElement(By.id("formPreview")).click();
         switchTab(1);
