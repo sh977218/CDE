@@ -8,29 +8,34 @@ import org.testng.annotations.Test;
 public class Vsac2Test extends NlmCdeBaseTest {
 
     @Test
-    public void removeVsacId() {
+    public void importVsacValues() {
         mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName("Left Colon Excision Ind-2");
+        goToCdeByName("Patient Race Category");
         findElement(By.linkText("Permissible Values")).click();
+        Assert.assertTrue(textPresent("Native Hawaiian or other Pacific Islander"));
+        Assert.assertTrue(textNotPresent("Match"));
+        findElement(By.id("removeAllPvs")).click();
+        Assert.assertTrue(textNotPresent("Native Hawaiian or other Pacific Islander"));
         findElement(By.linkText("Update O.I.D")).click();
-        findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
+        findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.836");
         findElement(By.id("vsacIdCheck")).click();
-        closeAlert();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
+        findElement(By.id("addVsacValue-0")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-valid")));
+        findElement(By.id("addAllVsac")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-3-valid")));
+        findElement(By.id("pvRemove-0")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
 
-        textPresent("20121025");
-
-        newCdeVersion();
-        hangon(1);
-
-        findElement(By.id("removeVSButton")).click();
-
-        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
-        Assert.assertEquals(driver.findElement(By.cssSelector("BODY")).getText().indexOf("2.16.840.1.114222.4.11.837"), -1);
-
-        newCdeVersion();
+        newCdeVersion("Importing All VSAC Values");
 
 
-        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-3-valid")));
     }
 
     @Test(dependsOnMethods = {"importVsacValues"})
