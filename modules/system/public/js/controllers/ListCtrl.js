@@ -304,7 +304,8 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
     };
     
     $scope.getSelectedClassificationsAlt = function() {
-        var result =  $scope.selectedOrgAlt;
+        //var result =  $scope.selectedOrgAlt;
+        var result =  $scope.classificationFilters[1].org;
         if (/*$scope.selectedElementsAlt*/$scope.classificationFilters[1].elements.length > 0) {
             result += " > " + /*$scope.selectedElementsAlt*/$scope.classificationFilters[1].elements.join(" > ");
         }
