@@ -14,6 +14,7 @@ public class StoreSearch2Test extends NlmCdeBaseTest {
     public void resetSearch() {
         goToCdeSearch();
         findElement(By.id("li-blank-caCORE")).click();
+        textPresent("caCORE 3.2");
         findElement(By.id("li-blank-caCORE")).click();
         findElement(By.id("li-blank-CSM")).click();
         textPresent("2 results");

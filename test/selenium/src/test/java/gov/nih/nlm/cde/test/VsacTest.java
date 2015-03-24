@@ -40,34 +40,36 @@ public class VsacTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));   
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-3-valid")));        
-    }   
-    
-    
-   @Test
-    public void assignVsacId() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName("Patient Ethnic Group Category");
-        findElement(By.linkText("Permissible Values")).click();
-        Assert.assertTrue(textPresent("No Value Set specified."));
-        findElement(By.linkText("Update O.I.D")).click();
-        findElement(By.name("vsacId")).sendKeys("invalidId");
-        findElement(By.id("vsacIdCheck")).click();
-        Assert.assertTrue(textPresent("Invalid VSAC OID"));
-        closeAlert();
-        findElement(By.linkText("Update O.I.D")).click();
-        findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
-        findElement(By.id("vsacIdCheck")).click();
-        // check that version got fetched.
-        Assert.assertTrue(textPresent("20121025"));
-        newCdeVersion("Adding vsac Id");
-
-        Assert.assertTrue(textPresent("20121025"));
-        Assert.assertTrue(textPresent("2135-2"));
-        Assert.assertTrue(textPresent("CDCREC"));
-        WebElement tbody = driver.findElement(By.id("vsacTableBody"));
-        List<WebElement> vsacLines = tbody.findElements(By.tagName("tr"));
-        Assert.assertEquals(vsacLines.size(), 2);
-        Assert.assertTrue(textPresent("Match"));
     }
+
+    @Test(dependsOnMethods = {"importVsacValues"})
+    public void modifyValueCode() {
+        mustBeLoggedInAs(ctepCurator_username, password);
+        goToCdeByName("Patient Race Category");
+        findElement(By.linkText("Permissible Values")).click();
+        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-valid")));
+        findElement(By.cssSelector("#pvName-4 .fa-edit")).click();
+        findElement(By.cssSelector("#pvName-4 input.typeahead")).sendKeys(" Category");
+        findElement(By.cssSelector("#pvName-4 .fa-check")).click();
+        hangon(1);
+        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-warning")));
+
+        findElement(By.cssSelector("#pvCode-4 .fa-edit")).click();
+        findElement(By.cssSelector("#pvCode-4 input")).sendKeys(".1");
+        findElement(By.cssSelector("#pvCode-4 .fa-check")).click();
+
+        findElement(By.cssSelector("#pvCodeSystem-4 .fa-edit")).click();
+        findElement(By.xpath("//td[@id='pvCodeSystem-4']//input")).sendKeys(".1");
+        findElement(By.cssSelector("#pvCodeSystem-4 .fa-check")).click();
+
+        newCdeVersion("Modified VS Codes");
+
+        goToCdeByName("Patient Race Category");
+
+        Assert.assertTrue(textPresent("Other Race Category"));
+        Assert.assertTrue(textPresent("2131-1.1"));
+        Assert.assertTrue(textPresent("CDCREC.1"));
+    }
+
     
 }

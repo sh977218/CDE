@@ -71,7 +71,7 @@
                 </div>            
                 <div id="classification-facets">
                     <div ng-repeat="e in (altClassificationFilterMode===true ? classificationFilters[1].elements : classificationFilters[0].elements)" style="margin-left:{{($index + 1) * 10}}px;">
-                        <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="(altClassificationFilterMode===true ? selectedElementsAlt.indexOf(e) : selectedElements.indexOf(e)) > -1">
+                        <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="(altClassificationFilterMode===true ? classificationFilters[1].elements.indexOf(e) : classificationFilters[0].elements.indexOf(e)) > -1">
                             <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{e}}" ></i>
                             <i ng-switch-when="false" class="fa fa-chevron-right" id="li-blank-{{e}}" ></i>
                             <span>
@@ -80,7 +80,7 @@
                         </span>
                     </div>  
                     <div ng-repeat="b in (altClassificationFilterMode===true ? aggregations.flatClassificationAlt : aggregations.flatClassification) | orderBy:'name'" style="margin-left:{{((altClassificationFilterMode===true ? classificationFilters[1].elements.length : classificationFilters[0].elements.length) + 1) * 10}}px;">
-                        <span ng-click="selectElement(b.name)" class="hand-cursor" ng-switch="(altClassificationFilterMode===true ? selectedElementsAlt.indexOf(b.name) : selectedElements.indexOf(b.name)) > -1">
+                        <span ng-click="selectElement(b.name)" class="hand-cursor" ng-switch="(altClassificationFilterMode===true ? classificationFilters[1].elements.length.indexOf(b.name) : classificationFilters[0].elements.indexOf(b.name)) > -1">
                             <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{b.name}}" ></i>
                             <i ng-switch-when="false" class="fa fa-chevron-right" id="li-blank-{{b.name}}" ></i>
                             <span>
