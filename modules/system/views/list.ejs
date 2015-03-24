@@ -40,8 +40,8 @@
 <div class="container-fluid pt30">    
     <script type="text/ng-template"  id="facet_elements_tree.html">
         <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="classificationFilters[0].elements.indexOf(e.name) > -1">
-            <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e.name}}" >d</i>
-            <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e.name}}" >d</i>
+            <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e.name}}" ></i>
+            <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e.name}}" ></i>
             <span>
                 <small> {{e.name}} ({{e.count}})</small>
             </span>
@@ -64,16 +64,16 @@
                      ng-switch="t.key === classificationFilters[altClassificationFilterMode].org"
                      ng-click="addOrgFilter(t)" ng-show="t.key === classificationFilters[altClassificationFilterMode].org || !classificationFilters[altClassificationFilterMode].org">
                     <span class="hand-cursor" tooltip="{{t.longName}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
-                        <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{t.key}}">c</i>
-                        <i ng-switch-default class="fa fa-chevron-right" id="li-blank-{{t.key}}" >c</i>
+                        <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>
+                        <i ng-switch-default class="fa fa-chevron-right" id="li-blank-{{t.key}}" ></i>
                         <small id="classifications-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
                     </span>
                 </div>            
                 <div id="classification-facets">
                     <div ng-repeat="e in classificationFilters[altClassificationFilterMode].elements" style="margin-left:{{($index + 1) * 10}}px;">
                         <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="classificationFilters[altClassificationFilterMode].elements.indexOf(e) > -1">
-                            <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{e}}" >b</i>
-                            <i ng-switch-when="false" class="fa fa-chevron-right" id="li-blank-{{e}}" >b</i>
+                            <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{e}}" ></i>
+                            <i ng-switch-when="false" class="fa fa-chevron-right" id="li-blank-{{e}}" ></i>
                             <span>
                                 <small>{{e}}</small>
                             </span>
@@ -81,8 +81,8 @@
                     </div>  
                     <div ng-repeat="b in (altClassificationFilterMode===1 ? aggregations.flatClassificationAlt : aggregations.flatClassification) | orderBy:'name'" style="margin-left:{{(classificationFilters[altClassificationFilterMode].elements.length + 1) * 10}}px;">
                         <span ng-click="selectElement(b.name)" class="hand-cursor" ng-switch="classificationFilters[altClassificationFilterMode].elements.length.indexOf(b.name) > -1">
-                            <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{b.name}}" >a</i>
-                            <i ng-switch-when="false" class="fa fa-chevron-right" id="li-blank-{{b.name}}" >a</i>
+                            <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{b.name}}" ></i>
+                            <i ng-switch-when="false" class="fa fa-chevron-right" id="li-blank-{{b.name}}" ></i>
                             <span>
                                 <small>{{b.name}} ({{b.count}})</small>
                             </span>
