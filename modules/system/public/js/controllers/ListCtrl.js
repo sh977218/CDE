@@ -41,15 +41,16 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;   
     }
     
-    $scope.altClassificationFilterMode = false;
+    $scope.altClassificationFilterMode = 0;
+
     $scope.toggleAltClassificationFilterMode = function() {
-        $scope.altClassificationFilterMode = !$scope.altClassificationFilterMode;
-        
-        if(!$scope.altClassificationFilterMode) {
+        if ($scope.altClassificationFilterMode === 0) {
+            $scope.altClassificationFilterMode = 1;
+        } else {
+            $scope.altClassificationFilterMode = 0;
             $scope.classificationFilters[1].org = undefined;
             $scope.classificationFilters[1].elements = [];
         }
-        
         $scope.reload();
     };
     
@@ -104,7 +105,7 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         delete $scope.classificationFilters[1].elements;
 
 
-        $scope.altClassificationFilterMode = false;
+        $scope.altClassificationFilterMode = 0;
         for (var i in $scope.registrationStatuses) {
             $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
         }
@@ -146,7 +147,7 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
     };
     
     $scope.addOrgFilter = function(t) {
-        if($scope.altClassificationFilterMode) {
+        if($scope.altClassificationFilterMode===1) {
             if ($scope.classificationFilters[1].org === undefined) {
                 $scope.cacheOrgFilterAlt(t.key);
                 $scope.classificationFilters[1].org = t.key;
@@ -171,7 +172,7 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
     };
 
     $scope.selectElement = function(e) {
-        if($scope.altClassificationFilterMode) {
+        if($scope.altClassificationFilterMode===1) {
             if ($scope.classificationFilters[1].elements.length === 0) {
                 $scope.classificationFilters[1].elements = [];
                 $scope.classificationFilters[1].elements.push(e);
