@@ -27,7 +27,6 @@ public class QuestionTest extends BaseFormTest {
         
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
         hangon(2);
-        textPresent(cdeName, By.cssSelector(".formSectionArea"));
     }    
     
     public void addQuestionToSectionSafe(String cdeName, int sectionNumber) {
