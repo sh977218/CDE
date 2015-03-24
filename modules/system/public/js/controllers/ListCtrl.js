@@ -145,64 +145,38 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
     $scope.isDefaultAttachment = function (item) {
         return item.isDefault;  
     };
-    
+
     $scope.addOrgFilter = function(t) {
-        if($scope.altClassificationFilterMode===1) {
-            if ($scope.classificationFilters[1].org === undefined) {
-                $scope.cacheOrgFilterAlt(t.key);
-                $scope.classificationFilters[1].org = t.key;
-            } else {
-                $scope.removeCacheOrgFilterAlt();
-                $scope.classificationFilters[1].org = undefined;
-                $scope.classificationFilters[1].elements = [];
-            }
+        if ($scope.classificationFilters[$scope.altClassificationFilterMode].org === undefined) {
+            if ($scope.altClassificationFilterMode === 0) $scope.cacheOrgFilter(t.key);
+            else $scope.cacheOrgFilterAlt(t.key);
+            $scope.classificationFilters[$scope.altClassificationFilterMode].org = t.key;
         } else {
-            if ($scope.classificationFilters[0].org === undefined) {
-                $scope.cacheOrgFilter(t.key);
-                $scope.classificationFilters[0].org = t.key;
-            } else {
-                $scope.removeCacheOrgFilter();
-                $scope.classificationFilters[0].org = undefined;
-                $scope.classificationFilters[0].elements = [];
-            }
+            if ($scope.altClassificationFilterMode === 0) $scope.removeCacheOrgFilter();
+            else $scope.removeCacheOrgFilterAlt();
+            $scope.classificationFilters[$scope.altClassificationFilterMode].org = undefined;
+            $scope.classificationFilters[$scope.altClassificationFilterMode].elements = [];
         }
-        
         delete $scope.aggregations.groups;
         $scope.reload();
     };
 
     $scope.selectElement = function(e) {
-        if($scope.altClassificationFilterMode===1) {
-            if ($scope.classificationFilters[1].elements.length === 0) {
-                $scope.classificationFilters[1].elements = [];
-                $scope.classificationFilters[1].elements.push(e);
-            } else {
-                var i = $scope.classificationFilters[1].elements.indexOf(e);
-                if (i > -1) {
-                    $scope.classificationFilters[1].elements.length(i);
-                } else {
-                    $scope.classificationFilters[1].elements.push(e);
-                }
-            }
-            $scope.cache.put($scope.getCacheName("selectedElementsAlt"), $scope.classificationFilters[1].elements);
+        if ($scope.classificationFilters[$scope.altClassificationFilterMode].elements.length === 0) {
+            $scope.classificationFilters[$scope.altClassificationFilterMode].elements = [];
+            $scope.classificationFilters[$scope.altClassificationFilterMode].elements.push(e);
         } else {
-            if ($scope.classificationFilters[0].elements.length === 0) {
-                $scope.classificationFilters[0].elements = [];
-                $scope.classificationFilters[0].elements.push(e);
+            var i = $scope.classificationFilters[$scope.altClassificationFilterMode].elements.indexOf(e);
+            if (i > -1) {
+                $scope.classificationFilters[$scope.altClassificationFilterMode].elements.length = i;
             } else {
-                var i = $scope.classificationFilters[0].elements.indexOf(e);
-                if (i > -1) {
-                    $scope.classificationFilters[0].elements.length = i;
-                } else {
-                    $scope.classificationFilters[0].elements.push(e);
-                }
+                $scope.classificationFilters[$scope.altClassificationFilterMode].elements.push(e);
             }
-            $scope.cache.put($scope.getCacheName("selectedElements"), $scope.classificationFilters[0].elements);
         }
-
+        $scope.cache.put($scope.getCacheName($scope.altClassificationFilterMode===0?"selectedElements":"selectedElementsAlt"), $scope.classificationFilters[$scope.altClassificationFilterMode].elements);
         $scope.reload();
     };
-    
+
     $scope.cacheOrgFilter = function(t) {
         $scope.cache.put($scope.getCacheName("selectedOrg"), t);       
     };
