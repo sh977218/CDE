@@ -14,6 +14,7 @@ var passport = require('passport')
     , csrf = require('csurf')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
+    , request = require('request')
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -26,6 +27,12 @@ exports.nocacheMiddleware = function(req, res, next) {
 };
 
 exports.init = function(app) {
+
+    var getRealIp = function(req) {
+        if (req._remoteAddress) return req._remoteAddress;
+        if (req.ip) return req.ip;
+    };
+
     app.use(function(req, res, next) {   
         if (req && req.headers['user-agent'] && req.headers['user-agent'].indexOf("MSIE")>=0) exports.nocacheMiddleware(req, res, next);
         else next();
@@ -39,9 +46,59 @@ exports.init = function(app) {
         res.render(req.params.template, req.params.module, {config: viewConfig});
     });		
 
-    app.get("statusToken", function(req, res) {
-        
-        res.send();
+    var token;
+    app.get('/statusToken', function(req, res) {
+        token = mongo_data_system.generateTinyId();
+        res.send(token);
+    });
+
+    app.get('/serverStatuses', function(req, res) {
+        if (app.isLocalIp(getRealIp(req))) {
+            mongo_data_system.getClusterHostStatuses(function(err, statuses) {
+                res.send(statuses);
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
+
+    app.get('/stop/:host/:port', function(req, res) {
+        if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
+            mongo_data_system.getClusterHostStatus({hostname: config.hostname, port: config.port},
+                    function(err, record) {
+                        if (err){
+                            logging.errorLogger.error("Unable to retrieve state of host in cluster config.", err);
+                            res.status(500).send();
+                        }
+                        record.nodeStatus = "Stopped";
+                        record.lastUpdate = new Date();
+                        record.save(function (err) {
+                            if (err)  {
+                                logging.errorLogger.error("Unable to update state of cluster record.", err);
+                                return res.status.send();
+                            }
+                            request.post('http://' + req.params.host + ':' + config.pm.port + '/stop',
+                                {json: true,
+                                    body: {
+                                    token: token,
+                                    port: req.params.port,
+                                    requester: {host: config.hostname, port: config.port
+                                }}},
+                                function (err, response, body) {
+                                    if (err) {
+                                        logging.errorLogger.error(JSON.stringify({msg: 'Unable to stop server'}));
+                                        return res.status(500).send('Unable.');
+                                    }
+                                    if (response.statusCode !== 200) {
+                                        return res.status(500).send('Unable');
+                                    }
+                                    return res.send('OK');
+                                });
+                        });
+                    });
+        } else {
+            res.status(401).send();
+        }
     });
 
     app.get("/supportedBrowsers", function(req, res) {
@@ -164,21 +221,9 @@ exports.init = function(app) {
         }         
     });
 
-    app.get('/serverStatuses', function(req, res) {
-        var ip = req.remoteAddress || req.ip;
-        if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
-            mongo_data_system.getClusterHostStatuses(function(err, statuses) {
-                res.send(statuses);
-            });
-        } else {
-            res.status(401).send();
-        }
-    });
-
 
     app.get('/siteadmins', function(req, res) {
-        var ip = req.remoteAddress || req.ip;
-        if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
+        if (app.isLocalIp(getRealIp(req))) {
             mongo_data_system.siteadmins(function(err, users) {
                 res.send(users);
             });
@@ -273,11 +318,11 @@ exports.init = function(app) {
     });
 
     app.isLocalIp = function (ip) {
-        return ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0;
+        return ip.indexOf("127.0") !== -1 || ip === "::1" ||  ip.indexOf(config.internalIP) === 0;
     };
 
     app.get('/siteaudit', function(req, res) {
-        if (app.isLocalIp(req.ip) 
+        if (app.isLocalIp(getRealIp(req))
                 && req.user && req.user.siteAdmin) {
             res.render('siteAudit', 'system', {config: viewConfig}); 
         } else {
@@ -286,7 +331,7 @@ exports.init = function(app) {
     });
 
     app.get('/searchUsers/:username?', function(req, res) {
-        if (app.isLocalIp(req.ip) 
+        if (app.isLocalIp(getRealIp(req))
                 && req.user && req.user.siteAdmin) {
             mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
                 res.send({users: users});
@@ -333,8 +378,8 @@ exports.init = function(app) {
 
 
     app.get('/siteaccountmanagement', exports.nocacheMiddleware, function(req, res) {
-        var ip = req.ip;
-        if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
+        if (app.isLocalIp(getRealIp(req))
+            && req.user && req.user.siteAdmin) {
             res.render('siteaccountmanagement', "system");
         } else {
             res.status(401).send();

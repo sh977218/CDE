@@ -5,12 +5,14 @@
 
     <div class="row">
         <div ng-repeat="status in statuses" class="pull-left boxed-div">
-            <h4>{{status.hostname}}</h4>
+            <h4>{{status.hostname}}:{{status.port}}</h4>
             <div class="boxed-div">
                 <dl class="dl-horizontal">
                     <dt>Status: </dt><dd>{{status.nodeStatus}}</dd>
                     <dt>Last Up: </dt><dd>{{status.lastUpdate | timeAgo}}</dd>
                 </dl>
+                <button type="button" class="fa fa-power-off" ng-click="sendStop(status)"> Stop</button>
+                <button type="button" class="fa fa-refresh" ng-click="sendRestart(status)"> Restart</button>
                 <hr/>
                 <h5>ElasticSearch</h5>
                 <dl class="dl-horizontal">

@@ -2,7 +2,9 @@ var spawn = require('child_process').spawn,
     express = require('express'),
     http = require('http'),
     config = require('config'),
-    request = require('request');
+    request = require('request'),
+    bodyParser = require('body-parser')
+    ;
 
 var allHosts = [];
 var getHosts = function() {
@@ -12,7 +14,7 @@ var getHosts = function() {
             allHosts = JSON.parse(body).map(function (server) {
                 return {hostname: server.hostname, port: server.port};
             });
-            console.log("all hosts: " + allHosts);
+            getTokens();
         } catch (e) {
             console.log("error retrieving status. " + e);
         }
@@ -34,7 +36,7 @@ var spawnChild = function() {
     spawned = spawn('node', ['app'], {stdio: 'inherit'});
     setTimeout(function() {
         getHosts();
-    }, 5 * 1000)
+    }, 10 * 1000)
 };
 
 spawnChild();
@@ -42,10 +44,19 @@ spawnChild();
 var app = express();
 
 app.set('port', config.pm.port || 3081);
+app.use(bodyParser.json());
 
-app.get('/stop', function(req, res) {
-    spawned.kill();
-    res.send('OK');
+app.post('/stop', function(req, res) {
+    console.log("body: " + req.body);
+    allHosts.forEach(function(host) {
+        if (host.hostname === req.body.requester.host
+            && host.port == req.body.requester.port
+            && host.token === req.body.token) {
+            spawned.kill();
+            return res.send('OK');
+        }
+    });
+    return res.status(403).send();
 });
 
 app.get('/start', function(req, res) {
@@ -68,4 +79,4 @@ setInterval(function() {
 // get Token at regular interval
 setInterval(function() {
     getTokens();
-}, (congif.pm.tokenInterval || 5) * 60 * 1000);
+}, (config.pm.tokenInterval || 5) * 60 * 1000);
