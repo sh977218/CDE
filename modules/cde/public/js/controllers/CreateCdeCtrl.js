@@ -78,7 +78,14 @@ angular.module('cdeModule').controller('CreateCdeCtrl', ['$scope', '$window', '$
         if (!$scope.elt.designation || $scope.elt.designation.length < 3) {
             return;
         }
-        suggestionPromise = $timeout(function () {            
+        suggestionPromise = $timeout(function () {
+            $scope.classificationFilters = [{
+                org: $scope.selectedOrg
+                , elements: $scope.selectedElements
+            }, {
+                org: $scope.selectedOrgAlt
+                , elements: $scope.selectedElementsAlt
+            }];
             $scope.filter = Elastic.buildElasticQueryPre($scope);
             var settings = Elastic.buildElasticQuerySettings($scope);
             settings.searchTerm = $scope.elt.designation;

@@ -98,12 +98,6 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         delete $scope.filter;
         delete $scope.searchForm.ftsearch;
 
-        //TODO remove
-        //delete $scope.selectedOrg;
-        //delete $scope.selectedOrgAlt;
-        //$scope.selectedElements = [];
-        //$scope.selectedElementsAlt = [];
-
         delete $scope.classificationFilters[0].org;
         delete $scope.classificationFilters[1].org;
         delete $scope.classificationFilters[0].elements;
@@ -155,25 +149,19 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         if($scope.altClassificationFilterMode) {
             if ($scope.classificationFilters[1].org === undefined) {
                 $scope.cacheOrgFilterAlt(t.key);
-                //$scope.selectedOrgAlt = t.key;
                 $scope.classificationFilters[1].org = t.key;
             } else {
                 $scope.removeCacheOrgFilterAlt();
-                //delete $scope.selectedOrgAlt;
                 $scope.classificationFilters[1].org = undefined;
-                //$scope.selectedElementsAlt = [];
                 $scope.classificationFilters[1].elements = [];
             }
         } else {
             if ($scope.classificationFilters[0].org === undefined) {
                 $scope.cacheOrgFilter(t.key);
-                //$scope.selectedOrg = t.key;
                 $scope.classificationFilters[0].org = t.key;
             } else {
                 $scope.removeCacheOrgFilter();
-                //delete $scope.selectedOrg;
                 $scope.classificationFilters[0].org = undefined;
-                //$scope.selectedElements = [];
                 $scope.classificationFilters[0].elements = [];
             }
         }
@@ -182,86 +170,32 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         $scope.reload();
     };
 
-    //$scope.selectElement = function(e) {
-    //    if($scope.altClassificationFilterMode) {
-    //        if ($scope.classificationFilters[1].elements === undefined || $scope.classificationFilters[1].elements === []/*$scope.selectedElementsAlt === undefined*/) {
-    //            //$scope.selectedElementsAlt = [];
-    //            //$scope.selectedElementsAlt.push(e);
-    //            $scope.classificationFilters[1].elements = [];
-    //            $scope.classificationFilters[1].elements.push(e);
-    //        } else {
-    //            //var i = $scope.selectedElementsAlt.indexOf(e);
-    //            var i = $scope.classificationFilters[1].elements.indexOf(e);
-    //            if (i > -1) {
-    //                //$scope.selectedElementsAlt.length = i;
-    //                $scope.classificationFilters[1].elements.length(i);
-    //            } else {
-    //                //$scope.selectedElementsAlt.push(e);
-    //                $scope.classificationFilters[1].elements.push(e);
-    //            }
-    //        }
-    //        $scope.cache.put($scope.getCacheName("selectedElementsAlt"), $scope.classificationFilters[1].elements/*$scope.selectedElementsAlt*/);
-    //    } else {
-    //        if (/*$scope.selectedElements*/$scope.classificationFilters[0].elements === undefined || $scope.classificationFilters[0].elements === []) {
-    //            //$scope.selectedElements = [];
-    //            $scope.classificationFilters[0].elements = [];
-    //            //$scope.selectedElements.push(e);
-    //            $scope.classificationFilters[0].elements.push(e);
-    //        } else {
-    //            //var i = $scope.selectedElements.indexOf(e);
-    //            var i = $scope.classificationFilters[0].elements.indexOf(e);
-    //            if (i > -1) {
-    //                //$scope.selectedElements.length = i;
-    //                $scope.classificationFilters[0].elements.length = i;
-    //            } else {
-    //                //$scope.selectedElements.push(e);
-    //                $scope.classificationFilters[0].elements.push(e);
-    //            }
-    //        }
-    //        //$scope.cache.put($scope.getCacheName("selectedElements"), $scope.selectedElements);
-    //        $scope.cache.put($scope.getCacheName("selectedElements"), $scope.classificationFilters[0].elements);
-    //    }
-    //
-    //    $scope.reload();
-    //};
-
     $scope.selectElement = function(e) {
         if($scope.altClassificationFilterMode) {
-            if ($scope.classificationFilters[1].elements.length === 0/*$scope.selectedElementsAlt === undefined*/) {
-                //$scope.selectedElementsAlt = [];
-                //$scope.selectedElementsAlt.push(e);
+            if ($scope.classificationFilters[1].elements.length === 0) {
                 $scope.classificationFilters[1].elements = [];
                 $scope.classificationFilters[1].elements.push(e);
             } else {
-                //var i = $scope.selectedElementsAlt.indexOf(e);
                 var i = $scope.classificationFilters[1].elements.indexOf(e);
                 if (i > -1) {
-                    //$scope.selectedElementsAlt.length = i;
                     $scope.classificationFilters[1].elements.length(i);
                 } else {
-                    //$scope.selectedElementsAlt.push(e);
                     $scope.classificationFilters[1].elements.push(e);
                 }
             }
-            $scope.cache.put($scope.getCacheName("selectedElementsAlt"), $scope.classificationFilters[1].elements/*$scope.selectedElementsAlt*/);
+            $scope.cache.put($scope.getCacheName("selectedElementsAlt"), $scope.classificationFilters[1].elements);
         } else {
-            if (/*$scope.selectedElements*/$scope.classificationFilters[0].elements.length === 0) {
-                //$scope.selectedElements = [];
+            if ($scope.classificationFilters[0].elements.length === 0) {
                 $scope.classificationFilters[0].elements = [];
-                //$scope.selectedElements.push(e);
                 $scope.classificationFilters[0].elements.push(e);
             } else {
-                //var i = $scope.selectedElements.indexOf(e);
                 var i = $scope.classificationFilters[0].elements.indexOf(e);
                 if (i > -1) {
-                    //$scope.selectedElements.length = i;
                     $scope.classificationFilters[0].elements.length = i;
                 } else {
-                    //$scope.selectedElements.push(e);
                     $scope.classificationFilters[0].elements.push(e);
                 }
             }
-            //$scope.cache.put($scope.getCacheName("selectedElements"), $scope.selectedElements);
             $scope.cache.put($scope.getCacheName("selectedElements"), $scope.classificationFilters[0].elements);
         }
 
@@ -295,19 +229,17 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
     
     // Create string representation of what classification filters are selected
     $scope.getSelectedClassifications = function() {
-        //var result =  $scope.selectedOrg;
         var result =  $scope.classificationFilters[0].org;
-        if (/*$scope.selectedElements.length*/ $scope.classificationFilters[0].elements.length > 0) {
-            result += " > " + /*$scope.selectedElements*/$scope.classificationFilters[0].elements.join(" > ");
+        if ($scope.classificationFilters[0].elements.length > 0) {
+            result += " > " + $scope.classificationFilters[0].elements.join(" > ");
         }
         return result;
     };
     
     $scope.getSelectedClassificationsAlt = function() {
-        //var result =  $scope.selectedOrgAlt;
         var result =  $scope.classificationFilters[1].org;
-        if (/*$scope.selectedElementsAlt*/$scope.classificationFilters[1].elements.length > 0) {
-            result += " > " + /*$scope.selectedElementsAlt*/$scope.classificationFilters[1].elements.join(" > ");
+        if ($scope.classificationFilters[1].elements.length > 0) {
+            result += " > " + $scope.classificationFilters[1].elements.join(" > ");
         }
         return result;
     };
