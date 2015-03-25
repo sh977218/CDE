@@ -228,6 +228,9 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
     };
     
     $scope.reload = function() {
+        //$scope.cdeLoadedPromise = new $q(function(resolve, reject) {
+        //    $scope.resolveCdeLoadedPromise = resolve;
+        //});
         var timestamp = new Date().getTime();
         if (!userResource.user) return;
         $scope.lastQueryTimeStamp = timestamp;        
@@ -286,6 +289,9 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
                 
                 $scope.filterOutWorkingGroups($scope.aggregations);
                 OrgHelpers.addLongNameToOrgs($scope.aggregations.lowRegStatusOrCurator_filter.orgs.buckets, OrgHelpers.orgsDetailedInfo);
+
+                //$scope.resolveCdeLoadedPromise();
+                $scope.$broadcast('elementsLoaded');
              });
         });  
     };   
@@ -332,5 +338,13 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         }, function () {
         });        
     };
-}
-]);
+
+    $scope.listViewType = 'accordion';
+
+    $scope.switchGridAccordionView = function() {
+        if ($scope.listViewType === 'accordion') $scope.listViewType = 'grid';
+        else $scope.listViewType = 'accordion';
+    };
+
+
+}]);

@@ -443,3 +443,12 @@ button#selectDefault {
         margin: 40px 150px 30px 150px;
     }
 }
+
+.gridStyle {
+    height: 600px;
+}
+
+.deViewGrid {
+    height: 635px;
+    width: 1000px;
+}
