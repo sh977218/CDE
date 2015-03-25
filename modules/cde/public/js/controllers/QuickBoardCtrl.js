@@ -1,18 +1,13 @@
-angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', function($scope, CdeList) {
+angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', 'CdeGridView', function($scope, CdeList, CdeGridView) {
     
     $scope.viewType = {
         accordion : true
         , grid : false
         , sidebyside : false
     };
-    
-    $scope.gridOptions = {
-        data: 'qbGridCdes'
-        , enableColumnResize: true
-        , enableRowReordering: true
-        , enableCellSelection: true
-    };
-    
+
+    $scope.gridOptions = CdeGridView.gridOptions;
+
     $scope.cdes = [];
     $scope.qbGridCdes = [];
     
@@ -27,33 +22,11 @@ angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', f
         $scope.viewType.grid = true;
         $scope.viewType.sidebyside = false;
         
-        $scope.qbGridCdes = [];
+        $scope.gridCdes = [];
         for( var i in $scope.cdes ) {
             var cde = $scope.cdes[i];
-            var thisCde = 
-            {
-                ID: cde.tinyId
-                , Version: cde.version
-                , Name: cde.naming[0].designation
-                , Definition: cde.naming[0].definition
-                , Steward: cde.stewardOrg.name
-                , "OriginId": cde.originId 
-                , Origin: cde.origin
-                , "RegistrationStatus": cde.registrationState.registrationStatus
-           };
-           var otherNames = "";
-           for (var j = 1; j < cde.naming.length; j++) {
-               otherNames = otherNames.concat(" " + cde.naming[j].designation);
-           } 
-           thisCde.otherNames = otherNames;
-
-           var permissibleValues = "";
-           for (var j = 0; j < cde.valueDomain.permissibleValues.length; j++) {
-               permissibleValues = permissibleValues.concat(cde.valueDomain.permissibleValues[j].permissibleValue + "; ");
-           } 
-           thisCde.permissbleValues = permissibleValues;
-
-           $scope.qbGridCdes.push(thisCde);               
+            var thisCde = CdeGridView.cdeToExportCde(cde);
+           $scope.gridCdes.push(thisCde);
         }
     };
     
