@@ -23,8 +23,8 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , searchTerm: scope.searchForm.ftsearch
                 , isSiteAdmin: scope.isSiteAdmin()
                 , userOrgs: userResource.userOrgs
-                , selectedOrg: scope.selectedOrg
-                , selectedOrgAlt: scope.selectedOrgAlt
+                , selectedOrg: scope.classificationFilters[0].org
+                , selectedOrgAlt: scope.classificationFilters[1].org
                 , selectedElements: this.getSelectedElements(scope)
                 , selectedElementsAlt: this.getSelectedElementsAlt(scope)
                 , filter: scope.filter
@@ -33,10 +33,10 @@ angular.module('ElasticSearchResource', ['ngResource'])
             return settings;
         }
         , getSelectedElements: function(scope) {
-            return scope.selectedElements?scope.selectedElements:[];
+            return scope.classificationFilters[0].elements?scope.classificationFilters[0].elements:[];
         }
         , getSelectedElementsAlt: function(scope) {
-            return scope.selectedElementsAlt?scope.selectedElementsAlt:[];
+            return scope.classificationFilters[0].elements?scope.classificationFilters[1].elements:[];
         }
         , getSize: function(settings) {
             return settings.resultPerPage?settings.resultPerPage:20;

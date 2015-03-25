@@ -35,8 +35,8 @@ public class VsacTest extends NlmCdeBaseTest {
 
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
     }
-    
-   @Test
+
+    @Test
     public void assignVsacId() {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Patient Ethnic Group Category");
@@ -62,5 +62,5 @@ public class VsacTest extends NlmCdeBaseTest {
         Assert.assertEquals(vsacLines.size(), 2);
         Assert.assertTrue(textPresent("Match"));
     }
-    
+
 }

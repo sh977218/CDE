@@ -41,15 +41,16 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;   
     }
     
-    $scope.altClassificationFilterMode = false;
+    $scope.altClassificationFilterMode = 0;
+
     $scope.toggleAltClassificationFilterMode = function() {
-        $scope.altClassificationFilterMode = !$scope.altClassificationFilterMode;
-        
-        if(!$scope.altClassificationFilterMode) {
-            $scope.selectedOrgAlt = undefined;
-            $scope.selectedElementsAlt = [];
+        if ($scope.altClassificationFilterMode === 0) {
+            $scope.altClassificationFilterMode = 1;
+        } else {
+            $scope.altClassificationFilterMode = 0;
+            $scope.classificationFilters[1].org = undefined;
+            $scope.classificationFilters[1].elements = [];
         }
-        
         $scope.reload();
     };
     
@@ -66,6 +67,14 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
     } else {
         $timeout($scope.toggleAltClassificationFilterMode, 0);
     }
+
+    $scope.classificationFilters = [{
+        org: $scope.selectedOrg
+        , elements: $scope.selectedElements
+    }, {
+        org: $scope.selectedOrgAlt
+        , elements: $scope.selectedElementsAlt
+    }];
     
     $scope.totalItems = $scope.cache.get($scope.getCacheName("totalItems"));
 
@@ -89,11 +98,14 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         delete $scope.aggregations;
         delete $scope.filter;
         delete $scope.searchForm.ftsearch;
-        delete $scope.selectedOrg;
-        delete $scope.selectedOrgAlt;
-        $scope.selectedElements = [];
-        $scope.selectedElementsAlt = [];
-        $scope.altClassificationFilterMode = false;
+
+        delete $scope.classificationFilters[0].org;
+        delete $scope.classificationFilters[1].org;
+        delete $scope.classificationFilters[0].elements;
+        delete $scope.classificationFilters[1].elements;
+
+
+        $scope.altClassificationFilterMode = 0;
         for (var i in $scope.registrationStatuses) {
             $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
         }
@@ -133,64 +145,38 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
     $scope.isDefaultAttachment = function (item) {
         return item.isDefault;  
     };
-    
+
     $scope.addOrgFilter = function(t) {
-        if($scope.altClassificationFilterMode) {
-            if ($scope.selectedOrgAlt === undefined) {
-                $scope.cacheOrgFilterAlt(t.key);
-                $scope.selectedOrgAlt = t.key;
-            } else {
-                $scope.removeCacheOrgFilterAlt();
-                delete $scope.selectedOrgAlt;
-                $scope.selectedElementsAlt = [];            
-            }
+        if ($scope.classificationFilters[$scope.altClassificationFilterMode].org === undefined) {
+            if ($scope.altClassificationFilterMode === 0) $scope.cacheOrgFilter(t.key);
+            else $scope.cacheOrgFilterAlt(t.key);
+            $scope.classificationFilters[$scope.altClassificationFilterMode].org = t.key;
         } else {
-            if ($scope.selectedOrg === undefined) {
-                $scope.cacheOrgFilter(t.key);
-                $scope.selectedOrg = t.key;
-            } else {
-                $scope.removeCacheOrgFilter();
-                delete $scope.selectedOrg;
-                $scope.selectedElements = [];            
-            }
+            if ($scope.altClassificationFilterMode === 0) $scope.removeCacheOrgFilter();
+            else $scope.removeCacheOrgFilterAlt();
+            $scope.classificationFilters[$scope.altClassificationFilterMode].org = undefined;
+            $scope.classificationFilters[$scope.altClassificationFilterMode].elements = [];
         }
-        
         delete $scope.aggregations.groups;
         $scope.reload();
     };
 
     $scope.selectElement = function(e) {
-        if($scope.altClassificationFilterMode) {
-            if ($scope.selectedElementsAlt === undefined) {
-                $scope.selectedElementsAlt = [];
-                $scope.selectedElementsAlt.push(e);
-            } else {
-                var i = $scope.selectedElementsAlt.indexOf(e);
-                if (i > -1) {
-                    $scope.selectedElementsAlt.length = i;
-                } else {
-                    $scope.selectedElementsAlt.push(e);
-                }
-            }
-            $scope.cache.put($scope.getCacheName("selectedElementsAlt"), $scope.selectedElementsAlt);
+        if ($scope.classificationFilters[$scope.altClassificationFilterMode].elements.length === 0) {
+            $scope.classificationFilters[$scope.altClassificationFilterMode].elements = [];
+            $scope.classificationFilters[$scope.altClassificationFilterMode].elements.push(e);
         } else {
-            if ($scope.selectedElements === undefined) {
-                $scope.selectedElements = [];
-                $scope.selectedElements.push(e);
+            var i = $scope.classificationFilters[$scope.altClassificationFilterMode].elements.indexOf(e);
+            if (i > -1) {
+                $scope.classificationFilters[$scope.altClassificationFilterMode].elements.length = i;
             } else {
-                var i = $scope.selectedElements.indexOf(e);
-                if (i > -1) {
-                    $scope.selectedElements.length = i;
-                } else {
-                    $scope.selectedElements.push(e);
-                }
-            }            
-            $scope.cache.put($scope.getCacheName("selectedElements"), $scope.selectedElements);
+                $scope.classificationFilters[$scope.altClassificationFilterMode].elements.push(e);
+            }
         }
-        
+        $scope.cache.put($scope.getCacheName($scope.altClassificationFilterMode===0?"selectedElements":"selectedElementsAlt"), $scope.classificationFilters[$scope.altClassificationFilterMode].elements);
         $scope.reload();
-    };    
-    
+    };
+
     $scope.cacheOrgFilter = function(t) {
         $scope.cache.put($scope.getCacheName("selectedOrg"), t);       
     };
@@ -218,17 +204,17 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
     
     // Create string representation of what classification filters are selected
     $scope.getSelectedClassifications = function() {
-        var result =  $scope.selectedOrg;
-        if ($scope.selectedElements.length > 0) {
-            result += " > " + $scope.selectedElements.join(" > ");
+        var result =  $scope.classificationFilters[0].org;
+        if ($scope.classificationFilters[0].elements.length > 0) {
+            result += " > " + $scope.classificationFilters[0].elements.join(" > ");
         }
         return result;
     };
     
     $scope.getSelectedClassificationsAlt = function() {
-        var result =  $scope.selectedOrgAlt;
-        if ($scope.selectedElementsAlt.length > 0) {
-            result += " > " + $scope.selectedElementsAlt.join(" > ");
+        var result =  $scope.classificationFilters[1].org;
+        if ($scope.classificationFilters[1].elements.length > 0) {
+            result += " > " + $scope.classificationFilters[1].elements.join(" > ");
         }
         return result;
     };
