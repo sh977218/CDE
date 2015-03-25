@@ -32,7 +32,6 @@ var getTokens = function() {
 var spawned;
 
 var spawnChild = function() {
-    console.log("Spawning process.");
     spawned = spawn('node', ['app'], {stdio: 'inherit'});
     setTimeout(function() {
         getHosts();
@@ -46,27 +45,37 @@ var app = express();
 app.set('port', config.pm.port || 3081);
 app.use(bodyParser.json());
 
-app.post('/stop', function(req, res) {
-    console.log("body: " + req.body);
+var verifyToken = function(req) {
+    var result = false;
     allHosts.forEach(function(host) {
         if (host.hostname === req.body.requester.host
             && host.port == req.body.requester.port
             && host.token === req.body.token) {
-            spawned.kill();
-            return res.send('OK');
+            result = true;
         }
     });
-    return res.status(403).send();
+    return result;
+}
+
+app.post('/stop', function(req, res) {
+    if (verifyToken(req)) {
+        spawned.kill();
+        return res.send('OK');
+    } else {
+        return res.status(403).send();
+    }
 });
 
-app.get('/start', function(req, res) {
-    spawnChild();
-    res.send('OK');
+app.post('/restart', function(req, res) {
+    if (verifyToken(req)) {
+        spawned.kill();
+        spawnChild();
+        return res.send('OK');
+    } else {
+        return res.status(403).send();
+    }
 });
 
-app.get('/status', function(req, res) {
-    res.send({killed: spawned.killed});
-});
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));

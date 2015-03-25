@@ -62,43 +62,42 @@ exports.init = function(app) {
         }
     });
 
-    app.get('/stop/:host/:port', function(req, res) {
+    var callProcessManager = function(req, res, action, server, callback) {
         if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data_system.getClusterHostStatus({hostname: config.hostname, port: config.port},
-                    function(err, record) {
-                        if (err){
-                            logging.errorLogger.error("Unable to retrieve state of host in cluster config.", err);
-                            res.status(500).send();
+            mongo_data_system.updateClusterHostStatus(server, function(err, record) {
+                if (err){
+                    res.status(500).send("Unable to update cluster status");
+                }
+                request.post('http://' + req.params.host + ':' + config.pm.port + '/' + action,
+                    {json: true,
+                        body: {
+                            token: token,
+                            port: req.params.port,
+                            requester: {host: config.hostname, port: config.port
+                            }}},
+                    function (err, response, body) {
+                        if (err) {
+                            console.log("err: " + err);
+                            logging.errorLogger.error(JSON.stringify({msg: 'Unable to ' + action + ' server'}));
+                            return res.status(500).send('Unable.');
                         }
-                        record.nodeStatus = "Stopped";
-                        record.lastUpdate = new Date();
-                        record.save(function (err) {
-                            if (err)  {
-                                logging.errorLogger.error("Unable to update state of cluster record.", err);
-                                return res.status.send();
-                            }
-                            request.post('http://' + req.params.host + ':' + config.pm.port + '/stop',
-                                {json: true,
-                                    body: {
-                                    token: token,
-                                    port: req.params.port,
-                                    requester: {host: config.hostname, port: config.port
-                                }}},
-                                function (err, response, body) {
-                                    if (err) {
-                                        logging.errorLogger.error(JSON.stringify({msg: 'Unable to stop server'}));
-                                        return res.status(500).send('Unable.');
-                                    }
-                                    if (response.statusCode !== 200) {
-                                        return res.status(500).send('Unable');
-                                    }
-                                    return res.send('OK');
-                                });
-                        });
+                        if (response.statusCode !== 200) {
+                            return res.status(500).send('Unable ' + response.statusCode);
+                        }
+                        return res.send('OK');
                     });
+            });
         } else {
             res.status(401).send();
         }
+    };
+
+    app.get('/restart/:host/:port', function(req, res) {
+        return callProcessManager(req, res, 'restart',{hostname: config.hostname, port: config.port, newStatus: "Stopped"});
+    });
+
+    app.get('/stop/:host/:port', function(req, res) {
+        return callProcessManager(req, res, 'stop',{hostname: config.hostname, port: config.port, newStatus: "Stopped"});
     });
 
     app.get("/supportedBrowsers", function(req, res) {

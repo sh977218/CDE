@@ -11,15 +11,18 @@
                     <dt>Status: </dt><dd>{{status.nodeStatus}}</dd>
                     <dt>Last Up: </dt><dd>{{status.lastUpdate | timeAgo}}</dd>
                 </dl>
-                <button type="button" class="fa fa-power-off" ng-click="sendStop(status)"> Stop</button>
-                <button type="button" class="fa fa-refresh" ng-click="sendRestart(status)"> Restart</button>
+                <a type="button" class="btn btn-danger fa fa-power-off" ng-click="sendStop(status)" ng-if="status.nodeStatus === 'Running'"> Stop</a>
+                <a type="button" class="btn btn-default fa fa-refresh" ng-click="sendRestart(status)"> Restart</a>
                 <hr/>
                 <h5>ElasticSearch</h5>
                 <dl class="dl-horizontal">
-                    <dt>Up: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.up?'btn-success':'btn-danger'""><i class="fa" ng-class="status.elastic.up?'fa-check':'fa-times'"/></a></dd>
-                    <dt>Returns Results: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.results?'btn-success':'btn-danger'""><i class="fa" ng-class="status.elastic.results?'fa-check':'fa-times'"/></a></dd>
-                    <dt>Syncing: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.sync?'btn-success':'btn-danger'""><i class="fa" ng-class="status.elastic.sync?'fa-check':'fa-times'"/></a></dd>
-                    <dt>Updating: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.updating?'btn-success':'btn-danger'""><i class="fa" ng-class="status.elastic.updating?'fa-check':'fa-times'"/></a></dd>
+                    <dt>Up: </dt><dd>
+                        <a class="btn btn-xs" ng-class="status.elastic.up?'btn-success':'btn-danger'">
+                        <i class="fa" ng-class="status.elastic.up?'fa-check':'fa-times'"/></a>
+                    </dd>
+                    <dt>Returns Results: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.results?'btn-success':'btn-danger'"><i class="fa" ng-class="status.elastic.results?'fa-check':'fa-times'"/></a></dd>
+                    <dt>Syncing: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.sync?'btn-success':'btn-danger'"><i class="fa" ng-class="status.elastic.sync?'fa-check':'fa-times'"/></a></dd>
+                    <dt>Updating: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.updating?'btn-success':'btn-danger'"><i class="fa" ng-class="status.elastic.updating?'fa-check':'fa-times'"/></a></dd>
                 </dl>
             </div>
         </div>
