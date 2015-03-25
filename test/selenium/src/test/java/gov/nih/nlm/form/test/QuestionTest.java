@@ -19,7 +19,7 @@ public class QuestionTest extends BaseFormTest {
         textPresent("1 results");        
         textPresent(cdeName, By.id("acc_link_0"));
         
-        WebElement sourceElt = findElement(By.xpath("//div[@id='accordionList']//i[@class=\"fa fa-arrows question-move-handle ng-scope\"]"));
+        WebElement sourceElt = findElement(By.cssSelector("#accordionList .question-move-handle"));
         WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumber));
         
         Assert.assertTrue(sourceElt.isDisplayed());

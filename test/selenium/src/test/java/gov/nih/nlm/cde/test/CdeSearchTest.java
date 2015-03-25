@@ -29,7 +29,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         WebElement csDl = findElement(By.id("repeatCs"));
         List<WebElement> csElements = csDl.findElements(By.cssSelector("#repeatCs ul li"));
         Assert.assertEquals(csElements.size(), 7);
-        List<String> assertList = new ArrayList<>();
+        List<String> assertList = new ArrayList<String>();
         assertList.add("GO Trial");
         assertList.add("GO New CDEs");
         assertList.add("C3D");
@@ -37,7 +37,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
 
         hangon(5);
 
-        List<String> actualList = new ArrayList<>();
+        List<String> actualList = new ArrayList<String>();
         for (WebElement csElt : csElements) {
             actualList.add(csElt.getText());
         }
