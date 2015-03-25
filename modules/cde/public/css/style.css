@@ -374,7 +374,7 @@ dd.formViewDetails {
 .table {
     max-width: none;
     table-layout: fixed;
-    word-wrap: break-word;
+    /*word-wrap: break-word;*/
 }
 
 .section-move-handle {
@@ -450,5 +450,27 @@ button#selectDefault {
 
 .deViewGrid {
     height: 635px;
-    width: 1000px;
+    width: 100%;
 }
+
+.ngGrid.unselectable {
+    -moz-user-select: text;
+    -khtml-user-select: text;
+    -webkit-user-select: text;
+    -o-user-select: text;
+    user-select: text;
+}
+.gridListView td {
+    max-height: 30px!important;
+    table-layout: fixed;
+}
+
+.gridListView {font-size: 10pt;}
+.gridListView .name {width: 10%;}
+.gridListView .naming {width: 10%;}
+.gridListView .permissibleValues {width: 10%;text-overflow: ellipsis;}
+.gridListView .stewardOrg {width: 40px;}
+.gridListView .usedBy {width: 10%;}
+.gridListView .registrationStatus {width: 55px;}
+.gridListView .administrativeStatus {width: 55px;}
+.gridListView .ids {width: 100px;  overflow: hidden;}

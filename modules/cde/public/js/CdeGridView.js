@@ -5,14 +5,16 @@ angular.module('cdeModule')
         , enableColumnResize: true
         , enableRowReordering: true
         , enableCellSelection: true
+        , enableSorting: false
         , columnDefs: [
             {field: 'primaryNameCopy', displayName: 'Name'}
             , {field: 'naming', displayName: 'Other Names', width: 200}
-            , {field: 'stewardOrg', displayName: 'Steward', width: 60}
-            , {field: 'registrationStatus', displayName: 'Status', width: 80}
             , {field: 'permissibleValues', displayName: 'Permissible Values', width: 200}
-            , {field: 'origin', displayName: 'Origin', width: 60}
-            , {field: 'ids', displayName: 'IDs', width: 100}
+            , {field: 'stewardOrg', displayName: 'Steward', width: 60}
+            , {field: 'usedBy', displayName: 'Used By', width: 150}
+            , {field: 'registrationStatus', displayName: 'Status', width: 80}
+            , {field: 'administrativeStatus', displayName: 'Admin Status', width: 170}
+            , {field: 'ids', displayName: 'IDs', width: 170}
         ]
     };
     this.cdeToExportCde = function(cde) {
@@ -22,15 +24,17 @@ angular.module('cdeModule')
             , primaryDefinitionCopy: cde.naming[0].definition
             , stewardOrg: cde.stewardOrg.name
             , registrationStatus: cde.registrationState.registrationStatus
-            , naming: cde.naming.slice(1, 100).map(function(naming) {
-            return naming.designation;
-        }).join(", ")
+            , naming: cde.naming.slice(1, 3).map(function(naming) {
+                return naming.designation;
+            }).join("<br> ")
             , permissibleValues: cde.valueDomain.permissibleValues.map(function(pv) {
-            return pv.permissibleValue;
-        }).join(", ")
+                return pv.permissibleValue;
+            }).join(", ")
             , origin: cde.origin
             , version: cde.version
             , tinyId: cde.tinyId
+            , usedBy: cde.usedBy.join(", ")
+            , administrativeStatus: cde.registrationState.administrativeStatus
         };
 
         var ids = "";

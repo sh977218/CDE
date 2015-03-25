@@ -19,15 +19,15 @@
     <span class="pt8 pb8 ib"><strong>{{totalItems}}</strong> results for <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> | <span class="label label-success" id="classif_filter">{{classificationFilters[0].org?getSelectedClassifications():'All Classifications'}}</span> <span ng-show="altClassificationFilterMode === 1">and <span class="label label-success">{{classificationFilters[1].org?getSelectedClassificationsAlt():'All Classifications'}} <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl5" ng-click="toggleAltClassificationFilterMode()" tooltip="Remove this classifications filter" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true"></i></span></span> | {{getSelectedStatuses()?getSelectedStatuses():'All Status'}}</span>
 
     <a href="#/cdeSearchExport" ng-show="totalItems>0 && cPage !== 'forms'">
-        <button id="gridView" value="CSV Export" class="btn btn-default pull-right">
-            <i class="fa fa-table"></i>
-            CSV Export
+        <button id="gridView" value="Export Search" class="btn btn-default pull-right">
+            <i class="fa fa-download"></i>
+            Export Search
         </button>
     </a>
 
-    <button ng-if="listViewType === 'accordion'" ng-click="switchGridAccordionView()" id="gridView" value="Grid View" class="btn btn-default pull-right">
+    <button ng-if="listViewType === 'accordion'" ng-click="switchGridAccordionView()" id="gridView" value="Table View" class="btn btn-default pull-right">
         <i class="fa fa-table"></i>
-        Grid View
+        Table View
     </button>
     <button ng-if="listViewType === 'grid'" ng-click="switchGridAccordionView()" id="accordionView" value="Accordion View" class="btn btn-default pull-right">
         <i class="fa fa-bars"></i>
@@ -35,7 +35,7 @@
     </button>
 
 
-    <button ng-show="totalItems>0" ng-click="openCloseAllSwitch(cdes, 'list');" class="btn btn-default btn-checkbox pull-right" id="openAllCb">
+    <button  ng-if="listViewType === 'accordion'" ng-show="totalItems>0" ng-click="openCloseAllSwitch(cdes, 'list');" class="btn btn-default btn-checkbox pull-right" id="openAllCb">
         <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
         <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
     </button>

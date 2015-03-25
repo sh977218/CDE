@@ -1,3 +1,64 @@
 <span ng-controller="CdeGridListCtrl">
-    <div class="deViewGrid" ng-grid="gridOptions"></div>
+    <!--<div class="deViewGrid" ng-grid="gridOptions"></div>-->
+    <table class="gridListView table table-condensed table-striped table-bordered">
+        <thead>
+        <tr>
+            <th class="name">Name</th>
+            <th class="naming">Other Names</th>
+            <th class="permissibleValues">Permissible Values</th>
+            <th class="stewardOrg">Steward</th>
+            <th class="usedBy">Used by Organizations</th>
+            <th class="registrationStatus">Registration Status</th>
+            <th class="administrativeStatus">Admin Status</th>
+            <th class="ids">Identifiers</th>
+        </tr>
+        </thead>
+        <tbody>
+            <!--<tr ng-repeat="c in gridCdes">-->
+                <!--<td class="name">-->
+                    <!--<a href="#/deview/?tinyId={{c.tinyId}}">-->
+                        <!--{{c.primaryNameCopy}}-->
+                    <!--</a>-->
+                <!--</td>-->
+                <!--<td class="naming" ng-bind-html="c.naming"></td>-->
+                <!--<td class="permissibleValues multiline-ellipsis">{{ c.permissibleValues | limitTo: 100 }}{{c.permissibleValues.length > 100 ? '...' : ''}}</td>-->
+                <!--<td class="stewardOrg">{{c.stewardOrg}}</td>-->
+                <!--<td class="usedBy multiline-ellipsis">{{c.usedBy | limitTo: 100 }}{{c.usedBy.length > 100 ? '...' : ''}}</td>-->
+                <!--<td class="registrationStatus">{{c.registrationStatus}}</td>-->
+                <!--<td class="administrativeStatus">{{c.administrativeStatus}}</td>-->
+                <!--<td class="ids">{{c.ids}}</td>-->
+            <!--</tr>-->
+
+            <tr ng-repeat="c in cdes">
+                <td class="name">
+                    <a href="#/deview/?tinyId={{c.tinyId}}">
+                        {{c.primaryNameCopy}}
+                    </a>
+                </td>
+                <td class="naming">
+                    <ul>
+                        <li ng-repeat="name in c.naming">{{name.designation}}</li>
+                    </ul>
+                </td>
+                <td class="permissibleValues multiline-ellipsis">
+                    <ul>
+                        <li ng-repeat="pv in c.valueDomain.permissibleValues">
+                            {{pv.valueMeaningName}}
+                        </li>
+                    </ul>
+                </td>
+                <td class="stewardOrg">{{c.stewardOrg.name}}</td>
+                <td class="usedBy multiline-ellipsis">
+                    <span ng-repeat="org in c.usedBy">{{$index>0?", ":""}}{{org}}</span>
+                </td>
+                <td class="registrationStatus">{{c.registrationState.registrationStatus}}</td>
+                <td class="administrativeStatus">{{c.registrationState.administrativeStatus}}</td>
+                <td class="ids">
+                    <div ng-repeat="id in c.ids">
+                        {{id.source}}: {{id.id}} v{{id.version}}
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 <span/>
