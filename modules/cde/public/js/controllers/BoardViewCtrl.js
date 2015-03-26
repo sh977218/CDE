@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
+angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', function($scope, $routeParams, $http, OrgHelpers, userResource) {
     $scope.cdes = [];
         
     $scope.$watch('currentPage', function() {
@@ -26,6 +26,7 @@ angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams
                             }
                         }
                     }
+                    $scope.cdes.forEach(function(elt) {elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);});
                 }
             }).
             error(function(response) {
