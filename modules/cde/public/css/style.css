@@ -476,3 +476,5 @@ button#selectDefault {
 .gridListView .ids {width: 100px;  overflow: hidden;}
 
 .gridListView .lastItem {list-style-type: none;}
+
+.gridListView td {overflow: hidden;}

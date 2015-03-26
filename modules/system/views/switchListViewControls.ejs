@@ -1,8 +1,8 @@
-<button ng-if="listViewType === 'accordion'" ng-click="switchGridAccordionView()" id="gridView" value="Table View" class="btn btn-default pull-right">
+<button ng-if="listViewType !== 'table'" ng-click="switchGridAccordionView()" id="gridView" value="Table View" class="btn btn-default pull-right">
     <i class="fa fa-table"></i>
     Table View
 </button>
-<button ng-if="listViewType === 'grid'" ng-click="switchGridAccordionView()" id="accordionView" value="Accordion View" class="btn btn-default pull-right">
+<button ng-if="listViewType !== 'accordion'" ng-click="switchGridAccordionView()" id="accordionView" value="Accordion View" class="btn btn-default pull-right">
     <i class="fa fa-bars"></i>
     Accordion View
 </button>

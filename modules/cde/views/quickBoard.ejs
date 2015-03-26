@@ -1,21 +1,17 @@
-<div class="container-fluid">
+<div class="container-fluid" ng-controller="SwitchListViewCtrl">
+
     <div ng-if="quickBoard.length>0">
         <br/>
         <div class="btn-group">
-            <button id="qb.accordion" ng-disabled="viewType.accordion" value="Accordion View" ng-click="showAccordionView()" class="btn btn-default">
-                <i class="fa fa-bars"></i> Accordion View
-            </button>
 
-            <button id="qb.gridview" ng-disabled="viewType.grid" value="Grid View" ng-click="showGridView()" class="btn btn-default">
-                <i class="fa fa-table"></i> Grid View
-            </button>
+            <span ng-include="'/template/system/switchListViewControls'"></span>
 
-            <button id="qb.compare" ng-disabled="viewType.sidebyside" value="Side by Side View" ng-click="showSideBySideView()" class="btn btn-default">
+            <button id="qb.compare" ng-disabled="listViewType==='sideBySide'" value="Side by Side View" ng-click="showSideBySideView()" class="btn btn-default">
                 <i class="fa fa-search"></i> Side by Side View
             </button>
         </div>
         <div class="btn-group">
-            <button id="qb.openCloseAll" ng-disabled="!viewType.accordion" ng-click="openCloseAllSwitch(cdes, 'quickboard');" class="btn btn-default btn-checkbox">
+            <button id="qb.openCloseAll" ng-show="listViewType==='accordion'" ng-click="openCloseAllSwitch(cdes, 'quickboard');" class="btn btn-default btn-checkbox">
                 <span ng-hide="openCloseAllModel.quickboard"><i class="fa fa-expand"></i> Expand All</span>
                 <span ng-show="openCloseAllModel.quickboard"><i class="fa fa-compress"></i> Collapse All</span>
             </button>
@@ -37,15 +33,10 @@
     </div>
 
     <div ng-if="cdes.length>0" >
-        <div ng-if="viewType.accordion">
-            <div ng-include="'/template/cde/cdeAccordionList'" ng-init="ejsPage = 'quickboard';"></div>
-        </div>
 
-        <div ng-if="viewType.grid">
-            <div id="quickBoardGridView" class="gridStyle" ng-grid="gridOptions"></div>
-        </div>
+        <span ng-if="listViewType!=='sideBySide'" ng-include="'/template/system/switchListViewContent.ejs'" ng-init="module='cde'"></span>
         
-        <div ng-if="viewType.sidebyside">
+        <div ng-if="listViewType==='sideBySide'">
             <div ng-include="'/template/cde/deCompare'"></div>
         </div>        
 
