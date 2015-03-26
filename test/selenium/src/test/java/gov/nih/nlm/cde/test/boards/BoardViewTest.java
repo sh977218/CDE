@@ -10,7 +10,7 @@ public class BoardViewTest extends BoardTest {
     public void showLargeGridView() {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
-        findElement(By.linkText("Grid View")).click();
+        findElement(By.linkText("Table View")).click();
         textPresent("500 documents returned");
         Assert.assertTrue(driver.findElements(By.cssSelector("div.ngRow")).size() > 20);
     }
@@ -29,7 +29,7 @@ public class BoardViewTest extends BoardTest {
         closeAlert();
         hangon(1);
         goToBoard(boardName);
-        findElement(By.linkText("Grid View")).click();
+        findElement(By.linkText("Table View")).click();
         Assert.assertEquals(driver.findElements(By.cssSelector("div.ngRow")).size(), 5);
         textPresent("Fluorescence in situ");
         textPresent("pN0, pN1, NX");

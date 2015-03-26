@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', function($scope, CdeList) {
+angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', 'OrgHelpers', 'userResource', function($scope, CdeList, OrgHelpers, userResource) {
 
     $scope.cdes = [];
     $scope.qbGridCdes = [];
@@ -28,6 +28,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', f
                    }
                 }
                $scope.openCloseAll($scope.cdes, "quickboard");
+               $scope.cdes.forEach(function(elt) {elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);});
            }
         });
     }

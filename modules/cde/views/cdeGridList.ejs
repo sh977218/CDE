@@ -1,6 +1,7 @@
+<span  ng-class="accordionListStyle">
 <span ng-controller="CdeGridListCtrl">
     <!--<div class="deViewGrid" ng-grid="gridOptions"></div>-->
-    <table class="gridListView table table-condensed table-striped table-bordered">
+    <table class="gridListView table table-condensed table-striped table-bordered" ng-class="accordionListStyle">
         <thead>
         <tr>
             <th class="name">Name</th>
@@ -17,12 +18,12 @@
             <tr ng-repeat="c in cdes">
                 <td class="name">
                     <a href="#/deview/?tinyId={{c.tinyId}}">
-                        {{c.primaryNameCopy}}
+                        {{c.naming[0].designation}}
                     </a>
                 </td>
                 <td class="naming">
                     <ul>
-                        <li ng-repeat="name in c.naming | limitTo: maxLines" ng-show="name.designation">{{name.designation}}</li>
+                        <li ng-repeat="name in c.naming | limitTo: maxLines" ng-show="name.designation">{{name.designation | limitTo: lineLength}} <span ng-show="name.designation.length>lineLength">...</span></li>
                         <li class="lastItem" ng-show="c.naming.length > maxLines">...</li>
                     </ul>
                 </td>
@@ -33,7 +34,7 @@
                     <span ng-if="c.valueDomain.permissibleValues">
                         <ul>
                             <li ng-repeat="pv in c.valueDomain.permissibleValues  | limitTo: maxLines">
-                                {{pv.valueMeaningName}}
+                                {{pv.valueMeaningName | limitTo: lineLength}} <span ng-show="pv.valueMeaningName.length>lineLength">...</span>
                             </li>
                             <li class="lastItem" ng-show="c.valueDomain.permissibleValues.length > maxLines">...</li>
                         </ul>
@@ -48,7 +49,7 @@
                 <td class="ids">
                     <ul>
                         <li ng-repeat="id in c.ids | limitTo: maxLines">
-                            {{id.source}}: {{id.id}} <span ng-show="id.version">v{{id.version}}</span>
+                            {{id.source}}: <strong>{{id.id}}</strong> <span ng-show="id.version">v{{id.version}}</span>
                         </li>
                         <li class="lastItem" ng-show="c.ids.length > maxLines">...</li>
                     </ul>
@@ -57,4 +58,5 @@
             </tr>
         </tbody>
     </table>
-<span/>
+</span>
+</span>

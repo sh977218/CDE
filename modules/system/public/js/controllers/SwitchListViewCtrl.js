@@ -1,6 +1,7 @@
 angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', function($scope, OrgHelpers) {
 
     $scope.maxLines = 5;
+    $scope.lineLength = 50;
     $scope.listViewType = 'accordion';
 
     $scope.getUsedBy = OrgHelpers.getUsedBy;
