@@ -21,7 +21,9 @@ angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$
           }
         });
         modalInstance.result.then(function (newelt) {
-            $window.location.href = redirectBaseLink + newelt._id;  
+            $window.location.href = redirectBaseLink + newelt.tinyId;
+            $scope.elt = newelt;
+            if ($scope.elt.history && $scope.elt.history.length>0) $scope.loadPriorCdes();
             $scope.addAlert("success", "Saved.");
         }, function(reason) {
         });

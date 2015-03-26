@@ -50,6 +50,8 @@ public class CdeStewardTest extends NlmCdeBaseTest {
         findElement(By.id("elt.stewardOrg.name.ok")).click();
         Assert.assertTrue(textPresent("CTEP"));
         newCdeVersion();
+
+        goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale", "Candidate");
         Assert.assertEquals("CTEP", findElement(By.id("dd_general_steward")).getText());
         
         hoverOverElement(findElement(By.linkText("CTEP")));

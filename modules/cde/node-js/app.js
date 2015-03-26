@@ -104,16 +104,18 @@ exports.init = function(app, daoManager) {
     });
 
     app.get('/debytinyid/:tinyId/:version?', function(req, res) {
+        var serveCde = function(err, cde) {
+            adminItemSvc.hideUnapprovedComments(cde);
+            res.send(cdesvc.hideProprietaryPvs(cde, req.user));
+            if (req.isAuthenticated()) {
+                mongo_data.addToViewHistory(cde, req.user);
+            };
+            mongo_data.incDeView(cde);
+        };
         if (!req.params.version) {
-            mongo_data.eltByTinyId(req.params.tinyId, function(err, cde) {
-                adminItemSvc.hideUnapprovedComments(cde);
-                res.send(cdesvc.hideProprietaryPvs(cde, req.user));
-            }); 
+            mongo_data.eltByTinyId(req.params.tinyId, serveCde);
         } else {
-            mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, de) {
-                adminItemSvc.hideUnapprovedComments(de);
-                res.send(cdesvc.hideProprietaryPvs(de, req.user));
-            });
+            mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, serveCde);
         }
     });
     
@@ -133,9 +135,9 @@ exports.init = function(app, daoManager) {
             var splicedArray = req.user.viewHistory.splice(req.params.start, 10);
             var idList = [];
             for (var i = 0; i < splicedArray.length; i++) {
-                idList.push(splicedArray[i]);
+                if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
             }
-            mongo_data.cdesByTinyIdList(idList, function(err, cdes) {
+            mongo_data.cdesByTinyIdListInOrder(idList, function(err, cdes) {
                 res.send(cdesvc.hideProprietaryPvs(cdes, req.user));
             });
         }

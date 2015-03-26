@@ -12,9 +12,9 @@ angular.module('systemModule').controller('AccordionCtrl', ['$scope', '$location
         $scope.interruptEvent(event);
     
         if ($scope.module === 'cde') {
-            $location.url("deview?cdeId=" + elt._id);
+            $location.url("deview?tinyId=" + elt.tinyId);
         } else if ($scope.module === 'form') {
-            $location.url("formView?_id=" + elt._id);
+            $location.url("formView?tinyId=" + elt.tinyId);
         }
     };         
 
@@ -22,9 +22,9 @@ angular.module('systemModule').controller('AccordionCtrl', ['$scope', '$location
         $scope.interruptEvent(event);
     
         if ($scope.module === 'cde') {
-            $window.open("#/deview?cdeId=" + elt._id);
+            $window.open("#/deview?tinyId=" + elt.tinyId);
         } else if ($scope.module === 'form') {
-            $window.open("#/formView?_id=" + elt._id);
+            $window.open("#/formView?tinyId=" + elt.tinyId);
         }
     };           
             

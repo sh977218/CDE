@@ -58,6 +58,7 @@ public class AWorkingGroupTest extends BaseClassificationTest {
         goToCdeByName("Test CDE for Test Working Group", "Recorded");
         findElement(By.linkText("Classification")).click();
         new ClassificationTest().addClassificationMethod(new String[]{"Test Working Group", classification, subClassification});
+        hangon(3);
                 
         // Make sure ctepCurator user can see it
         goToCdeSearch();

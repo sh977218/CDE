@@ -34,7 +34,8 @@ public class SkipLogicTest extends BaseFormTest {
         WebElement sourceElt = findElement(By.cssSelector("#section_view_1 .section-move-handle"));
         WebElement targetElt = findElement(By.id("section_drop_area_0"));
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
-        saveForm(); 
+        saveForm();
+        scrollToTop();
         findElement(By.linkText("Form Description")).click();        
         findElement(By.cssSelector(".section_view .section_view .skipLogicCondition")).sendKeys("\"Patient Gender Category\" = \"Female Gender\"");
         saveForm(); 

@@ -15,7 +15,7 @@
         });
 
         modalInstance.result.then(function (newElt) {
-            $window.location.href = $scope.baseLink + newElt._id;  
+            $window.location.href = $scope.baseLink + newElt.tinyId;
             $scope.addAlert("success", "Saved");
          }, function () {
              $scope.revert($scope.elt);
