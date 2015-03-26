@@ -1,12 +1,10 @@
-angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', 'CdeGridView', function($scope, CdeList, CdeGridView) {
+angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', function($scope, CdeList) {
     
     $scope.viewType = {
         accordion : true
         , grid : false
         , sidebyside : false
     };
-
-    $scope.gridOptions = CdeGridView.gridOptions;
 
     $scope.cdes = [];
     $scope.qbGridCdes = [];
@@ -21,13 +19,6 @@ angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', '
         $scope.viewType.accordion = false;
         $scope.viewType.grid = true;
         $scope.viewType.sidebyside = false;
-        
-        $scope.gridCdes = [];
-        for( var i in $scope.cdes ) {
-            var cde = $scope.cdes[i];
-            var thisCde = CdeGridView.cdeToExportCde(cde);
-           $scope.gridCdes.push(thisCde);
-        }
     };
     
     $scope.showSideBySideView = function() {

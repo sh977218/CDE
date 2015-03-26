@@ -6,7 +6,6 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
             $scope.filterMode = false;
         }
     },0);
-    
 
     if (!$scope.searchForm) $scope.searchForm = {};
 
@@ -219,14 +218,6 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         return result;
     };
     
-    $scope.getUsedBy = function(elt) {
-        if (elt.classification)
-            return elt.classification.filter(function(c) {
-                return OrgHelpers.showWorkingGroup(c.stewardOrg.name, userResource.user);
-            }).map(function(e) {return e.stewardOrg.name;});
-        else return [];
-    };
-    
     $scope.reload = function() {
         var timestamp = new Date().getTime();
         if (!userResource.user) return;
@@ -246,7 +237,7 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
                 if(timestamp < $scope.lastQueryTimeStamp) return;
                 $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage); 
                 $scope.cdes = result.cdes;
-                $scope.cdes.forEach(function(elt) {elt.usedBy = $scope.getUsedBy(elt);});
+                $scope.cdes.forEach(function(elt) {elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);});
                 $scope.accordionListStyle = "";
                 $scope.openCloseAll($scope.cdes, "list");
                 $scope.totalItems = result.totalNumber;
@@ -333,12 +324,12 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         });        
     };
 
-    $scope.listViewType = 'accordion';
-
-    $scope.switchGridAccordionView = function() {
-        if ($scope.listViewType === 'accordion') $scope.listViewType = 'grid';
-        else $scope.listViewType = 'accordion';
-    };
-
+    //$scope.getUsedBy = function(elt) {
+    //    if (elt.classification)
+    //        return elt.classification.filter(function(c) {
+    //            return OrgHelpers.showWorkingGroup(c.stewardOrg.name, userResource.user);
+    //        }).map(function(e) {return e.stewardOrg.name;});
+    //    else return [];
+    //};
 
 }]);

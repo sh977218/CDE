@@ -14,21 +14,6 @@
         </tr>
         </thead>
         <tbody>
-            <!--<tr ng-repeat="c in gridCdes">-->
-                <!--<td class="name">-->
-                    <!--<a href="#/deview/?tinyId={{c.tinyId}}">-->
-                        <!--{{c.primaryNameCopy}}-->
-                    <!--</a>-->
-                <!--</td>-->
-                <!--<td class="naming" ng-bind-html="c.naming"></td>-->
-                <!--<td class="permissibleValues multiline-ellipsis">{{ c.permissibleValues | limitTo: 100 }}{{c.permissibleValues.length > 100 ? '...' : ''}}</td>-->
-                <!--<td class="stewardOrg">{{c.stewardOrg}}</td>-->
-                <!--<td class="usedBy multiline-ellipsis">{{c.usedBy | limitTo: 100 }}{{c.usedBy.length > 100 ? '...' : ''}}</td>-->
-                <!--<td class="registrationStatus">{{c.registrationStatus}}</td>-->
-                <!--<td class="administrativeStatus">{{c.administrativeStatus}}</td>-->
-                <!--<td class="ids">{{c.ids}}</td>-->
-            <!--</tr>-->
-
             <tr ng-repeat="c in cdes">
                 <td class="name">
                     <a href="#/deview/?tinyId={{c.tinyId}}">
@@ -37,26 +22,37 @@
                 </td>
                 <td class="naming">
                     <ul>
-                        <li ng-repeat="name in c.naming">{{name.designation}}</li>
+                        <li ng-repeat="name in c.naming | limitTo: maxLines" ng-show="name.designation">{{name.designation}}</li>
+                        <li class="lastItem" ng-show="c.naming.length > maxLines">...</li>
                     </ul>
                 </td>
                 <td class="permissibleValues multiline-ellipsis">
-                    <ul>
-                        <li ng-repeat="pv in c.valueDomain.permissibleValues">
-                            {{pv.valueMeaningName}}
-                        </li>
-                    </ul>
+                    <div>
+                        {{c.valueDomain.datatype}}<span ng-show="c.valueDomain.datatype==='Value List'">:</span>
+                    </div>
+                    <span ng-if="c.valueDomain.permissibleValues">
+                        <ul>
+                            <li ng-repeat="pv in c.valueDomain.permissibleValues  | limitTo: maxLines">
+                                {{pv.valueMeaningName}}
+                            </li>
+                            <li class="lastItem" ng-show="c.valueDomain.permissibleValues.length > maxLines">...</li>
+                        </ul>
+                     </span>
                 </td>
                 <td class="stewardOrg">{{c.stewardOrg.name}}</td>
                 <td class="usedBy multiline-ellipsis">
-                    <span ng-repeat="org in c.usedBy">{{$index>0?", ":""}}{{org}}</span>
+                    <span ng-repeat="org in c.usedBy | limitTo: maxLines ">{{$index>0?", ":""}}{{org}}</span><span ng-show="c.usedBy.length > maxLines">, ...</span>
                 </td>
                 <td class="registrationStatus">{{c.registrationState.registrationStatus}}</td>
                 <td class="administrativeStatus">{{c.registrationState.administrativeStatus}}</td>
                 <td class="ids">
-                    <div ng-repeat="id in c.ids">
-                        {{id.source}}: {{id.id}} v{{id.version}}
-                    </div>
+                    <ul>
+                        <li ng-repeat="id in c.ids | limitTo: maxLines">
+                            {{id.source}}: {{id.id}} <span ng-show="id.version">v{{id.version}}</span>
+                        </li>
+                        <li class="lastItem" ng-show="c.ids.length > maxLines">...</li>
+                    </ul>
+
                 </td>
             </tr>
         </tbody>

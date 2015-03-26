@@ -1,7 +1,5 @@
-angular.module('cdeModule').controller('ExportCtrl', ['$scope', '$window', 'CsvDownload', 'CdeGridView', function($scope, $window, CsvDownload, CdeGridView) {
+angular.module('cdeModule').controller('ExportCtrl', ['$scope', '$window', 'CsvDownload', function($scope, $window, CsvDownload) {
     $scope.gridCdes = [];
-
-    $scope.gridOptions = CdeGridView.gridOptions;
 
     $scope.cdeToExportCde = function(cde) {
         var newCde = 
