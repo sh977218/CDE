@@ -61,24 +61,25 @@ exports.init = function(app) {
             res.status(401).send();
         }
     });
-
-    var callProcessManager = function(req, res, action, server, callback) {
+    
+    app.post('/serverState', function(req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data_system.updateClusterHostStatus(server, function(err, record) {
+            req.body.nodeStatus = "Stopped";
+            mongo_data_system.updateClusterHostStatus(req.body, function(err) {
                 if (err){
                     res.status(500).send("Unable to update cluster status");
                 }
-                request.post('http://' + req.params.host + ':' + config.pm.port + '/' + action,
+                request.post('http://' + req.body.hostname + ':' + req.body.pmPort + '/' + req.body.action,
                     {json: true,
                         body: {
                             token: token,
-                            port: req.params.port,
+                            port: req.body.port,
                             requester: {host: config.hostname, port: config.port
                             }}},
                     function (err, response, body) {
                         if (err) {
                             console.log("err: " + err);
-                            logging.errorLogger.error(JSON.stringify({msg: 'Unable to ' + action + ' server'}));
+                            logging.errorLogger.error(JSON.stringify({msg: 'Unable to ' + req.body.action + ' server'}));
                             return res.status(500).send('Unable.');
                         }
                         if (response.statusCode !== 200) {
@@ -90,14 +91,6 @@ exports.init = function(app) {
         } else {
             res.status(401).send();
         }
-    };
-
-    app.get('/restart/:host/:port', function(req, res) {
-        return callProcessManager(req, res, 'restart',{hostname: config.hostname, port: config.port, newStatus: "Stopped"});
-    });
-
-    app.get('/stop/:host/:port', function(req, res) {
-        return callProcessManager(req, res, 'stop',{hostname: config.hostname, port: config.port, newStatus: "Stopped"});
     });
 
     app.get("/supportedBrowsers", function(req, res) {

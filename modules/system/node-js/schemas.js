@@ -149,7 +149,8 @@ schemas.message.set('collection', 'messages');
 
 schemas.clusterStatus = mongoose.Schema({
     hostname: String
-    , port: String
+    , port: Number
+    , pmPort: Number
     , nodeStatus: {type: String, enum: ["Running", "Stopped"]}
     , lastUpdate: Date
     , elastic: {

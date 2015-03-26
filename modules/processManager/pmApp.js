@@ -9,7 +9,7 @@ var spawn = require('child_process').spawn,
 var allHosts = [];
 var getHosts = function() {
     request("http://localhost:" + config.port + "/serverStatuses", function(err, res, body) {
-        if (err) console.log("Error getting server status: " + err);
+        if (err) return console.log("Error getting server status: " + err);
         try {
             allHosts = JSON.parse(body).map(function (server) {
                 return {hostname: server.hostname, port: server.port};
@@ -87,5 +87,9 @@ setInterval(function() {
 
 // get Token at regular interval
 setInterval(function() {
+    try {
     getTokens();
+    } catch (e) {
+        console.log("error retrieving status. " + e);
+    }
 }, (config.pm.tokenInterval || 5) * 60 * 1000);
