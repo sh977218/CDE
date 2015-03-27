@@ -61,7 +61,7 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
             if (route.version) query.version = route.version;
         }
         service.get(query, function(de) {
-            $scope.elt = de;        
+            $scope.elt = de;
             $scope.loadValueSet();
             $scope.canLinkPvFunc();
             $scope.loadMlt;           
@@ -121,7 +121,7 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
     }; 
     
     $scope.revert = function(elt) {
-        $scope.reload({cdeId: elt._id});
+        $scope.reload({tinyId: elt.tinyId});
     };
 
     $scope.compareLists = function(listA, listB) {

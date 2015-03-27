@@ -66,12 +66,18 @@ angular.module('resourcesCde', ['ngResource'])
     return {
         require: 'ngModel',
         link: function(scope, ele, attrs, ctrl) {
+            var url;
             scope.$watch(attrs.ngModel, function() {
+                if (scope.elt.formElements) {
+                    url = '/formbytinyid/' + scope.elt.tinyId + "/" + scope.elt.version;
+                } else {
+                    url = '/deExists/' + scope.elt.tinyId + "/" + scope.elt.version
+                }
                 $http({
                     method: 'GET',
-                    url: '/debytinyid/' + scope.elt.tinyId + "/" + scope.elt.version
+                    url: url
                 }).success(function(data, status, headers, cfg) {
-                    ctrl.$setValidity('unique', data === "");
+                    ctrl.$setValidity('unique', !data);
                 }).error(function(data, status, headers, cfg) {
                     ctrl.$setValidity('unique', false);
                 });

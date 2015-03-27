@@ -34,6 +34,12 @@ iConnectionEstablisherCde.connect(function(conn) {
 
 var mongo_data = this;
 
+exports.exists = function(condition, callback) {
+    DataElement.count(condition, function(err, result) {
+        callback(err, result > 0);
+    })
+};
+
 exports.boardsByUserId = function(userId, callback) {
     PinningBoard.find({"owner.userId": userId}).exec(function (err, result) {
         callback(result); 
