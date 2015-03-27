@@ -50,7 +50,7 @@ public class OrgAdminTest extends BaseClassificationTest {
         textPresent("Organization Curator Removed");
         Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("userToPromote"));
 
-        findElement(By.linkText("Organizations Admins")).click();       
+        findElement(By.linkText("Organizations Admins")).click();
         new Select(findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText("caBIG");
         findElement(By.id("newOrgAdminUsername")).sendKeys("userToPromote");
         Assert.assertEquals(findElement(By.xpath("//form[@id='newOrgAdminForm']/div[1]/ul/li[1]/a")).getText(), "userToPromote");

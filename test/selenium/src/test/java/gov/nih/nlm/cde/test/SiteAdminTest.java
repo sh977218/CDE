@@ -136,7 +136,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Site Management")).click();
-        findElement(By.linkText("Organizations Admins")).click();
+        findElement(By.linkText("Org Admins")).click();
         new Select(driver.findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText(testOrg);
         findElement(By.id("newOrgAdminUsername")).sendKeys(test_username);
         findElement(By.id("newOrgAdminSubmit")).click();
@@ -152,7 +152,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Site Management")).click();
-        findElement(By.linkText("Organizations Admins")).click();
+        findElement(By.linkText("Org Admins")).click();
 
         findElement(By.xpath("//span[text() = '" + test_username + "' ]/..//i[@title=\"Remove\"]")).click();
         textNotPresent(test_username);

@@ -1,6 +1,6 @@
 var path = require('path');
 
-require(path.join(__dirname, '../../../../deploy/configTest.js'));
+//require(path.join(__dirname, '../../../../deploy/configTest.js'));
 
 var express = require('express')
   , https = require('https')
@@ -107,17 +107,30 @@ var server = net.createServer(function(c) {
         file += data;
 
         var array = JSON.parse(JSON.stringify(data));
-        var last4 = array.slice(-4);
-        if (last4.length < 4) return;
-        for (var i=0; i<3; i++) if (last4[i]!==0) return;
+        try {
+            var last4;
+            if (array.data) last4 = array.data.slice(-4);
+            else last4 = array.slice(-4);
+            if (last4.length < 4) return;
+            for (var i = 0; i < 3; i++) if (last4[i] !== 0) return;
 
-        if (file.toString().indexOf("VIRUS") > -1) malicious = true;
+            if (file.toString().indexOf("VIRUS") > -1) {
+                malicious = true;
+                console.log("setting malicious = true");
+            }
 
-        if (malicious) console.log("stream: A FOUND\n");
-        else console.log("stream: OK\n");
+            if (malicious) console.log("stream: A FOUND\n");
+            else console.log("stream: OK\n");
 
-        if (malicious) c.write("stream: A FOUND\n");
-        else c.write("stream: OK\n");
+            if (malicious) c.write("stream: A FOUND\n");
+            else c.write("stream: OK\n");
+        } catch (e) {
+            if (malicious) console.log("stream: A FOUND\n");
+            else console.log("stream: OK\n");
+
+            if (malicious) c.write("stream: A FOUND\n");
+            else c.write("stream: OK\n");
+        }
     });
     c.on("end", function() {
         console.log("Scan connection closed");

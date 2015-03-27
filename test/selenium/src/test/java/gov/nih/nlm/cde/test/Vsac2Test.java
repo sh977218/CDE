@@ -62,8 +62,10 @@ public class Vsac2Test extends NlmCdeBaseTest {
 
         goToCdeByName("Patient Race Category");
 
-        Assert.assertTrue(textPresent("Other Race Category"));
-        Assert.assertTrue(textPresent("2131-1.1"));
-        Assert.assertTrue(textPresent("CDCREC.1"));
+        findElement(By.linkText("Permissible Values")).click();
+
+        textPresent("Other Race Category");
+        textPresent("2131-1.1");
+        textPresent("CDCREC.1");
     }
 }
