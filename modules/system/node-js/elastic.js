@@ -67,7 +67,7 @@ var projectCde = function(elasticCde){
     return cde;
 };
 
-exports.elasticSearchExport = function(res, query, type, cb) {
+exports.elasticSearchExport = function(res, query, type) {
     var url = null;
     if (type === "cde") url = exports.elasticCdeUri;
     if (type === "form") url = exports.elasticFormUri;

@@ -371,8 +371,8 @@ angular.module('ElasticSearchResource', ['ngResource'])
             .success(function (response) {
                 cb(response);
             })
-            .error(function(response) {
-
+            .error(function(data, status, headers, config) {
+                cb(response);
             });
         }
     };
