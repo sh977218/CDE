@@ -593,5 +593,5 @@ exports.init = function(app) {
         mongo_data_system.deleteFileById(req.params.id);
         res.send("Attachment declined");
     });
-  
+
 };

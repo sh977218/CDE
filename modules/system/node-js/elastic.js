@@ -49,3 +49,16 @@ exports.elasticsearch = function (query, type, cb) {
         } 
     });  
 };
+
+exports.elasticSearchExport = function(query, type, cb) {
+    var url = null;
+    if (type === "cde") url = exports.elasticCdeUri;
+    if (type === "form") url = exports.elasticFormUri;
+    query.size = 99999;
+    console.log(JSON.stringify(query));
+    request.post(url + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
+        console.log(error);
+        var resp = JSON.parse(body);
+        cb(error, resp.hits.hits)
+    });
+};

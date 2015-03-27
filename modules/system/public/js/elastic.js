@@ -365,5 +365,15 @@ angular.module('ElasticSearchResource', ['ngResource'])
             if (matched  === "flatIds") field = "Identifier";
             cde.highlight.matchedBy = field;
         }
+        , getExport: function(query, type, cb) {
+            var elastic = this;
+            $http.post("/elasticSearchExport/" + type, query)
+            .success(function (response) {
+                cb(response);
+            })
+            .error(function(response) {
+
+            });
+        }
     };
 });

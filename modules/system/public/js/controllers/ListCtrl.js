@@ -324,12 +324,4 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         });        
     };
 
-    //$scope.getUsedBy = function(elt) {
-    //    if (elt.classification)
-    //        return elt.classification.filter(function(c) {
-    //            return OrgHelpers.showWorkingGroup(c.stewardOrg.name, userResource.user);
-    //        }).map(function(e) {return e.stewardOrg.name;});
-    //    else return [];
-    //};
-
 }]);
