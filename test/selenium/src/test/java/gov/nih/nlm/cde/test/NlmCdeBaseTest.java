@@ -158,11 +158,11 @@ public class NlmCdeBaseTest {
         }
 
         findElement(By.id("addOrg")).click();
-        Assert.assertTrue(textPresent("Org Added"));
-        Assert.assertTrue(textPresent(orgName));
+        textPresent("Org Added");
+        textPresent(orgName);
 
         if (orgLongName != null) {
-            Assert.assertTrue(textPresent(orgLongName));
+            textPresent(orgLongName);
         }
     }
       
@@ -307,7 +307,7 @@ public class NlmCdeBaseTest {
         try {
             findElement(By.cssSelector(".alert .close")).click();
         } catch (Exception e) {
-
+            System.out.println("Unable to close alert.");
         }
     }
 

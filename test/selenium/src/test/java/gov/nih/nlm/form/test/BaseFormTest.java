@@ -4,10 +4,23 @@ import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 
+import java.util.concurrent.TimeoutException;
+
 public class BaseFormTest extends NlmCdeBaseTest {
 
     protected void startAddingQuestions() {
         scrollToTop();
+        try {
+            textPresent("Show Question Search", By.id("startAddingQuestions"), 2);
+            findElement(By.id("startAddingQuestions")).click();
+        } catch (Exception e) {
+            // if button does not say show, then don't click it.
+        }
+    }
+
+    public void stopAddingQuestions() {
+        scrollToTop();
+        textPresent("Hide Question Search", By.id("startAddingQuestions"), 2);
         findElement(By.id("startAddingQuestions")).click();
     }
     

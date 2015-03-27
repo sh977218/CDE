@@ -90,14 +90,6 @@ body {
     list-style: none;
 }
 
-#repeatCs > .pull-left, #classMgt {
-    border: 1px solid rgb(220,220,220);
-    border-radius: 5px;
-    margin: 5px;
-    padding: 10px;
-    word-wrap: break-word;
-}
-
 #repeatCm > .pull-left {
     margin: 5px;
     padding: 10px;
@@ -480,3 +472,12 @@ button#selectDefault {
 .gridListView td {overflow: hidden;}
 
 .gridListView ul {padding-left: 20px;}
+
+.boxed-div {
+    border: 1px solid rgb(220,220,220);
+    border-radius: 5px;
+    margin: 5px;
+    padding: 10px;
+    word-wrap: break-word;
+}
+

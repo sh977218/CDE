@@ -14,6 +14,7 @@ var passport = require('passport')
     , csrf = require('csurf')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
+    , request = require('request')
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -26,11 +27,16 @@ exports.nocacheMiddleware = function(req, res, next) {
 };
 
 exports.init = function(app) {
+
+    var getRealIp = function(req) {
+        if (req._remoteAddress) return req._remoteAddress;
+        if (req.ip) return req.ip;
+    };
+
     app.use(function(req, res, next) {   
         if (req && req.headers['user-agent'] && req.headers['user-agent'].indexOf("MSIE")>=0) exports.nocacheMiddleware(req, res, next);
         else next();
     });
-    
     
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
     
@@ -39,6 +45,53 @@ exports.init = function(app) {
     app.get('/template/:module/:template', function(req, res) {        
         res.render(req.params.template, req.params.module, {config: viewConfig});
     });		
+
+    var token;
+    app.get('/statusToken', function(req, res) {
+        token = mongo_data_system.generateTinyId();
+        res.send(token);
+    });
+
+    app.get('/serverStatuses', function(req, res) {
+        if (app.isLocalIp(getRealIp(req))) {
+            mongo_data_system.getClusterHostStatuses(function(err, statuses) {
+                res.send(statuses);
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
+    
+    app.post('/serverState', function(req, res) {
+        if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
+            req.body.nodeStatus = "Stopped";
+            mongo_data_system.updateClusterHostStatus(req.body, function(err) {
+                if (err){
+                    res.status(500).send("Unable to update cluster status");
+                }
+                request.post('http://' + req.body.hostname + ':' + req.body.pmPort + '/' + req.body.action,
+                    {json: true,
+                        body: {
+                            token: token,
+                            port: req.body.port,
+                            requester: {host: config.hostname, port: config.port
+                            }}},
+                    function (err, response, body) {
+                        if (err) {
+                            console.log("err: " + err);
+                            logging.errorLogger.error(JSON.stringify({msg: 'Unable to ' + req.body.action + ' server'}));
+                            return res.status(500).send('Unable.');
+                        }
+                        if (response.statusCode !== 200) {
+                            return res.status(500).send('Unable ' + response.statusCode);
+                        }
+                        return res.send('OK');
+                    });
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
 
     app.get("/supportedBrowsers", function(req, res) {
        res.render('supportedBrowsers', 'system'); 
@@ -160,9 +213,9 @@ exports.init = function(app) {
         }         
     });
 
+
     app.get('/siteadmins', function(req, res) {
-        var ip = req.remoteAddress || req.ip;
-        if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
+        if (app.isLocalIp(getRealIp(req))) {
             mongo_data_system.siteadmins(function(err, users) {
                 res.send(users);
             });
@@ -257,11 +310,11 @@ exports.init = function(app) {
     });
 
     app.isLocalIp = function (ip) {
-        return ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0;
+        return ip.indexOf("127.0") !== -1 || ip === "::1" ||  ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIp) > -1;
     };
 
     app.get('/siteaudit', function(req, res) {
-        if (app.isLocalIp(req.ip) 
+        if (app.isLocalIp(getRealIp(req))
                 && req.user && req.user.siteAdmin) {
             res.render('siteAudit', 'system', {config: viewConfig}); 
         } else {
@@ -270,7 +323,7 @@ exports.init = function(app) {
     });
 
     app.get('/searchUsers/:username?', function(req, res) {
-        if (app.isLocalIp(req.ip) 
+        if (app.isLocalIp(getRealIp(req))
                 && req.user && req.user.siteAdmin) {
             mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
                 res.send({users: users});
@@ -317,8 +370,8 @@ exports.init = function(app) {
 
 
     app.get('/siteaccountmanagement', exports.nocacheMiddleware, function(req, res) {
-        var ip = req.ip;
-        if (ip.indexOf("127.0") === 0 || ip.indexOf(config.internalIP) === 0) {
+        if (app.isLocalIp(getRealIp(req))
+            && req.user && req.user.siteAdmin) {
             res.render('siteaccountmanagement', "system");
         } else {
             res.status(401).send();

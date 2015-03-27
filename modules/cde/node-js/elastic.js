@@ -5,7 +5,6 @@ var config = require('config')
 ;
 
 var elasticCdeUri = sharedElastic.elasticCdeUri;
-var elasticFormUri = sharedElastic.elasticFormUri;
 
 exports.elasticsearch = function (query, cb) {
     if (!config.modules.cde.highlight) {
@@ -28,13 +27,6 @@ var mltConf = {
         "property.concepts.originId"
     ]
 };    
-
-
-function jsonToUri(object){
-    return Object.keys(object).map(function(key){ 
-        return encodeURIComponent(key) + '=' + encodeURIComponent(object[key]); 
-    }).join('&');
-}
 
 exports.morelike = function(id, callback) {
     var from = 0;
