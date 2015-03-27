@@ -491,9 +491,9 @@ exports.init = function(app, daoManager) {
     });
 
     app.post('/elasticSearchExport/cde', function(req, res) {
-        return elastic_system.elasticSearchExport(req.body.query, 'cde', function(err, result) {
-            if (err) return res.status(400).send("invalid query");
-            res.send(result);
+        return elastic_system.elasticSearchExport(res, req.body.query, 'cde', function(err, result) {
+            //if (err) return res.status(400).send("invalid query");
+            //res.send(result);
         });
     });
 

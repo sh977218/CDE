@@ -1,6 +1,8 @@
 var config = require('config')
     , request = require('request')
     , logging = require('../../system/node-js/logging')
+    , jsonStream = require('JSONStream')
+    , es = require('event-stream')
 ;
 
 exports.elasticCdeUri = config.elasticUri;
@@ -81,20 +83,51 @@ var stringifyCde = function(elasticCde){
     return cde;
 };
 
-exports.elasticSearchExport = function(query, type, cb) {
+//exports.elasticSearchExport = function(query, type, cb) {
+//    var url = null;
+//    if (type === "cde") url = exports.elasticCdeUri;
+//    if (type === "form") url = exports.elasticFormUri;
+//    query.size = 99999;
+//    request.post(url + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
+//        var time0 = new Date().getTime();
+//        var elasticCdes = JSON.parse(body).hits.hits;
+//        var time1 = new Date().getTime();
+//        var cdes = elasticCdes.map(function(c){return stringifyCde(c._source);});
+//        var time2 = new Date().getTime();
+//        console.log(time1 - time0);
+//        console.log(time2 - time1);
+//        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+//        cb(error, cdes)
+//    });
+//};
+
+exports.elasticSearchExport = function(res, query, type, cb) {
     var url = null;
     if (type === "cde") url = exports.elasticCdeUri;
     if (type === "form") url = exports.elasticFormUri;
     query.size = 99999;
-    request.post(url + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
-        var time0 = new Date().getTime();
-        var elasticCdes = JSON.parse(body).hits.hits;
-        var time1 = new Date().getTime();
-        var cdes = elasticCdes.map(function(c){return stringifyCde(c._source);});
-        var time2 = new Date().getTime();
-        console.log(time1 - time0);
-        console.log(time2 - time1);
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        cb(error, cdes)
-    });
+    //request.post(url + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
+    //    var time0 = new Date().getTime();
+    //    var elasticCdes = JSON.parse(body).hits.hits;
+    //    var time1 = new Date().getTime();
+    //    var cdes = elasticCdes.map(function(c){return stringifyCde(c._source);});
+    //    var time2 = new Date().getTime();
+    //    console.log(time1 - time0);
+    //    console.log(time2 - time1);
+    //    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    //    cb(error, cdes)
+    //});
+
+    //request({uri: url + "_search", body: JSON.stringify(query), method: "POST"})
+    //.pipe(jsonStream.parse('hits.hits.*'))
+    //.pipe(es.mapSync(function (data) {
+    //    console.error(data);
+    //}));
+    request({uri: url + "_search", body: JSON.stringify(query), method: "POST"})
+    .pipe(jsonStream.parse('hits.hits.*'))
+    .pipe(es.map(function (de, cb) {
+        cdeProjection = stringifyCde(de._source);
+        cb(null, JSON.stringify(cdeProjection));
+    })).pipe(res);
 };
+
