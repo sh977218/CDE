@@ -19,8 +19,8 @@ public class BoardViewTest extends BoardTest {
         textNotPresent("DrgSubIllctUseOTH");
         findElement(By.linkText("Next")).click();
         textNotPresent("Tissue specimen collection date and time");
-        textPresent("Sex participant or subject genotype type");
-        textPresent("MS diagnostic criterion type");
+        textPresent("ISNCSCI left neurological injury level");
+        textPresent("Headache Mail Questionnaire");
     }
     
     @Test
