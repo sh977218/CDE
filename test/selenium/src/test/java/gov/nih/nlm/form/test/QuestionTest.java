@@ -37,7 +37,7 @@ public class QuestionTest extends BaseFormTest {
         textPresent("1 results");
         textPresent(cdeName, By.id("accordionList"));
         
-        WebElement sourceElt = findElement(By.xpath("//div[@id='accordionList']//i[@class=\"fa fa-arrows question-move-handle ng-scope\"]"));
+        WebElement sourceElt = findElement(By.xpath("//div[@id='accordionList']//i[contains(@class, 'question-move-handle')]"));
         WebElement targetElt = findElement(By.xpath("//*[text()=\"Patient Gender Category\"]"));
         
         Assert.assertTrue(sourceElt.isDisplayed());
@@ -160,9 +160,9 @@ public class QuestionTest extends BaseFormTest {
         hangon(1);
         Assert.assertEquals("Value List", findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_datatype_0']")).getText().trim());
         Assert.assertFalse(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
-        startAddingQuestions();
+        stopAddingQuestions();
         findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).click();
-        startAddingQuestions();
+//        startAddingQuestions();
         saveForm();
 
         findElement(By.linkText("Form Description")).click();
@@ -170,9 +170,10 @@ public class QuestionTest extends BaseFormTest {
 
         Assert.assertTrue(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
 
-        startAddingQuestions();
+        // hide search CDE
+        findElement(By.id("startAddingQuestions")).click();
 
-        WebElement sourceElt = findElement(By.xpath("//div[@id='section_drop_area_1']//div[@id='question_0']//i[@class='fa fa-arrows question-move-handle ng-scope']"));
+        WebElement sourceElt = findElement(By.xpath("//div[@id='section_drop_area_1']//div[@id='question_0']//i[contains(@class, 'question-move-handle')]"));
         WebElement targetElt = findElement(By.id("section_drop_area_0"));
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
 

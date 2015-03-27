@@ -10,7 +10,6 @@ var express = require('express')
   , mongo_data_system = require('./modules/system/node-js/mongo-data')
   , config = require('config')
   , session = require('express-session')
-  , MongoStore = require('connect-mongo')(session)
   , favicon = require('serve-favicon')
   , auth = require( './modules/system/node-js/authentication' )//TODO: MOVE TO SYSTEM
   , logging = require('./modules/system/node-js/logging.js')
@@ -20,8 +19,9 @@ var express = require('express')
   , bodyParser = require('body-parser')
   , cookieParser = require('cookie-parser')
   , methodOverride = require('method-override')
-  , morganLogger = require('morgan')  
-;
+  , morganLogger = require('morgan')
+    , async = require('async')
+    ;
 
 require('log-buffer')(config.logBufferSize || 4096);
 
@@ -63,12 +63,10 @@ app.set('trust proxy', true);
 
 app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ico')));//TODO: MOVE TO SYSTEM
 
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(methodOverride());
 app.use(cookieParser());
-
 
 var expressSettings = {
     secret: "Kfji76R"
@@ -194,10 +192,10 @@ app.use(function(err, req, res, next){
     next();
 });
 
-
-
 domain.run(function(){
     http.createServer(app).listen(app.get('port'), function(){
         console.log('Express server listening on port ' + app.get('port'));
     });
 });
+
+

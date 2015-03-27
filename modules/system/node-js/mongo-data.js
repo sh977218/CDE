@@ -25,6 +25,7 @@ var User;
 var gfs;
 var connectionEstablisher = connHelper.connectionEstablisher;
 var Message;
+var ClusterStatus;
 var sessionStore;
 var fs_files;
 
@@ -35,6 +36,7 @@ iConnectionEstablisherSys.connect(function(resCon) {
     Org = conn.model('Org', schemas.orgSchema);
     User = conn.model('User', schemas.userSchema);
     Message = conn.model('Message', schemas.message);
+    ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus);
     gfs = Grid(conn.db, mongoose.mongo);
     sessionStore = new MongoStore({ 
         mongooseConnection: resCon  
@@ -51,6 +53,54 @@ iConnectionEstablisherLocal.connect(function(resCon) {
 exports.sessionStore = sessionStore;
 
 exports.mongoose_connection = conn;
+
+exports.getClusterHostStatus = function(server, callback) {
+    ClusterStatus.findOne({hostname: server.hostname, port: server.port}).exec(function(err, result) {
+       callback(err, result);
+    });
+};
+
+exports.getClusterHostStatuses = function(callback) {
+    ClusterStatus.find().exec(function(err, statuses) {
+        callback(err, statuses);
+    });
+};
+
+exports.updateClusterHostStatus = function(status, callback) {
+    status.lastUpdate = new Date();
+    ClusterStatus.update({port: status.port, hostname: status.hostname}, status, {upsert: true}, function(err) {
+        if (err){
+            logging.errorLogger.error("Unable to retrieve state of host in cluster config.", err);
+        }
+        if (callback) callback(err);
+    });
+};
+
+//exports.updateClusterHostStatus = function(status, callback) {
+//    exports.getClusterHostStatus(status, function(err, record) {
+//        if (err){
+//            logging.errorLogger.error("Unable to retrieve state of host in cluster config.", err);
+//            return callback(err);
+//        }
+//        record.nodeStatus = status.newStatus;
+//        record.lastUpdate = new Date();
+//        record.save(function (err) {
+//            if (err) {
+//                logging.errorLogger.error("Unable to update state of cluster record.", err);
+//            }
+//            callback(err);
+//        });
+//    });
+//};
+
+//exports.createClusterHostStatus = function(status, callback) {
+//    var s = new ClusterStatus(status);
+//    s.nodeStatus = "Running";
+//    s.lastUpdate = new Date();
+//    s.save(function(err) {
+//        callback(err);
+//    });
+//};
 
 exports.org_autocomplete = function(name, callback) {
     Org.find({"name": new RegExp(name, 'i')}, function(err, orgs) {

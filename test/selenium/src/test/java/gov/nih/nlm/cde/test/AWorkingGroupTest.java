@@ -20,7 +20,7 @@ public class AWorkingGroupTest extends BaseClassificationTest {
         // Give ctepCurator permission to administer working group
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Site Management")).click();
-        findElement(By.linkText("Organizations Admins")).click();
+        findElement(By.linkText("Org Admins")).click();
         new Select(driver.findElement(By.name("newOrgAdminOrgName"))).selectByVisibleText(orgWG);
         findElement(By.id("newOrgAdminUsername")).sendKeys(ctepCurator_username);
         findElement(By.id("newOrgAdminSubmit")).click();

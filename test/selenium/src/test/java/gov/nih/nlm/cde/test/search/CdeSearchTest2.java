@@ -1,6 +1,6 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.search;
 
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
+import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;

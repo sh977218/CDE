@@ -31,6 +31,10 @@ exports.init = function(app, daoManager) {
     }
     
     app.get('/formById/:id/:type', formCtrl.formById);
+
+    app.get('/formbytinyid/:id/:version', function(req, res) {
+        res.send("");
+    });
     
     app.post('/elasticSearch/form', function(req, res) {
        sharedElastic.elasticsearch(req.body.query, 'form', function(err, result) {

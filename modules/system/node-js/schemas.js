@@ -147,6 +147,20 @@ schemas.message = new mongoose.Schema ({
 
 schemas.message.set('collection', 'messages');
 
+schemas.clusterStatus = mongoose.Schema({
+    hostname: String
+    , port: Number
+    , pmPort: Number
+    , nodeStatus: {type: String, enum: ["Running", "Stopped"]}
+    , lastUpdate: Date
+    , elastic: {
+        up: Boolean
+        , results: Boolean
+        , sync: Boolean
+        , updating: Boolean
+    }
+});
+
 schemas.fs_files = new mongoose.Schema({
     "_id" : mongoose.Schema.Types.ObjectId
     , "filename" : String

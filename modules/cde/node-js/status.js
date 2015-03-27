@@ -176,5 +176,11 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
 
 setInterval(function() {
     status.checkElastic(elastic.elasticCdeUri, mongo);
-}, config.status.timeouts.statusCheck);    
+}, config.status.timeouts.statusCheck);
+
+setInterval(function() {
+    var server = {hostname: config.hostname, port: config.port, nodeStatus: "Running",
+        elastic:status.statusReport.elastic, pmPort: config.pm.port};
+    mongo_data_system.updateClusterHostStatus(server);
+}, config.status.timeouts.clusterStatus * 1000);
 

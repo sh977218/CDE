@@ -49,7 +49,7 @@ public class SkipLogicTest extends BaseFormTest {
                 
         switchTabAndClose(0);       
         
-        findElement(By.xpath("//span[text()=\"Person Birth Date\" and @id=\"question_accordion_0_0\"]")).click();
+        findElement(By.xpath("//span[text()=\"Person Birth Date\" and contains(@id, 'question_accordion')]")).click();
         findElement(By.xpath("//*[@class=\"formQuestion_Person Birth Date\"]//*[contains(@class,'skipLogicCondition ')]")).sendKeys("\"Patient Gender Category\" = \"Female Gender\"");
         saveForm(); 
         findElement(By.id("formPreview")).click();
