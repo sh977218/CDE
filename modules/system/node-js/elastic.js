@@ -50,15 +50,51 @@ exports.elasticsearch = function (query, type, cb) {
     });  
 };
 
+var stringifyCde = function(elasticCde){
+    //return {
+    //    name: elasticCde.naming[0].designation
+    //    , otherNames: elasticCde.naming.slice(1).map(function(n){return n.designation;})
+    //    , valueDomainType: elasticCde.valueDomain.datatype
+    //    , permissibleValues: elasticCde.valueDomain.permissibleValues.map(function(pv){return pv.valueMeaningName;})
+    //    , ids: elasticCde.ids.map(function(id){return id.source+": "+id.id+(id.version?" v"+id.version:"");})
+    //};
+    //var ids;
+    //try {
+    //    ids = elasticCde.ids.map(function (id) {
+    //        return id.source + ": " + id.id + (id.version ? " v" + id.version : "");
+    //    });
+    //} catch (e) {
+    //    console.log(e);
+    //}
+
+    var cde = {
+        name: elasticCde.naming[0].designation
+        , otherNames: elasticCde.naming.slice(1).map(function(n){return n.designation;})
+        , valueDomainType: elasticCde.valueDomain.datatype
+        , permissibleValues: elasticCde.valueDomain.permissibleValues.map(function(pv){return pv.valueMeaningName;})
+        , ids: elasticCde.ids
+        , stewardOrg: elasticCde.stewardOrg
+        , registrationStatus: elasticCde.registrationState.registrationStatus
+        , adminStatus: elasticCde.registrationState.administrativeStatus
+    };
+    if (elasticCde.classification) cde.usedBy = elasticCde.classification.map(function(c){return c.stewardOrg.name});
+    return cde;
+};
+
 exports.elasticSearchExport = function(query, type, cb) {
     var url = null;
     if (type === "cde") url = exports.elasticCdeUri;
     if (type === "form") url = exports.elasticFormUri;
     query.size = 99999;
-    console.log(JSON.stringify(query));
     request.post(url + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
-        console.log(error);
-        var resp = JSON.parse(body);
-        cb(error, resp.hits.hits)
+        var time0 = new Date().getTime();
+        var elasticCdes = JSON.parse(body).hits.hits;
+        var time1 = new Date().getTime();
+        var cdes = elasticCdes.map(function(c){return stringifyCde(c._source);});
+        var time2 = new Date().getTime();
+        console.log(time1 - time0);
+        console.log(time2 - time1);
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        cb(error, cdes)
     });
 };
