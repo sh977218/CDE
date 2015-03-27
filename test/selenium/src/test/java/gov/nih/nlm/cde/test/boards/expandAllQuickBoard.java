@@ -36,19 +36,36 @@ public class ExpandAllQuickBoard extends NlmCdeBaseTest {
         findElement(By.linkText("Quick Board ( 2 )")).click();
         textNotPresent("Loading...");
 
-        Assert.assertFalse(findElement(By.id("qb.accordion")).isEnabled());
-        Assert.assertTrue( findElement(By.id("qb.gridview")).isEnabled() );
-        Assert.assertTrue( findElement(By.id("qb.compare")).isEnabled() );
+        findElement(By.id("qb.compare")).click();
+        textPresent("Prostate Cancer pN0 TNM Finding");
+        textPresent("Prostate Tumor Pathologic N Stage");
+        textPresent("NCI Thesaurus");
 
-        findElement(By.id("qb.gridview")).click();
-        Assert.assertTrue( findElement(By.id("qb.accordion")).isEnabled() );
-        Assert.assertFalse( findElement(By.id("qb.gridview")).isEnabled() );
-        Assert.assertTrue( findElement(By.id("qb.compare")).isEnabled() );
+        findElement(By.id("accordionView")).click();
+        textNotPresent("Prostate Cancer pN0 TNM Finding");
+        textNotPresent("Prostate Tumor Pathologic N Stage");
+        textNotPresent("NCI Thesaurus");
+
+        findElement(By.id("gridView")).click();
+        textPresent("Pathologic N Stage");
+        textPresent("Prostate Cancer pN0 TNM Finding");
+        textPresent("3028594");
+        textPresent("3436564");
+        textPresent("Fluorescence in situ ");
+        textPresent("Prostate Cancer pNX TNM Finding");
+        textPresent("Standard");
+        textPresent("Qualified");
+        textNotPresent("NCI Thesaurus");
+
+        findElement(By.id("accordionView")).click();
+        textNotPresent("Prostate Cancer pN0 TNM Finding");
+        textNotPresent("Prostate Tumor Pathologic N Stage");
+        textNotPresent("NCI Thesaurus");
 
         findElement(By.id("qb.compare")).click();
-        Assert.assertTrue( findElement(By.id("qb.accordion")).isEnabled() );
-        Assert.assertTrue( findElement(By.id("qb.gridview")).isEnabled() );
-        Assert.assertFalse( findElement(By.id("qb.compare")).isEnabled() );
+        textPresent("Prostate Cancer pN0 TNM Finding");
+        textPresent("Prostate Tumor Pathologic N Stage");
+        textPresent("NCI Thesaurus");
     }
 
 }

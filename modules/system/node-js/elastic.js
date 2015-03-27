@@ -82,7 +82,8 @@ exports.elasticSearchExport = function(res, query, type) {
     var url = null;
     if (type === "cde") url = exports.elasticCdeUri;
     if (type === "form") url = exports.elasticFormUri;
-    query.size = 999999;
+    query.size = 500;
+    res.write("Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By");
     request({uri: url + "_search", body: JSON.stringify(query), method: "POST"})
         .pipe(jsonStream.parse('hits.hits.*'))
         .pipe(es.map(function (de, cb) {

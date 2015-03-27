@@ -34,7 +34,7 @@
 
     <div ng-if="cdes.length>0" >
 
-        <span ng-if="listViewType!=='sideBySide'" ng-include="'/template/system/switchListViewContent.ejs'" ng-init="module='cde'"></span>
+        <span ng-if="listViewType!=='sideBySide'" ng-include="'/template/system/switchListViewContent.ejs'" ng-init="module='cde'; ejsPage='quickboard'"></span>
         
         <div ng-if="listViewType==='sideBySide'">
             <div ng-include="'/template/cde/deCompare'"></div>

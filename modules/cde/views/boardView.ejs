@@ -11,5 +11,5 @@
 
     <span ng-include="'/template/system/switchListViewContent.ejs'" ng-init="ejsPage = 'board';module = 'cde';"></span>
 
-    <pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems" ng-model="currentPage" max-size="10"></pagination>
+    <pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems" ng-model="currentPage" max-size="10" ng-change="setPage(currentPage)"></pagination>
  </span>

@@ -68,12 +68,11 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Generalized Activities of Daily Living Pain Restricted Scale" );
         Assert.assertTrue(textPresent("Quick Board ( 5 )"));
         findElement(By.linkText("Quick Board ( 5 )")).click();
-        findElement(By.id("qb.gridview"));
-        findElement(By.id("qb.compare"));
-        findElement(By.id("qb.openCloseAll"));
-        Assert.assertNotEquals(driver.findElements(By.cssSelector("div.ngRow")).size(), 5);
-        findElement(By.id("qb.gridview")).click();
-        Assert.assertEquals(driver.findElements(By.cssSelector("div.ngRow")).size(), 5);
+        findElement(By.id("gridView")).click();
+        textPresent("3436564");
+        textPresent("Prostate Cancer pN0 TNM Finding");
+        textPresent("Prior BMSCT Administered Indicator");
+        textPresent("2320242");
         findElement(By.id("qb.empty")).click();
         Assert.assertTrue( textPresent( "Quick Board ( empty )" ) );
     }
