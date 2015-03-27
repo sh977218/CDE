@@ -3,6 +3,7 @@ var config = require('config')
     , logging = require('../../system/node-js/logging')
     , jsonStream = require('JSONStream')
     , es = require('event-stream')
+    , trim = require("trim")
 ;
 
 exports.elasticCdeUri = config.elasticUri;
@@ -58,13 +59,23 @@ var projectCde = function(elasticCde){
         , otherNames: elasticCde.naming.slice(1).map(function(n){return n.designation;})
         , valueDomainType: elasticCde.valueDomain.datatype
         , permissibleValues: elasticCde.valueDomain.permissibleValues.map(function(pv){return pv.valueMeaningName;})
-        , ids: elasticCde.ids
-        , stewardOrg: elasticCde.stewardOrg
+        , ids: elasticCde.ids.map(function(id) {return id.source + ": " + id.id + (id.version ? " v" + id.version : "")})
+        , stewardOrg: elasticCde.stewardOrg.name
         , registrationStatus: elasticCde.registrationState.registrationStatus
         , adminStatus: elasticCde.registrationState.administrativeStatus
     };
     if (elasticCde.classification) cde.usedBy = elasticCde.classification.map(function(c){return c.stewardOrg.name});
     return cde;
+};
+
+var convertToCsv = function(cde) {
+    var row = "";
+    Object.keys(cde).forEach(function(key) {
+        var value = cde[key];
+        if (Array.isArray(value)) row += value.map(function(v){return trim(v).replace(",","");}).join("; ") + ", ";
+        else row += value +", ";
+    });
+    return row+ "\n";
 };
 
 exports.elasticSearchExport = function(res, query, type) {
@@ -73,10 +84,10 @@ exports.elasticSearchExport = function(res, query, type) {
     if (type === "form") url = exports.elasticFormUri;
     query.size = 999999;
     request({uri: url + "_search", body: JSON.stringify(query), method: "POST"})
-    .pipe(jsonStream.parse('hits.hits.*'))
-    .pipe(es.map(function (de, cb) {
-        cdeProjection = projectCde(de._source);
-        cb(null, JSON.stringify(cdeProjection));
-    })).pipe(res);
+        .pipe(jsonStream.parse('hits.hits.*'))
+        .pipe(es.map(function (de, cb) {
+            cdeProjection = projectCde(de._source);
+            csvCde = convertToCsv(cdeProjection);
+            cb(null, csvCde);
+        })).pipe(res);
 };
-
