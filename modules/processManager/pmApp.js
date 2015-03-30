@@ -32,12 +32,12 @@ var getTokens = function() {
 var spawned;
 
 var spawnChild = function() {
-    var opts = {stdio: 'inherit'};
-    var appCmd = 'app';
-    if (config.pm.cwd) {
-        opts.cwd = config.pm.cwd;
-        appCmd = opts.cwd + "/" + appCmd;
-    }
+    //var opts = {stdio: 'inherit'};
+    //var appCmd = 'app';
+    //if (config.pm.cwd) {
+    //    opts.cwd = config.pm.cwd;
+    //    appCmd = opts.cwd + "/" + appCmd;
+    //}
     var nodeProcess = config.pm.nodeProcess || "node";
     spawned = spawn(nodeProcess, [appCmd], opts);
     setTimeout(function() {
