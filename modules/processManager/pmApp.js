@@ -33,9 +33,11 @@ var spawned;
 
 var spawnChild = function() {
     var opts = {stdio: 'inherit'};
-    //var appCmd = 'app';
+    var appCmd = 'app';
     if (config.pm.cwd) {
+        console.log("CWD: " + opts.cwd);
         opts.cwd = config.pm.cwd;
+        appCmd = opts.cwd + "/" + app;
     }
     spawned = spawn('node', ['app'], opts);
     setTimeout(function() {
