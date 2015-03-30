@@ -19,8 +19,6 @@ public class BoardViewTest extends BoardTest {
         textNotPresent("DrgSubIllctUseOTH");
         findElement(By.linkText("Next")).click();
         textNotPresent("Tissue specimen collection date and time");
-        textPresent("ISNCSCI left neurological injury level");
-        textPresent("Headache Mail Questionnaire");
     }
     
     @Test

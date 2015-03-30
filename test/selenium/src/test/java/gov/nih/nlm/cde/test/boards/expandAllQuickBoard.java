@@ -37,6 +37,7 @@ public class ExpandAllQuickBoard extends NlmCdeBaseTest {
         textNotPresent("Loading...");
 
         findElement(By.id("qb.compare")).click();
+        hangon(5);
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
@@ -47,12 +48,13 @@ public class ExpandAllQuickBoard extends NlmCdeBaseTest {
         textNotPresent("NCI Thesaurus");
 
         findElement(By.id("gridView")).click();
+        textPresent("NX");
+        textPresent("pN0");
         textPresent("Pathologic N Stage");
-        textPresent("Prostate Cancer pN0 TNM Finding");
+        textPresent("NUMBER");
         textPresent("3028594");
         textPresent("3436564");
         textPresent("Fluorescence in situ ");
-        textPresent("Prostate Cancer pNX TNM Finding");
         textPresent("Standard");
         textPresent("Qualified");
         textNotPresent("NCI Thesaurus");
@@ -63,6 +65,7 @@ public class ExpandAllQuickBoard extends NlmCdeBaseTest {
         textNotPresent("NCI Thesaurus");
 
         findElement(By.id("qb.compare")).click();
+        hangon(5);
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
