@@ -39,7 +39,8 @@ var spawnChild = function() {
         appCmd = opts.cwd + "/" + appCmd;
         console.log("CWD: " + opts.cwd);
     }
-    spawned = spawn('node', [appCmd], opts);
+    var nodeProcess = config.pm.nodeProcess || "node";
+    spawned = spawn(nodeProcess, [appCmd], opts);
     setTimeout(function() {
         getHosts();
     }, 10 * 1000)
