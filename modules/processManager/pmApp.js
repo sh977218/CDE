@@ -37,7 +37,6 @@ var spawnChild = function() {
     if (config.pm.cwd) {
         opts.cwd = config.pm.cwd;
         appCmd = opts.cwd + "/" + appCmd;
-        console.log("CWD: " + opts.cwd);
     }
     var nodeProcess = config.pm.nodeProcess || "node";
     spawned = spawn(nodeProcess, [appCmd], opts);
