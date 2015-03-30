@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('ExportCtrl', ['$scope', 'Elastic', '$window', function($scope, Elastic, $window) {
+angular.module('cdeModule').controller('ExportCtrl', ['$scope', 'Elastic', '$window', '$timeout', function($scope, Elastic, $window, $timeout) {
 
     $scope.csvDownloadState = "none";
     $scope.exportSearchResults = function() {
@@ -9,7 +9,10 @@ angular.module('cdeModule').controller('ExportCtrl', ['$scope', 'Elastic', '$win
             //var objectUrl = URL.createObjectURL(blob);
             //$window.open(objectUrl);
             $scope.csvDownloadState = "ready";
-            $window.exportUrl  = "data:text/csv;charset=utf-8,"+result;
+            $scope.exportUrl  = "data:text/csv;charset=utf-8,"+result;
+            $timeout(function(){
+                $window.location.href = $scope.exportUrl;
+            }, 1000);
         });
     };
 
