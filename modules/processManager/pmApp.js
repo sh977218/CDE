@@ -32,7 +32,9 @@ var getTokens = function() {
 var spawned;
 
 var spawnChild = function() {
-    spawned = spawn('node', ['app'], {stdio: 'inherit'});
+    var opts = {stdio: 'inherit'};
+    if (config.pm.cwd) opts.cdw = config.pm.cwd;
+    spawned = spawn('node', ['app'], opts);
     setTimeout(function() {
         getHosts();
     }, 10 * 1000)
