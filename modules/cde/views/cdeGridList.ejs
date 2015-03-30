@@ -34,7 +34,7 @@
                     <span ng-if="c.valueDomain.permissibleValues">
                         <ul>
                             <li ng-repeat="pv in c.valueDomain.permissibleValues  | limitTo: maxLines">
-                                {{pv.valueMeaningName | limitTo: lineLength}} <span ng-show="pv.valueMeaningName.length>lineLength">...</span>
+                                {{pv.permissibleValue | limitTo: lineLength}} <span ng-show="pv.permissibleValue.length>lineLength">...</span>
                             </li>
                             <li class="lastItem" ng-show="c.valueDomain.permissibleValues.length > maxLines">...</li>
                         </ul>

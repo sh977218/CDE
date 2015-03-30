@@ -19,12 +19,22 @@
     <div class="container-fluid searchInfo">
         <span class="pt8 pb8 ib"><strong>{{totalItems}}</strong> results for <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> | <span class="label label-success" id="classif_filter">{{classificationFilters[0].org?getSelectedClassifications():'All Classifications'}}</span> <span ng-show="altClassificationFilterMode === 1">and <span class="label label-success">{{classificationFilters[1].org?getSelectedClassificationsAlt():'All Classifications'}} <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl5" ng-click="toggleAltClassificationFilterMode()" tooltip="Remove this classifications filter" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true"></i></span></span> | {{getSelectedStatuses()?getSelectedStatuses():'All Status'}}</span>
 
-        <a ng-controller="ExportCtrl" ng-click="exportSearchResults()" ng-show="totalItems>0 && cPage !== 'forms'">
-            <button id="gridView" value="Export Search" class="btn btn-default pull-right">
-                <i class="fa fa-download"></i>
-                Export Search
-            </button>
-        </a>
+        <span ng-controller="ExportCtrl">
+            <a ng-click="exportSearchResults()" ng-show="totalItems>0 && cPage !== 'forms'">
+                <button id="gridView" value="Export Search" class="btn btn-default pull-right">
+                    <i class="fa fa-download"></i>
+                    Export Search
+                </button>
+            </a>
+            <a href="{{exportUrl}}">
+                {{ csvDownloadState }}
+                <button ng-show="csvDownloadState!=='none'" ng-disabled="csvDownloadState==='loading'" id="gridView" value="Export Search" class="btn btn-default pull-right">
+                    <i class="fa fa-download"></i>
+                    Download
+                </button>
+            </a>
+        </span>
+
 
         <span ng-include="'/template/system/switchListViewControls'"></span>
 

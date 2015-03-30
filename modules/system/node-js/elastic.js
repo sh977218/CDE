@@ -56,9 +56,9 @@ exports.elasticsearch = function (query, type, cb) {
 var projectCde = function(elasticCde){
     var cde = {
         name: elasticCde.naming[0].designation
-        , otherNames: elasticCde.naming.slice(1).map(function(n){return n.designation;})
+        , otherNames: elasticCde.naming.slice(1).map(function(n){return n.designation;}).filter(function(n){return n;})
         , valueDomainType: elasticCde.valueDomain.datatype
-        , permissibleValues: elasticCde.valueDomain.permissibleValues.map(function(pv){return pv.valueMeaningName;})
+        , permissibleValues: elasticCde.valueDomain.permissibleValues.map(function(pv){return pv.permissibleValue;})
         , ids: elasticCde.ids.map(function(id) {return id.source + ": " + id.id + (id.version ? " v" + id.version : "")})
         , stewardOrg: elasticCde.stewardOrg.name
         , registrationStatus: elasticCde.registrationState.registrationStatus
@@ -72,7 +72,10 @@ var convertToCsv = function(cde) {
     var row = "";
     Object.keys(cde).forEach(function(key) {
         var value = cde[key];
-        if (Array.isArray(value)) row += value.map(function(v){return trim(v).replace(",","");}).join("; ") + ", ";
+        if (Array.isArray(value)) row += value.map(function(v){
+            //if (!v || !trim(v)) {console.log(cde);console.log(key); console.log(v);}
+            return trim(v).replace(",","");
+        }).join("; ") + ", ";
         else row += value +", ";
     });
     return row+ "\n";
