@@ -42,7 +42,7 @@ public class BoardViewTest extends BoardTest {
         textPresent("Anaplastic Lymp");
         textPresent("ALK Standard Deviation");
         textPresent("Pathologic N Stage");
-        textPresent("Prostate Cancer pN0 TNM Finding");
+        textPresent("pN0");
         textPresent("3436564");
         textPresent("3028594");
         textPresent("Prior BMSCT Administered Indicator");

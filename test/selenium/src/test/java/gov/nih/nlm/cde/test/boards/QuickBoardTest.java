@@ -70,7 +70,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         findElement(By.linkText("Quick Board ( 5 )")).click();
         findElement(By.id("gridView")).click();
         textPresent("3436564");
-        textPresent("Prostate Cancer pN0 TNM Finding");
+        textPresent("pN0");
         textPresent("Prior BMSCT Administered Indicator");
         textPresent("2320242");
         findElement(By.id("qb.empty")).click();
