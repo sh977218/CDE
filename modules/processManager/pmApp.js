@@ -36,7 +36,7 @@ var spawnChild = function() {
     var appCmd = 'app';
     if (config.pm.cwd) {
         opts.cwd = config.pm.cwd;
-        appCmd = opts.cwd + "/" + app;
+        appCmd = opts.cwd + "/" + appCmd;
         console.log("CWD: " + opts.cwd);
     }
     spawned = spawn('node', [appCmd], opts);
