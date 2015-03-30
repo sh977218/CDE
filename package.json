@@ -55,6 +55,7 @@
     "grunt-available-tasks": "*",
     "grunt-useref": "*",
     "log-buffer": "0.0.3",
-    "chalk": "*"
+    "chalk": "*",
+    "xmlbuilder": "2.6.2"
   }
 }
