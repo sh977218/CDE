@@ -39,7 +39,7 @@ var spawnChild = function() {
         appCmd = opts.cwd + "/" + app;
         console.log("CWD: " + opts.cwd);
     }
-    spawned = spawn('node', ['app'], opts);
+    spawned = spawn('node', [appCmd], opts);
     setTimeout(function() {
         getHosts();
     }, 10 * 1000)
