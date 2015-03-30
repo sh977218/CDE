@@ -103,6 +103,12 @@ exports.init = function(app, daoManager) {
         });
     });
 
+    app.get('/deExists/:tinyId/:version', function(req, res) {
+        mongo_data.exists({tinyId: req.params.tinyId, version: req.params.version}, function(err, result) {
+            res.send(result);
+        });
+    });
+
     app.get('/debytinyid/:tinyId/:version?', function(req, res) {
         var serveCde = function(err, cde) {
             adminItemSvc.hideUnapprovedComments(cde);

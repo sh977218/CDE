@@ -76,7 +76,7 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltSearch();
         findElement(By.name("ftsearch")).sendKeys("Alkaline");
         findElement(By.id("search.submit")).click();
-        hangon(2);
+        hangon(3);
         Assert.assertTrue(!driver.findElement(By.id("accordionList")).getText().contains(eltName));
     }
 
