@@ -38,7 +38,7 @@ var config = {
         , scripts: {
             stop: "sudo /sbin/service elasticsearch stop"
             , start: "sudo /sbin/service elasticsearch start"
-        }          
+        }
     }
     , database: {
         servers: [

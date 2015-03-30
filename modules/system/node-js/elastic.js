@@ -69,14 +69,24 @@ var projectCde = function(elasticCde){
 };
 
 var convertToCsv = function(cde) {
+    var sanitize = function(v) {
+        //return trim(v)//.replace(/,/g,"");
+        return trim(v).replace(/\"/g,"\"\"");
+    };
     var row = "";
     Object.keys(cde).forEach(function(key) {
+        row += "\"";
+        //row += "";
         var value = cde[key];
-        if (Array.isArray(value)) row += value.map(function(v){
-            //if (!v || !trim(v)) {console.log(cde);console.log(key); console.log(v);}
-            return trim(v).replace(",","");
-        }).join("; ") + ", ";
-        else row += value +", ";
+        if (Array.isArray(value)) {
+            row += value.map(function (value) {
+                return sanitize(value);
+            }).join("; ");
+        } else if (value) {
+            row += sanitize(value);
+        }
+        row+="\",";
+        //row+=",";
     });
     return row+ "\n";
 };
@@ -86,7 +96,7 @@ exports.elasticSearchExport = function(res, query, type) {
     if (type === "cde") url = exports.elasticCdeUri;
     if (type === "form") url = exports.elasticFormUri;
     query.size = 500;
-    res.write("Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By");
+    res.write("Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n");
     request({uri: url + "_search", body: JSON.stringify(query), method: "POST"})
         .pipe(jsonStream.parse('hits.hits.*'))
         .pipe(es.map(function (de, cb) {
