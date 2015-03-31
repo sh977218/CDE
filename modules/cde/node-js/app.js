@@ -18,7 +18,6 @@ var cdesvc = require('./cdesvc')
   , authorizationShared = require("../../system/shared/authorizationShared")
   , async = require("async")
   , multer  = require('multer')
-  , elastic_system = require('../../system/node-js/elastic')
 ;
 
 exports.init = function(app, daoManager) {
@@ -494,10 +493,6 @@ exports.init = function(app, daoManager) {
         } else {
             res.status(401).send("Not Authorized");
         }
-    });
-
-    app.post('/elasticSearchExport/cde', function(req, res) {
-        return elastic_system.elasticSearchExport(res, req.body.query, 'cde');
     });
 
 };

@@ -15,6 +15,7 @@ var passport = require('passport')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
     , request = require('request')
+    , elastic_system = require('../../system/node-js/elastic')
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -647,4 +648,7 @@ exports.init = function(app) {
         res.send("Attachment declined");
     });
 
+    app.post('/elasticSearchExport/:module', function(req, res) {
+        return elastic_system.elasticSearchExport(res, req.body.query, req.params.module);
+    });
 };

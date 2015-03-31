@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('ExportCtrl', ['$scope', 'Elastic', '$window', '$timeout', function($scope, Elastic, $window, $timeout) {
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', '$window', '$timeout', function($scope, Elastic, $window, $timeout) {
     var maxExportSize = 500;
 
     $scope.csvDownloadState = "none";

@@ -68,15 +68,26 @@ var projectCde = function(elasticCde){
     return cde;
 };
 
+var projectForm = function(elasticCde){
+    var cde = {
+        name: elasticCde.naming[0].designation
+        , otherNames: elasticCde.naming.slice(1).map(function(n){return n.designation;}).filter(function(n){return n;})
+        , ids: elasticCde.ids.map(function(id) {return id.source + ": " + id.id + (id.version ? " v" + id.version : "")})
+        , stewardOrg: elasticCde.stewardOrg.name
+        , registrationStatus: elasticCde.registrationState.registrationStatus
+        , adminStatus: elasticCde.registrationState.administrativeStatus
+    };
+    if (elasticCde.classification) cde.usedBy = elasticCde.classification.map(function(c){return c.stewardOrg.name});
+    return cde;
+};
+
 var convertToCsv = function(cde) {
     var sanitize = function(v) {
-        //return trim(v)//.replace(/,/g,"");
         return trim(v).replace(/\"/g,"\"\"");
     };
     var row = "";
     Object.keys(cde).forEach(function(key) {
         row += "\"";
-        //row += "";
         var value = cde[key];
         if (Array.isArray(value)) {
             row += value.map(function (value) {
@@ -86,21 +97,26 @@ var convertToCsv = function(cde) {
             row += sanitize(value);
         }
         row+="\",";
-        //row+=",";
     });
     return row+ "\n";
 };
 
 exports.elasticSearchExport = function(res, query, type) {
-    var url = null;
-    if (type === "cde") url = exports.elasticCdeUri;
-    if (type === "form") url = exports.elasticFormUri;
+    var url, project;
+    if (type === "cde") {
+        url = exports.elasticCdeUri;
+        project = projectCde;
+    }
+    if (type === "form") {
+        url = exports.elasticFormUri;
+        project = projectForm;
+    }
     query.size = 500;
     res.write("Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n");
     request({uri: url + "_search", body: JSON.stringify(query), method: "POST"})
         .pipe(jsonStream.parse('hits.hits.*'))
         .pipe(es.map(function (de, cb) {
-            cdeProjection = projectCde(de._source);
+            cdeProjection = project(de._source);
             csvCde = convertToCsv(cdeProjection);
             cb(null, csvCde);
         })).pipe(res);
