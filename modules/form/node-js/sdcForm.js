@@ -1,5 +1,6 @@
 var mongo_data = require("./mongo-form")
     , xmlbuilder = require("xmlbuilder")
+    , config = require('config')
 ;
 
 
@@ -12,7 +13,8 @@ var addCardinality = function(parent, formElement) {
 var doQuestion = function(parent, question) {
     var newQuestion = parent.ele("sdc:question",
         {"initial_state": "enabled",
-        "data_element_scoped_identifier": "https://cde.nlm.nih.gov/debytinyid/" + question.question.cde.tinyId + "/" + question.question.cde.version});
+        "data_element_scoped_identifier": config.publicUrl + "/debytinyid/" +
+            question.question.cde.tinyId + "/" + question.question.cde.version});
 
     addCardinality(newQuestion, question);
 

@@ -1,6 +1,7 @@
 var config = {
 	name: "Sample Localhost Configuration"
     , hostname: "localhost"
+    , publicUrl: "https://cde.nlm.nih.gov"
     , umls: {
         licenseCode: "NLM-4110134256"
     }
