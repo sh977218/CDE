@@ -98,7 +98,6 @@ var config = {
     }
     , pm: {
         port: 3081
-        , cwd: "path to your main app"
         , nodeProcess: "path to node bin, if needed"
     }
 };
