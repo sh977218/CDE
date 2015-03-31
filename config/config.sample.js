@@ -97,7 +97,10 @@ var config = {
         ip: "127.0.0.1"
         , port: 3311
     }
-    , pm: {}
+    , pm: {
+        port: 3081
+        , nodeProcess: "path to node bin, if needed"
+    }
 };
 
 module.exports = config;
