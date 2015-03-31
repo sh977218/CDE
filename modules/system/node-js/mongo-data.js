@@ -76,32 +76,6 @@ exports.updateClusterHostStatus = function(status, callback) {
     });
 };
 
-//exports.updateClusterHostStatus = function(status, callback) {
-//    exports.getClusterHostStatus(status, function(err, record) {
-//        if (err){
-//            logging.errorLogger.error("Unable to retrieve state of host in cluster config.", err);
-//            return callback(err);
-//        }
-//        record.nodeStatus = status.newStatus;
-//        record.lastUpdate = new Date();
-//        record.save(function (err) {
-//            if (err) {
-//                logging.errorLogger.error("Unable to update state of cluster record.", err);
-//            }
-//            callback(err);
-//        });
-//    });
-//};
-
-//exports.createClusterHostStatus = function(status, callback) {
-//    var s = new ClusterStatus(status);
-//    s.nodeStatus = "Running";
-//    s.lastUpdate = new Date();
-//    s.save(function(err) {
-//        callback(err);
-//    });
-//};
-
 exports.org_autocomplete = function(name, callback) {
     Org.find({"name": new RegExp(name, 'i')}, function(err, orgs) {
         callback(orgs);
