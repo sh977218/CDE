@@ -76,8 +76,6 @@ var config = {
             , comments: true
             , highlight: true
             , audit: true
-            , tableView: true
-            , eltExport: true
         }
     } 
     , status: {
