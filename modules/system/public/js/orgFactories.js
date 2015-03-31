@@ -1,6 +1,6 @@
 angular.module('OrgFactories', ['ngResource'])
 .factory('OrgHelpers', function ($http) {
-    return {    
+    var orgHelpers = {
         orgsDetailedInfo: {}
         , isInitialized : function() {
             return Object.keys(this.orgsDetailedInfo).length !== 0;
@@ -75,6 +75,14 @@ angular.module('OrgFactories', ['ngResource'])
                 });                
             }
             return isNotWorkingGroup || userIsWorkingGroupCurator || userIsCuratorOfParentOrg || isSisterOfWg;        
-        }       
+        }
+        , getUsedBy: function(elt, user) {
+            if (elt.classification)
+                return elt.classification.filter(function(c) {
+                    return orgHelpers.showWorkingGroup(c.stewardOrg.name, user);
+                }).map(function(e) {return e.stewardOrg.name;});
+            else return [];
+        }
     };
+    return orgHelpers;
 });

@@ -13,7 +13,7 @@ angular.module('cdeModule').controller('CdeExportCtrl', ['$scope', 'Elastic', fu
             var list = result.cdes;
             for (var i in list) {
                 var cde = list[i];
-                var thisCde = $scope.cdeToExportCde(cde);
+                var thisCde = CdeGridView.cdeToExportCde(cde);
                 var ids = "";
                 for (var j = 0; j < cde.ids.length; j++) {
                     ids = ids.concat(cde.ids[j].source + ":" + cde.ids[j].id + "v" + cde.ids[j].version + "; ");

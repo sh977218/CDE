@@ -1,0 +1,59 @@
+<span  ng-class="accordionListStyle">
+    <table class="gridListView table table-condensed table-striped table-bordered" ng-class="accordionListStyle">
+        <thead>
+        <tr>
+            <th class="name">Name</th>
+            <th class="naming">Other Names</th>
+            <th class="permissibleValues">Permissible Values</th>
+            <th class="stewardOrg">Steward</th>
+            <th class="usedBy">Used by Organizations</th>
+            <th class="registrationStatus">Registration Status</th>
+            <th class="administrativeStatus">Admin Status</th>
+            <th class="ids">Identifiers</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="c in cdes">
+                <td class="name">
+                    <a href="#/deview/?tinyId={{c.tinyId}}">
+                        {{c.naming[0].designation}}
+                    </a>
+                </td>
+                <td class="naming">
+                    <ul>
+                        <li ng-repeat="name in c.naming | limitTo: maxLines" ng-show="name.designation">{{name.designation | limitTo: lineLength}} <span ng-show="name.designation.length>lineLength">...</span></li>
+                        <li class="lastItem" ng-show="c.naming.length > maxLines">...</li>
+                    </ul>
+                </td>
+                <td class="permissibleValues multiline-ellipsis">
+                    <div>
+                        {{c.valueDomain.datatype}}<span ng-show="c.valueDomain.datatype==='Value List'">:</span>
+                    </div>
+                    <span ng-if="c.valueDomain.permissibleValues">
+                        <ul>
+                            <li ng-repeat="pv in c.valueDomain.permissibleValues  | limitTo: maxLines">
+                                {{pv.permissibleValue | limitTo: lineLength}} <span ng-show="pv.permissibleValue.length>lineLength">...</span>
+                            </li>
+                            <li class="lastItem" ng-show="c.valueDomain.permissibleValues.length > maxLines">...</li>
+                        </ul>
+                     </span>
+                </td>
+                <td class="stewardOrg">{{c.stewardOrg.name}}</td>
+                <td class="usedBy multiline-ellipsis">
+                    <span ng-repeat="org in c.usedBy | limitTo: maxLines ">{{$index>0?", ":""}}{{org}}</span><span ng-show="c.usedBy.length > maxLines">, ...</span>
+                </td>
+                <td class="registrationStatus">{{c.registrationState.registrationStatus}}</td>
+                <td class="administrativeStatus">{{c.registrationState.administrativeStatus}}</td>
+                <td class="ids">
+                    <ul>
+                        <li ng-repeat="id in c.ids | limitTo: maxLines">
+                            {{id.source}}: <strong>{{id.id}}</strong> <span ng-show="id.version">v{{id.version}}</span>
+                        </li>
+                        <li class="lastItem" ng-show="c.ids.length > maxLines">...</li>
+                    </ul>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</span>

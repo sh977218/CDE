@@ -19,12 +19,41 @@ public class MiscTests extends NlmCdeBaseTest {
         findElement(By.id("li-blank-AECC")).click();
         hangon(2);
         findElement(By.id("gridView")).click();
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("exportLink")));
-        List<WebElement> rows = driver.findElements(By.xpath("//div[@class='ngCanvas']/div"));
-        Assert.assertEquals(7, rows.size());
-        Assert.assertTrue(textPresent("Noncompliant Reason"));
-        Assert.assertTrue(textPresent("Race Category Text"));
-        Assert.assertTrue(textPresent("Prostate Cancer American"));
+        textPresent("Pathologic N Stage");
+        textPresent("If No, specify reason for ");
+        textPresent("AE Ongoing?");
+        textPresent("Patient DOB");
+        textPresent("pN0");
+        textPresent("pN1");
+        textPresent("Not Hispanic or Latino");
+        textPresent("Hispanic or Latino");
+        textPresent("American Indian or Alaska Native");
+        textPresent("Female");
+        textPresent("3436564");
+        textPresent("2182832");
+        textPresent("2746311");
+        textPresent("2192217");
+        textPresent("NHLBI");
+        textPresent("SPOREs");
+        textPresent("NICHD");
+        findElement(By.id("accordionView")).click();
+        textNotPresent("Pathologic N Stage");
+        textNotPresent("If No, specify reason for ");
+        textNotPresent("AE Ongoing?");
+        textNotPresent("Patient DOB");
+        textNotPresent("pN0");
+        textNotPresent("pN1");
+        textNotPresent("Not Hispanic or Latino");
+        textNotPresent("Hispanic or Latino");
+        textNotPresent("American Indian or Alaska Native");
+        textNotPresent("Female");
+        textNotPresent("3436564");
+        textNotPresent("2182832");
+        textNotPresent("2746311");
+        textNotPresent("2192217");
+        textNotPresent("NHLBI");
+        textNotPresent("SPOREs");
+        textNotPresent("NICHD");
     }
     
     

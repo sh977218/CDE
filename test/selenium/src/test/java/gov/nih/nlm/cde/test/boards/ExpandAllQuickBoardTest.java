@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class ExpandAllQuickBoard extends NlmCdeBaseTest {
+public class ExpandAllQuickBoardTest extends NlmCdeBaseTest {
 
     @Test
     public void expandAllQuickBoard() {
@@ -36,19 +36,39 @@ public class ExpandAllQuickBoard extends NlmCdeBaseTest {
         findElement(By.linkText("Quick Board ( 2 )")).click();
         textNotPresent("Loading...");
 
-        Assert.assertFalse(findElement(By.id("qb.accordion")).isEnabled());
-        Assert.assertTrue( findElement(By.id("qb.gridview")).isEnabled() );
-        Assert.assertTrue( findElement(By.id("qb.compare")).isEnabled() );
+        findElement(By.id("qb.compare")).click();
+        hangon(5);
+        textPresent("Prostate Cancer pN0 TNM Finding");
+        textPresent("Prostate Tumor Pathologic N Stage");
+        textPresent("NCI Thesaurus");
 
-        findElement(By.id("qb.gridview")).click();
-        Assert.assertTrue( findElement(By.id("qb.accordion")).isEnabled() );
-        Assert.assertFalse( findElement(By.id("qb.gridview")).isEnabled() );
-        Assert.assertTrue( findElement(By.id("qb.compare")).isEnabled() );
+        findElement(By.id("accordionView")).click();
+        textNotPresent("Prostate Cancer pN0 TNM Finding");
+        textNotPresent("Prostate Tumor Pathologic N Stage");
+        textNotPresent("NCI Thesaurus");
+
+        findElement(By.id("gridView")).click();
+        textPresent("NX");
+        textPresent("pN0");
+        textPresent("Pathologic N Stage");
+        textPresent("NUMBER");
+        textPresent("3028594");
+        textPresent("3436564");
+        textPresent("Fluorescence in situ ");
+        textPresent("Standard");
+        textPresent("Qualified");
+        textNotPresent("NCI Thesaurus");
+
+        findElement(By.id("accordionView")).click();
+        textNotPresent("Prostate Cancer pN0 TNM Finding");
+        textNotPresent("Prostate Tumor Pathologic N Stage");
+        textNotPresent("NCI Thesaurus");
 
         findElement(By.id("qb.compare")).click();
-        Assert.assertTrue( findElement(By.id("qb.accordion")).isEnabled() );
-        Assert.assertTrue( findElement(By.id("qb.gridview")).isEnabled() );
-        Assert.assertFalse( findElement(By.id("qb.compare")).isEnabled() );
+        hangon(5);
+        textPresent("Prostate Cancer pN0 TNM Finding");
+        textPresent("Prostate Tumor Pathologic N Stage");
+        textPresent("NCI Thesaurus");
     }
 
 }
