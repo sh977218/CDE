@@ -64,7 +64,7 @@ app.set('trust proxy', true);
 app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ico')));//TODO: MOVE TO SYSTEM
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: "16mb"}));
 app.use(methodOverride());
 app.use(cookieParser());
 
