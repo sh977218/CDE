@@ -26,8 +26,7 @@ angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$
             if ($scope.elt.history && $scope.elt.history.length>0) $scope.loadPriorCdes();
             $scope.addAlert("success", "Saved.");
         }, function(reason) {
-            $scope.addAlert("danger", reason);
-        });        
+        });
     };
 
 }
