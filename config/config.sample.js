@@ -68,7 +68,7 @@ var config = {
     , modules: {
         forms: {
             attachments: true
-            , comments: true          
+            , comments: true
         }
         , article: true
         , cde: {
@@ -76,6 +76,8 @@ var config = {
             , comments: true
             , highlight: true
             , audit: true
+            , tableView: true
+            , eltExport: true
         }
     } 
     , status: {
