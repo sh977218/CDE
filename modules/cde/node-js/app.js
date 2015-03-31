@@ -18,6 +18,7 @@ var cdesvc = require('./cdesvc')
   , authorizationShared = require("../../system/shared/authorizationShared")
   , async = require("async")
   , multer  = require('multer')
+  , elastic_system = require('../../system/node-js/elastic')
 ;
 
 exports.init = function(app, daoManager) {
@@ -493,6 +494,25 @@ exports.init = function(app, daoManager) {
         } else {
             res.status(401).send("Not Authorized");
         }
-    });     
+    });
+
+    app.post('/elasticSearchExport/cde', function(req, res) {
+        var projectCde = function(elasticCde){
+            var cde = {
+                name: elasticCde.naming[0].designation
+                , otherNames: elasticCde.naming.slice(1).map(function(n){return n.designation;}).filter(function(n){return n;})
+                , valueDomainType: elasticCde.valueDomain.datatype
+                , permissibleValues: elasticCde.valueDomain.permissibleValues.map(function(pv){return pv.permissibleValue;})
+                , ids: elasticCde.ids.map(function(id) {return id.source + ": " + id.id + (id.version ? " v" + id.version : "")})
+                , stewardOrg: elasticCde.stewardOrg.name
+                , registrationStatus: elasticCde.registrationState.registrationStatus
+                , adminStatus: elasticCde.registrationState.administrativeStatus
+            };
+            if (elasticCde.classification) cde.usedBy = elasticCde.classification.map(function(c){return c.stewardOrg.name});
+            return cde;
+        };
+        var cdeHeader = "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
+        return elastic_system.elasticSearchExport(res, req.body.query, 'cde', projectCde, cdeHeader);
+    });
 
 };

@@ -8,6 +8,7 @@ var express = require('express')
   , multer  = require('multer')
     , sdc = require('./sdcForm')
     , logging = require('../../system/node-js/logging')
+  , elastic_system = require('../../system/node-js/elastic')
 ;
 
 exports.init = function(app, daoManager) {
@@ -85,6 +86,22 @@ exports.init = function(app, daoManager) {
 
     app.get('/form/properties/keys', function(req, res) {
         adminItemSvc.allPropertiesKeys(req, res, mongo_data);
+    });
+
+    app.post('/elasticSearchExport/form', function(req, res) {
+        var projectForm = function(elasticCde){
+            var cde = {
+                name: elasticCde.naming[0].designation
+                , ids: elasticCde.ids.map(function(id) {return id.source + ": " + id.id + (id.version ? " v" + id.version : "")})
+                , stewardOrg: elasticCde.stewardOrg.name
+                , registrationStatus: elasticCde.registrationState.registrationStatus
+                , adminStatus: elasticCde.registrationState.administrativeStatus
+            };
+            if (elasticCde.classification) cde.usedBy = elasticCde.classification.map(function(c){return c.stewardOrg.name});
+            return cde;
+        };
+        var formHeader = "Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
+        return elastic_system.elasticSearchExport(res, req.body.query, 'form', projectForm, formHeader);
     });
 
 };

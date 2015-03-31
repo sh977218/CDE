@@ -1,71 +1,9 @@
-angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', function($scope, CdeList) {
-    
-    $scope.viewType = {
-        accordion : true
-        , grid : false
-        , sidebyside : false
-    };
-    
-    $scope.gridOptions = {
-        data: 'qbGridCdes'
-        , enableColumnResize: true
-        , enableRowReordering: true
-        , enableCellSelection: true
-    };
-    
+angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', 'OrgHelpers', 'userResource', function($scope, CdeList, OrgHelpers, userResource) {
+
     $scope.cdes = [];
     $scope.qbGridCdes = [];
-    
-    $scope.showAccordionView = function() {
-        $scope.viewType.accordion = true;
-        $scope.viewType.grid = false;
-        $scope.viewType.sidebyside = false;
-    };
 
-    $scope.showGridView = function() {
-        $scope.viewType.accordion = false;
-        $scope.viewType.grid = true;
-        $scope.viewType.sidebyside = false;
-        
-        $scope.qbGridCdes = [];
-        for( var i in $scope.cdes ) {
-            var cde = $scope.cdes[i];
-            var thisCde = 
-            {
-                ID: cde.tinyId
-                , Version: cde.version
-                , Name: cde.naming[0].designation
-                , Definition: cde.naming[0].definition
-                , Steward: cde.stewardOrg.name
-                , "OriginId": cde.originId 
-                , Origin: cde.origin
-                , "RegistrationStatus": cde.registrationState.registrationStatus
-           };
-           var otherNames = "";
-           for (var j = 1; j < cde.naming.length; j++) {
-               otherNames = otherNames.concat(" " + cde.naming[j].designation);
-           } 
-           thisCde.otherNames = otherNames;
 
-           var permissibleValues = "";
-           for (var j = 0; j < cde.valueDomain.permissibleValues.length; j++) {
-               permissibleValues = permissibleValues.concat(cde.valueDomain.permissibleValues[j].permissibleValue + "; ");
-           } 
-           thisCde.permissbleValues = permissibleValues;
-
-           $scope.qbGridCdes.push(thisCde);               
-        }
-    };
-    
-    $scope.showSideBySideView = function() {
-        if ($scope.cdes.length !== 2) {
-            $scope.addAlert("danger", "You may only compare 2 CDEs side by side.");
-        } else {
-            $scope.viewType.accordion = false;
-            $scope.viewType.grid = false;
-            $scope.viewType.sidebyside = true;      
-        }
-    };
     
     $scope.removeDE = function( index ) {
         $scope.cdes.splice(index, 1);
@@ -90,6 +28,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', f
                    }
                 }
                $scope.openCloseAll($scope.cdes, "quickboard");
+               $scope.cdes.forEach(function(elt) {elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);});
            }
         });
     }

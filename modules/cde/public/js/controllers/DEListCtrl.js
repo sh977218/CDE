@@ -119,7 +119,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
     
     $scope.$on("$destroy", function handler() {
         TourContent.stop();
-    });    
-    
-}
-]);
+    });
+
+
+}]);

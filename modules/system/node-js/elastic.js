@@ -1,6 +1,9 @@
 var config = require('config')
     , request = require('request')
     , logging = require('../../system/node-js/logging')
+    , jsonStream = require('JSONStream')
+    , es = require('event-stream')
+    , trim = require("trim")
 ;
 
 exports.elasticCdeUri = config.elasticUri;
@@ -48,4 +51,39 @@ exports.elasticsearch = function (query, type, cb) {
             }
         } 
     });  
+};
+
+var convertToCsv = function(cde) {
+    var sanitize = function(v) {
+        return trim(v).replace(/\"/g,"\"\"");
+    };
+    var row = "";
+    Object.keys(cde).forEach(function(key) {
+        row += "\"";
+        var value = cde[key];
+        if (Array.isArray(value)) {
+            row += value.map(function (value) {
+                return sanitize(value);
+            }).join("; ");
+        } else if (value) {
+            row += sanitize(value);
+        }
+        row+="\",";
+    });
+    return row+ "\n";
+};
+
+exports.elasticSearchExport = function(res, query, type, project, header) {
+    var url;
+    if (type === "cde") url = exports.elasticCdeUri;
+    if (type === "form") url = exports.elasticFormUri;
+    query.size = 500;
+    res.write(header);
+    request({uri: url + "_search", body: JSON.stringify(query), method: "POST"})
+        .pipe(jsonStream.parse('hits.hits.*'))
+        .pipe(es.map(function (de, cb) {
+            cdeProjection = project(de._source);
+            csvCde = convertToCsv(cdeProjection);
+            cb(null, csvCde);
+        })).pipe(res);
 };

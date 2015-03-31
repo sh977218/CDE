@@ -10,9 +10,15 @@ public class BoardViewTest extends BoardTest {
     public void showLargeGridView() {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
-        findElement(By.linkText("Grid View")).click();
-        textPresent("500 documents returned");
-        Assert.assertTrue(driver.findElements(By.cssSelector("div.ngRow")).size() > 20);
+        findElement(By.id("gridView")).click();
+        textPresent("TissSpecmnCollctnDateTime");
+        textPresent("DrgSubIllctUseOTH");
+        findElement(By.id("accordionView")).click();
+        textPresent("Tissue specimen collection date and time");
+        textNotPresent("TissSpecmnCollctnDateTime");
+        textNotPresent("DrgSubIllctUseOTH");
+        findElement(By.linkText("Next")).click();
+        textNotPresent("Tissue specimen collection date and time");
     }
     
     @Test
@@ -29,13 +35,18 @@ public class BoardViewTest extends BoardTest {
         closeAlert();
         hangon(1);
         goToBoard(boardName);
-        findElement(By.linkText("Grid View")).click();
-        Assert.assertEquals(driver.findElements(By.cssSelector("div.ngRow")).size(), 5);
+        findElement(By.id("gridView")).click();
         textPresent("Fluorescence in situ");
-        textPresent("pN0, pN1, NX");
-        textPresent("ALK Standard");
-        textPresent("Indicator of Yes or No");
-        textPresent("CTEP");
+        textPresent("Anaplastic Lymp");
+        textPresent("ALK Standard Deviation");
+        textPresent("Pathologic N Stage");
+        textPresent("pN0");
+        textPresent("3436564");
+        textPresent("3028594");
+        textPresent("Prior BMSCT Administered Indicator");
+        textPresent("Generalized Activities of Daily Living Pain");
+        textPresent("Platinum free");
+        textPresent("3535434");
     }
 
     public void attachToBoard(String cdeName, String boardName) {

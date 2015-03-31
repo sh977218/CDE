@@ -43,7 +43,7 @@ exports.init = function(app) {
     var viewConfig = {modules: config.modules};
 
     app.get('/template/:module/:template', function(req, res) {        
-        res.render(req.params.template, req.params.module, {config: viewConfig});
+        res.render(req.params.template, req.params.module, {config: viewConfig, module: req.params.module});
     });		
 
     var token;
@@ -646,5 +646,5 @@ exports.init = function(app) {
         mongo_data_system.deleteFileById(req.params.id);
         res.send("Attachment declined");
     });
-  
+
 };
