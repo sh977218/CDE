@@ -53,35 +53,6 @@ exports.elasticsearch = function (query, type, cb) {
     });  
 };
 
-var projectCde = function(elasticCde){
-    var cde = {
-        name: elasticCde.naming[0].designation
-        , otherNames: elasticCde.naming.slice(1).map(function(n){return n.designation;}).filter(function(n){return n;})
-        , valueDomainType: elasticCde.valueDomain.datatype
-        , permissibleValues: elasticCde.valueDomain.permissibleValues.map(function(pv){return pv.permissibleValue;})
-        , ids: elasticCde.ids.map(function(id) {return id.source + ": " + id.id + (id.version ? " v" + id.version : "")})
-        , stewardOrg: elasticCde.stewardOrg.name
-        , registrationStatus: elasticCde.registrationState.registrationStatus
-        , adminStatus: elasticCde.registrationState.administrativeStatus
-    };
-    if (elasticCde.classification) cde.usedBy = elasticCde.classification.map(function(c){return c.stewardOrg.name});
-    return cde;
-};
-var cdeHeader = "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
-
-var projectForm = function(elasticCde){
-    var cde = {
-        name: elasticCde.naming[0].designation
-        , ids: elasticCde.ids.map(function(id) {return id.source + ": " + id.id + (id.version ? " v" + id.version : "")})
-        , stewardOrg: elasticCde.stewardOrg.name
-        , registrationStatus: elasticCde.registrationState.registrationStatus
-        , adminStatus: elasticCde.registrationState.administrativeStatus
-    };
-    if (elasticCde.classification) cde.usedBy = elasticCde.classification.map(function(c){return c.stewardOrg.name});
-    return cde;
-};
-var formHeader = "Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
-
 var convertToCsv = function(cde) {
     var sanitize = function(v) {
         return trim(v).replace(/\"/g,"\"\"");
@@ -102,18 +73,10 @@ var convertToCsv = function(cde) {
     return row+ "\n";
 };
 
-exports.elasticSearchExport = function(res, query, type) {
-    var url, header, project;
-    if (type === "cde") {
-        header = cdeHeader;
-        url = exports.elasticCdeUri;
-        project = projectCde;
-    }
-    if (type === "form") {
-        header = formHeader;
-        url = exports.elasticFormUri;
-        project = projectForm;
-    }
+exports.elasticSearchExport = function(res, query, type, project, header) {
+    var url;
+    if (type === "cde") url = exports.elasticCdeUri;
+    if (type === "form") url = exports.elasticFormUri;
     query.size = 500;
     res.write(header);
     request({uri: url + "_search", body: JSON.stringify(query), method: "POST"})
