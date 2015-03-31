@@ -647,7 +647,4 @@ exports.init = function(app) {
         res.send("Attachment declined");
     });
 
-    //app.post('/elasticSearchExport/:module', function(req, res) {
-    //    return elastic_system.elasticSearchExport(res, req.body.query, req.params.module);
-    //});
 };
