@@ -67,11 +67,11 @@ var projectCde = function(elasticCde){
     if (elasticCde.classification) cde.usedBy = elasticCde.classification.map(function(c){return c.stewardOrg.name});
     return cde;
 };
+var cdeHeader = "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
 
 var projectForm = function(elasticCde){
     var cde = {
         name: elasticCde.naming[0].designation
-        , otherNames: elasticCde.naming.slice(1).map(function(n){return n.designation;}).filter(function(n){return n;})
         , ids: elasticCde.ids.map(function(id) {return id.source + ": " + id.id + (id.version ? " v" + id.version : "")})
         , stewardOrg: elasticCde.stewardOrg.name
         , registrationStatus: elasticCde.registrationState.registrationStatus
@@ -80,6 +80,7 @@ var projectForm = function(elasticCde){
     if (elasticCde.classification) cde.usedBy = elasticCde.classification.map(function(c){return c.stewardOrg.name});
     return cde;
 };
+var formHeader = "Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
 
 var convertToCsv = function(cde) {
     var sanitize = function(v) {
@@ -102,17 +103,19 @@ var convertToCsv = function(cde) {
 };
 
 exports.elasticSearchExport = function(res, query, type) {
-    var url, project;
+    var url, header, project;
     if (type === "cde") {
+        header = cdeHeader;
         url = exports.elasticCdeUri;
         project = projectCde;
     }
     if (type === "form") {
+        header = formHeader;
         url = exports.elasticFormUri;
         project = projectForm;
     }
     query.size = 500;
-    res.write("Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n");
+    res.write(header);
     request({uri: url + "_search", body: JSON.stringify(query), method: "POST"})
         .pipe(jsonStream.parse('hits.hits.*'))
         .pipe(es.map(function (de, cb) {

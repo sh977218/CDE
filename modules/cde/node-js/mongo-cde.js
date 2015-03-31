@@ -227,7 +227,7 @@ exports.removeBoard = function (boardId, callback) {
 };
 //TODO: Consider moving
 exports.addToViewHistory = function(cde, user) {
-    if (!cde || !user) return;
+    if (!cde || !user) return logging.errorLogger.error("Error: Cannot update viewing history", {origin: "cde.mongo-cde.addToViewHistory", stack: new Error().stack, details: {"cde":cde, user: user}});
     User.update({'_id': user._id}, {
         $push: {
             viewHistory: {
