@@ -236,7 +236,9 @@ exports.addToViewHistory = function(cde, user) {
                 , $slice: 1000
             }
         }
-    }).exec();
+    }).exec(function(err) {
+        if (err) logging.errorLogger.error("Error: Cannot update viewing history", {origin: "cde.mongo-cde.addToViewHistory", stack: new Error().stack, details: {"cde":cde, user: user}});
+    });
 };
 
 exports.newBoard = function(board, callback) {
