@@ -15,12 +15,8 @@ public class SdcExport extends NlmCdeBaseTest {
 
         String url = findElement(By.id("sdcExport")).getAttribute("href");
 
-        System.out.println(url);
-
         String response = get(url).asString();
-
-        System.out.println(response);
-
+        
         Assert.assertTrue(response.contains("<sdc:form_package xmlns:sdc=\"http://nlm.nih.gov/sdc/for\" xmlns:mfi13=\"http://www.iso.org/19763/13/2013\"><sdc:form_design><sdc:designation><sdc:Context>SDC Pilot Project</sdc:Context><sdc:sign acceptability=\"preferred\">Apathy Scale (AS)</sdc:sign>"));
 
 
