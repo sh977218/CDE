@@ -4,11 +4,48 @@ var mongoose = require('mongoose')
 var schemas = {};
 
 
-var csTreeRoot = {
-    elements: []
-    , name: String
+//var csTreeRoot = {
+//    elements: []
+//    , name: String
+//};
+//var currentLevel = csTreeRoot.elements;
+//for (var i = 0; i < 2; i++) {
+//    currentLevel.push({
+//        elements: []
+//        , name: String
+//    });
+//    currentLevel = currentLevel[0].elements;
+//}
+//
+//var csEltSchema = new mongoose.Schema(csTreeRoot, {_id: false});
+//schemas.classificationSchema = new mongoose.Schema({
+//    stewardOrg: {name: String}
+//    , workingGroup: Boolean
+//    , elements: [csEltSchema]
+//}, {_id: false});
+
+//var csTreeRoot = {
+//    elements: []
+//    , name: String
+//};
+//var currentLevel = csTreeRoot.elements;
+//for (var i = 0; i < 2; i++) {
+//    currentLevel.push({
+//        elements: []
+//        , name: String
+//    });
+//    currentLevel = currentLevel[0].elements;
+//}
+//
+//var csEltSchema = new mongoose.Schema(csTreeRoot, {_id: false});
+
+
+var classif = {
+    stewardOrg: {name: String}
+    , workingGroup: Boolean
+    , elements: [csEltSchema]
 };
-var currentLevel = csTreeRoot.elements;
+var currentLevel = classif.elements;
 for (var i = 0; i < 2; i++) {
     currentLevel.push({
         elements: []
@@ -16,8 +53,8 @@ for (var i = 0; i < 2; i++) {
     });
     currentLevel = currentLevel[0].elements;
 }
+schemas.classificationSchema = new mongoose.Schema(classif, {_id: false});
 
-var csEltSchema = new mongoose.Schema(csTreeRoot, {_id: false});
 
 schemas.permissibleValueSchema = new mongoose.Schema({
     permissibleValue: String
@@ -26,12 +63,6 @@ schemas.permissibleValueSchema = new mongoose.Schema({
     , valueMeaningDefinition: String
     , codeSystemName: String
     , codeSystemVersion: String
-}, {_id: false});
-
-schemas.classificationSchema = new mongoose.Schema({
-    stewardOrg: {name: String}
-    , workingGroup: Boolean
-    , elements: [csEltSchema]
 }, {_id: false});
 
 schemas.orgSchema = new mongoose.Schema ({
