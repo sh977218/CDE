@@ -70,6 +70,7 @@ var config = {
         forms: {
             attachments: true
             , comments: true
+            , sectionLevels: 10
         }
         , article: true
         , cde: {
@@ -101,6 +102,7 @@ var config = {
         port: 3081
         , nodeProcess: "path to node bin, if needed"
     }
+    , classificationLevels: 30
 };
 
 module.exports = config;
