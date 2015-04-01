@@ -3,12 +3,23 @@ var mongoose = require('mongoose')
 
 var schemas = {};
 
-var csEltSchema = new mongoose.Schema({
-    name: String
-    , elements: [csEltSchema]
-}, {_id: false});
 
-exports.permissibleValueSchema = new mongoose.Schema({
+var csTreeRoot = {
+    elements: []
+    , name: String
+};
+var currentLevel = csTreeRoot.elements;
+for (var i = 0; i < 2; i++) {
+    currentLevel.push({
+        elements: []
+        , name: String
+    });
+    currentLevel = currentLevel[0].elements;
+}
+
+var csEltSchema = new mongoose.Schema(csTreeRoot, {_id: false});
+
+schemas.permissibleValueSchema = new mongoose.Schema({
     permissibleValue: String
     , valueMeaningName: String
     , valueMeaningCode: String
@@ -17,7 +28,7 @@ exports.permissibleValueSchema = new mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
-exports.classificationSchema = new mongoose.Schema({
+schemas.classificationSchema = new mongoose.Schema({
     stewardOrg: {name: String}
     , workingGroup: Boolean
     , elements: [csEltSchema]

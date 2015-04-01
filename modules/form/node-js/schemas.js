@@ -28,7 +28,7 @@ var formElementSchema = new Schema({
     , showIfExpression: String
     , section: sectionSchema
     , question: questionSchema
-    , formElements: [formElementSchema]
+    //, formElements: [formElementSchema]
     , skipLogic: {
         action: {type: String, enum: ['show', 'enable']} 
         , condition: String
@@ -58,7 +58,7 @@ exports.formSchema = new Schema({
     , origin: String
     , attachments: [sharedSchemas.attachmentSchema]
     , comments: [sharedSchemas.commentSchema]
-    , history: [mongoose.ObjectId]
+    , history: [mongoose.Schema.Types.ObjectId]
     , created: Date
     , createdBy: {
         userId: mongoose.Schema.Types.ObjectId

@@ -33,7 +33,18 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
             
         });
     };
-    
+
+    $scope.declineComment = function(msg) {
+        $http.post('/comments/'+msg.typeCommentApproval.element.eltType+'/decline', msg.typeCommentApproval).
+            success(function(data, status, headers, config) {
+                $scope.addAlert("success", data);
+                $scope.closeMessage(msg);
+            }).
+            error(function(data, status, headers, config) {
+                $scope.addAlert("danger", data);
+            });
+    };
+
 }]);
 
 angular.module('systemModule').controller('ApproveUserModalCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {

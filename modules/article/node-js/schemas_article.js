@@ -20,7 +20,7 @@ schemas.articleSchema = mongoose.Schema({
         , username: String
     } 
     , attachments: [sharedSchemas.attachmentSchema]
-    , history: [ObjectId]
+    //, history: [ObjectId]
     , archived: Boolean
 });
 

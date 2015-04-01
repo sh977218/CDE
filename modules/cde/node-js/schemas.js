@@ -1,5 +1,4 @@
 var mongoose = require('mongoose')
-    , ObjectId = require('mongodb').ObjectId
     , sharedSchemas = require('../../system/node-js/schemas.js')
     ;
 
@@ -78,7 +77,7 @@ var deJsonSchema = {
         }
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
     }
-    , history: [ObjectId]
+    , history: [mongoose.Schema.Types.ObjectId]
     , changeNote: String
     , cadsrRegStatus: String
     , registrationState: sharedSchemas.registrationStateSchema
