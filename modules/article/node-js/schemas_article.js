@@ -1,5 +1,4 @@
 var mongoose = require('mongoose')
-    , ObjectId = require('mongodb').ObjectId
     , sharedSchemas = require('../../system/node-js/schemas.js')
 ;
 
@@ -20,7 +19,7 @@ schemas.articleSchema = mongoose.Schema({
         , username: String
     } 
     , attachments: [sharedSchemas.attachmentSchema]
-    //, history: [ObjectId]
+    , history: [mongoose.Schema.Types.ObjectId]
     , archived: Boolean
 });
 
