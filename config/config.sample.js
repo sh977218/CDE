@@ -70,6 +70,8 @@ var config = {
         forms: {
             attachments: true
             , comments: true
+            , localRender: true
+            , loincRenderUrl: "https://lforms.nlm.nih.gov/#/preview/nlmcde/"
         }
         , article: true
         , cde: {
