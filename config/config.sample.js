@@ -71,6 +71,8 @@ var config = {
             attachments: true
             , comments: true
             , sectionLevels: 10
+            , localRender: true
+            , loincRenderUrl: "https://lforms.nlm.nih.gov/#/preview/nlmcde/"
         }
         , article: true
         , cde: {

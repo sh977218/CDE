@@ -6,7 +6,13 @@
     <div class="alert alert-info mt20" role="alert" ng-show="elt.outdated"><i class="fa fa-exclamation-triangle"></i> <strong>Note: </strong>Some CDEs in this form have newer version. </div> 
 
     <h3>{{elt.naming[0].designation}}
-        <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview" href="/form/public/html/formRender.html?id={{elt._id}}"><i class="fa fa-cogs"></i> Preview</a>
+        <% if (config.modules.forms.localRender) { %>
+            <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview" href="/form/public/html/formRender.html?id={{elt._id}}"><i class="fa fa-cogs"></i> Preview</a>
+        <% } %>
+        <% if (config.modules.forms.loincRenderUrl) { %>
+           <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview"
+              href="<%= config.modules.forms.loincRenderUrl %>/{{elt._id}}"><i class="fa fa-cogs"></i> Loinc Preview</a>
+        <% } %>
         <a class="btn btn-small btn-default" target="_blank" title="Preview" id="sdcExport" href="sdcExport/{{elt._id}}"><i class="fa fa-download"></i> SDC Export</a>
     </h3>
 
