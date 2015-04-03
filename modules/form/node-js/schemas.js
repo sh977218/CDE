@@ -58,24 +58,6 @@ currentLevel.push(new mongoose.Schema({}, {strict: false}));
 
 var formElementSchema = new Schema(formElementTreeRoot, {_id: false});
 
-
-//var formElementSchema = new Schema({
-//    elementType: {type: String, enum: ['section', 'question']}
-//    , label: String
-//    , instructions: String
-//    , cardinality: String
-//    , repeatsFor: String
-//    , showIfExpression: String
-//    , section: sectionSchema
-//    , question: questionSchema
-//    , formElements: [formElementSchema]
-//    , skipLogic: {
-//        action: {type: String, enum: ['show', 'enable']}
-//        , condition: String
-//    }
-//}, {_id: false});
-
-
 exports.formSchema = new Schema({
     tinyId: String
     , naming: [sharedSchemas.namingSchema]     
