@@ -45,7 +45,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
             this.countFacetsDepthString = function (depth) {
                 var fd = "classification";
                 for (var j=1; j<=depth; j++) fd += ".elements";
-                fd += ".name";  
+                fd += ".name";
                 return fd;
             };
             this.flattenSelection = function(upTo) {
@@ -53,7 +53,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 for (var i = 0; i < settings.selectedElements.length && i < upTo; i++) {
                     if (flatSelection !== "") flatSelection = flatSelection + ";";
                     flatSelection = flatSelection + settings.selectedElements[i];
-                } 
+                }
                 return flatSelection;
             };
             this.flattenSelectionAlt = function(upTo) {
@@ -69,48 +69,21 @@ angular.module('ElasticSearchResource', ['ngResource'])
             this.escapeRegExp = function(str) {
                 return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
             };
-            
-            var queryStuff = {size: this.getSize(settings)};
-            var searchQ = settings.searchTerm;       
 
-            queryStuff.query = 
-            {   
+            var queryStuff = {size: this.getSize(settings)};
+            var searchQ = settings.searchTerm;
+
+            queryStuff.query =
+            {
                 bool: {
                     must_not: [{
                         term: {
                             "registrationState.registrationStatus": "Retired"
                         }
-                    },{
-                        term: {
-                            "registrationState.administrativeStatus": "retire"
-                        }
-                    },{
-                        term: {
-                            "archived": "true"
-                        }
-                    },{
-                        term: {
-                            "isFork": "true"
-                        }                    
-                    } 
-                    ]
+                    }]
                 }
             };
 
-            var registrationStatusSortOrderLte = 3;
-            if (settings.isSiteAdmin) {
-                registrationStatusSortOrderLte = 100;
-            }
-                
-            var lowRegStatusOrCuratorFilter = [];
-            lowRegStatusOrCuratorFilter.push({range: {"registrationState.registrationStatusSortOrder": {lte: registrationStatusSortOrderLte}}});
-            if (settings.userOrgs !== undefined) {
-                 for (var i = 0; i < settings.userOrgs.length; i++) {
-                     lowRegStatusOrCuratorFilter.push({term: {"stewardOrg.name": settings.userOrgs[i]}});
-                 }
-            }
-            settings.filter.and.push({or: lowRegStatusOrCuratorFilter});
-            
             queryStuff.query.bool.must = [];
 
             var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
@@ -131,7 +104,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                         }
                     };
                 queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
-                queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query = 
+                queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
                 {
                     query_string: {
                         fields: ["naming.designation^5", "naming.definition^2"]
@@ -141,7 +114,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2.5";
                 if (searchQ.indexOf("\"") < 0) {
                     queryStuff.query.bool.must[0].dis_max.queries.push({function_score: { script_score: {script: script}}});
-                    queryStuff.query.bool.must[0].dis_max.queries[2].function_score.query = 
+                    queryStuff.query.bool.must[0].dis_max.queries[2].function_score.query =
                     {
                         query_string: {
                             fields: ["naming.designation^5", "naming.definition^2"]
@@ -151,52 +124,47 @@ angular.module('ElasticSearchResource', ['ngResource'])
                     queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
                 }
             }
-
+            
             if (settings.selectedOrg !== undefined) {
                 queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
             }
 
             var queryBuilder = this;
-            
+
             var flatSelection = queryBuilder.flattenSelection(1000);
             if (flatSelection !== "") {
                 queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
             }
-            
+
             var flatSelectionAlt = queryBuilder.flattenSelectionAlt(1000);
             if (flatSelectionAlt !== "") {
                 queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
             }
-            
+
             queryStuff.aggregations = {
-                lowRegStatusOrCurator_filter: {                
+                lowRegStatusOrCurator_filter: {
                     "filter": {
-                        "or": lowRegStatusOrCuratorFilter
-                    }
-                    , aggs: {
+                    },
+                    aggs: {
                         orgs: {
                             terms: {
-                                "field": "classification.stewardOrg.name", 
-                                "size": 40, 
+                                "field": "classification.stewardOrg.name",
+                                "size": 40,
                                 order: {
                                     "_term": "desc"
                                 }
                             }
-                        }                        
+                        }
                     }
-                }
-                , statuses: {
+                },
+                statuses: {
                     terms: {
                         field: "registrationState.registrationStatus"
                     }
                 }
             };
+
             queryStuff.aggregations.statuses.aggregations = {
-                "lowRegStatusOrCurator_filter": {
-                    "filter": {
-                        "or": lowRegStatusOrCuratorFilter
-                    }
-                }
             };
 
             if (settings.selectedOrg !== undefined) {
@@ -212,13 +180,15 @@ angular.module('ElasticSearchResource', ['ngResource'])
                     flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
                 }
                 queryStuff.aggregations.filteredFlatClassification = {
-                    filter: {or: lowRegStatusOrCuratorFilter}
+                    filter: {
+                        //or: lowRegStatusOrCuratorFilter
+                    }
                     , aggs: {
                         flatClassification: flatClassification
                     }
                 };
             }
-            
+
             if (settings.selectedOrgAlt !== undefined) {
                 var flatClassificationAlt = {
                     terms: {
@@ -232,19 +202,21 @@ angular.module('ElasticSearchResource', ['ngResource'])
                     flatClassificationAlt.terms.include = settings.selectedOrgAlt + ';' + queryBuilder.escapeRegExp(flatSelectionAlt) + ";[^;]+";
                 }
                 queryStuff.aggregations.filteredFlatClassificationAlt = {
-                    filter: {or: lowRegStatusOrCuratorFilter}
+                    filter: {
+                        //or: lowRegStatusOrCuratorFilter
+                    }
                     , aggs: {
                         flatClassificationAlt: flatClassificationAlt
                     }
                 };
-            }        
+            }
 
 
             if (settings.filter !== undefined) {
                 if (settings.filter.and !== undefined) {
                     if (settings.filter.and.length === 0) {
                         delete settings.filter.and;
-                    } 
+                    }
                 }
                 if (settings.filter.and === undefined) {
                     delete settings.filter;
@@ -261,7 +233,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
 
             var from = (settings.currentPage - 1) * settings.resultPerPage;
             queryStuff.from = from;
-            
+
             queryStuff.highlight = {
                 "order" : "score"
                 , "pre_tags" : ["<strong>"]
@@ -280,7 +252,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                     , "property.concepts.originId": {}
                     , "objectClass.concepts.name": {}
                     , "objectClass.concepts.origin": {}
-                    , "objectClass.concepts.originId": {}                    
+                    , "objectClass.concepts.originId": {}
                     , "valueDomain.datatype": {}
                     , "flatProperties": {}
                     , "flatIds": {}
@@ -288,23 +260,12 @@ angular.module('ElasticSearchResource', ['ngResource'])
                     , "classification.elements.name": {}
                     , "classification.elements.elements.name": {}
                     , "classification.elements.elements.elements.name": {}
-                    
+
                 }
             };
-            
-//            queryStuff.highlight = {
-//                "order" : "score"
-//                , "fields" : {
-//                    "*" : {
-//                        "pre_tags" : ["<strong>"]
-//                        , "post_tags" : ["</strong>"]
-//                        , "content": {"fragment_size" : 1000}
-//                    }
-//                }
-//            };
-            
+
             return callback({query: queryStuff});
-        }              
+        }
         , generalSearchQuery: function(query, type, cb) {          
             var elastic = this; 
             $http.post("/elasticSearch/" + type, query)
