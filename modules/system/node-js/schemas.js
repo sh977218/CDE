@@ -5,21 +5,6 @@ var mongoose = require('mongoose')
 
 var schemas = {};
 
-
-/*var csTreeRoot = {
-    elements: []
-    , name: String
-};
-var currentLevel = csTreeRoot.elements;
-for (var i = 0; i < config.classificationLevels; i++) {
-    currentLevel.push({
-        elements: []
-        , name: String
-    });
-    currentLevel = currentLevel[0].elements;
-}
-currentLevel.push(new mongoose.Schema({}, {strict: false}));*/
-
 var csEltSchema = new mongoose.Schema({
     elements: []
     , name: String
