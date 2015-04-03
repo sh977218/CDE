@@ -6,7 +6,7 @@ var mongoose = require('mongoose')
 var schemas = {};
 
 
-var csTreeRoot = {
+/*var csTreeRoot = {
     elements: []
     , name: String
 };
@@ -18,9 +18,13 @@ for (var i = 0; i < config.classificationLevels; i++) {
     });
     currentLevel = currentLevel[0].elements;
 }
-currentLevel.push(new mongoose.Schema({}, {strict: false}));
+currentLevel.push(new mongoose.Schema({}, {strict: false}));*/
 
-var csEltSchema = new mongoose.Schema(csTreeRoot, {_id: false});
+var csEltSchema = new mongoose.Schema({
+    elements: []
+    , name: String
+}, {_id: false});
+
 schemas.classificationSchema = new mongoose.Schema({
     stewardOrg: {name: String}
     , workingGroup: Boolean
