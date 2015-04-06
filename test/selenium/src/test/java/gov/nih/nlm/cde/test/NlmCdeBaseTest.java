@@ -376,7 +376,6 @@ public class NlmCdeBaseTest {
     }
 
     
-//    @AfterMethod
     protected void goHome() {
         // gonowhere gets rid of possible alert.
         driver.get(baseUrl + "/gonowhere");
