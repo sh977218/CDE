@@ -339,7 +339,11 @@ exports.init = function(app, daoManager) {
         
         app.post('/comments/cde/approve', function(req, res) {
             adminItemSvc.approveComment(req, res, mongo_data);
-        });        
+        });
+
+        app.post('/comments/cde/decline', function(req, res) {
+            adminItemSvc.approveComment(req, res, mongo_data);
+        });
     }
 
 
