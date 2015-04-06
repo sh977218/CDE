@@ -144,5 +144,48 @@ public abstract class CommentTest extends CommonTest {
         textPresent("Curator's comment.");         
         
     }
+
+    public void declineComment(String eltName, String status, String user) {
+        String commentText = "Bad Comment";
+        String censoredText = "pending approval";
+        mustBeLoggedInAs(user, anonymousCommentUser_password);
+        goToEltByName(eltName, status);
+        hangon(2);
+        addComment(commentText);
+        textNotPresent(commentText);
+        textPresent(censoredText);
+        logout();
+
+        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
+        findElement(By.id("incomingMessage")).click();
+
+        textPresent("Comment Approval");
+        findElement(By.cssSelector(".accordion-toggle")).click();
+
+        String preClass = "";
+        try {
+            textPresent(eltName);
+        } catch (Exception e) {
+            preClass = "accordion:nth-child(2) ";
+            findElement(By.cssSelector(preClass+".accordion-toggle")).click();
+            textPresent(commentText);
+        }
+
+        findElement(By.cssSelector(preClass+".linkToElt")).click();
+        switchTab(1);
+        textPresent(eltName);
+        switchTabAndClose(0);
+
+        findElement(By.cssSelector(preClass+".declineComment")).click();
+        textPresent("Comment declined");
+
+
+        logout();
+        goToEltByName(eltName, status);
+        gotoComments();
+        textNotPresent(censoredText);
+        textNotPresent(commentText);
+
+    }
     
 }

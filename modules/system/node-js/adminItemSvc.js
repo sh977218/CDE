@@ -249,23 +249,63 @@ exports.removeComment = function(req, res, dao) {
     }
 };
 
-exports.approveComment = function(req, res, dao){
+//exports.approveComment = function(req, res, dao){
+//    if (!req.isAuthenticated() || !authorizationShared.hasRole(req.user, "CommentReviewer")) {
+//        res.status(403).send("You are not authorized to approve a comment.");
+//    }
+//    dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
+//        if (err || !elt) {
+//            res.status(404).send("Cannot find element by tiny id.");
+//            logging.errorLogger.error("Error: Cannot find element by tiny id.", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req);
+//        }
+//        elt.comments[req.body.comment.index].pendingApproval = false;
+//        delete elt.comments[req.body.comment.index].pendingApproval;
+//        elt.save(function(err){
+//            if (err || !elt) {
+//                res.status(404).send("Cannot save element.");
+//                logging.errorLogger.error("Error: Cannot save element.", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req);
+//            }
+//            res.send("Comment approved!");
+//        });
+//    });
+//};
+//
+//exports.declineComment = function(req, res, dao){
+//    if (!req.isAuthenticated() || !authorizationShared.hasRole(req.user, "CommentReviewer")) {
+//        res.status(403).send("You are not authorized to decline a comment.");
+//    }
+//    dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
+//        if (err || !elt) {
+//            res.status(404).send("Cannot find element by tiny id.");
+//            logging.errorLogger.error("Error: Cannot find element by tiny id.", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req);
+//        }
+//        elt.comments.splice(req.body.comment.index, 1);
+//        elt.save(function(err){
+//            if (err || !elt) {
+//                res.status(404).send("Cannot save element.");
+//                logging.errorLogger.error("Error: Cannot save element.", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req);
+//            }
+//            res.send("Comment declined!");
+//        });
+//    });
+//};
+
+exports.declineApproveComment = function(req, res, dao, action, msg){
     if (!req.isAuthenticated() || !authorizationShared.hasRole(req.user, "CommentReviewer")) {
         res.status(403).send("You are not authorized to approve a comment.");
     }
     dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
         if (err || !elt) {
             res.status(404).send("Cannot find element by tiny id.");
-            logging.errorLogger.error("Error: Cannot find element by tiny id.", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req); 
+            logging.errorLogger.error("Error: Cannot find element by tiny id.", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req);
         }
-        elt.comments[req.body.comment.index].pendingApproval = false;
-        delete elt.comments[req.body.comment.index].pendingApproval;
+        action(elt);
         elt.save(function(err){
             if (err || !elt) {
                 res.status(404).send("Cannot save element.");
-                logging.errorLogger.error("Error: Cannot save element.", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req); 
-            }   
-            res.send("Comment approved!");
+                logging.errorLogger.error("Error: Cannot save element.", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req);
+            }
+            res.send(msg);
         });
     });
 };

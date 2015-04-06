@@ -336,13 +336,18 @@ exports.init = function(app, daoManager) {
         app.post('/comments/cde/remove', function(req, res) {
             adminItemSvc.removeComment(req, res, mongo_data);
         });
-        
+
         app.post('/comments/cde/approve', function(req, res) {
-            adminItemSvc.approveComment(req, res, mongo_data);
+            adminItemSvc.declineApproveComment(req, res, mongo_data, function(elt) {
+                elt.comments[req.body.comment.index].pendingApproval = false;
+                delete elt.comments[req.body.comment.index].pendingApproval;
+            }, "Comment approved!");
         });
 
         app.post('/comments/cde/decline', function(req, res) {
-            adminItemSvc.approveComment(req, res, mongo_data);
+            adminItemSvc.declineApproveComment(req, res, mongo_data, function(elt) {
+                elt.comments.splice(req.body.comment.index, 1);
+            }, "Comment declined!");
         });
     }
 
