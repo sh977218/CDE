@@ -44,7 +44,7 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
                 $scope.addAlert("danger", data);
             });
     };
-    
+
 }]);
 
 angular.module('systemModule').controller('ApproveUserModalCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {

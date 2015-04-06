@@ -6,8 +6,9 @@ var express = require('express')
   , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
   , config = require('config')
   , multer  = require('multer')
+    , sdc = require('./sdcForm')
+    , logging = require('../../system/node-js/logging')
   , elastic_system = require('../../system/node-js/elastic')
-
 ;
 
 exports.init = function(app, daoManager) {
@@ -36,6 +37,30 @@ exports.init = function(app, daoManager) {
 
     app.get('/formbytinyid/:id/:version', function(req, res) {
         res.send("");
+    });
+
+    app.get("/sdcExport/:id", function(req, res) {
+        mongo_data.byId(req.params.id, function(err, form) {
+            if (err) {
+                logging.errorLogger.error("Error: Cannot find element by tiny id.", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req);
+                return res.status(500).send();
+            } else {
+                res.setHeader("Content-Type", "application/xml");
+                res.send(sdc.formToSDC(form));
+            }
+        });
+    });
+
+    app.get('/sdcExportByTinyId/:tinyId/:version', function(req, res) {
+        mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, form) {
+            if (err) {
+                logging.errorLogger.error("Error: Cannot find element by tiny id.", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req);
+                return res.status(500).send();
+            } else {
+                res.setHeader("Content-Type", "application/xml");
+                res.send(sdc.formToSDC(form));
+            }
+        });
     });
     
     app.post('/elasticSearch/form', function(req, res) {

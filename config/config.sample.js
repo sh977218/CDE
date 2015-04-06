@@ -1,6 +1,7 @@
 var config = {
 	name: "Sample Localhost Configuration"
     , hostname: "localhost"
+    , publicUrl: "https://cde.nlm.nih.gov"
     , umls: {
         licenseCode: "NLM-4110134256"
     }
@@ -69,6 +70,9 @@ var config = {
         forms: {
             attachments: true
             , comments: true
+            , sectionLevels: 10
+            , localRender: true
+            , loincRenderUrl: "https://lforms.nlm.nih.gov/#/preview/nlmcde/"
         }
         , article: true
         , cde: {

@@ -38,16 +38,16 @@ public class QuestionTest2 extends BaseFormTest {
 
         List<WebElement> lis = driver.findElements(By.xpath("//div[@id = 'question_0']//ul[@class='select2-choices']//li/span/span"));
         Assert.assertEquals(lis.size(), 3);
-        Assert.assertEquals(lis.get(0).getText(), "Female Gender");
-        Assert.assertEquals(lis.get(1).getText(), "Male Gender");
-        Assert.assertEquals(lis.get(2).getText(), "Unknown");
+        Assert.assertEquals(lis.get(0).getText(), "FEMALE");
+        Assert.assertEquals(lis.get(1).getText(), "MALE");
+        Assert.assertEquals(lis.get(2).getText(), "UNKNOWN");
 
         findElement(By.xpath("//div[@id='question_0']//ul[@class='select2-choices']//li[1]/a")).click();
-        textNotPresent("Female Gender");
+        textNotPresent("FEMALE");
         lis = driver.findElements(By.xpath("//div[@id = 'question_0']//ul[@class='select2-choices']//li/span/span"));
         Assert.assertEquals(lis.size(), 2);
-        Assert.assertEquals("Male Gender", lis.get(0).getText());
-        Assert.assertEquals("Unknown", lis.get(1).getText());
+        Assert.assertEquals("MALE", lis.get(0).getText());
+        Assert.assertEquals("UNKNOWN", lis.get(1).getText());
         
         saveForm();
         
