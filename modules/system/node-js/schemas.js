@@ -1,26 +1,29 @@
 var mongoose = require('mongoose')
-    , authorizationShared = require('../shared/authorizationShared');
+    , authorizationShared = require('../shared/authorizationShared')
+    , config = require("config")
+    ;
 
 var schemas = {};
 
 var csEltSchema = new mongoose.Schema({
-    name: String
+    elements: []
+    , name: String
+}, {_id: false});
+
+schemas.classificationSchema = new mongoose.Schema({
+    stewardOrg: {name: String}
+    , workingGroup: Boolean
     , elements: [csEltSchema]
 }, {_id: false});
 
-exports.permissibleValueSchema = new mongoose.Schema({
+
+schemas.permissibleValueSchema = new mongoose.Schema({
     permissibleValue: String
     , valueMeaningName: String
     , valueMeaningCode: String
     , valueMeaningDefinition: String
     , codeSystemName: String
     , codeSystemVersion: String
-}, {_id: false});
-
-exports.classificationSchema = new mongoose.Schema({
-    stewardOrg: {name: String}
-    , workingGroup: Boolean
-    , elements: [csEltSchema]
 }, {_id: false});
 
 schemas.orgSchema = new mongoose.Schema ({
