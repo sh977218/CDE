@@ -1,8 +1,8 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.facets;
 
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
 import java.util.List;
+
+import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -57,37 +57,32 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void facets() {
-        mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("Study");
+        findElement(By.name("ftsearch")).sendKeys("trial");
         findElement(By.id("search.submit")).click();
-        textPresent("Candidate (10)");
+        textPresent("Candidate (3)");
         findElement(By.id("li-checked-Qualified")).click();
-        hangon(1);
+        textPresent("13 results ");
         findElement(By.id("li-checked-Standard")).click();
-        hangon(1);
-        try {
-            findElement(By.id("li-checked-Preferred Standard")).click();
-            hangon(1);
-        } catch (Exception e) {}
+        textPresent("8 results ");
+        findElement(By.id("li-checked-Preferred Standard")).click();
+        textPresent("7 results ");
 
-        findElement(By.id("li-blank-Candidate")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText("Intervention Trial Study Protocol Document Classification ")));
 
-        textPresent("10 results ");
         findElement(By.id("li-blank-caBIG")).click();
 
-        textPresent("9 results");
+        textPresent("4 results");
 
         findElement(By.id("li-checked-Candidate")).click();
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(
-                By.partialLinkText("Work Or Study Difficulty With Homework ")));
-        hangon(1);
+        textPresent("1 results");
+        textPresent("Investigator Identifier java.lang.Integer");
+
         wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("3")));
         scrollToTop();
         findElement(By.id("li-checked-caBIG")).click();
-        Assert.assertTrue(textPresent("Electrophysiology study type"));
+        textPresent("Participant Future Trial Participation");
     }
     
     @Test
@@ -110,48 +105,6 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("Immunology Gonorrhea Assay Laboratory Finding Result"));
     }
 
-    @Test
-    public void classificationFilters() {
-        goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("Image");
-        findElement(By.id("search.submit")).click();
-        textPresent("caBIG (8)");
-        findElement(By.id("li-blank-caBIG")).click();
-        textPresent("Generic Image");
-
-        textPresent("8 results for");
-        List <WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 8);
-
-        // Check that CTEP classification with 0 items does not show
-        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("Radiograph Evidence Type"));
-        
-        findElement(By.id("li-blank-Generic Image")).click();
-        textPresent("genericimage (2)");
-        findElement(By.id("li-blank-gov.nih.nci.ivi.genericimage")).click();
-        textPresent("2 results for");
-        
-        linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 2);
-        
-        // Now test unclicking everything
-        findElement(By.id("li-checked-Generic Image")).click();
-        textPresent("8 results for");
-        linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 8);
-        
-        textPresent("Generic Image (2)");
-        findElement(By.id("li-blank-Generic Image")).click();
-        
-        textPresent("2 results for");
-        linkList = driver.findElements(By.cssSelector("div.panel-default"));
-        Assert.assertEquals(linkList.size(), 2);
-        
-        findElement(By.id("li-checked-caBIG")).click();
-        textPresent("92 results for");
-
-    
-    }
     
     @Test
     public void preferredStandardFacet() {

@@ -23,8 +23,8 @@ public class SkipLogicTest extends BaseFormTest {
         String formV = "0.1";
         createForm(formName, formDef, formV, "CTEP");        
         findElement(By.linkText("Form Description")).click();        
-        new SectionTest().addSection("Patient Demographics", null);  
-        new SectionTest().addSection("Female Patient Screening", null);
+        new CreateEditSectionTest().addSection("Patient Demographics", null);
+        new CreateEditSectionTest().addSection("Female Patient Screening", null);
         startAddingQuestions();          
 
         // Add 2nd Section

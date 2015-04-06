@@ -106,7 +106,7 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
 
         $scope.altClassificationFilterMode = 0;
         for (var i in $scope.registrationStatuses) {
-            $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
+            $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete'].indexOf($scope.registrationStatuses[i].name) > -1;
         }
         $scope.cache.remove($scope.getCacheName("selectedOrg"));
         $scope.cache.remove($scope.getCacheName("selectedOrgAlt"));
@@ -196,10 +196,15 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
     
     // Create string representation of what status filters are selected    
     $scope.getSelectedStatuses = function() {
-        return $scope.registrationStatuses.filter(function(s){
+        var selectedRegStatuses = $scope.registrationStatuses.filter(function(s){
             if(s.selected) return true;
-        }).map(function(s){return s.name;}).join(", ");
-    };    
+        });
+        if (selectedRegStatuses.length === 6) {
+            return "All Statuses";
+        } else {
+            return selectedRegStatuses.map(function(s){return s.name;}).join(", ");
+        }
+    };
     
     // Create string representation of what classification filters are selected
     $scope.getSelectedClassifications = function() {

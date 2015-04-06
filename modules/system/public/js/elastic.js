@@ -79,6 +79,9 @@ angular.module('ElasticSearchResource', ['ngResource'])
                     must_not: [{
                         term: {
                             "registrationState.registrationStatus": "Retired"
+                        }}, {
+                        term: {
+                            "isFork": "true"
                         }
                     }]
                 }
@@ -124,7 +127,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                     queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
                 }
             }
-            
+
             if (settings.selectedOrg !== undefined) {
                 queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
             }

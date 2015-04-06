@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
+import gov.nih.nlm.form.test.QuestionTest;
 import org.openqa.selenium.*;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
@@ -238,10 +240,10 @@ public class NlmCdeBaseTest {
     
     public void searchElt(String name, String type, String status) {
         goToSearch(type);
-        if (status != null) {
-            findElement(By.id("li-blank-" + status)).click();
-            hangon(2);
-        }        
+//        if (status != null) {
+//            findElement(By.id("li-blank-" + status)).click();
+//            hangon(2);
+//        }
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.id("search.submit")).click();   

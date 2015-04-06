@@ -64,5 +64,25 @@ public class BaseFormTest extends NlmCdeBaseTest {
         closeAlert();
         hangon(1);
     }
-    
+
+    public void addSection(String title, String card) {
+        int nbOfSections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_view')]")).size();
+        scrollToTop();
+        findElement(By.linkText("Form Description")).click();
+
+        findElement(By.id("addSection")).click();
+
+        String section_title_path = "//div[@id='section_title_" + nbOfSections + "']";
+        findElement(By.xpath(section_title_path + "//i")).click();
+        findElement(By.xpath(section_title_path + "//input")).clear();
+        findElement(By.xpath(section_title_path + "//input")).sendKeys(title);
+        findElement(By.xpath(section_title_path + "//button[text()=' Confirm']")).click();
+
+        if (card != null) {
+            findElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']")).click();
+            new Select(findElement(By.xpath("//select[@id='select_section_card_"  + nbOfSections + "']"))).selectByVisibleText(card);
+            findElement(By.xpath("//dd[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']")).click();
+        }
+    }
+
 }

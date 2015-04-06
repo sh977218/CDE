@@ -344,7 +344,7 @@ exports.fork = function(req, res, dao) {
 
 exports.forkRoot = function(req, res, dao) {
     dao.isForkOf(req.params.tinyId, function(err, cdes) {
-        if (cdes.length !== 1) {
+        if (!cdes || cdes.length !== 1) {
             res.send("Not a regular fork");
         } else {
             res.send(cdes[0]);
