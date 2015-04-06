@@ -54,16 +54,25 @@ public class UserTest extends NlmCdeBaseTest {
         
         // now see 10 other CDEs
         goToCdeByName("Specimen Inflammation Change Type");
+        hangon(1);
         goToCdeByName("Person Mother Onset Menopause Age Value");
+        hangon(1);
         goToCdeByName("Definition Type Definition Type String");
+        hangon(1);
         goToCdeByName("Service Item Display Name java.lang.String");
+        hangon(1);
         goToCdeByName("Apgar Score Created By java.lang.Long");
+        hangon(1);
         goToCdeByName("Target Lesion Sum Short Longest Dimension Measurement");
+        hangon(1);
         goToCdeByName("Form Element End Date");
+        hangon(1);
         goToCdeByName("Treatment Text Other Text");
+        hangon(1);
         goToCdeByName("Specimen Block Received Count");
+        hangon(1);
         goToCdeByName("Malignant Neoplasm Metastatic Involvement Anatomic");
-        hangon(4);
+        hangon(1);
         
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();

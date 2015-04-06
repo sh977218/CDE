@@ -88,6 +88,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         findElement(By.name("elt.designation")).sendKeys(name);
         findElement(By.name("elt.definition")).sendKeys(definition);
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(org);
+        hangon(1);
         addClassificationMethod(new String[]{org, classification, subClassification});
     }
 

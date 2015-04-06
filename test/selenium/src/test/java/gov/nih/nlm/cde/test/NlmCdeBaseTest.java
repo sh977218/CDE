@@ -307,9 +307,10 @@ public class NlmCdeBaseTest {
 
     public void closeAlert() {
         try {
+            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             findElement(By.cssSelector(".alert .close")).click();
+            driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         } catch (Exception e) {
-            System.out.println("Unable to close alert.");
         }
     }
 
@@ -375,7 +376,7 @@ public class NlmCdeBaseTest {
     }
 
     
-    @AfterMethod
+//    @AfterMethod
     protected void goHome() {
         // gonowhere gets rid of possible alert.
         driver.get(baseUrl + "/gonowhere");

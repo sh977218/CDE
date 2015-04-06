@@ -79,7 +79,8 @@ angular.module('ElasticSearchResource', ['ngResource'])
                     must_not: [{
                         term: {
                             "registrationState.registrationStatus": "Retired"
-                        }}, {
+                        }
+                    },{
                         term: {
                             "isFork": "true"
                         }

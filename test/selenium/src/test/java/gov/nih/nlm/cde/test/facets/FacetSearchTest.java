@@ -58,31 +58,22 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void facets() {
         goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("trial");
+        findElement(By.name("ftsearch")).sendKeys("Study");
         findElement(By.id("search.submit")).click();
-        textPresent("Candidate (3)");
+        textNotPresent("Ethnic Group");
+        findElement(By.linkText("10"));
         findElement(By.id("li-checked-Qualified")).click();
-        textPresent("13 results ");
         findElement(By.id("li-checked-Standard")).click();
-        textPresent("8 results ");
+        textNotPresent("Ethnic Group Category Text");
         findElement(By.id("li-checked-Preferred Standard")).click();
-        textPresent("7 results ");
+        textNotPresent("Administration, Management Performed Study");
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText("Intervention Trial Study Protocol Document Classification ")));
+        textPresent("Stress Specimen Cell Examined Total Count");
 
         findElement(By.id("li-blank-caBIG")).click();
-
-        textPresent("4 results");
-
-        findElement(By.id("li-checked-Candidate")).click();
-
-        textPresent("1 results");
-        textPresent("Investigator Identifier java.lang.Integer");
-
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("3")));
-        scrollToTop();
+        textNotPresent("Stress Specimen Cell Examined Total Count");
         findElement(By.id("li-checked-caBIG")).click();
-        textPresent("Participant Future Trial Participation");
+        textPresent("Stress Specimen Cell Examined Total Count");
     }
     
     @Test
