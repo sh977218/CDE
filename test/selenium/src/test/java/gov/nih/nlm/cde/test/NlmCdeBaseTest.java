@@ -59,6 +59,7 @@ public class NlmCdeBaseTest {
     protected static String transferStewardUser_username = "transferStewardUser";
     protected static String createUser_username = "createUser";
     protected static String anonymousCommentUser_username = "anonymousCommentUser";
+    protected static String anonymousCommentUser2_username = "anonymousCommentUser2";
     protected static String anonymousFormCommentUser_username = "anonymousFormCommentUser";
     protected static String anonymousCommentUser_password = "pass";
     protected static String commentEditor_username = "commentEditor";

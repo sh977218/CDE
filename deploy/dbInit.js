@@ -45,6 +45,7 @@ db.users.insert({username: 'nindsWg2User', password: 'pass', orgAdmin: [], orgCu
 db.users.insert({username: 'boardPublisherTest', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boardBot', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'anonymousCommentUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'anonymousCommentUser2', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'anonymousFormCommentUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'commentEditor', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["CommentReviewer"], email: "admin@email.com"});
 db.users.insert({username: 'attachmentReviewer', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["AttachmentReviewer"], email: "admin@email.com"});
