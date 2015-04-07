@@ -58,6 +58,7 @@ public class CdeMappingSpecificationTest extends NlmCdeBaseTest {
         findElement(By.id("confirmRemoveMappingSpecification-0")).click();
         
         textPresent("There are no mapping specifications");
+        hangon(1);
         
     }
     
