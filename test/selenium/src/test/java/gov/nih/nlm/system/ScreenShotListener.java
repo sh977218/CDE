@@ -1,6 +1,6 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.system;
 
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.driver;
+import static gov.nih.nlm.system.NlmCdeBaseTest.driver;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +8,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;

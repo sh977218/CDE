@@ -1,10 +1,8 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.cde.test.NlmCdeBaseTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
-
-import java.util.concurrent.TimeoutException;
 
 public class BaseFormTest extends NlmCdeBaseTest {
 

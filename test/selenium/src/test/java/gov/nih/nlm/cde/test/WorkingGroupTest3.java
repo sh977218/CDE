@@ -1,6 +1,5 @@
 package gov.nih.nlm.cde.test;
 
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wguser_username;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;

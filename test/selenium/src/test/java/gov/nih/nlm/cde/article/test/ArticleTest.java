@@ -1,6 +1,6 @@
 package gov.nih.nlm.cde.article.test;
 
-import gov.nih.nlm.cde.test.NlmCdeBaseTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;

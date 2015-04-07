@@ -6,7 +6,7 @@
 
 package gov.nih.nlm.cde.common.test;
 
-import gov.nih.nlm.cde.test.NlmCdeBaseTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 
 
 public abstract class CommonTest extends NlmCdeBaseTest {

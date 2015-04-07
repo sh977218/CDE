@@ -2,10 +2,9 @@ package gov.nih.nlm.cde.test.facets;
 
 import java.util.List;
 
-import gov.nih.nlm.cde.test.NlmCdeBaseTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;

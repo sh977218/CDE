@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -57,6 +58,7 @@ public class CdeMappingSpecificationTest extends NlmCdeBaseTest {
         findElement(By.id("confirmRemoveMappingSpecification-0")).click();
         
         textPresent("There are no mapping specifications");
+        hangon(1);
         
     }
     
