@@ -177,7 +177,7 @@ exports.acceptFork = function(fork, orig, callback) {
 
 exports.isForkOf = function(fork, callback) {
     return DataElement.findOne({tinyId: fork.forkOf}).where("archived").equals(null).exec(function(err, cde) {
-            callback(err, cde);
+        callback(err, cde);
     });
 };
 

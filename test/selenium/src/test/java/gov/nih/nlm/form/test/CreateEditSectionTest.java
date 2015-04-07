@@ -5,69 +5,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class SectionTest extends BaseFormTest {
-            
-    @Test
-    public void createForm() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-
-        String formName = "Create Form Test Name";
-        String formDef = "Fill out carefully!";
-        String formV = "0.1alpha";
-
-        createForm(formName, formDef, formV, "CTEP");
-        
-        Assert.assertTrue(textPresent(formName));
-        Assert.assertTrue(textPresent(formDef));
-        Assert.assertTrue(textPresent(formV));
-        
-        goToFormByName("Create Form Test Name", "Incomplete");
-        textPresent("Fill out carefully!");        
-    }
-    
-    @Test
-    public void formFacets() {
-        gotoPublicForms();
-        searchForm("FormSearchTest");
-        textPresent("Skin Cancer Patient");
-        textPresent("Traumatic Brain Injury - Adverse Events");
-        textNotPresent("Vision Deficit Report");        
-        textPresent(", Qualified");      
-        findElement(By.id("li-blank-Recorded")).click(); 
-        textPresent("Skin Cancer Patient");
-        textPresent("Traumatic Brain Injury - Adverse Events");        
-        textPresent("Vision Deficit Report");   
-        findElement(By.id("li-checked-Qualified")).click();     
-        textNotPresent("Skin Cancer Patient");
-        textNotPresent("Traumatic Brain Injury - Adverse Events");        
-        textPresent("Vision Deficit Report");
-        findElement(By.id("li-checked-Recorded")).click();  
-        textPresent("0 results for");
-        findElement(By.id("li-blank-Recorded")).click();  
-        textNotPresent("Skin Cancer Patient");
-        textNotPresent("Traumatic Brain Injury - Adverse Events");
-        textPresent("Vision Deficit Report");
-    }    
-    
-    public void addSection(String title, String card) {
-        int nbOfSections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_view')]")).size();
-        scrollToTop();
-        findElement(By.linkText("Form Description")).click();
-
-        findElement(By.id("addSection")).click();
-
-        String section_title_path = "//div[@id='section_title_" + nbOfSections + "']";
-        findElement(By.xpath(section_title_path + "//i")).click();
-        findElement(By.xpath(section_title_path + "//input")).clear();
-        findElement(By.xpath(section_title_path + "//input")).sendKeys(title);
-        findElement(By.xpath(section_title_path + "//button[text()=' Confirm']")).click();
-    
-        if (card != null) {
-            findElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']")).click();
-            new Select(findElement(By.xpath("//select[@id='select_section_card_"  + nbOfSections + "']"))).selectByVisibleText(card);
-            findElement(By.xpath("//dd[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']")).click();
-        }
-    }
+public class CreateEditSectionTest extends BaseFormTest {
     
     @Test
     public void createEditSection() {

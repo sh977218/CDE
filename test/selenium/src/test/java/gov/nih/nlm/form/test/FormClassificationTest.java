@@ -13,11 +13,8 @@ public class FormClassificationTest extends BaseFormTest {
         textPresent("Headache");
         textPresent("Participant/Subject History and Family History");          
         findElement(By.linkText("Participant/Subject History and Family History")).click();
-        hangon(1);
-        findElement(By.id("li-blank-Recorded")).click();
-        textPresent("Participant/Subject History and Family History");   
+        textPresent("Vision Deficit Report");
         textPresent("Skin Cancer Patient");
-        textPresent("Vision Deficit Report");               
     }
     
     @Test
@@ -38,8 +35,8 @@ public class FormClassificationTest extends BaseFormTest {
         String formDef = "Symptoms, onset, treatment.";
         String formV = "0.1alpha";        
         createForm(formName, formDef, formV, "NINDS");
-        new SectionTest().addSection("Patient Information", null);
-        new SectionTest().addSection("Diagnostic Methods", null);
+        new CreateEditSectionTest().addSection("Patient Information", null);
+        new CreateEditSectionTest().addSection("Diagnostic Methods", null);
         startAddingQuestions();
         String cde1 = "Informed consent type",
                 cde2 = "Person Birth Date",
