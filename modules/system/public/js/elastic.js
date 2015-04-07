@@ -146,18 +146,12 @@ angular.module('ElasticSearchResource', ['ngResource'])
             }
 
             queryStuff.aggregations = {
-                lowRegStatusOrCurator_filter: {
-                    "filter": {
-                    },
-                    aggs: {
-                        orgs: {
-                            terms: {
-                                "field": "classification.stewardOrg.name",
-                                "size": 40,
-                                order: {
-                                    "_term": "desc"
-                                }
-                            }
+                orgs: {
+                    terms: {
+                        "field": "classification.stewardOrg.name",
+                        "size": 40,
+                        order: {
+                            "_term": "desc"
                         }
                     }
                 },
@@ -183,14 +177,8 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 } else {
                     flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
                 }
-                queryStuff.aggregations.filteredFlatClassification = {
-                    filter: {
-                        //or: lowRegStatusOrCuratorFilter
-                    }
-                    , aggs: {
-                        flatClassification: flatClassification
-                    }
-                };
+                queryStuff.aggregations.flatClassification = flatClassification
+
             }
 
             if (settings.selectedOrgAlt !== undefined) {
@@ -205,14 +193,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 } else {
                     flatClassificationAlt.terms.include = settings.selectedOrgAlt + ';' + queryBuilder.escapeRegExp(flatSelectionAlt) + ";[^;]+";
                 }
-                queryStuff.aggregations.filteredFlatClassificationAlt = {
-                    filter: {
-                        //or: lowRegStatusOrCuratorFilter
-                    }
-                    , aggs: {
-                        flatClassificationAlt: flatClassificationAlt
-                    }
-                };
+                queryStuff.aggregations.flatClassificationAlt = flatClassificationAlt;
             }
 
 

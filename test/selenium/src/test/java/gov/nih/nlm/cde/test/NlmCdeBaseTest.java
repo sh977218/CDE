@@ -241,10 +241,6 @@ public class NlmCdeBaseTest {
     
     public void searchElt(String name, String type, String status) {
         goToSearch(type);
-//        if (status != null) {
-//            findElement(By.id("li-blank-" + status)).click();
-//            hangon(2);
-//        }
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.id("search.submit")).click();   

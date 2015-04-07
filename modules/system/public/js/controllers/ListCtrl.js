@@ -264,16 +264,16 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
                 
                 $scope.classifications = {elements: []};
                 
-                if (result.aggregations !== undefined && result.aggregations.filteredFlatClassification !== undefined) {
-                    $scope.aggregations.flatClassification = result.aggregations.filteredFlatClassification.flatClassification.buckets.map(function (c) {
+                if (result.aggregations !== undefined && result.aggregations.flatClassification !== undefined) {
+                    $scope.aggregations.flatClassification = result.aggregations.flatClassification.buckets.map(function (c) {
                         return {name: c.key.split(';').pop(), count: c.doc_count};
                     });
                 } else {
                     $scope.aggregations.flatClassification = [];
                 }
                 
-                if (result.aggregations !== undefined && result.aggregations.filteredFlatClassificationAlt !== undefined) {
-                    $scope.aggregations.flatClassificationAlt = result.aggregations.filteredFlatClassificationAlt.flatClassificationAlt.buckets.map(function (c) {
+                if (result.aggregations !== undefined && result.aggregations.flatClassificationAlt !== undefined) {
+                    $scope.aggregations.flatClassificationAlt = result.aggregations.flatClassificationAlt.buckets.map(function (c) {
                         return {name: c.key.split(';').pop(), count: c.doc_count};
                     });
                 } else {
@@ -281,14 +281,14 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
                 }
                 
                 $scope.filterOutWorkingGroups($scope.aggregations);
-                OrgHelpers.addLongNameToOrgs($scope.aggregations.lowRegStatusOrCurator_filter.orgs.buckets, OrgHelpers.orgsDetailedInfo);
+                OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.buckets, OrgHelpers.orgsDetailedInfo);
              });
         });  
     };   
     
     $scope.filterOutWorkingGroups = function(aggregations) {
         this.setAggregations = function() {
-            aggregations.lowRegStatusOrCurator_filter.orgs.buckets = aggregations.lowRegStatusOrCurator_filter.orgs.buckets.filter(function(bucket) {
+            aggregations.orgs.buckets = aggregations.orgs.buckets.filter(function(bucket) {
                 return OrgHelpers.showWorkingGroup(bucket.key, userResource.user) || userResource.user.siteAdmin;
             });
             $scope.aggregations = aggregations;            
