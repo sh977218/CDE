@@ -42,7 +42,14 @@ public class UserTest extends NlmCdeBaseTest {
         findElement(By.id("username_link"));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Create")));
     }
-    
+
+    private void checkUserHistory(String cdeName) {
+        goToCdeByName(cdeName);
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Profile")).click();
+        textPresent(cdeName);
+    }
+
     @Test
     public void viewingHistory() {
         mustBeLoggedInAs(history_username, password);
@@ -53,32 +60,18 @@ public class UserTest extends NlmCdeBaseTest {
         textPresent("Patient Eligibility Ind-2");
         
         // now see 10 other CDEs
-        goToCdeByName("Specimen Inflammation Change Type");
-        goToCdeByName("Person Mother Onset Menopause Age Value");
-        goToCdeByName("Definition Type Definition Type String");
-        goToCdeByName("Service Item Display Name java.lang.String");
-        goToCdeByName("Apgar Score Created By java.lang.Long");
-        goToCdeByName("Target Lesion Sum Short Longest Dimension Measurement");
-        goToCdeByName("Form Element End Date");
-        goToCdeByName("Treatment Text Other Text");
-        goToCdeByName("Specimen Block Received Count");
-        goToCdeByName("Malignant Neoplasm Metastatic Involvement Anatomic");
-        hangon(4);
-        
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Profile")).click();
-        textPresent("Specimen Inflammation Change Type");
-        textPresent("Person Mother Onset Menopause Age Value");
-        textPresent("Definition Type Definition Type String");
-        textPresent("Service Item Display Name java.lang.String");
-        textPresent("Apgar Score Created By java.lang.Long");
-        textPresent("Target Lesion Sum Short Longest Dimension Measurement");
-        textPresent("Form Element End Date");
-        textPresent("Treatment Text Other Text");
-        textPresent("Specimen Block Received Count");
-        textPresent("Malignant Neoplasm Metastatic Involvement Anatomic");
-        
-        Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("Patient Eligibility Ind-2"));
+        checkUserHistory("Specimen Inflammation Change Type");
+        checkUserHistory("Person Mother Onset Menopause Age Value");
+        checkUserHistory("Definition Type Definition Type String");
+        checkUserHistory("Service Item Display Name java.lang.String");
+        checkUserHistory("Apgar Score Created By java.lang.Long");
+        checkUserHistory("Target Lesion Sum Short Longest Dimension Measurement");
+        checkUserHistory("Form Element End Date");
+        checkUserHistory("Treatment Text Other Text");
+        checkUserHistory("Specimen Block Received Count");
+        checkUserHistory("Malignant Neoplasm Metastatic Involvement Anatomic");
+
+        textNotPresent("Patient Eligibility Ind-2");
     }
     
     @Test

@@ -19,7 +19,7 @@ public class FormSearch extends BaseFormTest {
 
         findElement(By.linkText("Form Description")).click();
 
-        new SectionTest().addSection("Answer List Section", null);
+        new CreateEditSectionTest().addSection("Answer List Section", null);
         
         startAddingQuestions();
         new QuestionTest().addQuestionToSection(cdeName, 0);
