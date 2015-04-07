@@ -28,9 +28,7 @@ public class ClassificationTest2 extends BaseClassificationTest {
         findElement(By.id("resetTree")).click();
         textPresent("Domain", By.id("addClassificationModalBody"));
         textPresent("Population", By.id("addClassificationModalBody"));
-        textNotPresent("Amyotrophic Lateral Sclerosis", By.id("addClassificationModalBody"));
-        findElement(By.xpath("//button[text() = 'Close']")).click();
-        modalGone();
+        textNotPresent("Amyotrophic Lateral Sclerosis", By.id("addClassificationModalBody"));       
     }
 
         

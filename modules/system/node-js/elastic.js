@@ -9,7 +9,6 @@ var config = require('config')
 exports.elasticCdeUri = config.elasticUri;
 exports.elasticFormUri = config.elasticFormUri;
 
-
 exports.elasticsearch = function (query, type, cb) {
     var url = null;
     if (type === "cde") url = exports.elasticCdeUri;
@@ -40,14 +39,14 @@ exports.elasticsearch = function (query, type, cb) {
                 cb("Invalid Query");
             } else {
                 var querystr = "cannot stringify query";
-                var errBody;
+                var body;
                 try {
                     querystr = JSON.stringify(query);
-                    errBody  = JSON.stringify(body);
+                    body  = JSON.stringify(body);
                 } catch (e){}
                 logging.errorLogger.error("Error: ElasticSearch Error", 
                     {origin: "system.elastic.elasticsearch", stack: new Error().stack,
-                        details: "query " + querystr + ", body " + errBody});
+                        details: "query " + querystr + ", body " + body});
                 cb("Server Error");
             }
         } 

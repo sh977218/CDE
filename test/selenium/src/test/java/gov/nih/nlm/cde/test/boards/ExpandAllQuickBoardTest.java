@@ -36,9 +36,8 @@ public class ExpandAllQuickBoardTest extends NlmCdeBaseTest {
         findElement(By.linkText("Quick Board ( 2 )")).click();
         textNotPresent("Loading...");
 
-        hangon(1);
-
         findElement(By.id("qb.compare")).click();
+        hangon(5);
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");

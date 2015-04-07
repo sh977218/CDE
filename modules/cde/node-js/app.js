@@ -98,7 +98,6 @@ exports.init = function(app, daoManager) {
 
     app.get('/dataelement/:id', function(req, res) {  
         cdesvc.show(req, function(result) {
-            if (!result) res.status(404).send();
             var cde = cdesvc.hideProprietaryPvs(result, req.user);
             adminItemSvc.hideUnapprovedComments(cde);
             res.send(cde);
@@ -113,8 +112,6 @@ exports.init = function(app, daoManager) {
 
     app.get('/debytinyid/:tinyId/:version?', function(req, res) {
         var serveCde = function(err, cde) {
-            if (!cde) return res.status(404).send();
-
             adminItemSvc.hideUnapprovedComments(cde);
             res.send(cdesvc.hideProprietaryPvs(cde, req.user));
             if (req.isAuthenticated()) {

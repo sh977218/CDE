@@ -44,16 +44,14 @@ exports.show = function(req, cb) {
         return;
     }
     mongo_data.byId(cdeId, function(err, cde) {
-        cb(cde);
         // Following have no callback because it's no big deal if it fails.
         // So create new thread and move on.
-        if (cde) {
-            mongo_data.incDeView(cde);
-            if (req.isAuthenticated()) {
-                mongo_data.addToViewHistory(cde, req.user);
-            }
+        mongo_data.incDeView(cde); 
+        if (req.isAuthenticated()) {
+           mongo_data.addToViewHistory(cde, req.user);
         }
-    });
+        cb(cde);
+    }); 
 };
 
 exports.save = function (req, res) {

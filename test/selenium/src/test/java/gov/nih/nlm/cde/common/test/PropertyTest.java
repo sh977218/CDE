@@ -70,7 +70,6 @@ public abstract class PropertyTest extends CommonTest {
         findElement(By.xpath("//dd[@id='dd_prop_value_0']//div[@contenteditable='true']")).sendKeys(" Hello From Selenium  ");
         findElement(By.xpath("//dd[@id='dd_prop_value_0']//button[@class='fa fa-check']")).click();
         textPresent("Hello From Selenium");
-        hangon(1);
     }
     
     

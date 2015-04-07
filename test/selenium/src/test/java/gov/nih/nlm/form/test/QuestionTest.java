@@ -61,7 +61,7 @@ public class QuestionTest extends BaseFormTest {
         
         findElement(By.linkText("Form Description")).click();
         
-        new CreateEditSectionTest().addSection("Patient Information", null);
+        new SectionTest().addSection("Patient Information", null);
         
         startAddingQuestions();
 
@@ -153,7 +153,7 @@ public class QuestionTest extends BaseFormTest {
         startAddingQuestions();    
 
         // Add 2nd Section
-        new CreateEditSectionTest().addSection("Smoking Status", null);
+        new SectionTest().addSection("Smoking Status", null);
 
         addQuestionToSection("Smoking History Ind", 1);
         findElement(By.id("question_accordion_1_0")).click();

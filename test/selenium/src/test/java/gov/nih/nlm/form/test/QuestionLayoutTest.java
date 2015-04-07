@@ -6,6 +6,8 @@ import org.testng.annotations.Test;
 
 public class QuestionLayoutTest extends BaseFormTest {
 
+    private SectionTest sectionTest = new SectionTest();
+
     @Test
     public void questionsLayoutTest() {
         Dimension currentWindowSize = getWindowSize();
@@ -21,8 +23,8 @@ public class QuestionLayoutTest extends BaseFormTest {
         String sec1 = "first section";
         String sec2 = "second section";
 
-        addSection(sec1, "0 or more");
-        addSection(sec2, "0 or more");
+        sectionTest.addSection(sec1, "0 or more");
+        sectionTest.addSection(sec2, "0 or more");
 
         textPresent(sec1);
         textPresent(sec2);
@@ -43,7 +45,7 @@ public class QuestionLayoutTest extends BaseFormTest {
         textPresent("There is no content yet.");
 
         String sec3 = "thrid section";
-        addSection(sec3, "0 or more");
+        sectionTest.addSection(sec3, "0 or more");
 
         textNotPresent("Show Filters");
         textNotPresent("results for");

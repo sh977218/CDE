@@ -3,12 +3,13 @@ package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 
-public class FormPermissionTest extends BaseFormTest {
+public class Section2Test extends BaseFormTest {
     
-    private CreateEditSectionTest sectionTest = new CreateEditSectionTest();
+    private SectionTest sectionTest = new SectionTest();
 
     @Test
     public void formPermissionTest() {
@@ -35,5 +36,20 @@ public class FormPermissionTest extends BaseFormTest {
         
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
     }
+    
+    @Test
+    public void dragHandleVisibility() {
+        mustBeLoggedOut();
+        goToFormByName("Intraoperative Management");
+        findElement(By.linkText("Form Description")).click();
+        Assert.assertEquals(findElement(By.cssSelector("div.formSectionArea")).findElements(By.cssSelector("i.question-move-handle")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.cssSelector("i.section-move-handle")).size(), 0);
+
+        mustBeLoggedInAs(ninds_username, password);
+        goToFormByName("Intraoperative Management");
+        findElement(By.linkText("Form Description")).click();
+        findElement(By.cssSelector("div.formSectionArea")).findElement(By.cssSelector("i.question-move-handle"));
+        findElement(By.cssSelector("div.formSectionArea")).findElement(By.cssSelector("i.section-move-handle"));
+    }   
     
 }

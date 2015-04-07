@@ -14,10 +14,10 @@ public class HomeTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void loggedInHomeIsSearch() {
+    public void loggedInHomeIsSeach() {
         mustBeLoggedInAs(ctepCurator_username, password);
         driver.get(baseUrl);
-        textPresent(" | All Statuses");
+        textPresent("Preferred Standard, Standard, Qualified");
     }
 
     @Test

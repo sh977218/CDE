@@ -19,6 +19,6 @@
 
     window.addEventListener('error', function (evt) {        
         handleError(evt.error.message, evt.error.message, evt.error.stack);
-    });
+    });    
 })();
 
