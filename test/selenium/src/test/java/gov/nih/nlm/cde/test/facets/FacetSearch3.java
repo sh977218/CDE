@@ -1,7 +1,7 @@
 
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.facets;
 
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.acrin_username;
+import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.Test;
@@ -39,16 +39,16 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         textNotPresent("Albert Einstein Cancer Center");
     }
     
-    @Test
-    public void lowStatusFilter() {
-        mustBeLoggedInAs(acrin_username, password);
-        goToCdeSearch();
-        textPresent("ACRIN (3)");
-        logout();
-        goToCdeSearch();
-        textNotPresent("ACRIN (3");
-    }
-    
+//    @Test
+//    public void lowStatusFilter() {
+//        mustBeLoggedInAs(acrin_username, password);
+//        goToCdeSearch();
+//        textPresent("ACRIN (3)");
+//        logout();
+//        goToCdeSearch();
+//        textNotPresent("ACRIN (3");
+//    }
+//
     @Test
     public void twoClassificationSearch() {
         mustBeLoggedOut();
@@ -80,7 +80,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         
         findElement(By.id("resetSearch")).click();
         hangon(.5);
-        textPresent( "All Terms | All Classifications | Preferred Standard, Standard, Qualified" );
+        textPresent( "All Terms | All Classifications | All Statuses" );
     }
     
 }

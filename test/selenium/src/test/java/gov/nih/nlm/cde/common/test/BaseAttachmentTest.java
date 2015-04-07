@@ -51,7 +51,6 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(attachmentReviewer_username, password);       
         gotoInbox();
 
-
         textPresent("Attachment Approval");
         findElement(By.xpath("//div[@id='mail_received']//a[1]")).click();
 
