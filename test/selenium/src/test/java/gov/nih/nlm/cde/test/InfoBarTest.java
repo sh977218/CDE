@@ -8,7 +8,6 @@ public class InfoBarTest extends NlmCdeBaseTest {
    
     private final FacetSearchTest facetSearchTest = new FacetSearchTest();
 
-    @Test
     public void infoBarClassification() {
         goToCdeSearch();
         findElement(By.id("li-blank-NINDS")).click();

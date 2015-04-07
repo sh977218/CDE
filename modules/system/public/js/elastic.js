@@ -178,7 +178,6 @@ angular.module('ElasticSearchResource', ['ngResource'])
                     flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
                 }
                 queryStuff.aggregations.flatClassification = flatClassification
-
             }
 
             if (settings.selectedOrgAlt !== undefined) {
@@ -216,8 +215,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 delete queryStuff.query.bool.must;
             }
 
-            var from = (settings.currentPage - 1) * settings.resultPerPage;
-            queryStuff.from = from;
+            queryStuff.from = (settings.currentPage - 1) * settings.resultPerPage;
 
             queryStuff.highlight = {
                 "order" : "score"
@@ -312,7 +310,6 @@ angular.module('ElasticSearchResource', ['ngResource'])
             cde.highlight.matchedBy = field;
         }
         , getExport: function(query, type, cb) {
-            var elastic = this;
             $http.post("/elasticSearchExport/" + type, query)
             .success(function (response) {
                 cb(response);
