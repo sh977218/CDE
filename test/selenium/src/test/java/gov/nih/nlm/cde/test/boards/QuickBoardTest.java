@@ -2,7 +2,7 @@ package gov.nih.nlm.cde.test.boards;
 
 import java.util.List;
 
-import gov.nih.nlm.cde.test.NlmCdeBaseTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;

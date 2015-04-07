@@ -1,10 +1,11 @@
 package gov.nih.nlm.cde.test;
 
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 
-public class Compare2Test extends NlmCdeBaseTest{
+public class Compare2Test extends NlmCdeBaseTest {
 
     @Test
     public void compareMeWithMlt() {

@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.system;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import gov.nih.nlm.form.test.QuestionTest;
 import org.openqa.selenium.*;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
@@ -15,7 +14,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.JavascriptExecutor;
-import org.testng.Assert;
 import org.testng.annotations.*;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.interactions.Actions;

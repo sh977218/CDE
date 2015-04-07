@@ -1,7 +1,6 @@
 
 package gov.nih.nlm.cde.test;
 
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.ninds_username;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;

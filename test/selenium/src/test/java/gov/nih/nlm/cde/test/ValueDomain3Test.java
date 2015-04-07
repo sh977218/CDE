@@ -1,10 +1,10 @@
 package gov.nih.nlm.cde.test;
 
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 
-public class ValueDomain3Test extends NlmCdeBaseTest {    
+public class ValueDomain3Test extends NlmCdeBaseTest {
     @Test
     public void integerDatatype() {
         mustBeLoggedInAs(ninds_username, password);

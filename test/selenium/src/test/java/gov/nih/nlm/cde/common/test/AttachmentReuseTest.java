@@ -1,11 +1,8 @@
 package gov.nih.nlm.cde.common.test;
 
-import gov.nih.nlm.cde.test.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.testng.Assert;
 import org.testng.annotations.Test;
-import com.jayway.restassured.RestAssured;
 
 public class AttachmentReuseTest extends BaseAttachmentTest {
 

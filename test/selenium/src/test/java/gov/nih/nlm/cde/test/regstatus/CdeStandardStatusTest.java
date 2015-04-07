@@ -1,7 +1,6 @@
 package gov.nih.nlm.cde.test.regstatus;
 
-import gov.nih.nlm.cde.test.NlmCdeBaseTest;
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.wait;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;

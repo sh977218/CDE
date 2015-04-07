@@ -1,7 +1,6 @@
 
 package gov.nih.nlm.cde.test;
 
-import static gov.nih.nlm.cde.test.NlmCdeBaseTest.anonymousCommentUser_username;
 import org.testng.annotations.Test;
 
 public class CdeCommentTest2 extends CdeCommentTest {
