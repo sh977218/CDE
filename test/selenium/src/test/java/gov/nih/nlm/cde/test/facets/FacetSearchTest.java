@@ -62,15 +62,27 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textNotPresent("Ethnic Group");
         findElement(By.linkText("10"));
         findElement(By.id("li-checked-Qualified")).click();
+        hangon(1);
         findElement(By.id("li-checked-Standard")).click();
         textNotPresent("Ethnic Group Category Text");
-        findElement(By.id("li-checked-Preferred Standard")).click();
-        textNotPresent("Administration, Management Performed Study");
 
+        findElement(By.id("li-blank-Candidate")).click();
+        textPresent("Study Specimen Identification Source Name");
+
+        findElement(By.id("li-checked-Preferred Standard")).click();
+        findElement(By.id("li-checked-Candidate")).click();
+
+        textPresent("| All Statuses");
+        findElement(By.linkText("10"));
+
+        textNotPresent("Study Specimen Identification Source Name");
+
+        findElement(By.id("li-blank-Candidate")).click();
         textPresent("Stress Specimen Cell Examined Total Count");
 
         findElement(By.id("li-blank-caBIG")).click();
         textNotPresent("Stress Specimen Cell Examined Total Count");
+        textPresent("Study Publication Identification Digital Object Identifier Text");
         findElement(By.id("li-checked-caBIG")).click();
         textPresent("Stress Specimen Cell Examined Total Count");
     }

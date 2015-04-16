@@ -80,7 +80,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         
         findElement(By.id("resetSearch")).click();
         hangon(.5);
-        textPresent( "All Terms | All Classifications | All Statuses" );
+        textPresent( "All Terms | All Classifications | Preferred Standard, Standard, Qualified" );
     }
     
 }
