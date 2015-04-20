@@ -35,10 +35,11 @@ exports.cdeClassification = function(body, action, cb) {
                 classification.saveCdeClassif(err, cde, cb);
             });
         } else if (action === classificationShared.actions.delete) {
-            classificationShared.modifyCategory(steward.object, body.categories, {type:"delete"}, function() {
-                classification.saveCdeClassif("", cde, cb);
+            classificationShared.modifyCategory(steward.object, body.categories, {type:"delete"}, function(err) {
+                classification.saveCdeClassif(err, cde, cb);
             });
-        }        
+        }
+
     };
     daoManager.getDaoList().forEach(function(dao) {
         var  findElements = function(err, cde) {

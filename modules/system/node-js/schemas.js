@@ -178,6 +178,23 @@ schemas.fs_files = new mongoose.Schema({
     , "md5" : String
 });
 
+schemas.classificationAudit = new mongoose.Schema({
+    date: { type: Date, default: Date.now }
+    , user: {
+        username: String
+    }
+    , elements: [{
+        tinyId: String
+        , version: String
+        , _id: mongoose.Schema.Types.ObjectId
+        , name: String
+    }]
+    , action: {type: String, enum: ["add","delete","rename"]}
+    , path: [String]
+});
+
+schemas.classificationAudit.set('collection', 'classificationAudit');
+
 schemas.fs_files.set('collection', 'fs.files');
 
 module.exports = schemas;

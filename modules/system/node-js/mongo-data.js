@@ -28,6 +28,7 @@ var Message;
 var ClusterStatus;
 var sessionStore;
 var fs_files;
+var classificationAudit;
 
 var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');
 iConnectionEstablisherSys.connect(function(resCon) {
@@ -43,6 +44,7 @@ iConnectionEstablisherSys.connect(function(resCon) {
     });
     exports.sessionStore = sessionStore;
     fs_files = conn.model('fs_files', schemas.fs_files);
+    classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
 });
 
 var iConnectionEstablisherLocal = new connectionEstablisher(config.database.local.uri, 'LOCAL');
@@ -460,4 +462,9 @@ exports.mailStatus = function(user, cb){
     exports.getMessages({user:user, params: {type:"received"}}, function(err, mail){
         cb(err, mail.length);
     });
+};
+
+exports.addToClassifAudit = function(msg) {
+    var classifRecord = new classificationAudit(msg);
+    classifRecord.save();
 };
