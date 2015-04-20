@@ -72,6 +72,14 @@ public abstract class PropertyTest extends CommonTest {
         textPresent("Hello From Selenium");
         hangon(1);
     }
-    
+
+    public void truncateText(String eltName, String status) {
+        mustBeLoggedInAs(ninds_username, password);
+        goToEltByName(eltName, null);
+        findElement(By.linkText("Properties")).click();
+        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
+        textPresent("516-543, DOI:10.1002/jmri.22259");
+        hangon(1);
+            }
     
 }

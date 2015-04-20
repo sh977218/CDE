@@ -310,7 +310,7 @@ exports.init = function(app) {
     });
 
     app.isLocalIp = function (ip) {
-        return ip.indexOf("127.0") !== -1 || ip === "::1" ||  ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIp) > -1;
+        return ip.indexOf("127.0") !== -1 || ip === "::1" ||  ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIP) > -1;
     };
 
     app.get('/siteaudit', function(req, res) {

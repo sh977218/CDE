@@ -78,7 +78,7 @@ exports.ticketValidate = function( tkt, cb ) {
 };
 
 exports.updateUserAfterLogin = function(req, user) {
-    if( !user.knowIPs ) {
+    if( !user.knownIPs ) {
         user.knownIPs = [];
     }
     if( user.knownIPs.length > 100 ) {

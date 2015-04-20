@@ -480,3 +480,12 @@ button#selectDefault {
     word-wrap: break-word;
 }
 
+.collapseText {
+    display:block;
+    overflow: hidden;
+    max-height:62px;
+}
+.expandText{
+    overflow: hidden;
+    display: inline-block;
+}
