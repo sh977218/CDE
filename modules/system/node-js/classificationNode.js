@@ -93,6 +93,16 @@ exports.modifyOrgClassification = function(request, action, callback) {
                                 classification.saveCdeClassif("", elt);     
                             });
                         }
+                        mongo_data_system.addToClassifAudit({
+                            date: new Date()
+                            , user: {
+                                username: "unknown"
+                            }
+                            , elements: result.map(function(e){return {tinyId: e.tinyId};})
+                            , action: "rename"
+                            , path: [request.orgName].concat(request.categories)
+                            , newname: request.newname
+                        });
                     });
                 });            
                 if(callback) callback(err, stewardOrg);
@@ -128,5 +138,14 @@ exports.classifyEntireSearch = function(req, cb) {
     elastic.elasticsearch(req.query, req.itemType, function(err, result) {   
         var ids = result.cdes.map(function(cde) {return cde._id;});    
         adminItemSvc.bulkAction(ids, action, cb);
+        mongo_data_system.addToClassifAudit({
+            date: new Date()
+            , user: {
+                username: "unknown"
+            }
+            , elements: result.cdes.map(function(e){return {tinyId: e.tinyId};})
+            , action: "reclassify"
+            , path: [req.newClassification.orgName].concat(req.newClassification.categories)
+        });
     });
 };

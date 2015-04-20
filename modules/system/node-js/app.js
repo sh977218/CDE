@@ -470,7 +470,9 @@ exports.init = function(app) {
             return;
         }      
         classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function(err, org) {
-            if (!err) res.send(org);
+            if (!err) {
+                res.send(org);
+            }
             else res.status(202).send({error: {message: "Classification does not exists."}});
         });
     });    

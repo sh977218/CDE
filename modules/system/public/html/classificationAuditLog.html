@@ -25,7 +25,7 @@
             <dt ng-if="edit.elements.length === 1">Registration Status</dt>
             <dd ng-if="edit.elements.length === 1">{{edit.elements[0].status}}</dd>
             <dt>Classification</dt>
-            <dd><span class="text-danger">{{edit.path.join(" > ")}}</span></dd>
+            <dd>{{edit.action | camelCaseToHuman}} <span class="text-danger">{{edit.path.join(" > ")}}</span> <span ng-if="edit.action === 'rename'"> to <span class='text-danger'>{{edit.newname}}</span></span></dd>
         </dl>
     </accordion-group>
 </accordion>

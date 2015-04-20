@@ -190,7 +190,8 @@ schemas.classificationAudit = new mongoose.Schema({
         , name: String
         , status: String
     }]
-    , action: {type: String, enum: ["add","delete","rename"]}
+    , newname: String
+    , action: {type: String, enum: ["add","delete","rename", "reclassify"]}
     , path: [String]
 });
 
