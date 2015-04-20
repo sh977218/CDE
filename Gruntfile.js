@@ -3,7 +3,11 @@ require('./deploy/configTest.js');
 var config = require('config')
     , elastic = require('./deploy/elasticSearchInit.js')
     , chalk = require('chalk')
-    , fs = require('fs');
+    , fs = require('fs')
+    , tar = require('tar-fs')
+    , zlib = require('zlib')
+    , spawn = require('child_process').spawn
+;
     
 var welcomeMessage = fs.readFileSync("./deploy/doc/welcome.txt");
 var helpMessage = fs.readFileSync("./deploy/doc/help.txt");
@@ -537,7 +541,21 @@ module.exports = function(grunt) {
     
     grunt.registerTask('persistVersion', function() {
         fs.writeFileSync("./modules/system/views/version.ejs", grunt.config.get("version"));         
-    });    
+    });
+    grunt.registerTask('tarCode', function() {
+        var gzip = zlib.createGzip();
+        var done = this.async();
+        var writeS = fs.createWriteStream('./code.tar.gz');
+        writeS.on('close', function() {
+            // tar done, now sign with gpg
+            var gpg = spawn('gpg', ["-s", "./code.tar.gz"]);
+            gpg.on('close', function(code){
+                fs.unlinkSync("./code.tar.gz");
+                done();
+            });
+        });
+        tar.pack(config.node.buildDir).pipe(gzip).pipe(writeS);
+    });
 
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['prompt:elastic', 'do-elastic']);

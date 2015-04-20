@@ -25,6 +25,13 @@
                     <dt>Syncing: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.sync?'btn-success':'btn-danger'"><i class="fa" ng-class="status.elastic.sync?'fa-check':'fa-times'"/></a></dd>
                     <dt>Updating: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.updating?'btn-success':'btn-danger'"><i class="fa" ng-class="status.elastic.updating?'fa-check':'fa-times'"/></a></dd>
                 </dl>
+                <hr/>
+                <form action="/deploy" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="deployFile"/>
+                    <input type="hidden" value="{{status.hostname}}" name="hostname"/>
+                    <input type="hidden" value="{{status.pmPort}}" name="pmPort"/>
+                    <input type="submit" value="Deploy"/>
+                </form>
             </div>
         </div>
     </div>

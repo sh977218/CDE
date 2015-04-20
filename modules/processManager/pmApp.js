@@ -3,7 +3,11 @@ var spawn = require('child_process').spawn,
     http = require('http'),
     config = require('config'),
     request = require('request'),
-    bodyParser = require('body-parser')
+    bodyParser = require('body-parser'),
+    fs = require('fs'),
+    multer = require('multer'),
+    tar = require('tar-fs'),
+    zlib = require('zlib')
     ;
 
 var allHosts = [];
@@ -78,6 +82,40 @@ app.post('/restart', function(req, res) {
     }
 });
 
+app.post('/deploy', multer(), function(req, res) {
+    console.log("In POST /deploy... do stuff + "  + req.files.deployFile.path);
+    var gpg = spawn('gpg', ["-o", config.pm.tempDir + "deploy.tar.gz", "-d", req.files.deployFile.path], {stdio: 'inherit'});
+    gpg.on('error', function(err) {
+        console.log(err);
+        res.status(500).send();
+    });
+    gpg.on('close', function(code) {
+        if (code === 0) {
+            var gzip = zlib.createGzip();
+            var writeS = fs.createWriteStream(config.pm.tempDir + "deploy.tar");
+            writeS.on("close", function(code) {
+                if (code === 0) {
+                    
+                } else {
+                    res.status(500).send("unable to unzip");
+                }
+            });
+                tar.extract(config.node.buildDir);
+            writeS.on('error', function(err) {
+                console.log(err);
+                res.status(500).send();
+            });
+            fs.createReadStream(config.pm.tempDir + "deploy.tar.gz").pipe(gzip).pipe(writeS);
+            writeS.on('close', function(code) {
+                if (code !== 0) {
+                    res.status(500).send("cannot extract");
+                } else {
+                    res.send("OK");
+                }
+            })
+        }
+    } )
+});
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));

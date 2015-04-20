@@ -59,6 +59,9 @@
     "grunt-useref": "*",
     "log-buffer": "0.0.3",
     "chalk": "*",
-    "xmlbuilder": "2.6.2"
+    "xmlbuilder": "2.6.2",
+    "tar-fs": "0.5.2",
+    "zlib": "1.0.5",
+    "gpg": "0.3.4"
   }
 }

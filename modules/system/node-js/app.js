@@ -15,6 +15,8 @@ var passport = require('passport')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
     , request = require('request')
+    , fs = require('fs')
+    , multer  = require('multer')
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -45,6 +47,15 @@ exports.init = function(app) {
     app.get('/template/:module/:template', function(req, res) {        
         res.render(req.params.template, req.params.module, {config: viewConfig, module: req.params.module});
     });		
+
+    app.post('/deploy', multer(), function(req, res) {
+        request.post({url: 'http://' + req.body.hostname + ':' + req.body.pmPort + '/' + "deploy",
+            formData: {
+                deployFile: fs.createReadStream(req.files.deployFile.path)
+        }}).on('response', function(response) {
+            res.status(response.statusCode).send();
+        });
+    });
 
     var token;
     app.get('/statusToken', function(req, res) {
