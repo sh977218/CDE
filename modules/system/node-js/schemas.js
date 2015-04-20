@@ -179,7 +179,7 @@ schemas.fs_files = new mongoose.Schema({
 });
 
 schemas.classificationAudit = new mongoose.Schema({
-    date: { type: Date, default: Date.now }
+    date: { type: Date, default: Date.now, index: true }
     , user: {
         username: String
     }
@@ -188,6 +188,7 @@ schemas.classificationAudit = new mongoose.Schema({
         , version: String
         , _id: mongoose.Schema.Types.ObjectId
         , name: String
+        , status: String
     }]
     , action: {type: String, enum: ["add","delete","rename"]}
     , path: [String]

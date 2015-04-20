@@ -1,0 +1,33 @@
+<accordion>
+    <accordion-group ng-repeat="edit in records">
+        <accordion-heading>
+            <span ng-if="edit.elements.length === 1">{{edit.elements[0].name}}</span>
+            <span ng-if="edit.elements.length > 1">{{edit.elements.length}} elements</span>
+            <span class="text-info">{{edit.path.join(" > ")}}</span>
+            <span class="matched-by">{{edit.date | date : 'MMM d, y, h:mm a' }}</span>
+        </accordion-heading>
+        <dl class="dl-horizontal">
+            <dt>User</dt>
+            <dd>{{edit.user.username}}</dd>
+            <dt>Date</dt>
+            <dd>{{edit.date | date : 'MMM d, y, h:mm a'}}</dd>
+            <dt>
+                <span ng-if="edit.elements.length === 1">Element</span>
+                <span ng-if="edit.elements.length > 1">Elements</span></dt>
+            <dd>
+                <span ng-if="edit.elements.length>1">{{edit.elements.length}} elements: </span>
+                <span ng-repeat="e in edit.elements track by $index">
+                    <a ng-if="e._id" target="_blank" href="/#/deview?cdeId={{e._id}}">{{e.name || "Element " +  ($index + 1)}}</a>
+                    <a ng-if="e.tinyId" target="_blank" href="/#/deview?tinyId={{e.tinyId}}">{{e.name || "Element " +  ($index + 1)}}</a>
+                    <span ng-if="$index < edit.elements.length-1">, </span>
+                </span>
+            </dd>
+            <dt ng-if="edit.elements.length === 1">Registration Status</dt>
+            <dd ng-if="edit.elements.length === 1">{{edit.elements[0].status}}</dd>
+            <dt>Classification</dt>
+            <dd><span class="text-danger">{{edit.path.join(" > ")}}</span></dd>
+        </dl>
+    </accordion-group>
+</accordion>
+
+<pagination total-items="1000" ng-model="currentPage" ng-change="gotoPageLocal(currentPage)" max-size="10"></pagination>

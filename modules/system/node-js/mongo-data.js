@@ -465,6 +465,28 @@ exports.mailStatus = function(user, cb){
 };
 
 exports.addToClassifAudit = function(msg) {
-    var classifRecord = new classificationAudit(msg);
-    classifRecord.save();
+    var persistClassifRecord = function(err, elt) {
+        if (!elt) return;
+        msg.elements[0].name = elt.naming[0].designation;
+        msg.elements[0].status = elt.registrationState.registrationStatus;
+        var classifRecord = new classificationAudit(msg);
+        classifRecord.save(function(err,r){
+            console.log(err);
+            console.log(r);
+        });
+    };
+    daoManager.getDaoList().forEach(function(dao) {
+        if (msg.elements[0]._id) dao.byId(msg.elements[0]._id, persistClassifRecord);
+        if (msg.elements[0].tinyId) dao.eltByTinyId(msg.elements[0].tinyId, persistClassifRecord);
+    });
+};
+
+exports.getClassificationAuditLog = function(params, callback){
+    classificationAudit.find()
+        .sort('-date')
+        .skip(params.skip)
+        .limit(params.limit)
+        .exec(function(err, logs){
+            callback(err, logs);
+        });
 };
