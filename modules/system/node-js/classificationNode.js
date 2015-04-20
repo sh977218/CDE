@@ -99,7 +99,7 @@ exports.modifyOrgClassification = function(request, action, callback) {
                                 username: "unknown"
                             }
                             , elements: result.map(function(e){return {tinyId: e.tinyId};})
-                            , action: "rename"
+                            , action: action
                             , path: [request.orgName].concat(request.categories)
                             , newname: request.newname
                         });
