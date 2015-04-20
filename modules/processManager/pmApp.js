@@ -83,38 +83,34 @@ app.post('/restart', function(req, res) {
 });
 
 app.post('/deploy', multer(), function(req, res) {
-    console.log("In POST /deploy... do stuff + "  + req.files.deployFile.path);
-    var gpg = spawn('gpg', ["-o", config.pm.tempDir + "deploy.tar.gz", "-d", req.files.deployFile.path], {stdio: 'inherit'});
-    gpg.on('error', function(err) {
-        console.log(err);
-        res.status(500).send();
-    });
-    gpg.on('close', function(code) {
-        if (code === 0) {
-            var gzip = zlib.createGzip();
-            var writeS = fs.createWriteStream(config.pm.tempDir + "deploy.tar");
-            writeS.on("close", function(code) {
-                if (code === 0) {
-                    
-                } else {
-                    res.status(500).send("unable to unzip");
-                }
-            });
-                tar.extract(config.node.buildDir);
-            writeS.on('error', function(err) {
-                console.log(err);
-                res.status(500).send();
-            });
-            fs.createReadStream(config.pm.tempDir + "deploy.tar.gz").pipe(gzip).pipe(writeS);
-            writeS.on('close', function(code) {
-                if (code !== 0) {
-                    res.status(500).send("cannot extract");
-                } else {
-                    res.send("OK");
-                }
-            })
-        }
-    } )
+    req.body.requester = {host: req.body.requester_host, port: req.body.requester_port};
+    if (verifyToken(req)) {
+        var gzPath = config.pm.tempDir + "deploy.tar.gz";
+        if (fs.existsSync(gzPath))
+            fs.unlinkSync(gzPath);
+        var gpg = spawn('gpg', ["-o", gzPath, "-d", req.files.deployFile.path], {stdio: 'inherit'});
+        gpg.on('error', function(err) {
+            res.status(500).send("Error decrypting file");
+        });
+        gpg.on('close', function(code) {
+            if (code !== 0) {
+                console.log("Error untar-ing");
+                res.status(500).send("Error untar-ing");
+             } else {
+                res.send("Done");
+                var gzip = zlib.createGunzip();
+                var writeS = tar.extract(config.node.buildDir);
+                spawned.kill();
+                fs.createReadStream(gzPath).pipe(gzip).pipe(writeS);
+                writeS.on('finish', function() {
+                    console.log("DONE EXTRACTING");
+                    spawnChild();
+                });
+            }
+        })
+    } else {
+        return res.status(403).send();
+    }
 });
 
 http.createServer(app).listen(app.get('port'), function(){

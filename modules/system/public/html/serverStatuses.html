@@ -26,12 +26,8 @@
                     <dt>Updating: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.updating?'btn-success':'btn-danger'"><i class="fa" ng-class="status.elastic.updating?'fa-check':'fa-times'"/></a></dd>
                 </dl>
                 <hr/>
-                <form action="/deploy" method="POST" enctype="multipart/form-data">
-                    <input type="file" name="deployFile"/>
-                    <input type="hidden" value="{{status.hostname}}" name="hostname"/>
-                    <input type="hidden" value="{{status.pmPort}}" name="pmPort"/>
-                    <input type="submit" value="Deploy"/>
-                </form>
+                <div ng-file-select="" ng-model="files" class="btn btn-default upload-button" ng-multiple="false" ng-accept="'*.gpg'"
+                     tabindex="0" ng-file-change="upload(status.hostname, status.pmPort, $files)">Deploy File {{progressPercentage}}</div><br>
             </div>
         </div>
     </div>

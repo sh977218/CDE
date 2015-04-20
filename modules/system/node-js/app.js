@@ -46,18 +46,22 @@ exports.init = function(app) {
 
     app.get('/template/:module/:template', function(req, res) {        
         res.render(req.params.template, req.params.module, {config: viewConfig, module: req.params.module});
-    });		
+    });
 
+    var token;
     app.post('/deploy', multer(), function(req, res) {
         request.post({url: 'http://' + req.body.hostname + ':' + req.body.pmPort + '/' + "deploy",
             formData: {
-                deployFile: fs.createReadStream(req.files.deployFile.path)
-        }}).on('response', function(response) {
+                token: token
+                , "requester_host": config.hostname
+                , "requester_port": config.port
+                , deployFile: fs.createReadStream(req.files.deployFile.path)
+            }
+        }).on('response', function(response) {
             res.status(response.statusCode).send();
         });
     });
 
-    var token;
     app.get('/statusToken', function(req, res) {
         token = mongo_data_system.generateTinyId();
         res.send(token);

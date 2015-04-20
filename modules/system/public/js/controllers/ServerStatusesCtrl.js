@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$http',
-    function($scope, $http) {
+angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$http', '$upload',
+    function($scope, $http, $upload) {
 
     $scope.statuses = [];
 
@@ -25,9 +25,25 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
         $http.post("/serverState", {hostname: server.hostname, port: server.port, pmPort: server.pmPort, action: "restart"}).then(function (result) {
             $scope.addAlert("success", "Restart request sent");
         });
-    }
-
+    };
 
     $scope.refreshStatus();
+
+    $scope.upload = function (hostname, pmPort, files) {
+        if (files && files.length) {
+            var file = files[0];
+            $upload.upload({
+                url: '/deploy',
+                fields: {'hostname': hostname, pmPort: pmPort},
+                file: file,
+                fileFormDataName: "deployFile"
+            }).progress(function (evt) {
+                $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+            }).success(function (data, status, headers, config) {
+                delete $scope.progressPercentage;
+                $scope.addAlert("success", "Deployment complete");
+            });
+        }
+    };
 
 }]);
