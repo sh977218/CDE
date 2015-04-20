@@ -189,6 +189,7 @@ schemas.classificationAudit = new mongoose.Schema({
         , _id: mongoose.Schema.Types.ObjectId
         , name: String
         , status: String
+        , eltType: {type: String, enum: ["cde", "form"]}
     }]
     , newname: String
     , action: {type: String, enum: ["add","delete","rename", "reclassify"]}

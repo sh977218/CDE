@@ -99,4 +99,12 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         findElement(By.id("submit")).click();
         hangon(6);
     }
+
+    public void openClassificationAudit(String name){
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Audit")).click();
+        findElement(By.linkText("Classification Audit Log")).click();
+        findElement(By.xpath("(//span[text()=\""+name+"\" and contains(@class,\"text-info\")])[1]")).click();
+    }
 }
