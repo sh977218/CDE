@@ -80,7 +80,7 @@
                     }
                 }else{
                     if($scope.textType == 'html') {
-                        elStr = '<span ng-class="class">' +
+                        elStr = '<span ng-class="">' +
                         $scope.text +
                         '</span>';
                         el = angular.element( elStr );
