@@ -9,6 +9,7 @@ public class ViewingHistory extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
+        textPresent("User Profile");
         textPresent(cdeName);
     }
 
