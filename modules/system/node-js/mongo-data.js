@@ -470,10 +470,7 @@ exports.addToClassifAudit = function(msg) {
         msg.elements[0].name = elt.naming[0].designation;
         msg.elements[0].status = elt.registrationState.registrationStatus;
         var classifRecord = new classificationAudit(msg);
-        classifRecord.save(function(err,r){
-            console.log(err);
-            console.log(r);
-        });
+        classifRecord.save(function(err,r){});
     };
     daoManager.getDaoList().forEach(function(dao) {
         if (msg.elements[0]._id) dao.byId(msg.elements[0]._id, persistClassifRecord);
