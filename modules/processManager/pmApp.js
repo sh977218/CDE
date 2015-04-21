@@ -86,8 +86,7 @@ app.post('/deploy', multer(), function(req, res) {
     req.body.requester = {host: req.body.requester_host, port: req.body.requester_port};
     if (verifyToken(req)) {
         var gzPath = config.pm.tempDir + "deploy.tar.gz";
-        if (fs.existsSync(gzPath))
-            fs.unlinkSync(gzPath);
+        if (fs.existsSync(gzPath)) fs.unlinkSync(gzPath);
         var gpg = spawn('gpg', ["-o", gzPath, "-d", req.files.deployFile.path], {stdio: 'inherit'});
         gpg.on('error', function(err) {
             res.status(500).send("Error decrypting file");

@@ -38,7 +38,7 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
                 file: file,
                 fileFormDataName: "deployFile"
             }).progress(function (evt) {
-                $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total) + " %";
             }).success(function (data, status, headers, config) {
                 delete $scope.progressPercentage;
                 $scope.addAlert("success", "Deployment complete");

@@ -50,6 +50,9 @@ exports.init = function(app) {
 
     var token;
     app.post('/deploy', multer(), function(req, res) {
+        if (!token) {
+            return res.status(500).send("No valid token");
+        }
         request.post({url: 'http://' + req.body.hostname + ':' + req.body.pmPort + '/' + "deploy",
             formData: {
                 token: token
