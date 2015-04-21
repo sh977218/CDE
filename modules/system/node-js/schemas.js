@@ -1,6 +1,7 @@
 var mongoose = require('mongoose')
     , authorizationShared = require('../shared/authorizationShared')
     , config = require("config")
+    , regStatusShared = require("../shared/regStatusShared")
     ;
 
 var schemas = {};
@@ -85,7 +86,7 @@ var attachmentSchema = {
 schemas.attachmentSchema = new mongoose.Schema(attachmentSchema, {_id: false});
 
 schemas.registrationStateSchema = {
-    registrationStatus: {type: String}
+    registrationStatus: {type: String, enum: regStatusShared.statusList}
     , effectiveDate: Date
     , untilDate: Date
     , administrativeNote: String
@@ -178,6 +179,8 @@ schemas.fs_files = new mongoose.Schema({
     , "md5" : String
 });
 
+
+
 schemas.classificationAudit = new mongoose.Schema({
     date: { type: Date, default: Date.now, index: true }
     , user: {
@@ -188,7 +191,7 @@ schemas.classificationAudit = new mongoose.Schema({
         , version: String
         , _id: mongoose.Schema.Types.ObjectId
         , name: String
-        , status: String
+        , status: {type: String, enum: regStatusShared.statusList}
         , eltType: {type: String, enum: ["cde", "form"]}
     }]
     , newname: String
