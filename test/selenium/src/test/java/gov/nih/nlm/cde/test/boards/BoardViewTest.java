@@ -17,6 +17,7 @@ public class BoardViewTest extends BoardTest {
         textPresent("Imaging contrast agent dose");
         textNotPresent("NeurtcPlaqBrnRegnScoreAnatcSit");
         textNotPresent("EEGInterictEpilpNLocOnsDescTxt");
+        findElement(By.id("gridView")).click();
         findElement(By.linkText("Next")).click();
         textNotPresent("Imaging contrast agent dose");
         textPresent("Risk Factor Questionnaire (RFQ-U) - work rotenone product use 46 55 age indicator");
@@ -53,8 +54,8 @@ public class BoardViewTest extends BoardTest {
     }
 
     public void attachToBoard(String cdeName, String boardName) {
-        searchElt(name, "cde", null);
-        findElement(By.id("eyeLink_0")).click();
+        searchElt(cdeName, "cde", null);
+        findElement(By.id("pinToBoard_0")).click();
         hangon(1);
         findElement(By.linkText(boardName)).click();
     }
