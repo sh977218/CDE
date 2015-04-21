@@ -15,6 +15,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.*;
 
+import java.lang.System;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -138,6 +139,7 @@ public class NlmCdeBaseTest {
         } else {
             WebElement unameLink = findElement(By.id("username_link"));
             if (!unameLink.getText().equals(username)) {
+                System.out.println("uname is:"+unameLink.getText());
                 logout();
                 loginAs(username, password);
             }
