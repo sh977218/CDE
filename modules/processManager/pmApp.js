@@ -27,7 +27,7 @@ var getHosts = function() {
 
 var getTokens = function() {
     allHosts.forEach(function(server){
-        request("http://" + server.hostname + ":" + server.port + "/statusToken", function(error, response, body) {
+        request("http://" + server.hostname + "/statusToken", function(error, response, body) {
             server.token = body;
         });
     });
@@ -102,7 +102,6 @@ app.post('/deploy', multer(), function(req, res) {
                 spawned.kill();
                 fs.createReadStream(gzPath).pipe(gzip).pipe(writeS);
                 writeS.on('finish', function() {
-                    console.log("DONE EXTRACTING");
                     spawnChild();
                 });
             }
