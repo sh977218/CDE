@@ -1,13 +1,14 @@
 
 package gov.nih.nlm.cde.test;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ClassificationMgt2Test extends BaseClassificationTest {
     @Test

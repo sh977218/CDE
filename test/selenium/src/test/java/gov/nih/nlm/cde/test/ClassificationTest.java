@@ -1,10 +1,11 @@
 package gov.nih.nlm.cde.test;
 
-import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 public class ClassificationTest extends BaseClassificationTest {  
     
