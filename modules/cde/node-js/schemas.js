@@ -130,7 +130,7 @@ schemas.dataElementSchema.set('collection', 'dataelements');
 schemas.pinningBoardSchema.set('collection', 'pinningBoards');
 
 schemas.cdeAuditSchema = new mongoose.Schema({
-    date: {type: Date, index: true}
+    date: {type: Date, default: Date.now, index: true}
     , user: {
         username: String
     }
