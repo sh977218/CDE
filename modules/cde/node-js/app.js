@@ -501,7 +501,7 @@ exports.init = function(app, daoManager) {
     app.post('/getCdeAuditLog', function(req, res) {
         if(req.isAuthenticated() && req.user.siteAdmin) {
             mongo_data.getCdeAuditLog(req.body, function(err, result) {
-                res.send(result);                
+                res.send(result);
             });
         } else {
             res.status(401).send("Not Authorized");

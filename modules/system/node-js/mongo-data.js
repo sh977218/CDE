@@ -28,6 +28,7 @@ var Message;
 var ClusterStatus;
 var sessionStore;
 var fs_files;
+var classificationAudit;
 
 var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');
 iConnectionEstablisherSys.connect(function(resCon) {
@@ -43,6 +44,7 @@ iConnectionEstablisherSys.connect(function(resCon) {
     });
     exports.sessionStore = sessionStore;
     fs_files = conn.model('fs_files', schemas.fs_files);
+    classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
 });
 
 var iConnectionEstablisherLocal = new connectionEstablisher(config.database.local.uri, 'LOCAL');
@@ -460,4 +462,28 @@ exports.mailStatus = function(user, cb){
     exports.getMessages({user:user, params: {type:"received"}}, function(err, mail){
         cb(err, mail.length);
     });
+};
+
+exports.addToClassifAudit = function(msg) {
+    var persistClassifRecord = function(err, elt) {
+        if (!elt) return;
+        msg.elements[0].name = elt.naming[0].designation;
+        msg.elements[0].status = elt.registrationState.registrationStatus;
+        var classifRecord = new classificationAudit(msg);
+        classifRecord.save(function(err,r){});
+    };
+    daoManager.getDaoList().forEach(function(dao) {
+        if (msg.elements[0]._id) dao.byId(msg.elements[0]._id, persistClassifRecord);
+        if (msg.elements[0].tinyId) dao.eltByTinyId(msg.elements[0].tinyId, persistClassifRecord);
+    });
+};
+
+exports.getClassificationAuditLog = function(params, callback){
+    classificationAudit.find()
+        .sort('-date')
+        .skip(params.skip)
+        .limit(params.limit)
+        .exec(function(err, logs){
+            callback(err, logs);
+        });
 };

@@ -41,7 +41,11 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         findElement(By.linkText("Classification")).click();
         textPresent("NINDS");
         textPresent("Population");
-        textPresent("Adult");        
+        textPresent("Adult");
+
+        openClassificationAudit("NINDS > Classification Transfer > Child Classification");
+        textPresent("Reclassify NINDS > Classification Transfer > Child Classification");
+        textPresent("214 elements");
     }
     
     @Test

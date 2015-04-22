@@ -29,6 +29,11 @@ public class ClassificationTest extends BaseClassificationTest {
         }
         findElement(By.xpath("//button[text() = 'Close']")).click();
         modalGone();
+
+        openClassificationAudit("NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
+        textPresent("classificationMgtUser");
+        textPresent("Surgical Procedure Other Anatomic Site Performed Indicator");
+        textPresent("Add NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
     }
     
     private void removeClassificationMethod(String[] categories) {
@@ -59,6 +64,11 @@ public class ClassificationTest extends BaseClassificationTest {
         
         removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis"});
         Assert.assertTrue(textNotPresent("Myasthenia Gravis"));
+
+
+        openClassificationAudit("NINDS > Disease > Myasthenia Gravis");
+        textPresent("classificationMgtUser");
+        textPresent("Delete NINDS > Disease > Myasthenia Gravis");
     }    
     
     @Test

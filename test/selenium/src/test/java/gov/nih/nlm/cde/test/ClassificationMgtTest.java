@@ -65,6 +65,10 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         searchNestedClassifiedForms();
         hangon(1);
         Assert.assertTrue(textNotPresent("NINDS (40)"));
+
+        openClassificationAudit("NINDS > Disease > Epilepsy");
+        textPresent("867 elements");
+        textPresent("Delete NINDS > Disease > Epilepsy");
     }
     
     @Test

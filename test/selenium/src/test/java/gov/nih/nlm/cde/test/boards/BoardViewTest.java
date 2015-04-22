@@ -10,14 +10,18 @@ public class BoardViewTest extends BoardTest {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
         findElement(By.id("gridView")).click();
-        textPresent("TissSpecmnCollctnDateTime");
-        textPresent("DrgSubIllctUseOTH");
+        textPresent("NeurtcPlaqBrnRegnScoreAnatcSit");
+        textPresent("EEGInterictEpilpNLocOnsDescTxt");
         findElement(By.id("accordionView")).click();
-        textPresent("Tissue specimen collection date and time");
-        textNotPresent("TissSpecmnCollctnDateTime");
-        textNotPresent("DrgSubIllctUseOTH");
+        textPresent("Imaging contrast agent dose");
+        textNotPresent("NeurtcPlaqBrnRegnScoreAnatcSit");
+        textNotPresent("EEGInterictEpilpNLocOnsDescTxt");
+        findElement(By.id("gridView")).click();
         findElement(By.linkText("Next")).click();
-        textNotPresent("Tissue specimen collection date and time");
+        textNotPresent("Imaging contrast agent dose");
+        textPresent("Risk Factor Questionnaire (RFQ-U) - work rotenone product use 46 55 age indicator");
+        textPresent("RFQWrkRotenoneProdUs4655AgeInd");
+        textPresent("NMSSSeeThngNotThereSevScore");
     }
     
     @Test
@@ -49,8 +53,8 @@ public class BoardViewTest extends BoardTest {
     }
 
     public void attachToBoard(String cdeName, String boardName) {
-        openCdeInList(cdeName);
-        findElement(By.xpath("//a[@id='pin_0']")).click();
+        searchElt(cdeName, "cde", null);
+        findElement(By.id("pinToBoard_0")).click();
         hangon(1);
         findElement(By.linkText(boardName)).click();
     }
