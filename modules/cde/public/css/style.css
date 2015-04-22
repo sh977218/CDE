@@ -483,7 +483,7 @@ button#selectDefault {
 .collapseText {
     display:block;
     overflow: hidden;
-    max-height:100px;
+    max-height:82px;
     box-shadow: 0px 9px 7px -5px #969696;
 }
 .expandText{

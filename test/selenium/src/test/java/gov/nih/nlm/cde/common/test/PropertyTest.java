@@ -73,13 +73,47 @@ public abstract class PropertyTest extends CommonTest {
         hangon(1);
     }
 
-    public void truncateText(String eltName, String status) {
+    public void truncateRichText(String eltName, String status) {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, null);
         findElement(By.linkText("Properties")).click();
+
+        // click edit
+        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::i[@class='fa fa-edit']")).click();
+
+        // click rich text
+        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[text()='Rich Text']")).click();
+
+        // click comfirm button
+        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[text()='Confirm']")).click();
+
+        // click More link
         findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
+
+        // find text
         textPresent("516-543, DOI:10.1002/jmri.22259");
         hangon(1);
             }
-    
+
+    public void truncatePlainText(String eltName, String status) {
+        mustBeLoggedInAs(ninds_username, password);
+        goToEltByName(eltName, null);
+        findElement(By.linkText("Properties")).click();
+
+        // click edit
+        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::i[@class='fa fa-edit']")).click();
+
+        // click rich text
+        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[text()='Plain Text']")).click();
+
+        // click comfirm button
+        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[text()='Confirm']")).click();
+
+        // click More link
+        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
+
+        // find text
+        textPresent("516-543, DOI:10.1002/jmri.22259");
+        hangon(1);
+    }
 }
