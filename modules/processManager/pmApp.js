@@ -56,10 +56,7 @@ app.use(bodyParser.json());
 
 var verifyToken = function(req) {
     var result = false;
-    console.log(req.body);
     allHosts.forEach(function(host) {
-        console.log("HOST:")
-        console.log(host);
         if (host.hostname === req.body.requester.host
             && host.port == req.body.requester.port
             && host.token === req.body.token) {
@@ -93,7 +90,6 @@ app.post('/deploy', multer(), function(req, res) {
     if (verifyToken(req)) {
         var gzPath = config.pm.tempDir + "deploy.tar.gz";
         if (fs.existsSync(gzPath)) fs.unlinkSync(gzPath);
-
         var gpg = spawn('gpg', ["-o", gzPath, "-d", req.files.deployFile.path], {stdio: 'inherit'});
         gpg.on('error', function(err) {
             res.status(500).send("Error decrypting file");
