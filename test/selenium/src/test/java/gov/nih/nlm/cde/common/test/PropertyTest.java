@@ -87,6 +87,7 @@ public abstract class PropertyTest extends CommonTest {
         // click comfirm button
         findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[text()='Confirm']")).click();
 
+        hangon(1);
         // click More link
         findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
 
@@ -109,6 +110,7 @@ public abstract class PropertyTest extends CommonTest {
         // click comfirm button
         findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[text()='Confirm']")).click();
 
+        hangon(1);
         // click More link
         findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
 
