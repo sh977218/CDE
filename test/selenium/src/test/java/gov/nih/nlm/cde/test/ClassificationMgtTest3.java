@@ -52,6 +52,10 @@ public class ClassificationMgtTest3 extends BaseClassificationTest {
         findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/div/div/a")).click();
         hangon(1);
         Assert.assertTrue(textPresent("Spinal Cord Injuries"));
+
+        openClassificationAudit("NINDS > Disease > Spinal Cord Injury");
+        textPresent("1236 elements");
+        textPresent("Rename NINDS > Disease > Spinal Cord Injury to Spinal Cord Injuries");
     }
     
 }
