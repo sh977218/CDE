@@ -104,7 +104,7 @@ app.post('/deploy', multer(), function(req, res) {
                 var writeS = tar.extract(config.node.buildDir);
                 fs.createReadStream(gzPath).pipe(gzip).pipe(writeS);
                 writeS.on('finish', function() {
-                    fs.chmodSync(config.node.buildDir, 700);
+                    fs.chmodSync(config.node.buildDir, '700');
                     spawned.kill();
                     spawnChild();
                 });
@@ -117,6 +117,11 @@ app.post('/deploy', multer(), function(req, res) {
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
+});
+
+process.on('uncaughtException', function (err) {
+    console.log("uncaught exception");
+    console.log(err);
 });
 
 setInterval(function() {
