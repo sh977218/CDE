@@ -99,12 +99,13 @@ app.post('/deploy', multer(), function(req, res) {
                 console.log("Error untar-ing");
                 res.status(500).send("Error untar-ing");
              } else {
-                res.send("Done");
+                res.send("File received. Deploying...");
                 var gzip = zlib.createGunzip();
                 var writeS = tar.extract(config.node.buildDir);
-                spawned.kill();
                 fs.createReadStream(gzPath).pipe(gzip).pipe(writeS);
                 writeS.on('finish', function() {
+                    fs.chmodSync(config.node.buildDir, 700);
+                    spawned.kill();
                     spawnChild();
                 });
             }
