@@ -56,7 +56,9 @@ app.use(bodyParser.json());
 
 var verifyToken = function(req) {
     var result = false;
+    console.log(req.body);
     allHosts.forEach(function(host) {
+        console.log("HOST: " + host);
         if (host.hostname === req.body.requester.host
             && host.port == req.body.requester.port
             && host.token === req.body.token) {
