@@ -27,8 +27,10 @@ var getHosts = function() {
 
 var getTokens = function() {
     allHosts.forEach(function(server){
-        var url =
-        request("http://" + server.hostname + "/statusToken", function(error, response, body) {
+        var url = "http://" + server.hostname;
+        if (server.hostname === 'localhost') url += ":" + server.port;
+        url += "/statusToken"
+        request(url, function(error, response, body) {
             server.token = body;
         });
     });
