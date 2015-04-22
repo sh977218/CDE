@@ -58,7 +58,8 @@ var verifyToken = function(req) {
     var result = false;
     console.log(req.body);
     allHosts.forEach(function(host) {
-        console.log("HOST: " + host);
+        console.log("HOST:")
+        console.log(host);
         if (host.hostname === req.body.requester.host
             && host.port == req.body.requester.port
             && host.token === req.body.token) {
