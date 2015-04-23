@@ -507,6 +507,7 @@ public class NlmCdeBaseTest {
             // Assumption is that UMLS sometimes throws an error on login. With a socket hangup. login fails, we retry.
         } catch (TimeoutException e) {
             System.out.println("Login failed. Re-trying. error: " + e.getMessage());
+            hangon(1);
             findElement(By.id("login_button")).click();
             textPresent(checkText);            
         }

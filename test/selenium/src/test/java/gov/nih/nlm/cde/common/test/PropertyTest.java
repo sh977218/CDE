@@ -83,8 +83,8 @@ public abstract class PropertyTest extends CommonTest {
         hangon(1);
         findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
         textPresent("516-543, DOI:10.1002/jmri.22259");
-        textNotPresent("More", By.xpath("//dd[@id='dd_prop_value_0']/descendant::span[text()='More']"));
         hangon(1);
+        textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
     }
 
     public void truncatePlainText(String eltName, String status) {
@@ -98,6 +98,6 @@ public abstract class PropertyTest extends CommonTest {
         findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
         textPresent("516-543, DOI:10.1002/jmri.22259");
         hangon(1);
-        textNotPresent("More", By.xpath("//dd[@id='dd_prop_value_0']/descendant::span[text()='More']"));
+        textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
     }
 }
