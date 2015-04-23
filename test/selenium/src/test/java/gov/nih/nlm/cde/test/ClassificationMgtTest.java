@@ -1,10 +1,11 @@
 package gov.nih.nlm.cde.test;
 
-import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.concurrent.TimeUnit;
 
 public class ClassificationMgtTest extends BaseClassificationTest {
     private void searchNestedClassifiedCdes() {

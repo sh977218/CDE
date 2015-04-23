@@ -1,7 +1,6 @@
 package gov.nih.nlm.cde.test.boards;
 
 import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class BoardManagement2Test  extends BoardTest {

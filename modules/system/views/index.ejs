@@ -1,6 +1,6 @@
 <!doctype html>
 <html xmlns:ng="http://angularjs.org" ng-app="systemModule" id="ng-app" lang="en">
-    <head>        
+    <head>
         <title>NIH CDE Repository</title>
         <meta name="site-version" content="<%- include version.ejs %>">
 
@@ -8,7 +8,7 @@
             <script type="text/javascript">
                 window.location = "/supportedBrowsers";
             </script>
-         <![endif]--> 
+         <![endif]-->
 
         <link href="/cde/public/assets/css/bootstrap.min.css" rel="stylesheet">
         <link href="/cde/public/assets/css/font-awesome.min.css" rel="stylesheet">
@@ -17,7 +17,7 @@
 
         <link href="/cde/public/assets/css/select2.css" rel="stylesheet">
         <link href="/cde/public/assets/css/selectize.default.css" rel="stylesheet">
-        
+
         <!-- build:css /cde/public/css/style.concat.min.css -->
         <link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all" />
         <!-- endbuild -->
@@ -26,7 +26,7 @@
 
         <!-- build:js /cde/public/assets/js/resource.concat.min.js -->
         <script src="/cde/public/assets/js/jquery.min.js"></script>
-        <script src="/cde/public/assets/js/jquery-ui.min.js"></script>        
+        <script src="/cde/public/assets/js/jquery-ui.min.js"></script>
         <script src="/cde/public/assets/js/angular.min.js"></script>
         <script src="/cde/public/assets/js/angular-route.min.js"></script>
         <script src="/cde/public/assets/js/angular-resource.min.js"></script>
@@ -39,12 +39,12 @@
         <script src='/cde/public/assets/js/textAngular-sanitize.min.js'></script>
         <script src='/cde/public/assets/js/textAngular.min.js'></script>
 
-        <script src="/cde/public/assets/js/angular-local-storage.js"></script> 
+        <script src="/cde/public/assets/js/angular-local-storage.js"></script>
         <script src="/cde/public/assets/js/ui-bootstrap-tpls.js"></script>
         <script src="/cde/public/assets/js/diff_match_patch.js"></script>
         <script src="/cde/public/assets/js/match-media.js"></script>
         <script src="/cde/public/assets/js/sortable.js"></script>
-        <script src="/cde/public/assets/js/scrollfix.js"></script>        
+        <script src="/cde/public/assets/js/scrollfix.js"></script>
         <script src="/cde/public/assets/js/select.js"></script>
         <script src="/cde/public/assets/js/bootstrap-tour.js"></script>
         <script src="/cde/public/assets/js/ng-grid.js"></script>
@@ -64,8 +64,8 @@
             document.createElement('inline-edit');
             document.createElement('inline-area-edit');
           </script>
-        <![endif]-->         
-         
+        <![endif]-->
+
         <!-- fixes an issue in bootstrap #1078 -->
         <style>
             .modal-body{overflow-y: inherit;}
@@ -74,11 +74,11 @@
     </head>
     <body role="application">
 
-        
+
         <div ng-controller="MainCtrl">
             <!-- Navagation bar -->
             <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-                <div class="container">
+                <div class="container-fluid">
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                             <span class="sr-only sr-only-focusable">Toggle navigation</span>
@@ -93,29 +93,29 @@
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
                             <li ng-class="{ active: isPageActive('/cde/search')}"><a href="/#/cde/search">CDEs</a></li>
-                                                       
+
                             <% if (config.modules.forms) { %><li ng-class="{ active: isPageActive('/form/search')}"><a href="/#/form/search">Forms</a></li> <% } %>
-                            
-                            <li dropdown ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' tabindex="0">    
+
+                            <li dropdown ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' tabindex="0">
                                 <a dropdown-toggle class="dropdown-toggle" href="#" id="boardsMenu" tabindex="-1" title="Boards" aria-label="Boards">Boards<span class="caret"></span></a>
                                 <ul role="menu" class="dropdown-menu" aria-labelledby="boardsMenu" tabindex="0" aria-expanded="true">
-                                    <li><a href="#/boardList">Public Boards</a></li>                                    
+                                    <li><a href="#/boardList">Public Boards</a></li>
                                     <li><a href="#/myboards">My Boards</a></li>
                                 </ul>
-                            </li>   
-                           
-                            <li id="boardsLink" ng-class="{ active: isPageActive('/boardList')}" ng-show='!user._id'>    
-                                <a href="#/boardList">Boards</a>
-                            </li>                            
+                            </li>
 
-                            <li dropdown ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}" ng-show='isOrgCurator()' tabindex="0">    
+                            <li id="boardsLink" ng-class="{ active: isPageActive('/boardList')}" ng-show='!user._id'>
+                                <a href="#/boardList">Boards</a>
+                            </li>
+
+                            <li dropdown ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}" ng-show='isOrgCurator()' tabindex="0">
                                 <a dropdown-toggle  class="dropdown-toggle" href="#" id="dropdownMenu2" tabindex="-1" title="Create" aria-label="Create">Create<span class="caret"></span></a>
                                 <ul role="menu" class="dropdown-menu" aria-labelledby="dropdownMenu2" tabindex="0">
                                     <li><a href="#/createCde">CDE</a></li>
                                     <% if (config.modules.forms) { %><li><a href="#/createForm">Form</a></li><% } %>
                                 </ul>
-                            </li>                            
-                            
+                            </li>
+
                             <li ng-class="{ active: isPageActive('/quickBoard')}">
                                 <a class="navbar-link" href="#/quickBoard">
                                     Quick Board (
@@ -125,7 +125,7 @@
                                             <span ng-switch-default>{{quickBoard.length}}</span>
                                         </span>
                                     )
-                                </a>                          
+                                </a>
                             </li>
                             <li dropdown ng-class="{ active: isPageActive('/help')}">
                                 <a dropdown-toggle class="dropdown-toggle" href="#" id="dropdownMenu_help" tabindex="-1" title="Help" aria-label="Help">Help<span class="caret"></span></a>
@@ -133,14 +133,14 @@
                                     <li><a href="#/home">About</a></li>
                                     <% if (config.modules.article) { %><li><a href="#/help/index">User Guide</a></li><% } %>
                                     <li ng-controller="TakeATourCtrl"><a ng-click="restartTour()">Take a tour</a></li>
-                                </ul>                                                     
+                                </ul>
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right" data-userloaded="loaded-{{user.userLoaded}}">
-                           <a ng-cloak ng-if="userHasMail" title="New messages" href="#/inbox"><i id="incomingMessage" class="fa fa-envelope text-danger"></i></a> 
+                           <a ng-cloak ng-if="userHasMail" title="New messages" href="#/inbox"><i id="incomingMessage" class="fa fa-envelope text-danger"></i></a>
                            <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id"><a href="#/login" id="login_link" tabindex="0" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a></li>
-                            <li dropdown class="login" ng-show="user._id" tabindex="0">                                                               
-                                <a dropdown-toggle class="dropdown-toggle" href="#" id="username_link" tabindex="-1" title="{{user.username}}" aria-label="{{user.username}}"><span ng-bind="user.username"></span><span class="caret"></span></a>
+                            <li dropdown class="login" ng-show="user._id" tabindex="0">
+                                <a dropdown-toggle class="dropdown-toggle" href="#" id="username_link" tabindex="-1" title="{{user.username}}" aria-label="{{user.username}}"><span>{{user.username | limitTo:20}}</span><span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="username_link" tabindex="0">
                                     <li ng-show='user._id'><a href="#/profile">Profile</a></li>
                                     <li ng-show='inboxVisible()'><a href="#/inbox">Inbox</a></li>
@@ -148,24 +148,24 @@
                                     <li ng-show="isOrgAdmin() && !user.siteAdmin"><a href="#/orgaccountmanagement">Account Management</a></li>
                                     <li ng-show='user._id && user.siteAdmin'><a href="#/siteaccountmanagement">Site Management</a></li>
                                     <li ng-show='user._id && user.siteAdmin'><a href="#/siteAudit">Audit</a></li>
-                                    <li ng-show='user._id'><a href="/logout">Log Out</a></li>                                         
+                                    <li ng-show='user._id'><a href="/logout">Log Out</a></li>
                                 </ul>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Alerts area -->
             <div class="navbar-fixed-bottom">
                 <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
             </div>
-            
+
             <!-- Main content area -->
             <div ng-view>
             </div>
         </div>
-        
+
         <!-- Footer area -->
         <div>
             <hr>
@@ -201,8 +201,8 @@
         <%- include includeFrontEndJS.ejs %>
         <%- include ../../cde/views/includeFrontEndJS.ejs %>
         <%- include ../../form/views/includeFrontEndJS.ejs %>
-        
-        <script src="/article/public/js/articleConfig.js"></script>        
+
+        <script src="/article/public/js/articleConfig.js"></script>
 
     </body>
 </html>

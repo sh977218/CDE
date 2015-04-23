@@ -1,14 +1,5 @@
 package gov.nih.nlm.system;
 
-import static gov.nih.nlm.system.NlmCdeBaseTest.driver;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -17,6 +8,16 @@ import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import static gov.nih.nlm.system.NlmCdeBaseTest.driver;
 
 public class ScreenShotListener extends TestListenerAdapter {
     SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
