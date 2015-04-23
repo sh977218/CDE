@@ -56,10 +56,7 @@ app.use(bodyParser.json());
 
 var verifyToken = function(req) {
     var result = false;
-    console.log(req.body)
     allHosts.forEach(function(host) {
-        console.log("HOST")
-        console.log(host)
         if (host.hostname === req.body.requester.host
             && host.port == req.body.requester.port
             && host.token === req.body.token) {
@@ -103,9 +100,8 @@ app.post('/deploy', multer(), function(req, res) {
                 res.status(500).send("Error untar-ing");
              } else {
                 res.send("File received. Deploying...");
-                var gzip = zlib.createGunzip();
-                var writeS = tar.extract(config.node.buildDir);
-                fs.createReadStream(gzPath).pipe(gzip).pipe(writeS);
+                var writeS = tar.extract(config.pm.extractDir);
+                fs.createReadStream(gzPath).pipe(zlib.createGunzip()).pipe(writeS);
                 writeS.on('finish', function() {
                     fs.chmodSync(config.node.buildDir, '700');
                     spawned.kill();

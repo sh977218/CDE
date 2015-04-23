@@ -104,6 +104,7 @@ var config = {
         port: 3081
         , nodeProcess: "path to node bin, if needed"
         , tempDir: "/tmp/"
+        , extractDir: ".."
     }
 };
 
