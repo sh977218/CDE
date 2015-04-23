@@ -407,12 +407,12 @@ button#selectDefault {
     position: relative!important;
 }
 
-#incomingMessage {
+.userIcon {
     position: absolute;
     top: 19px;
-    left: -18px;
 }
-
+#incomingMessage {left: -18px;}
+#searchSettings {right: -16px;}
 
 
 @media (min-width: 0px) {
@@ -480,3 +480,4 @@ button#selectDefault {
     word-wrap: break-word;
 }
 
+/*#searchSettings {color: white;}*/

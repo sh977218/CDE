@@ -11,21 +11,21 @@
             <th class="administrativeStatus">Admin Status</th>
             <th class="ids">Identifiers</th>
         </tr>
-        </thead>{{searchConfiguration.tableViewFields.cde.name}}
+        </thead>{{searchSettings.tableViewFields.cde.name}}
         <tbody>
             <tr ng-repeat="c in cdes">
-                <td ng-if="searchConfiguration.tableViewFields.cde.name" class="name">
+                <td ng-if="searchSettings.tableViewFields.cde.name" class="name">
                     <a href="#/deview/?tinyId={{c.tinyId}}">
                         {{c.naming[0].designation}}
                     </a>
                 </td>
-                <td ng-if="searchConfiguration.tableViewFields.cde.naming" class="naming">
+                <td ng-if="searchSettings.tableViewFields.cde.naming" class="naming">
                     <ul>
                         <li ng-repeat="name in c.naming | limitTo: maxLines" ng-show="name.designation">{{name.designation | limitTo: lineLength}} <span ng-show="name.designation.length>lineLength">...</span></li>
                         <li class="lastItem" ng-show="c.naming.length > maxLines">...</li>
                     </ul>
                 </td>
-                <td ng-if="searchConfiguration.tableViewFields.cde.permissibleValues" class="permissibleValues multiline-ellipsis">
+                <td ng-if="searchSettings.tableViewFields.cde.permissibleValues" class="permissibleValues multiline-ellipsis">
                     <div>
                         {{c.valueDomain.datatype}}<span ng-show="c.valueDomain.datatype==='Value List'">:</span>
                     </div>
@@ -38,13 +38,13 @@
                         </ul>
                      </span>
                 </td>
-                <td ng-if="searchConfiguration.tableViewFields.cde.stewardOrg" class="stewardOrg">{{c.stewardOrg.name}}</td>
-                <td ng-if="searchConfiguration.tableViewFields.cde.usedBy" class="usedBy multiline-ellipsis">
+                <td ng-if="searchSettings.tableViewFields.cde.stewardOrg" class="stewardOrg">{{c.stewardOrg.name}}</td>
+                <td ng-if="searchSettings.tableViewFields.cde.usedBy" class="usedBy multiline-ellipsis">
                     <span ng-repeat="org in c.usedBy | limitTo: maxLines ">{{$index>0?", ":""}}{{org}}</span><span ng-show="c.usedBy.length > maxLines">, ...</span>
                 </td>
-                <td ng-if="searchConfiguration.tableViewFields.cde.registrationStatus" class="registrationStatus">{{c.registrationState.registrationStatus}}</td>
-                <td ng-if="searchConfiguration.tableViewFields.cde.administrativeStatus" class="administrativeStatus">{{c.registrationState.administrativeStatus}}</td>
-                <td ng-if="searchConfiguration.tableViewFields.cde.ids" class="ids">
+                <td ng-if="searchSettings.tableViewFields.cde.registrationStatus" class="registrationStatus">{{c.registrationState.registrationStatus}}</td>
+                <td ng-if="searchSettings.tableViewFields.cde.administrativeStatus" class="administrativeStatus">{{c.registrationState.administrativeStatus}}</td>
+                <td ng-if="searchSettings.tableViewFields.cde.ids" class="ids">
                     <ul>
                         <li ng-repeat="id in c.ids | limitTo: maxLines">
                             {{id.source}}: <strong>{{id.id}}</strong> <span ng-show="id.version">v{{id.version}}</span>

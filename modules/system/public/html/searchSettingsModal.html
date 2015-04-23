@@ -1,0 +1,41 @@
+<div class="modal-header">
+    <h3 class="modal-title">Search Settings</h3>
+</div>
+<div class="modal-body">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input id="name" type="checkbox" ng-model="settings.tableViewFields.cde.name">
+    </div>
+    <div class="form-group">
+        <label for="naming">Other Names</label>
+        <input id="naming" type="checkbox" ng-model="settings.tableViewFields.cde.naming">
+    </div>
+    <div class="form-group">
+        <label for="permissibleValues">Permissible Values</label>
+        <input id="permissibleValues" type="checkbox" ng-model="settings.tableViewFields.cde.permissibleValues">
+    </div>
+    <div class="form-group">
+        <label for="stewardOrg">Steward</label>
+        <input id="stewardOrg" type="checkbox" ng-model="settings.tableViewFields.cde.stewardOrg">
+    </div>
+    <div class="form-group">
+        <label for="usedBy">Used by Organizations</label>
+        <input id="usedBy" type="checkbox" ng-model="settings.tableViewFields.cde.usedBy">
+    </div>
+    <div class="form-group">
+        <label for="registrationStatus">Registration Status</label>
+        <input id="registrationStatus" type="checkbox" ng-model="settings.tableViewFields.cde.registrationStatus">
+    </div>
+    <div class="form-group">
+        <label for="administrativeStatus">Admin Status</label>
+        <input id="administrativeStatus" type="checkbox" ng-model="settings.tableViewFields.cde.administrativeStatus">
+    </div>
+    <div class="form-group">
+        <label for="ids">Identifiers</label>
+        <input id="ids" type="checkbox" ng-model="settings.tableViewFields.cde.ids">
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="save()">OK</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
