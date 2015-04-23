@@ -1,11 +1,11 @@
 package gov.nih.nlm.cde.test;
 
-import static com.jayway.restassured.RestAssured.*;
-
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static com.jayway.restassured.RestAssured.*;
 
 public class LogErrorsTest extends NlmCdeBaseTest {
     @Test

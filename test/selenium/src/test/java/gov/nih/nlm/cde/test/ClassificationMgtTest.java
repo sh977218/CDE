@@ -1,10 +1,11 @@
 package gov.nih.nlm.cde.test;
 
-import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.concurrent.TimeUnit;
 
 public class ClassificationMgtTest extends BaseClassificationTest {
     private void searchNestedClassifiedCdes() {
@@ -64,6 +65,10 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         searchNestedClassifiedForms();
         hangon(1);
         Assert.assertTrue(textNotPresent("NINDS (40)"));
+
+        openClassificationAudit("NINDS > Disease > Epilepsy");
+        textPresent("867 elements");
+        textPresent("Delete NINDS > Disease > Epilepsy");
     }
     
     @Test
