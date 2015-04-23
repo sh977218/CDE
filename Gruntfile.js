@@ -4,9 +4,10 @@ var config = require('config')
     , elastic = require('./deploy/elasticSearchInit.js')
     , chalk = require('chalk')
     , fs = require('fs')
-    , tar = require('tar-fs')
+    , tar = require('tar')
     , zlib = require('zlib')
     , spawn = require('child_process').spawn
+    , fstream = require('fstream')
 ;
     
 var welcomeMessage = fs.readFileSync("./deploy/doc/welcome.txt");
@@ -544,7 +545,6 @@ module.exports = function(grunt) {
         fs.writeFileSync("./modules/system/views/version.ejs", grunt.config.get("version"));         
     });
     grunt.registerTask('tarCode', function() {
-        var gzip = zlib.createGzip();
         var done = this.async();
         var writeS = fs.createWriteStream('./code.tar.gz');
         writeS.on('close', function() {
@@ -555,7 +555,16 @@ module.exports = function(grunt) {
                 done();
             });
         });
-        tar.pack(config.node.buildDir).pipe(gzip).pipe(writeS);
+        var fixupDirs = function(entry) {
+            // Make sure readable directories have execute permission
+            if (entry.props.type === "Directory")
+                entry.props.mode |= (entry.props.mode >>> 2) & 0111;
+            return true;
+        }
+
+        return fstream.Reader({ path: config.node.buildDir, type: 'Directory', filter: fixupDirs }).pipe(
+            tar.Pack()).pipe(zlib.createGzip()).pipe(writeS);
+        //tar.pack(config.node.buildDir).pipe(gzip).pipe(writeS);
     });
 
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);

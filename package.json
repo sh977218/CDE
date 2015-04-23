@@ -57,6 +57,8 @@
     "log-buffer": "0.0.3",
     "chalk": "*",
     "xmlbuilder": "2.6.2",
-    "tar-fs": "0.5.2"
+    "tar-fs": "0.5.2",
+    "tar": "2.1.0",
+    "fstream": "1.0.4"
   }
 }
