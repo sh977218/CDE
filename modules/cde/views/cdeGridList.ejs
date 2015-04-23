@@ -2,14 +2,14 @@
     <table class="gridListView table table-condensed table-striped table-bordered" ng-class="accordionListStyle">
         <thead>
         <tr>
-            <th class="name">Name</th>
-            <th class="naming">Other Names</th>
-            <th class="permissibleValues">Permissible Values</th>
-            <th class="stewardOrg">Steward</th>
-            <th class="usedBy">Used by Organizations</th>
-            <th class="registrationStatus">Registration Status</th>
-            <th class="administrativeStatus">Admin Status</th>
-            <th class="ids">Identifiers</th>
+            <th ng-if="searchSettings.tableViewFields.cde.name" class="name">Name</th>
+            <th ng-if="searchSettings.tableViewFields.cde.naming" class="naming">Other Names</th>
+            <th ng-if="searchSettings.tableViewFields.cde.permissibleValues" class="permissibleValues">Permissible Values</th>
+            <th ng-if="searchSettings.tableViewFields.cde.stewardOrg" class="stewardOrg">Steward</th>
+            <th ng-if="searchSettings.tableViewFields.cde.usedBy" class="usedBy">Used by Organizations</th>
+            <th ng-if="searchSettings.tableViewFields.cde.registrationStatus" class="registrationStatus">Registration Status</th>
+            <th ng-if="searchSettings.tableViewFields.cde.administrativeStatus" class="administrativeStatus">Admin Status</th>
+            <th ng-if="searchSettings.tableViewFields.cde.ids" class="ids">Identifiers</th>
         </tr>
         </thead>{{searchSettings.tableViewFields.cde.name}}
         <tbody>
