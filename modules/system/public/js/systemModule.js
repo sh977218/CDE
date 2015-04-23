@@ -251,3 +251,8 @@ angular.module('systemModule').config(function($provide) {
         };
     }]);
 });
+
+angular.module('systemModule').config(function (localStorageServiceProvider) {
+    localStorageServiceProvider
+        .setPrefix('nlmcde')
+});
