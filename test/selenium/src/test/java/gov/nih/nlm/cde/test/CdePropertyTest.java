@@ -29,5 +29,11 @@ public class CdePropertyTest extends PropertyTest {
     public void richPropText() {
         richText("Imaging diffusion sixth b value", null);
     }
-    
+
+    @Test
+    public void truncateRichText() {truncateRichText("Skull fracture morphology findings type", null);}
+
+    @Test
+    public void truncatePlainText() {truncatePlainText("Skull fracture morphology findings type", null);}
+
 }
