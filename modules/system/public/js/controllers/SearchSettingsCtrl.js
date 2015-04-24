@@ -1,41 +1,19 @@
-angular.module('systemModule').controller('SearchSettingsCtrl', ['$scope', 'SearchSettings', function($scope, SearchSettings) {
-    $scope.searchSettings = SearchSettings.getConfiguration();
+angular.module('systemModule').controller('SearchSettingsCtrl', ['$scope', 'SearchSettings', '$window', function($scope, SearchSettings, $window) {
+    $scope.searchSettings = angular.copy(SearchSettings.getConfiguration());
     $scope.saveSettings = function() {
         SearchSettings.saveConfiguration($scope.searchSettings);
+        $scope.addAlert("success", "Settings saved!");
+        $scope.goBack();
+    };
+    $scope.cancelSettings = function() {
+        $scope.addAlert("warning", "Cancelled...");
+        $scope.goBack();
+    };
+    $scope.loadDefault = function() {
+        $scope.searchSettings = angular.copy(SearchSettings.getDefault());
+        $scope.addAlert("info", "Default settings loaded. Press Save to persist them.");
+    };
+    $scope.goBack = function() {
+        $window.history.back();
     };
 }]);
-
-
-//angular.module('systemModule').controller('SearchSettingsIconCtrl', ['$scope', 'SearchSettings', '$modal', function($scope, SearchSettings, $modal) {
-//    $scope.openSearchSettingsModal = function() {
-//        var modalInstance = $modal.open({
-//            templateUrl: '/system/public/html/searchSettingsModal.html'
-//            , controller: 'SearchSettingsModalCtrl'
-//            , resolve: {
-//                currentSettings: function () {
-//                    //var settings = {
-//                    //    "tableViewFields": {
-//                    //        "cde": {
-//                    //            "name": true
-//                    //            , "naming": true
-//                    //            , "permissibleValues": true
-//                    //            , "stewardOrg": false
-//                    //            , "usedBy": true
-//                    //            , "registrationStatus": true
-//                    //            , "administrativeStatus": true
-//                    //            , "ids": false
-//                    //        }
-//                    //    }
-//                    //};
-//                    return SearchSettings.getConfiguration();
-//                }
-//            }
-//        });
-//
-//        modalInstance.result.then(function (settings) {
-//            SearchSettings.saveConfiguration(settings);
-//        }, function () {
-//
-//        });
-//    };
-//}]);

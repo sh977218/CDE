@@ -1,4 +1,6 @@
 <div class="container" ng-controller="SearchSettingsCtrl">
+    <h2><i class="fa fa-table"></i> Table View Fields</h2>
+    <p class="text-muted">Specify fields visible within a "Table View".</p>
     <div class="form-group">
         <input id="name" type="checkbox" ng-model="searchSettings.tableViewFields.cde.name">
         <label for="name">Name</label>
@@ -24,5 +26,7 @@
         <input id="ids" type="checkbox" ng-model="searchSettings.tableViewFields.cde.ids">
         <label for="ids">Identifiers</label>
     </div>
+    <button type="button" class="btn btn-success pull-right" ng-click="saveSettings()"><i class="fa fa-check"></i> Save</button>
+    <button type="button" class="btn btn-warning pull-right" ng-click="cancelSettings()"><i class="fa fa-times"></i> Cancel</button>
+    <button type="button" class="btn btn-info pull-right" ng-click="loadDefault()"><i class="fa fa-undo"></i> Load Default</button>
 </div>
-<button type="button" class="btn btn-success" ng-click="saveSettings()">Save</button>

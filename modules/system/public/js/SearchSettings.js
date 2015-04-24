@@ -9,5 +9,8 @@ angular.module('systemModule')
                 searchSettings = settings;
                 localStorageService.set("SearchSettings", settings);
             }
+            , getDefault: function() {
+                return {"tableViewFields":{"cde":{"name":true,"naming":true,"permissibleValues":true,"stewardOrg":true,"usedBy":true,"registrationStatus":true,"administrativeStatus":true,"ids":true}}};
+            }
         };
     });
