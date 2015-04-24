@@ -11,20 +11,23 @@ public class FormFacetsTest extends BaseFormTest {
         searchForm("FormSearchTest");
         textPresent("Skin Cancer Patient");
         textPresent("Traumatic Brain Injury - Adverse Events");
-        textPresent("Vision Deficit Report");
-        textPresent("| All Statuses");
-        findElement(By.id("li-checked-Recorded")).click();
         textNotPresent("Vision Deficit Report");
+        textPresent("| Preferred Standard, Standard, Qualified");
         findElement(By.id("li-blank-Recorded")).click();
+        textPresent("Vision Deficit Report");
+        findElement(By.id("li-checked-Recorded")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Candidate")).click();
         hangon(1);
         findElement(By.id("li-checked-Qualified")).click();
-        textPresent("Vision Deficit Report");
+        textNotPresent("Vision Deficit Report");
         textNotPresent("Skin Cancer Patient");
         textNotPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Diabetes - Adverse Event");
         findElement(By.id("li-blank-Qualified")).click();
         textPresent("Skin Cancer Patient");
         textPresent("Traumatic Brain Injury - Adverse Events");
-        textPresent("Vision Deficit Report");
+        textNotPresent("Vision Deficit Report");
     }
 
 }

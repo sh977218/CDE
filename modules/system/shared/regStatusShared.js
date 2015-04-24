@@ -37,3 +37,5 @@ regStatusShared.statusList = [
         , curHelp: "Retired elements are not returned in searches"
     }
 ];
+
+if (exports) exports.statusList = regStatusShared.statusList.map(function(e){return e.name});

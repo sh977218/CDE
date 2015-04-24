@@ -8,15 +8,6 @@ public class CdeCommentTest2 extends CdeCommentTest {
     public void siteAdminCanRemoveCdeComment() {
         siteAdminCanRemoveComment("Genbank", null);
     }
-    
-    @Test
-    public void approvingCommentsCde() {
-        approvingComments("Imaging phase encode direction text", null, anonymousCommentUser_username);
-    }
 
-    @Test(dependsOnMethods = {"approvingCommentsCde"})
-    public void declineComment() {
-        declineComment("Alcohol use started age value",  null, anonymousCommentUser2_username);
-    }
 
 }

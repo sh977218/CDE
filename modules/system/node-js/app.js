@@ -328,7 +328,7 @@ exports.init = function(app) {
     });
 
     app.isLocalIp = function (ip) {
-        return ip.indexOf("127.0") !== -1 || ip === "::1" ||  ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIp) > -1;
+        return ip.indexOf("127.0") !== -1 || ip === "::1" ||  ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIP) > -1;
     };
 
     app.get('/siteaudit', function(req, res) {
@@ -418,7 +418,18 @@ exports.init = function(app) {
         }      
         classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
             if (!err) { 
-                res.send({ code: 200, msg: "Classification Added"}); 
+                res.send({ code: 200, msg: "Classification Added"});
+                mongo_data_system.addToClassifAudit({
+                    date: new Date()
+                    , user: {
+                        username: req.user.username
+                    }
+                    , elements: [{
+                        _id: req.body.cdeId
+                    }]
+                    , action: "add"
+                    , path: [req.body.orgName].concat(req.body.categories)
+                });
             } else {
                 res.send({ code: 403, msg: "Classification Already Exists"}); 
             }
@@ -430,10 +441,21 @@ exports.init = function(app) {
         if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
             res.status(401).send();
             return;
-        }  
+        }
         classificationNode.cdeClassification(req.query, classificationShared.actions.delete, function(err) {
             if (!err) { 
-                res.end(); 
+                res.end();
+                mongo_data_system.addToClassifAudit({
+                    date: new Date()
+                    , user: {
+                        username: req.user.username
+                    }
+                    , elements: [{
+                        _id: req.query.cdeId
+                    }]
+                    , action: "delete"
+                    , path: [req.query.orgName].concat(req.query.categories)
+                });
             } else {
                 res.status(202).send({error: {message: "Classification does not exists."}});
             }
@@ -466,7 +488,9 @@ exports.init = function(app) {
             return;
         }      
         classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function(err, org) {
-            if (!err) res.send(org);
+            if (!err) {
+                res.send(org);
+            }
             else res.status(202).send({error: {message: "Classification does not exists."}});
         });
     });    
@@ -505,7 +529,18 @@ exports.init = function(app) {
                 return e.id;
             });
             adminItemSvc.bulkAction(elts, action, function(err) {
-                if (!err) res.end();
+                if (!err) {
+                    res.send();
+                    mongo_data_system.addToClassifAudit({
+                        date: new Date()
+                        , user: {
+                            username: req.user.username
+                        }
+                        , elements: req.body.elements.map(function(e){return {tinyId: e.id};})
+                        , action: "add"
+                        , path: [req.body.classification.orgName].concat(req.body.classification.categories)
+                    });
+                }
                 else res.status(202).send({error: {message: err}});
             });                
         });        
@@ -663,6 +698,16 @@ exports.init = function(app) {
         });
         mongo_data_system.deleteFileById(req.params.id);
         res.send("Attachment declined");
+    });
+
+    app.post('/getClassificationAuditLog', function(req, res) {
+        if(req.isAuthenticated() && req.user.siteAdmin) {
+            mongo_data_system.getClassificationAuditLog(req.body, function(err, result) {
+                res.send(result);
+            });
+        } else {
+            res.status(401).send("Not Authorized");
+        }
     });
 
 };

@@ -1,8 +1,8 @@
 package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.cde.test.ClassificationTest;
-import org.testng.annotations.Test;
 import org.openqa.selenium.By;
+import org.testng.annotations.Test;
 
 public class FormClassificationTest extends BaseFormTest {            
     @Test
@@ -13,7 +13,7 @@ public class FormClassificationTest extends BaseFormTest {
         textPresent("Headache");
         textPresent("Participant/Subject History and Family History");          
         findElement(By.linkText("Participant/Subject History and Family History")).click();
-        textPresent("Vision Deficit Report");
+        findElement(By.id("li-blank-Recorded")).click();
         textPresent("Skin Cancer Patient");
     }
     

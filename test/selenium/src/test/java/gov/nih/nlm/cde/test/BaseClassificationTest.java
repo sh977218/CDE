@@ -2,8 +2,8 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.openqa.selenium.support.ui.Select;
+import org.testng.Assert;
 
 public class BaseClassificationTest extends NlmCdeBaseTest {
    public void addClassificationMethod(String[] categories) {     
@@ -98,5 +98,13 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         fillOutBasicCreateFields(name, definition, org, classification, subclassification);
         findElement(By.id("submit")).click();
         hangon(6);
+    }
+
+    public void openClassificationAudit(String name){
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Audit")).click();
+        findElement(By.linkText("Classification Audit Log")).click();
+        findElement(By.xpath("(//span[text()=\""+name+"\" and contains(@class,\"text-info\")])[1]")).click();
     }
 }

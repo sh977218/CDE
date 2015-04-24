@@ -1,11 +1,12 @@
 package gov.nih.nlm.cde.test;
 
-import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 public class WorkingGroupTest3 extends BaseClassificationTest {
 

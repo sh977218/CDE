@@ -24,20 +24,19 @@ public class ResetSearchStatusTest extends NlmCdeBaseTest {
         goToCdeSearch();
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         textPresent("10");
-        Assert.assertTrue(linkList.size() > 10);
         findElement(By.id("li-checked-Standard")).click();
         hangon(1);
         findElement(By.id("li-checked-Qualified")).click();
         hangon(2);
-        findElement(By.id("li-checked-Candidate")).click();
+        findElement(By.id("li-blank-Candidate")).click();
         hangon(2);
-        findElement(By.id("li-checked-Recorded")).click();
+        findElement(By.id("li-blank-Recorded")).click();
         hangon(2);
-        findElement(By.id("li-checked-Incomplete")).click();
+        findElement(By.id("li-blank-Incomplete")).click();
         hangon(2);
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         // Expectation, less than 10 standard CDEs when this test runs.
-        Assert.assertTrue(linkList.size() < 10);
+        Assert.assertTrue(linkList.size() > 10);
         scrollToTop();
         findElement(By.id("resetSearch")).click();
         findElement(By.id("li-checked-Standard"));
