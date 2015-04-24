@@ -10,7 +10,24 @@ angular.module('systemModule')
                 localStorageService.set("SearchSettings", settings);
             }
             , getDefault: function() {
-                return {"tableViewFields":{"cde":{"name":true,"naming":true,"permissibleValues":true,"stewardOrg":true,"usedBy":true,"registrationStatus":true,"administrativeStatus":true,"ids":true}}};
+                return {
+                    "defaultSearchView": "accordion"
+                    , "tableViewFields": {
+                        "cde": {
+                            "name": true,
+                            "naming": true,
+                            "permissibleValues": true,
+                            "stewardOrg": true,
+                            "usedBy": true,
+                            "registrationStatus": true,
+                            "administrativeStatus": true,
+                            "ids": true
+                        }
+                    }
+                };
+            }
+            , getDefaultSearchView: function() {
+                return searchSettings.defaultSearchView;
             }
         };
     });

@@ -1,8 +1,11 @@
-angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', function($scope, OrgHelpers) {
+angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings', function($scope, OrgHelpers, SearchSettings) {
 
     $scope.maxLines = 5;
     $scope.lineLength = 50;
-    $scope.listViewType = 'accordion';
+    if (!$scope.listViewType) {
+        if (SearchSettings.getDefaultSearchView()) $scope.listViewType = SearchSettings.getDefaultSearchView();
+        else $scope.listViewType = 'accordion';
+    }
 
     $scope.getUsedBy = OrgHelpers.getUsedBy;
 
