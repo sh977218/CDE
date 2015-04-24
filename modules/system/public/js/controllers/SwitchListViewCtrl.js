@@ -2,16 +2,16 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
 
     $scope.maxLines = 5;
     $scope.lineLength = 50;
-    if (!$scope.listViewType) {
-        if (SearchSettings.getDefaultSearchView()) $scope.listViewType = SearchSettings.getDefaultSearchView();
-        else $scope.listViewType = 'accordion';
-    }
+    if ($scope.cache.get("listViewType")) $scope.listViewType = $scope.cache.get("listViewType");
+    else if (SearchSettings.getDefaultSearchView()) $scope.listViewType = SearchSettings.getDefaultSearchView();
+    else $scope.listViewType = "accordion";
 
     $scope.getUsedBy = OrgHelpers.getUsedBy;
 
     $scope.switchGridAccordionView = function() {
         if ($scope.listViewType === 'accordion') $scope.listViewType = 'table';
         else $scope.listViewType = 'accordion';
+        $scope.cache.put("listViewType", $scope.listViewType);
     };
 
     $scope.showSideBySideView = function() {
