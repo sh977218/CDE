@@ -1,0 +1,28 @@
+<div class="container" ng-controller="SearchSettingsCtrl">
+    <div class="form-group">
+        <input id="name" type="checkbox" ng-model="searchSettings.tableViewFields.cde.name">
+        <label for="name">Name</label>
+        <br>
+        <input id="naming" type="checkbox" ng-model="searchSettings.tableViewFields.cde.naming">
+        <label for="naming">Other Names</label>
+        <br>
+        <input id="permissibleValues" type="checkbox" ng-model="searchSettings.tableViewFields.cde.permissibleValues">
+        <label for="permissibleValues">Permissible Values</label>
+        <br>
+        <input id="stewardOrg" type="checkbox" ng-model="searchSettings.tableViewFields.cde.stewardOrg">
+        <label for="stewardOrg">Steward</label>
+        <br>
+        <input id="usedBy" type="checkbox" ng-model="searchSettings.tableViewFields.cde.usedBy">
+        <label for="usedBy">Used by Organizations</label>
+        <br>
+        <input id="registrationStatus" type="checkbox" ng-model="searchSettings.tableViewFields.cde.registrationStatus">
+        <label for="registrationStatus">Registration Status</label>
+        <br>
+        <input id="administrativeStatus" type="checkbox" ng-model="searchSettings.tableViewFields.cde.administrativeStatus">
+        <label for="administrativeStatus">Admin Status</label>
+        <br>
+        <input id="ids" type="checkbox" ng-model="searchSettings.tableViewFields.cde.ids">
+        <label for="ids">Identifiers</label>
+    </div>
+</div>
+<button type="button" class="btn btn-success" ng-click="saveSettings()">Save</button>
