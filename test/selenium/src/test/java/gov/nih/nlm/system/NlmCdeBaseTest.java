@@ -56,12 +56,12 @@ public class NlmCdeBaseTest {
     protected static String boardUser = "boarduser";
     protected static String pinUser = "pinuser";
     protected static String docEditor = "docEditor";
-    protected static String classificationMgtUser_username = "classificationMgtUser";
+    protected static String classificationMgtUser_username = "classMgtUser";
     protected static String transferStewardUser_username = "transferStewardUser";
     protected static String createUser_username = "createUser";
-    protected static String anonymousCommentUser_username = "anonymousCommentUser";
-    protected static String anonymousCommentUser2_username = "anonymousCommentUser2";
-    protected static String anonymousFormCommentUser_username = "anonymousFormCommentUser";
+    protected static String anonymousCommentUser_username = "CommentUser";
+    protected static String anonymousCommentUser2_username = "CommentUser2";
+    protected static String anonymousFormCommentUser_username = "FormCommentUser";
     protected static String anonymousCommentUser_password = "pass";
     protected static String commentEditor_username = "commentEditor";
     protected static String commentEditor_password = "pass";    
