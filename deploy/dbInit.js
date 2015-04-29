@@ -50,6 +50,7 @@ db.users.insert({username: 'FormCommentUser', password: 'pass', orgAdmin: [], or
 db.users.insert({username: 'commentEditor', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["CommentReviewer"], email: "admin@email.com"});
 db.users.insert({username: 'attachmentReviewer', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["AttachmentReviewer"], email: "admin@email.com"});
 db.users.insert({username: 'ctep_fileCurator', password: 'pass', orgAdmin: [], orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'hiIamLongerThanSeventeenCharacters', password: 'pass', orgAdmin: [], orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
 
 db.articles.insert({key: "testAdminCanEdit", body: "Admin can edit this."});
 db.articles.insert({key: "testEdits", body: "Testing edits"});

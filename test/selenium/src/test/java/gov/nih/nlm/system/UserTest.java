@@ -57,5 +57,10 @@ public class UserTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']")).click();
         textPresent("Saved");                
     }
-    
+
+    @Test
+    public void testLongUsername() {
+        mustBeLoggedInAs("hiIamLongerThanSeventeenCharacters", password);
+    }
+
 }
