@@ -1,5 +1,5 @@
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule','OrgFactories','classification', 'ngGrid',
-               'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago']).
+               'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago','ngTextTruncate']).
     config(function($routeProvider) {
         $routeProvider.
         when('/', {redirectTo: function(){
@@ -9,27 +9,27 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         when('/home', {controller: 'HomeCtrl', templateUrl:'/system/public/html/home.html'}).
         when('/login', {controller: 'AuthCtrl', templateUrl:'/login'}).
         when('/signup', {controller: 'AuthCtrl', templateUrl:'/signup'}).
-        when('/siteAudit', {templateUrl: '/siteaudit'}).        
+        when('/siteAudit', {templateUrl: '/siteaudit'}).
         when('/inbox', {controller: 'InboxCtrl', templateUrl: '/system/public/html/inbox.html'}).
         when('/siteaccountmanagement', {controller: 'AccountManagementCtrl', templateUrl: '/siteaccountmanagement'}).
         when('/orgaccountmanagement', {controller: 'AccountManagementCtrl', templateUrl: '/orgaccountmanagement'}).
         when('/classificationmanagement', {controller: 'ClassificationManagementCtrl', templateUrl: '/template/system/classificationManagement'}).
-        when('/profile', {controller: 'ProfileCtrl', templateUrl: '/profile'}).                  
+        when('/profile', {controller: 'ProfileCtrl', templateUrl: '/profile'}).
         when('/triggerClientException', {controller: 'TriggerClientExceptionCtrl', templateUrl: '/template/system/triggerClientException'}).
         when('/searchSettings', {controller: 'SearchSettingsCtrl', templateUrl: '/system/public/html/searchSettings.html'}).
         otherwise({redirectTo:'/'});
     })
     .directive('inlineEdit', function() {
     return {
-        template: '<span>' + 
-                        '<span ng-hide="editMode">' + 
-                            '<i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' + 
-                        '</span>' + 
-                        '<form name="inlineForm" ng-show="editMode">' + 
-                            '<input name="inlineInput" type="{{inputType}}" ng-model="value" typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +                                                        
-                            '<button class="btn btn-default btn-sm fa fa-check" ng-click="model = value;editMode = false; onOk();" ng-disabled="!inlineForm.inlineInput.$valid"> Confirm</button>' + 
-                            '<button class="btn btn-default btn-sm fa fa-times" ng-click="editMode = false"> Discard</button>' + 
-                        '</form>' +       
+        template: '<span>' +
+                        '<span ng-hide="editMode">' +
+                            '<i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' +
+                        '</span>' +
+                        '<form name="inlineForm" ng-show="editMode">' +
+                            '<input name="inlineInput" type="{{inputType}}" ng-model="value" typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +
+                            '<button class="btn btn-default btn-sm fa fa-check" ng-click="model = value;editMode = false; onOk();" ng-disabled="!inlineForm.inlineInput.$valid"> Confirm</button>' +
+                            '<button class="btn btn-default btn-sm fa fa-times" ng-click="editMode = false"> Discard</button>' +
+                        '</form>' +
                     '</span>'
                 ,
         restrict: 'AE',
@@ -39,7 +39,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             , isAllowed: '&'
             , onOk: '&'
             , typeaheadSource: '='
-        }, 
+        },
         controller: function($scope){
             $scope.inputType = $scope.inputType || 'text';
         }
@@ -47,22 +47,22 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     })
     .directive('inlineAreaEdit', function() {
         return {
-            template: '<div>' + 
-                            '<div ng-hide="editMode" ng-switch="defFormat">' + 
+            template: '<div>' +
+                            '<div ng-hide="editMode" ng-switch="defFormat">' +
                             '   <i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>' +
-                            '   <span ng-switch-default><span ng-bind="model"></span></span>' +
-                            '   <span ng-switch-when="html"><span ng-bind-html="model"></span></span>' +
-                            '</div>' + 
-                            '<div ng-show="editMode">' + 
+                            '   <span ng-switch-default><span ng-bind="model" ng-text-truncate="model" ng-tt-threshold="500"></span></span>' +
+                            '   <span ng-switch-when="html"><span ng-bind-html="model" ng-text-truncate="model" ng-tt-threshold="500"></span></span>' +
+                            '</div>' +
+                            '<div ng-show="editMode">' +
                             '   <div class="btn-group definitionFormatRadio">' +
                             '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="null">Plain Text</button>' +
                             '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="\'html\'">Rich Text</button>' +
-                            '   </div>' +                            
-                            '   <textarea ng-show="defFormat!=\'html\'" ng-model="value" class="form-control"></textarea>' +  
-                            '   <div text-angular ng-show="defFormat==\'html\'" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ></div>' +                             
-                            '   <button class="fa fa-check" ng-click="model = value;editMode = false; onOk();">Confirm</button>' + 
-                            '   <button class="fa fa-times" ng-click="editMode = false">Cancel</button>' + 
-                            '</div>       ' + 
+                            '   </div>' +
+                            '   <textarea ng-show="defFormat!=\'html\'" ng-model="value" class="form-control"></textarea>' +
+                            '   <div text-angular ng-show="defFormat==\'html\'" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ></div>' +
+                            '   <button class="fa fa-check" ng-click="model = value;editMode = false; onOk();">Confirm</button>' +
+                            '   <button class="fa fa-times" ng-click="editMode = false">Cancel</button>' +
+                            '</div>       ' +
                         '</div>',
             restrict: 'AE',
             scope: {
@@ -98,7 +98,7 @@ angular.module('systemModule').filter('bytes', function() {
 angular.module('systemModule').factory('isAllowedModel', function (userResource) {
     var isAllowedModel = {
     };
-    
+
     isAllowedModel.isAllowed = function ($scope, CuratedItem) {
         if (!CuratedItem) return false;
         if (CuratedItem.archived) {
@@ -106,7 +106,7 @@ angular.module('systemModule').factory('isAllowedModel', function (userResource)
         }
         if (userResource.user.siteAdmin) {
             return true;
-        } else {   
+        } else {
             if (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard") {
                 return false;
             }
@@ -117,23 +117,23 @@ angular.module('systemModule').factory('isAllowedModel', function (userResource)
             }
         }
     };
-    
+
     isAllowedModel.setCanCurate = function($scope) {
         isAllowedModel.runWhenInitialized($scope, function() {
             $scope.canCurate = isAllowedModel.isAllowed($scope, $scope.elt);
         });
     };
-    
+
     isAllowedModel.runWhenInitialized = function($scope, toRun) {
         userResource.getPromise().then(toRun);
     };
-    
+
     isAllowedModel.setDisplayStatusWarning = function($scope) {
         isAllowedModel.runWhenInitialized($scope, function() {
             $scope.displayStatusWarning = isAllowedModel.displayStatusWarning($scope, $scope.elt);
-        });    
+        });
     };
-    
+
     isAllowedModel.displayStatusWarning = function($scope, CuratedItem) {
         if(!CuratedItem) return false;
         if(CuratedItem.archived || userResource.user.siteAdmin) {
@@ -166,7 +166,7 @@ angular.module('systemModule').directive('diff', function () {
                     if (v) {
                         if (output !== "") output += ", ";
                         output += v;
-                    }                        
+                    }
                 }
                 return output;
             };
@@ -238,8 +238,8 @@ angular.module('systemModule').config(function($provide) {
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector', function($delegate, $injector) {
         var previousException;
         return function(exception, cause) {
-            $delegate(exception, cause);            
-            if (previousException && exception.toString() === previousException.toString()) return;   
+            $delegate(exception, cause);
+            if (previousException && exception.toString() === previousException.toString()) return;
             previousException = exception;
             var http;
             if (!http) { http = $injector.get('$http'); }

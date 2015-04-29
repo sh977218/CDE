@@ -1,27 +1,28 @@
 package gov.nih.nlm.system;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-
 import org.openqa.selenium.*;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.browserlaunchers.Sleeper;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.JavascriptExecutor;
-import org.testng.annotations.*;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.support.ui.Select;
+import org.testng.annotations.*;
+
+import java.lang.System;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -138,6 +139,7 @@ public class NlmCdeBaseTest {
         } else {
             WebElement unameLink = findElement(By.id("username_link"));
             if (!unameLink.getText().equals(username)) {
+                System.out.println("uname is:"+unameLink.getText());
                 logout();
                 loginAs(username, password);
             }
@@ -505,6 +507,7 @@ public class NlmCdeBaseTest {
             // Assumption is that UMLS sometimes throws an error on login. With a socket hangup. login fails, we retry.
         } catch (TimeoutException e) {
             System.out.println("Login failed. Re-trying. error: " + e.getMessage());
+            hangon(1);
             findElement(By.id("login_button")).click();
             textPresent(checkText);            
         }
