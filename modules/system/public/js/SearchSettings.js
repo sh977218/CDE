@@ -1,7 +1,6 @@
 angular.module('systemModule')
     .factory('SearchSettings', function(localStorageService) {
-        var searchSettings = localStorageService.get("SearchSettings");
-        return {
+         var searchSettingsFactory = {
             getConfiguration: function () {
                 return searchSettings;
             }
@@ -30,4 +29,7 @@ angular.module('systemModule')
                 return searchSettings.defaultSearchView;
             }
         };
+        var searchSettings = localStorageService.get("SearchSettings");
+        if (!searchSettings) searchSettings = searchSettingsFactory.getDefault();
+        return searchSettingsFactory;
     });
