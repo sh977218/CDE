@@ -38,6 +38,9 @@
                         </ul>
                      </span>
                 </td>
+                <td ng-if="searchSettings.tableViewFields.cde.uom" class="uom multiline-ellipsis">
+                    {{c.valueDomain.uom}}
+                </td>
                 <td ng-if="searchSettings.tableViewFields.cde.stewardOrg" class="stewardOrg">{{c.stewardOrg.name}}</td>
                 <td ng-if="searchSettings.tableViewFields.cde.usedBy" class="usedBy multiline-ellipsis">
                     <span ng-repeat="org in c.usedBy | limitTo: maxLines ">{{$index>0?", ":""}}{{org}}</span><span ng-show="c.usedBy.length > maxLines">, ...</span>

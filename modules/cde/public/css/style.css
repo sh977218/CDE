@@ -410,9 +410,9 @@ button#selectDefault {
 .userIcon {
     position: absolute;
     top: 19px;
+    left: 0px;
 }
 #incomingMessage {left: -18px;}
-#searchSettings {right: -16px;}
 
 
 @media (min-width: 0px) {

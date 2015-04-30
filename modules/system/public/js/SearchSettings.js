@@ -16,6 +16,7 @@ angular.module('systemModule')
                             "name": true,
                             "naming": true,
                             "permissibleValues": true,
+                            "uom": false,
                             "stewardOrg": true,
                             "usedBy": true,
                             "registrationStatus": true,
