@@ -11,7 +11,14 @@ public class TourTest extends NlmCdeBaseTest {
         goToCdeByName("Person Birth Date");
         findElement(By.linkText("Help")).click();
         findElement(By.linkText("Take a tour")).click();
-        textPresent("an overview of the CDE attributes");
+        textPresent("Welcome to the NIH");
+        hangon(1);
+        getNext("back to the CDE search page");
+        getNext("take you to the Form search page");
+        getNext("Boards allow registered users to group CDEs");
+        getNext("The quick board is emptied when the");
+        getNext("more documentation about this site or start this tour again");
+        getNext("an overview of the CDE attributes");
         getNext("to see what type of value are allowed");
         getNext("may have multiple names, often given");
         getNext("describe the way in which an organization may use a CDE");

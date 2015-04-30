@@ -1,4 +1,5 @@
-angular.module('systemModule').controller('TakeATourCtrl', ['$scope', 'TourContent', function ($scope, TourContent) {
+angular.module('systemModule').controller('TakeATourCtrl', ['$scope', 'TourContent',
+    function ($scope, TourContent) {
 
     TourContent.stop = function () {
         if ($scope.tour)
@@ -6,7 +7,9 @@ angular.module('systemModule').controller('TakeATourCtrl', ['$scope', 'TourConte
     };
 
     $scope.setTour = function () {
-        $scope.tour = new Tour({template: TourContent.template, steps: TourContent.steps});
+
+        $scope.tour = new Tour({template: TourContent.template,
+            steps:  TourContent.defaultSteps.concat(TourContent.steps)});
         $scope.tour.init();
         $scope.tour.restart();
     };

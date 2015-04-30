@@ -74,8 +74,51 @@ angular.module('resourcesSystem', ['ngResource'])
     })
     .factory("TourContent", function() {
         return {
-            stop: null 
+            defaultSteps: [
+                {
+                    element: "#dropdownMenu_help"
+                    , title: "Welcome"
+                    , content: "Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here. Different sections of the applications have different help sections."
+                }
+                , {
+                    element: "a:contains('CDEs')"
+                    , title: "CDEs"
+                    , content: "This menu will take you back to the CDE search page"
+                }
+                , {
+                    element: "a:contains('Forms')"
+                    , title: "Forms"
+                    , content: "This menu will take you to the Form search page"
+                }
+                , {
+                    element: "#boardsMenu"
+                    ,
+                    title: "Boards"
+                    ,
+                    content: "Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them."
+                }
+                , {
+                    element: "#boardsLink"
+                    ,
+                    title: "Boards"
+                    ,
+                    content: "Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them."
+                }
+                , {
+                    element: "a:contains('Quick Board (')"
+                    ,
+                    title: "Quick Board"
+                    ,
+                    content: "The quick board is is a volatile board for doing quick comparisons or CDE downloads. The quick board is emptied when the page is refreshed."
+                }
+                , {
+                    element: "a:contains('Help')"
+                    , title: "Help"
+                    , content: "Here's where you can find more documentation about this site or start this tour again."
+                }]
+            , stop: null
             , steps: []
+
         };
     })
     .factory('userResource', function($http, $q) {
