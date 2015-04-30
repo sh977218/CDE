@@ -30,7 +30,7 @@ db.users.insert({username: 'pinuser', password: 'pass', quota: 1073741824, viewH
 db.users.insert({username: 'boarduserEdit', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'historyuser', password: 'pass', quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'appScan', password: 'I@mA88Scan', quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'classificationMgtUser', password: 'pass', orgCurator: ["CTEP","NINDS"], orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'classMgtUser', password: 'pass', orgCurator: ["CTEP","NINDS"], orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'phri', password: 'pass', orgCurator: ["PHRI"], orgAdmin: ["PHRI"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'ninds', password: 'pass', orgCurator: [], orgAdmin: ["NINDS"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'acrin', password: 'pass', orgCurator: ["ACRIN"], orgAdmin: [], quota: 1073741824, viewHistory: []});
@@ -44,12 +44,13 @@ db.users.insert({username: 'nindsWg1User', password: 'pass', orgAdmin: [], orgCu
 db.users.insert({username: 'nindsWg2User', password: 'pass', orgAdmin: [], orgCurator: ["NINDS-WG-2"], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boardPublisherTest', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'boardBot', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'anonymousCommentUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'anonymousCommentUser2', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
-db.users.insert({username: 'anonymousFormCommentUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'CommentUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'CommentUser2', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'FormCommentUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []});
 db.users.insert({username: 'commentEditor', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["CommentReviewer"], email: "admin@email.com"});
 db.users.insert({username: 'attachmentReviewer', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["AttachmentReviewer"], email: "admin@email.com"});
 db.users.insert({username: 'ctep_fileCurator', password: 'pass', orgAdmin: [], orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
+db.users.insert({username: 'hiIamLongerThanSeventeenCharacters', password: 'pass', orgAdmin: [], orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []});
 
 db.articles.insert({key: "testAdminCanEdit", body: "Admin can edit this."});
 db.articles.insert({key: "testEdits", body: "Testing edits"});
