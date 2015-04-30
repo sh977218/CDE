@@ -7,105 +7,119 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-public class ClassificationTest extends BaseClassificationTest {  
-    
-    @Test
-    public void addClassification() {
-        mustBeLoggedInAs("classificationMgtUser", "pass");
-        goToCdeByName("Surgical Procedure Other Anatomic Site Performed Indicator");
-        findElement(By.linkText("Classification")).click();
-        addClassificationMethod(new String[]{"NINDS","Disease","Myasthenia Gravis","Classification","Supplemental"});
-        checkRecentlyUsedClassifications(new String[]{"NINDS","Disease","Myasthenia Gravis","Classification","Supplemental"});
-        hangon(1);
-        addClassificationMethod(new String[]{"NINDS","Domain","Treatment/Intervention Data","Therapies"});
-        findElement(By.id("addClassification")).click(); 
-        List<WebElement> priorClassifs = driver.findElements(By.xpath("//div[ol]"));
-        for (WebElement prior : priorClassifs) {
-            if (prior.getText().contains("Myasthenia Gravis") && prior.getText().contains("Supplemental")) {
-                prior.findElement(By.tagName("button")).click();
-                textPresent("Classification Already Exists");
-                closeAlert();
-            }
-        }
-        findElement(By.xpath("//button[text() = 'Close']")).click();
-        modalGone();
+public class ClassificationTest extends BaseClassificationTest {
 
-        openClassificationAudit("NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
-        textPresent("classificationMgtUser");
-        textPresent("Surgical Procedure Other Anatomic Site Performed Indicator");
-        textPresent("Add NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
-    }
-    
-    private void removeClassificationMethod(String[] categories) {
-        String selector = "";        
-        for (int i=0; i<categories.length; i++) {
-            selector += categories[i];
-            if (i<categories.length-1) selector += ",";
-        }
-        textPresent(categories[categories.length-1], By.id("classification-"+selector)); 
-        deleteClassification("classification-"+selector);
-        driver.navigate().refresh();
-        findElement(By.linkText("Classification")).click();
-        Assert.assertTrue(checkElementDoesNotExistByCSS("[id='classification-"+selector+"']"));
-    }
-    
-    @Test
-    public void deleteClassification() {
-        mustBeLoggedInAs(classificationMgtUser_username, password);
-        goToCdeByName("Spectroscopy geometry location not applicable indicator");
-        findElement(By.linkText("Classification")).click();
-        List<WebElement> linkList = driver.findElements(By.cssSelector("li[id$='Imaging Diagnostics']"));
-        Assert.assertEquals(linkList.size(), 1);
-        removeClassificationMethod(new String[]{"Domain","Assessments and Examinations","Imaging Diagnostics"});
-        linkList = driver.findElements(By.cssSelector("li[id$='Imaging Diagnostics']"));
-        Assert.assertEquals(linkList.size(), 0);
-        linkList = driver.findElements(By.cssSelector("li[id$='Assessments and Examinations']"));
-        Assert.assertTrue(linkList.size() == 1);
-        
-        removeClassificationMethod(new String[]{"Disease","Myasthenia Gravis"});
-        Assert.assertTrue(textNotPresent("Myasthenia Gravis"));
+	@Test
+	public void addClassification() {
+		mustBeLoggedInAs("classMgtUser", "pass");
+		goToCdeByName("Surgical Procedure Other Anatomic Site Performed Indicator");
+		findElement(By.linkText("Classification")).click();
+		addClassificationMethod(new String[] { "NINDS", "Disease",
+				"Myasthenia Gravis", "Classification", "Supplemental" });
+		checkRecentlyUsedClassifications(new String[] { "NINDS", "Disease",
+				"Myasthenia Gravis", "Classification", "Supplemental" });
+		hangon(1);
+		addClassificationMethod(new String[] { "NINDS", "Domain",
+				"Treatment/Intervention Data", "Therapies" });
+		findElement(By.id("addClassification")).click();
+		List<WebElement> priorClassifs = driver.findElements(By
+				.xpath("//div[ol]"));
+		for (WebElement prior : priorClassifs) {
+			if (prior.getText().contains("Myasthenia Gravis")
+					&& prior.getText().contains("Supplemental")) {
+				prior.findElement(By.tagName("button")).click();
+				textPresent("Classification Already Exists");
+				closeAlert();
+			}
+		}
+		findElement(By.xpath("//button[text() = 'Close']")).click();
+		modalGone();
 
+		openClassificationAudit("NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
+		textPresent("classMgtUser");
+		textPresent("Surgical Procedure Other Anatomic Site Performed Indicator");
+		textPresent("Add NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
+	}
 
-        openClassificationAudit("NINDS > Disease > Myasthenia Gravis");
-        textPresent("classificationMgtUser");
-        textPresent("Delete NINDS > Disease > Myasthenia Gravis");
-    }    
-    
-    @Test
-    public void classificationLink() {
-        mustBeLoggedInAs(classificationMgtUser_username, password);
-        goToCdeByName("Spectroscopy water signal removal filter text");
-        findElement(By.linkText("Classification")).click();
-        findElement(By.cssSelector("[id='classification-Domain,Assessments and Examinations,Imaging Diagnostics'] .name")).click();
-        showSearchFilters();
-        hangon(1);
-        Assert.assertTrue(textPresent("Classifications"));
-        Assert.assertTrue(textPresent("NINDS (10"));
-        Assert.assertTrue(textPresent("Imaging Diagnostics"));
-    }
+	private void removeClassificationMethod(String[] categories) {
+		String selector = "";
+		for (int i = 0; i < categories.length; i++) {
+			selector += categories[i];
+			if (i < categories.length - 1)
+				selector += ",";
+		}
+		textPresent(categories[categories.length - 1],
+				By.id("classification-" + selector));
+		deleteClassification("classification-" + selector);
+		driver.navigate().refresh();
+		findElement(By.linkText("Classification")).click();
+		Assert.assertTrue(checkElementDoesNotExistByCSS("[id='classification-"
+				+ selector + "']"));
+	}
 
-    // Feature is Temporarily Disabled
-    //@Test
-    public void classifyEntireSearch() {
-        mustBeLoggedInAs(ninds_username, password);
-        goToCdeSearch();
-        findElement(By.id("li-blank-AECC")).click();
-        textPresent("NCI Standard Template CDEs (7)");
-        findElement(By.id("classifyAll")).click();
-        findElement(By.xpath("//span[text()='Population']")).click();
-        findElement(By.xpath("//div[@id='addClassification-Adult']//button")).click();
-        textPresent("Search result classified");
-        goToCdeByName("Noncompliant Reason Text");
-        findElement(By.linkText("Classification")).click();
-        textPresent("NINDS");
-        textPresent("Population");
-        textPresent("Adult");
-        goToCdeByName("Adverse Event Ongoing Event Indicator");
-        findElement(By.linkText("Classification")).click();
-        textPresent("NINDS");
-        textPresent("Population");
-        textPresent("Adult");        
-    }    
-    
+	@Test
+	public void deleteClassification() {
+		mustBeLoggedInAs(classificationMgtUser_username, password);
+		goToCdeByName("Spectroscopy geometry location not applicable indicator");
+		findElement(By.linkText("Classification")).click();
+		List<WebElement> linkList = driver.findElements(By
+				.cssSelector("li[id$='Imaging Diagnostics']"));
+		Assert.assertEquals(linkList.size(), 1);
+		removeClassificationMethod(new String[] { "Domain",
+				"Assessments and Examinations", "Imaging Diagnostics" });
+		linkList = driver.findElements(By
+				.cssSelector("li[id$='Imaging Diagnostics']"));
+		Assert.assertEquals(linkList.size(), 0);
+		linkList = driver.findElements(By
+				.cssSelector("li[id$='Assessments and Examinations']"));
+		Assert.assertTrue(linkList.size() == 1);
+
+		removeClassificationMethod(new String[] { "Disease",
+				"Myasthenia Gravis" });
+		Assert.assertTrue(textNotPresent("Myasthenia Gravis"));
+
+		openClassificationAudit("NINDS > Disease > Myasthenia Gravis");
+		textPresent("classMgtUser");
+		textPresent("Delete NINDS > Disease > Myasthenia Gravis");
+	}
+
+	@Test
+	public void classificationLink() {
+		mustBeLoggedInAs(classificationMgtUser_username, password);
+		goToCdeByName("Spectroscopy water signal removal filter text");
+		findElement(By.linkText("Classification")).click();
+		findElement(
+				By.cssSelector("[id='classification-Domain,Assessments and Examinations,Imaging Diagnostics'] .name"))
+				.click();
+		showSearchFilters();
+		hangon(1);
+		Assert.assertTrue(textPresent("Classifications"));
+		Assert.assertTrue(textPresent("NINDS (10"));
+		Assert.assertTrue(textPresent("Imaging Diagnostics"));
+	}
+
+	// Feature is Temporarily Disabled
+	// @Test
+	public void classifyEntireSearch() {
+		mustBeLoggedInAs(ninds_username, password);
+		goToCdeSearch();
+		findElement(By.id("li-blank-AECC")).click();
+		textPresent("NCI Standard Template CDEs (7)");
+		findElement(By.id("classifyAll")).click();
+		findElement(By.xpath("//span[text()='Population']")).click();
+		findElement(By.xpath("//div[@id='addClassification-Adult']//button"))
+				.click();
+		textPresent("Search result classified");
+		goToCdeByName("Noncompliant Reason Text");
+		findElement(By.linkText("Classification")).click();
+		textPresent("NINDS");
+		textPresent("Population");
+		textPresent("Adult");
+		goToCdeByName("Adverse Event Ongoing Event Indicator");
+		findElement(By.linkText("Classification")).click();
+		textPresent("NINDS");
+		textPresent("Population");
+		textPresent("Adult");
+	}
 
 }
