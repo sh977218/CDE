@@ -94,9 +94,9 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li ng-class="{ active: isPageActive('/cde/search')}"><a href="/#/cde/search">CDEs</a></li>
+                            <li ng-class="{ active: isPageActive('/cde/search')}"><a id="menu_cdes_link" href="/#/cde/search">CDEs</a></li>
 
-                            <% if (config.modules.forms) { %><li ng-class="{ active: isPageActive('/form/search')}"><a href="/#/form/search">Forms</a></li> <% } %>
+                            <% if (config.modules.forms) { %><li ng-class="{ active: isPageActive('/form/search')}"><a id="menu_forms_link" href="/#/form/search">Forms</a></li> <% } %>
 
                             <li dropdown ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' >
                                 <a dropdown-toggle class="dropdown-toggle" href="#" id="boardsMenu" title="Boards" aria-label="Boards">Boards<span class="caret"></span></a>
