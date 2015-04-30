@@ -279,13 +279,11 @@ public class NlmCdeBaseTest {
     }
 
     protected WebElement findElement(By by) {
-        hangon(8);
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }
 
     public void waitAndClick(By by) {
-        hangon(2);
         wait.until(ExpectedConditions.elementToBeClickable(by));
         findElement(by).click();
     }
