@@ -92,7 +92,7 @@ angular.module('resourcesSystem', ['ngResource'])
                 userResource.setOrganizations();
                 userResource.user.userLoaded = true;
             }
-            userResource.deferred.resolve();
+            userResource.deferred.resolve(response.data);
         });    
         this.getPromise = function(){
             return userResource.deferred.promise;
@@ -111,7 +111,10 @@ angular.module('resourcesSystem', ['ngResource'])
             }
         };
 
-
+        this.updateSearchSettings = function(settings) {
+            if (!userResource.user.username) return;
+            $http.post("/user/update/searchSettings", settings);
+        };
         return this;
     })    
     .factory("CsvDownload", function($window) {

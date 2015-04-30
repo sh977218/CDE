@@ -5,6 +5,8 @@ angular.module('systemModule')
         this.saveConfiguration = function (settings) {
             searchSettings = settings;
             localStorageService.set("SearchSettings", settings);
+            userResource.updateSearchSettings(settings);
+
         };
         this.getDefault = function () {
             return {
@@ -33,7 +35,10 @@ angular.module('systemModule')
             return searchSettingsFactory.deferred.promise;
         };
         var searchSettings = localStorageService.get("SearchSettings");
-        this.deferred.resolve(searchSettings);
+        userResource.getPromise().then(function(user){
+            if (user === "Not logged in.") searchSettingsFactory.deferred.resolve(searchSettings);
+            else searchSettingsFactory.deferred.resolve(user.searchSettings);
+        });
         if (!searchSettings) searchSettings = this.getDefault();
         return this;
     });

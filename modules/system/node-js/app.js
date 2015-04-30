@@ -692,4 +692,9 @@ exports.init = function(app) {
         }
     });
 
+    app.post('/user/update/searchSettings', function(req, res) {
+        usersrvc.updateSearchSettings(req.user.username, req.body), function() {
+            res.send("Search settings updated.");
+        };
+    });
 };
