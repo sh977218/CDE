@@ -5,11 +5,14 @@
             <th ng-if="searchSettings.tableViewFields.cde.name" class="name">Name</th>
             <th ng-if="searchSettings.tableViewFields.cde.naming" class="naming">Other Names</th>
             <th ng-if="searchSettings.tableViewFields.cde.permissibleValues" class="permissibleValues">Permissible Values</th>
+            <th ng-if="searchSettings.tableViewFields.cde.uom" class="uom">Unit of Measure</th>
             <th ng-if="searchSettings.tableViewFields.cde.stewardOrg" class="stewardOrg">Steward</th>
             <th ng-if="searchSettings.tableViewFields.cde.usedBy" class="usedBy">Used by Organizations</th>
             <th ng-if="searchSettings.tableViewFields.cde.registrationStatus" class="registrationStatus">Registration Status</th>
             <th ng-if="searchSettings.tableViewFields.cde.administrativeStatus" class="administrativeStatus">Admin Status</th>
             <th ng-if="searchSettings.tableViewFields.cde.ids" class="ids">Identifiers</th>
+            <th ng-if="searchSettings.tableViewFields.cde.source" class="source">Source</th>
+            <th ng-if="searchSettings.tableViewFields.cde.updated" class="updated">Updated</th>
         </tr>
         </thead>{{searchSettings.tableViewFields.cde.name}}
         <tbody>
@@ -38,7 +41,7 @@
                         </ul>
                      </span>
                 </td>
-                <td ng-if="searchSettings.tableViewFields.cde.uom" class="uom multiline-ellipsis">
+                <td ng-if="searchSettings.tableViewFields.cde.uom" class="uom">
                     {{c.valueDomain.uom}}
                 </td>
                 <td ng-if="searchSettings.tableViewFields.cde.stewardOrg" class="stewardOrg">{{c.stewardOrg.name}}</td>
@@ -54,7 +57,12 @@
                         </li>
                         <li class="lastItem" ng-show="c.ids.length > maxLines">...</li>
                     </ul>
-
+                </td>
+                <td ng-if="searchSettings.tableViewFields.cde.source" class="source">
+                    {{c.source}}
+                </td>
+                <td ng-if="searchSettings.tableViewFields.cde.updated" class="updated">
+                    {{c.updated | date: 'MM/dd/yyyy @ h:mma'}}
                 </td>
             </tr>
         </tbody>

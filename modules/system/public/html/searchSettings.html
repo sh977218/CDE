@@ -39,6 +39,12 @@
         <br>
         <input id="ids" type="checkbox" ng-model="searchSettings.tableViewFields.cde.ids">
         <label for="ids">Identifiers</label>
+        <br>
+        <input id="source" type="checkbox" ng-model="searchSettings.tableViewFields.cde.source">
+        <label for="source">Source</label>
+        <br>
+        <input id="updated" type="checkbox" ng-model="searchSettings.tableViewFields.cde.updated">
+        <label for="updated">Updated</label>
     </div>
     <button id="saveSettings" type="button" class="btn btn-success pull-right" ng-click="saveSettings()"><i class="fa fa-check"></i> Save</button>
     <button type="button" class="btn btn-warning pull-right" ng-click="cancelSettings()"><i class="fa fa-times"></i> Cancel</button>

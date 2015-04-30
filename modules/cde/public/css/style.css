@@ -412,7 +412,12 @@ button#selectDefault {
     top: 19px;
     left: 0px;
 }
-#incomingMessage {left: -18px;}
+#incomingMessage {
+    left: -18px;
+}
+#searchSettings {
+    margin-left: 10px;
+}
 
 
 @media (min-width: 0px) {
@@ -460,11 +465,14 @@ button#selectDefault {
 .gridListView .name {width: 10%;}
 .gridListView .naming {width: 10%;}
 .gridListView .permissibleValues {width: 10%;text-overflow: ellipsis;}
+.gridListView .uom {width: 7%;}
 .gridListView .stewardOrg {width: 40px;}
 .gridListView .usedBy {width: 10%;}
 .gridListView .registrationStatus {width: 55px;}
 .gridListView .administrativeStatus {width: 55px;}
 .gridListView .ids {width: 100px;  overflow: hidden;}
+.gridListView .source {width: 70px;}
+.gridListView .updated {width: 90px;}
 
 .gridListView .lastItem {list-style-type: none;}
 

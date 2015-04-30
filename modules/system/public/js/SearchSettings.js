@@ -20,8 +20,10 @@ angular.module('systemModule')
                             "stewardOrg": true,
                             "usedBy": true,
                             "registrationStatus": true,
-                            "administrativeStatus": true,
-                            "ids": true
+                            "administrativeStatus": false,
+                            "ids": true,
+                            "source": false,
+                            "updated": false
                         }
                     }
                 };
