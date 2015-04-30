@@ -74,7 +74,7 @@ angular.module('resourcesSystem', ['ngResource'])
     })
     .factory("TourContent", function() {
         return {
-            stop: null 
+            stop: null
             , steps: []
         };
     })

@@ -273,7 +273,7 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
         });
     };
   
-    TourContent.steps = [     
+    TourContent.steps = [
         {
             element: "a:contains('General Details')"
             , title: "General Details"
