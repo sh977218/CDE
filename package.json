@@ -16,7 +16,6 @@
     "mongoose": "3.8.25",
     "xml2js": "0.4.4",
     "node-restful": "0.1.17",
-    "util": "0.10.3",
     "passport": "0.2.1",
     "passport-local": "1.0.0",
     "body-parser":"1.11.0",
@@ -29,8 +28,6 @@
     "event-stream": "3.3.0",
     "trim": "0.0.1",
     "gridfs-stream": "1.1.0",
-    "crypto": "0.0.3",
-    "querystring": "0.2.0",
     "serve-favicon": "2.2.0",
     "connect-mongo": "0.7.0",
     "morgan": "1.5.1",
@@ -59,6 +56,9 @@
     "grunt-useref": "*",
     "log-buffer": "0.0.3",
     "chalk": "*",
-    "xmlbuilder": "2.6.2"
+    "xmlbuilder": "2.6.2",
+    "tar-fs": "0.5.2",
+    "tar": "2.1.0",
+    "fstream": "1.0.4"
   }
 }
