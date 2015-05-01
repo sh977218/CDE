@@ -11,7 +11,14 @@ public class TourTest extends NlmCdeBaseTest {
         goToCdeByName("Person Birth Date");
         findElement(By.linkText("Help")).click();
         findElement(By.linkText("Take a tour")).click();
-        textPresent("an overview of the CDE attributes");
+        textPresent("Welcome to the NIH");
+        hangon(1);
+        getNext("back to the CDE search page");
+        getNext("take you to the Form search page");
+        getNext("Boards allow registered users to group CDEs");
+        getNext("The quick board is emptied when the");
+        getNext("more documentation about this site or start this tour again");
+        getNext("an overview of the CDE attributes");
         getNext("to see what type of value are allowed");
         getNext("may have multiple names, often given");
         getNext("describe the way in which an organization may use a CDE");
@@ -30,38 +37,40 @@ public class TourTest extends NlmCdeBaseTest {
         findElement(By.xpath("//button[@data-role='end']")).click();
     }
 
-    private void getNext(String expectedText) {
-        waitAndClick(By.xpath("//button[@data-role='next']"));
-        textPresent(expectedText);
-    }
+	private void getNext(String expectedText) {
+		hangon(2);
+		waitAndClick(By.xpath("//button[@data-role='next']"));
+		hangon(2);
+		textPresent(expectedText);
+		hangon(2);
+	}
 
-    @Test
-    public void listTour() {
-        mustBeLoggedOut();
-        goToCdeSearch();
-        findElement(By.linkText("Help")).click();
-        findElement(By.linkText("Take a tour")).click();
-        textPresent("Welcome to the NIH");
-        hangon(1);
-        getNext("back to the CDE search page");
-        getNext("take you to the Form search page");
-        getNext("Boards allow registered users to group CDEs");
-        getNext("The quick board is emptied when the");
-        getNext("more documentation about this site or start this tour again");
-        getNext("For example, search for");
-        getNext("a combination of most relevant and higher status CDEs first");
-        getNext(" to view the CDE summary");
-        getNext("Click the eye to see the full detail");
-        getNext("The plus sign will add a CDE");
-        getNext("view shows all search results (max 1000)");
-        getNext("If your screen is small and the");
-        getNext("tree to filter results by context, domain,");
-        getNext("You can add a second classification ");
-        getNext("See which filter are applied");
-        getNext("Restrict search to one or more ");
-        getNext("By default, CDEs in Recorded status");
-        findElement(By.xpath("//button[@data-role='end']")).click();
-    }
-
+	@Test
+	public void listTour() {
+		mustBeLoggedOut();
+		goToCdeSearch();
+		findElement(By.linkText("Help")).click();
+		findElement(By.linkText("Take a tour")).click();
+		textPresent("Welcome to the NIH");
+		hangon(1);
+		getNext("back to the CDE search page");
+		getNext("take you to the Form search page");
+		getNext("Boards allow registered users to group CDEs");
+		getNext("The quick board is emptied when the");
+		getNext("more documentation about this site or start this tour again");
+		getNext("For example, search for");
+		getNext("a combination of most relevant and higher status CDEs first");
+		getNext(" to view the CDE summary");
+		getNext("Click the eye to see the full detail");
+		getNext("The plus sign will add a CDE");
+		getNext("view shows all search results (max 1000)");
+		getNext("If your screen is small and the");
+		getNext("tree to filter results by context, domain,");
+		getNext("You can add a second classification ");
+		getNext("See which filter are applied");
+		getNext("Restrict search to one or more ");
+		getNext("By default, CDEs in Recorded status");
+		findElement(By.xpath("//button[@data-role='end']")).click();
+	}
 
 }

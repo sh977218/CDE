@@ -44,7 +44,7 @@ public class UserTest extends NlmCdeBaseTest {
     
     @Test
     public void userEmail() {
-        mustBeLoggedInAs(test_username, test_password);
+		mustBeLoggedInAs(test_username, test_password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         Assert.assertEquals("test@example.com", findElement(By.id("user_email")).getText());
@@ -56,6 +56,11 @@ public class UserTest extends NlmCdeBaseTest {
         Assert.assertTrue(findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']")).isEnabled());
         findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']")).click();
         textPresent("Saved");                
+    }
+
+    @Test
+    public void testLongUsername() {
+        mustBeLoggedInAs("hiIamLongerThanSeventeenCharacters", password);
     }
 
 }

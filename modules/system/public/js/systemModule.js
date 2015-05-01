@@ -85,6 +85,19 @@ angular.module('systemModule').filter('placeholdEmpty', function() {
     };
 });
 
+angular.module('systemModule').filter('truncateLongUserName', function() {
+    return function(input) {
+        if (!(input === undefined || input === null || input === "")) {
+            if(input.length > 17){
+                return input.substr(0,17)+'...';
+            }
+            else return input;
+        } else {
+            return "N/A";
+        }
+    };
+});
+
 angular.module('systemModule').filter('bytes', function() {
     return function(bytes, precision) {
             if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
