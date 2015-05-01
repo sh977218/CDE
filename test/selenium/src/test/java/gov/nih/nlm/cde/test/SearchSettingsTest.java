@@ -6,9 +6,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class SearchSettingsTest extends NlmCdeBaseTest {
-    @Test
-    void UnloggedUserSetsFields (){
-        goToSearch("cde");
+
+    void setAndCheckFields(){
         textNotPresent("Other Names");
         textNotPresent("Permissible Values");
         textNotPresent("Steward");
@@ -23,7 +22,6 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Steward");
         textPresent("Used by Organizations");
         textPresent("Registration Status");
-        textPresent("Admin Status");
         textPresent("Identifiers");
 
         findElement(By.id("searchSettings")).click();
@@ -41,12 +39,45 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Steward");
         textPresent("Used by Organizations");
         textNotPresent("Registration Status");
-        textNotPresent("Admin Status");
         textPresent("Identifiers");
+    }
 
-        mustBeLoggedInAs(ninds_username, password);
+    void clearStorage() {
+        String clearStorage = "localStorage.clear();";
+        ((JavascriptExecutor) driver).executeScript(clearStorage, "");
+    }
+
+    @Test
+    void UnloggedUserSetsFields (){
+        mustBeLoggedOut();
         goToSearch("cde");
+        setAndCheckFields();
 
-        //localStorage.clear();
+        //The following just tests that clearStorage() works
+        clearStorage();
+        goToSearch("cde");
+        findElement(By.id("gridView")).click();
+        textPresent("Other Names");
+        textPresent("Permissible Values");
+        textPresent("Steward");
+        textPresent("Used by Organizations");
+        textPresent("Registration Status");
+        textPresent("Identifiers");
+    }
+
+    @Test
+    void LoggedUserSetsFields() {
+        mustBeLoggedInAs(tableViewUser_username, password);
+        goToSearch("cde");
+        setAndCheckFields();
+        clearStorage();
+        goToSearch("cde");
+        findElement(By.id("gridView")).click();
+        textPresent("Other Names");
+        textPresent("Permissible Values");
+        textPresent("Steward");
+        textPresent("Used by Organizations");
+        textNotPresent("Registration Status");
+        textPresent("Identifiers");
     }
 }

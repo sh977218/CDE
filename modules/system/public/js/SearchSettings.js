@@ -37,7 +37,10 @@ angular.module('systemModule')
         var searchSettings = localStorageService.get("SearchSettings");
         userResource.getPromise().then(function(user){
             if (user === "Not logged in.") searchSettingsFactory.deferred.resolve(searchSettings);
-            else searchSettingsFactory.deferred.resolve(user.searchSettings);
+            else {
+                if (!user.searchSettings) user.searchSettings = searchSettingsFactory.getDefault();
+                searchSettingsFactory.deferred.resolve(user.searchSettings);
+            }
         });
         if (!searchSettings) searchSettings = this.getDefault();
         return this;
