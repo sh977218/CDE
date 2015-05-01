@@ -43,5 +43,10 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textNotPresent("Registration Status");
         textNotPresent("Admin Status");
         textPresent("Identifiers");
+
+        mustBeLoggedInAs(ninds_username, password);
+        goToSearch("cde");
+
+        //localStorage.clear();
     }
 }
