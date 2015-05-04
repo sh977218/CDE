@@ -35,6 +35,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , selectedElementsAlt: this.getSelectedElementsAlt(scope)
                 , filter: filter
                 , currentPage: scope.searchForm.currentPage
+                , includeAggregations: true
             };
             return settings;
         }
@@ -166,64 +167,65 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
             }
 
-            queryStuff.aggregations = {
-                orgs: {
-                    filter: settings.filter,
-                    aggregations: {
-                        orgs: {
-                            terms: {
-                                "field": "classification.stewardOrg.name",
-                                "size": 40,
-                                order: {
-                                    "_term": "desc"
+            if (settings.includeAggregations) {
+                queryStuff.aggregations = {
+                    orgs: {
+                        filter: settings.filter,
+                        aggregations: {
+                            orgs: {
+                                terms: {
+                                    "field": "classification.stewardOrg.name",
+                                    "size": 40,
+                                    order: {
+                                        "_term": "desc"
+                                    }
                                 }
                             }
                         }
-                    }
-                },
-                statuses: {
-                    terms: {
-                        field: "registrationState.registrationStatus"
-                    }
-                }
-            };
-
-            queryStuff.aggregations.statuses.aggregations = {
-            };
-
-            if (settings.selectedOrg !== undefined) {
-                var flatClassification = {
-                    terms: {
-                        size: 500,
-                        field: "flatClassification"
+                    },
+                    statuses: {
+                        terms: {
+                            field: "registrationState.registrationStatus"
+                        }
                     }
                 };
-                if (flatSelection === "") {
-                    flatClassification.terms.include = settings.selectedOrg + ";[^;]+";
-                } else {
-                    flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
-                }
-                queryStuff.aggregations.flatClassification = {
-                    filter: settings.filter,
-                    aggs: {flatClassification: flatClassification}
-                }
-            }
 
-            if (settings.selectedOrgAlt !== undefined) {
-                var flatClassificationAlt = {
-                    terms: {
-                        size: 500,
-                        field: "flatClassification"
+                queryStuff.aggregations.statuses.aggregations = {};
+
+                if (settings.selectedOrg !== undefined) {
+                    var flatClassification = {
+                        terms: {
+                            size: 500,
+                            field: "flatClassification"
+                        }
+                    };
+                    if (flatSelection === "") {
+                        flatClassification.terms.include = settings.selectedOrg + ";[^;]+";
+                    } else {
+                        flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
                     }
-                };
-                if (flatSelectionAlt === "") {
-                    flatClassificationAlt.terms.include = settings.selectedOrgAlt + ";[^;]+";
-                } else {
-                    flatClassificationAlt.terms.include = settings.selectedOrgAlt + ';' + queryBuilder.escapeRegExp(flatSelectionAlt) + ";[^;]+";
+                    queryStuff.aggregations.flatClassification = {
+                        filter: settings.filter,
+                        aggs: {flatClassification: flatClassification}
+                    }
                 }
-                queryStuff.aggregations.flatClassificationAlt = {
-                    filter: settings.filter,
-                    aggs: {flatClassificationAlt: flatClassificationAlt}
+
+                if (settings.selectedOrgAlt !== undefined) {
+                    var flatClassificationAlt = {
+                        terms: {
+                            size: 500,
+                            field: "flatClassification"
+                        }
+                    };
+                    if (flatSelectionAlt === "") {
+                        flatClassificationAlt.terms.include = settings.selectedOrgAlt + ";[^;]+";
+                    } else {
+                        flatClassificationAlt.terms.include = settings.selectedOrgAlt + ';' + queryBuilder.escapeRegExp(flatSelectionAlt) + ";[^;]+";
+                    }
+                    queryStuff.aggregations.flatClassificationAlt = {
+                        filter: settings.filter,
+                        aggs: {flatClassificationAlt: flatClassificationAlt}
+                    }
                 }
             }
 
