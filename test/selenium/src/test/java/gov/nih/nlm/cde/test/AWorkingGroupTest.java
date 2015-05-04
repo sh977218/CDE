@@ -61,16 +61,19 @@ public class AWorkingGroupTest extends BaseClassificationTest {
                 
         // Make sure ctepCurator user can see it
         goToCdeSearch();
+        findElement(By.id("li-blank-Recorded")).click();
         textPresent("Test Working Group (");
         
         // Make sure nlm users can see it
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
+        findElement(By.id("li-blank-Recorded")).click();
         textPresent("Test Working Group (");
         
         // Make sure cabigAdmin can't
         mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeSearch();
+        findElement(By.id("li-blank-Recorded")).click();
         textNotPresent("Test Working Group (");
     }
    

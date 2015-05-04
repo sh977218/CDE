@@ -342,6 +342,7 @@ public class NlmCdeBaseTest {
         hangon(1);
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("has already been used");
+        hangon(0.5);
         waitAndClick(By.id("confirmNewVersion"));
         try {
             textPresent("Saved.");
