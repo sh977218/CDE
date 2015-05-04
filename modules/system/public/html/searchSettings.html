@@ -1,0 +1,52 @@
+<div class="container" ng-controller="SearchSettingsCtrl">
+    <h2><i class="fa fa-bars"></i> Search Results View </h2>
+
+    <div class="form-group">
+        <label for="defaultView">Default View: </label><br>
+        <span class="text-muted">Which type of view do you want to use by default?</span><br>
+        <select ng-model="searchSettings.defaultSearchView" class="form-control" id="defaultView">
+            <option value="accordion"><i class="fa fa-bars"></i> Accordion View</option>
+            <option value="table"><i class="fa fa-table"></i> Table View</option>
+        </select>
+    </div>
+
+    <h2><i class="fa fa-table"></i> Table View Fields</h2>
+    <p class="text-muted">Select the fields that should be returned in <i class="fa fa-table"></i> Table View</p>
+    <div class="form-group">
+        <input id="name" type="checkbox" ng-model="searchSettings.tableViewFields.cde.name" ng-disabled="true">
+        <label for="name">Name</label>
+        <br>
+        <input id="naming" type="checkbox" ng-model="searchSettings.tableViewFields.cde.naming">
+        <label for="naming">Other Names</label>
+        <br>
+        <input id="permissibleValues" type="checkbox" ng-model="searchSettings.tableViewFields.cde.permissibleValues">
+        <label for="permissibleValues">Permissible Values</label>
+        <br>
+        <input id="uom" type="checkbox" ng-model="searchSettings.tableViewFields.cde.uom">
+        <label for="uom">Unit of Measure</label>
+        <br>
+        <input id="stewardOrg" type="checkbox" ng-model="searchSettings.tableViewFields.cde.stewardOrg">
+        <label for="stewardOrg">Steward</label>
+        <br>
+        <input id="usedBy" type="checkbox" ng-model="searchSettings.tableViewFields.cde.usedBy">
+        <label for="usedBy">Used by Organizations</label>
+        <br>
+        <input id="registrationStatus" type="checkbox" ng-model="searchSettings.tableViewFields.cde.registrationStatus">
+        <label for="registrationStatus">Registration Status</label>
+        <br>
+        <input id="administrativeStatus" type="checkbox" ng-model="searchSettings.tableViewFields.cde.administrativeStatus">
+        <label for="administrativeStatus">Admin Status</label>
+        <br>
+        <input id="ids" type="checkbox" ng-model="searchSettings.tableViewFields.cde.ids">
+        <label for="ids">Identifiers</label>
+        <br>
+        <input id="source" type="checkbox" ng-model="searchSettings.tableViewFields.cde.source">
+        <label for="source">Source</label>
+        <br>
+        <input id="updated" type="checkbox" ng-model="searchSettings.tableViewFields.cde.updated">
+        <label for="updated">Updated</label>
+    </div>
+    <button id="saveSettings" type="button" class="btn btn-success pull-right" ng-click="saveSettings()"><i class="fa fa-check"></i> Save</button>
+    <button type="button" class="btn btn-warning pull-right" ng-click="cancelSettings()"><i class="fa fa-times"></i> Cancel</button>
+    <button type="button" class="btn btn-info pull-right" ng-click="loadDefault()"><i class="fa fa-undo"></i> Load Default</button>
+</div>

@@ -18,6 +18,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         when('/classificationmanagement', {controller: 'ClassificationManagementCtrl', templateUrl: '/template/system/classificationManagement'}).
         when('/profile', {controller: 'ProfileCtrl', templateUrl: '/profile'}).
         when('/triggerClientException', {controller: 'TriggerClientExceptionCtrl', templateUrl: '/template/system/triggerClientException'}).
+        when('/searchSettings', {controller: 'SearchSettingsCtrl', templateUrl: '/system/public/html/searchSettings.html'}).
         otherwise({redirectTo:'/'});
     })
     .directive('inlineEdit', function() {
@@ -265,4 +266,9 @@ angular.module('systemModule').config(function($provide) {
             }
         };
     }]);
+});
+
+angular.module('systemModule').config(function (localStorageServiceProvider) {
+    localStorageServiceProvider
+        .setPrefix('nlmcde')
 });

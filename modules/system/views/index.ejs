@@ -140,11 +140,11 @@
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right" data-userloaded="loaded-{{user.userLoaded}}">
-                           <a ng-cloak ng-if="userHasMail" title="New messages" href="#/inbox"><i id="incomingMessage" class="fa fa-envelope text-danger"></i></a>
-                           <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id"><a href="#/login" id="login_link"  title="Log in" aria-label="Log in" ng-bind="'Log In'"></a></li>
+                            <a ng-cloak ng-if="userHasMail" title="New messages" href="#/inbox"><i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
+                            <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id"><a href="#/login" id="login_link" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a> </li>
                             <li dropdown class="login" ng-show="user._id" >
-                                <a dropdown-toggle class="dropdown-toggle" href="#" id="username_link"  title="{{user.username}}" aria-label="{{user.username}}"><span>{{user.username | truncateLongUserName}}</span><span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="username_link" >
+                                <a dropdown-toggle class="dropdown-toggle" href="#" id="username_link" title="{{user.username}}" aria-label="{{user.username}}"><span>{{user.username | truncateLongUserName}}</span><span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="username_link">
                                     <li ng-show='user._id'><a href="#/profile">Profile</a></li>
                                     <li ng-show='inboxVisible()'><a href="#/inbox">Inbox</a></li>
                                     <li ng-show="isOrgCurator()"><a href="#/classificationmanagement">Classifications</a></li>
@@ -154,6 +154,7 @@
                                     <li ng-show='user._id'><a href="/logout">Log Out</a></li>
                                 </ul>
                             </li>
+                            <li><a href="#/searchSettings"><i id="searchSettings" ng-click="openSearchSettingsModal()" id="searchSettings" class="fa fa-cog navbar-inverse text-muted userIcon"></i></a></li>
                         </ul>
                     </div>
                 </div>
