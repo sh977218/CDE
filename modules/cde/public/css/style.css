@@ -456,6 +456,9 @@ button#selectDefault {
     -o-user-select: text;
     user-select: text;
 }
+
+.gridListView th{overflow: hidden;}
+
 .gridListView td {
     max-height: 30px!important;
     table-layout: fixed;
