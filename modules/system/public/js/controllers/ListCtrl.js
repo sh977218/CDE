@@ -266,7 +266,7 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
                 $scope.classifications = {elements: []};
                 
                 if (result.aggregations !== undefined && result.aggregations.flatClassification !== undefined) {
-                    $scope.aggregations.flatClassification = result.aggregations.flatClassification.buckets.map(function (c) {
+                    $scope.aggregations.flatClassification = result.aggregations.flatClassification.flatClassification.buckets.map(function (c) {
                         return {name: c.key.split(';').pop(), count: c.doc_count};
                     });
                 } else {
@@ -274,7 +274,7 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
                 }
                 
                 if (result.aggregations !== undefined && result.aggregations.flatClassificationAlt !== undefined) {
-                    $scope.aggregations.flatClassificationAlt = result.aggregations.flatClassificationAlt.buckets.map(function (c) {
+                    $scope.aggregations.flatClassificationAlt = result.aggregations.flatClassificationAlt.flatClassificationAlt.buckets.map(function (c) {
                         return {name: c.key.split(';').pop(), count: c.doc_count};
                     });
                 } else {

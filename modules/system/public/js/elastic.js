@@ -203,7 +203,10 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 } else {
                     flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
                 }
-                queryStuff.aggregations.flatClassification = flatClassification
+                queryStuff.aggregations.flatClassification = {
+                    filter: settings.filter,
+                    aggs: {flatClassification: flatClassification}
+                }
             }
 
             if (settings.selectedOrgAlt !== undefined) {
@@ -218,7 +221,10 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 } else {
                     flatClassificationAlt.terms.include = settings.selectedOrgAlt + ';' + queryBuilder.escapeRegExp(flatSelectionAlt) + ";[^;]+";
                 }
-                queryStuff.aggregations.flatClassificationAlt = flatClassificationAlt;
+                queryStuff.aggregations.flatClassificationAlt = {
+                    filter: settings.filter,
+                    aggs: {flatClassificationAlt: flatClassification}
+                }
             }
 
             if (queryStuff.query.bool.must.length === 0) {
