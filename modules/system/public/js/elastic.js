@@ -1,5 +1,5 @@
 angular.module('ElasticSearchResource', ['ngResource'])
-.factory('Elastic', function($http, userResource) {
+.factory('Elastic', function($http, userResource, SearchSettings) {
     return {
         buildFilter: function (scope) {
             var regStatuses = scope.registrationStatuses;
@@ -12,7 +12,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 }
             }
             if (regStatusOr.length === 0) {
-                scope.userDefaultStatuses.forEach(function (regStatus) {
+                SearchSettings.getUserDefaultStatuses().forEach(function (regStatus) {
                     regStatusOr.push({term: {"registrationState.registrationStatus": regStatus}});
                 });
             }
