@@ -1,5 +1,4 @@
 angular.module('systemModule').controller('SearchSettingsCtrl', ['$scope', 'SearchSettings', '$window', function($scope, SearchSettings, $window) {
-    //$scope.searchSettings = angular.copy(SearchSettings.getConfiguration());
     SearchSettings.getPromise().then(function(settings) {$scope.searchSettings = settings;});
     $scope.saveSettings = function() {
         SearchSettings.saveConfiguration($scope.searchSettings);
