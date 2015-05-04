@@ -223,7 +223,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 }
                 queryStuff.aggregations.flatClassificationAlt = {
                     filter: settings.filter,
-                    aggs: {flatClassificationAlt: flatClassification}
+                    aggs: {flatClassificationAlt: flatClassificationAlt}
                 }
             }
 
