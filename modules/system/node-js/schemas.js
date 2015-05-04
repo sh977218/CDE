@@ -51,6 +51,24 @@ schemas.userSchema = new mongoose.Schema ({
     , viewHistory: [String]
     , knownIPs: [String]
     , roles: [{ type: String, enum: authorizationShared.rolesEnum }]
+    , searchSettings: {
+        defaultSearchView: { type: String, enum: ["accordion", "table"]}
+        , tableViewFields: {
+            cde: {
+                name: Boolean
+                , naming: Boolean
+                , permissibleValues: Boolean
+                , uom: Boolean
+                , stewardOrg: Boolean
+                , usedBy: Boolean
+                , registrationStatus: Boolean
+                , administrativeStatus: Boolean
+                , ids: Boolean
+                , source: Boolean
+                , updated: Boolean
+            }
+        }
+    }
 });
 
 schemas.orgSchema.set('collection', 'orgs');

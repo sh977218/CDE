@@ -1,5 +1,7 @@
-angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule','OrgFactories','classification', 'ngGrid',
-               'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable', 'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago','ngTextTruncate']).
+angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule',
+                'OrgFactories','classification', 'ngGrid',
+                'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
+                'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate']).
     config(function($routeProvider) {
         $routeProvider.
         when('/', {redirectTo: function(){
@@ -16,6 +18,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         when('/classificationmanagement', {controller: 'ClassificationManagementCtrl', templateUrl: '/template/system/classificationManagement'}).
         when('/profile', {controller: 'ProfileCtrl', templateUrl: '/profile'}).
         when('/triggerClientException', {controller: 'TriggerClientExceptionCtrl', templateUrl: '/template/system/triggerClientException'}).
+        when('/searchSettings', {controller: 'SearchSettingsCtrl', templateUrl: '/system/public/html/searchSettings.html'}).
         otherwise({redirectTo:'/'});
     })
     .directive('inlineEdit', function() {
@@ -78,6 +81,19 @@ angular.module('systemModule').filter('placeholdEmpty', function() {
     return function(input) {
         if (!(input === undefined || input === null || input === "")) {
             return input;
+        } else {
+            return "N/A";
+        }
+    };
+});
+
+angular.module('systemModule').filter('truncateLongUserName', function() {
+    return function(input) {
+        if (!(input === undefined || input === null || input === "")) {
+            if(input.length > 17){
+                return input.substr(0,17)+'...';
+            }
+            else return input;
         } else {
             return "N/A";
         }
@@ -250,4 +266,9 @@ angular.module('systemModule').config(function($provide) {
             }
         };
     }]);
+});
+
+angular.module('systemModule').config(function (localStorageServiceProvider) {
+    localStorageServiceProvider
+        .setPrefix('nlmcde')
 });

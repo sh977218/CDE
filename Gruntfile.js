@@ -3,7 +3,12 @@ require('./deploy/configTest.js');
 var config = require('config')
     , elastic = require('./deploy/elasticSearchInit.js')
     , chalk = require('chalk')
-    , fs = require('fs');
+    , fs = require('fs')
+    , tar = require('tar')
+    , zlib = require('zlib')
+    , spawn = require('child_process').spawn
+    , fstream = require('fstream')
+;
     
 var welcomeMessage = fs.readFileSync("./deploy/doc/welcome.txt");
 var helpMessage = fs.readFileSync("./deploy/doc/help.txt");
@@ -359,6 +364,7 @@ module.exports = function(grunt) {
                     'js/angular-resource.min.js': 'angular-resource/angular-resource.min.js',
                     'js/angular-sanitize.min.js': 'angular-sanitize/angular-sanitize.min.js',
                     'js/angular-animate.min.js': 'angular-animate/angular-animate.min.js',
+                    'js/angular-file-upload.min.js': 'ng-file-upload/angular-file-upload.min.js',
                     'js/timeAgo.js': 'angular-timeago/src/timeAgo.js',
                     'js/textAngular.min.js': 'textAngular/dist/textAngular.min.js',
                     'js/textAngular-rangy.min.js': 'textAngular/dist/textAngular-rangy.min.js',
@@ -537,7 +543,29 @@ module.exports = function(grunt) {
     
     grunt.registerTask('persistVersion', function() {
         fs.writeFileSync("./modules/system/views/version.ejs", grunt.config.get("version"));         
-    });    
+    });
+    grunt.registerTask('tarCode', function() {
+        var done = this.async();
+        var writeS = fs.createWriteStream('./code.tar.gz');
+        writeS.on('close', function() {
+            // tar done, now sign with gpg
+            var gpg = spawn('gpg', ["-s", "./code.tar.gz"]);
+            gpg.on('close', function(code){
+                fs.unlinkSync("./code.tar.gz");
+                done();
+            });
+        });
+        var fixupDirs = function(entry) {
+            // Make sure readable directories have execute permission
+            if (entry.props.type === "Directory")
+                entry.props.mode |= (entry.props.mode >>> 2) & 0111;
+            return true;
+        }
+
+        return fstream.Reader({ path: config.node.buildDir, type: 'Directory', filter: fixupDirs }).pipe(
+            tar.Pack()).pipe(zlib.createGzip()).pipe(writeS);
+        //tar.pack(config.node.buildDir).pipe(gzip).pipe(writeS);
+    });
 
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['prompt:elastic', 'do-elastic']);
@@ -546,7 +574,7 @@ module.exports = function(grunt) {
     grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
     grunt.registerTask('tests',['prompt:testsLocation','do-test','clearQueue']);
     grunt.registerTask('bower',['bower-install-simple','bowercopy']);
-    grunt.registerTask('refreplace-concat-minify', 'Run reference replacement, concatenation, minification build directory', ['useref', 'concat', 'uglify', 'cssmin']);
+    grunt.registerTask('refreplace-concat-minify', 'Run reference replacement, concatenation, minification build directory', ['useref', 'concat', 'cssmin']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
         grunt.task.run('npm-install');
         if (config.node.buildDir) {
@@ -555,7 +583,7 @@ module.exports = function(grunt) {
         }
     });
     grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
-    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','divider','guihelp','divider','git','divider','elastic','divider','bower-install-simple','divider','bowercopy','divider','build','divider','node']);
+    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','divider','guihelp','divider','elastic','divider','bower-install-simple','divider','bowercopy','divider','build']);
     grunt.registerTask('help', ['availabletasks']);    
     grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);
     // https://www.npmjs.org/package/grunt-bower-install-simple

@@ -3,7 +3,11 @@ var spawn = require('child_process').spawn,
     http = require('http'),
     config = require('config'),
     request = require('request'),
-    bodyParser = require('body-parser')
+    bodyParser = require('body-parser'),
+    fs = require('fs'),
+    multer = require('multer'),
+    tar = require('tar-fs'),
+    zlib = require('zlib')
     ;
 
 var allHosts = [];
@@ -23,7 +27,10 @@ var getHosts = function() {
 
 var getTokens = function() {
     allHosts.forEach(function(server){
-        request("http://" + server.hostname + ":" + server.port + "/statusToken", function(error, response, body) {
+        var url = "http://" + server.hostname;
+        if (server.hostname === 'localhost') url += ":" + server.port;
+        url += "/statusToken"
+        request(url, function(error, response, body) {
             server.token = body;
         });
     });
@@ -78,9 +85,42 @@ app.post('/restart', function(req, res) {
     }
 });
 
+app.post('/deploy', multer(), function(req, res) {
+    req.body.requester = {host: req.body.requester_host, port: req.body.requester_port};
+    if (verifyToken(req)) {
+        var gzPath = config.pm.tempDir + "deploy.tar.gz";
+        if (fs.existsSync(gzPath)) fs.unlinkSync(gzPath);
+        var gpg = spawn('gpg', ["-o", gzPath, "-d", req.files.deployFile.path], {stdio: 'inherit'});
+        gpg.on('error', function(err) {
+            res.status(500).send("Error decrypting file");
+        });
+        gpg.on('close', function(code) {
+            if (code !== 0) {
+                console.log("Error untar-ing");
+                res.status(500).send("Error untar-ing");
+             } else {
+                res.send("File received. Deploying...");
+                var writeS = tar.extract(config.pm.extractDir);
+                fs.createReadStream(gzPath).pipe(zlib.createGunzip()).pipe(writeS);
+                writeS.on('finish', function() {
+                    fs.chmodSync(config.node.buildDir, '700');
+                    spawned.kill();
+                    spawnChild();
+                });
+            }
+        })
+    } else {
+        return res.status(403).send();
+    }
+});
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
+});
+
+process.on('uncaughtException', function (err) {
+    console.log("uncaught exception");
+    console.log(err);
 });
 
 setInterval(function() {

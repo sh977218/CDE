@@ -224,3 +224,12 @@ exports.getAllUsernames = function(req, res) {
         }
     });
 };
+
+exports.updateSearchSettings = function(username, settings, cb) {
+    mongo_data.userByName(username, function(err, user){
+        user.searchSettings = settings;
+        user.save(function(err){
+            if (cb) cb();
+        });
+    });
+};

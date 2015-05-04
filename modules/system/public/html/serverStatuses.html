@@ -25,6 +25,9 @@
                     <dt>Syncing: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.sync?'btn-success':'btn-danger'"><i class="fa" ng-class="status.elastic.sync?'fa-check':'fa-times'"/></a></dd>
                     <dt>Updating: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.updating?'btn-success':'btn-danger'"><i class="fa" ng-class="status.elastic.updating?'fa-check':'fa-times'"/></a></dd>
                 </dl>
+                <hr/>
+                <div ng-file-select="" ng-model="files" class="btn btn-default upload-button" ng-multiple="false" ng-accept="'*.gpg'"
+                     tabindex="0" ng-file-change="upload(status.hostname, status.pmPort, $files)">Deploy File </div>{{progressPercentage}}<br>
             </div>
         </div>
     </div>
