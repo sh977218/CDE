@@ -1,6 +1,8 @@
 angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource) {
     $scope.filterMode = true;
 
+    $scope.userDefaultStatuses = ['Standard', 'Preferred Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete'];
+
     $timeout(function(){
         if($scope.isScreenSizeXsSm) {
             $scope.filterMode = false;
@@ -228,7 +230,6 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         if (!userResource.user) return;
         $scope.lastQueryTimeStamp = timestamp;        
         $scope.accordionListStyle = "semi-transparent";
-        $scope.filter = Elastic.buildElasticQueryPre($scope);
         var settings = Elastic.buildElasticQuerySettings($scope);
         Elastic.buildElasticQuery(settings, function(query) {
             $scope.query = query;
@@ -281,14 +282,14 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
                 }
                 
                 $scope.filterOutWorkingGroups($scope.aggregations);
-                OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.buckets, OrgHelpers.orgsDetailedInfo);
+                OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
              });
         });  
     };   
     
     $scope.filterOutWorkingGroups = function(aggregations) {
         this.setAggregations = function() {
-            aggregations.orgs.buckets = aggregations.orgs.buckets.filter(function(bucket) {
+            aggregations.orgs.buckets = aggregations.orgs.orgs.buckets.filter(function(bucket) {
                 return OrgHelpers.showWorkingGroup(bucket.key, userResource.user) || userResource.user.siteAdmin;
             });
             $scope.aggregations = aggregations;            

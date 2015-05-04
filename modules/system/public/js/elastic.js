@@ -1,7 +1,7 @@
 angular.module('ElasticSearchResource', ['ngResource'])
 .factory('Elastic', function($http, userResource) {
     return {
-        buildElasticQueryPre: function (scope) {
+        buildFilter: function (scope) {
             var regStatuses = scope.registrationStatuses;
             if (!regStatuses) regStatuses = [];
             var regStatusOr = [];
@@ -11,13 +11,19 @@ angular.module('ElasticSearchResource', ['ngResource'])
                     regStatusOr.push({term: {"registrationState.registrationStatus": t.name}});
                 }
             }
+            if (regStatusOr.length === 0) {
+                scope.userDefaultStatuses.forEach(function (regStatus) {
+                    regStatusOr.push({term: {"registrationState.registrationStatus": regStatus}});
+                });
+            }
             var filter = {and: []};
             if (regStatusOr.length > 0) {
                 filter.and.push({or: regStatusOr});
-            }      
+            }
             return filter;
         }
         , buildElasticQuerySettings: function(scope){
+            var filter = this.buildFilter(scope);
             var settings = {
                 resultPerPage: scope.resultPerPage
                 , searchTerm: scope.searchForm.ftsearch
@@ -27,7 +33,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , selectedOrgAlt: scope.classificationFilters[1].org
                 , selectedElements: this.getSelectedElements(scope)
                 , selectedElementsAlt: this.getSelectedElementsAlt(scope)
-                , filter: scope.filter
+                , filter: filter
                 , currentPage: scope.searchForm.currentPage
             };
             return settings;
@@ -133,6 +139,21 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
             }
 
+            if (settings.filter !== undefined) {
+                if (settings.filter.and !== undefined) {
+                    if (settings.filter.and.length === 0) {
+                        delete settings.filter.and;
+                    }
+                }
+                if (settings.filter.and === undefined) {
+                    delete settings.filter;
+                }
+            }
+
+            if (settings.filter !== undefined) {
+                queryStuff.filter = settings.filter;
+            }
+
             var queryBuilder = this;
 
             var flatSelection = queryBuilder.flattenSelection(1000);
@@ -147,11 +168,16 @@ angular.module('ElasticSearchResource', ['ngResource'])
 
             queryStuff.aggregations = {
                 orgs: {
-                    terms: {
-                        "field": "classification.stewardOrg.name",
-                        "size": 40,
-                        order: {
-                            "_term": "desc"
+                    filter: settings.filter,
+                    aggregations: {
+                        orgs: {
+                            terms: {
+                                "field": "classification.stewardOrg.name",
+                                "size": 40,
+                                order: {
+                                    "_term": "desc"
+                                }
+                            }
                         }
                     }
                 },
@@ -193,22 +219,6 @@ angular.module('ElasticSearchResource', ['ngResource'])
                     flatClassificationAlt.terms.include = settings.selectedOrgAlt + ';' + queryBuilder.escapeRegExp(flatSelectionAlt) + ";[^;]+";
                 }
                 queryStuff.aggregations.flatClassificationAlt = flatClassificationAlt;
-            }
-
-
-            if (settings.filter !== undefined) {
-                if (settings.filter.and !== undefined) {
-                    if (settings.filter.and.length === 0) {
-                        delete settings.filter.and;
-                    }
-                }
-                if (settings.filter.and === undefined) {
-                    delete settings.filter;
-                }
-            }
-
-            if (settings.filter !== undefined) {
-                queryStuff.filter = settings.filter;
             }
 
             if (queryStuff.query.bool.must.length === 0) {

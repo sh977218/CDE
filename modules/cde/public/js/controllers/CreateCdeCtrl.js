@@ -86,7 +86,6 @@ angular.module('cdeModule').controller('CreateCdeCtrl', ['$scope', '$window', '$
                 org: $scope.selectedOrgAlt
                 , elements: $scope.selectedElementsAlt
             }];
-            $scope.filter = Elastic.buildElasticQueryPre($scope);
             var settings = Elastic.buildElasticQuerySettings($scope);
             settings.searchTerm = $scope.elt.designation;
             Elastic.buildElasticQuery(settings, function(query) {
