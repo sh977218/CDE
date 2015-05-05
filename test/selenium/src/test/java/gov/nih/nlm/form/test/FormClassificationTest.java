@@ -61,6 +61,7 @@ public class FormClassificationTest extends BaseFormTest {
         
         //Classify All
         goToFormByName(formName, "Incomplete");
+        textPresent("Some CDEs in this form");
         findElement(By.linkText("Form Description")).click();
         findElement(By.id("classifyAllCdes")).click();
         clickElement(By.cssSelector("[id='addClassification-Disease'] span.fake-link"));        
