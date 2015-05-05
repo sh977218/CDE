@@ -95,7 +95,7 @@ var config = {
     , maxLogsPerMinute: 1000
     , expressToStdout: false
     , logBufferSize: 1000
-    , viewsIncrementTreshold: 3
+    , viewsIncrementThreshold: 3
     , antivirus: {
         ip: "127.0.0.1"
         , port: 3311
