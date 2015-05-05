@@ -49,7 +49,7 @@ angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'user
                     $scope.alerts.splice(i, 1);
                 }
             }
-        }, 5000);
+        }, 50000);
     };
     
     $scope.boards = [];

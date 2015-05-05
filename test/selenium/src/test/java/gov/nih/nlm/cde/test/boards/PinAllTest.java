@@ -18,19 +18,19 @@ public class PinAllTest extends BoardTest {
         findElement(By.id("li-blank-Classification")).click();
         findElement(By.id("li-blank-Core")).click();
         hangon(1);
+        int expectedSize = driver.findElements(By.cssSelector(".accordion-toggle")).size();
         findElement(By.id("pinAll")).click();
         findElement(By.linkText("Cerebral Palsy > Public Review")).click();
         modalGone();
         gotoMyBoards();
         findElement(By.xpath("//a[../dl/dd/div/div/span[contains(text(),'CDEs to be use for Cerebral Palsy')]]")).click();
-        Assert.assertEquals(driver.findElements(By.xpath("//h4[@class=\"panel-title\"]")).size(), 7);
-        Assert.assertTrue(textPresent("Birth date"));
-        Assert.assertTrue(textPresent("Race USA category"));
-        Assert.assertTrue(textPresent("Ethnicity USA category"));
-        Assert.assertTrue(textPresent("Medical history condition text"));
-        Assert.assertTrue(textPresent("Medical history condition SNOMED CT code"));
-        Assert.assertTrue(textPresent("Education year count"));
-        Assert.assertTrue(textPresent("Gender Type"));
+        Assert.assertEquals(driver.findElements(By.xpath("//h4[@class=\"panel-title\"]")).size(), expectedSize);
+        textPresent("Birth date");
+        textPresent("Race USA category");
+        textPresent("Ethnicity USA category");
+        textPresent("Medical history condition text");
+        textPresent("Medical history condition SNOMED CT code");
+        textPresent("Gender Type");
     }
 
 }
