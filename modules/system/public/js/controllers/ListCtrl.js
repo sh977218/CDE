@@ -32,9 +32,9 @@ angular.module('systemModule').controller('ListCtrl',
     }
     if (!$scope.registrationStatuses) {
         $scope.registrationStatuses = JSON.parse(JSON.stringify(regStatusShared.statusList));
-        for (var i in $scope.registrationStatuses) {
-            $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
-        }
+        //for (var i in $scope.registrationStatuses) {
+        //    $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
+        //}
     }   
 
     if ($scope.cache.get($scope.getCacheName("ftsearch"))) {
@@ -107,9 +107,9 @@ angular.module('systemModule').controller('ListCtrl',
 
 
         $scope.altClassificationFilterMode = 0;
-        for (var i in $scope.registrationStatuses) {
-            $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
-        }
+        //for (var i in $scope.registrationStatuses) {
+        //    $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
+        //}
         $scope.cache.remove($scope.getCacheName("selectedOrg"));
         $scope.cache.remove($scope.getCacheName("selectedOrgAlt"));
         $scope.cache.remove($scope.getCacheName("selectedElements"));  

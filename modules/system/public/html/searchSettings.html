@@ -1,16 +1,32 @@
 <div class="container" ng-controller="SearchSettingsCtrl">
-    <h2><i class="fa fa-bars"></i> Search Results View </h2>
 
+    <h2><i class="fa fa-search"></i> Search Results </h2>
+
+    <h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>
     <div class="form-group">
-        <label for="defaultView">Default View: </label><br>
-        <span class="text-muted">Which type of view do you want to use by default?</span><br>
-        <select ng-model="searchSettings.defaultSearchView" class="form-control" id="defaultView">
-            <option value="accordion"><i class="fa fa-bars"></i> Accordion View</option>
-            <option value="table"><i class="fa fa-table"></i> Table View</option>
+        <span class="text-muted">What is the lowest registration status you are interested in?</span><br>
+        <label for="lowestRegistrationStatus">Show all CDEs with registration status of the following or higher:</label>
+        <select ng-model="searchSettings.lowestRegistrationStatus" class="form-control" id="lowestRegistrationStatus">
+            <option value="Preferred Standard">Preferred Standard</option>
+            <option value="Standard">Standard</option>
+            <option value="Qualified">Qualified</option>
+            <option value="Recorded">Recorded</option>
+            <option value="Candidate">Candidate</option>
+            <option value="Incomplete">Incomplete</option>
         </select>
     </div>
 
-    <h2><i class="fa fa-table"></i> Table View Fields</h2>
+    <h3><i class="fa fa-bars"></i> Default Search Results View</h3>
+    <div class="form-group">
+        <span class="text-muted">Which type of view do you want to use by default?</span><br>
+        <label for="defaultView">Default View</label>
+        <select ng-model="searchSettings.defaultSearchView" class="form-control" id="defaultView">
+            <option value="accordion">Accordion View</option>
+            <option value="table">Table View</option>
+        </select>
+    </div>
+
+    <h3><i class="fa fa-table"></i> Table View Fields</h3>
     <p class="text-muted">Select the fields that should be returned in <i class="fa fa-table"></i> Table View</p>
     <div class="form-group">
         <input id="name" type="checkbox" ng-model="searchSettings.tableViewFields.cde.name" ng-disabled="true">
