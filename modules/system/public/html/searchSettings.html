@@ -4,16 +4,31 @@
 
     <h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>
     <div class="form-group">
-        <span class="text-muted">What is the lowest registration status you are interested in?</span><br>
-        <label for="lowestRegistrationStatus">Show all CDEs with registration status of the following or higher:</label>
-        <select ng-model="searchSettings.lowestRegistrationStatus" class="form-control" id="lowestRegistrationStatus">
-            <option value="Preferred Standard">Preferred Standard</option>
-            <option value="Standard">Standard</option>
-            <option value="Qualified">Qualified</option>
-            <option value="Recorded">Recorded</option>
-            <option value="Candidate">Candidate</option>
-            <option value="Incomplete">Incomplete</option>
-        </select>
+        <span>I want my search results to include these statuses</span>
+        <div class="radio indent" >
+            <label>
+                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="defaultView-accordion" value="Qualified">
+                Preferred Standard, Standard, Qualified
+            </label>
+        </div>
+        <div class="radio indent" >
+            <label>
+                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="defaultView-accordion" value="Recorded">
+                Preferred Standard, Standard, Qualified, Recorded
+            </label>
+        </div>
+        <div class="radio indent" >
+            <label>
+                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="defaultView-accordion" value="Candidate">
+                Preferred Standard, Standard, Qualified, Recorded, Candidate
+            </label>
+        </div>
+        <div class="radio indent" >
+            <label>
+                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="defaultView-accordion" value="Incomplete">
+                Preferred Standard, Standard, Qualified, Recorded, Candidate, Incomplete
+            </label>
+        </div>
     </div>
 
     <h3><i class="fa fa-bars"></i> Default Search Results View</h3>
