@@ -4,7 +4,7 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class ValueDomain3Test extends NlmCdeBaseTest {
+public class IntegerDatatypeTest extends NlmCdeBaseTest {
     @Test
     public void integerDatatype() {
         mustBeLoggedInAs(ninds_username, password);

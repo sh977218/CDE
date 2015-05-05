@@ -141,8 +141,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
 
     };       
 
-    $scope.classifyEntireSearch = function(oldClassification, newClassification) {  
-        
+    $scope.classifyEntireSearch = function(oldClassification, newClassification) {
         var settings = {
             resultPerPage: 1000000
             , searchTerm: ""

@@ -24,7 +24,20 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void stewardFacets() {
         goToCdeSearch();
+        textNotPresent("GRDR (75)");
+        textPresent("CCR (4");
+        findElement(By.id("li-blank-Recorded")).click();
         textPresent("GRDR (75)");
+        textPresent("NINDS (91");
+        findElement(By.id("li-checked-Qualified")).click();
+        textNotPresent("NINDS (9");
+        findElement(By.id("li-checked-Recorded")).click();
+        textNotPresent("GRDR (75)");
+        findElement(By.id("li-checked-Standard")).click();
+        textNotPresent("OHSU Knight");
+        waitAndClick(By.id("li-checked-Preferred Standard"));
+        textPresent("NINDS (91");
+        textPresent("All Statuses");
     }
 
     @Test

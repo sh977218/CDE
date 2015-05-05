@@ -140,7 +140,8 @@
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right" data-userloaded="loaded-{{user.userLoaded}}">
-                            <a ng-cloak ng-if="userHasMail" title="New messages" href="#/inbox"><i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
+                            <a ng-cloak ng-if="userHasMail" title="New messages" href="#/inbox">
+                                <i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
                             <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id"><a href="#/login" id="login_link" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a> </li>
                             <li dropdown class="login" ng-show="user._id" >
                                 <a dropdown-toggle class="dropdown-toggle" href="#" id="username_link" title="{{user.username}}" aria-label="{{user.username}}"><span>{{user.username | truncateLongUserName}}</span><span class="caret"></span></a>

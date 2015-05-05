@@ -1,4 +1,6 @@
-angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource) {
+angular.module('systemModule').controller('ListCtrl',
+    ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
+        function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource) {
     $scope.filterMode = true;
 
     $timeout(function(){
@@ -228,7 +230,6 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
         if (!userResource.user) return;
         $scope.lastQueryTimeStamp = timestamp;        
         $scope.accordionListStyle = "semi-transparent";
-        $scope.filter = Elastic.buildElasticQueryPre($scope);
         var settings = Elastic.buildElasticQuerySettings($scope);
         Elastic.buildElasticQuery(settings, function(query) {
             $scope.query = query;
@@ -265,7 +266,7 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
                 $scope.classifications = {elements: []};
                 
                 if (result.aggregations !== undefined && result.aggregations.flatClassification !== undefined) {
-                    $scope.aggregations.flatClassification = result.aggregations.flatClassification.buckets.map(function (c) {
+                    $scope.aggregations.flatClassification = result.aggregations.flatClassification.flatClassification.buckets.map(function (c) {
                         return {name: c.key.split(';').pop(), count: c.doc_count};
                     });
                 } else {
@@ -273,7 +274,7 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
                 }
                 
                 if (result.aggregations !== undefined && result.aggregations.flatClassificationAlt !== undefined) {
-                    $scope.aggregations.flatClassificationAlt = result.aggregations.flatClassificationAlt.buckets.map(function (c) {
+                    $scope.aggregations.flatClassificationAlt = result.aggregations.flatClassificationAlt.flatClassificationAlt.buckets.map(function (c) {
                         return {name: c.key.split(';').pop(), count: c.doc_count};
                     });
                 } else {
@@ -281,14 +282,14 @@ angular.module('systemModule').controller('ListCtrl', ['$scope', '$modal', 'Elas
                 }
                 
                 $scope.filterOutWorkingGroups($scope.aggregations);
-                OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.buckets, OrgHelpers.orgsDetailedInfo);
+                OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
              });
         });  
     };   
     
     $scope.filterOutWorkingGroups = function(aggregations) {
         this.setAggregations = function() {
-            aggregations.orgs.buckets = aggregations.orgs.buckets.filter(function(bucket) {
+            aggregations.orgs.buckets = aggregations.orgs.orgs.buckets.filter(function(bucket) {
                 return OrgHelpers.showWorkingGroup(bucket.key, userResource.user) || userResource.user.siteAdmin;
             });
             $scope.aggregations = aggregations;            

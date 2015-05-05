@@ -1,4 +1,4 @@
-angular.module('systemModule')
+angular.module('ElasticSearchResource')
     .factory('SearchSettings', function (localStorageService, $q, userResource) {
         var searchSettingsFactory = this;
         this.deferred = $q.defer();
@@ -33,6 +33,9 @@ angular.module('systemModule')
         };
         this.getPromise = function () {
             return searchSettingsFactory.deferred.promise;
+        };
+        this.getUserDefaultStatuses = function() {
+            return ['Standard', 'Preferred Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete'];
         };
         var searchSettings = localStorageService.get("SearchSettings");
         userResource.getPromise().then(function(user){

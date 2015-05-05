@@ -93,7 +93,7 @@ public abstract class CommentTest extends CommonTest {
         textPresent(censoredText);      
         
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
-        hangon(0.5);
+        hangon(1);
         findElement(By.id("incomingMessage")).click();        
 
         textPresent("Comment Approval");
@@ -158,6 +158,7 @@ public abstract class CommentTest extends CommonTest {
         logout();
 
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
+        hangon(1);
         findElement(By.id("incomingMessage")).click();
 
         textPresent("Comment Approval");

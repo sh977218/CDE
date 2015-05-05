@@ -320,7 +320,7 @@ public class NlmCdeBaseTest {
     public void closeAlert() {
         try {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            findElement(By.cssSelector(".alert .close")).click();
+            findElement(By.cssSelector("button.close")).click();
             driver.manage().timeouts()
                     .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         } catch (Exception e) {
@@ -339,7 +339,6 @@ public class NlmCdeBaseTest {
                     "Change note for change number 1");
         }
         // assumption is that text is sent before JS can load. So wait 1 sec.
-        hangon(1);
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("has already been used");
         waitAndClick(By.id("confirmNewVersion"));

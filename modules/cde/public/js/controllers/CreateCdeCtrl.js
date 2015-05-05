@@ -1,4 +1,6 @@
-angular.module('cdeModule').controller('CreateCdeCtrl', ['$scope', '$window', '$timeout', '$modal', 'DataElement', 'Elastic', 'userResource', function($scope, $window, $timeout, $modal, DataElement, Elastic, userResource) {
+angular.module('cdeModule').controller('CreateCdeCtrl',
+    ['$scope', '$window', '$timeout', '$modal', 'DataElement', 'Elastic', 'userResource',
+        function($scope, $window, $timeout, $modal, DataElement, Elastic, userResource) {
     $scope.openCdeInNewTab = true;
     $scope.currentPage = 1;
     $scope.totalItems = 0;
@@ -86,7 +88,6 @@ angular.module('cdeModule').controller('CreateCdeCtrl', ['$scope', '$window', '$
                 org: $scope.selectedOrgAlt
                 , elements: $scope.selectedElementsAlt
             }];
-            $scope.filter = Elastic.buildElasticQueryPre($scope);
             var settings = Elastic.buildElasticQuerySettings($scope);
             settings.searchTerm = $scope.elt.designation;
             Elastic.buildElasticQuery(settings, function(query) {
