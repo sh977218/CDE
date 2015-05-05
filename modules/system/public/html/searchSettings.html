@@ -48,41 +48,48 @@
         </div>
     </div>
 
-    <h2><i class="fa fa-table"></i> Table View Fields</h2>
+    <h3><i class="fa fa-table"></i> Table View Fields</h3>
     <span>I want my <i class="fa fa-table"></i> Table View to include these fields </span>
     <div class="form-group">
-        <div class="checkbox indent">
-            <label><input ng-disabled="true" id="name" type="checkbox" ng-model="searchSettings.tableViewFields.cde.name"> Name</label>
-        </div>
-        <div class="checkbox indent">
-            <label><input id="naming" type="checkbox" ng-model="searchSettings.tableViewFields.cde.naming"> Other Names</label>
-        </div>
-        <div class="checkbox indent">
-            <label><input id="permissibleValues" type="checkbox" ng-model="searchSettings.tableViewFields.cde.permissibleValues"> Permissible Values</label>
-        </div>
-        <div class="checkbox indent">
-            <label><input id="uom" type="checkbox" ng-model="searchSettings.tableViewFields.cde.uom"> Unit of Measure</label>
-        </div>
-        <div class="checkbox indent">
-            <label><input id="stewardOrg" type="checkbox" ng-model="searchSettings.tableViewFields.cde.stewardOrg"> Steward</label>
-        </div>
-        <div class="checkbox indent">
-            <label><input id="usedBy" type="checkbox" ng-model="searchSettings.tableViewFields.cde.usedBy"> Used by Organizations</label>
-        </div>
-        <div class="checkbox indent">
-            <label><input id="registrationStatus" type="checkbox" ng-model="searchSettings.tableViewFields.cde.registrationStatus"> Registration Status</label>
-        </div>
-        <div class="checkbox indent">
-            <label><input id="administrativeStatus" type="checkbox" ng-model="searchSettings.tableViewFields.cde.administrativeStatus"> Admin Status</label>
-        </div>
-        <div class="checkbox indent">
-            <label><input id="ids" type="checkbox" ng-model="searchSettings.tableViewFields.cde.ids"> Identifiers</label>
-        </div>
-        <div class="checkbox indent">
-            <label><input id="source" type="checkbox" ng-model="searchSettings.tableViewFields.cde.source"> Source</label>
-        </div>
-        <div class="checkbox indent">
-            <label><input id="updated" type="checkbox" ng-model="searchSettings.tableViewFields.cde.updated"> Updated</label>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="checkbox indent">
+                <label><input ng-disabled="true" id="name" type="checkbox" ng-model="searchSettings.tableViewFields.cde.name"> Name</label>
+                </div>
+                <div class="checkbox indent">
+                <label><input id="naming" type="checkbox" ng-model="searchSettings.tableViewFields.cde.naming"> Other Names</label>
+                </div>
+                <div class="checkbox indent">
+                <label><input id="permissibleValues" type="checkbox" ng-model="searchSettings.tableViewFields.cde.permissibleValues"> Permissible Values</label>
+                </div>
+                <div class="checkbox indent">
+                <label><input id="uom" type="checkbox" ng-model="searchSettings.tableViewFields.cde.uom"> Unit of Measure</label>
+                </div>
+                <div class="checkbox indent">
+                <label><input id="stewardOrg" type="checkbox" ng-model="searchSettings.tableViewFields.cde.stewardOrg"> Steward</label>
+                </div>
+                <div class="checkbox indent">
+                <label><input id="usedBy" type="checkbox" ng-model="searchSettings.tableViewFields.cde.usedBy"> Used by Organizations</label>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div class="checkbox indent">
+                    <label><input id="registrationStatus" type="checkbox" ng-model="searchSettings.tableViewFields.cde.registrationStatus"> Registration Status</label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="administrativeStatus" type="checkbox" ng-model="searchSettings.tableViewFields.cde.administrativeStatus"> Admin Status</label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="ids" type="checkbox" ng-model="searchSettings.tableViewFields.cde.ids"> Identifiers</label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="source" type="checkbox" ng-model="searchSettings.tableViewFields.cde.source"> Source</label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="updated" type="checkbox" ng-model="searchSettings.tableViewFields.cde.updated"> Updated</label>
+                </div>
+            </div>
         </div>
     </div>
     <button id="saveSettings" type="button" class="btn btn-success pull-right" ng-click="saveSettings()"><i class="fa fa-check"></i> Save</button>

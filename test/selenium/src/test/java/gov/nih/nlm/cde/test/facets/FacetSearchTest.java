@@ -65,37 +65,62 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-checked-Disease")).click();
     }
     
-    @Test
-    public void facets() {
-        goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("Study");
-        findElement(By.id("search.submit")).click();
-        textNotPresent("Ethnic Group");
-        findElement(By.linkText("10"));
-        findElement(By.id("li-checked-Qualified")).click();
-        hangon(1);
-        findElement(By.id("li-checked-Standard")).click();
-        textNotPresent("Ethnic Group Category Text");
+//    @Test
+//    public void facets() {
+//        goToCdeSearch();
+//        findElement(By.name("ftsearch")).sendKeys("Study");
+//        findElement(By.id("search.submit")).click();
+//        textNotPresent("Ethnic Group");
+//        findElement(By.linkText("10"));
+//        findElement(By.id("li-checked-Qualified")).click();
+//        hangon(1);
+//        findElement(By.id("li-checked-Standard")).click();
+//        textNotPresent("Ethnic Group Category Text");
+//
+//        findElement(By.id("li-blank-Candidate")).click();
+//        textPresent("Study Specimen Identification Source Name");
+//
+//        findElement(By.id("li-checked-Preferred Standard")).click();
+//        findElement(By.id("li-checked-Candidate")).click();
+//
+//        textPresent("| All Statuses");
+//        findElement(By.linkText("10"));
+//
+//        textNotPresent("Study Specimen Identification Source Name");
+//
+//        findElement(By.id("li-blank-Candidate")).click();
+//        textPresent("Stress Specimen Cell Examined Total Count");
+//
+//        findElement(By.id("li-blank-caBIG")).click();
+//        textNotPresent("Stress Specimen Cell Examined Total Count");
+//        textPresent("Study Publication Identification Digital Object Identifier Text");
+//        findElement(By.id("li-checked-caBIG")).click();
+//        textPresent("Stress Specimen Cell Examined Total Count");
+//    }
 
-        findElement(By.id("li-blank-Candidate")).click();
-        textPresent("Study Specimen Identification Source Name");
+    @Test
+    public void regStatusFacets() {
+        goToCdeSearch();
+        findElement(By.id("li-blank-caBIG")).click();
+
+        findElement(By.id("li-blank-Preferred Standard")).click();
+        textPresent("Patient Visual Change Chief Complaint Indicator");
+        textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
 
         findElement(By.id("li-checked-Preferred Standard")).click();
-        findElement(By.id("li-checked-Candidate")).click();
+        findElement(By.id("li-blank-Standard")).click();
+        textPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
 
-        textPresent("| All Statuses");
-        findElement(By.linkText("10"));
+        findElement(By.id("li-checked-Standard")).click();
+        findElement(By.id("li-blank-Qualified")).click();
+        textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
+        textPresent("Communication Contact Email Address java.lang.String");
 
-        textNotPresent("Study Specimen Identification Source Name");
-
+        findElement(By.id("li-checked-Qualified")).click();
         findElement(By.id("li-blank-Candidate")).click();
-        textPresent("Stress Specimen Cell Examined Total Count");
-
-        findElement(By.id("li-blank-caBIG")).click();
-        textNotPresent("Stress Specimen Cell Examined Total Count");
-        textPresent("Study Publication Identification Digital Object Identifier Text");
-        findElement(By.id("li-checked-caBIG")).click();
-        textPresent("Stress Specimen Cell Examined Total Count");
+        textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
+        textNotPresent("Communication Contact Email Address java.lang.String");
+        textPresent("First Follow-up Visit Date");
     }
     
     @Test
@@ -107,7 +132,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         hangon(1);
         findElement(By.linkText("Next")).click();
         textPresent("OPEN to Rave Standard ");
-        findElement(By.cssSelector("i.fa-check-square-o"));
+        //findElement(By.cssSelector("i.fa-check-square-o"));
         
         scrollToTop();
         

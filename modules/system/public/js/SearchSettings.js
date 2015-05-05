@@ -50,6 +50,7 @@ angular.module('ElasticSearchResource')
             if (user === "Not logged in.") searchSettingsFactory.deferred.resolve(searchSettings);
             else {
                 if (!user.searchSettings) user.searchSettings = searchSettingsFactory.getDefault();
+                searchSettings = user.searchSettings;
                 searchSettingsFactory.deferred.resolve(user.searchSettings);
             }
         });
