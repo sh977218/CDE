@@ -419,6 +419,9 @@ button#selectDefault {
     margin-left: 10px;
 }
 
+.indent {
+    margin-left: 20px;
+}
 
 @media (min-width: 0px) {
     #quickSearchForm {
