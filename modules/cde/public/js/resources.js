@@ -68,6 +68,7 @@ angular.module('resourcesCde', ['ngResource'])
         link: function(scope, ele, attrs, ctrl) {
             var url;
             scope.$watch(attrs.ngModel, function() {
+                var lastVersion = scope.elt.version;
                 if (scope.elt.formElements) {
                     url = '/formbytinyid/' + scope.elt.tinyId + "/" + scope.elt.version;
                 } else {
@@ -77,8 +78,10 @@ angular.module('resourcesCde', ['ngResource'])
                     method: 'GET',
                     url: url
                 }).success(function(data, status, headers, cfg) {
+                    if (lastVersion !== scope.elt.version) return;
                     ctrl.$setValidity('unique', !data);
                 }).error(function(data, status, headers, cfg) {
+                    if (lastVersion !== scope.elt.version) return;
                     ctrl.$setValidity('unique', false);
                 });
             });
