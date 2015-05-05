@@ -32,7 +32,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-checked-Qualified")).click();
         textNotPresent("NINDS (9");
         findElement(By.id("li-checked-Recorded")).click();
+        textNotPresent("GRDR (75)");
         findElement(By.id("li-checked-Standard")).click();
+        textNotPresent("OHSU Knight");
         waitAndClick(By.id("li-checked-Preferred Standard"));
         textPresent("NINDS (91");
         textPresent("All Statuses");
