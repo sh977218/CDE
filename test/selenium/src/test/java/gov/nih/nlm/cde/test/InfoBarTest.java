@@ -39,7 +39,7 @@ public class InfoBarTest extends NlmCdeBaseTest {
         textPresent( "Standard, Recorded" );
         scrollToTop();
         findElement(By.id("resetSearch")).click();
-        textPresent( "results for All Terms | All Classifications | Preferred Standard, Standard, Qualified" );
+        textPresent( "results for All Terms | All Classifications | All Statuses" );
     }
     
 }

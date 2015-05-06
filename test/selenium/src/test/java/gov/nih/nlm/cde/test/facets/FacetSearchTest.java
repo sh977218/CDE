@@ -24,6 +24,14 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void stewardFacets() {
         goToCdeSearch();
+        mustBeLoggedOut();
+        setLowStatusesVisible();
+        findElement(By.id("li-blank-Preferred Standard")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Standard")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Qualified")).click();
+
         textNotPresent("GRDR (75)");
         textPresent("CCR (4");
         findElement(By.id("li-blank-Recorded")).click();
@@ -43,7 +51,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         textPresent("Qualified (94");
         findElement(By.id("li-blank-caBIG")).click();
-        findElement(By.cssSelector("i.fa-check-square-o"));
+        findElement(By.cssSelector("i.fa-square-o"));
         textPresent("Qualified (1");
     }
 
@@ -107,15 +115,18 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textPresent("Patient Visual Change Chief Complaint Indicator");
         textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
 
+        scrollToTop();
         findElement(By.id("li-checked-Preferred Standard")).click();
         findElement(By.id("li-blank-Standard")).click();
         textPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
 
+        scrollToTop();
         findElement(By.id("li-checked-Standard")).click();
         findElement(By.id("li-blank-Qualified")).click();
         textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
         textPresent("Communication Contact Email Address java.lang.String");
 
+        scrollToTop();
         findElement(By.id("li-checked-Qualified")).click();
         findElement(By.id("li-blank-Candidate")).click();
         textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
@@ -155,7 +166,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         waitForESUpdate();
         goToCdeSearch();  
         textPresent("Preferred Standard");
-        findElement(By.id("li-checked-Preferred Standard")).click();
+        findElement(By.id("li-blank-Standard")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Qualified")).click();
+        hangon(1);
         textNotPresent("Noncompliant Reason Text");
     }
     

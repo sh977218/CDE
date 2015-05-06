@@ -94,7 +94,7 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.cache.put($scope.getCacheName("registrationStatuses"), $scope.registrationStatuses);
         $scope.reload();
     }; 
-
+ 
     $scope.resetSearch = function() {
         delete $scope.aggregations;
         delete $scope.filter;
@@ -107,9 +107,9 @@ angular.module('systemModule').controller('ListCtrl',
 
 
         $scope.altClassificationFilterMode = 0;
-        //for (var i in $scope.registrationStatuses) {
-        //    $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
-        //}
+        for (var i in $scope.registrationStatuses) {
+            $scope.registrationStatuses[i].selected  = false;
+        }
         $scope.cache.remove($scope.getCacheName("selectedOrg"));
         $scope.cache.remove($scope.getCacheName("selectedOrgAlt"));
         $scope.cache.remove($scope.getCacheName("selectedElements"));  
