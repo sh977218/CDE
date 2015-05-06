@@ -80,31 +80,48 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         mustBeLoggedOut();
         setLowStatusesVisible();
         findElement(By.id("li-blank-caBIG")).click();
+        findElement(By.id("li-blank-ASCO")).click();
+        textPresent("Agent Physical Appearance Type");
+        textPresent("First Follow-up Visit Date");
+        textPresent("Heart MUGA Test Date");
+        textPresent("Axillary Surgery Dissection Date");
+        textPresent("Patient Name");
+        textPresent("Person Gender Text Type");
+        textPresent("Person Birth Date");
+        textPresent("Patient Ethnic Group Category");
 
-        findElement(By.id("li-blank-Preferred Standard")).click();
-        textPresent("Patient Visual Change Chief Complaint Indicator");
-        textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
-
-        scrollToTop();
-        findElement(By.id("li-checked-Preferred Standard")).click();
-        hangon(1);
         findElement(By.id("li-blank-Standard")).click();
-        textPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
+        textNotPresent("Agent Physical Appearance Type");
+        textNotPresent("First Follow-up Visit Date");
+        textNotPresent("Heart MUGA Test Date");
+        textPresent("Person Gender Text Type");
+        textPresent("Person Birth Date");
+        textNotPresent("Patient Ethnic Group Category");
 
         scrollToTop();
         findElement(By.id("li-checked-Standard")).click();
         hangon(1);
         findElement(By.id("li-blank-Qualified")).click();
-        textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
-        textPresent("Organism External Database Accession Number java.lang.String");
+        textNotPresent("Agent Physical Appearance Type");
+        textNotPresent("First Follow-up Visit Date");
+        textPresent("Heart MUGA Test Date");
+        textPresent("Patient Name");
+        textNotPresent("Person Gender Text Type");
+        textNotPresent("Person Birth Date");
+        textPresent("Patient Ethnic Group Category");
 
         scrollToTop();
         findElement(By.id("li-checked-Qualified")).click();
         hangon(1);
         findElement(By.id("li-blank-Candidate")).click();
-        textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
-        textNotPresent("Organism External Database Accession Number java.lang.String");
+        textPresent("Agent Physical Appearance Type");
         textPresent("First Follow-up Visit Date");
+        textNotPresent("Heart MUGA Test Date");
+        textNotPresent("Axillary Surgery Dissection Date");
+        textNotPresent("Patient Name");
+        textNotPresent("Person Gender Text Type");
+        textNotPresent("Person Birth Date");
+        textNotPresent("Patient Ethnic Group Category");
     }
     
     @Test
