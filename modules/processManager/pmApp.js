@@ -30,7 +30,7 @@ var getTokens = function() {
         var url = "http://" + server.hostname;
         if (server.hostname === 'localhost') url += ":" + server.port;
         url += "/statusToken"
-        request(url, function(error, response, body) {
+        request({uri: url, method: "GET", strictSSL: false}, function(error, response, body) {
             server.token = body;
         });
     });
@@ -130,7 +130,7 @@ setInterval(function() {
 // get Token at regular interval
 setInterval(function() {
     try {
-    getTokens();
+        getTokens();
     } catch (e) {
         console.log("error retrieving status. " + e);
     }
