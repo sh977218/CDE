@@ -50,11 +50,7 @@ exports.init = function(app) {
 
     var token = mongo_data_system.generateTinyId();
     setInterval(function() {
-        try {
-            token = mongo_data_system.generateTinyId();
-        } catch (e) {
-            console.log("error retrieving status. " + e);
-        }
+        token = mongo_data_system.generateTinyId();
     }, (config.pm.tokenInterval || 5) * 60 * 1000);
 
     app.post('/deploy', multer(), function(req, res) {
