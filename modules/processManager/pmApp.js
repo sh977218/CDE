@@ -18,21 +18,9 @@ var getHosts = function() {
             allHosts = JSON.parse(body).map(function (server) {
                 return {hostname: server.hostname, port: server.port};
             });
-            getTokens();
         } catch (e) {
             console.log("error retrieving status. " + e);
         }
-    });
-};
-
-var getTokens = function() {
-    allHosts.forEach(function(server){
-        var url = "http://" + server.hostname;
-        if (server.hostname === 'localhost') url += ":" + server.port;
-        url += "/statusToken"
-        request({uri: url, method: "GET", strictSSL: false}, function(error, response, body) {
-            server.token = body;
-        });
     });
 };
 
@@ -55,16 +43,21 @@ app.set('port', config.pm.port || 3081);
 app.use(bodyParser.json());
 
 var verifyToken = function(req) {
-    var result = false;
     allHosts.forEach(function(host) {
         if (host.hostname === req.body.requester.host
-            && host.port == req.body.requester.port
-            && host.token === req.body.token) {
-            result = true;
+            && host.port == req.body.requester.port) {
+
+            var url = "http://" + host.hostname;
+            if (host.hostname === 'localhost') url += ":" + host.port;
+            url += "/statusToken";
+            request({uri: url, method: "GET", strictSSL: false}, function(error, response, body) {
+                return body === req.body.token;
+            });
+
         }
     });
-    return result;
-}
+    return false;
+};
 
 app.post('/stop', function(req, res) {
     if (verifyToken(req)) {
@@ -126,12 +119,3 @@ process.on('uncaughtException', function (err) {
 setInterval(function() {
     getHosts();
 }, (config.pm.serverStatusInterval || 6 * 60) * 60 * 1000);
-
-// get Token at regular interval
-setInterval(function() {
-    try {
-        getTokens();
-    } catch (e) {
-        console.log("error retrieving status. " + e);
-    }
-}, (config.pm.tokenInterval || 5) * 60 * 1000);

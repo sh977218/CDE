@@ -48,7 +48,15 @@ exports.init = function(app) {
         res.render(req.params.template, req.params.module, {config: viewConfig, module: req.params.module});
     });
 
-    var token;
+    var token = mongo_data_system.generateTinyId();
+    setInterval(function() {
+        try {
+            token = mongo_data_system.generateTinyId();
+        } catch (e) {
+            console.log("error retrieving status. " + e);
+        }
+    }, (config.pm.tokenInterval || 5) * 60 * 1000);
+
     app.post('/deploy', multer(), function(req, res) {
         if (!token) {
             return res.status(500).send("No valid token");
@@ -66,7 +74,6 @@ exports.init = function(app) {
     });
 
     app.get('/statusToken', function(req, res) {
-        token = mongo_data_system.generateTinyId();
         res.send(token);
     });
 
