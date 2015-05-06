@@ -92,13 +92,13 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-checked-Standard")).click();
         findElement(By.id("li-blank-Qualified")).click();
         textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
-        textPresent("Common Toxicity Criteria Adverse Event Short Name Type");
+        textPresent("Local Excision Colorectal Lateral Surgical Margin Identifier java.lang.Long");
 
         scrollToTop();
         findElement(By.id("li-checked-Qualified")).click();
         findElement(By.id("li-blank-Candidate")).click();
         textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
-        textNotPresent("Common Toxicity Criteria Adverse Event Short Name Type");
+        textNotPresent("Local Excision Colorectal Lateral Surgical Margin Identifier java.lang.Long");
         textPresent("First Follow-up Visit Date");
     }
     
