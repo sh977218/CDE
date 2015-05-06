@@ -25,10 +25,6 @@ public class ResetSearchStatusTest extends NlmCdeBaseTest {
         setLowStatusesVisible();
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         textPresent("10");
-//        findElement(By.id("li-checked-Standard")).click();
-//        hangon(1);
-//        findElement(By.id("li-checked-Qualified")).click();
-//        hangon(2);
         findElement(By.id("li-blank-Candidate")).click();
         hangon(2);
         findElement(By.id("li-blank-Recorded")).click();
@@ -40,7 +36,6 @@ public class ResetSearchStatusTest extends NlmCdeBaseTest {
         Assert.assertTrue(linkList.size() > 10);
         scrollToTop();
         findElement(By.id("resetSearch")).click();
-        //findElement(By.id("li-checked-Standard"));
         Assert.assertTrue(textPresent("PBTC ("));
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(linkList.size() > 10);

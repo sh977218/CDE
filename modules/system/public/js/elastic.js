@@ -83,11 +83,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
             queryStuff.query =
             {
                 bool: {
-                    must_not: [/*{
-                        term: {
-                            "registrationState.registrationStatus": "Retired"
-                        }
-                    },*/{
+                    must_not: [{
                         term: {
                             "isFork": "true"
                         }
@@ -101,9 +97,6 @@ angular.module('ElasticSearchResource', ['ngResource'])
                     term: {"registrationState.registrationStatus": status}
                 });
             });
-
-            console.log(queryStuff.query.bool.must_not);
-
 
             queryStuff.query.bool.must = [];
 

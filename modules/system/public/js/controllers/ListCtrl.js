@@ -32,9 +32,6 @@ angular.module('systemModule').controller('ListCtrl',
     }
     if (!$scope.registrationStatuses) {
         $scope.registrationStatuses = JSON.parse(JSON.stringify(regStatusShared.statusList));
-        //for (var i in $scope.registrationStatuses) {
-        //    $scope.registrationStatuses[i].selected  = ['Standard', 'Preferred Standard', 'Qualified'].indexOf($scope.registrationStatuses[i].name) > -1;
-        //}
     }   
 
     if ($scope.cache.get($scope.getCacheName("ftsearch"))) {
@@ -94,7 +91,7 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.cache.put($scope.getCacheName("registrationStatuses"), $scope.registrationStatuses);
         $scope.reload();
     }; 
- 
+
     $scope.resetSearch = function() {
         delete $scope.aggregations;
         delete $scope.filter;
