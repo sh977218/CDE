@@ -7,7 +7,7 @@ public class ViewingHistory extends NlmCdeBaseTest {
 
     private void checkUserHistory(String cdeName) {
         goToCdeByName(cdeName);
-        hangon(1);
+        hangon(2);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         textPresent("User Profile");

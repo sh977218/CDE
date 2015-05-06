@@ -87,17 +87,20 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
         scrollToTop();
         findElement(By.id("li-checked-Preferred Standard")).click();
+        hangon(1);
         findElement(By.id("li-blank-Standard")).click();
         textPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
 
         scrollToTop();
         findElement(By.id("li-checked-Standard")).click();
+        hangon(1);
         findElement(By.id("li-blank-Qualified")).click();
         textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
         textPresent("Local Excision Colorectal Lateral Surgical Margin Identifier java.lang.Long");
 
         scrollToTop();
         findElement(By.id("li-checked-Qualified")).click();
+        hangon(1);
         findElement(By.id("li-blank-Candidate")).click();
         textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
         textNotPresent("Local Excision Colorectal Lateral Surgical Margin Identifier java.lang.Long");

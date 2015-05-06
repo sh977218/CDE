@@ -30,8 +30,8 @@ public class InfoBarTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Standard")).click();
         hangon(1);
         findElement(By.id("li-blank-Qualified")).click();
-
         textPresent("| Preferred Standard, Standard, Qualified");
+        hangon(1);
         findElement(By.id("li-checked-Qualified")).click();
         textNotPresent(", Qualified");
         textPresent(", Standard");
