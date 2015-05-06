@@ -72,43 +72,11 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textPresent("Epidemiology (11");
         findElement(By.id("li-checked-Disease")).click();
     }
-    
-//    @Test
-//    public void facets() {
-//        goToCdeSearch();
-//        findElement(By.name("ftsearch")).sendKeys("Study");
-//        findElement(By.id("search.submit")).click();
-//        textNotPresent("Ethnic Group");
-//        findElement(By.linkText("10"));
-//        findElement(By.id("li-checked-Qualified")).click();
-//        hangon(1);
-//        findElement(By.id("li-checked-Standard")).click();
-//        textNotPresent("Ethnic Group Category Text");
-//
-//        findElement(By.id("li-blank-Candidate")).click();
-//        textPresent("Study Specimen Identification Source Name");
-//
-//        findElement(By.id("li-checked-Preferred Standard")).click();
-//        findElement(By.id("li-checked-Candidate")).click();
-//
-//        textPresent("| All Statuses");
-//        findElement(By.linkText("10"));
-//
-//        textNotPresent("Study Specimen Identification Source Name");
-//
-//        findElement(By.id("li-blank-Candidate")).click();
-//        textPresent("Stress Specimen Cell Examined Total Count");
-//
-//        findElement(By.id("li-blank-caBIG")).click();
-//        textNotPresent("Stress Specimen Cell Examined Total Count");
-//        textPresent("Study Publication Identification Digital Object Identifier Text");
-//        findElement(By.id("li-checked-caBIG")).click();
-//        textPresent("Stress Specimen Cell Examined Total Count");
-//    }
 
     @Test
     public void regStatusFacets() {
-        goToCdeSearch();
+        mustBeLoggedOut();
+        setLowStatusesVisible();
         findElement(By.id("li-blank-caBIG")).click();
 
         findElement(By.id("li-blank-Preferred Standard")).click();
@@ -124,13 +92,13 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-checked-Standard")).click();
         findElement(By.id("li-blank-Qualified")).click();
         textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
-        textPresent("Communication Contact Email Address java.lang.String");
+        textPresent("Common Toxicity Criteria Adverse Event Short Name Type");
 
         scrollToTop();
         findElement(By.id("li-checked-Qualified")).click();
         findElement(By.id("li-blank-Candidate")).click();
         textNotPresent("Gene Versioned Genbank Accession Number Genomic Identifier");
-        textNotPresent("Communication Contact Email Address java.lang.String");
+        textNotPresent("Common Toxicity Criteria Adverse Event Short Name Type");
         textPresent("First Follow-up Visit Date");
     }
     
