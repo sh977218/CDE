@@ -13,7 +13,7 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
 
     var groupsL2 = page.evaluate(function() {
         var results = [];
-        var links = document.querySelectorAll(".fieldset-wrapper a");
+        var links = document.querySelectorAll("fieldset:first-of-type a");
         for (var i = 0; i<links.length; i++) {
             results.push(links[i].innerText);
         }
