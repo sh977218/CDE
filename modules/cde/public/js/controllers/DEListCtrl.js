@@ -95,11 +95,6 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 title: "Status",
                 content: "Restrict search to one or more statuses here. "
             }
-            , {
-                element: "#status-text-Recorded",
-                title: "Recorded Status",
-                content: "By default, CDEs in Recorded status are hidden. You can enable this checkbox to make them appear. "
-            }
         ];
 
         $scope.$on("$destroy", function handler() {

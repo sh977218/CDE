@@ -85,7 +85,15 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
     
     @Test
     public void saveSearchState() {
+        mustBeLoggedOut();
+        setLowStatusesVisible();
         goToCdeSearch();
+        findElement(By.id("li-blank-Preferred Standard")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Standard")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Qualified")).click();
+
         findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
         findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
         hangon(1);

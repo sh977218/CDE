@@ -11,8 +11,9 @@ public class FormFacetsTest extends BaseFormTest {
         searchForm("FormSearchTest");
         textPresent("Skin Cancer Patient");
         textPresent("Traumatic Brain Injury - Adverse Events");
+        findElement(By.id("li-blank-Qualified")).click();
         textNotPresent("Vision Deficit Report");
-        textPresent("| Preferred Standard, Standard, Qualified");
+        textPresent("| Qualified");
         findElement(By.id("li-blank-Recorded")).click();
         textPresent("Vision Deficit Report");
         findElement(By.id("li-checked-Recorded")).click();

@@ -70,7 +70,6 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.id("resetSearch")).click();
         Assert.assertTrue(textPresent("Qualified (94"));
         findElement(By.id("li-blank-caBIG")).click();
-        findElement(By.cssSelector("i.fa-check-square-o"));
         Assert.assertTrue(textPresent("Qualified (1"));
         findElement(By.id("resetSearch")).click();
 
