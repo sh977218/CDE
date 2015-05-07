@@ -11,15 +11,20 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
         phantom.exit();
     }
 
-    var groupsL2 = page.evaluate(function() {
-        var results = [];
-        var links = document.querySelectorAll("fieldset:first-of-type a");
-        for (var i = 0; i<links.length; i++) {
-            results.push(links[i].innerText);
+    var findChildrenLinks = function(linksSelector) {
+        var sel = linksSelector;
+        return function () {
+            var results = [];
+            var links = document.querySelectorAll(sel);
+            for (var i = 0; i < links.length; i++) {
+                results.push({name: links[i].innerText, url: links[i].href});
+            }
+            return results;
         }
-        return results;
-    });
-    console.log(groupsL2.join("\n"));
+    };
+
+    var groupsL2 = page.evaluate(findChildrenLinks("fieldset:nth-of-type(1) a"));
+    console.log(groupsL2.map(function(e) {return e.name+":"+e.url}).join("\n"));
 
     phantom.exit();
 });
