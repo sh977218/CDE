@@ -45,10 +45,14 @@ angular.module('ElasticSearchResource')
         };
         var searchSettings = localStorageService.get("SearchSettings");
         userResource.getPromise().then(function(user){
-            if (user === "Not logged in.") searchSettingsFactory.deferred.resolve(searchSettings);
+            if (user === "Not logged in.") {
+                if (!searchSettings.lowestRegistrationStatus) searchSettings.lowestRegistrationStatus = "Qualified";
+                searchSettingsFactory.deferred.resolve(searchSettings);
+            }
             else {
                 if (!user.searchSettings) user.searchSettings = searchSettingsFactory.getDefault();
                 searchSettings = user.searchSettings;
+                if (!user.searchSettings.lowestRegistrationStatus) user.searchSettings.lowestRegistrationStatus = "Qualified";
                 searchSettingsFactory.deferred.resolve(user.searchSettings);
             }
         });
