@@ -48,25 +48,33 @@ exports.init = function(app) {
         res.render(req.params.template, req.params.module, {config: viewConfig, module: req.params.module});
     });
 
-    var token;
+    var token = mongo_data_system.generateTinyId();
+    setInterval(function() {
+        token = mongo_data_system.generateTinyId();
+    }, (config.pm.tokenInterval || 5) * 60 * 1000);
+
     app.post('/deploy', multer(), function(req, res) {
-        if (!token) {
-            return res.status(500).send("No valid token");
-        }
-        request.post({url: 'http://' + req.body.hostname + ':' + req.body.pmPort + '/' + "deploy",
-            formData: {
-                token: token
-                , "requester_host": config.hostname
-                , "requester_port": config.port
-                , deployFile: fs.createReadStream(req.files.deployFile.path)
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            if (!token) {
+                return res.status(500).send("No valid token");
             }
-        }).on('response', function(response) {
-            res.status(response.statusCode).send();
-        });
+            request.post({
+                url: 'http://' + req.body.hostname + ':' + req.body.pmPort + '/' + "deploy",
+                formData: {
+                    token: token
+                    , "requester_host": config.hostname
+                    , "requester_port": config.port
+                    , deployFile: fs.createReadStream(req.files.deployFile.path)
+                }
+            }).on('response', function (response) {
+                res.status(response.statusCode).send();
+            });
+        } else {
+            res.status(401).send();
+        }
     });
 
     app.get('/statusToken', function(req, res) {
-        token = mongo_data_system.generateTinyId();
         res.send(token);
     });
 
