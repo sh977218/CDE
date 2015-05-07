@@ -54,19 +54,24 @@ exports.init = function(app) {
     }, (config.pm.tokenInterval || 5) * 60 * 1000);
 
     app.post('/deploy', multer(), function(req, res) {
-        if (!token) {
-            return res.status(500).send("No valid token");
-        }
-        request.post({url: 'http://' + req.body.hostname + ':' + req.body.pmPort + '/' + "deploy",
-            formData: {
-                token: token
-                , "requester_host": config.hostname
-                , "requester_port": config.port
-                , deployFile: fs.createReadStream(req.files.deployFile.path)
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            if (!token) {
+                return res.status(500).send("No valid token");
             }
-        }).on('response', function(response) {
-            res.status(response.statusCode).send();
-        });
+            request.post({
+                url: 'http://' + req.body.hostname + ':' + req.body.pmPort + '/' + "deploy",
+                formData: {
+                    token: token
+                    , "requester_host": config.hostname
+                    , "requester_port": config.port
+                    , deployFile: fs.createReadStream(req.files.deployFile.path)
+                }
+            }).on('response', function (response) {
+                res.status(response.statusCode).send();
+            });
+        } else {
+            res.status(401).send();
+        }
     });
 
     app.get('/statusToken', function(req, res) {
