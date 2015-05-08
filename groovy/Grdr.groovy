@@ -132,7 +132,7 @@ def DBObject ParseRow(XSSFRow row, Map xlsMap) {
     newDE.put("stewardOrg",stewardOrg);  
         
     BasicDBObject registrationState = new BasicDBObject();
-    registrationState.put("registrationStatus", "Recorded");
+    registrationState.put("registrationStatus", "Qualified");
     newDE.put("registrationState", registrationState);        
 
     def vd = new BasicDBObject();
