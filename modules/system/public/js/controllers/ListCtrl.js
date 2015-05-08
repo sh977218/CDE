@@ -99,8 +99,8 @@ angular.module('systemModule').controller('ListCtrl',
 
         delete $scope.classificationFilters[0].org;
         delete $scope.classificationFilters[1].org;
-        delete $scope.classificationFilters[0].elements;
-        delete $scope.classificationFilters[1].elements;
+        $scope.classificationFilters[0].elements = [];
+        $scope.classificationFilters[1].elements = [];
 
 
         $scope.altClassificationFilterMode = 0;
