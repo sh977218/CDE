@@ -4,6 +4,12 @@ body {
     background-color:#fff;
 }
 
+#homeNihCdeLogo {width: 300px;}
+
+.homeDescriptionLink{
+    color: #0F4E9D;
+}
+
 .jumbotron {
     background-color: #95b7da;
 }
