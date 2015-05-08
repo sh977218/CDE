@@ -1,9 +1,9 @@
 var webpage = require('webpage')
     , system = require('system')
-    , mongo_cde = require('../modules/cde/node-js/mongo-cde')
-    , config = require('config')
-    , classificationShared = require('../modules/system/shared/classificationShared')
-    , mongo_data_system = require('../modules/system/node-js/mongo-data')
+    //, mongo_cde = require('../../modules/cde/node-js/mongo-cde')
+    //, config = require('config')
+    //, classificationShared = require('../modules/system/shared/classificationShared')
+    //, mongo_data_system = require('../../modules/system/node-js/mongo-data')
     ;
 
 var page = webpage.create();
@@ -30,7 +30,8 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
     var cdes = [{}];
 
     var processCde = function(cde){
-        mongo_cde.byOtherId("", "", )
+        //mongo_cde.byOtherId("", "", )
+        console.log(cde.moduleGroup+" > "+cde.module + " > " + cde.id +"\n\n");
     };
 
     var moduleGroups = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
