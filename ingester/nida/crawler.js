@@ -1,5 +1,10 @@
 var webpage = require('webpage')
-    , system = require('system');
+    , system = require('system')
+    , mongo_cde = require('../modules/cde/node-js/mongo-cde')
+    , config = require('config')
+    , classificationShared = require('../modules/system/shared/classificationShared')
+    , mongo_data_system = require('../modules/system/node-js/mongo-data')
+    ;
 
 var page = webpage.create();
 
@@ -22,38 +27,30 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
         return results;
     };
 
-    var instruments = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
-    instruments.forEach(function(instrument) {
+    var cdes = [{}];
+
+    var processCde = function(cde){
+        mongo_cde.byOtherId("", "", )
+    };
+
+    var moduleGroups = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
+    moduleGroups.forEach(function(moduleGroup) {
         var subPage = webpage.create();
-        subPage.open(instrument.url, function(status) {
+        subPage.open(moduleGroup.url, function(status) {
             var modules = subPage.evaluate(findChildrenLinks, "div.content > table.tableheader-processed td a");
             modules.forEach(function(module){
                 var modulePage = webpage.create();
                 modulePage.open(module.url, function(status){
-                    var cdes = modulePage.evaluate(findChildrenLinks, "td:nth-child(1) a");
+                    //var cdes = modulePage.evaluate(findChildrenLinks, "td:nth-child(1) a");
                     var ids = modulePage.evaluate(findChildrenLinks, "td:nth-child(2) a");
-                    cdes.forEach(function(cde, i){
-                        console.log(instrument.name+" > "+module.name + " > " + cde.name + " : " + ids[i].name +"\n\n");
+                    ids.forEach(function(id, i){
+                        //console.log(moduleGroup.name+" > "+module.name + " > " + cdes[i].name + " : " + ids[i].name +"\n\n");
+                        processCde({
+                            id: ids[i].name
+                            , module: module.name
+                            , moduleGroup: moduleGroup.name
+                        });
                     });
-
-                    //ids.forEach(function(cde, i){
-                    //    console.log("id id id");
-                    //    console.log("id: "+instrument.name+" > "+module.name + " > " + cde.name + " > " /*+ ids[i].name*/ +"\n\n");
-                    //});
-
-                    //var rows = modulePage.evaluate(function(){
-                    //    var rows = document.querySelectorAll("tr");
-                    //    var result = [];
-                    //    for (var i = 0; i < rows.length; i++) result.push({
-                    //        name: jQuery(rows[i]).find("td:nth-child(1) a").text()
-                    //        , id: jQuery(rows[i]).find("td:nth-child(2) a").text()//jQuery(rows[i]).html()
-                    //    });
-                    //    return result;
-                    //});
-                    //for (var i = 0; i < rows.length; i ++) {
-                    //    console.log(instrument.name+" > "+module.name + " > " + rows[i].name + " : " + rows[i].id);
-                    //    //console.log(rows[i].name);
-                    //}
                 });
             });
         });
