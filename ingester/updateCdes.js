@@ -47,8 +47,24 @@ var removeClassificationTree = function(cde, org) {
     }
 };
 
+var changed = 0;
+var created = 0;
+var todo = 0;
+
+var checkTodo = function() {
+    todo--;
+    if (todo === 0) {
+        console.log("nothing left to do");
+        process.exit(0);
+    }
+};
+
+setInterval(function(){console.log("TODO: " + todo)}, 10000);
+
+
 var stream = MigrationDataElement.find().stream();
 stream.on('data', function (migrationCde) {
+    todo++;
     var orgName = migrationCde.stewardOrg.name;
     var cdeId = 0;
     for (var i = 0; i < migrationCde.ids.length; i++) {
@@ -57,22 +73,26 @@ stream.on('data', function (migrationCde) {
     }
     
     if (cdeId !== 0) {
-        DataElement.find({archived: null}).where("ids").elemMatch(function(elem) {
-            elem.where("source").equals(orgName);
-            elem.where("id").equals(cdeId);
+        DataElement.find({archived: null, "registrationState.registrationStatus": {$not: /Retired/}})
+            .where("ids").elemMatch(function(elem) {
+                elem.where("source").equals(orgName);
+                elem.where("id").equals(cdeId);
         }).exec(function(err, existingCdes) {
             if (existingCdes.length === 0) {
                 var newDe = new DataElement(migrationCde);
                 newDe.save(function(err) {
                     if (err) console.log("unable to save");
                     else {
+                        console.log(created++ + " CDE Created -- " + newDe.naming[0].designation + " -- TODO: " + todo);
                         migrationCde.remove(function(err) {
                             if (err) console.log("unable to remove");
+                            else checkTodo();
                         });
                     }
                 });
             } else if (existingCdes.length > 1) {
-                console.log("Too many CDEs with Id = " + cdeId);                
+                console.log("Too many CDEs with Id = " + cdeId + " -- TODO: " + todo);
+                checkTodo();
             } else {
                 var existingCde = existingCdes[0];
                 var jsonDe = JSON.parse(JSON.stringify(existingCde));
@@ -99,6 +119,14 @@ stream.on('data', function (migrationCde) {
                         newDe.save(function(err) {
                             if (err) {
                                 console.log("Can't save new Cde " + err);
+                            } else {
+                                //console.log(changed++ + " CDE modified -- " + newDe.naming[0].designation);
+                                migrationCde.remove(function(err) {
+                                    if (err) console.log("unable to remove");
+                                    else checkTodo();
+
+
+                                });
                             }
                         });
                     }
@@ -107,7 +135,8 @@ stream.on('data', function (migrationCde) {
         });        
     } else {
         // No Cde.
-        console.log("CDE with no ID. !!");
+        console.log("CDE with no ID. !! ");
+        checkTodo();
     }
         
 });
@@ -118,4 +147,5 @@ stream.on('error', function (err) {
 
 stream.on('close', function () {
     console.log("End of stream");
+    console.log("TODO: " + todo);
 });

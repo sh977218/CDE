@@ -9,8 +9,6 @@ var fs = require('fs'),
     , ninds = require('./ninds')
     , Readable = require('stream').Readable;
 
-//  for f in $(find ../nlm-seed/ExternalCDEs/caDSR/xml_cde_20151510354/  -name *.xml); do  node ingester/uploadCadsr.js $f ; done
-
 var nindsInput = process.argv[2];
 if (!nindsInput) {
     console.log("missing nindsInput arg");
@@ -39,7 +37,7 @@ addDomain = function (cde, disease, subDisease, value) {
     if (value != null && value.length > 0 && value != ("N/A.N/A")) {
         var valueArr = value.split(";");
         valueArr.forEach(function (val) {
-            var cls = []
+            var cls = [];
             cls.push("Domain");
             cls = cls.concat(val.split("."));
             classificationShared.classifyItem(cde, "NINDS", cls);
@@ -290,10 +288,10 @@ parseCde = function (obj, cb) {
     addDomain(cde, "Facioscapulohumeral muscular dystrophy", "", obj["Domain.Facioscapulohumeral muscular dystrophy"]);
     addDomain(cde, "Myotonic Dystrophy", "", obj["Domain.Myotonic Dystrophy"]);
 
-    addDomain(cde, "Traumatic Brain Injury", "Acute Hospitalized", obj["Domain.Acute Hospitalized"]);
-    addDomain(cde, "Traumatic Brain Injury", "Concussion/Mild TBI", obj["Domain.Concussion/Mild TBI"]);
-    addDomain(cde, "Traumatic Brain Injury", "Epidemiology", obj["Domain.Epidemiology"]);
-    addDomain(cde, "Traumatic Brain Injury", "Moderate/Severe TBI: Rehabilitation", obj["Domain.Moderate/Severe TBI: Rehabilitation"]);
+    //addDomain(cde, "Traumatic Brain Injury", "Acute Hospitalized", obj["Domain.Acute Hospitalized"]);
+    //addDomain(cde, "Traumatic Brain Injury", "Concussion/Mild TBI", obj["Domain.Concussion/Mild TBI"]);
+    //addDomain(cde, "Traumatic Brain Injury", "Epidemiology", obj["Domain.Epidemiology"]);
+    //addDomain(cde, "Traumatic Brain Injury", "Moderate/Severe TBI: Rehabilitation", obj["Domain.Moderate/Severe TBI: Rehabilitation"]);
 
     addClassification(cde, "General (For all diseases)", obj["Classification.General (For all diseases)"]);
     addClassification(cde, "Parkinson's Disease", obj["Classification.Parkinson's Disease"]);
