@@ -13,9 +13,6 @@ var setPage = function (p) {
     p.onResourceTimeout = function () {
         console.log("\n\nResource Timeout\n\n");
     };
-    p.onResourceRequested = function (request) {
-        //console.log('Request ' + JSON.stringify(request, undefined, 4));
-    };
 };
 
 setPage(page);
@@ -35,16 +32,28 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
         return results;
     };
 
-    var cdes = [];
-    var moduleGroups = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
-    var allModules = [];
+    var moduleGroupsCR = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
+    var moduleGroupsEHR = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(2) a");
 
-    var processCdeList = function() {
-        var fileContent = "";
+    var processCdeList1 = function() {
         cdes.forEach(function(line){
-            fileContent += line.id + ","+line.moduleGroup+","+line.module+"\n";
+            fileContent += line.id + "," + topLevel + ","+line.moduleGroup+","+line.module+"\n";
         });
-        fs.write("./cdes.csv", fileContent, 'w');
+        processCdeList = processCdeList2;
+
+        moduleGroups = moduleGroupsEHR;
+        topLevel = "Electronic Health Records";
+        allModules = [];
+        cdes = [];
+        processModuleGroup(0);
+    };
+
+    var processCdeList2 = function() {
+        cdes.forEach(function(line){
+            fileContent += line.id + "," + topLevel + ","+line.moduleGroup+","+line.module+"\n";
+        });
+        fs.write("./nida-cdes.csv", fileContent, 'w');
+        console.log("\n\nFetched " +cdes.length+ " CDEs from NIDA.");
         phantom.exit();
     };
 
@@ -95,5 +104,11 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
             else processModule(0);
         });
     };
+    var fileContent = "";
+    var moduleGroups = moduleGroupsCR;
+    var topLevel = "Clinical Research";
+    var allModules = [];
+    var cdes = [];
+    var processCdeList = processCdeList1;
     processModuleGroup(0);
 });

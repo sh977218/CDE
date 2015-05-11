@@ -410,10 +410,10 @@ exports.removeAttachmentLinks = function(id) {
 exports.setAttachmentApproved = function(id) {
     adminItemSvc.setAttachmentApproved(id, DataElement);
 };
-//
+
 //exports.byOtherId = function(source, id, cb) {
 //    DataElement.find({"ids.source":source, "ids.id": id, "archived": null}).exec(function(err, cde){
-//
+//        cb(err, cde);
 //    });
 //};
 
