@@ -38,6 +38,7 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
     var cdes = [];
     var moduleGroups = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
     moduleGroups.forEach(function(moduleGroup) {
+        if (subPage) console.log("subPage already exists");
         var subPage = webpage.create();
         setPage(subPage);
         console.log("Opening 1st level: " + moduleGroup.name);
@@ -68,10 +69,10 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
                         //console.log(ids[i].name + ","+moduleGroup.name+","+module.name);
                     });
                 });
-                modulePage.close();
+                //modulePage.close();
             });
         });
-        subPage.close();
+        //subPage.close();
     });
     setTimeout(function(){
         var fileContent = "";
@@ -81,4 +82,4 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
         fs.write("./cdes.csv", fileContent, 'w');
     }, 20000)
 });
-page.close();
+//page.close();
