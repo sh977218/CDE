@@ -7,7 +7,6 @@ setTimeout(function() {
     mongo_cde.query({"classification.stewardOrg.name":"NIDA"}, function(err, result) {
         result.forEach(function(cde) {
             var steward = classificationShared.findSteward(cde, "NIDA");
-            //if (steward) steward.object.elements = [];
             cde.classification.splice(steward.index, 1);
             cde.save(function(err, cde) {
                 if (err) throw "Cannot save";

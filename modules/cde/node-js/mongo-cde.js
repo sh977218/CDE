@@ -412,8 +412,9 @@ exports.setAttachmentApproved = function(id) {
 };
 
 exports.byOtherId = function(source, id, cb) {
-    DataElement.findOne({"ids.source":source, "ids.id": id, "archived": null}).exec(function(err, cde){
-        cb(err, cde);
+    DataElement.find({"archived": null}).elemMatch("ids", {"source":source, "id": id}).exec(function(err, cdes){
+        if (cdes.length >1 ) cb("Multiple results, returning first", cdes[0]);
+        else cb(err, cdes[0]);
     });
 };
 
