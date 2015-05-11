@@ -18,7 +18,7 @@ public class HomeTest extends NlmCdeBaseTest {
     public void loggedInHomeIsSearch() {
         mustBeLoggedInAs(ctepCurator_username, password);
         driver.get(baseUrl);
-        textPresent(" | Preferred Standard, Standard, Qualified");
+        textPresent(" | All Statuses");
     }
 
     @Test

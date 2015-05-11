@@ -254,6 +254,7 @@ public class NlmCdeBaseTest {
             findElement(By.id("li-blank-" + status)).click();
             hangon(2);
         }
+        scrollToTop();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.id("search.submit")).click();
@@ -653,5 +654,13 @@ public class NlmCdeBaseTest {
         findElement(
                 By.xpath("//accordion//span[contains(text(),'" + cdeName
                         + "')]")).click();
+    }
+
+    protected void setLowStatusesVisible(){
+        goHome();
+        findElement(By.id("searchSettings")).click();
+        findElement(By.id("minStatus-Incomplete")).click();
+        findElement(By.id("saveSettings")).click();
+        goToSearch("cde");
     }
 }

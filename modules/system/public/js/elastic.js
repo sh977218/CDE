@@ -85,15 +85,18 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 bool: {
                     must_not: [{
                         term: {
-                            "registrationState.registrationStatus": "Retired"
-                        }
-                    },{
-                        term: {
                             "isFork": "true"
                         }
                     }]
                 }
             };
+
+            var visibleRegStatuses = SearchSettings.getUserDefaultStatuses();
+            exports.statusList.forEach(function(status){
+                if (visibleRegStatuses.indexOf(status)===-1) queryStuff.query.bool.must_not.push({
+                    term: {"registrationState.registrationStatus": status}
+                });
+            });
 
             queryStuff.query.bool.must = [];
 

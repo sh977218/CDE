@@ -69,7 +69,6 @@ public class TourTest extends NlmCdeBaseTest {
 		getNext("You can add a second classification ");
 		getNext("See which filter are applied");
 		getNext("Restrict search to one or more ");
-		getNext("By default, CDEs in Recorded status");
 		findElement(By.xpath("//button[@data-role='end']")).click();
 	}
 

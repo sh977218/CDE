@@ -11,6 +11,7 @@ angular.module('ElasticSearchResource')
         this.getDefault = function () {
             return {
                 "defaultSearchView": "accordion"
+                , "lowestRegistrationStatus": "Qualified"
                 , "tableViewFields": {
                     "cde": {
                         "name": true,
@@ -35,13 +36,23 @@ angular.module('ElasticSearchResource')
             return searchSettingsFactory.deferred.promise;
         };
         this.getUserDefaultStatuses = function() {
-            return ['Standard', 'Preferred Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete'];
+            var overThreshold = false;
+            return exports.statusList.filter(function(status) {
+                if (overThreshold) return false;
+                overThreshold = searchSettings.lowestRegistrationStatus === status;
+                return true;
+            });
         };
         var searchSettings = localStorageService.get("SearchSettings");
         userResource.getPromise().then(function(user){
-            if (user === "Not logged in.") searchSettingsFactory.deferred.resolve(searchSettings);
+            if (user === "Not logged in.") {
+                if (!searchSettings.lowestRegistrationStatus) searchSettings.lowestRegistrationStatus = "Qualified";
+                searchSettingsFactory.deferred.resolve(searchSettings);
+            }
             else {
                 if (!user.searchSettings) user.searchSettings = searchSettingsFactory.getDefault();
+                searchSettings = user.searchSettings;
+                if (!user.searchSettings.lowestRegistrationStatus) user.searchSettings.lowestRegistrationStatus = "Qualified";
                 searchSettingsFactory.deferred.resolve(user.searchSettings);
             }
         });

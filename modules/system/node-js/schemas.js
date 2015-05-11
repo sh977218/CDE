@@ -53,6 +53,7 @@ schemas.userSchema = new mongoose.Schema ({
     , roles: [{ type: String, enum: authorizationShared.rolesEnum }]
     , searchSettings: {
         defaultSearchView: { type: String, enum: ["accordion", "table"]}
+        , lowestRegistrationStatus: String
         , tableViewFields: {
             cde: {
                 name: Boolean

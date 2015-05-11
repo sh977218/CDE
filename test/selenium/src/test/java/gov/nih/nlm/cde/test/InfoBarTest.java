@@ -24,7 +24,14 @@ public class InfoBarTest extends NlmCdeBaseTest {
     @Test
     public void infoBarStatus() {
         goToCdeSearch();
+        textPresent("| All Statuses");
+        findElement(By.id("li-blank-Preferred Standard")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Standard")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Qualified")).click();
         textPresent("| Preferred Standard, Standard, Qualified");
+        hangon(1);
         findElement(By.id("li-checked-Qualified")).click();
         textNotPresent(", Qualified");
         textPresent(", Standard");
@@ -32,7 +39,7 @@ public class InfoBarTest extends NlmCdeBaseTest {
         textPresent( "Standard, Recorded" );
         scrollToTop();
         findElement(By.id("resetSearch")).click();
-        textPresent( "results for All Terms | All Classifications | Preferred Standard, Standard, Qualified" );
+        textPresent( "results for All Terms | All Classifications | All Statuses" );
     }
     
 }

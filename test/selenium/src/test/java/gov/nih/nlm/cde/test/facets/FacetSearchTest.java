@@ -24,6 +24,14 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void stewardFacets() {
         goToCdeSearch();
+        mustBeLoggedOut();
+        setLowStatusesVisible();
+        findElement(By.id("li-blank-Preferred Standard")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Standard")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Qualified")).click();
+
         textNotPresent("GRDR (75)");
         textPresent("CCR (4");
         findElement(By.id("li-blank-Recorded")).click();
@@ -32,9 +40,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-checked-Qualified")).click();
         textNotPresent("NINDS (9");
         findElement(By.id("li-checked-Recorded")).click();
-        textNotPresent("GRDR (75)");
+        hangon(1);
         findElement(By.id("li-checked-Standard")).click();
-        textNotPresent("OHSU Knight");
+        hangon(1);
         waitAndClick(By.id("li-checked-Preferred Standard"));
         textPresent("NINDS (91");
         textPresent("All Statuses");
@@ -45,7 +53,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         textPresent("Qualified (94");
         findElement(By.id("li-blank-caBIG")).click();
-        findElement(By.cssSelector("i.fa-check-square-o"));
+        findElement(By.cssSelector("i.fa-square-o"));
         textPresent("Qualified (1");
     }
 
@@ -66,38 +74,54 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textPresent("Epidemiology (11");
         findElement(By.id("li-checked-Disease")).click();
     }
-    
+
     @Test
-    public void facets() {
-        goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("Study");
-        findElement(By.id("search.submit")).click();
-        textNotPresent("Ethnic Group");
-        findElement(By.linkText("10"));
+    public void regStatusFacets() {
+        mustBeLoggedOut();
+        setLowStatusesVisible();
+        findElement(By.id("li-blank-caBIG")).click();
+        findElement(By.id("li-blank-ASCO")).click();
+        textPresent("Agent Physical Appearance Type");
+        textPresent("First Follow-up Visit Date");
+        textPresent("Heart MUGA Test Date");
+        textPresent("Axillary Surgery Dissection Date");
+        textPresent("Patient Name");
+        textPresent("Person Gender Text Type");
+        textPresent("Person Birth Date");
+        textPresent("Patient Ethnic Group Category");
+
+        findElement(By.id("li-blank-Standard")).click();
+        textNotPresent("Agent Physical Appearance Type");
+        textNotPresent("First Follow-up Visit Date");
+        textNotPresent("Heart MUGA Test Date");
+        textPresent("Person Gender Text Type");
+        textPresent("Person Birth Date");
+        textNotPresent("Patient Ethnic Group Category");
+
+        scrollToTop();
+        findElement(By.id("li-checked-Standard")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Qualified")).click();
+        textNotPresent("Agent Physical Appearance Type");
+        textNotPresent("First Follow-up Visit Date");
+        textPresent("Heart MUGA Test Date");
+        textPresent("Patient Name");
+        textNotPresent("Person Gender Text Type");
+        textNotPresent("Person Birth Date");
+        textPresent("Patient Ethnic Group Category");
+
+        scrollToTop();
         findElement(By.id("li-checked-Qualified")).click();
         hangon(1);
-        findElement(By.id("li-checked-Standard")).click();
-        textNotPresent("Ethnic Group Category Text");
-
         findElement(By.id("li-blank-Candidate")).click();
-        textPresent("Study Specimen Identification Source Name");
-
-        findElement(By.id("li-checked-Preferred Standard")).click();
-        findElement(By.id("li-checked-Candidate")).click();
-
-        textPresent("| All Statuses");
-        findElement(By.linkText("10"));
-
-        textNotPresent("Study Specimen Identification Source Name");
-
-        findElement(By.id("li-blank-Candidate")).click();
-        textPresent("Stress Specimen Cell Examined Total Count");
-
-        findElement(By.id("li-blank-caBIG")).click();
-        textNotPresent("Stress Specimen Cell Examined Total Count");
-        textPresent("Study Publication Identification Digital Object Identifier Text");
-        findElement(By.id("li-checked-caBIG")).click();
-        textPresent("Stress Specimen Cell Examined Total Count");
+        textPresent("Agent Physical Appearance Type");
+        textPresent("First Follow-up Visit Date");
+        textNotPresent("Heart MUGA Test Date");
+        textNotPresent("Axillary Surgery Dissection Date");
+        textNotPresent("Patient Name");
+        textNotPresent("Person Gender Text Type");
+        textNotPresent("Person Birth Date");
+        textNotPresent("Patient Ethnic Group Category");
     }
     
     @Test
@@ -109,7 +133,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         hangon(1);
         findElement(By.linkText("Next")).click();
         textPresent("OPEN to Rave Standard ");
-        findElement(By.cssSelector("i.fa-check-square-o"));
+        //findElement(By.cssSelector("i.fa-check-square-o"));
         
         scrollToTop();
         
@@ -132,7 +156,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         waitForESUpdate();
         goToCdeSearch();  
         textPresent("Preferred Standard");
-        findElement(By.id("li-checked-Preferred Standard")).click();
+        findElement(By.id("li-blank-Standard")).click();
+        hangon(1);
+        findElement(By.id("li-blank-Qualified")).click();
+        hangon(1);
         textNotPresent("Noncompliant Reason Text");
     }
     
