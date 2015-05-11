@@ -35,12 +35,14 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
     var moduleGroupsCR = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
     var moduleGroupsEHR = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(2) a");
 
-    var processCdeList1 = function() {
+    var processCdeList = function() {
         cdes.forEach(function(line){
             fileContent += line.id + "," + topLevel + ","+line.moduleGroup+","+line.module+"\n";
         });
-        processCdeList = processCdeList2;
+    };
 
+    var endOfCdeList1 = function() {
+        endOfCdeList = endOfCdeList2;
         moduleGroups = moduleGroupsEHR;
         topLevel = "Electronic Health Records";
         allModules = [];
@@ -48,12 +50,8 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
         processModuleGroup(0);
     };
 
-    var processCdeList2 = function() {
-        cdes.forEach(function(line){
-            fileContent += line.id + "," + topLevel + ","+line.moduleGroup+","+line.module+"\n";
-        });
+    var endOfCdeList2 = function() {
         fs.write("./nida-cdes.csv", fileContent, 'w');
-        console.log("\n\nFetched " +cdes.length+ " CDEs from NIDA.");
         phantom.exit();
     };
 
@@ -77,7 +75,10 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
                 });
             });
             if (allModules[index+1]) processModule(index+1);
-            else processCdeList();
+            else {
+                processCdeList();
+                endOfCdeList();
+            }
             modulePage.close();
         });
 
@@ -109,6 +110,6 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
     var topLevel = "Clinical Research";
     var allModules = [];
     var cdes = [];
-    var processCdeList = processCdeList1;
+    var endOfCdeList = endOfCdeList1;
     processModuleGroup(0);
 });

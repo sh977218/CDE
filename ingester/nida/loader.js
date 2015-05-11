@@ -8,16 +8,23 @@ var classificationArray;
 
 var classifyCde = function(index){
     mongo_cde.byOtherId("caDSR",classificationArray[index][0], function(err, cde){
-        if (process.argv[0]==="wipe"){
-            var steward = mongo_cde.findSteward(cde, "NIDA");
-            if (!steward) process.exit("NIDA classifications not found!");
-            steward.object.elements = [];
-        }
-        if (process.argv[0]==="classify") {
-            classificationShared.classifyItem(cde, "NIDA", );
-        }
-        if (classificationArray[index+1]) classifyCde(index+1);
-        else process.exit();
+        if (!cde) throw "Cannot find CDE";
+        var classifications = [
+            classificationArray[index][1]
+            , classificationArray[index][2]
+            , classificationArray[index][3]
+        ];
+        classificationShared.classifyItem(cde, "NIDA", classifications);
+        cde.registrationState.registrationStatus = "Qualified";
+        cde.save(function(err, cde){
+            if (err)  throw "Can't save";
+            console.log("Added NIDA classifications for: " + cde.naming[0].designation);
+            if (classificationArray[index+1]) classifyCde(index+1);
+            else setTimeout(function(){
+                console.log("Imported Classifications");
+                process.exit();
+            }, 5000);
+        });
     });
 };
 
