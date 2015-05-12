@@ -122,7 +122,7 @@ var doStream = function() {
                             if (err) console.log("unable to save.  " + err);
                             else {
                                 created++;
-                                console.log(created + " CDE Created -- " + newDe.naming[0].designation + " -- TODO: " + todo);
+                                //console.log(created + " CDE Created -- " + newDe.naming[0].designation + " -- TODO: " + todo);
                                 migrationCde.remove(function (err) {
                                     if (err) console.log("unable to remove: " + err);
                                     else checkTodo();
@@ -136,9 +136,8 @@ var doStream = function() {
                         var existingCde = existingCdes[0];
 
                         // deep copy
-                        var jsonDe = JSON.parse(JSON.stringify(existingCde));
-                        delete jsonDe._id;
-                        var newDe = new DataElement(jsonDe);
+                        var newDe = JSON.parse(JSON.stringify(existingCde));
+                        delete newDe._id;
 
                         var deepDiff = compareCdes(existingCde, migrationCde);
                         if (!deepDiff || deepDiff.length === 0) {
