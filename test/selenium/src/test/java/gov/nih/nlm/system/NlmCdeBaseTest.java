@@ -661,6 +661,8 @@ public class NlmCdeBaseTest {
         findElement(By.id("searchSettings")).click();
         findElement(By.id("minStatus-Incomplete")).click();
         findElement(By.id("saveSettings")).click();
+        textPresent("Settings saved");
+        closeAlert();
         goToSearch("cde");
     }
 }
