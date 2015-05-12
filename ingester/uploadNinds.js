@@ -9,6 +9,7 @@ var fs = require('fs'),
     , ninds = require('./ninds')
     , Readable = require('stream').Readable;
 
+
 var nindsInput = process.argv[2];
 if (!nindsInput) {
     console.log("missing nindsInput arg");
@@ -34,9 +35,10 @@ var datatypeMapping = {
 
 addDomain = function (cde, disease, subDisease, value) {
     value = value.trim();
-    if (value != null && value.length > 0 && value != ("N/A.N/A")) {
+    if (value.length > 0 && value != ("N/A.N/A")) {
         var valueArr = value.split(";");
         valueArr.forEach(function (val) {
+            val = val.trim();
             var cls = [];
             cls.push("Domain");
             cls = cls.concat(val.split("."));
@@ -53,8 +55,6 @@ addDomain = function (cde, disease, subDisease, value) {
             cls = cls.concat(val.split("."));
             classificationShared.classifyItem(cde, "NINDS", cls);
             classificationShared.addCategory({elements: nindsOrg.classifications}, cls);
-
-
         });
     }
 }
@@ -73,7 +73,8 @@ addClassification = function (cde, disease, value) {
 }
 
 addSubDiseaseClassification = function (cde, disease, subDisease, value) {
-    if (value.trim().length > 0) {
+    value = value.trim();
+    if (value.length > 0) {
         var cls = [];
         cls.push("Disease");
         cls.push(disease);
@@ -87,70 +88,58 @@ addSubDiseaseClassification = function (cde, disease, subDisease, value) {
 
 parseCde = function (obj, cb) {
     var cde = {classification: []};
-    cde["imported"] = new Date();
-    cde["source"] = "NINDS";
-    cde["version"] = obj["Version Number"];
+    cde.imported = new Date();
+    cde.source = "NINDS";
+    cde.version = obj["Version Number"];
 
-    var namings = [];
-    var naming = {};
-    naming["designation"] = obj["Title"];
-    naming["definition"] = obj["Description"];
-    naming["languageCode"] = "EN-US";
-    var context = {};
-    context["contextName"] = "Health";
-    context["acceptability"] = "preferred";
-    naming["context"] = context;
-    namings.push(naming);
+    var namings = [{
+        designation: obj["Title"].trim()
+        , definition:  obj["Description"].trim()
+        , languageCode: "EN-US"
+        , context: {
+            contextName: "Health"
+            , acceptability: "preferred"
+        }
+    }];
 
     if (!(obj["Short Description"].toUpperCase().trim() === obj["Description"].toUpperCase().trim())) {
         var shortNaming = {};
         var shortContext = {};
-        shortNaming["definition"] = obj["Short Description"];
-        shortNaming["languageCode"] = "EN-US";
-        shortContext["contextName"] = "Short";
-        shortContext["acceptability"] = "preferred";
-        shortNaming["context"] = shortContext;
-        namings.push(shortNaming);
+        namings.push({
+            designation: obj["Title"].trim()
+            , definition:  obj["Short Description"].trim()
+            , languageCode: "EN-US"
+            , context: {
+            contextName: "Short Description"
+                , acceptability: "preferred"
+            }
+        })
     }
 
-    var stewardOrg = {};
-    stewardOrg["name"] = "NINDS";
-    cde["stewardOrg"] = stewardOrg;
+    cde.stewardOrg = {name: "NINDS"};
 
-    var registrationState = {};
-    registrationState["registrationStatus"] = "Qualified";
-    cde["registrationState"] = registrationState;
+    var registrationState = {registrationStatus: "Qualified"};
 
     var vd = {};
-    var dataTypeStr = obj["Data Type"];
+    var dataTypeStr = obj["Data Type"].trim();
     var dataType = "";
-    if (dataTypeStr.toLowerCase().trim() === "numeric values") {
+    if (dataTypeStr.toLowerCase() === "numeric values") {
         dataType = "Integer";
         var dataTypeInt = {};
-        if (obj["minValue"] != null && obj["Minimum Value"].trim().length > 0) {
-            dataTypeInt["minValue"] = obj["Minimum Value"].trim();
+        if (obj["Minimum Value"] > 0) {
+            dataTypeInt.minValue = obj["Minimum Value"];
         }
-        if (obj["maxValue"] != null && obj["Maximum Value"].trim().length > 0) {
-            dataTypeInt["maxValue"] = obj["Maximum Value"].trim();
+        if (obj["Maximum Value"] > 0) {
+            dataTypeInt.maxValue = obj["Maximum Value"];
         }
-        if (dataTypeInt == null) {
-            dataTypeInt = {};
-        }
-        if (dataTypeInt != null) {
-            vd["datatypeInteger"] = dataTypeInt;
-        }
-    } else if (dataTypeStr.toLowerCase().trim() === ("alphanumeric")) {
+        vd.datatypeInteger = dataTypeInt;
+    } else if (dataTypeStr.toLowerCase() === "alphanumeric") {
         dataType = "Text";
         var dataTypeText = {};
-        if (obj["Size"] != null && obj["Size"] > 0) {
-            dataTypeText["maxLength"] = obj["Size"];
+        if (obj["Size"] > 0) {
+            dataTypeText.maxLength = obj["Size"];
         }
-        if (dataTypeText == null) {
-            dataTypeText = {};
-        }
-        if (dataTypeText != null) {
-            vd["datatypeText"] = dataTypeText;
-        }
+        vd.datatypeText = dataTypeText;
     } else if (dataTypeStr.toLowerCase().trim() === "date or date & time") {
         dataType = "Date"
     }
@@ -158,12 +147,10 @@ parseCde = function (obj, cb) {
     var inputType = obj["Input Restrictions"];
     var listDataType = {};
     if (inputType.toLowerCase().trim() === "single pre-defined value selected") {
-        dataType = "Value List";
-        listDataType["datatype"] = dataType;
+        listDataType.datatype = "Value List";
     } else if (inputType.toLowerCase().trim() === "multiple pre-defined values selected") {
-        dataType = "Value List";
-        listDataType["datatype"] = dataType;
-        listDataType["multi"] = true;
+        listDataType.datatype = "Value List";
+        listDataType.multi = true;
     }
     vd.datatypeValueList = listDataType;
 
@@ -173,94 +160,92 @@ parseCde = function (obj, cb) {
         var descs = obj["Permissible Value Descriptions"].split(";");
         for (var i = 0; i < answers.length; i++) {
             var permValue = {};
-            permValue["permissibleValue"] = answers[i];
+            permValue.permissibleValue = answers[i];
             if (i < descs.length) {
-                permValue["valueMeaningName"] = descs[i];
+                permValue.valueMeaningName = descs[i];
             } else {
-                permValue["valueMeaningName"] = answers[i];
+                permValue.valueMeaningName = answers[i];
             }
             permValues.push(permValue);
         }
     }
-    vd["permissibleValues"] = permValues;
+    vd.permissibleValues = permValues;
 
-    var uom = obj["Measurement Type"];
-    if (uom != null && uom.trim().length > 0) {
+    var uom = obj["Measurement Type"].trim();
+    if (uom.length > 0) {
         vd.uom = uom;
     }
-    vd["datatype"] = dataType;
-
+    vd.datatype = dataType;
 
     var properties = [];
-    var guidelines = obj["Guidelines/Instructions"];
-    if (guidelines != null && guidelines.trim().length > 0) {
-        var p = {};
-        p["key"] = "NINDS Guidelines";
-        p["value"] = guidelines.replace("-----", "-----<br/>");
-        p["valueFormat"] = "html";
-        properties.push(p);
+    var guidelines = obj["Guidelines/Instructions"].trim();
+    if (guidelines.length > 0) {
+        properties.push({
+            key: "NINDS Guidelines"
+            , value: guidelines.replace("-----", "-----<br/>")
+            , valueFormat: "html"
+        });
     }
-    var notes = obj["Notes"];
-    if (notes != null && notes.trim().length > 0) {
-        var p = {};
-        p["key"] = "NINDS Notes";
-        p["value"] = notes.replace("-----", "-----<br/>");
-        p["valueFormat"] = "html";
-        properties.push(p);
-    }
-
-    var suggestedQuestion = obj["Suggested Question Text"];
-    if (suggestedQuestion != null && suggestedQuestion.trim().length > 0) {
-        var p = {};
-        p["key"] = "NINDS Suggested Question";
-        p["value"] = suggestedQuestion.replace("-----", "-----<br/>");
-        p["valueFormat"] = "html";
-        properties.push(p);
+    var notes = obj["Notes"].trim();
+    if (notes.length > 0) {
+        properties.push({
+            key: "NINDS Notes"
+            , value: notes.replace("-----", "-----<br/>")
+            , valueFormat: "html"
+        });
     }
 
-    var keywords = obj["Keywords"];
-    if (keywords != null && keywords.trim().length > 0) {
-        var p = {};
-        p["key"] = "NINDS Keywords";
-        p["value"] = keywords.replace("-----", "-----<br/>");
-        p["valueFormat"] = "html";
-        properties.push(p);
+    var suggestedQuestion = obj["Suggested Question Text"].trim();
+    if (suggestedQuestion.length > 0) {
+        properties.push({
+            key: "NINDS Suggested Question"
+            , value: suggestedQuestion.replace("-----", "-----<br/>")
+            , valueFormat: "html"
+        });
     }
 
-    var references = obj["References"];
-    if (references != null && references.trim().length > 0) {
-        var p = {}
-        p["key"] = "NINDS References";
-        p["value"] = references.replace("-----", "-----<br/>");
-        p["valueFormat"] = "html";
-        properties.push(p);
+    var keywords = obj["Keywords"].trim();
+    if (keywords.length > 0) {
+        properties.push({
+            key: "NINDS Keywords"
+            , value: keywords.replace("-----", "-----<br/>")
+            , valueFormat: "html"
+    });
     }
 
+    var references = obj["References"].trim();
+    if (references.length > 0) {
+        properties.push({
+            key: "NINDS References"
+            , value: references.replace("-----", "-----<br/>")
+            , valueFormat: "html"
+        });
+    }
 
     var ids = [];
-    var nindsId = {};
-    nindsId["source"] = "NINDS";
-    nindsId["id"] = obj["External ID.NINDS"];
-    nindsId["version"] = obj["Version Number"];
-    ids.push(nindsId);
+    ids.push({
+        source: "NINDS"
+        ,id:  obj["External ID.NINDS"].trim()
+        , version: obj["Version Number"]
+    } );
 
-    var variableName = {};
-    variableName["source"] = "NINDS Variable Name";
-    variableName["id"] = obj["Name"];
-    ids.push(variableName);
+    ids.push({
+        source: "NINDS Variable Name"
+        , id: obj["Name"].trim()
+    });
 
-    var cadsrId = obj["External ID.caDSR"];
-    if (cadsrId != null && cadsrId.trim().length > 0) {
-        var id = {};
-        id["source"] = "caDSR";
-        id["id"] = cadsrId;
-        ids.push(id);
+    var cadsrId = obj["External ID.caDSR"].trim();
+    if (cadsrId.length > 0) {
+        ids.push({
+            source: "caDSR"
+            , id: cadsrId
+        });
     }
 
-    cde["naming"] = namings;
-    cde["valueDomain"] = vd;
-    cde["properties"] = properties;
-    cde["ids"] = ids;
+    cde.naming = namings;
+    cde.valueDomain = vd;
+    cde.properties = properties;
+    cde.ids = ids;
 
     var populations = obj["Population.All"].split(";");
     populations.forEach(function (pop) {

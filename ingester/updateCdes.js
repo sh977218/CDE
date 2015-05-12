@@ -3,10 +3,11 @@ var fs = require('fs')
     , xml2js = require('xml2js')
     , mongoose = require('mongoose')
     , shortid = require('shortid')
-    , classNode = require('../modules/system/node-js/classificationNode.js')
     , config = require('config')
     , cde_schemas = require('../modules/cde/node-js/schemas')
-    , sys_schemas = require('../modules/system/node-js/schemas')
+    , mongo_cde = require('../modules/cde/node-js/mongo-cde')
+    , cdesvc = require('../modules/cde/node-js/cdesvc')
+    , classificationShared = require('../modules/system/shared/classificationShared')
 ;
 
 var parser = new xml2js.Parser();
@@ -49,103 +50,173 @@ var removeClassificationTree = function(cde, org) {
 
 var changed = 0;
 var created = 0;
+var same = 0;
 var todo = 0;
+var doneThisTime = 0;
 
 var checkTodo = function() {
     todo--;
     if (todo === 0) {
         console.log("nothing left to do");
-        process.exit(0);
+        console.log(changed + " elements changed");
+        console.log(created + " elements Created");
+        console.log(same + " elements unchanged");
+        doStream();
     }
 };
 
-setInterval(function(){console.log("TODO: " + todo)}, 10000);
+setInterval(function(){
+    console.log("TODO: " + todo +  " changed: " + changed + " same: " + same + " created: " + created);
+}, 10000);
 
+var wipeUseless = function(toWipeCde) {
+    delete toWipeCde._id;
+    delete toWipeCde.history;
+    delete toWipeCde.imported;
+    delete toWipeCde.created;
+    delete toWipeCde.updated;
+    delete toWipeCde.comments;
+    delete toWipeCde.registrationState;
+    delete toWipeCde.tinyId;
+}
 
-var stream = MigrationDataElement.find().stream();
-stream.on('data', function (migrationCde) {
-    todo++;
-    var orgName = migrationCde.stewardOrg.name;
-    var cdeId = 0;
-    for (var i = 0; i < migrationCde.ids.length; i++) {
-        if (migrationCde.ids[i].source === orgName)
-            cdeId = migrationCde.ids[i].id;
+var compareCdes = function(existingCde, newCde) {
+    existingCde = JSON.parse(JSON.stringify(existingCde));
+    wipeUseless(existingCde);
+    for (var i = existingCde.classification.length - 1; i > 0; i--) {
+        if (existingCde.classification[i].stewardOrg.name !== newCde.source) {
+            existingCde.classification.splice(i, 1);
+        }
     }
-    
-    if (cdeId !== 0) {
-        DataElement.find({archived: null, "registrationState.registrationStatus": {$not: /Retired/}})
-            .where("ids").elemMatch(function(elem) {
-                elem.where("source").equals(orgName);
-                elem.where("id").equals(cdeId);
-        }).exec(function(err, existingCdes) {
-            if (existingCdes.length === 0) {
-                var newDe = new DataElement(migrationCde);
-                newDe.save(function(err) {
-                    if (err) console.log("unable to save");
-                    else {
-                        console.log(created++ + " CDE Created -- " + newDe.naming[0].designation + " -- TODO: " + todo);
-                        migrationCde.remove(function(err) {
-                            if (err) console.log("unable to remove");
-                            else checkTodo();
-                        });
-                    }
-                });
-            } else if (existingCdes.length > 1) {
-                console.log("Too many CDEs with Id = " + cdeId + " -- TODO: " + todo);
-                checkTodo();
-            } else {
-                var existingCde = existingCdes[0];
-                var jsonDe = JSON.parse(JSON.stringify(existingCde));
-                delete jsonDe._id;                
-                var newDe = new DataElement(jsonDe);
-                newDe.history.push(existingCde._id);
-                newDe.naming[0] = migrationCde.naming[0];
-                newDe.version = migrationCde.version;
-                newDe.changeNote = "Bulk update from source";
-                newDe.imported = new Date().toJSON();
+    classificationShared.sortClassification(existingCde);
 
-                for (var j = 0; j < migrationCde.properties.length; j++) {
-                    removeProperty(newDe, migrationCde.properties[j]);
-                    newDe.properties.push(migrationCde.properties[j]);
-                }
+    newCde = JSON.parse(JSON.stringify(newCde));
+    wipeUseless(newCde);
 
-                removeClassificationTree(newDe, orgName);
-                newDe.classification.push(migrationCde.classification[0]);
-                existingCde.archived = true;
-                existingCde.save(function(err) {
-                    if (err) {
-                        console.log("Can't archive existing: " + err);
-                    } else {
-                        newDe.save(function(err) {
-                            if (err) {
-                                console.log("Can't save new Cde " + err);
-                            } else {
-                                //console.log(changed++ + " CDE modified -- " + newDe.naming[0].designation);
-                                migrationCde.remove(function(err) {
-                                    if (err) console.log("unable to remove");
+    return cdesvc.diff(existingCde, newCde);
+};
+
+var doStream = function() {
+    doneThisTime = 0;
+    var stream = MigrationDataElement.find().limit(200).stream();
+    stream.on('data', function (migrationCde) {
+        todo++;
+        doneThisTime++;
+        classificationShared.sortClassification(migrationCde);
+        var orgName = migrationCde.stewardOrg.name;
+        var cdeId = 0;
+        for (var i = 0; i < migrationCde.ids.length; i++) {
+            if (migrationCde.ids[i].source === orgName)
+                cdeId = migrationCde.ids[i].id;
+        }
+
+        if (cdeId !== 0) {
+            DataElement.find({archived: null, "registrationState.registrationStatus": {$not: /Retired/}})
+                .where("ids").elemMatch(function (elem) {
+                    elem.where("source").equals(orgName);
+                    elem.where("id").equals(cdeId);
+                }).exec(function (err, existingCdes) {
+                    if (existingCdes.length === 0) {
+                        var newDe = new DataElement(migrationCde);
+                        newDe.save(function (err) {
+                            if (err) console.log("unable to save.  " + err);
+                            else {
+                                created++;
+                                console.log(created + " CDE Created -- " + newDe.naming[0].designation + " -- TODO: " + todo);
+                                migrationCde.remove(function (err) {
+                                    if (err) console.log("unable to remove: " + err);
                                     else checkTodo();
-
-
                                 });
                             }
                         });
+                    } else if (existingCdes.length > 1) {
+                        console.log("Too many CDEs with Id = " + cdeId + " -- TODO: " + todo);
+                        checkTodo();
+                    } else {
+                        var existingCde = existingCdes[0];
+
+                        // deep copy
+                        var jsonDe = JSON.parse(JSON.stringify(existingCde));
+                        delete jsonDe._id;
+                        var newDe = new DataElement(jsonDe);
+
+                        var deepDiff = compareCdes(existingCde, migrationCde);
+                        if (!deepDiff || deepDiff.length === 0) {
+                            // nothing changed, remove from input
+                            migrationCde.remove(function (err) {
+                                same++;
+                                if (err) console.log("unable to remove");
+                                else checkTodo();
+                            });
+                        } else if (deepDiff.length > 0) {
+                            //console.log(newDe.naming[0].designation + " -- changed: ");
+                            //console.log(deepDiff[0]);
+                            //newDe.history.push(existingCde._id);
+                            newDe.naming[0] = migrationCde.naming[0];
+                            newDe.version = migrationCde.version;
+                            newDe.changeNote = "Bulk update from source";
+                            newDe.imported = new Date().toJSON();
+
+                            for (var j = 0; j < migrationCde.properties.length; j++) {
+                                removeProperty(newDe, migrationCde.properties[j]);
+                                newDe.properties.push(migrationCde.properties[j]);
+                            }
+
+                            removeClassificationTree(newDe, orgName);
+                            newDe.classification.push(migrationCde.classification[0]);
+                            newDe._id = existingCde._id;
+                            mongo_cde.update(newDe, {username: "batchloader"}, function(){
+                                migrationCde.remove(function (err) {
+                                    if (err) console.log("unable to remove " + err);
+                                    else checkTodo();
+                                    changed++;
+                                });
+                            });
+                            //existingCde.archived = true;
+                            //existingCde.save(function (err) {
+                            //    if (err) {
+                            //        console.log("Can't archive existing: " + err);
+                            //    } else {
+                            //        newDe.save(function (err) {
+                            //            if (err) {
+                            //                console.log("Can't save new Cde " + err);
+                            //            } else {
+                            //                //console.log(" CDE modified -- " + newDe.naming[0].designation);
+                            //                //console.log(deepDiff[0]);
+                            //                migrationCde.remove(function (err) {
+                            //                    if (err) console.log("unable to remove " + err);
+                            //                    else checkTodo();
+                            //                    changed++;
+                            //                });
+                            //            }
+                            //        });
+                            //    }
+                            //});
+                        } else {
+                            console.log("Something wrong with deepDiff");
+                            console.log(deepDiff);
+                        }
                     }
                 });
-            }
-        });        
-    } else {
-        // No Cde.
-        console.log("CDE with no ID. !! ");
-        checkTodo();
-    }
-        
-});
+        } else {
+            // No Cde.
+            console.log("CDE with no ID. !! ");
+            checkTodo();
+        }
 
-stream.on('error', function (err) {
-    console.log("!!!!!!!!!!!!!!!!!! Unable to read from Stream !!!!!!!!!!!!!!");
-});
+    });
 
-stream.on('close', function () {
-    console.log("End of stream");
-    console.log("TODO: " + todo);
-});
+    stream.on('error', function (err) {
+        console.log("!!!!!!!!!!!!!!!!!! Unable to read from Stream !!!!!!!!!!!!!!");
+    });
+
+    stream.on('close', function () {
+        console.log("End of stream");
+        if (doneThisTime === 0) {
+            console.log("Nothing left to do");
+            process.exit(0);
+        }
+    });
+}
+
+doStream();
