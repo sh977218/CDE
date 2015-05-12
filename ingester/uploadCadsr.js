@@ -77,7 +77,7 @@ var doFile = function (cadsrFile, fileCb) {
   fs.readFile(cadsrFile, function(err, data) {
     parser.parseString(data, function (err, result) {
         async.eachSeries(result.DataElementsList.DataElement, function(de, cb){
-            if (de.REGISTRATIONSTATUS[0].trim() === "Retired" || de.REGISTRATIONSTATUS[0].trim() === "Historical") cb();
+            if (de.REGISTRATIONSTATUS[0]=== "Retired" || de.REGISTRATIONSTATUS[0] === "Historical") cb();
             var cde = {
                 registrationState: {
                     registrationStatus: convertCadsrStatusToNlmStatus(de.REGISTRATIONSTATUS[0])
