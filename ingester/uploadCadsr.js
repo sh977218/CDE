@@ -60,7 +60,6 @@ setTimeout(function() {
 }, 1000);
 
 var convertCadsrStatusToNlmStatus = function(status) {
-    //!! do not load retired & historical!!!
     switch (status) {
         case "Preferred Standard":
         case "Standard":
@@ -78,6 +77,7 @@ var doFile = function (cadsrFile, fileCb) {
   fs.readFile(cadsrFile, function(err, data) {
     parser.parseString(data, function (err, result) {
         async.eachSeries(result.DataElementsList.DataElement, function(de, cb){
+            if (de.REGISTRATIONSTATUS[0].trim() === "Retired" || de.REGISTRATIONSTATUS[0].trim() === "Historical") cb();
             var cde = {
                 registrationState: {
                     registrationStatus: convertCadsrStatusToNlmStatus(de.REGISTRATIONSTATUS[0])
