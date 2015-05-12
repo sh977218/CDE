@@ -24,15 +24,6 @@ setTimeout(function () {
     });
 }, 1000);
 
-var datatypeMapping = {
-    CHARACTER: "Text"
-    , NUMBER: "Float"
-    , ALPHANUMERIC: "Text"
-    , TIME: "Time"
-    , DATE: "Date"
-    , DATETIME: "Date/Time"
-};
-
 addDomain = function (cde, disease, subDisease, value) {
     value = value.trim();
     if (value.length > 0 && value != ("N/A.N/A")) {
@@ -57,7 +48,7 @@ addDomain = function (cde, disease, subDisease, value) {
             classificationShared.addCategory({elements: nindsOrg.classifications}, cls);
         });
     }
-}
+};
 
 addClassification = function (cde, disease, value) {
     value = value.trim();
@@ -70,7 +61,7 @@ addClassification = function (cde, disease, value) {
         classificationShared.classifyItem(cde, "NINDS", cls);
         classificationShared.addCategory({elements: nindsOrg.classifications}, cls);
     }
-}
+};
 
 addSubDiseaseClassification = function (cde, disease, subDisease, value) {
     value = value.trim();
@@ -79,12 +70,16 @@ addSubDiseaseClassification = function (cde, disease, subDisease, value) {
         cls.push("Disease");
         cls.push(disease);
         cls.push(subDisease);
-        cls.push("Classification")
+        cls.push("Classification");
         cls = cls.concat(value);
         classificationShared.classifyItem(cde, "NINDS", cls);
         classificationShared.addCategory({elements: nindsOrg.classifications}, cls);
     }
-}
+};
+
+var stripBreakline = function(input) {
+    return input.replace(/-----/g, "").replace(/\\n/g, "<br/>");
+};
 
 parseCde = function (obj, cb) {
     var cde = {classification: []};
@@ -103,8 +98,6 @@ parseCde = function (obj, cb) {
     }];
 
     if (!(obj["Short Description"].toUpperCase().trim() === obj["Description"].toUpperCase().trim())) {
-        var shortNaming = {};
-        var shortContext = {};
         namings.push({
             designation: obj["Title"].trim()
             , definition:  obj["Short Description"].trim()
@@ -118,7 +111,7 @@ parseCde = function (obj, cb) {
 
     cde.stewardOrg = {name: "NINDS"};
 
-    var registrationState = {registrationStatus: "Qualified"};
+    cde.registrationState = {registrationStatus: "Qualified"};
 
     var vd = {};
     var dataTypeStr = obj["Data Type"].trim();
@@ -182,7 +175,7 @@ parseCde = function (obj, cb) {
     if (guidelines.length > 0) {
         properties.push({
             key: "NINDS Guidelines"
-            , value: guidelines.replace("-----", "-----<br/>")
+            , value: stripBreakline(guidelines)
             , valueFormat: "html"
         });
     }
@@ -190,7 +183,7 @@ parseCde = function (obj, cb) {
     if (notes.length > 0) {
         properties.push({
             key: "NINDS Notes"
-            , value: notes.replace("-----", "-----<br/>")
+            , value: stripBreakline(notes)
             , valueFormat: "html"
         });
     }
@@ -199,7 +192,7 @@ parseCde = function (obj, cb) {
     if (suggestedQuestion.length > 0) {
         properties.push({
             key: "NINDS Suggested Question"
-            , value: suggestedQuestion.replace("-----", "-----<br/>")
+            , value: stripBreakline(suggestedQuestion)
             , valueFormat: "html"
         });
     }
@@ -208,7 +201,7 @@ parseCde = function (obj, cb) {
     if (keywords.length > 0) {
         properties.push({
             key: "NINDS Keywords"
-            , value: keywords.replace("-----", "-----<br/>")
+            , value: stripBreakline(keywords)
             , valueFormat: "html"
     });
     }
@@ -217,7 +210,7 @@ parseCde = function (obj, cb) {
     if (references.length > 0) {
         properties.push({
             key: "NINDS References"
-            , value: references.replace("-----", "-----<br/>")
+            , value: stripBreakline(references)
             , valueFormat: "html"
         });
     }
@@ -273,11 +266,6 @@ parseCde = function (obj, cb) {
     addDomain(cde, "Facioscapulohumeral muscular dystrophy", "", obj["Domain.Facioscapulohumeral muscular dystrophy"]);
     addDomain(cde, "Myotonic Dystrophy", "", obj["Domain.Myotonic Dystrophy"]);
 
-    //addDomain(cde, "Traumatic Brain Injury", "Acute Hospitalized", obj["Domain.Acute Hospitalized"]);
-    //addDomain(cde, "Traumatic Brain Injury", "Concussion/Mild TBI", obj["Domain.Concussion/Mild TBI"]);
-    //addDomain(cde, "Traumatic Brain Injury", "Epidemiology", obj["Domain.Epidemiology"]);
-    //addDomain(cde, "Traumatic Brain Injury", "Moderate/Severe TBI: Rehabilitation", obj["Domain.Moderate/Severe TBI: Rehabilitation"]);
-
     addClassification(cde, "General (For all diseases)", obj["Classification.General (For all diseases)"]);
     addClassification(cde, "Parkinson's Disease", obj["Classification.Parkinson's Disease"]);
     addClassification(cde, "Friedreich's Ataxia", obj["Classification.Friedreich's Ataxia"]);
@@ -313,7 +301,7 @@ parseCde = function (obj, cb) {
             console.log("saved");
         }
     });
-}
+};
 
 setTimeout(function () {
     if (ninds.length > 0) {
@@ -325,7 +313,7 @@ setTimeout(function () {
             else {
                 nindsOrg.save(function (err) {
                     if (err) console.log(err);
-                    console.log("finished")
+                    console.log("finished");
                     process.exit(0);
                 })
             }

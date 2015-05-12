@@ -5,6 +5,7 @@ var fs = require('fs')
     , shortid = require('shortid')
     , config = require('config')
     , cde_schemas = require('../modules/cde/node-js/schemas')
+    , sys_schemas = require('../modules/system/node-js/schemas')
     , mongo_cde = require('../modules/cde/node-js/mongo-cde')
     , cdesvc = require('../modules/cde/node-js/cdesvc')
     , classificationShared = require('../modules/system/shared/classificationShared')
@@ -29,6 +30,9 @@ migrationConn.once('open', function callback () {
 
 var DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
 var MigrationDataElement = migrationConn.model('DataElement', cde_schemas.dataElementSchema);
+
+var Org = conn.model('Org', sys_schemas.orgSchema);
+var MigrationOrg = migrationConn.model('Org', sys_schemas.orgSchema);
 
 var removeProperty = function(cde, property) {
     for (var i = 0; i < cde.properties.length; i++) {
@@ -78,7 +82,7 @@ var wipeUseless = function(toWipeCde) {
     delete toWipeCde.comments;
     delete toWipeCde.registrationState;
     delete toWipeCde.tinyId;
-}
+};
 
 var compareCdes = function(existingCde, newCde) {
     existingCde = JSON.parse(JSON.stringify(existingCde));
@@ -117,12 +121,11 @@ var doStream = function() {
                     elem.where("id").equals(cdeId);
                 }).exec(function (err, existingCdes) {
                     if (existingCdes.length === 0) {
-                        var newDe = new DataElement(migrationCde);
-                        newDe.save(function (err) {
+                        var createDe = new DataElement(migrationCde);
+                        createDe.save(function (err) {
                             if (err) console.log("unable to save.  " + err);
                             else {
                                 created++;
-                                //console.log(created + " CDE Created -- " + newDe.naming[0].designation + " -- TODO: " + todo);
                                 migrationCde.remove(function (err) {
                                     if (err) console.log("unable to remove: " + err);
                                     else checkTodo();
@@ -186,17 +189,31 @@ var doStream = function() {
 
     });
 
-    stream.on('error', function (err) {
+    stream.on('error', function () {
         console.log("!!!!!!!!!!!!!!!!!! Unable to read from Stream !!!!!!!!!!!!!!");
     });
 
     stream.on('close', function () {
         console.log("End of stream");
         if (doneThisTime === 0) {
-            console.log("Nothing left to do");
-            process.exit(0);
+            console.log("Nothing left to do, saving Org");
+            MigrationOrg.find().exec(function(err, orgs) {
+                if (err) console.log("Error Finding Migration Org " + err);
+                orgs.forEach(function(org) {
+                    Org.findOne({name: org.name}).exec(function (err, theOrg) {
+                        if (err)  console.log("Error finding existing org " + err);
+                        theOrg.classifications = org.classifications;
+                        theOrg.save(function(err) {
+                            if (err) console.log("Error saving Org " + err);
+                        });
+                    });
+                });
+            });
+
+            // give 5 secs for org to save.
+            setTimeout(function(){process.exit(0);}, 5000);
         }
     });
-}
+};
 
 doStream();
