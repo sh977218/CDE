@@ -171,26 +171,7 @@ var doStream = function() {
                                     changed++;
                                 });
                             });
-                            //existingCde.archived = true;
-                            //existingCde.save(function (err) {
-                            //    if (err) {
-                            //        console.log("Can't archive existing: " + err);
-                            //    } else {
-                            //        newDe.save(function (err) {
-                            //            if (err) {
-                            //                console.log("Can't save new Cde " + err);
-                            //            } else {
-                            //                //console.log(" CDE modified -- " + newDe.naming[0].designation);
-                            //                //console.log(deepDiff[0]);
-                            //                migrationCde.remove(function (err) {
-                            //                    if (err) console.log("unable to remove " + err);
-                            //                    else checkTodo();
-                            //                    changed++;
-                            //                });
-                            //            }
-                            //        });
-                            //    }
-                            //});
+
                         } else {
                             console.log("Something wrong with deepDiff");
                             console.log(deepDiff);
