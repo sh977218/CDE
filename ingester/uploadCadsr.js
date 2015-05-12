@@ -59,14 +59,28 @@ setTimeout(function() {
     });
 }, 1000);
 
+var convertCadsrStatusToNlmStatus = function(status) {
+    //!! do not load retired & historical!!!
+    switch (status) {
+        case "Preferred Standard":
+        case "Standard":
+            return "Candidate";
+        case "Qualified":
+        case "Recorded":
+        case "Candidate":
+        default:
+            return "Incomplete";
+    }
+};
+
 var doFile = function (cadsrFile, fileCb) {
   console.log("starting " + cadsrFile);
   fs.readFile(cadsrFile, function(err, data) {
     parser.parseString(data, function (err, result) {
-        async.each(result.DataElementsList.DataElement, function(de, cb){
+        async.eachSeries(result.DataElementsList.DataElement, function(de, cb){
             var cde = {
                 registrationState: {
-                    registrationStatus: de.REGISTRATIONSTATUS[0]   
+                    registrationStatus: convertCadsrStatusToNlmStatus(de.REGISTRATIONSTATUS[0])
                     , administrativeStatus: de.WORKFLOWSTATUS[0]
                 }
                 , tinyId: shortid.generate()
@@ -100,6 +114,7 @@ var doFile = function (cadsrFile, fileCb) {
                     {key: "caDSR_Context", value: de.CONTEXTNAME[0]}
                     , {key: "caDSR_Datatype", value: de.VALUEDOMAIN[0].Datatype[0]}
                     , {key: "caDSR_Short_Name", value: de.PREFERREDNAME[0]}
+                    , {key: "caDSR_Registration_Status", value: de.REGISTRATIONSTATUS[0] || "Empty"}
                 ]
             };
             if (cde.registrationState.registrationStatus === "Application" || cde.registrationState.registrationStatus === "Proposed") {
@@ -257,9 +272,9 @@ var doFile = function (cadsrFile, fileCb) {
                             classifName === "PhenX") {                        
                         classificationShared.classifyItem(cde, "PhenX", ['PhenX', csi.ClassificationSchemeItemName[0]]);
                         classificationShared.addCategory({elements: phenxOrg.classifications}, ["PhenX", csi.ClassificationSchemeItemName[0]]);
-                    } else if (csi.ClassificationScheme[0].ContextName[0] === "NIDA") {                        
-                        classificationShared.classifyItem(cde, "NIDA", [classifName, csi.ClassificationSchemeItemName[0]]);
-                        classificationShared.addCategory({elements: nidaOrg.classifications}, ["NIDA", csi.ClassificationSchemeItemName[0]]);
+                    } else if (csi.ClassificationScheme[0].ContextName[0] === "NIDA" || csi.ClassificationScheme[0].ContextName[0] === "NINDS") {
+                        //classificationShared.classifyItem(cde, "NIDA", [classifName, csi.ClassificationSchemeItemName[0]]);
+                        //classificationShared.addCategory({elements: nidaOrg.classifications}, ["NIDA", csi.ClassificationSchemeItemName[0]]);
                     } else {
                         classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classifName, csi.ClassificationSchemeItemName[0]]);
                         classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classifName, csi.ClassificationSchemeItemName[0]]);
@@ -267,8 +282,6 @@ var doFile = function (cadsrFile, fileCb) {
                 }
             });
 
-            
-            
             mongo_cde.create(cde, {username: 'batchloader'}, function(err, newCde) {
                if (err) {
                    console.log("unable to create CDE. " + JSON.stringify(cde) );
