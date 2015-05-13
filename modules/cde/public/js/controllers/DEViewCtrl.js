@@ -38,7 +38,7 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
     });
     
     $scope.$on('$locationChangeStart', function( event ) {
-        if ($scope.elt.unsaved) {
+        if ($scope.elt && $scope.elt.unsaved) {
             var answer = confirm("You have unsaved changes, are you sure you want to leave this page?");
             if (!answer) {
                 event.preventDefault();
