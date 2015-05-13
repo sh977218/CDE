@@ -132,10 +132,14 @@ var processCde = function(cdeId, migrationCde, source, orgName){
                 var deepDiff = compareCdes(existingCde, migrationCde);
                 if (!deepDiff || deepDiff.length === 0) {
                     // nothing changed, remove from input
-                    migrationCde.remove(function (err) {
-                        same++;
-                        if (err) console.log("unable to remove");
-                        else checkTodo();
+                    existingCde.imported = new Date().toJSON();
+                    existingCde.save(function(err){
+                        if (err) throw "Unable to update import date";
+                        migrationCde.remove(function (err) {
+                            same++;
+                            if (err) throw "unable to remove";
+                            checkTodo();
+                        });
                     });
                 } else if (deepDiff.length > 0) {
                     newDe.naming[0] = migrationCde.naming[0];
