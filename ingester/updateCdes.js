@@ -151,9 +151,6 @@ var doStream = function() {
                                 else checkTodo();
                             });
                         } else if (deepDiff.length > 0) {
-                            //console.log(newDe.naming[0].designation + " -- changed: ");
-                            //console.log(deepDiff[0]);
-                            //newDe.history.push(existingCde._id);
                             newDe.naming[0] = migrationCde.naming[0];
                             newDe.version = migrationCde.version;
                             newDe.changeNote = "Bulk update from source";
