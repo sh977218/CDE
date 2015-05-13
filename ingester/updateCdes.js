@@ -25,7 +25,7 @@ conn.once('open', function callback () {
 var migrationConn = mongoose.createConnection(mongoMigrationUri);
 migrationConn.on('error', console.error.bind(console, 'connection error:'));
 migrationConn.once('open', function callback () {
-    console.log('mongodb connection open');
+    console.log('mongodb migration connection open');
 });    
 
 var DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
@@ -100,13 +100,14 @@ var compareCdes = function(existingCde, newCde) {
     return cdesvc.diff(existingCde, newCde);
 };
 
-var processCde = function(){
-    DataElement.find({archived: null, "registrationState.registrationStatus": {$not: /Retired/}})
+var processCde = function(cdeId, migrationCde, source, orgName){
+    DataElement.find({archived: null, source: source, "registrationState.registrationStatus": {$not: /Retired/}})
         .where("ids").elemMatch(function (elem) {
-            elem.where("source").equals(orgName);
+            elem.where("source").equals(source);
             elem.where("id").equals(cdeId);
         }).exec(function (err, existingCdes) {
             if (existingCdes.length === 0) {
+                delete migrationCde._id;
                 var createDe = new DataElement(migrationCde);
                 createDe.save(function (err) {
                     if (err) console.log("unable to save.  " + err);
@@ -137,9 +138,6 @@ var processCde = function(){
                         else checkTodo();
                     });
                 } else if (deepDiff.length > 0) {
-                    //console.log(newDe.naming[0].designation + " -- changed: ");
-                    //console.log(deepDiff[0]);
-                    //newDe.history.push(existingCde._id);
                     newDe.naming[0] = migrationCde.naming[0];
                     newDe.version = migrationCde.version;
                     newDe.changeNote = "Bulk update from source";
@@ -173,18 +171,19 @@ var streamOnData = function (migrationCde) {
     todo++;
     doneThisTime++;
     classificationShared.sortClassification(migrationCde);
+    var source = migrationCde.source;
     var orgName = migrationCde.stewardOrg.name;
     var cdeId = 0;
     for (var i = 0; i < migrationCde.ids.length; i++) {
-        if (migrationCde.ids[i].source === orgName)
-            cdeId = migrationCde.ids[i].id;
+        if (migrationCde.ids[i].source === source) cdeId = migrationCde.ids[i].id;
     }
 
     if (cdeId !== 0) {
-        processCde();
+        processCde(cdeId, migrationCde, source, orgName);
     } else {
         // No Cde.
         console.log("CDE with no ID. !! ");
+        console.log(migrationCde);
         checkTodo();
     }
 };
@@ -214,6 +213,7 @@ var streamOnClose = function () {
 var doStream = function() {
     doneThisTime = 0;
     var stream = MigrationDataElement.find().limit(200).stream();
+
     stream.on('data', streamOnData);
 
     stream.on('error', function () {
