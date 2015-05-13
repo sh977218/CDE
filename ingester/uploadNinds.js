@@ -78,7 +78,7 @@ addSubDiseaseClassification = function (cde, disease, subDisease, value) {
 };
 
 var stripBreakline = function(input) {
-    return input.replace(/-----/g, "").replace(/\\n/g, "<br/>");
+    return input.replace(/-----/g, "").replace(/\n/g, "<br/>");
 };
 
 parseCde = function (obj, cb) {
@@ -194,6 +194,14 @@ parseCde = function (obj, cb) {
             key: "NINDS Suggested Question"
             , value: stripBreakline(suggestedQuestion)
             , valueFormat: "html"
+        });
+    }
+
+    var previousTitle = obj["Previous Title"].trim();
+    if (previousTitle.length > 0) {
+        properties.push({
+            key: "NINDS Previous Title"
+            , value: previousTitle
         });
     }
 
