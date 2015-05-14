@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
@@ -24,10 +25,18 @@ public class QuestionTest extends BaseFormTest {
         WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumber));
         
         Assert.assertTrue(sourceElt.isDisplayed());
-        Assert.assertTrue(targetElt.isDisplayed());
+        //Assert.assertTrue(targetElt.isDisplayed());
+
+        String jsScroll = "var y = $(\"#section_drop_area_"+sectionNumber+"\").position().top;\n" +
+                "$(window).scrollTop(y);";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+
+        scrollTo(targetElt.getLocation().getY());
         
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
-        hangon(2);
+
+        textPresent(cdeName, By.id("section_drop_area_" + sectionNumber));
+
     }    
     
     public void addQuestionToSectionSafe(String cdeName, int sectionNumber) {

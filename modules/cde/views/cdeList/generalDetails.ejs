@@ -24,6 +24,10 @@
         </td>
     </tr>
     <tr>
+        <th class="text-right" ng-show="cde.uom">Unit of Measure:</th>
+        <td id="dd_uom">{{cde.valueDomain.uom | placeholdEmpty}}</td>
+    </tr>
+    <tr>
         <th class="text-right" ng-show="cde.origin">Origin:</th>
         <td>{{cde.origin}}</td>
     </tr>

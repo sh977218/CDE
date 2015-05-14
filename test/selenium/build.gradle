@@ -37,7 +37,7 @@ test {
     maxParallelForks = Integer.parseInt(forkNb)
 
     testLogging {
-         Uncomment to display system.out and system.err messages
+        // Uncomment to display system.out and system.err messages
         events "standardOut", "standardError"
     }
 }
