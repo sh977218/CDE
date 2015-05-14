@@ -171,4 +171,7 @@ module.exports.occsPrimaryRepl =
 };
 
 
+module.exports.mongoMigrationUri = "mongodb://" + config.database.servers.map(function(srv) {
+    return srv.host + ":" + srv.port;
+}).join(",") + "/" + "migration";
 

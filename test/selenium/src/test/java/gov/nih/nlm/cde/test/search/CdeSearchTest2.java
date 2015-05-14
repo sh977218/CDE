@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.search;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -89,8 +90,12 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         mustBeLoggedOut();
         setLowStatusesVisible();
         goToCdeSearch();
-        findElement(By.id("li-blank-Preferred Standard")).click();
-        hangon(1);
+        try {
+            findElement(By.id("li-blank-Preferred Standard")).click();
+            hangon(1);
+        } catch (TimeoutException e) {
+            // ignore, there may not be any Pref Standard.
+        }
         findElement(By.id("li-blank-Standard")).click();
         hangon(1);
         findElement(By.id("li-blank-Qualified")).click();

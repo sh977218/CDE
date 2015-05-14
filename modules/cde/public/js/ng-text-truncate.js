@@ -42,7 +42,7 @@
                 applyTruncation: function (threshold, $scope, $element) {
                     var elStr;
                     var el;
-                    if ($scope.text.length >= threshold) {
+                    if ($scope.text && $scope.text.length >= threshold) {
                         if ($scope.textType === 'html') {
                             elStr = '<span ng-class="class" ng-bind-html="text">' +
                             '</span>' +
