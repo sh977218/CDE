@@ -142,18 +142,24 @@ var processCde = function(migrationCde, existingCde, orgName) {
         removeClassificationTree(newDe, orgName);
         newDe.classification.push(migrationCde.classification[0]);
         newDe._id = existingCde._id;
-        mongo_cde.update(newDe, {username: "batchloader"}, function(err){
-            if (err) {
-                console.log("Cannot save CDE.");
-                console.log(newDe);
-                throw err;
-            }
-            else migrationCde.remove(function (err) {
-                if (err) console.log("unable to remove " + err);
-                else checkTodo();
-                changed++;
+        try {
+            mongo_cde.update(newDe, {username: "batchloader"}, function (err) {
+                if (err) {
+                    console.log("Cannot save CDE.");
+                    console.log(newDe);
+                    throw err;
+                }
+                else migrationCde.remove(function (err) {
+                    if (err) console.log("unable to remove " + err);
+                    else checkTodo();
+                    changed++;
+                });
             });
-        });
+        } catch(e) {
+            console.log(newDe);
+            console.log(existingCde);
+            throw e;
+        }
 
     } else {
         console.log("Something wrong with deepDiff");
@@ -171,23 +177,31 @@ var findCde = function(cdeId, migrationCde, source, orgName, idv){
             if (existingCdes.length === 0) {
                 //delete migrationCde._id;
                 var mCde = JSON.parse(JSON.stringify(migrationCde.toObject()));
-                delete migrationCde._id;
-                var createDe = new DataElement(migrationCde);
-                createDe.save(function (err) {
-                    if (err) {
-                        console.log("Unable to create CDE.");
-                        console.log(migrationCde);
-                        console.log(createDe);
-                        throw err;
-                    }
-                    else {
-                        created++;
-                        migrationCde.remove(function (err) {
-                            if (err) console.log("unable to remove: " + err);
-                            else checkTodo();
-                        });
-                    }
-                });
+                delete mCde._id; //use mCde below!!!
+                var createDe = new DataElement(mCde);
+                createDe.imported = new Date().toJSON();
+                createDe.created = importDate;
+                try {
+                    createDe.save(function (err) {
+                        if (err) {
+                            console.log("Unable to create CDE.");
+                            console.log(mCde);
+                            console.log(createDe);
+                            throw err;
+                        }
+                        else {
+                            created++;
+                            migrationCde.remove(function (err) {
+                                if (err) console.log("unable to remove: " + err);
+                                else checkTodo();
+                            });
+                        }
+                    });
+                } catch(e) {
+                    console.log(createDe);
+                    console.log(mCde);
+                    throw e;
+                }
             } else if (existingCdes.length > 1) {
                 console.log("Too many CDEs with Id = " + cdeId + ",  -- TODO: " + todo);
 
@@ -204,7 +218,7 @@ var findCde = function(cdeId, migrationCde, source, orgName, idv){
                             console.log(idv);
                             throw "Too many CDEs with the same ID/version.";
                         }
-                        checkTodo(); //Multiple CDEs with the same ID but not any one with the same ID+version? This must be a new version, keep it for later!
+                        //checkTodo(); //Multiple CDEs with the same ID but not any one with the same ID+version? This must be a new version, keep it for later!
                     });
 
             } else {
