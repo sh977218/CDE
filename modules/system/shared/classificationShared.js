@@ -151,11 +151,11 @@ exports.sortClassification = function(elt) {
         return c1.stewardOrg.name.localeCompare(c2.stewardOrg.name);
     });
     var sortSubClassif = function(classif) {
-          if (classif.elements) {
-              classif.elements = classif.elements.sort(function (c1, c2) {
-                  return c1.name.localeCompare(c2.name);
-              });
-          }
+        if (classif.elements) {
+            classif.elements = classif.elements.sort(function (c1, c2) {
+                return c1.name.localeCompare(c2.name);
+            });
+        }
     };
     var doRecurse = function(classif) {
         sortSubClassif(classif);
