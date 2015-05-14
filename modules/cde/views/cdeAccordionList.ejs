@@ -24,20 +24,16 @@
                                 ng-bind-html="cde.highlight.matchedBy"></span></strong></small>
             </div>
             <div class="row">
-                <div class="col-xs-5">
+                <div class="col-xs-4">
                     <%- include cdeList/generalDetails.ejs %>
                 </div>
                 <div class="col-xs-4" ng-if="cde.valueDomain.datatype === 'Value List'">
                     <%- include cdeList/valueDomain.ejs %>
                 </div>
-                <div ng-class="{'col-xs-7': cde.valueDomain.datatype !== 'Value List', 'col-xs-3': cde.valueDomain.datatype === 'Value List'}">
-                    <div>
-                        <div ng-include="'/cde/public/html/cdeList/idTable.html'"/>
-                        <div>
-                            <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment"
-                                 ng-src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
-                        </div>
-                    </div>
+                <div class="col-xs-4">
+                    <div ng-include="'/cde/public/html/cdeList/idTable.html'"/>
+                    <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment"
+                         ng-src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
                 </div>
             </div>
             <div class="row">
