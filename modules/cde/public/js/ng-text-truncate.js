@@ -31,7 +31,7 @@
                         $scope.$watch("text", function () {
                             $element.empty();
                             Truncation.applyTruncation(THRESHOLD, $scope, $element);
-                            if ($scope.textType === 'plainText' && $scope.text.length >= THRESHOLD)
+                            if ($scope.textType === 'plainText' && $scope.text && $scope.text.length >= THRESHOLD)
                                 $($element.find('span')[0]).text($scope.text);
                         })
                     }
