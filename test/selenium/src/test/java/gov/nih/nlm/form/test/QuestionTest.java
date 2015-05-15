@@ -171,6 +171,7 @@ public class QuestionTest extends BaseFormTest {
         Assert.assertTrue(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
 
         // hide search CDE
+        scrollToTop();
         findElement(By.id("startAddingQuestions")).click();
 
         WebElement sourceElt = findElement(By.xpath("//div[@id='section_drop_area_1']//div[@id='question_0']//i[contains(@class, 'question-move-handle')]"));
