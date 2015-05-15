@@ -11,6 +11,8 @@ var fs = require('fs')
     , classificationShared = require('../modules/system/shared/classificationShared')
 ;
 
+var cdeSource = process.argv[3];
+
 var importDate = new Date().toJSON();
 
 var parser = new xml2js.Parser();
@@ -60,7 +62,7 @@ var same = 0;
 var todo = 0;
 var doneThisTime = 0;
 
-var checkTodo = function() {
+var checkTodo = function(source) {
     todo--;
     if (todo === 0) {
         console.log("nothing left to do");
@@ -72,6 +74,8 @@ var checkTodo = function() {
     //MigrationDataElement.find().count(function (err, count) {
     //    if (count>0) doStream();
     //})
+
+    DataElement.where({imported: {$ne: importDate}, source: cdeSource}).update({"registrationState.registrationStatus":"Retired", "registrationState.administrativeNote":"Not present in import from " + importDate});
 };
 
 setInterval(function(){
@@ -140,7 +144,7 @@ var processCde = function(migrationCde, existingCde, orgName) {
         }
 
         removeClassificationTree(newDe, orgName);
-        newDe.classification.push(migrationCde.classification[0]);
+        if (migrationCde.classification[0]) newDe.classification.push(migrationCde.classification[0]);
         newDe._id = existingCde._id;
         try {
             mongo_cde.update(newDe, {username: "batchloader"}, function (err) {
@@ -179,7 +183,7 @@ var findCde = function(cdeId, migrationCde, source, orgName, idv){
                 var mCde = JSON.parse(JSON.stringify(migrationCde.toObject()));
                 delete mCde._id; //use mCde below!!!
                 var createDe = new DataElement(mCde);
-                createDe.imported = new Date().toJSON();
+                createDe.imported = importDate;
                 createDe.created = importDate;
                 try {
                     createDe.save(function (err) {
@@ -211,12 +215,16 @@ var findCde = function(cdeId, migrationCde, source, orgName, idv){
                         elem.where("id").equals(cdeId);
                         elem.where("version").equals(idv);
                     }).exec(function (err, existingCdes) {
-                        if (existingCdes.length === 1) processCde(migrationCde, existingCdes[0], orgName);
+                        if (existingCdes.length === 1) {
+                            processCde(migrationCde, existingCdes[0], orgName);
+                        }
                         else if (existingCdes.length > 1) {
                             console.log(cdeId);
                             console.log(source);
                             console.log(idv);
                             throw "Too many CDEs with the same ID/version.";
+                        } else {
+                            throw "Too many CDEs with same ID but there is a new version. Need to implement this.";
                         }
                         //checkTodo(); //Multiple CDEs with the same ID but not any one with the same ID+version? This must be a new version, keep it for later!
                     });

@@ -14,6 +14,7 @@ exports.elasticsearch = function (query, type, cb) {
     var url = null;
     if (type === "cde") url = exports.elasticCdeUri;
     if (type === "form") url = exports.elasticFormUri;
+    console.log(url + "_search");
     request.post(url + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
         if (!error && response.statusCode === 200) {
             var resp = JSON.parse(body);
