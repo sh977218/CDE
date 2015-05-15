@@ -41,15 +41,11 @@ var datatypeMapping = {
 };
 
 var phenxOrg = null;
-var nidaOrg = null;
 var nciOrg = null;
 
 setTimeout(function() {
     mongo_data_system.orgByName("PhenX", function(stewardOrg) {
        phenxOrg = stewardOrg; 
-    });
-    mongo_data_system.orgByName("NIDA", function(stewardOrg) {
-       nidaOrg = stewardOrg; 
     });
     mongo_data_system.orgByName("NCI", function(stewardOrg) {
         nciOrg = stewardOrg; 
@@ -60,13 +56,26 @@ setTimeout(function() {
 }, 1000);
 
 var convertCadsrStatusToNlmStatus = function(status) {
+    //switch (status) {
+    //    case "Preferred Standard":
+    //    case "Standard":
+    //        return "Candidate";
+    //    case "Qualified":
+    //    case "Recorded":
+    //    case "Candidate":
+    //    default:
+    //        return "Incomplete";
+    //}
     switch (status) {
         case "Preferred Standard":
         case "Standard":
-            return "Candidate";
-        case "Qualified":
-        case "Recorded":
+            return "Standard";
         case "Candidate":
+        case "Recorded":
+            return "Recorded";
+        case "Qualified":
+            return "Candidate";
+        case "Proposed":
         default:
             return "Incomplete";
     }
@@ -77,7 +86,7 @@ var doFile = function (cadsrFile, fileCb) {
   fs.readFile(cadsrFile, function(err, data) {
     parser.parseString(data, function (err, result) {
         async.eachSeries(result.DataElementsList.DataElement, function(de, cb){
-            if (de.REGISTRATIONSTATUS[0]=== "Retired" || de.REGISTRATIONSTATUS[0] === "Historical") cb();
+            if (de.REGISTRATIONSTATUS[0]=== "Retired" || de.REGISTRATIONSTATUS[0] === "Historical") return cb();
             var cde = {
                 registrationState: {
                     registrationStatus: convertCadsrStatusToNlmStatus(de.REGISTRATIONSTATUS[0])
@@ -114,7 +123,7 @@ var doFile = function (cadsrFile, fileCb) {
                     {key: "caDSR_Context", value: de.CONTEXTNAME[0]}
                     , {key: "caDSR_Datatype", value: de.VALUEDOMAIN[0].Datatype[0]}
                     , {key: "caDSR_Short_Name", value: de.PREFERREDNAME[0]}
-                    , {key: "caDSR_Registration_Status", value: de.REGISTRATIONSTATUS[0] || "Empty"}
+                    , {key: "caDSR_Registration_Status", value: (typeof de.REGISTRATIONSTATUS[0] === "String" && de.REGISTRATIONSTATUS[0].length > 0)  ? de.REGISTRATIONSTATUS[0] : "Empty"}
                 ]
             };
             if (cde.registrationState.registrationStatus === "Application" || cde.registrationState.registrationStatus === "Proposed") {
@@ -268,13 +277,14 @@ var doFile = function (cadsrFile, fileCb) {
                 var classifName = classifMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + csi.ClassificationScheme[0].Version[0]] || "";
                 if (classifName.length > 0 &&
                         csi.ClassificationSchemeItemName[0].length > 0) {
-                    if (csi.ClassificationScheme[0].ContextName[0] === "caBIG" &&
-                            classifName === "PhenX") {                        
+                    if (csi.ClassificationScheme[0].ContextName[0] === "caBIG" && classifName === "PhenX") {
                         classificationShared.classifyItem(cde, "PhenX", ['PhenX', csi.ClassificationSchemeItemName[0]]);
                         classificationShared.addCategory({elements: phenxOrg.classifications}, ["PhenX", csi.ClassificationSchemeItemName[0]]);
-                    } else if (csi.ClassificationScheme[0].ContextName[0] === "NIDA" || csi.ClassificationScheme[0].ContextName[0] === "NINDS") {
-                        //classificationShared.classifyItem(cde, "NIDA", [classifName, csi.ClassificationSchemeItemName[0]]);
-                        //classificationShared.addCategory({elements: nidaOrg.classifications}, ["NIDA", csi.ClassificationSchemeItemName[0]]);
+                        cde.registrationState.registrationStatus = "Qualified";
+                    } else if (csi.ClassificationScheme[0].ContextName[0] === "NIDA") {
+                        cde.registrationState.registrationStatus = "Qualified";
+                    } else if (csi.ClassificationScheme[0].ContextName[0] === "NINDS") {
+                        // ignore classifications
                     } else {
                         classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classifName, csi.ClassificationSchemeItemName[0]]);
                         classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classifName, csi.ClassificationSchemeItemName[0]]);
@@ -311,24 +321,14 @@ var doFile = function (cadsrFile, fileCb) {
 
 
 setTimeout(function() {
-    if (fs.lstatSync(cadsrFolder).isDirectory()) {
-        fs.readdir(cadsrFolder, function(err, files) {
-            if (err) {
-                console.log("Cant read folder dir." + err);
-                process.exit(1);
-            }
-            async.eachSeries(files, function(cadsrFile, cb) {
-                doFile(cadsrFolder + cadsrFile, cb);
-            }, function(err) {
-                console.log("All files finished.");
+    doFile(cadsrFolder, function() {
+        console.log("single file done");
+        phenxOrg.save(function(err) {
+            if (err) throw "Cannot save Phenx!";
+            nciOrg.save(function(err){
+                if (err) throw "Cannot save NCI org!";
                 process.exit(0);
             });
         });
-
-    } else {
-        doFile(cadsrFolder, function() {
-            console.log("single file done");
-            process.exit(0);
-        });
-    }
+    });
 }, 2000);
