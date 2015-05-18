@@ -147,13 +147,13 @@ var doFile = function (cadsrFile, fileCb) {
             if (cde.valueDomain.datatype === 'Number') {
                 cde.valueDomain.datatypeNumber = {};
                 if (de.VALUEDOMAIN[0].MaximumValue[0].length > 0) {
-                    cde.valueDomain.datatypeFloat.maxValue = de.VALUEDOMAIN[0].MaximumValue[0];
+                    cde.valueDomain.datatypeNumber.maxValue = de.VALUEDOMAIN[0].MaximumValue[0];
                 } 
                 if (de.VALUEDOMAIN[0].MinimumValue[0].length > 0) {
-                    cde.valueDomain.datatypeFloat.minValue = de.VALUEDOMAIN[0].MinimumValue[0];
+                    cde.valueDomain.datatypeNumber.minValue = de.VALUEDOMAIN[0].MinimumValue[0];
                 } 
                 if (de.VALUEDOMAIN[0].DecimalPlace[0].length > 0) {
-                    cde.valueDomain.datatypeFloat.precision = de.VALUEDOMAIN[0].DecimalPlace[0];
+                    cde.valueDomain.datatypeNumber.precision = de.VALUEDOMAIN[0].DecimalPlace[0];
                 } 
             }
             if (cde.valueDomain.datatype === 'Text') {
