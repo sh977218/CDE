@@ -1,4 +1,4 @@
-<table class="table table-border cdeTable cdeTable-noBorder">
+<table class="generalDetailsTable cdeTable cdeTable-noBorder table table-border">
     <caption>General Details</caption>
     <tr>
         <th class="text-right">Name:</th>
@@ -23,24 +23,24 @@
             </span>
         </td>
     </tr>
-    <tr>
-        <th class="text-right" ng-show="cde.uom">Unit of Measure:</th>
+    <tr ng-show="cde.valueDomain.uom">
+        <th class="text-right">Unit of Measure:</th>
         <td id="dd_uom">{{cde.valueDomain.uom | placeholdEmpty}}</td>
     </tr>
-    <tr>
-        <th class="text-right" ng-show="cde.origin">Origin:</th>
+    <tr ng-show="cde.origin">
+        <th class="text-right">Origin:</th>
         <td>{{cde.origin}}</td>
     </tr>
-    <tr>
-        <th class="text-right" ng-show="cde.source">Source:</th>
+    <tr ng-show="cde.source">
+        <th class="text-right">Source:</th>
         <td>{{cde.source}}</td>
     </tr>
     <tr>
         <th class="text-right" id="dt_status">Status:</th>
         <td id="dd_status">{{cde.registrationState.registrationStatus}}</td>
     </tr>
-    <tr>
-        <th class="text-right" ng-show="cde.views">Views:</th>
+    <tr  ng-show="cde.views">
+        <th class="text-right">Views:</th>
         <td id="dd_views">{{cde.views}}</td>
     </tr>
 </table>

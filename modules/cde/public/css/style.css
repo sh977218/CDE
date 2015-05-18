@@ -614,10 +614,26 @@ button#selectDefault {
     table-layout: fixed;
 }
 
-.cdeTable td {
-    overflow: hidden;
-}
-
 .cdeTable-noBorder td, .cdeTable-noBorder th {
     border: none !important;
+}
+
+/*.cdeTable th {*/
+    /*width: 90px;*/
+    /*overflow: hidden;*/
+/*}*/
+
+.generalDetailsTable th{
+    width: 30%;
+}
+
+.cdeTable th, .cdeTable td {
+    overflow: hidden;
+    padding-top: 4px!important;
+    padding-bottom: 4px!important;
+}
+
+.generalDetailsTable th, .generalDetailsTable td {
+    padding-top: 2px!important;
+    padding-bottom:2px!important;
 }

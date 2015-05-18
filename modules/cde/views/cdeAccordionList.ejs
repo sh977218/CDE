@@ -24,13 +24,13 @@
                                 ng-bind-html="cde.highlight.matchedBy"></span></strong></small>
             </div>
             <div class="row">
-                <div class="col-xs-4">
+                <div class="col-md-4 col-sm-12 col-xs-12">
                     <%- include cdeList/generalDetails.ejs %>
                 </div>
-                <div class="col-xs-4" ng-if="cde.valueDomain.datatype === 'Value List'">
+                <div class="col-md-4 col-sm-6 col-xs-12" ng-if="cde.valueDomain.datatype === 'Value List'">
                     <%- include cdeList/valueDomain.ejs %>
                 </div>
-                <div class="col-xs-4">
+                <div class="col-md-4 col-sm-6 col-xs-12">
                     <div ng-include="'/cde/public/html/cdeList/idTable.html'"/>
                     <img ng-repeat="attachment in cde.attachments | filter:isDefaultAttachment"
                          ng-src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
