@@ -51,7 +51,8 @@ var config = {
             , cappedCollectionSizeMB: 1024*1024*250
         }, local: {
             uri: "mongodb://localhost/local"
-        }
+        }, username: "insert username here"
+        , password: "insert password here"
     }
     , node: {
         scripts: {
@@ -109,9 +110,11 @@ var config = {
 };
 
 module.exports = config;
-module.exports.mongoUri = "mongodb://" + config.database.servers.map(function(srv) {
-    return srv.host + ":" + srv.port;
-}).join(",") + "/" + config.database.dbname;
+module.exports.mongoUri = "mongodb://" + config.database.username + ":" +
+    config.database.password + "@"
+    + config.database.servers.map(function(srv) {
+        return srv.host + ":" + srv.port;
+    }).join(",") + "/" + config.database.dbname;
 module.exports.elasticUri = config.elastic.uri + "/" + config.elastic.index.name + "/";
 module.exports.elasticRiverUri = config.elastic.uri + "/_river/" + config.elastic.index.name;
 module.exports.elasticFormUri = config.elastic.uri + "/" + config.elastic.formIndex.name + "/";
