@@ -1,34 +1,40 @@
-angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$timeout', '$http', function($scope, $modal, $timeout, $http) {
-        
-    $scope.cardinalityOptions = 
+angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$timeout', '$http', function ($scope, $modal, $timeout, $http) {
+
+    $scope.cardinalityOptions =
     {
         "1": "Exactly 1"
         , "+": "1 or more"
         , "*": "0 or more"
         , "0.1": "0 or 1"
     };
-    
-    $scope.addSection = function() {
+
+    $scope.addSection = function () {
         if (!$scope.elt.formElements) {
             $scope.elt.formElements = [];
         }
-        $scope.elt.formElements.push({label: "New Section", cardinality: "1", section: {}, formElements: [], elementType: "section"});
-        $scope.stageElt(); 
+        $scope.elt.formElements.push({
+            label: "New Section",
+            cardinality: "1",
+            section: {},
+            formElements: [],
+            elementType: "section"
+        });
+        $scope.stageElt();
     };
-    
+
     $scope.sortableOptionsSections = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
-        , receive: function(e, ui) {
+        , receive: function (e, ui) {
             if (!ui.item.sortable.moved) return ui.item.sortable.cancel();
             if (ui.item.sortable.moved.tinyId || ui.item.sortable.moved.elementType === "question") ui.item.sortable.cancel();
         }
-    };        
+    };
 
     $scope.sortableOptions = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
-        , receive: function(e, ui) {
+        , receive: function (e, ui) {
             var cde = ui.item.sortable.moved;
             if (cde.valueDomain !== undefined) {
                 var question = {
@@ -36,9 +42,10 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
                     , label: cde.naming[0].designation
                     , cardinality: "1"
                     , question: {
-                        cde: {tinyId: cde.tinyId
+                        cde: {
+                            tinyId: cde.tinyId
                             , version: cde.version
-                            }
+                        }
                         , datatype: cde.valueDomain.datatype
                         , required: false
                         , uoms: []
@@ -52,14 +59,14 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
                 if (cde.valueDomain.permissibleValues.length > 0) {
                     if (cde.valueDomain.permissibleValues.length > 9) {
                         $http.get("debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
-                            result.data.valueDomain.permissibleValues.forEach(function(pv) {
-                                question.question.answers.push(pv); 
-                                question.question.cde.permissibleValues.push(pv);  
+                            result.data.valueDomain.permissibleValues.forEach(function (pv) {
+                                question.question.answers.push(pv);
+                                question.question.cde.permissibleValues.push(pv);
                             });
                         });
                     } else {
-                        cde.valueDomain.permissibleValues.forEach(function(pv) {
-                            question.question.answers.push(pv); 
+                        cde.valueDomain.permissibleValues.forEach(function (pv) {
+                            question.question.answers.push(pv);
                             question.question.cde.permissibleValues.push(pv);
                         });
                     }
@@ -70,15 +77,15 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
         }
     };
 
-    $scope.openNameSelect = function(question) {
+    $scope.openNameSelect = function (question) {
         var modalInstance = $modal.open({
-          templateUrl: '/form/public/html/selectQuestionName.html',
-          controller: 'SelectQuestionNameModalCtrl',
-          resolve: {
-                cde: function() {
-                  return question.question.cde;
-                }         
-          }
+            templateUrl: '/form/public/html/selectQuestionName.html',
+            controller: 'SelectQuestionNameModalCtrl',
+            resolve: {
+                cde: function () {
+                    return question.question.cde;
+                }
+            }
         });
 
         modalInstance.result.then(function (selectedName) {
@@ -86,38 +93,38 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
             $scope.stageElt();
         });
     };
-    
-    $scope.checkUom = function(question, index) {
-        $timeout(function() {
-            if (question.question.uoms[index] === "") question.question.uoms.splice(index, 1);        
+
+    $scope.checkUom = function (question, index) {
+        $timeout(function () {
+            if (question.question.uoms[index] === "") question.question.uoms.splice(index, 1);
         }, 0);
     };
 
-    $scope.canAddUom = function(question) {
+    $scope.canAddUom = function (question) {
         return $scope.canCurate && (!question.question.uoms || question.question.uoms.indexOf("Please specify") < 0);
     };
-    
-    $scope.addUom = function(question) {
+
+    $scope.addUom = function (question) {
         if (!question.question.uoms) question.question.uoms = [];
         question.question.uoms.push("Please specify");
     };
 
-    $scope.removeElt = function(form, index) {
+    $scope.removeElt = function (form, index) {
         form.formElements.splice(index, 1);
         $scope.stageElt();
-        
-        if(form.formElements.length === 0) {
+
+        if (form.formElements.length === 0) {
             $scope.setToNoneAddCdeMode();
         }
     };
-    
-    $scope.removeQuestion = function(section, index) {
+
+    $scope.removeQuestion = function (section, index) {
         section.formElements.splice(index, 1);
         $scope.stageElt();
     };
 
-    $scope.moveElt = function(index, inc) {
-        $scope.elt.formElements.splice(index + inc, 0, $scope.elt.formElements.splice(index, 1)[0]);   
+    $scope.moveElt = function (index, inc) {
+        $scope.elt.formElements.splice(index + inc, 0, $scope.elt.formElements.splice(index, 1)[0]);
         $scope.stageElt();
     };
 
