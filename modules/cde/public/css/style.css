@@ -618,11 +618,6 @@ button#selectDefault {
     border: none !important;
 }
 
-/*.cdeTable th {*/
-    /*width: 90px;*/
-    /*overflow: hidden;*/
-/*}*/
-
 .generalDetailsTable th{
     width: 30%;
 }
