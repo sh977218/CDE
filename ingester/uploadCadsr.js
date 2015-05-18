@@ -33,7 +33,7 @@ if (!cadsrFolder) {
 
 var datatypeMapping = {
     CHARACTER: "Text"
-    , NUMBER: "Float"
+    , NUMBER: "Number"
     , ALPHANUMERIC: "Text"
     , TIME: "Time"
     , DATE: "Date"
@@ -56,16 +56,6 @@ setTimeout(function() {
 }, 1000);
 
 var convertCadsrStatusToNlmStatus = function(status) {
-    //switch (status) {
-    //    case "Preferred Standard":
-    //    case "Standard":
-    //        return "Candidate";
-    //    case "Qualified":
-    //    case "Recorded":
-    //    case "Candidate":
-    //    default:
-    //        return "Incomplete";
-    //}
     switch (status) {
         case "Preferred Standard":
         case "Standard":
@@ -151,8 +141,8 @@ var doFile = function (cadsrFile, fileCb) {
             if (datatypeMapping[cde.valueDomain.datatype]) {
                 cde.valueDomain.datatype = datatypeMapping[cde.valueDomain.datatype];
             }
-            if (cde.valueDomain.datatype === 'Float') {
-                cde.valueDomain.datatypeFloat = {};
+            if (cde.valueDomain.datatype === 'Number') {
+                cde.valueDomain.datatypeNumber = {};
                 if (de.VALUEDOMAIN[0].MaximumValue[0].length > 0) {
                     cde.valueDomain.datatypeFloat.maxValue = de.VALUEDOMAIN[0].MaximumValue[0];
                 } 
