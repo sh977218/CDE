@@ -19,7 +19,7 @@ var builder = new xml2js.Builder();
 
 var classifMapping = {};
 cadsrClassifs.shift();
-var cadsrClassifMap = cadsrClassifs.forEach(function(classif) {
+cadsrClassifs.forEach(function(classif) {
     if (classif.FIELD19 === 'RELEASED') {
         classifMapping[classif.FIELD14 + "v" + classif.FIELD17] = classif.FIELD9;
     }
@@ -45,7 +45,10 @@ var nciOrg = null;
 
 setTimeout(function() {
     mongo_data_system.orgByName("PhenX", function(stewardOrg) {
-       phenxOrg = stewardOrg; 
+       phenxOrg = stewardOrg;
+        if (!phenxOrg) {
+            phenxOrg = {name: "PhenX", classifications: []};
+        }
     });
     mongo_data_system.orgByName("NCI", function(stewardOrg) {
         nciOrg = stewardOrg; 
