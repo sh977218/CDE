@@ -7,7 +7,7 @@ var fs = require('fs'),
     async = require ('async')
     , xml2js = require('xml2js')
     , shortid = require('shortid')
-    , cadsrClassifs = require('./cadsrClassifs')
+    , classifMapping = require('./classifMapping')
     , Readable = require('stream').Readable
     , entities = require("entities")
         ;
@@ -16,14 +16,6 @@ var parser = new xml2js.Parser();
 var builder = new xml2js.Builder();
 
 //  for f in $(find ../nlm-seed/ExternalCDEs/caDSR/xml_cde_20151510354/  -name *.xml); do  node ingester/uploadCadsr.js $f ; done
-
-var classifMapping = {};
-cadsrClassifs.shift();
-cadsrClassifs.forEach(function(classif) {
-    if (classif.FIELD19 === 'RELEASED') {
-        classifMapping[classif.FIELD14 + "v" + classif.FIELD17] = classif.FIELD9;
-    }
-});
 
 var cadsrFolder = process.argv[2];
 if (!cadsrFolder) {
@@ -267,8 +259,9 @@ var doFile = function (cadsrFile, fileCb) {
         
             if (de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM)
             de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.forEach(function(csi) {
-                var classifName = classifMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + csi.ClassificationScheme[0].Version[0]] || "";
-                if (classifName.length > 0 &&
+                var classifName = classifMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + csi.ClassificationScheme[0].Version[0]].longName || "";
+                var classifStatus = classifMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + csi.ClassificationScheme[0].Version[0]].workflowStatusName;
+                if (classifStatus === 'RELEASED' && classifName.length > 0 &&
                         csi.ClassificationSchemeItemName[0].length > 0) {
                     if (csi.ClassificationScheme[0].ContextName[0] === "caBIG" && classifName === "PhenX") {
                         classificationShared.classifyItem(cde, "PhenX", ['PhenX', csi.ClassificationSchemeItemName[0]]);
