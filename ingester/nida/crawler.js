@@ -1,3 +1,5 @@
+// usage: phantomjs ingester/nida/crawler.js, node ingester/nida/wiper.js, node ingester/nida/loader.js
+
 var webpage = require('webpage')
     , system = require('system')
     , fs = require('fs')
