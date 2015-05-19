@@ -61,7 +61,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                             '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="\'html\'">Rich Text</button>' +
                             '   </div>' +
                             '   <textarea ng-show="defFormat!=\'html\'" ng-model="value" class="form-control"></textarea>' +
-                            '   <div text-angular ng-show="defFormat==\'html\'" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ></div>' +
+                            '   <div text-angular ng-show="defFormat==\'html\'" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ta-toolbar="[[\'h1\',\'h2\',\'h3\',\'h4\',\'h5\',\'h6\',\'p\'],[\'bold\',\'italics\'],[\'undo\',\'redo\'],[\'ul\',\'ol\'],[\'justifyLeft\',\'justifyCenter\',\'justifyRight\'],[\'indent\',\'outdent\']]"></div>' +
                             '   <button class="fa fa-check" ng-click="model = value;editMode = false; onOk();">Confirm</button>' +
                             '   <button class="fa fa-times" ng-click="editMode = false">Cancel</button>' +
                             '</div>       ' +
