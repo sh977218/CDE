@@ -7,7 +7,7 @@ var fs = require('fs'),
     async = require ('async')
     , xml2js = require('xml2js')
     , shortid = require('shortid')
-    , classifMapping = require('./classifMapping')
+    , classifMapping = require('./classifMapping.json')
     , Readable = require('stream').Readable
     , entities = require("entities")
         ;
@@ -39,13 +39,15 @@ setTimeout(function() {
     mongo_data_system.orgByName("PhenX", function(stewardOrg) {
        phenxOrg = stewardOrg;
         if (!phenxOrg) {
-            phenxOrg = {name: "PhenX", classifications: []};
+            //phenxOrg = {name: "PhenX", classifications: []};
+            throw "PhenX Org does not exists!";
         }
     });
     mongo_data_system.orgByName("NCI", function(stewardOrg) {
         nciOrg = stewardOrg; 
         if (!nciOrg) {
-            nciOrg = {name: "NCI", classifications: []};
+            //nciOrg = {name: "NCI", classifications: []};
+            throw "NCI Org does not exists!";
         }
     });
 }, 1000);
@@ -259,8 +261,19 @@ var doFile = function (cadsrFile, fileCb) {
         
             if (de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM)
             de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.forEach(function(csi) {
-                var classifName = classifMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + csi.ClassificationScheme[0].Version[0]].longName || "";
-                var classifStatus = classifMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + csi.ClassificationScheme[0].Version[0]].workflowStatusName;
+                var getStringVersion = function (shortVersion) {
+                    if (shortVersion.indexOf(".")===-1) return shortVersion + ".0";
+                    else return shortVersion;
+                };
+                var classifVersion = getStringVersion(csi.ClassificationScheme[0].Version[0]);
+                try {
+                    var classifName = classifMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion].longName || "";
+
+                } catch(e){
+                    console.log(csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion);
+                    throw e;
+                }
+                var classifStatus = classifMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion].workflowStatusName;
                 if (classifStatus === 'RELEASED' && classifName.length > 0 &&
                         csi.ClassificationSchemeItemName[0].length > 0) {
                     if (csi.ClassificationScheme[0].ContextName[0] === "caBIG" && classifName === "PhenX") {

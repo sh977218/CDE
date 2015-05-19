@@ -27,7 +27,7 @@ request('http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=gov.nih.nci.cadsr.d
                 };
             });
         });
-        console.log(finalMapping.length);
-        fs.writeFile("./classifMapping.js", beautify(finalMapping, null, 2, 1000), function(){});
+        console.log("Classifications obtained.");
+        fs.writeFile("./ingester/classifMapping.json", beautify(finalMapping, null, 2, 1000), function(){});
     }
 });
