@@ -101,7 +101,6 @@
                 </div>
                 <br/>
                 <strong ng-show="aggregations.statuses.buckets" id="status_filter">Registration Status</strong>
-                <i class="fa-info on fa-circle" tooltip-placement="right" tooltip-append-to-body="true" tooltip-html-unsafe="You can restrict search to certain Registration Status. Go to your search settings (<i class='fa fa-cog'></i> Upper right corner) to view more statuses."></i>
                 <div class="pl5">
                     <div tabindex="0" ng-repeat="t in registrationStatuses" style="margin-right: 0px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
                         <span class="hand-cursor" ng-show="t.count > 0" tooltip-html-unsafe="{{t.help}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
