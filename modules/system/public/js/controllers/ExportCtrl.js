@@ -1,6 +1,7 @@
 angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', '$window', '$timeout', function($scope, Elastic, $window, $timeout) {
     var maxExportSize = 500;
 
+    $scope.feedbackClass = ["fa-download"];
     $scope.csvDownloadState = "none";
     $scope.exportSearchResults = function() {
         try {
@@ -8,13 +9,15 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', '$
         } catch (e) {
             return $scope.addAlert("danger", "Export feature is not supported in this browser. Please try Google Chrome or Mozilla FireFox.");
         }
-        if ($scope.totalItems>maxExportSize) $scope.addAlert("warning", "The search result is too large. It will be capped to " + maxExportSize + " items.");
-        $scope.query.query.size = maxExportSize;
+        $scope.feedbackClass = ['fa-spinner', 'fa-pulse'];
+        $scope.addAlert("warning", "Your export is being generated, please wait.");
         Elastic.getExport($scope.query, $scope.module,  function(result) {
             var blob = new Blob([result], {
                 type: "text/csv"
             });
             saveAs(blob, 'SearchExport' + '.csv');
+            $scope.addAlert("success", "Export downloaded.")
+            $scope.feedbackClass = ["fa-download"];
         });
     };
 

@@ -22,7 +22,7 @@
         <span ng-controller="ExportCtrl">
             <a ng-click="exportSearchResults()" ng-show="totalItems>0 && cPage !== 'forms'">
                 <button id="exportSearch" value="Export Search" class="btn btn-default pull-right">
-                    <i class="fa fa-download"></i>
+                    <i class="fa" ng-class="feedbackClass"></i>
                     Export Search
                 </button>
             </a>
@@ -112,7 +112,7 @@
                 </div>
             </div>
             <div ng-class="{'col-xs-9 col-lg-10' : filterMode===true, 'col-xs-12' : filterMode===false}">
-                <span ng-hide="cdes.length >= 0"><h1 class="pl130"><i class="fa fa-spinner fa-spin"></i> Searching...</h1></span>
+                <span ng-hide="cdes.length >= 0"><h1 class="pl130"><i class="fa fa-spinner fa-pulse"></i> Searching...</h1></span>
                 <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found. Try other criterias or selecting more statuses</h4></span>
                 <span ng-include="'/template/system/switchListViewContent.ejs'"></span>
                 <pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems" items-per-page="20" ng-model="searchForm.currentPage" next-text="Next"></pagination>
