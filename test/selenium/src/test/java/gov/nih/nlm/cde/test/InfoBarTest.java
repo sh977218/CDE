@@ -23,7 +23,7 @@ public class InfoBarTest extends NlmCdeBaseTest {
     
     @Test
     public void infoBarStatus() {
-        goToCdeSearch();
+        setLowStatusesVisible();
         textPresent("| All Statuses");
         findElement(By.id("li-blank-Preferred Standard")).click();
         hangon(1);
