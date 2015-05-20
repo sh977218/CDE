@@ -110,7 +110,7 @@ var doFile = function (cadsrFile, fileCb) {
                     {key: "caDSR_Context", value: de.CONTEXTNAME[0]}
                     , {key: "caDSR_Datatype", value: de.VALUEDOMAIN[0].Datatype[0]}
                     , {key: "caDSR_Short_Name", value: de.PREFERREDNAME[0]}
-                    , {key: "caDSR_Registration_Status", value: (typeof de.REGISTRATIONSTATUS[0] === "String" && de.REGISTRATIONSTATUS[0].length > 0)  ? de.REGISTRATIONSTATUS[0] : "Empty"}
+                    , {key: "caDSR_Registration_Status", value: (de.REGISTRATIONSTATUS[0] && de.REGISTRATIONSTATUS[0].length > 0)  ? de.REGISTRATIONSTATUS[0] : "Empty"}
                 ]
             };
             if (cde.registrationState.registrationStatus === "Application" || cde.registrationState.registrationStatus === "Proposed") {
@@ -195,8 +195,8 @@ var doFile = function (cadsrFile, fileCb) {
             }            
             
             if (de.VALUEDOMAIN[0].ValueDomainType[0] === 'Enumerated') {
+                cde.valueDomain.datatypeValueList = {datatype: cde.valueDomain.datatype};
                 cde.valueDomain.datatype = "Value List";
-                cde.valueDomain.datatypeValueList = {datatype: de.VALUEDOMAIN[0].Datatype[0]};
             }
             
             if (de.VALUEDOMAIN[0].UnitOfMeasure[0].length > 0) {
@@ -279,7 +279,9 @@ var doFile = function (cadsrFile, fileCb) {
                     if (csi.ClassificationScheme[0].ContextName[0] === "caBIG" && classifName === "PhenX") {
                         classificationShared.classifyItem(cde, "PhenX", ['PhenX', csi.ClassificationSchemeItemName[0]]);
                         classificationShared.addCategory({elements: phenxOrg.classifications}, ["PhenX", csi.ClassificationSchemeItemName[0]]);
-                        cde.registrationState.registrationStatus = "Qualified";
+                        if (['Standard', 'Preferred Standard'].indexOf(cde.registrationState.registrationStatus) < 0) {
+                            cde.registrationState.registrationStatus = "Qualified";
+                        }
                     } else if (csi.ClassificationScheme[0].ContextName[0] === "NIDA") {
                         cde.registrationState.registrationStatus = "Qualified";
                     } else if (csi.ClassificationScheme[0].ContextName[0] === "NINDS") {
