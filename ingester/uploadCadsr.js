@@ -113,12 +113,12 @@ var doFile = function (cadsrFile, fileCb) {
                     , {key: "caDSR_Registration_Status", value: (de.REGISTRATIONSTATUS[0] && de.REGISTRATIONSTATUS[0].length > 0)  ? de.REGISTRATIONSTATUS[0] : "Empty"}
                 ]
             };
-            if (cde.registrationState.registrationStatus === "Application" || cde.registrationState.registrationStatus === "Proposed") {
-                cde.registrationState.registrationStatus = "Recorded";
-            } 
-            if (cde.registrationState.registrationStatus['$']) {
-                cde.registrationState.registrationStatus = "Recorded";
-            }
+            //if (cde.registrationState.registrationStatus === "Application" || cde.registrationState.registrationStatus === "Proposed") {
+            //    cde.registrationState.registrationStatus = "Recorded";
+            //}
+            //if (cde.registrationState.registrationStatus['$']) {
+            //    cde.registrationState.registrationStatus = "Recorded";
+            //}
             if (de.ORIGIN[0] && de.ORIGIN[0].length > 0) {
                 cde.origin = de.ORIGIN[0];
             }
@@ -283,7 +283,9 @@ var doFile = function (cadsrFile, fileCb) {
                             cde.registrationState.registrationStatus = "Qualified";
                         }
                     } else if (csi.ClassificationScheme[0].ContextName[0] === "NIDA") {
-                        cde.registrationState.registrationStatus = "Qualified";
+                        if (['Standard', 'Preferred Standard'].indexOf(cde.registrationState.registrationStatus) < 0) {
+                            cde.registrationState.registrationStatus = "Qualified";
+                        }
                     } else if (csi.ClassificationScheme[0].ContextName[0] === "NINDS") {
                         // ignore classifications
                     } else {
