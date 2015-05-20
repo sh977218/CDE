@@ -18,6 +18,7 @@ public class TourTest extends NlmCdeBaseTest {
         getNext("Boards allow registered users to group CDEs");
         getNext("The quick board is emptied when the");
         getNext("more documentation about this site or start this tour again");
+        getNext("Personalize your search results.");
         getNext("an overview of the CDE attributes");
         getNext("to see what type of value are allowed");
         getNext("may have multiple names, often given");
@@ -58,6 +59,7 @@ public class TourTest extends NlmCdeBaseTest {
 		getNext("Boards allow registered users to group CDEs");
 		getNext("The quick board is emptied when the");
 		getNext("more documentation about this site or start this tour again");
+        getNext("Personalize your search results.");
 		getNext("For example, search for");
 		getNext("a combination of most relevant and higher status CDEs first");
 		getNext(" to view the CDE summary");
