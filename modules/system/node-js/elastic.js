@@ -107,6 +107,9 @@ exports.elasticSearchExport = function(res, query, type, project, header) {
                 }
             } else {
                 lock = false;
+                logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
+                    {origin: "system.elastic.elasticsearch", stack: new Error().stack,
+                        details: "body " + body});
                 res.status(500).send("ES Error");
             }
         });
@@ -118,6 +121,9 @@ exports.elasticSearchExport = function(res, query, type, project, header) {
             scrollThrough(resp._scroll_id);
         } else {
             lock = false;
+            logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
+                {origin: "system.elastic.elasticsearch", stack: new Error().stack,
+                    details: "body " + body + ", query: " + query});
             res.status(500).send("ES Error");
         }
     });

@@ -12,12 +12,16 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', '$
         $scope.feedbackClass = ['fa-spinner', 'fa-pulse'];
         $scope.addAlert("warning", "Your export is being generated, please wait.");
         Elastic.getExport($scope.query, $scope.module,  function(result) {
-            var blob = new Blob([result], {
-                type: "text/csv"
-            });
-            saveAs(blob, 'SearchExport' + '.csv');
-            $scope.addAlert("success", "Export downloaded.")
-            $scope.feedbackClass = ["fa-download"];
+            if (result) {
+                var blob = new Blob([result], {
+                    type: "text/csv"
+                });
+                saveAs(blob, 'SearchExport' + '.csv');
+                $scope.addAlert("success", "Export downloaded.")
+                $scope.feedbackClass = ["fa-download"];
+            } else {
+                $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
+            }
         });
     };
 
