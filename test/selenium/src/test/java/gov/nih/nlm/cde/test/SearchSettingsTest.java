@@ -77,7 +77,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Permissible Values");
         textPresent("Steward");
         textPresent("Used by Organizations");
-        textNotPresent("Registration Status");
+        textNotPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
     }
 }
