@@ -93,7 +93,7 @@ public class ClassificationTest extends BaseClassificationTest {
 				.click();
 		showSearchFilters();
 		hangon(1);
-		Assert.assertTrue(textPresent("Classifications"));
+		Assert.assertTrue(textPresent("Classification"));
 		Assert.assertTrue(textPresent("NINDS (10"));
 		Assert.assertTrue(textPresent("Imaging Diagnostics"));
 	}
