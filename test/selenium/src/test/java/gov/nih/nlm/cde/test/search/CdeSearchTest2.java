@@ -90,18 +90,12 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         mustBeLoggedOut();
         setLowStatusesVisible();
         goToCdeSearch();
-        try {
-            findElement(By.id("li-blank-Preferred Standard")).click();
-            hangon(1);
-        } catch (TimeoutException e) {
-            // ignore, there may not be any Pref Standard.
-        }
+        findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
+        findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
         findElement(By.id("li-blank-Standard")).click();
         hangon(1);
         findElement(By.id("li-blank-Qualified")).click();
         hangon(1);
-        findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
-        findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
         textPresent("results for All Terms | CTEP > CATEGORY | Preferred Standard, Standard, Qualified");
         findElement(By.xpath("//i[@id=\"li-checked-Qualified\"]")).click();
         scrollToTop();
