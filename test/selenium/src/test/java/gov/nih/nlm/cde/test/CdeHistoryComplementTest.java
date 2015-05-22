@@ -14,10 +14,10 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");
 
         findElement(By.linkText("Naming")).click();
-        findElement(By.xpath("//button[text()=\" Add Naming\"]")).click();
+        findElement(By.id("addNamePair")).click();
         findElement(By.xpath("//label[text()=\"Name\"]/following-sibling::input")).sendKeys("Alternative Name 1");
         findElement(By.xpath("//label[text()=\"Definition\"]/following-sibling::textarea")).sendKeys("Alternative Definition 1");
-        findElement(By.xpath("//div[@id='newConceptModalFooter']//button[text()=\"Save\"]")).click();
+        findElement(By.id("createNamePair")).click();
         modalGone();
 
         findElement(By.linkText("Concepts")).click();
