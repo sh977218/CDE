@@ -25,12 +25,10 @@ public class InfoBarTest extends NlmCdeBaseTest {
     public void infoBarStatus() {
         setLowStatusesVisible();
         textPresent("| All Statuses");
-        findElement(By.id("li-blank-Preferred Standard")).click();
-        hangon(1);
         findElement(By.id("li-blank-Standard")).click();
         hangon(1);
         findElement(By.id("li-blank-Qualified")).click();
-        textPresent("| Preferred Standard, Standard, Qualified");
+        textPresent("| Standard, Qualified");
         hangon(1);
         findElement(By.id("li-checked-Qualified")).click();
         textNotPresent(", Qualified");

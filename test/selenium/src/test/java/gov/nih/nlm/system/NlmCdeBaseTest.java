@@ -265,6 +265,7 @@ public class NlmCdeBaseTest {
     protected void openEltInList(String name, String type, String status) {
         searchElt(name, type, status);
         clickElement(By.id("acc_link_0"));
+        textPresent("View Full Detail");
         wait.until(ExpectedConditions.elementToBeClickable(By
                 .id("openEltInCurrentTab_0")));
     }
