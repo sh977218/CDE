@@ -1,20 +1,20 @@
 <table class="generalDetailsTable cdeTable cdeTable-noBorder table table-border">
-    <caption>General Details</caption>
+    <caption tabindex="0">General Details</caption>
     <tr>
-        <th class="text-right">Name:</th>
-        <td id="dd_general_name" ng-bind-html="cde.primaryNameCopy"></td>
+        <th tabindex="0" class="text-right">Name:</th>
+        <td tabindex="0" id="dd_general_name" ng-bind-html="cde.primaryNameCopy"></td>
     </tr>
     <tr>
-        <th class="text-right">Steward:</th>
-        <td ng-bind-html="cde.stewardOrg.name"></td>
+        <th tabindex="0" class="text-right">Steward:</th>
+        <td tabindex="0" ng-bind-html="cde.stewardOrg.name"></td>
     </tr>
     <tr>
-        <th class="text-right">Definition:</th>
-        <td id="dd_def" ng-bind-html="cde.primaryDefinitionCopy | placeholdEmpty"></td>
+        <th tabindex="0" class="text-right">Definition:</th>
+        <td tabindex="0" id="dd_def" ng-bind-html="cde.primaryDefinitionCopy | placeholdEmpty"></td>
     </tr>
     <tr>
-        <th class="text-right">Used By:</th>
-        <td id="dd_usedBy">
+        <th tabindex="0" class="text-right">Used By:</th>
+        <td tabindex="0" id="dd_usedBy">
             <span ng-switch="cde.classification.length > 0">
                 <span ng-switch-when="false">None</span>
                 <span ng-switch-default>
@@ -23,25 +23,25 @@
             </span>
         </td>
     </tr>
-    <tr ng-show="cde.valueDomain.uom">
-        <th class="text-right">Unit of Measure:</th>
-        <td id="dd_uom">{{cde.valueDomain.uom | placeholdEmpty}}</td>
+    <tr ng-if="cde.valueDomain.uom">
+        <th tabindex="0" class="text-right">Unit of Measure:</th>
+        <td tabindex="0" id="dd_uom">{{cde.valueDomain.uom | placeholdEmpty}}</td>
     </tr>
-    <tr ng-show="cde.origin">
-        <th class="text-right">Origin:</th>
-        <td>{{cde.origin}}</td>
+    <tr ng-if="cde.origin">
+        <th tabindex="0" class="text-right">Origin:</th>
+        <td tabindex="0">{{cde.origin}}</td>
     </tr>
-    <tr ng-show="cde.source">
-        <th class="text-right">Source:</th>
-        <td>{{cde.source}}</td>
+    <tr ng-if="cde.source">
+        <th tabindex="0" class="text-right">Source:</th>
+        <td tabindex="0">{{cde.source}}</td>
     </tr>
     <tr>
-        <th class="text-right" id="dt_status">Status:</th>
-        <td id="dd_status">{{cde.registrationState.registrationStatus}}</td>
+        <th tabindex="0" class="text-right" id="dt_status">Status:</th>
+        <td tabindex="0" id="dd_status">{{cde.registrationState.registrationStatus}}</td>
     </tr>
-    <tr  ng-show="cde.views">
-        <th class="text-right">Views:</th>
-        <td id="dd_views">{{cde.views}}</td>
+    <tr ng-if="cde.views">
+        <th tabindex="0" class="text-right">Views:</th>
+        <td tabindex="0" id="dd_views">{{cde.views}}</td>
     </tr>
 </table>
 
