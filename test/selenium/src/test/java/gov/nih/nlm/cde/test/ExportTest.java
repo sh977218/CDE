@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -30,9 +31,16 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
         textPresent("server is busy processing");
         closeAlert();
-        wait.withTimeout(25, TimeUnit.SECONDS);
-        textPresent("Export downloaded.");
+        wait.withTimeout(10, TimeUnit.SECONDS);
+        boolean done = false;
+        for (int i=0; !done && i < 10; i++) {
+            try {
+                textPresent("Export downloaded.");
+                done = true;
+            } catch (TimeoutException e) {System.out.println("No export after : " + 10 * i + "seconds");}
+        }
         wait.withTimeout(defaultTimeout, TimeUnit.SECONDS);
         closeAlert();
+        if (!done) throw new TimeoutException("Export was too slow.");
     }
 }
