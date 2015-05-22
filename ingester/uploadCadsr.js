@@ -39,14 +39,12 @@ setTimeout(function() {
     mongo_data_system.orgByName("PhenX", function(stewardOrg) {
        phenxOrg = stewardOrg;
         if (!phenxOrg) {
-            //phenxOrg = {name: "PhenX", classifications: []};
             throw "PhenX Org does not exists!";
         }
     });
     mongo_data_system.orgByName("NCI", function(stewardOrg) {
         nciOrg = stewardOrg; 
         if (!nciOrg) {
-            //nciOrg = {name: "NCI", classifications: []};
             throw "NCI Org does not exists!";
         }
     });
@@ -113,12 +111,7 @@ var doFile = function (cadsrFile, fileCb) {
                     , {key: "caDSR_Registration_Status", value: (de.REGISTRATIONSTATUS[0] && de.REGISTRATIONSTATUS[0].length > 0)  ? de.REGISTRATIONSTATUS[0] : "Empty"}
                 ]
             };
-            //if (cde.registrationState.registrationStatus === "Application" || cde.registrationState.registrationStatus === "Proposed") {
-            //    cde.registrationState.registrationStatus = "Recorded";
-            //}
-            //if (cde.registrationState.registrationStatus['$']) {
-            //    cde.registrationState.registrationStatus = "Recorded";
-            //}
+
             if (de.ORIGIN[0] && de.ORIGIN[0].length > 0) {
                 cde.origin = de.ORIGIN[0];
             }
@@ -215,9 +208,6 @@ var doFile = function (cadsrFile, fileCb) {
                         newPv.valueMeaningCode = pv.MEANINGCONCEPTS[0];
                     }
                     cde.valueDomain.permissibleValues.push(newPv);
-    //                if (pv.MEANINGCONCEPTS[0].length > 0) {
-    //                    newPv.valueMeaningCodeSystem
-    //                }
                 });
                 cde.valueDomain.permissibleValues.sort(function(pv1, pv2) {
                     if (pv1.permissibleValue === pv2.permissibleValue) return 0;
