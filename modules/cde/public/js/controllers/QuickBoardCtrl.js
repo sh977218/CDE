@@ -2,8 +2,6 @@ angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', '
 
     $scope.cdes = [];
     $scope.qbGridCdes = [];
-
-
     
     $scope.removeDE = function( index ) {
         $scope.cdes.splice(index, 1);
@@ -32,5 +30,5 @@ angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', '
            }
         });
     }
-    
+
 }]);

@@ -11,6 +11,10 @@ var fs = require('fs')
     , classificationShared = require('../modules/system/shared/classificationShared')
 ;
 
+var cdeSource = process.argv[3];
+
+var importDate = new Date().toJSON();
+
 var parser = new xml2js.Parser();
 
 var mongoUri = config.mongoUri;
@@ -58,7 +62,7 @@ var same = 0;
 var todo = 0;
 var doneThisTime = 0;
 
-var checkTodo = function() {
+var checkTodo = function(source) {
     todo--;
     if (todo === 0) {
         console.log("nothing left to do");
@@ -67,6 +71,11 @@ var checkTodo = function() {
         console.log(same + " elements unchanged");
         doStream();
     }
+    //MigrationDataElement.find().count(function (err, count) {
+    //    if (count>0) doStream();
+    //})
+
+    DataElement.where({imported: {$ne: importDate}, source: cdeSource}).update({"registrationState.registrationStatus":"Retired", "registrationState.administrativeNote":"Not present in import from " + importDate});
 };
 
 setInterval(function(){
@@ -92,7 +101,13 @@ var compareCdes = function(existingCde, newCde) {
             existingCde.classification.splice(i, 1);
         }
     }
-    classificationShared.sortClassification(existingCde);
+    if (existingCde.classification == [null]) existingCde.classification = [];
+    try {
+        if (existingCde.classification.length > 0) classificationShared.sortClassification(existingCde);
+    } catch(e) {
+        console.log(existingCde);
+        throw e;
+    }
 
     newCde = JSON.parse(JSON.stringify(newCde));
     wipeUseless(newCde);
@@ -100,73 +115,122 @@ var compareCdes = function(existingCde, newCde) {
     return cdesvc.diff(existingCde, newCde);
 };
 
-var processCde = function(cdeId, migrationCde, source, orgName){
-    DataElement.find({archived: null, source: source, "registrationState.registrationStatus": {$not: /Retired/}})
+var processCde = function(migrationCde, existingCde, orgName) {
+    // deep copy
+    var newDe = existingCde.toObject();
+    delete newDe._id;
+
+    var deepDiff = compareCdes(existingCde, migrationCde);
+    if (!deepDiff || deepDiff.length === 0) {
+        // nothing changed, remove from input
+        existingCde.imported = importDate;
+        existingCde.save(function(err){
+            if (err) throw "Unable to update import date";
+            migrationCde.remove(function (err) {
+                same++;
+                if (err) throw "unable to remove";
+                checkTodo();
+            });
+        });
+    } else if (deepDiff.length > 0) {
+        newDe.naming[0] = migrationCde.naming[0];
+        newDe.version = migrationCde.version;
+        newDe.changeNote = "Bulk update from source";
+        newDe.imported = importDate;
+
+        for (var j = 0; j < migrationCde.properties.length; j++) {
+            removeProperty(newDe, migrationCde.properties[j]);
+            newDe.properties.push(migrationCde.properties[j]);
+        }
+
+        removeClassificationTree(newDe, orgName);
+        if (migrationCde.classification[0]) newDe.classification.push(migrationCde.classification[0]);
+        newDe._id = existingCde._id;
+        try {
+            mongo_cde.update(newDe, {username: "batchloader"}, function (err) {
+                if (err) {
+                    console.log("Cannot save CDE.");
+                    console.log(newDe);
+                    throw err;
+                }
+                else migrationCde.remove(function (err) {
+                    if (err) console.log("unable to remove " + err);
+                    else checkTodo();
+                    changed++;
+                });
+            });
+        } catch(e) {
+            console.log(newDe);
+            console.log(existingCde);
+            throw e;
+        }
+
+    } else {
+        console.log("Something wrong with deepDiff");
+        console.log(deepDiff);
+    }
+};
+
+var findCde = function(cdeId, migrationCde, source, orgName, idv){
+    var cdeCond = {archived: null, source: source, "registrationState.registrationStatus": {$not: /Retired/}, imported: {$ne: importDate}};
+    DataElement.find(cdeCond)
         .where("ids").elemMatch(function (elem) {
             elem.where("source").equals(source);
             elem.where("id").equals(cdeId);
         }).exec(function (err, existingCdes) {
             if (existingCdes.length === 0) {
-                delete migrationCde._id;
-                var createDe = new DataElement(migrationCde);
-                createDe.save(function (err) {
-                    if (err) console.log("unable to save.  " + err);
-                    else {
-                        created++;
-                        migrationCde.remove(function (err) {
-                            if (err) console.log("unable to remove: " + err);
-                            else checkTodo();
-                        });
-                    }
-                });
-            } else if (existingCdes.length > 1) {
-                console.log("Too many CDEs with Id = " + cdeId + " -- TODO: " + todo);
-                checkTodo();
-            } else {
-                var existingCde = existingCdes[0];
-
-                // deep copy
-                var newDe = JSON.parse(JSON.stringify(existingCde));
-                delete newDe._id;
-
-                var deepDiff = compareCdes(existingCde, migrationCde);
-                if (!deepDiff || deepDiff.length === 0) {
-                    // nothing changed, remove from input
-                    existingCde.imported = new Date().toJSON();
-                    existingCde.save(function(err){
-                        if (err) throw "Unable to update import date";
-                        migrationCde.remove(function (err) {
-                            same++;
-                            if (err) throw "unable to remove";
-                            checkTodo();
-                        });
+                //delete migrationCde._id;
+                var mCde = JSON.parse(JSON.stringify(migrationCde.toObject()));
+                delete mCde._id; //use mCde below!!!
+                var createDe = new DataElement(mCde);
+                createDe.imported = importDate;
+                createDe.created = importDate;
+                try {
+                    createDe.save(function (err) {
+                        if (err) {
+                            console.log("Unable to create CDE.");
+                            console.log(mCde);
+                            console.log(createDe);
+                            throw err;
+                        }
+                        else {
+                            created++;
+                            migrationCde.remove(function (err) {
+                                if (err) console.log("unable to remove: " + err);
+                                else checkTodo();
+                            });
+                        }
                     });
-                } else if (deepDiff.length > 0) {
-                    newDe.naming[0] = migrationCde.naming[0];
-                    newDe.version = migrationCde.version;
-                    newDe.changeNote = "Bulk update from source";
-                    newDe.imported = new Date().toJSON();
-
-                    for (var j = 0; j < migrationCde.properties.length; j++) {
-                        removeProperty(newDe, migrationCde.properties[j]);
-                        newDe.properties.push(migrationCde.properties[j]);
-                    }
-
-                    removeClassificationTree(newDe, orgName);
-                    newDe.classification.push(migrationCde.classification[0]);
-                    newDe._id = existingCde._id;
-                    mongo_cde.update(newDe, {username: "batchloader"}, function(){
-                        migrationCde.remove(function (err) {
-                            if (err) console.log("unable to remove " + err);
-                            else checkTodo();
-                            changed++;
-                        });
-                    });
-
-                } else {
-                    console.log("Something wrong with deepDiff");
-                    console.log(deepDiff);
+                } catch(e) {
+                    console.log(createDe);
+                    console.log(mCde);
+                    throw e;
                 }
+            } else if (existingCdes.length > 1) {
+                console.log("Too many CDEs with Id = " + cdeId + ",  -- TODO: " + todo);
+
+                DataElement.find(cdeCond)
+                    .where("ids").elemMatch(function (elem) {
+                        elem.where("source").equals(source);
+                        elem.where("id").equals(cdeId);
+                        elem.where("version").equals(idv);
+                    }).exec(function (err, existingCdes) {
+                        if (existingCdes.length === 1) {
+                            processCde(migrationCde, existingCdes[0], orgName);
+                        }
+                        else if (existingCdes.length > 1) {
+                            console.log(cdeId);
+                            console.log(source);
+                            console.log(idv);
+                            throw "Too many CDEs with the same ID/version.";
+                        } else {
+                            throw "Too many CDEs with same ID but there is a new version. Need to implement this.";
+                        }
+                        //checkTodo(); //Multiple CDEs with the same ID but not any one with the same ID+version? This must be a new version, keep it for later!
+                    });
+
+            } else {
+                processCde(migrationCde, existingCdes[0], orgName);
             }
         });
 };
@@ -178,16 +242,19 @@ var streamOnData = function (migrationCde) {
     var source = migrationCde.source;
     var orgName = migrationCde.stewardOrg.name;
     var cdeId = 0;
+    var idv;
     for (var i = 0; i < migrationCde.ids.length; i++) {
-        if (migrationCde.ids[i].source === source) cdeId = migrationCde.ids[i].id;
+        if (migrationCde.ids[i].source === source) {
+            cdeId = migrationCde.ids[i].id;
+            idv = migrationCde.ids[i].version;
+        }
     }
 
     if (cdeId !== 0) {
-        processCde(cdeId, migrationCde, source, orgName);
+        findCde(cdeId, migrationCde, source, orgName, idv);
     } else {
         // No Cde.
         console.log("CDE with no ID. !! ");
-        console.log(migrationCde);
         checkTodo();
     }
 };

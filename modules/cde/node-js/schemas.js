@@ -59,6 +59,11 @@ var deJsonSchema = {
             minValue: Number
             , maxValue: Number
         }
+        , datatypeNumber: {
+            minValue: Number
+            , maxValue: Number
+            , precision: Number
+        }
         , datatypeFloat: {
             minValue: Number
             , maxValue: Number 
