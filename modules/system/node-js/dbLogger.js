@@ -129,8 +129,10 @@ exports.getClientErrors = function(params, callback) {
 };
 
 exports.usageByDay = function(callback) {
+    var d = new Date();
+    d.setDate(d.getDate() - 3);
     LogModel.aggregate(
-        {$match: {date: {$exists: true}}}
+        {$match: {date: {$exists: true}, date: {$gte: d}}}
         , {$group : {_id: {ip: "$remoteAddr", year: {$year: "$date"}, month: {$month: "$date"}, dayOfMonth: {$dayOfMonth: "$date"}}, number: {$sum: 1}, latest: {$max: "$date"}}}
         , function (err, result) {
             if (err || !result) logging.errorLogger.error("Error: Cannot retrieve logs", {origin: "system.dblogger.usageByDay", stack: new Error().stack, details: "err "+err});

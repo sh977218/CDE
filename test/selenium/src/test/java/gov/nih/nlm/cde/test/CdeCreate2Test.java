@@ -16,7 +16,7 @@ public class CdeCreate2Test extends BaseClassificationTest {
             openCdeInList("AlignmentCDE", "Incomplete");
         }
         Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
-        waitAndClick(By.linkText("View Full Detail"));
+        hangon(2);
         textPresent("ctepCurator");
         Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
     }
