@@ -37,30 +37,6 @@ public class PinTest extends BoardTest {
         removeBoard("Smoking Board");
 
     }
-
-    @Test
-    public void noDoublePin() {
-        mustBeLoggedInAs(pinUser, password);
-        goToCdeSearch();
-        String cdeName = "Specimen Array";
-        String boardName = "Double Pin Board";
-        
-        createBoard(boardName, "test");
-        pinTo(cdeName, boardName);
-        
-        goToCdeSearch();
-        openCdeInList(cdeName);
-        findElement(By.id("pin_0")).click();
-        findElement(By.linkText(boardName)).click();
-        
-        Assert.assertTrue(textPresent("Already added"));
-        modalGone();
-        
-        goToBoard(boardName);
-        Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 1);
-        
-        removeBoard(boardName);
-    }
     
     @Test
     public void unpin() {
