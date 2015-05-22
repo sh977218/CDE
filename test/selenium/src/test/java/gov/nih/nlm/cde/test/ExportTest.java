@@ -30,7 +30,7 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
         textPresent("server is busy processing");
         closeAlert();
-        wait.withTimeout(20, TimeUnit.SECONDS);
+        wait.withTimeout(25, TimeUnit.SECONDS);
         textPresent("Export downloaded.");
         wait.withTimeout(defaultTimeout, TimeUnit.SECONDS);
         closeAlert();

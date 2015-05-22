@@ -99,14 +99,14 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         textPresent("results for All Terms | CTEP > CATEGORY | Standard, Qualified");
         findElement(By.xpath("//i[@id=\"li-checked-Qualified\"]")).click();
         scrollToTop();
-        textPresent("results for All Terms | CTEP > CATEGORY | Preferred Standard, Standard");
+        textPresent("results for All Terms | CTEP > CATEGORY | Standard");
         findElement(By.name("ftsearch")).sendKeys("name");
         findElement(By.id("search.submit")).click();     
-        textPresent("0 results for name | CTEP > CATEGORY | Preferred Standard, Standard");
+        textPresent("0 results for name | CTEP > CATEGORY | Standard");
         findElement(By.linkText("Forms")).click();     
         textNotPresent("CATEGORY");
         findElement(By.linkText("CDEs")).click();     
-        textPresent("0 results for name | CTEP > CATEGORY | Preferred Standard, Standard");
+        textPresent("0 results for name | CTEP > CATEGORY | Standard");
     }
 
     @Test

@@ -32,9 +32,9 @@ public class InfoBarTest extends NlmCdeBaseTest {
         hangon(1);
         findElement(By.id("li-checked-Qualified")).click();
         textNotPresent(", Qualified");
-        textPresent(", Standard");
+        textPresent("| Standard");
         findElement(By.id("li-blank-Recorded")).click();
-        textPresent( "Standard, Recorded" );
+        textPresent( "| Standard, Recorded" );
         scrollToTop();
         findElement(By.id("resetSearch")).click();
         textPresent( "results for All Terms | All Classifications | All Statuses" );
