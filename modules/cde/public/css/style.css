@@ -618,17 +618,26 @@ button#selectDefault {
     border: none !important;
 }
 
-.generalDetailsTable th{
+.generalDetailsTable th {
     width: 30%;
 }
 
 .cdeTable th, .cdeTable td {
     overflow: hidden;
-    padding-top: 4px!important;
-    padding-bottom: 4px!important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
 }
 
 .generalDetailsTable th, .generalDetailsTable td {
-    padding-top: 2px!important;
-    padding-bottom:2px!important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+}
+
+.nonLinkAnchor {
+    color: black;
+    text-decoration: none;
+}
+
+.displayBlock {
+    display: block;
 }

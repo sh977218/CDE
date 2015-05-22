@@ -23,6 +23,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void stewardFacets() {
+        setLowStatusesVisible();
         goToCdeSearch();
         mustBeLoggedOut();
         setLowStatusesVisible();
@@ -50,10 +51,11 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void statusFacets() {
+        setLowStatusesVisible();
         goToCdeSearch();
         textPresent("Qualified (94");
         findElement(By.id("li-blank-caBIG")).click();
-        findElement(By.cssSelector("i.fa-square-o"));
+        //findElement(By.cssSelector("i.fa-square-o"));
         textPresent("Qualified (1");
     }
 
