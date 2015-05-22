@@ -75,17 +75,58 @@ var convertToCsv = function(cde) {
     return row+ "\n";
 };
 
+var lock = false;
 exports.elasticSearchExport = function(res, query, type, project, header) {
+    if (lock) return res.status(503).send("Servers busy");
+
+    lock = true;
+
     var url;
     if (type === "cde") url = exports.elasticCdeUri;
     if (type === "form") url = exports.elasticFormUri;
     query.size = 500;
     res.write(header);
-    request({uri: url + "_search", body: JSON.stringify(query), method: "POST"})
-        .pipe(jsonStream.parse('hits.hits.*'))
-        .pipe(es.map(function (de, cb) {
-            cdeProjection = project(de._source);
-            csvCde = convertToCsv(cdeProjection);
-            cb(null, csvCde);
-        })).pipe(res);
+
+    delete query.aggregations;
+
+    var scrollThrough = function(scrollId) {
+        var uri = config.elastic.uri + "/_search/scroll?scroll=1m" + "&size=20&scroll_id=" + scrollId;
+        request({uri: uri, method: "GET"}, function (err, response, body) {
+            if (!err && response.statusCode === 200) {
+                var resp = JSON.parse(body);
+                var newScrollId = resp._scroll_id;
+                if (resp.hits.hits.length === 0) {
+                    lock = false;
+                    res.send();
+                }
+                else {
+                    for (var i = 0; i < resp.hits.hits.length; i++) {
+                        var thisCde = resp.hits.hits[i]._source;
+                        res.write(convertToCsv(project(thisCde)));
+                    }
+                    scrollThrough(newScrollId);
+                }
+            } else {
+                lock = false;
+                logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
+                    {origin: "system.elastic.elasticsearch", stack: new Error().stack,
+                        details: "body " + body});
+                res.status(500).send("ES Error");
+            }
+        });
+    };
+
+    request({uri: url + "_search?search_type=scan&scroll=1m", body: JSON.stringify(query), method: "POST"}, function (err, response, body) {
+        if (!err && response.statusCode === 200) {
+            var resp = JSON.parse(body);
+            scrollThrough(resp._scroll_id);
+        } else {
+            lock = false;
+            logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
+                {origin: "system.elastic.elasticsearch", stack: new Error().stack,
+                    details: "body " + body + ", query: " + query});
+            res.status(500).send("ES Error");
+        }
+    });
+
 };

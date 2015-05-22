@@ -1,4 +1,5 @@
-<dl class="dl-horizontal">
+<dl class="dl-horizontal"
+    ng-if="cde.valueDomain.datatypeValueList.multi === true || cde.valueDomain.datatypeValueList.otherPleaseSpecify === true">
     <span ng-if="cde.valueDomain.datatypeValueList.multi === true">
         <dt>Multiple Values:</dt>
         <dd>Yes</dd>
@@ -11,20 +12,21 @@
     </span>
 </dl>
 
-<h4><strong>Permissible Values</strong></h4>
-<div ng-show="cde.valueDomain.permissibleValues.length == 0">No Permissible Values</div>
-<table ng-show="cde.valueDomain.permissibleValues.length > 0" class="table table-responsive table-bordered table-condensed table-striped" summary="List of permissible values">
+<div ng-if="cde.valueDomain.permissibleValues.length == 0">No Permissible Values</div>
+<table ng-show="cde.valueDomain.permissibleValues.length > 0"
+       class="table cdeTable" summary="List of permissible values">
+    <caption>Permissible Values</caption>
     <tr>
-        <th id="value">Value</th>
-        <th id="codeName">Code Name</th>
-        <th id="code">Code</th>
+        <th id="value" class="col-xs-4">Value</th>
+        <th id="codeName" class="col-xs-4">Code Name</th>
+        <th id="code" class="col-xs-4">Code</th>
     </tr>
     <tr ng-repeat="pv in cde.valueDomain.permissibleValues">
-        <td ng-bind="pv.permissibleValue" headers="value"></td>
-        <td ng-bind="pv.valueMeaningName" headers="codeName" ></td>
-        <td ng-bind="pv.valueMeaningCode" headers="code"></td>
+        <td ng-bind="pv.permissibleValue" headers="value" class="col-xs-4"></td>
+        <td ng-bind="pv.valueMeaningName" headers="codeName" class="col-xs-4"></td>
+        <td ng-bind="pv.valueMeaningCode" headers="code" class="col-xs-4"></td>
     </tr>
     <tr ng-show="cde.valueDomain.permissibleValues.length == 10">
-        <td colspan="6">See full list in Detailed View</td>
+        <td colspan="3">See full list in Detailed View</td>
     </tr>
 </table>

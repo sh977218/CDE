@@ -24,7 +24,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
         }
         , buildElasticQuerySettings: function(scope){
             var filter = this.buildFilter(scope);
-            var settings = {
+            return {
                 resultPerPage: scope.resultPerPage
                 , searchTerm: scope.searchForm.ftsearch
                 , isSiteAdmin: scope.isSiteAdmin()
@@ -37,7 +37,6 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , currentPage: scope.searchForm.currentPage
                 , includeAggregations: true
             };
-            return settings;
         }
         , getSelectedElements: function(scope) {
             return scope.classificationFilters[0].elements?scope.classificationFilters[0].elements:[];
@@ -49,12 +48,6 @@ angular.module('ElasticSearchResource', ['ngResource'])
             return settings.resultPerPage?settings.resultPerPage:20;
         }
         , buildElasticQuery: function (settings, callback) {
-            this.countFacetsDepthString = function (depth) {
-                var fd = "classification";
-                for (var j=1; j<=depth; j++) fd += ".elements";
-                fd += ".name";
-                return fd;
-            };
             this.flattenSelection = function(upTo) {
                 var flatSelection = "";
                 for (var i = 0; i < settings.selectedElements.length && i < upTo; i++) {
@@ -336,7 +329,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 cb(response);
             })
             .error(function(data, status, headers, config) {
-                cb(response);
+                cb();
             });
         }
     };

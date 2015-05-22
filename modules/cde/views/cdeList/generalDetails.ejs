@@ -1,19 +1,19 @@
-<h4><strong>General Details</strong></h4>
-<table class="table table-border table-responsive accordionlist">
+<table class="generalDetailsTable cdeTable cdeTable-noBorder table table-border">
+    <caption>General Details</caption>
     <tr>
-        <th>Name:</th>
+        <th class="text-right">Name:</th>
         <td id="dd_general_name" ng-bind-html="cde.primaryNameCopy"></td>
     </tr>
     <tr>
-        <th>Steward:</th>
+        <th class="text-right">Steward:</th>
         <td ng-bind-html="cde.stewardOrg.name"></td>
     </tr>
     <tr>
-        <th>Definition:</th>
+        <th class="text-right">Definition:</th>
         <td id="dd_def" ng-bind-html="cde.primaryDefinitionCopy | placeholdEmpty"></td>
     </tr>
     <tr>
-        <th>Used By:</th>
+        <th class="text-right">Used By:</th>
         <td id="dd_usedBy">
             <span ng-switch="cde.classification.length > 0">
                 <span ng-switch-when="false">None</span>
@@ -23,28 +23,24 @@
             </span>
         </td>
     </tr>
-    <tr>
-        <th>Unit of Measure:</th>
+    <tr ng-show="cde.valueDomain.uom">
+        <th class="text-right">Unit of Measure:</th>
         <td id="dd_uom">{{cde.valueDomain.uom | placeholdEmpty}}</td>
     </tr>
-    <tr>
-        <th ng-show="cde.origin">Origin:</th>
+    <tr ng-show="cde.origin">
+        <th class="text-right">Origin:</th>
         <td>{{cde.origin}}</td>
     </tr>
-    <tr>
-        <th ng-show="cde.source">Source:</th>
+    <tr ng-show="cde.source">
+        <th class="text-right">Source:</th>
         <td>{{cde.source}}</td>
     </tr>
     <tr>
-        <th id="dt_status">Status:</th>
+        <th class="text-right" id="dt_status">Status:</th>
         <td id="dd_status">{{cde.registrationState.registrationStatus}}</td>
     </tr>
-    <tr>
-        <th id="dt_valueType">Value Type:</th>
-        <td id="dd_valueType">{{cde.valueDomain.datatype}}</td>
-    </tr>
-    <tr>
-        <th ng-show="cde.views">Views:</th>
+    <tr  ng-show="cde.views">
+        <th class="text-right">Views:</th>
         <td id="dd_views">{{cde.views}}</td>
     </tr>
 </table>

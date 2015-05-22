@@ -11,7 +11,7 @@ public class SkipLogicTest extends BaseFormTest {
     
     QuestionTest questionTest = new QuestionTest();
     
-    @Test
+    //@Test
     public void singlePermissibleValue() {
         mustBeLoggedInAs(ctepCurator_username, password);    
         

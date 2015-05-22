@@ -12,7 +12,7 @@ public class SectionInSectionTest extends BaseFormTest {
 
     private QuestionTest questionTest = new QuestionTest();
 
-    @Test
+    //@Test
     public void sectionInSection() {
         Dimension currentWindowSize = getWindowSize();
         resizeWindow(1524, 1150);        
