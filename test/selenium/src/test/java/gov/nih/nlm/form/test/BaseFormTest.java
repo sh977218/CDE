@@ -21,17 +21,18 @@ public class BaseFormTest extends NlmCdeBaseTest {
         textPresent("Hide Question Search", By.id("startAddingQuestions"), 2);
         findElement(By.id("startAddingQuestions")).click();
     }
-    
+
     protected void gotoPublicForms() {
-        findElement(By.linkText("Forms")).click();    
+        //findElement(By.linkText("Forms")).click();
+        goToSearch("form");
         showSearchFilters();
     }
-    
+
     protected void saveForm() {
         scrollToViewById("openSaveBottom");
         findElement(By.id("openSaveBottom")).click();
         findElement(By.name("version")).sendKeys("1");
-        findElement(By.id("confirmNewVersion")).click();  
+        findElement(By.id("confirmNewVersion")).click();
         textPresent("Saved.");
         closeAlert();
         hangon(1);
@@ -40,9 +41,9 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     protected void searchForm(String query) {
         findElement(By.name("ftsearch")).sendKeys("\"" + query + "\"");
-        findElement(By.id("search.submit")).click();    
+        findElement(By.id("search.submit")).click();
     }
-    
+
     protected void gotoFormCreate() {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("Form")).click();
@@ -78,7 +79,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
         if (card != null) {
             findElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']")).click();
-            new Select(findElement(By.xpath("//select[@id='select_section_card_"  + nbOfSections + "']"))).selectByVisibleText(card);
+            new Select(findElement(By.xpath("//select[@id='select_section_card_" + nbOfSections + "']"))).selectByVisibleText(card);
             findElement(By.xpath("//dd[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']")).click();
         }
     }
