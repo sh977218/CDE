@@ -29,10 +29,9 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
         textPresent("server is busy processing");
         closeAlert();
-        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        wait.withTimeout(20, TimeUnit.SECONDS);
         textPresent("Export downloaded.");
-        driver.manage().timeouts()
-                .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+        wait.withTimeout(defaultTimeout, TimeUnit.SECONDS);
         closeAlert();
     }
 }
