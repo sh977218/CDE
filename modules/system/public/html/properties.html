@@ -1,57 +1,64 @@
 <div ng-controller="PropertiesCtrl">
+    <h4 tabindex="0">Properties</h4>
 
-<h4>Properties</h4>    
-<div ng-if="elt.properties.length === 0">There are no properties.</div>
-
-<div ng-repeat="prop in elt.properties">
-    <div class="row">
-        <div class="col-md-1 text-right" ng-show="canCurate && elt.properties.length > 0">
-            <div class="row">
-                <span ng-show="showDelete">
-                    Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeProperty($index)" id="confirmRemoveProperty-{{$index}}" title="OK" href=""></a>
+    <div tabindex="0" ng-if="elt.properties.length === 0">There are no properties.</div>
+    <div ng-repeat="prop in elt.properties">
+        <div class="row">
+            <div class="col-md-1 text-right" ng-show="canCurate && elt.properties.length > 0">
+                <div class="row">
+                <span ng-show="showDelete">Confirm Delete
+                    <a class="fa fa-check" ng-click="showDelete = false; removeProperty($index)"
+                       id="confirmRemoveProperty-{{$index}}" title="OK" href=""></a>
                     <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
                 </span>
-                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeProperty-{{$index}}" title="Remove" href=""></a>
+                    <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
+                       id="removeProperty-{{$index}}" title="Remove" href=""></a>
+                </div>
+            </div>
+            <div class="col-md-11">
+                <dl class="dl-horizontal">
+                    <dt tabindex="0">Key:</dt>
+                    <dd tabindex="0" id="dd_name_{{$index}}">{{prop.key}}</dd>
+                    <dt tabindex="0">Value:</dt>
+
+                    <dd tabindex="0" id="dd_prop_value_{{$index}}">
+                        <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
+                             model="prop.value" is-allowed="canEditProperty()" def-format="prop.valueFormat"
+                             on-ok="saveProperty()"></div>
+                    </dd>
+                </dl>
             </div>
         </div>
-        <div class="col-md-11">
-            <dl class="dl-horizontal">
-                <dt>Key: </dt> 
-                <dd id="dd_name_{{$index}}">{{prop.key}}</dd>
-                <dt>Value: </dt>
-                
-                <dd id="dd_prop_value_{{$index}}">
-                    <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
-                         model="prop.value" is-allowed="canEditProperty()" def-format="prop.valueFormat" on-ok="saveProperty()"> </div>
-                </dd>
-            </dl>
-        </div>
+        <hr/>
     </div>
-    <hr/>
-</div>
-
-<button ng-show="canCurate" class="btn btn-small btn-default" value="add" ng-click="openNewProperty()" id="addProperty"><i class="fa fa-plus"> </i> Add Property</button>
-
-<script type="text/ng-template" id="newPropertyModalContent.html">
-    <div class="modal-header" id="newPropertyModalHeader">
-        <h4>Add Property</h4>
-    </div>
-    <form name="form" role="form">
-        <div class="modal-body" id="newPropertyModalBody">
-            <div class="form-group">
-                <label for="key">Key</label>
-                <input class="form-control" ng-model="newProperty.key" name="key" Placeholder="Property Key" typeahead="k for k in autocompleteList | filter:$viewValue | limitTo:8" required/>
-            </div>    
-            <div class="form-group">
-                <label for="value">Value</label>
-                <textarea class="form-control" ng-model="newProperty.value" name="value" Placeholder="Property Value" required></textarea>
-            </div>    
+    <button ng-show="canCurate" class="btn btn-small btn-default" value="add" ng-click="openNewProperty()"
+            id="addProperty"><i class="fa fa-plus"> </i> Add Property
+    </button>
+    <script type="text/ng-template" id="newPropertyModalContent.html">
+        <div class="modal-header" id="newPropertyModalHeader">
+            <h4 tabindex="0">Add Property</h4>
         </div>
-        <div class="modal-footer" id="newPropertyModalFooter">
-            <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>
-            <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid" id="createProperty" type="submit">Save</button>
-        </div>
-    </form>
-</script>
+        <form name="form" role="form">
+            <div class="modal-body" id="newPropertyModalBody">
+                <div class="form-group">
+                    <label tabindex="0" for="key">Key</label>
+                    <input tabindex="0" class="form-control" ng-model="newProperty.key" name="key"
+                           Placeholder="Property Key"
+                           typeahead="k for k in autocompleteList | filter:$viewValue | limitTo:8" required/>
+                </div>
+                <div class="form-group">
+                    <label tabindex="0" for="value">Value</label>
+                    <textarea tabindex="0" class="form-control" ng-model="newProperty.value" name="value"
+                              Placeholder="Property Value" required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer" id="newPropertyModalFooter">
+                <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>
+                <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid"
+                        id="createProperty" type="submit">Save
+                </button>
+            </div>
+        </form>
+    </script>
 
 </div>
