@@ -15,17 +15,17 @@ public class IntegerDatatypeTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='listDatatype']//input")).sendKeys("Custom Datatype");
         findElement(By.cssSelector("#listDatatype .fa-check")).click();
 
-        newCdeVersion();    
+        newCdeVersion();
 
         checkInHistory("Permissible Values - Value List", "", "Custom Datatype");
-        
+
         findElement(By.linkText("Permissible Values")).click();
         findElement(By.xpath("//div[@id='listDatatype']//i[@title='Edit']")).click();
         findElement(By.xpath("//div[@id='listDatatype']//input")).sendKeys("Other Datatype");
         findElement(By.cssSelector("#listDatatype .fa-check")).click();
-        
-        newCdeVersion();        
-        checkInHistory("Permissible Values - Value List", "Custom Datatype", "Other Datatype");           
+
+        newCdeVersion();
+        checkInHistory("Permissible Values - Value List", "Custom Datatype", "Other Datatype");
     }      
 
 }
