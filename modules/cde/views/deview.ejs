@@ -11,7 +11,6 @@
         <h1 class="page-header">
             {{elt.naming[0].designation}}
             <a class="btn btn-small btn-default" ng-show="showCompareButton(elt)" role="button" tabindex="0" ng-click="addToQuickBoard(elt)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add to Quick Board</a>
-    <!--        <span ng-show="elt.forkOf && canCurate"><button class="btn btn-default btn-small" ng-click="sendForkNotification()"><i class="fa fa-envelope-o"></i> Send Notification</button> </span>-->
         </h1>
 
         <div tabset>
@@ -54,7 +53,7 @@
                 </div>
             <% } %>
             <div tab heading="{{tabs['boards'].heading}}" id="boards_tab">
-                <h4>Boards this Data Element is in</h4>
+                <h4 tabindex="0">Boards this Data Element is in</h4>
                 <%- include listOfBoards.ejs %>
             </div>
             <% if (config.modules.cde.attachments) { %>

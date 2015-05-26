@@ -2,15 +2,18 @@
     <div class="row">
         <div class="col-md-12">
             <dl class="dl-horizontal">
-                <dt>Name: </dt> 
-                <dd id="dd_name_{{$index}}">{{board.name | placeholdEmpty}}</dd>
-                <dt>Description: </dt>
-                <dd id="dd_def_{{$index}}"><span ng-bind-html="board.description | placeholdEmpty"/></dd>
-                <dt>Owner: </dt><dd id="dd_owner_{{$index}}">{{board.owner.username}}</dd>
-                <dt>Number of Cdes: </dt><dd id="dd_numb">{{board.pins.length}}</dd>
-                <dt>Modified: </dt><dd id="dd_mod">{{board.updatedDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+                <dt tabindex="0">Name:</dt>
+                <dd tabindex="0" id="dd_name_{{$index}}">{{board.name | placeholdEmpty}}</dd>
+                <dt tabindex="0">Description:</dt>
+                <dd tabindex="0" id="dd_def_{{$index}}"><span ng-bind-html="board.description | placeholdEmpty"/></dd>
+                <dt tabindex="0">Owner:</dt>
+                <dd tabindex="0" id="dd_owner_{{$index}}">{{board.owner.username}}</dd>
+                <dt tabindex="0">Number of Cdes:</dt>
+                <dd tabindex="0" id="dd_numb">{{board.pins.length}}</dd>
+                <dt tabindex="0">Modified:</dt>
+                <dd tabindex="0" id="dd_mod">{{board.updatedDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
             </dl>
-            <a class="btn btn-default" href="#/board/{{board._id}}" id="view_{{$index}}">View Board</a> 
+            <a class="btn btn-default" href="#/board/{{board._id}}" id="view_{{$index}}">View Board</a>
         </div>
     </div>
     <hr/>
