@@ -23,17 +23,18 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     })
     .directive('inlineEdit', function() {
     return {
-        template: '<span>' +
-                        '<span ng-hide="editMode">' +
-                            '<i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' +
-                        '</span>' +
-                        '<form name="inlineForm" ng-show="editMode">' +
-                            '<input name="inlineInput" type="{{inputType}}" ng-model="value" typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +
-                            '<button class="btn btn-default btn-sm fa fa-check" ng-click="model = value;editMode = false; onOk();" ng-disabled="!inlineForm.inlineInput.$valid"> Confirm</button>' +
-                            '<button class="btn btn-default btn-sm fa fa-times" ng-click="editMode = false"> Discard</button>' +
-                        '</form>' +
-                    '</span>'
-                ,
+        template:
+            '<span>' +
+                '<span ng-hide="editMode">' +
+                    '<i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' +
+                '</span>' +
+                '<form name="inlineForm" ng-show="editMode">' +
+                    '<input name="inlineInput" type="{{inputType}}" ng-model="value" typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +
+                    '<button class="btn btn-default btn-sm fa fa-check" ng-click="model = value;editMode = false; onOk();" ng-disabled="!inlineForm.inlineInput.$valid"> Confirm</button>' +
+                    '<button class="btn btn-default btn-sm fa fa-times" ng-click="editMode = false"> Discard</button>' +
+                '</form>' +
+            '</span>'
+        ,
         restrict: 'AE',
         scope: {
             model: '='
@@ -49,23 +50,24 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     })
     .directive('inlineAreaEdit', function() {
         return {
-            template: '<div>' +
-                            '<div ng-hide="editMode" ng-switch="defFormat">' +
-                            '   <i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>' +
-                            '   <span ng-switch-default><span ng-bind="model" ng-text-truncate="model" ng-tt-threshold="500"></span></span>' +
-                            '   <span ng-switch-when="html"><span ng-bind-html="model" ng-text-truncate="model" ng-tt-threshold="500"></span></span>' +
-                            '</div>' +
-                            '<div ng-show="editMode">' +
-                            '   <div class="btn-group definitionFormatRadio">' +
-                            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="null">Plain Text</button>' +
-                            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="\'html\'">Rich Text</button>' +
-                            '   </div>' +
-                            '   <textarea ng-show="defFormat!=\'html\'" ng-model="value" class="form-control"></textarea>' +
-                            '   <div text-angular ng-show="defFormat==\'html\'" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ta-toolbar="[[\'h1\',\'h2\',\'h3\',\'h4\',\'h5\',\'h6\',\'p\'],[\'bold\',\'italics\'],[\'undo\',\'redo\'],[\'ul\',\'ol\'],[\'justifyLeft\',\'justifyCenter\',\'justifyRight\'],[\'indent\',\'outdent\']]"></div>' +
-                            '   <button class="fa fa-check" ng-click="model = value;editMode = false; onOk();">Confirm</button>' +
-                            '   <button class="fa fa-times" ng-click="editMode = false">Cancel</button>' +
-                            '</div>       ' +
-                        '</div>',
+            template:
+                '<div>' +
+                    '<div ng-hide="editMode" ng-switch="defFormat">' +
+                    '   <i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>' +
+                    '   <span ng-switch-default><span ng-bind="model" ng-text-truncate="model" ng-tt-threshold="500"></span></span>' +
+                    '   <span ng-switch-when="html"><span ng-bind-html="model" ng-text-truncate="model" ng-tt-threshold="500"></span></span>' +
+                    '</div>' +
+                    '<div ng-show="editMode">' +
+                    '   <div class="btn-group definitionFormatRadio">' +
+                    '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="null">Plain Text</button>' +
+                    '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="\'html\'">Rich Text</button>' +
+                    '   </div>' +
+                    '   <textarea ng-show="defFormat!=\'html\'" ng-model="value" class="form-control"></textarea>' +
+                    '   <div text-angular ng-show="defFormat==\'html\'" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ta-toolbar="[[\'h1\',\'h2\',\'h3\',\'h4\',\'h5\',\'h6\',\'p\'],[\'bold\',\'italics\'],[\'undo\',\'redo\'],[\'ul\',\'ol\'],[\'justifyLeft\',\'justifyCenter\',\'justifyRight\'],[\'indent\',\'outdent\']]"></div>' +
+                    '   <button class="fa fa-check" ng-click="model = value;editMode = false; onOk();">Confirm</button>' +
+                    '   <button class="fa fa-times" ng-click="editMode = false">Cancel</button>' +
+                    '</div>       ' +
+                '</div>',
             restrict: 'AE',
             scope: {
                 model: '='

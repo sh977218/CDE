@@ -6,8 +6,8 @@ var mongoose = require('mongoose')
     , connHelper = require('../../system/node-js/connections')
     , logging = require('../../system/node-js/logging')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
-    , deepCopy = require('deep-copy')
     , cdesvc = require("./cdesvc")
+    , deValidator = require("../shared/deValidator.js").deValidator
 ;
 
 exports.type = "cde";
@@ -280,6 +280,10 @@ exports.fork = function(elt, user, callback) {
 };
 
 exports.update = function(elt, user, callback, special) {
+    if (!deValidator.checkPvUnicity(elt.valueDomain).allValid) {
+        return callback("Invalid Permissible Value");
+    }
+
     return DataElement.findById(elt._id, function(err, dataElement) {
         delete elt._id;
         if (!elt.history) elt.history = [];

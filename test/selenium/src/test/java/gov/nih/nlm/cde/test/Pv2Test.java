@@ -7,6 +7,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class Pv2Test extends NlmCdeBaseTest {
+    private PvValidatorTest pvValidator = new PvValidatorTest();
 
     @Test
     public void addPv() {
@@ -16,12 +17,7 @@ public class Pv2Test extends NlmCdeBaseTest {
         findElement(By.linkText("Permissible Values")).click();
         textPresent("Right Middle Abdomen");
         findElement(By.id("pvRemove-8")).click();
-        findElement(By.id("addPv")).click();
-        findElement(By.xpath("//td[@id='pv-10']//i")).click();
-        findElement(By.xpath("//td[@id='pv-10']//input")).clear();
-        findElement(By.xpath("//td[@id='pv-10']//input")).sendKeys("New PV");
-        findElement(By.cssSelector("#pv-10 .fa-check")).click();
-
+        pvValidator.addPv(10, "New PV");
         findElement(By.xpath("//td[@id='pvCodeSystem-10']//div[@typeahead-source='pVTypeaheadCodeSystemNameList']//i[@class='fa fa-edit']")).click();
         textPresent("Confirm");
         findElement(By.xpath("//td[@id='pvCodeSystem-10']//input")).sendKeys("N");
