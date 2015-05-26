@@ -65,11 +65,12 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
     
     @Test
     public void StandardStatusWarningCheck() {
+        mustBeLoggedOut();
         // Check that a none Standard or Preferred Standard CDE doesn't have warning message when not logged in
         goToCdeByName("Specimen Collection Sampling Number");
         textNotPresent("Note: You may not edit this CDE because it is standard.");
 
-        // Check that a Standard CDE doesn't have warning message when viewed by none owner
+        // Check that a Standard CDE doesn't have warning message when viewed by non logged user
         goToCdeByName("Adverse Event Ongoing Event Indicator");
         textNotPresent("Note: You may not edit this CDE because it is standard.");
         
@@ -89,30 +90,23 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         mustBeLoggedOut();
         setLowStatusesVisible();
         goToCdeSearch();
-        try {
-            findElement(By.id("li-blank-Preferred Standard")).click();
-            hangon(1);
-        } catch (TimeoutException e) {
-            // ignore, there may not be any Pref Standard.
-        }
+        findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
+        findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
         findElement(By.id("li-blank-Standard")).click();
         hangon(1);
         findElement(By.id("li-blank-Qualified")).click();
-
-        findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
-        findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
         hangon(1);
-        textPresent("results for All Terms | CTEP > CATEGORY | Preferred Standard, Standard, Qualified");
+        textPresent("results for All Terms | CTEP > CATEGORY | Standard, Qualified");
         findElement(By.xpath("//i[@id=\"li-checked-Qualified\"]")).click();
         scrollToTop();
-        textPresent("results for All Terms | CTEP > CATEGORY | Preferred Standard, Standard");
+        textPresent("results for All Terms | CTEP > CATEGORY | Standard");
         findElement(By.name("ftsearch")).sendKeys("name");
         findElement(By.id("search.submit")).click();     
-        textPresent("0 results for name | CTEP > CATEGORY | Preferred Standard, Standard");
+        textPresent("0 results for name | CTEP > CATEGORY | Standard");
         findElement(By.linkText("Forms")).click();     
         textNotPresent("CATEGORY");
         findElement(By.linkText("CDEs")).click();     
-        textPresent("0 results for name | CTEP > CATEGORY | Preferred Standard, Standard");
+        textPresent("0 results for name | CTEP > CATEGORY | Standard");
     }
 
     @Test

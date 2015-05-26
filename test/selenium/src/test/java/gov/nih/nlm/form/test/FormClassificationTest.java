@@ -24,7 +24,7 @@ public class FormClassificationTest extends BaseFormTest {
         new ClassificationTest().addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
     }  
     
-    @Test
+    //@Test
     public void classifyFormCdes() {
         resizeWindow(1024, 1300);        
         mustBeLoggedInAs(ninds_username, password);

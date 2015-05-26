@@ -16,7 +16,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
         "<div class='popover-content'></div>" +
         "<div class='popover-navigation'>" +
         "<div class='btn-group'>" +
-        "<button class='btn btn-sm btn-default' tabindex='1' data-role='prev'>>&laquo; Prev</button>" +
+        "<button class='btn btn-sm btn-default' tabindex='1' data-role='prev'>&laquo; Prev</button>" +
         "<button class='btn btn-sm btn-default' tabindex='1' data-role='next'>Next &raquo;</button>" +
         "</div>" +
         "<button class='btn btn-sm btn-default' tabindex='1' data-role='end'>End tour</button>" +

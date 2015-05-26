@@ -42,6 +42,11 @@ angular.module('systemModule').controller('TakeATourCtrl', ['$scope', 'TourConte
                 element: "a:contains('Help')"
                 , title: "Help"
                 , content: "Here's where you can find more documentation about this site or start this tour again."
+            }, {
+                element: "#searchSettings"
+                , title: "Preferences"
+                , content: "Personalize your search results. Include more registration statuses or configure how results are shown."
+                , placement: "left"
             }];
 
     TourContent.stop = function () {

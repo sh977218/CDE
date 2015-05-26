@@ -18,6 +18,7 @@ angular.module('cdeModule').factory('CdeDiffPopulate', function() {
             , {fieldName: "Permissible Values - Value Type", path: ["valueDomain", "datatype"]}
             , {fieldName: "Permissible Values - Text", path: ["valueDomain", "datatypeText"]}
             , {fieldName: "Permissible Values - Integer", path: ["valueDomain", "datatypeInteger"]}
+            , {fieldName: "Permissible Values - Number", path: ["valueDomain", "datatypeNumber"]}
             , {fieldName: "Permissible Values - Date", path: ["valueDomain", "datatypeDate"]} 
             , {fieldName: "Permissible Values - Value List", path: ["valueDomain", "datatypeValueList"]} 
             , {fieldName: "Unit of Measure", path: ["valueDomain", "uom"]} 
@@ -36,9 +37,11 @@ angular.module('cdeModule').factory('CdeDiffPopulate', function() {
             , {fieldName: "Permissible Values - Text - Regular Expression", path: ["valueDomain", "datatypeText", "regex"]}
             , {fieldName: "Permissible Values - Text - Freetext Rule", path: ["valueDomain", "datatypeText", "rule"]}
             , {fieldName: "Permissible Values - Text - Maximum Length", path: ["valueDomain", "datatypeText", "maxLength"]}
-            , {fieldName: "Permissible Values - Text - Minimum Length", path: ["valueDomain", "datatypeText", "minLength"]} 
+            , {fieldName: "Permissible Values - Text - Minimum Length", path: ["valueDomain", "datatypeText", "minLength"]}
             , {fieldName: "Permissible Values - Integer - Maximum Value", path: ["valueDomain", "datatypeInteger", "maxValue"]}
-            , {fieldName: "Permissible Values - Integer - Minimum Value", path: ["valueDomain", "datatypeInteger", "minValue"]}     
+            , {fieldName: "Permissible Values - Integer - Minimum Value", path: ["valueDomain", "datatypeInteger", "minValue"]}
+            , {fieldName: "Permissible Values - Number - Maximum Value", path: ["valueDomain", "datatypeNumber", "maxValue"]}
+            , {fieldName: "Permissible Values - Number - Minimum Value", path: ["valueDomain", "datatypeNumber", "minValue"]}
             , {fieldName: "Permissible Values - Date - Format", path: ["valueDomain", "datatypeDate", "format"]}     
             , {fieldName: "Permissible Values - Value List - Datatype", path: ["valueDomain", "datatypeValueList", "datatype"]}   
             , {fieldName: "Permissible Values - Properties - Value", path: ["properties", -1, "value"]}   

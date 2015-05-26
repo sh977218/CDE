@@ -411,6 +411,14 @@ exports.setAttachmentApproved = function(id) {
     adminItemSvc.setAttachmentApproved(id, DataElement);
 };
 
+exports.byOtherId = function(source, id, cb) {
+    DataElement.find({"archived": null}).elemMatch("ids", {"source":source, "id": id}).exec(function(err, cdes){
+        if (cdes.length >1 ) cb("Multiple results, returning first", cdes[0]);
+        else cb(err, cdes[0]);
+    });
+};
+
 exports.fileUsed = function(id, cb) {
     adminItemSvc.fileUsed(id, DataElement, cb);
 };
+

@@ -24,7 +24,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
         }
         , buildElasticQuerySettings: function(scope){
             var filter = this.buildFilter(scope);
-            var settings = {
+            return {
                 resultPerPage: scope.resultPerPage
                 , searchTerm: scope.searchForm.ftsearch
                 , isSiteAdmin: scope.isSiteAdmin()
@@ -37,7 +37,6 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , currentPage: scope.searchForm.currentPage
                 , includeAggregations: true
             };
-            return settings;
         }
         , getSelectedElements: function(scope) {
             return scope.classificationFilters[0].elements?scope.classificationFilters[0].elements:[];
@@ -49,30 +48,6 @@ angular.module('ElasticSearchResource', ['ngResource'])
             return settings.resultPerPage?settings.resultPerPage:20;
         }
         , buildElasticQuery: function (settings, callback) {
-            this.countFacetsDepthString = function (depth) {
-                var fd = "classification";
-                for (var j=1; j<=depth; j++) fd += ".elements";
-                fd += ".name";
-                return fd;
-            };
-            this.flattenSelection = function(upTo) {
-                var flatSelection = "";
-                for (var i = 0; i < settings.selectedElements.length && i < upTo; i++) {
-                    if (flatSelection !== "") flatSelection = flatSelection + ";";
-                    flatSelection = flatSelection + settings.selectedElements[i];
-                }
-                return flatSelection;
-            };
-            this.flattenSelectionAlt = function(upTo) {
-                var flatSelectionAlt = "";
-                if(settings.selectedElementsAlt) {
-                    for (var i = 0; i < settings.selectedElementsAlt.length && i < upTo; i++) {
-                        if (flatSelectionAlt !== "") flatSelectionAlt = flatSelectionAlt + ";";
-                        flatSelectionAlt = flatSelectionAlt + settings.selectedElementsAlt[i];
-                    }
-                }
-                return flatSelectionAlt;
-            };
             this.escapeRegExp = function(str) {
                 return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
             };
@@ -112,11 +87,11 @@ angular.module('ElasticSearchResource', ['ngResource'])
 
             if (searchQ !== undefined && searchQ !== "") {
                 queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
-                    {
-                        query_string: {
-                            query: searchQ
-                        }
-                    };
+                {
+                    query_string: {
+                        query: searchQ
+                    }
+                };
                 queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
                 queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
                 {
@@ -160,12 +135,12 @@ angular.module('ElasticSearchResource', ['ngResource'])
 
             var queryBuilder = this;
 
-            var flatSelection = queryBuilder.flattenSelection(1000);
+            var flatSelection = settings.selectedElements.join(";");
             if (flatSelection !== "") {
                 queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
             }
 
-            var flatSelectionAlt = queryBuilder.flattenSelectionAlt(1000);
+            var flatSelectionAlt = settings.selectedElementsAlt?settings.selectedElementsAlt.join(";"):"";
             if (flatSelectionAlt !== "") {
                 queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
             }
@@ -195,40 +170,29 @@ angular.module('ElasticSearchResource', ['ngResource'])
 
                 queryStuff.aggregations.statuses.aggregations = {};
 
-                if (settings.selectedOrg !== undefined) {
+                var flattenClassificationAggregations = function(variableName, orgVariableName, selectionString) {
                     var flatClassification = {
                         terms: {
                             size: 500,
                             field: "flatClassification"
                         }
                     };
-                    if (flatSelection === "") {
-                        flatClassification.terms.include = settings.selectedOrg + ";[^;]+";
+                    if (selectionString === "") {
+                        flatClassification.terms.include = settings[orgVariableName] + ";[^;]+";
                     } else {
-                        flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
+                        flatClassification.terms.include = settings[orgVariableName] + ';' + queryBuilder.escapeRegExp(selectionString) + ";[^;]+";
                     }
-                    queryStuff.aggregations.flatClassification = {
+                    queryStuff.aggregations[variableName] = {
                         filter: settings.filter,
-                        aggs: {flatClassification: flatClassification}
-                    }
-                }
-
-                if (settings.selectedOrgAlt !== undefined) {
-                    var flatClassificationAlt = {
-                        terms: {
-                            size: 500,
-                            field: "flatClassification"
-                        }
+                        aggs: {}
                     };
-                    if (flatSelectionAlt === "") {
-                        flatClassificationAlt.terms.include = settings.selectedOrgAlt + ";[^;]+";
-                    } else {
-                        flatClassificationAlt.terms.include = settings.selectedOrgAlt + ';' + queryBuilder.escapeRegExp(flatSelectionAlt) + ";[^;]+";
-                    }
-                    queryStuff.aggregations.flatClassificationAlt = {
-                        filter: settings.filter,
-                        aggs: {flatClassificationAlt: flatClassificationAlt}
-                    }
+                    queryStuff.aggregations[variableName].aggs[variableName] = flatClassification;
+                };
+                if (settings.selectedOrg !== undefined) {
+                    flattenClassificationAggregations('flatClassification', 'selectedOrg',flatSelection);
+                }
+                if (settings.selectedOrgAlt !== undefined) {
+                    flattenClassificationAggregations('flatClassificationAlt', 'selectedOrgAlt',flatSelectionAlt);
                 }
             }
 
@@ -336,7 +300,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 cb(response);
             })
             .error(function(data, status, headers, config) {
-                cb(response);
+                cb();
             });
         }
     };

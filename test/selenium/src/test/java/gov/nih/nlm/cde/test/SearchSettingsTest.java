@@ -12,7 +12,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textNotPresent("Permissible Values");
         textNotPresent("Steward");
         textNotPresent("Used by Organizations");
-        textNotPresent("Registration Status");
+        textNotPresent("Registration Status", By.id("gridList"));
         textNotPresent("Admin Status");
         textNotPresent("Identifiers");
 
@@ -21,7 +21,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Permissible Values");
         textPresent("Steward");
         textPresent("Used by Organizations");
-        textPresent("Registration Status");
+        textPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
 
         findElement(By.id("searchSettings")).click();
@@ -38,7 +38,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Permissible Values");
         textPresent("Steward");
         textPresent("Used by Organizations");
-        textNotPresent("Registration Status");
+        textNotPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
     }
 
@@ -77,7 +77,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Permissible Values");
         textPresent("Steward");
         textPresent("Used by Organizations");
-        textNotPresent("Registration Status");
+        textNotPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
     }
 }
