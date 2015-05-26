@@ -304,7 +304,7 @@ exports.init = function(app, daoManager) {
     });
 
     app.post('/elasticSearch/cde', function(req, res) {
-       return elastic.elasticsearch(req.body.query, function(err, result) {
+       return elastic.elasticsearch(req.body, 'cde', function(err, result) {
            if (err) return res.status(400).send("invalid query");
            result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
            res.send(result);

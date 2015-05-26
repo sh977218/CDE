@@ -36,6 +36,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , filter: filter
                 , currentPage: scope.searchForm.currentPage
                 , includeAggregations: true
+                , visibleRegStatuses: SearchSettings.getUserDefaultStatuses()
             };
         }
         , getSelectedElements: function(scope) {
@@ -47,196 +48,196 @@ angular.module('ElasticSearchResource', ['ngResource'])
         , getSize: function(settings) {
             return settings.resultPerPage?settings.resultPerPage:20;
         }
-        , buildElasticQuery: function (settings, callback) {
-            this.escapeRegExp = function(str) {
-                return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-            };
-
-            var queryStuff = {size: this.getSize(settings)};
-            var searchQ = settings.searchTerm;
-
-            queryStuff.query =
-            {
-                bool: {
-                    must_not: [{
-                        term: {
-                            "isFork": "true"
-                        }
-                    }]
-                }
-            };
-
-            var visibleRegStatuses = SearchSettings.getUserDefaultStatuses();
-            exports.statusList.forEach(function(status){
-                if (visibleRegStatuses.indexOf(status)===-1) queryStuff.query.bool.must_not.push({
-                    term: {"registrationState.registrationStatus": status}
-                });
-            });
-
-            queryStuff.query.bool.must = [];
-
-            var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
-
-            queryStuff.query.bool.must.push({
-                dis_max: {
-                    queries: [
-                        {function_score: {script_score: {script: script}}}
-                    ]
-                }
-            });
-
-            if (searchQ !== undefined && searchQ !== "") {
-                queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
-                {
-                    query_string: {
-                        query: searchQ
-                    }
-                };
-                queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
-                queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
-                {
-                    query_string: {
-                        fields: ["naming.designation^5", "naming.definition^2"]
-                        , query: searchQ
-                    }
-                };
-                queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2.5";
-                if (searchQ.indexOf("\"") < 0) {
-                    queryStuff.query.bool.must[0].dis_max.queries.push({function_score: { script_score: {script: script}}});
-                    queryStuff.query.bool.must[0].dis_max.queries[2].function_score.query =
-                    {
-                        query_string: {
-                            fields: ["naming.designation^5", "naming.definition^2"]
-                            , query: "\"" + searchQ + "\"~4"
-                        }
-                    };
-                    queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
-                }
-            }
-
-            if (settings.selectedOrg !== undefined) {
-                queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
-            }
-
-            if (settings.filter !== undefined) {
-                if (settings.filter.and !== undefined) {
-                    if (settings.filter.and.length === 0) {
-                        delete settings.filter.and;
-                    }
-                }
-                if (settings.filter.and === undefined) {
-                    delete settings.filter;
-                }
-            }
-
-            if (settings.filter !== undefined) {
-                queryStuff.filter = settings.filter;
-            }
-
-            var queryBuilder = this;
-
-            var flatSelection = settings.selectedElements.join(";");
-            if (flatSelection !== "") {
-                queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
-            }
-
-            var flatSelectionAlt = settings.selectedElementsAlt?settings.selectedElementsAlt.join(";"):"";
-            if (flatSelectionAlt !== "") {
-                queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
-            }
-
-            if (settings.includeAggregations) {
-                queryStuff.aggregations = {
-                    orgs: {
-                        filter: settings.filter,
-                        aggregations: {
-                            orgs: {
-                                terms: {
-                                    "field": "classification.stewardOrg.name",
-                                    "size": 40,
-                                    order: {
-                                        "_term": "desc"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    statuses: {
-                        terms: {
-                            field: "registrationState.registrationStatus"
-                        }
-                    }
-                };
-
-                queryStuff.aggregations.statuses.aggregations = {};
-
-                var flattenClassificationAggregations = function(variableName, orgVariableName, selectionString) {
-                    var flatClassification = {
-                        terms: {
-                            size: 500,
-                            field: "flatClassification"
-                        }
-                    };
-                    if (selectionString === "") {
-                        flatClassification.terms.include = settings[orgVariableName] + ";[^;]+";
-                    } else {
-                        flatClassification.terms.include = settings[orgVariableName] + ';' + queryBuilder.escapeRegExp(selectionString) + ";[^;]+";
-                    }
-                    queryStuff.aggregations[variableName] = {
-                        filter: settings.filter,
-                        aggs: {}
-                    };
-                    queryStuff.aggregations[variableName].aggs[variableName] = flatClassification;
-                };
-                if (settings.selectedOrg !== undefined) {
-                    flattenClassificationAggregations('flatClassification', 'selectedOrg',flatSelection);
-                }
-                if (settings.selectedOrgAlt !== undefined) {
-                    flattenClassificationAggregations('flatClassificationAlt', 'selectedOrgAlt',flatSelectionAlt);
-                }
-            }
-
-            if (queryStuff.query.bool.must.length === 0) {
-                delete queryStuff.query.bool.must;
-            }
-
-            queryStuff.from = (settings.currentPage - 1) * settings.resultPerPage;
-
-            queryStuff.highlight = {
-                "order" : "score"
-                , "pre_tags" : ["<strong>"]
-                , "post_tags" : ["</strong>"]
-                , "fields" : {
-                    "stewardOrgCopy.name" : {}
-                    , "primaryNameCopy": {}
-                    , "primaryDefinitionCopy": {}
-                    , "naming.designation": {}
-                    , "naming.definition": {}
-                    , "dataElementConcept.concepts.name": {}
-                    , "dataElementConcept.concepts.origin": {}
-                    , "dataElementConcept.concepts.originId": {}
-                    , "property.concepts.name": {}
-                    , "property.concepts.origin": {}
-                    , "property.concepts.originId": {}
-                    , "objectClass.concepts.name": {}
-                    , "objectClass.concepts.origin": {}
-                    , "objectClass.concepts.originId": {}
-                    , "valueDomain.datatype": {}
-                    , "flatProperties": {}
-                    , "flatIds": {}
-                    , "classification.stewardOrg.name": {}
-                    , "classification.elements.name": {}
-                    , "classification.elements.elements.name": {}
-                    , "classification.elements.elements.elements.name": {}
-
-                }
-            };
-
-            return callback({query: queryStuff});
-        }
-        , generalSearchQuery: function(query, type, cb) {          
+        //, buildElasticQuery: function (settings, callback) {
+        //    this.escapeRegExp = function(str) {
+        //        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        //    };
+        //
+        //    var queryStuff = {size: this.getSize(settings)};
+        //    var searchQ = settings.searchTerm;
+        //
+        //    queryStuff.query =
+        //    {
+        //        bool: {
+        //            must_not: [{
+        //                term: {
+        //                    "isFork": "true"
+        //                }
+        //            }]
+        //        }
+        //    };
+        //
+        //    var visibleRegStatuses = SearchSettings.getUserDefaultStatuses();
+        //    exports.statusList.forEach(function(status){
+        //        if (visibleRegStatuses.indexOf(status)===-1) queryStuff.query.bool.must_not.push({
+        //            term: {"registrationState.registrationStatus": status}
+        //        });
+        //    });
+        //
+        //    queryStuff.query.bool.must = [];
+        //
+        //    var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
+        //
+        //    queryStuff.query.bool.must.push({
+        //        dis_max: {
+        //            queries: [
+        //                {function_score: {script_score: {script: script}}}
+        //            ]
+        //        }
+        //    });
+        //
+        //    if (searchQ !== undefined && searchQ !== "") {
+        //        queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
+        //        {
+        //            query_string: {
+        //                query: searchQ
+        //            }
+        //        };
+        //        queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
+        //        queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
+        //        {
+        //            query_string: {
+        //                fields: ["naming.designation^5", "naming.definition^2"]
+        //                , query: searchQ
+        //            }
+        //        };
+        //        queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2.5";
+        //        if (searchQ.indexOf("\"") < 0) {
+        //            queryStuff.query.bool.must[0].dis_max.queries.push({function_score: { script_score: {script: script}}});
+        //            queryStuff.query.bool.must[0].dis_max.queries[2].function_score.query =
+        //            {
+        //                query_string: {
+        //                    fields: ["naming.designation^5", "naming.definition^2"]
+        //                    , query: "\"" + searchQ + "\"~4"
+        //                }
+        //            };
+        //            queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
+        //        }
+        //    }
+        //
+        //    if (settings.selectedOrg !== undefined) {
+        //        queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
+        //    }
+        //
+        //    if (settings.filter !== undefined) {
+        //        if (settings.filter.and !== undefined) {
+        //            if (settings.filter.and.length === 0) {
+        //                delete settings.filter.and;
+        //            }
+        //        }
+        //        if (settings.filter.and === undefined) {
+        //            delete settings.filter;
+        //        }
+        //    }
+        //
+        //    if (settings.filter !== undefined) {
+        //        queryStuff.filter = settings.filter;
+        //    }
+        //
+        //    var queryBuilder = this;
+        //
+        //    var flatSelection = settings.selectedElements.join(";");
+        //    if (flatSelection !== "") {
+        //        queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
+        //    }
+        //
+        //    var flatSelectionAlt = settings.selectedElementsAlt?settings.selectedElementsAlt.join(";"):"";
+        //    if (flatSelectionAlt !== "") {
+        //        queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
+        //    }
+        //
+        //    if (settings.includeAggregations) {
+        //        queryStuff.aggregations = {
+        //            orgs: {
+        //                filter: settings.filter,
+        //                aggregations: {
+        //                    orgs: {
+        //                        terms: {
+        //                            "field": "classification.stewardOrg.name",
+        //                            "size": 40,
+        //                            order: {
+        //                                "_term": "desc"
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            },
+        //            statuses: {
+        //                terms: {
+        //                    field: "registrationState.registrationStatus"
+        //                }
+        //            }
+        //        };
+        //
+        //        queryStuff.aggregations.statuses.aggregations = {};
+        //
+        //        var flattenClassificationAggregations = function(variableName, orgVariableName, selectionString) {
+        //            var flatClassification = {
+        //                terms: {
+        //                    size: 500,
+        //                    field: "flatClassification"
+        //                }
+        //            };
+        //            if (selectionString === "") {
+        //                flatClassification.terms.include = settings[orgVariableName] + ";[^;]+";
+        //            } else {
+        //                flatClassification.terms.include = settings[orgVariableName] + ';' + queryBuilder.escapeRegExp(selectionString) + ";[^;]+";
+        //            }
+        //            queryStuff.aggregations[variableName] = {
+        //                filter: settings.filter,
+        //                aggs: {}
+        //            };
+        //            queryStuff.aggregations[variableName].aggs[variableName] = flatClassification;
+        //        };
+        //        if (settings.selectedOrg !== undefined) {
+        //            flattenClassificationAggregations('flatClassification', 'selectedOrg',flatSelection);
+        //        }
+        //        if (settings.selectedOrgAlt !== undefined) {
+        //            flattenClassificationAggregations('flatClassificationAlt', 'selectedOrgAlt',flatSelectionAlt);
+        //        }
+        //    }
+        //
+        //    if (queryStuff.query.bool.must.length === 0) {
+        //        delete queryStuff.query.bool.must;
+        //    }
+        //
+        //    queryStuff.from = (settings.currentPage - 1) * settings.resultPerPage;
+        //
+        //    queryStuff.highlight = {
+        //        "order" : "score"
+        //        , "pre_tags" : ["<strong>"]
+        //        , "post_tags" : ["</strong>"]
+        //        , "fields" : {
+        //            "stewardOrgCopy.name" : {}
+        //            , "primaryNameCopy": {}
+        //            , "primaryDefinitionCopy": {}
+        //            , "naming.designation": {}
+        //            , "naming.definition": {}
+        //            , "dataElementConcept.concepts.name": {}
+        //            , "dataElementConcept.concepts.origin": {}
+        //            , "dataElementConcept.concepts.originId": {}
+        //            , "property.concepts.name": {}
+        //            , "property.concepts.origin": {}
+        //            , "property.concepts.originId": {}
+        //            , "objectClass.concepts.name": {}
+        //            , "objectClass.concepts.origin": {}
+        //            , "objectClass.concepts.originId": {}
+        //            , "valueDomain.datatype": {}
+        //            , "flatProperties": {}
+        //            , "flatIds": {}
+        //            , "classification.stewardOrg.name": {}
+        //            , "classification.elements.name": {}
+        //            , "classification.elements.elements.name": {}
+        //            , "classification.elements.elements.elements.name": {}
+        //
+        //        }
+        //    };
+        //
+        //    return callback({query: queryStuff});
+        //}
+        , generalSearchQuery: function(settings, type, cb) {
             var elastic = this; 
-            $http.post("/elasticSearch/" + type, query)
+            $http.post("/elasticSearch/" + type, settings)
                     .success(function (response) {
                         elastic.highlightResults(response.cdes);
                         cb(null, response);

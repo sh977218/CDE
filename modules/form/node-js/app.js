@@ -63,12 +63,27 @@ exports.init = function(app, daoManager) {
         });
     });
     
+    //app.post('/elasticSearch/form', function(req, res) {
+    //   sharedElastic.elasticsearch(req.body.query, 'form', function(err, result) {
+    //       if (err) return res.status(400).end();
+    //       res.send(result);
+    //   });
+    //});
+
     app.post('/elasticSearch/form', function(req, res) {
-       sharedElastic.elasticsearch(req.body.query, 'form', function(err, result) {
-           if (err) return res.status(400).end();
-           res.send(result);
-       }); 
-    });    
+        elastic.elasticsearch(req.body, 'form', function(err, result) {
+            if (err) return res.status(400).end();
+            res.send(result);
+        });
+    });
+
+    //app.post('/elasticSearch/cde', function(req, res) {
+    //    return elastic.elasticsearch(req.body, function(err, result) {
+    //        if (err) return res.status(400).send("invalid query");
+    //        result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
+    //        res.send(result);
+    //    });
+    //});
 
     if (config.modules.forms.comments) {
         app.post('/comments/form/add', function(req, res) {
