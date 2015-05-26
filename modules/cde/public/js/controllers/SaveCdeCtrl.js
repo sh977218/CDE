@@ -25,7 +25,7 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$modal', funct
         $scope.runManualValidation();
     };
     $scope.addPv = function() {
-        $scope.elt.valueDomain.permissibleValues.push({permissibleValue: "Unspecified"});
+        $scope.elt.valueDomain.permissibleValues.push({permissibleValue: ""});
     };
     
     $scope.movePvUp = function(index) {
@@ -40,7 +40,15 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$modal', funct
         $scope.stageElt($scope.elt);
     };
     
-    
+
+    $scope.canAddPv = function() {
+        var result = true;
+        $scope.elt.valueDomain.permissibleValues.forEach(function(pv){
+            if (pv.permissibleValue === "") result = false;
+        });
+        return result;
+    };
+
     $scope.removeVSMapping = function() {
         delete $scope.elt.dataElementConcept.conceptualDomain.vsac;
         $scope.stageElt($scope.elt);

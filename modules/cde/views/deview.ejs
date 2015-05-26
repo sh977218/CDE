@@ -73,9 +73,12 @@
             </div>
         </div>
 
-        <div ng-show="elt.unsaved">
+        <div ng-show="elt.unsaved && allValid" class="mt20">
             <button class="btn cancel" ng-click="revert(elt)" id="discardChanges">Discard Changes</button>
             <button class="btn btn-primary" ng-click="openSave(elt, '#/deview?tinyId=')" id="openSave">Save Changes</button>
+        </div>
+        <div ng-if="!allValid"  class="alert alert-warning mt20" role="alert">
+            There are validation errors.
         </div>
     </div>
 </div>

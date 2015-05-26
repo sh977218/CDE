@@ -1,4 +1,8 @@
-angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement', 'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q', function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes, isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff, $q) {
+angular.module('cdeModule').controller('DEViewCtrl',
+    ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement',
+        'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q',
+        function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes,
+                 isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff, $q) {
     $scope.module = 'cde';
     $scope.baseLink = '#/deview?tinyId=';
     $scope.eltLoaded = false;
@@ -153,11 +157,21 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
            });
         }
     };
+
+    $scope.allValid = true;
+    $scope.checkPvUnicity = function() {
+        $timeout(function() {
+            var validObject = deValidator.checkPvUnicity($scope.elt.valueDomain);
+            $scope.allValid = validObject.allValid;
+            $scope.pvNotValidMsg = validObject.pvNotValidMsg;
+        }, 0);
+    };
     
     $scope.runManualValidation = function () {
         delete $scope.showValidateButton;
         $scope.validatePvWithVsac();
         $scope.validateVsacWithPv();
+        $scope.checkPvUnicity();
     };
     
     $scope.runDelayedManualValidation = function() {
