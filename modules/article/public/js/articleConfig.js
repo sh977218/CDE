@@ -24,7 +24,7 @@ angular.module('articleModule', ['ngRoute']).config(
     this.destination = $routeParams.helpPage;
     $scope.elt = {};
     $scope.originalBody = {};
-    $scope.elt.body = "<div ng-if='!elt'><h1 class='pt60 pb40 text-center'><i class='fa fa-spinner fa-spin'></i> Loading...</h1></div>";
+    $scope.elt.body = "<div ng-if='!elt'><h1 class='pt60 pb40 text-center'><i class='fa fa-spinner fa-pulse'></i> Loading...</h1></div>";
     $http.get("/article/key/" + this.destination).
             success(function (result) {
                 $scope.elt = result;
@@ -91,7 +91,7 @@ angular.module('articleModule', ['ngRoute']).config(
 .controller('ArticleCtrl', ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
     this.destination = $routeParams.id;
     $scope.elt = {};
-    $scope.elt.body = "<div ng-if='!elt'><h1 class='pt60 pb40 text-center'><i class='fa fa-spinner fa-spin'></i> Loading...</h1></div>";
+    $scope.elt.body = "<div ng-if='!elt'><h1 class='pt60 pb40 text-center'><i class='fa fa-spinner fa-pulse'></i> Loading...</h1></div>";
     $http.get("/article/id/" + this.destination).
         success(function (result) {
             $scope.elt = result;
