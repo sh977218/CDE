@@ -10,14 +10,9 @@ public class CdeCreate2Test extends BaseClassificationTest {
     public void testAlignmentForMissingFields() {
         mustBeLoggedInAs(ctepCurator_username, password);
         createBasicCde("AlignmentCDE", "Definition for alignment cde", "CTEP", "DISEASE", "Brain");
-        try {
-            openCdeInList("AlignmentCDE", "Incomplete");
-        } catch (Exception e) {
-            openCdeInList("AlignmentCDE", "Incomplete");
-        }
-        Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
-        hangon(2);
-        textPresent("ctepCurator");
+
+        openCdeInList("AlignmentCDE", "Incomplete");
+
         Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
     }
 
