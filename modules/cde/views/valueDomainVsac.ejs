@@ -6,29 +6,30 @@
     <div ng-show="user._id" ng-controller="SaveCdeCtrl"  ng-include="'vsacAddMapping.html'"></div>
     <hr/>
     <div ng-show="vsacMappingExists() && user._id" ng-include="'vsacTable.html'"></div>
-    <div tabindex="0"  ng-show="vsacMappingExists() && !user._id">Please log in to see VSAC mapping.</div>
-    <a class="btn btn-small btn-default" ng-show="vsacMappingExists() && canCurate && !allVsacMatch()" ng-click="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
+    <div tabindex="0" ng-show="vsacMappingExists() && !user._id">Please log in to see VSAC mapping.</div>
+    <a class="btn btn-small btn-default mt20" ng-show="vsacMappingExists() && canCurate && !allVsacMatch()" ng-click="addAllVsac()">
+        <i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
     </div>
 </script>
 
-<script type="text/ng-template" id="vsacHeader.html">   
+<script type="text/ng-template" id="vsacHeader.html">
     <dt tabindex="0" >Value Set Name: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.name | placeholdEmpty}}</dd>
     <dt tabindex="0" >Value Set ID: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.id | placeholdEmpty}}</dd>
     <dt tabindex="0" >Value Set Version: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.version | placeholdEmpty}}</dd>
-</script>  
+</script>
 
-<script type="text/ng-template" id="vsacAddMapping.html">   
+<script type="text/ng-template" id="vsacAddMapping.html">
     <div tabindex="0" >{{vsacError}}</div>
     <div ng-hide="editMode">
         <a class="btn btn-default" ng-show="canCurate" ng-click="editMode=true" id="updateOID">Update O.I.D</a>
         <a class="btn btn-default" ng-show="canCurate && vsacMappingExists()" ng-click="removeVSMapping()" id="removeVSButton">Remove Mapping</a>
-    </div> 
+    </div>
     <div ng-show="editMode">
         <input name="vsacId" type="text" ng-model="elt.dataElementConcept.conceptualDomain.vsac.id" placeholder="VSAC O.I.D"/>
         <i id="vsacIdCheck" class="fa fa-check" ng-click="checkVsacId(elt); editMode = false"></i>
         <i class="fa fa-times" ng-click="editMode = false"></i>
-    </div>    
-</script>    
+    </div>
+</script>
 
 <script type="text/ng-template" id="vsacTable.html">
     <table class="table-bordered table-condensed table-striped">
@@ -40,7 +41,7 @@
                  <th tabindex="0"  id="validation">Match</th>
                  <th tabindex="0"  ng-show="canCurate">Actions</th>
              </tr>
-         </thead> 
+         </thead>
          <tbody id="vsacTableBody">
              <tr id="vsacValue-{{$index}}" ng-repeat="con in vsacValueSet">
                  <td tabindex="0" >{{con.displayName}}</td>
