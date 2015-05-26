@@ -48,34 +48,6 @@ angular.module('ElasticSearchResource', ['ngResource'])
             return settings.resultPerPage?settings.resultPerPage:20;
         }
         , buildElasticQuery: function (settings, callback) {
-//<<<<<<< HEAD
-//            this.countFacetsDepthString = function (depth) {
-//                var fd = "classification";
-//                for (var j=1; j<=depth; j++) fd += ".elements";
-//                fd += ".name";
-//                return fd;
-//            };
-//
-//=======
-//            this.flattenSelection = function(upTo) {
-//                var flatSelection = "";
-//                for (var i = 0; i < settings.selectedElements.length && i < upTo; i++) {
-//                    if (flatSelection !== "") flatSelection = flatSelection + ";";
-//                    flatSelection = flatSelection + settings.selectedElements[i];
-//                }
-//                return flatSelection;
-//            };
-//            this.flattenSelectionAlt = function(upTo) {
-//                var flatSelectionAlt = "";
-//                if(settings.selectedElementsAlt) {
-//                    for (var i = 0; i < settings.selectedElementsAlt.length && i < upTo; i++) {
-//                        if (flatSelectionAlt !== "") flatSelectionAlt = flatSelectionAlt + ";";
-//                        flatSelectionAlt = flatSelectionAlt + settings.selectedElementsAlt[i];
-//                    }
-//                }
-//                return flatSelectionAlt;
-//            };
-//>>>>>>> d97fc169db465458ee3464578a313115c985a645
             this.escapeRegExp = function(str) {
                 return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
             };
@@ -168,7 +140,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
             }
 
-            var flatSelectionAlt = settings.selectedElementsAlt.join(";");
+            var flatSelectionAlt = settings.selectedElementsAlt?settings.selectedElementsAlt.join(";"):"";
             if (flatSelectionAlt !== "") {
                 queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
             }
