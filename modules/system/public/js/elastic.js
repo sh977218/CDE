@@ -55,24 +55,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 fd += ".name";
                 return fd;
             };
-            this.flattenSelection = function(upTo) {
-                var flatSelection = "";
-                for (var i = 0; i < settings.selectedElements.length && i < upTo; i++) {
-                    if (flatSelection !== "") flatSelection = flatSelection + ";";
-                    flatSelection = flatSelection + settings.selectedElements[i];
-                }
-                return flatSelection;
-            };
-            this.flattenSelectionAlt = function(upTo) {
-                var flatSelectionAlt = "";
-                if(settings.selectedElementsAlt) {
-                    for (var i = 0; i < settings.selectedElementsAlt.length && i < upTo; i++) {
-                        if (flatSelectionAlt !== "") flatSelectionAlt = flatSelectionAlt + ";";
-                        flatSelectionAlt = flatSelectionAlt + settings.selectedElementsAlt[i];
-                    }
-                }
-                return flatSelectionAlt;
-            };
+
             this.escapeRegExp = function(str) {
                 return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
             };
@@ -112,11 +95,11 @@ angular.module('ElasticSearchResource', ['ngResource'])
 
             if (searchQ !== undefined && searchQ !== "") {
                 queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
-                    {
-                        query_string: {
-                            query: searchQ
-                        }
-                    };
+                {
+                    query_string: {
+                        query: searchQ
+                    }
+                };
                 queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
                 queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
                 {
@@ -160,12 +143,12 @@ angular.module('ElasticSearchResource', ['ngResource'])
 
             var queryBuilder = this;
 
-            var flatSelection = queryBuilder.flattenSelection(1000);
+            var flatSelection = settings.selectedElements.join(";");
             if (flatSelection !== "") {
                 queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
             }
 
-            var flatSelectionAlt = queryBuilder.flattenSelectionAlt(1000);
+            var flatSelectionAlt = settings.selectedElementsAlt.join(";");
             if (flatSelectionAlt !== "") {
                 queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
             }
@@ -195,40 +178,66 @@ angular.module('ElasticSearchResource', ['ngResource'])
 
                 queryStuff.aggregations.statuses.aggregations = {};
 
-                if (settings.selectedOrg !== undefined) {
+
+                //if (settings.selectedOrg !== undefined) {
+                //    var flatClassification = {
+                //        terms: {
+                //            size: 500,
+                //            field: "flatClassification"
+                //        }
+                //    };
+                //    if (flatSelection === "") {
+                //        flatClassification.terms.include = settings.selectedOrg + ";[^;]+";
+                //    } else {
+                //        flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
+                //    }
+                //    queryStuff.aggregations.flatClassification = {
+                //        filter: settings.filter,
+                //        aggs: {flatClassification: flatClassification}
+                //    }
+                //}
+                //
+                //if (settings.selectedOrgAlt !== undefined) {
+                //    var flatClassificationAlt = {
+                //        terms: {
+                //            size: 500,
+                //            field: "flatClassification"
+                //        }
+                //    };
+                //    if (flatSelectionAlt === "") {
+                //        flatClassificationAlt.terms.include = settings.selectedOrgAlt + ";[^;]+";
+                //    } else {
+                //        flatClassificationAlt.terms.include = settings.selectedOrgAlt + ';' + queryBuilder.escapeRegExp(flatSelectionAlt) + ";[^;]+";
+                //    }
+                //    queryStuff.aggregations.flatClassificationAlt = {
+                //        filter: settings.filter,
+                //        aggs: {flatClassificationAlt: flatClassificationAlt}
+                //    }
+                //}
+
+                var flattenClassificationAggregations = function(variableName, orgVariableName, selectionString) {
                     var flatClassification = {
                         terms: {
                             size: 500,
                             field: "flatClassification"
                         }
                     };
-                    if (flatSelection === "") {
-                        flatClassification.terms.include = settings.selectedOrg + ";[^;]+";
+                    if (selectionString === "") {
+                        flatClassification.terms.include = settings[orgVariableName] + ";[^;]+";
                     } else {
-                        flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
+                        flatClassification.terms.include = settings[orgVariableName] + ';' + queryBuilder.escapeRegExp(selectionString) + ";[^;]+";
                     }
-                    queryStuff.aggregations.flatClassification = {
+                    queryStuff.aggregations[variableName] = {
                         filter: settings.filter,
-                        aggs: {flatClassification: flatClassification}
+                        aggs: {}
                     }
+                    queryStuff.aggregations[variableName].aggs[variableName] = flatClassification;
+                };
+                if (settings.selectedOrg !== undefined) {
+                    flattenClassificationAggregations('flatClassification', 'selectedOrg',flatSelection);
                 }
-
                 if (settings.selectedOrgAlt !== undefined) {
-                    var flatClassificationAlt = {
-                        terms: {
-                            size: 500,
-                            field: "flatClassification"
-                        }
-                    };
-                    if (flatSelectionAlt === "") {
-                        flatClassificationAlt.terms.include = settings.selectedOrgAlt + ";[^;]+";
-                    } else {
-                        flatClassificationAlt.terms.include = settings.selectedOrgAlt + ';' + queryBuilder.escapeRegExp(flatSelectionAlt) + ";[^;]+";
-                    }
-                    queryStuff.aggregations.flatClassificationAlt = {
-                        filter: settings.filter,
-                        aggs: {flatClassificationAlt: flatClassificationAlt}
-                    }
+                    flattenClassificationAggregations('flatClassificationAlt', 'selectedOrgAlt',flatSelectionAlt);
                 }
             }
 
