@@ -178,43 +178,6 @@ angular.module('ElasticSearchResource', ['ngResource'])
 
                 queryStuff.aggregations.statuses.aggregations = {};
 
-
-                //if (settings.selectedOrg !== undefined) {
-                //    var flatClassification = {
-                //        terms: {
-                //            size: 500,
-                //            field: "flatClassification"
-                //        }
-                //    };
-                //    if (flatSelection === "") {
-                //        flatClassification.terms.include = settings.selectedOrg + ";[^;]+";
-                //    } else {
-                //        flatClassification.terms.include = settings.selectedOrg + ';' + queryBuilder.escapeRegExp(flatSelection) + ";[^;]+";
-                //    }
-                //    queryStuff.aggregations.flatClassification = {
-                //        filter: settings.filter,
-                //        aggs: {flatClassification: flatClassification}
-                //    }
-                //}
-                //
-                //if (settings.selectedOrgAlt !== undefined) {
-                //    var flatClassificationAlt = {
-                //        terms: {
-                //            size: 500,
-                //            field: "flatClassification"
-                //        }
-                //    };
-                //    if (flatSelectionAlt === "") {
-                //        flatClassificationAlt.terms.include = settings.selectedOrgAlt + ";[^;]+";
-                //    } else {
-                //        flatClassificationAlt.terms.include = settings.selectedOrgAlt + ';' + queryBuilder.escapeRegExp(flatSelectionAlt) + ";[^;]+";
-                //    }
-                //    queryStuff.aggregations.flatClassificationAlt = {
-                //        filter: settings.filter,
-                //        aggs: {flatClassificationAlt: flatClassificationAlt}
-                //    }
-                //}
-
                 var flattenClassificationAggregations = function(variableName, orgVariableName, selectionString) {
                     var flatClassification = {
                         terms: {
@@ -230,7 +193,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                     queryStuff.aggregations[variableName] = {
                         filter: settings.filter,
                         aggs: {}
-                    }
+                    };
                     queryStuff.aggregations[variableName].aggs[variableName] = flatClassification;
                 };
                 if (settings.selectedOrg !== undefined) {
