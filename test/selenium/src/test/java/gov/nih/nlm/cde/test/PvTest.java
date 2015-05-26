@@ -31,10 +31,10 @@ public class PvTest extends NlmCdeBaseTest {
     public void longPvList() {
         goToCdeByName("Common Toxicity Criteria Adverse Event Short Name Type");
         findElement(By.linkText("Permissible Values")).click();         
-        Assert.assertTrue(textPresent("Hemoglobinuria"));
-        Assert.assertTrue(textNotPresent("Hypermagnesemia"));
+        textPresent("Hemoglobinuria");
+        textNotPresent("Hypermagnesemia");
         findElement(By.id("showMorePvs")).click();
-        Assert.assertTrue(textPresent("Hypermagnesemia"));
+        textPresent("Hypermagnesemia");
     }
     
     @Test
@@ -50,13 +50,13 @@ public class PvTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password); 
         goToCdeByName("Post traumatic amnesia duration range");
         findElement(By.linkText("Permissible Values")).click();
-        Assert.assertTrue(textPresent("SNOMEDCT"));
+        textPresent("SNOMEDCT");
        
         logout();
         goToCdeByName("Post traumatic amnesia duration range");
         findElement(By.linkText("Permissible Values")).click();
-        Assert.assertTrue(textNotPresent("SNOMEDCT"));
-        Assert.assertTrue(textPresent("Login to see the value."));        
+        textNotPresent("SNOMEDCT");
+        textPresent("Login to see the value.");
     }    
 
     
