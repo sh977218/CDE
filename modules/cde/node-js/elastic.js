@@ -16,7 +16,6 @@ exports.elasticsearch = function (settings, type, cb) {
     //    });
     //}
     var query = sharedElastic.buildElasticSearchQuery(settings);
-    console.log(query);
     sharedElastic.elasticsearch(query, type, cb);
 };
 
