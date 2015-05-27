@@ -221,68 +221,6 @@ angular.module('systemModule').controller('ListCtrl',
         }
         return result;
     };
-    
-    //$scope.reload = function() {
-    //    var timestamp = new Date().getTime();
-    //    if (!userResource.user) return;
-    //    $scope.lastQueryTimeStamp = timestamp;
-    //    $scope.accordionListStyle = "semi-transparent";
-    //    var settings = Elastic.buildElasticQuerySettings($scope);
-    //    Elastic.buildElasticQuery(settings, function(query) {
-    //        $scope.query = query;
-    //        Elastic.generalSearchQuery(query, $scope.module,  function(err, result) {
-    //            if (err) {
-    //                $scope.accordionListStyle = "";
-    //                $scope.addAlert("danger", "There was a problem with your query");
-    //                $scope.cdes = [];
-    //                return;
-    //            }
-    //            if(timestamp < $scope.lastQueryTimeStamp) return;
-    //            $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage);
-    //            $scope.cdes = result.cdes;
-    //            $scope.cdes.forEach(function(elt) {elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);});
-    //            $scope.accordionListStyle = "";
-    //            $scope.openCloseAll($scope.cdes, "list");
-    //            $scope.totalItems = result.totalNumber;
-    //            $scope.cache.put($scope.getCacheName("totalItems"), $scope.totalItems);
-    //            $scope.aggregations = result.aggregations;
-    //
-    //            for (var j = 0; j < $scope.registrationStatuses.length; j++) {
-    //               $scope.registrationStatuses[j].count = 0;
-    //            }
-    //            if ($scope.aggregations.statuses !== undefined) {
-    //                for (var i = 0; i < $scope.registrationStatuses.length; i++) {
-    //                    for (var j = 0; j < $scope.aggregations.statuses.buckets.length; j++) {
-    //                        if ($scope.aggregations.statuses.buckets[j].key === $scope.registrationStatuses[i].name) {
-    //                            $scope.registrationStatuses[i].count = $scope.aggregations.statuses.buckets[j].doc_count;
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //
-    //            $scope.classifications = {elements: []};
-    //
-    //            if (result.aggregations !== undefined && result.aggregations.flatClassification !== undefined) {
-    //                $scope.aggregations.flatClassification = result.aggregations.flatClassification.flatClassification.buckets.map(function (c) {
-    //                    return {name: c.key.split(';').pop(), count: c.doc_count};
-    //                });
-    //            } else {
-    //                $scope.aggregations.flatClassification = [];
-    //            }
-    //
-    //            if (result.aggregations !== undefined && result.aggregations.flatClassificationAlt !== undefined) {
-    //                $scope.aggregations.flatClassificationAlt = result.aggregations.flatClassificationAlt.flatClassificationAlt.buckets.map(function (c) {
-    //                    return {name: c.key.split(';').pop(), count: c.doc_count};
-    //                });
-    //            } else {
-    //                $scope.aggregations.flatClassificationAlt = [];
-    //            }
-    //
-    //            $scope.filterOutWorkingGroups($scope.aggregations);
-    //            OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
-    //        });
-    //    });
-    //};
 
     $scope.reload = function() {
         var timestamp = new Date().getTime();
@@ -376,7 +314,6 @@ angular.module('systemModule').controller('ListCtrl',
         modalInstance.result.then(function (selectedBoard) {
             var settings = Elastic.buildElasticQuerySettings($scope);
             var data = {
-                //query: $scope.query.query
                 query: settings
                 , board: selectedBoard
                 , itemType: $scope.module

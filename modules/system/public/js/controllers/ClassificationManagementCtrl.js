@@ -154,25 +154,6 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
             , visibleRegStatuses: SearchSettings.getUserDefaultStatuses()
         };
 
-        //Elastic.buildElasticQuery(settings, function(query) {
-        //    var data = {
-        //        query: query.query
-        //        , newClassification: newClassification
-        //        , itemType: $scope.module
-        //    };
-        //    var timeout = $timeout(function() {
-        //        $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
-        //    }, 3000);
-        //    $http({method: 'post', url: '/classifyEntireSearch', data: data}).success(function(data, status, headers, config) {
-        //        $timeout.cancel(timeout);
-        //        if (status===200) $scope.addAlert("success", "Elements classified.");
-        //        else $scope.addAlert("danger", data.error.message);
-        //
-        //    }).error(function(data) {
-        //        $scope.addAlert("danger", "Task not performed completely!");
-        //        $timeout.cancel(timeout);
-        //    });
-        //});
         var data = {
             query: settings
             , newClassification: newClassification
