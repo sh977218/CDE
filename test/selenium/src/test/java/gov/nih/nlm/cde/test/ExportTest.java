@@ -16,8 +16,7 @@ public class ExportTest extends NlmCdeBaseTest {
 
         String query = "{\"resultPerPage\":20,\"userOrgs\":[\"Test Working Group\",\"CTEP\"],\"selectedElements\":[],\"selectedElementsAlt\":[],\"filter\":{\"and\":[{\"or\":[{\"term\":{\"registrationState.registrationStatus\":\"Preferred Standard\"}},{\"term\":{\"registrationState.registrationStatus\":\"Standard\"}},{\"term\":{\"registrationState.registrationStatus\":\"Qualified\"}},{\"term\":{\"registrationState.registrationStatus\":\"Recorded\"}},{\"term\":{\"registrationState.registrationStatus\":\"Candidate\"}},{\"term\":{\"registrationState.registrationStatus\":\"Incomplete\"}}]}]},\"includeAggregations\":true,\"visibleRegStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"]}";
         String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde").asString();//.then().assertThat().contentType(ContentType.JSON);
-
-        System.out.print(response);
+        
         Assert.assertTrue(response.contains("\"Ethnic Group Category Text\",\"Ethnicity; Patient Ethnicity; Ethnicity; Newborn's Ethnicity\",\"Value List\",\"Not Hispanic or Latino; Hispanic or Latino; Unknown; Not reported\",\"caDSR: 2192217 v2\",\"caBIG\",\"Standard\",\"\",\"NIDCR; caBIG; CCR; CTEP; NICHD; AECC; LCC; USC/NCCC; NHC-NCI; PBTC; CITN; OHSU Knight; DCP; DCI; Training\","));
 
         goToSearch("cde");
