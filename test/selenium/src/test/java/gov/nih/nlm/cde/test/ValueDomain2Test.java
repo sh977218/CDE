@@ -10,7 +10,7 @@ public class ValueDomain2Test extends NlmCdeBaseTest {
 
     private ValueDomainTest vdTest = new ValueDomainTest();
 
-    @Test
+    //@Test
     public void integerDatatype() {
         mustBeLoggedInAs(ninds_username, password);
         String cdeName = "Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Desire cocaine frequency";
