@@ -1,33 +1,33 @@
-angular.module('systemModule').controller('ClassificationManagementCtrl', ['$scope', '$http', '$modal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', function($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource) {
+angular.module('systemModule').controller('ClassificationManagementCtrl', ['$scope', '$http', '$modal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', 'SearchSettings', function($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource, SearchSettings) {
     $scope.module = "cde";
     $scope.classifSubEltPage = '/system/public/html/classif-elt-mgt.html';
-        
+
     userResource.getPromise().then(function(){
         if (userResource.userOrgs.length > 0)  {
             $scope.orgToManage = userResource.userOrgs[0];
             $scope.userOrgs = userResource.userOrgs;
             $scope.updateOrg();
-        }             
+        }
     });
-    
-    
-    
+
+
+
     $scope.org = {};
-    
+
     $scope.updateOrg = function() {
         $timeout(function () {
             if ($scope.orgToManage !== undefined) {
                 $http.get("/org/" + $scope.orgToManage).then(function(response) {
-                   $scope.org = response.data;
+                    $scope.org = response.data;
                 });
             }
         }, 0);
     };
-    
+
     $scope.classificationToFilter = function() {
-         return $scope.org.classifications;
+        return $scope.org.classifications;
     };
-    
+
     $scope.removeClassification = function(orgName, elts) {
         OrgClassification.resource.remove({
             orgName: orgName
@@ -37,7 +37,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
             $scope.addAlert("success", "Classification Deleted");
         });
     };
-    
+
     $scope.openAddClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: '/template/system/addClassification',
@@ -57,17 +57,17 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
                 newClassification.orgName = $scope.orgToManage;
                 OrgClassification.resource.save(newClassification, function(response) {
                     if (response.error) {
-                        $scope.addAlert("danger", response.error.message);        
+                        $scope.addAlert("danger", response.error.message);
                     }
                     else {
                         $scope.org = response;
-                        $scope.addAlert("success", "Classification Added");                      
-                    }              
+                        $scope.addAlert("success", "Classification Added");
+                    }
                 });
             }
         });
     };
-    
+
     $scope.showRenameDialog = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: 'renameClassificationModal.html',
@@ -75,7 +75,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
             resolve: {
                 classifName: function() {
                     return pathArray[pathArray.length-1];
-                }           
+                }
             }
         });
 
@@ -85,9 +85,9 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
                     $scope.org = response;
                 });
             }
-        });        
+        });
     };
-    
+
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: '/template/system/removeClassificationMgtModal',
@@ -107,9 +107,9 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
 
     $scope.showClassifyEntireSearchModal = function (orgName, pathArray) {
         var modalInstance = $modal.open({
-          templateUrl: '/template/system/classifyCde',
-          controller: 'AddClassificationModalCtrl',
-          resolve: {
+            templateUrl: '/template/system/classifyCde',
+            controller: 'AddClassificationModalCtrl',
+            resolve: {
                 module: function() {
                     return $scope.module;
                 }
@@ -121,7 +121,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
                 }
                 , orgName: function() {
                     return orgName;
-                } 
+                }
                 , pathArray: function() {
                     return pathArray;
                 }
@@ -136,10 +136,10 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
                         }
                     };
                 }
-            }          
+            }
         });
 
-    };       
+    };
 
     $scope.classifyEntireSearch = function(oldClassification, newClassification) {
         var settings = {
@@ -151,33 +151,51 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
             , selectedElements: oldClassification.classifications
             , filter: {and: []}
             , currentPage: 1
+            , visibleRegStatuses: SearchSettings.getUserDefaultStatuses()
         };
-        
-        Elastic.buildElasticQuery(settings, function(query) {
-            var data = {
-                query: query.query
-                , newClassification: newClassification
-                , itemType: $scope.module
-            };
-            var timeout = $timeout(function() {
-                $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
-            }, 3000);
-            $http({method: 'post', url: '/classifyEntireSearch', data: data}).success(function(data, status, headers, config) {
-                $timeout.cancel(timeout);            
-                if (status===200) $scope.addAlert("success", "Elements classified.");  
-                else $scope.addAlert("danger", data.error.message);  
 
-            }).error(function(data) {
-                $scope.addAlert("danger", "Task not performed completely!");  
-                $timeout.cancel(timeout);
-            });
-        }); 
-    };    
+        //Elastic.buildElasticQuery(settings, function(query) {
+        //    var data = {
+        //        query: query.query
+        //        , newClassification: newClassification
+        //        , itemType: $scope.module
+        //    };
+        //    var timeout = $timeout(function() {
+        //        $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
+        //    }, 3000);
+        //    $http({method: 'post', url: '/classifyEntireSearch', data: data}).success(function(data, status, headers, config) {
+        //        $timeout.cancel(timeout);
+        //        if (status===200) $scope.addAlert("success", "Elements classified.");
+        //        else $scope.addAlert("danger", data.error.message);
+        //
+        //    }).error(function(data) {
+        //        $scope.addAlert("danger", "Task not performed completely!");
+        //        $timeout.cancel(timeout);
+        //    });
+        //});
+        var data = {
+            query: settings
+            , newClassification: newClassification
+            , itemType: $scope.module
+        };
+        var timeout = $timeout(function() {
+            $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
+        }, 3000);
+        $http({method: 'post', url: '/classifyEntireSearch', data: data}).success(function(data, status, headers, config) {
+            $timeout.cancel(timeout);
+            if (status===200) $scope.addAlert("success", "Elements classified.");
+            else $scope.addAlert("danger", data.error.message);
+
+        }).error(function(data) {
+            $scope.addAlert("danger", "Task not performed completely!");
+            $timeout.cancel(timeout);
+        });
+    };
 }]);
 
 angular.module('systemModule').controller('RenameClassificationModalCtrl', ['$scope', '$modalInstance', 'classifName', function($scope, $modalInstance, classifName) {
     $scope.classifName = classifName;
     $scope.close = function(newname) {
         $modalInstance.close(newname);
-    };  
+    };
 }]);
