@@ -23,7 +23,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
             return filter;
         }
         , buildElasticQuerySettings: function(scope){
-            var filter = this.buildFilter(SearchSettings.getUserDefaultStatuses(), scope.registrationStatuses);
+            //var filter = this.buildFilter(SearchSettings.getUserDefaultStatuses(), scope.registrationStatuses);
             return {
                 resultPerPage: scope.resultPerPage
                 , searchTerm: scope.searchForm.ftsearch
@@ -33,7 +33,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , selectedOrgAlt: scope.classificationFilters[1].org
                 , selectedElements: this.getSelectedElements(scope)
                 , selectedElementsAlt: this.getSelectedElementsAlt(scope)
-                , filter: filter
+                //, filter: filter
                 , currentPage: scope.searchForm.currentPage
                 , includeAggregations: true
                 , visibleRegStatuses: SearchSettings.getUserDefaultStatuses()
