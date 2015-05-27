@@ -2,8 +2,8 @@
     <div class="panel-heading">
         <div class="row">
           <div class="col-md-9">
-            <h4>{{section.label}}</h4>
-            <p>{{section.instructions}}</p>
+            <h4 tabindex="0">{{section.label}}</h4>
+            <p tabindex="0">{{section.instructions}}</p>
           </div>
           <div class="col-md-3" ng-if="canRepeat(section)">
               <button class="btn btn-default fa fa-plus" ng-click="addSection(section, formElements, $index)"> Add One</button>
@@ -14,7 +14,7 @@
     <div class="panel-body">
       <div ng-repeat="formElement in section.formElements track by $index" class="row">
             <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'" ng-init="formElements = section.formElements; question = formElement;"></div>
-            <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'" ng-init="formElements = section.formElements; section = formElement;"></div>          
+            <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'" ng-init="formElements = section.formElements; section = formElement;"></div>
       </div>
     </div>
 </div>

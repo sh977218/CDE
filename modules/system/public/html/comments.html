@@ -1,22 +1,32 @@
 <div ng-controller="CommentsCtrl">
     <br/>
-    <div ng-if="!user._id">Please <a href="#/login">log in</a> to comment.</div>
+
+    <div tabindex="0" ng-if="!user._id">Please <a tabindex="0" href="#/login">log in</a> to comment.</div>
     <div ng-if="user._id">
         <form role="form" name="commentForm" id="commentForm" novalidate>
-        	<label class="sr-only" for="commentTextArea">Comments</label>
-            <textarea name="commentTextArea" id="commentTextArea" class="form-control" rows="3" ng-model="comment.content" placeholder="Join the discussion..." required></textarea>
+            <label tabindex="0" class="sr-only" for="commentTextArea">Comments</label>
+            <textarea tabindex="0" name="commentTextArea" id="commentTextArea" class="form-control" rows="3"
+                      ng-model="comment.content" placeholder="Join the discussion..." required></textarea>
             <br/>
-            <input name="postComment" id="postComment" class="btn btn-primary" type="button" value="Post Comment" ng-click="addComment()" ng-disabled="commentForm.commentTextArea.$invalid" />
+            <input tabindex="0" name="postComment" id="postComment" class="btn btn-primary" type="button"
+                   value="Post Comment"
+                   ng-click="addComment()" ng-disabled="commentForm.commentTextArea.$invalid"/>
         </form>
     </div>
     <br/>
+
     <div ng-repeat="comment in elt.comments">
         <div class="row">
             <div class="col-xs-1">
                 <img class="pull-right" src="/cde/public/assets/img/portrait.png" width="50" alt="portrait"/>
             </div>
             <div class="col-xs-11">
-                <strong>{{comment.username}}</strong> - <small class="gray">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</small><span ng-show="canRemoveComment(comment)" > - <i class="fa fa-trash-o hand-cursor" ng-click="removeComment(comment._id)" id="removeComment-{{$index}}"></i></span>
+                <strong tabindex="0">{{comment.username}}</strong> -
+                <small tabindex="0" class="gray">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</small>
+                <span tabindex="0" ng-show="canRemoveComment(comment)"> -
+                    <i class="fa fa-trash-o hand-cursor" ng-click="removeComment(comment._id)"
+                       id="removeComment-{{$index}}"></i></span>
+
                 <div id="commentText-{{$index}}">{{comment.text}}</div>
             </div>
         </div>

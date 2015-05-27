@@ -58,7 +58,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
             fillInput("Version", version);
         }
         new Select(findElement(By.id("newForm.stewardOrg.name"))).selectByVisibleText(org);
-        findElement(By.xpath("//button[text()='Save']")).click();
+        findElement(By.id("createForm")).click();
         textPresent("Form created");
         closeAlert();
         hangon(1);

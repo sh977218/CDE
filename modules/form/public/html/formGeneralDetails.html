@@ -1,9 +1,21 @@
 <br/>
 <dl class="dl-horizontal">
-    <dt>Name: </dt><dd inline-edit id="nameEdit" model="elt.naming[0].designation" is-allowed="false" on-ok="stageCde(form)"> </dd>
-    <dt>Description: </dt><dd inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="elt.naming[0].definition" is-allowed="false" def-format="elt.naming[0].definitionFormat" on-ok="stageCde(form)"> </dd>
-    <dt>Copyrighted: </dt><dd>{{elt.isCopyrighted}}</dd>   
-    <dt>Version: </dt><dd>{{elt.version | placeholdEmpty}}</dd>
-    <dt>Steward: </dt><dd>{{elt.stewardOrg.name}}</dd>
-    <dt id="dt_status">Status: </dt><dd id="dd_status" ng-controller="RegistrationCtrl"><i id="editStatus" ng-show="canCurate" class="fa fa-edit" ng-click="openRegStatusUpdate()"></i> {{elt.registrationState.registrationStatus}}</dd>
+    <dt tabindex="0">Name:</dt>
+    <dd tabindex="0" inline-edit id="nameEdit" model="elt.naming[0].designation" is-allowed="false"
+        on-ok="stageCde(form)"></dd>
+    <dt tabindex="0">Description:</dt>
+    <dd tabindex="0" inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="elt.naming[0].definition"
+        is-allowed="false" def-format="elt.naming[0].definitionFormat" on-ok="stageCde(form)"></dd>
+    <dt tabindex="0">Copyrighted:</dt>
+    <dd tabindex="0">{{elt.isCopyrighted}}</dd>
+    <dt tabindex="0">Version:</dt>
+    <dd tabindex="0">{{elt.version | placeholdEmpty}}</dd>
+    <dt tabindex="0">Steward:</dt>
+    <dd tabindex="0">{{elt.stewardOrg.name}}</dd>
+    <dt tabindex="0" id="dt_status">Status:</dt>
+    <dd tabindex="0" id="dd_status" ng-controller="RegistrationCtrl"><i id="editStatus" ng-show="canCurate"
+                                                                        class="fa fa-edit"
+                                                                        ng-click="openRegStatusUpdate()"></i>
+        {{elt.registrationState.registrationStatus}}
+    </dd>
 </dl> 

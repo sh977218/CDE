@@ -1,31 +1,36 @@
-<h1>Create New Form</h1>
+<h1 tabindex="0">Create New Form</h1>
 
 <form role="form">
     <div class="form-group">
-        <label for="formName">Name</label>
-        <input ng-model="newForm.designation"  type="text" class="form-control" id="formName" placeholder="Name">
+        <label tabindex="0" for="formName">Name</label>
+        <input tabindex="0" ng-model="newForm.designation" type="text" class="form-control" id="formName"
+               placeholder="Name">
     </div>
     <div class="form-group">
-        <label for="formDefinition">Description</label>
-        <input  ng-model="newForm.definition" type="text" class="form-control" id="formDefinition" placeholder="Definition">
+        <label tabindex="0" for="formDefinition">Description</label>
+        <input tabindex="0" ng-model="newForm.definition" type="text" class="form-control" id="formDefinition"
+               placeholder="Definition">
     </div>
     <div class="form-group">
-        <label for="formVersion">Version</label>
-        <input  ng-model="newForm.version" type="text" class="form-control" id="formVersion" placeholder="Version">
+        <label tabindex="0" for="formVersion">Version</label>
+        <input tabindex="0" ng-model="newForm.version" type="text" class="form-control" id="formVersion"
+               placeholder="Version">
     </div>
-    
+
     <div class="form-group">
-        <label for="newForm.stewardOrg.name">Steward Organization</label>
+        <label tabindex="0" for="newForm.stewardOrg.name">Steward Organization</label>
         <select class="form-control" ng-model="newForm.stewardOrg.name" id="newForm.stewardOrg.name" required>
             <option value="">Select One</option>
             <option ng-repeat="o in myOrgs" ng-value="o">{{o}}</option>
         </select>
-    </div>    
-    
-    <div ng-show="validationErrors() !== null">
+    </div>
+
+    <div tabindex="0" ng-show="validationErrors() !== null">
         <i class="fa fa-warning"></i> {{validationErrors()}}
-    </div>    
-    
+    </div>
+
     <a href="#/" class="btn btn-warning">Cancel</a>
-    <button ng-click="save()" ng-disabled="validationErrors() !== null" type="submit" class="btn btn-success">Save</button>
+    <button ng-click="save()" ng-disabled="validationErrors() !== null" type="submit" class="btn btn-success"
+            id="createForm">Save
+    </button>
 </form>
