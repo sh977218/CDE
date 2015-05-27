@@ -26,6 +26,8 @@ exports.init = function(app, daoManager) {
 
     var viewConfig = {modules: config.modules};
 
+    app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
+
     daoManager.registerDao(mongo_data);
 
     app.get('/quickBoard', function(req, res) {

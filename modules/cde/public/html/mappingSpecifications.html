@@ -1,60 +1,69 @@
 <div ng-controller="MappingSpecificationsCtrl">
+    <h4 tabindex="0">Mapping Specifications</h4>
 
-<h4>Mapping Specifications</h4>    
-<div ng-if="elt.mappingSpecifications.length === 0">There are no mapping specifications.</div>
-
-    
-<div ng-repeat="ms in elt.mappingSpecifications">
-    <div class="row">
-        <div class="col-md-1 text-right" ng-show="canCurate && elt.mappingSpecifications.length > 0">
-            <div class="row">
-                <span ng-show="showDelete">
-                    Confirm Delete <a class="fa fa-check" ng-click="showDelete = false; removeMappingSpecification($index)" id="confirmRemoveMappingSpecification-{{$index}}" title="OK" href=""></a>
+    <div tabindex="0" ng-if="elt.mappingSpecifications.length === 0">There are no mapping specifications.</div>
+    <div ng-repeat="ms in elt.mappingSpecifications">
+        <div class="row">
+            <div class="col-md-1 text-right" ng-show="canCurate && elt.mappingSpecifications.length > 0">
+                <div class="row">
+                <span ng-show="showDelete">Confirm Delete
+                    <a class="fa fa-check" ng-click="showDelete = false; removeMappingSpecification($index)"
+                       id="confirmRemoveMappingSpecification-{{$index}}" title="OK" href=""></a>
                     <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
                 </span>
-                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeMappingSpecification-{{$index}}" title="Remove" href=""></a>
+                    <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
+                       id="removeMappingSpecification-{{$index}}" title="Remove" href=""></a>
+                </div>
+            </div>
+            <div class="col-md-11">
+                <dl class="dl-horizontal">
+                    <dt tabindex="0">Content:</dt>
+                    <dd tabindex="0" id="dd_ms_content_{{$index}}">{{ms.content | placeholdEmpty}}</dd>
+                    <dt tabindex="0">Type:</dt>
+                    <dd tabindex="0" id="dd_ms_type_{{$index}}">{{ms.spec_type | placeholdEmpty}}</dd>
+                    <dt tabindex="0">Script:</dt>
+                    <dd tabindex="0" id="dd_ms_script_{{$index}}">{{ms.script | placeholdEmpty}}</dd>
+                </dl>
             </div>
         </div>
-        <div class="col-md-11">
-            <dl class="dl-horizontal">
-                <dt>Content: </dt> 
-                <dd id="dd_ms_content_{{$index}}">{{ms.content | placeholdEmpty}}</dd>
-                <dt>Type: </dt>                
-                <dd id="dd_ms_type_{{$index}}">{{ms.spec_type | placeholdEmpty}}</dd>
-                <dt>Script: </dt>                
-                <dd id="dd_ms_script_{{$index}}">{{ms.script | placeholdEmpty}}</dd>
-            </dl>
-        </div>
+        <hr/>
     </div>
-    <hr/>
-</div>
 
-<button ng-show="canCurate" class="btn btn-small btn-default" value="add" ng-click="openNewMappingSpecification()" id="addMappingSpecification"><i class="fa fa-plus"> </i> Add Mapping Specification</button>
+    <button ng-show="canCurate" class="btn btn-small btn-default" value="add" ng-click="openNewMappingSpecification()"
+            id="addMappingSpecification"><i class="fa fa-plus"> </i> Add Mapping Specification
+    </button>
 
-<script type="text/ng-template" id="newMappingSpecificationModalContent.html">
-    <div class="modal-header" id="newMappingSpecificationModalHeader">
-        <h4>Add Mapping Specification</h4>
-    </div>
-    <form name="form" role="form">
-        <div class="modal-body" id="newMappingSpecificationModalBody">
-            <div class="form-group">
-                <label for="newMappingSpecification.content">Content: </label>
-                <input class="form-control" ng-model="newMappingSpecification.content" typeahead="k for k in contentAutocompleteList | filter:$viewValue | limitTo:8" id="newMappingSpecification.content" Placeholder="Content" required/>
-            </div>    
-            <div class="form-group">
-                <label for="newMappingSpecification.type">Type: </label>
-                <input class="form-control" ng-model="newMappingSpecification.spec_type" typeahead="k for k in typeAutocompleteList | filter:$viewValue | limitTo:8" id="newMappingSpecification.type" Placeholder="Type" required/>
-            </div>    
-            <div class="form-group">
-                <label for="newMappingSpecification.script">Script: </label>
-                <input class="form-control" ng-model="newMappingSpecification.script" id="newMappingSpecification.script" Placeholder="Script" required/>
-            </div>    
+    <script type="text/ng-template" id="newMappingSpecificationModalContent.html">
+        <div class="modal-header" id="newMappingSpecificationModalHeader">
+            <h4 tabindex="0">Add Mapping Specification</h4>
         </div>
-        <div class="modal-footer" id="newMappingSpecificationModalFooter">
-            <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>
-            <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid" id="createMappingSpecification" type="submit">Save</button>
-        </div>
-    </form>
-</script>
+        <form name="form" role="form">
+            <div class="modal-body" id="newMappingSpecificationModalBody">
+                <div class="form-group">
+                    <label tabindex="0" for="newMappingSpecification.content">Content: </label>
+                    <input tabindex="0" class="form-control" ng-model="newMappingSpecification.content"
+                           typeahead="k for k in contentAutocompleteList | filter:$viewValue | limitTo:8"
+                           id="newMappingSpecification.content" Placeholder="Content" required/>
+                </div>
+                <div class="form-group">
+                    <label tabindex="0" for="newMappingSpecification.type">Type: </label>
+                    <input tabindex="0" class="form-control" ng-model="newMappingSpecification.spec_type"
+                           typeahead="k for k in typeAutocompleteList | filter:$viewValue | limitTo:8"
+                           id="newMappingSpecification.type" Placeholder="Type" required/>
+                </div>
+                <div class="form-group">
+                    <label tabindex="0" for="newMappingSpecification.script">Script: </label>
+                    <input tabindex="0" class="form-control" ng-model="newMappingSpecification.script"
+                           id="newMappingSpecification.script" Placeholder="Script" required/>
+                </div>
+            </div>
+            <div class="modal-footer" id="newMappingSpecificationModalFooter">
+                <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>
+                <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid"
+                        id="createMappingSpecification" type="submit">Save
+                </button>
+            </div>
+        </form>
+    </script>
 
 </div>

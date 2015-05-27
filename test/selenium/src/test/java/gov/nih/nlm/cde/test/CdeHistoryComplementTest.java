@@ -14,17 +14,17 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");
 
         findElement(By.linkText("Naming")).click();
-        findElement(By.xpath("//button[text()=\" Add Naming\"]")).click();
+        findElement(By.id("addNamePair")).click();
         findElement(By.xpath("//label[text()=\"Name\"]/following-sibling::input")).sendKeys("Alternative Name 1");
         findElement(By.xpath("//label[text()=\"Definition\"]/following-sibling::textarea")).sendKeys("Alternative Definition 1");
-        findElement(By.xpath("//div[@id='newConceptModalFooter']//button[text()=\"Save\"]")).click();
+        findElement(By.id("createNamePair")).click();
         modalGone();
 
         findElement(By.linkText("Concepts")).click();
-        findElement(By.xpath("//button[text()=\" Add Concept\"]")).click();
+        findElement(By.id("addConcept")).click();
         findElement(By.xpath("//label[text()=\"Code Name\"]/following-sibling::input")).sendKeys("Code Name 1");
         findElement(By.xpath("//label[text()=\"Code ID\"]/following-sibling::input")).sendKeys("Code ID 1");
-        findElement(By.xpath("//div[@id='newConceptModalFooter']//button[text()=\"Save\"]")).click();
+        findElement(By.id("createConcept")).click();
         modalGone();
 
         newCdeVersion();
@@ -45,11 +45,11 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         findElement(By.linkText("Identifiers")).click();
         closeAlert();
-        findElement(By.xpath("//button[text()=\" Add Identifier\"]")).click();
+        findElement(By.id("addId")).click();
         findElement(By.xpath("//label[text()=\"Source\"]/following-sibling::input")).sendKeys("Origin 1");
         findElement(By.xpath("//label[text()=\"Identifier\"]/following-sibling::textarea")).sendKeys("Identifier 1");
         findElement(By.xpath("//label[text()=\"Version\"]/following-sibling::textarea")).sendKeys("Version 1");
-        findElement(By.xpath("//div[@id=\"newIdModalFooter\"]//button[text()=\"Save\"]")).click();
+        findElement(By.id("createId")).click();
         modalGone();
         goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "Recorded");
         checkInHistory("Identifiers", "", "Origin 1");

@@ -1,11 +1,17 @@
-<h4>Registration State</h4>
+<h4 tabindex="0">Registration State</h4>
 <dl class="dl-horizontal">
-    <dt>Effective Date</dt><dd>{{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | placeholdEmpty}}</dd>
-    <dt>Until Date</dt><dd>{{elt.registrationState.untilDate | date: 'MM/dd/yyyy' | placeholdEmpty}}</dd>
-    <dt>Administrative Note</dt><dd>{{elt.registrationState.administrativeNote | placeholdEmpty}}</dd>
-    <dt>Unresolved Issue</dt><dd>{{elt.registrationState.unresolvedIssue | placeholdEmpty}}</dd>    
-    <dt>Status</dt><dd>{{elt.registrationState.registrationStatus | placeholdEmpty}}</dd>
+    <dt tabindex="0">Effective Date</dt>
+    <dd tabindex="0">{{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | placeholdEmpty}}</dd>
+    <dt tabindex="0">Until Date</dt>
+    <dd tabindex="0">{{elt.registrationState.untilDate | date: 'MM/dd/yyyy' | placeholdEmpty}}</dd>
+    <dt tabindex="0">Administrative Note</dt>
+    <dd tabindex="0">{{elt.registrationState.administrativeNote | placeholdEmpty}}</dd>
+    <dt tabindex="0">Unresolved Issue</dt>
+    <dd tabindex="0">{{elt.registrationState.unresolvedIssue | placeholdEmpty}}</dd>
+    <dt tabindex="0">Status</dt>
+    <dd tabindex="0">{{elt.registrationState.registrationStatus | placeholdEmpty}}</dd>
     <span ng-show="elt.registrationState.administrativeStatus">
-        <dt id="dd_adminStatus">Administrative Status</dt><dd>{{elt.registrationState.administrativeStatus}}</dd>    
+        <dt tabindex="0" id="dd_adminStatus">Administrative Status</dt>
+        <dd tabindex="0">{{elt.registrationState.administrativeStatus}}</dd>
     </span>
 </dl>

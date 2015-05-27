@@ -1,12 +1,13 @@
 <div id="repeatCs" class="container-fluid">
-    <div ng-repeat="stewardClassifications in classificationToFilter()" ng-hide="hideWorkingGroups(stewardClassifications)" class="pull-left boxed-div" id="stewardClassificationGroup-{{stewardClassifications.stewardOrg.name}}">
-        <h4 id="{{stewardClassifications.stewardOrg.name}}">{{stewardClassifications.stewardOrg.name}}</h4>
+    <div ng-repeat="stewardClassifications in classificationToFilter()"
+         ng-hide="hideWorkingGroups(stewardClassifications)" class="pull-left boxed-div"
+         id="stewardClassificationGroup-{{stewardClassifications.stewardOrg.name}}">
+        <h4 tabindex="0" id="{{stewardClassifications.stewardOrg.name}}">{{stewardClassifications.stewardOrg.name}}</h4>
         <hr/>
         <div class="pull-left boxed-div"
-             ng-repeat="elt in stewardClassifications.elements" 
-             ng-init='pathArray = [elt.name]' 
+             ng-repeat="elt in stewardClassifications.elements"
+             ng-init='pathArray = [elt.name]'
              id="conceptSystem-{{stewardClassifications.stewardOrg.name}}-{{elt.name}}">
-
             <ul class="fa-ul">
                 <li ng-include="'/system/public/html/classifEltLoop.html'"
                     ng-init="myOrg = myOrgs.indexOf(stewardClassifications.stewardOrg.name) >= 0; orgName = stewardClassifications.stewardOrg.name; pathArray = pathArray.slice(0); classificationPage='deview'"

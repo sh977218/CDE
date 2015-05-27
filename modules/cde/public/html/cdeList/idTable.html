@@ -1,13 +1,13 @@
 <table ng-show="cde.ids.length > 0" class="table cdeTable" summary="Identifiers List">
-    <caption>Identifiers</caption>
+    <caption tabindex="0">Identifiers</caption>
     <tr>
-        <th id="id" class="col-xs-6">Id</th>
-        <th id="version" class="col-xs-2">Vers.</th>
-        <th id="source" class="col-xs-4">Src.</th>
+        <th tabindex="0" id="id" class="col-xs-6">Id</th>
+        <th tabindex="0" id="version" class="col-xs-2">Vers.</th>
+        <th tabindex="0" id="source" class="col-xs-4">Src.</th>
     </tr>
     <tr ng-repeat="id in cde.ids">
-        <td ng-bind="id.id" headers="id" class="col-xs-6"></td>
-        <td ng-bind="id.version" headers="version" class="col-xs-2"></td>
-        <td ng-bind="id.source" headers="source" class="col-xs-4"></td>
+        <td tabindex="0" ng-bind="id.id" headers="id" class="col-xs-6"></td>
+        <td tabindex="0" ng-bind="id.version" headers="version" class="col-xs-2"></td>
+        <td tabindex="0" ng-bind="id.source" headers="source" class="col-xs-4"></td>
     </tr>
 </table>

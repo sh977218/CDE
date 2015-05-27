@@ -3,6 +3,11 @@ angular.module('systemModule').controller('ListCtrl',
         function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource) {
     $scope.filterMode = true;
 
+    $scope.focusClassification = function(){
+        //any good angular way to do this?
+        $('#classif_filter_title').focus();
+    }
+
     $timeout(function(){
         if($scope.isScreenSizeXsSm) {
             $scope.filterMode = false;
@@ -14,31 +19,31 @@ angular.module('systemModule').controller('ListCtrl',
     $scope.hideShowFilter = function() {
         $scope.filterMode = !$scope.filterMode;
     };
-    
+
     $scope.$watch('isScreenSizeXsSm', function(isScreenSizeXsSm_new, isScreenSizeXsSm_old) {
         if (isScreenSizeXsSm_new !== isScreenSizeXsSm_old) {
             $scope.filterMode = !isScreenSizeXsSm_new;
         }
     });
-    
+
     $scope.query = null;
-    
+
     $scope.getCacheName = function(name) {
         return "search." + $scope.module + "." + name;
-    };    
+    };
 
     if ($scope.cache.get($scope.getCacheName("registrationStatuses"))) {
         $scope.registrationStatuses = $scope.cache.get($scope.getCacheName("registrationStatuses"));
     }
     if (!$scope.registrationStatuses) {
         $scope.registrationStatuses = JSON.parse(JSON.stringify(regStatusShared.statusList));
-    }   
+    }
 
     if ($scope.cache.get($scope.getCacheName("ftsearch"))) {
-        $scope.searchForm.ftsearch = $scope.cache.get($scope.getCacheName("ftsearch")); 
-        $scope.currentSearchTerm = $scope.searchForm.ftsearch;   
+        $scope.searchForm.ftsearch = $scope.cache.get($scope.getCacheName("ftsearch"));
+        $scope.currentSearchTerm = $scope.searchForm.ftsearch;
     }
-    
+
     $scope.altClassificationFilterMode = 0;
 
     $scope.toggleAltClassificationFilterMode = function() {
@@ -50,15 +55,16 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.classificationFilters[1].elements = [];
         }
         $scope.reload();
+        $scope.focusClassification();
     };
-    
-    $scope.selectedOrg = $scope.cache.get($scope.getCacheName("selectedOrg"));    
+
+    $scope.selectedOrg = $scope.cache.get($scope.getCacheName("selectedOrg"));
     $scope.selectedElements = $scope.cache.get($scope.getCacheName("selectedElements"));
     if (!$scope.selectedElements) {
         $scope.selectedElements = [];
     }
-    
-    $scope.selectedOrgAlt = $scope.cache.get($scope.getCacheName("selectedOrgAlt"));    
+
+    $scope.selectedOrgAlt = $scope.cache.get($scope.getCacheName("selectedOrgAlt"));
     $scope.selectedElementsAlt = $scope.cache.get($scope.getCacheName("selectedElementsAlt"));
     if (!$scope.selectedElementsAlt) {
         $scope.selectedElementsAlt = [];
@@ -73,11 +79,11 @@ angular.module('systemModule').controller('ListCtrl',
         org: $scope.selectedOrgAlt
         , elements: $scope.selectedElementsAlt
     }];
-    
+
     $scope.totalItems = $scope.cache.get($scope.getCacheName("totalItems"));
 
     $scope.searchForm.currentPage = $scope.cache.get($scope.getCacheName("currentPage"));
-    
+
     $scope.$watch('searchForm.currentPage', function() {
         if (!$scope.searchForm.currentPage) return;
         $scope.cache.put($scope.getCacheName("currentPage"), $scope.searchForm.currentPage);
@@ -85,12 +91,12 @@ angular.module('systemModule').controller('ListCtrl',
     });
 
     userResource.getPromise().then(function(){$scope.reload()});
-    
+
     $scope.addStatusFilter = function(t) {
         t.selected = !t.selected;
         $scope.cache.put($scope.getCacheName("registrationStatuses"), $scope.registrationStatuses);
         $scope.reload();
-    }; 
+    };
 
     $scope.resetSearch = function() {
         delete $scope.aggregations;
@@ -109,25 +115,25 @@ angular.module('systemModule').controller('ListCtrl',
         }
         $scope.cache.remove($scope.getCacheName("selectedOrg"));
         $scope.cache.remove($scope.getCacheName("selectedOrgAlt"));
-        $scope.cache.remove($scope.getCacheName("selectedElements"));  
+        $scope.cache.remove($scope.getCacheName("selectedElements"));
         $scope.cache.remove($scope.getCacheName("registrationStatuses"));
-        $scope.cache.remove($scope.getCacheName("ftsearch"));   
-        
+        $scope.cache.remove($scope.getCacheName("ftsearch"));
+
         $scope.currentSearchTerm = null;
         $scope.reload();
-    };  
+    };
 
     $scope.search = function() {
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;
         $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
         $scope.reload();
-        
+
     };
-    
+
     $scope.isAllowed = function (cde) {
         return false;
     };
-    
+
     $scope.openAddToForm = function (cde) {
         $modal.open({
           templateUrl: 'addToFormModalContent.html',
@@ -139,9 +145,9 @@ angular.module('systemModule').controller('ListCtrl',
           }
         });
     };
-    
+
     $scope.isDefaultAttachment = function (item) {
-        return item.isDefault;  
+        return item.isDefault;
     };
 
     $scope.addOrgFilter = function(t) {
@@ -157,6 +163,7 @@ angular.module('systemModule').controller('ListCtrl',
         }
         delete $scope.aggregations.groups;
         $scope.reload();
+        $scope.focusClassification();
     };
 
     $scope.selectElement = function(e) {
@@ -173,27 +180,28 @@ angular.module('systemModule').controller('ListCtrl',
         }
         $scope.cache.put($scope.getCacheName($scope.altClassificationFilterMode===0?"selectedElements":"selectedElementsAlt"), $scope.classificationFilters[$scope.altClassificationFilterMode].elements);
         $scope.reload();
+        $scope.focusClassification();
     };
 
     $scope.cacheOrgFilter = function(t) {
-        $scope.cache.put($scope.getCacheName("selectedOrg"), t);       
+        $scope.cache.put($scope.getCacheName("selectedOrg"), t);
     };
-    
+
     $scope.cacheOrgFilterAlt = function(t) {
-        $scope.cache.put($scope.getCacheName("selectedOrgAlt"), t);       
+        $scope.cache.put($scope.getCacheName("selectedOrgAlt"), t);
     };
-    
+
     $scope.removeCacheOrgFilter = function() {
         $scope.cache.remove($scope.getCacheName("selectedOrg"));
-        $scope.cache.remove($scope.getCacheName("selectedElements"));            
+        $scope.cache.remove($scope.getCacheName("selectedElements"));
     };
-    
+
     $scope.removeCacheOrgFilterAlt = function() {
         $scope.cache.remove($scope.getCacheName("selectedOrgAlt"));
         $scope.cache.remove($scope.getCacheName("selectedElementsAlt"));
     };
-    
-    // Create string representation of what status filters are selected    
+
+    // Create string representation of what status filters are selected
     $scope.getSelectedStatuses = function() {
         var selectedRegStatuses = $scope.registrationStatuses.filter(function(s){
             if(s.selected) return true;
@@ -204,7 +212,7 @@ angular.module('systemModule').controller('ListCtrl',
             return selectedRegStatuses.map(function(s){return s.name;}).join(", ");
         }
     };
-    
+
     // Create string representation of what classification filters are selected
     $scope.getSelectedClassifications = function() {
         var result =  $scope.classificationFilters[0].org;
@@ -213,7 +221,7 @@ angular.module('systemModule').controller('ListCtrl',
         }
         return result;
     };
-    
+
     $scope.getSelectedClassificationsAlt = function() {
         var result =  $scope.classificationFilters[1].org;
         if ($scope.classificationFilters[1].elements.length > 0) {
@@ -229,57 +237,57 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.accordionListStyle = "semi-transparent";
         var settings = Elastic.buildElasticQuerySettings($scope);
 
-            Elastic.generalSearchQuery(settings, $scope.module,  function(err, result) {
-                if (err) {
-                    $scope.accordionListStyle = "";
-                    $scope.addAlert("danger", "There was a problem with your query");
-                    $scope.cdes = [];
-                    return;
-                }
-                if(timestamp < $scope.lastQueryTimeStamp) return;
-                $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage);
-                $scope.cdes = result.cdes;
-                $scope.cdes.forEach(function(elt) {elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);});
+        Elastic.generalSearchQuery(settings, $scope.module,  function(err, result) {
+            if (err) {
                 $scope.accordionListStyle = "";
-                $scope.openCloseAll($scope.cdes, "list");
-                $scope.totalItems = result.totalNumber;
-                $scope.cache.put($scope.getCacheName("totalItems"), $scope.totalItems);
-                $scope.aggregations = result.aggregations;
+                $scope.addAlert("danger", "There was a problem with your query");
+                $scope.cdes = [];
+                return;
+            }
+            if(timestamp < $scope.lastQueryTimeStamp) return;
+            $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage);
+            $scope.cdes = result.cdes;
+            $scope.cdes.forEach(function(elt) {elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);});
+            $scope.accordionListStyle = "";
+            $scope.openCloseAll($scope.cdes, "list");
+            $scope.totalItems = result.totalNumber;
+            $scope.cache.put($scope.getCacheName("totalItems"), $scope.totalItems);
+            $scope.aggregations = result.aggregations;
 
-                for (var j = 0; j < $scope.registrationStatuses.length; j++) {
-                    $scope.registrationStatuses[j].count = 0;
-                }
-                if ($scope.aggregations.statuses !== undefined) {
-                    for (var i = 0; i < $scope.registrationStatuses.length; i++) {
-                        for (var j = 0; j < $scope.aggregations.statuses.buckets.length; j++) {
-                            if ($scope.aggregations.statuses.buckets[j].key === $scope.registrationStatuses[i].name) {
-                                $scope.registrationStatuses[i].count = $scope.aggregations.statuses.buckets[j].doc_count;
-                            }
+            for (var j = 0; j < $scope.registrationStatuses.length; j++) {
+                $scope.registrationStatuses[j].count = 0;
+            }
+            if ($scope.aggregations.statuses !== undefined) {
+                for (var i = 0; i < $scope.registrationStatuses.length; i++) {
+                    for (var j = 0; j < $scope.aggregations.statuses.buckets.length; j++) {
+                        if ($scope.aggregations.statuses.buckets[j].key === $scope.registrationStatuses[i].name) {
+                            $scope.registrationStatuses[i].count = $scope.aggregations.statuses.buckets[j].doc_count;
                         }
                     }
                 }
+            }
 
-                $scope.classifications = {elements: []};
+            $scope.classifications = {elements: []};
 
-                if (result.aggregations !== undefined && result.aggregations.flatClassification !== undefined) {
-                    $scope.aggregations.flatClassification = result.aggregations.flatClassification.flatClassification.buckets.map(function (c) {
-                        return {name: c.key.split(';').pop(), count: c.doc_count};
-                    });
-                } else {
-                    $scope.aggregations.flatClassification = [];
-                }
+            if (result.aggregations !== undefined && result.aggregations.flatClassification !== undefined) {
+                $scope.aggregations.flatClassification = result.aggregations.flatClassification.flatClassification.buckets.map(function (c) {
+                    return {name: c.key.split(';').pop(), count: c.doc_count};
+                });
+            } else {
+                $scope.aggregations.flatClassification = [];
+            }
 
-                if (result.aggregations !== undefined && result.aggregations.flatClassificationAlt !== undefined) {
-                    $scope.aggregations.flatClassificationAlt = result.aggregations.flatClassificationAlt.flatClassificationAlt.buckets.map(function (c) {
-                        return {name: c.key.split(';').pop(), count: c.doc_count};
-                    });
-                } else {
-                    $scope.aggregations.flatClassificationAlt = [];
-                }
+            if (result.aggregations !== undefined && result.aggregations.flatClassificationAlt !== undefined) {
+                $scope.aggregations.flatClassificationAlt = result.aggregations.flatClassificationAlt.flatClassificationAlt.buckets.map(function (c) {
+                    return {name: c.key.split(';').pop(), count: c.doc_count};
+                });
+            } else {
+                $scope.aggregations.flatClassificationAlt = [];
+            }
 
-                $scope.filterOutWorkingGroups($scope.aggregations);
-                OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
-            });
+            $scope.filterOutWorkingGroups($scope.aggregations);
+            OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
+        });
 
     };
 
@@ -288,16 +296,16 @@ angular.module('systemModule').controller('ListCtrl',
             aggregations.orgs.buckets = aggregations.orgs.orgs.buckets.filter(function(bucket) {
                 return OrgHelpers.showWorkingGroup(bucket.key, userResource.user) || userResource.user.siteAdmin;
             });
-            $scope.aggregations = aggregations;            
+            $scope.aggregations = aggregations;
         };
         if (!OrgHelpers.isInitialized()) {
             var filterOutWorkingGroups = this;
             OrgHelpers.getOrgsDetailedInfoAPI(function() {
                 filterOutWorkingGroups.setAggregations();
             });
-        } 
+        }
         this.setAggregations();
-    };    
+    };
 
 
     $scope.showPinAllModal = function() {
@@ -319,12 +327,12 @@ angular.module('systemModule').controller('ListCtrl',
                 , itemType: $scope.module
             };
             $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
-                $scope.addAlert("success", "All elements pinned.");  
+                $scope.addAlert("success", "All elements pinned.");
             }).error(function() {
-                $scope.addAlert("danger", "Not all elements were not pinned!");  
-            });  
+                $scope.addAlert("danger", "Not all elements were not pinned!");
+            });
         }, function () {
-        });        
+        });
     };
 
 }]);

@@ -20,7 +20,7 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         findElement(By.id("li-blank-PBTC")).click();
         textPresent("4 results for");
         String viewing = findElement(By.id("acc_link_0")).getText();
-        findElement(By.xpath("//span[@id='acc_link_0']/../i[@title='View Full Detail']")).click();
+        findElement(By.xpath("//*[@id='accordionList']/div/div/div[1]/div[1]/h4/a/a[2]")).click();
         textPresent("More Like This");
         textPresent(viewing);
         findElement(By.xpath("//i[@id='editStatus']")).click();

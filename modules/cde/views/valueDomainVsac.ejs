@@ -1,58 +1,59 @@
 <script type="text/ng-template" id="valueDomainVsac.html">
     <div ng-show="detailedView">
-    <h4>VSAC Value Set</h4>
+    <h4 tabindex="0" >VSAC Value Set</h4>
     <dl class="dl-horizontal" ng-show="vsacMappingExists()" ng-include="'vsacHeader.html'"></dl>
-    <div ng-hide="vsacMappingExists()">No Value Set specified.</div>
+    <div  tabindex="0" ng-hide="vsacMappingExists()">No Value Set specified.</div>
     <div ng-show="user._id" ng-controller="SaveCdeCtrl"  ng-include="'vsacAddMapping.html'"></div>
     <hr/>
     <div ng-show="vsacMappingExists() && user._id" ng-include="'vsacTable.html'"></div>
-    <div ng-show="vsacMappingExists() && !user._id">Please log in to see VSAC mapping.</div>
-    <a class="btn btn-small btn-default" ng-show="vsacMappingExists() && canCurate && !allVsacMatch()" ng-click="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
+    <div tabindex="0" ng-show="vsacMappingExists() && !user._id">Please log in to see VSAC mapping.</div>
+    <a class="btn btn-small btn-default mt20" ng-show="vsacMappingExists() && canCurate && !allVsacMatch()" ng-click="addAllVsac()">
+        <i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
     </div>
 </script>
 
-<script type="text/ng-template" id="vsacHeader.html">   
-    <dt>Value Set Name: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.name | placeholdEmpty}}</dd>
-    <dt>Value Set ID: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.id | placeholdEmpty}}</dd>
-    <dt>Value Set Version: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.version | placeholdEmpty}}</dd>
-</script>  
+<script type="text/ng-template" id="vsacHeader.html">
+    <dt tabindex="0" >Value Set Name: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.name | placeholdEmpty}}</dd>
+    <dt tabindex="0" >Value Set ID: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.id | placeholdEmpty}}</dd>
+    <dt tabindex="0" >Value Set Version: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.version | placeholdEmpty}}</dd>
+</script>
 
-<script type="text/ng-template" id="vsacAddMapping.html">   
-    <div>{{vsacError}}</div>    
+<script type="text/ng-template" id="vsacAddMapping.html">
+    <div tabindex="0" >{{vsacError}}</div>
     <div ng-hide="editMode">
         <a class="btn btn-default" ng-show="canCurate" ng-click="editMode=true" id="updateOID">Update O.I.D</a>
         <a class="btn btn-default" ng-show="canCurate && vsacMappingExists()" ng-click="removeVSMapping()" id="removeVSButton">Remove Mapping</a>
-    </div> 
+    </div>
     <div ng-show="editMode">
         <input name="vsacId" type="text" ng-model="elt.dataElementConcept.conceptualDomain.vsac.id" placeholder="VSAC O.I.D"/>
         <i id="vsacIdCheck" class="fa fa-check" ng-click="checkVsacId(elt); editMode = false"></i>
         <i class="fa fa-times" ng-click="editMode = false"></i>
-    </div>    
-</script>    
+    </div>
+</script>
 
 <script type="text/ng-template" id="vsacTable.html">
     <table class="table-bordered table-condensed table-striped">
          <thead>
              <tr>
-                 <th>Code Name</th>
-                 <th>Code</th>
-                 <th>Code System</th>
-                 <th id="validation">Match</th>
-                 <th ng-show="canCurate">Actions</th>
+                 <th tabindex="0" >Code Name</th>
+                 <th tabindex="0" >Code</th>
+                 <th tabindex="0" >Code System</th>
+                 <th tabindex="0"  id="validation">Match</th>
+                 <th tabindex="0"  ng-show="canCurate">Actions</th>
              </tr>
-         </thead> 
+         </thead>
          <tbody id="vsacTableBody">
              <tr id="vsacValue-{{$index}}" ng-repeat="con in vsacValueSet">
-                 <td>{{con.displayName}}</td>
-                 <td>{{con.code}}</td>
-                 <td>{{con.codeSystemName}}</td>
-                 <td headers="validation">
+                 <td tabindex="0" >{{con.displayName}}</td>
+                 <td tabindex="0" >{{con.code}}</td>
+                 <td tabindex="0" >{{con.codeSystemName}}</td>
+                 <td tabindex="0"  headers="validation">
                      <span ng-switch="con.isValid">
                          <i ng-switch-when="true" class="fa fa-check text-success" id="vset-{{$index}}-valid"></i>
                          <i ng-switch-default class="fa fa-exclamation text-warning" id="vset-{{$index}}-warning"></i>
                      </span>
                  </td>
-                 <td ng-show="canCurate">
+                 <td  tabindex="0" ng-show="canCurate">
                      <i id="addVsacValue-{{$index}}" ng-click="addVsacValue(con)" ng-show="!isVsInPv(con)" class="fa fa fa-plus"></i>
                  </td>
              </tr>

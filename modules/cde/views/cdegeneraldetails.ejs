@@ -1,40 +1,58 @@
 <div ng-controller="SaveCdeCtrl">
-
-<h4>General Details</h4>    
-<dl class="dl-horizontal">
-    <dt>Name: </dt>
-    <dd id="dd_general_name">    
-        <div inline-edit id="nameEdit" model="elt.naming[0].designation" is-allowed="canCurate" on-ok="stageElt(elt)"> </div>
-    </dd>    
-    <dt>Steward: </dt>
-    <dd id="dd_general_steward">
+    <h4 tabindex="0">General Details</h4>
+    <dl class="dl-horizontal">
+        <dt tabindex="0">Name:</dt>
+        <dd tabindex="0" id="dd_general_name">
+            <div inline-edit id="nameEdit" model="elt.naming[0].designation" is-allowed="canCurate"
+                 on-ok="stageElt(elt)"></div>
+        </dd>
+        <dt tabindex="0">Steward:</dt>
+        <dd tabindex="0" id="dd_general_steward">
         <span ng-show="editDtMode">
-            <select id="elt.stewardOrg.name" ng-model="elt.stewardOrg.name" ng-options="myOrg for myOrg in myOrgs"></select>
-            <i id="elt.stewardOrg.name.ok" class="fa fa-check" ng-click="editDtMode = false; stageElt(elt)"></i>&nbsp;&nbsp;<i id="elt.stewardOrg.name.cancel" class="fa fa-times" ng-click="elt.stewardOrg.name = oldStewardName; editDtMode = false;"></i>
+            <select id="elt.stewardOrg.name" ng-model="elt.stewardOrg.name"
+                    ng-options="myOrg for myOrg in myOrgs"></select>
+            <i id="elt.stewardOrg.name.ok" class="fa fa-check" ng-click="editDtMode = false; stageElt(elt)"></i>&nbsp;&nbsp;
+            <i id="elt.stewardOrg.name.cancel" class="fa fa-times"
+               ng-click="elt.stewardOrg.name = oldStewardName; editDtMode = false;"></i>
         </span>
-        <span ng-hide="editDtMode"><i tabindex="0" title="Edit Steward" role="link" ng-show="canCurate" class="fa fa-edit" ng-click="oldStewardName = elt.stewardOrg.name; editDtMode = true" id="dd_edit_steward" ></i> <a tabindex="0" tooltip-html-unsafe="{{orgDetailsInfoHtml}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">{{elt.stewardOrg.name}}</a></span>
-    </dd>
-    <dt>Definition: </dt>
-    <dd id="dd_def">   
-        <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="elt.naming[0].definition" is-allowed="canCurate" def-format="elt.naming[0].definitionFormat" on-ok="stageElt(elt)"> </div>
-    </dd>
-    <dt>Used By: </dt>
-    <dd id="dd_usedBy">
+            <span ng-hide="editDtMode">
+                <i title="Edit Steward" role="link" ng-show="canCurate" class="fa fa-edit"
+                   ng-click="oldStewardName = elt.stewardOrg.name; editDtMode = true" id="dd_edit_steward"></i>
+                <a tooltip-html-unsafe="{{orgDetailsInfoHtml}}" tooltip-popup-delay="500" tooltip-placement="right"
+                   tooltip-append-to-body="true">{{elt.stewardOrg.name}}</a></span>
+        </dd>
+        <dt tabindex="0">Definition:</dt>
+        <dd tabindex="0" id="dd_def">
+            <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="elt.naming[0].definition"
+                 is-allowed="canCurate" def-format="elt.naming[0].definitionFormat" on-ok="stageElt(elt)"></div>
+        </dd>
+        <dt tabindex="0">Used By:</dt>
+        <dd tabindex="0" id="dd_usedBy">
         <span ng-switch="elt.classification.length > 0">
             <span ng-switch-when="false">None</span>
             <span ng-switch-default>
                 <span ng-repeat="cl in elt.classification">{{cl.stewardOrg.name}} </span>
             </span>
         </span>
-    </dd>
-    <dt>Unit of Measure: </dt>
-    <dd id="dd_uom">
-        <div inline-edit id="uomEdit" model="elt.valueDomain.uom" is-allowed="canCurate" on-ok="stageElt(elt)"> </div>   
-    </dd> 
-    <dt ng-show="elt.origin">Origin: </dt><dd>{{elt.origin}}</dd>
-    <dt ng-show="elt.source">Source: </dt><dd>{{elt.source}}</dd>
-    <dt id="dt_status">Status: </dt><dd id="dd_status" ng-controller="RegistrationCtrl"><i tabindex="0" title="Edit Status" role="link" id="editStatus" ng-show="canCurate && !elt.unsaved" class="fa fa-edit" ng-click="openRegStatusUpdate()"></i> {{elt.registrationState.registrationStatus}}</dd>
-    <dt ng-show="elt.views">Views: </dt><dd id="dd_views">{{elt.views}}</dd>
-</dl>
+        </dd>
+        <dt tabindex="0">Unit of Measure:</dt>
+        <dd tabindex="0" id="dd_uom">
+            <div inline-edit id="uomEdit" model="elt.valueDomain.uom" is-allowed="canCurate"
+                 on-ok="stageElt(elt)"></div>
+        </dd>
+        <dt tabindex="0" ng-show="elt.origin">Origin:</dt>
+        <dd tabindex="0">{{elt.origin}}</dd>
+        <dt tabindex="0" ng-show="elt.source">Source:</dt>
+        <dd tabindex="0">{{elt.source}}</dd>
+        <dt tabindex="0" id="dt_status">Status:</dt>
+        <dd tabindex="0" id="dd_status" ng-controller="RegistrationCtrl">
+            <i tabindex="0" title="Edit Status" role="link" id="editStatus"
+               ng-show="canCurate && !elt.unsaved" class="fa fa-edit"
+               ng-click="openRegStatusUpdate()"></i>
+            {{elt.registrationState.registrationStatus}}
+        </dd>
+        <dt tabindex="0" ng-show="elt.views">Views:</dt>
+        <dd tabindex="0" id="dd_views">{{elt.views}}</dd>
+    </dl>
 
 </div>

@@ -638,6 +638,16 @@ button#selectDefault {
     text-decoration: none;
 }
 
+.nonLinkAnchor:focus {
+    color: black;
+    text-decoration: none;
+}
+
+.nonLinkAnchor:hover {
+    color: black;
+    text-decoration: none;
+}
+
 .displayBlock {
     display: block;
 }

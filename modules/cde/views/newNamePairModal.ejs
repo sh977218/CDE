@@ -1,24 +1,29 @@
 <div class="modal-header" id="newNamePairModalHeader">
-    <h4>Add Naming</h4>
+    <h4 tabindex="0">Add Naming</h4>
 </div>
 <form name="form" role="form">
-<div class="modal-body" id="newNamePairModalBody">
-    <div class="form-group">
-        <label for="designation">Name</label>
-        <input class="form-control" ng-model="newNamePair.designation" name="designation" Placeholder="Name / Designation" required/>
-    </div>    
-    <div class="form-group">
-        <label for="definition">Definition</label>
-        <textarea class="form-control" ng-model="newNamePair.definition" name="definition" Placeholder="Definition" required></textarea>
-    </div>    
+    <div class="modal-body" id="newNamePairModalBody">
+        <div class="form-group">
+            <label tabindex="0" for="designation">Name</label>
+            <input tabindex="0" class="form-control" ng-model="newNamePair.designation" name="designation"
+                   Placeholder="Name / Designation" required/>
+        </div>
+        <div class="form-group">
+            <label tabindex="0" for="definition">Definition</label>
+            <textarea tabindex="0" class="form-control" ng-model="newNamePair.definition" name="definition"
+                      Placeholder="Definition" required></textarea>
+        </div>
 
-    <div class="form-group">
-        <label for="context">Context</label>
-        <input class="form-control" ng-model="newNamePair.context.contextName" name="context" Placeholder="Context" required/>
-    </div>    
-</div>
-<div class="modal-footer" id="newConceptModalFooter">
-    <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>
-    <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid" id="createNamePair" type="submit">Save</button>
-</div>
+        <div class="form-group">
+            <label tabindex="0" for="context">Context</label>
+            <input tabindex="0" class="form-control" ng-model="newNamePair.context.contextName" name="context"
+                   Placeholder="Context" required/>
+        </div>
+    </div>
+    <div class="modal-footer" id="newConceptModalFooter">
+        <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>
+        <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid"
+                id="createNamePair" type="submit">Save
+        </button>
+    </div>
 </form>

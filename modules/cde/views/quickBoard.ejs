@@ -1,48 +1,46 @@
 <div ng-cloak class="container-fluid" ng-controller="SwitchListViewCtrl">
-
     <div ng-if="quickBoard.length>0">
         <br/>
+
         <div class="btn-group">
-
             <span ng-include="'/template/system/switchListViewControls'"></span>
-
-            <button id="qb.compare" ng-disabled="listViewType==='sideBySide'" value="Side by Side View" ng-click="showSideBySideView()"
-                    class="btn btn-default">
+            <button id="qb.compare" ng-disabled="listViewType==='sideBySide'" value="Side by Side View"
+                    ng-click="showSideBySideView()" class="btn btn-default">
                 <i class="fa fa-search"></i> Side by Side View
             </button>
         </div>
         <div class="btn-group">
-            <button id="qb.openCloseAll" ng-show="listViewType==='accordion'" ng-click="openCloseAllSwitch(cdes, 'quickboard');"
-                    class="btn btn-default btn-checkbox">
+            <button id="qb.openCloseAll" ng-show="listViewType==='accordion'"
+                    ng-click="openCloseAllSwitch(cdes, 'quickboard');" class="btn btn-default btn-checkbox">
                 <span ng-hide="openCloseAllModel.quickboard"><i class="fa fa-expand"></i> Expand All</span>
                 <span ng-show="openCloseAllModel.quickboard"><i class="fa fa-compress"></i> Collapse All</span>
             </button>
-
-            <button id="qb.empty" value="Empty Quick Board" ng-click="emptyQuickBoardAndScreen()" class="btn btn-default">
+            <button id="qb.empty" value="Empty Quick Board" ng-click="emptyQuickBoardAndScreen()"
+                    class="btn btn-default">
                 <i class="fa fa-trash-o"></i> Empty Quick Board
             </button>
         </div>
         <br/>
         <hr/>
     </div>
-    
+
     <div ng-if="quickBoard.length>0 && cdes.length<1" class="container pt40 pb40 text-center"><h1>
             <i class="fa fa-spinner fa-pulse"></i> Loading...</h1></div>
-
     <div ng-if="quickBoard.length<1" class="container">
         <br/>
-        <h3>The quick board is empty.</h3>
-        <p>Note: Click on <i class="fa fa-plus"></i> to add a CDE to the quick board. <a href="/#/cde/search">Go to the search page and get started.</a></p>
+
+        <h3 tabindex="0">The quick board is empty.</h3>
+
+        <p tabindex="0">Note: Click on <i class="fa fa-plus"></i> to add a CDE to the quick board.
+            <a href="/#/cde/search">Go to the search page and get started.</a></p>
     </div>
 
-    <div ng-if="cdes.length>0" >
-
+    <div ng-if="cdes.length>0">
         <span ng-if="listViewType!=='sideBySide'" ng-include="'/template/system/switchListViewContent.ejs'"
               ng-init="module='cde'; ejsPage='quickboard'"></span>
-        
+
         <div ng-if="listViewType==='sideBySide'">
             <div ng-include="'/template/cde/deCompare'"></div>
-        </div>        
-
+        </div>
     </div>
 </div>
