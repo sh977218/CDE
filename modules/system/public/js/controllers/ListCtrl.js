@@ -374,8 +374,10 @@ angular.module('systemModule').controller('ListCtrl',
         });
 
         modalInstance.result.then(function (selectedBoard) {
+            var settings = Elastic.buildElasticQuerySettings($scope);
             var data = {
-                query: $scope.query.query
+                //query: $scope.query.query
+                query: settings
                 , board: selectedBoard
                 , itemType: $scope.module
             };

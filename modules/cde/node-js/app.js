@@ -463,7 +463,10 @@ exports.init = function(app, daoManager) {
     
     app.post('/pinEntireSearchToBoard', function(req, res) {
         if (req.isAuthenticated()) {
-            usersvc.pinAllToBoard(req, res);
+            var query = sharedElastic.buildElasticSearchQuery(req.body.query);
+            sharedElastic.elasticsearch(query, 'cde', function(err, cdes){
+                usersvc.pinAllToBoard(req, cdes.cdes, res);
+            });
         } else {
             res.send("Please login first.");
         }      
