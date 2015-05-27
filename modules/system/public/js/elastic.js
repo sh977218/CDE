@@ -1,8 +1,8 @@
 angular.module('ElasticSearchResource', ['ngResource'])
 .factory('Elastic', function($http, userResource, SearchSettings) {
     return {
-        buildFilter: function (scope) {
-            var regStatuses = scope.registrationStatuses;
+        buildFilter: function (allowedStatuses, selectedStatuses) {
+            var regStatuses = selectedStatuses;
             if (!regStatuses) regStatuses = [];
             var regStatusOr = [];
             for (var i = 0; i < regStatuses.length; i++) {
@@ -12,7 +12,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 }
             }
             if (regStatusOr.length === 0) {
-                SearchSettings.getUserDefaultStatuses().forEach(function (regStatus) {
+                allowedStatuses.forEach(function (regStatus) {
                     regStatusOr.push({term: {"registrationState.registrationStatus": regStatus}});
                 });
             }
@@ -23,7 +23,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
             return filter;
         }
         , buildElasticQuerySettings: function(scope){
-            var filter = this.buildFilter(scope);
+            var filter = this.buildFilter(SearchSettings.getUserDefaultStatuses(), scope.registrationStatuses);
             return {
                 resultPerPage: scope.resultPerPage
                 , searchTerm: scope.searchForm.ftsearch
@@ -37,6 +37,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , currentPage: scope.searchForm.currentPage
                 , includeAggregations: true
                 , visibleRegStatuses: SearchSettings.getUserDefaultStatuses()
+                , selectedStatuses: scope.registrationStatuses
             };
         }
         , getSelectedElements: function(scope) {
