@@ -8,14 +8,13 @@ var config = require('config')
 var elasticCdeUri = sharedElastic.elasticCdeUri;
 
 exports.elasticsearch = function (settings, type, cb) {
-    //TODO: move this where it belongs!
-    //if (!config.modules.cde.highlight) {
-    //    Object.keys(query.highlight.fields).forEach(function(field){
-    //        if (field == "primaryNameCopy" || field == "primaryDefinitionCopy") return;
-    //        else delete query.highlight.fields[field];
-    //    });
-    //}
     var query = sharedElastic.buildElasticSearchQuery(settings);
+    if (!config.modules.cde.highlight) {
+        Object.keys(query.highlight.fields).forEach(function(field){
+            if (field == "primaryNameCopy" || field == "primaryDefinitionCopy") return;
+            else delete query.highlight.fields[field];
+        });
+    }
     sharedElastic.elasticsearch(query, type, cb);
 };
 
