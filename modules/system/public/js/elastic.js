@@ -24,6 +24,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
         }
         , buildElasticQuerySettings: function(scope){
             var filter = this.buildFilter(scope);
+            console.log(SearchSettings.getUserDefaultStatuses());
             return {
                 resultPerPage: scope.resultPerPage
                 , searchTerm: scope.searchForm.ftsearch
