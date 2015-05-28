@@ -15,15 +15,14 @@ public class ResetSearchStatusTest extends NlmCdeBaseTest {
     public void resetSearchStatus() {
         goToCdeSearch();
         driver.navigate().refresh();
-        List<WebElement> classfications = driver.findElements(By.cssSelector("#classificationListHolder a"));
-        int c_en = classfications.size();
+        List<WebElement> classifications = driver.findElements(By.cssSelector("#classificationListHolder a"));
+        int classifications_len = classifications.size();
 
-        int c_selected = (int) Math.random() * c_en;
-        System.out.println("c_selected:" + c_selected);
-        WebElement c = classfications.get(c_selected + 1);
-        String c_str = c.getText();
-        c.click();
+        int classification_selected = (int) Math.random() * classifications_len;
+        WebElement classification = classifications.get(classification_selected + 1);
+        String classification_text = classification.getText();
+        classification.click();
         findElement(By.id("resetSearch")).click();
-        textPresent(c_str);
+        textPresent(classification_text);
     }
 }
