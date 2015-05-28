@@ -11,7 +11,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', '$
         }
         $scope.feedbackClass = ['fa-spinner', 'fa-pulse'];
         $scope.addAlert("warning", "Your export is being generated, please wait.");
-        Elastic.getExport($scope.query, $scope.module,  function(result) {
+        Elastic.getExport(Elastic.buildElasticQuerySettings($scope), $scope.module,  function(result) {
             if (result) {
                 var blob = new Blob([result], {
                     type: "text/csv"
