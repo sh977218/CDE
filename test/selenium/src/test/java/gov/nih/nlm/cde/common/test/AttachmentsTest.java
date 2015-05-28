@@ -18,7 +18,6 @@ public class AttachmentsTest extends BaseAttachmentTest {
         goToCdeByName(cdeName);
 
         addAttachment();
-        findElement(By.id("defaultCbLabel")).click();
         textPresent("Saved");
         closeAlert();           
         checkAttachmentNotReviewed();
