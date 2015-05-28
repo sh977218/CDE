@@ -73,17 +73,26 @@ iConnectionEstablisherLog.connect(function(conn) {
 });
 
 exports.storeQuery = function(settings, callback) {
-    var storedQuery = {
+    var storedQuery = new StoredQueryModel ({
         searchTerm: settings.searchTerm
         , regStatuses: settings.visibleRegStatuses.slice(0)
-
-    };
+        , selectedElements1: settings.selectedElements.slice(0)
+        , selectedElements2: settings.selectedElementsAlt.slice(0)
+    });
     if (settings.username) storedQuery.username = settings.username;
     if (settings.remoteAddr) storedQuery.remoteAddr = settings.remoteAddr;
-    if (settings.isSiteAdmin) storedQuery.remoteAddr = settings.isSiteAdmin;
+    if (settings.isSiteAdmin) storedQuery.isSiteAdmin = settings.isSiteAdmin;
+    if (settings.selectedOrg) storedQuery.selectedOrg1 = settings.selectedOrg;
+    if (settings.selectedOrgAlt) storedQuery.selectedOrg2 = settings.selectedOrgAlt;
 
+    // @TODO add IP and username.
 
-}
+    storedQuery.save(function(err) {
+        if (err) console.log(err);
+        if (callback) callback(err);
+    });
+
+};
 
 exports.log = function(message, callback) {    
     if (message.httpStatus !== "304") {

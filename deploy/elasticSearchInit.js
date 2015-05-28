@@ -149,3 +149,26 @@ exports.createFormRiverJson = {
         , "type": "form"                  
     }        
 };
+
+exports.createStoredQueryJson = {
+    "mappings" : {
+        "storedquery" : {
+            "properties" : {
+
+            }
+        }
+    }
+};
+
+exports.createStoredQueryRiverJson = {
+    "type": "mongodb"
+    , "mongodb": {
+        "servers": config.database.servers
+        , "db": config.database.log.dbname
+        , "collection": "storedqueries"
+    }
+    , "index": {
+        "name": config.elastic.storedQueryIndex.name
+        , "type": "storedquery"
+    }
+};

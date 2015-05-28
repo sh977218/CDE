@@ -1,6 +1,7 @@
 var config = require('config')
     , request = require('request')
     , sharedElastic = require('../../system/node-js/elastic.js')
+    , dbLogger = require('../../system/node-js/dbLogger.js')
     , logging = require('../../system/node-js/logging.js')
     , regStatusShared = require('../../system/shared/regStatusShared')
 ;
@@ -15,6 +16,7 @@ exports.elasticsearch = function (settings, type, cb) {
             else delete query.highlight.fields[field];
         });
     }
+    dbLogger.storeQuery(settings);
     sharedElastic.elasticsearch(query, type, cb);
 };
 
