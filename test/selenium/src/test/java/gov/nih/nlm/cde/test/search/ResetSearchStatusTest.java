@@ -17,17 +17,13 @@ public class ResetSearchStatusTest extends NlmCdeBaseTest {
         driver.navigate().refresh();
         List<WebElement> classfications = driver.findElements(By.cssSelector("#classificationListHolder a"));
         int c_en = classfications.size();
-        System.out.println("c_en:" + c_en);
-        int c_selected = randomPick(c_en);
+
+        int c_selected = (int) Math.random() * c_en;
         System.out.println("c_selected:" + c_selected);
         WebElement c = classfications.get(c_selected + 1);
         String c_str = c.getText();
         c.click();
         findElement(By.id("resetSearch")).click();
         textPresent(c_str);
-    }
-
-    private int randomPick(int i) {
-        return (int) Math.random() * i;
     }
 }
