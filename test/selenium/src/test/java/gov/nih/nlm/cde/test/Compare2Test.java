@@ -14,9 +14,9 @@ public class Compare2Test extends NlmCdeBaseTest {
         findElement(By.id("compareMe")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compareMe")));
         findElement(By.linkText("Common Toxicity Criteria Adverse Event Platelet Count Grade")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")));
-        findElement(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")).click();
-        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div/div/h4/a/span[text()='Common Toxicity Criteria Adverse Event Platelet Count Grade']/../../../..//i[@title='Add to Quick Board']")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
+        findElement(By.id("compare_0")).click();
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         findElement(By.linkText("Quick Board ( 2 )")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("qb.compare")));
         // IDK why sometimes the following click doesn't seem to work. Wait above should be enough, but no.
