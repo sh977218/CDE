@@ -1,29 +1,7 @@
 angular.module('ElasticSearchResource', ['ngResource'])
 .factory('Elastic', function($http, userResource, SearchSettings) {
     return {
-        buildFilter: function (scope) {
-            var regStatuses = scope.registrationStatuses;
-            if (!regStatuses) regStatuses = [];
-            var regStatusOr = [];
-            for (var i = 0; i < regStatuses.length; i++) {
-                var t = regStatuses[i];
-                if (t.selected === true) {
-                    regStatusOr.push({term: {"registrationState.registrationStatus": t.name}});
-                }
-            }
-            if (regStatusOr.length === 0) {
-                SearchSettings.getUserDefaultStatuses().forEach(function (regStatus) {
-                    regStatusOr.push({term: {"registrationState.registrationStatus": regStatus}});
-                });
-            }
-            var filter = {and: []};
-            if (regStatusOr.length > 0) {
-                filter.and.push({or: regStatusOr});
-            }
-            return filter;
-        }
-        , buildElasticQuerySettings: function(scope){
-            var filter = this.buildFilter(scope);
+        buildElasticQuerySettings: function(scope){
             return {
                 resultPerPage: scope.resultPerPage
                 , searchTerm: scope.searchForm.ftsearch
@@ -33,10 +11,10 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , selectedOrgAlt: scope.classificationFilters[1].org
                 , selectedElements: this.getSelectedElements(scope)
                 , selectedElementsAlt: this.getSelectedElementsAlt(scope)
-                , filter: filter
                 , currentPage: scope.searchForm.currentPage
                 , includeAggregations: true
                 , visibleRegStatuses: SearchSettings.getUserDefaultStatuses()
+                , selectedStatuses: scope.registrationStatuses
             };
         }
         , getSelectedElements: function(scope) {

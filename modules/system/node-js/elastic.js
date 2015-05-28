@@ -81,6 +81,30 @@ exports.buildElasticSearchQuery = function(settings) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
     }
 
+    var buildFilter = function (allowedStatuses, selectedStatuses) {
+        var regStatuses = selectedStatuses;
+        if (!regStatuses) regStatuses = [];
+        var regStatusOr = [];
+        for (var i = 0; i < regStatuses.length; i++) {
+            var t = regStatuses[i];
+            if (t.selected === true) {
+                regStatusOr.push({term: {"registrationState.registrationStatus": t.name}});
+            }
+        }
+        if (regStatusOr.length === 0) {
+            allowedStatuses.forEach(function (regStatus) {
+                regStatusOr.push({term: {"registrationState.registrationStatus": regStatus}});
+            });
+        }
+        var filter = {and: []};
+        if (regStatusOr.length > 0) {
+            filter.and.push({or: regStatusOr});
+        }
+        return filter;
+    };
+
+    settings.filter = buildFilter(settings.visibleRegStatuses, settings.selectedStatuses);
+
     if (settings.filter !== undefined) {
         if (settings.filter.and !== undefined) {
             if (settings.filter.and.length === 0) {
