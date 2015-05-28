@@ -77,7 +77,7 @@ addSubDiseaseClassification = function (cde, disease, subDisease, value) {
     }
 };
 
-var stripBreakline = function(input) {
+var stripBreakline = function (input) {
     return input.replace(/-----/g, "").replace(/\n/g, "<br/>");
 };
 
@@ -89,7 +89,7 @@ parseCde = function (obj, cb) {
 
     var namings = [{
         designation: obj["Title"].trim()
-        , definition:  obj["Description"].trim()
+        , definition: obj["Description"].trim()
         , languageCode: "EN-US"
         , context: {
             contextName: "Health"
@@ -100,10 +100,10 @@ parseCde = function (obj, cb) {
     if (!(obj["Short Description"].toUpperCase().trim() === obj["Description"].toUpperCase().trim())) {
         namings.push({
             designation: obj["Title"].trim()
-            , definition:  obj["Short Description"].trim()
+            , definition: obj["Short Description"].trim()
             , languageCode: "EN-US"
             , context: {
-            contextName: "Short Description"
+                contextName: "Short Description"
                 , acceptability: "preferred"
             }
         })
@@ -116,17 +116,7 @@ parseCde = function (obj, cb) {
     var vd = {};
     var dataTypeStr = obj["Data Type"].trim();
     var dataType = "";
-    if (dataTypeStr.toLowerCase() === "numeric values") {
-        dataType = "Integer";
-        var dataTypeInt = {};
-        if (obj["Minimum Value"] > 0) {
-            dataTypeInt.minValue = obj["Minimum Value"];
-        }
-        if (obj["Maximum Value"] > 0) {
-            dataTypeInt.maxValue = obj["Maximum Value"];
-        }
-        vd.datatypeInteger = dataTypeInt;
-    } else if (dataTypeStr.toLowerCase() === "alphanumeric") {
+    if (dataTypeStr.toLowerCase() === "alphanumeric") {
         dataType = "Text";
         var dataTypeText = {};
         if (obj["Size"] > 0) {
@@ -211,7 +201,7 @@ parseCde = function (obj, cb) {
             key: "NINDS Keywords"
             , value: stripBreakline(keywords)
             , valueFormat: "html"
-    });
+        });
     }
 
     var references = obj["References"].trim();
@@ -226,9 +216,9 @@ parseCde = function (obj, cb) {
     var ids = [];
     ids.push({
         source: "NINDS"
-        ,id:  obj["External ID.NINDS"].trim()
+        , id: obj["External ID.NINDS"].trim()
         , version: obj["Version Number"]
-    } );
+    });
 
     ids.push({
         source: "NINDS Variable Name"
