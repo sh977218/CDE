@@ -18,11 +18,13 @@ public class AttachmentsTest extends BaseAttachmentTest {
         goToCdeByName(cdeName);
 
         addAttachment();
-        textPresent("Saved");
-        closeAlert();           
         checkAttachmentNotReviewed();
         reviewAttachment("glass.jpg");
 
+        mustBeLoggedInAs(ninds_username, password);
+        goToCdeByName(cdeName);
+        setAttachmentDefault();
+        mustBeLoggedOut();
         hangon(5);
 
         openCdeInList(cdeName);
