@@ -116,7 +116,17 @@ parseCde = function (obj, cb) {
     var vd = {};
     var dataTypeStr = obj["Data Type"].trim();
     var dataType = "";
-    if (dataTypeStr.toLowerCase() === "alphanumeric") {
+    if (dataTypeStr.toLowerCase() === "numeric values") {
+        dataType = "Number";
+        var dataTypeNum = {};
+        if (obj["Minimum Value"] > 0) {
+            dataTypeNum.minValue = obj["Minimum Value"];
+        }
+        if (obj["Maximum Value"] > 0) {
+            dataTypeNum.maxValue = obj["Maximum Value"];
+        }
+        vd.datatypeInteger = dataTypeNum;
+    } else if (dataTypeStr.toLowerCase() === "alphanumeric") {
         dataType = "Text";
         var dataTypeText = {};
         if (obj["Size"] > 0) {
