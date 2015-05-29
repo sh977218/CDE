@@ -107,6 +107,7 @@ var config = {
         , nodeProcess: "path to node bin, if needed"
         , tempDir: "/tmp/"
         , extractDir: ".."
+        , runOnStartup: ['/path/to/kibana']
     }
 };
 

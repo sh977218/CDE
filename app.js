@@ -23,6 +23,7 @@ var express = require('express')
     , async = require('async')
     ;
 
+
 require('log-buffer')(config.logBufferSize || 4096);
 
 passport.serializeUser(function(user, done) {
@@ -39,6 +40,12 @@ passport.use(new LocalStrategy({passReqToCallback: true}, auth.authBeforeVsac));
 var app = express();
 
 app.use(auth.ticketAuth);
+
+var request = require('request');
+app.use('/kibana/', function(req, res, next) {
+    req.pipe(request('http://localhost:5601' + req.url)).on('error', function(err) {res.send(500)}).pipe(res);
+});
+
 
 process.on('uncaughtException', function (err) {
     console.log("ERROR1: " + err);

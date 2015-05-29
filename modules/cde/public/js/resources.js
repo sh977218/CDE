@@ -10,7 +10,8 @@ angular.module('cdeModule')
     when('/board/:boardId', {controller: 'BoardViewCtrl', templateUrl: '/board'}).
     when('/boardList', {controller: 'BoardListCtrl', templateUrl: '/boardList'}).   
     when('/createCde', {controller: 'CreateCdeCtrl', templateUrl:'/createcde'}).
-    when('/deview', {controller: 'DEViewCtrl', templateUrl: '/deview'});
+    when('/deview', {controller: 'DEViewCtrl', templateUrl: '/deview'}).
+    when('/stats', {controller: 'MainCtrl', templateUrl: '/system/public/html/stats.html'});
 });
 
 angular.module('resourcesCde', ['ngResource'])

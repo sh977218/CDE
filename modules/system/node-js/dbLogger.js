@@ -73,9 +73,18 @@ iConnectionEstablisherLog.connect(function(conn) {
 });
 
 exports.storeQuery = function(settings, callback) {
+    var regStatuses =  [];
+    if (settings.selectedStatuses) {
+        settings.selectedStatuses.forEach(function (rs) {
+            if (rs.selected) {
+                regStatuses.push(rs.name);
+            }
+        });
+    }
+    if (regStatuses.length === 0) regStatuses = settings.visibleRegStatuses;
     var storedQuery = new StoredQueryModel ({
         searchTerm: settings.searchTerm
-        , regStatuses: settings.visibleRegStatuses.slice(0)
+        , regStatuses: regStatuses
         , selectedElements1: settings.selectedElements.slice(0)
         , selectedElements2: settings.selectedElementsAlt.slice(0)
     });

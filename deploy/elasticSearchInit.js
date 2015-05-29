@@ -150,11 +150,15 @@ exports.createFormRiverJson = {
     }        
 };
 
-exports.createStoredQueryJson = {
+exports.createStoredQueryIndexJson = {
     "mappings" : {
         "storedquery" : {
             "properties" : {
-
+                "selectedOrg1" : { "type" : "string", "index" : "not_analyzed" }
+                ,"selectedOrg2" : { "type" : "string", "index" : "not_analyzed" }
+                ,"selectedElements1" : { "type" : "string", "index" : "not_analyzed" }
+                ,"selectedElements2" : { "type" : "string", "index" : "not_analyzed" }
+                ,"regStatuses" : { "type" : "string", "index" : "not_analyzed" }
             }
         }
     }

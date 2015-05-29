@@ -723,4 +723,5 @@ exports.init = function(app) {
             res.send("Search settings updated.");
         });
     });
+
 };

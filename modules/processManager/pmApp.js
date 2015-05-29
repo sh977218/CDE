@@ -37,6 +37,10 @@ var spawnChild = function() {
 
 spawnChild();
 
+config.pm.runOnStartup.forEach(function(toRun) {
+    spawn(toRun);
+});
+
 var app = express();
 
 app.set('port', config.pm.port || 3081);

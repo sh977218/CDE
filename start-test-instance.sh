@@ -25,7 +25,7 @@ if [ "$curl_res" == "$target" ]
 then
     echo "All documents Removed"
 else
-    echo "Not all documents removed. Aborting"
+    echo "Not all documents remov\ed. Aborting"
     echo $curl_res
     exit
 fi
