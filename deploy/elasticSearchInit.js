@@ -1,43 +1,43 @@
 var config = require('config');
 
 exports.createIndexJson = {
-    "mappings" : {
-        "dataelement" : {
-            "properties" : {
+    "mappings": {
+        "dataelement": {
+            "properties": {
                 "stewardOrg": {
                     "properties": {
-                        "name" : { "type" : "string", "index" : "not_analyzed" }
+                        "name": {"type": "string", "index": "not_analyzed"}
                     }
                 }
-                , "flatClassifications": { "type" : "string", "index" : "not_analyzed", "index_name": "flatClassification"}
-                , "classification.stewardOrg.name": { "type" : "string", "index" : "not_analyzed" }
+                , "flatClassifications": {"type": "string", "index": "not_analyzed", "index_name": "flatClassification"}
+                , "classification.stewardOrg.name": {"type": "string", "index": "not_analyzed"}
                 , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
-                , "source" : { "type" : "string", "index" : "not_analyzed" }
-                , "origin" : { "type" : "string", "index" : "not_analyzed" }
-                , "valueDomain.permissibleValues.valueMeaningCodeSystem": { "type" : "string", "index" : "not_analyzed" }
+                , "source": {"type": "string", "index": "not_analyzed"}
+                , "origin": {"type": "string", "index": "not_analyzed"}
+                , "valueDomain.permissibleValues.valueMeaningCodeSystem": {"type": "string", "index": "not_analyzed"}
                 , "properties": {
-                    "type" : "nested",
+                    "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "key" : {"type": "string" },
-                        "value"  : {"type": "string" }
+                        "key": {"type": "string"},
+                        "value": {"type": "string"}
                     }
                 }, "ids": {
-                    "type" : "nested",
+                    "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "source" : {"type": "string" },
-                        "id"  : {"type": "string" },
-                        "version"  : {"type": "string" }
+                        "source": {"type": "string"},
+                        "id": {"type": "string"},
+                        "version": {"type": "string"}
                     }
                 }
-                , "tinyId" : { "type" : "string", "index" : "not_analyzed" }
+                , "tinyId": {"type": "string", "index": "not_analyzed"}
             }
         }
     }
 };
 
-var riverFunction = 
+var riverFunction =
     "if (ctx.operation !== 'd') {\
     function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}\
      var flatArray = [];\
@@ -92,60 +92,67 @@ var riverFunction =
     }";
 
 
-exports.createRiverJson = { 
+exports.createRiverJson = {
     "type": "mongodb",
     "mongodb": {
         "servers": config.database.servers,
-        "db": config.database.dbname, 
+        "credentials": [
+            {"db": "admin", "user": "siteRootAdmin", "password": "password"}
+        ],
+        "db": config.database.dbname,
         "collection": "dataelements",
         "script": riverFunction
     },
     "index": {
-        "name": config.elastic.index.name, 
-        "type": "dataelement"                  
-    }        
+        "name": config.elastic.index.name,
+        "type": "dataelement"
+    }
 };
 
 exports.createFormIndexJson = {
-    "mappings" : {
-        "form" : {
-            "properties" : {
-                "stewardOrg.name" : { "type" : "string", "index" : "not_analyzed" }
-                , "flatClassifications": { "type" : "string", "index" : "not_analyzed", "index_name": "flatClassification"}
-                , "classification.stewardOrg.name": { "type" : "string", "index" : "not_analyzed" }
+    "mappings": {
+        "form": {
+            "properties": {
+                "stewardOrg.name": {"type": "string", "index": "not_analyzed"}
+                , "flatClassifications": {"type": "string", "index": "not_analyzed", "index_name": "flatClassification"}
+                , "classification.stewardOrg.name": {"type": "string", "index": "not_analyzed"}
                 , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
-                , "source" : { "type" : "string", "index" : "not_analyzed" }
-                , "origin" : { "type" : "string", "index" : "not_analyzed" }
+                , "source": {"type": "string", "index": "not_analyzed"}
+                , "origin": {"type": "string", "index": "not_analyzed"}
                 , "properties": {
-                    "type" : "nested",
+                    "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "key" : {"type": "string" },
-                        "value"  : {"type": "string" }
+                        "key": {"type": "string"},
+                        "value": {"type": "string"}
                     }
                 }, "ids": {
-                    "type" : "nested",
+                    "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "source" : {"type": "string" },
-                        "id"  : {"type": "string" },
-                        "version"  : {"type": "string" }
+                        "source": {"type": "string"},
+                        "id": {"type": "string"},
+                        "version": {"type": "string"}
                     }
-                }            }
+                }
+            }
         }
     }
 };
 
-exports.createFormRiverJson = { 
+exports.createFormRiverJson = {
     "type": "mongodb"
     , "mongodb": {
         "servers": config.database.servers
+        , "credentials": [
+            {"db": "admin", "user": "siteRootAdmin", "password": "password"}
+        ]
         , "db": config.database.dbname
         , "collection": "forms"
         , "script": riverFunction
     }
     , "index": {
         "name": config.elastic.formIndex.name
-        , "type": "form"                  
-    }        
+        , "type": "form"
+    }
 };

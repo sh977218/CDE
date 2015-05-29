@@ -5,7 +5,7 @@ NODE_LOC='.'
 
 gradle -b test/selenium/build.gradle -PhubUrl=any -PtestUrl=any -PforkNb=8 -Ptimeout=8 -Pbrowser=any clean compileTest &
 
-mongo test deploy/dbInit.js
+mongo test deploy/dbInit.js -u siteRootAdmin -p password -authenticationDatabase admin
 
 target='{"count":0,"_shards":{"total":1,"successful":1,"failed":0}}'
 #wait for empty
@@ -31,16 +31,16 @@ else
 fi
 
 
-mongo test test/data/testForms.js
-mongo cde-logs-test deploy/logInit.js
+mongo test test/data/testForms.js -u siteRootAdmin -p password -authenticationDatabase admin
+mongo cde-logs-test deploy/logInit.js -u siteRootAdmin -p password -authenticationDatabase admin
 
-mongorestore -d test -c dataelements test/data/cdedump/dataelements.bson
-mongorestore -d test -c forms test/data/nindsDump/test/forms.bson
-mongoimport --drop -d test -c orgs test/data/cdedump/orgs.bson
+mongorestore -d test -c dataelements test/data/cdedump/dataelements.bson -u siteRootAdmin -p password -authenticationDatabase admin
+mongorestore -d test -c forms test/data/nindsDump/test/forms.bson -u siteRootAdmin -p password -authenticationDatabase admin
+mongoimport --drop -d test -c orgs test/data/cdedump/orgs.bson -u siteRootAdmin -p password -authenticationDatabase admin
 
-mongo test test/createLargeBoard.js
-mongo test test/createManyBoards.js
-mongo test test/initOrgs.js
+mongo test test/createLargeBoard.js -u siteRootAdmin -p password -authenticationDatabase admin
+mongo test test/createManyBoards.js -u siteRootAdmin -p password -authenticationDatabase admin
+mongo test test/initOrgs.js -u siteRootAdmin -p password -authenticationDatabase admin
 
 target='{"count":9575,"_shards":{"total":1,"successful":1,"failed":0}}'
 #wait for full
@@ -50,7 +50,7 @@ while [ $COUNTER -lt 45 ]; do
     if [ "$curl_res" == "$target" ] 
     then
         COUNTER=45
-    else 
+    else
         sleep 1
         let COUNTER=COUNTER+1
     fi
