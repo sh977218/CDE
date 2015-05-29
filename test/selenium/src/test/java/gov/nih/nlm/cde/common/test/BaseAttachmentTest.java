@@ -85,5 +85,13 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         findElement(By.cssSelector(preClass+".declineAttachment")).click();
         textPresent("Attachment declined");  
               
-    }     
+    }
+
+    public void setAttachmentDefault() {
+        findElement(By.linkText("Attachments")).click();
+        textPresent("Upload more files");
+        findElement(By.id("defaultCbLabel")).click();
+        textPresent("Saved");
+        closeAlert();
+    }
 }

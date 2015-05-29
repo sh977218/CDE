@@ -1,14 +1,15 @@
 var express = require('express')
-  , path = require('path')
-  , formCtrl = require('./formCtrl')
-  , sharedElastic = require('../../system/node-js/elastic.js')
-  , mongo_data = require('./mongo-form')
-  , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
-  , config = require('config')
-  , multer  = require('multer')
+    , path = require('path')
+    , formCtrl = require('./formCtrl')
+    , sharedElastic = require('../../system/node-js/elastic.js')
+    , mongo_data = require('./mongo-form')
+    , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
+    , config = require('config')
+    , multer  = require('multer')
     , sdc = require('./sdcForm')
     , logging = require('../../system/node-js/logging')
-  , elastic_system = require('../../system/node-js/elastic')
+    , elastic_system = require('../../system/node-js/elastic')
+    , sharedElastic = require('../../system/node-js/elastic.js')
 ;
 
 exports.init = function(app, daoManager) {
@@ -62,13 +63,14 @@ exports.init = function(app, daoManager) {
             }
         });
     });
-    
+
     app.post('/elasticSearch/form', function(req, res) {
-       sharedElastic.elasticsearch(req.body.query, 'form', function(err, result) {
-           if (err) return res.status(400).end();
-           res.send(result);
-       }); 
-    });    
+        var query = elastic_system.buildElasticSearchQuery(req.body);
+        sharedElastic.elasticsearch(query, 'form', function(err, result) {
+            if (err) return res.status(400).end();
+            res.send(result);
+        });
+    });
 
     if (config.modules.forms.comments) {
         app.post('/comments/form/add', function(req, res) {
@@ -111,7 +113,8 @@ exports.init = function(app, daoManager) {
             return cde;
         };
         var formHeader = "Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
-        return elastic_system.elasticSearchExport(res, req.body.query, 'form', projectForm, formHeader);
+        var query = sharedElastic.buildElasticSearchQuery(req.body);
+        return elastic_system.elasticSearchExport(res, query, 'form', projectForm, formHeader);
     });
 
 };

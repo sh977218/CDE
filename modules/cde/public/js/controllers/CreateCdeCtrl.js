@@ -90,12 +90,10 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
             }];
             var settings = Elastic.buildElasticQuerySettings($scope);
             settings.searchTerm = $scope.elt.designation;
-            Elastic.buildElasticQuery(settings, function(query) {
-                Elastic.generalSearchQuery(query, "cde", function(err, result) {
-                    if (err) return;
-                    $scope.cdes = result.cdes;
-                    $scope.totalItems = result.totalNumber;
-                });
+            Elastic.generalSearchQuery(settings, "cde", function(err, result) {
+                if (err) return;
+                $scope.cdes = result.cdes;
+                $scope.totalItems = result.totalNumber;
             });
         }, 0);
     };

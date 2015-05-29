@@ -8,8 +8,8 @@
                 <span ng-if="attachment.pendingApproval">{{attachment.filename}} - This attachment cannot be dowloaded because it is pending approval.</span>
             </dd>
             
-            <dt>Default Image: </dt>
-            <dd>
+            <dt ng-if="!attachment.pendingApproval">Default Image: </dt>
+            <dd ng-if="!attachment.pendingApproval">
             <span ng-switch="attachment.filesize > 512*1024">
                 <span ng-switch-when="true">
                     Attachments smaller than 500k can be marked as default 

@@ -1,15 +1,15 @@
 var mongo_data_cde = require('../../cde/node-js/mongo-cde')
-    , mongo_data_system = require('./mongo-data') 
+    , mongo_data_system = require('./mongo-data')
     , usersvc = require('../../system/node-js/usersrvc')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
-    , adminItemSvc = require("./adminItemSvc")     
+    , adminItemSvc = require("./adminItemSvc")
     , elastic = require('./elastic')
-;
+    ;
 
 var classification = this;
 
-classification.saveCdeClassif = function(err, cde, cb) {   
+classification.saveCdeClassif = function(err, cde, cb) {
     if (err) {
         if (cb) cb(err);
         return;
@@ -17,15 +17,15 @@ classification.saveCdeClassif = function(err, cde, cb) {
     cde.classification.forEach(function(steward, i) {
         if (steward.elements.length === 0) {
             cde.classification.splice(i, 1);
-        }            
+        }
     });
     cde.markModified('classification');
     cde.save(function() {
         if (cb) cb(err);
-    });            
-};  
+    });
+};
 
-exports.cdeClassification = function(body, action, cb) {  
+exports.cdeClassification = function(body, action, cb) {
     var classify = function (steward, cde) {
         if( !(body.categories instanceof Array) ) {
             body.categories = [body.categories];
@@ -52,26 +52,26 @@ exports.cdeClassification = function(body, action, cb) {
                             name: body.orgName
                         }
                         , elements: []
-                    };                    
-                    
+                    };
+
                     if (stewardOrg.workingGroupOf) classifOrg.workingGroup = true;
                     if (!cde.classification) cde.classification = [];
                     cde.classification.push(classifOrg);
-                    steward = classificationShared.findSteward(cde, body.orgName);  
+                    steward = classificationShared.findSteward(cde, body.orgName);
                     classify(steward, cde);
                 });
             } else classify(steward, cde);
         };
-        if (body.cdeId) dao.byId(body.cdeId, findElements);  
-        if (body.tinyId && (!body.version)) dao.eltByTinyId(body.tinyId, findElements);     
-        if (body.tinyId && body.version) dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);     
-    });    
+        if (body.cdeId) dao.byId(body.cdeId, findElements);
+        if (body.tinyId && (!body.version)) dao.eltByTinyId(body.tinyId, findElements);
+        if (body.tinyId && body.version) dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);
+    });
 };
 
 exports.modifyOrgClassification = function(request, action, callback) {
     if( !(request.categories instanceof Array) ) {
-        request.categories = [request.categories];    
-    }    
+        request.categories = [request.categories];
+    }
     mongo_data_system.orgByName(request.orgName, function(stewardOrg) {
         var fakeTree = {elements: stewardOrg.classifications};
         classificationShared.modifyCategory(fakeTree, request.categories, {type: action, newname: request.newname}, function() {
@@ -83,14 +83,14 @@ exports.modifyOrgClassification = function(request, action, callback) {
                     for (var j = 0; j<=i; j++) key += ".elements";
                     key += ".name";
                     query[key] = request.categories[i];
-                }            
+                }
                 daoManager.getDaoList().forEach(function(dao) {
                     dao.query(query, function(err, result) {
                         for (var i = 0; i < result.length; i++) {
                             var elt = result[i];
-                            var steward = classificationShared.findSteward(elt, request.orgName);   
+                            var steward = classificationShared.findSteward(elt, request.orgName);
                             classificationShared.modifyCategory(steward.object, request.categories, {type: action, newname: request.newname}, function() {
-                                classification.saveCdeClassif("", elt);     
+                                classification.saveCdeClassif("", elt);
                             });
                         }
                         mongo_data_system.addToClassifAudit({
@@ -104,9 +104,9 @@ exports.modifyOrgClassification = function(request, action, callback) {
                             , newname: request.newname
                         });
                     });
-                });            
+                });
                 if(callback) callback(err, stewardOrg);
-            });   
+            });
         });
     });
 };
@@ -115,7 +115,7 @@ exports.addOrgClassification = function(body, cb) {
     if( !(body.categories instanceof Array) ) {
         body.categories = [body.categories];
     }
-    
+
     mongo_data_system.orgByName(body.orgName, function(stewardOrg) {
         var fakeTree = {elements: stewardOrg.classifications};
         classificationShared.addCategory(fakeTree, body.categories);
@@ -132,11 +132,12 @@ exports.classifyEntireSearch = function(req, cb) {
             orgName: req.newClassification.orgName
             , categories: req.newClassification.categories
             , cdeId: id
-        };          
-        classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);  
+        };
+        classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
     };
-    elastic.elasticsearch(req.query, req.itemType, function(err, result) {   
-        var ids = result.cdes.map(function(cde) {return cde._id;});    
+    var query = elastic.buildElasticSearchQuery(req.query);
+    elastic.elasticsearch(query, req.itemType, function(err, result) {
+        var ids = result.cdes.map(function(cde) {return cde._id;});
         adminItemSvc.bulkAction(ids, action, cb);
         mongo_data_system.addToClassifAudit({
             date: new Date()

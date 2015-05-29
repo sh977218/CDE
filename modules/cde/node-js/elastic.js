@@ -2,18 +2,20 @@ var config = require('config')
     , request = require('request')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , logging = require('../../system/node-js/logging.js')
+    , regStatusShared = require('../../system/shared/regStatusShared')
 ;
 
 var elasticCdeUri = sharedElastic.elasticCdeUri;
 
-exports.elasticsearch = function (query, cb) {
+exports.elasticsearch = function (settings, type, cb) {
+    var query = sharedElastic.buildElasticSearchQuery(settings);
     if (!config.modules.cde.highlight) {
         Object.keys(query.highlight.fields).forEach(function(field){
             if (field == "primaryNameCopy" || field == "primaryDefinitionCopy") return;
             else delete query.highlight.fields[field];
         });
     }
-    sharedElastic.elasticsearch(query, 'cde', cb);
+    sharedElastic.elasticsearch(query, type, cb);
 };
 
 var mltConf = {

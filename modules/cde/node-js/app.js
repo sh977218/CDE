@@ -19,6 +19,7 @@ var cdesvc = require('./cdesvc')
   , async = require("async")
   , multer  = require('multer')
   , elastic_system = require('../../system/node-js/elastic')
+  , sharedElastic = require('../../system/node-js/elastic.js')
 ;
 
 exports.init = function(app, daoManager) {
@@ -306,7 +307,7 @@ exports.init = function(app, daoManager) {
     });
 
     app.post('/elasticSearch/cde', function(req, res) {
-       return elastic.elasticsearch(req.body.query, function(err, result) {
+       return elastic.elasticsearch(req.body, 'cde', function(err, result) {
            if (err) return res.status(400).send("invalid query");
            result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
            res.send(result);
@@ -464,7 +465,10 @@ exports.init = function(app, daoManager) {
     
     app.post('/pinEntireSearchToBoard', function(req, res) {
         if (req.isAuthenticated()) {
-            usersvc.pinAllToBoard(req, res);
+            var query = sharedElastic.buildElasticSearchQuery(req.body.query);
+            sharedElastic.elasticsearch(query, 'cde', function(err, cdes){
+                usersvc.pinAllToBoard(req, cdes.cdes, res);
+            });
         } else {
             res.send("Please login first.");
         }      
@@ -526,7 +530,7 @@ exports.init = function(app, daoManager) {
             return cde;
         };
         var cdeHeader = "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
-        return elastic_system.elasticSearchExport(res, req.body.query, 'cde', projectCde, cdeHeader);
+        var query = sharedElastic.buildElasticSearchQuery(req.body);
+        return elastic_system.elasticSearchExport(res, query, 'cde', projectCde, cdeHeader);
     });
-
 };
