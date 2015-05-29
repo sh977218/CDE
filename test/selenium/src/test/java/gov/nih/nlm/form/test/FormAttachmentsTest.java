@@ -19,11 +19,14 @@ public class FormAttachmentsTest extends BaseAttachmentTest {
         goToFormByName(formName);
 
         addAttachment("melanoma.jpg");
-        findElement(By.id("defaultCbLabel")).click();
-        textPresent("Saved");
-        closeAlert();
+
         checkAttachmentNotReviewed();
         reviewAttachment("melanoma.jpg");
+
+        mustBeLoggedInAs(ctep_fileCurator_username, password);
+        goToFormByName(formName);
+        setAttachmentDefault();
+        mustBeLoggedOut();
 
         hangon(5);
 
