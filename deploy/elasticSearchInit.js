@@ -37,6 +37,9 @@ exports.createIndexJson = {
     }
 };
 
+var storedQueryRiverFunction =
+    "for (var i = 0; i < ctx.document.selectedElements1.length && i < 4; i++) {ctx.document['classifLevel' + i] = ctx.document.selectedElements1[i];}";
+
 var riverFunction = 
     "if (ctx.operation !== 'd') {\
     function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}\
@@ -159,6 +162,11 @@ exports.createStoredQueryIndexJson = {
                 ,"selectedElements1" : { "type" : "string", "index" : "not_analyzed" }
                 ,"selectedElements2" : { "type" : "string", "index" : "not_analyzed" }
                 ,"regStatuses" : { "type" : "string", "index" : "not_analyzed" }
+                ,"classifLevel0" : { "type" : "string", "index" : "not_analyzed" }
+                ,"classifLevel1" : { "type" : "string", "index" : "not_analyzed" }
+                ,"classifLevel2" : { "type" : "string", "index" : "not_analyzed" }
+                ,"classifLevel3" : { "type" : "string", "index" : "not_analyzed" }
+                ,"classifLevel4" : { "type" : "string", "index" : "not_analyzed" }
             }
         }
     }
@@ -170,6 +178,7 @@ exports.createStoredQueryRiverJson = {
         "servers": config.database.servers
         , "db": config.database.log.dbname
         , "collection": "storedqueries"
+        , "script": storedQueryRiverFunction
     }
     , "index": {
         "name": config.elastic.storedQueryIndex.name

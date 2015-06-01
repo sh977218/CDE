@@ -41,6 +41,33 @@ config.pm.runOnStartup.forEach(function(toRun) {
     spawn(toRun);
 });
 
+
+var initKibana = function() {
+    var kibanaData = require('../../deploy/kibana.js').kibana;
+    // start by removing everything from each kibana index
+    kibanaData.hits.hits.forEach(function(hit) {
+        request.del(config.elastic.uri + "/" + hit._index + "/" + hit._type).on("error", function(err){
+            console.log("Unable to empty index");
+        });
+    });
+
+    // now add the visualization etc..
+    setTimeout(function() {
+        kibanaData.hits.hits.forEach(function (hit) {
+            request({
+                uri: config.elastic.uri + "/" + hit._index + "/" + hit._type + "/" + hit._id
+                , method: "PUT"
+                , json: true
+                , body: hit._source
+            }).on("error", function (err) {
+                console.log("Unable to empty index");
+            });
+        });
+    }, 3000);
+};
+
+initKibana();
+
 var app = express();
 
 app.set('port', config.pm.port || 3081);
