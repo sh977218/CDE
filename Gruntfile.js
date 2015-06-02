@@ -583,7 +583,7 @@ module.exports = function(grunt) {
         }
     });
     grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
-    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','divider','guihelp','divider','elastic','divider','bower-install-simple','divider','bowercopy','divider','build']);
+    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','buildVersion','divider','guihelp','divider','elastic','divider','bower-install-simple','divider','bowercopy','divider','build']);
     grunt.registerTask('help', ['availabletasks']);    
     grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);
     // https://www.npmjs.org/package/grunt-bower-install-simple
