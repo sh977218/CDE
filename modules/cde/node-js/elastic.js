@@ -1,4 +1,4 @@
-var config = require('config')
+var config = require('../../system/node-js/parseConfig')
     , request = require('request')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , dbLogger = require('../../system/node-js/dbLogger.js')

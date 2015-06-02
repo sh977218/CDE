@@ -1,8 +1,56 @@
 
-<div style="height:1200px">
-    <iframe id='iframe2'
-            src="kibana/#/dashboard/Default-Dashboard?embed&_g=(refreshInterval:(display:Off,section:0,value:0),time:(from:now-5y,mode:quick,to:now))&_a=(filters:!(),panels:!((col:1,id:Most-Searched-Classifications,row:1,size_x:5,size_y:5,type:visualization)),query:(query_string:(analyze_wildcard:!t,query:'*')),title:'Default%20Dashboard')"
-            frameborder="0" style="overflow: hidden; height: 100%;
-        width: 100%; position: absolute;" height="100%" width="100%">
-    </iframe>
+<div style="height:1200px" tabset>
+
+    <div tab heading="General Stats" active="genStatsActive">
+        <div ng-if="genStatsActive">
+            <iframe id='generalFrame'
+                    src="kibana/#/dashboard/Favorite-Dashboard?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                    frameborder="0" style="overflow: hidden; height: 100%;
+            width: 100%; position: absolute;" height="100%" width="100%">
+            </iframe>
+        </div>
+    </div>
+
+    <div tab heading="NCI" active="nciStatsActive">
+        <div ng-if="nciStatsActive">
+            <iframe id='nciFrame'
+                    src="kibana/#/dashboard/NCI-Dashboard?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                    frameborder="0" style="overflow: hidden; height: 100%;
+                width: 100%; position: absolute;" height="100%" width="100%">
+            </iframe>
+        </div>
+    </div>
+
+    <div tab heading="NINDS" active="nindsStatsActive2">
+        <div ng-if="nindsStatsActive2">
+            <iframe id='nindsFrame'
+                    src="kibana/#/dashboard/NINDS-Dashboard?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                    frameborder="0" style="overflow: hidden; height: 100%;
+                width: 100%; position: absolute;" height="100%" width="100%">
+            </iframe>
+        </div>
+    </div>
+
+
+    <div tab heading="Custom" active="customStatsActive">
+        <div class="container-fluid">
+            <div class="row" ng-if="customStatsActive">
+                <div class="col-md-4">
+                    <iframe
+                            src="http://localhost:5601/#/visualize/edit/NINDS-Queries?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                            width="100%" height="400px" frameBorder="0" style="overflow:hidden;"
+                            >
+                    </iframe>
+                </div>
+                <div class="col-md-4">
+                    <iframe
+                            src="http://localhost:5601/#/visualize/edit/Most-Popular-Classifications-NCI?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                            width="100%" height="400px" frameBorder="0" style="overflow:hidden;"
+                            >
+                    </iframe>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>

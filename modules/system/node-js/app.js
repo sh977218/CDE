@@ -1,6 +1,6 @@
 var passport = require('passport')
     , mongo_data_system = require('./mongo-data')
-    , config = require('config')
+    , config = require('./parseConfig')
     , dbLogger = require('./dbLogger.js')
     , logging = require('./logging.js')
     , orgsvc = require('./orgsvc')

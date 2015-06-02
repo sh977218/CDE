@@ -5,7 +5,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , fs = require('fs')
     , md5 = require("md5-file")
     , clamav = require('clamav.js')
-    , config = require('config')
+    , config = require('./parseConfig')
     , logging = require('./logging')
     , email = require('../../system/node-js/email')
 ;

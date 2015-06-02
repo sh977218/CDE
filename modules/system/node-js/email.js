@@ -1,5 +1,5 @@
 var nodemailer = require('nodemailer')
-    , config = require('config')
+    , config = require('./parseConfig')
     , mongo_data_system = require('./mongo-data')
     , logging = require('../../system/node-js/logging');
     

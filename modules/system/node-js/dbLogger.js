@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-    , config = require('config')
+    , config = require('./parseConfig')
     , connHelper = require('./connections')
     , logging = require('./logging')
     ;

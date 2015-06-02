@@ -1,7 +1,7 @@
 var spawn = require('child_process').spawn,
     express = require('express'),
     http = require('http'),
-    config = require('config'),
+    config = require('../system/node-js/parseConfig'),
     request = require('request'),
     bodyParser = require('body-parser'),
     fs = require('fs'),
@@ -44,15 +44,20 @@ config.pm.runOnStartup.forEach(function(toRun) {
 
 var initKibana = function() {
     var kibanaData = require('../../deploy/kibana.js').kibana;
-    // start by removing everything from each kibana index
-    kibanaData.hits.hits.forEach(function(hit) {
-        request.del(config.elastic.uri + "/" + hit._index + "/" + hit._type).on("error", function(err){
-            console.log("Unable to empty index");
+
+    setTimeout(function(){
+        console.log("Cleaning Kibana");
+        // start by removing everything from each kibana index
+        kibanaData.hits.hits.forEach(function(hit) {
+            request.del(config.elastic.uri + "/" + hit._index + "/" + hit._type).on("error", function(err){
+                console.log("Unable to empty index");
+            });
         });
-    });
+    }, 5000);
 
     // now add the visualization etc..
     setTimeout(function() {
+        console.log("Initializing Kibana");
         kibanaData.hits.hits.forEach(function (hit) {
             request({
                 uri: config.elastic.uri + "/" + hit._index + "/" + hit._type + "/" + hit._id
@@ -63,7 +68,7 @@ var initKibana = function() {
                 console.log("Unable to empty index");
             });
         });
-    }, 3000);
+    }, 8000);
 };
 
 initKibana();
