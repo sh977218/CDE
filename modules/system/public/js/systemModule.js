@@ -268,6 +268,20 @@ angular.module('systemModule').config(function($provide) {
             }
         };
     }]);
+
+    //$provide.decorator('$route', function($delegate) {
+    //    console.log("changing route");
+    //    console.log($delegate);
+    //
+    //    var original = $delegate.reload;
+    //
+    //    $delegate.reload = function(string){
+    //        console.log("changed url");
+    //        original(string);
+    //    };
+    //
+    //    return $delegate;
+    //});
 });
 
 angular.module('systemModule').config(function (localStorageServiceProvider) {
