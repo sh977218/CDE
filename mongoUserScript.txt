@@ -1,0 +1,9 @@
+use admin;
+
+db.createUser( {
+    user: "siteRootAdmin",
+    pwd: "password",
+    roles: [ { role: "root", db: "admin" },
+			{ role: "dbAdmin", db: "test" },
+			{ role: "dbAdmin", db: "cde-logs-test" } ]
+  });
