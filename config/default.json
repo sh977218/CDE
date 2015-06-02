@@ -127,9 +127,9 @@
     "port": 3081,
     "nodeProcess": "path to node bin, if needed",
     "tempDir": "/tmp/",
-    "extractDir": "..",
-    "runOnStartup": ["/path/to/kibana"]
+    "extractDir": ".."
   },
+  "runOnStartup": ["/path/to/kibana"],
   "occsNonPrimaryReplicas": [
     "130.14.164.22:27017",
     "130.14.164.21:27017"
