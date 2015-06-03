@@ -125,7 +125,7 @@ parseCde = function (obj, cb) {
         if (obj["Maximum Value"] > 0) {
             dataTypeNum.maxValue = obj["Maximum Value"];
         }
-        vd.datatypeInteger = dataTypeNum;
+        vd.datatypeNumber = dataTypeNum;
     } else if (dataTypeStr.toLowerCase() === "alphanumeric") {
         dataType = "Text";
         var dataTypeText = {};
