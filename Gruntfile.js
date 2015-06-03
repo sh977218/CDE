@@ -1,6 +1,6 @@
 require('./deploy/configTest.js');
 
-var config = require('config')
+var config = require('./modules/system/node-js/parseConfig')
     , elastic = require('./deploy/elasticSearchInit.js')
     , chalk = require('chalk')
     , fs = require('fs')
