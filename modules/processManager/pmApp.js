@@ -45,15 +45,13 @@ config.pmRunOnStartup.forEach(function(toRun) {
 var initKibana = function() {
     var kibanaData = require('../../deploy/kibana.js').kibana;
 
-    setTimeout(function(){
-        console.log("Cleaning Kibana");
-        // start by removing everything from each kibana index
-        kibanaData.hits.hits.forEach(function(hit) {
-            request.del(config.elastic.uri + "/" + hit._index + "/" + hit._type).on("error", function(err){
-                console.log("Unable to empty index");
-            });
+    console.log("Cleaning Kibana");
+    // start by removing everything from each kibana index
+    kibanaData.hits.hits.forEach(function(hit) {
+        request.del(config.elastic.uri + "/" + hit._index + "/" + hit._type).on("error", function(err){
+            console.log("Unable to empty index");
         });
-    }, 5000);
+    });
 
     // now add the visualization etc..
     setTimeout(function() {
@@ -68,7 +66,7 @@ var initKibana = function() {
                 console.log("Unable to empty index");
             });
         });
-    }, 8000);
+    }, 3000);
 };
 
 initKibana();
