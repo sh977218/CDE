@@ -146,10 +146,6 @@ angular.module('systemModule').controller('ListCtrl',
         });
     };
 
-    $scope.isDefaultAttachment = function (item) {
-        return item.isDefault;
-    };
-
     $scope.addOrgFilter = function(t) {
         if ($scope.classificationFilters[$scope.altClassificationFilterMode].org === undefined) {
             if ($scope.altClassificationFilterMode === 0) $scope.cacheOrgFilter(t.key);
