@@ -12,6 +12,8 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     @Test
     public void gotoEmptyQuickBoard() {
         goHome();
+        textPresent("Quick Board ( empty )");
+        hangon(0.5);
         findElement(By.linkText("Quick Board ( empty )")).click();
         try {
             Assert.assertTrue(textPresent("The quick board is empty."));
