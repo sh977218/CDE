@@ -8,6 +8,7 @@ var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
 var LogModel;
 var LogErrorModel;
 var ClientErrorModel;
+var StoredQueryModel;
 
 // w = 0 means write very fast. It's ok if it fails.   
 // capped means no more than 5 gb for that collection.
@@ -47,6 +48,20 @@ var clientErrorSchema= new mongoose.Schema(
     , stack: String
 }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
+var storedQuerySchema= new mongoose.Schema(
+    {
+        searchTerm: String
+        , date: {type: Date, default: Date.now}
+        , username: String
+        , remoteAddr: String
+        , isSiteAdmin: Boolean
+        , regStatuses: [String]
+        , selectedOrg1: String
+        , selectedOrg2: String
+        , selectedElements1: [String]
+        , selectedElements2: [String]
+    }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
+
 var connectionEstablisher = connHelper.connectionEstablisher;
 
 var iConnectionEstablisherLog = new connectionEstablisher(mongoLogUri, 'Logs');
@@ -54,7 +69,30 @@ iConnectionEstablisherLog.connect(function(conn) {
     LogModel = conn.model('DbLogger', logSchema);
     LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
     ClientErrorModel = conn.model('DbClientErrorLogger', clientErrorSchema);
+    StoredQueryModel = conn.model('StoredQuery', storedQuerySchema);
 });
+
+exports.storeQuery = function(settings, callback) {
+    var storedQuery = new StoredQueryModel ({
+        searchTerm: settings.searchTerm
+        , regStatuses: settings.visibleRegStatuses.slice(0)
+        , selectedElements1: settings.selectedElements.slice(0)
+        , selectedElements2: settings.selectedElementsAlt.slice(0)
+    });
+    if (settings.username) storedQuery.username = settings.username;
+    if (settings.remoteAddr) storedQuery.remoteAddr = settings.remoteAddr;
+    if (settings.isSiteAdmin) storedQuery.isSiteAdmin = settings.isSiteAdmin;
+    if (settings.selectedOrg) storedQuery.selectedOrg1 = settings.selectedOrg;
+    if (settings.selectedOrgAlt) storedQuery.selectedOrg2 = settings.selectedOrgAlt;
+
+    // @TODO add IP and username.
+
+    storedQuery.save(function(err) {
+        if (err) console.log(err);
+        if (callback) callback(err);
+    });
+
+};
 
 exports.log = function(message, callback) {    
     if (message.httpStatus !== "304") {

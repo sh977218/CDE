@@ -35,7 +35,9 @@ var config = {
         , index: {name: "cdetest"}
         , river: {name: "cdetest"}
         , formIndex: {name: "formtest"}
-        , formRiver: {name: "formtest"} 
+        , formRiver: {name: "formtest"}
+        , storedQueryIndex: {name: "storedquerytest"}
+        , storedQueryRiver: {name: "storedquerytest"}
         , scripts: {
             stop: "sudo /sbin/service elasticsearch stop"
             , start: "sudo /sbin/service elasticsearch start"
@@ -47,7 +49,7 @@ var config = {
         ]
         , dbname: "test"
         , log: {
-            uri: "mongodb://localhost/cde-logs-test"
+            dbname: "cde-logs-test"
             , cappedCollectionSizeMB: 1024*1024*250
         }, local: {
             uri: "mongodb://localhost/local"
@@ -109,6 +111,8 @@ var config = {
     , webtrends: false
 };
 
+config.database.log.uri = "mongodb://localhost/" + config.database.log.dbname
+
 module.exports = config;
 module.exports.mongoUri = "mongodb://" + config.database.servers.map(function(srv) {
     return srv.host + ":" + srv.port;
@@ -117,6 +121,8 @@ module.exports.elasticUri = config.elastic.uri + "/" + config.elastic.index.name
 module.exports.elasticRiverUri = config.elastic.uri + "/_river/" + config.elastic.index.name;
 module.exports.elasticFormUri = config.elastic.uri + "/" + config.elastic.formIndex.name + "/";
 module.exports.elasticFormRiverUri = config.elastic.uri + "/_river/" + config.elastic.formIndex.name;
+module.exports.elasticStoredQueryUri = config.elastic.uri + "/" + config.elastic.storedQueryIndex.name + "/";
+module.exports.elasticStoredQueryRiverUri = config.elastic.uri + "/_river/" + config.elastic.storedQueryIndex.name;
 
 module.exports.occsNonPrimaryReplicas = ["130.14.164.22:27017", "130.14.164.21:27017"];
 module.exports.nccsReplicas = ["165.112.35.20:27017", "165.112.35.21:27017"];
