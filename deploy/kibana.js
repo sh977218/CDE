@@ -1,7 +1,6 @@
 var config = require('../modules/system/node-js/parseConfig');
 
 var _kibana =
-
     {
       "took" : 2,
       "timed_out" : false,
@@ -49,12 +48,6 @@ var _kibana =
           "_id" : "Most-Popular-Registration-Statuses",
           "_score" : 1.0,
           "_source":{"title":"Most Popular Registration Statuses","visState":"{\"type\":\"pie\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"views\"}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"registrationState.registrationStatus\",\"exclude\":{\"pattern\":\"Retired\"},\"size\":7,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}","description":"","version":1,"kibanaSavedObjectMeta":{"searchSourceJSON":"{\"index\":\"cdetest\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"}}
-        }, {
-          "_index" : ".kibana",
-          "_type" : "visualization",
-          "_id" : "Most-Popular-Classifications-NCI",
-          "_score" : 1.0,
-          "_source":{"title":"Most Popular Classifications NCI","visState":"{\"type\":\"pie\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"classifLevel0\",\"size\":20,\"order\":\"desc\",\"orderBy\":\"1\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"classifLevel1\",\"size\":20,\"order\":\"desc\",\"orderBy\":\"1\"}},{\"id\":\"4\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"classifLevel2\",\"size\":15,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}","description":"","version":1,"kibanaSavedObjectMeta":{"searchSourceJSON":"{\"index\":\"storedquerytest\",\"query\":{\"query_string\":{\"query\":\"selectedOrg1:\\\"NCI\\\"\",\"analyze_wildcard\":true}},\"filter\":[]}"}}
         }, {
           "_index" : ".kibana",
           "_type" : "visualization",
@@ -109,6 +102,12 @@ var _kibana =
           "_id" : "Top-NINDS-CDEs",
           "_score" : 1.0,
           "_source":{"title":"Top NINDS CDEs","description":"","hits":0,"columns":["views","primaryNameCopy"],"sort":["views","desc"],"version":1,"kibanaSavedObjectMeta":{"searchSourceJSON":"{\"index\":\"cdetest\",\"query\":{\"query_string\":{\"query\":\"stewardOrg.name:\\\"NINDS\\\" NOT registrationState.registrationStatus:\\\"Retired\\\"\",\"analyze_wildcard\":true}},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}}},\"filter\":[]}"}}
+        }, {
+          "_index" : ".kibana",
+          "_type" : "visualization",
+          "_id" : "Most-Popular-Classifications-NCI",
+          "_score" : 1.0,
+          "_source":{"title":"Most Popular Classifications NCI","visState":"{\"type\":\"pie\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"classifLevel0\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"classifLevel1\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1\"}},{\"id\":\"4\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"classifLevel2\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}","description":"","version":1,"kibanaSavedObjectMeta":{"searchSourceJSON":"{\"index\":\"storedquerytest\",\"query\":{\"query_string\":{\"query\":\"selectedOrg1:\\\"NCI\\\"\",\"analyze_wildcard\":true}},\"filter\":[]}"}}
         } ]
       }
     }
