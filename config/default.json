@@ -21,18 +21,17 @@
   "vsac": {
     "username": "user",
     "password": "pass",
-    "host": "localhost",
+    "host": "vsac.nlm.nih.gov",
     "ticket": {
       "path": "/vsac/ws/Ticket"
     },
     "valueSet": {
       "path": "/vsac/ws/RetrieveValueSet"
     },
-    "port": 4000
+    "port": 443
   },
   "uts": {
     "service": "http://umlsks.nlm.nih.gov",
-    // Identifier of the service for which the ticket was issued.,
     "ticketValidation": {
       "host": "utslogin.nlm.nih.gov",
       "path": "/cas/serviceValidate",
@@ -64,7 +63,6 @@
     "dbname": "test",
     "log": {
       "dbname": "cde-logs-test",
-      // 1024*1024*250,
       "cappedCollectionSizeMB": 262144000
     },
     "local": {

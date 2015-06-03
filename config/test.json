@@ -1,5 +1,31 @@
 {
+
+
   "logBufferSize": 10,
-  "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana.bat"]
+  "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana.bat"],
+  "viewsIncrementThreshold": 1,
+
+
+  "vsac": {
+    "username": "user",
+    "password": "pass",
+    "host": "localhost",
+    "ticket": {
+      "path": "/vsac/ws/Ticket"
+    },
+    "valueSet": {
+      "path": "/vsac/ws/RetrieveValueSet"
+    },
+    "port": 4000
+  },
+  "uts": {
+    "service": "http://umlsks.nlm.nih.gov",
+    "ticketValidation": {
+      "host": "localhost",
+      "path": "/cas/serviceValidate",
+      "port": 4000
+    }
+  }
+
 }
 
