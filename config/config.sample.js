@@ -106,6 +106,7 @@ var config = {
         , tempDir: "/tmp/"
         , extractDir: ".."
     }
+    , webtrends: false
 };
 
 module.exports = config;

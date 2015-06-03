@@ -268,6 +268,7 @@ angular.module('systemModule').config(function($provide) {
             }
         };
     }]);
+    
 });
 
 angular.module('systemModule').config(function (localStorageServiceProvider) {
