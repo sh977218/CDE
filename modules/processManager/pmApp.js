@@ -28,7 +28,7 @@ var spawned;
 
 var spawnChild = function() {
     var opts = {stdio: 'inherit'};
-    var nodeProcess = config.pm.nodeProcess || "node";
+    var nodeProcess = config.pmNodeProcess || "node";
     spawned = spawn(nodeProcess, ['app'], opts);
     setTimeout(function() {
         getHosts();
@@ -37,7 +37,7 @@ var spawnChild = function() {
 
 spawnChild();
 
-config.pm.runOnStartup.forEach(function(toRun) {
+config.pmRunOnStartup.forEach(function(toRun) {
     spawn(toRun);
 });
 

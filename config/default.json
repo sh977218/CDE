@@ -125,11 +125,11 @@
   },
   "pm": {
     "port": 3081,
-    "nodeProcess": "path to node bin, if needed",
     "tempDir": "/tmp/",
     "extractDir": ".."
   },
-  "runOnStartup": ["/path/to/kibana"],
+  "pmNodeProcess": null,
+  "pmRunOnStartup": ["/usr/nlm/cde/apps/kibana/current/bin/kibana"],
   "occsNonPrimaryReplicas": [
     "130.14.164.22:27017",
     "130.14.164.21:27017"

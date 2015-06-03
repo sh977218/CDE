@@ -43,7 +43,7 @@ app.use(auth.ticketAuth);
 
 var request = require('request');
 app.use('/kibana/', function(req, res, next) {
-    req.pipe(request('http://localhost:5601' + req.url)).on('error', function(err) {res.send(500)}).pipe(res);
+    req.pipe(request('http://localhost:5601' + req.url)).on('error', function(err) {res.sendStatus(500)}).pipe(res);
 });
 
 

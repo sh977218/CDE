@@ -1,5 +1,5 @@
 {
   "logBufferSize": 10,
-  "runOnStartup": ["/c/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana"]
+  "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana.bat"]
 }
 
