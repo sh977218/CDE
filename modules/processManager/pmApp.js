@@ -38,7 +38,7 @@ var spawnChild = function() {
 spawnChild();
 
 config.pmRunOnStartup.forEach(function(toRun) {
-    spawn(toRun);
+    spawn(toRun, [], {stdio: "ignore"});
 });
 
 
