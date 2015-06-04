@@ -1,6 +1,8 @@
 var config = require('config');
 
-config.database.log.uri = "mongodb://localhost/" + config.database.log.dbname
+config.database.log.uri = "mongodb://" + config.database.servers.map(function(srv) {
+        return srv.host + ":" + srv.port;
+    }).join(",") + "/" + config.database.log.dbname
 
 config.mongoUri = "mongodb://" + config.database.servers.map(function(srv) {
         return srv.host + ":" + srv.port;
