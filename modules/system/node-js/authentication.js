@@ -1,11 +1,11 @@
 var https = require('https')
-  , xml2js = require('xml2js')
-  , helper = require('./helper.js') 
-  , logging = require('./logging.js') 
-  , config = require('config')
-  , mongo_data_system = require('./mongo-data') 
-  , request = require('request')
-;
+    , xml2js = require('xml2js')
+    , helper = require('./helper.js')
+    , logging = require('./logging.js')
+    , config = require('./parseConfig')
+    , mongo_data_system = require('./mongo-data')
+    , request = require('request')
+    ;
 
 var ticketValidationOptions = {
     host: config.uts.ticketValidation.host
