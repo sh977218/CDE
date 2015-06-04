@@ -10,5 +10,6 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute'])
         when('/board/:boardId', {controller: 'BoardViewCtrl', templateUrl: '/board'}).
         when('/boardList', {controller: 'BoardListCtrl', templateUrl: '/boardList'}).
         when('/createCde', {controller: 'CreateCdeCtrl', templateUrl:'/createcde'}).
-        when('/deview', {controller: 'DEViewCtrl', templateUrl: '/deview'});
-});
+        when('/deview', {controller: 'DEViewCtrl', templateUrl: '/deview'}).
+        when('/stats', {controller: 'MainCtrl', templateUrl: '/system/public/html/stats.html'});
+    });

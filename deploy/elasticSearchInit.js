@@ -106,7 +106,7 @@ exports.createRiverJson = {
     "index": {
         "name": config.elastic.index.name, 
         "type": "dataelement"                  
-    }        
+    }
 };
 
 exports.createFormIndexJson = {
