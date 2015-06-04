@@ -15,7 +15,7 @@ if (!process.env.NODE_ENV) {
     process.exit();
 }
 
-if (!fs.existsSync('./config/'+process.env.NODE_ENV+'.js')) {
+if (!fs.existsSync('./config/'+process.env.NODE_ENV+'.json')) {
     console.log(msg2);
     process.exit();
 }

@@ -1,6 +1,6 @@
 var https = require('https')
     , querystring = require('querystring')
-    , config = require('config')
+    , config = require('../../system/node-js/parseConfig')
     , fs = require('fs')
     , util = require('util')
     , request = require('request')

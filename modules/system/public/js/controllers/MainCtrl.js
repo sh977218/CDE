@@ -187,6 +187,11 @@ angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'user
         });
         
     };
-    
+
+    //$scope.$on('$routeChangeSuccess', function(scope, next, current){
+    //    //dcsMultiTrack();
+    //    console.log("route change");
+    //});
+
 }
 ]);

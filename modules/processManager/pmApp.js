@@ -1,7 +1,7 @@
 var spawn = require('child_process').spawn,
     express = require('express'),
     http = require('http'),
-    config = require('config'),
+    config = require('../system/node-js/parseConfig'),
     request = require('request'),
     bodyParser = require('body-parser'),
     fs = require('fs'),
@@ -28,7 +28,7 @@ var spawned;
 
 var spawnChild = function() {
     var opts = {stdio: 'inherit'};
-    var nodeProcess = config.pm.nodeProcess || "node";
+    var nodeProcess = config.pmNodeProcess || "node";
     spawned = spawn(nodeProcess, ['app'], opts);
     setTimeout(function() {
         getHosts();
@@ -36,6 +36,42 @@ var spawnChild = function() {
 };
 
 spawnChild();
+
+config.pmRunOnStartup.forEach(function(toRun) {
+    spawn(toRun);
+});
+
+
+var initKibana = function() {
+    var kibanaData = require('../../deploy/kibana.js').kibana;
+
+    setTimeout(function(){
+        console.log("Cleaning Kibana");
+        // start by removing everything from each kibana index
+        kibanaData.hits.hits.forEach(function(hit) {
+            request.del(config.elastic.uri + "/" + hit._index + "/" + hit._type).on("error", function(err){
+                console.log("Unable to empty index");
+            });
+        });
+    }, 5000);
+
+    // now add the visualization etc..
+    setTimeout(function() {
+        console.log("Initializing Kibana");
+        kibanaData.hits.hits.forEach(function (hit) {
+            request({
+                uri: config.elastic.uri + "/" + hit._index + "/" + hit._type + "/" + hit._id
+                , method: "PUT"
+                , json: true
+                , body: hit._source
+            }).on("error", function (err) {
+                console.log("Unable to empty index");
+            });
+        });
+    }, 8000);
+};
+
+initKibana();
 
 var app = express();
 

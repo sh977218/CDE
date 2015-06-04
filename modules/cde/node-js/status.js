@@ -1,5 +1,5 @@
-var config = require('config')
-    , request = require('request')
+var request = require('request')
+    , config = require('../../system/node-js/parseConfig')
     , mongo = require('./mongo-cde')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , elastic = require('../../system/node-js/elastic')

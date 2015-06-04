@@ -1,4 +1,4 @@
-var config = require('config');
+var config = require('../modules/system/node-js/parseConfig');
 
 exports.createIndexJson = {
     "mappings" : {
@@ -36,6 +36,9 @@ exports.createIndexJson = {
         }
     }
 };
+
+var storedQueryRiverFunction =
+    "for (var i = 0; i < ctx.document.selectedElements1.length && i < 4; i++) {ctx.document['classifLevel' + i] = ctx.document.selectedElements1[i];}";
 
 var riverFunction = 
     "if (ctx.operation !== 'd') {\
@@ -150,11 +153,20 @@ exports.createFormRiverJson = {
     }        
 };
 
-exports.createStoredQueryJson = {
+exports.createStoredQueryIndexJson = {
     "mappings" : {
         "storedquery" : {
             "properties" : {
-
+                "selectedOrg1" : { "type" : "string", "index" : "not_analyzed" }
+                ,"selectedOrg2" : { "type" : "string", "index" : "not_analyzed" }
+                ,"selectedElements1" : { "type" : "string", "index" : "not_analyzed" }
+                ,"selectedElements2" : { "type" : "string", "index" : "not_analyzed" }
+                ,"regStatuses" : { "type" : "string", "index" : "not_analyzed" }
+                ,"classifLevel0" : { "type" : "string", "index" : "not_analyzed" }
+                ,"classifLevel1" : { "type" : "string", "index" : "not_analyzed" }
+                ,"classifLevel2" : { "type" : "string", "index" : "not_analyzed" }
+                ,"classifLevel3" : { "type" : "string", "index" : "not_analyzed" }
+                ,"classifLevel4" : { "type" : "string", "index" : "not_analyzed" }
             }
         }
     }
@@ -166,6 +178,7 @@ exports.createStoredQueryRiverJson = {
         "servers": config.database.servers
         , "db": config.database.log.dbname
         , "collection": "storedqueries"
+        , "script": storedQueryRiverFunction
     }
     , "index": {
         "name": config.elastic.storedQueryIndex.name

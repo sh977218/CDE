@@ -1,6 +1,6 @@
 var schemas = require('./schemas')
     , mongoose = require('mongoose')
-    , config = require('config')
+    , config = require('./parseConfig')
     , mongoUri = config.mongoUri
     , Grid = require('gridfs-stream')
     , fs = require('fs')
