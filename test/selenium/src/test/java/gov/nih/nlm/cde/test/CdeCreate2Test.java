@@ -11,7 +11,10 @@ public class CdeCreate2Test extends BaseClassificationTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         createBasicCde("AlignmentCDE", "Definition for alignment cde", "CTEP", "DISEASE", "Brain");
 
-        openCdeInList("AlignmentCDE", "Incomplete");
+        mustBeLoggedOut();
+        setLowStatusesVisible();
+
+        openCdeInList("AlignmentCDE");
 
         Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
     }

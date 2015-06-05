@@ -1,6 +1,6 @@
 require('./deploy/configTest.js');
 
-var config = require('config')
+var config = require('./modules/system/node-js/parseConfig')
     , elastic = require('./deploy/elasticSearchInit.js')
     , chalk = require('chalk')
     , fs = require('fs')
@@ -49,8 +49,7 @@ module.exports = function(grunt) {
                     , method: 'POST'
                     , json: elastic.createRiverJson                   
                 }
-            }   
-            
+            }
             , elasticDeleteFormIndex: {
                 options: {
                     uri: config.elasticFormUri
@@ -76,7 +75,33 @@ module.exports = function(grunt) {
                     , method: 'POST'
                     , json: elastic.createFormRiverJson                   
                 }
-            }             
+            }
+            , elasticDeleteStoredQueryIndex: {
+                options: {
+                    uri: config.elasticStoredQueryUri
+                    , method: 'DELETE'
+                }
+            }
+            , elasticCreateStoredQueryIndex: {
+                options: {
+                    uri: config.elasticStoredQueryUri
+                    , method: 'POST'
+                    , json: elastic.createStoredQueryIndexJson
+                }
+            }
+            , elasticDeleteStoredQueryRiver: {
+                options: {
+                    uri: config.elasticStoredQueryRiverUri
+                    , method: 'DELETE'
+                }
+            }
+            , elasticCreateStoredQueryRiver: {
+                options: {
+                    uri: config.elasticStoredQueryRiverUri + "/_meta"
+                    , method: 'POST'
+                    , json: elastic.createStoredQueryRiverJson
+                }
+            }
         }
         , shell: {
             stop: {
@@ -133,6 +158,7 @@ module.exports = function(grunt) {
                             , 'config/**'
                             , 'deploy/configTest.js'
                             , 'node_modules/**'
+                            , "deploy/kibana.js"
                             , 'app.js'
                         ]
                         , dest: config.node.buildDir
@@ -174,8 +200,7 @@ module.exports = function(grunt) {
                             config: 'elastic.river.create'
                             , type: 'confirm'
                             , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'river for ' + config.name + ' configuration?'
-                        }     
-                        
+                        }
                         , {
                             config: 'elastic.form.index.delete'
                             , type: 'confirm'
@@ -195,7 +220,27 @@ module.exports = function(grunt) {
                             config: 'elastic.form.river.create'
                             , type: 'confirm'
                             , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'form river for ' + config.name + ' configuration?'
-                        }                           
+                        }
+                        , {
+                            config: 'elastic.storedquery.index.delete'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'stored query index for ' + config.name + ' configuration?'
+                        }
+                        , {
+                            config: 'elastic.storedquery.index.create'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'stored query index for ' + config.name + ' configuration?'
+                        }
+                        , {
+                            config: 'elastic.storedquery.river.delete'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'stored query river for ' + config.name + ' configuration?'
+                        }
+                        , {
+                            config: 'elastic.storedquery.river.create'
+                            , type: 'confirm'
+                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'stored query river for ' + config.name + ' configuration?'
+                        }
                     ]
                 }
             }  
@@ -471,8 +516,7 @@ module.exports = function(grunt) {
         if (grunt.config('elastic.river.create')) {
             grunt.log.writeln('\n\nCreating Elastic Search River!');
             grunt.task.run('http:elasticCreateRiver');
-        }   
-        
+        }
         if (grunt.config('elastic.form.river.delete')) {
             grunt.log.writeln('\n\nDeleting Elastic Search Form River!');
             grunt.task.run('http:elasticDeleteFormRiver');
@@ -488,8 +532,24 @@ module.exports = function(grunt) {
         if (grunt.config('elastic.form.river.create')) {
             grunt.log.writeln('\n\nCreating Elastic Search Form River!');
             grunt.task.run('http:elasticCreateFormRiver');
-        }         
-    });       
+        }
+        if (grunt.config('elastic.storedquery.river.delete')) {
+            grunt.log.writeln('\n\nDeleting Elastic Search Stored Query River!');
+            grunt.task.run('http:elasticDeleteStoredQueryRiver');
+        }
+        if (grunt.config('elastic.storedquery.index.delete')) {
+            grunt.log.writeln('\n\nDeleting Elastic Search Stored Query Index!');
+            grunt.task.run('http:elasticDeleteStoredQueryIndex');
+        }
+        if (grunt.config('elastic.storedquery.index.create')) {
+            grunt.log.writeln('\n\nCreating Elastic Search Stored Query Index!');
+            grunt.task.run('http:elasticCreateStoredQueryIndex');
+        }
+        if (grunt.config('elastic.storedquery.river.create')) {
+            grunt.log.writeln('\n\nCreating Elastic Search Stored Query River!');
+            grunt.task.run('http:elasticCreateStoredQueryRiver');
+        }
+    });
     
     grunt.registerTask('do-node', function() {
         if (grunt.config('node.scripts.stop')) {
@@ -583,7 +643,7 @@ module.exports = function(grunt) {
         }
     });
     grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
-    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','divider','guihelp','divider','elastic','divider','bower-install-simple','divider','bowercopy','divider','build']);
+    grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','buildVersion','divider','guihelp','divider','elastic','divider','bower-install-simple','divider','bowercopy','divider','build']);
     grunt.registerTask('help', ['availabletasks']);    
     grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);
     // https://www.npmjs.org/package/grunt-bower-install-simple

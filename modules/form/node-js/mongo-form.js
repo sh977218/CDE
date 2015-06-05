@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-    , config = require('config')
+    , config = require('../../system/node-js/parseConfig')
     , schemas = require('./schemas')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , connHelper = require('../../system/node-js/connections')

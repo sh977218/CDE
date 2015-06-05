@@ -1,6 +1,6 @@
 var mongo_data = require("./mongo-form")
     , xmlbuilder = require("xmlbuilder")
-    , config = require('config')
+    , config = require('../../system/node-js/parseConfig')
 ;
 
 

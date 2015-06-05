@@ -1,4 +1,5 @@
-var config = require('config');
+var config = require('./parseConfig');
+
 
 exports.GLOBALS = {
     REQ_TIMEOUT : 2000

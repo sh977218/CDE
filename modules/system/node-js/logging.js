@@ -1,9 +1,9 @@
 var winston = require('winston')
-  , util = require('util')
-  , dbLogger = require('./dbLogger.js')
-  , helper = require('./helper.js')
-  , config = require('config')
-;
+    , util = require('util')
+    , dbLogger = require('./dbLogger.js')
+    , helper = require('./helper.js')
+    , config = require('./parseConfig')
+    ;
 
 var MongoLogger = winston.transports.MongoLogger = function (options) {
     this.name = 'mongoLogger';
