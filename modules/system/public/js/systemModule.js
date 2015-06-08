@@ -270,30 +270,6 @@ angular.module('systemModule').config(function($provide) {
     }]);
 });
 
-angular.module('systemModule').config(function($provide) {
-    $provide.decorator("$exceptionHandler", ['$delegate', '$injector', function($delegate, $injector) {
-        var previousException;
-        return function(exception, cause) {
-            $delegate(exception, cause);
-            if (previousException && exception.toString() === previousException.toString()) return;
-            previousException = exception;
-            var http;
-            if (!http) { http = $injector.get('$http'); }
-            try {
-                if (exception.message.indexOf("[$compile:tpload]")>-1) return;
-                http.post('/logClientException', {stack: exception.stack, message: exception.message, name: exception.name});
-            } catch (e) {
-
-            }
-        };
-    }]);
-
-    $provide.decorator('$route', function($delegate) {
-        console.log("changing route");
-        return $delegate;
-    });
-});
-
 angular.module('systemModule').config(function (localStorageServiceProvider) {
     localStorageServiceProvider
         .setPrefix('nlmcde')
