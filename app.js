@@ -130,6 +130,8 @@ app.use("/system/public", express.static(path.join(__dirname,'/modules/system/pu
 app.use("/form/public", express.static(path.join(__dirname,'/modules/form/public')));
 app.use("/article/public", express.static(path.join(__dirname,'/modules/article/public')));
 
+app.use("/testData", express.static(path.join(__dirname,'/test/article/public')));
+
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
