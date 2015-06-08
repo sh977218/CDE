@@ -2,6 +2,12 @@
     <script src="/system/public/js/webtrends.js" type="text/javascript"></script>
     <script type="text/javascript">
         var _tag=new WebTrends();
+
+        function submitWebtrends(){
+            _tag.DCS.dcsuri = window.location.hash;
+            dcsMultiTrack();
+        };
+
         _tag.dcsGetId();
         _tag.dcsCustom=function(){
             _tag.DCSext.dcsid=_tag.dcsid
@@ -9,5 +15,6 @@
         }
         _tag.trackAllEvents=true;
         _tag.dcsCollect();
+
     </script>
 <% } %>

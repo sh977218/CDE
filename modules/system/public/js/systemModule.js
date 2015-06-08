@@ -300,11 +300,7 @@ angular.module('systemModule').config(function (localStorageServiceProvider) {
 });
 
 angular.module('systemModule').run( function($rootScope, $location) {
-
-    // register listener to watch route changes
-    //dcsMultiTrack
     $rootScope.$on("$routeChangeSuccess", function(event, next, current) {
-        console.log($location.url());
-        dcsMultiTrack();
+        submitWebtrends();
     });
 });
