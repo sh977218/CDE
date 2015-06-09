@@ -9,6 +9,7 @@ var LogModel;
 var LogErrorModel;
 var ClientErrorModel;
 var StoredQueryModel;
+var FeedbackModel;
 
 // w = 0 means write very fast. It's ok if it fails.   
 // capped means no more than 5 gb for that collection.
@@ -62,6 +63,22 @@ var storedQuerySchema= new mongoose.Schema(
         , selectedElements2: [String]
     }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
+var feedbackIssueSchema = new mongoose.Schema({
+    date: { type: Date, default: Date.now, index: true }
+    , user: {
+        username: String
+        , ip: String
+    }
+    , screenshot: {
+        id: String
+        , content: String
+    }
+    , rawHtml: String
+    , userMessage: String
+    , browswer: String
+    , reportedUrl: String
+});
+
 var connectionEstablisher = connHelper.connectionEstablisher;
 
 var iConnectionEstablisherLog = new connectionEstablisher(mongoLogUri, 'Logs');
@@ -70,6 +87,7 @@ iConnectionEstablisherLog.connect(function(conn) {
     LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
     ClientErrorModel = conn.model('DbClientErrorLogger', clientErrorSchema);
     StoredQueryModel = conn.model('StoredQuery', storedQuerySchema);
+    FeedbackModel = conn.model('FeedbackIssue', feedbackIssueSchema);
 });
 
 exports.storeQuery = function(settings, callback) {
@@ -189,6 +207,16 @@ exports.usageByDay = function(callback) {
 };
 
 exports.saveFeedback = function(req, cb) {
-    if (cb) cb();
+    var report = JSON.parse(req.body.feedback);
+    var issue = new FeedbackModel({
+        user: {username: req.user?req.user.username:null}
+        , rawHtml: report.html
+        , reportedUrl: report.url
+        , userMessage: report.note
+        , screenshot: {content: report.img}
+    });
+    issue.save(function(err){
+        if (cb) cb(err);
+    });
 };
 

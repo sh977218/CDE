@@ -549,10 +549,7 @@ angular.module('angular-send-feedback').directive('angularFeedback', [ function(
                                             success: function() {
                                                 $('#feedback-module').append(settings.tpl.submitSuccess);
                                             },
-                                            error: function(a,b,c){
-                                                console.log(a);
-                                                console.log(b);
-                                                console.log(c);
+                                            error: function(){
                                                 $('#feedback-module').append(settings.tpl.submitError);
                                             }
                                         });
