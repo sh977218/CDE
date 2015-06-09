@@ -1,9 +1,8 @@
 <td>{{err.date | date:'MM/dd/yyyy @ h:mma'}}</td>
 <td>{{err.userMessage}}</td>
 <td>
-    <a href="{{err.screenshot.content}}" target="_blank">
-        Link <img src="{{err.screenshot.content}}">
-    </a>
+    <!--<img src="{{err.screenshot.content}}">-->
+    <span ng-bind-html="renderImage(err.screenshot.content)" ng-text-truncate="renderImage(err.screenshot.content)" ng-tt-threshold="500"></span>
 </td>
 <td>
     <!--{{err.rawHtml}}-->
