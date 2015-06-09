@@ -617,8 +617,18 @@ exports.init = function(app) {
         } else {
             res.status(401).send();
         }
-    });   
-    
+    });
+
+
+    app.post('/getFeedbackIssues', function(req, res) {
+        if(req.isAuthenticated() && req.user.siteAdmin) {
+            dbLogger.getFeedbackIssues(req.body, function(err, result) {
+                res.send(result);
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
     
     app.post('/logClientException', function(req, res) {
         dbLogger.logClientError(req.body, function(err, result) {

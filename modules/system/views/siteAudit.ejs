@@ -6,16 +6,6 @@
         <div tab heading="{{tabs[1].title}}" active="tabs[1].active">
             <%- include dailyUsage.ejs %>
         </div>
-        <div tab heading="{{tabs[2].title}}" active="tabs[2].active">
-            <div class="table" ng-controller="AuditServerErrorListCtrl">
-                <div ng-include="'/system/public/html/errorList.html'"></div>
-            </div>
-        </div>
-        <div tab heading="{{tabs[3].title}}" active="tabs[3].active">
-            <div class="table" ng-controller="AuditClientErrorListCtrl">
-                <div ng-include="'/system/public/html/errorList.html'"></div>
-            </div>
-        </div>
 
         <% for (module in config.modules) { if (!config.modules[module].audit) continue; %>
             <div tab heading="CDE Audit Log">
@@ -30,5 +20,23 @@
                 <div ng-include="'/system/public/html/classificationAuditLog.html'"></div>
             </div>
         </div>
+
+        <div tab heading="Reported Issues">
+            <div class="table" ng-controller="FeedbackIssueListCtrl" id="FeedbackIssueList">
+                <div ng-include="'/system/public/html/errorList.html'"></div>
+            </div>
+        </div>
+
+        <div tab heading="{{tabs[2].title}}" active="tabs[2].active">
+            <div class="table" ng-controller="AuditServerErrorListCtrl">
+                <div ng-include="'/system/public/html/errorList.html'"></div>
+            </div>
+        </div>
+        <div tab heading="{{tabs[3].title}}" active="tabs[3].active">
+            <div class="table" ng-controller="AuditClientErrorListCtrl">
+                <div ng-include="'/system/public/html/errorList.html'"></div>
+            </div>
+        </div>
+
     </div>
 </div>

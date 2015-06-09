@@ -193,6 +193,17 @@ exports.getClientErrors = function(params, callback) {
     });
 };
 
+exports.getFeedbackIssues = function(params, callback) {
+    FeedbackModel
+        .find()
+        .sort('-date')
+        .skip(params.skip)
+        .limit(params.limit)
+        .exec(function(err, logs){
+            callback(err, logs);
+        });
+};
+
 exports.usageByDay = function(callback) {
     var d = new Date();
     d.setDate(d.getDate() - 3);
