@@ -724,4 +724,9 @@ exports.init = function(app) {
         });
     });
 
+    app.post('/feedback/report', function(req, res) {
+        dbLogger.saveFeedback(req, function(){
+            res.send({});
+        });
+    });
 };

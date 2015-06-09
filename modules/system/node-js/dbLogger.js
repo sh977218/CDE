@@ -188,4 +188,7 @@ exports.usageByDay = function(callback) {
     );
 };
 
+exports.saveFeedback = function(req, cb) {
+    if (cb) cb();
+};
 
