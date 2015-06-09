@@ -651,3 +651,9 @@ button#selectDefault {
 .displayBlock {
     display: block;
 }
+
+.feedback-btn-gray {
+    font-family: inherit!important;
+    border-top-left-radius: 6px!important;
+    border-top-right-radius: 6px!important;
+}
