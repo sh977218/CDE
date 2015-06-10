@@ -1,10 +1,11 @@
 <td>{{err.date | date:'MM/dd/yyyy @ h:mma'}}</td>
+<td>{{err.user.username?err.user.username:"Anonymous"}}</td>
 <td>{{err.userMessage}}</td>
 <td>
     <!--<img src="{{err.screenshot.content}}">-->
-    <span ng-bind-html="renderImage(err.screenshot.content)" ng-text-truncate="renderImage(err.screenshot.content)" ng-tt-threshold="500"></span>
+    <a ng-click="showScreenshot(err.screenshot.content)">Show Screenshot</a>
 </td>
 <td>
     <!--{{err.rawHtml}}-->
-    <span ng-bind="err.rawHtml" ng-text-truncate="err.rawHtml" ng-tt-threshold="500"></span>
+    <span ng-click="showRawHtml(err.rawHtml)">Show Screenshot</span>
 </td>
