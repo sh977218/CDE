@@ -100,14 +100,14 @@ exports.createRiverJson = {
     "mongodb": {
         "servers": config.database.servers,
         "credentials": [
-            {"db": "admin", "user": "siteRootAdmin", "password": "password"}
+            {"db": "admin", "user": config.database.username, "password": config.database.password}
         ],
         "db": config.database.dbname,
         "collection": "dataelements",
         "script": riverFunction
     },
     "index": {
-        "name": config.elastic.index.name, 
+        "name": config.elastic.index.name,
         "type": "dataelement"
     }
 };
@@ -148,7 +148,7 @@ exports.createFormRiverJson = {
     , "mongodb": {
         "servers": config.database.servers
         , "credentials": [
-            {"db": "admin", "user": "siteRootAdmin", "password": "password"}
+            {"db": "admin", "user": config.database.username, "password": config.database.password}
         ]
         , "db": config.database.dbname
         , "collection": "forms"
@@ -156,24 +156,24 @@ exports.createFormRiverJson = {
     }
     , "index": {
         "name": config.elastic.formIndex.name
-        , "type": "form"                  
-    }        
+        , "type": "form"
+    }
 };
 
 exports.createStoredQueryIndexJson = {
-    "mappings" : {
-        "storedquery" : {
-            "properties" : {
-                "selectedOrg1" : { "type" : "string", "index" : "not_analyzed" }
-                ,"selectedOrg2" : { "type" : "string", "index" : "not_analyzed" }
-                ,"selectedElements1" : { "type" : "string", "index" : "not_analyzed" }
-                ,"selectedElements2" : { "type" : "string", "index" : "not_analyzed" }
-                ,"regStatuses" : { "type" : "string", "index" : "not_analyzed" }
-                ,"classifLevel0" : { "type" : "string", "index" : "not_analyzed" }
-                ,"classifLevel1" : { "type" : "string", "index" : "not_analyzed" }
-                ,"classifLevel2" : { "type" : "string", "index" : "not_analyzed" }
-                ,"classifLevel3" : { "type" : "string", "index" : "not_analyzed" }
-                ,"classifLevel4" : { "type" : "string", "index" : "not_analyzed" }
+    "mappings": {
+        "storedquery": {
+            "properties": {
+                "selectedOrg1": {"type": "string", "index": "not_analyzed"}
+                , "selectedOrg2": {"type": "string", "index": "not_analyzed"}
+                , "selectedElements1": {"type": "string", "index": "not_analyzed"}
+                , "selectedElements2": {"type": "string", "index": "not_analyzed"}
+                , "regStatuses": {"type": "string", "index": "not_analyzed"}
+                , "classifLevel0": {"type": "string", "index": "not_analyzed"}
+                , "classifLevel1": {"type": "string", "index": "not_analyzed"}
+                , "classifLevel2": {"type": "string", "index": "not_analyzed"}
+                , "classifLevel3": {"type": "string", "index": "not_analyzed"}
+                , "classifLevel4": {"type": "string", "index": "not_analyzed"}
             }
         }
     }
