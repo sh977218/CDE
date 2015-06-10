@@ -160,7 +160,7 @@ module.exports = function(grunt) {
                             , 'Gruntfile.js'
                             , 'node_modules/**'
                             , "deploy/kibana.js"
-                            , 'app.js',
+                            , 'app.js'
                             , 'package.json'
                         ]
                         , dest: config.node.buildDir
