@@ -52,6 +52,7 @@ var storedQuerySchema= new mongoose.Schema(
     {
         searchTerm: String
         , date: {type: Date, default: Date.now}
+        , searchToken: String
         , username: String
         , remoteAddr: String
         , isSiteAdmin: Boolean
@@ -82,22 +83,29 @@ exports.storeQuery = function(settings, callback) {
         });
     }
     if (regStatuses.length === 0) regStatuses = settings.visibleRegStatuses;
-    var storedQuery = new StoredQueryModel ({
-        searchTerm: settings.searchTerm
+    var storedQuery = {
+        searchTerm: settings.searchTerm?settings.searchTerm:""
+        , date: new Date()
         , regStatuses: regStatuses
         , selectedElements1: settings.selectedElements.slice(0)
         , selectedElements2: settings.selectedElementsAlt.slice(0)
-    });
+    };
     if (settings.username) storedQuery.username = settings.username;
     if (settings.remoteAddr) storedQuery.remoteAddr = settings.remoteAddr;
     if (settings.isSiteAdmin) storedQuery.isSiteAdmin = settings.isSiteAdmin;
     if (settings.selectedOrg) storedQuery.selectedOrg1 = settings.selectedOrg;
     if (settings.selectedOrgAlt) storedQuery.selectedOrg2 = settings.selectedOrgAlt;
+    if (settings.searchToken) storedQuery.searchToken = settings.searchToken;
 
-    storedQuery.save(function(err) {
-        if (err) console.log(err);
-        if (callback) callback(err);
-    });
+    StoredQueryModel.findOneAndUpdate(
+        {date: {$gt: new Date().getTime() - 60000}, searchToken: storedQuery.searchToken},
+        storedQuery,
+        {upsert: true},
+        function(err) {
+            if (err) console.log(err);
+            if (callback) callback(err);
+        }
+    );
 
 };
 
