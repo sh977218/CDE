@@ -9,9 +9,8 @@ angular.module('systemModule').controller('FeedbackBtnCtrl', ['$scope', function
     var highlighter = '<div id="feedback-highlighter"><div class="h3">Report a problem</div>' +
         '<p>Is the problem related to a specific part of the page?</p>' +
         '<p>Go ahead and highlight the area!</p>' +
-        '<button class="feedback-sethighlight feedback-active"><div class="ico"></div>' +
-        '<span>Highlight</span></button>' +
-        '<label>Click & Drag over the area on the page.</label>' +
+        '<p>Try to draw a rectangle over the affected area.</p>' +
+        '<img src="/system/public/img/feedbackHowtoHighlight.png">' +
         '<div class="feedback-buttons"><button id="feedback-highlighter-next" class="feedback-next-btn btn btn-info">Next</button><button id="feedback-highlighter-back" class="feedback-back-btn btn btn-default">Back</button></div><div class="feedback-wizard-close"></div></div>';
 
     var overview = '<div id="feedback-overview"><div class="h3">Report a problem</div><div id="feedback-overview-description"><div id="feedback-overview-description-text">' +
