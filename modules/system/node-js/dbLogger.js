@@ -2,6 +2,8 @@ var mongoose = require('mongoose')
     , config = require('./parseConfig')
     , connHelper = require('./connections')
     , logging = require('./logging')
+    , mongo_data_system = require('../../system/node-js/mongo-data')
+    , email = require('../../system/node-js/email')
     ;
     
 var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
@@ -229,6 +231,14 @@ exports.saveFeedback = function(req, cb) {
     });
     issue.save(function(err){
         if (cb) cb(err);
+    });
+    var emailContent = {
+        subject: "Issue reported by a user"
+        , body: report.note
+    };
+    mongo_data_system.siteadmins(function(err, users) {
+        email.emailUsers(emailContent, users, function(err) {
+        });
     });
 };
 
