@@ -117,8 +117,6 @@ angular.module('angular-send-feedback').directive('angularFeedback', [ function(
                                 }
 
                                 if(settings.isDraggable) {
-                                    var wWidth = $(window).width();
-                                    var dHeight = $(document).height();
                                     $('#feedback-highlighter').on('mousedown', function(e) {
                                         var $d = $(this).addClass('feedback-draggable'),
                                             drag_h  = $d.outerHeight(),
@@ -133,14 +131,14 @@ angular.module('angular-send-feedback').directive('angularFeedback', [ function(
 
                                             if (_left < 0) _left = 0;
                                             if (_top < 0) _top = 0;
-                                            if (_right > wWidth)
-                                                _left = wWidth - drag_w;
-                                            if (_left > wWidth - drag_w)
-                                                _left = wWidth - drag_w;
-                                            if (_bottom > dHeight)
-                                                _top = wWidth - drag_h;
-                                            if (_top > wWidth - drag_h)
-                                                _top = wWidth - drag_h;
+                                            if (_right > $(window).width())
+                                                _left = $(window).width() - drag_w;
+                                            if (_left > $(window).width() - drag_w)
+                                                _left = $(window).width() - drag_w;
+                                            if (_bottom > $(document).height())
+                                                _top = $(document).height() - drag_h;
+                                            if (_top > $(document).height() - drag_h)
+                                                _top = $(document).height() - drag_h;
 
                                             $('.feedback-draggable').offset({
                                                 top:    _top,
@@ -291,15 +289,14 @@ angular.module('angular-send-feedback').directive('angularFeedback', [ function(
 
                                             $('#feedback-canvas').css('cursor', 'crosshair');
 
-                                            // Disabling select element, because it's hell slow
-                                            //$('* :not(body,script,iframe,div,section,.feedback-btn,#feedback-module *)').each(function(){
-                                            //    if ($(this).attr('data-highlighted') === 'true')
-                                            //        return;
-                                            //
-                                            //    if (e.pageX > $(this).offset().left && e.pageX < $(this).offset().left + $(this).width() && e.pageY > $(this).offset().top + parseInt($(this).css('padding-top'), 10) && e.pageY < $(this).offset().top + $(this).height() + parseInt($(this).css('padding-top'), 10)) {
-                                            //            tmpHighlighted.push($(this));
-                                            //    }
-                                            //});
+                                            $('* :not(body,script,iframe,div,section,.feedback-btn,#feedback-module *)').each(function(){
+                                                if ($(this).attr('data-highlighted') === 'true')
+                                                    return;
+
+                                                if (e.pageX > $(this).offset().left && e.pageX < $(this).offset().left + $(this).width() && e.pageY > $(this).offset().top + parseInt($(this).css('padding-top'), 10) && e.pageY < $(this).offset().top + $(this).height() + parseInt($(this).css('padding-top'), 10)) {
+                                                        tmpHighlighted.push($(this));
+                                                }
+                                            });
 
                                             var $toHighlight = tmpHighlighted[tmpHighlighted.length - 1];
 

@@ -225,7 +225,7 @@ exports.saveFeedback = function(req, cb) {
         , reportedUrl: report.url
         , userMessage: report.note
         , screenshot: {content: report.img}
-        , browser: Object.keys(report.browser).map(function(key){return report.browser[key];}).join(", ")
+        , browser: report.browser.userAgent
     });
     issue.save(function(err){
         if (cb) cb(err);

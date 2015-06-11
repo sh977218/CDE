@@ -5,13 +5,11 @@
     {{err.reportedUrl}}
 </td>
 <td>
-    <!--<img src="{{err.screenshot.content}}">-->
     <a ng-click="showScreenshot(err.screenshot.content)">Show Screenshot</a>
 </td>
 <td>
-    {{err.}}
+    {{err.browser}}
 </td>
 <td>
-    <!--{{err.rawHtml}}-->
-    <span ng-click="showRawHtml(err.rawHtml)">Show Screenshot</span>
+    <a ng-click="showRawHtml(err.rawHtml)">Show HTML</a>
 </td>

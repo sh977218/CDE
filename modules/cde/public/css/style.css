@@ -664,5 +664,11 @@ button#selectDefault {
 
 #feedback-overview-note {
     width: 350px;
-    height: 200px;
+    height: 317px!important;
 }
+
+#feedback-highlighter{
+    cursor: move;
+}
+
+.ta-hidden-input {display: none;}
