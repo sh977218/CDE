@@ -60,7 +60,7 @@ var storedQuerySchema= new mongoose.Schema(
         , selectedOrg2: String
         , selectedElements1: [String]
         , selectedElements2: [String]
-    }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
+    }, { safe: {w: 0}});
 
 var connectionEstablisher = connHelper.connectionEstablisher;
 
@@ -93,8 +93,6 @@ exports.storeQuery = function(settings, callback) {
     if (settings.isSiteAdmin) storedQuery.isSiteAdmin = settings.isSiteAdmin;
     if (settings.selectedOrg) storedQuery.selectedOrg1 = settings.selectedOrg;
     if (settings.selectedOrgAlt) storedQuery.selectedOrg2 = settings.selectedOrgAlt;
-
-    // @TODO add IP and username.
 
     storedQuery.save(function(err) {
         if (err) console.log(err);
