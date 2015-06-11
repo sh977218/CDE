@@ -40,14 +40,6 @@ public class ScreenShotListener extends TestListenerAdapter {
     public void onTestSuccess(ITestResult itr) {
         String methodName = itr.getName();
         try {
-            InputStream response = new URL("http://localhost:9200/cdetest/_count").openStream();
-            byte [] esStr = new byte[100];
-            response.read(esStr);
-            
-            response = new URL("http://localhost:3001/deCount").openStream();
-            byte [] mongoStr = new byte[100];
-            response.read(mongoStr);
-            
             FileUtils.writeStringToFile(new File("build/testlogs/" + methodName + "_" + formater.format(calendar.getTime()) + ".txt"),
                     "mongo: " + new String(mongoStr) + "\nES: " + new String(esStr));
         } catch (IOException e1) {
