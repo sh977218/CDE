@@ -23,6 +23,7 @@ var express = require('express')
     , async = require('async')
     ;
 
+
 require('log-buffer')(config.logBufferSize || 4096);
 
 passport.serializeUser(function(user, done) {
@@ -39,6 +40,12 @@ passport.use(new LocalStrategy({passReqToCallback: true}, auth.authBeforeVsac));
 var app = express();
 
 app.use(auth.ticketAuth);
+
+var request = require('request');
+app.use('/kibana/', function(req, res, next) {
+    req.pipe(request('http://localhost:5601' + req.url)).on('error', function(err) {res.sendStatus(500)}).pipe(res);
+});
+
 
 process.on('uncaughtException', function (err) {
     console.log("ERROR1: " + err);
@@ -108,13 +115,14 @@ app.use(function preventSessionCreation(req, res, next) {
         if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".gif") return true;
         return false;
     };
-    if ((req.cookies['connect.sid'] || req.originalUrl === "/login") && !this.isFile(req)) {
+    if ((req.cookies['connect.sid'] || req.originalUrl === "/login" || req.originalUrl === "/csrf") && !this.isFile(req)) {
         expressSettings.store = mongo_data_system.sessionStore;
         var initExpressSession = session(expressSettings);
         initExpressSession(req, res, next);
    } else {
        next();
    }
+
 });
 
 app.use("/cde/public", express.static(path.join(__dirname,'/modules/cde/public')));

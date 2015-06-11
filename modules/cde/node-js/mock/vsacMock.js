@@ -1,19 +1,17 @@
 var path = require('path');
 
-//require(path.join(__dirname, '../../../../deploy/configTest.js'));
-
 var express = require('express')
-  , https = require('https')
-  , util = require('util')
-  , crypto = require('crypto')
-  , fs = require('fs')
-  , config = require('config')  
-  , bodyParser = require('body-parser')
-  , cookieParser = require('cookie-parser')
-  , session = require('express-session')
-  , methodOverride = require('method-override')
-  , morganLogger = require('morgan')
-;
+    , https = require('https')
+    , util = require('util')
+    , crypto = require('crypto')
+    , fs = require('fs')
+    , config = require('../../../system/node-js/parseConfig')
+    , bodyParser = require('body-parser')
+    , cookieParser = require('cookie-parser')
+    , session = require('express-session')
+    , methodOverride = require('method-override')
+    , morganLogger = require('morgan')
+    ;
 
 var app = express();
 

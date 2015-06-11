@@ -1,0 +1,90 @@
+
+<div style="height:1200px" tabset>
+
+    <div tab heading="General Stats" active="genStatsActive">
+        <div class="container-fluid">
+            <div class="row" ng-if="genStatsActive">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <iframe id='genStatuses'
+                            src="kibana/#/visualize/edit/Most-Popular-Registration-Statuses?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                            width="100%" height="500px" frameBorder="0" style="overflow:hidden;"
+                            >
+                    </iframe>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <iframe id='genClassifs'
+                            src="kibana/#/visualize/edit/Most-Searched-Classifications?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                            width="100%" height="500px" frameBorder="0" style="overflow:hidden;"
+                            >
+                    </iframe>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <iframe id='genTopCdes'
+                            src="kibana/#/dashboard/Top-CDEs?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                            width="100%" height="500px" frameBorder="0" style="overflow:hidden;"
+                            >
+                    </iframe>
+                </div>
+            </div>
+            <div class="row" ng-if="genStatsActive">
+                <div class="col-sm-12">
+                    <iframe id='genTopTerms'
+                            src="kibana/#/visualize/edit/Most-Searched-Terms?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                            width="100%" height="500px" frameBorder="0" style="overflow:hidden;"
+                            >
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div tab heading="NCI" active="nciStatsActive">
+        <div class="container-fluid">
+            <div class="row" ng-if="nciStatsActive">
+                <div class="col-lg-5 col-md-6 col-sm-12">
+                    <iframe id='nciClassifs'
+                            src="kibana/#/visualize/edit/Most-Popular-Classifications-NCI?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                            width="100%" height="600px" frameBorder="0" style="overflow:hidden;"
+                            >
+                    </iframe>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <iframe id='nciMostViewedStatuses'
+                            src="kibana/#/visualize/edit/Top-NCI-Statuses?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                            width="100%" height="600px" frameBorder="0" style="overflow:hidden;"
+                            >
+                    </iframe>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <iframe id='nciTopCdes'
+                            src="kibana/#/dashboard/Top-NCI-CDEs?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                                width="100%" height="600px" frameBorder="0" style="overflow:hidden;"
+                            >
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div tab heading="NINDS" active="nindsStatsActive">
+        <div class="container-fluid">
+            <div class="row" ng-if="nindsStatsActive">
+                <div class="col-md-6">
+                    <iframe id='nindsClassifs'
+                            src="kibana/#/visualize/edit/NINDS-Queries?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                            width="100%" height="600px" frameBorder="0" style="overflow:hidden;"
+                            >
+                    </iframe>
+                </div>
+                <div class="col-md-6">
+                    <iframe id='nindsTopCdes'
+                            src="kibana/#/dashboard/Top-NINDS-CDEs?embed&_g=(time:(from:now-5y,mode:quick,to:now))"
+                            width="100%" height="600px" frameBorder="0" style="overflow:hidden;"
+                            >
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

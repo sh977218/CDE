@@ -38,7 +38,7 @@ public class BoardViewTest extends BoardTest {
         closeAlert();
         hangon(1);
         goToBoard(boardName);
-        findElement(By.id("gridView")).click();
+        waitAndClick(By.id("gridView"));
         textPresent("Fluorescence in situ");
         textPresent("Anaplastic Lymp");
         textPresent("ALK Standard Deviation");

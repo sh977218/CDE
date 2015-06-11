@@ -1,7 +1,6 @@
-var config = require('config')
-    , request = require('request')
+var request = require('request')
+    , config = require('./parseConfig')
     , logging = require('../../system/node-js/logging')
-    , jsonStream = require('JSONStream')
     , es = require('event-stream')
     , trim = require("trim")
     , regStatusShared = require('../../system/shared/regStatusShared')
@@ -247,7 +246,7 @@ exports.elasticsearch = function (query, type, cb) {
             if (response.statusCode === 400) {
                 logging.errorLogger.error("Error: ElasticSearch Error", 
                     {origin: "system.elastic.elasticsearch", stack: new Error().stack,
-                        details: {body: JSON.stringify(query)}});
+                        details: JSON.stringify(query)});
                 cb("Invalid Query");
             } else {
                 var querystr = "cannot stringify query";

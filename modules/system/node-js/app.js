@@ -1,6 +1,6 @@
 var passport = require('passport')
     , mongo_data_system = require('./mongo-data')
-    , config = require('config')
+    , config = require('./parseConfig')
     , dbLogger = require('./dbLogger.js')
     , logging = require('./logging.js')
     , orgsvc = require('./orgsvc')
@@ -42,7 +42,7 @@ exports.init = function(app) {
     
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
     
-    var viewConfig = {modules: config.modules};
+    var viewConfig = {modules: config.modules, webtrends: config.webtrends};
 
     app.get('/template/:module/:template', function(req, res) {        
         res.render(req.params.template, req.params.module, {config: viewConfig, module: req.params.module});
@@ -723,4 +723,5 @@ exports.init = function(app) {
             res.send("Search settings updated.");
         });
     });
+
 };
