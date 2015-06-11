@@ -127,9 +127,9 @@
                                 <a class="navbar-link" href="#/quickBoard">
                                     Quick Board (
                                         <span ng-switch="quickBoard.length">
-                                            <span ng-switch-when="0">empty</span>
-                                             <span ng-switch-when="10">full</span>
-                                            <span ng-switch-default>{{quickBoard.length}}</span>
+                                            <span ng-switch-when="0" ng-bind="'empty'"></span>
+                                            <span ng-switch-when="10" ng-bind="'full'"></span>
+                                            <span ng-switch-default ng-bind="quickBoard.length"></span>
                                         </span>
                                     )
                                 </a>
@@ -149,7 +149,8 @@
                                 <i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
                             <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id"><a href="#/login" id="login_link" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a> </li>
                             <li dropdown class="login" ng-show="user._id" >
-                                <a dropdown-toggle class="dropdown-toggle" href="#" id="username_link" title="{{user.username}}" aria-label="{{user.username}}"><span>{{user.username | truncateLongUserName}}</span><span class="caret"></span></a>
+                                <a dropdown-toggle class="dropdown-toggle" href="#" id="username_link" title="{{user.username}}" aria-label="{{user.username}}">
+                                    <span ng-bind="user.username | truncateLongUserName"></span><span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="username_link">
                                     <li ng-show='user._id'><a href="#/profile">Profile</a></li>
                                     <li ng-show='inboxVisible()'><a href="#/inbox">Inbox</a></li>
@@ -168,7 +169,7 @@
 
             <!-- Alerts area -->
             <div class="navbar-fixed-bottom">
-                <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+                <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)"><span ng-bind="alert.msg"></span></alert>
             </div>
 
             <!-- Main content area -->
