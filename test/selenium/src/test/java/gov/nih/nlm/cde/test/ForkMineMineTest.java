@@ -45,17 +45,10 @@ public class ForkMineMineTest extends ForkTest {
 
         Assert.assertEquals("Other Group Patient Identifier Number - FORKED", findElement(By.id("dd_general_name")).getText());
 
-        waitForESUpdate();
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("\"Other Group Patient Identifier Number\"");
         findElement(By.cssSelector("i.fa-search")).click();
         textPresent("1 results for");
-        try {
-            textPresent("Other Group Patient Identifier Number - FORK");
-        } catch(TimeoutException e) {
-            findElement(By.cssSelector("i.fa-search")).click();
-            textPresent("1 results for");
-            textPresent("Other Group Patient Identifier Number - FORK");
-        }
+        textPresent("Other Group Patient Identifier Number - FORK");
     }
 }

@@ -155,8 +155,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         textPresent("Standard elements cannot be edited by their stewards");
         findElement(By.id("saveRegStatus")).click();
-        waitForESUpdate();
-        goToCdeSearch();  
+        goToCdeSearch();
         textPresent("Preferred Standard");
         findElement(By.id("li-blank-Standard")).click();
         hangon(1);
