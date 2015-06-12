@@ -97,15 +97,19 @@ exports.storeQuery = function(settings, callback) {
     if (settings.selectedOrgAlt) storedQuery.selectedOrg2 = settings.selectedOrgAlt;
     if (settings.searchToken) storedQuery.searchToken = settings.searchToken;
 
-    StoredQueryModel.findOneAndUpdate(
-        {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
-        storedQuery,
-        {upsert: true},
-        function(err) {
-            if (err) console.log(err);
-            if (callback) callback(err);
-        }
-    );
+    if (!storedQuery.selectedOrg1 && storedQuery.searchTerm == "" && !settings.selectedStatuses) {
+        return;
+    } else {
+        StoredQueryModel.findOneAndUpdate(
+            {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
+            storedQuery,
+            {upsert: true},
+            function (err) {
+                if (err) console.log(err);
+                if (callback) callback(err);
+            }
+        );
+    }
 
 };
 
