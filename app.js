@@ -115,13 +115,14 @@ app.use(function preventSessionCreation(req, res, next) {
         if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".gif") return true;
         return false;
     };
-    if ((req.cookies['connect.sid'] || req.originalUrl === "/login") && !this.isFile(req)) {
+    if ((req.cookies['connect.sid'] || req.originalUrl === "/login" || req.originalUrl === "/csrf") && !this.isFile(req)) {
         expressSettings.store = mongo_data_system.sessionStore;
         var initExpressSession = session(expressSettings);
         initExpressSession(req, res, next);
    } else {
        next();
    }
+
 });
 
 app.use("/cde/public", express.static(path.join(__dirname,'/modules/cde/public')));
@@ -129,8 +130,6 @@ app.use("/system/public", express.static(path.join(__dirname,'/modules/system/pu
 
 app.use("/form/public", express.static(path.join(__dirname,'/modules/form/public')));
 app.use("/article/public", express.static(path.join(__dirname,'/modules/article/public')));
-
-app.use("/testData", express.static(path.join(__dirname,'/test/article/public')));
 
 app.use(flash());
 app.use(passport.initialize());
