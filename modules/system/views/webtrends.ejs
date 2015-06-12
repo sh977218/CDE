@@ -1,9 +1,13 @@
+<script type="text/javascript">
+    var submitWebtrends = null;
+</script>
+
 <% if (config.webtrends) { %>
     <script src="/system/public/js/webtrends.js" type="text/javascript"></script>
     <script type="text/javascript">
         var _tag=new WebTrends();
 
-        function submitWebtrends(){
+        submitWebtrends = function(){
             _tag.DCS.dcsuri = window.location.hash;
             dcsMultiTrack(); // dcsCollect() is the original function in the script, but this was recommended by the dev. community
         };
