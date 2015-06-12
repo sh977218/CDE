@@ -98,17 +98,28 @@ exports.setAttachmentDefault = function(req, res, dao) {
     });
 };
 
-exports.scanFile = function(path, res, cb) {
-    var stream = fs.createReadStream(path);
+exports.scanFile = function(fileBuffer, res, cb) {
+    //var stream = fs.createReadStream(path);
+    var streamBuffers = require("stream-buffers");
+    var stream = new streamBuffers.ReadableStreamBuffer({
+        frequency: 10,      // in milliseconds.
+        chunkSize: 2048     // in bytes.
+    });
+    stream.put(fileBuffer);
+
     clamav.createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, function(err, object, malicious) {
+        console.log(err);
+        console.log(object);
+        console.log(malicious);
         if (err) return cb(false);
         if (malicious) return res.status(431).send("The file probably contains a virus.");
         cb(true);
     });    
 };
 
-exports.addAttachment = function(req, res, dao) {   
-    exports.scanFile(req.files.uploadedFiles.path, res, function(scanned) {
+exports.addAttachment = function(req, res, dao) {
+    var fileBuffer = req.files.uploadedFiles.buffer;
+    exports.scanFile(fileBuffer, res, function(scanned) {
         req.files.uploadedFiles.scanned = scanned;
         auth.checkOwnership(dao, req.body.id, req, function(err, elt) {
             if (err) return res.send(err);
