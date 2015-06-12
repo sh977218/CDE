@@ -39,12 +39,6 @@ public class ScreenShotListener extends TestListenerAdapter {
     
     public void onTestSuccess(ITestResult itr) {
         String methodName = itr.getName();
-        try {
-            FileUtils.writeStringToFile(new File("build/testlogs/" + methodName + "_" + formater.format(calendar.getTime()) + ".txt"),
-                    "mongo: " + new String(mongoStr) + "\nES: " + new String(esStr));
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
         saveLogs(methodName);
     }
     
