@@ -278,6 +278,7 @@ angular.module('systemModule').config(function (localStorageServiceProvider) {
 angular.module('systemModule').run( function($rootScope, $location) {
     var timeout;
     $rootScope.$on("$routeChangeSuccess", function(event, next, current) {
+        if (!submitWebtrends) return;
         clearTimeout(timeout);
         timeout = setTimeout(function(){
             submitWebtrends();
