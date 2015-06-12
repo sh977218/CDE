@@ -13,7 +13,7 @@
 #feedback-note-tmp {
   width: 444px;
   height: auto;
-  min-height: 200px;
+  min-height: 90px;
   padding: 4px;
   font-family: Arial, sans-serif;
   outline: none;
@@ -46,7 +46,7 @@
   font-size: 16px;
   font-weight: normal;
   line-height: 32px;
-  background: url(../img/icons.png) 0px 0px no-repeat;
+  background: url(icons.png) 0px 0px no-repeat;
 }
 
 .feedback-next-btn {
@@ -100,7 +100,7 @@
   width: 30px;
   height: 30px;
   cursor: pointer;
-  background: url(../img/icons.png) 0px -64px;
+  background: url(icons.png) 0px -64px;
 }
 
 .feedback-wizard-close {
@@ -110,7 +110,7 @@
   width: 30px;
   height: 30px;
   cursor: pointer;
-  background: url(../img/icons.png) 0px -34px;
+  background: url(icons.png) 0px -34px;
   opacity: 0.65;
 }
 
@@ -138,7 +138,7 @@
   bottom: 100px;
   display: none;
   width: 540px;
-  height: 574px;
+  height: 275px;
 }
 
 #feedback-overview {
@@ -283,7 +283,7 @@
   width: 16px;
   height: 16px;
   margin-top: 7px;
-  background: url(../img/icons.png) 0px -94px;
+  background: url(icons.png) 0px -94px;
 }
 
 .feedback-setblackout div {
@@ -291,7 +291,7 @@
   width: 16px;
   height: 16px;
   margin-top: 7px;
-  background: url(../img/icons.png) -16px -94px;
+  background: url(icons.png) -16px -94px;
 }
 
 .feedback-sethighlight:hover,
@@ -357,7 +357,7 @@
 
 #feedback-overview-note {
   width: 314px;
-  height: 200px;
+  height: 90px;
   padding: 4px;
   font-family: Arial, sans-serif;
   outline: none;
@@ -379,7 +379,7 @@
   margin-left: 26px;
   font-size: 14px;
   color: #666;
-  background: url(../img/icons.png) -30px -34px no-repeat;
+  background: url(icons.png) -30px -34px no-repeat;
 }
 
 #feedback-browser-info,

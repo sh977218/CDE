@@ -19,6 +19,7 @@
     "ng-grid": "2.0.14",
     "angular-timeago": "0.1.9",
     "angularjs-camelCase-human": "*",
+    "angular-send-feedback": "1.0.2",
     "html2canvas": "*",
     "ng-file-upload": "3.3.3"
   },
