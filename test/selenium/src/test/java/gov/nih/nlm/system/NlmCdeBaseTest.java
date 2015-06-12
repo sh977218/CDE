@@ -661,6 +661,7 @@ public class NlmCdeBaseTest {
         goHome();
         findElement(By.id("searchSettings")).click();
         findElement(By.id("minStatus-Incomplete")).click();
+        scrollTo(1000);
         findElement(By.id("saveSettings")).click();
         textPresent("Settings saved");
         closeAlert();

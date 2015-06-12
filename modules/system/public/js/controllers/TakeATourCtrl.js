@@ -47,11 +47,6 @@ angular.module('systemModule').controller('TakeATourCtrl', ['$scope', 'TourConte
                 , title: "Preferences"
                 , content: "Personalize your search results. Include more registration statuses or configure how results are shown."
                 , placement: "left"
-            }, {
-                element: ".feedback-btn"
-                , title: "Experiencing issues?"
-                , content: "If you experience technical issues with the website you can report them here."
-                , placement: "left"
             }];
 
     TourContent.stop = function () {
