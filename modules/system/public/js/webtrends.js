@@ -13,7 +13,7 @@ function WebTrends(){
 	this.onsitedoms="nlm.nih.gov";
 	this.downloadtypes="exe,dll,com,zip,pdf,arc,bin,sit,tar,gz,z,arj,rpm,rar,doc,docx,xls,xlsx,ppt,pptx,mpeg,mp3,avi,mp2,hqx,wav,mp4,txt,xml,tif,mpg,m4v,mov,wmv,f4v,magpie,smil,ogg";
 	this.navigationtag="div,table";
-	this.trackevents=true;
+	this.trackevents=false;
 	this.trimoffsiteparams=true;
 	this.enabled=true;
 	this.i18n=false;
