@@ -98,7 +98,7 @@ exports.storeQuery = function(settings, callback) {
     if (settings.searchToken) storedQuery.searchToken = settings.searchToken;
 
     StoredQueryModel.findOneAndUpdate(
-        {date: {$gt: new Date().getTime() - 60000}, searchToken: storedQuery.searchToken},
+        {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
         storedQuery,
         {upsert: true},
         function(err) {
