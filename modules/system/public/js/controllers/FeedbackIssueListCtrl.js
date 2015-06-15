@@ -19,4 +19,6 @@ angular.module('systemModule').controller('FeedbackIssueListCtrl', ['$scope', '$
             , scope: $rootScope
         });
     };
+
+    $scope.gotoPage(1);
 }]);
