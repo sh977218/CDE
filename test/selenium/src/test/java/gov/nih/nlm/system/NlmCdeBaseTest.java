@@ -291,11 +291,13 @@ public class NlmCdeBaseTest {
         findElement(by).click();
     }
 
+
     protected void clickElement(By by) {
         try {
             findElement(by).click();
-        } catch (StaleElementReferenceException e) {
+        } catch (WebDriverException e) {
             hangon(2);
+            scrollTo(1000);
             findElement(by).click();
         }
     }
@@ -507,6 +509,11 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
 
+    public void scrollToEltByCss(String css){
+        String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
+        ((JavascriptExecutor) driver).executeScript(scrollScript, "");
+    }
+
     public void scrollToViewById(String id) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
         WebElement element = driver.findElement(By.id(id));
@@ -667,4 +674,6 @@ public class NlmCdeBaseTest {
         closeAlert();
         goToSearch("cde");
     }
+
+
 }
