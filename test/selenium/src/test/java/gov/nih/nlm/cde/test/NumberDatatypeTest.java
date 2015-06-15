@@ -48,10 +48,6 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         checkInHistory("Permissible Values - Number - Maximum Value", "456", "987");
 
         findElement(By.linkText("Permissible Values")).click();
-
-        //vdTest.checkInvalidEntry("numberMinValue", "ABC");
-        //vdTest.checkInvalidEntry("numberMaxValue", "ABC");
-
     }
 
 }
