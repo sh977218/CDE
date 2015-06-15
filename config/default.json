@@ -129,6 +129,7 @@
   },
   "pmNodeProcess": null,
   "pmRunOnStartup": ["/usr/nlm/cde/apps/kibana/current/bin/kibana"],
+  "multer": {"inMemory": true},
   "occsNonPrimaryReplicas": [
     "130.14.164.22:27017",
     "130.14.164.21:27017"

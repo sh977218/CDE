@@ -51,9 +51,6 @@
       "path": "/cas/serviceValidate",
       "port": 4000
     }
-  },
-  "multer": {
-    "inMemory": true
   }
 }
 

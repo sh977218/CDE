@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -49,3 +50,4 @@ public class Pv2Test extends NlmCdeBaseTest {
         checkInHistory("Permissible Values", "C25594,C48046,C13717", "C25229");
     }
 }
+

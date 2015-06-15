@@ -59,6 +59,8 @@
     "xmlbuilder": "2.6.2",
     "tar-fs": "0.5.2",
     "tar": "2.1.0",
-    "fstream": "1.0.4"
+    "fstream": "1.0.4",
+    "stream-buffers": "2.1.0",
+    "streamifier": "0.1.1"
   }
 }

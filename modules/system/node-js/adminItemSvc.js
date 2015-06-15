@@ -8,6 +8,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , config = require('./parseConfig')
     , logging = require('./logging')
     , email = require('../../system/node-js/email')
+    , streamifier = require('streamifier')
 ;
 
 var commentPendingApprovalText = "This comment is pending approval.";
@@ -23,7 +24,7 @@ exports.save = function(req, res, dao) {
                         && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0
                         && !req.user.siteAdmin) {
                     res.status(403).send("not authorized");
-                } else if (elt.registrationState && elt.registrationState.registationStatus) {
+                } else if (elt.registrationState && elt.registrationState.registrationStatus) {
                     if ((elt.registrationState.registrationStatus !== "Standard" && elt.registrationState.registrationStatus !== " Preferred Standard")
                             && !req.user.siteAdmin)
                         {
@@ -98,15 +99,7 @@ exports.setAttachmentDefault = function(req, res, dao) {
     });
 };
 
-exports.scanFile = function(fileBuffer, res, cb) {
-    //var stream = fs.createReadStream(path);
-    var streamBuffers = require("stream-buffers");
-    var stream = new streamBuffers.ReadableStreamBuffer({
-        frequency: 10,      // in milliseconds.
-        chunkSize: 2048     // in bytes.
-    });
-    stream.put(fileBuffer);
-
+exports.scanFile = function(stream, res, cb) {
     clamav.createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, function(err, object, malicious) {
         console.log(err);
         console.log(object);
@@ -119,7 +112,8 @@ exports.scanFile = function(fileBuffer, res, cb) {
 
 exports.addAttachment = function(req, res, dao) {
     var fileBuffer = req.files.uploadedFiles.buffer;
-    exports.scanFile(fileBuffer, res, function(scanned) {
+    var stream = streamifier.createReadStream(fileBuffer);
+    exports.scanFile(strean, res, function(scanned) {
         req.files.uploadedFiles.scanned = scanned;
         auth.checkOwnership(dao, req.body.id, req, function(err, elt) {
             if (err) return res.send(err);
@@ -128,7 +122,7 @@ exports.addAttachment = function(req, res, dao) {
                     res.send({message: "You have exceeded your quota"});
                 } else {
                     var file = req.files.uploadedFiles;
-                    file.stream = fs.createReadStream(file.path);
+                    file.stream = stream;
                     md5.async(file.path, function (hash) {
                         file.md5 = hash;
                         mongo_data_system.addAttachment(file, req.user, "some comment", elt, function(attachment, requiresApproval) {
