@@ -51,7 +51,7 @@ angular.module('systemModule').controller('FeedbackBtnCtrl', ['$scope', function
         },
         onClose:                function() {},
         screenshotStroke:       true,
-        highlightElement:       true,
+        highlightElement:       false,
         initialBox:             true
     };
 }]);
