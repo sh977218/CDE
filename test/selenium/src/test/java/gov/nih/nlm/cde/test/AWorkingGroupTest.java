@@ -50,8 +50,8 @@ public class AWorkingGroupTest extends BaseClassificationTest {
         textPresent(classification);
         textPresent(subClassification);
         findElement(By.id("submit")).click();
-        hangon(4);
-        
+        waitForESUpdate();
+
         new CdeRegStatusTest().changeRegistrationStatus("Test CDE for Test Working Group", ctepCurator_username, "Incomplete", "Recorded");
 
         goToCdeByName("Test CDE for Test Working Group", "Recorded");

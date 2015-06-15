@@ -1,7 +1,8 @@
 angular.module('ElasticSearchResource', ['ngResource'])
 .factory('Elastic', function($http, userResource, SearchSettings) {
     return {
-        buildElasticQuerySettings: function(scope){
+        searchToken: "id" + Math.random().toString(16).slice(2)
+        , buildElasticQuerySettings: function(scope){
             return {
                 resultPerPage: scope.resultPerPage
                 , searchTerm: scope.searchForm.ftsearch
@@ -15,6 +16,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , includeAggregations: true
                 , visibleRegStatuses: SearchSettings.getUserDefaultStatuses()
                 , selectedStatuses: scope.registrationStatuses
+                , searchToken: this.searchToken
             };
         }
         , getSelectedElements: function(scope) {
