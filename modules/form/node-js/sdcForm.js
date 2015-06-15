@@ -31,7 +31,7 @@ var doQuestion = function(parent, question) {
                 //li.ele("mfi13:value_meaning").ele("mfi13:label", {}, answer.valueMeaningName);
                 li.ele("sdc:value_meaning_terminology_code", {}, answer.valueMeaningCode);
                 li.ele("sdc:value_meaning_code_name", {}, answer.valueMeaningName);
-                li.ele("sdc:value_meaning_code_system_name", {}, answer.valueMeaningCodeSystem);
+                li.ele("sdc:value_meaning_code_system_name", {}, answer.codeSystemName);
             });
         }
 
