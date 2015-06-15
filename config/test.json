@@ -54,7 +54,7 @@
       "path": "/cas/serviceValidate",
       "port": 4000
     }
-  }
-
+  },
+  "webtrends": false
 }
 

@@ -44,7 +44,6 @@ config.pmRunOnStartup.forEach(function(toRun) {
 
 var initKibana = function() {
     var kibanaData = require('../../deploy/kibana.js').kibana;
-
     console.log("Cleaning Kibana");
     // start by removing everything from each kibana index
     kibanaData.hits.hits.forEach(function(hit) {
