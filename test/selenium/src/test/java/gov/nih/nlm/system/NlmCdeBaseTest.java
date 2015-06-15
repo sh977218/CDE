@@ -19,6 +19,7 @@ import java.lang.System;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -658,7 +659,7 @@ public class NlmCdeBaseTest {
                         + "')]")).click();
     }
 
-    protected void setLowStatusesVisible(){
+    protected void setLowStatusesVisible() {
         goHome();
         findElement(By.id("searchSettings")).click();
         findElement(By.id("minStatus-Incomplete")).click();
@@ -666,5 +667,15 @@ public class NlmCdeBaseTest {
         textPresent("Settings saved");
         closeAlert();
         goToSearch("cde");
+    }
+
+    protected void randomPickClassificationRegistrationStatus() {
+        List<WebElement> classifications = driver.findElements(By.cssSelector("#classificationListHolder a"));
+        int classifications_len = classifications.size();
+        int classification_selected = (int) Math.random() * classifications_len;
+        WebElement classification = classifications.get(classification_selected + 1);
+        String classifTextAbove = classifications.get(classification_selected).getText();
+        String classification_text = classification.getText();
+        classification.click();
     }
 }
