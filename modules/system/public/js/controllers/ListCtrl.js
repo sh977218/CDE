@@ -325,6 +325,8 @@ angular.module('systemModule').controller('ListCtrl',
                 , board: selectedBoard
                 , itemType: $scope.module
             };
+            var resultNum_string = $('#searchResultNum').text().trim();
+            data.query.resultPerPage = parseInt(resultNum_string);
             $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
                 $scope.addAlert("success", "All elements pinned.");
             }).error(function() {
