@@ -17,10 +17,11 @@ public class PinAllTest extends BoardTest {
         hangon(1);
         findElement(By.id("resetSearch")).click();
         randomPickClassification();
+        hangon(1);
         randomPickRegistrationStatus();
         String searchResultNum_string = findElement(By.id("searchResultNum")).getText().trim();
         int searchResultNum_int = Integer.parseInt(searchResultNum_string);
-        hangon(2);
+        hangon(1);
         findElement(By.id("pinAll")).click();
         hangon(1);
         findElement(By.linkText(board_name)).click();
