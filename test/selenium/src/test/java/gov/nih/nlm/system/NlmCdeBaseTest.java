@@ -300,8 +300,8 @@ public class NlmCdeBaseTest {
             findElement(by).click();
         } catch (WebDriverException e) {
             JavascriptExecutor executor = (JavascriptExecutor) driver;
-            Integer value = (Integer) executor.executeScript("return window.scrollY;");
-            scrollTo(value+100);
+            Integer value = (int)(long) executor.executeScript("return window.scrollY;");
+            scrollTo(value + 100);
             findElement(by).click();
         }
     }
