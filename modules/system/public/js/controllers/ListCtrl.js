@@ -339,7 +339,7 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     $scope.showCompareButton = function(elt) {
-        QuickBoard.canAddElt(elt);
+        return QuickBoard.canAddElt(elt);
     };
 
 }]);

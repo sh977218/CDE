@@ -80,8 +80,8 @@ angular.module('resourcesCde', ['ngResource'])
         //elts: [],
         //eltIds: [],
         add: function(elt) {
-            if( elts.length < this.max_elts) {
-                elts[elt.tinyId] = elt;
+            if(this.size() < this.max_elts) {
+                this.elts[elt.tinyId] = elt;
             }
         },
         remove: function(index) {
@@ -91,22 +91,26 @@ angular.module('resourcesCde', ['ngResource'])
             this.elts = {};
         },
         canAddElt: function(elt) {
-            return Object.keys(this.elts).length < this.max_elts &&
+            return this.size() < this.max_elts &&
                 elt !== undefined &&
-                this.elts[elt.tinyId] !== undefined;
+                this.elts[elt.tinyId] === undefined;
         },
-        loadElts: function() {
-            if (this.elts.length > 0) {
-                CdeList.byTinyIdList(this.elts.keys(), function(result) {
+        size: function() {
+            return Object.keys(this.elts).length;
+        },
+        loadElts: function(cb) {
+            if (this.size() > 0) {
+                var qb = this;
+                CdeList.byTinyIdList(Object.keys(this.elts), function(result) {
                     if(result) {
                         result.forEach(function(elt) {
-                            this.elts[elt.tinyId] = elt;
-                        })
-                        $scope.openCloseAll($scope.cdes, "quickboard");
-                        this.elts.keys().forEach(function(key) {
-                            elts[key].usedBy = OrgHelpers.getUsedBy(elts[key], userResource.user);}
+                            qb.elts[elt.tinyId] = elt;
+                        });
+                        Object.keys(qb.elts).forEach(function(key) {
+                            qb.elts[key].usedBy = OrgHelpers.getUsedBy(qb.elts[key], userResource.user);}
                         );
                     }
+                    if (cb) cb();
                 });
             }
         }

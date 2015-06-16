@@ -2,6 +2,8 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
     ['$scope', 'CdeList', 'OrgHelpers', 'userResource', 'QuickBoard',
         function($scope, CdeList, OrgHelpers, userResource, QuickBoard) {
 
+    $scope.cdes = [];
+
     $scope.getQuickBoardElts = function() {
         return QuickBoard.elts;
     };
@@ -14,6 +16,20 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
         QuickBoard.empty();
     };
 
-    QuickBoard.loadElts();
+    $scope.openCloseAll = function(cdes, type) {
+        for (var i = 0; i < cdes.length; i++) {
+            cdes[i].isOpen = $scope.openCloseAllModel[type];
+        }
+    };
+
+
+    QuickBoard.loadElts(function() {
+        // TODO REFAC this. cdeAccordionList excepts something called cdes.
+        $scope.cdes = [];
+        Object.keys(QuickBoard.elts).forEach(function(key) {
+            cdes.push(QuickBoard.elts[key]);
+        });
+        $scope.openCloseAll($scope.cdes, "quickboard");
+    });
 
 }]);
