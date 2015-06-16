@@ -295,8 +295,10 @@ public class NlmCdeBaseTest {
     protected void clickElement(By by) {
         try {
             findElement(by).click();
-        } catch (WebDriverException e) {
+        } catch (StaleElementReferenceException e){
             hangon(2);
+            findElement(by).click();
+        } catch (WebDriverException e) {
             scrollTo(1000);
             findElement(by).click();
         }
