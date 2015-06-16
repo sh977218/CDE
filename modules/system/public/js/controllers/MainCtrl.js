@@ -1,6 +1,8 @@
 angular.module('systemModule').controller('MainCtrl',
-    ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory', '$interval', '$window', 'screenSize', 'OrgHelpers',
-        function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers) {
+    ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory', '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard',
+        function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers, QuickBoard) {
+
+    $scope.quickBoard = QuickBoard;
 
     // Global variables
     var GLOBALS = {

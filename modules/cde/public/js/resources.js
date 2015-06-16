@@ -73,4 +73,43 @@ angular.module('resourcesCde', ['ngResource'])
         }
     };
 }])
+.factory("QuickBoard", function(CdeList, OrgHelpers, userResource) {
+    return {
+        max_elts: 10,
+        elts: {},
+        //elts: [],
+        //eltIds: [],
+        add: function(elt) {
+            if( elts.length < this.max_elts) {
+                elts[elt.tinyId] = elt;
+            }
+        },
+        remove: function(index) {
+            elts.splice(index, 1);
+        },
+        empty: function() {
+            this.elts = {};
+        },
+        canAddElt: function(elt) {
+            return Object.keys(this.elts).length < this.max_elts &&
+                elt !== undefined &&
+                this.elts[elt.tinyId] !== undefined;
+        },
+        loadElts: function() {
+            if (this.elts.length > 0) {
+                CdeList.byTinyIdList(this.elts.keys(), function(result) {
+                    if(result) {
+                        result.forEach(function(elt) {
+                            this.elts[elt.tinyId] = elt;
+                        })
+                        $scope.openCloseAll($scope.cdes, "quickboard");
+                        this.elts.keys().forEach(function(key) {
+                            elts[key].usedBy = OrgHelpers.getUsedBy(elts[key], userResource.user);}
+                        );
+                    }
+                });
+            }
+        }
+    }
+});
 ;    
