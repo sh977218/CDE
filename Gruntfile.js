@@ -420,7 +420,9 @@ module.exports = function(grunt) {
                     'js/bootstrap.js': 'bootstrap/dist/js/bootstrap.js',
                     'js/camelCaseToHuman.js': 'angularjs-camelCase-human/camelCaseToHuman.js',
                     'js/ui-bootstrap-tpls.js': 'angular-ui-bootstrap-bower/ui-bootstrap-tpls.js',
-                    'js/ng-grid.js': 'ng-grid/build/ng-grid.js'
+                    'js/ng-grid.js': 'ng-grid/build/ng-grid.js',
+                    'js/feedback.js': 'angular-send-feedback/dist/angular-send-feedback.js',
+                    'js/html2canvas.js': 'html2canvas/build/html2canvas.js'
                 }
             },
             map: {
@@ -451,7 +453,9 @@ module.exports = function(grunt) {
                     'css/select2.png': 'select2/select2.png',
                     'css/selectize.default.css': 'selectize/dist/css/selectize.default.css',
                     'css/textAngular.css': 'textAngular/src/textAngular.css',
-                    'css/bootstrap-tour.min.css': 'bootstrap-tour/build/css/bootstrap-tour.min.css'
+                    'css/bootstrap-tour.min.css': 'bootstrap-tour/build/css/bootstrap-tour.min.css',
+                    'css/feedback.css': 'angular-send-feedback/dist/angular-send-feedback.css',
+                    'css/icons.png': 'angular-send-feedback/dist/icons.png'
                 }
             },
             bootstrapFont: {

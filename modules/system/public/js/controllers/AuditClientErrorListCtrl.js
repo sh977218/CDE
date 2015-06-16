@@ -2,5 +2,6 @@ angular.module('systemModule').controller('AuditClientErrorListCtrl', ['$scope',
     $scope.api = "/getClientErrors"; 
     $scope.errorType = "client";
     $scope.fields = ["Date", "Name", "Message", "Stack"];
-    $controller('AuditErrorListCtrl', {$scope: $scope}); 
+    $controller('AuditErrorListCtrl', {$scope: $scope});
+    $scope.gotoPage(1);
 }]);

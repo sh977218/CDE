@@ -4,6 +4,6 @@ angular.module('systemModule').controller('ClassificationAuditLogCtrl', ['$scope
 
     $scope.gotoPageLocal = function(page){
         $scope.gotoPage(page);
-
     };
+    $scope.gotoPage(1);
 }]);
