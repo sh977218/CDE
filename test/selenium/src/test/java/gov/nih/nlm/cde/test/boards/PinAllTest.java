@@ -8,13 +8,11 @@ public class PinAllTest extends BoardTest {
 
     @Test
     public void pinAll() {
-        String board_name = "Cerebral Palsy > Public Review";
-        String board_description = "CDEs to be use for Cerebral Palsy";
+        String board_name = "Pin All Test Board";
+        String board_description = "This board is only for pin all test.";
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         createBoard(board_name, board_description);
-        gotoMyBoards();
-        String num_cde_before_pinAll_string = findElement(By.id("dd_numb_0")).getText();
-        int num_cde_before_pinAll_int = Integer.parseInt(num_cde_before_pinAll_string);
+        int num_cde_before_pinAll_int = 0;
         goToCdeSearch();
         hangon(1);
         findElement(By.id("resetSearch")).click();
