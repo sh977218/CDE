@@ -119,7 +119,7 @@ exports.pVCodeSystemList = [];
 
 exports.fetchPVCodeSystemList = function() {
     var elastic = this;
-    this.DataElementDistinct("valueDomain.permissibleValues.valueMeaningCodeSystem", function(result) {
+    this.DataElementDistinct("valueDomain.permissibleValues.codeSystemName", function(result) {
         elastic.pVCodeSystemList = result;
     });
 };

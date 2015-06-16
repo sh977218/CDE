@@ -89,7 +89,6 @@ public abstract class RegStatusTest extends CommonTest {
         textPresent("Standard elements cannot be edited by their stewards");
         findElement(By.id("saveRegStatus")).click();        
         closeAlert();
-        waitForESUpdate();
         goToEltByName(eltName);
         textPresent("Standard");
     }

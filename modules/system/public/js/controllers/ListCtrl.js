@@ -201,7 +201,7 @@ angular.module('systemModule').controller('ListCtrl',
 
     // Create string representation of what status filters are selected
     $scope.getSelectedStatuses = function() {
-        if (!$scope.registrationStatuses) return;
+        if (!$scope.registrationStatuses) return [];
         var selectedRegStatuses = $scope.registrationStatuses.filter(function(s){
             if(s.selected) return true;
         });
