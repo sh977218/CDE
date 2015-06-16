@@ -293,11 +293,17 @@ public class NlmCdeBaseTest {
         findElement(by).click();
     }
 
+
     protected void clickElement(By by) {
         try {
             findElement(by).click();
-        } catch (StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException e){
             hangon(2);
+            findElement(by).click();
+        } catch (WebDriverException e) {
+            JavascriptExecutor executor = (JavascriptExecutor) driver;
+            Integer value = (int)(long) executor.executeScript("return window.scrollY;");
+            scrollTo(value + 100);
             findElement(by).click();
         }
     }
@@ -509,6 +515,11 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
 
+    public void scrollToEltByCss(String css){
+        String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
+        ((JavascriptExecutor) driver).executeScript(scrollScript, "");
+    }
+
     public void scrollToViewById(String id) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
         WebElement element = driver.findElement(By.id(id));
@@ -663,6 +674,7 @@ public class NlmCdeBaseTest {
         goHome();
         findElement(By.id("searchSettings")).click();
         findElement(By.id("minStatus-Incomplete")).click();
+        scrollTo(1000);
         findElement(By.id("saveSettings")).click();
         textPresent("Settings saved");
         closeAlert();
@@ -678,4 +690,5 @@ public class NlmCdeBaseTest {
         String classification_text = classification.getText();
         classification.click();
     }
+
 }

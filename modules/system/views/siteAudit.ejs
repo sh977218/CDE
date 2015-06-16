@@ -6,6 +6,27 @@
         <div tab heading="{{tabs[1].title}}" active="tabs[1].active">
             <%- include dailyUsage.ejs %>
         </div>
+
+        <% for (module in config.modules) { if (!config.modules[module].audit) continue; %>
+            <div tab heading="{{tabs[4].title}}">
+                <div class="table" ng-controller="AuditLogCtrl">
+                    <div ng-include="'/system/public/html/auditLog.html'" ng-init="module='<%= module %>'"></div>
+                </div>
+            </div>
+        <% } %>
+
+        <div tab heading="{{tabs[5].title}}">
+            <div class="table" ng-controller="ClassificationAuditLogCtrl" id="ClassificationAudit">
+                <div ng-include="'/system/public/html/classificationAuditLog.html'"></div>
+            </div>
+        </div>
+
+        <div tab heading="{{tabs[6].title}}">
+            <div class="table" ng-controller="FeedbackIssueListCtrl" id="FeedbackIssueList">
+                <div ng-include="'/system/public/html/errorList.html'"></div>
+            </div>
+        </div>
+
         <div tab heading="{{tabs[2].title}}" active="tabs[2].active">
             <div class="table" ng-controller="AuditServerErrorListCtrl">
                 <div ng-include="'/system/public/html/errorList.html'"></div>
@@ -17,18 +38,5 @@
             </div>
         </div>
 
-        <% for (module in config.modules) { if (!config.modules[module].audit) continue; %>
-            <div tab heading="CDE Audit Log">
-                <div class="table" ng-controller="AuditLogCtrl">
-                    <div ng-include="'/system/public/html/auditLog.html'" ng-init="module='<%= module %>'"></div>
-                </div>
-            </div>
-        <% } %>
-
-        <div tab heading="Classification Audit Log">
-            <div class="table" ng-controller="ClassificationAuditLogCtrl" id="ClassificationAudit">
-                <div ng-include="'/system/public/html/classificationAuditLog.html'"></div>
-            </div>
-        </div>
     </div>
 </div>

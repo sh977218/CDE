@@ -24,6 +24,7 @@
         <!-- endbuild -->
 
         <link rel='stylesheet' href='/cde/public/assets/css/textAngular.css'>
+        <link href="/cde/public/assets/css/feedback.css" rel='stylesheet'>
 
         <!-- build:js /cde/public/assets/js/resource.concat.min.js -->
         <script src="/cde/public/assets/js/jquery.min.js"></script>
@@ -221,5 +222,10 @@
 
         <script src="/article/public/js/articleConfig.js"></script>
 
+        <script src="/cde/public/assets/js/feedback.js"></script>
+
+        <span ng-controller="FeedbackBtnCtrl">
+            <angular-feedback options="feedbackOptions"></angular-feedback>
+        </span>
     </body>
 </html>
