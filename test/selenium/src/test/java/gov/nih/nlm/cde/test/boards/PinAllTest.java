@@ -8,29 +8,26 @@ public class PinAllTest extends BoardTest {
 
     @Test
     public void pinAll() {
-        mustBeLoggedInAs(ninds_username, password);
+        String board_name = "Pin All Test Board";
+        String board_description = "This board is only for pin all test.";
+        mustBeLoggedInAs(pinAllBoardUser_username, password);
+        createBoard(board_name, board_description);
+        int num_cde_before_pinAll_int = 0;
         goToCdeSearch();
-        createBoard("Cerebral Palsy > Public Review", "CDEs to be use for Cerebral Palsy");
-        goToCdeSearch();
-        findElement(By.id("classifications-text-NINDS")).click();
-        findElement(By.id("li-blank-Disease")).click();
-        findElement(By.id("li-blank-General (For all diseases)")).click();
-        findElement(By.id("li-blank-Classification")).click();
-        findElement(By.id("li-blank-Core")).click();
+        hangon(1);
+        findElement(By.id("resetSearch")).click();
+        randomPickClassification();
+        randomPickRegistrationStatus();
+        String searchResultNum_string = findElement(By.id("searchResultNum")).getText().trim();
+        int searchResultNum_int = Integer.parseInt(searchResultNum_string);
         hangon(2);
-        int expectedSize = driver.findElements(By.cssSelector(".accordion-toggle")).size();
         findElement(By.id("pinAll")).click();
-        findElement(By.linkText("Cerebral Palsy > Public Review")).click();
-        modalGone();
+        hangon(1);
+        findElement(By.linkText(board_name)).click();
+        hangon(1);
         gotoMyBoards();
-        findElement(By.xpath("//a[../dl/dd/div/div/span[contains(text(),'CDEs to be use for Cerebral Palsy')]]")).click();
-        Assert.assertEquals(driver.findElements(By.xpath("//h4[@class=\"panel-title\"]")).size(), expectedSize);
-        textPresent("Birth date");
-        textPresent("Race USA category");
-        textPresent("Ethnicity USA category");
-        textPresent("Medical history condition text");
-        textPresent("Medical history condition SNOMED CT code");
-        textPresent("Gender Type");
+        String num_cde_after_pinAll_string = findElement(By.id("dd_numb_0")).getText();
+        int num_cde_after_pinAll_int = Integer.parseInt(num_cde_after_pinAll_string);
+        Assert.assertEquals(num_cde_before_pinAll_int + searchResultNum_int, num_cde_after_pinAll_int);
     }
-
 }

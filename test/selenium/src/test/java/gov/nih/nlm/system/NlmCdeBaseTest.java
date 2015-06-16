@@ -19,6 +19,7 @@ import java.lang.System;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -69,6 +70,7 @@ public class NlmCdeBaseTest {
     protected static String attachmentReviewer_username = "attachmentReviewer";
     protected static String ctep_fileCurator_username = "ctep_fileCurator";
     protected static String tableViewUser_username = "tableViewUser";
+    protected static String pinAllBoardUser_username = "pinAllBoardUser";
 
     protected static String password = "pass";
 
@@ -295,7 +297,7 @@ public class NlmCdeBaseTest {
     protected void clickElement(By by) {
         try {
             findElement(by).click();
-        } catch (StaleElementReferenceException e){
+        } catch (StaleElementReferenceException e) {
             hangon(2);
             findElement(by).click();
         } catch (WebDriverException e) {
@@ -511,7 +513,7 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
 
-    public void scrollToEltByCss(String css){
+    public void scrollToEltByCss(String css) {
         String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
         ((JavascriptExecutor) driver).executeScript(scrollScript, "");
     }
@@ -666,7 +668,7 @@ public class NlmCdeBaseTest {
                         + "')]")).click();
     }
 
-    protected void setLowStatusesVisible(){
+    protected void setLowStatusesVisible() {
         goHome();
         findElement(By.id("searchSettings")).click();
         findElement(By.id("minStatus-Incomplete")).click();
@@ -677,5 +679,24 @@ public class NlmCdeBaseTest {
         goToSearch("cde");
     }
 
+    protected void randomPickClassification() {
+        List<WebElement> classifications = driver.findElements(By.cssSelector("#classificationListHolder a"));
+        int classifications_len = classifications.size();
+        int classification_selected = (int) Math.random() * classifications_len;
+        System.out.println("classification_selected:" + classification_selected);
+        WebElement classification = classifications.get(classification_selected + 1);
+        String classification_text = classification.getText();
+        classification.click();
+    }
 
+    protected void randomPickRegistrationStatus() {
+        List<WebElement> registrationStatuses = driver.findElements(By.cssSelector("#registrationStatusListHolder a"));
+        int registrationStatuses_len = registrationStatuses.size();
+        int registrationStatus_selected = (int) Math.random() * registrationStatuses_len;
+        System.out.println("registrationStatus_selected:" + registrationStatus_selected);
+        WebElement registrationStatus = registrationStatuses.get(registrationStatus_selected + 1);
+        String registrationStatus_text = registrationStatus.getText();
+        registrationStatus.click();
+
+    }
 }
