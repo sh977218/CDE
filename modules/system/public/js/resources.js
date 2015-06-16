@@ -132,6 +132,29 @@ angular.module('resourcesSystem', ['ngResource'])
                 return str;
             }            
         };
-    })  
+    })
+    .factory("QuickBoard", function() {
+        return {
+            max_elts: 10,
+            elts: {},
+            add: function(elt) {
+                if( elts.length < this.max_elts) {
+                    elts[tinyId] = elt;
+                }
+            },
+            remove: function(index) {
+                elts.splice(index, 1);
+            },
+            empty: function() {
+                this.elts = [];
+            },
+            canAddElt: function(elt) {
+                return elts.length < this.max_elts &&
+                    elt !== undefined &&
+                    $scope.quickBoard.indexOf(cde.tinyId) < 0;
+
+            }
+        }
+    });
 
 ;    

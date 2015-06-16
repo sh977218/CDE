@@ -1,9 +1,10 @@
-angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory', '$interval', '$window', 'screenSize', 'OrgHelpers', function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers) {
+angular.module('systemModule').controller('MainCtrl',
+    ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory', '$interval', '$window', 'screenSize', 'OrgHelpers',
+        function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers) {
 
     // Global variables
     var GLOBALS = {
-        max_quickboard_cdes : 10
-        , getOrgsInterval : 1000 * 60 * 10 * 1 // 10 min
+        getOrgsInterval : 1000 * 60 * 10 // 10 min
     };
     
     $scope.resultPerPage = 20;
@@ -74,18 +75,6 @@ angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'user
     $scope.isDocumentationEditor = function() {
         return exports.hasRole(userResource.user, "DocumentationEditor");
     };
-    
-    // quickBoard contains an array of CDE IDs
-    $scope.quickBoard = [];
-    $scope.addToQuickBoard = function(cdeId) {
-        if( $scope.quickBoard.length < GLOBALS.max_quickboard_cdes ) {
-            $scope.quickBoard.push(cdeId.tinyId);
-        }
-    };
-    
-    $scope.emptyQuickBoard = function() {
-        $scope.quickBoard = [];
-    };
            
     $scope.openPinModal = function (cde) {
         var modalInstance = $modal.open({
@@ -110,12 +99,6 @@ angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'user
             });
         }, function () {
         });
-    };
-        
-    $scope.showCompareButton = function(cde) {
-        return $scope.quickBoard.length < GLOBALS.max_quickboard_cdes &&
-               cde !== undefined &&
-               $scope.quickBoard.indexOf(cde.tinyId) < 0;
     };
 
     $scope.isPageActive = function (viewLocation) { 

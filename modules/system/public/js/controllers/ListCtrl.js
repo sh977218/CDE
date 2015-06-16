@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('ListCtrl',
-    ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', 'SearchSettings',
-        function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource, SearchSettings) {
+    ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', 'SearchSettings', 'QuickBoard',
+        function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource, SearchSettings, QuickBoard) {
     $scope.filterMode = true;
 
     $scope.focusClassification = function(){
@@ -332,6 +332,14 @@ angular.module('systemModule').controller('ListCtrl',
             });
         }, function () {
         });
+    };
+
+    $scope.addToQuickBoard = function(elt) {
+        QuickBoard.add(elt);
+    };
+
+    $scope.showCompareButton = function(elt) {
+        QuickBoard.canAddElt(elt);
     };
 
 }]);
