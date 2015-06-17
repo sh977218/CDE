@@ -16,6 +16,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
     
     $scope.emptyQuickBoard = function() {
         QuickBoard.empty();
+        $scope.cdes = [];
     };
 
     $scope.openCloseAll = function(cdes, type) {
@@ -25,7 +26,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
     };
 
     QuickBoard.loadElts(function() {
-        // TODO REFAC this. cdeAccordionList excepts something called cdes.
+        // TODO REFAC this. cdeAccordionList expects something called cdes.
         $scope.cdes = [];
         Object.keys(QuickBoard.elts).forEach(function(key) {
             $scope.cdes.push(QuickBoard.elts[key]);

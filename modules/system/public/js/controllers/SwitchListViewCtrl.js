@@ -1,4 +1,5 @@
-angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings', function($scope, OrgHelpers, SearchSettings) {
+angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings',
+    function($scope, OrgHelpers, SearchSettings) {
 
     $scope.maxLines = 5;
     $scope.lineLength = 50;
@@ -16,7 +17,7 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
     };
 
     $scope.showSideBySideView = function() {
-        if ($scope.quickBoard.length !== 2) {
+        if ($scope.quickBoard.size() !== 2) {
             $scope.addAlert("danger", "You may only compare 2 CDEs side by side.");
         } else {
             $scope.listViewType = "sideBySide";

@@ -1,10 +1,8 @@
-<div ng-cloak class="container-fluid" ng-controller="SwitchListViewCtrl">
+<div ng-cloak class="container-fluid mt20" ng-controller="SwitchListViewCtrl">
     <div ng-if="cdes.length > 0">
-        <br/>
-
         <div class="btn-group">
             <span ng-include="'/template/system/switchListViewControls'"></span>
-            <button id="qb.compare" ng-disabled="listViewType==='sideBySide'" value="Side by Side View"
+            <button id="qb.compare" ng-disabled="listViewType === 'sideBySide'" value="Side by Side View"
                     ng-click="showSideBySideView()" class="btn btn-default">
                 <i class="fa fa-search"></i> Side by Side View
             </button>
@@ -15,7 +13,7 @@
                 <span ng-hide="openCloseAllModel.quickboard"><i class="fa fa-expand"></i> Expand All</span>
                 <span ng-show="openCloseAllModel.quickboard"><i class="fa fa-compress"></i> Collapse All</span>
             </button>
-            <button id="qb.empty" value="Empty Quick Board" ng-click="emptyQuickBoardAndScreen()"
+            <button id="qb.empty" value="Empty Quick Board" ng-click="emptyQuickBoard()"
                     class="btn btn-default">
                 <i class="fa fa-trash-o"></i> Empty Quick Board
             </button>
@@ -35,8 +33,8 @@
             <a href="/#/cde/search">Go to the search page and get started.</a></p>
     </div>
 
-    <div ng-if="cdes.length>0">
-        <span ng-if="listViewType!=='sideBySide'" ng-include="'/template/system/switchListViewContent.ejs'"
+    <div ng-if="cdes.length > 0">
+        <span ng-if="listViewType !== 'sideBySide'" ng-include="'/template/system/switchListViewContent.ejs'"
               ng-init="module='cde'; ejsPage='quickboard'"></span>
 
         <div ng-if="listViewType==='sideBySide'">
