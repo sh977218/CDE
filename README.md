@@ -154,4 +154,4 @@ $> node app
 ```
 
 ### How to create two mongo instances and enable authentication
-(./MongoDbMutipleInstances.md)
+[click](./MongoDbMutipleInstances.md)
