@@ -686,7 +686,6 @@ public class NlmCdeBaseTest {
         int classifications_len = classifications.size();
         int classification_selected = randInt(1, classifications_len);
         WebElement classification = classifications.get(classification_selected - 1);
-        String classification_text = classification.getText();
         classification.click();
     }
 
@@ -695,7 +694,7 @@ public class NlmCdeBaseTest {
         int registrationStatuses_len = registrationStatuses.size();
         int registrationStatus_selected = randInt(1, registrationStatuses_len);
         WebElement registrationStatus = registrationStatuses.get(registrationStatus_selected - 1);
-        String registrationStatus_text = registrationStatus.getText();
+        System.out.println("registrationStatus_selected:" + registrationStatus_selected);
         registrationStatus.click();
     }
 

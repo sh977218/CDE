@@ -17,6 +17,7 @@ public class PinAllTest extends BoardTest {
         hangon(1);
         findElement(By.id("resetSearch")).click();
         randomPickClassification();
+        hangon(1);
         randomPickRegistrationStatus();
         hangon(1);
         String searchResultNum_string = findElement(By.id("searchResultNum")).getText().trim();
