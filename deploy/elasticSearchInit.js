@@ -100,7 +100,7 @@ exports.createRiverJson = {
     "mongodb": {
         "servers": config.database.servers,
         "credentials": [
-            {"db": "admin", "user": config.database.username, "password": config.database.password}
+            {"db": "admin", "user": config.database.dbUser, "password": config.database.dbPassword}
         ],
         "db": config.database.dbname,
         "collection": "dataelements",
@@ -148,7 +148,7 @@ exports.createFormRiverJson = {
     , "mongodb": {
         "servers": config.database.servers
         , "credentials": [
-            {"db": "admin", "user": config.database.username, "password": config.database.password}
+            {"db": "admin", "user": config.database.dbUser, "password": config.database.dbPassword}
         ]
         , "db": config.database.dbname
         , "collection": "forms"
@@ -183,6 +183,9 @@ exports.createStoredQueryRiverJson = {
     "type": "mongodb"
     , "mongodb": {
         "servers": config.database.servers
+        , "credentials": [
+            {"db": "admin", "user": config.database.dbUser, "password": config.database.dbPassword}
+        ]
         , "db": config.database.log.dbname
         , "collection": "storedqueries"
         , "script": storedQueryRiverFunction
