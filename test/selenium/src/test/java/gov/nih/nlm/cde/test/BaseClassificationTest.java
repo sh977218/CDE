@@ -71,9 +71,9 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         if(categories.length==1) {
             findElement(By.xpath("//h4[@id='org-" + org + "']/a")).click();
         } else if(categories.length==2){
-            findElement(By.xpath("//span[@id='classification-" + addSelector + "']/../../span/a[@title='Add Child Classification']")).click();
+            clickElement(By.xpath("//span[@id='classification-" + addSelector + "']/../../span/a[@title='Add Child Classification']"));
         } else {
-            findElement(By.xpath("//*[@id='classification-" + addSelector + "']/div/div/span/a[@title='Add Child Classification']")).click();
+            clickElement(By.xpath("//*[@id='classification-" + addSelector + "']/div/div/span/a[@title='Add Child Classification']"));
         }
         findElement(By.id("addNewCatName")).sendKeys(categories[categories.length - 1]);
         findElement(By.id("addNewCatButton")).click();

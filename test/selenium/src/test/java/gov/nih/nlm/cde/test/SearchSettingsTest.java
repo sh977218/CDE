@@ -30,6 +30,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Search Results View");
         findElement(By.id("registrationStatus")).click();
         findElement(By.id("administrativeStatus")).click();
+        scrollTo(1000);
         findElement(By.id("saveSettings")).click();
 
         goToSearch("cde");
