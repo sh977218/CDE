@@ -681,7 +681,7 @@ public class NlmCdeBaseTest {
         goToSearch("cde");
     }
 
-    protected void randomPickClassificationRegistrationStatus() {
+    protected void randomPickClassification() {
         List<WebElement> classifications = driver.findElements(By.cssSelector("#classificationListHolder a"));
         int classifications_len = classifications.size();
         int classification_selected = randInt(1, classifications_len);
@@ -691,7 +691,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void randomPickRegistrationStatus() {
-        List<WebElement> registrationStatuses = driver.findElements(By.cssSelector("#registrationStatusListHolder span"));
+        List<WebElement> registrationStatuses = driver.findElements(By.cssSelector("#registrationStatusListHolder a"));
         int registrationStatuses_len = registrationStatuses.size();
         int registrationStatus_selected = randInt(1, registrationStatuses_len);
         WebElement registrationStatus = registrationStatuses.get(registrationStatus_selected - 1);
