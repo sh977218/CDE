@@ -20,8 +20,8 @@
                    ng-click="unpin(board.pins[$index])">
                     <i class="fa fa-thumb-tack fa-rotate-90 hand-cursor" title="unPin from Board" id="unpin_{{$index}}"
                        role="link"> </i></a>
-                <a href tabindex="0" class="nonLinkAnchor" ng-if="showCompareButton(cde) && cPage!=='forms'"
-                   ng-click="accordionIconAction(cde,'addToQuickBoard',$event)">
+                <a href tabindex="0" class="nonLinkAnchor" ng-if="quickBoard.canAddElt(cde) && cPage!=='forms'"
+                   ng-click="accordionIconAction(cde,'quickBoard.add',$event)">
                     <i class="fa fa-plus hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
                        role="link"></i></a>
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="ejsPage=='quickboard'" ng-click="removeElt($index)">
