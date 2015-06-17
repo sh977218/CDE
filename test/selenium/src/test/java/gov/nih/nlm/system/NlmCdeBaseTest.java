@@ -694,13 +694,10 @@ public class NlmCdeBaseTest {
         int registrationStatuses_len = registrationStatuses.size();
         int registrationStatus_selected = randInt(1, registrationStatuses_len);
         WebElement registrationStatus = registrationStatuses.get(registrationStatus_selected - 1);
-        System.out.println("registrationStatus_selected:" + registrationStatus_selected);
         registrationStatus.click();
     }
 
     private int randInt(int min, int max) {
-        Random rand = new Random();
-        int randomNum = rand.nextInt((max - min) + 1) + min;
-        return randomNum;
+        return new Random().nextInt((max - min) + 1) + min;
     }
 }
