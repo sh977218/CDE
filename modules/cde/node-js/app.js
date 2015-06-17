@@ -394,7 +394,7 @@ exports.init = function(app, daoManager) {
 
     // run every 1 hours
     fetchRemoteData();
-    setInterval(fetchRemoteData, 1000 * 60 * 60 * 1);
+    setInterval(fetchRemoteData, 1000 * 60 * 60);
 
     var parser = new xml2js.Parser();
     app.get('/vsacBridge/:vsacId', function(req, res) {

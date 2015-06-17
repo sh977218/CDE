@@ -73,7 +73,7 @@ angular.module('resourcesCde', ['ngResource'])
         }
     };
 }])
-.factory("QuickBoard", function(CdeList, OrgHelpers, userResource) {
+.factory("QuickBoard", function(CdeList, OrgHelpers, userResource, localStorageService) {
     return {
         max_elts: 10,
         elts: {},
