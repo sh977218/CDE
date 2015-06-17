@@ -6,7 +6,7 @@ var connectionEstablisher = function (uri, type) {
     var opts = {auth: {authdb: "admin"}}
     var conn = mongoose.createConnection(uri, opts);
     this.connect = function (openCb) {
-        console.log("connecting to : " + uri);
+        console.log("connecting to : " + type);
         conn.once('open', function () {
             console.log('MongoDB ' + _type + ' connection open');
             openCb(conn);
