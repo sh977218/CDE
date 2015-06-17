@@ -327,6 +327,7 @@ angular.module('systemModule').controller('ListCtrl',
             };
             $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
                 $scope.addAlert("success", "All elements pinned.");
+                $scope.loadMyBoards();
             }).error(function() {
                 $scope.addAlert("danger", "Not all elements were not pinned!");
             });
