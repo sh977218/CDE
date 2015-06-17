@@ -302,7 +302,7 @@ public class NlmCdeBaseTest {
             findElement(by).click();
         } catch (WebDriverException e) {
             JavascriptExecutor executor = (JavascriptExecutor) driver;
-            Integer value = (int)(long) executor.executeScript("return window.scrollY;");
+            Integer value = (int) (long) executor.executeScript("return window.scrollY;");
             scrollTo(value + 100);
             findElement(by).click();
         }
@@ -681,7 +681,7 @@ public class NlmCdeBaseTest {
         goToSearch("cde");
     }
 
-    protected void randomPickClassification() {
+    protected void randomPickClassificationRegistrationStatus() {
         List<WebElement> classifications = driver.findElements(By.cssSelector("#classificationListHolder a"));
         int classifications_len = classifications.size();
         int classification_selected = randInt(1, classifications_len);
