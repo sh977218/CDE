@@ -99,9 +99,6 @@ exports.setAttachmentDefault = function (req, res, dao) {
 
 exports.scanFile = function (stream, res, cb) {
     clamav.createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, function (err, object, malicious) {
-        console.log("err:" + err);
-        console.log(object);
-        console.log("mal: " + malicious);
         if (err) return cb(false);
         if (malicious) return res.status(431).send("The file probably contains a virus.");
         cb(true);
