@@ -24,7 +24,7 @@
                    ng-click="accordionIconAction(cde,'addToQuickBoard',$event)">
                     <i class="fa fa-plus hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
                        role="link"></i></a>
-                <a href tabindex="0" class="nonLinkAnchor" ng-if="ejsPage=='quickboard'" ng-click="removeElt(index)">
+                <a href tabindex="0" class="nonLinkAnchor" ng-if="ejsPage=='quickboard'" ng-click="removeElt($index)">
                     <i class="glyphicon glyphicon-remove hand-cursor" title="remove" id="remove_{{$index}}"
                        role="link"></i></a>
                 <small tabindex="0" class="matched-by" ng-if="cde.highlight.matchedBy">Matched by: <strong>

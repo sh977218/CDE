@@ -77,15 +77,13 @@ angular.module('resourcesCde', ['ngResource'])
     return {
         max_elts: 10,
         elts: {},
-        //elts: [],
-        //eltIds: [],
         add: function(elt) {
             if(this.size() < this.max_elts) {
                 this.elts[elt.tinyId] = elt;
             }
         },
-        remove: function(index) {
-            elts.splice(index, 1);
+        remove: function(elt) {
+            delete this.elts[elt.tinyId];
         },
         empty: function() {
             this.elts = {};

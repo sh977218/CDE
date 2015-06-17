@@ -1,5 +1,5 @@
 <div ng-cloak class="container-fluid" ng-controller="SwitchListViewCtrl">
-    <div ng-if="quickBoard.length>0">
+    <div ng-if="cdes.length > 0">
         <br/>
 
         <div class="btn-group">
@@ -24,9 +24,9 @@
         <hr/>
     </div>
 
-    <div ng-if="quickBoard.length>0 && cdes.length<1" class="container pt40 pb40 text-center"><h1>
+    <div ng-if="quickBoard.size() > 0 && cdes.length < 1" class="container pt40 pb40 text-center"><h1>
             <i class="fa fa-spinner fa-pulse"></i> Loading...</h1></div>
-    <div ng-if="quickBoard.length<1" class="container">
+    <div ng-if="quickBoard.size() < 1" class="container">
         <br/>
 
         <h3 tabindex="0">The quick board is empty.</h3>
