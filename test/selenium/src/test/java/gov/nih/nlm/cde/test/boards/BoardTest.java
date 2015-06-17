@@ -62,7 +62,7 @@ public class BoardTest extends NlmCdeBaseTest {
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
             if (boardName.equals(name)) {
-                findElement(By.id("removeBoard-" + i)).click();
+                clickElement(By.id("removeBoard-" + i));
                 findElement(By.id("confirmRemove-" + i)).click();
                 textNotPresent(boardName);
                 return;

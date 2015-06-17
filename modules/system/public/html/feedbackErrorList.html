@@ -1,0 +1,15 @@
+<td>{{err.date | date:'MM/dd/yyyy @ h:mma'}}</td>
+<td>{{err.user.username?err.user.username:"Anonymous"}}</td>
+<td>{{err.userMessage}}</td>
+<td>
+    {{err.reportedUrl}}
+</td>
+<td>
+    <a ng-click="showScreenshot(err.screenshot.content)">Show Screenshot</a>
+</td>
+<td>
+    {{err.browser}}
+</td>
+<td>
+    <a ng-click="showRawHtml(err.rawHtml)">Show HTML</a>
+</td>

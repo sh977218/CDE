@@ -54,6 +54,8 @@ var users = [
     , {username: 'tableViewUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []}
     , {username: 'hiIamLongerThanSeventeenCharacters', password: 'pass', orgAdmin: [], orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
     , {username: 'selenium', password: 'pass', orgAdmin: [], orgCurator: ["SeleniumOrg"], quota: 1073741824, viewHistory: []}
+    , {username: 'pinAllBoardUser', password: 'pass', orgAdmin: ["NINDS"], orgCurator: ["NINDS"], quota: 1073741824, viewHistory: []}
+
 ];
 
 users.forEach(function(u) {
