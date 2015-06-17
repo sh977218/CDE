@@ -1,7 +1,8 @@
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule',
                 'OrgFactories','classification', 'ngGrid',
                 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
-                'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate']).
+                'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
+                , 'angular-send-feedback']).
     config(function($routeProvider) {
         $routeProvider.
         when('/', {redirectTo: function(){
@@ -268,10 +269,20 @@ angular.module('systemModule').config(function($provide) {
             }
         };
     }]);
-    
 });
 
 angular.module('systemModule').config(function (localStorageServiceProvider) {
     localStorageServiceProvider
         .setPrefix('nlmcde')
+});
+
+angular.module('systemModule').run( function($rootScope, $location) {
+    var timeout;
+    $rootScope.$on("$routeChangeSuccess", function(event, next, current) {
+        if (!submitWebtrends) return;
+        clearTimeout(timeout);
+        timeout = setTimeout(function(){
+            submitWebtrends();
+        }, 4000);
+    });
 });

@@ -70,7 +70,7 @@ app.set('trust proxy', true);
 
 app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ico')));//TODO: MOVE TO SYSTEM
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false , limit: "5mb"}));
 app.use(bodyParser.json({limit: "16mb"}));
 app.use(methodOverride());
 app.use(cookieParser());
@@ -115,13 +115,14 @@ app.use(function preventSessionCreation(req, res, next) {
         if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".gif") return true;
         return false;
     };
-    if ((req.cookies['connect.sid'] || req.originalUrl === "/login") && !this.isFile(req)) {
+    if ((req.cookies['connect.sid'] || req.originalUrl === "/login" || req.originalUrl === "/csrf") && !this.isFile(req)) {
         expressSettings.store = mongo_data_system.sessionStore;
         var initExpressSession = session(expressSettings);
         initExpressSession(req, res, next);
    } else {
        next();
    }
+
 });
 
 app.use("/cde/public", express.static(path.join(__dirname,'/modules/cde/public')));

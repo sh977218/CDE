@@ -12,9 +12,9 @@ exports.createIndexJson = {
                 , "flatClassifications": {"type": "string", "index": "not_analyzed", "index_name": "flatClassification"}
                 , "classification.stewardOrg.name": {"type": "string", "index": "not_analyzed"}
                 , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
-                , "source": {"type": "string", "index": "not_analyzed"}
-                , "origin": {"type": "string", "index": "not_analyzed"}
-                , "valueDomain.permissibleValues.valueMeaningCodeSystem": {"type": "string", "index": "not_analyzed"}
+                , "source" : { "type" : "string", "index" : "not_analyzed" }
+                , "origin" : { "type" : "string", "index" : "not_analyzed" }
+                , "valueDomain.permissibleValues.codeSystemName": { "type" : "string", "index" : "not_analyzed" }
                 , "properties": {
                     "type": "nested",
                     "include_in_parent": true,

@@ -94,6 +94,11 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 element: "#status_filter",
                 title: "Status",
                 content: "Restrict search to one or more statuses here. "
+            }, {
+                element: ".feedback-btn"
+                , title: "Experiencing issues?"
+                , content: "If you experience technical issues with the website you can report them here."
+                , placement: "left"
             }
         ];
 

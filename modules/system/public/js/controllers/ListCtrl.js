@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('ListCtrl',
-    ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
-        function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource) {
+    ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', 'SearchSettings',
+        function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource, SearchSettings) {
     $scope.filterMode = true;
 
     $scope.focusClassification = function(){
@@ -36,7 +36,9 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.registrationStatuses = $scope.cache.get($scope.getCacheName("registrationStatuses"));
     }
     if (!$scope.registrationStatuses) {
-        $scope.registrationStatuses = JSON.parse(JSON.stringify(regStatusShared.statusList));
+        SearchSettings.getPromise().then(function(){
+            $scope.registrationStatuses = SearchSettings.getUserDefaultStatuses().map(function(a){return {name: a}});
+        });
     }
 
     if ($scope.cache.get($scope.getCacheName("ftsearch"))) {
@@ -199,6 +201,7 @@ angular.module('systemModule').controller('ListCtrl',
 
     // Create string representation of what status filters are selected
     $scope.getSelectedStatuses = function() {
+        if (!$scope.registrationStatuses) return [];
         var selectedRegStatuses = $scope.registrationStatuses.filter(function(s){
             if(s.selected) return true;
         });
@@ -324,6 +327,7 @@ angular.module('systemModule').controller('ListCtrl',
             };
             $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
                 $scope.addAlert("success", "All elements pinned.");
+                $scope.loadMyBoards();
             }).error(function() {
                 $scope.addAlert("danger", "Not all elements were not pinned!");
             });

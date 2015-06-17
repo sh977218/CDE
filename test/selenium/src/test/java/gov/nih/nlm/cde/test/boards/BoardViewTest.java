@@ -9,6 +9,7 @@ public class BoardViewTest extends BoardTest {
     public void showLargeGridView() {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
+        textPresent("Neuritic plaque");
         findElement(By.id("gridView")).click();
         textPresent("NeurtcPlaqBrnRegnScoreAnatcSit");
         textPresent("EEGInterictEpilpNLocOnsDescTxt");
@@ -38,7 +39,7 @@ public class BoardViewTest extends BoardTest {
         closeAlert();
         hangon(1);
         goToBoard(boardName);
-        findElement(By.id("gridView")).click();
+        waitAndClick(By.id("gridView"));
         textPresent("Fluorescence in situ");
         textPresent("Anaplastic Lymp");
         textPresent("ALK Standard Deviation");

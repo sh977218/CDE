@@ -117,6 +117,7 @@
   "expressToStdout": false,
   "logBufferSize": 1000,
   "viewsIncrementThreshold": 3,
+  "webtrends": false,
   "antivirus": {
     "ip": "127.0.0.1",
     "port": 3311
