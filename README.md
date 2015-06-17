@@ -153,5 +153,5 @@ To run the app:
 $> node app
 ```
 
-How to create two mongo instances and enable authentication
-[a relative link](./MongoDbMutipleInstances.md)
+### How to create two mongo instances and enable authentication
+(./MongoDbMutipleInstances.md)
