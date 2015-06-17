@@ -41,7 +41,7 @@ mongo cde-logs-test deploy/logInit.js -u $db_user -p $db_password -authenticatio
 
 mongorestore -d test -c dataelements test/data/cdedump/dataelements.bson -u $db_user -p $db_password -authenticationDatabase admin
 mongorestore -d test -c forms test/data/nindsDump/test/forms.bson -u $db_user -p $db_password -authenticationDatabase admin
-mongoimport --drop -d test -c orgs test/data/cdedump/orgs.bson -u $db_user -p $db_password -authenticationDatabase admin
+mongoimport --drop -d test -c orgs test/data/cdedump/orgs.json -u $db_user -p $db_password -authenticationDatabase admin
 
 mongo test test/createLargeBoard.js -u $db_user -p $db_password -authenticationDatabase admin
 mongo test test/createManyBoards.js -u $db_user -p $db_password -authenticationDatabase admin
