@@ -33,8 +33,7 @@ public class CdeStewardTest extends NlmCdeBaseTest {
     
     @Test
     public void checkStewardOrgDetails() {
-        setLowStatusesVisible();
-
+        mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale", "Candidate");
         hangon(1);
         hoverOverElement(findElement(By.linkText("caBIG")));
