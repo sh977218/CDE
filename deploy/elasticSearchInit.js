@@ -174,6 +174,7 @@ exports.createStoredQueryIndexJson = {
                 , "classifLevel2": {"type": "string", "index": "not_analyzed"}
                 , "classifLevel3": {"type": "string", "index": "not_analyzed"}
                 , "classifLevel4": {"type": "string", "index": "not_analyzed"}
+                , "searchTerm": {"type": "string", "analyzer": "stop"}
             }
         }
     }
