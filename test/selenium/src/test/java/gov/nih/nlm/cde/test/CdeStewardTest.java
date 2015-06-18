@@ -33,7 +33,8 @@ public class CdeStewardTest extends NlmCdeBaseTest {
     
     @Test
     public void checkStewardOrgDetails() {
-        mustBeLoggedInAs(classificationMgtUser_username, password);
+        setLowStatusesVisible();
+
         goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale", "Candidate");
         hangon(1);
         hoverOverElement(findElement(By.linkText("caBIG")));
@@ -49,11 +50,12 @@ public class CdeStewardTest extends NlmCdeBaseTest {
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("CTEP");
         hangon(.5);
         findElement(By.id("elt.stewardOrg.name.ok")).click();
-        Assert.assertTrue(textPresent("CTEP"));
+        textPresent("CTEP");
         newCdeVersion();
 
         goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale", "Candidate");
         Assert.assertEquals("CTEP", findElement(By.id("dd_general_steward")).getText());
+        hangon(1);
         
         hoverOverElement(findElement(By.linkText("CTEP")));
         textPresent("Organization Details");
