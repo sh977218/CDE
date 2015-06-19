@@ -24,12 +24,14 @@
       }
     ],
     "dbname": "test",
+    "dbUser": "siteRootAdmin",
+    "dbPassword": "password",
     "log": {
       "dbname": "cde-logs-test",
       "cappedCollectionSizeMB": 262144000
     },
     "local": {
-      "uri": "mongodb://localhost/local"
+      "dbname": "local"
     }
   },
   "vsac": {

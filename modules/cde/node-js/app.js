@@ -51,11 +51,11 @@ exports.init = function(app, daoManager) {
     });
 
     app.get('/listboards', function(req, res) {
-       boardsvc.boardList(req, res); 
+       boardsvc.boardList(req, res);
     });
-    
+
     app.get('/createcde', appSystem.nocacheMiddleware, function(req, res) {
-       res.render('createcde'); 
+       res.render('createcde');
     });
 
     app.get('/deview', function(req, res) {
@@ -63,7 +63,7 @@ exports.init = function(app, daoManager) {
     });
 
     app.get('/myboards', function(req, res) {
-       res.render("myBoards"); 
+       res.render("myBoards");
     });
 
     app.post('/cdesByTinyIdList', function(req, res) {
@@ -78,7 +78,7 @@ exports.init = function(app, daoManager) {
             res.send(result);
         });
     });
-    
+
     app.get('/priorcdes/:id', function(req, res) {
         cdesvc.priorCdes(req, res);
     });
@@ -99,7 +99,7 @@ exports.init = function(app, daoManager) {
         adminItemSvc.forkRoot(req, res, mongo_data);
     });
 
-    app.get('/dataelement/:id', function(req, res) {  
+    app.get('/dataelement/:id', function(req, res) {
         cdesvc.show(req, function(result) {
             if (!result) res.status(404).send();
             var cde = cdesvc.hideProprietaryPvs(result, req.user);
@@ -131,10 +131,10 @@ exports.init = function(app, daoManager) {
             mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, serveCde);
         }
     });
-    
+
     app.post('/debytinyid/:tinyId/:version?', function(req, res) {
         return cdesvc.save(req, res);
-    });    
+    });
 
     app.post('/dataelement', function (req, res) {
         return cdesvc.save(req, res);
@@ -169,7 +169,7 @@ exports.init = function(app, daoManager) {
     });
 
     app.get('/board', function(req, res) {
-       res.render("boardView"); 
+       res.render("boardView");
     });
 
     app.get('/board/:boardId/:start/:size?', function(req, res) {
@@ -188,7 +188,7 @@ exports.init = function(app, daoManager) {
                     }
                 }
                 var totalItems = board.pins.length;
-                var pins = board.pins.splice(req.params.start, size); 
+                var pins = board.pins.splice(req.params.start, size);
                 board.pins = pins;
                 var idList = [];
                 for (var i = 0; i < pins.length; i++) {
@@ -215,13 +215,13 @@ exports.init = function(app, daoManager) {
                 board.owner = {
                     userId: req.user._id
                     , username: req.user.username
-                };            
+                };
                 if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) return res.status(403).send("You don't have permission to make boards public!");
                 async.parallel([
                     function(callback){
                         mongo_data.newBoard(board, function(err, newBoard) {
                            callback(err, newBoard);
-                        });                        
+                        });
                     },
                     function(callback){
                         mongo_data.nbBoardsByUserId(req.user._id, function(err, nbBoards) {
@@ -238,17 +238,17 @@ exports.init = function(app, daoManager) {
             } else  {
                 mongo_data.boardById(board._id, function(err, b) {
                     if (err) {
-                        logging.errorLogger.error("Cannot find board by id", {origin: "cde.app.board", stack: new Error().stack, request: logging.generateErrorLogRequest(req), details: "board._id "+board._id}); 
+                        logging.errorLogger.error("Cannot find board by id", {origin: "cde.app.board", stack: new Error().stack, request: logging.generateErrorLogRequest(req), details: "board._id "+board._id});
                         return res.status(404).send("Cannot find board.");
-                    }                     
+                    }
                     b.name = board.name;
                     b.description = board.description;
                     b.shareStatus = board.shareStatus;
                     if (checkUnauthorizedPublishing(req.user, b.shareStatus)) return res.status(403).send("You don't have permission to make boards public!");
                     return mongo_data.save(b, function(err) {
-                        if (err) logging.errorLogger.error("Cannot save board", {origin: "cde.app.board", stack: new Error().stack, request: logging.generateErrorLogRequest(req), details: "board._id "+board._id}); 
+                        if (err) logging.errorLogger.error("Cannot save board", {origin: "cde.app.board", stack: new Error().stack, request: logging.generateErrorLogRequest(req), details: "board._id "+board._id});
                         res.send(b);
-                    });                
+                    });
                 });
             }
         } else {
@@ -300,10 +300,10 @@ exports.init = function(app, daoManager) {
             if (err) return res.status(404).send("Cannot retrieve DataElement.");
             if (!dataElement.history || dataElement.history.length < 1) return res.send([]);
             mongo_data.byId(dataElement.history[dataElement.history.length - 1], function (err, priorDe) {
-                var diff = cdesvc.diff(dataElement, priorDe); 
+                var diff = cdesvc.diff(dataElement, priorDe);
                 res.send(diff);
             });
-        });        
+        });
     });
 
     app.post('/elasticSearch/cde', function(req, res) {
@@ -318,7 +318,7 @@ exports.init = function(app, daoManager) {
         classificationNode.moveClassifications(req, function(err, cde) {
            if(!err) res.send(cde);
         });
-    });  
+    });
 
     if (config.modules.cde.attachments) {
         app.post('/attachments/cde/add', multer(config.multer),function(req, res) {
@@ -328,12 +328,12 @@ exports.init = function(app, daoManager) {
         app.post('/attachments/cde/remove', function(req, res) {
             adminItemSvc.removeAttachment(req, res, mongo_data);
         });
-        
+
         app.post('/attachments/cde/setDefault', function(req, res) {
             adminItemSvc.setAttachmentDefault(req, res, mongo_data);
-        });        
+        });
     }
-    
+
     if (config.modules.cde.comments) {
         app.post('/comments/cde/add', function(req, res) {
             adminItemSvc.addComment(req, res, mongo_data);
@@ -363,7 +363,7 @@ exports.init = function(app, daoManager) {
            return res.send({username: req.params.uname, totalSize: space});
        });
     });
-    
+
     app.get('/moreLikeCde/:cdeId', function(req, res) {
         elastic.morelike(req.params.cdeId, function(result) {
             result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
@@ -375,7 +375,7 @@ exports.init = function(app, daoManager) {
        mongo_data.desByConcept(req.body, function(result) {
            result.forEach(adminItemSvc.hideUnapprovedComments);
            res.send(cdesvc.hideProprietaryPvs(result, req.user));
-       }); 
+       });
     });
 
     app.get('/deCount', function(req, res) {
@@ -389,7 +389,7 @@ exports.init = function(app, daoManager) {
             console.log("Got TGT");
         });
 
-        elastic.fetchPVCodeSystemList();   
+        elastic.fetchPVCodeSystemList();
     };
 
     // run every 1 hours
@@ -398,10 +398,10 @@ exports.init = function(app, daoManager) {
 
     var parser = new xml2js.Parser();
     app.get('/vsacBridge/:vsacId', function(req, res) {
-        if (!req.user) { 
+        if (!req.user) {
             res.status(202).send({error: {message: "Please login to see VSAC mapping."}});
         }
-        vsac.getValueSet(req.params.vsacId, function(result) {       
+        vsac.getValueSet(req.params.vsacId, function(result) {
             if (result === 404 || result === 400) {
                 res.status(result);
                 res.end();
@@ -444,36 +444,39 @@ exports.init = function(app, daoManager) {
             res.status(401).send("Not Authorized");
         }
     });
-    
+
     app.get('/sdc/:tinyId/:version', function (req, res) {
        sdc.byTinyIdVersion(req, res);
     });
 
     app.get('/sdc/:id', function (req, res) {
        sdc.byId(req, res);
-    });    
-    
+    });
+
     app.get('/sdcView', function(req, res){
         res.render('sdcView');
-    });    
-    
+    });
+
     app.get('/profile', function(req, res) {
-        res.render("profile", "cde"); 
-    });        
-    
+        res.render("profile", "cde");
+    });
+
     app.get('/status/cde', status.status);
-    
+
     app.post('/pinEntireSearchToBoard', function(req, res) {
         if (req.isAuthenticated()) {
             var query = sharedElastic.buildElasticSearchQuery(req.body.query);
+            if(query.size > config.maxPin){
+                res.send("Maximum number excesses.");
+            }
             sharedElastic.elasticsearch(query, 'cde', function(err, cdes){
                 usersvc.pinAllToBoard(req, cdes.cdes, res);
             });
         } else {
             res.send("Please login first.");
-        }      
+        }
     });
-    
+
     app.get('/cde/properties/keys', function(req, res) {
         adminItemSvc.allPropertiesKeys(req, res, mongo_data);
     });
@@ -494,16 +497,8 @@ exports.init = function(app, daoManager) {
                 res.send(contents);
             }
         });
-    });    
-    app.get('/archivedCdes/:cdeArray', function(req, res) {        
-        mongo_data.archivedCdes(req.params.cdeArray, function(err, resultCdes) {
-            if (err) {
-                logging.errorLogger.error("Error: Cannot find archived cdes", {origin: "cde.app.archivedCdes", stack: new Error().stack}, req); 
-                res.status(500).send("Unexpected Error");
-            } else res.send(resultCdes);
-        });
     });
-    
+
     app.post('/getCdeAuditLog', function(req, res) {
         if(req.isAuthenticated() && req.user.siteAdmin) {
             mongo_data.getCdeAuditLog(req.body, function(err, result) {

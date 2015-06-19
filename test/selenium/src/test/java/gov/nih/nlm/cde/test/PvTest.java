@@ -44,6 +44,12 @@ public class PvTest extends NlmCdeBaseTest {
         findElement(By.linkText("Permissible Values")).click();         
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-edit")).click();
         findElement(By.xpath("//td[@id='pvCodeSystem-0']//input")).sendKeys("SNOMEDCT");
+
+        hangon(1);
+        if (driver.findElements(By.cssSelector("#pvCodeSystem-0 a")).size() > 0) {
+            findElement(By.cssSelector("#pvCodeSystem-0 a")).click();
+        }
+
         findElement(By.cssSelector("#pvCodeSystem-0 .fa-check")).click();
         newCdeVersion();
         

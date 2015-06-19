@@ -114,6 +114,7 @@
   },
   "account": "CDE Account <cdeuser@nlm.nih.gov>",
   "maxLogsPerMinute": 1000,
+  "maxPin":500,
   "expressToStdout": false,
   "logBufferSize": 1000,
   "viewsIncrementThreshold": 3,

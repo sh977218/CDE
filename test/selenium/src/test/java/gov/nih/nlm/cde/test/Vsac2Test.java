@@ -57,7 +57,7 @@ public class Vsac2Test extends NlmCdeBaseTest {
 
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-edit")).click();
         findElement(By.xpath("//td[@id='pvCodeSystem-4']//input")).sendKeys(".1");
-        findElement(By.cssSelector("#pvCodeSystem-4 .fa-check")).click();
+        clickElement(By.cssSelector("#pvCodeSystem-4 .fa-check"));
 
         newCdeVersion("Modified VS Codes");
 
