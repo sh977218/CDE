@@ -325,6 +325,7 @@ angular.module('systemModule').controller('ListCtrl',
                 , board: selectedBoard
                 , itemType: $scope.module
             };
+            data.query.resultPerPage = window.maxPin;
             $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
                 $scope.addAlert("success", "All elements pinned.");
                 $scope.loadMyBoards();
