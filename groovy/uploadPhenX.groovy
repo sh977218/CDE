@@ -116,7 +116,7 @@ doPage = {thisFile ->
     }    
 }
 
-def baseFolder = new File(baseFileDir);
+def baseFolder = new File(w);
 files = baseFolder.listFiles();
 for (def thisFile : files) {
     if (thisFile.canonicalPath.contains("browse.protocoldetails") && !thisFile.canonicalPath.contains("tree=off"))
