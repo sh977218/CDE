@@ -466,6 +466,9 @@ exports.init = function(app, daoManager) {
     app.post('/pinEntireSearchToBoard', function(req, res) {
         if (req.isAuthenticated()) {
             var query = sharedElastic.buildElasticSearchQuery(req.body.query);
+            if(query.size > config.maxPin){
+                res.send("Maximum number excesses.");
+            }
             sharedElastic.elasticsearch(query, 'cde', function(err, cdes){
                 usersvc.pinAllToBoard(req, cdes.cdes, res);
             });
