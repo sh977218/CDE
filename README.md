@@ -152,3 +152,6 @@ To run the app:
 ```sh
 $> node app
 ```
+
+### How to create two mongo instances and enable authentication
+[click](./MongoDbMutipleInstances.md)
