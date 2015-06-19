@@ -62,7 +62,6 @@ public class CdeStewardTest extends NlmCdeBaseTest {
         hoverOverElement(findElement(By.linkText("CTEP")));
         checkTooltipText(by, "Organization Details");
         checkTooltipText(by, "Cancer Therapy Evaluation Program");
-        checkTooltipText(by, "Cancer Biomedical Informatics Grid");
         checkTooltipText(by, "75 Sunshine Street, Blah, Doh 12345");
         checkTooltipText(by, "https://cabig.nci.nih.gov/");
     }
