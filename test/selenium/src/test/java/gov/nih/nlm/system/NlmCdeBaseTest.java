@@ -297,12 +297,12 @@ public class NlmCdeBaseTest {
     protected void clickElement(By by) {
         try {
             findElement(by).click();
-        } catch (StaleElementReferenceException e){
+        } catch (StaleElementReferenceException e) {
             hangon(2);
             findElement(by).click();
         } catch (WebDriverException e) {
             JavascriptExecutor executor = (JavascriptExecutor) driver;
-            Integer value = (int)(long) executor.executeScript("return window.scrollY;");
+            Integer value = (int) (long) executor.executeScript("return window.scrollY;");
             scrollTo(value + 100);
             findElement(by).click();
         }
@@ -515,7 +515,7 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
 
-    public void scrollToEltByCss(String css){
+    public void scrollToEltByCss(String css) {
         String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
         ((JavascriptExecutor) driver).executeScript(scrollScript, "");
     }
@@ -681,14 +681,23 @@ public class NlmCdeBaseTest {
         goToSearch("cde");
     }
 
-    protected void randomPickClassificationRegistrationStatus() {
+    protected void randomPickClassification() {
         List<WebElement> classifications = driver.findElements(By.cssSelector("#classificationListHolder a"));
         int classifications_len = classifications.size();
-        int classification_selected = (int) Math.random() * classifications_len;
-        WebElement classification = classifications.get(classification_selected + 1);
-        String classifTextAbove = classifications.get(classification_selected).getText();
-        String classification_text = classification.getText();
+        int classification_selected = randInt(1, classifications_len);
+        WebElement classification = classifications.get(classification_selected - 1);
         classification.click();
     }
 
+    protected void randomPickRegistrationStatus() {
+        List<WebElement> registrationStatuses = driver.findElements(By.cssSelector("#registrationStatusListHolder a"));
+        int registrationStatuses_len = registrationStatuses.size();
+        int registrationStatus_selected = randInt(1, registrationStatuses_len);
+        WebElement registrationStatus = registrationStatuses.get(registrationStatus_selected - 1);
+        registrationStatus.click();
+    }
+
+    private int randInt(int min, int max) {
+        return new Random().nextInt((max - min) + 1) + min;
+    }
 }
