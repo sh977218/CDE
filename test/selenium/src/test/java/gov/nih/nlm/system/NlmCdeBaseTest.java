@@ -283,6 +283,16 @@ public class NlmCdeBaseTest {
         findElement(By.id("acc_link_0")).click();
     }
 
+    public void checkTooltipText(By by, String text) {
+        try {
+            textPresent(text);
+        } catch (TimeoutException e) {
+            hoverOverElement(findElement(By.id("searchSettings")));
+            hoverOverElement(findElement(by));
+            textPresent(text);
+        }
+    }
+
     protected WebElement findElement(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);

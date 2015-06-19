@@ -13,16 +13,17 @@ public class ExpandAllQuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
 
-        Assert.assertTrue(textPresent("Quick Board ( 2 )"));
+        textPresent("Quick Board ( 2 )");
 
         findElement(By.linkText("Quick Board ( 2 )")).click();
 
         findElement(By.id("qb.openCloseAll")).click();
-        Assert.assertTrue(textPresent("AJCC Based:"));
-        Assert.assertTrue(textPresent("Value used as a Standard Deviation"));
+        textPresent("AJCC Based:");
+        textPresent("Value used as a Standard Deviation");
 
         findElement(By.id("qb.empty")).click();
-        Assert.assertTrue( textPresent( "Quick Board ( empty )" ) );
+        textPresent("Quick Board ( empty )");
+        new QuickBoardTest().emptyQuickBoard();
     }
 
     @Test
@@ -70,6 +71,7 @@ public class ExpandAllQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
+        new QuickBoardTest().emptyQuickBoard();
     }
 
 }

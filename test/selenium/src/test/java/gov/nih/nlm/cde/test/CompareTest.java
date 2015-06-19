@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+import gov.nih.nlm.cde.test.boards.QuickBoardTest;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -12,7 +13,7 @@ public class CompareTest extends NlmCdeBaseTest {
     public void noElementCompareList() {
         goToCdeSearch();
         findElement(By.linkText("Quick Board ( empty )")).click();
-        Assert.assertTrue(textPresent("The quick board is empty."));
+        textPresent("The quick board is empty.");
     }
     
     @Test
@@ -31,6 +32,7 @@ public class CompareTest extends NlmCdeBaseTest {
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
         textNotPresent("VSAC Value Set");
+        new QuickBoardTest().emptyQuickBoard();
     }
     
     @Test
@@ -59,7 +61,8 @@ public class CompareTest extends NlmCdeBaseTest {
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-valid")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-6-valid")));
         textPresent("an observational assessment that is used to measure");        
-        textPresent("pain/discomfort, and anxiety/depression");        
+        textPresent("pain/discomfort, and anxiety/depression");
+        new QuickBoardTest().emptyQuickBoard();
     }
     
 }
