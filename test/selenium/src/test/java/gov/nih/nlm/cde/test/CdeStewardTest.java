@@ -37,13 +37,14 @@ public class CdeStewardTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale", "Candidate");
         hangon(1);
-        hoverOverElement(findElement(By.linkText("caBIG")));
-        checkTooltipText(By.linkText("caBIG"), "Organization Details");
-        checkTooltipText(By.linkText("caBIG"), "Cancer Biomedical Informatics Grid");
-        checkTooltipText(By.linkText("caBIG"), "123 Somewhere On Earth, Abc, Def, 20001");
-        checkTooltipText(By.linkText("caBIG"), "caBig@nih.gov");
-        checkTooltipText(By.linkText("caBIG"), "111-222-3333");
-        checkTooltipText(By.linkText("caBIG"), "https://cabig.nci.nih.gov/");
+        By by = By.linkText("caBIG");
+        hoverOverElement(findElement(by));
+        checkTooltipText(by, "Organization Details");
+        checkTooltipText(by, "Cancer Biomedical Informatics Grid");
+        checkTooltipText(by, "123 Somewhere On Earth, Abc, Def, 20001");
+        checkTooltipText(by, "caBig@nih.gov");
+        checkTooltipText(by, "111-222-3333");
+        checkTooltipText(by, "https://cabig.nci.nih.gov/");
         
         // Changes Steward and save
         findElement(By.id("dd_edit_steward")).click();
@@ -56,13 +57,14 @@ public class CdeStewardTest extends NlmCdeBaseTest {
         goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale", "Candidate");
         Assert.assertEquals("CTEP", findElement(By.id("dd_general_steward")).getText());
         hangon(1);
-        
+
+        by = By.linkText("CTEP");
         hoverOverElement(findElement(By.linkText("CTEP")));
-        checkTooltipText(By.linkText("CTEP"), "Organization Details");
-        checkTooltipText(By.linkText("CTEP"), "Cancer Therapy Evaluation Program");
-        checkTooltipText(By.linkText("CTEP"), "Cancer Biomedical Informatics Grid");
-        checkTooltipText(By.linkText("CTEP"), "75 Sunshine Street, Blah, Doh 12345");
-        checkTooltipText(By.linkText("CTEP"), "https://cabig.nci.nih.gov/");
+        checkTooltipText(by, "Organization Details");
+        checkTooltipText(by, "Cancer Therapy Evaluation Program");
+        checkTooltipText(by, "Cancer Biomedical Informatics Grid");
+        checkTooltipText(by, "75 Sunshine Street, Blah, Doh 12345");
+        checkTooltipText(by, "https://cabig.nci.nih.gov/");
     }
 
     private void checkTooltipText(By by, String text) {
