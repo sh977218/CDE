@@ -1,11 +1,11 @@
 <td>{{err.date | date:'MM/dd/yyyy @ h:mma'}}</td>
 <td>{{err.origin}}</td>
-<td>{{err.stack}}</td>
+<td ng-text-truncate="err.stack" ng-tt-threshold="500"></td>
 <td>
     <span ng-if="err.request.username">User: {{err.request.username}}<br></span>
     <span ng-if="err.request.url">URL:&nbsp;{{err.request.url}}<br></span>
     <span ng-if="err.request.method">Method: {{err.request.method}}<br></span>
     <span ng-if="err.request.params">Params: {{err.request.params}}<br></span>
-    <span ng-if="err.request.body">Body: {{err.request.body}}<br></span>
-    <span ng-if="err.details">Details: {{err.details}}<br></span>
+    <span ng-if="err.request.body"><b>Body: </b><span ng-text-truncate="err.request.body" ng-tt-threshold="500"></span><br></span>
+    <span ng-if="err.details"><b>Details: </b><span ng-text-truncate="err.details" ng-tt-threshold="500"></span><br></span>
 </td>
