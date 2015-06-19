@@ -2,9 +2,7 @@ angular.module('systemModule').controller('ProfileCtrl', ['$scope', 'ViewingHist
     ViewingHistory.getCdes({start: 0}, function(cdes) {
         $scope.cdes = cdes;
     });
-
-    console.log("testing tests recording console.");
-
+    
     $scope.saveProfile = function() {
         $timeout(function() {
             $http.post('/user/me', userResource.user).then(function(res) {
