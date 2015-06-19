@@ -75,18 +75,27 @@ angular.module('resourcesCde', ['ngResource'])
 }])
 .factory("QuickBoard", function(CdeList, OrgHelpers, userResource, localStorageService) {
     return {
+        restoreFromLocalStorage: function() {
+            var res = localStorageService.get("quickBoard");
+            if (!res) res = {};
+            console.log(res);
+            this.elts = res;
+        },
         max_elts: 10,
         elts: {},
         add: function(elt) {
             if(this.size() < this.max_elts) {
                 this.elts[elt.tinyId] = elt;
             }
+            localStorageService.add("quickBoard", this.elts);
         },
         remove: function(elt) {
             delete this.elts[elt.tinyId];
+            localStorageService.add("quickBoard", this.elts);
         },
         empty: function() {
             this.elts = {};
+            localStorageService.add("quickBoard", this.elts);
         },
         canAddElt: function(elt) {
             return this.size() < this.max_elts &&

@@ -3,6 +3,7 @@ angular.module('systemModule').controller('MainCtrl',
         function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers, QuickBoard) {
 
     $scope.quickBoard = QuickBoard;
+    QuickBoard.restoreFromLocalStorage();
 
     // Global variables
     var GLOBALS = {
