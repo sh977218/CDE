@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <script type='text/ng-template' id="mailTemplate">
     <accordion ng-repeat="message in mail[type] | orderBy: 'date' : true" close-others="oneAtATime">
-        
+
         <accordion-group ng-if="message.type === 'MergeRequest'">
             <accordion-heading>
                 {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.typeRequest.destination.object.naming[0].designation}} | {{message.author.name}}
