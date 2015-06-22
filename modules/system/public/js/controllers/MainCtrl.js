@@ -6,8 +6,6 @@ angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'user
         , getOrgsInterval : 1000 * 60 * 10 * 1 // 10 min
     };
 
-    console.log("Here's a log entry");
-
     $scope.resultPerPage = 20;
 
     userResource.getPromise().then(function() {
