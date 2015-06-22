@@ -5,7 +5,7 @@ angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'user
         max_quickboard_cdes : 10
         , getOrgsInterval : 1000 * 60 * 10 * 1 // 10 min
     };
-    
+
     $scope.resultPerPage = 20;
 
     userResource.getPromise().then(function() {
