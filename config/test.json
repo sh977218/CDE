@@ -1,6 +1,6 @@
 {
   "port": 3001,
-  "logBufferSize": 10,
+  "logBufferSize": 2,
   "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana.bat"],
   "viewsIncrementThreshold": 1,
   "elastic": {
@@ -53,7 +53,6 @@
       "path": "/cas/serviceValidate",
       "port": 4000
     }
-  },
-  "webtrends": false
+  }
 }
 

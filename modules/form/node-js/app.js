@@ -25,7 +25,7 @@ exports.init = function(app, daoManager) {
             adminItemSvc.setAttachmentDefault(req, res, mongo_data);
         });
 
-        app.post('/attachments/form/add', multer(), function(req, res) {
+        app.post('/attachments/form/add', multer(config.multer), function(req, res) {
             adminItemSvc.addAttachment(req, res, mongo_data);
         });
 
