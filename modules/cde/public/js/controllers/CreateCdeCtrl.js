@@ -9,7 +9,7 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
     $scope.searchForm = {};
     $scope.classifSubEltPage = '/cde/public/html/classif-elt-createCde.html';
 
-    $scope.elt = { classification: [], stewardOrg: {}}; 
+    $scope.elt = { classification: [], stewardOrg: {}, naming:[{designation: "", definition:""}]};
     
     if (userResource.userOrgs.length === 1) {
         $scope.elt.stewardOrg.name = userResource.userOrgs[0];
@@ -18,24 +18,24 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
     $scope.save = function() {
         $scope.elt.naming = [];
         $scope.elt.naming.push({
-           designation: $scope.elt.designation
-           , definition: $scope.elt.definition
+           designation: $scope.elt.naming[0].designation
+           , definition: $scope.elt.naming[0].definition
            , context: {
                contextName: "Health"
                , acceptability: "preferred"
            }
         });
-        delete $scope.elt.designation;
-        delete $scope.elt.definition;     
+        //delete $scope.elt.designation;
+        //delete $scope.elt.definition;
         DataElement.save($scope.elt, function(cde) {
             $window.location.href = "/#/deview?tinyId=" + cde.tinyId;
         });
     };
     
     $scope.validationErrors = function() {
-        if (!$scope.elt.designation) {
+        if (!$scope.elt.naming[0].designation) {
             return "Please enter a name for the new CDE";
-        } else if (!$scope.elt.definition) {
+        } else if (!$scope.elt.naming[0].definition) {
             return "Please enter a definition for the new CDE";
         } else if (!$scope.elt.stewardOrg.name) {
             return "Please select a steward for the new CDE";
@@ -77,7 +77,7 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
         if (suggestionPromise !== 0) {
             $timeout.cancel(suggestionPromise);
         }
-        if (!$scope.elt.designation || $scope.elt.designation.length < 3) {
+        if (!$scope.elt.naming[0].designation || $scope.elt.naming[0].designation.length < 3) {
             return;
         }
         suggestionPromise = $timeout(function () {
@@ -89,7 +89,7 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
                 , elements: $scope.selectedElementsAlt
             }];
             var settings = Elastic.buildElasticQuerySettings($scope);
-            settings.searchTerm = $scope.elt.designation;
+            settings.searchTerm = $scope.elt.naming[0].designation;
             Elastic.generalSearchQuery(settings, "cde", function(err, result) {
                 if (err) return;
                 $scope.cdes = result.cdes;

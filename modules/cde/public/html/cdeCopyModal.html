@@ -3,6 +3,7 @@
 </div>
 <div class="modal-body">
     <p class="text-info">You are about to create a new CDE by duplicating this one. Please specify a new name and a classification of the CDE.</p>
+    <div ng-include="'/template/cde/createCdeForm'"></div>
 </div>
 <div class="modal-footer">
     <button class="btn btn-success" ng-click="saveCopy()" id="saveCopy">Save</button>

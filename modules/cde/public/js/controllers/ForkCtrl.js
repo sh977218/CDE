@@ -44,7 +44,7 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
             templateUrl: '/cde/public/html/cdeCopyModal.html',
             controller: 'CdeCopyModalCtrl',
             resolve: {
-                userResource: function() {return userResource}
+                elt: function() {return $scope.elt;}
             }
         });
 

@@ -88,7 +88,7 @@ public class AttachmentsTest extends BaseAttachmentTest {
         }
     }
 
-    @Test
+    @Test(dependsOnMethods)
     public void checkOnlyShowingDefaultAttachmentForm() {
         String cdeName = "Pre-Hospital/Emergency Medical Service (EMS) Course";
         mustBeLoggedInAs(ninds_username, password);
