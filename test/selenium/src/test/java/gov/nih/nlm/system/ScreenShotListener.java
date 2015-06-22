@@ -46,7 +46,7 @@ public class ScreenShotListener extends TestListenerAdapter {
         LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER);
         StringBuilder sb = new StringBuilder();
         for (LogEntry entry : logEntries) {
-            if (entry.getMessage().indexOf("Range.detach") < -1)
+            if (entry.getMessage().indexOf("Range.detach") < 0)
                 sb.append(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage() + "\n");
         }
         if (sb.length() > 0) {

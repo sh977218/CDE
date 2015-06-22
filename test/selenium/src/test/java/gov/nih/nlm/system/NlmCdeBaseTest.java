@@ -303,6 +303,15 @@ public class NlmCdeBaseTest {
         findElement(by).click();
     }
 
+    public void checkTooltipText(By by, String text) {
+        try {
+            textPresent(text);
+        } catch (TimeoutException e) {
+            hoverOverElement(findElement(By.id("searchSettings")));
+            hoverOverElement(findElement(by));
+            textPresent(text);
+        }
+    }
 
     protected void clickElement(By by) {
         try {

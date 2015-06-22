@@ -9,7 +9,7 @@ angular.module('systemModule').controller('MainCtrl',
     var GLOBALS = {
         getOrgsInterval : 1000 * 60 * 10 // 10 min
     };
-    
+
     $scope.resultPerPage = 20;
 
     userResource.getPromise().then(function() {
