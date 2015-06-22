@@ -5,6 +5,11 @@
             <fieldset>
                 <legend>Create Data Element</legend>
                 <div ng-include="'/template/cde/createCdeForm'"></div>
+                <hr/>
+                <a href="#/" class="btn btn-warning">Cancel</a>
+                <input id="submit" type="submit" ng-click="save()" class="btn btn-success"
+                       value="Save" ng-disabled="isClean() || createCde.$invalid || validationErrors() !== null">
+                </input>
             </fieldset>
         </form>
     </div>

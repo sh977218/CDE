@@ -9,8 +9,6 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
             $scope.searchForm = {};
             $scope.classifSubEltPage = '/cde/public/html/classif-elt-createCde.html';
 
-            $scope.elt = { classification: [], stewardOrg: {}, naming:[{designation: "", definition:""}]};
-
             if (userResource.userOrgs.length === 1) {
                 $scope.elt.stewardOrg.name = userResource.userOrgs[0];
             }

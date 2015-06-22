@@ -9,7 +9,7 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
     $scope.resultPerPage = 20;
     $scope.searchForm = {};
 
-        //$scope.elt = { classification: [], stewardOrg: {}, naming:[{designation: "", definition:""}]};
+    $scope.elt = { classification: [], stewardOrg: {}, naming:[{designation: "", definition:""}]};
     
     $scope.save = function() {
         //$scope.elt.naming = [];

@@ -29,8 +29,3 @@
 <div ng-show="validationErrors() !== null">
     <i class="fa fa-warning"></i> {{validationErrors()}}
 </div>
-<hr/>
-<a href="#/" class="btn btn-warning">Cancel</a>
-<input id="submit" type="submit" ng-click="save()" class="btn btn-success"
-       value="Save" ng-disabled="isClean() || createCde.$invalid || validationErrors() !== null">
-</input>
