@@ -3,7 +3,12 @@
         <i class="fa fa-exclamation-triangle"></i> This element is not saved. <button class="btn btn-primary" ng-click="openSave(elt, '#/formView?tinyId=')" id="openSave">Save</button></div>
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.archived">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is archived.</div>
-    <div class="alert alert-info mt20" role="alert" ng-show="elt.outdated"><i class="fa fa-exclamation-triangle"></i> <strong>Note: </strong>Some CDEs in this form have newer version. </div> 
+
+    <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.registrationStatus=='Retired'">
+        <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is retired.
+        <span ng-show="elt.registrationState.replacedBy">
+            <a href="#/formView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
+    <div class="alert alert-info mt20" role="alert" ng-show="elt.outdated"><i class="fa fa-exclamation-triangle"></i> <strong>Note: </strong>Some CDEs in this form have newer version. </div>
 
     <h3>{{elt.naming[0].designation}}
         <% if (config.modules.forms.localRender) { %>

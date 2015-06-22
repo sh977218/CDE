@@ -1,4 +1,7 @@
-angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource', function($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource) {
+angular.module('formModule').controller('FormViewCtrl',
+    ['$scope', '$routeParams', '$window', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource',
+        function($scope, $routeParams, $window, Form, isAllowedModel, $modal, BulkClassification, $http, userResource) {
+
     $scope.module = "form";
     $scope.baseLink = '#/formView?tinyId=';
     $scope.addCdeMode = false;
@@ -42,6 +45,9 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
             $scope.elt = form;
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
+        }, function() {
+            $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
+            $window.location.href = "/#/home";
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
