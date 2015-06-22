@@ -9,6 +9,7 @@ public class ReportIssueTest extends NlmCdeBaseTest {
         mustBeLoggedOut();
         goToCdeSearch();
         findElement(By.cssSelector(".feedback-btn")).click();
+        hangon(1);
         findElement(By.id("feedback-note-tmp")).sendKeys("I don't like this website.");
         findElement(By.id("feedback-welcome-next")).click();
         findElement(By.id("feedback-highlighter-next")).click();
