@@ -94,7 +94,8 @@ public class AttachmentsTest extends BaseAttachmentTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(cdeName);
 
-        addAttachment("default.jpg");
+        addAttachment("defaultAttachmentForForm.jpg");
+        reviewAttachment("defaultAttachmentForForm.jpg");
 
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(cdeName);

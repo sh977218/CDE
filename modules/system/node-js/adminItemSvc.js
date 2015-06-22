@@ -109,6 +109,7 @@ exports.addAttachment = function (req, res, dao) {
     var fileBuffer = req.files.uploadedFiles.buffer;
     var stream = streamifier.createReadStream(fileBuffer);
     var streamFS = streamifier.createReadStream(fileBuffer);
+    var streamFS1 = streamifier.createReadStream(fileBuffer);
     exports.scanFile(stream, res, function (scanned) {
         req.files.uploadedFiles.scanned = scanned;
         auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
@@ -118,20 +119,21 @@ exports.addAttachment = function (req, res, dao) {
                     res.send({message: "You have exceeded your quota"});
                 } else {
                     var file = req.files.uploadedFiles;
-                    file.stream = stream;
+                    file.stream = streamFS1;
 
                     //store it to FS here
                     var writeStream = fs.createWriteStream(file.path);
                     streamFS.pipe(writeStream);
-
-                    md5.async(file.path, function (hash) {
-                        file.md5 = hash;
-                        mongo_data_system.addAttachment(file, req.user, "some comment", elt, function (attachment, requiresApproval) {
-                            if (requiresApproval) exports.createApprovalMessage(req.user, "AttachmentReviewer", "AttachmentApproval", attachment);
-                            res.send(elt);
-                        });
+                    streamFS.on('end', function (err) {
+                            md5.async(file.path, function (hash) {
+                                console.log("Hash from md5.async: "+hash);
+                                file.md5 = hash;
+                                mongo_data_system.addAttachment(file, req.user, "some comment", elt, function (attachment, requiresApproval) {
+                                    if (requiresApproval) exports.createApprovalMessage(req.user, "AttachmentReviewer", "AttachmentApproval", attachment);
+                                    res.send(elt);
+                                });
+                            });
                     });
-
                 }
             });
         });
