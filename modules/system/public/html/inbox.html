@@ -1,14 +1,28 @@
 <div class="container-fluid">
     <script type='text/ng-template' id="mailTemplate">
     <accordion ng-repeat="message in mail[type] | orderBy: 'date' : true" close-others="oneAtATime">
-        <accordion-group>
+        
+        <accordion-group ng-if="message.type === 'MergeRequest'">
             <accordion-heading>
-                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} <span ng-if="message.type=='MergeRequest'">| {{message.typeRequest.destination.object.naming[0].designation}}</span> | {{message.author.name}}
+                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.typeRequest.destination.object.naming[0].designation}} | {{message.author.name}}
             </accordion-heading>
-            <div ng-if="message.type=='MergeRequest'" ng-include="'/cde/public/html/mergeRequestMessage.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
-            <div ng-if="message.type=='CommentApproval'" ng-include="'/system/public/html/messages/commentApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
-            <div ng-if="message.type=='AttachmentApproval'" ng-include="'/system/public/html/attachmentApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
+            <div ng-include="'/cde/public/html/mergeRequestMessage.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
         </accordion-group>
+
+        <accordion-group ng-if="message.type === 'CommentApproval'">
+            <accordion-heading>
+                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.author.name}}
+            </accordion-heading>
+            <div ng-include="'/system/public/html/messages/commentApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
+        </accordion-group>
+
+        <accordion-group ng-if="message.type === 'AttachmentApproval'">
+            <accordion-heading>
+                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} ( {{message.typeAttachmentApproval.filename}} ) | {{message.author.name}}
+            </accordion-heading>
+            <div ng-include="'/system/public/html/attachmentApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
+        </accordion-group>
+
     </accordion>
     </script>
     <h4 ng-show='mail[mailTypeReceived].length==0 && mail[mailTypeSent].length==0 && mail[mailTypeArchived].length==0'><center>Your Inbox is empty.</center></h4>

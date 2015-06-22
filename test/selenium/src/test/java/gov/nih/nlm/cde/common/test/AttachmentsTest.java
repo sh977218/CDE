@@ -52,9 +52,10 @@ public class AttachmentsTest extends BaseAttachmentTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Alcohol use frequency");
 
-        addAttachment("painLocationInapr.png");
+        String attachmentName = "painLocationInapr.png";
+        addAttachment(attachmentName);
         checkAttachmentNotReviewed();
-        declineAttachment();
+        declineAttachment(attachmentName);
 
         goToCdeByName(cdeName);
         findElement(By.linkText("Attachments")).click();
