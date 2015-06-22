@@ -7,7 +7,7 @@ public class ViewingHistory extends NlmCdeBaseTest {
 
     private void checkUserHistory(String cdeName) {
         goToCdeByName(cdeName);
-        hangon(2);
+        hangon(4);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         textPresent("User Profile");
@@ -17,13 +17,7 @@ public class ViewingHistory extends NlmCdeBaseTest {
     @Test
     public void viewingHistory() {
         mustBeLoggedInAs(history_username, password);
-        goToCdeByName("Patient Eligibility Ind-2");
-        hangon(4);
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Profile")).click();
-        textPresent("Patient Eligibility Ind-2");
-
-        // now see 10 other CDEs
+        checkUserHistory("Patient Eligibility Ind-2");
         checkUserHistory("Specimen Inflammation Change Type");
         checkUserHistory("Person Mother Onset Menopause Age Value");
         checkUserHistory("Definition Type Definition Type String");

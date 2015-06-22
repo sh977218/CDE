@@ -1,37 +1,37 @@
 var config = require('../modules/system/node-js/parseConfig');
 
 exports.createIndexJson = {
-    "mappings" : {
-        "dataelement" : {
-            "properties" : {
+    "mappings": {
+        "dataelement": {
+            "properties": {
                 "stewardOrg": {
                     "properties": {
-                        "name" : { "type" : "string", "index" : "not_analyzed" }
+                        "name": {"type": "string", "index": "not_analyzed"}
                     }
                 }
-                , "flatClassifications": { "type" : "string", "index" : "not_analyzed", "index_name": "flatClassification"}
-                , "classification.stewardOrg.name": { "type" : "string", "index" : "not_analyzed" }
+                , "flatClassifications": {"type": "string", "index": "not_analyzed", "index_name": "flatClassification"}
+                , "classification.stewardOrg.name": {"type": "string", "index": "not_analyzed"}
                 , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
                 , "source" : { "type" : "string", "index" : "not_analyzed" }
                 , "origin" : { "type" : "string", "index" : "not_analyzed" }
                 , "valueDomain.permissibleValues.codeSystemName": { "type" : "string", "index" : "not_analyzed" }
                 , "properties": {
-                    "type" : "nested",
+                    "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "key" : {"type": "string" },
-                        "value"  : {"type": "string" }
+                        "key": {"type": "string"},
+                        "value": {"type": "string"}
                     }
                 }, "ids": {
-                    "type" : "nested",
+                    "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "source" : {"type": "string" },
-                        "id"  : {"type": "string" },
-                        "version"  : {"type": "string" }
+                        "source": {"type": "string"},
+                        "id": {"type": "string"},
+                        "version": {"type": "string"}
                     }
                 }
-                , "tinyId" : { "type" : "string", "index" : "not_analyzed" }
+                , "tinyId": {"type": "string", "index": "not_analyzed"}
             }
         }
     }
@@ -40,7 +40,7 @@ exports.createIndexJson = {
 var storedQueryRiverFunction =
     "for (var i = 0; i < ctx.document.selectedElements1.length && i < 4; i++) {ctx.document['classifLevel' + i] = ctx.document.selectedElements1[i];}";
 
-var riverFunction = 
+var riverFunction =
     "if (ctx.operation !== 'd') {\
     function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}\
      var flatArray = [];\
@@ -95,78 +95,86 @@ var riverFunction =
     }";
 
 
-exports.createRiverJson = { 
+exports.createRiverJson = {
     "type": "mongodb",
     "mongodb": {
         "servers": config.database.servers,
-        "db": config.database.dbname, 
+        "credentials": [
+            {"db": "admin", "user": config.database.dbUser, "password": config.database.dbPassword}
+        ],
+        "db": config.database.dbname,
         "collection": "dataelements",
         "script": riverFunction
     },
     "index": {
-        "name": config.elastic.index.name, 
-        "type": "dataelement"                  
+        "name": config.elastic.index.name,
+        "type": "dataelement"
     }
 };
 
 exports.createFormIndexJson = {
-    "mappings" : {
-        "form" : {
-            "properties" : {
-                "stewardOrg.name" : { "type" : "string", "index" : "not_analyzed" }
-                , "flatClassifications": { "type" : "string", "index" : "not_analyzed", "index_name": "flatClassification"}
-                , "classification.stewardOrg.name": { "type" : "string", "index" : "not_analyzed" }
+    "mappings": {
+        "form": {
+            "properties": {
+                "stewardOrg.name": {"type": "string", "index": "not_analyzed"}
+                , "flatClassifications": {"type": "string", "index": "not_analyzed", "index_name": "flatClassification"}
+                , "classification.stewardOrg.name": {"type": "string", "index": "not_analyzed"}
                 , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
-                , "source" : { "type" : "string", "index" : "not_analyzed" }
-                , "origin" : { "type" : "string", "index" : "not_analyzed" }
+                , "source": {"type": "string", "index": "not_analyzed"}
+                , "origin": {"type": "string", "index": "not_analyzed"}
                 , "properties": {
-                    "type" : "nested",
+                    "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "key" : {"type": "string" },
-                        "value"  : {"type": "string" }
+                        "key": {"type": "string"},
+                        "value": {"type": "string"}
                     }
                 }, "ids": {
-                    "type" : "nested",
+                    "type": "nested",
                     "include_in_parent": true,
                     "properties": {
-                        "source" : {"type": "string" },
-                        "id"  : {"type": "string" },
-                        "version"  : {"type": "string" }
+                        "source": {"type": "string"},
+                        "id": {"type": "string"},
+                        "version": {"type": "string"}
                     }
-                }            }
+                }
+            }
         }
     }
 };
 
-exports.createFormRiverJson = { 
+exports.createFormRiverJson = {
     "type": "mongodb"
     , "mongodb": {
         "servers": config.database.servers
+        , "credentials": [
+            {"db": "admin", "user": config.database.dbUser, "password": config.database.dbPassword}
+        ]
         , "db": config.database.dbname
         , "collection": "forms"
         , "script": riverFunction
     }
     , "index": {
         "name": config.elastic.formIndex.name
-        , "type": "form"                  
-    }        
+        , "type": "form"
+    }
 };
 
 exports.createStoredQueryIndexJson = {
-    "mappings" : {
-        "storedquery" : {
-            "properties" : {
-                "selectedOrg1" : { "type" : "string", "index" : "not_analyzed" }
-                ,"selectedOrg2" : { "type" : "string", "index" : "not_analyzed" }
-                ,"selectedElements1" : { "type" : "string", "index" : "not_analyzed" }
-                ,"selectedElements2" : { "type" : "string", "index" : "not_analyzed" }
-                ,"regStatuses" : { "type" : "string", "index" : "not_analyzed" }
-                ,"classifLevel0" : { "type" : "string", "index" : "not_analyzed" }
-                ,"classifLevel1" : { "type" : "string", "index" : "not_analyzed" }
-                ,"classifLevel2" : { "type" : "string", "index" : "not_analyzed" }
-                ,"classifLevel3" : { "type" : "string", "index" : "not_analyzed" }
-                ,"classifLevel4" : { "type" : "string", "index" : "not_analyzed" }
+    "mappings": {
+        "storedquery": {
+            "properties": {
+                "selectedOrg1": {"type": "string", "index": "not_analyzed"}
+                , "selectedOrg2": {"type": "string", "index": "not_analyzed"}
+                , "selectedElements1": {"type": "string", "index": "not_analyzed"}
+                , "selectedElements2": {"type": "string", "index": "not_analyzed"}
+                , "regStatuses": {"type": "string", "index": "not_analyzed"}
+                , "classifLevel0": {"type": "string", "index": "not_analyzed"}
+                , "classifLevel1": {"type": "string", "index": "not_analyzed"}
+                , "classifLevel2": {"type": "string", "index": "not_analyzed"}
+                , "classifLevel3": {"type": "string", "index": "not_analyzed"}
+                , "classifLevel4": {"type": "string", "index": "not_analyzed"}
+                , "searchTerm": {"type": "string", "analyzer": "stop"}
             }
         }
     }
@@ -176,6 +184,9 @@ exports.createStoredQueryRiverJson = {
     "type": "mongodb"
     , "mongodb": {
         "servers": config.database.servers
+        , "credentials": [
+            {"db": "admin", "user": config.database.dbUser, "password": config.database.dbPassword}
+        ]
         , "db": config.database.log.dbname
         , "collection": "storedqueries"
         , "script": storedQueryRiverFunction

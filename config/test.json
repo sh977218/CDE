@@ -1,10 +1,8 @@
 {
-
   "port": 3001,
   "logBufferSize": 10,
   "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana.bat"],
   "viewsIncrementThreshold": 1,
-
   "elastic": {
     "uri": "http://localhost:9200",
     "index": {"name": "cdetest"},
@@ -26,15 +24,16 @@
       }
     ],
     "dbname": "test",
+    "dbUser": "siteRootAdmin",
+    "dbPassword": "password",
     "log": {
       "dbname": "cde-logs-test",
       "cappedCollectionSizeMB": 262144000
     },
     "local": {
-      "uri": "mongodb://localhost/local"
+      "dbname": "local"
     }
   },
-
   "vsac": {
     "username": "user",
     "password": "pass",
