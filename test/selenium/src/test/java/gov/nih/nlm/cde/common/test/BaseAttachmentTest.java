@@ -54,7 +54,8 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         findElement(By.linkText(name));
         textPresent("Scanned by ClamAV");
         findElement(By.id("approve-" + name)).click();
-        textPresent("Attachment approved");  
+        textPresent("Attachment approved");
+        closeAlert();
               
     } 
 
@@ -71,6 +72,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
 
         findElement(By.id("decline-" + name)).click();
         textPresent("Attachment declined");
+        closeAlert();
     }
 
     public void setAttachmentDefault() {
