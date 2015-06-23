@@ -77,46 +77,54 @@ angular.module('resourcesCde', ['ngResource'])
     return {
         restoreFromLocalStorage: function() {
             var res = localStorageService.get("quickBoard");
-            if (!res) res = {};
-            console.log(res);
+            if (!res) res = [];
             this.elts = res;
         },
         max_elts: 10,
-        elts: {},
+        elts: [],
+        loading: false,
         add: function(elt) {
-            if(this.size() < this.max_elts) {
-                this.elts[elt.tinyId] = elt;
+            if(this.elts.length < this.max_elts) {
+                this.elts.push(elt);
             }
             localStorageService.add("quickBoard", this.elts);
         },
-        remove: function(elt) {
-            delete this.elts[elt.tinyId];
+        remove: function(index) {
+            this.elts.splice(index, 1);
             localStorageService.add("quickBoard", this.elts);
         },
         empty: function() {
-            this.elts = {};
+            this.elts = [];
             localStorageService.add("quickBoard", this.elts);
         },
         canAddElt: function(elt) {
-            return this.size() < this.max_elts &&
-                elt !== undefined &&
-                this.elts[elt.tinyId] === undefined;
-        },
-        size: function() {
-            return Object.keys(this.elts).length;
+            if (this.elts.length < this.max_elts &&
+                elt !== undefined) {
+
+                var tinyIds = this.elts.map(function(_elt) {
+                    return _elt.tinyId;
+                });
+                return tinyIds.indexOf(elt.tinyId) === -1;
+            }
+            else {
+                return false;
+            }
         },
         loadElts: function(cb) {
-            if (this.size() > 0) {
+            if (this.elts.length > 0) {
                 var qb = this;
-                CdeList.byTinyIdList(Object.keys(this.elts), function(result) {
+                qb.loading = true;
+                var tinyIds = this.elts.map(function(elt) {
+                    return elt.tinyId;
+                });
+                CdeList.byTinyIdList(tinyIds, function(result) {
                     if(result) {
-                        result.forEach(function(elt) {
-                            qb.elts[elt.tinyId] = elt;
+                        qb.elts = result;
+                        qb.elts.forEach(function (elt) {
+                            elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                         });
-                        Object.keys(qb.elts).forEach(function(key) {
-                            qb.elts[key].usedBy = OrgHelpers.getUsedBy(qb.elts[key], userResource.user);}
-                        );
                     }
+                    qb.loading = false;
                     if (cb) cb();
                 });
             }

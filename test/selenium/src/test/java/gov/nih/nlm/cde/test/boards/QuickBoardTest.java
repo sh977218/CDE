@@ -46,13 +46,12 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Laboratory Procedure Magnesium Result Unspecified Lower Limit of Normal Value" );
         addToQuickBoard( "Central Nervous System Preventive Intervention Administered Indicator" );
      
-        Assert.assertTrue(textPresent("Quick Board ( full )"));
+        textPresent("Quick Board ( full )");
     
         findElement(By.linkText("Quick Board ( full )")).click();
         textNotPresent("The quick board is empty.");
         findElement(By.id("qb.empty")).click();
-        textPresent( "Quick Board ( empty )" );
-        emptyQuickBoard();
+        textPresent("Quick Board ( empty )");
     }
 
     @Test
@@ -64,7 +63,6 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Prior BMSCT Administered Indicator" );
         addToQuickBoard( "Generalized Activities of Daily Living Pain Restricted Scale" );
         textPresent("Quick Board ( 5 )");
-        emptyQuickBoard();
     }
     
     @Test
@@ -73,8 +71,8 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
-        addToQuickBoard( "Prior BMSCT Administered Indicator" );
-        addToQuickBoard( "Generalized Activities of Daily Living Pain Restricted Scale" );
+        addToQuickBoard("Prior BMSCT Administered Indicator");
+        addToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
         textPresent("Quick Board ( 5 )");
         findElement(By.linkText("Quick Board ( 5 )")).click();
         textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
@@ -85,22 +83,20 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent("2320242");
         findElement(By.id("qb.empty")).click();
         textPresent( "Quick Board ( empty )" );
-        emptyQuickBoard();
     }
 
     @Test
     public void noSideBySideCompare() {
         goToCdeSearch();
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
-        addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
-        addToQuickBoard( "Prior BMSCT Administered Indicator" );
+        addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
+        addToQuickBoard("Prior BMSCT Administered Indicator");
         textPresent("Quick Board ( 3 )");
         findElement(By.linkText("Quick Board ( 3 )")).click();
         findElement(By.id("qb.compare")).click();
-        textPresent( "You may only compare 2 CDEs side by side." );
+        textPresent("You may only compare 2 CDEs side by side." );
         findElement(By.id("qb.empty")).click();
         textPresent( "Quick Board ( empty )" );
-        emptyQuickBoard();
     }
 
     @Test
@@ -118,11 +114,10 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent( "ALK Standard Deviation" );
         textPresent( "Platinum free interval" );
         textPresent( "Permissible Values" );
-        
+
         findElement(By.linkText("Quick Board ( 2 )")).click();
         findElement(By.id("qb.empty")).click();
         textPresent( "Quick Board ( empty )" );
-        emptyQuickBoard();
     }
     
     @Test
@@ -150,7 +145,6 @@ public class QuickBoardTest extends NlmCdeBaseTest {
             Assert.assertFalse(plus.isDisplayed());
         }
         textNotPresent(toRemove);
-        emptyQuickBoard();
     }
 
 }

@@ -1,9 +1,12 @@
-angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'CdeList', function($scope, CdeList) {
+angular.module('cdeModule').controller('CompareCtrl',
+    ['$scope', 'CdeList', 'QuickBoard',
+        function($scope, CdeList, QuickBoard) {
     $scope.compareView = true;
     $scope.pvLimit = 30;
     
     $scope.initCache();
     $scope.openAllCompareModel = $scope.cache.get("openAllCompare");
+    $scope.quickBoard = QuickBoard;
     
     $scope.openAllCompare = function( newValue ) {
         $scope.openAllCompareModel = newValue;
@@ -15,19 +18,7 @@ angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'CdeList', func
     };
     
     $scope.canCurate = false;
-    
-    if ($scope.quickBoard.length === 2) {
-        CdeList.byTinyIdList( $scope.quickBoard, function( result ) {
-            if( result ) {
-                $scope.cdes = result;
-                if ($scope.cdes.length === 2) {
-                    $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);
-                    $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
-                }
-            }
-        });
-    }
-        
+
     function lowerCompare(item1, item2) {
         if (item1 === undefined && item2 === undefined) {
             return true;
@@ -56,5 +47,13 @@ angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'CdeList', func
                 list1[i].isValid = wellIsIt;
            });
         }
-    }; 
+    };
+
+    $scope.cdes = QuickBoard.elts;
+    if ($scope.cdes.length === 2) {
+        $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);
+        $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
+    }
+
+
 }]);

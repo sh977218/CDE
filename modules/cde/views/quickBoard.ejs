@@ -22,9 +22,10 @@
         <hr/>
     </div>
 
-    <div ng-if="quickBoard.size() > 0 && cdes.length < 1" class="container pt40 pb40 text-center"><h1>
-            <i class="fa fa-spinner fa-pulse"></i> Loading...</h1></div>
-    <div ng-if="quickBoard.size() < 1" class="container">
+    <div ng-if="quickBoard.loading" class="container pt40 pb40 text-center">
+        <h1><i class="fa fa-spinner fa-pulse"></i> Loading...</h1>
+    </div>
+    <div ng-if="quickBoard.elts.length < 1" class="container">
         <br/>
 
         <h3 tabindex="0">The quick board is empty.</h3>
@@ -33,7 +34,7 @@
             <a href="/#/cde/search">Go to the search page and get started.</a></p>
     </div>
 
-    <div ng-if="cdes.length > 0">
+    <div ng-if="quickBoard.elts.length > 0">
         <span ng-if="listViewType !== 'sideBySide'" ng-include="'/template/system/switchListViewContent.ejs'"
               ng-init="module='cde'; ejsPage='quickboard'"></span>
 

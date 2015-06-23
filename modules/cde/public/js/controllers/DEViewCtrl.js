@@ -14,7 +14,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.pVTypeheadVsacNameList = [];
     $scope.pVTypeaheadCodeSystemNameList = [];
     $scope.pvLimit = 30;    
-    $scope.showValidationIcons = false;
     $scope.classifSubEltPage = '/template/system/classif-sub-elements';
     $scope.quickBoard = QuickBoard;
     
@@ -72,7 +71,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
             $scope.loadValueSet();
             $scope.canLinkPvFunc();
             $scope.loadBoards();
-            if ($scope.elt.dataElementConcept) $scope.showValidationIcons = $scope.elt.dataElementConcept.conceptualDomain != null && $scope.elt.dataElementConcept.conceptualDomain.vsac.id != null;
             $scope.getPVTypeaheadCodeSystemNameList();
             $scope.loadPriorCdes();
             if ($scope.elt.forkOf) {
@@ -153,7 +151,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             return;
         }
         pvs.forEach(function(pv) {
-            pv.valid = $scope.isPvInVSet(pv);
+            pv.isValid = $scope.isPvInVSet(pv);
         });
     };
 

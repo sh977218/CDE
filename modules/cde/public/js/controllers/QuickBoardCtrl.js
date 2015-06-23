@@ -5,13 +5,8 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
             $scope.cdes = [];
             $scope.quickBoard = QuickBoard;
 
-            $scope.getQuickBoardElts = function () {
-                return QuickBoard.elts;
-            };
-
             $scope.removeElt = function (index) {
-                QuickBoard.remove($scope.cdes[index]);
-                $scope.cdes.splice(index, 1);
+                QuickBoard.remove(index);
             };
 
             $scope.emptyQuickBoard = function () {
@@ -27,10 +22,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
 
             QuickBoard.loadElts(function () {
                 // TODO REFAC this. cdeAccordionList expects something called cdes.
-                $scope.cdes = [];
-                Object.keys(QuickBoard.elts).forEach(function (key) {
-                    $scope.cdes.push(QuickBoard.elts[key]);
-                });
+                $scope.cdes = QuickBoard.elts;
                 $scope.openCloseAll($scope.cdes, "quickboard");
             });
 

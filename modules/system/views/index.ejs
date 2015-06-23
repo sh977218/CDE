@@ -125,10 +125,10 @@
                             <li ng-class="{ active: isPageActive('/quickBoard')}">
                                 <a class="navbar-link" href="#/quickBoard">
                                     Quick Board (
-                                        <span ng-switch="quickBoard.size()">
+                                        <span ng-switch="quickBoard.elts.length">
                                             <span ng-switch-when="0" ng-bind="'empty'"></span>
                                             <span ng-switch-when="10" ng-bind="'full'"></span>
-                                            <span ng-switch-default ng-bind="quickBoard.size()"></span>
+                                            <span ng-switch-default ng-bind="quickBoard.elts.length"></span>
                                         </span>
                                     )
                                 </a>

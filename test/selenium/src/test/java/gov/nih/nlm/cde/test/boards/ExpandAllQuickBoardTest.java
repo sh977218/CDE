@@ -23,7 +23,6 @@ public class ExpandAllQuickBoardTest extends NlmCdeBaseTest {
 
         findElement(By.id("qb.empty")).click();
         textPresent("Quick Board ( empty )");
-        new QuickBoardTest().emptyQuickBoard();
     }
 
     @Test
@@ -71,7 +70,6 @@ public class ExpandAllQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
-        new QuickBoardTest().emptyQuickBoard();
     }
 
 }
