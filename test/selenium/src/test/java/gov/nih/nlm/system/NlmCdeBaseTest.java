@@ -385,16 +385,20 @@ public class NlmCdeBaseTest {
     ;
 
     public boolean textPresent(String text, By by) {
-        if (by != null)
-            wait.until(ExpectedConditions.textToBePresentInElementLocated(by,
-                    text));
-        else
-            textPresent(text);
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
         return true;
     }
 
     public boolean textPresent(String text) {
         return textPresent(text, By.cssSelector("BODY"));
+    }
+
+    public void textOrTextPresent(String text1, String text2) {
+        try {
+            textPresent(text1, By.cssSelector("BODY"));
+        } catch(Exception e){
+            textPresent(text2, By.cssSelector("BODY"));
+        }
     }
 
     public boolean textPresentTrueFalse(String text) {

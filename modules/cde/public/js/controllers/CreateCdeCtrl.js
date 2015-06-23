@@ -2,6 +2,7 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
     ['$scope', '$window', '$timeout', '$modal', 'DataElement', 'Elastic', 'userResource', '$controller'
         , function($scope, $window, $timeout, $modal, DataElement, Elastic, userResource, $controller) {
 
+    $scope.elt = { classification: [], stewardOrg: {}, naming:[{designation: "", definition:""}]};
     $controller('CreateCdeAbstractCtrl', {$scope: $scope});
     $scope.openCdeInNewTab = true;
     $scope.currentPage = 1;
@@ -9,7 +10,6 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
     $scope.resultPerPage = 20;
     $scope.searchForm = {};
 
-    $scope.elt = { classification: [], stewardOrg: {}, naming:[{designation: "", definition:""}]};
     
     $scope.save = function() {
         //$scope.elt.naming = [];

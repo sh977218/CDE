@@ -47,7 +47,7 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         hangon(1);
         findElement(By.id("li-blank-Standard")).click();
         hangon(1);
-        textPresent("4 results for");
+        textOrTextPresent("4 results for", "5 results for");
     }
     
 }

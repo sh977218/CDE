@@ -119,14 +119,19 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     public void removeOne() {
         goToCdeSearch();
         findElement(By.id("li-blank-OHSU Knight")).click();
-        textPresent("4 results for");
+        //textPresent("4 results for");
+        textOrTextPresent("4 results for", "5 results for");
+
+        String searchResultNum_string = findElement(By.id("searchResultNum")).getText().trim();
+        int searchResultNum_int = Integer.parseInt(searchResultNum_string);
+
         findElement(By.id("addToCompare_0")).click();
         findElement(By.id("addToCompare_1")).click();
         findElement(By.id("addToCompare_2")).click();
         String toRemove = findElement(By.id("acc_link_2")).getText();
         findElement(By.id("addToCompare_3")).click();
         hangon(.5);
-        findElement(By.linkText("Quick Board ( 4 )")).click();
+        findElement(By.linkText("Quick Board ( " + searchResultNum_int + " )")).click();
         hangon(.5);
         Assert.assertTrue(textPresent(toRemove));
         List<WebElement> pluses = driver.findElements(By.cssSelector("i.fa-plus"));
