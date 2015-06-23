@@ -25,8 +25,9 @@ def userName = "siteRootAdmin";
 def database = "admin";
 def password = "password";
 
-MongoCredential credential = MongoCredential.createCredential(userName, database, password);
-MongoClient mongoClient = new MongoClient( mongoHost, credential);
+//MongoCredential credential = MongoCredential.createCredential(userName, database, password);
+MongoClient mongoClient = new MongoClient( mongoHost);
+//MongoClient mongoClient = new MongoClient( mongoHost, credential);
 DB db = mongoClient.getDB(mongoDb);
 
 DBCollection deColl = db.getCollection("dataelements");
