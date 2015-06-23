@@ -112,5 +112,11 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
                 });
             };
 
+            $scope.save = function() {
+                DataElement.save($scope.elt, function(cde) {
+                    $window.location.href = "/#/deview?tinyId=" + cde.tinyId;
+                });
+            };
+
         }
     ]);
