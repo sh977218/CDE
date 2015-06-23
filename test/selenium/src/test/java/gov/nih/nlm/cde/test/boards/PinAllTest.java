@@ -42,6 +42,7 @@ public class PinAllTest extends BoardTest {
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         createBoard(board_name, board_description);
         goToCdeSearch();
+        findElement(By.id("resetSearch")).click();
         pickClassification();
         hangon(1);
         pickRegistrationStatus();
