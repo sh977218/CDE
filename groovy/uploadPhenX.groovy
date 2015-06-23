@@ -21,7 +21,12 @@ if(mongoHost == null || mongoDb == null)  {
 
 def idUtils = new IdUtils();
 
-MongoClient mongoClient = new MongoClient( mongoHost );
+def userName = "siteRootAdmin";
+def database = "admin";
+def password = "password";
+
+MongoCredential credential = MongoCredential.createCredential(userName, database, password);
+MongoClient mongoClient = new MongoClient( mongoHost, credential);
 DB db = mongoClient.getDB(mongoDb);
 
 DBCollection deColl = db.getCollection("dataelements");
