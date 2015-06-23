@@ -13,7 +13,7 @@ def mongoHost = args[1];
 def mongoDb = args[2];
 
 if(mongoHost == null || mongoDb == null)  {
-    println "Please specify mongodb host and dbname: 'groovy UploadCadsr.groovy [filename] [mongodb-host] [dbname]'";
+    println "Please specify mongodb host and dbname: 'groovy UploadPhenX.groovy [filename] [mongodb-host] [dbname]'";
     System.exit(0);
 } else {
     println "MongoDB host: " + mongoHost + ", db: " + mongoDb
