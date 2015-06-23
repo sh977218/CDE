@@ -182,14 +182,15 @@ angular.module('cdeModule').controller('DEViewCtrl',
         if (!pvs) {
             return false;
         }
+        var res = false;
         pvs.forEach(function(pv) {
             if (pv.valueMeaningCode === vs.code &&
                 pv.codeSystemName === vs.codeSystemName &&
                 pv.valueMeaningName === vs.displayName) {
-                return true;
+                res = true;
             }
         });
-        return false;
+        return res;
     };    
     
     $scope.validateVsacWithPv = function() {

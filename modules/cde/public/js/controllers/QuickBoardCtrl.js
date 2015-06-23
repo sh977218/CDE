@@ -4,6 +4,8 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
 
             $scope.cdes = [];
             $scope.quickBoard = QuickBoard;
+            $scope.showSideBySideView = false;
+
 
             $scope.removeElt = function (index) {
                 QuickBoard.remove(index);

@@ -61,7 +61,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
         addToQuickBoard( "Prior BMSCT Administered Indicator" );
-        addToQuickBoard( "Generalized Activities of Daily Living Pain Restricted Scale" );
+        addToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
         textPresent("Quick Board ( 5 )");
     }
     

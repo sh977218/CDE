@@ -119,7 +119,13 @@ angular.module('resourcesCde', ['ngResource'])
                 });
                 CdeList.byTinyIdList(tinyIds, function(result) {
                     if(result) {
-                        qb.elts = result;
+                        for (var i = 0; i < qb.elts.length; i++) {
+                            result.forEach(function(res) {
+                                if (res.tinyId === qb.elts[i].tinyId) {
+                                     qb.elts[i] = res;
+                                }
+                            })
+                        }
                         qb.elts.forEach(function (elt) {
                             elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                         });
