@@ -79,6 +79,9 @@ exports.buildElasticSearchQuery = function(settings) {
     if (settings.selectedOrg !== undefined) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
     }
+    if (settings.selectedOrgAlt !== undefined) {
+        queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrgAlt}});
+    }
 
     var buildFilter = function (allowedStatuses, selectedStatuses) {
         var regStatuses = selectedStatuses;
@@ -126,7 +129,8 @@ exports.buildElasticSearchQuery = function(settings) {
         queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
     }
 
-    var flatSelectionAlt = settings.selectedElementsAlt?settings.selectedElementsAlt.join(";"):"";
+    //var flatSelectionAlt = settings.selectedElementsAlt?settings.selectedElementsAlt.join(";"):"";
+    var flatSelectionAlt = settings.selectedElementsAlt.join(";");
     if (flatSelectionAlt !== "") {
         queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
     }
