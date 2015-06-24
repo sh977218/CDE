@@ -74,7 +74,7 @@ public class BoardTest extends NlmCdeBaseTest {
         openCdeInList(cdeName);
         findElement(By.id("pinToBoard_0")).click();
         findElement(By.linkText(boardName)).click();
-        Assert.assertTrue(textPresent("Added to Board")); 
+        textPresent("Added to Board");
         modalGone();         
         closeAlert();
     }
@@ -83,8 +83,10 @@ public class BoardTest extends NlmCdeBaseTest {
         gotoMyBoards();
         textPresent(boardName);
 
-        // use find by id.
+        findElement(By.id("viewBoard_" + boardName)).click();
 
+        // wait for board to show name in title
+        findElement(By.xpath("//h3//*[contains(text(), '" + boardName + "')]"));
     }
     
 
