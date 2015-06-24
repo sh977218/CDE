@@ -128,12 +128,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
         $scope.reload({tinyId: elt.tinyId});
     };
 
-    $scope.compareLists = function(listA, listB) {
-        return listA.filter(function(pvb) {
-            return listB.filter(function(pva){return JSON.stringify(pva)===JSON.stringify(pvb);}).length===0;
-        });
-    };
-    
     $scope.isPvInVSet = function(pv) {
         for (var i = 0; i < $scope.vsacValueSet.length; i++) {
             if (pv.valueMeaningCode === $scope.vsacValueSet[i].code &&
