@@ -26,9 +26,9 @@ public class PinAllTest extends BoardTest {
         String searchResultNum_string = findElement(By.id("searchResultNum")).getText().trim();
         int searchResultNum_int = Integer.parseInt(searchResultNum_string);
         findElement(By.id("pinAll")).click();
-        textPresent(board_name);
+        textPresent("Select Board");
         findElement(By.linkText(board_name)).click();
-        hangon(1);
+        textPresent("All elements pinned.");
         gotoMyBoards();
         String num_cde_after_pinAll_string = findElement(By.id("dd_numb_0")).getText();
         int num_cde_after_pinAll_int = Integer.parseInt(num_cde_after_pinAll_string);
@@ -42,35 +42,19 @@ public class PinAllTest extends BoardTest {
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         createBoard(board_name, board_description);
         goToCdeSearch();
-        findElement(By.id("resetSearch")).click();
-        pickClassification();
+        findElement(By.id("classifications-text-CTEP")).click();
         hangon(1);
-        pickRegistrationStatus();
+        findElement(By.id("status-text-Qualified")).click();
         hangon(1);
         String searchResultNum_string = findElement(By.id("searchResultNum")).getText().trim();
         int searchResultNum_int = Integer.parseInt(searchResultNum_string);
         findElement(By.id("pinAll")).click();
+        textPresent("Select Board");
         findElement(By.linkText(board_name)).click();
-        hangon(1);
+        textPresent("All elements pinned.");
         gotoMyBoards();
         String num_cde_after_pinAll_string = findElement(By.id("dd_numb_1")).getText();
         int num_cde_after_pinAll_int = Integer.parseInt(num_cde_after_pinAll_string);
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
-    }
-
-    private void pickClassification() {
-        List<WebElement> classifications = driver.findElements(By.cssSelector("#classificationListHolder a"));
-        int classifications_len = classifications.size();
-        int classification_selected = 8;
-        WebElement classification = classifications.get(classification_selected);
-        classification.click();
-    }
-
-    private void pickRegistrationStatus() {
-        List<WebElement> registrationStatuses = driver.findElements(By.cssSelector("#registrationStatusListHolder a"));
-        int registrationStatuses_len = registrationStatuses.size();
-        int registrationStatus_selected = 1;
-        WebElement registrationStatus = registrationStatuses.get(registrationStatus_selected);
-        registrationStatus.click();
     }
 }
