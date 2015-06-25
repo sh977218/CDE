@@ -101,25 +101,27 @@
                     </div>
                 </div>
                 <br/>
-                <strong tabindex="0" ng-show="aggregations.statuses.buckets" id="status_filter">Registration Status</strong>
-                <div class="pl5" id="registrationStatusListHolder">
-                    <span class="hand-cursor" ng-repeat="t in registrationStatuses" tooltip-html-unsafe="{{t.help}}"
-                          tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
-                    <a href class="nonLinkAnchor displayBlock" tabindex="0" ng-if="t.count > 0"
-                       style="margin-right: 0px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
-                        <i ng-switch-default class="fa fa-square-o" id="li-blank-{{t.name}}"></i>
-                        <i ng-switch-when="true" class="fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
-                        <small id="status-text-{{t.name}}"> {{t.name}} ({{t.count}})</small>
-                    </a>
+                <div ng-if="selectedMainAreaMode.showStatusFilter">
+                    <strong tabindex="0" ng-show="aggregations.statuses.buckets" id="status_filter">Registration Status</strong>
+                    <div class="pl5" id="registrationStatusListHolder">
+                        <span class="hand-cursor" ng-repeat="t in registrationStatuses" tooltip-html-unsafe="{{t.help}}"
+                              tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
+                            <a href class="nonLinkAnchor displayBlock" tabindex="0" ng-if="t.count > 0"
+                               style="margin-right: 0px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
+                                <i ng-switch-default class="fa fa-square-o" id="li-blank-{{t.name}}"></i>
+                                <i ng-switch-when="true" class="fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
+                                <small id="status-text-{{t.name}}"> {{t.name}} ({{t.count}})</small>
+                            </a>
                         </span>
-
+                    </div>
                 </div>
             </div>
             <div ng-class="{'col-xs-9 col-lg-10' : filterMode===true, 'col-xs-12' : filterMode===false}">
                 <span ng-hide="cdes.length >= 0"><h1 class="pl130"><i class="fa fa-spinner fa-pulse"></i> Searching...</h1></span>
-                <span ng-show="cdes.length === 0"><h4><i class="fa fa-frown-o"></i> No results were found. Try other criterias or selecting more statuses</h4></span>
-                <span ng-include="'/template/system/switchListViewContent.ejs'"></span>
-                <pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems" items-per-page="20" ng-model="searchForm.currentPage" next-text="Next"></pagination>
+                <span ng-show="cdes.length === 0">
+                    <h4><i class="fa fa-frown-o"></i> No results were found. Try other criterias or selecting more statuses</h4>
+                </span>
+                <span ng-include="selectedMainAreaMode.url"></span>
             </div>
         </div>
     </div>

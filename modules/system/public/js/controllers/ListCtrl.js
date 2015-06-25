@@ -16,6 +16,15 @@ angular.module('systemModule').controller('ListCtrl',
 
     if (!$scope.searchForm) $scope.searchForm = {};
 
+    var mainAreaModes = {
+        "searchResult": {
+            "url": "/system/public/html/searchResult.html"
+            , "showStatusFilter": true
+        }
+        , "orgOverview": {"url": "/system/public/html/orgOverview.html"}
+    };
+    $scope.selectedMainAreaMode = mainAreaModes.orgOverview;
+
     $scope.hideShowFilter = function() {
         $scope.filterMode = !$scope.filterMode;
     };
@@ -25,8 +34,6 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.filterMode = !isScreenSizeXsSm_new;
         }
     });
-
-    $scope.query = null;
 
     $scope.getCacheName = function(name) {
         return "search." + $scope.module + "." + name;
@@ -92,7 +99,9 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.reload();
     });
 
-    userResource.getPromise().then(function(){$scope.reload()});
+    userResource.getPromise().then(function(){
+        $scope.search()
+    });
 
     $scope.addStatusFilter = function(t) {
         t.selected = !t.selected;
@@ -128,8 +137,8 @@ angular.module('systemModule').controller('ListCtrl',
     $scope.search = function() {
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;
         $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
-        $scope.reload();
 
+        $scope.reload();
     };
 
     $scope.isAllowed = function (cde) {
@@ -230,14 +239,6 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     $scope.reload = function() {
-        var e = new Error('dummy');
-        var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '')
-            .replace(/^\s+at\s+/gm, '')
-            .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
-            .split('\n');
-        console.log(stack);
-
-
         var timestamp = new Date().getTime();
         if (!userResource.user) return;
         $scope.lastQueryTimeStamp = timestamp;
