@@ -20,14 +20,22 @@ if(mongoHost == null || mongoDb == null)  {
 }
 
 def idUtils = new IdUtils();
+def siteRootAdmin = "siteRootAdmin";
+def authDB = "admin";
+def password = new char[8];
+password[0] = 'p';
+password[1] = 'a';
+password[2] = 's';
+password[3] = 's';
+password[4] = 'w';
+password[5] = 'o';
+password[6] = 'r';
+password[7] = 'd';
 
-def userName = "siteRootAdmin";
-def database = "admin";
-def password = "password";
+MongoCredential credential = MongoCredential.createMongoCRCredential(siteRootAdmin, authDB, password);
 
-//MongoCredential credential = MongoCredential.createCredential(userName, database, password);
-MongoClient mongoClient = new MongoClient( mongoHost);
-//MongoClient mongoClient = new MongoClient( mongoHost, credential);
+//MongoClient mongoClient = new MongoClient( mongoHost);
+MongoClient mongoClient = new MongoClient( Arrays.asList(new ServerAddress(mongoHost, 27017)), Arrays.asList(credential),);
 DB db = mongoClient.getDB(mongoDb);
 
 DBCollection deColl = db.getCollection("dataelements");
@@ -122,7 +130,7 @@ doPage = {thisFile ->
     }    
 }
 
-def baseFolder = new File(w);
+def baseFolder = new File(baseFileDir);
 files = baseFolder.listFiles();
 for (def thisFile : files) {
     if (thisFile.canonicalPath.contains("browse.protocoldetails") && !thisFile.canonicalPath.contains("tree=off"))
