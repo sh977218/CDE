@@ -1,12 +1,14 @@
 angular.module('systemModule').controller('ListCtrl',
-    ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', 'SearchSettings',
-        function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource, SearchSettings) {
+    ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', 'SearchSettings', 'QuickBoard',
+        function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource, SearchSettings, QuickBoard) {
+
+    $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
 
     $scope.focusClassification = function(){
         //any good angular way to do this?
         $('#classif_filter_title').focus();
-    }
+    };
 
     $timeout(function(){
         if($scope.isScreenSizeXsSm) {

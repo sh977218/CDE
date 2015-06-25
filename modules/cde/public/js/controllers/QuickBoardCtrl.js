@@ -1,34 +1,33 @@
-angular.module('cdeModule').controller('QuickBoardCtrl', ['$scope', 'CdeList', 'OrgHelpers', 'userResource', function($scope, CdeList, OrgHelpers, userResource) {
+angular.module('cdeModule').controller('QuickBoardCtrl',
+    ['$scope', 'CdeList', 'OrgHelpers', 'userResource', 'QuickBoard',
+        function ($scope, CdeList, OrgHelpers, userResource, QuickBoard) {
 
-    $scope.cdes = [];
-    $scope.qbGridCdes = [];
-    
-    $scope.removeDE = function( index ) {
-        $scope.cdes.splice(index, 1);
-        $scope.quickBoard.splice(index, 1);
-    };
-    
-    $scope.emptyQuickBoardAndScreen = function() {
-        $scope.emptyQuickBoard();
-        $scope.cdes = [];
-        $scope.qbGridCdes = [];
-    };
+            $scope.cdes = [];
+            $scope.quickBoard = QuickBoard;
+            $scope.showSideBySideView = false;
 
-    if ($scope.quickBoard.length > 0) {
-        CdeList.byTinyIdList($scope.quickBoard, function(result) {
-           if(result) {
+
+            $scope.removeElt = function (index) {
+                QuickBoard.remove(index);
+            };
+
+            $scope.emptyQuickBoard = function () {
+                QuickBoard.empty();
                 $scope.cdes = [];
-                for (var i = 0; i < $scope.quickBoard.length; i++) {
-                   for (var j = 0; j < result.length; j++) {
-                       if ($scope.quickBoard[i] === result[j].tinyId) {
-                           $scope.cdes.push(result[j]);
-                       }
-                   }
-                }
-               $scope.openCloseAll($scope.cdes, "quickboard");
-               $scope.cdes.forEach(function(elt) {elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);});
-           }
-        });
-    }
+            };
 
-}]);
+            $scope.openCloseAll = function (cdes, type) {
+                for (var i = 0; i < cdes.length; i++) {
+                    cdes[i].isOpen = $scope.openCloseAllModel[type];
+                }
+            };
+
+            QuickBoard.loadElts(function () {
+                // TODO REFAC this. cdeAccordionList expects something called cdes.
+                $scope.cdes = QuickBoard.elts;
+                $scope.openCloseAll($scope.cdes, "quickboard");
+            });
+
+
+
+        }]);

@@ -43,10 +43,6 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Identifiers");
     }
 
-    void clearStorage() {
-        String clearStorage = "localStorage.clear();";
-        ((JavascriptExecutor) driver).executeScript(clearStorage, "");
-    }
 
     @Test
     void UnloggedUserSetsFields (){
