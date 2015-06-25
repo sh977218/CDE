@@ -28,4 +28,6 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
                 $scope.openCloseAll($scope.cdes, "quickboard");
             });
 
+
+
         }]);

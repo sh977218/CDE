@@ -26,11 +26,12 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
     };
 
     $scope.showSideBySideView = function() {
-        if ($scope.quickBoard.elts.length !== 2) {
+        if ($scope.cdes.length !== 2) {
             $scope.addAlert("danger", "You may only compare 2 CDEs side by side.");
         } else {
             $scope.listViewType = "sideBySide";
         }
     };
 
-}]);
+
+    }]);
