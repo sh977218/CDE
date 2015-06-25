@@ -21,7 +21,9 @@ angular.module('systemModule').controller('ListCtrl',
             "url": "/system/public/html/searchResult.html"
             , "showStatusFilter": true
         }
-        , "orgOverview": {"url": "/system/public/html/orgOverview.html"}
+        , "orgOverview": {
+            "url": "/system/public/html/orgOverview.html"
+        }
     };
     $scope.selectedMainAreaMode = mainAreaModes.orgOverview;
 
