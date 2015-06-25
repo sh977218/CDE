@@ -1,0 +1,23 @@
+<h1>
+    <img id="homeNihCdeLogo" class="img-center-responsive" alt="NIH CDE logo"
+         src="/cde/public/assets/img/NIH-CDE.png" />
+</h1>
+
+<div class="pt20 text-center">
+    <form name="quickSearchForm" id="quickSearchForm" novalidate>
+        <div class="input-group input-group-lg">
+            <label class="sr-only" for="searchTerms">Search Terms</label>
+            <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="searchForm.ftsearch"
+                   ng-maxlength="500" placeholder="Search Common Data Elements">
+
+            <div class="input-group-btn">
+                <button name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit"
+                        ng-click="search()" ng-disabled="quickSearchForm.$invalid">
+                    <i class="fa fa-search"></i><span class="hidden-xs"> Search</span></button>
+            </div>
+        </div>
+
+        <!-- Error display area -->
+        <span ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><p class="error-block"><small>Query terms must be 500 characters or less.</small></p></span>
+    </form>
+</div>

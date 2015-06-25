@@ -19,13 +19,13 @@ angular.module('systemModule').controller('ListCtrl',
     var mainAreaModes = {
         "searchResult": {
             "url": "/system/public/html/searchResult.html"
-            , "showStatusFilter": true
+            , "showSearchResult": true
         }
-        , "orgOverview": {
-            "url": "/system/public/html/orgOverview.html"
+        , "welcomeSearch": {
+            "url": "/system/public/html/welcomeSearch.html"
         }
     };
-    $scope.selectedMainAreaMode = mainAreaModes.orgOverview;
+    $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
 
     $scope.hideShowFilter = function() {
         $scope.filterMode = !$scope.filterMode;
@@ -297,6 +297,13 @@ angular.module('systemModule').controller('ListCtrl',
 
             $scope.filterOutWorkingGroups($scope.aggregations);
             OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
+
+            console.log($scope.selectedOrg);
+
+            if (($scope.searchForm.ftsearch && $scope.searchForm.ftsearch.length > 0) || $scope.classificationFilters[0].org)
+                $scope.selectedMainAreaMode = mainAreaModes.searchResult;
+            else
+                $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
         });
 
     };

@@ -1,4 +1,6 @@
 <span ng-controller="SwitchListViewCtrl">
+    <div ng-if="selectedMainAreaMode.showSearchResult">
+
     <div class="container-fluid pt40 pb30">
         <form name="advSearchForm" id="advSearchForm"  ng-submit="submitForm( quickSearchForm.$valid )" novalidate>
             <!-- Search dropdown and text field -->
@@ -45,6 +47,8 @@
 
     </div>
     <hr class="searchInfoHr"/>
+
+    </div>
     <div class="container-fluid pt30">
         <script type="text/ng-template"  id="facet_elements_tree.html">
             <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="classificationFilters[0].elements.indexOf(e.name) > -1">
@@ -101,7 +105,7 @@
                     </div>
                 </div>
                 <br/>
-                <div ng-if="selectedMainAreaMode.showStatusFilter">
+                <div ng-if="selectedMainAreaMode.showSearchReult">
                     <strong tabindex="0" ng-show="aggregations.statuses.buckets" id="status_filter">Registration Status</strong>
                     <div class="pl5" id="registrationStatusListHolder">
                         <span class="hand-cursor" ng-repeat="t in registrationStatuses" tooltip-html-unsafe="{{t.help}}"
