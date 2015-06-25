@@ -50,10 +50,7 @@ angular.module('cdeModule').controller('CompareCtrl',
     };
 
     $scope.cdes = QuickBoard.elts;
-    if ($scope.cdes.length === 2) {
-        $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);
-        $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
-    }
-
+    $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);
+    $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
 
 }]);
