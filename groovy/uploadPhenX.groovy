@@ -34,7 +34,6 @@ password[7] = 'd';
 
 MongoCredential credential = MongoCredential.createMongoCRCredential(siteRootAdmin, authDB, password);
 
-//MongoClient mongoClient = new MongoClient( mongoHost);
 MongoClient mongoClient = new MongoClient( Arrays.asList(new ServerAddress(mongoHost, 27017)), Arrays.asList(credential),);
 DB db = mongoClient.getDB(mongoDb);
 
