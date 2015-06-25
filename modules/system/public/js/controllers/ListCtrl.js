@@ -159,11 +159,11 @@ angular.module('systemModule').controller('ListCtrl',
         });
     };
 
-    $scope.addOrgFilter = function(t) {
+    $scope.addOrgFilter = function(orgName) {
         if ($scope.classificationFilters[$scope.altClassificationFilterMode].org === undefined) {
-            if ($scope.altClassificationFilterMode === 0) $scope.cacheOrgFilter(t.key);
-            else $scope.cacheOrgFilterAlt(t.key);
-            $scope.classificationFilters[$scope.altClassificationFilterMode].org = t.key;
+            if ($scope.altClassificationFilterMode === 0) $scope.cacheOrgFilter(orgName);
+            else $scope.cacheOrgFilterAlt(orgName);
+            $scope.classificationFilters[$scope.altClassificationFilterMode].org = orgName;
         } else {
             if ($scope.altClassificationFilterMode === 0) $scope.removeCacheOrgFilter();
             else $scope.removeCacheOrgFilterAlt();
@@ -297,8 +297,6 @@ angular.module('systemModule').controller('ListCtrl',
 
             $scope.filterOutWorkingGroups($scope.aggregations);
             OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
-
-            console.log($scope.selectedOrg);
 
             if (($scope.searchForm.ftsearch && $scope.searchForm.ftsearch.length > 0) || $scope.classificationFilters[0].org)
                 $scope.selectedMainAreaMode = mainAreaModes.searchResult;
