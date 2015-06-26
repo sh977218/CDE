@@ -79,7 +79,7 @@
                         <span class="hand-cursor" tooltip="{{t.longName}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                             <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>
                             <i ng-switch-default class="fa fa-chevron-right" id="li-blank-{{t.key}}" ></i>
-                            <small id="classifications-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
+                            <small id="classifications-text-{{t.key}}"> {{t.key}} (<span ng-bind="t.doc_count" id="nbOfClassifElts-{{t.key}}"></span>)</small>
                         </span>
                 </a>
                 <div id="classification-facets">
@@ -97,7 +97,7 @@
                                 <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{b.name}}" ></i>
                                 <i ng-switch-when="false" class="fa fa-chevron-right" id="li-blank-{{b.name}}" ></i>
                                 <span>
-                                    <small>{{b.name}} ({{b.count}})</small>
+                                    <small>{{b.name}} (<span ng-bind="b.count" id="nbOfClassifElts-{{b.name}}"></span>)</small>
                                 </span>
                             </span>
                     </a>
