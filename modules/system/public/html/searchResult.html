@@ -54,7 +54,7 @@
                 <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e.name}}" ></i>
                 <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e.name}}" ></i>
                 <span>
-                    <small> {{e.name}} ({{e.count}})</small>
+                    <small> {{e.name}} (<span ng-bind="e.count" id="nbOfClassifElts-{{e.name}}"></span>)</small>
                 </span>
             </span>
         <div ng-show="selectedElements.indexOf(e.name) > -1" style="margin-left: 5px">

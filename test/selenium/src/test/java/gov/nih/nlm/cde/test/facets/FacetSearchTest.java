@@ -44,9 +44,12 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void statusFacets() {
         goToCdeSearch();
-        findElement(By.id("browseOrg-caBIG")).click();
-        textPresent("Qualified (94");
-        textPresent("Qualified (1");
+        int numOfCipElts = Integer.valueOf(findElement(By.id("nbOfElts-CIP")).getText());
+        findElement(By.id("browseOrg-CIP")).click();
+        textPresent("Qualified (" + numOfCipElts + ")");
+        int numOfLidcElts = Integer.valueOf(findElement(By.id("nbOfClassifElts-LIDC")).getText());
+        findElement(By.id("li-blank-LIDC")).click();
+        textPresent("Qualified (" + numOfLidcElts + ")");
     }
 
     @Test
@@ -119,20 +122,18 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     public void facetPagination() {
         goToCdeSearch();
         findElement(By.id("browseOrg-CTEP")).click();
-        // next line should make it wait.
-        textPresent("OPEN to Rave");
-        hangon(1);
-        findElement(By.linkText("Next")).click();
-        textPresent("OPEN to Rave Standard ");
-        //findElement(By.cssSelector("i.fa-check-square-o"));
-        
-        scrollToTop();
-        
-        findElement(By.id("resetSearch")).click();
-        textPresent("Qualified (94");
-        findElement(By.name("ftsearch")).sendKeys("Immunology");
-        findElement(By.cssSelector("i.fa-search")).click();
-        textPresent("Immunology Gonorrhea Assay Laboratory Finding Result");
+
+        int numOfDiseaseElts = Integer.valueOf(findElement(By.id("nbOfClassifElts-DISEASE")).getText());
+
+        findElement(By.id("li-blank-DISEASE")).click();
+
+        textPresent(numOfDiseaseElts + " results for");
+
+        int expectedNumberOfPages = (int) Math.ceil((double)numOfDiseaseElts / 20);
+        for (int i = 1; i < expectedNumberOfPages; i ++) {
+            findElement(By.linkText("" + i));
+        }
+        Assert.assertEquals(0, driver.findElements(By.linkText("" + (expectedNumberOfPages + 1))).size());
     }
 
     
@@ -146,11 +147,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("saveRegStatus")).click();
         waitForESUpdate();
         goToCdeSearch();
-        textPresent("Preferred Standard");
+        findElement(By.id("browseOrg-DCP"));
+        textNotPresent("Noncompliant Reason Text");
+        textPresent("Preferred Standard (");
         findElement(By.id("li-blank-Standard")).click();
-        hangon(1);
-        findElement(By.id("li-blank-Qualified")).click();
-        hangon(1);
         textNotPresent("Noncompliant Reason Text");
     }
     
