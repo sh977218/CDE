@@ -132,6 +132,6 @@ angular.module('resourcesSystem', ['ngResource'])
                 return str;
             }            
         };
-    })  
+    })
 
 ;    

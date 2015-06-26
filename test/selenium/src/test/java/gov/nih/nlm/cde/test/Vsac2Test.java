@@ -13,10 +13,10 @@ public class Vsac2Test extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Patient Race Category");
         findElement(By.linkText("Permissible Values")).click();
-        Assert.assertTrue(textPresent("Native Hawaiian or other Pacific Islander"));
-        Assert.assertTrue(textNotPresent("Match"));
+        textPresent("Native Hawaiian or other Pacific Islander");
+        textNotPresent("Match");
         findElement(By.id("removeAllPvs")).click();
-        Assert.assertTrue(textNotPresent("Native Hawaiian or other Pacific Islander"));
+        textNotPresent("Native Hawaiian or other Pacific Islander");
         findElement(By.linkText("Update O.I.D")).click();
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.836");
         findElement(By.id("vsacIdCheck")).click();

@@ -1,6 +1,8 @@
 angular.module('systemModule').controller('ListCtrl',
-    ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', 'SearchSettings',
-        function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource, SearchSettings) {
+    ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', 'SearchSettings', 'QuickBoard',
+        function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource, SearchSettings, QuickBoard) {
+
+    $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
 
     $scope.focusClassification = function(){
