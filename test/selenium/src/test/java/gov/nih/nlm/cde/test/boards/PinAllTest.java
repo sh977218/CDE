@@ -15,7 +15,6 @@ public class PinAllTest extends BoardTest {
         String board_description = "This board is only for pin all test.";
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         createBoard(board_name, board_description);
-        int num_cde_before_pinAll_int = 0;
         goToCdeSearch();
         hangon(1);
         findElement(By.id("resetSearch")).click();
@@ -23,16 +22,19 @@ public class PinAllTest extends BoardTest {
         hangon(1);
         randomPickRegistrationStatus();
         hangon(1);
-        String searchResultNum_string = findElement(By.id("searchResultNum")).getText().trim();
-        int searchResultNum_int = Integer.parseInt(searchResultNum_string);
+        int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         findElement(By.id("pinAll")).click();
         textPresent("Select Board");
         findElement(By.linkText(board_name)).click();
         textPresent("All elements pinned.");
         gotoMyBoards();
-        String num_cde_after_pinAll_string = findElement(By.id("dd_numb_0")).getText();
-        int num_cde_after_pinAll_int = Integer.parseInt(num_cde_after_pinAll_string);
-        Assert.assertEquals(num_cde_before_pinAll_int + searchResultNum_int, num_cde_after_pinAll_int);
+
+        // find nb of cdes for the board.
+        int num_cde_after_pinAll_int =
+                Integer.valueOf(findElement(By.xpath("//*[@data-id = 'boardDiv_'" + board_name
+                        + "']//[contains(@id, 'dd_numb_']")).getText());
+        Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
+        removeBoard(board_name);
     }
 
     @Test
@@ -56,5 +58,6 @@ public class PinAllTest extends BoardTest {
         String num_cde_after_pinAll_string = findElement(By.id("dd_numb_1")).getText();
         int num_cde_after_pinAll_int = Integer.parseInt(num_cde_after_pinAll_string);
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
+        removeBoard(board_name);
     }
 }
