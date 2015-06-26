@@ -45,14 +45,16 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
 
 
     @Test
-    void UnloggedUserSetsFields (){
+    void unloggedUserSetsFields (){
         mustBeLoggedOut();
         goToSearch("cde");
+        findElement(By.id("browseOrg-NINDS")).click();
         setAndCheckFields();
 
         //The following just tests that clearStorage() works
         clearStorage();
         goToSearch("cde");
+        findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("gridView")).click();
         textPresent("Other Names");
         textPresent("Permissible Values");
@@ -63,12 +65,14 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
     }
 
     @Test
-    void LoggedUserSetsFields() {
+    void loggedUserSetsFields() {
         mustBeLoggedInAs(tableViewUser_username, password);
         goToSearch("cde");
+        findElement(By.id("browseOrg-NINDS")).click();
         setAndCheckFields();
         clearStorage();
         goToSearch("cde");
+        findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("gridView")).click();
         textPresent("Other Names");
         textPresent("Permissible Values");

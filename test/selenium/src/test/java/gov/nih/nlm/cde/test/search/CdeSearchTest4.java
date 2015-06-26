@@ -12,6 +12,7 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
     @Test
     public void basicPagination() {
         goToCdeSearch();
+        findElement(By.id("browseOrg-NINDS")).click();
         WebElement pagElt = findElement(By.cssSelector("ul.pagination"));
         findElement(By.linkText("10"));
         List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));

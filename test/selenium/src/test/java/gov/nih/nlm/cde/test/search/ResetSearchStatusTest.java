@@ -14,20 +14,9 @@ public class ResetSearchStatusTest extends NlmCdeBaseTest {
     @Test
     public void resetSearchStatus() {
         goToCdeSearch();
-
-//        driver.navigate().refresh();
-        List<WebElement> classifications = driver.findElements(By.cssSelector("#classificationListHolder a"));
-        int classifications_len = classifications.size();
-
-        int classification_selected = (int) Math.random() * classifications_len;
-        WebElement classification = classifications.get(classification_selected + 1);
-        String classifTextAbove = classifications.get(classification_selected).getText();
-        String classification_text = classification.getText();
-
-        classification.click();
-        textNotPresent(classifTextAbove);
-
+        findElement(By.id("browseOrg-caBIG")).click();
+        
         findElement(By.id("resetSearch")).click();
-        textPresent(classifTextAbove);
+        textPresent("Browse by organization");
     }
 }

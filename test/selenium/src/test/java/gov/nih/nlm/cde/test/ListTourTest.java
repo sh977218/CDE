@@ -9,6 +9,7 @@ public class ListTourTest extends TourTest {
     public void listTour() {
         mustBeLoggedOut();
         goToCdeSearch();
+        findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.linkText("Help")).click();
         findElement(By.linkText("Take a tour")).click();
         textPresent("Welcome to the NIH");

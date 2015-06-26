@@ -21,6 +21,7 @@ public class InfoBarTest extends NlmCdeBaseTest {
     @Test
     public void infoBarStatus() {
         setLowStatusesVisible();
+        findElement(By.id("browseOrg-caBIG")).click();
         textPresent("| All Statuses");
         findElement(By.id("li-blank-Standard")).click();
         hangon(1);
