@@ -48,8 +48,8 @@ public class PinAllTest extends BoardTest {
         hangon(1);
         findElement(By.id("status-text-Qualified")).click();
         hangon(1);
-        String searchResultNum_string = findElement(By.id("searchResultNum")).getText().trim();
-        int searchResultNum_int = Integer.parseInt(searchResultNum_string);
+        int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
+        Assert.assertTrue(searchResultNum_int > 20);
         findElement(By.id("pinAll")).click();
         textPresent("Select Board");
         findElement(By.linkText(board_name)).click();
