@@ -1,6 +1,6 @@
 <div class="form-group">
     <label>Name</label>
-    <input type="text" class="form-control" required ng-model="elt.naming[0].designation" name="elt.designation" ng-change="showSuggestions()">
+    <input id="cdeName" type="text" class="form-control" required ng-model="elt.naming[0].designation" name="elt.designation" ng-change="showSuggestions()">
     <span ng-show="createCde.elt.naming[0].designation.$error.required">Required</span>
 </div>
 
@@ -22,10 +22,10 @@
     <label for="selectDefault">Classifications</label>
     <div ng-include="'/template/system/classificationBody'">
     </div>
-    <button class="btn btn-default btn-small" ng-click="openSelectDefaultClassificationModal()" id="addClassification">Classify this {{module | uppercase}}</button>
+    <button class="btn btn-default btn-small" ng-click="openSelectDefaultClassificationModal()" id="addClassification-createCde">Classify this {{module | uppercase}}</button>
 </div>
 <br />
 
-<div ng-show="validationErrors() !== null">
+<div ng-show="validationErrors() !== null" class="text-danger">
     <i class="fa fa-warning"></i> {{validationErrors()}}
 </div>

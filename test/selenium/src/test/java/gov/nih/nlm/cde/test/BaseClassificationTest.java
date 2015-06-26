@@ -8,6 +8,15 @@ import org.testng.Assert;
 public class BaseClassificationTest extends NlmCdeBaseTest {
    public void addClassificationMethod(String[] categories) {     
         findElement(By.id("addClassification")).click();
+       addClassificationMethodDo(categories);
+    }
+
+    public void addClassificationToNewCdeMethod(String[] categories) {
+        findElement(By.id("addClassification-createCde")).click();
+        addClassificationMethodDo(categories);
+    }
+
+    private void addClassificationMethodDo(String[] categories){
 
         try {
             new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
@@ -24,10 +33,10 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         try {
             closeAlert();
         } catch(Exception e) {
-        
+
         }
         findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
-        hangon(3);        
+        hangon(3);
         String selector = "";
         for (int i = 1; i < categories.length; i++) {
             selector += categories[i];
@@ -36,8 +45,8 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
             }
         }
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-" + selector + "'] .name")).getText().equals(categories[categories.length - 1]));
-    }    
-   
+    }
+
     public void checkRecentlyUsedClassifications(String[] categories) {
         findElement(By.id("addClassification")).click();
         findElement(By.id("addClass.byRecentlyAdded")).click();
