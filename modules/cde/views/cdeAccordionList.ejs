@@ -20,11 +20,11 @@
                    ng-click="unpin(board.pins[$index])">
                     <i class="fa fa-thumb-tack fa-rotate-90 hand-cursor" title="unPin from Board" id="unpin_{{$index}}"
                        role="link"> </i></a>
-                <a href tabindex="0" class="nonLinkAnchor" ng-if="showCompareButton(cde) && cPage!=='forms'"
-                   ng-click="accordionIconAction(cde,'addToQuickBoard',$event)">
+                <a href tabindex="0" class="nonLinkAnchor" ng-if="quickBoard.canAddElt(cde) && cPage!=='forms'"
+                   ng-click="accordionIconAction(cde,'quickBoard.add',$event)">
                     <i class="fa fa-plus hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
                        role="link"></i></a>
-                <a href tabindex="0" class="nonLinkAnchor" ng-if="ejsPage=='quickboard'" ng-click="removeDE($index)">
+                <a href tabindex="0" class="nonLinkAnchor" ng-if="ejsPage=='quickboard'" ng-click="removeElt($index)">
                     <i class="glyphicon glyphicon-remove hand-cursor" title="remove" id="remove_{{$index}}"
                        role="link"></i></a>
                 <small tabindex="0" class="matched-by" ng-if="cde.highlight.matchedBy">Matched by: <strong>
@@ -57,8 +57,8 @@
                     <a tabindex="0" ng-if="user._id && ejsPage=='board'" class="btn btn-small btn-default"
                        ng-click="unpin(cde)" id="pin_{{$index}}">
                         <i class="fa fa-thumb-tack fa-rotate-90" title="unPin"></i> Remove from Board</a>
-                    <a tabindex="0" ng-if="showCompareButton(cde)" class="btn btn-small btn-default"
-                       ng-click="addToQuickBoard(cde)" id="compare_{{$index}}">
+                    <a tabindex="0" ng-if="quickBoard.canAddElt(cde)" class="btn btn-small btn-default"
+                       ng-click="quickBoard.add(cde)" id="compare_{{$index}}">
                         <i class="fa fa-plus"></i> Add to Quick Board</a>
                     <a class="pull-right" ng-href="#/sdcview/?cdeId={{cde._id}}" aria-label="SDC View"
                        id="sdcView_{{$index}}">

@@ -124,14 +124,14 @@ exports.addAttachment = function (req, res, dao) {
                     //store it to FS here
                     var writeStream = fs.createWriteStream(file.path);
                     streamFS.pipe(writeStream);
-                    streamFS.on('end', function (err) {
-                            md5.async(file.path, function (hash) {
-                                file.md5 = hash;
-                                mongo_data_system.addAttachment(file, req.user, "some comment", elt, function (attachment, requiresApproval) {
-                                    if (requiresApproval) exports.createApprovalMessage(req.user, "AttachmentReviewer", "AttachmentApproval", attachment);
-                                    res.send(elt);
-                                });
+                    writeStream.on('finish', function (err) {
+                        md5.async(file.path, function (hash) {
+                            file.md5 = hash;
+                            mongo_data_system.addAttachment(file, req.user, "some comment", elt, function (attachment, requiresApproval) {
+                                if (requiresApproval) exports.createApprovalMessage(req.user, "AttachmentReviewer", "AttachmentApproval", attachment);
+                                res.send(elt);
                             });
+                        });
                     });
                 }
             });
