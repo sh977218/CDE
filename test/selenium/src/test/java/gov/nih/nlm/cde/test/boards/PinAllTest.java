@@ -31,8 +31,8 @@ public class PinAllTest extends BoardTest {
 
         // find nb of cdes for the board.
         int num_cde_after_pinAll_int =
-                Integer.valueOf(findElement(By.xpath("//*[@data-id = 'boardDiv_'" + board_name
-                        + "']//*[contains(@id, 'dd_numb_')]")).getText());
+                Integer.valueOf(findElement(By.xpath("//*[@data-id = 'boardDiv_"
+                        + board_name + "']//*[contains(@id, 'dd_numb_')]")).getText());
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
         removeBoard(board_name);
     }
@@ -55,8 +55,9 @@ public class PinAllTest extends BoardTest {
         findElement(By.linkText(board_name)).click();
         textPresent("All elements pinned.");
         gotoMyBoards();
-        String num_cde_after_pinAll_string = findElement(By.id("dd_numb_1")).getText();
-        int num_cde_after_pinAll_int = Integer.parseInt(num_cde_after_pinAll_string);
+        int num_cde_after_pinAll_int =
+                Integer.valueOf(findElement(By.xpath("//*[@data-id = 'boardDiv_"
+                        + board_name + "']//*[contains(@id, 'dd_numb_')]")).getText());
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
         removeBoard(board_name);
     }
