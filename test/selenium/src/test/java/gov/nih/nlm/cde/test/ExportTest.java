@@ -31,7 +31,7 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
         wait.withTimeout(10, TimeUnit.SECONDS);
         boolean done = false;
-        for (int i=0; !done && i < 10; i++) {
+        for (int i=0; !done && i < 15; i++) {
             try {
                 textPresent("Export downloaded.");
                 done = true;

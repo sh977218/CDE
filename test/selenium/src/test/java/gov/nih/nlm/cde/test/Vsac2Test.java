@@ -66,6 +66,6 @@ public class Vsac2Test extends NlmCdeBaseTest {
 
         textPresent("Other Race Category");
         textPresent("2131-1.1");
-        textPresent("CDCREC.1");
+        textPresent("CDCREC.modifVC");
     }
 }
