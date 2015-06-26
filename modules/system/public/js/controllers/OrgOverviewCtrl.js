@@ -15,8 +15,8 @@ function($scope, OrgHelpers) {
                             longName: org_t.longName,
                             count: org_t.doc_count,
                             source: OrgHelpers.orgsDetailedInfo[org_t.key].uri,
-                            extra: OrgHelpers.orgsDetailedInfo[org_t.key].extra
-                        })
+                            extraInfo: OrgHelpers.orgsDetailedInfo[org_t.key].extraInfo
+                        });
                 }
             });
         }

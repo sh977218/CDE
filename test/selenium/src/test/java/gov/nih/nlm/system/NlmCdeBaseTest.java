@@ -252,14 +252,14 @@ public class NlmCdeBaseTest {
 
     public void searchElt(String name, String type, String status) {
         goToSearch(type);
-        if (status != null) {
-            findElement(By.id("li-blank-" + status)).click();
-            hangon(2);
-        }
         scrollToTop();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.id("search.submit")).click();
+        hangon(2);
+        if (status != null) {
+            findElement(By.id("li-blank-" + status)).click();
+        }
         textPresent("1 results for");
         textPresent(name, By.id("acc_link_0"));
     }
@@ -433,8 +433,8 @@ public class NlmCdeBaseTest {
         textPresent("Nothing here");
         driver.get(baseUrl + "/#/" + type + "/search");
         findElement(By.name("ftsearch"));
-        showSearchFilters();
-        textPresent("NINDS (");
+//        showSearchFilters();
+//        textPresent("NINDS (");
     }
 
     protected void goToSearchByMenu() {

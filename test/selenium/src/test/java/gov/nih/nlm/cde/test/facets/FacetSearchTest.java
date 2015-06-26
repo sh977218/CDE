@@ -23,8 +23,6 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void stewardFacets() {
-        setLowStatusesVisible();
-        goToCdeSearch();
         mustBeLoggedOut();
         setLowStatusesVisible();
         findElement(By.id("li-blank-Preferred Standard")).click();
@@ -62,7 +60,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void deepFacets() {
         goToCdeSearch();
-        findElement(By.id("li-blank-NINDS")).click();
+        findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
         findElement(By.id("li-blank-Traumatic Brain Injury")).click();
         findElement(By.id("li-blank-Acute Hospitalized")).click();
@@ -80,7 +78,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     public void regStatusFacets() {
         mustBeLoggedOut();
         setLowStatusesVisible();
-        findElement(By.id("li-blank-caBIG")).click();
+        findElement(By.id("browseOrg-caBIG")).click();
         findElement(By.id("li-blank-ASCO")).click();
         textPresent("Agent Physical Appearance Type");
         textPresent("First Follow-up Visit Date");
@@ -128,7 +126,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void facetPagination() {
         goToCdeSearch();
-        findElement(By.id("li-blank-CTEP")).click();
+        findElement(By.id("browseOrg-CTEP")).click();
         // next line should make it wait.
         textPresent("OPEN to Rave");
         hangon(1);
@@ -139,10 +137,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         scrollToTop();
         
         findElement(By.id("resetSearch")).click();
-        Assert.assertTrue(textPresent("Qualified (94"));
+        textPresent("Qualified (94");
         findElement(By.name("ftsearch")).sendKeys("Immunology");
         findElement(By.cssSelector("i.fa-search")).click();
-        Assert.assertTrue(textPresent("Immunology Gonorrhea Assay Laboratory Finding Result"));
+        textPresent("Immunology Gonorrhea Assay Laboratory Finding Result");
     }
 
     

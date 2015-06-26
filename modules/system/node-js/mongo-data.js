@@ -164,7 +164,8 @@ exports.listOrgsLongName = function(callback) {
 };
 
 exports.listOrgsDetailedInfo = function(callback) {
-    Org.find({}, {'_id': 0, 'name':1, 'longName':1, 'mailAddress':1, "emailAddress":1, "phoneNumber":1, "uri":1, "workingGroupOf":1}).exec(function(err, result) {
+    Org.find({}, {'_id': 0, 'name':1, 'longName':1, 'mailAddress':1, "emailAddress":1,
+        "phoneNumber":1, "uri":1, "workingGroupOf":1, "extraInfo": 1}).exec(function(err, result) {
         callback("", result);
     });
 };

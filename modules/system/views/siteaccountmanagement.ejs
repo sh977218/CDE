@@ -54,6 +54,7 @@
                     <th>E-mail Address:</th>
                     <th>Phone Number:</th>
                     <th>Website:</th>
+                    <th>Extra Info:</th>
                     <th>Working Group Of:</th>
                 </tr>
                 <tr ng-repeat="c in orgs | orderBy:'name'">
@@ -74,6 +75,9 @@
                     </td>
                     <td>
                         <div inline-edit id="orgUri-{{c.name}}" model="c.uri" is-allowed="true" on-ok="updateOrg(c)"></div>
+                    </td>
+                    <td>
+                        <div inline-edit id="orgExtra-{{c.name}}" model="c.extraInfo" is-allowed="true" on-ok="updateOrg(c)"></div>
                     </td>
                     <td>
                         <div inline-edit id="orgWg-{{c.name}}" typeahead-source="orgNames" model="c.workingGroupOf" is-allowed="true" on-ok="updateOrg(c)"></div>
