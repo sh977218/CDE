@@ -3,9 +3,7 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
 function($scope, OrgHelpers) {
 
     $scope.orgs = [];
-
-    //OrgHelpers.orgsDetailedInfo[org.name] = org;
-
+    
     $scope.$watch('aggregations.orgs.buckets', function() {
         if ($scope.aggregations) {
             $scope.aggregations.orgs.buckets.forEach(function (org_t) {
