@@ -19,7 +19,8 @@ public class ExportTest extends NlmCdeBaseTest {
 
         Assert.assertTrue(response.contains("\"Ethnic Group Category Text\",\"Ethnicity; Patient Ethnicity; Ethnicity; Newborn's Ethnicity\",\"Value List\",\"Not Hispanic or Latino; Hispanic or Latino; Unknown; Not reported\",\"caDSR: 2192217 v2\",\"caBIG\",\"Standard\",\"\",\"NIDCR; caBIG; CCR; CTEP; NICHD; AECC; LCC; USC/NCCC; NHC-NCI; PBTC; CITN; OHSU Knight; DCP; DCI; Training\","));
 
-        goToSearch("cde");
+        goHome();
+        findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("ftsearch-input")).sendKeys("\"Parkinson's\"");
         findElement(By.id("exportSearch")).click();
         textPresent("export is being generated");

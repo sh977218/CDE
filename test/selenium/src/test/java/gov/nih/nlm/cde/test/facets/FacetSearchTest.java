@@ -24,6 +24,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void stewardFacets() {
         mustBeLoggedOut();
+        goHome();
         findElement(By.id("browseOrg-caBIG")).click();
         int numOfElts = Integer.valueOf(findElement(By.id("nbOfClassifElts-All Candidates")).getText());
 
