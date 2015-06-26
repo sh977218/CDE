@@ -24,15 +24,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void stewardFacets() {
         mustBeLoggedOut();
-        setLowStatusesVisible();
-        findElement(By.id("li-blank-Preferred Standard")).click();
-        hangon(1);
-        findElement(By.id("li-blank-Standard")).click();
-        hangon(1);
-        findElement(By.id("li-blank-Qualified")).click();
 
         textNotPresent("GRDR (75)");
-        textPresent("CCR (4");
+        findElement(By.id("browseOrg-GRDR"));
         findElement(By.id("li-blank-Recorded")).click();
         textPresent("GRDR (75)");
         textPresent("NINDS (91");
@@ -49,11 +43,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void statusFacets() {
-        setLowStatusesVisible();
         goToCdeSearch();
+        findElement(By.id("browseOrg-caBIG")).click();
         textPresent("Qualified (94");
-        findElement(By.id("li-blank-caBIG")).click();
-        //findElement(By.cssSelector("i.fa-square-o"));
         textPresent("Qualified (1");
     }
 
