@@ -61,7 +61,6 @@ exports.ticketValidate = function( tkt, cb ) {
     req.on('error', function (e) {
         logging.errorLogger.error('getTgt: ERROR with request: ' + e);
         return cb(e);
-//        logging.errorLogger.error("getTgt: ERROR with request", {origin: "system.adminItemSvc.approveComment", stack: new Error().stack}, req);                
     });
     
     req.on("timeout", function() { 
@@ -155,7 +154,7 @@ exports.findAddUserLocally = function(username, req, next) {
             return;
         } else if(!user) { // User has been authenticated but user is not in local db, so register him.
             mongo_data_system.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
-                auth.updateUserAfterLogin(req, user);
+                auth.updateUserAfterLogin(req, newUser);
                 next(newUser);
             });
         } else { // User already exists, so update user info. Code should never reach here if using authBeforeVsac()

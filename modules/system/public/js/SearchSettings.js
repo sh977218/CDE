@@ -6,7 +6,6 @@ angular.module('ElasticSearchResource')
             searchSettings = settings;
             localStorageService.set("SearchSettings", settings);
             userResource.updateSearchSettings(settings);
-
         };
         this.getDefault = function () {
             return {

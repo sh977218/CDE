@@ -125,6 +125,12 @@ public class NlmCdeBaseTest {
         resizeWindow(1280, 800);
     }
 
+    @BeforeMethod
+    public void clearStorage() {
+        String clearStorage = "localStorage.clear();";
+        ((JavascriptExecutor) driver).executeScript(clearStorage, "");
+    }
+
     protected void resizeWindow(int width, int height) {
         driver.manage().window().setSize(new Dimension(width, height));
     }
@@ -283,16 +289,6 @@ public class NlmCdeBaseTest {
         findElement(By.id("acc_link_0")).click();
     }
 
-    protected WebElement findElement(By by) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-        return driver.findElement(by);
-    }
-
-    public void waitAndClick(By by) {
-        wait.until(ExpectedConditions.elementToBeClickable(by));
-        findElement(by).click();
-    }
-
     public void checkTooltipText(By by, String text) {
         try {
             textPresent(text);
@@ -301,6 +297,16 @@ public class NlmCdeBaseTest {
             hoverOverElement(findElement(by));
             textPresent(text);
         }
+    }
+
+    protected WebElement findElement(By by) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+        return driver.findElement(by);
+    }
+
+    public void waitAndClick(By by) {
+        wait.until(ExpectedConditions.elementToBeClickable(by));
+        findElement(by).click();
     }
 
     protected void clickElement(By by) {

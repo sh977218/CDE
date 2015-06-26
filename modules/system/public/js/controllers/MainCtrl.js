@@ -1,9 +1,13 @@
-angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory', '$interval', '$window', 'screenSize', 'OrgHelpers', function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers) {
+angular.module('systemModule').controller('MainCtrl',
+    ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory', '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard',
+        function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers, QuickBoard) {
+
+    $scope.quickBoard = QuickBoard;
+    QuickBoard.restoreFromLocalStorage();
 
     // Global variables
     var GLOBALS = {
-        max_quickboard_cdes : 10
-        , getOrgsInterval : 1000 * 60 * 10 * 1 // 10 min
+        getOrgsInterval : 1000 * 60 * 10 // 10 min
     };
 
     $scope.resultPerPage = 20;
@@ -74,18 +78,6 @@ angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'user
     $scope.isDocumentationEditor = function() {
         return exports.hasRole(userResource.user, "DocumentationEditor");
     };
-    
-    // quickBoard contains an array of CDE IDs
-    $scope.quickBoard = [];
-    $scope.addToQuickBoard = function(cdeId) {
-        if( $scope.quickBoard.length < GLOBALS.max_quickboard_cdes ) {
-            $scope.quickBoard.push(cdeId.tinyId);
-        }
-    };
-    
-    $scope.emptyQuickBoard = function() {
-        $scope.quickBoard = [];
-    };
            
     $scope.openPinModal = function (cde) {
         var modalInstance = $modal.open({
@@ -110,12 +102,6 @@ angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'user
             });
         }, function () {
         });
-    };
-        
-    $scope.showCompareButton = function(cde) {
-        return $scope.quickBoard.length < GLOBALS.max_quickboard_cdes &&
-               cde !== undefined &&
-               $scope.quickBoard.indexOf(cde.tinyId) < 0;
     };
 
     $scope.isPageActive = function (viewLocation) { 
@@ -142,17 +128,18 @@ angular.module('systemModule').controller('MainCtrl', ['$scope', '$modal', 'user
     $scope.openCloseAllModel = {};
     $scope.openCloseAllModel["list"] = $scope.cache.get("openCloseAlllist");
     $scope.openCloseAllModel["quickboard"] = $scope.cache.get("openCloseAllquickboard");
-    
+
+
     $scope.openCloseAllSwitch = function(cdes, type) {
         $scope.openCloseAllModel[type] = !$scope.openCloseAllModel[type];
         $scope.cache.put("openCloseAllModel"+type, $scope.openCloseAllModel[type]);
         $scope.openCloseAll(cdes,type);
     };
-    
+
     $scope.openCloseAll = function(cdes, type) {
         for (var i = 0; i < cdes.length; i++) {
             cdes[i].isOpen = $scope.openCloseAllModel[type];
-        }        
+        }
     };
 
     $scope.searchByClassification = function(orgName, elts, type) {
