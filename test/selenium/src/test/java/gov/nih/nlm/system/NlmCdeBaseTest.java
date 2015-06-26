@@ -696,22 +696,6 @@ public class NlmCdeBaseTest {
         goToSearch("cde");
     }
 
-    protected void randomPickClassification() {
-        List<WebElement> classifications = driver.findElements(By.cssSelector("#classificationListHolder a"));
-        int classifications_len = classifications.size();
-        int classification_selected = randInt(1, classifications_len);
-        WebElement classification = classifications.get(classification_selected - 1);
-        classification.click();
-    }
-
-    protected void randomPickRegistrationStatus() {
-        List<WebElement> registrationStatuses = driver.findElements(By.cssSelector("#registrationStatusListHolder a"));
-        int registrationStatuses_len = registrationStatuses.size();
-        int registrationStatus_selected = randInt(1, registrationStatuses_len);
-        WebElement registrationStatus = registrationStatuses.get(registrationStatus_selected - 1);
-        registrationStatus.click();
-    }
-
     private int randInt(int min, int max) {
         return new Random().nextInt((max - min) + 1) + min;
     }

@@ -10,18 +10,16 @@ import java.util.List;
 public class PinAllTest extends BoardTest {
 
     @Test
-    public void pinAll() {
+    public void pinAllLessThan20() {
         String board_name = "Pin All Test Board";
-        String board_description = "This board is only for pin all test.";
+        String board_description = "Pin All less than 20 board.";
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         createBoard(board_name, board_description);
         goToCdeSearch();
-        hangon(1);
-        findElement(By.id("resetSearch")).click();
-        randomPickClassification();
-        hangon(1);
-        randomPickRegistrationStatus();
-        hangon(1);
+
+        findElement(By.id("li-blank-SPOREs")).click();
+        hangon(3);
+
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         findElement(By.id("pinAll")).click();
         textPresent("Select Board");
@@ -44,10 +42,10 @@ public class PinAllTest extends BoardTest {
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         createBoard(board_name, board_description);
         goToCdeSearch();
-        findElement(By.id("classifications-text-CTEP")).click();
-        hangon(1);
-        findElement(By.id("status-text-Qualified")).click();
-        hangon(1);
+        findElement(By.id("li-blank-CTEP")).click();
+        hangon(3);
+        findElement(By.id("li-blank-Qualified")).click();
+        hangon(3);
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         Assert.assertTrue(searchResultNum_int > 20);
         findElement(By.id("pinAll")).click();
