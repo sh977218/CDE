@@ -24,21 +24,13 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void stewardFacets() {
         mustBeLoggedOut();
+        findElement(By.id("browseOrg-caBIG")).click();
+        int numOfElts = Integer.valueOf(findElement(By.id("nbOfClassifElts-All Candidates")).getText());
 
-        textNotPresent("GRDR (75)");
-        findElement(By.id("browseOrg-GRDR"));
-        findElement(By.id("li-blank-Recorded")).click();
-        textPresent("GRDR (75)");
-        textPresent("NINDS (91");
-        findElement(By.id("li-checked-Qualified")).click();
-        textNotPresent("NINDS (9");
-        findElement(By.id("li-checked-Recorded")).click();
-        hangon(1);
-        findElement(By.id("li-checked-Standard")).click();
-        hangon(1);
-        waitAndClick(By.id("li-checked-Preferred Standard"));
-        textPresent("NINDS (91");
-        textPresent("All Statuses");
+        findElement(By.id("li-blank-All Candidates")).click();
+
+        textPresent(numOfElts + " results for All Terms | caBIG | All Statuses");
+        
     }
 
     @Test
@@ -147,7 +139,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("saveRegStatus")).click();
         waitForESUpdate();
         goToCdeSearch();
-        findElement(By.id("browseOrg-DCP"));
+        findElement(By.id("browseOrg-DCP")).click();
         textNotPresent("Noncompliant Reason Text");
         textPresent("Preferred Standard (");
         findElement(By.id("li-blank-Standard")).click();
