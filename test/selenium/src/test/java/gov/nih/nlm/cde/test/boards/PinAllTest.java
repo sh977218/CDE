@@ -1,8 +1,11 @@
 package gov.nih.nlm.cde.test.boards;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 public class PinAllTest extends BoardTest {
 
@@ -32,4 +35,5 @@ public class PinAllTest extends BoardTest {
         int num_cde_after_pinAll_int = Integer.parseInt(num_cde_after_pinAll_string);
         Assert.assertEquals(num_cde_before_pinAll_int + searchResultNum_int, num_cde_after_pinAll_int);
     }
+    
 }
