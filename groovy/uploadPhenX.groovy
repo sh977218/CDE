@@ -11,9 +11,10 @@ import com.gargoylesoftware.htmlunit.html.*
 def baseFileDir = args[0];
 def mongoHost = args[1];
 def mongoDb = args[2];
+def password = args[3];
 
-if(mongoHost == null || mongoDb == null)  {
-    println "Please specify mongodb host and dbname: 'groovy UploadPhenX.groovy [filename] [mongodb-host] [dbname]'";
+if(mongoHost == null || mongoDb == null || password == null)  {
+    println "Please specify mongodb host and dbname: 'groovy UploadPhenX.groovy [filename] [mongodb-host] [dbname] [password]'";
     System.exit(0);
 } else {
     println "MongoDB host: " + mongoHost + ", db: " + mongoDb
@@ -22,7 +23,6 @@ if(mongoHost == null || mongoDb == null)  {
 def idUtils = new IdUtils();
 def siteRootAdmin = "siteRootAdmin";
 def authDB = "admin";
-def password = "password";
 
 MongoCredential credential = MongoCredential.createMongoCRCredential(siteRootAdmin, authDB, password.toCharArray());
 
