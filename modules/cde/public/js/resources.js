@@ -73,4 +73,68 @@ angular.module('resourcesCde', ['ngResource'])
         }
     };
 }])
+.factory("QuickBoard", function(CdeList, OrgHelpers, userResource, localStorageService) {
+    return {
+        restoreFromLocalStorage: function() {
+            var res = localStorageService.get("quickBoard");
+            if (!res) res = [];
+            this.elts = res;
+        },
+        max_elts: 10,
+        elts: [],
+        loading: false,
+        add: function(elt) {
+            if(this.elts.length < this.max_elts) {
+                this.elts.push(elt);
+            }
+            localStorageService.add("quickBoard", this.elts);
+        },
+        remove: function(index) {
+            this.elts.splice(index, 1);
+            localStorageService.add("quickBoard", this.elts);
+        },
+        empty: function() {
+            this.elts = [];
+            localStorageService.add("quickBoard", this.elts);
+        },
+        canAddElt: function(elt) {
+            if (this.elts.length < this.max_elts &&
+                elt !== undefined) {
+
+                var tinyIds = this.elts.map(function(_elt) {
+                    return _elt.tinyId;
+                });
+                return tinyIds.indexOf(elt.tinyId) === -1;
+            }
+            else {
+                return false;
+            }
+        },
+        loadElts: function(cb) {
+            if (this.elts.length > 0) {
+                var qb = this;
+                qb.loading = true;
+                var tinyIds = this.elts.map(function(elt) {
+                    return elt.tinyId;
+                });
+                CdeList.byTinyIdList(tinyIds, function(result) {
+                    if(result) {
+                        for (var i = 0; i < qb.elts.length; i++) {
+                            result.forEach(function(res) {
+                                if (res.tinyId === qb.elts[i].tinyId) {
+                                     qb.elts[i] = res;
+                                }
+                            })
+                        }
+                        qb.elts.forEach(function (elt) {
+                            elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
+                        });
+                    }
+                    qb.loading = false;
+                    if (cb) cb();
+                });
+            }
+        }
+    }
+});
 ;    

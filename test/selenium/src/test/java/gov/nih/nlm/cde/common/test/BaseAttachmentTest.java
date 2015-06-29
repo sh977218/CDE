@@ -49,42 +49,30 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         gotoInbox();
 
         textPresent("Attachment Approval");
-        findElement(By.xpath("//div[@id='mail_received']//a[1]")).click();
+        findElement(By.xpath("//span[contains(text(), '" + name + "')]")).click();
 
-        String preClass = "";
-        try {
-            textPresent(name);
-        } catch (Exception e) {
-            preClass = "accordion:nth-child(2) ";
-            findElement(By.cssSelector(preClass+".accordion-toggle")).click();
-            textPresent(name);
-        }
-        textPresent("Scanned");
-        findElement(By.cssSelector(preClass+".approveAttachment")).click();
-        textPresent("Attachment approved");  
+        findElement(By.linkText(name));
+        textPresent("Scanned by ClamAV");
+        findElement(By.id("approve-" + name)).click();
+        textPresent("Attachment approved");
+        closeAlert();
               
     } 
 
-    protected void declineAttachment() {
+    protected void declineAttachment(String name) {
         mustBeLoggedInAs(attachmentReviewer_username, password);       
         gotoInbox();
 
 
         textPresent("Attachment Approval");
-        findElement(By.cssSelector(".accordion-toggle")).click();        
+        findElement(By.xpath("//span[contains(text(), '" + name + "')]")).click();
 
-        String preClass = "";
-        try {
-            textPresent("painLocationInapr.png");
-        } catch (Exception e) {
-            preClass = "accordion:nth-child(2) ";
-            findElement(By.cssSelector(preClass+".accordion-toggle")).click();
-            textPresent("painLocationInapr.png");
-        }
+        findElement(By.linkText(name));
+        textPresent("Scanned by ClamAV");
 
-        findElement(By.cssSelector(preClass+".declineAttachment")).click();
-        textPresent("Attachment declined");  
-              
+        findElement(By.id("decline-" + name)).click();
+        textPresent("Attachment declined");
+        closeAlert();
     }
 
     public void setAttachmentDefault() {

@@ -1,5 +1,6 @@
 var  path = require('path')
     , express = require('express')
+    , config = require('../../system/node-js/parseConfig')
     , mongo = require('./mongo_article')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
@@ -44,7 +45,7 @@ exports.init = function(app) {
         }
     });
   
-    app.post('/attachments/article/add', multer(), function(req, res) {
+    app.post('/attachments/article/add', multer(config.multer), function(req, res) {
         if (authorizationShared.hasRole(req.user, "DocumentationEditor")) {
             mongo.byId(req.body.id, function(err, elt) {
                 if (err) res.status(404).end();

@@ -35,7 +35,7 @@ public class MoreLikeThisTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         createTest.createBasicCde(cdeName, "mlt def", "CTEP", "Phase", "Phase II");
         findElement(By.id("editStatus")).click();
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
+        new Select(findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
         createTest.createBasicCde(cdeName, "mlt def", "CTEP", "Phase", "Phase II");

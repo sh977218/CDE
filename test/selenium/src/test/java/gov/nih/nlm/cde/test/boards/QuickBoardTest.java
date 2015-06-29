@@ -9,6 +9,14 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 public class QuickBoardTest extends NlmCdeBaseTest {
+
+    public void emptyQuickBoard() {
+        findElement(By.partialLinkText("Quick Board (")).click();
+        findElement(By.id("qb.empty")).click();
+        findElement(By.linkText("Quick Board ( empty )")).click();
+        hangon(1);
+    }
+
     @Test
     public void gotoEmptyQuickBoard() {
         goHome();
@@ -16,11 +24,11 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         hangon(0.5);
         findElement(By.linkText("Quick Board ( empty )")).click();
         try {
-            Assert.assertTrue(textPresent("The quick board is empty."));
+            textPresent("The quick board is empty.");
         } catch (Exception e) {
             goHome();
             findElement(By.linkText("Quick Board ( empty )")).click();
-            Assert.assertTrue(textPresent("The quick board is empty."));
+            textPresent("The quick board is empty.");
         }
     }
 
@@ -38,26 +46,23 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Laboratory Procedure Magnesium Result Unspecified Lower Limit of Normal Value" );
         addToQuickBoard( "Central Nervous System Preventive Intervention Administered Indicator" );
      
-        Assert.assertTrue(textPresent("Quick Board ( full )"));
+        textPresent("Quick Board ( full )");
     
         findElement(By.linkText("Quick Board ( full )")).click();
-        Assert.assertTrue(textNotPresent("The quick board is empty."));
+        textNotPresent("The quick board is empty.");
         findElement(By.id("qb.empty")).click();
-        Assert.assertTrue( textPresent( "Quick Board ( empty )" ) );
+        textPresent("Quick Board ( empty )");
     }
 
     @Test
-    public void emptyQuickBoard() {
+    public void emptyQuickBoardTest() {
         goToCdeSearch();
         addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
         addToQuickBoard( "Prior BMSCT Administered Indicator" );
-        addToQuickBoard( "Generalized Activities of Daily Living Pain Restricted Scale" );
-        Assert.assertTrue(textPresent("Quick Board ( 5 )"));
-        findElement(By.linkText("Quick Board ( 5 )")).click();
-        findElement(By.id("qb.empty")).click();
-        findElement(By.linkText("Quick Board ( empty )")).click();
+        addToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
+        textPresent("Quick Board ( 5 )");
     }
     
     @Test
@@ -66,9 +71,9 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
-        addToQuickBoard( "Prior BMSCT Administered Indicator" );
-        addToQuickBoard( "Generalized Activities of Daily Living Pain Restricted Scale" );
-        Assert.assertTrue(textPresent("Quick Board ( 5 )"));
+        addToQuickBoard("Prior BMSCT Administered Indicator");
+        addToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
+        textPresent("Quick Board ( 5 )");
         findElement(By.linkText("Quick Board ( 5 )")).click();
         textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
         waitAndClick(By.id("gridView"));
@@ -77,21 +82,21 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent("Prior BMSCT Administered Indicator");
         textPresent("2320242");
         findElement(By.id("qb.empty")).click();
-        Assert.assertTrue( textPresent( "Quick Board ( empty )" ) );
+        textPresent( "Quick Board ( empty )" );
     }
 
     @Test
     public void noSideBySideCompare() {
         goToCdeSearch();
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
-        addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
-        addToQuickBoard( "Prior BMSCT Administered Indicator" );
-        Assert.assertTrue(textPresent("Quick Board ( 3 )"));
+        addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
+        addToQuickBoard("Prior BMSCT Administered Indicator");
+        textPresent("Quick Board ( 3 )");
         findElement(By.linkText("Quick Board ( 3 )")).click();
         findElement(By.id("qb.compare")).click();
-        Assert.assertTrue( textPresent( "You may only compare 2 CDEs side by side." ) );
+        textPresent("You may only compare 2 CDEs side by side." );
         findElement(By.id("qb.empty")).click();
-        Assert.assertTrue( textPresent( "Quick Board ( empty )" ) );
+        textPresent( "Quick Board ( empty )" );
     }
 
     @Test
@@ -109,7 +114,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent( "ALK Standard Deviation" );
         textPresent( "Platinum free interval" );
         textPresent( "Permissible Values" );
-        
+
         findElement(By.linkText("Quick Board ( 2 )")).click();
         findElement(By.id("qb.empty")).click();
         textPresent( "Quick Board ( empty )" );
@@ -133,7 +138,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         hangon(.5);
         findElement(By.linkText("Quick Board ( " + searchResultNum_int + " )")).click();
         hangon(.5);
-        Assert.assertTrue(textPresent(toRemove));
+        textPresent(toRemove);
         List<WebElement> pluses = driver.findElements(By.cssSelector("i.fa-plus"));
         for (WebElement plus : pluses) {
             Assert.assertFalse(plus.isDisplayed());
@@ -144,7 +149,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         for (WebElement plus : pluses) {
             Assert.assertFalse(plus.isDisplayed());
         }
-        Assert.assertTrue(textNotPresent(toRemove));
+        textNotPresent(toRemove);
     }
 
 }
