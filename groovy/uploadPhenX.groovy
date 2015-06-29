@@ -22,17 +22,9 @@ if(mongoHost == null || mongoDb == null)  {
 def idUtils = new IdUtils();
 def siteRootAdmin = "siteRootAdmin";
 def authDB = "admin";
-def password = new char[8];
-password[0] = 'p';
-password[1] = 'a';
-password[2] = 's';
-password[3] = 's';
-password[4] = 'w';
-password[5] = 'o';
-password[6] = 'r';
-password[7] = 'd';
+def password = "password";
 
-MongoCredential credential = MongoCredential.createMongoCRCredential(siteRootAdmin, authDB, password);
+MongoCredential credential = MongoCredential.createMongoCRCredential(siteRootAdmin, authDB, password.toCharArray());
 
 MongoClient mongoClient = new MongoClient( Arrays.asList(new ServerAddress(mongoHost, 27017)), Arrays.asList(credential),);
 DB db = mongoClient.getDB(mongoDb);
