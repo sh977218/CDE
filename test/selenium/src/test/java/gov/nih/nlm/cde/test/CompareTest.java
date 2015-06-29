@@ -17,7 +17,6 @@ public class CompareTest extends NlmCdeBaseTest {
     
     @Test
     public void emptyList() {
-        goToCdeSearch();
         openCdeInList("Sedation status");
         findElement(By.id("compare_0")).click();
         textPresent("Quick Board ( 1 )");      

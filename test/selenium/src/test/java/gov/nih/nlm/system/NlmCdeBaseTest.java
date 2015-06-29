@@ -439,6 +439,7 @@ public class NlmCdeBaseTest {
         textPresent("Nothing here");
         driver.get(baseUrl + "/#/" + type + "/search");
         findElement(By.name("ftsearch"));
+        scrollToTop();
     }
 
     protected void goToSearchByMenu() {
