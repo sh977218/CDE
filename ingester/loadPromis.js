@@ -61,7 +61,7 @@ var doFile = function(file, cb) {
             var duplicate = cdeArray.findDuplicate(cde.naming[0].designation);
             
             if (duplicate) {
-                duplicate.classification[0].elements[0].elements.push({name: form.name, elements: []});
+                classificationShared.addCategory(duplicate.classification[0], ["Forms", classifs[0], classifs[1]]);
             } else {
                 cde.classification = [];    
                 cde.classification.push({
