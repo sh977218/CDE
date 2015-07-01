@@ -300,7 +300,7 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.filterOutWorkingGroups($scope.aggregations);
             OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
 
-            if (($scope.searchForm.ftsearch && $scope.searchForm.ftsearch.length > 0) || $scope.classificationFilters[0].org)
+            if ((settings.searchTerm && settings.searchTerm.length > 0) || settings.selectedOrg)
                 $scope.selectedMainAreaMode = mainAreaModes.searchResult;
             else
                 $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;

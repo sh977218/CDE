@@ -21,6 +21,7 @@ public class ExportTest extends NlmCdeBaseTest {
 
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
+        textPresent("All Statuses");
         findElement(By.id("ftsearch-input")).sendKeys("\"Parkinson's\"");
         findElement(By.id("exportSearch")).click();
         textPresent("export is being generated");

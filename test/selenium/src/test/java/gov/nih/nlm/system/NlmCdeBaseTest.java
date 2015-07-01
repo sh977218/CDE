@@ -256,6 +256,10 @@ public class NlmCdeBaseTest {
         openEltInList(name, type, null);
     }
 
+    public void searchCde(String cdeName) {
+        searchElt(cdeName, "cde", null);
+    }
+
     public void searchElt(String name, String type, String status) {
         goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();
@@ -437,8 +441,7 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/gonowhere");
         textPresent("Nothing here");
         driver.get(baseUrl + "/#/" + type + "/search");
-        findElement(By.name("ftsearch"));
-        scrollToTop();
+        findElement(By.id("ftsearch-input"));
     }
 
     protected void goToSearchByMenu() {
@@ -467,11 +470,7 @@ public class NlmCdeBaseTest {
     }
 
     public void addToQuickBoard(String cdeName) {
-        findElement(By.name("ftsearch")).clear();
-        findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
-        findElement(By.id("search.submit")).click();
-        textPresent("1 results for");
-        textPresent(cdeName, By.cssSelector("#acc_link_0"));
+        searchCde(cdeName);
         findElement(By.id("addToCompare_0")).click();
         hangon(.5);
         findElement(By.name("ftsearch")).clear();
