@@ -508,20 +508,6 @@ public class NlmCdeBaseTest {
         return elementVisible;
     }
 
-    protected boolean checkElementDoesNotExistById(String id) {
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-        boolean elementVisible;
-        try {
-            driver.findElement(By.id(id));
-            elementVisible = false;
-        } catch (NoSuchElementException e) {
-            elementVisible = true;
-        }
-        driver.manage().timeouts()
-                .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
-        return elementVisible;
-    }
-
     public void scrollTo(Integer y) {
         String jsScroll = "scroll(0," + Integer.toString(y) + ");";
         String jqueryScroll = "$(window).scrollTop(" + Integer.toString(y)
