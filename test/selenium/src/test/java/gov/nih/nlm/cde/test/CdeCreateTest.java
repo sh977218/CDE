@@ -24,10 +24,10 @@ public class CdeCreateTest extends BaseClassificationTest {
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
         textPresent("Please select at least one classification");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
-        addClassificationMethod(new String[]{"CTEP", "DISEASE", "Gynecologic"});
+        addClassificationToNewCdeMethod(new String[]{"CTEP", "DISEASE", "Gynecologic"});
         textPresent("Please select at least one classification owned by NINDS");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
-        addClassificationMethod(new String[]{"NINDS", "Population", "Adult"});
+        addClassificationToNewCdeMethod(new String[]{"NINDS", "Population", "Adult"});
         textNotPresent("Please");
         Assert.assertTrue(findElement(By.id("submit")).isEnabled());
     }
