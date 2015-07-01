@@ -1,13 +1,16 @@
+var promisDir = process.argv[2];
+
 var fs = require('fs'),
     https = require('https'),
-    mongo_cde = require('../modules/cde/node-js/mongo-cde'),
+    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
     config = require('config'),
-    classificationShared = require('../modules/system/shared/classificationShared'),
-    mongo_data_system = require('../modules/system/node-js/mongo-data'),
-    async = require ('async')
-        ;
+    classificationShared = require('../../modules/system/shared/classificationShared'),
+    mongo_data_system = require('../../modules/system/node-js/mongo-data'),
+    async = require ('async'),
+    loinc = require('../../'+promisDir + '/loinc.json')
+    ;
 
-var promisDir = process.argv[2];
+
 var date = process.argv[3];
 if (!promisDir) {
     console.log("missing promisDir arg");
@@ -44,6 +47,11 @@ var doFile = function(file, cb) {
                 valueDomain: {datatype: "Text"},
                 registrationState: {registrationStatus: "Qualified"}
             };
+
+            //var lastNamePart = item.Elements[item.Elements.length-1];
+            //if (lastNamePart[lastNamePart.length-1]===".") item.Elements[items.Elements.length-1] = lastNamePart.substr(0,lastNamePart.length -2);
+            //console.log("corrected name: "+item.Elements[items.Elements.length-1]);
+
             item.Elements.forEach(function(element) {
                 if (!element.Map) {
                     cde.naming[0].designation = cde.naming[0].designation + " " + element.Description;
@@ -83,6 +91,22 @@ var doFile = function(file, cb) {
                 });
                 cdeArray.cdearray.push(cde);
             }
+            var found = false;
+            loinc.forEach(function(l){
+                var processString = function(str){
+                    return str.toLowerCase().replace(/[^A-z]/g,"");
+                };
+                var loincName = processString(l.name);
+                var loincName2 = processString(l.name2);
+                var cdeName = processString(cde.naming[0].designation);
+                if (loincName === cdeName || loincName2 === cdeName || cde.ids[0].id === l.sourceId) {
+                    if (found) console.log("ID found twice: " + cdeName);
+                    cde.ids.push({source:"LOINC", id: l.loincCode});
+                    found = true;
+                }
+
+            });
+            if (!found) console.log("can't find ID: " + cde.naming[0].designation);
         });
         cb();
     });    
