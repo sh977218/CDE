@@ -59,4 +59,5 @@ public class PinAllTest extends BoardTest {
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
         removeBoard(board_name);
     }
+    
 }
