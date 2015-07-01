@@ -442,6 +442,7 @@ public class NlmCdeBaseTest {
         textPresent("Nothing here");
         driver.get(baseUrl + "/#/" + type + "/search");
         findElement(By.id("ftsearch-input"));
+        textPresent("Browse by organization");
     }
 
     protected void goToSearchByMenu() {

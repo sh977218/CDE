@@ -30,8 +30,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
         findElement(By.id("li-blank-All Candidates")).click();
 
-        textPresent(numOfElts + " results for All Terms | caBIG | All Statuses");
-        
+        textPresent(numOfElts + " results for All Terms | caBIG > All Candidates | All Statuses");
     }
 
     @Test

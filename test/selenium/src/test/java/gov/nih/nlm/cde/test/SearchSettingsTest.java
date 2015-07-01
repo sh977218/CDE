@@ -54,7 +54,6 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         //The following just tests that clearStorage() works
         clearStorage();
         goToCdeSearch();
-        textPresent("Browse by organization");
         findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("gridView")).click();
         textPresent("Other Names");
@@ -73,7 +72,6 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         setAndCheckFields();
         clearStorage();
         goToCdeSearch();
-        textPresent("Browse by organization");
         findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("gridView")).click();
         textPresent("Other Names");

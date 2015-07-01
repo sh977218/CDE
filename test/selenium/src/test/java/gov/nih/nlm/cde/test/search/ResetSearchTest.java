@@ -22,6 +22,8 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(linkList.size(), 2);
         findElement(By.id("resetSearch")).click();
         textPresent("Browse by organization");
+        findElement(By.id("browseOrg-NINDS")).click();
+        textPresent("Population (");
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(linkList.size() > 10);
 
