@@ -8,7 +8,8 @@ var fs = require('fs'),
     classificationShared = require('../../modules/system/shared/classificationShared'),
     mongo_data_system = require('../../modules/system/node-js/mongo-data'),
     async = require ('async'),
-    loinc = require('../../'+promisDir + '/loinc.json')
+    loinc = require('../../'+promisDir + '/loinc.json'),
+    loadLoincPv = require('./loadLoincPVs')
     ;
 
 
@@ -220,24 +221,27 @@ mongo_data_system.orgByName("Assessment Center", function(stewardOrg) {
         stewardOrg.classifications = fakeTree.elements;
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
-        });        
+        });
+        var newCdeArray = [];
         async.each(cdeArray.cdearray, function(cde, cb) {
             mongo_cde.create(cde, {username: 'loader'}, function(err, newCde) {
                if (err) {
                    console.log("unable to create CDE. " + err);
                }
-                cde.tinyId = newCde.tinyId;
-                cde.version = newCde.version;
+               newCdeArray.push(newCde);
                cb();
             });                        
         }, function(err) {
+            cdeArray.cdearray = newCdeArray;
             // Now load the forms
             async.each(files, function(file, cb){
                 loadForm(file, function(){
                     cb();
                 });
             }, function(err) {
-                process.exit(0);
+                loadLoincPv.loadPvs(cdeArray, function() {
+                    process.exit(0);
+                });
             });
         });
     });    
