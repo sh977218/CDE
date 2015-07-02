@@ -36,6 +36,7 @@ public class BoardManagement4Test extends BoardTest {
         Assert.assertEquals(0, num);
         pinTo("Lymph Node Procedure", boardName);
         gotoMyBoards();
+        textPresent(boardName);
         length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();

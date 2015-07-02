@@ -506,20 +506,6 @@ public class NlmCdeBaseTest {
         return elementVisible;
     }
 
-    protected boolean checkElementDoesNotExistById(String id) {
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-        boolean elementVisible;
-        try {
-            driver.findElement(By.id(id));
-            elementVisible = false;
-        } catch (NoSuchElementException e) {
-            elementVisible = true;
-        }
-        driver.manage().timeouts()
-                .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
-        return elementVisible;
-    }
-
     public void scrollTo(Integer y) {
         String jsScroll = "scroll(0," + Integer.toString(y) + ");";
         String jqueryScroll = "$(window).scrollTop(" + Integer.toString(y)
@@ -692,22 +678,6 @@ public class NlmCdeBaseTest {
         textPresent("Settings saved");
         closeAlert();
         goToSearch("cde");
-    }
-
-    protected void randomPickClassification() {
-        List<WebElement> classifications = driver.findElements(By.cssSelector("#classificationListHolder a"));
-        int classifications_len = classifications.size();
-        int classification_selected = randInt(1, classifications_len);
-        WebElement classification = classifications.get(classification_selected - 1);
-        classification.click();
-    }
-
-    protected void randomPickRegistrationStatus() {
-        List<WebElement> registrationStatuses = driver.findElements(By.cssSelector("#registrationStatusListHolder a"));
-        int registrationStatuses_len = registrationStatuses.size();
-        int registrationStatus_selected = randInt(1, registrationStatuses_len);
-        WebElement registrationStatus = registrationStatuses.get(registrationStatus_selected - 1);
-        registrationStatus.click();
     }
 
     private int randInt(int min, int max) {
