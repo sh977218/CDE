@@ -26,12 +26,5 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         textPresent("Population (");
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(linkList.size() > 10);
-
-        findElement(By.id("li-blank-caCORE")).click();
-        textPresent("caCORE 3.2");
-        findElement(By.id("li-blank-caCORE")).click();
-        findElement(By.id("li-blank-CSM")).click();
-        textPresent("2 results");
-
     }
 }
