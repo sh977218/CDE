@@ -1,24 +1,23 @@
 var fs = require('fs');
 var formPath = process.argv[2];
-var levelOneClassifs = fs.readdirSync(formPath);
-
 var formNameMap = {};
 
-levelOneClassifs.forEach(function (l1) {
-    var levelTwoClassifs = fs.readdirSync(formPath + "/" +l1);
-    levelTwoClassifs.forEach(function(l2){
-        if (l2.substr(l2.length - 4) === ".pdf") {
-            formNameMap[l2.substr(0, l2.length - 4)] = [l1];
+var readDir = function(path){
+    var dirContent = fs.readdirSync(formPath+"/"+ path.join("/"));
+    dirContent.forEach(function(element){
+        if (element.substr(element.length - 4) === ".pdf") {
+            formNameMap[element.substr(0, element.length - 4)] = path;
         }
         else {
-            var levelThreeClassifs = fs.readdirSync(formPath + "/" + l1 + "/" + l2);
-            levelThreeClassifs.forEach(function(l3){
-                formNameMap[l3.substr(0, l3.length - 4)] = [l1, l2];
-            });
+            var pCopy = JSON.parse(JSON.stringify(path));
+            pCopy.push(element);
+            readDir(pCopy);
         }
     });
-});
+};
 
+readDir([]);
 fs.writeFileSync(formPath + "/../formMap.json", JSON.stringify(formNameMap));
+console.log("Loaded...");
 
 

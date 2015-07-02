@@ -8,10 +8,14 @@ var fs = require('fs'),
     classificationShared = require('../../modules/system/shared/classificationShared'),
     mongo_data_system = require('../../modules/system/node-js/mongo-data'),
     async = require ('async'),
-    loinc = require('../../'+promisDir + '/loinc.json'),
-    loadLoincPv = require('./loadLoincPVs')
+    //loinc = require('../../'+promisDir + '/loinc.json'),
+    loinc = JSON.parse(fs.readFileSync(promisDir + '/loinc.json')),
+    loadLoincPv = require('./loadLoincPVs'),
+    formClassifMap = JSON.parse(fs.readFileSync(promisDir + '/formMap.json'))
+    //formClassifMap = require('../../'+promisDir + '/formMap.json')
     ;
 
+var lostForms = [];
 
 var date = process.argv[3];
 if (!promisDir) {
@@ -38,6 +42,8 @@ var doFile = function(file, cb) {
         console.log("Form: " + form.name);
         //var classifs = form.name.split(" - ");
         //classificationShared.addCategory(fakeTree, [classifs[0], classifs[1], classifs[2]]);
+        console.log(JSON.stringify(formClassifMap[form.name]));
+        if (formClassifMap[form.name]) classificationShared.addCategory(fakeTree, formClassifMap[form.name]);
         form.content.Items.forEach(function(item) {
             var cde = {
                 stewardOrg: {name: "Assessment Center"},
@@ -73,6 +79,8 @@ var doFile = function(file, cb) {
             
             if (duplicate) {
                 //classificationShared.addCategory(duplicate.classification[0], [classifs[0], classifs[1], classifs[2]]);
+                if (formClassifMap[form.name] && duplicate.classification[0]) classificationShared.addCategory(duplicate.classification[0], formClassifMap[form.name]);
+                else lostForms.push(form.name);
             } else {
                 cde.classification = [];    
                 //cde.classification.push({
@@ -91,6 +99,24 @@ var doFile = function(file, cb) {
                 //        }
                 //    ]
                 //});
+                if (formClassifMap[form.name]) {
+                    cde.classification.push({
+                        stewardOrg: {
+                            name: "Assessment Center"
+                        },
+                        elements: [
+                            {
+                                name: formClassifMap[form.name][0],
+                                elements: [
+                                    {
+                                        name: formClassifMap[form.name][1]
+                                        , elements: []
+                                    }
+                                ]
+                            }
+                        ]
+                    });
+                }
                 cdeArray.cdearray.push(cde);
             }
             var found = false;
@@ -239,6 +265,7 @@ mongo_data_system.orgByName("Assessment Center", function(stewardOrg) {
                     cb();
                 });
             }, function(err) {
+                lostForms.forEach(function(f){console.log(f)});
                 loadLoincPv.loadPvs(cdeArray, function() {
                     process.exit(0);
                 });
