@@ -8,10 +8,14 @@ var fs = require('fs'),
     classificationShared = require('../../modules/system/shared/classificationShared'),
     mongo_data_system = require('../../modules/system/node-js/mongo-data'),
     async = require ('async'),
-    loinc = require('../../'+promisDir + '/loinc.json'),
-    loadLoincPv = require('./loadLoincPVs')
+    //loinc = require('../../'+promisDir + '/loinc.json'),
+    loinc = JSON.parse(fs.readFileSync(promisDir + '/loinc.json')),
+    loadLoincPv = require('./loadLoincPVs'),
+    formClassifMap = JSON.parse(fs.readFileSync(promisDir + '/formMap.json'))
+    //formClassifMap = require('../../'+promisDir + '/formMap.json')
     ;
 
+var lostForms = [];
 
 var date = process.argv[3];
 if (!promisDir) {
@@ -38,6 +42,7 @@ var doFile = function(file, cb) {
         console.log("Form: " + form.name);
         //var classifs = form.name.split(" - ");
         //classificationShared.addCategory(fakeTree, [classifs[0], classifs[1], classifs[2]]);
+        if (formClassifMap[form.name]) classificationShared.addCategory(fakeTree, formClassifMap[form.name]);
         form.content.Items.forEach(function(item) {
             var cde = {
                 stewardOrg: {name: "Assessment Center"},
@@ -73,19 +78,21 @@ var doFile = function(file, cb) {
             
             if (duplicate) {
                 //classificationShared.addCategory(duplicate.classification[0], [classifs[0], classifs[1], classifs[2]]);
+                if (formClassifMap[form.name] && duplicate.classification[0]) classificationShared.addCategory(duplicate.classification[0], formClassifMap[form.name]);
+                else lostForms.push(form.name);
             } else {
                 cde.classification = [];
-                cde.classification.push({
-                        stewardOrg : {
-                            name : "Assessment Center"
-                        },
-                        elements : [
-                            {
-                                name: "temp",
-                                elements: []
-                            }
-                        ]
-                });
+                //cde.classification.push({
+                //        stewardOrg : {
+                //            name : "Assessment Center"
+                //        },
+                //        elements : [
+                //            {
+                //                name: "temp",
+                //                elements: []
+                //            }
+                //        ]
+                //});
                 //cde.classification.push({
                 //    stewardOrg : {
                 //        name : "Assessment Center"
@@ -102,6 +109,30 @@ var doFile = function(file, cb) {
                 //        }
                 //    ]
                 //});
+                if (formClassifMap[form.name]) {
+                    cde.classification.push({
+                        stewardOrg: {
+                            name: "Assessment Center"
+                        },
+                        elements: [
+                            {
+                                name: formClassifMap[form.name][0],
+                                elements: [
+                                    {
+                                        name: formClassifMap[form.name][1]
+                                        , elements: []
+                                    }
+                                ]
+                            }
+                        ]
+                    });
+                    if (formClassifMap[form.name].length>2) {
+                        cde.classification[0].elements[0].elements[0].elements.push({
+                            name: formClassifMap[form.name][2]
+                            , elements: []
+                        });
+                    }
+                }
                 cdeArray.cdearray.push(cde);
             }
             var found = false;
@@ -133,7 +164,7 @@ var loadForm = function(file, cb) {
         //each item is a CDE
         console.log("Form: " + pForm.name);
         //var classifs = pForm.name.split(" - ");
-        //classificationShared.addCategory(fakeTree, [classifs[0], classifs[1]]);
+        if (formClassifMap[pForm.name]) classificationShared.addCategory(fakeTree, formClassifMap[pForm.name]);
 
 
         var form = {
@@ -150,21 +181,29 @@ var loadForm = function(file, cb) {
                 label: "Main Section",
                 formElements: []
             }],
-            //classification: [
-            //    {
-            //        stewardOrg : {
-            //            name : "Assessment Center"
-            //        },
-            //        elements : [{
-            //            name : classifs[0],
-            //            elements : [
-            //                {
-            //                    name : classifs[1]
-            //                    , elements: []
-            //                }]
-            //        }]
-            //    }]
+            classification: [
+                {
+                    stewardOrg : {
+                        name : "Assessment Center"
+                    },
+                    elements : []
+                }]
         };
+        if (formClassifMap[pForm.name]) {
+            form.classification[0].elements.push({
+                name : formClassifMap[pForm.name][0],
+                elements : [{
+                    name : formClassifMap[pForm.name][1]
+                    , elements: []
+                }]
+            });
+            if (formClassifMap[pForm.name].length>2) {
+                form.classification[0].elements[0].elements[0].elements.push({
+                    name: formClassifMap[pForm.name][2]
+                    , elements: []
+                });
+            }
+        }
 
         pForm.content.Items.forEach(function(item) {
             var cdeName = "";
@@ -230,8 +269,6 @@ fs.readdir(promisDir + "/forms"+date, function(err, files) {
     
 mongo_data_system.orgByName("Assessment Center", function(stewardOrg) {
     fakeTree = {elements: stewardOrg.classifications};
-    console.log("FAKETREE: ");
-    console.log(fakeTree);
     async.each(files, function(file, cb){
         doFile(file, function(){
             cb();
@@ -259,6 +296,7 @@ mongo_data_system.orgByName("Assessment Center", function(stewardOrg) {
                 });
             }, function(err) {
                 loadLoincPv.loadPvs(cdeArray, function() {
+                    lostForms.forEach(function(f){console.log(f)});
                     process.exit(0);
                 });
             });

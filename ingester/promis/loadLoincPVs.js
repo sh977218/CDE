@@ -11,7 +11,6 @@ exports.loadPvs = function(cdeArray, doneWithLoad) {
                  pv.valueMeaningName = mapping.value;
                  pv.valueMeaningCode = mapping.code;
                  pv.codeSystemName = "LOINC";
-                 console.log("set code");
              } else {
                  if (notFound[pv.valueMeaningName] > 0) {
                      notFound[pv.valueMeaningName]++;
