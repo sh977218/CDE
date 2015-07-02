@@ -37,7 +37,8 @@ var processForms = function(){
 
             var req = request(options, function (err, res, body) {
                 console.log("statusCode: ", res.statusCode);
-                fs.writeFile(promisDir + "/forms" + formsDate + "/" + form.OID + ".json", "{\"name\": \"" + form.Name + "\", \"content\":" + body + "}");
+                var content = {name: form.Name, OID: form.OID, content: body};
+                fs.writeFile(promisDir + "/forms" + formsDate + "/" + form.OID + ".json", JSON.stringify(content));
             });
         });
 

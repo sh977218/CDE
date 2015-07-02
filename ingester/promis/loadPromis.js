@@ -3,6 +3,7 @@ var promisDir = process.argv[2];
 var fs = require('fs'),
     https = require('https'),
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
+    mongo_form = require('../../modules/form/node-js/mongo-form'),
     config = require('config'),
     classificationShared = require('../../modules/system/shared/classificationShared'),
     mongo_data_system = require('../../modules/system/node-js/mongo-data'),
@@ -113,6 +114,91 @@ var doFile = function(file, cb) {
  };
 
 
+var loadForm = function(file, cb) {
+    fs.readFile(promisDir + "/forms" + date + "/" + file, function(err, formData) {
+        if (err) console.log("err " + err);
+        var pForm = JSON.parse(formData);
+        //each item is a CDE
+        console.log("Form: " + pForm.name);
+        var classifs = pForm.name.split(" - ");
+        classificationShared.addCategory(fakeTree, [classifs[0], classifs[1]]);
+
+
+        var form = {
+            stewardOrg: {name: "Assessment Center"},
+            source: "Assessment Center",
+            naming: [
+                {designation: pForm.name, definition: "N/A"}
+            ],
+            ids: [{source: 'Assessment Center', id: pForm.OID}],
+            registrationState: {registrationStatus: "Qualified"},
+            formElements: [{
+                elementType: "section",
+                cardinality: "0.1",
+                label: "Main Section",
+                formElements: []
+            }]
+        };
+
+        pForm.content.Items.forEach(function(item) {
+            var cdeName = "";
+            item.Elements.forEach(function(element) {
+                if (!element.Map) {
+                    cdeName = cdeName + " " + element.Description;
+                    cdeName = cdeName.trim();
+                }
+            });
+
+            var cde = cdeArray.findDuplicate(cdeName);
+
+            if (!cde) {
+                console.log("Unable to find CDE: " + cde.naming[0].designation);
+                process.exit(1);
+            } else {
+                form.formElements[0].formElements.push(
+                    {
+                        elementType: "question",
+                        formElements: [],
+                        cardinality: "0.1",
+                        label: cdeName,
+                        question: {
+                            answers: [],
+                            cde: {
+                                version: cde.version,
+                                tinyId: cde.tinyId
+                            },
+                            uoms: [],
+                            otherPleaseSpecify: false
+                        },
+                        classification: [
+                            {
+                                stewardOrg : {
+                                    name : "Assessment Center"
+                                },
+                                elements : [{
+                                    name : classifs[0],
+                                    elements : [
+                                        {
+                                            name : classifs[1]
+                                            , elements: []
+                                        }]
+                                }]
+                            }]
+                    }
+                )
+            }
+        });
+        mongo_form.create(form, {username: 'loader'}, function(err, newForm) {
+            if (err) {
+                console.log("unable to create FORM. " + err);
+                process.exit(1);
+            }
+            cb();
+        });
+    });
+};
+
+
 var fakeTree = {};
 
 setTimeout(function() {
@@ -140,10 +226,19 @@ mongo_data_system.orgByName("Assessment Center", function(stewardOrg) {
                if (err) {
                    console.log("unable to create CDE. " + err);
                }
+                cde.tinyId = newCde.tinyId;
+                cde.version = newCde.version;
                cb();
             });                        
         }, function(err) {
-           process.exit(0); 
+            // Now load the forms
+            async.each(files, function(file, cb){
+                loadForm(file, function(){
+                    cb();
+                });
+            }, function(err) {
+                process.exit(0);
+            });
         });
     });    
 });
