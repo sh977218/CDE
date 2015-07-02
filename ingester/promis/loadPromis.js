@@ -181,23 +181,31 @@ var loadForm = function(file, cb) {
                 console.log("Unable to find CDE: " + cde.naming[0].designation);
                 process.exit(1);
             } else {
+                var question = {
+                    answers: [],
+                    cde: {
+                        version: cde.version,
+                        tinyId: cde.tinyId
+                    },
+                    uoms: [],
+                    otherPleaseSpecify: false
+                };
+
+                if (cde.valueDomain.permissibleValues.length > 0) {
+                    question.datatype = 'Value List';
+                    question.answers = cde.valueDomain.permissibleValues.slice(0);
+                }
+
                 form.formElements[0].formElements.push(
                     {
                         elementType: "question",
                         formElements: [],
                         cardinality: "0.1",
                         label: cdeName,
-                        question: {
-                            answers: [],
-                            cde: {
-                                version: cde.version,
-                                tinyId: cde.tinyId
-                            },
-                            uoms: [],
-                            otherPleaseSpecify: false
-                        }
+                        question: question
                     }
                 )
+
             }
         });
         mongo_form.create(form, {username: 'loader'}, function(err, newForm) {
