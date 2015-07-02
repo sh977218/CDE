@@ -36,8 +36,8 @@ var doFile = function(file, cb) {
         var form = JSON.parse(formData);
         //each item is a CDE
         console.log("Form: " + form.name);
-        var classifs = form.name.split(" - ");
-        classificationShared.addCategory(fakeTree, [classifs[0], classifs[1], classifs[2]]);
+        //var classifs = form.name.split(" - ");
+        //classificationShared.addCategory(fakeTree, [classifs[0], classifs[1], classifs[2]]);
         form.content.Items.forEach(function(item) {
             var cde = {
                 stewardOrg: {name: "Assessment Center"},
@@ -72,25 +72,25 @@ var doFile = function(file, cb) {
             var duplicate = cdeArray.findDuplicate(cde.naming[0].designation);
             
             if (duplicate) {
-                classificationShared.addCategory(duplicate.classification[0], [classifs[0], classifs[1], classifs[2]]);
+                //classificationShared.addCategory(duplicate.classification[0], [classifs[0], classifs[1], classifs[2]]);
             } else {
                 cde.classification = [];    
-                cde.classification.push({
-                    stewardOrg : {
-                        name : "Assessment Center"
-                    },
-                    elements : [ 
-                        {
-                            name : classifs[0],
-                            elements : [ 
-                                {
-                                    name : classifs[1]
-                                    , elements: [{name: classifs[2]}]
-                                }
-                            ]
-                        }
-                    ]                
-                });
+                //cde.classification.push({
+                //    stewardOrg : {
+                //        name : "Assessment Center"
+                //    },
+                //    elements : [
+                //        {
+                //            name : classifs[0],
+                //            elements : [
+                //                {
+                //                    name : classifs[1]
+                //                    , elements: [{name: classifs[2]}]
+                //                }
+                //            ]
+                //        }
+                //    ]
+                //});
                 cdeArray.cdearray.push(cde);
             }
             var found = false;
@@ -121,8 +121,8 @@ var loadForm = function(file, cb) {
         var pForm = JSON.parse(formData);
         //each item is a CDE
         console.log("Form: " + pForm.name);
-        var classifs = pForm.name.split(" - ");
-        classificationShared.addCategory(fakeTree, [classifs[0], classifs[1]]);
+        //var classifs = pForm.name.split(" - ");
+        //classificationShared.addCategory(fakeTree, [classifs[0], classifs[1]]);
 
 
         var form = {
@@ -139,20 +139,20 @@ var loadForm = function(file, cb) {
                 label: "Main Section",
                 formElements: []
             }],
-            classification: [
-                {
-                    stewardOrg : {
-                        name : "Assessment Center"
-                    },
-                    elements : [{
-                        name : classifs[0],
-                        elements : [
-                            {
-                                name : classifs[1]
-                                , elements: []
-                            }]
-                    }]
-                }]
+            //classification: [
+            //    {
+            //        stewardOrg : {
+            //            name : "Assessment Center"
+            //        },
+            //        elements : [{
+            //            name : classifs[0],
+            //            elements : [
+            //                {
+            //                    name : classifs[1]
+            //                    , elements: []
+            //                }]
+            //        }]
+            //    }]
         };
 
         pForm.content.Items.forEach(function(item) {
