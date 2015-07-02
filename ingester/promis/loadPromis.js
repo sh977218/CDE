@@ -74,7 +74,18 @@ var doFile = function(file, cb) {
             if (duplicate) {
                 //classificationShared.addCategory(duplicate.classification[0], [classifs[0], classifs[1], classifs[2]]);
             } else {
-                cde.classification = [];    
+                cde.classification = [];
+                cde.classification.push({
+                        stewardOrg : {
+                            name : "Assessment Center"
+                        },
+                        elements : [
+                            {
+                                name: "temp",
+                                elements: []
+                            }
+                        ]
+                });
                 //cde.classification.push({
                 //    stewardOrg : {
                 //        name : "Assessment Center"
