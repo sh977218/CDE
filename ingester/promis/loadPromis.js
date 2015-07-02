@@ -137,7 +137,21 @@ var loadForm = function(file, cb) {
                 cardinality: "0.1",
                 label: "Main Section",
                 formElements: []
-            }]
+            }],
+            classification: [
+                {
+                    stewardOrg : {
+                        name : "Assessment Center"
+                    },
+                    elements : [{
+                        name : classifs[0],
+                        elements : [
+                            {
+                                name : classifs[1]
+                                , elements: []
+                            }]
+                    }]
+                }]
         };
 
         pForm.content.Items.forEach(function(item) {
@@ -169,21 +183,7 @@ var loadForm = function(file, cb) {
                             },
                             uoms: [],
                             otherPleaseSpecify: false
-                        },
-                        classification: [
-                            {
-                                stewardOrg : {
-                                    name : "Assessment Center"
-                                },
-                                elements : [{
-                                    name : classifs[0],
-                                    elements : [
-                                        {
-                                            name : classifs[1]
-                                            , elements: []
-                                        }]
-                                }]
-                            }]
+                        }
                     }
                 )
             }
