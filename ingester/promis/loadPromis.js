@@ -82,7 +82,18 @@ var doFile = function(file, cb) {
                 if (formClassifMap[form.name] && duplicate.classification[0]) classificationShared.addCategory(duplicate.classification[0], formClassifMap[form.name]);
                 else lostForms.push(form.name);
             } else {
-                cde.classification = [];    
+                cde.classification = [];
+                cde.classification.push({
+                        stewardOrg : {
+                            name : "Assessment Center"
+                        },
+                        elements : [
+                            {
+                                name: "temp",
+                                elements: []
+                            }
+                        ]
+                });
                 //cde.classification.push({
                 //    stewardOrg : {
                 //        name : "Assessment Center"

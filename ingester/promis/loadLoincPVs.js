@@ -6,14 +6,17 @@ var notFound = {};
 exports.loadPvs = function(cdeArray, doneWithLoad) {
     async.each(cdeArray.cdearray, function(cde, cb) {
         cde.valueDomain.permissibleValues.forEach(function(pv) {
-             if (loincMapping[pv.valueMeaningName]) {
-                 pv.valueMeaningCode = loincMapping[pv.valueMeaningName];
-                 pv.valueMeaningCodeSystem = "LOINC";
+            var mapping = loincMapping.getMapping(pv.valueMeaningName);
+             if (mapping) {
+                 pv.valueMeaningName = mapping.value;
+                 pv.valueMeaningCode = mapping.code;
+                 pv.codeSystemName = "LOINC";
+                 console.log("set code");
              } else {
-                 if (notFound[pv.valueMeaningName]) {
+                 if (notFound[pv.valueMeaningName] > 0) {
                      notFound[pv.valueMeaningName]++;
                  } else {
-                     notFound[pv.valueMeaningName] = 0;
+                     notFound[pv.valueMeaningName] = 1;
                  }
              }
         });
@@ -30,6 +33,8 @@ exports.loadPvs = function(cdeArray, doneWithLoad) {
             console.log("Unable to attach loinc codes to permissible Values. " + err);
             process.exit(1);
         } else {
+            console.log("These Values were not found");
+            console.log(JSON.stringify(notFound));
             doneWithLoad();
         }
     });
