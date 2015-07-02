@@ -17,8 +17,7 @@ public class PinAllTest extends BoardTest {
         createBoard(board_name, board_description);
         goToCdeSearch();
 
-        findElement(By.id("li-blank-SPOREs")).click();
-        hangon(3);
+        findElement(By.id("browseOrg-SPOREs")).click();
 
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         findElement(By.id("pinAll")).click();
@@ -35,6 +34,7 @@ public class PinAllTest extends BoardTest {
         removeBoard(board_name);
     }
 
+
     @Test
     public void pinAllMoreThan20() {
         String board_name = "Pin All More Than 20 Test Board";
@@ -43,11 +43,11 @@ public class PinAllTest extends BoardTest {
         createBoard(board_name, board_description);
         goToCdeSearch();
         findElement(By.id("browseOrg-CTEP")).click();
-        hangon(3);
         findElement(By.id("li-blank-Qualified")).click();
         hangon(3);
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         Assert.assertTrue(searchResultNum_int > 20);
+        scrollToTop();
         findElement(By.id("pinAll")).click();
         textPresent("Select Board");
         findElement(By.linkText(board_name)).click();
