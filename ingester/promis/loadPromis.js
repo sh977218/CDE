@@ -74,6 +74,8 @@ var doFile = function(file, cb) {
                 }
             });
 
+
+
             var duplicate = cdeArray.findDuplicate(cde.naming[0].designation);
             
             if (duplicate) {
@@ -182,12 +184,7 @@ var loadForm = function(file, cb) {
             ],
             ids: [{source: 'Assessment Center', id: pForm.OID}],
             registrationState: {registrationStatus: "Qualified"},
-            formElements: [{
-                elementType: "section",
-                cardinality: "0.1",
-                label: "Main Section",
-                formElements: []
-            }],
+            formElements: [],
             classification: [
                 {
                     stewardOrg : {
@@ -212,38 +209,63 @@ var loadForm = function(file, cb) {
             }
         }
 
+        var currentSection = {
+            elementType: "section",
+            cardinality: "0.1",
+            label: "___",
+            formElements: []
+        };
         pForm.content.Items.forEach(function(item) {
-            var cdeName = "";
+            var nameParts = [];
             item.Elements.forEach(function(element) {
                 if (!element.Map) {
-                    cdeName = cdeName + " " + element.Description;
-                    cdeName = cdeName.trim();
+                    nameParts.push(element.Description.trim());
                 }
             });
 
-            var cde = cdeArray.findDuplicate(cdeName);
+            var newSectionName = nameParts.length > 1? nameParts[0] : "Main Section";
+
+            if (newSectionName !== currentSection.label) {
+                currentSection = {
+                    elementType: "section",
+                    cardinality: "0.1",
+                    label: newSectionName,
+                    formElements: []
+                };
+                form.formElements.push(currentSection);
+            }
+            var cde = cdeArray.findDuplicate(nameParts.join(" "));
 
             if (!cde) {
                 console.log("Unable to find CDE: " + cde.naming[0].designation);
                 process.exit(1);
             } else {
-                form.formElements[0].formElements.push(
+                var question = {
+                    answers: [],
+                    cde: {
+                        version: cde.version,
+                        tinyId: cde.tinyId
+                    },
+                    uoms: [],
+                    otherPleaseSpecify: false
+                };
+
+                if (cde.valueDomain.permissibleValues.length > 0) {
+                    question.datatype = 'Value List';
+                    question.answers = cde.valueDomain.permissibleValues.slice(0);
+                }
+
+                var qLabel = nameParts.length > 1 ? nameParts[1] : nameParts [0];
+                currentSection.formElements.push(
                     {
                         elementType: "question",
                         formElements: [],
                         cardinality: "0.1",
-                        label: cdeName,
-                        question: {
-                            answers: [],
-                            cde: {
-                                version: cde.version,
-                                tinyId: cde.tinyId
-                            },
-                            uoms: [],
-                            otherPleaseSpecify: false
-                        }
+                        label: qLabel,
+                        question: question
                     }
                 )
+
             }
         });
         mongo_form.create(form, {username: 'loader'}, function(err, newForm) {
