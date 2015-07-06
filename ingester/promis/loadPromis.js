@@ -78,8 +78,13 @@ var doFile = function(file, cb) {
             
             if (duplicate) {
                 //classificationShared.addCategory(duplicate.classification[0], [classifs[0], classifs[1], classifs[2]]);
-                if (formClassifMap[form.name] && duplicate.classification[0]) classificationShared.addCategory(duplicate.classification[0], formClassifMap[form.name]);
-                else lostForms.push(form.name);
+                if (formClassifMap[form.name] && duplicate.classification[0]) {
+                    classificationShared.addCategory(duplicate.classification[0], formClassifMap[form.name]);
+                }
+                else {
+                    lostForms.push(form.name);
+
+                }
             } else {
                 cde.classification = [];
                 //cde.classification.push({
@@ -132,6 +137,22 @@ var doFile = function(file, cb) {
                             , elements: []
                         });
                     }
+                }
+                else {
+                    cde.classification.push({
+                        stewardOrg: {
+                            name: "Assessment Center"
+                        },
+                        elements: [
+                            {
+                                name: "Forms \\ Instruments",
+                                elements: [{
+                                    name: form.name
+                                    , elements: []
+                                }]
+                            }
+                        ]
+                    });
                 }
                 cdeArray.cdearray.push(cde);
             }
