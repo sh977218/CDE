@@ -6,7 +6,9 @@ var readDir = function(path){
     var dirContent = fs.readdirSync(formPath+"/"+ path.join("/"));
     dirContent.forEach(function(element){
         if (element.substr(element.length - 4) === ".pdf") {
-            formNameMap[element.substr(0, element.length - 4)] = path;
+            var formName = element.substr(0, element.length - 4);
+            if (formName.indexOf("_")>-1) formName = formName.substr(0, formName.length - 11);
+            formNameMap[formName] = path;
         }
         else {
             var pCopy = JSON.parse(JSON.stringify(path));

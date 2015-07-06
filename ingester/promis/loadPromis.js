@@ -42,7 +42,7 @@ var doFile = function(file, cb) {
         console.log("Form: " + form.name);
         //var classifs = form.name.split(" - ");
         //classificationShared.addCategory(fakeTree, [classifs[0], classifs[1], classifs[2]]);
-        if (formClassifMap[form.name]) classificationShared.addCategory(fakeTree, formClassifMap[form.name]);
+        //if (formClassifMap[form.name]) classificationShared.addCategory(fakeTree, formClassifMap[form.name]);
         form.content.Items.forEach(function(item) {
             var cde = {
                 stewardOrg: {name: "Assessment Center"},
@@ -77,7 +77,6 @@ var doFile = function(file, cb) {
             var duplicate = cdeArray.findDuplicate(cde.naming[0].designation);
             
             if (duplicate) {
-                //classificationShared.addCategory(duplicate.classification[0], [classifs[0], classifs[1], classifs[2]]);
                 if (formClassifMap[form.name] && duplicate.classification[0]) {
                     classificationShared.addCategory(duplicate.classification[0], formClassifMap[form.name]);
                 }
@@ -87,34 +86,8 @@ var doFile = function(file, cb) {
                 }
             } else {
                 cde.classification = [];
-                //cde.classification.push({
-                //        stewardOrg : {
-                //            name : "Assessment Center"
-                //        },
-                //        elements : [
-                //            {
-                //                name: "temp",
-                //                elements: []
-                //            }
-                //        ]
-                //});
-                //cde.classification.push({
-                //    stewardOrg : {
-                //        name : "Assessment Center"
-                //    },
-                //    elements : [
-                //        {
-                //            name : classifs[0],
-                //            elements : [
-                //                {
-                //                    name : classifs[1]
-                //                    , elements: [{name: classifs[2]}]
-                //                }
-                //            ]
-                //        }
-                //    ]
-                //});
                 if (formClassifMap[form.name]) {
+                    classificationShared.addCategory(fakeTree, formClassifMap[form.name]);
                     cde.classification.push({
                         stewardOrg: {
                             name: "Assessment Center"
@@ -139,21 +112,34 @@ var doFile = function(file, cb) {
                     }
                 }
                 else {
+                    var c1;
+                    if (form.name.indexOf("Neuro-QOL")>-1) {
+                        c1 = "Neuro-QOL Measures";
+                    } else if (form.name.indexOf("PROMIS")>-1) {
+                        c1 = "PROMIS Instruments";
+                    } else {
+                        c1 = "Other";
+                    }
+                    classificationShared.addCategory(fakeTree, ["Assesment Center", "Other", c1, form.name]);
                     cde.classification.push({
                         stewardOrg: {
                             name: "Assessment Center"
                         },
                         elements: [
                             {
-                                name: "Forms \\ Instruments",
+                                name: c1,
                                 elements: [{
-                                    name: form.name
-                                    , elements: []
+                                    name: "Other"
+                                    , elements: [{
+                                        name: form.name
+                                        , elements: []
+                                    }]
                                 }]
                             }
                         ]
                     });
                 }
+
                 cdeArray.cdearray.push(cde);
             }
             var found = false;
