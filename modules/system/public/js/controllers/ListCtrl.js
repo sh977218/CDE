@@ -18,6 +18,17 @@ angular.module('systemModule').controller('ListCtrl',
 
     if (!$scope.searchForm) $scope.searchForm = {};
 
+    var mainAreaModes = {
+        "searchResult": {
+            "url": "/system/public/html/searchResult.html"
+            , "showSearchResult": true
+        }
+        , "welcomeSearch": {
+            "url": "/system/public/html/welcomeSearch.html"
+        }
+    };
+    $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
+
     $scope.hideShowFilter = function() {
         $scope.filterMode = !$scope.filterMode;
     };
@@ -27,8 +38,6 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.filterMode = !isScreenSizeXsSm_new;
         }
     });
-
-    $scope.query = null;
 
     $scope.getCacheName = function(name) {
         return "search." + $scope.module + "." + name;
@@ -94,7 +103,9 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.reload();
     });
 
-    userResource.getPromise().then(function(){$scope.reload()});
+    userResource.getPromise().then(function(){
+        $scope.search()
+    });
 
     $scope.addStatusFilter = function(t) {
         t.selected = !t.selected;
@@ -130,8 +141,8 @@ angular.module('systemModule').controller('ListCtrl',
     $scope.search = function() {
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;
         $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
-        $scope.reload();
 
+        $scope.reload();
     };
 
     $scope.isAllowed = function (cde) {
@@ -150,11 +161,11 @@ angular.module('systemModule').controller('ListCtrl',
         });
     };
 
-    $scope.addOrgFilter = function(t) {
+    $scope.addOrgFilter = function(orgName) {
         if ($scope.classificationFilters[$scope.altClassificationFilterMode].org === undefined) {
-            if ($scope.altClassificationFilterMode === 0) $scope.cacheOrgFilter(t.key);
-            else $scope.cacheOrgFilterAlt(t.key);
-            $scope.classificationFilters[$scope.altClassificationFilterMode].org = t.key;
+            if ($scope.altClassificationFilterMode === 0) $scope.cacheOrgFilter(orgName);
+            else $scope.cacheOrgFilterAlt(orgName);
+            $scope.classificationFilters[$scope.altClassificationFilterMode].org = orgName;
         } else {
             if ($scope.altClassificationFilterMode === 0) $scope.removeCacheOrgFilter();
             else $scope.removeCacheOrgFilterAlt();
@@ -288,6 +299,11 @@ angular.module('systemModule').controller('ListCtrl',
 
             $scope.filterOutWorkingGroups($scope.aggregations);
             OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
+
+            if ((settings.searchTerm && settings.searchTerm.length > 0) || settings.selectedOrg)
+                $scope.selectedMainAreaMode = mainAreaModes.searchResult;
+            else
+                $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
         });
 
     };

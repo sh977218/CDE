@@ -41,6 +41,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     protected void searchForm(String query) {
         findElement(By.name("ftsearch")).sendKeys("\"" + query + "\"");
+        hangon(1);
         findElement(By.id("search.submit")).click();
     }
 

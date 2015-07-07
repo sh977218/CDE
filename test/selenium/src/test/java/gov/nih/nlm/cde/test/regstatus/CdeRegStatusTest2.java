@@ -17,7 +17,7 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
     public void removeStatusStatusFilter() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
-        findElement(By.id("li-blank-PBTC")).click();
+        findElement(By.id("browseOrg-PBTC")).click();
         textPresent("4 results for");
         String viewing = findElement(By.id("acc_link_0")).getText();
         findElement(By.xpath("//*[@id='accordionList']/div/div/div[1]/div[1]/h4/a/a[2]")).click();

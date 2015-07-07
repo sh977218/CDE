@@ -91,8 +91,8 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         mustBeLoggedOut();
         setLowStatusesVisible();
         goToCdeSearch();
-        findElement(By.xpath("//i[@id=\"li-blank-CTEP\"]")).click();
-        findElement(By.xpath("//i[@id=\"li-blank-CATEGORY\"]")).click();
+        findElement(By.id("browseOrg-CTEP")).click();
+        findElement(By.id("li-blank-CATEGORY")).click();
         findElement(By.id("li-blank-Standard")).click();
         hangon(2);
         findElement(By.id("li-blank-Qualified")).click();

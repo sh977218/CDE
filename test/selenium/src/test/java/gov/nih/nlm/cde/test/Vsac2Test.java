@@ -32,7 +32,6 @@ public class Vsac2Test extends NlmCdeBaseTest {
 
         newCdeVersion("Importing All VSAC Values");
 
-
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
@@ -56,7 +55,7 @@ public class Vsac2Test extends NlmCdeBaseTest {
         findElement(By.cssSelector("#pvCode-4 .fa-check")).click();
 
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-edit")).click();
-        findElement(By.xpath("//td[@id='pvCodeSystem-4']//input")).sendKeys(".1");
+        findElement(By.xpath("//td[@id='pvCodeSystem-4']//input")).sendKeys(".modifVC");
         clickElement(By.cssSelector("#pvCodeSystem-4 .fa-check"));
 
         newCdeVersion("Modified VS Codes");
@@ -67,6 +66,6 @@ public class Vsac2Test extends NlmCdeBaseTest {
 
         textPresent("Other Race Category");
         textPresent("2131-1.1");
-        textPresent("CDCREC.1");
+        textPresent("CDCREC.modifVC");
     }
 }

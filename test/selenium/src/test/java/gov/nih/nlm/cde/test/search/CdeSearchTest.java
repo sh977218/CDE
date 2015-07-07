@@ -13,7 +13,6 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void cdeFullDetail() {
-        goHome();
         goToCdeByName("Genotype Therapy Basis Mutation");
         textPresent("Genotype Therapy Basis Mutation Analysis Indicator");
         textPresent("Text descriptor to indicate whether "
@@ -54,15 +53,14 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void vdInstruction() {
-        goHome();
-        goToCdeByName("Participant Identifier Source", "Recorded");
+        setLowStatusesVisible();
+        goToCdeByName("Participant Identifier Source");
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertEquals("One of \"GUID\" or \"Source Registry Specific Identifier\"", findElement(By.id("dd_vd_def")).getText());
     }
     
     @Test
     public void searchBySteward() {
-        goHome();
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("steward:CIP");
         findElement(By.id("search.submit")).click();
