@@ -123,7 +123,6 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     @Test
     public void removeOne() {
         goToCdeSearch();
-        findElement(By.id("li-blank-OHSU Knight")).click();
         findElement(By.id("browseOrg-OHSU Knight")).click();
         textPresent("4 results for");
         findElement(By.id("addToCompare_0")).click();
