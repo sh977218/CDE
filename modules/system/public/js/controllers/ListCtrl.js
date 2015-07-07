@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('ListCtrl',
-    ['$scope', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', 'SearchSettings', 'QuickBoard',
-        function($scope, $modal, Elastic, OrgHelpers, $http, $timeout, userResource, SearchSettings, QuickBoard) {
+    ['$scope', '$routeParams', '$window', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', 'SearchSettings', 'QuickBoard',
+        function($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource, SearchSettings, QuickBoard) {
 
     $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
@@ -353,5 +353,13 @@ angular.module('systemModule').controller('ListCtrl',
         }, function () {
         });
     };
+
+    if ($routeParams.welcome === "true") {
+        $scope.resetSearch();
+    }
+
+    $scope.reset = function() {
+        $window.location = "#/" + $scope.module + "/search?welcome=true";
+    }
 
 }]);
