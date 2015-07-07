@@ -4,6 +4,10 @@
 
 if (typeof(exports) === "undefined") exports = {};
 
+exports.exportHeader = {
+    cdeHeader: "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n"
+};
+
 exports.formatExportForm = function (elasticCde) {
     var cde = {
         name: elasticCde.naming[0].designation

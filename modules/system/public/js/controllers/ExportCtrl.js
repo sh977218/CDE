@@ -25,7 +25,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', '$
         });
     };
     $scope.exportQuickBoard = function () {
-        var result = "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
+        var result = exports.exportHeader.cdeHeader;
         $scope.cdes.forEach(function (ele) {
             result += exports.convertToCsv(exports.formatExportCde(ele));
         });

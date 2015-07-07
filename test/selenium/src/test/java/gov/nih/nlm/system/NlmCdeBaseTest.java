@@ -443,6 +443,10 @@ public class NlmCdeBaseTest {
         textPresent("NINDS (");
     }
 
+    protected void goToQuickBoard() {
+        driver.get(baseUrl + "/#/quickBoard");
+    }
+
     protected void goToSearchByMenu() {
         findElement(By.linkText("CDEs")).click();
     }
