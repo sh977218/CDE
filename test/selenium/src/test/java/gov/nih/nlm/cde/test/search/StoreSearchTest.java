@@ -10,9 +10,10 @@ public class StoreSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void rememberText() {
-        goToCdeByName("Smoking History Ind");
+        String cdeName = "Smoking History Ind";
+        goToCdeByName(cdeName);
         driver.navigate().back();
-        hangon(1);
+        textPresent(cdeName);
         Assert.assertTrue("Smoking History Ind".equals(findElement(By.id("acc_link_0")).getText()));
     }
     
@@ -23,14 +24,10 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         findElement(By.linkText("2")).click();
         hangon(2);
         scrollToTop();
-        findElement(By.id("acc_link_0")).click();
-        hangon(1);
-        findElement(By.xpath("//li[a = 'CDEs']")).click();
-        hangon(1);
-        scrollTo(4000);
-        hangon(1);
-        WebElement elt = findElement(By.xpath("//li[a = '2']"));
-        Assert.assertTrue(elt.getAttribute("ng-class").contains("active"));
+        findElement(By.id("eyeLink_0")).click();
+        textPresent("More Like This");
+        driver.navigate().back();
+        Assert.assertTrue(findElement(By.xpath("//li[a = '2']")).getAttribute("ng-class").contains("active"));
     }
 
 }

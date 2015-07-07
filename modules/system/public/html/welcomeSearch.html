@@ -30,7 +30,7 @@
         <div class="row">
             <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-repeat="org in orgs | orderBy:'name'">
                 <div class="welcomeSearchOrganizationBox" >
-                    <h3><a href ng-bind="org.name" ng-click="addOrgFilter(org.name)" id="browseOrg-{{org.name}}"></a></h3>
+                    <h3><a href ng-bind="org.name" ng-click="browseOrg(org.name)" id="browseOrg-{{org.name}}"></a></h3>
                     <div ng-if="org.longName" ng-bind="org.longName"></div>
                     <div><span id="nbOfElts-{{org.name}}">{{org.count}}</span> elements</div>
                     <div ng-if="org.extraInfo" ng-bind="org.extraInfo"></div>
