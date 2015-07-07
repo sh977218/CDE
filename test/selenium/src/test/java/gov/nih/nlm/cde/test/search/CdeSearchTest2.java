@@ -106,7 +106,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         textPresent("0 results for name | CTEP > CATEGORY | Standard");
         findElement(By.linkText("Forms")).click();     
         textNotPresent("CATEGORY");
-        findElement(By.linkText("CDEs")).click();     
+        driver.navigate().back();
         textPresent("0 results for name | CTEP > CATEGORY | Standard");
     }
 

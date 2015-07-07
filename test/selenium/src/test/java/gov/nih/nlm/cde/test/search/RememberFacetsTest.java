@@ -20,8 +20,8 @@ public class RememberFacetsTest extends NlmCdeBaseTest {
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);
         findElement(By.id("acc_link_0")).click();
-        hangon(1);
-        findElement(By.xpath("//li[a = 'CDEs']")).click();
+        textPresent("More Like This");
+        driver.navigate().back();
         textPresent("User First Name");
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);

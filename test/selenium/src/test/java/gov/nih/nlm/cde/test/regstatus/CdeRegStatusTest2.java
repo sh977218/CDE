@@ -28,7 +28,7 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
         waitForESUpdate();
-        findElement(By.linkText("CDEs")).click();
+        driver.navigate().back();
         showSearchFilters();
         hangon(1);
         findElement(By.id("li-blank-Preferred Standard")).click();

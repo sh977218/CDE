@@ -5,8 +5,8 @@
     </div>
     <div ng-class="addCdeMode ? 'col-md-7 hidden-sm' : 'col-md-0'" ng-show="addCdeMode && elt.formElements.length > 0">
         <div ui-scrollfix="+35" offset-bottom="70" class="question-search-area">
-            <div class="panel-group" id="accordion">
-                <div id="questionSearchArea" ng-include="'/system/public/html/searchResult.html'" ng-controller="DEListCtrl"
+            <div class="panel-group" id="accordion" ng-controller="DEListCtrl">
+                <div id="questionSearchArea" ng-include="'/system/public/html/searchResult.html'" ng-controller="FormDEListCtrl"
                      ng-init="cPage = 'forms';"></div>
             </div>
         </div>
