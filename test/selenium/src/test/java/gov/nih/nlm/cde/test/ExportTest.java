@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import static com.jayway.restassured.RestAssured.*;
 
 public class ExportTest extends NlmCdeBaseTest {
+
     @Test
     public void searchExport() {
 
@@ -77,7 +78,6 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
         findElement(By.id("qb.empty")).click();
         if (!done) throw new TimeoutException("Export was too slow.");
-
     }
 
 }

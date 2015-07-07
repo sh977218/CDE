@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', '$window', '$timeout', function ($scope, Elastic, $window, $timeout) {
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', '$window', '$timeout', '$http', function ($scope, Elastic, $window, $timeout, $http) {
     var maxExportSize = 500;
 
     $scope.feedbackClass = ["fa-download"];
@@ -40,4 +40,30 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', '$
             $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
         }
     }
-}]);
+
+    $scope.exportBoard = function () {
+        var bid = $scope.board._id;
+        $http({method: 'get', url: '/board/' + bid + '/0/500'})
+            .success(function (response) {
+                var result = exports.exportHeader.cdeHeader;
+                response.cdes.forEach(function (ele) {
+                    result += exports.convertToCsv(exports.formatExportCde(ele));
+                });
+                if (result) {
+                    var blob = new Blob([result], {
+                        type: "text/csv"
+                    });
+                    saveAs(blob, 'BoardExport' + '.csv');
+                    $scope.addAlert("success", "Export downloaded.")
+                    $scope.feedbackClass = ["fa-download"];
+                } else {
+                    $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
+                }
+            })
+            .error(function (data, status, headers, config) {
+            })
+
+    }
+
+}])
+;

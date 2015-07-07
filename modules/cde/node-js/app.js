@@ -527,4 +527,5 @@ exports.init = function (app, daoManager) {
         var query = sharedElastic.buildElasticSearchQuery(req.body);
         return elastic_system.elasticSearchExport(res, query, 'cde', exports.formatExportCde, cdeHeader);
     });
+
 };

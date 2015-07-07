@@ -1,11 +1,13 @@
 package gov.nih.nlm.cde.test.boards;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class PinAllTest extends BoardTest {
 
@@ -59,5 +61,38 @@ public class PinAllTest extends BoardTest {
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
         removeBoard(board_name);
     }
-    
+
+    @Test
+    public void boardExport() {
+        String board_name = "Export my board test";
+        String board_description = "This test tests export borad.";
+        mustBeLoggedInAs(exportBoardUser_username, password);
+        createBoard(board_name, board_description);
+        goToSearch("cde");
+        findElement(By.id("classifications-text-caBIG")).click();
+        hangon(1);
+        findElement(By.id("pinAll")).click();
+        textPresent("Select Board");
+        findElement(By.linkText(board_name)).click();
+        textPresent("All elements pinned.");
+        gotoMyBoards(board_name);
+        textPresent("Export Board");
+        findElement(By.id("mb.export")).click();
+        wait.withTimeout(10, TimeUnit.SECONDS);
+        boolean done = false;
+        for (int i = 0; !done && i < 15; i++) {
+            try {
+                textPresent("Export downloaded.");
+                done = true;
+            } catch (TimeoutException e) {
+                System.out.println("No export after : " + 10 * i + "seconds");
+            }
+        }
+        wait.withTimeout(defaultTimeout, TimeUnit.SECONDS);
+        closeAlert();
+        if (!done) throw new TimeoutException("Export was too slow.");
+        removeBoard(board_name);
+    }
+
+
 }

@@ -1,7 +1,7 @@
 body {
-     padding-top: 50px;
-     padding-bottom: 20px;
-     background-color: #fff;
+    padding-top: 50px;
+    padding-bottom: 20px;
+    background-color: #fff;
 }
 
 #homeNihCdeLogo {
@@ -75,6 +75,7 @@ body {
 .searchInfo {
     padding-top: 7px;
     padding-bottom: 7px;
+    overflow: hidden;
 }
 
 .searchInfoHr {
@@ -653,9 +654,9 @@ button#selectDefault {
 }
 
 .feedback-btn-gray {
-    font-family: inherit!important;
-    border-top-left-radius: 6px!important;
-    border-top-right-radius: 6px!important;
+    font-family: inherit !important;
+    border-top-left-radius: 6px !important;
+    border-top-right-radius: 6px !important;
 }
 
 #feedback-note-tmp {
@@ -664,23 +665,29 @@ button#selectDefault {
 
 #feedback-overview-note {
     width: 350px;
-    height: 317px!important;
-}
-
-#feedback-highlighter{
-    cursor: move;
-}
-
-.ta-hidden-input {display: none;}
-
-#feedback-note-tmp {
-    min-height: 200px!important;
+    height: 317px !important;
 }
 
 #feedback-highlighter {
-    height: 574px!important;
+    cursor: move;
+}
+
+.ta-hidden-input {
+    display: none;
+}
+
+#feedback-note-tmp {
+    min-height: 200px !important;
+}
+
+#feedback-highlighter {
+    height: 574px !important;
 }
 
 #feedback-overview-note {
-    height: 200px!important;
+    height: 200px !important;
+}
+
+.centerText {
+    text-align: center;
 }
