@@ -24,7 +24,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         findElement(By.linkText("2")).click();
         hangon(2);
         scrollToTop();
-        findElement(By.id("acc_link_0")).click();
+        findElement(By.id("eyeLink_0")).click();
         textPresent("More Like This");
         driver.navigate().back();
         Assert.assertTrue(findElement(By.xpath("//li[a = '2']")).getAttribute("ng-class").contains("active"));
