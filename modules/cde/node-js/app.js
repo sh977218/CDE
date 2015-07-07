@@ -20,9 +20,10 @@ var cdesvc = require('./cdesvc')
     , multer = require('multer')
     , elastic_system = require('../../system/node-js/elastic')
     , sharedElastic = require('../../system/node-js/elastic.js')
+    , exportShared = require('../../system/shared/exportShared')
     ;
 
-exports.init = function(app, daoManager) {
+exports.init = function (app, daoManager) {
 
     var viewConfig = {modules: config.modules};
 
@@ -30,68 +31,68 @@ exports.init = function(app, daoManager) {
 
     daoManager.registerDao(mongo_data);
 
-    app.get('/quickBoard', function(req, res) {
-      res.render('quickBoard');
+    app.get('/quickBoard', function (req, res) {
+        res.render('quickBoard');
     });
 
-    app.get('/exportCdeSearch', function(req, res) {
-      res.render('cdeExport');
+    app.get('/exportCdeSearch', function (req, res) {
+        res.render('cdeExport');
     });
 
-    app.get('/list', function(req, res){
-        res.render('list','system',{module:"cde"});
+    app.get('/list', function (req, res) {
+        res.render('list', 'system', {module: "cde"});
     });
 
-    app.get('/boardList', appSystem.nocacheMiddleware, function(req, res){
-      res.render('boardList');
+    app.get('/boardList', appSystem.nocacheMiddleware, function (req, res) {
+        res.render('boardList');
     });
 
-    app.get('/deCompare', appSystem.nocacheMiddleware, function(req, res){
-      res.render('deCompare');
+    app.get('/deCompare', appSystem.nocacheMiddleware, function (req, res) {
+        res.render('deCompare');
     });
 
-    app.get('/listboards', function(req, res) {
-       boardsvc.boardList(req, res);
+    app.get('/listboards', function (req, res) {
+        boardsvc.boardList(req, res);
     });
 
-    app.get('/createcde', appSystem.nocacheMiddleware, function(req, res) {
-       res.render('createcde');
+    app.get('/createcde', appSystem.nocacheMiddleware, function (req, res) {
+        res.render('createcde');
     });
 
-    app.get('/deview', function(req, res) {
+    app.get('/deview', function (req, res) {
         res.render("deview", 'cde', {config: viewConfig});
     });
 
-    app.get('/myboards', function(req, res) {
-       res.render("myBoards");
+    app.get('/myboards', function (req, res) {
+        res.render("myBoards");
     });
 
-    app.post('/cdesByTinyIdList', function(req, res) {
-        mongo_data.cdesByTinyIdList(req.body, function(err, cdes) {
+    app.post('/cdesByTinyIdList', function (req, res) {
+        mongo_data.cdesByTinyIdList(req.body, function (err, cdes) {
             cdes.forEach(adminItemSvc.hideUnapprovedComments);
             res.send(cdes);
         });
     });
 
-    app.get('/listOrgsFromDEClassification', function(req, res) {
-        elastic.DataElementDistinct("classification.stewardOrg.name", function(result) {
+    app.get('/listOrgsFromDEClassification', function (req, res) {
+        elastic.DataElementDistinct("classification.stewardOrg.name", function (result) {
             res.send(result);
         });
     });
 
-    app.get('/priorcdes/:id', function(req, res) {
+    app.get('/priorcdes/:id', function (req, res) {
         cdesvc.priorCdes(req, res);
     });
 
-    app.get('/forks/:id', function(req, res) {
+    app.get('/forks/:id', function (req, res) {
         cdesvc.forks(req, res);
     });
 
-    app.post('/dataelement/fork', function(req, res) {
+    app.post('/dataelement/fork', function (req, res) {
         adminItemSvc.fork(req, res, mongo_data);
     });
 
-    app.post('/acceptFork', function(req, res) {
+    app.post('/acceptFork', function (req, res) {
         adminItemSvc.acceptFork(req, res, mongo_data);
     });
 
@@ -99,8 +100,8 @@ exports.init = function(app, daoManager) {
         adminItemSvc.forkRoot(req, res, mongo_data);
     });
 
-    app.get('/dataelement/:id', function(req, res) {
-        cdesvc.show(req, function(result) {
+    app.get('/dataelement/:id', function (req, res) {
+        cdesvc.show(req, function (result) {
             if (!result) res.status(404).send();
             var cde = cdesvc.hideProprietaryPvs(result, req.user);
             adminItemSvc.hideUnapprovedComments(cde);
@@ -108,21 +109,22 @@ exports.init = function(app, daoManager) {
         });
     });
 
-    app.get('/deExists/:tinyId/:version', function(req, res) {
-        mongo_data.exists({tinyId: req.params.tinyId, version: req.params.version}, function(err, result) {
+    app.get('/deExists/:tinyId/:version', function (req, res) {
+        mongo_data.exists({tinyId: req.params.tinyId, version: req.params.version}, function (err, result) {
             res.send(result);
         });
     });
 
-    app.get('/debytinyid/:tinyId/:version?', function(req, res) {
-        var serveCde = function(err, cde) {
+    app.get('/debytinyid/:tinyId/:version?', function (req, res) {
+        var serveCde = function (err, cde) {
             if (!cde) return res.status(404).send();
 
             adminItemSvc.hideUnapprovedComments(cde);
             res.send(cdesvc.hideProprietaryPvs(cde, req.user));
             if (req.isAuthenticated()) {
                 mongo_data.addToViewHistory(cde, req.user);
-            };
+            }
+            ;
             mongo_data.incDeView(cde);
         };
         if (!req.params.version) {
@@ -132,7 +134,7 @@ exports.init = function(app, daoManager) {
         }
     });
 
-    app.post('/debytinyid/:tinyId/:version?', function(req, res) {
+    app.post('/debytinyid/:tinyId/:version?', function (req, res) {
         return cdesvc.save(req, res);
     });
 
@@ -141,7 +143,7 @@ exports.init = function(app, daoManager) {
     });
 
 
-    app.get('/viewingHistory/:start', function(req, res) {
+    app.get('/viewingHistory/:start', function (req, res) {
         if (!req.user) {
             res.send("You must be logged in to do that");
         } else {
@@ -150,29 +152,29 @@ exports.init = function(app, daoManager) {
             for (var i = 0; i < splicedArray.length; i++) {
                 if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
             }
-            mongo_data.cdesByTinyIdListInOrder(idList, function(err, cdes) {
+            mongo_data.cdesByTinyIdListInOrder(idList, function (err, cdes) {
                 res.send(cdesvc.hideProprietaryPvs(cdes, req.user));
             });
         }
     });
 
-    app.get('/boards/:userId', function(req, res) {
-        mongo_data.boardsByUserId(req.params.userId, function(result) {
+    app.get('/boards/:userId', function (req, res) {
+        mongo_data.boardsByUserId(req.params.userId, function (result) {
             res.send(result);
         });
     });
 
-    app.get('/deBoards/:tinyId', function(req, res) {
-       mongo_data.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
+    app.get('/deBoards/:tinyId', function (req, res) {
+        mongo_data.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
             res.send(result);
-       });
+        });
     });
 
-    app.get('/board', function(req, res) {
-       res.render("boardView");
+    app.get('/board', function (req, res) {
+        res.render("boardView");
     });
 
-    app.get('/board/:boardId/:start/:size?', function(req, res) {
+    app.get('/board/:boardId/:start/:size?', function (req, res) {
         var size = 20;
         if (req.params.size) {
             size = req.params.size;
@@ -194,7 +196,7 @@ exports.init = function(app, daoManager) {
                 for (var i = 0; i < pins.length; i++) {
                     idList.push(pins[i].deTinyId);
                 }
-                mongo_data.cdesByTinyIdList(idList, function(err, cdes) {
+                mongo_data.cdesByTinyIdList(idList, function (err, cdes) {
                     res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes), totalItems: totalItems});
                 });
             } else {
@@ -203,9 +205,9 @@ exports.init = function(app, daoManager) {
         });
     });
 
-    app.post('/board', function(req, res, next) {
+    app.post('/board', function (req, res, next) {
         var boardQuota = config.boardQuota || 50;
-        var checkUnauthorizedPublishing = function(user, shareStatus) {
+        var checkUnauthorizedPublishing = function (user, shareStatus) {
             return shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher")
         };
         if (req.isAuthenticated()) {
@@ -218,35 +220,45 @@ exports.init = function(app, daoManager) {
                 };
                 if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) return res.status(403).send("You don't have permission to make boards public!");
                 async.parallel([
-                    function(callback){
-                        mongo_data.newBoard(board, function(err, newBoard) {
-                           callback(err, newBoard);
-                        });
-                    },
-                    function(callback){
-                        mongo_data.nbBoardsByUserId(req.user._id, function(err, nbBoards) {
-                            callback(err, nbBoards);
-                        });
-                    }
-                ],
-                function(err, results){
-                    if (results[1]<boardQuota) return res.send(results[0]);
-                    mongo_data.removeBoard(results[0]._id);
-                    res.status(403).send("You have too many boards!");
-                });
+                        function (callback) {
+                            mongo_data.newBoard(board, function (err, newBoard) {
+                                callback(err, newBoard);
+                            });
+                        },
+                        function (callback) {
+                            mongo_data.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
+                                callback(err, nbBoards);
+                            });
+                        }
+                    ],
+                    function (err, results) {
+                        if (results[1] < boardQuota) return res.send(results[0]);
+                        mongo_data.removeBoard(results[0]._id);
+                        res.status(403).send("You have too many boards!");
+                    });
 
-            } else  {
-                mongo_data.boardById(board._id, function(err, b) {
+            } else {
+                mongo_data.boardById(board._id, function (err, b) {
                     if (err) {
-                        logging.errorLogger.error("Cannot find board by id", {origin: "cde.app.board", stack: new Error().stack, request: logging.generateErrorLogRequest(req), details: "board._id "+board._id});
+                        logging.errorLogger.error("Cannot find board by id", {
+                            origin: "cde.app.board",
+                            stack: new Error().stack,
+                            request: logging.generateErrorLogRequest(req),
+                            details: "board._id " + board._id
+                        });
                         return res.status(404).send("Cannot find board.");
                     }
                     b.name = board.name;
                     b.description = board.description;
                     b.shareStatus = board.shareStatus;
                     if (checkUnauthorizedPublishing(req.user, b.shareStatus)) return res.status(403).send("You don't have permission to make boards public!");
-                    return mongo_data.save(b, function(err) {
-                        if (err) logging.errorLogger.error("Cannot save board", {origin: "cde.app.board", stack: new Error().stack, request: logging.generateErrorLogRequest(req), details: "board._id "+board._id});
+                    return mongo_data.save(b, function (err) {
+                        if (err) logging.errorLogger.error("Cannot save board", {
+                            origin: "cde.app.board",
+                            stack: new Error().stack,
+                            request: logging.generateErrorLogRequest(req),
+                            details: "board._id " + board._id
+                        });
                         res.send(b);
                     });
                 });
@@ -272,20 +284,20 @@ exports.init = function(app, daoManager) {
     });
 
     // Check that apache will support delete
-    app.delete('/pincde/:pinId/:boardId', function(req, res) {
-       if (req.isAuthenticated()) {
-           usersvc.removePinFromBoard(req, res);
-       } else {
-           res.send("Please login first.");
-       }
+    app.delete('/pincde/:pinId/:boardId', function (req, res) {
+        if (req.isAuthenticated()) {
+            usersvc.removePinFromBoard(req, res);
+        } else {
+            res.send("Please login first.");
+        }
     });
 
-    app.put('/pincde/:tinyId/:boardId', function(req, res) {
-       if (req.isAuthenticated()) {
-           usersvc.pinToBoard(req, res);
-       } else {
-           res.send("Please login first.");
-       }
+    app.put('/pincde/:tinyId/:boardId', function (req, res) {
+        if (req.isAuthenticated()) {
+            usersvc.pinToBoard(req, res);
+        } else {
+            res.send("Please login first.");
+        }
     });
 
     app.get('/autocomplete/org/:name', function (req, res) {
@@ -294,7 +306,7 @@ exports.init = function(app, daoManager) {
         });
     });
 
-    app.get('/cdediff/:deId', function(req, res) {
+    app.get('/cdediff/:deId', function (req, res) {
         if (!req.params.deId) res.status(404).send("Please specify CDE id.");
         mongo_data.byId(req.params.deId, function (err, dataElement) {
             if (err) return res.status(404).send("Cannot retrieve DataElement.");
@@ -306,86 +318,86 @@ exports.init = function(app, daoManager) {
         });
     });
 
-    app.post('/elasticSearch/cde', function(req, res) {
-       return elastic.elasticsearch(req.body, 'cde', function(err, result) {
-           if (err) return res.status(400).send("invalid query");
-           result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
-           res.send(result);
-       });
+    app.post('/elasticSearch/cde', function (req, res) {
+        return elastic.elasticsearch(req.body, 'cde', function (err, result) {
+            if (err) return res.status(400).send("invalid query");
+            result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
+            res.send(result);
+        });
     });
 
-    app.post('/classification/cde/moveclassif', function(req, res) {
-        classificationNode.moveClassifications(req, function(err, cde) {
-           if(!err) res.send(cde);
+    app.post('/classification/cde/moveclassif', function (req, res) {
+        classificationNode.moveClassifications(req, function (err, cde) {
+            if (!err) res.send(cde);
         });
     });
 
     if (config.modules.cde.attachments) {
-        app.post('/attachments/cde/add', multer(config.multer),function(req, res) {
+        app.post('/attachments/cde/add', multer(config.multer), function (req, res) {
             adminItemSvc.addAttachment(req, res, mongo_data);
         });
 
-        app.post('/attachments/cde/remove', function(req, res) {
+        app.post('/attachments/cde/remove', function (req, res) {
             adminItemSvc.removeAttachment(req, res, mongo_data);
         });
 
-        app.post('/attachments/cde/setDefault', function(req, res) {
+        app.post('/attachments/cde/setDefault', function (req, res) {
             adminItemSvc.setAttachmentDefault(req, res, mongo_data);
         });
     }
 
     if (config.modules.cde.comments) {
-        app.post('/comments/cde/add', function(req, res) {
+        app.post('/comments/cde/add', function (req, res) {
             adminItemSvc.addComment(req, res, mongo_data);
         });
 
-        app.post('/comments/cde/remove', function(req, res) {
+        app.post('/comments/cde/remove', function (req, res) {
             adminItemSvc.removeComment(req, res, mongo_data);
         });
 
-        app.post('/comments/cde/approve', function(req, res) {
-            adminItemSvc.declineApproveComment(req, res, mongo_data, function(elt) {
+        app.post('/comments/cde/approve', function (req, res) {
+            adminItemSvc.declineApproveComment(req, res, mongo_data, function (elt) {
                 elt.comments[req.body.comment.index].pendingApproval = false;
                 delete elt.comments[req.body.comment.index].pendingApproval;
             }, "Comment approved!");
         });
 
-        app.post('/comments/cde/decline', function(req, res) {
-            adminItemSvc.declineApproveComment(req, res, mongo_data, function(elt) {
+        app.post('/comments/cde/decline', function (req, res) {
+            adminItemSvc.declineApproveComment(req, res, mongo_data, function (elt) {
                 elt.comments.splice(req.body.comment.index, 1);
             }, "Comment declined!");
         });
     }
 
 
-    app.get('/userTotalSpace/:uname', function(req, res) {
-       return mongo_data.userTotalSpace(req.params.uname, function(space) {
-           return res.send({username: req.params.uname, totalSize: space});
-       });
+    app.get('/userTotalSpace/:uname', function (req, res) {
+        return mongo_data.userTotalSpace(req.params.uname, function (space) {
+            return res.send({username: req.params.uname, totalSize: space});
+        });
     });
 
-    app.get('/moreLikeCde/:cdeId', function(req, res) {
-        elastic.morelike(req.params.cdeId, function(result) {
+    app.get('/moreLikeCde/:cdeId', function (req, res) {
+        elastic.morelike(req.params.cdeId, function (result) {
             result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
             res.send(result);
         });
     });
 
-    app.post('/desByConcept', function(req, res) {
-       mongo_data.desByConcept(req.body, function(result) {
-           result.forEach(adminItemSvc.hideUnapprovedComments);
-           res.send(cdesvc.hideProprietaryPvs(result, req.user));
-       });
+    app.post('/desByConcept', function (req, res) {
+        mongo_data.desByConcept(req.body, function (result) {
+            result.forEach(adminItemSvc.hideUnapprovedComments);
+            res.send(cdesvc.hideProprietaryPvs(result, req.user));
+        });
     });
 
-    app.get('/deCount', function(req, res) {
-       mongo_data.deCount(function (result) {
-           res.send({count: result});
-       });
+    app.get('/deCount', function (req, res) {
+        mongo_data.deCount(function (result) {
+            res.send({count: result});
+        });
     });
 
-    var fetchRemoteData = function() {
-        vsac.getTGT(function(tgt) {
+    var fetchRemoteData = function () {
+        vsac.getTGT(function (tgt) {
             console.log("Got TGT");
         });
 
@@ -397,45 +409,45 @@ exports.init = function(app, daoManager) {
     setInterval(fetchRemoteData, 1000 * 60 * 60);
 
     var parser = new xml2js.Parser();
-    app.get('/vsacBridge/:vsacId', function(req, res) {
+    app.get('/vsacBridge/:vsacId', function (req, res) {
         if (!req.user) {
             res.status(202).send({error: {message: "Please login to see VSAC mapping."}});
         }
-        vsac.getValueSet(req.params.vsacId, function(result) {
+        vsac.getValueSet(req.params.vsacId, function (result) {
             if (result === 404 || result === 400) {
                 res.status(result);
                 res.end();
             } else {
                 parser.parseString(result, function (err, jsonResult) {
-                 res.send(jsonResult);
+                    res.send(jsonResult);
                 });
             }
-        }) ;
+        });
     });
 
-    app.get('/permissibleValueCodeSystemList', function(req, res) {
+    app.get('/permissibleValueCodeSystemList', function (req, res) {
         res.send(elastic.pVCodeSystemList);
     });
 
     app.post('/retireCde', function (req, res) {
         req.params.type = "received";
-        mongo_data.byId(req.body._id, function(err, cde) {
+        mongo_data.byId(req.body._id, function (err, cde) {
             if (err) res.status(404).send(err);
             if (!cde.registrationState.administrativeStatus === "Retire Candidate") return res.status(409).send("CDE is not a Retire Candidate");
             cde.registrationState.registrationStatus = "Retired";
             delete cde.registrationState.administrativeStatus;
-            cde.save(function() {
+            cde.save(function () {
                 res.end();
             });
         });
     });
 
     var systemAlert = "";
-    app.get("/systemAlert", function(req, res) {
+    app.get("/systemAlert", function (req, res) {
         res.send(systemAlert);
     });
 
-    app.post("/systemAlert", function(req, res) {
+    app.post("/systemAlert", function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             systemAlert = req.body.alert;
             console.log("system: " + systemAlert);
@@ -446,30 +458,30 @@ exports.init = function(app, daoManager) {
     });
 
     app.get('/sdc/:tinyId/:version', function (req, res) {
-       sdc.byTinyIdVersion(req, res);
+        sdc.byTinyIdVersion(req, res);
     });
 
     app.get('/sdc/:id', function (req, res) {
-       sdc.byId(req, res);
+        sdc.byId(req, res);
     });
 
-    app.get('/sdcView', function(req, res){
+    app.get('/sdcView', function (req, res) {
         res.render('sdcView');
     });
 
-    app.get('/profile', function(req, res) {
+    app.get('/profile', function (req, res) {
         res.render("profile", "cde");
     });
 
     app.get('/status/cde', status.status);
 
-    app.post('/pinEntireSearchToBoard', function(req, res) {
+    app.post('/pinEntireSearchToBoard', function (req, res) {
         if (req.isAuthenticated()) {
             var query = sharedElastic.buildElasticSearchQuery(req.body.query);
-            if(query.size > config.maxPin){
+            if (query.size > config.maxPin) {
                 res.status(403).send("Maximum number excesses.");
             } else {
-                sharedElastic.elasticsearch(query, 'cde', function(err, cdes){
+                sharedElastic.elasticsearch(query, 'cde', function (err, cdes) {
                     usersvc.pinAllToBoard(req, cdes.cdes, res);
                 });
             }
@@ -478,12 +490,12 @@ exports.init = function(app, daoManager) {
         }
     });
 
-    app.get('/cde/properties/keys', function(req, res) {
+    app.get('/cde/properties/keys', function (req, res) {
         adminItemSvc.allPropertiesKeys(req, res, mongo_data);
     });
 
-    app.get('/cde/mappingSpecifications/types', function(req, res) {
-        mongo_data.getDistinct("mappingSpecifications.spec_type", function(err, types) {
+    app.get('/cde/mappingSpecifications/types', function (req, res) {
+        mongo_data.getDistinct("mappingSpecifications.spec_type", function (err, types) {
             if (err) res.status(500).send("Unexpected Error");
             else {
                 res.send(types);
@@ -491,8 +503,8 @@ exports.init = function(app, daoManager) {
         });
     });
 
-    app.get('/cde/mappingSpecifications/contents', function(req, res) {
-        mongo_data.getDistinct("mappingSpecifications.content", function(err, contents) {
+    app.get('/cde/mappingSpecifications/contents', function (req, res) {
+        mongo_data.getDistinct("mappingSpecifications.content", function (err, contents) {
             if (err) res.status(500).send("Unexpected Error");
             else {
                 res.send(contents);
@@ -500,9 +512,9 @@ exports.init = function(app, daoManager) {
         });
     });
 
-    app.post('/getCdeAuditLog', function(req, res) {
-        if(req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data.getCdeAuditLog(req.body, function(err, result) {
+    app.post('/getCdeAuditLog', function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            mongo_data.getCdeAuditLog(req.body, function (err, result) {
                 res.send(result);
             });
         } else {
@@ -510,23 +522,9 @@ exports.init = function(app, daoManager) {
         }
     });
 
-    app.post('/elasticSearchExport/cde', function(req, res) {
-        var projectCde = function(elasticCde){
-            var cde = {
-                name: elasticCde.naming[0].designation
-                , otherNames: elasticCde.naming.slice(1).map(function(n){return n.designation;}).filter(function(n){return n;})
-                , valueDomainType: elasticCde.valueDomain.datatype
-                , permissibleValues: elasticCde.valueDomain.permissibleValues.map(function(pv){return pv.permissibleValue;})
-                , ids: elasticCde.ids.map(function(id) {return id.source + ": " + id.id + (id.version ? " v" + id.version : "")})
-                , stewardOrg: elasticCde.stewardOrg.name
-                , registrationStatus: elasticCde.registrationState.registrationStatus
-                , adminStatus: elasticCde.registrationState.administrativeStatus
-            };
-            if (elasticCde.classification) cde.usedBy = elasticCde.classification.map(function(c){return c.stewardOrg.name});
-            return cde;
-        };
+    app.post('/elasticSearchExport/cde', function (req, res) {
         var cdeHeader = "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
         var query = sharedElastic.buildElasticSearchQuery(req.body);
-        return elastic_system.elasticSearchExport(res, query, 'cde', projectCde, cdeHeader);
+        return elastic_system.elasticSearchExport(res, query, 'cde', exports.formatExportCde, cdeHeader);
     });
 };
