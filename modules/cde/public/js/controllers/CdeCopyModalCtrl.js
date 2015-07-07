@@ -2,6 +2,7 @@ angular.module('cdeModule').controller('CdeCopyModalCtrl', ['$scope', 'elt', 'us
     elt.classification = [];
     delete elt.tinyId;
     delete elt._id;
+    elt.ids = [];
     elt.registrationState.registrationStatus = "Incomplete";
     delete elt.registrationState.administrativeStatus;
     $scope.elt = JSON.parse(JSON.stringify(elt));

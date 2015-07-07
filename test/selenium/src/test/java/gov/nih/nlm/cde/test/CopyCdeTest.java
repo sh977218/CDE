@@ -17,7 +17,7 @@ public class CopyCdeTest extends BaseClassificationTest {
         textPresent("Please select at least one classification");
         Assert.assertFalse(findElement(By.id("saveCopy")).isEnabled());
         findElement(By.id("cdeName")).sendKeys(" - copy");
-        addClassificationMethod(new String[]{"NINDS", "Population", "Adult"});
+        addClassificationToNewCdeMethod(new String[]{"NINDS", "Population", "Adult"});
         findElement(By.id("saveCopy")).click();
         hangon(1);
         textPresent("Incomplete", By.id("dd_status"));

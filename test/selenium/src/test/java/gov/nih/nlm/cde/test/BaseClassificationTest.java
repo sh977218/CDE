@@ -52,6 +52,16 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         findElement(By.id("addClass.byRecentlyAdded")).click();
         for (int i = 0; i < categories.length; i++) {
             textPresent(categories[i], By.id("viewType.byRecentlyAdded"));
+        }
+        findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
+        modalGone();
+    }
+
+    public void checkRecentlyUsedClassificationsForNewCde(String[] categories) {
+        findElement(By.id("addClassification-createCde")).click();
+        findElement(By.id("addClass.byRecentlyAdded")).click();
+        for (int i = 0; i < categories.length; i++) {
+            textPresent(categories[i], By.id("viewType.byRecentlyAdded"));
         }        
         findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
         modalGone();   

@@ -13,7 +13,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
     public void infoBarTerms() {
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("blah blah blah");
-        findElement(By.cssSelector("i.fa-search")).click();
+        findElement(By.name("quickSearchButton")).click();
         hangon(.5);
         scrollToTop();
         textPresent("blah blah blah");

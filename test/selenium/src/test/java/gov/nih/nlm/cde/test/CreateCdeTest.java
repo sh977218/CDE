@@ -27,8 +27,8 @@ public class CreateCdeTest extends BaseClassificationTest {
         deleteClassification("classification-Disease,Traumatic Brain Injury");
 
         addClassificationToNewCdeMethod(new String[]{"NINDS", "Disease", "Headache"});
-        
-        checkRecentlyUsedClassifications(new String[]{"NINDS", "Disease", "Headache"});
+
+        checkRecentlyUsedClassificationsForNewCde(new String[]{"NINDS", "Disease", "Headache"});
         
         findElement(By.id("submit")).click();
         hangon(1);
