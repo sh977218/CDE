@@ -21,6 +21,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
     public void rememberPageNumber() {
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
+        scrollToTop();
         findElement(By.linkText("2")).click();
         hangon(2);
         scrollToTop();
