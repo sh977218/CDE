@@ -3,11 +3,14 @@ package gov.nih.nlm.cde.test.boards;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static com.jayway.restassured.RestAssured.given;
 
 public class PinAllTest extends BoardTest {
 
@@ -64,6 +67,8 @@ public class PinAllTest extends BoardTest {
 
     @Test
     public void boardExport() {
+
+
         String board_name = "Export my board test";
         String board_description = "This test tests export borad.";
         mustBeLoggedInAs(exportBoardUser_username, password);
@@ -91,7 +96,17 @@ public class PinAllTest extends BoardTest {
         wait.withTimeout(defaultTimeout, TimeUnit.SECONDS);
         closeAlert();
         if (!done) throw new TimeoutException("Export was too slow.");
-        removeBoard(board_name);
+
+        String url = driver.getCurrentUrl();
+        String bid = url.substring(url.lastIndexOf("/"));
+        String response = given().contentType("application/json; charset=UTF-16").when().get(baseUrl + "/board/" + bid + "/0/500").asString();
+
+        String result = "\"Diagnosis Change Date java.util.Date\"" +
+                "\"Performed Study Activity Negation Occurrence Flag ISO21090.BL.v1.0\"" +
+                "\"Person Other Premalignant Non-Melanomatous Lesion Indicator\"" +
+                "\"Common Toxicity Criteria Adverse Event Dysphagia Grade\"" +
+                "\"Animal Cancer Model Cell Line Name java.lang.String\"";
+        Assert.assertTrue(response.contains(result));
     }
 
 
