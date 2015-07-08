@@ -24,7 +24,7 @@ function($scope, OrgHelpers, $window) {
     });
 
     $scope.browseOrg = function(orgName) {
-        $scope.addOrgFilter(orgName);
+        $scope.alterOrgFilter(orgName);
         $window.location = "#/" + $scope.module + "/search";
     }
 

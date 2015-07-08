@@ -75,7 +75,7 @@
                 <a tabindex="0" href class="nonLinkAnchor displayBlock"
                    ng-repeat="t in aggregations.orgs.buckets | orderBy:'key'"
                    ng-switch="t.key === classificationFilters[altClassificationFilterMode].org"
-                   ng-click="addOrgFilter(t.key)" ng-show="t.key === classificationFilters[altClassificationFilterMode].org || !classificationFilters[altClassificationFilterMode].org">
+                   ng-click="alterOrgFilter(t.key)" ng-show="t.key === classificationFilters[altClassificationFilterMode].org || !classificationFilters[altClassificationFilterMode].org">
                         <span class="hand-cursor" tooltip="{{t.longName}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                             <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>
                             <i ng-switch-default class="fa fa-chevron-right" id="li-blank-{{t.key}}" ></i>
