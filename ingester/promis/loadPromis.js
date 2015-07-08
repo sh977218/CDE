@@ -39,7 +39,7 @@ var doFile = function(file, cb) {
         if (err) console.log("err " + err);
         var form = JSON.parse(formData);
         //each item is a CDE
-        console.log("Form: " + form.name);
+        //console.log("Form: " + form.name);
         //var classifs = form.name.split(" - ");
         //classificationShared.addCategory(fakeTree, [classifs[0], classifs[1], classifs[2]]);
         //if (formClassifMap[form.name]) classificationShared.addCategory(fakeTree, formClassifMap[form.name]);
@@ -77,13 +77,29 @@ var doFile = function(file, cb) {
 
 
             var duplicate = cdeArray.findDuplicate(cde.naming[0].designation);
-            
+
+            if (form.name === "PROMIS SF v2.0 - Instrumental Support 4a") {
+                console.log("bad cde");
+            }
+
             if (duplicate) {
                 if (formClassifMap[form.name] && duplicate.classification[0]) {
                     classificationShared.addCategory(duplicate.classification[0], formClassifMap[form.name].concat(form.name));
+                    classificationShared.addCategory(fakeTree, formClassifMap[form.name].concat(form.name));
                 }
                 else {
-                    lostForms.push(form.name);
+                    //lostForms.push(form.name);
+
+                    var c1;
+                    if (form.name.indexOf("Neuro-QOL")>-1) {
+                        c1 = "Neuro-QOL Measures";
+                    } else if (form.name.indexOf("PROMIS")>-1) {
+                        c1 = "PROMIS Instruments";
+                    } else {
+                        c1 = "Other";
+                    }
+                    classificationShared.addCategory(fakeTree, [c1, "Other", form.name]);
+                    classificationShared.addCategory(duplicate.classification[0], [c1, "Other", form.name]);
 
                 }
             } else {
@@ -145,7 +161,7 @@ var doFile = function(file, cb) {
                     } else {
                         c1 = "Other";
                     }
-                    classificationShared.addCategory(fakeTree, ["Assesment Center", "Other", c1, form.name]);
+                    classificationShared.addCategory(fakeTree, [c1, "Other", form.name]);
                     cde.classification.push({
                         stewardOrg: {
                             name: "Assessment Center"
@@ -182,7 +198,7 @@ var doFile = function(file, cb) {
                 }
 
             });
-            if (!found) console.log("can't find ID: " + cde.naming[0].designation);
+            //if (!found) console.log("can't find ID: " + cde.naming[0].designation);
         });
         cb();
     });    
@@ -194,7 +210,7 @@ var loadForm = function(file, cb) {
         if (err) console.log("err " + err);
         var pForm = JSON.parse(formData);
         //each item is a CDE
-        console.log("Form: " + pForm.name);
+        //console.log("Form: " + pForm.name);
         //var classifs = pForm.name.split(" - ");
         if (formClassifMap[pForm.name]) classificationShared.addCategory(fakeTree, formClassifMap[pForm.name]);
 
@@ -340,6 +356,7 @@ mongo_data_system.orgByName("Assessment Center", function(stewardOrg) {
                 });
             }, function(err) {
                 loadLoincPv.loadPvs(cdeArray, function() {
+                    console.log("lost forms\n\n\n");
                     lostForms.forEach(function(f){console.log(f)});
                     process.exit(0);
                 });
