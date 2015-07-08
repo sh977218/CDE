@@ -80,7 +80,7 @@ var doFile = function(file, cb) {
             
             if (duplicate) {
                 if (formClassifMap[form.name] && duplicate.classification[0]) {
-                    classificationShared.addCategory(duplicate.classification[0], formClassifMap[form.name]);
+                    classificationShared.addCategory(duplicate.classification[0], formClassifMap[form.name].concat(form.name));
                 }
                 else {
                     lostForms.push(form.name);
@@ -89,27 +89,50 @@ var doFile = function(file, cb) {
             } else {
                 cde.classification = [];
                 if (formClassifMap[form.name]) {
-                    classificationShared.addCategory(fakeTree, formClassifMap[form.name]);
-                    cde.classification.push({
-                        stewardOrg: {
-                            name: "Assessment Center"
-                        },
-                        elements: [
-                            {
-                                name: formClassifMap[form.name][0],
-                                elements: [
-                                    {
-                                        name: formClassifMap[form.name][1]
-                                        , elements: []
-                                    }
-                                ]
-                            }
-                        ]
-                    });
-                    if (formClassifMap[form.name].length>2) {
-                        cde.classification[0].elements[0].elements[0].elements.push({
-                            name: formClassifMap[form.name][2]
-                            , elements: []
+                    classificationShared.addCategory(fakeTree, formClassifMap[form.name].concat([form.name]));
+                    if (formClassifMap[form.name].length === 2) {
+                        cde.classification.push({
+                            stewardOrg: {
+                                name: "Assessment Center"
+                            },
+                            elements: [
+                                {
+                                    name: formClassifMap[form.name][0],
+                                    elements: [
+                                        {
+                                            name: formClassifMap[form.name][1]
+                                            , elements: [{
+                                                name: form.name
+                                                , elements: []
+                                            }]
+                                        }
+                                    ]
+                                }
+                            ]
+                        });
+                    }
+                    else if (formClassifMap[form.name].length>2) {
+                        cde.classification.push({
+                            stewardOrg: {
+                                name: "Assessment Center"
+                            },
+                            elements: [
+                                {
+                                    name: formClassifMap[form.name][0],
+                                    elements: [
+                                        {
+                                            name: formClassifMap[form.name][1]
+                                            , elements: [{
+                                                name:  formClassifMap[form.name][2]
+                                                , elements: [{
+                                                    name: form.name
+                                                    , elements: []
+                                                }]
+                                            }]
+                                        }
+                                    ]
+                                }
+                            ]
                         });
                     }
                 }
