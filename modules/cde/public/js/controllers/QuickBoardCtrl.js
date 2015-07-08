@@ -28,6 +28,21 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
                 $scope.openCloseAll($scope.cdes, "quickboard");
             });
 
-
+            $scope.exportQuickBoard = function () {
+                var result = exports.exportHeader.cdeHeader;
+                $scope.cdes.forEach(function (ele) {
+                    result += exports.convertToCsv(exports.projectCdeForExport(ele));
+                });
+                if (result) {
+                    var blob = new Blob([result], {
+                        type: "text/csv"
+                    });
+                    saveAs(blob, 'QuickBoardExport' + '.csv');
+                    $scope.addAlert("success", "Export downloaded.")
+                    $scope.feedbackClass = ["fa-download"];
+                } else {
+                    $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
+                }
+            }
 
         }]);

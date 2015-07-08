@@ -273,7 +273,7 @@ exports.elasticsearch = function (query, type, cb) {
 };
 
 var lock = false;
-exports.elasticSearchExport = function (res, query, type, project, header) {
+exports.elasticSearchExport = function (res, query, type, converter, header) {
     if (lock) return res.status(503).send("Servers busy");
 
     lock = true;
@@ -299,7 +299,7 @@ exports.elasticSearchExport = function (res, query, type, project, header) {
                 else {
                     for (var i = 0; i < resp.hits.hits.length; i++) {
                         var thisCde = resp.hits.hits[i]._source;
-                        res.write(exportShared.convertToCsv(exportShared.formatExportCde(thisCde)));
+                        res.write(converter(exportShared.projectCdeForExport(thisCde)));
                     }
                     scrollThrough(newScrollId);
                 }

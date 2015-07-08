@@ -1,14 +1,10 @@
-/**
- * Created by huangs8 on 7/7/2015.
- */
-
 if (typeof(exports) === "undefined") exports = {};
 
 exports.exportHeader = {
     cdeHeader: "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n"
 };
 
-exports.formatExportForm = function (elasticCde) {
+exports.projectFormForExport = function (elasticCde) {
     var cde = {
         name: elasticCde.naming[0].designation
         , ids: elasticCde.ids.map(function (id) {
@@ -24,7 +20,7 @@ exports.formatExportForm = function (elasticCde) {
     return cde;
 };
 
-exports.formatExportCde = function (ele) {
+exports.projectCdeForExport = function (ele) {
     var cde = {
         name: ele.naming[0].designation
         , otherNames: ele.naming.slice(1).map(function (n) {
@@ -49,14 +45,14 @@ exports.formatExportCde = function (ele) {
     return cde;
 }
 
-exports.convertToCsv = function (cde) {
+exports.convertToCsv = function (ele) {
     var sanitize = function (v) {
         return v.trim().replace(/\"/g, "\"\"");
     };
     var row = "";
-    Object.keys(cde).forEach(function (key) {
+    Object.keys(ele).forEach(function (key) {
         row += "\"";
-        var value = cde[key];
+        var value = ele[key];
         if (Array.isArray(value)) {
             row += value.map(function (value) {
                 return sanitize(value);

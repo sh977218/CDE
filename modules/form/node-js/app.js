@@ -110,7 +110,7 @@ exports.init = function (app, daoManager) {
     app.post('/elasticSearchExport/form', function (req, res) {
         var formHeader = "Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
         var query = sharedElastic.buildElasticSearchQuery(req.body);
-        return elastic_system.elasticSearchExport(res, query, 'form', exportShared.formatExportForm, formHeader);
+        return elastic_system.elasticSearchExport(res, query, 'form', exportShared.projectFormForExport, formHeader);
     });
 
 };
