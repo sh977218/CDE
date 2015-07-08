@@ -37,6 +37,7 @@ public class ForkMineTheirsTest extends ForkTest {
         Assert.assertEquals("Standard", findElement(By.id("dd_status")).getText());
 
         goToCdeSearch();
+        waitForESUpdate();
         findElement(By.id("ftsearch-input")).sendKeys("\"Adverse Event Ongoing Event Indicator\"");
         findElement(By.cssSelector("i.fa-search")).click();
         textPresent("1 results for");
