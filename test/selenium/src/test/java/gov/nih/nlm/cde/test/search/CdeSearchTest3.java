@@ -36,26 +36,37 @@ public class CdeSearchTest3 extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("ISO2109");
         findElement(By.id("search.submit")).click();
-        Assert.assertTrue(textPresent("No results were found."));
+        textPresent("No results were found.");
 
         goToCdeSearch();
         findElement(By.name("ftsearch")).sendKeys("ISO2109*");
         findElement(By.id("search.submit")).click();
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(linkList.size() > 10);
-        Assert.assertTrue(textPresent("ISO21090.ST"));
+        textPresent("ISO21090.ST");
 
     }
 
     @Test
     public void openAllButton() {
         goToCdeSearch();
+        findElement(By.id("browseOrg-NINDS")).click();
+        textPresent("Expand All");
+        textNotPresent("Collapse All");
         for (int i = 0; i < 19; i++) {
-            wait.until(ExpectedConditions.elementToBeClickable(By.id("acc_link_" + i)));
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_" + i)));
         }
         findElement(By.id("openAllCb")).click();
+        textPresent("Collapse All");
+        textNotPresent("Expand All");
         for (int i = 0; i < 19; i++) {
-            wait.until(ExpectedConditions.elementToBeClickable(By.id("acc_link_" + i)));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_" + i)));
+        }
+        findElement(By.id("openAllCb")).click();
+        textPresent("Expand All");
+        textNotPresent("Collapse All");
+        for (int i = 0; i < 19; i++) {
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_" + i)));
         }
     }
 

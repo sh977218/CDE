@@ -16,7 +16,7 @@ public class MiscTests extends NlmCdeBaseTest {
     @Test
     public void gridView() {
         goToCdeSearch();
-        findElement(By.id("li-blank-AECC")).click();
+        findElement(By.id("browseOrg-AECC")).click();
         hangon(2);
         findElement(By.id("gridView")).click();
         textPresent("Pathologic N Stage");
@@ -117,7 +117,7 @@ public class MiscTests extends NlmCdeBaseTest {
         alert = driver.switchTo().alert();
         Assert.assertTrue(alert.getText().contains("are you sure you want to leave"));
         alert.accept();
-        findElement(By.id("showHideFilters"));
+        textPresent("Browse by organization");
     }
 
 }

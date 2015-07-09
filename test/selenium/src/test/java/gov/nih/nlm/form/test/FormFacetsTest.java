@@ -8,7 +8,7 @@ public class FormFacetsTest extends BaseFormTest {
     @Test
     public void formFacets() {
         setLowStatusesVisible();
-        gotoPublicForms();
+        goToFormSearch();
         searchForm("FormSearchTest");
         textPresent("Skin Cancer Patient");
         textPresent("Traumatic Brain Injury - Adverse Events");
