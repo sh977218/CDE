@@ -144,11 +144,22 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.reload();
     };
 
-    $scope.search = function() {
-        $scope.currentSearchTerm = $scope.searchForm.ftsearch;
-        $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
+    //$scope.search = function() {
+    //    $scope.currentSearchTerm = $scope.searchForm.ftsearch;
+    //    $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
+    //
+    //    $scope.reload();
+    //};
 
-        $scope.reload();
+    $scope.search = function() {
+
+
+        $timeout(function () {
+            $scope.$digest();
+            $scope.currentSearchTerm = $scope.searchForm.ftsearch;
+            $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
+            $scope.reload();
+        }, 0);
     };
 
     $scope.isAllowed = function (cde) {

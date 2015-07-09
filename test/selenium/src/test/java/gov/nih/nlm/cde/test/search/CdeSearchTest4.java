@@ -67,5 +67,6 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("+-aaa");
         findElement(By.cssSelector("i.fa-search")).click();
         textPresent("There was a problem with your query");
+        closeAlert();
     }
 }

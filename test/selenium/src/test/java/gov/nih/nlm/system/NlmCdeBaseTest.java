@@ -264,6 +264,7 @@ public class NlmCdeBaseTest {
         goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
+        hangon(0.5); // Wait for ng-model of ftsearch to update. Otherwise angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
         findElement(By.id("search.submit")).click();
         hangon(2);
         if (status != null) {
@@ -360,6 +361,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void newCdeVersion(String changeNote) {
+        scrollToEltByCss("#openSave");
         findElement(By.id("openSave")).click();
         if (changeNote != null) {
             findElement(By.name("changeNote")).clear();

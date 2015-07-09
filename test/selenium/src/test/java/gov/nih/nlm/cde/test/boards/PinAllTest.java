@@ -59,7 +59,7 @@ public class PinAllTest extends BoardTest {
         int num_cde_after_pinAll_int =
                 Integer.valueOf(findElement(By.xpath("//*[@data-id = 'boardDiv_"
                         + board_name + "']//*[contains(@id, 'dd_numb_')]")).getText());
-        Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
+        Assert.assertTrue(searchResultNum_int - 1 <= num_cde_after_pinAll_int && num_cde_after_pinAll_int <= searchResultNum_int + 1);
         removeBoard(board_name);
     }
     
