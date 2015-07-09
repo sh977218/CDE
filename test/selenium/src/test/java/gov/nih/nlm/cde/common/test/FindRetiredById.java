@@ -18,7 +18,7 @@ public class FindRetiredById extends NlmCdeBaseTest {
         driver.get(url);
     }
 
-//    @Test
+    @Test
     public void retiredCdeById() {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Skull fracture anatomic site");
@@ -27,7 +27,7 @@ public class FindRetiredById extends NlmCdeBaseTest {
     }
 
 
-//    @Test
+    @Test
     public void retiredFormById() {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("PTSD Checklist - Civilian (PCL-C)");

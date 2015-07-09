@@ -45,9 +45,8 @@ angular.module('formModule').controller('FormViewCtrl',
             $scope.elt = form;
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
-        //}, function() {
-        //    $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
-        //    $window.location.href = "/#/home";
+        }, function() {
+            $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;

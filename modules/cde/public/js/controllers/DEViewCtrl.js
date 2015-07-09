@@ -82,9 +82,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
             isAllowedModel.setDisplayStatusWarning($scope);
             $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
             $scope.resolveCdeLoaded();
-        //}, function () {
-        //    $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
-        //    $window.location.href = "/#/home";
+        }, function () {
+            $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
