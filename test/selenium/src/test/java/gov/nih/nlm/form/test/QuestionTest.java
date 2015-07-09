@@ -25,7 +25,6 @@ public class QuestionTest extends BaseFormTest {
         WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumber));
 
         Assert.assertTrue(sourceElt.isDisplayed());
-        //Assert.assertTrue(targetElt.isDisplayed());
 
         String jsScroll = "var y = $(\"#section_drop_area_" + sectionNumber + "\").position().top;\n" +
                 "$(window).scrollTop(y);";

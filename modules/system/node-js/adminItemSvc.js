@@ -25,7 +25,8 @@ exports.save = function (req, res, dao) {
                     && !req.user.siteAdmin) {
                     res.status(403).send("not authorized");
                 } else if (elt.registrationState && elt.registrationState.registrationStatus) {
-                    if ((elt.registrationState.registrationStatus !== "Standard" && elt.registrationState.registrationStatus !== " Preferred Standard")
+                    if ((elt.registrationState.registrationStatus !== "Standard"
+                        && elt.registrationState.registrationStatus !== " Preferred Standard")
                         && !req.user.siteAdmin) {
                         return res.status(403).send("Not authorized");
                     }

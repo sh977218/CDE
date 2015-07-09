@@ -23,46 +23,31 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     
     @Test
     public void stewardFacets() {
-        setLowStatusesVisible();
-        goToCdeSearch();
         mustBeLoggedOut();
-        setLowStatusesVisible();
-        findElement(By.id("li-blank-Preferred Standard")).click();
-        hangon(1);
-        findElement(By.id("li-blank-Standard")).click();
-        hangon(1);
-        findElement(By.id("li-blank-Qualified")).click();
+        goToCdeSearch();
+        findElement(By.id("browseOrg-caBIG")).click();
+        int numOfElts = Integer.valueOf(findElement(By.id("nbOfClassifElts-All Candidates")).getText());
 
-        textNotPresent("GRDR (75)");
-        textPresent("CCR (4");
-        findElement(By.id("li-blank-Recorded")).click();
-        textPresent("GRDR (75)");
-        textPresent("NINDS (91");
-        findElement(By.id("li-checked-Qualified")).click();
-        textNotPresent("NINDS (9");
-        findElement(By.id("li-checked-Recorded")).click();
-        hangon(1);
-        findElement(By.id("li-checked-Standard")).click();
-        hangon(1);
-        waitAndClick(By.id("li-checked-Preferred Standard"));
-        textPresent("NINDS (91");
-        textPresent("All Statuses");
+        findElement(By.id("li-blank-All Candidates")).click();
+
+        textPresent(numOfElts + " results for All Terms | caBIG > All Candidates | All Statuses");
     }
 
     @Test
     public void statusFacets() {
-        setLowStatusesVisible();
         goToCdeSearch();
-        textPresent("Qualified (94");
-        findElement(By.id("li-blank-caBIG")).click();
-        //findElement(By.cssSelector("i.fa-square-o"));
-        textPresent("Qualified (1");
+        int numOfCipElts = Integer.valueOf(findElement(By.id("nbOfElts-CIP")).getText());
+        findElement(By.id("browseOrg-CIP")).click();
+        textPresent("Qualified (" + numOfCipElts + ")");
+        int numOfLidcElts = Integer.valueOf(findElement(By.id("nbOfClassifElts-LIDC")).getText());
+        findElement(By.id("li-blank-LIDC")).click();
+        textPresent("Qualified (" + numOfLidcElts + ")");
     }
 
     @Test
     public void deepFacets() {
         goToCdeSearch();
-        findElement(By.id("li-blank-NINDS")).click();
+        findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
         findElement(By.id("li-blank-Traumatic Brain Injury")).click();
         findElement(By.id("li-blank-Acute Hospitalized")).click();
@@ -80,7 +65,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     public void regStatusFacets() {
         mustBeLoggedOut();
         setLowStatusesVisible();
-        findElement(By.id("li-blank-caBIG")).click();
+        findElement(By.id("browseOrg-caBIG")).click();
         findElement(By.id("li-blank-ASCO")).click();
         textPresent("Agent Physical Appearance Type");
         textPresent("First Follow-up Visit Date");
@@ -128,21 +113,19 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void facetPagination() {
         goToCdeSearch();
-        findElement(By.id("li-blank-CTEP")).click();
-        // next line should make it wait.
-        textPresent("OPEN to Rave");
-        hangon(1);
-        findElement(By.linkText("Next")).click();
-        textPresent("OPEN to Rave Standard ");
-        //findElement(By.cssSelector("i.fa-check-square-o"));
-        
-        scrollToTop();
-        
-        findElement(By.id("resetSearch")).click();
-        Assert.assertTrue(textPresent("Qualified (94"));
-        findElement(By.name("ftsearch")).sendKeys("Immunology");
-        findElement(By.cssSelector("i.fa-search")).click();
-        Assert.assertTrue(textPresent("Immunology Gonorrhea Assay Laboratory Finding Result"));
+        findElement(By.id("browseOrg-CTEP")).click();
+
+        int numOfDiseaseElts = Integer.valueOf(findElement(By.id("nbOfClassifElts-DISEASE")).getText());
+
+        findElement(By.id("li-blank-DISEASE")).click();
+
+        textPresent(numOfDiseaseElts + " results for");
+
+        int expectedNumberOfPages = (int) Math.ceil((double)numOfDiseaseElts / 20);
+        for (int i = 1; i < expectedNumberOfPages; i ++) {
+            findElement(By.linkText("" + i));
+        }
+        Assert.assertEquals(0, driver.findElements(By.linkText("" + (expectedNumberOfPages + 1))).size());
     }
 
     
@@ -156,11 +139,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("saveRegStatus")).click();
         waitForESUpdate();
         goToCdeSearch();
-        textPresent("Preferred Standard");
+        findElement(By.id("browseOrg-DCP")).click();
+        textNotPresent("Noncompliant Reason Text");
+        textPresent("Preferred Standard (");
         findElement(By.id("li-blank-Standard")).click();
-        hangon(1);
-        findElement(By.id("li-blank-Qualified")).click();
-        hangon(1);
         textNotPresent("Noncompliant Reason Text");
     }
     
