@@ -7,6 +7,7 @@ angular.module('cdeModule').controller('CdeCopyModalCtrl', ['$scope', 'elt', 'us
     delete elt.registrationState.administrativeStatus;
     $scope.elt = JSON.parse(JSON.stringify(elt));
     $scope.origName = $scope.elt.naming[0].designation;
+    $scope.elt.naming[0].designation = "Copy of: " + $scope.elt.naming[0].designation;
     $scope.myOrgs = userResource.userOrgs;
     $controller('CreateCdeAbstractCtrl', {$scope: $scope});
 

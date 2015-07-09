@@ -32,8 +32,6 @@ public class InfoBarTest extends NlmCdeBaseTest {
         hangon(1);
         textNotPresent(", Qualified");
         textPresent("| Standard");
-        findElement(By.id("li-blank-Recorded")).click();
-        textPresent( "| Standard, Recorded" );
         scrollToTop();
         findElement(By.id("resetSearch")).click();
         textPresent( "Browse by organization" );
