@@ -394,7 +394,7 @@ exports.init = function(app, daoManager) {
 
     // run every 1 hours
     fetchRemoteData();
-    setInterval(fetchRemoteData, 1000 * 60 * 60 * 1);
+    setInterval(fetchRemoteData, 1000 * 60 * 60);
 
     var parser = new xml2js.Parser();
     app.get('/vsacBridge/:vsacId', function(req, res) {
@@ -467,11 +467,12 @@ exports.init = function(app, daoManager) {
         if (req.isAuthenticated()) {
             var query = sharedElastic.buildElasticSearchQuery(req.body.query);
             if(query.size > config.maxPin){
-                res.send("Maximum number excesses.");
+                res.status(403).send("Maximum number excesses.");
+            } else {
+                sharedElastic.elasticsearch(query, 'cde', function(err, cdes){
+                    usersvc.pinAllToBoard(req, cdes.cdes, res);
+                });
             }
-            sharedElastic.elasticsearch(query, 'cde', function(err, cdes){
-                usersvc.pinAllToBoard(req, cdes.cdes, res);
-            });
         } else {
             res.send("Please login first.");
         }

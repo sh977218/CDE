@@ -9,6 +9,14 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 public class QuickBoardTest extends NlmCdeBaseTest {
+
+    public void emptyQuickBoard() {
+        findElement(By.partialLinkText("Quick Board (")).click();
+        findElement(By.id("qb.empty")).click();
+        findElement(By.linkText("Quick Board ( empty )")).click();
+        hangon(1);
+    }
+
     @Test
     public void gotoEmptyQuickBoard() {
         goHome();
@@ -16,11 +24,11 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         hangon(0.5);
         findElement(By.linkText("Quick Board ( empty )")).click();
         try {
-            Assert.assertTrue(textPresent("The quick board is empty."));
+            textPresent("The quick board is empty.");
         } catch (Exception e) {
             goHome();
             findElement(By.linkText("Quick Board ( empty )")).click();
-            Assert.assertTrue(textPresent("The quick board is empty."));
+            textPresent("The quick board is empty.");
         }
     }
 
@@ -41,13 +49,13 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent("Quick Board ( full )");
     
         findElement(By.linkText("Quick Board ( full )")).click();
-        Assert.assertTrue(textNotPresent("The quick board is empty."));
+        textNotPresent("The quick board is empty.");
         findElement(By.id("qb.empty")).click();
-        textPresent( "Quick Board ( empty )");
+        textPresent("Quick Board ( empty )");
     }
 
     @Test
-    public void emptyQuickBoard() {
+    public void emptyQuickBoardTest() {
         goToCdeSearch();
         addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
@@ -66,8 +74,8 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
-        addToQuickBoard( "Prior BMSCT Administered Indicator" );
-        addToQuickBoard( "Generalized Activities of Daily Living Pain Restricted Scale" );
+        addToQuickBoard("Prior BMSCT Administered Indicator");
+        addToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
         textPresent("Quick Board ( 5 )");
         findElement(By.linkText("Quick Board ( 5 )")).click();
         textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
@@ -84,14 +92,14 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     public void noSideBySideCompare() {
         goToCdeSearch();
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
-        addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
-        addToQuickBoard( "Prior BMSCT Administered Indicator" );
+        addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
+        addToQuickBoard("Prior BMSCT Administered Indicator");
         textPresent("Quick Board ( 3 )");
         findElement(By.linkText("Quick Board ( 3 )")).click();
         findElement(By.id("qb.compare")).click();
-         textPresent( "You may only compare 2 CDEs side by side." );
+        textPresent("You may only compare 2 CDEs side by side." );
         findElement(By.id("qb.empty")).click();
-         textPresent( "Quick Board ( empty )" ) ;
+        textPresent( "Quick Board ( empty )" );
     }
 
     @Test
@@ -109,7 +117,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent( "ALK Standard Deviation" );
         textPresent( "Platinum free interval" );
         textPresent( "Permissible Values" );
-        
+
         findElement(By.linkText("Quick Board ( 2 )")).click();
         findElement(By.id("qb.empty")).click();
         textPresent( "Quick Board ( empty )" );
@@ -118,7 +126,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     @Test
     public void removeOne() {
         goToCdeSearch();
-        findElement(By.id("li-blank-OHSU Knight")).click();
+        findElement(By.id("browseOrg-OHSU Knight")).click();
         textPresent("4 results for");
         findElement(By.id("addToCompare_0")).click();
         findElement(By.id("addToCompare_1")).click();

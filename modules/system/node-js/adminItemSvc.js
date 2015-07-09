@@ -25,7 +25,8 @@ exports.save = function (req, res, dao) {
                     && !req.user.siteAdmin) {
                     res.status(403).send("not authorized");
                 } else if (elt.registrationState && elt.registrationState.registrationStatus) {
-                    if ((elt.registrationState.registrationStatus !== "Standard" && elt.registrationState.registrationStatus !== " Preferred Standard")
+                    if ((elt.registrationState.registrationStatus !== "Standard"
+                        && elt.registrationState.registrationStatus !== " Preferred Standard")
                         && !req.user.siteAdmin) {
                         return res.status(403).send("Not authorized");
                     }
@@ -124,14 +125,14 @@ exports.addAttachment = function (req, res, dao) {
                     //store it to FS here
                     var writeStream = fs.createWriteStream(file.path);
                     streamFS.pipe(writeStream);
-                    streamFS.on('end', function (err) {
-                            md5.async(file.path, function (hash) {
-                                file.md5 = hash;
-                                mongo_data_system.addAttachment(file, req.user, "some comment", elt, function (attachment, requiresApproval) {
-                                    if (requiresApproval) exports.createApprovalMessage(req.user, "AttachmentReviewer", "AttachmentApproval", attachment);
-                                    res.send(elt);
-                                });
+                    writeStream.on('finish', function (err) {
+                        md5.async(file.path, function (hash) {
+                            file.md5 = hash;
+                            mongo_data_system.addAttachment(file, req.user, "some comment", elt, function (attachment, requiresApproval) {
+                                if (requiresApproval) exports.createApprovalMessage(req.user, "AttachmentReviewer", "AttachmentApproval", attachment);
+                                res.send(elt);
                             });
+                        });
                     });
                 }
             });

@@ -125,6 +125,12 @@ public class NlmCdeBaseTest {
         resizeWindow(1280, 800);
     }
 
+    @BeforeMethod
+    public void clearStorage() {
+        String clearStorage = "localStorage.clear();";
+        ((JavascriptExecutor) driver).executeScript(clearStorage, "");
+    }
+
     protected void resizeWindow(int width, int height) {
         driver.manage().window().setSize(new Dimension(width, height));
     }
@@ -250,16 +256,19 @@ public class NlmCdeBaseTest {
         openEltInList(name, type, null);
     }
 
+    public void searchCde(String cdeName) {
+        searchElt(cdeName, "cde", null);
+    }
+
     public void searchElt(String name, String type, String status) {
         goToSearch(type);
-        if (status != null) {
-            findElement(By.id("li-blank-" + status)).click();
-            hangon(2);
-        }
-        scrollToTop();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.id("search.submit")).click();
+        hangon(2);
+        if (status != null) {
+            findElement(By.id("li-blank-" + status)).click();
+        }
         textPresent("1 results for");
         textPresent(name, By.id("acc_link_0"));
     }
@@ -283,16 +292,6 @@ public class NlmCdeBaseTest {
         findElement(By.id("acc_link_0")).click();
     }
 
-    protected WebElement findElement(By by) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-        return driver.findElement(by);
-    }
-
-    public void waitAndClick(By by) {
-        wait.until(ExpectedConditions.elementToBeClickable(by));
-        findElement(by).click();
-    }
-
     public void checkTooltipText(By by, String text) {
         try {
             textPresent(text);
@@ -301,6 +300,16 @@ public class NlmCdeBaseTest {
             hoverOverElement(findElement(by));
             textPresent(text);
         }
+    }
+
+    protected WebElement findElement(By by) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+        return driver.findElement(by);
+    }
+
+    public void waitAndClick(By by) {
+        wait.until(ExpectedConditions.elementToBeClickable(by));
+        findElement(by).click();
     }
 
     protected void clickElement(By by) {
@@ -432,9 +441,8 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/gonowhere");
         textPresent("Nothing here");
         driver.get(baseUrl + "/#/" + type + "/search");
-        findElement(By.name("ftsearch"));
-        showSearchFilters();
-        textPresent("NINDS (");
+        findElement(By.id("ftsearch-input"));
+        textPresent("Browse by organization");
     }
 
     protected void goToSearchByMenu() {
@@ -463,11 +471,7 @@ public class NlmCdeBaseTest {
     }
 
     public void addToQuickBoard(String cdeName) {
-        findElement(By.name("ftsearch")).clear();
-        findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
-        findElement(By.id("search.submit")).click();
-        textPresent("1 results for");
-        textPresent(cdeName, By.cssSelector("#acc_link_0"));
+        searchCde(cdeName);
         findElement(By.id("addToCompare_0")).click();
         hangon(.5);
         findElement(By.name("ftsearch")).clear();
@@ -493,20 +497,6 @@ public class NlmCdeBaseTest {
         boolean elementVisible;
         try {
             driver.findElement(By.cssSelector(selector));
-            elementVisible = false;
-        } catch (NoSuchElementException e) {
-            elementVisible = true;
-        }
-        driver.manage().timeouts()
-                .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
-        return elementVisible;
-    }
-
-    protected boolean checkElementDoesNotExistById(String id) {
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-        boolean elementVisible;
-        try {
-            driver.findElement(By.id(id));
             elementVisible = false;
         } catch (NoSuchElementException e) {
             elementVisible = true;
@@ -688,22 +678,6 @@ public class NlmCdeBaseTest {
         textPresent("Settings saved");
         closeAlert();
         goToSearch("cde");
-    }
-
-    protected void randomPickClassification() {
-        List<WebElement> classifications = driver.findElements(By.cssSelector("#classificationListHolder a"));
-        int classifications_len = classifications.size();
-        int classification_selected = randInt(1, classifications_len);
-        WebElement classification = classifications.get(classification_selected - 1);
-        classification.click();
-    }
-
-    protected void randomPickRegistrationStatus() {
-        List<WebElement> registrationStatuses = driver.findElements(By.cssSelector("#registrationStatusListHolder a"));
-        int registrationStatuses_len = registrationStatuses.size();
-        int registrationStatus_selected = randInt(1, registrationStatuses_len);
-        WebElement registrationStatus = registrationStatuses.get(registrationStatus_selected - 1);
-        registrationStatus.click();
     }
 
     private int randInt(int min, int max) {

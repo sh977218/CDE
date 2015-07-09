@@ -13,10 +13,10 @@ public class Vsac2Test extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Patient Race Category");
         findElement(By.linkText("Permissible Values")).click();
-        Assert.assertTrue(textPresent("Native Hawaiian or other Pacific Islander"));
-        Assert.assertTrue(textNotPresent("Match"));
+        textPresent("Native Hawaiian or other Pacific Islander");
+        textNotPresent("Match");
         findElement(By.id("removeAllPvs")).click();
-        Assert.assertTrue(textNotPresent("Native Hawaiian or other Pacific Islander"));
+        textNotPresent("Native Hawaiian or other Pacific Islander");
         findElement(By.linkText("Update O.I.D")).click();
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.836");
         findElement(By.id("vsacIdCheck")).click();
@@ -31,7 +31,6 @@ public class Vsac2Test extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
 
         newCdeVersion("Importing All VSAC Values");
-
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));
@@ -56,7 +55,7 @@ public class Vsac2Test extends NlmCdeBaseTest {
         findElement(By.cssSelector("#pvCode-4 .fa-check")).click();
 
         findElement(By.cssSelector("#pvCodeSystem-4 .fa-edit")).click();
-        findElement(By.xpath("//td[@id='pvCodeSystem-4']//input")).sendKeys(".1");
+        findElement(By.xpath("//td[@id='pvCodeSystem-4']//input")).sendKeys(".modifVC");
         clickElement(By.cssSelector("#pvCodeSystem-4 .fa-check"));
 
         newCdeVersion("Modified VS Codes");
@@ -67,6 +66,6 @@ public class Vsac2Test extends NlmCdeBaseTest {
 
         textPresent("Other Race Category");
         textPresent("2131-1.1");
-        textPresent("CDCREC.1");
+        textPresent("CDCREC.modifVC");
     }
 }

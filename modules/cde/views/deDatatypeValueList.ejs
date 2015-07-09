@@ -16,7 +16,7 @@
              <th  tabindex="0" id="codeName">Code Name</th>
              <th  tabindex="0" id="code">Code</th>
              <th  tabindex="0" id="codeSystem">Code System</th>
-             <th  tabindex="0" id="validation" ng-show="showValidationIcons || compareView">Match</th>
+             <th  tabindex="0" id="validation" ng-show="vsacMappingExists() || compareView">Match</th>
              <th  tabindex="0" id="actions" ng-show="canCurate">Actions</th>
          </tr>
      </thead>
@@ -34,7 +34,7 @@
              <td  tabindex="0" headers="codeSystem" id="pvCodeSystem-{{$index}}">
                 <div inline-edit model="pv.codeSystemName" is-allowed="canCurate" typeahead-source="pVTypeaheadCodeSystemNameList" on-ok="stageElt(elt); runDelayedManualValidation();"></div>
              </td>
-             <td tabindex="0"  headers="validation" ng-show="showValidationIcons || compareView">
+             <td tabindex="0"  headers="validation" ng-show="vsacMappingExists() || compareView">
                  <span ng-switch="pv.isValid">
                      <i ng-switch-when="true" class="fa fa-check text-success" id="pv-{{$index}}-valid"></i>
                      <i ng-switch-default class="fa fa-exclamation text-warning" id="pv-{{$index}}-warning"></i>

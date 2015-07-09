@@ -1,8 +1,9 @@
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement',
-        'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q',
+        'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q', 'QuickBoard',
         function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes,
-                 isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff, $q) {
+                 isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff, $q, QuickBoard) {
+
     $scope.module = 'cde';
     $scope.baseLink = '#/deview?tinyId=';
     $scope.eltLoaded = false;
@@ -13,8 +14,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.pVTypeheadVsacNameList = [];
     $scope.pVTypeaheadCodeSystemNameList = [];
     $scope.pvLimit = 30;    
-    $scope.showValidationIcons = false;
     $scope.classifSubEltPage = '/template/system/classif-sub-elements';
+    $scope.quickBoard = QuickBoard;
     
     $scope.canCurate = false;
     
@@ -58,19 +59,18 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     $scope.reload = function(route, cb) {
         var service = DataElement;
-        if (route.cdeId) var query = {deId: route.cdeId};
-        if (route.tinyId) {
+        var query = {};
+        if (route.cdeId) query = {deId: route.cdeId};
+        else if (route.tinyId) {
             service = DataElementTinyId;
-            var query = {tinyId: route.tinyId};
+            query = {tinyId: route.tinyId};
             if (route.version) query.version = route.version;
         }
         service.get(query, function(de) {
             $scope.elt = de;
             $scope.loadValueSet();
             $scope.canLinkPvFunc();
-            $scope.loadMlt;           
             $scope.loadBoards();
-            if ($scope.elt.dataElementConcept) $scope.showValidationIcons = $scope.elt.dataElementConcept.conceptualDomain != null && $scope.elt.dataElementConcept.conceptualDomain.vsac.id != null;
             $scope.getPVTypeaheadCodeSystemNameList();
             $scope.loadPriorCdes();
             if ($scope.elt.forkOf) {
@@ -131,22 +131,15 @@ angular.module('cdeModule').controller('DEViewCtrl',
         $scope.reload({tinyId: elt.tinyId});
     };
 
-    $scope.compareLists = function(listA, listB) {
-        var missingInA = listA.filter(function(pvb) {
-            return listB.filter(function(pva){return JSON.stringify(pva)===JSON.stringify(pvb);}).length===0;
-        });
-        return missingInA;
-    };
-    
-    $scope.isPvInVSet = function(pv, callback) {
-            for (var i = 0; i < $scope.vsacValueSet.length; i++) {
-                if (pv.valueMeaningCode === $scope.vsacValueSet[i].code && 
-                    pv.codeSystemName === $scope.vsacValueSet[i].codeSystemName &&
-                    pv.valueMeaningName === $scope.vsacValueSet[i].displayName) {
-                        return callback(true);
-                }
+    $scope.isPvInVSet = function(pv) {
+        for (var i = 0; i < $scope.vsacValueSet.length; i++) {
+            if (pv.valueMeaningCode === $scope.vsacValueSet[i].code &&
+                pv.codeSystemName === $scope.vsacValueSet[i].codeSystemName &&
+                pv.valueMeaningName === $scope.vsacValueSet[i].displayName) {
+                    return true;
             }
-            return callback(false);
+        }
+        return false;
     };
     
     $scope.validatePvWithVsac = function() {
@@ -154,11 +147,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
         if (!pvs) {
             return;
         }
-        for (var i = 0; i < pvs.length; i++) {
-           $scope.isPvInVSet(pvs[i], function(wellIsIt) {
-                pvs[i].isValid = wellIsIt;
-           });
-        }
+        pvs.forEach(function(pv) {
+            pv.isValid = $scope.isPvInVSet(pv);
+        });
     };
 
     $scope.allValid = true;
@@ -183,34 +174,26 @@ angular.module('cdeModule').controller('DEViewCtrl',
         },100);
     };
        
-    $scope.isVsInPv = function(vs, callback) {
-        var returnVal = function(value){
-            if (callback) {
-                return callback(value);
-            } else {
-                return value;
-            }
-        };
+    $scope.isVsInPv = function(vs) {
         var pvs = $scope.elt.valueDomain.permissibleValues;
         if (!pvs) {
-            return returnVal(false);       
+            return false;
         }
-        for (var i = 0; i < pvs.length; i++) {
-            if (pvs[i].valueMeaningCode === vs.code && 
-                pvs[i].codeSystemName === vs.codeSystemName &&
-                pvs[i].valueMeaningName === vs.displayName) {
-                    return returnVal(true);
+        var res = false;
+        pvs.forEach(function(pv) {
+            if (pv.valueMeaningCode === vs.code &&
+                pv.codeSystemName === vs.codeSystemName &&
+                pv.valueMeaningName === vs.displayName) {
+                res = true;
             }
-        }
-        return returnVal(false);
+        });
+        return res;
     };    
     
     $scope.validateVsacWithPv = function() {
-        for (var i = 0; i < $scope.vsacValueSet.length; i++) {
-           $scope.isVsInPv($scope.vsacValueSet[i], function(wellIsIt) {
-                $scope.vsacValueSet[i].isValid = wellIsIt;
-           });
-        }
+        $scope.vsacValueSet.forEach(function(vsItem) {
+            vsItem.isValid = $scope.isVsInPv(vsItem);
+        })
     };
     
     $scope.allVsacMatch = function () {

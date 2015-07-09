@@ -35,8 +35,8 @@ angular.module('systemModule').controller('AccordionCtrl', ['$scope', '$location
             case "openPinModal":
                 $scope.openPinModal(elt);
             break;
-            case "addToQuickBoard":
-                $scope.addToQuickBoard(elt);
+            case "quickBoard.add":
+                $scope.quickBoard.add(elt);
             break;
         }        
     }; 

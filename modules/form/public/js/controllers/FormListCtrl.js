@@ -5,3 +5,12 @@ angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller'
     $controller('ListCtrl', {$scope: $scope});   
     
 }]);
+
+angular.module('formModule').controller('FormDEListCtrl', ['$scope'
+    , function($scope) {
+
+    $scope.reset = function() {
+        $scope.resetSearch();
+    }
+
+}]);

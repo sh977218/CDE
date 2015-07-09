@@ -20,6 +20,7 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         closeAlert();
         createClassificationName(org, new String[]{"Classification Transfer","Child Classification"});
         closeAlert();
+        scrollToTop();
         findElement(By.xpath("//li[@id=\"classification-Disease,Duchenne Muscular Dystrophy/Becker Muscular Dystrophy\"]//a[contains(@class, 'classifyAll')]")).click();
         findElement(By.xpath("//div[@id='addClassificationModalBody']//span[text()='Classification Transfer']")).click();
         findElement(By.xpath("//div[@id='addClassification-Child Classification']//button")).click();

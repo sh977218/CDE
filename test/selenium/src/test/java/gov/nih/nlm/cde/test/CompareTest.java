@@ -3,22 +3,20 @@ package gov.nih.nlm.cde.test;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CompareTest extends NlmCdeBaseTest {
-    
+
     @Test
     public void noElementCompareList() {
+        mustBeLoggedOut();
         goToCdeSearch();
         findElement(By.linkText("Quick Board ( empty )")).click();
-        Assert.assertTrue(textPresent("The quick board is empty."));
+        textPresent("The quick board is empty.");
     }
     
     @Test
     public void emptyList() {
-        goToCdeSearch();
-        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("emptyCart")));
         openCdeInList("Sedation status");
         findElement(By.id("compare_0")).click();
         textPresent("Quick Board ( 1 )");      
@@ -59,7 +57,7 @@ public class CompareTest extends NlmCdeBaseTest {
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-valid")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-6-valid")));
         textPresent("an observational assessment that is used to measure");        
-        textPresent("pain/discomfort, and anxiety/depression");        
+        textPresent("pain/discomfort, and anxiety/depression");
     }
     
 }
