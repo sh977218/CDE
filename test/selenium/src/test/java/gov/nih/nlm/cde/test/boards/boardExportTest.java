@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.jayway.restassured.RestAssured.given;
 
-public class boardExportTest extends BoardTest {
+public class BoardExportTest extends BoardTest {
     @Test
     public void boardExport() {
         String board_name = "Export my board test";
