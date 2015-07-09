@@ -20,7 +20,7 @@ public class BoardExportTest extends BoardTest {
         mustBeLoggedInAs(exportBoardUser_username, password);
         createBoard(board_name, board_description);
         goToSearch("cde");
-        findElement(By.id("classifications-text-caBIG")).click();
+        findElement(By.id("browseOrg-caBIG")).click();
         hangon(1);
         findElement(By.id("pinAll")).click();
         textPresent("Select Board");
@@ -46,7 +46,9 @@ public class BoardExportTest extends BoardTest {
         String url = driver.getCurrentUrl();
         String bid = url.substring(url.lastIndexOf("/") + 1);
         String url_string = baseUrl + "/board/" + bid + "/0/500";
+/*
         System.out.println("url_string:" + url_string);
+*/
 
         String response = given().contentType("application/json; charset=UTF-16").when().get(url_string).asString();
 
@@ -55,9 +57,11 @@ public class BoardExportTest extends BoardTest {
                 "\"Person Other Premalignant Non-Melanomatous Lesion Indicator\"" +
                 "\"Common Toxicity Criteria Adverse Event Dysphagia Grade\"" +
                 "\"Animal Cancer Model Cell Line Name java.lang.String\"";
+/*
         System.out.println("********response***********");
         System.out.println(response);
         System.out.println("**************************");
+*/
         Assert.assertTrue(response.contains(result));
     }
 
