@@ -690,4 +690,23 @@ button#selectDefault {
 
 .centerText {
     text-align: center;
+    height: 200px !important;
+}
+
+.welcomeSearchOrganizationBox {
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    margin: 10px 0px 10px 0px;
+    padding: 0px 10px;
+    height: 140px;
+}
+
+.welcomeSearchOrganizationBox:hover {
+    display: block;
+    height: 140px;
+    content: ".";
+}
+
+.welcomeSearchSearch {
+    margin: 65px 0px;
 }

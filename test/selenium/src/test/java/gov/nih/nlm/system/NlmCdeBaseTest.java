@@ -258,16 +258,19 @@ public class NlmCdeBaseTest {
         openEltInList(name, type, null);
     }
 
+    public void searchCde(String cdeName) {
+        searchElt(cdeName, "cde", null);
+    }
+
     public void searchElt(String name, String type, String status) {
         goToSearch(type);
-        if (status != null) {
-            findElement(By.id("li-blank-" + status)).click();
-            hangon(2);
-        }
-        scrollToTop();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         findElement(By.id("search.submit")).click();
+        hangon(2);
+        if (status != null) {
+            findElement(By.id("li-blank-" + status)).click();
+        }
         textPresent("1 results for");
         textPresent(name, By.id("acc_link_0"));
     }
@@ -440,9 +443,8 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/gonowhere");
         textPresent("Nothing here");
         driver.get(baseUrl + "/#/" + type + "/search");
-        findElement(By.name("ftsearch"));
-        showSearchFilters();
-        textPresent("NINDS (");
+        findElement(By.id("ftsearch-input"));
+        textPresent("Browse by organization");
     }
 
     protected void goToQuickBoard() {
@@ -475,11 +477,7 @@ public class NlmCdeBaseTest {
     }
 
     public void addToQuickBoard(String cdeName) {
-        findElement(By.name("ftsearch")).clear();
-        findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
-        findElement(By.id("search.submit")).click();
-        textPresent("1 results for");
-        textPresent(cdeName, By.cssSelector("#acc_link_0"));
+        searchCde(cdeName);
         findElement(By.id("addToCompare_0")).click();
         hangon(.5);
         findElement(By.name("ftsearch")).clear();

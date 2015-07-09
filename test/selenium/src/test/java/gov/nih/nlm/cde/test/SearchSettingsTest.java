@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 public class SearchSettingsTest extends NlmCdeBaseTest {
 
     void setAndCheckFields(){
+        findElement(By.id("browseOrg-NINDS")).click();
         textNotPresent("Other Names");
         textNotPresent("Permissible Values");
         textNotPresent("Steward");
@@ -33,7 +34,8 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         scrollTo(1000);
         findElement(By.id("saveSettings")).click();
 
-        goToSearch("cde");
+        goToCdeSearch();
+        findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("gridView")).click();
         textPresent("Other Names");
         textPresent("Permissible Values");
@@ -45,14 +47,15 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
 
 
     @Test
-    void UnloggedUserSetsFields (){
+    void unloggedUserSetsFields (){
         mustBeLoggedOut();
-        goToSearch("cde");
+        goToCdeSearch();
         setAndCheckFields();
 
         //The following just tests that clearStorage() works
         clearStorage();
-        goToSearch("cde");
+        goToCdeSearch();
+        findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("gridView")).click();
         textPresent("Other Names");
         textPresent("Permissible Values");
@@ -63,12 +66,13 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
     }
 
     @Test
-    void LoggedUserSetsFields() {
+    void loggedUserSetsFields() {
         mustBeLoggedInAs(tableViewUser_username, password);
-        goToSearch("cde");
+        goToCdeSearch();
         setAndCheckFields();
         clearStorage();
-        goToSearch("cde");
+        goToCdeSearch();
+        findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("gridView")).click();
         textPresent("Other Names");
         textPresent("Permissible Values");

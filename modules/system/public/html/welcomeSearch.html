@@ -1,0 +1,44 @@
+<div class="container">
+    <div class="welcomeSearchSearch">
+        <h1>
+            <img id="homeNihCdeLogo" class="img-center-responsive" alt="NIH CDE logo"
+                 src="/cde/public/assets/img/NIH-CDE.png" />
+        </h1>
+
+        <div class="pt20 text-center">
+            <form name="quickSearchForm" id="quickSearchForm" novalidate>
+                <div class="input-group input-group-lg">
+                    <label class="sr-only" for="ftsearch-input">Search Terms</label>
+                    <input name="ftsearch" id="ftsearch-input" type="text" class="form-control" ng-model="searchForm.ftsearch"
+                           ng-maxlength="500" placeholder="Search Elements">
+
+                    <div class="input-group-btn">
+                        <button name="quickSearchButton" id="search.submit" class="btn btn-danger btn-lg" type="submit"
+                                ng-click="search()" ng-disabled="quickSearchForm.$invalid">
+                            <i class="fa fa-search"></i><span class="hidden-xs"> Search</span></button>
+                    </div>
+                </div>
+
+                <!-- Error display area -->
+                <span ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><p class="error-block"><small>Query terms must be 500 characters or less.</small></p></span>
+            </form>
+        </div>
+    </div>
+
+    <div ng-controller="OrgOverviewCtrl">
+        <h3 class="">Browse by organization</h3>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-repeat="org in orgs | orderBy:'name'">
+                <div class="welcomeSearchOrganizationBox" >
+                    <h3><a href ng-bind="org.name" ng-click="browseOrg(org.name)" id="browseOrg-{{org.name}}"></a></h3>
+                    <div ng-if="org.longName" ng-bind="org.longName"></div>
+                    <div><span id="nbOfElts-{{org.name}}">{{org.count}}</span> elements</div>
+                    <div ng-if="org.extraInfo" ng-bind="org.extraInfo"></div>
+                    <div ng-if="org.source"><a href="{{org.source}}" target="_blank">Source</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

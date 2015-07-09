@@ -16,14 +16,17 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-search")).click();
         hangon(.5);
         scrollToTop();
-        textPresent( "blah blah blah" );
+        textPresent("blah blah blah");
         findElement(By.id("resetSearch")).click();
-        textPresent( "All Terms" );
+        findElement(By.id("browseOrg-NINDS")).click();
+        textPresent("All Terms");
     }
     
     @Test
     public void hoverOverClassifications() {
         goToCdeSearch();
+        textPresent("Albert Einstein Cancer Center");
+        findElement(By.id("browseOrg-AECC")).click();
         hoverOverElement(findElement(By.linkText("CDEs")));
         textNotPresent("Albert Einstein Cancer Center");
         hoverOverElement(findElement(By.id("classifications-text-AECC")));
@@ -35,25 +38,15 @@ public class FacetSearch3 extends NlmCdeBaseTest {
             hoverOverElement(findElement(By.id("classifications-text-AECC")));
             checkTooltipText(By.id("classifications-text-AECC"), "Albert Einstein Cancer Center");
         }
-        hoverOverElement(findElement(By.id("classifications-text-caBIG")));
+        hoverOverElement(findElement(By.linkText("CDEs")));
         textNotPresent("Albert Einstein Cancer Center");
     }
     
-//    @Test
-//    public void lowStatusFilter() {
-//        mustBeLoggedInAs(acrin_username, password);
-//        goToCdeSearch();
-//        textPresent("ACRIN (3)");
-//        logout();
-//        goToCdeSearch();
-//        textNotPresent("ACRIN (3");
-//    }
-//
     @Test
     public void twoClassificationSearch() {
         mustBeLoggedOut();
         goToCdeSearch();
-        findElement(By.id("li-blank-NINDS")).click();
+        findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
         findElement(By.id("li-blank-Neuromuscular Disease")).click();
         textPresent( "NINDS > Disease > Neuromuscular Disease" );
@@ -71,16 +64,19 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         textPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
         
         findElement(By.linkText("Boards")).click();
-        findElement(By.linkText("CDEs")).click();
+        driver.navigate().back();
         textPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
         
         findElement(By.id("removeAltClassificationFilterMode")).click();
         textNotPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
         textPresent( "NINDS (100" );
-        
+
+        hangon(1);
+
         findElement(By.id("resetSearch")).click();
-        hangon(.5);
-        textPresent( "All Terms | All Classifications | All Statuses" );
+        findElement(By.id("browseOrg-caCORE"));
+        findElement(By.id("browseOrg-NINDS")).click();
+        textPresent( "All Terms | NINDS | All Statuses" );
     }
     
 }

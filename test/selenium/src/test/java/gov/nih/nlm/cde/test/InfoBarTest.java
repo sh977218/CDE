@@ -21,6 +21,7 @@ public class InfoBarTest extends NlmCdeBaseTest {
     @Test
     public void infoBarStatus() {
         setLowStatusesVisible();
+        findElement(By.id("browseOrg-caBIG")).click();
         textPresent("| All Statuses");
         findElement(By.id("li-blank-Standard")).click();
         hangon(1);
@@ -28,13 +29,14 @@ public class InfoBarTest extends NlmCdeBaseTest {
         textPresent("| Standard, Qualified");
         hangon(1);
         findElement(By.id("li-checked-Qualified")).click();
+        hangon(1);
         textNotPresent(", Qualified");
         textPresent("| Standard");
         findElement(By.id("li-blank-Recorded")).click();
         textPresent( "| Standard, Recorded" );
         scrollToTop();
         findElement(By.id("resetSearch")).click();
-        textPresent( "results for All Terms | All Classifications | All Statuses" );
+        textPresent( "Browse by organization" );
     }
     
 }
