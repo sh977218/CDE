@@ -10,6 +10,7 @@ public class ListTourTest extends TourTest {
         mustBeLoggedOut();
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
+        hangon(0.5);
         findElement(By.linkText("Help")).click();
         findElement(By.linkText("Take a tour")).click();
         textPresent("Welcome to the NIH");
