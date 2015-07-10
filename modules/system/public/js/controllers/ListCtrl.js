@@ -83,11 +83,9 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.selectedOrgAlt = $scope.cache.get($scope.getCacheName("selectedOrgAlt"));
     $scope.selectedElementsAlt = $scope.cache.get($scope.getCacheName("selectedElementsAlt"));
-            console.log("initializing ListCtrl");
+
     if (!$scope.selectedElementsAlt) {
         $scope.selectedElementsAlt = [];
-    } else {
-        //$timeout($scope.toggleAltClassificationFilterMode, 0);
     }
 
     $scope.classificationFilters = [{
@@ -109,7 +107,7 @@ angular.module('systemModule').controller('ListCtrl',
     });
 
     userResource.getPromise().then(function(){
-        $scope.search()
+        $scope.reload()
     });
 
     $scope.addStatusFilter = function(t) {
@@ -149,6 +147,8 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
 
         $scope.reload();
+
+        $window.location = "#/" + $scope.module + "/search";
     };
 
     $scope.isAllowed = function (cde) {
@@ -166,23 +166,6 @@ angular.module('systemModule').controller('ListCtrl',
           }
         });
     };
-
-    //$scope.addOrgFilter = function(orgName) {
-    //    if ($scope.classificationFilters[$scope.altClassificationFilterMode].org === undefined) {
-    //        if ($scope.altClassificationFilterMode === 0) $scope.cacheOrgFilter(orgName);
-    //        else $scope.cacheOrgFilterAlt(orgName);
-    //        $scope.classificationFilters[$scope.altClassificationFilterMode].org = orgName;
-    //    } else {
-    //        if ($scope.altClassificationFilterMode === 0) $scope.removeCacheOrgFilter();
-    //        else $scope.removeCacheOrgFilterAlt();
-    //        $scope.classificationFilters[$scope.altClassificationFilterMode].org = undefined;
-    //        $scope.classificationFilters[$scope.altClassificationFilterMode].elements = [];
-    //    }
-    //    delete $scope.aggregations.groups;
-    //    $scope.reload();
-    //    $scope.focusClassification();
-    //};
-
 
     $scope.alterOrgFilter = function(orgName){
         if ($scope.classificationFilters[$scope.altClassificationFilterMode].org === undefined) {

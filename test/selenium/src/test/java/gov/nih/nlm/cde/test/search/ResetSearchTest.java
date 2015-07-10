@@ -27,4 +27,16 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(linkList.size() > 10);
     }
+
+
+    @Test
+    public void resetFromWelcome() {
+        goToCdeSearch();
+        findElement(By.id("ftsearch-input")).sendKeys("some search");
+        findElement(By.id("search.submit")).click();
+        textPresent("results for some search");
+        findElement(By.id("resetSearch")).click();
+        textPresent("Browse by organization");
+    }
+
 }

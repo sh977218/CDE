@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('OrgOverviewCtrl',
-['$scope', 'OrgHelpers', '$window',
-function($scope, OrgHelpers, $window) {
+['$scope', 'OrgHelpers', '$window', '$timeout',
+function($scope, OrgHelpers, $window, $timeout) {
 
     $scope.orgs = [];
     
@@ -27,6 +27,5 @@ function($scope, OrgHelpers, $window) {
         $scope.alterOrgFilter(orgName);
         $window.location = "#/" + $scope.module + "/search";
     }
-
 
 }]);
