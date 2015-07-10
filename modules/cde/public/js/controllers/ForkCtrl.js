@@ -49,9 +49,7 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
         });
 
         modalInstance.result.then(function (result) {
-            //$http.post('/dataelement/fork', {id: $scope.elt._id, org: result.org, changeNote: result.changeNote}).then(function(result) {
-            //    getForks();
-            //});
+
         });
     };
 }]);

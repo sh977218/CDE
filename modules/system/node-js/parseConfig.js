@@ -8,7 +8,6 @@ config.database.local.uri = "mongodb://" + config.database.dbUser + ":" + config
 config.mongoUri = "mongodb://" + config.database.dbUser + ":" + config.database.dbPassword + "@" + config.database.servers.map(function (srv) {
     return srv.host + ":" + srv.port;
 }).join(",") + "/" + config.database.dbname;
-console.log(config.mongoUri);
 config.elasticUri = config.elastic.uri + "/" + config.elastic.index.name + "/";
 config.elasticRiverUri = config.elastic.uri + "/_river/" + config.elastic.index.name;
 config.elasticFormUri = config.elastic.uri + "/" + config.elastic.formIndex.name + "/";
