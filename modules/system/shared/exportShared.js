@@ -4,20 +4,20 @@ exports.exportHeader = {
     cdeHeader: "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n"
 };
 
-exports.projectFormForExport = function (elasticCde) {
-    var cde = {
-        name: elasticCde.naming[0].designation
-        , ids: elasticCde.ids.map(function (id) {
+exports.projectFormForExport = function (ele) {
+    var form = {
+        name: ele.naming[0].designation
+        , ids: ele.ids.map(function (id) {
             return id.source + ": " + id.id + (id.version ? " v" + id.version : "")
         })
-        , stewardOrg: elasticCde.stewardOrg.name
-        , registrationStatus: elasticCde.registrationState.registrationStatus
-        , adminStatus: elasticCde.registrationState.administrativeStatus
+        , stewardOrg: ele.stewardOrg.name
+        , registrationStatus: ele.registrationState.registrationStatus
+        , adminStatus: ele.registrationState.administrativeStatus
     };
-    if (elasticCde.classification) cde.usedBy = elasticCde.classification.map(function (c) {
+    if (ele.classification) form.usedBy = ele.classification.map(function (c) {
         return c.stewardOrg.name
     });
-    return cde;
+    return form;
 };
 
 exports.projectCdeForExport = function (ele) {
