@@ -12,23 +12,21 @@
             </select>
         </div>
 
-        <div class="form-group" ng-controller="DatepickerCtrl">
+        <div class="form-group" id="effectiveDateDiv" ng-controller="DatepickerCtrl">
             <label for="effectiveDate">Effective Date</label>
             <input id="effectiveDate" name="effectiveDate" type="text" class="form-control pickdaterInput"
                    datepicker-popup="{{format}}" ng-model="elt.registrationState.effectiveDate"
-                   is-open="opened" min-date="minDate" datepicker-options="dateOptions"
-                   ng-required="true" close-text="Close"/>
-            <button type="button" class="btn btn-default pickdaterBtn" ng-click="open($event)"><i
-                    class="glyphicon glyphicon-calendar"></i></button>
+                   is-open="opened" min-date="minDate" datepicker-options="dateOptions" close-text="Close"/>
+            <button type="button" id="effectiveDateDatepicker" class="btn btn-default pickdaterBtn"
+                    ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
         </div>
-        <div class="form-group" ng-controller="DatepickerCtrl">
+        <div class="form-group" id="untilDateDiv" ng-controller="DatepickerCtrl">
             <label for="untilDate">Until Date</label>
             <input id="untilDate" name="untilDate" type="text" class="form-control pickdaterInput"
                    datepicker-popup="{{format}}" ng-model="elt.registrationState.untilDate"
-                   is-open="opened" min-date="minDate" datepicker-options="dateOptions"
-                   ng-required="true" close-text="Close"/>
-            <button type="button" class="btn btn-default pickdaterBtn" ng-click="open($event)"><i
-                    class="glyphicon glyphicon-calendar"></i></button>
+                   is-open="opened" min-date="minDate" datepicker-options="dateOptions" close-text="Close"/>
+            <button type="button" id="untilDateDatepicker" class="btn btn-default pickdaterBtn" ng-click="open($event)">
+                <i class="glyphicon glyphicon-calendar"></i></button>
         </div>
 
         <div class="form-group">
