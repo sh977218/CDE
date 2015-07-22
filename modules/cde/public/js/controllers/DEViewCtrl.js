@@ -26,6 +26,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
         classification: {heading: "Classification"},
         concepts: {heading: "Concepts"},
         status: {heading: "Status"},
+        referenceDocument: {heading: "Reference Document"},
         properties: {heading: "Properties"},
         mappingSpecifications: {heading: "Mappings"},
         ids: {heading: "Identifiers"},
@@ -311,8 +312,12 @@ angular.module('cdeModule').controller('DEViewCtrl',
               , title: "Status"
               , placement: "bottom"
               , content: "This section shows the status of the CDE, and optionally dates and/or administrative status."
-          }    
-        , {
+        }, {
+              element: "a:contains('Reference Documents')"
+              , title: "Reference Documents"
+              , placement: "bottom"
+              , content: "This sections show the reference documents of the CDE."
+        }, {
               element: "a:contains('Properties')"
               , title: "Properties"
               , placement: "bottom"

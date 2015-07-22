@@ -11,7 +11,7 @@ var conceptSchema = new mongoose.Schema({
 }, {_id: false});
 
 var deJsonSchema = {
-    naming: [sharedSchemas.namingSchema]         
+    naming: [sharedSchemas.namingSchema]
     , source: String
     , sourceId: String
     , origin: String
@@ -93,7 +93,7 @@ var deJsonSchema = {
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
     , referenceDocuments: [
-        {docType: String, text: String, uri: String, providerOrg: String, title: String, languageCode: String, _id: false}
+        {docType: String, id:String, text: String, uri: String, providerOrg: String, title: String, languageCode: String, _id: false}
     ]
 };
 
@@ -118,7 +118,7 @@ schemas.pinningBoardSchema = new mongoose.Schema ({
 schemas.dataElementSchema = new mongoose.Schema(deJsonSchema);
 
 schemas.pinningBoardSchema.pre('save', function(next) {
-   this.updatedDate = Date.now(); 
+   this.updatedDate = Date.now();
    next();
 });
 
@@ -143,7 +143,7 @@ schemas.cdeAuditSchema = new mongoose.Schema({
         , name: String
     }
     , diff: Object
-}, { strict: false}); 
+}, { strict: false});
 
 schemas.cdeAuditSchema.set('collection', 'cdeAudit');
 
