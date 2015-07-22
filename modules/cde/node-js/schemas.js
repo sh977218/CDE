@@ -42,7 +42,7 @@ var deJsonSchema = {
         }
     }
     , objectClass: {concepts: [conceptSchema]}
-    , property:{concepts: [conceptSchema]}
+    , property: {concepts: [conceptSchema]}
     , valueDomain: {
         name: String
         , definition: String
@@ -93,33 +93,44 @@ var deJsonSchema = {
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
     , referenceDocuments: [
-        {docType: String, id:String, text: String, uri: String, providerOrg: String, title: String, languageCode: String, _id: false}
+        {
+            docType: String,
+            document: String,
+            id: String,
+            text: String,
+            uri: String,
+            providerOrg: String,
+            title: String,
+            languageCode: String,
+            _id: false
+        }
     ]
 };
 
-var pinSchema = new mongoose.Schema ({
-   name: String
-   , pinnedDate: Date
-   , deTinyId: String
+var pinSchema = new mongoose.Schema({
+    name: String
+    , pinnedDate: Date
+    , deTinyId: String
 });
 
-schemas.pinningBoardSchema = new mongoose.Schema ({
-   name: String
-   , description: String
-   , shareStatus: String
-   , createdDate: Date
-   , updatedDate: Date
-   , owner: {
-       userId: mongoose.Schema.Types.ObjectId
-        , username: String}
-   , pins: [pinSchema]
+schemas.pinningBoardSchema = new mongoose.Schema({
+    name: String
+    , description: String
+    , shareStatus: String
+    , createdDate: Date
+    , updatedDate: Date
+    , owner: {
+        userId: mongoose.Schema.Types.ObjectId
+        , username: String
+    }
+    , pins: [pinSchema]
 });
 
 schemas.dataElementSchema = new mongoose.Schema(deJsonSchema);
 
-schemas.pinningBoardSchema.pre('save', function(next) {
-   this.updatedDate = Date.now();
-   next();
+schemas.pinningBoardSchema.pre('save', function (next) {
+    this.updatedDate = Date.now();
+    next();
 });
 
 schemas.dataElementSchema.set('collection', 'dataelements');
@@ -143,7 +154,7 @@ schemas.cdeAuditSchema = new mongoose.Schema({
         , name: String
     }
     , diff: Object
-}, { strict: false});
+}, {strict: false});
 
 schemas.cdeAuditSchema.set('collection', 'cdeAudit');
 

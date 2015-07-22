@@ -705,6 +705,6 @@ button#selectDefault {
     margin: 65px 0px;
 }
 
-.textRight {
-    text-align: right;
+.dvText {
+    font-weight: 700;
 }
