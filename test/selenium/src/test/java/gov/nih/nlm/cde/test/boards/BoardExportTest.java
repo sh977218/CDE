@@ -53,6 +53,11 @@ public class BoardExportTest extends BoardTest {
                 "\"Person Other Premalignant Non-Melanomatous Lesion Indicator\"" +
                 "\"Common Toxicity Criteria Adverse Event Dysphagia Grade\"" +
                 "\"Animal Cancer Model Cell Line Name java.lang.String\"";
+        System.out.println("url_string:**********************************");
+        System.out.println(url_string);
+
+        System.out.println("response:**********************************");
+        System.out.println(response);
         Assert.assertTrue(response.contains(result));
     }
 
