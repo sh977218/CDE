@@ -116,12 +116,7 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.reload();
     };
 
-    $scope.resetSearch = function() {
-        delete $scope.aggregations;
-        delete $scope.filter;
-        delete $scope.searchForm.ftsearch;
-
-        delete $scope.classificationFilters[0].org;
+    var resetFromSearch = function() {
         delete $scope.classificationFilters[1].org;
         $scope.classificationFilters[0].elements = [];
         $scope.classificationFilters[1].elements = [];
@@ -130,25 +125,40 @@ angular.module('systemModule').controller('ListCtrl',
         for (var i in $scope.registrationStatuses) {
             $scope.registrationStatuses[i].selected  = false;
         }
-        $scope.cache.remove($scope.getCacheName("selectedOrg"));
         $scope.cache.remove($scope.getCacheName("selectedOrgAlt"));
         $scope.cache.remove($scope.getCacheName("selectedElements"));
         $scope.cache.remove($scope.getCacheName("selectedElementsAlt"));
         $scope.cache.remove($scope.getCacheName("registrationStatuses"));
-        $scope.cache.remove($scope.getCacheName("ftsearch"));
         $scope.cache.remove($scope.getCacheName("altClassificationFilterMode"));
+
+    };
+
+    $scope.resetSearch = function() {
+        delete $scope.aggregations;
+        delete $scope.filter;
+        delete $scope.searchForm.ftsearch;
+
+        delete $scope.classificationFilters[0].org;
+        resetFromSearch();
+
+        delete $scope.classificationFilters[1].org;
+        $scope.cache.remove($scope.getCacheName("selectedOrg"));
+        $scope.cache.remove($scope.getCacheName("ftsearch"));
 
         $scope.currentSearchTerm = null;
         $scope.reload();
     };
 
-    $scope.search = function() {
+    var search = function() {
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;
         $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
 
         $scope.reload();
+    };
 
-        $window.location = "#/" + $scope.module + "/search";
+    $scope.searchAction = function() {
+        resetFromSearch();
+        search();
     };
 
     $scope.isAllowed = function (cde) {
@@ -370,10 +380,6 @@ angular.module('systemModule').controller('ListCtrl',
 
     if ($routeParams.welcome === "true") {
         $scope.resetSearch();
-    }
-
-    $scope.reset = function() {
-        $window.location = "#/" + $scope.module + "/search?welcome=true";
     }
 
 }]);

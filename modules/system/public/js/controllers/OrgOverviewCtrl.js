@@ -23,6 +23,11 @@ function($scope, OrgHelpers, $window, $timeout) {
         }
     });
 
+    $scope.searchNoOrg = function() {
+        $scope.searchAction();
+        $window.location = "#/" + $scope.module + "/search";
+    }
+
     $scope.browseOrg = function(orgName) {
         $scope.alterOrgFilter(orgName);
         $window.location = "#/" + $scope.module + "/search";
