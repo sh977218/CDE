@@ -96,7 +96,7 @@ var deJsonSchema = {
         {
             docType: String,
             document: String,
-            id: String,
+            referenceDocumentId: String,
             text: String,
             uri: String,
             providerOrg: String,
