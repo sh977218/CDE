@@ -710,3 +710,13 @@ button#selectDefault {
 .welcomeSearchSearch {
     margin: 65px 0px;
 }
+
+.pickdaterInput {
+    width: 90%;
+    float: left;
+}
+
+.pickdaterBtn {
+    width: auto;
+    float: left;
+}
