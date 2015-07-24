@@ -708,3 +708,13 @@ button#selectDefault {
 .dvText {
     font-weight: 700;
 }
+
+.pickdaterInput {
+    width: 90%;
+    float: left;
+}
+
+.pickdaterBtn {
+    width: auto;
+    float: left;
+}
