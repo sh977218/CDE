@@ -11,7 +11,8 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
     @Test
     public void cdeHistoryComplement() {
         mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");
+        String cdeName = "Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2";
+        goToCdeByName(cdeName);
 
         findElement(By.linkText("Naming")).click();
         findElement(By.id("addNamePair")).click();
@@ -35,10 +36,10 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         checkInHistory("Naming", "", "Alternative Name 1");
         checkInHistory("Naming", "", "Alternative Definition 1");
 
-        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2");
+        goToCdeByName(cdeName);
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(findElement(By.xpath("//label[text()=\"Registration Status\"]/following-sibling::select"))).selectByValue("Recorded");
-        findElement(By.xpath("//div[@id=\"regStatusModalFooter\"]//button[text()=\"Save\"]")).click();
+        findElement(By.id("saveRegStatus")).click();
         modalGone();
 
         checkInHistory("Registration State", "Qualified", "Recorded");
@@ -51,7 +52,7 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         findElement(By.xpath("//label[text()=\"Version\"]/following-sibling::textarea")).sendKeys("Version 1");
         findElement(By.id("createId")).click();
         modalGone();
-        goToCdeByName("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "Recorded");
+        goToCdeByName(cdeName, "Recorded");
         checkInHistory("Identifiers", "", "Origin 1");
         checkInHistory("Identifiers", "", "Identifier 1");
         checkInHistory("Identifiers", "", "Version 1");
