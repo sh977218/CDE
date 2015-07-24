@@ -26,7 +26,7 @@ public class BoardExportTest extends BoardTest {
         textPresent("Select Board");
         findElement(By.linkText(board_name)).click();
         textPresent("All elements pinned.");
-        gotoMyBoards(board_name);
+        gotoMyBoards(board_name, true);
         textPresent("Export Board");
         findElement(By.id("mb.export")).click();
         wait.withTimeout(10, TimeUnit.SECONDS);
@@ -46,19 +46,16 @@ public class BoardExportTest extends BoardTest {
         String url = driver.getCurrentUrl();
         String bid = url.substring(url.lastIndexOf("/") + 1);
         String url_string = baseUrl + "/board/" + bid + "/0/500";
-        String response = given().contentType("application/json; charset=UTF-16").when().get(url_string).asString();
+        String response = given().when().get(url_string).asString();
 
-        String result = "\"Diagnosis Change Date java.util.Date\"" +
-                "\"Performed Study Activity Negation Occurrence Flag ISO21090.BL.v1.0\"" +
-                "\"Person Other Premalignant Non-Melanomatous Lesion Indicator\"" +
-                "\"Common Toxicity Criteria Adverse Event Dysphagia Grade\"" +
-                "\"Animal Cancer Model Cell Line Name java.lang.String\"";
-        System.out.println("url_string:**********************************");
-        System.out.println(url_string);
-
-        System.out.println("response:**********************************");
-        System.out.println(response);
-        Assert.assertTrue(response.contains(result));
+        String[] results = {"{\"permissibleValue\":\"Smoker\",\"valueMeaningName\":\"Smoker\",\"valueMeaningCode\":\"C68751\",\"valueMeaningCodeSystem\":\"NCI Thesaurus\"}]},\"property\":{\"concepts\":[{\"name\":\"Personal Medical History\",\"origin\":\"NCI Thesaurus\",\"originId\":\"C18772\"}]},\"objectClass\":{\"concepts\":[{\"name\":\"Smoking\",\"origin\":\"NCI Thesaurus\",\"originId\":\"C17934\"}]},\"dataElementConcept\":{\"concepts\":[{\"name\":\"Smoking History\",\"origin\":\"NCI caDSR\",\"originId\":\"2010568v2.31\"}]},\"stewardOrg\":{\"name\":\"CTEP\"}}],\"totalItems\":223}"};
+        for (String result : results) {
+            if (!response.contains(result)) {
+                System.out.println("not contains:");
+                System.out.println(result);
+            }
+            Assert.assertTrue(response.contains(result));
+        }
     }
 
 }
