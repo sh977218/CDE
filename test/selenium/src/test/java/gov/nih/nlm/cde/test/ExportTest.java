@@ -49,7 +49,7 @@ public class ExportTest extends NlmCdeBaseTest {
     @Test
     public void quickBoardExport() {
         goToSearch("cde");
-        findElement(By.id("classifications-text-CIP")).click();
+        findElement(By.id("browseOrg-caBIG")).click();
         hangon(1);
         findElement(By.id("addToCompare_0")).click();
         findElement(By.id("addToCompare_1")).click();
