@@ -8,7 +8,6 @@ public class TourTest extends NlmCdeBaseTest {
 	void getNext(String expectedText) {
 		hangon(2);
 		waitAndClick(By.xpath("//button[@data-role='next']"));
-		hangon(2);
 		textPresent(expectedText);
 		hangon(2);
 	}
