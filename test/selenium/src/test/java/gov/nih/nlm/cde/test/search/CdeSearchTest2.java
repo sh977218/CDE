@@ -94,7 +94,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         findElement(By.id("browseOrg-CTEP")).click();
         findElement(By.id("li-blank-CATEGORY")).click();
         findElement(By.id("li-blank-Standard")).click();
-        hangon(2);
+        hangon(1);
         findElement(By.id("li-blank-Qualified")).click();
         hangon(1);
         textPresent("results for All Terms | CTEP > CATEGORY | Standard, Qualified");
@@ -103,11 +103,11 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         textPresent("results for All Terms | CTEP > CATEGORY | Standard");
         findElement(By.name("ftsearch")).sendKeys("name");
         findElement(By.id("search.submit")).click();     
-        textPresent("0 results for name | CTEP > CATEGORY | Standard");
+        textPresent("0 results for name | CTEP | All Statuses");
         findElement(By.linkText("Forms")).click();     
         textNotPresent("CATEGORY");
         driver.navigate().back();
-        textPresent("0 results for name | CTEP > CATEGORY | Standard");
+        textPresent("results for name | CTEP | All Statuses");
     }
 
     @Test

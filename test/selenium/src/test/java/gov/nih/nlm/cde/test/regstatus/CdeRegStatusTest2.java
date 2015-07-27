@@ -41,10 +41,6 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
         waitForESUpdate();
-        driver.navigate().back();
-        if (!findElement(By.id("li-blank-Standard")).isDisplayed()) {
-            findElement(By.id("showHideFilters")).click();
-        }
         goToCdeSearch();
         findElement(By.id("browseOrg-PBTC")).click();
         textPresent("4 results for");

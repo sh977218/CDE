@@ -94,7 +94,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         textPresent(testOrgMailingAddress);
         textPresent(testOrgEmailingAddress);
         textPresent(testOrgPhoneNumber);
-        (textPresent(testOrgUri);
+        textPresent(testOrgUri);
         
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//input")).sendKeys(testOrgNotRenamed);

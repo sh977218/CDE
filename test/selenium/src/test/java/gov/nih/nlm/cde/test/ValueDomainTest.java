@@ -82,6 +82,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
 
     public void checkInvalidEntry(String buttonId, String entry) {
         findElement(By.xpath("//div[@id='" + buttonId + "']//i[@title='Edit']")).click();
+        hangon(.5);
         findElement(By.xpath("//div[@id='" + buttonId + "']//input")).sendKeys(entry);
         wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.cssSelector("#" + buttonId + " .fa-check"))));
         findElement(By.cssSelector("#" + buttonId + " .fa-times")).click();
