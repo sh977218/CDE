@@ -15,7 +15,7 @@ import static com.jayway.restassured.RestAssured.given;
 public class BoardExportTest extends BoardTest {
     @Test
     public void boardExport() {
-        String board_name = "Export my board test";
+        String board_name = "Export_my_board_test";
         String board_description = "This test tests export borad.";
         mustBeLoggedInAs(exportBoardUser_username, password);
         createBoard(board_name, board_description);
