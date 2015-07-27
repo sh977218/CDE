@@ -20,7 +20,7 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         textPresent("2 results");
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);
-        findElement(By.id("resetSearch")).click();
+        findElement(By.id("menu_cdes_link")).click();
         textPresent("Browse by organization");
         findElement(By.id("browseOrg-NINDS")).click();
         textPresent("Population (");
@@ -35,7 +35,7 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("some search");
         findElement(By.id("search.submit")).click();
         textPresent("results for some search");
-        findElement(By.id("resetSearch")).click();
+        findElement(By.id("menu_cdes_link")).click();
         textPresent("Browse by organization");
     }
 

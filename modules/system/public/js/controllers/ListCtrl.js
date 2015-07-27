@@ -27,7 +27,6 @@ angular.module('systemModule').controller('ListCtrl',
             "url": "/system/public/html/welcomeSearch.html"
         }
     };
-    $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
 
     $scope.hideShowFilter = function() {
         $scope.filterMode = !$scope.filterMode;
@@ -57,7 +56,14 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;
     }
 
-    $scope.altClassificationFilterMode = $scope.cache.get($scope.getCacheName("altClassificationFilterMode"));
+    if (!$scope.currentSearchTerm) {
+        $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
+    } else {
+        $scope.selectedMainAreaMode = mainAreaModes.searchResult;
+    }
+
+
+            $scope.altClassificationFilterMode = $scope.cache.get($scope.getCacheName("altClassificationFilterMode"));
     if (!$scope.altClassificationFilterMode) {
         $scope.altClassificationFilterMode = 0;
     }

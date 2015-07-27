@@ -73,7 +73,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
 
         hangon(1);
 
-        findElement(By.id("resetSearch")).click();
+        findElement(By.id("menu_cdes_link")).click();
         findElement(By.id("browseOrg-caCORE"));
         findElement(By.id("browseOrg-NINDS")).click();
         textPresent( "All Terms | NINDS | All Statuses" );

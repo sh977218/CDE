@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('OrgOverviewCtrl',
-['$scope', 'OrgHelpers', '$window', '$timeout',
-function($scope, OrgHelpers, $window, $timeout) {
+['$scope', 'OrgHelpers', '$window',
+function($scope, OrgHelpers, $window) {
 
     $scope.orgs = [];
     
@@ -25,12 +25,12 @@ function($scope, OrgHelpers, $window, $timeout) {
 
     $scope.searchNoOrg = function() {
         $scope.searchAction();
-        $window.location = "#/" + $scope.module + "/search";
-    }
+        if (!$scope.embedded) $window.location = "#/" + $scope.module + "/search";
+    };
 
     $scope.browseOrg = function(orgName) {
         $scope.alterOrgFilter(orgName);
-        $window.location = "#/" + $scope.module + "/search";
-    }
+        if (!$scope.embedded) $window.location = "#/" + $scope.module + "/search";
+    };
 
 }]);

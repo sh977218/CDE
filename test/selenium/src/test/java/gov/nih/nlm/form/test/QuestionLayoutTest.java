@@ -30,7 +30,7 @@ public class QuestionLayoutTest extends BaseFormTest {
         textPresent("Show Question Search Area");
         startAddingQuestions();
         textPresent("Hide Question Search Area");
-        textPresent("results for");
+        textPresent("Browse by organization");
 
         findElement(By.id("showHideFilters")).click();
         textPresent("Show Filters");
