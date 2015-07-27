@@ -12,8 +12,6 @@ public class FormPermissionTest extends BaseFormTest {
 
     @Test
     public void formPermissionTest() {
-        Dimension currentWindowSize = getWindowSize();
-        resizeWindow(1024, 1150);
         
         mustBeLoggedInAs(ninds_username, password);
         String formName = "Form Permission Test";
@@ -32,8 +30,7 @@ public class FormPermissionTest extends BaseFormTest {
         textNotPresent("Delete");
         textNotPresent("Add Section");
         textNotPresent("Show Question Search Area");
-        
-        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
+
     }
     
 }

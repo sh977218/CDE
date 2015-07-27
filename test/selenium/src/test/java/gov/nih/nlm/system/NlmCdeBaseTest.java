@@ -556,6 +556,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void switchTab(int i) {
+        hangon(1);
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }
