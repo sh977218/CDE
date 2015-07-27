@@ -38,14 +38,9 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.linkText("Public Boards")).click();
     }
 
-    protected void gotoMyBoards(String boardName, boolean makePublic) {
+    protected void gotoMyBoards(String boardName) {
         findElement(By.id("boardsMenu")).click();
         findElement(By.linkText("My Boards")).click();
-        if (makePublic) {
-            findElement(By.xpath("//div[@data-id= 'boardDiv_" + boardName + "']//i[@id='privateIcon_0']")).click();
-            findElement(By.xpath("//div[@data-id= 'boardDiv_" + boardName + "']//i[@id='confirmChangeStatus_0']")).click();
-            textPresent("Saved");
-        }
         findElement(By.xpath("//div[@data-id= 'boardDiv_" + boardName + "']//a[@id='view_0']")).click();
     }
 

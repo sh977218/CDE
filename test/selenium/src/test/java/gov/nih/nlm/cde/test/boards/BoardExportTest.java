@@ -26,10 +26,10 @@ public class BoardExportTest extends BoardTest {
         textPresent("Select Board");
         findElement(By.linkText(board_name)).click();
         textPresent("All elements pinned.");
-        gotoMyBoards(board_name, true);
+        makePublic(board_name);
+        gotoMyBoards(board_name);
         textPresent("Export Board");
         findElement(By.id("mb.export")).click();
-        wait.withTimeout(10, TimeUnit.SECONDS);
         boolean done = false;
         for (int i = 0; !done && i < 15; i++) {
             try {
@@ -39,7 +39,6 @@ public class BoardExportTest extends BoardTest {
                 System.out.println("No export after : " + 10 * i + "seconds");
             }
         }
-        wait.withTimeout(defaultTimeout, TimeUnit.SECONDS);
         closeAlert();
         if (!done) throw new TimeoutException("Export was too slow.");
 
@@ -48,14 +47,8 @@ public class BoardExportTest extends BoardTest {
         String url_string = baseUrl + "/board/" + bid + "/0/500";
         String response = given().when().get(url_string).asString();
 
-        String[] results = {"{\"permissibleValue\":\"Smoker\",\"valueMeaningName\":\"Smoker\",\"valueMeaningCode\":\"C68751\",\"valueMeaningCodeSystem\":\"NCI Thesaurus\"}]},\"property\":{\"concepts\":[{\"name\":\"Personal Medical History\",\"origin\":\"NCI Thesaurus\",\"originId\":\"C18772\"}]},\"objectClass\":{\"concepts\":[{\"name\":\"Smoking\",\"origin\":\"NCI Thesaurus\",\"originId\":\"C17934\"}]},\"dataElementConcept\":{\"concepts\":[{\"name\":\"Smoking History\",\"origin\":\"NCI caDSR\",\"originId\":\"2010568v2.31\"}]},\"stewardOrg\":{\"name\":\"CTEP\"}}],\"totalItems\":223}"};
-        for (String result : results) {
-            if (!response.contains(result)) {
-                System.out.println("not contains:");
-                System.out.println(result);
-            }
-            Assert.assertTrue(response.contains(result));
-        }
+        String result = "{\"permissibleValue\":\"Smoker\",\"valueMeaningName\":\"Smoker\",\"valueMeaningCode\":\"C68751\",\"valueMeaningCodeSystem\":\"NCI Thesaurus\"}]},\"property\":{\"concepts\":[{\"name\":\"Personal Medical History\",\"origin\":\"NCI Thesaurus\",\"originId\":\"C18772\"}]},\"objectClass\":{\"concepts\":[{\"name\":\"Smoking\",\"origin\":\"NCI Thesaurus\",\"originId\":\"C17934\"}]},\"dataElementConcept\":{\"concepts\":[{\"name\":\"Smoking History\",\"origin\":\"NCI caDSR\",\"originId\":\"2010568v2.31\"}]},\"stewardOrg\":{\"name\":\"CTEP\"}}]";
+        Assert.assertTrue(response.contains(result));
     }
 
 }
