@@ -12,7 +12,6 @@ public class FormPermissionTest extends BaseFormTest {
 
     @Test
     public void formPermissionTest() {
-        
         mustBeLoggedInAs(ninds_username, password);
         String formName = "Form Permission Test";
         
@@ -30,7 +29,6 @@ public class FormPermissionTest extends BaseFormTest {
         textNotPresent("Delete");
         textNotPresent("Add Section");
         textNotPresent("Show Question Search Area");
-
     }
     
 }

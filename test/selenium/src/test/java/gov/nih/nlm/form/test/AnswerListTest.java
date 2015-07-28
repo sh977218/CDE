@@ -14,7 +14,6 @@ public class AnswerListTest extends BaseFormTest {
 
     @Test
     public void answerList() {
-
         mustBeLoggedInAs(ctepCurator_username, password);
 
         String formName = "Answer List Test";

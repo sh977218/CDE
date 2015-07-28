@@ -11,7 +11,6 @@ public class OtherPleaseSpecifyTest extends BaseFormTest {
 
     @Test
     public void otherPleaseSpecify() {
-
         mustBeLoggedInAs(ctepCurator_username, password);
         String formName = "Other Please Specify Test";
         String formDef = "Form to test other please specify";
@@ -44,7 +43,6 @@ public class OtherPleaseSpecifyTest extends BaseFormTest {
         findElement(By.xpath("//input[@placeholder='Please Specify']")).sendKeys("Transgender");
 
         switchTabAndClose(0);
-
     }
 
 }

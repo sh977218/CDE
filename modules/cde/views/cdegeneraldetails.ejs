@@ -41,7 +41,10 @@
                  on-ok="stageElt(elt)"></div>
         </dd>
         <dt tabindex="0" ng-show="elt.origin">Origin:</dt>
-        <dd tabindex="0">{{elt.origin}}</dd>
+        <dd tabindex="0">
+            <div inline-edit id="origin" model="elt.origin" is-allowed="canCurate"
+                 on-ok="stageElt(elt)"></div>
+        </dd>
         <dt tabindex="0" ng-show="elt.source">Source:</dt>
         <dd tabindex="0">{{elt.source}}</dd>
         <dt tabindex="0" id="dt_status">Status:</dt>

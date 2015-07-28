@@ -10,7 +10,7 @@ public class ListTourTest extends TourTest {
         mustBeLoggedOut();
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
-        hangon(0.5);
+        hangon(1);
         findElement(By.linkText("Help")).click();
         findElement(By.linkText("Take a tour")).click();
         textPresent("Welcome to the NIH");
@@ -18,7 +18,7 @@ public class ListTourTest extends TourTest {
         getNext("back to the CDE search page");
         getNext("take you to the Form search page");
         getNext("Boards allow registered users to group CDEs");
-        getNext("The quick board is emptied when the");
+        getNext("The quick board is a volatile board");
         getNext("more documentation about this site or start this tour again");
         getNext("Personalize your search results.");
         getNext("For example, search for");
