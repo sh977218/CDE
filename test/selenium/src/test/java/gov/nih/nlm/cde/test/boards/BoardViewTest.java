@@ -31,7 +31,7 @@ public class BoardViewTest extends BoardTest {
         String boardName = "Test Board";
         createBoard(boardName, "Test");
 
-        attachToBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage", boardName);        
+        attachToBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage", boardName);
         attachToBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value", boardName);
         attachToBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count", boardName);
         attachToBoard("Prior BMSCT Administered Indicator", boardName);
@@ -56,7 +56,7 @@ public class BoardViewTest extends BoardTest {
     public void attachToBoard(String cdeName, String boardName) {
         searchElt(cdeName, "cde", null);
         findElement(By.id("pinToBoard_0")).click();
-        hangon(1);
         findElement(By.linkText(boardName)).click();
+        textPresent("Added to Board");
     }
 }

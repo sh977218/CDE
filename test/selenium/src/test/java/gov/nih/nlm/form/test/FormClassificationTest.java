@@ -26,7 +26,6 @@ public class FormClassificationTest extends BaseFormTest {
     
     //@Test
     public void classifyFormCdes() {
-        resizeWindow(1024, 1300);        
         mustBeLoggedInAs(ninds_username, password);
         
         //Create a new form

@@ -21,11 +21,6 @@ public class CdePropertyTest extends PropertyTest {
     }
     
     @Test
-    public void addRemoveCdeProperty() {
-        addRemoveProperty("Aromatase Inhibitor Most Recent Received Text", null);
-    }
-    
-    @Test
     public void richPropText() {
         richText("Imaging diffusion sixth b value", null);
     }
