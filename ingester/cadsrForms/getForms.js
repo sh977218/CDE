@@ -56,7 +56,11 @@ var getResource = function(url, cb){
         if (page) processResource(page.content, cb);
         else {
             request(url, function (error, response, body) {
-                if (!error && response.statusCode == 200) processResource(body, cb);
+                if (!error && response.statusCode == 200) {
+                    processResource(body, cb);
+                    var page = new CachedPage({url: url, content: body});
+                    page.save();
+                }
             });
         }
     });
