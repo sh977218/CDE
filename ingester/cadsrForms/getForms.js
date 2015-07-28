@@ -2,19 +2,10 @@ var request = require('request');
 var parseString = require('xml2js').parseString;
 var mongoose = require('mongoose');
 
-//mongoose.connect('mongodb://siteRootAdmin:password@localhost');
-//
-//var db = mongoose.connection;
-//db.on('error', console.error.bind(console, 'connection error:'));
-//db.once('open', function (callback) {
-//    console.log("connected to mongo");
-//});
-
-//var db = mongoose.createConnection("mongodb://siteRootAdmin:password@localhost:27017/cadsrCache" ,{auth:{authdb:"admin"}});
 mongoose.connect("mongodb://siteRootAdmin:password@localhost:27017/cadsrCache" ,{auth:{authdb:"admin"}});
 var db = mongoose.connection;
 db.once('open', function (callback) {
-    console.log("connected to mongo");
+
 });
 
 var cachedPageSchema = mongoose.Schema({
@@ -37,6 +28,7 @@ var getResource = function(url, cb){
     var processResource = function(res, cb){
         var forms = [];
         parseString(res, function (err, result) {
+            if (!result["xlink:httpQuery"].queryResponse) return cb(null);
             result["xlink:httpQuery"].queryResponse[0].class.forEach(function(cadsrForm){
                 var form = {};
                 cadsrForm.field.forEach(function(f){
@@ -70,14 +62,19 @@ var getResource = function(url, cb){
 var getForms = function(page){
     var url = getFormPageUrl(page);
     getResource(url, function(forms){
-        console.log(forms);
         forms.forEach(function(f){
             getResource(f.moduleCollection, function(sections){
                 f.sections = sections;
+                f.sections.forEach(function(s){
+                    getResource(s.questionCollection, function(questions){
+                        if (!questions) return;
+                        s.questions = questions;
+                    })
+                });
             });
         });
         setTimeout(function(){
-            console.log(forms);
+            console.log(JSON.stringify(forms));
         }, 1000);
     });
 };
