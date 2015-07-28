@@ -40,9 +40,9 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
     $scope.reload = function () {
         Form.get(query, function (form) {
             $scope.elt = form;
-            isAllowedModel.setCanCurate($scope);
+            if (window.formEditable)
+                isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
-            $scope.canCurate = $scope.canCurate && window.formEditable
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
