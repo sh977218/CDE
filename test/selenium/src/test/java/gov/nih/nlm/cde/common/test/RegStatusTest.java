@@ -72,7 +72,7 @@ public abstract class RegStatusTest extends CommonTest {
         textPresent("Retired elements are not returned in searches");
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
-        hangon(2);
+        waitForESUpdate();
         goToEltSearch();
         findElement(By.name("ftsearch")).sendKeys("Alkaline");
         findElement(By.id("search.submit")).click();
