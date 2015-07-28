@@ -69,7 +69,13 @@ var getForms = function(page){
                     getResource(s.questionCollection, function(questions){
                         if (!questions) return;
                         s.questions = questions;
-                    })
+                        s.questions.forEach(function(q){
+                            getResource(q.dataElement, function(de){
+                                if (!de) return;
+                                q.cde = de;
+                            })
+                        });
+                    });
                 });
             });
         });
