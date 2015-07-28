@@ -30,7 +30,7 @@ public class QuestionLayoutTest extends BaseFormTest {
         startAddingQuestions();
         textPresent("Hide Question Search Area");
         textPresent("Browse by organization");
-        findElement(By.id("browseOrg-caBIG")).click();
+        clickElement(By.id("browseOrg-caBIG"));
 
         findElement(By.id("showHideFilters")).click();
         textPresent("Show Filters");
