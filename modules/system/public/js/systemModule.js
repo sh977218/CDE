@@ -149,7 +149,7 @@ angular.module('systemModule').factory('isAllowedModel', function (userResource)
 
     isAllowedModel.setCanCurate = function ($scope) {
         isAllowedModel.runWhenInitialized($scope, function () {
-            $scope.canCurate = isAllowedModel.isAllowed($scope, $scope.elt) && window.formEditable;
+            $scope.canCurate = isAllowedModel.isAllowed($scope, $scope.elt);
         });
     };
 

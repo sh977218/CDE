@@ -1,4 +1,4 @@
-angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource', function($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource) {
+angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource', function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource) {
     $scope.module = "form";
     $scope.baseLink = '#/formView?tinyId=';
     $scope.addCdeMode = false;
@@ -22,11 +22,11 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         forks: {heading: "Forks"}
     };
 
-    $scope.setToAddCdeMode = function() {
+    $scope.setToAddCdeMode = function () {
         $scope.addCdeMode = true;
     };
 
-    $scope.setToNoneAddCdeMode = function() {
+    $scope.setToNoneAddCdeMode = function () {
         $scope.addCdeMode = false;
     };
 
@@ -37,11 +37,12 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
     if (route._id) var query = {formId: route._id, type: '_id'};
     if (route.tinyId) var query = {formId: route.tinyId, type: 'tinyId'};
 
-    $scope.reload = function() {
+    $scope.reload = function () {
         Form.get(query, function (form) {
             $scope.elt = form;
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
+            $scope.canCurate = $scope.canCurate && window.formEditable
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
@@ -50,56 +51,56 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
 
     $scope.reload();
 
-    $scope.switchEditQuestionsMode = function() {
+    $scope.switchEditQuestionsMode = function () {
         $scope.addCdeMode = !$scope.addCdeMode;
 
-        if($scope.addCdeMode) {
+        if ($scope.addCdeMode) {
             $scope.setToAddCdeMode();
         } else {
             $scope.setToNoneAddCdeMode();
         }
     };
 
-    $scope.revert = function() {
+    $scope.revert = function () {
         $scope.reload();
     };
 
-    $scope.stageElt = function() {
+    $scope.stageElt = function () {
         $scope.elt.unsaved = true;
     };
 
-    $scope.classificationToFilter = function() {
-         if ($scope.elt) {
-             return $scope.elt.classification;
-         }
+    $scope.classificationToFilter = function () {
+        if ($scope.elt) {
+            return $scope.elt.classification;
+        }
     };
 
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
-          templateUrl: '/template/system/classifyForm',
-          controller: 'ClassifyFormCdesModalCtrl',
-          resolve: {
-                userOrgs: function() {
+            templateUrl: '/template/system/classifyForm',
+            controller: 'ClassifyFormCdesModalCtrl',
+            resolve: {
+                userOrgs: function () {
                     return userResource.userOrgs;
                 }
-                , cde: function() {
+                , cde: function () {
                     return $scope.elt;
                 }
-                , addClassification: function() {
+                , addClassification: function () {
                     return {
-                        addClassification: function(newClassification) {
+                        addClassification: function (newClassification) {
                             var ids = [];
-                            var getChildren = function(element) {
+                            var getChildren = function (element) {
                                 if (element.question && element.question.cde) {
                                     ids.push({id: element.question.cde.tinyId, version: element.question.cde.version});
                                     return;
                                 }
-                                else element.formElements.forEach(function(e) {
+                                else element.formElements.forEach(function (e) {
                                     getChildren(e);
                                 });
                             };
                             getChildren($scope.elt);
-                            BulkClassification.classifyTinyidList(ids, newClassification, function(res) {
+                            BulkClassification.classifyTinyidList(ids, newClassification, function (res) {
                                 $scope.addAlert("success", "CDEs classified!");
                             });
                         }
@@ -110,13 +111,13 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
 
     };
 
-    $scope.updateSkipLogic = function(section) {
+    $scope.updateSkipLogic = function (section) {
         if (!section.skipLogic) return;
-        section.skipLogic.condition = "'" + section.skipLogic.condition1 + "' = '" + section.skipLogic.condition3+ "'";
+        section.skipLogic.condition = "'" + section.skipLogic.condition1 + "' = '" + section.skipLogic.condition3 + "'";
         $scope.stageElt();
     };
 
-    var tokenSplitter = function(str) {
+    var tokenSplitter = function (str) {
         var tokens = [];
         if (!str) {
             tokens.unmatched = str;
@@ -153,38 +154,44 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         return tokens;
     };
 
-    $scope.getCurrentOptions = function(currentContent, previousQuestions, thisQuestion) {
-        var filterFunc = function(e1) {
-            return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1 && (!thisQuestion || e1.trim().toLowerCase().replace(/"/g,"") !== thisQuestion.label.trim().toLowerCase().replace(/"/g,""));
+    $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion) {
+        var filterFunc = function (e1) {
+            return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1 && (!thisQuestion || e1.trim().toLowerCase().replace(/"/g, "") !== thisQuestion.label.trim().toLowerCase().replace(/"/g, ""));
         };
         var tokens = tokenSplitter(currentContent);
         if (tokens.length === 0) return $scope.languageOptions("question", previousQuestions).filter(filterFunc);
-        if (tokens.length === 1) return $scope.languageOptions("operator", previousQuestions).map(function(e1) {return currentContent + " " + e1;});
-        if (tokens.length === 2) return $scope.languageOptions("answer", previousQuestions, null, tokens[0]).filter(filterFunc).map(function(e1) {return "\"" + tokens[0] + "\" " + tokens[1] + " " + e1;});
+        if (tokens.length === 1) return $scope.languageOptions("operator", previousQuestions).map(function (e1) {
+            return currentContent + " " + e1;
+        });
+        if (tokens.length === 2) return $scope.languageOptions("answer", previousQuestions, null, tokens[0]).filter(filterFunc).map(function (e1) {
+            return "\"" + tokens[0] + "\" " + tokens[1] + " " + e1;
+        });
     };
 
 
-    $scope.languageOptions = function(languageMode, previousLevel, index, questionName) {
+    $scope.languageOptions = function (languageMode, previousLevel, index, questionName) {
         if (!previousLevel) return;
-        if (languageMode == 'question') return previousLevel.filter(function(q, i){
+        if (languageMode == 'question') return previousLevel.filter(function (q, i) {
             //Will assemble a list of questions
             if (i == index) return false; //Exclude myself            
             if (q.elementType !== "question") return false; //This element is not a question, ignore
-            if (!q.question.answers || q.question.answers.length===0) return false; //This question has no permissible answers, ignore
-            return  true;
-        }).map(function(q){
+            if (!q.question.answers || q.question.answers.length === 0) return false; //This question has no permissible answers, ignore
+            return true;
+        }).map(function (q) {
             return '"' + q.label + '" ';
         });
         if (languageMode == 'operator') return ["= ", "< ", "> "];
         if (languageMode == 'answer') {
-            var questions = previousLevel.filter(function(q) {
+            var questions = previousLevel.filter(function (q) {
                 if (q.label && questionName)
-                return q.label.trim() === questionName.trim();
+                    return q.label.trim() === questionName.trim();
             });
-            if (questions.length<=0) return [];
+            if (questions.length <= 0) return [];
             var question = questions[0];
             var answers = question.question.answers;
-            return answers.map(function(a) {return '"' + a.valueMeaningName + '"';});
+            return answers.map(function (a) {
+                return '"' + a.valueMeaningName + '"';
+            });
         }
         if (languageMode == 'conjuction') return ["AND", "OR"];
         return [];
