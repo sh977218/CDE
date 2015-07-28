@@ -1,10 +1,8 @@
 angular.module('OrgFactories', ['ngResource'])
-.factory('OrgHelpers', function ($http) {
+.factory('OrgHelpers', function ($http, $q) {
     var orgHelpers = {
         orgsDetailedInfo: {}
-        , isInitialized : function() {
-            return Object.keys(this.orgsDetailedInfo).length !== 0;
-        }
+        , deferred: $q.defer()
         , addLongNameToOrgs : function(buckets) {
             if(this.orgsDetailedInfo) {
                 for(var i=0; i<buckets.length; i++) {
@@ -39,22 +37,20 @@ angular.module('OrgFactories', ['ngResource'])
             }
             return false;
         }
-        , getOrgsDetailedInfoAPI : function(cb) {
+        , getOrgsDetailedInfoAPI : function() {
             var OrgHelpers = this;
             $http.get('/listOrgsDetailedInfo').success(function(response) {
-
                 // Transforms response to object literal notation
                 response.forEach(function(org) {
                     if(org) {
                         OrgHelpers.orgsDetailedInfo[org.name] = org;
                     }
                 });
-                if (cb) cb();
+                OrgHelpers.deferred.resolve();
             }).error(function() {
             });
         }    
         , showWorkingGroup: function(orgToHide, user) {
-            if (!this.isInitialized()) return true;
             var OrgHelpers = this;
             var parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide] && this.orgsDetailedInfo[orgToHide].workingGroupOf;
             var isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";
@@ -84,5 +80,6 @@ angular.module('OrgFactories', ['ngResource'])
             else return [];
         }
     };
+    orgHelpers.getOrgsDetailedInfoAPI();
     return orgHelpers;
 });

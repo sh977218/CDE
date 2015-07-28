@@ -427,6 +427,7 @@ public class NlmCdeBaseTest {
 
         driver.get(baseUrl + "/#/home");
         textPresent("has been designed to provide access");
+        hangon(.5);
     }
 
     protected void goToCdeSearch() {
@@ -443,6 +444,7 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/#/" + type + "/search");
         findElement(By.id("ftsearch-input"));
         textPresent("Browse by organization");
+        textPresent("Cancer Therapy Evaluation Program");
     }
 
     protected void goToSearchByMenu() {
@@ -553,12 +555,14 @@ public class NlmCdeBaseTest {
     }
 
     protected void switchTabAndClose(int i) {
+        hangon(1);
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
     }
 
     protected void switchTab(int i) {
+        hangon(1);
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }

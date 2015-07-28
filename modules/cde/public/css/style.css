@@ -348,6 +348,7 @@ dd.formViewDetails {
     border-style: solid;
     border-width: 1px;
     border-color: #ddd;
+    overflow-x: hidden;
 }
 
 .question-search-area.ui-scrollfix {
@@ -713,4 +714,8 @@ button#selectDefault {
 .pickdaterBtn {
     width: auto;
     float: left;
+}
+
+#questionSearchArea{
+    padding: 20px;
 }

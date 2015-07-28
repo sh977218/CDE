@@ -20,7 +20,7 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         findElement(By.id("browseOrg-PBTC")).click();
         textPresent("4 results for");
         String viewing = findElement(By.id("acc_link_0")).getText();
-        findElement(By.xpath("//*[@id='accordionList']/div/div/div[1]/div[1]/h4/a/a[2]")).click();
+        findElement(By.id("eyeLink_0")).click();
         textPresent("More Like This");
         textPresent(viewing);
         findElement(By.xpath("//i[@id='editStatus']")).click();
@@ -33,20 +33,16 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         hangon(1);
         findElement(By.id("li-blank-Preferred Standard")).click();
         textPresent("1 results for");
-        clickElement(By.xpath("//i[@title='View Full Detail']"));
-        hangon(0.5);
+        clickElement(By.id("eyeLink_0"));
+        textPresent("More Like This");
+        textPresent(viewing);
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
         waitForESUpdate();
-        driver.navigate().back();
-        if (!findElement(By.id("li-blank-Standard")).isDisplayed()) {
-            findElement(By.id("showHideFilters")).click();
-        }
-        hangon(1);
-        findElement(By.id("li-blank-Standard")).click();
-        hangon(1);
+        goToCdeSearch();
+        findElement(By.id("browseOrg-PBTC")).click();
         textPresent("4 results for");
     }
     
