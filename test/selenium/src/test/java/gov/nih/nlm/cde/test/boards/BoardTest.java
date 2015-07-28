@@ -81,14 +81,8 @@ public class BoardTest extends NlmCdeBaseTest {
     
     protected void goToBoard(String boardName) {
         gotoMyBoards();
-        int length = driver.findElements(By.linkText("View Board")).size();
-        for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("dd_name_" + i)).getText();
-            if (boardName.equals(name)) {
-                findElement(By.id("view_" + i)).click();
-                return;
-            }
-        }
+        findElement(By.xpath("//div[@data-id='boardDiv_MyBoard 1']//a[text()='View Board']")).click();
+        findElement(By.id("gridView"));
     }
     
 
