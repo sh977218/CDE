@@ -59,9 +59,10 @@
         <!-- endbuild -->
 
         <script type="text/javascript">
-            (function(){
+            (function () {
                 window.loggedIn = <%= loggedIn %>;
-                window.maxPin = <%=config.maxPin %>;
+                window.maxPin = <%= config.maxPin %>;
+                window.formEditable = <%= config.modules.forms.editable %>;
             })();
         </script>
 

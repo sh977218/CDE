@@ -5,7 +5,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
     $scope.openCdeInNewTab = true;
     $scope.dragEnabled = true;
     $scope.classifSubEltPage = '/template/system/classif-sub-elements';
-    
+
     $scope.tabs = {
         general: {heading: "General Details"},
         description: {heading: "Form Description"},
@@ -21,19 +21,19 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         history: {heading: "History"},
         forks: {heading: "Forks"}
     };
-    
+
     $scope.setToAddCdeMode = function() {
         $scope.addCdeMode = true;
     };
-    
+
     $scope.setToNoneAddCdeMode = function() {
         $scope.addCdeMode = false;
     };
-    
+
     var route = $routeParams;
-    
+
     $scope.resultPerPage = 10;
-    
+
     if (route._id) var query = {formId: route._id, type: '_id'};
     if (route.tinyId) var query = {formId: route.tinyId, type: 'tinyId'};
 
@@ -47,7 +47,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
             $scope.tabs[route.tab].active = true;
         }
     };
-    
+
     $scope.reload();
 
     $scope.switchEditQuestionsMode = function() {
@@ -90,25 +90,25 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                         addClassification: function(newClassification) {
                             var ids = [];
                             var getChildren = function(element) {
-                                if (element.question && element.question.cde) {                                    
+                                if (element.question && element.question.cde) {
                                     ids.push({id: element.question.cde.tinyId, version: element.question.cde.version});
                                     return;
-                                }  
+                                }
                                 else element.formElements.forEach(function(e) {
                                     getChildren(e);
                                 });
                             };
                             getChildren($scope.elt);
                             BulkClassification.classifyTinyidList(ids, newClassification, function(res) {
-                                $scope.addAlert("success", "CDEs classified!");              
-                            });                 
+                                $scope.addAlert("success", "CDEs classified!");
+                            });
                         }
                     };
                 }
-            }          
+            }
         });
 
-    }; 
+    };
 
     $scope.updateSkipLogic = function(section) {
         if (!section.skipLogic) return;
@@ -150,9 +150,9 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         tokens.push(t);
 
         tokens.unmatched = str;
-        return tokens; 
+        return tokens;
     };
-    
+
     $scope.getCurrentOptions = function(currentContent, previousQuestions, thisQuestion) {
         var filterFunc = function(e1) {
             return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1 && (!thisQuestion || e1.trim().toLowerCase().replace(/"/g,"") !== thisQuestion.label.trim().toLowerCase().replace(/"/g,""));
@@ -162,8 +162,8 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         if (tokens.length === 1) return $scope.languageOptions("operator", previousQuestions).map(function(e1) {return currentContent + " " + e1;});
         if (tokens.length === 2) return $scope.languageOptions("answer", previousQuestions, null, tokens[0]).filter(filterFunc).map(function(e1) {return "\"" + tokens[0] + "\" " + tokens[1] + " " + e1;});
     };
-    
-      
+
+
     $scope.languageOptions = function(languageMode, previousLevel, index, questionName) {
         if (!previousLevel) return;
         if (languageMode == 'question') return previousLevel.filter(function(q, i){
@@ -181,7 +181,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                 if (q.label && questionName)
                 return q.label.trim() === questionName.trim();
             });
-            if (questions.length<=0) return []; 
+            if (questions.length<=0) return [];
             var question = questions[0];
             var answers = question.question.answers;
             return answers.map(function(a) {return '"' + a.valueMeaningName + '"';});

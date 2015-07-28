@@ -84,6 +84,7 @@
   },
   "modules": {
     "forms": {
+      "editable": false,
       "attachments": true,
       "comments": true,
       "sectionLevels": 10,
@@ -114,7 +115,7 @@
   },
   "account": "CDE Account <cdeuser@nlm.nih.gov>",
   "maxLogsPerMinute": 1000,
-  "maxPin":500,
+  "maxPin": 500,
   "expressToStdout": false,
   "logBufferSize": 1000,
   "viewsIncrementThreshold": 3,
