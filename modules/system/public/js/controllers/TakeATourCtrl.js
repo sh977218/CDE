@@ -29,7 +29,7 @@ angular.module('systemModule').controller('TakeATourCtrl', ['$scope', 'TourConte
                 ,
                 title: "Quick Board"
                 ,
-                content: "The quick board is is a volatile board for doing quick comparisons or CDE downloads. "
+                content: "The quick board is a volatile board for doing quick comparisons or CDE downloads. "
             }
             , {
                 element: "#menu_help_link"

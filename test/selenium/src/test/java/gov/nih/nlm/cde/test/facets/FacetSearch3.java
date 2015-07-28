@@ -64,6 +64,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         textPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
         
         findElement(By.linkText("Boards")).click();
+        hangon(1);
         driver.navigate().back();
         textPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
         
