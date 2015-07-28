@@ -53,7 +53,7 @@ exports.init = function(app) {
         token = mongo_data_system.generateTinyId();
     }, (config.pm.tokenInterval || 5) * 60 * 1000);
 
-    app.post('/deploy', multer(config.multer), function(req, res) {
+    app.post('/deploy', multer(), function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             if (!token) {
                 return res.status(500).send("No valid token");
