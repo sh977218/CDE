@@ -122,7 +122,7 @@
                                 </ul>
                             </li>
 
-                            <li ng-class="{ active: isPageActive('/quickBoard')}">
+                            <li id="menu_qb_link" ng-class="{ active: isPageActive('/quickBoard')}">
                                 <a class="navbar-link" href="#/quickBoard">
                                     Quick Board (
                                         <span ng-switch="quickBoard.elts.length">
@@ -133,7 +133,7 @@
                                     )
                                 </a>
                             </li>
-                            <li dropdown ng-class="{ active: isPageActive('/help')}">
+                            <li id="menu_help_link" dropdown ng-class="{ active: isPageActive('/help')}">
                                 <a dropdown-toggle class="dropdown-toggle" href="#" id="dropdownMenu_help" title="Help" aria-label="Help">Help<span class="caret"></span></a>
                                 <ul role="menu" class="dropdown-menu" aria-labelledby="dropdownMenu_help" >
                                     <li><a href="#/home">About</a></li>

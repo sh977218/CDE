@@ -6,9 +6,7 @@ angular.module('systemModule').controller('HomeCtrl', ['$scope', '$http', '$loca
 
     $scope.gotoSearch = function() {
         $scope.initCache();
-        
         $scope.cache.put( 'search.cde.ftsearch', $scope.ftsearch );
-
         $location.url( '/cde/search' );
     };
     

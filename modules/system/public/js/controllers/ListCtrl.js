@@ -25,9 +25,9 @@ angular.module('systemModule').controller('ListCtrl',
         }
         , "welcomeSearch": {
             "url": "/system/public/html/welcomeSearch.html"
+            , "ngClass": "container"
         }
     };
-    $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
 
     $scope.hideShowFilter = function() {
         $scope.filterMode = !$scope.filterMode;
@@ -57,7 +57,14 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;
     }
 
-    $scope.altClassificationFilterMode = $scope.cache.get($scope.getCacheName("altClassificationFilterMode"));
+    if (!$scope.currentSearchTerm) {
+        $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
+    } else {
+        $scope.selectedMainAreaMode = mainAreaModes.searchResult;
+    }
+
+
+            $scope.altClassificationFilterMode = $scope.cache.get($scope.getCacheName("altClassificationFilterMode"));
     if (!$scope.altClassificationFilterMode) {
         $scope.altClassificationFilterMode = 0;
     }
@@ -83,11 +90,9 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.selectedOrgAlt = $scope.cache.get($scope.getCacheName("selectedOrgAlt"));
     $scope.selectedElementsAlt = $scope.cache.get($scope.getCacheName("selectedElementsAlt"));
-            console.log("initializing ListCtrl");
+
     if (!$scope.selectedElementsAlt) {
         $scope.selectedElementsAlt = [];
-    } else {
-        //$timeout($scope.toggleAltClassificationFilterMode, 0);
     }
 
     $scope.classificationFilters = [{
@@ -109,7 +114,7 @@ angular.module('systemModule').controller('ListCtrl',
     });
 
     userResource.getPromise().then(function(){
-        $scope.search()
+        $scope.reload()
     });
 
     $scope.addStatusFilter = function(t) {
@@ -118,12 +123,7 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.reload();
     };
 
-    $scope.resetSearch = function() {
-        delete $scope.aggregations;
-        delete $scope.filter;
-        delete $scope.searchForm.ftsearch;
-
-        delete $scope.classificationFilters[0].org;
+    var resetFromSearch = function() {
         delete $scope.classificationFilters[1].org;
         $scope.classificationFilters[0].elements = [];
         $scope.classificationFilters[1].elements = [];
@@ -132,23 +132,40 @@ angular.module('systemModule').controller('ListCtrl',
         for (var i in $scope.registrationStatuses) {
             $scope.registrationStatuses[i].selected  = false;
         }
-        $scope.cache.remove($scope.getCacheName("selectedOrg"));
         $scope.cache.remove($scope.getCacheName("selectedOrgAlt"));
         $scope.cache.remove($scope.getCacheName("selectedElements"));
         $scope.cache.remove($scope.getCacheName("selectedElementsAlt"));
         $scope.cache.remove($scope.getCacheName("registrationStatuses"));
-        $scope.cache.remove($scope.getCacheName("ftsearch"));
         $scope.cache.remove($scope.getCacheName("altClassificationFilterMode"));
+
+    };
+
+    $scope.resetSearch = function() {
+        delete $scope.aggregations;
+        delete $scope.filter;
+        delete $scope.searchForm.ftsearch;
+
+        delete $scope.classificationFilters[0].org;
+        resetFromSearch();
+
+        delete $scope.classificationFilters[1].org;
+        $scope.cache.remove($scope.getCacheName("selectedOrg"));
+        $scope.cache.remove($scope.getCacheName("ftsearch"));
 
         $scope.currentSearchTerm = null;
         $scope.reload();
     };
 
-    $scope.search = function() {
+    var search = function() {
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;
         $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
 
         $scope.reload();
+    };
+
+    $scope.searchAction = function() {
+        resetFromSearch();
+        search();
     };
 
     $scope.isAllowed = function (cde) {
@@ -166,23 +183,6 @@ angular.module('systemModule').controller('ListCtrl',
           }
         });
     };
-
-    //$scope.addOrgFilter = function(orgName) {
-    //    if ($scope.classificationFilters[$scope.altClassificationFilterMode].org === undefined) {
-    //        if ($scope.altClassificationFilterMode === 0) $scope.cacheOrgFilter(orgName);
-    //        else $scope.cacheOrgFilterAlt(orgName);
-    //        $scope.classificationFilters[$scope.altClassificationFilterMode].org = orgName;
-    //    } else {
-    //        if ($scope.altClassificationFilterMode === 0) $scope.removeCacheOrgFilter();
-    //        else $scope.removeCacheOrgFilterAlt();
-    //        $scope.classificationFilters[$scope.altClassificationFilterMode].org = undefined;
-    //        $scope.classificationFilters[$scope.altClassificationFilterMode].elements = [];
-    //    }
-    //    delete $scope.aggregations.groups;
-    //    $scope.reload();
-    //    $scope.focusClassification();
-    //};
-
 
     $scope.alterOrgFilter = function(orgName){
         if ($scope.classificationFilters[$scope.altClassificationFilterMode].org === undefined) {
@@ -346,13 +346,10 @@ angular.module('systemModule').controller('ListCtrl',
             });
             $scope.aggregations = aggregations;
         };
-        if (!OrgHelpers.isInitialized()) {
-            var filterOutWorkingGroups = this;
-            OrgHelpers.getOrgsDetailedInfoAPI(function() {
-                filterOutWorkingGroups.setAggregations();
-            });
-        }
-        this.setAggregations();
+        var filterOutWorkingGroups = this;
+        OrgHelpers.deferred.promise.then(function() {
+            filterOutWorkingGroups.setAggregations();
+        });
     };
 
 
@@ -387,10 +384,6 @@ angular.module('systemModule').controller('ListCtrl',
 
     if ($routeParams.welcome === "true") {
         $scope.resetSearch();
-    }
-
-    $scope.reset = function() {
-        $window.location = "#/" + $scope.module + "/search?welcome=true";
     }
 
 }]);

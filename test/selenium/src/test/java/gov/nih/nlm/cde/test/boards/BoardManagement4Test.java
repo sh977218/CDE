@@ -54,8 +54,6 @@ public class BoardManagement4Test extends BoardTest {
     public void iHaveNoBoard() {
         mustBeLoggedInAs(boarduser2_username, password);
         String cdeName = "Specimen Array";
-
-        goToCdeSearch();
         openCdeInList(cdeName);
         findElement(By.id("pin_0")).click();
         Assert.assertTrue(textPresent("Create a board now"));

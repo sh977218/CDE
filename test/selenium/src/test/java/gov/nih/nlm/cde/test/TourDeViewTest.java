@@ -15,7 +15,7 @@ public class TourDeViewTest extends TourTest {
         getNext("back to the CDE search page");
         getNext("take you to the Form search page");
         getNext("Boards allow registered users to group CDEs");
-        getNext("The quick board is emptied when the");
+        getNext("The quick board is a volatile board");
         getNext("more documentation about this site or start this tour again");
         getNext("Personalize your search results.");
         getNext("an overview of the CDE attributes");

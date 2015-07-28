@@ -14,9 +14,6 @@ public class AnswerListTest extends BaseFormTest {
 
     @Test
     public void answerList() {
-        Dimension currentWindowSize = getWindowSize();
-        resizeWindow(1024, 1150);
-
         mustBeLoggedInAs(ctepCurator_username, password);
 
         String formName = "Answer List Test";
@@ -50,8 +47,6 @@ public class AnswerListTest extends BaseFormTest {
         saveForm();
 
         new FormRegStatus().changeRegistrationStatus(formName, ctepCurator_username, "Incomplete", "Qualified");
-
-        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
 
     }
 
