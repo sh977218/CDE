@@ -62,6 +62,7 @@ public class AttachmentsTest extends BaseAttachmentTest {
         goToFormByName(cdeName);
 
         addAttachment("defaultAttachmentForForm.jpg");
+        textPresent("This attachment cannot be dowloaded because it is pending approval.");
         reviewAttachment("defaultAttachmentForForm.jpg");
 
         mustBeLoggedInAs(ninds_username, password);

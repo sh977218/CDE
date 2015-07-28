@@ -103,7 +103,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         textPresent("results for All Terms | CTEP > CATEGORY | Standard");
         findElement(By.name("ftsearch")).sendKeys("name");
         findElement(By.id("search.submit")).click();     
-        textPresent("0 results for name | CTEP | All Statuses");
+        textPresent("results for name | CTEP | All Statuses");
         findElement(By.linkText("Forms")).click();     
         textNotPresent("CATEGORY");
         driver.navigate().back();

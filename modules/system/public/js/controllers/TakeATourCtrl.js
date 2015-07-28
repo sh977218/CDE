@@ -18,13 +18,6 @@ angular.module('systemModule').controller('TakeATourCtrl', ['$scope', 'TourConte
                 , content: "This menu will take you to the Form search page"
             }
             , {
-                element: "#boardsMenu"
-                ,
-                title: "Boards"
-                ,
-                content: "Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them."
-            }
-            , {
                 element: "#boardsLink"
                 ,
                 title: "Boards"
@@ -32,14 +25,14 @@ angular.module('systemModule').controller('TakeATourCtrl', ['$scope', 'TourConte
                 content: "Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them."
             }
             , {
-                element: "a:contains('Quick Board (')"
+                element: "#menu_qb_link"
                 ,
                 title: "Quick Board"
                 ,
-                content: "The quick board is is a volatile board for doing quick comparisons or CDE downloads. The quick board is emptied when the page is refreshed."
+                content: "The quick board is is a volatile board for doing quick comparisons or CDE downloads. "
             }
             , {
-                element: "a:contains('Help')"
+                element: "#menu_help_link"
                 , title: "Help"
                 , content: "Here's where you can find more documentation about this site or start this tour again."
             }, {

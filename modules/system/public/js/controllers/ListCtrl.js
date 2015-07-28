@@ -25,6 +25,7 @@ angular.module('systemModule').controller('ListCtrl',
         }
         , "welcomeSearch": {
             "url": "/system/public/html/welcomeSearch.html"
+            , "ngClass": "container"
         }
     };
 
@@ -345,13 +346,10 @@ angular.module('systemModule').controller('ListCtrl',
             });
             $scope.aggregations = aggregations;
         };
-        if (!OrgHelpers.isInitialized()) {
-            var filterOutWorkingGroups = this;
-            OrgHelpers.getOrgsDetailedInfoAPI(function() {
-                filterOutWorkingGroups.setAggregations();
-            });
-        }
-        this.setAggregations();
+        var filterOutWorkingGroups = this;
+        OrgHelpers.deferred.promise.then(function() {
+            filterOutWorkingGroups.setAggregations();
+        });
     };
 
 
