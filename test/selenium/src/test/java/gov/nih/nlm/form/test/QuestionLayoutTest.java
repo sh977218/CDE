@@ -9,8 +9,7 @@ public class QuestionLayoutTest extends BaseFormTest {
     @Test
     public void questionsLayoutTest() {
         Dimension currentWindowSize = getWindowSize();
-        resizeWindow(1024, 1150);
-
+        resizeWindow(1524, 1150);
         mustBeLoggedInAs(ctepCurator_username, password);
         String formName = "Question Layout Test Form";
         String formDef = "This form is used to test the permission of tests";
@@ -30,7 +29,8 @@ public class QuestionLayoutTest extends BaseFormTest {
         textPresent("Show Question Search Area");
         startAddingQuestions();
         textPresent("Hide Question Search Area");
-        textPresent("results for");
+        textPresent("Browse by organization");
+        clickElement(By.id("browseOrg-caBIG"));
 
         findElement(By.id("showHideFilters")).click();
         textPresent("Show Filters");
@@ -47,7 +47,6 @@ public class QuestionLayoutTest extends BaseFormTest {
 
         textNotPresent("Show Filters");
         textNotPresent("results for");
-
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
     }
 

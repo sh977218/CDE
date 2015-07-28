@@ -65,7 +65,6 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#textMinLength .fa-check")).click();
         findElement(By.cssSelector("#textMaxLength .fa-check")).click();
 
-        
         newCdeVersion();
         
         checkInHistory("Permissible Values - Text - Regular Expression", "", "newre");
@@ -73,17 +72,5 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         checkInHistory("Permissible Values - Text - Maximum Length", "789", "123");
         checkInHistory("Permissible Values - Text - Minimum Length", "987", "321");
 
-
-        findElement(By.linkText("Permissible Values")).click();
-        checkInvalidEntry("textMinLength", "ABC");
-        checkInvalidEntry("textMaxLength", "ABC");
-
-    }
-
-    public void checkInvalidEntry(String buttonId, String entry) {
-        findElement(By.xpath("//div[@id='" + buttonId + "']//i[@title='Edit']")).click();
-        findElement(By.xpath("//div[@id='" + buttonId + "']//input")).sendKeys(entry);
-        wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.cssSelector("#" + buttonId + " .fa-check"))));
-        findElement(By.cssSelector("#" + buttonId + " .fa-times")).click();
     }
 }

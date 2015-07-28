@@ -16,7 +16,7 @@ public class ResetSearchStatusTest extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("browseOrg-caBIG")).click();
 
-        findElement(By.id("resetSearch")).click();
+        findElement(By.id("menu_cdes_link")).click();
         textPresent("Browse by organization");
     }
 }
