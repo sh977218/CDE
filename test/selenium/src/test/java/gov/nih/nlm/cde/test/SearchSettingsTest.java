@@ -33,7 +33,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         findElement(By.id("administrativeStatus")).click();
         scrollTo(1000);
         findElement(By.id("saveSettings")).click();
-
+        textPresent("Settings saved");
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("gridView")).click();

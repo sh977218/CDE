@@ -50,8 +50,8 @@ var deJsonSchema = {
         , vsacOid: String
         , datatype: String
         , datatypeText: {
-            minLength: String
-            , maxLength: String
+            minLength: Number
+            , maxLength: Number
             , regex: String
             , rule: String
         }

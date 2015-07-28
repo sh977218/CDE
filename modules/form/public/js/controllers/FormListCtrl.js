@@ -9,6 +9,8 @@ angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller'
 angular.module('formModule').controller('FormDEListCtrl', ['$scope'
     , function($scope) {
 
+    $scope.embedded = true;
+
     $scope.reset = function() {
         $scope.resetSearch();
     }
