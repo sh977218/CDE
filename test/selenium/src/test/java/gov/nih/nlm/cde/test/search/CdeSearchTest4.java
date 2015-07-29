@@ -45,7 +45,12 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
     @Test
     public void usedBySummary() {
         goToCdeSearch();
-        openCdeInList("Patient Race Category");
+        try {
+            openCdeInList("Patient Race Category");
+        } catch (Exception e){
+            waitForESUpdate();
+            openCdeInList("Patient Race Category");
+        }
         String usedBy = findElement(By.id("dd_usedBy")).getText();
         Assert.assertTrue(usedBy.contains("NIDCR"));
         Assert.assertTrue(usedBy.contains("PS&CC"));
@@ -62,5 +67,6 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("+-aaa");
         findElement(By.cssSelector("i.fa-search")).click();
         textPresent("There was a problem with your query");
+        closeAlert();
     }
 }

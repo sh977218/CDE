@@ -38,4 +38,18 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
             });
         });
     };
+
+    $scope.openCdeCopyModal = function() {
+        var modalInstance = $modal.open({
+            templateUrl: '/cde/public/html/cdeCopyModal.html',
+            controller: 'CdeCopyModalCtrl',
+            resolve: {
+                elt: function() {return $scope.elt;}
+            }
+        });
+
+        modalInstance.result.then(function (result) {
+
+        });
+    };
 }]);

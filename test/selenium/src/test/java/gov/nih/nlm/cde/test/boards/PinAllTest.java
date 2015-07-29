@@ -22,7 +22,11 @@ public class PinAllTest extends BoardTest {
         createBoard(board_name, board_description);
         goToCdeSearch();
 
-        findElement(By.id("browseOrg-SPOREs")).click();
+        findElement(By.id("browseOrg-NINDS")).click();
+        findElement(By.id("li-blank-Disease")).click();
+        findElement(By.id("li-blank-Stroke")).click();
+        findElement(By.id("li-blank-Classification")).click();
+        findElement(By.id("li-blank-Exploratory")).click();
 
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         findElement(By.id("pinAll")).click();
@@ -49,7 +53,7 @@ public class PinAllTest extends BoardTest {
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
-        findElement(By.id("li-blank-Amyotrophic Lateral Sclerosis")).click();
+        findElement(By.id("li-blank-Stroke")).click();
         findElement(By.id("li-blank-Classification")).click();
         findElement(By.id("li-blank-Core")).click();
         hangon(3);

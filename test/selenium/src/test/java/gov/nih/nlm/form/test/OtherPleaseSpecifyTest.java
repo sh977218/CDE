@@ -43,7 +43,6 @@ public class OtherPleaseSpecifyTest extends BaseFormTest {
         findElement(By.xpath("//input[@placeholder='Please Specify']")).sendKeys("Transgender");
 
         switchTabAndClose(0);
-
     }
 
 }
