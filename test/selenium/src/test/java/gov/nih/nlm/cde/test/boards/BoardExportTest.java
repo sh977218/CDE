@@ -46,8 +46,7 @@ public class BoardExportTest extends BoardTest {
         String bid = url.substring(url.lastIndexOf("/") + 1);
         String url_string = baseUrl + "/board/" + bid + "/0/500";
         String response = given().when().get(url_string).asString();
-
-        String result = "{\"permissibleValue\":\"Smoker\",\"valueMeaningName\":\"Smoker\",\"valueMeaningCode\":\"C68751\",\"valueMeaningCodeSystem\":\"NCI Thesaurus\"}]},\"property\":{\"concepts\":[{\"name\":\"Personal Medical History\",\"origin\":\"NCI Thesaurus\",\"originId\":\"C18772\"}]},\"objectClass\":{\"concepts\":[{\"name\":\"Smoking\",\"origin\":\"NCI Thesaurus\",\"originId\":\"C17934\"}]},\"dataElementConcept\":{\"concepts\":[{\"name\":\"Smoking History\",\"origin\":\"NCI caDSR\",\"originId\":\"2010568v2.31\"}]},\"stewardOrg\":{\"name\":\"CTEP\"}}]";
+        String result = "\"name\":\"Export my board test\",\"description\":\"This test tests export borad.\",\"shareStatus\":\"Public\",";
         Assert.assertTrue(response.contains(result));
     }
 
