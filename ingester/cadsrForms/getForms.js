@@ -154,7 +154,7 @@ var getForms = function(page){
 
                 cadsrForm.sections = cadsrForm.sections.sort(function(a,b){return a.displayOrder - b.displayOrder});
 
-                cadsrForm.sections.forEach(function(s){
+                async.eachSeries(cadsrForm.sections, function(s, cbs){
                     var newSection = {
                         elementType: 'section'
                         , label: s.longName
@@ -163,25 +163,27 @@ var getForms = function(page){
 
                     cdeForm.formElements.push(newSection);
 
-                    async.eachSeries(s.questions, function(q, cb) {
+                    async.eachSeries(s.questions, function(q, cbq) {
                         mongo_cde.byOtherId("caDSR", q.cde.publicID, function(err, cde){
                             newSection.formElements.push({
                                 elementType: 'question'
-                                , label: q.longName
+                                , label: q.questionText
                                 //, instructions: String
                                 , question:{
                                     cde: {tinyId: cde.tinyId, version: cde.version}
                                     , datatype: cde.valueDomain.datatype
-                                    , uoms: [cde.valueDomain.uom]
+                                    //, uoms: [cde.valueDomain.uom]
                                     , answers: cde.valueDomain.permissibleValues
                                 }
                             });
-                            cb();
+                            cbq();
                         });
                     }, function(err){
-                        mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function(){
-                            console.log("CDE created " + cdeForm.longName);
-                        });
+                        cbs();
+                    });
+                }, function(){
+                    mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function(){
+                        console.log("Form created " + cadsrForm.longName);
                     });
                 });
 

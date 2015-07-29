@@ -8,7 +8,8 @@ var questionSchema =  {
     cde: {tinyId: String, version: String}
     , datatype: String
     , uoms: [String]
-    , required: Boolean
+    , required: {type: Boolean, default: false}
+    , editable: {type: Boolean, default: true}
     , multiselect: Boolean
     , otherPleaseSpecify: {
         value: {type: Boolean, default: false}
