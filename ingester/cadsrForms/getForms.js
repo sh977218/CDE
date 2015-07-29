@@ -1,4 +1,5 @@
 // add attachment!
+// add instructions for sections
 
 var request = require('request')
     , parseString = require('xml2js').parseString
@@ -149,6 +150,16 @@ var getForms = function(page){
                     console.log(co.scheme);
                     classificationShared.addCategory(cdeClassifTree, [co.scheme, co.item]);
                     classificationShared.addCategory(fakeTree, [co.scheme, co.item]);
+                });
+
+                cadsrForm.sections = cadsrForm.sections.sort(function(a,b){return a.displayOrder - b.displayOrder});
+
+                cadsrForm.sections.forEach(function(s){
+                    cdeForm.formElements.push({
+                        elementType: 'section'
+                        , label: s.longName
+                        , formElements: []
+                    });
                 });
 
                 mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function(){
