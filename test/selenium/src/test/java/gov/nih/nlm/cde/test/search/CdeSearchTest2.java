@@ -93,6 +93,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("browseOrg-CTEP")).click();
         findElement(By.id("li-blank-CATEGORY")).click();
+        hangon(1);
         findElement(By.id("li-blank-Standard")).click();
         hangon(1);
         findElement(By.id("li-blank-Qualified")).click();
