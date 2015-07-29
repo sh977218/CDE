@@ -53,6 +53,7 @@ public class AWorkingGroupTest extends BaseClassificationTest {
         waitForESUpdate();
 
         new CdeRegStatusTest().changeRegistrationStatus("Test CDE for Test Working Group", ctepCurator_username, "Incomplete", "Recorded");
+        waitForESUpdate();
 
         goToCdeByName("Test CDE for Test Working Group", "Recorded");
         findElement(By.linkText("Classification")).click();
