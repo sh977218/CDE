@@ -161,14 +161,20 @@ var getForms = function(page){
                         , formElements: []
                     };
 
+                    if (s.maximumQuestionRepeat) newSection.cardinality = s.maximumQuestionRepeat;
+
                     cdeForm.formElements.push(newSection);
+
+                    s.questions = s.questions.sort(function(a,b){return a.displayOrder - b.displayOrder});
 
                     async.eachSeries(s.questions, function(q, cbq) {
                         mongo_cde.byOtherId("caDSR", q.cde.publicID, function(err, cde){
                             newSection.formElements.push({
                                 elementType: 'question'
                                 , label: q.questionText
-                                //, instructions: String
+                                , required: q.isMandatory
+                                , editable: q.isEditable
+                                , instructions: q.cde.longName
                                 , question:{
                                     cde: {tinyId: cde.tinyId, version: cde.version}
                                     , datatype: cde.valueDomain.datatype
