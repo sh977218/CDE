@@ -31,6 +31,7 @@ var getFormPageUrl = function(page){
 };
 
 var getResource = function(url, cb){
+    if (!url) throw url + " not a proper url!";
     var processResource = function(res, cb){
         var forms = [];
         parseString(res, function (err, result) {
@@ -85,18 +86,25 @@ var getForms = function(page){
                     });
                 });
             });
-
-            //getResource(f.getAdministeredComponentClassSchemeItemCollection, function(acCsis){
-            //    acCsis.forEach(function(acCsi){
-            //        getResource(acCsi.getClassSchemeClassSchemeItem, function(){
-            //
-            //        });
-            //    });
-            //});
+            f.classification = [];
+            getResource(f.administeredComponentClassSchemeItemCollection, function(acCsis){
+                acCsis.forEach(function(acCsi){
+                    getResource(acCsi.classSchemeClassSchemeItem, function(csCsi){
+                        getResource(csCsi[0].classificationScheme, function(cs){
+                            getResource(csCsi[0].classificationSchemeItem, function(csi){
+                                f.classification.push({
+                                    scheme: cs[0].longName
+                                    , item: csi[0].preferredDefinition
+                                });
+                            });
+                        });
+                    });
+                });
+            });
         });
         setTimeout(function(){
             console.log(JSON.stringify(forms));
-        }, 4000);
+        }, 1000);
     });
 };
 
