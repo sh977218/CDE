@@ -1,24 +1,25 @@
+// add attachment!
+
 var request = require('request')
     , parseString = require('xml2js').parseString
     , mongoose = require('mongoose')
     , async = require('async')
     ;
 
-mongoose.connect("mongodb://siteRootAdmin:password@localhost:27017/cadsrCache" ,{auth:{authdb:"admin"}});
-var db = mongoose.connection;
+var db = mongoose.createConnection("mongodb://siteRootAdmin:password@localhost:27017/cadsrCache", {auth:{authdb:"admin"}});
 
 db.once('open', function (callback) {
 
 });
 
-//var mongo_form = require('../../modules/form/node-js/mongo-form.js');
+var mongo_form = require('../../modules/form/node-js/mongo-form.js');
 
 var cachedPageSchema = mongoose.Schema({
     url: String
     , content: String
 });
 
-var CachedPage = mongoose.model('CachedPage', cachedPageSchema);
+var CachedPage = db.model('CachedPage', cachedPageSchema);
 
 
 var formIncrement = 1; //200
@@ -103,7 +104,50 @@ var getForms = function(page){
             });
         });
         setTimeout(function(){
-            console.log(JSON.stringify(forms));
+            //console.log(JSON.stringify(forms));
+
+            forms.forEach(function(cadsrForm){
+                var cdeForm = {
+                    naming: [{
+                        designation: cadsrForm.longName
+                        , definition: cadsrForm.preferredDefinition
+                        , languageCode: "EN-US"
+                        , context: {
+                            contextName: "Health"
+                            , acceptability: "preferred"
+                        }
+                    }]
+                    , stewardOrg: {
+                        name: "NCI"
+                    }
+                    , version: cadsrForm.version
+                    , registrationState: {
+                        registrationStatus: "Qualified"
+                        , administrativeNote: cadsrForm.workflowStatusDescription
+                        , administrativeStatus: cadsrForm.workflowStatusName
+                    }
+                    , properties: [
+                        {key: "caDSR_createdBy", value: cadsrForm.createdBy}
+                        , {key: "caDSR_dateModified", value: cadsrForm.dateModified}
+                        , {key: "caDSR_modifiedBy", value: cadsrForm.modifiedBy}
+                    ]
+                    , ids: [
+                        {source: "caDSR", id: cadsrForm.publicID, version: cadsrForm.version}
+                    ]
+                    //, attachments: [sharedSchemas.attachmentSchema]
+                    , created: cadsrForm.dateCreated
+                    , imported: new Date()
+                    , createdBy: {
+                        username: "batchloader"
+                    }
+                    //, formElements: [formElementSchema]
+                    //, classification: [sharedSchemas.classificationSchema]
+                };
+                mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function(){
+                    console.log("loaded");
+                });
+            });
+
         }, 1000);
     });
 };

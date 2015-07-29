@@ -57,9 +57,11 @@ exports.update = function (form, user, callback) {
 
 exports.create = function (form, user, callback) {
     var newForm = new Form(form);
-    newForm.registrationState = {
-        registrationStatus: "Incomplete"
-    };
+    if (!form.registrationState){
+        newForm.registrationState = {
+            registrationStatus: "Incomplete"
+        };
+    }
     newForm.created = Date.now();
     newForm.tinyId = mongo_data_system.generateTinyId();
     newForm.createdBy = {
