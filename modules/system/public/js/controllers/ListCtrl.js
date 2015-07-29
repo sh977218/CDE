@@ -160,7 +160,12 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.currentSearchTerm = $scope.searchForm.ftsearch;
         $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
 
-        $scope.reload();
+        $timeout(function () {
+            $scope.$digest();
+            $scope.currentSearchTerm = $scope.searchForm.ftsearch;
+            $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
+            $scope.reload();
+        }, 0);
     };
 
     $scope.searchAction = function() {
