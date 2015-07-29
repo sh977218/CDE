@@ -1,6 +1,7 @@
-var request = require('request');
-var parseString = require('xml2js').parseString;
-var mongoose = require('mongoose');
+var request = require('request')
+    , parseString = require('xml2js').parseString
+    , mongoose = require('mongoose')
+    , async = require('async');
 
 mongoose.connect("mongodb://siteRootAdmin:password@localhost:27017/cadsrCache" ,{auth:{authdb:"admin"}});
 var db = mongoose.connection;
@@ -81,7 +82,7 @@ var getForms = function(page){
         });
         setTimeout(function(){
             console.log(JSON.stringify(forms));
-        }, 1000);
+        }, 4000);
     });
 };
 
