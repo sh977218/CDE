@@ -66,7 +66,7 @@ var getForms = function(page){
     var url = getFormPageUrl(page);
     getResource(url, function(forms){
         forms.forEach(function(f){
-            
+            f.getAdministeredComponentClassSchemeItemCollection
             getResource(f.moduleCollection, function(sections){
                 if (!sections) return;
                 f.sections = sections;
@@ -90,4 +90,8 @@ var getForms = function(page){
     });
 };
 
-for (var i = 0; i < 20; i++) getForms(i);
+for (var i = 0; i < 1; i++) {
+    setTimeout(function(){
+        getForms(i);
+    }, i * 1000 * 5);
+}
