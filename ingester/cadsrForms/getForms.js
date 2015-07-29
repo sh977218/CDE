@@ -4,6 +4,9 @@ var request = require('request')
     , parseString = require('xml2js').parseString
     , mongoose = require('mongoose')
     , async = require('async')
+    , mongo_form = require('../../modules/form/node-js/mongo-form.js')
+    , classificationShared = require('../../modules/system/shared/classificationShared')
+    , mongo_data_system = require('../../modules/system/node-js/mongo-data')
     ;
 
 var db = mongoose.createConnection("mongodb://siteRootAdmin:password@localhost:27017/cadsrCache", {auth:{authdb:"admin"}});
@@ -11,8 +14,6 @@ var db = mongoose.createConnection("mongodb://siteRootAdmin:password@localhost:2
 db.once('open', function (callback) {
 
 });
-
-var mongo_form = require('../../modules/form/node-js/mongo-form.js');
 
 var cachedPageSchema = mongoose.Schema({
     url: String
@@ -30,6 +31,8 @@ var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form
 var getFormPageUrl = function(page){
     return formListUrl + (page * formIncrement);
 };
+
+var nciOrg, fakeTree;
 
 var getResource = function(url, cb){
     if (!url) throw url + " not a proper url!";
@@ -104,8 +107,6 @@ var getForms = function(page){
             });
         });
         setTimeout(function(){
-            //console.log(JSON.stringify(forms));
-
             forms.forEach(function(cadsrForm){
                 var cdeForm = {
                     naming: [{
@@ -140,11 +141,18 @@ var getForms = function(page){
                     , createdBy: {
                         username: "batchloader"
                     }
-                    //, formElements: [formElementSchema]
-                    //, classification: [sharedSchemas.classificationSchema]
+                    , formElements: []
+                    , classification: [{stewardOrg: {name: "NCI"}, elements: []}]
                 };
+                var cdeClassifTree = cdeForm.classification[0];
+                cadsrForm.classification.forEach(function(co){
+                    console.log(co.scheme);
+                    classificationShared.addCategory(cdeClassifTree, [co.scheme, co.item]);
+                    classificationShared.addCategory(fakeTree, [co.scheme, co.item]);
+                });
+
                 mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function(){
-                    console.log("loaded");
+                    console.log("CDE created " + cdeForm.longName);
                 });
             });
 
@@ -152,9 +160,26 @@ var getForms = function(page){
     });
 };
 
-for (var i = 0; i < maxPages; i++) {
-    var j = i;
-    setTimeout(function(){
-        getForms(j);
-    }, i * 1000 * 5);
-}
+setTimeout(function(){
+    mongo_data_system.orgByName("NCI", function(stewardOrg) {
+        nciOrg = stewardOrg;
+        fakeTree = {elements: stewardOrg.classifications};
+    });
+}, 1000);
+
+setTimeout(function(){
+    console.log("Ingestion started...");
+    for (var i = 0; i < maxPages; i++) {
+        var j = i;
+        setTimeout(function(){
+            console.log("Ingesting from API page: " + j);
+            getForms(j);
+            setTimeout(function(){
+                nciOrg.save(function(){
+                    console.log("Ingestion done ...");
+                    process.exit(0);
+                });
+            }, 3000);
+        }, i * 1000 * 5);
+    }
+},2000);
