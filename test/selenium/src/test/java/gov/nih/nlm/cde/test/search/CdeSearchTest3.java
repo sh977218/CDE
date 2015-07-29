@@ -23,6 +23,7 @@ public class CdeSearchTest3 extends NlmCdeBaseTest {
         findElement(By.name("ftsearch")).clear();
         findElement(By.name("ftsearch")).sendKeys("\"Biomarker Gene\"");
         findElement(By.id("search.submit")).click();
+        showSearchFilters();
         textPresent("caBIG (1)");
 
         textPresent("Biomarker Gene");
