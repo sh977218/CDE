@@ -17,10 +17,6 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
     $scope.resultPerPage = 20;
     $scope.searchForm = {};
 
-    
-
-
-    
     var suggestionPromise = 0;
     $scope.showSuggestions = function () {
         if (suggestionPromise !== 0) {
