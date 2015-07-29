@@ -6,6 +6,7 @@ var request = require('request')
     , mongoose = require('mongoose')
     , async = require('async')
     , mongo_form = require('../../modules/form/node-js/mongo-form.js')
+    , mongo_cde = require('../../modules/cde/node-js/mongo-cde.js')
     , classificationShared = require('../../modules/system/shared/classificationShared')
     , mongo_data_system = require('../../modules/system/node-js/mongo-data')
     ;
@@ -85,7 +86,7 @@ var getForms = function(page){
                         s.questions.forEach(function(q){
                             getResource(q.dataElement, function(de){
                                 if (!de) return;
-                                q.cde = de;
+                                q.cde = de[0];
                             })
                         });
                     });
@@ -147,7 +148,6 @@ var getForms = function(page){
                 };
                 var cdeClassifTree = cdeForm.classification[0];
                 cadsrForm.classification.forEach(function(co){
-                    console.log(co.scheme);
                     classificationShared.addCategory(cdeClassifTree, [co.scheme, co.item]);
                     classificationShared.addCategory(fakeTree, [co.scheme, co.item]);
                 });
@@ -155,16 +155,36 @@ var getForms = function(page){
                 cadsrForm.sections = cadsrForm.sections.sort(function(a,b){return a.displayOrder - b.displayOrder});
 
                 cadsrForm.sections.forEach(function(s){
-                    cdeForm.formElements.push({
+                    var newSection = {
                         elementType: 'section'
                         , label: s.longName
                         , formElements: []
+                    };
+
+                    cdeForm.formElements.push(newSection);
+
+                    async.eachSeries(s.questions, function(q, cb) {
+                        mongo_cde.byOtherId("caDSR", q.cde.publicID, function(err, cde){
+                            newSection.formElements.push({
+                                elementType: 'question'
+                                , label: q.longName
+                                //, instructions: String
+                                , question:{
+                                    cde: {tinyId: cde.tinyId, version: cde.version}
+                                    , datatype: cde.valueDomain.datatype
+                                    , uoms: [cde.valueDomain.uom]
+                                    , answers: cde.valueDomain.permissibleValues
+                                }
+                            });
+                            cb();
+                        });
+                    }, function(err){
+                        mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function(){
+                            console.log("CDE created " + cdeForm.longName);
+                        });
                     });
                 });
 
-                mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function(){
-                    console.log("CDE created " + cdeForm.longName);
-                });
             });
 
         }, 1000);
@@ -190,7 +210,7 @@ setTimeout(function(){
                     console.log("Ingestion done ...");
                     process.exit(0);
                 });
-            }, 3000);
+            }, 30000);
         }, i * 1000 * 5);
     }
 },2000);
