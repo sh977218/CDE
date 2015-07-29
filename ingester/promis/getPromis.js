@@ -5,7 +5,7 @@ var promisDir = process.argv[2];
 var formsDate = process.argv[3];
 var allFiles = promisDir + "/allForms" + formsDate + ".json";
 
-var sec = require("../" + promisDir + '/sec');
+var sec = require('./sec');
 
 var base64 = new Buffer(sec.regOID + ":" + sec.token).toString('base64');
 var header = {'Authorization': "Basic " + base64};
@@ -19,7 +19,7 @@ var options = {
 
 var req = request(options, function (err, res, body) {
     console.log("statusCode: ", res.statusCode);
-    //fs.writeFile(allFiles, body);
+    fs.writeFile(allFiles, body);
     processForms();
 });
 
