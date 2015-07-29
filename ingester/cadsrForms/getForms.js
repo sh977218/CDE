@@ -2,14 +2,16 @@ var request = require('request')
     , parseString = require('xml2js').parseString
     , mongoose = require('mongoose')
     , async = require('async')
-    , mongo_form = require('../../modules/form/node-js/mongo-form.js')
     ;
 
 mongoose.connect("mongodb://siteRootAdmin:password@localhost:27017/cadsrCache" ,{auth:{authdb:"admin"}});
 var db = mongoose.connection;
+
 db.once('open', function (callback) {
 
 });
+
+//var mongo_form = require('../../modules/form/node-js/mongo-form.js');
 
 var cachedPageSchema = mongoose.Schema({
     url: String
@@ -19,7 +21,8 @@ var cachedPageSchema = mongoose.Schema({
 var CachedPage = mongoose.model('CachedPage', cachedPageSchema);
 
 
-var formIncrement = 200;
+var formIncrement = 1; //200
+var maxPages = 1; //200
 
 var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
 
@@ -66,7 +69,6 @@ var getForms = function(page){
     var url = getFormPageUrl(page);
     getResource(url, function(forms){
         forms.forEach(function(f){
-            f.getAdministeredComponentClassSchemeItemCollection
             getResource(f.moduleCollection, function(sections){
                 if (!sections) return;
                 f.sections = sections;
@@ -83,6 +85,14 @@ var getForms = function(page){
                     });
                 });
             });
+
+            //getResource(f.getAdministeredComponentClassSchemeItemCollection, function(acCsis){
+            //    acCsis.forEach(function(acCsi){
+            //        getResource(acCsi.getClassSchemeClassSchemeItem, function(){
+            //
+            //        });
+            //    });
+            //});
         });
         setTimeout(function(){
             console.log(JSON.stringify(forms));
@@ -90,8 +100,9 @@ var getForms = function(page){
     });
 };
 
-for (var i = 0; i < 1; i++) {
+for (var i = 0; i < maxPages; i++) {
+    var j = i;
     setTimeout(function(){
-        getForms(i);
+        getForms(j);
     }, i * 1000 * 5);
 }
