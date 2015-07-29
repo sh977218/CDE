@@ -1,7 +1,9 @@
 var request = require('request')
     , parseString = require('xml2js').parseString
     , mongoose = require('mongoose')
-    , async = require('async');
+    , async = require('async')
+    , mongo_form = require('../../modules/form/node-js/mongo-form.js')
+    ;
 
 mongoose.connect("mongodb://siteRootAdmin:password@localhost:27017/cadsrCache" ,{auth:{authdb:"admin"}});
 var db = mongoose.connection;
@@ -17,7 +19,7 @@ var cachedPageSchema = mongoose.Schema({
 var CachedPage = mongoose.model('CachedPage', cachedPageSchema);
 
 
-var formIncrement = 20;
+var formIncrement = 200;
 
 var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
 
@@ -64,7 +66,9 @@ var getForms = function(page){
     var url = getFormPageUrl(page);
     getResource(url, function(forms){
         forms.forEach(function(f){
+            
             getResource(f.moduleCollection, function(sections){
+                if (!sections) return;
                 f.sections = sections;
                 f.sections.forEach(function(s){
                     getResource(s.questionCollection, function(questions){
@@ -86,4 +90,4 @@ var getForms = function(page){
     });
 };
 
-getForms(0);
+for (var i = 0; i < 20; i++) getForms(i);
