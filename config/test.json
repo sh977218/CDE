@@ -53,11 +53,6 @@
       "path": "/cas/serviceValidate",
       "port": 4000
     }
-  },
-  "modules": {
-    "forms": {
-      "editable": false
-    }
   }
 }
 

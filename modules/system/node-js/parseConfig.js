@@ -21,4 +21,4 @@ Object.keys(config).forEach(function (key) {
     exports[key] = config[key];
 });
 
-config.modules.forms.editable = false;
+config.modules.forms.editable = true;
