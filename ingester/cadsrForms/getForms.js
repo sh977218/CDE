@@ -26,8 +26,10 @@ var cachedPageSchema = mongoose.Schema({
 var CachedPage = db.model('CachedPage', cachedPageSchema);
 
 
-var formIncrement = 200; //200
-var maxPages = 1; //200
+var formIncrement = 50; //200
+var maxPages = 3; //200
+var bulkDelay = 30;
+var waitForContent = 20;
 
 var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
 
@@ -51,9 +53,9 @@ var getResource = function(url, cb){
                 });
                 forms.push(form);
             });
-
+            cb(forms);
         });
-        cb(forms);
+
     };
 
 
@@ -218,7 +220,7 @@ var getForms = function(page){
 
             });
 
-        }, 10000);
+        }, 1000 * waitForContent);
     });
 };
 
@@ -229,19 +231,34 @@ setTimeout(function(){
     });
 }, 1000);
 
+//setTimeout(function(){
+//    console.log("Ingestion started...");
+//    for (var i = 0; i < maxPages; i++) {
+//        var j = i;
+//        setTimeout(function(){
+//            console.log("Ingesting from API page: " + j);
+//            getForms(j);
+//        }, j * 1000 * 5);
+//    }
+//}, 2000);
+
+var callNextBulk = function (page){
+    console.log("Ingesting from API page: " + page);
+    getForms(page);
+    page++;
+    setTimeout(function(){
+        callNextBulk(page);
+    }, bulkDelay * 1000);
+};
+
 setTimeout(function(){
-    console.log("Ingestion started...");
-    for (var i = 0; i < maxPages; i++) {
-        var j = i;
-        setTimeout(function(){
-            console.log("Ingesting from API page: " + j);
-            getForms(j);
-            setTimeout(function(){
-                nciOrg.save(function(){
-                    console.log("Ingestion done ...");
-                    process.exit(0);
-                });
-            }, 30000);
-        }, i * 1000 * 5);
-    }
-},2000);
+    callNextBulk(0);
+}, 3000);
+
+
+setTimeout(function(){
+    nciOrg.save(function(){
+        console.log("Ingestion done ...");
+        process.exit(0);
+    });
+}, (1000 * maxPages * bulkDelay) + (waitForContent * 2) + 60000);
