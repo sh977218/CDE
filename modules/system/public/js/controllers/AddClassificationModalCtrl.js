@@ -4,19 +4,24 @@ angular.module('systemModule').controller('AddClassificationModalCtrl',
         function($scope, $timeout, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, module,
                  myOrgs, cde, orgName, pathArray, addClassification, localStorageService, userResource) {
 
-    $scope.viewType = {
-        byClassTree : true
-        , byRecentlyAdded : false
+
+    $scope.viewTypes = {
+        "byClassTree": {
+            "url": "/system/public/html/classifyCdeByClassTree.html"
+        },
+        "byRecentlyAdded": {
+            "url": "/system/public/html/classifyCdeByRecentlyAdded.html"
+        }
     };
-    
+
+    $scope.selectedViewType = $scope.viewTypes.byClassTree;
+
     $scope.showByClassTreeView = function() {
-        $scope.viewType.byClassTree = true;
-        $scope.viewType.byRecentlyAdded = false;
+        $scope.selectedViewType = $scope.viewTypes.byClassTree;
     };
     
     $scope.showByRecentlyAddedView = function() {
-        $scope.viewType.byClassTree = false;
-        $scope.viewType.byRecentlyAdded = true;
+        $scope.selectedViewType = $scope.viewTypes.byRecentlyAdded;
     };
     
     $scope.resetTree = function() {
@@ -25,7 +30,6 @@ angular.module('systemModule').controller('AddClassificationModalCtrl',
     
     $scope.module = module;
     $scope.myOrgs = myOrgs;
-    $scope.orgName = orgName;
     $scope.path = (orgName ? $scope.path = ClassificationPathBuilder.constructPath(orgName, pathArray) : undefined);
 
     $scope.classTree = ClassificationTree;

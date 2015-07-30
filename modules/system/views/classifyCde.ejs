@@ -21,40 +21,8 @@
         </button>
     </div>
     <br/><hr/>
-    <div ng-show="viewType.byClassTree">
-        <div class="form-group" ng-if="myOrgs.length>1 && !orgName">
-            <select id="selectClassificationOrg" name="selectClassificationOrg" class="form-control" ng-model="myOrg"
-                    ng-options="myOrg as myOrg for myOrg in myOrgs" ng-change="selectOrg(myOrg)" required>
-                <option value="">Start by selecting an organization...</option>
-            </select>
-        </div>
-        
-        <div id="resetTree" class="fake-link" ng-click="resetTree()"><strong>{{org.name}}</strong></div>
-        <div ng-repeat="cat in newClassification.categories" ng-click="classTree.wipeRest(newClassification, $index+1)" style="margin-left: {{10+10*$index}}px">
-            <i class="fa fa-chevron-down"></i> <span class="fake-link">{{cat}}</span>
-        </div>
-        <div ng-repeat="cat in classTree.getCategories(org, newClassification, newClassification.categories.length) | orderBy:'name'"
-             style="margin-left: {{10+10*newClassification.categories.length}}px" class="mb3" id="addClassification-{{cat.name}}">
-            <i class="fa fa-chevron-right"></i>
-            <span ng-if="cat.elements.length>0" ng-click="newClassification.categories.push(cat.name)" class="fake-link">{{cat.name}}</span>
-            <span ng-if="cat.elements.length===0 || !cat.elements" class="fake-link">{{cat.name}}</span>
-            <button ng-init="lastLeafName = cat.name" ng-click="addClassification(lastLeafName)" type="button"
-                    class="btn btn-default btn-xs"><i class="fa fa-plus"></i> Classify</button>
-        </div> 
-    </div>
-    <div ng-show="viewType.byRecentlyAdded" id="viewType.byRecentlyAdded">
-        <h5>Select from recently used classifications...</h5>
-        <br/>
-        <div ng-repeat="defaultClassification in defaultClassificationsHistory" class="row">
-            <ol ng-show="defaultClassification" class="breadcrumb col-md-8 col-md-offset-1" >
-                <li>{{defaultClassification.orgName}}</li>
-                <li ng-repeat="cat in defaultClassification.categories">{{cat}}</li>
-            </ol>
-            <button ng-click="selectPriorClassification(defaultClassification)" type="button" class="btn btn-default btn-xs">
-                <i class="fa fa-plus"></i> Classify</button>
-        </div>
-    </div>
-    
+    <div ng-include="selectedViewType.url"/>
+
 </div>
 <div class="modal-footer" id="addClassificationModalFooter">
     <button class="btn btn-default done" ng-click="close()">Close</button>
