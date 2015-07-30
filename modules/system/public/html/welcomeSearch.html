@@ -14,7 +14,7 @@
                            ng-maxlength="500" placeholder="Search Elements"
                            typeahead-wait-ms="500" typeahead-min-length="3"
                            typeahead="searchQuery for searchQuery in getAutoComplete($viewValue) | filter:$viewValue | limitTo:8"
-                           typeahead-focus-first="false" typeahead-on-select="onSelect($item, $model, $label)">
+                           typeahead-focus-first="false" typeahead-on-select="searchAction()">
 
                     <div class="input-group-btn">
                         <button name="quickSearchButton" id="search.submit" class="btn btn-danger btn-lg" type="submit"
