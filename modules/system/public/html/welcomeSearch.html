@@ -5,12 +5,16 @@
                  src="/cde/public/assets/img/NIH-CDE.png" />
         </h1>
 
-        <div class="pt20 text-center">
+        <div class="pt20 text-center" id="searchDiv">
             <form name="quickSearchForm" id="quickSearchForm" novalidate>
                 <div class="input-group input-group-lg">
                     <label class="sr-only" for="ftsearch-input">Search Terms</label>
-                    <input name="ftsearch" id="ftsearch-input" type="text" class="form-control" ng-model="searchForm.ftsearch"
-                           ng-maxlength="500" placeholder="Search Elements">
+                    <input name="ftsearch" id="ftsearch-input" type="text" class="form-control"
+                           ng-model="searchForm.ftsearch"
+                           ng-maxlength="500" placeholder="Search Elements"
+                           typeahead-wait-ms="500" typeahead-min-length="3"
+                           typeahead="searchQuery for searchQuery in getAutoComplete($viewValue) | filter:$viewValue | limitTo:8"
+                           typeahead-focus-first="false" typeahead-on-select="onSelect($item, $model, $label)">
 
                     <div class="input-group-btn">
                         <button name="quickSearchButton" id="search.submit" class="btn btn-danger btn-lg" type="submit"

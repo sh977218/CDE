@@ -38,7 +38,7 @@ exports.createIndexJson = {
 };
 
 var storedQueryRiverFunction =
-    "for (var i = 0; i < ctx.document.selectedElements1.length && i < 4; i++) {ctx.document['classifLevel' + i] = ctx.document.selectedElements1[i];}";
+    "for (var i = 0; i < ctx.document.selectedElements1.length && i < 4; i++) {ctx.document['classifLevel' + i] = ctx.document.selectedElements1[i];} ctx.document.search_suggest = ctx.document.searchTerm";
 
 var riverFunction =
     "if (ctx.operation !== 'd') {\
@@ -175,6 +175,11 @@ exports.createStoredQueryIndexJson = {
                 , "classifLevel3": {"type": "string", "index": "not_analyzed"}
                 , "classifLevel4": {"type": "string", "index": "not_analyzed"}
                 , "searchTerm": {"type": "string", "analyzer": "stop"}
+                , "search_suggest": { "type" : "completion",
+                    "index_analyzer" : "simple",
+                    "search_analyzer" : "simple",
+                    "payloads" : true
+                }
             }
         }
     }

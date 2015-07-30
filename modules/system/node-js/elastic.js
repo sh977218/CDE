@@ -334,4 +334,24 @@ exports.elasticSearchExport = function (res, query, type, converter, header) {
         }
     });
 
+    exports.completionSuggest = function (term, cb) {
+        var url = config.elasticStoredQueryUri;
+        var suggestQuery = {
+            "search_suggest": {
+                "text": term,
+                "completion": {
+                    "field": "search_suggest"
+                }
+            }
+        };
+        request.post(url + "_suggest", {body: JSON.stringify(suggestQuery)}, function (error, response, body) {
+            if (!error && response.statusCode === 200) {
+                var resp = JSON.parse(body);
+                cb(resp);
+            } else {
+                cb(error);
+            }
+        })
+    };
+
 };
