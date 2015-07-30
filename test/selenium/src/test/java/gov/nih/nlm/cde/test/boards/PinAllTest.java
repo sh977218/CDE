@@ -1,11 +1,16 @@
 package gov.nih.nlm.cde.test.boards;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.jayway.restassured.RestAssured.given;
 
 public class PinAllTest extends BoardTest {
 
@@ -17,7 +22,11 @@ public class PinAllTest extends BoardTest {
         createBoard(board_name, board_description);
         goToCdeSearch();
 
-        findElement(By.id("browseOrg-SPOREs")).click();
+        findElement(By.id("browseOrg-NINDS")).click();
+        findElement(By.id("li-blank-Disease")).click();
+        findElement(By.id("li-blank-Stroke")).click();
+        findElement(By.id("li-blank-Classification")).click();
+        findElement(By.id("li-blank-Exploratory")).click();
 
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         findElement(By.id("pinAll")).click();
@@ -44,7 +53,7 @@ public class PinAllTest extends BoardTest {
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
-        findElement(By.id("li-blank-Amyotrophic Lateral Sclerosis")).click();
+        findElement(By.id("li-blank-Stroke")).click();
         findElement(By.id("li-blank-Classification")).click();
         findElement(By.id("li-blank-Core")).click();
         hangon(3);
@@ -62,5 +71,4 @@ public class PinAllTest extends BoardTest {
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
         removeBoard(board_name);
     }
-    
 }

@@ -47,7 +47,6 @@ public class AnswerListTest extends BaseFormTest {
         saveForm();
 
         new FormRegStatus().changeRegistrationStatus(formName, ctepCurator_username, "Incomplete", "Qualified");
-
     }
 
 }
