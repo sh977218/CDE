@@ -475,7 +475,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/pinEntireSearchToBoard', function (req, res) {
         if (req.isAuthenticated()) {
-            var query = sharedElastic.buildElasticSearchQuery(req.body.query);
+            var query = elastic_system.buildElasticSearchQuery(req.body.query);
             if (query.size > config.maxPin) {
                 res.status(403).send("Maximum number excesses.");
             } else {
