@@ -75,6 +75,7 @@ body {
 .searchInfo {
     padding-top: 7px;
     padding-bottom: 7px;
+    overflow: hidden;
 }
 
 .searchInfoHr {
@@ -685,6 +686,11 @@ button#selectDefault {
 }
 
 #feedback-overview-note {
+    height: 200px !important;
+}
+
+.centerText {
+    text-align: center;
     height: 200px !important;
 }
 

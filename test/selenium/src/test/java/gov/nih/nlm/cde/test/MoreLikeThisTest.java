@@ -14,8 +14,9 @@ public class MoreLikeThisTest extends NlmCdeBaseTest {
     public Object[][] getMoreLikeThisData() {
         return new Object[][] {
             { "Patient Gender Category", new String[] {"Person Gender Text Type", "Patient Gender Code"} },
-            { "Ethnicity USA category", 
-                new String[] {"Ethnicity USA maternal category", "Ethnicity USA paternal category"} },
+            { "Induced Mutation Site Begin java.lang.Integer",
+                new String[] {"Therapeutic Procedure First Course Radiation Therapy Begin Date java.lang.String",
+                        "Protein Molecular Modeling Database Relationship Protein Begin java.lang.Long"} },
         };
     }
     

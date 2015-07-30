@@ -71,6 +71,8 @@ public class NlmCdeBaseTest {
     protected static String ctep_fileCurator_username = "ctep_fileCurator";
     protected static String tableViewUser_username = "tableViewUser";
     protected static String pinAllBoardUser_username = "pinAllBoardUser";
+    protected static String exportBoardUser_username = "exportBoardUser";
+
 
     protected static String password = "pass";
 
@@ -442,6 +444,10 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input"));
         textPresent("Browse by organization");
         textPresent("Cancer Therapy Evaluation Program");
+    }
+
+    protected void goToQuickBoard() {
+        driver.get(baseUrl + "/#/quickBoard");
     }
 
     protected void goToSearchByMenu() {
