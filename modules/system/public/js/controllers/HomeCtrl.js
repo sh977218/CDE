@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('HomeCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+angular.module('systemModule').controller('HomeCtrl', ['$scope', '$http', '$location','AutoCompleteResource', function($scope, $http, $location,AutoCompleteResource) {
     // Declare variables that will be used. Not needed but makes the code clear to understand.
 
     $scope.search = function () {
@@ -7,18 +7,12 @@ angular.module('systemModule').controller('HomeCtrl', ['$scope', '$http', '$loca
 
         $scope.reload();
     };
-    $scope.getAutoComplete = function (searchQuery) {
-        return $http.get('/cdeCompletion/' + searchQuery, {}).then(function (response) {
-            return response.data;
-        });
-    }
-
-    $scope.onSelect = function (item, model, label) {
-        $scope.gotoSearch();
-    }
 
     $scope.ftsearch = '';
-    
+
+    $scope.getAutoComplete = function (searchTerm) {
+        AutoCompleteResource.getAutoComplete(searchTerm);
+    }
 
     $scope.gotoSearch = function() {
         $scope.initCache();

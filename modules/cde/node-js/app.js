@@ -536,6 +536,7 @@ exports.init = function (app, daoManager) {
             res.send(result);
         })
     })
-
-
+    app.get('/formCompletion/:term', function (req, res) {
+        return [];
+    })
 };

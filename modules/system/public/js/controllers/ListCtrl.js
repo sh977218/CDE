@@ -1,9 +1,11 @@
 angular.module('systemModule').controller('ListCtrl',
-    ['$scope', '$routeParams', '$window', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', 'SearchSettings', 'QuickBoard',
-        function($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource, SearchSettings, QuickBoard) {
+    ['$scope', '$routeParams', '$window', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', 'SearchSettings', 'QuickBoard', 'AutoCompleteResource',
+        function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource, SearchSettings, QuickBoard, AutoCompleteResource) {
 
     $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
+
+    $scope.getAutoComplete = AutoCompleteResource.getAutoComplete();
 
     $scope.focusClassification = function(){
         //any good angular way to do this?

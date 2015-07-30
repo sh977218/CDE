@@ -10,7 +10,7 @@
                    ng-model="searchForm.ftsearch" ng-maxlength="500" aria-labelledby="l1"
                    typeahead-wait-ms="500" typeahead-min-length="3"
                    typeahead="searchQuery for searchQuery in getAutoComplete($viewValue) | filter:$viewValue | limitTo:8"
-                   typeahead-focus-first="false" typeahead-on-select="onSelect($item, $model, $label)">
+                   typeahead-focus-first="false" typeahead-on-select="gotoSearch()">
 
             <div class="input-group-btn">
                 <button name="search.submit" id="search.submit" class="btn btn-danger btn-lg" type="submit" ng-click="searchAction()"><i class="fa fa-search"></i> Search</button>
