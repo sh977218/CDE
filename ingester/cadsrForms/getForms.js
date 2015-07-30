@@ -26,7 +26,7 @@ var cachedPageSchema = mongoose.Schema({
 var CachedPage = db.model('CachedPage', cachedPageSchema);
 
 
-var formIncrement = 50; //200
+var formIncrement = 200; //200
 var maxPages = 3; //200
 var bulkDelay = 30;
 var waitForContent = 20;
@@ -42,8 +42,15 @@ var nciOrg, fakeTree;
 var getResource = function(url, cb){
     if (!url) throw url + " not a proper url!";
     var processResource = function(res, cb){
+        if (!res) throw "Cannot parse nothing";
         var forms = [];
         parseString(res, function (err, result) {
+            if (err) {
+                var fs = require('fs');
+                fs.writeFileSync('./badRes', res);
+                console.log(res);
+                throw err;
+            }
             if (!result["xlink:httpQuery"].queryResponse) return cb(null);
             result["xlink:httpQuery"].queryResponse[0].class.forEach(function(cadsrForm){
                 var form = {};
@@ -60,15 +67,14 @@ var getResource = function(url, cb){
 
 
     CachedPage.findOne({url: url}, function (err, page) {
-        if (err) return console.error(err);
+        if (err) throw console.error(err);
         if (page) processResource(page.content, cb);
         else {
             request(url, function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    processResource(body, cb);
-                    var page = new CachedPage({url: url, content: body});
-                    page.save();
-                }
+                if (error) throw error;
+                processResource(body, cb);
+                var page = new CachedPage({url: url, content: body});
+                page.save();
             });
         }
     });
@@ -246,9 +252,19 @@ var callNextBulk = function (page){
     console.log("Ingesting from API page: " + page);
     getForms(page);
     page++;
-    setTimeout(function(){
-        callNextBulk(page);
-    }, bulkDelay * 1000);
+
+    if (page + 1 < maxPages) {
+        setTimeout(function(){
+            callNextBulk(page);
+        }, bulkDelay * 1000);
+    } else {
+        setTimeout(function(){
+            nciOrg.save(function(){
+                console.log("Ingestion done ...");
+                process.exit(0);
+            });
+        }, 40000);
+    }
 };
 
 setTimeout(function(){
@@ -256,9 +272,9 @@ setTimeout(function(){
 }, 3000);
 
 
-setTimeout(function(){
-    nciOrg.save(function(){
-        console.log("Ingestion done ...");
-        process.exit(0);
-    });
-}, (1000 * maxPages * bulkDelay) + (waitForContent * 2) + 60000);
+//setTimeout(function(){
+//    nciOrg.save(function(){
+//        console.log("Ingestion done ...");
+//        process.exit(0);
+//    });
+//}, (1000 * maxPages * bulkDelay) + (waitForContent * 2) + 60000);
