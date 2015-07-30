@@ -1,5 +1,6 @@
 // add attachment!
 // add instructions for sections
+// load protocols
 
 var request = require('request')
     , parseString = require('xml2js').parseString
@@ -25,7 +26,7 @@ var cachedPageSchema = mongoose.Schema({
 var CachedPage = db.model('CachedPage', cachedPageSchema);
 
 
-var formIncrement = 1; //200
+var formIncrement = 200; //200
 var maxPages = 1; //200
 
 var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
@@ -76,6 +77,9 @@ var getForms = function(page){
     var url = getFormPageUrl(page);
     getResource(url, function(forms){
         forms.forEach(function(f){
+            getResource(f.context, function(context){
+                f.contextName = context[0].name;
+            });
             getResource(f.moduleCollection, function(sections){
                 if (!sections) return;
                 f.sections = sections;
@@ -94,6 +98,7 @@ var getForms = function(page){
             });
             f.classification = [];
             getResource(f.administeredComponentClassSchemeItemCollection, function(acCsis){
+                if (!acCsis)return;
                 acCsis.forEach(function(acCsi){
                     getResource(acCsi.classSchemeClassSchemeItem, function(csCsi){
                         getResource(csCsi[0].classificationScheme, function(cs){
@@ -145,16 +150,24 @@ var getForms = function(page){
                     }
                     , formElements: []
                     , classification: [{stewardOrg: {name: "NCI"}, elements: []}]
+                    , source: "caDSR"
                 };
-                var cdeClassifTree = cdeForm.classification[0];
-                cadsrForm.classification.forEach(function(co){
-                    classificationShared.addCategory(cdeClassifTree, [co.scheme, co.item]);
-                    classificationShared.addCategory(fakeTree, [co.scheme, co.item]);
-                });
+
+                if (cadsrForm.classification && cadsrForm.classification.length>0){
+                    var cdeClassifTree = cdeForm.classification[0];
+                    cadsrForm.classification.forEach(function(co){
+                        classificationShared.addCategory(cdeClassifTree, [cadsrForm.contextName, co.scheme, co.item]);
+                        classificationShared.addCategory(fakeTree, [cadsrForm.contextName, co.scheme, co.item]);
+                    });
+                }
+
+                if (!cadsrForm.sections) return;
 
                 cadsrForm.sections = cadsrForm.sections.sort(function(a,b){return a.displayOrder - b.displayOrder});
 
                 async.eachSeries(cadsrForm.sections, function(s, cbs){
+                    if (!s.questions) return cbs();
+
                     var newSection = {
                         elementType: 'section'
                         , label: s.longName
@@ -168,7 +181,17 @@ var getForms = function(page){
                     s.questions = s.questions.sort(function(a,b){return a.displayOrder - b.displayOrder});
 
                     async.eachSeries(s.questions, function(q, cbq) {
+                        if (!q.cde) {
+                            console.log("No CDE as a part of the form: ");
+                            console.log("Question Public ID " + q.publicID);
+                            console.log("Form Public ID " + cadsrForm.publicID);
+                            return cbq();
+                        }
                         mongo_cde.byOtherId("caDSR", q.cde.publicID, function(err, cde){
+                            if (!cde) {
+                                console.log("CDE not found. caDSR ID: " + q.cde.publicID);
+                                return cbq();
+                            }
                             newSection.formElements.push({
                                 elementType: 'question'
                                 , label: q.questionText
@@ -195,7 +218,7 @@ var getForms = function(page){
 
             });
 
-        }, 1000);
+        }, 10000);
     });
 };
 
