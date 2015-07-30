@@ -14,7 +14,7 @@
     <dd tabindex="0">{{elt.stewardOrg.name}}</dd>
     <dt tabindex="0" id="dt_status">Status:</dt>
     <dd tabindex="0" id="dd_status" ng-controller="RegistrationCtrl">
-        <i id="editStatus" ng-show="canCurate" ng-click="openRegStatusUpdate()"></i>
+        <i id="editStatus" ng-show="canCurate" ng-click="openRegStatusUpdate()" class="fa fa-edit"></i>
         {{elt.registrationState.registrationStatus}}
     </dd>
 </dl> 
