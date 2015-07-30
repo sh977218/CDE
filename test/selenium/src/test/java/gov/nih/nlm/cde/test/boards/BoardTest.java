@@ -5,11 +5,11 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 
 public class BoardTest extends NlmCdeBaseTest {
-    
+
     protected void makePublic(String boardName) {
         makePublic(boardName, "Saved");
     }
-    
+
     protected void makePublic(String boardName, String response) {
         gotoMyBoards();
         textPresent(boardName);
@@ -23,25 +23,31 @@ public class BoardTest extends NlmCdeBaseTest {
                 closeAlert();
                 hangon(2);
                 return;
-            } 
+            }
         }
         Assert.assertTrue(false);
     }
-    
+
     protected void gotoMyBoards() {
         findElement(By.linkText("Boards")).click();
         findElement(By.linkText("My Boards")).click();
     }
-    
+
     protected void gotoPublicBoards() {
         findElement(By.linkText("Boards")).click();
-        findElement(By.linkText("Public Boards")).click();    
-    }     
-    
+        findElement(By.linkText("Public Boards")).click();
+    }
+
+    protected void gotoMyBoards(String boardName) {
+        findElement(By.id("boardsMenu")).click();
+        findElement(By.linkText("My Boards")).click();
+        findElement(By.xpath("//div[@data-id= 'boardDiv_" + boardName + "']//a[@id='view_0']")).click();
+    }
+
     protected void createBoard(String name, String description) {
         createBoard(name, description, "Board created.");
     }
-  
+
     protected void createBoard(String name, String description, String response) {
         gotoMyBoards();
         hangon(1);
@@ -54,7 +60,7 @@ public class BoardTest extends NlmCdeBaseTest {
         closeAlert();
         hangon(1);
     }
-    
+
     protected void removeBoard(String boardName) {
         gotoMyBoards();
         int length = driver.findElements(By.linkText("View Board")).size();
@@ -68,7 +74,7 @@ public class BoardTest extends NlmCdeBaseTest {
             }
         }
     }
-    
+
     protected void pinTo(String cdeName, String boardName) {
         goToCdeSearch();
         openCdeInList(cdeName);
@@ -78,7 +84,7 @@ public class BoardTest extends NlmCdeBaseTest {
         modalGone();         
         closeAlert();
     }
-    
+
     protected void goToBoard(String boardName) {
         gotoMyBoards();
         textPresent(boardName);
@@ -88,6 +94,6 @@ public class BoardTest extends NlmCdeBaseTest {
         // wait for board to show name in title
         findElement(By.xpath("//h3//*[contains(text(), '" + boardName + "')]"));
     }
-    
+
 
 }
