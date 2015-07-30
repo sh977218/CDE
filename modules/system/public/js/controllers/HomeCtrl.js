@@ -11,7 +11,7 @@ angular.module('systemModule').controller('HomeCtrl', ['$scope', '$http', '$loca
     $scope.ftsearch = '';
 
     $scope.getAutoComplete = function (searchTerm) {
-        AutoCompleteResource.getAutoComplete(searchTerm);
+        return AutoCompleteResource.getAutoComplete(searchTerm);
     }
 
     $scope.gotoSearch = function() {

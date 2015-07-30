@@ -5,7 +5,9 @@ angular.module('systemModule').controller('ListCtrl',
     $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
 
-    $scope.getAutoComplete = AutoCompleteResource.getAutoComplete();
+    $scope.getAutoComplete = function (searchTerm) {
+        return AutoCompleteResource.getAutoComplete(searchTerm);
+    }
 
     $scope.focusClassification = function(){
         //any good angular way to do this?
