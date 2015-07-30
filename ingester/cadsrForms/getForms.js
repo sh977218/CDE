@@ -26,15 +26,17 @@ var cachedPageSchema = mongoose.Schema({
 var CachedPage = db.model('CachedPage', cachedPageSchema);
 
 
-var formIncrement = 200; //200
-var maxPages = 3; //200
+var formIncrement = 1; //200
+var maxPages = 1; //200
 var bulkDelay = 30;
 var waitForContent = 20;
 
-var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
+//var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
+var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41rest/rest/Form/search;workflowStatusName=RELEASED;?size=1&start=";
 
 var getFormPageUrl = function(page){
-    return formListUrl + (page * formIncrement);
+    //return formListUrl + (page * formIncrement);
+    return "http://cadsrapi.nci.nih.gov/cadsrapi41rest/rest/Form/search;workflowStatusName=RELEASED;?start=1&size=1";
 };
 
 var nciOrg, fakeTree;
@@ -51,8 +53,8 @@ var getResource = function(url, cb){
                 console.log(res);
                 throw err;
             }
-            if (!result["xlink:httpQuery"].queryResponse) return cb(null);
-            result["xlink:httpQuery"].queryResponse[0].class.forEach(function(cadsrForm){
+            //if (!result["xlink:httpQuery"].queryResponse) return cb(null);
+            //result["xlink:httpQuery"].queryResponse[0].class.forEach(function(cadsrForm){
                 var form = {};
                 cadsrForm.field.forEach(function(f){
                     form[f.$.name] = f._;
@@ -85,6 +87,7 @@ var getForms = function(page){
     var url = getFormPageUrl(page);
     getResource(url, function(forms){
         forms.forEach(function(f){
+            if (f.workflowStatusName === "RETIRED ARCHIVED") return;
             getResource(f.context, function(context){
                 f.contextName = context[0].name;
             });
@@ -115,6 +118,8 @@ var getForms = function(page){
                                     scheme: cs[0].longName
                                     , item: csi[0].preferredDefinition
                                 });
+                                console.log("csi");
+                                console.log(csi[0].preferredDefinition);
                             });
                         });
                     });
@@ -167,6 +172,8 @@ var getForms = function(page){
                         classificationShared.addCategory(cdeClassifTree, [cadsrForm.contextName, co.scheme, co.item]);
                         classificationShared.addCategory(fakeTree, [cadsrForm.contextName, co.scheme, co.item]);
                     });
+                } else {
+                    console.log("form has no classifications!");
                 }
 
                 if (!cadsrForm.sections) return;
