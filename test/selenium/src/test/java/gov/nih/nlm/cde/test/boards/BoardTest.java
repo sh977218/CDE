@@ -38,12 +38,6 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.linkText("Public Boards")).click();
     }
 
-    protected void gotoMyBoards(String boardName) {
-        findElement(By.id("boardsMenu")).click();
-        findElement(By.linkText("My Boards")).click();
-        findElement(By.xpath("//div[@data-id= 'boardDiv_" + boardName + "']//a[@id='view_0']")).click();
-    }
-
     protected void createBoard(String name, String description) {
         createBoard(name, description, "Board created.");
     }
@@ -92,7 +86,7 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.id("viewBoard_" + boardName)).click();
 
         // wait for board to show name in title
-        findElement(By.xpath("//h3//*[contains(text(), '" + boardName + "')]"));
+        findElement(By.xpath("//h3[text() = '" + boardName + "']"));
     }
 
 

@@ -27,7 +27,7 @@ public class BoardExportTest extends BoardTest {
         findElement(By.linkText(board_name)).click();
         textPresent("All elements pinned.");
         makePublic(board_name);
-        gotoMyBoards(board_name);
+        goToBoard(board_name);
         textPresent("Export Board");
         findElement(By.id("mb.export")).click();
         boolean done = false;
