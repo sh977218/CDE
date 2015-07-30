@@ -9,13 +9,13 @@ angular.module('cdeModule').controller('BoardExportCtrl', ['$scope', '$http', '$
                 for (var i = 0; i < pins.length; i++) {
                     for (var j = 0; j < respCdes.length; j++) {
                         if (pins[i].deTinyId === respCdes[j].tinyId) {
-                            pins[i].cde = respCdes[j];                    
+                            pins[i].cde = respCdes[j];
                             $scope.gridCdes.push($scope.cdeToExportCde(respCdes[j]));
                         }
                     }
                 }
                 if ($scope.gridCdes.length === 500) {
-                    $scope.addAlert("info", "limit of 500 documents returned");   
+                    $scope.addAlert("info", "limit of 500 documents returned");
                 }
             }
         }).
