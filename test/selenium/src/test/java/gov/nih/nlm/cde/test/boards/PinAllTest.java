@@ -1,11 +1,16 @@
 package gov.nih.nlm.cde.test.boards;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.jayway.restassured.RestAssured.given;
 
 public class PinAllTest extends BoardTest {
 
@@ -66,5 +71,4 @@ public class PinAllTest extends BoardTest {
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
         removeBoard(board_name);
     }
-    
 }

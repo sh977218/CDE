@@ -1,18 +1,29 @@
 <div ng-cloak>
-    <h3><center>{{board.name}}<center></h3>
+    <div><h3 class="centerText">{{board.name}}</h3></div>
 
-    <span ng-controller="SwitchListViewCtrl">
-        <div class="container-fluid searchInfo">
-            <span ng-include="'/template/system/switchListViewControls'"></span>
-            <button ng-show="totalItems>0" ng-click="openCloseAllSwitch(cdes, 'list');" class="btn btn-default btn-checkbox pull-right" id="openAllCb">
-                <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
-                <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
-            </button>
+    <div ng-controller="SwitchListViewCtrl">
+        <div class="searchInfo">
+            <div class="btn-group  pull-right" ng-controller="ExportCtrl">
+                <button id="mb.export" value="Export Board" ng-click="exportBoard()"
+                        class="btn btn-default">
+                    <i class="fa fa-download"></i> Export Board
+                </button>
+            </div>
+            <div class="btn-group  pull-right">
+                <span ng-include="'/template/system/switchListViewControls'"></span>
+                <button ng-show="totalItems>0" ng-click="openCloseAllSwitch(cdes, 'list');"
+                        class="btn btn-default btn-checkbox pull-right" id="openAllCb">
+                    <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
+                    <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
+                </button>
+            </div>
         </div>
 
-        <span ng-include="'/template/system/switchListViewContent.ejs'" ng-init="ejsPage = 'board';module = 'cde';"></span>
+        <span ng-include="'/template/system/switchListViewContent.ejs'"
+              ng-init="ejsPage = 'board';module = 'cde';"></span>
 
-        <pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems" ng-model="currentPage" max-size="10" ng-change="setPage(currentPage)"></pagination>
-     </span>
+        <pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems"
+                    ng-model="currentPage" max-size="10" ng-change="setPage(currentPage)"></pagination>
+    </div>
 
 </div>
