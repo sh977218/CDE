@@ -1,4 +1,9 @@
-angular.module('systemModule').controller('AddClassificationModalCtrl', ['$scope', '$timeout', '$modalInstance', 'ClassificationTree', 'Organization', 'ClassificationPathBuilder', 'module', 'myOrgs', 'cde', 'orgName', 'pathArray', 'addClassification', 'localStorageService', 'userResource', function($scope, $timeout, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, module, myOrgs, cde, orgName, pathArray, addClassification, localStorageService, userResource) {
+angular.module('systemModule').controller('AddClassificationModalCtrl',
+    ['$scope', '$timeout', '$modalInstance', 'ClassificationTree', 'Organization', 'ClassificationPathBuilder',
+        'module', 'myOrgs', 'cde', 'orgName', 'pathArray', 'addClassification', 'localStorageService', 'userResource',
+        function($scope, $timeout, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, module,
+                 myOrgs, cde, orgName, pathArray, addClassification, localStorageService, userResource) {
+
     $scope.viewType = {
         byClassTree : true
         , byRecentlyAdded : false
