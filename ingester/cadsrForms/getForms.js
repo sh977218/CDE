@@ -94,11 +94,11 @@ var getContext = function(f, cb){
 ///// Sections
 var getSectionsQuestions = function(f, cb){
     getResource(f.moduleCollection, function(sections){
-        if (!sections) return;
+        if (!sections) return cb();
         f.sections = sections;
         async.each(f.sections, function(s, cbs) {
             getResource(s.questionCollection, function(questions){
-                if (!questions) return;
+                if (!questions) return cbs();
                 s.questions = questions;
                 async.each(s.questions, function(q, cbq){
                     getResource(q.dataElement, function(de){
@@ -120,7 +120,7 @@ var getSectionsQuestions = function(f, cb){
 var getClassifications = function(f, cb){
     f.classification = [];
     getResource(f.administeredComponentClassSchemeItemCollection, function(acCsis){
-        if (!acCsis)return;
+        if (!acCsis) return cb();
         async.each(acCsis, function(acCsi, cbc){
             getResource(acCsi.classSchemeClassSchemeItem, function(csCsi){
                 getResource(csCsi[0].classificationScheme, function(cs){
@@ -254,21 +254,25 @@ var saveForm = function(cadsrForm) {
 var getForms = function(page){
     var url = getFormPageUrl(page);
     getResource(url, function(forms){
+        console.log("Page " + page + ", loading " + forms.length + " forms.");
         forms.forEach(function(f){
             if (f.workflowStatusName === "RETIRED ARCHIVED") return;
             async.parallel([
                 function(callback){
                     getContext(f, function(){
+                        console.log("getContext");
                         callback();
                     });
                 },
                 function(callback){
                     getSectionsQuestions(f, function(){
+                        console.log("getSectionsQuestions");
                         callback();
                     });
                 },
                 function(callback){
                     getClassifications(f, function(){
+                        console.log("getClassifications");
                         callback();
                     });
                 }
