@@ -345,7 +345,7 @@ public class NlmCdeBaseTest {
     public void modalGone() {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By
                 .cssSelector(".modal")));
-        hangon(1);
+        hangon(1.5);
     }
 
     public void closeAlert() {

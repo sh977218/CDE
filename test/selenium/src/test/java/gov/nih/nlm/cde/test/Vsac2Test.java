@@ -58,6 +58,8 @@ public class Vsac2Test extends NlmCdeBaseTest {
         findElement(By.xpath("//td[@id='pvCodeSystem-4']//input")).sendKeys(".modifVC");
         clickElement(By.cssSelector("#pvCodeSystem-4 .fa-check"));
 
+        hangon(.5);
+
         newCdeVersion("Modified VS Codes");
 
         goToCdeByName("Patient Race Category");
