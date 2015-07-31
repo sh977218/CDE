@@ -27,16 +27,16 @@
                 <dl class="dl-horizontal">
                     <dt>Name: </dt> 
                     <dd id="dd_name_{{$index}}">
-                        <span ng-switch="board.editMode"> 
-                            <span ng-switch-when="true"> 
+                        <div ng-switch="board.editMode">
+                            <div ng-switch-when="true">
                                 <input type="text" ng-model="board.name" id="name_input_{{$index}}"/>
                                 <i class="fa fa-check" ng-click="save(board)" id="name_confirm_{{$index}}"></i>
                                 <i class="fa fa-times" ng-click="cancelSave(board)"></i>
-                            </span>       
-                            <span ng-switch-default> 
-                                <i class="fa fa-pencil" ng-click="board.editMode=true" id="name_edit_{{$index}}"></i> {{board.name | placeholdEmpty}} 
-                            </span>
-                        </span>
+                            </div>
+                            <div ng-switch-default>
+                                <i class="fa fa-pencil" ng-click="board.editMode = true" id="name_edit_{{$index}}"></i>  <span ng-bind-html="board.name"></span>
+                            </div>
+                        </div>
                     </dd>
                     <dt>Description: </dt>
                     <dd id="dd_def_{{$index}}">
@@ -47,14 +47,14 @@
                                <i class="fa fa-times" ng-click="cancelSave(board)"></i>
                             </div>
                             <div ng-switch-default>
-                                <i class="fa fa-pencil" ng-click="board.editMode = true" id="desc_edit_{{$index}}"></i>&nbsp;<span ng-bind-html="board.description"></span>
+                                <i class="fa fa-pencil" ng-click="board.editMode = true" id="desc_edit_{{$index}}"></i> <span ng-bind-html="board.description"></span>
                             </div>
                         </div>
                     </dd>
                     <dt>Number of CDEs: </dt><dd id="dd_numb_{{$index}}">{{board.pins.length}}</dd>
                     <dt>Modified: </dt><dd id="dd_mod">{{board.updatedDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
                 </dl>
-                <a class="btn btn-default" href="#/board/{{board._id}}" id="view_{{$index}}">View Board</a> 
+                <a class="btn btn-default" href="#/board/{{board._id}}" id="viewBoard_{{board.name}}">View Board</a>
             </div>
         </div>
         <hr/>

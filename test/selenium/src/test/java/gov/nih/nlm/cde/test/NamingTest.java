@@ -34,7 +34,7 @@ public class NamingTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         findElement(By.linkText("Naming")).click();
-        Assert.assertTrue(textPresent("New Name Changed"));
+        textPresent("New Name Changed");
 
         findElement(By.cssSelector("#dd_def_1 .fa-edit")).click();
         findElement(By.cssSelector("#dd_def_1 textarea ")).sendKeys(" Changed");
@@ -43,7 +43,7 @@ public class NamingTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         findElement(By.linkText("Naming")).click();
-        Assert.assertTrue(textPresent("New Definition Changed"));
+        textPresent("New Definition Changed");
 
         findElement(By.cssSelector("#dd_context_1 .fa-edit")).click();
         findElement(By.cssSelector("#dd_context_1 input")).sendKeys(" Changed");
@@ -52,7 +52,7 @@ public class NamingTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         findElement(By.linkText("Naming")).click();
-        Assert.assertTrue(textPresent("Health Changed"));
+        textPresent("Health Changed");
 
         findElement(By.id("removeNaming-1")).click();
         
