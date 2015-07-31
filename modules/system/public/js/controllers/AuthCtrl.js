@@ -19,7 +19,7 @@ angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$windo
             },
             function(res) {
                 if (res === "OK") {
-                    $window.location.href = "/";
+                    $window.location.assign("/");
                 } else {
                     $scope.addAlert("danger", res.data);
                     $scope.getCsrf();
