@@ -712,6 +712,10 @@ button#selectDefault {
     margin: 65px 0px;
 }
 
+.dvText {
+    font-weight: 700;
+}
+
 .pickdaterInput {
     width: 90%;
     float: left;
