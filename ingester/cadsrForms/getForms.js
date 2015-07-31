@@ -250,12 +250,26 @@ var getForms = function(page){
     getResource(url, function(forms){
         forms.forEach(function(f){
             if (f.workflowStatusName === "RETIRED ARCHIVED") return;
-            getContext(f, function(){});
-            getSectionsQuestions(f, function(){});
-            getClassifications(f, function(){});
-            setTimeout(function(){
+            async.parallel([
+                function(callback){
+                    getContext(f, function(){
+                        callback();
+                    });
+                },
+                function(callback){
+                    getSectionsQuestions(f, function(){
+                        callback();
+                    });
+                },
+                function(callback){
+                    getClassifications(f, function(){
+                        callback();
+                    });
+                }
+            ],
+            function(err, results){
                 saveForm(f, function(){});
-            }, 30000);
+            });
         });
 
     });
