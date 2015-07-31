@@ -46,7 +46,7 @@ public abstract class RegStatusTest extends CommonTest {
         textPresent("Qualified");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
-        textPresent("Recorded elements are visible to the public");
+        textPresent("Recorded elements are not visible by default");
         findElement(By.name("effectiveDate")).sendKeys("9/15/2013");
         findElement(By.name("untilDate")).sendKeys("10/31/2014");
         findElement(By.name("administrativeNote")).sendKeys("Admin Note 1");
