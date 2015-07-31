@@ -38,12 +38,6 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.linkText("Public Boards")).click();
     }
 
-    protected void gotoMyBoards(String boardName) {
-        findElement(By.id("boardsMenu")).click();
-        findElement(By.linkText("My Boards")).click();
-        findElement(By.xpath("//div[@data-id= 'boardDiv_" + boardName + "']//a[@id='view_0']")).click();
-    }
-
     protected void createBoard(String name, String description) {
         createBoard(name, description, "Board created.");
     }
@@ -80,15 +74,17 @@ public class BoardTest extends NlmCdeBaseTest {
         openCdeInList(cdeName);
         findElement(By.id("pinToBoard_0")).click();
         findElement(By.linkText(boardName)).click();
-        Assert.assertTrue(textPresent("Added to Board"));
-        modalGone();
+        textPresent("Added to Board");
+        modalGone();         
         closeAlert();
     }
 
     protected void goToBoard(String boardName) {
         gotoMyBoards();
-        findElement(By.xpath("//div[@data-id='boardDiv_MyBoard 1']//a[text()='View Board']")).click();
-        findElement(By.id("gridView"));
+        textPresent(boardName);
+        findElement(By.id("viewBoard_" + boardName)).click();
+        // wait for board to show name in title
+        findElement(By.xpath("//h3[text() = '" + boardName + "']"));
     }
 
 
