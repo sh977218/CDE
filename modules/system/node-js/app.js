@@ -164,6 +164,7 @@ exports.init = function(app) {
     });
 
     app.get('/csrf', csrf(), function(req, res) {
+        exports.nocacheMiddleware(req, res);
         res.send(req.csrfToken());
     });
 
