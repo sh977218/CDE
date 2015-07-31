@@ -30,7 +30,10 @@ public class QuestionLayoutTest extends BaseFormTest {
         startAddingQuestions();
         textPresent("Hide Question Search Area");
         textPresent("Browse by organization");
-        clickElement(By.id("browseOrg-caBIG"));
+        // we are doing twice because of the double scroll bar and we are not sure how Selenium handles it.
+        scrollToTop();
+        scrollToTop();
+        clickElement(By.id("browseOrg-ACRIN"));
 
         findElement(By.id("showHideFilters")).click();
         textPresent("Show Filters");
