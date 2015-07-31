@@ -79,6 +79,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent("Quick Board ( 5 )");
         findElement(By.linkText("Quick Board ( 5 )")).click();
         textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
+        hangon(1);
         waitAndClick(By.id("gridView"));
         textPresent("3436564");
         textPresent("pN0");

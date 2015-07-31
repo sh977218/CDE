@@ -27,7 +27,7 @@ public class PinAllTest extends BoardTest {
         findElement(By.id("li-blank-Stroke")).click();
         findElement(By.id("li-blank-Classification")).click();
         findElement(By.id("li-blank-Exploratory")).click();
-
+        textPresent("9 results for All Terms");
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         findElement(By.id("pinAll")).click();
         textPresent("Select Board");
