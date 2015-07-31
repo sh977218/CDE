@@ -53,8 +53,8 @@ var getResource = function(url, cb){
                 console.log(res);
                 throw err;
             }
-            //if (!result["xlink:httpQuery"].queryResponse) return cb(null);
-            //result["xlink:httpQuery"].queryResponse[0].class.forEach(function(cadsrForm){
+            if (!result["xlink:httpQuery"].queryResponse) return cb(null);
+            result["xlink:httpQuery"].queryResponse[0].class.forEach(function(cadsrForm){
                 var form = {};
                 cadsrForm.field.forEach(function(f){
                     form[f.$.name] = f._;
