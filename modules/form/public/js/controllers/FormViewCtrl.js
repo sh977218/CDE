@@ -1,4 +1,7 @@
-angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource', function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource) {
+angular.module('formModule').controller('FormViewCtrl',
+    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource',
+        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource) {
+
     $scope.module = "form";
     $scope.baseLink = '#/formView?tinyId=';
     $scope.addCdeMode = false;
@@ -43,6 +46,8 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
             if (window.formEditable)
                 isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
+        }, function() {
+            $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
         if (route.tab) {
             $scope.tabs[route.tab].active = true;
@@ -76,7 +81,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
     };
 
     $scope.openAddClassificationModal = function () {
-        var modalInstance = $modal.open({
+        $modal.open({
             templateUrl: '/template/system/classifyForm',
             controller: 'ClassifyFormCdesModalCtrl',
             resolve: {
@@ -93,7 +98,6 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                             var getChildren = function (element) {
                                 if (element.question && element.question.cde) {
                                     ids.push({id: element.question.cde.tinyId, version: element.question.cde.version});
-                                    return;
                                 }
                                 else element.formElements.forEach(function (e) {
                                     getChildren(e);
@@ -156,7 +160,8 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
 
     $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion) {
         var filterFunc = function (e1) {
-            return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1 && (!thisQuestion || e1.trim().toLowerCase().replace(/"/g, "") !== thisQuestion.label.trim().toLowerCase().replace(/"/g, ""));
+            return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1 &&
+                (!thisQuestion || e1.trim().toLowerCase().replace(/"/g, "") !== thisQuestion.label.trim().toLowerCase().replace(/"/g, ""));
         };
         var tokens = tokenSplitter(currentContent);
         if (tokens.length === 0) return $scope.languageOptions("question", previousQuestions).filter(filterFunc);
