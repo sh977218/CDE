@@ -20,5 +20,3 @@ config.mongoMigrationUri = "mongodb://" + config.database.dbUser + ":" + config.
 Object.keys(config).forEach(function (key) {
     exports[key] = config[key];
 });
-
-config.modules.forms.editable = true;
