@@ -5,7 +5,7 @@
     <br/><br/>
 
     <div ng-show="vsacMappingExists()">
-        <dl class="dl-horizontal" ng-show="vsacMappingExists()" ng-include="'vsacHeader.html'">
+        <dl class="dl-horizontal" ng-show="vsacMappingExists()" >
             <dt tabindex="0" >Value Set Name: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.name | placeholdEmpty}}</dd>
             <dt tabindex="0" >Value Set ID: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.id | placeholdEmpty}}</dd>
             <dt tabindex="0" >Value Set Version: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.version | placeholdEmpty}}</dd>
