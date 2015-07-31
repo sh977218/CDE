@@ -162,6 +162,7 @@ exports.init = function(app) {
     });
 
     app.get('/csrf', csrf(), function(req, res) {
+        exports.nocacheMiddleware(req, res);
         res.send(req.csrfToken());
     });
 
@@ -270,7 +271,7 @@ exports.init = function(app) {
         }
     });
     
-    app.get('/user/me', function(req, res) {
+    app.get('/user/me', exports.nocacheMiddleware, function(req, res) {
         if (!req.user) {
             res.send("Not logged in.");
         } else {

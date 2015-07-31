@@ -75,6 +75,7 @@ body {
 .searchInfo {
     padding-top: 7px;
     padding-bottom: 7px;
+    overflow: hidden;
 }
 
 .searchInfoHr {
@@ -688,6 +689,11 @@ button#selectDefault {
     height: 200px !important;
 }
 
+.centerText {
+    text-align: center;
+    height: 200px !important;
+}
+
 .welcomeSearchOrganizationBox {
     border-radius: 5px;
     border: 1px solid rgba(0, 0, 0, 0.16);
@@ -704,6 +710,10 @@ button#selectDefault {
 
 .welcomeSearchSearch {
     margin: 65px 0px;
+}
+
+.dvText {
+    font-weight: 700;
 }
 
 .pickdaterInput {
