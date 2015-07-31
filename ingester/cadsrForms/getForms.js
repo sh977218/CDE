@@ -34,8 +34,8 @@ var waitForContent = 20;
 var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
 
 var getFormPageUrl = function(page){
-    return "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@publicID=2432444]";
-    //return formListUrl + (page * formIncrement);
+    //return "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@publicID=2432444]";
+    return formListUrl + (page * formIncrement);
 };
 
 var nciOrg, fakeTree;
@@ -96,13 +96,11 @@ var getSectionsQuestions = function(f, cb){
     getResource(f.moduleCollection, function(sections){
         if (!sections) return;
         f.sections = sections;
-        //f.sections.forEach(function(s){
         async.each(f.sections, function(s, cbs) {
             getResource(s.questionCollection, function(questions){
                 if (!questions) return;
                 s.questions = questions;
                 async.each(s.questions, function(q, cbq){
-                //s.questions.forEach(function(q){
                     getResource(q.dataElement, function(de){
                         if (!de) return;
                         q.cde = de[0];
@@ -123,7 +121,6 @@ var getClassifications = function(f, cb){
     f.classification = [];
     getResource(f.administeredComponentClassSchemeItemCollection, function(acCsis){
         if (!acCsis)return;
-        //acCsis.forEach(function(acCsi){
         async.each(acCsis, function(acCsi, cbc){
             getResource(acCsi.classSchemeClassSchemeItem, function(csCsi){
                 getResource(csCsi[0].classificationScheme, function(cs){
