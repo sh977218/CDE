@@ -26,17 +26,16 @@ var cachedPageSchema = mongoose.Schema({
 var CachedPage = db.model('CachedPage', cachedPageSchema);
 
 
-var formIncrement = 1; //200
+var formIncrement = 200; //200
 var maxPages = 1; //200
 var bulkDelay = 30;
 var waitForContent = 20;
 
-//var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
-var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41rest/rest/Form/search;workflowStatusName=RELEASED;?size=1&start=";
+var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
 
 var getFormPageUrl = function(page){
+    return "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@publicID=2432444]";
     //return formListUrl + (page * formIncrement);
-    return "http://cadsrapi.nci.nih.gov/cadsrapi41rest/rest/Form/search;workflowStatusName=RELEASED;?start=1&size=1";
 };
 
 var nciOrg, fakeTree;
@@ -268,7 +267,7 @@ var callNextBulk = function (page){
         setTimeout(function(){
             nciOrg.save(function(){
                 console.log("Ingestion done ...");
-                process.exit(0);
+                //process.exit(0);
             });
         }, 40000);
     }
