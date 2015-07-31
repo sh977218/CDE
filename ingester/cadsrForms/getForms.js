@@ -82,157 +82,182 @@ var getResource = function(url, cb){
 
 };
 
+
+/// Context
+var getContext = function(f, cb){
+    getResource(f.context, function(context){
+        f.contextName = context[0].name;
+        cb();
+    });
+};
+
+///// Sections
+var getSectionsQuestions = function(f, cb){
+    getResource(f.moduleCollection, function(sections){
+        if (!sections) return;
+        f.sections = sections;
+        f.sections.forEach(function(s){
+            getResource(s.questionCollection, function(questions){
+                if (!questions) return;
+                s.questions = questions;
+                s.questions.forEach(function(q){
+                    getResource(q.dataElement, function(de){
+                        if (!de) return;
+                        q.cde = de[0];
+                        cb();
+                    })
+                });
+            });
+        });
+    });
+};
+
+///// Classifications
+var getClassifications = function(f, cb){
+    f.classification = [];
+    getResource(f.administeredComponentClassSchemeItemCollection, function(acCsis){
+        if (!acCsis)return;
+        acCsis.forEach(function(acCsi){
+            getResource(acCsi.classSchemeClassSchemeItem, function(csCsi){
+                getResource(csCsi[0].classificationScheme, function(cs){
+                    getResource(csCsi[0].classificationSchemeItem, function(csi){
+                        f.classification.push({
+                            scheme: cs[0].longName
+                            , item: csi[0].preferredDefinition
+                        });
+                        console.log("csi");
+                        console.log(csi[0].preferredDefinition);
+                        cb();
+                    });
+                });
+            });
+        });
+    });
+};
+
+///// Save Form
+var saveForm = function(cadsrForm) {
+    var cdeForm = {
+        naming: [{
+            designation: cadsrForm.longName
+            , definition: cadsrForm.preferredDefinition
+            , languageCode: "EN-US"
+            , context: {
+                contextName: "Health"
+                , acceptability: "preferred"
+            }
+        }]
+        , stewardOrg: {
+            name: "NCI"
+        }
+        , version: cadsrForm.version
+        , registrationState: {
+            registrationStatus: "Qualified"
+            , administrativeNote: cadsrForm.workflowStatusDescription
+            , administrativeStatus: cadsrForm.workflowStatusName
+        }
+        , properties: [
+            {key: "caDSR_createdBy", value: cadsrForm.createdBy}
+            , {key: "caDSR_dateModified", value: cadsrForm.dateModified}
+            , {key: "caDSR_modifiedBy", value: cadsrForm.modifiedBy}
+        ]
+        , ids: [
+            {source: "caDSR", id: cadsrForm.publicID, version: cadsrForm.version}
+        ]
+        //, attachments: [sharedSchemas.attachmentSchema]
+        , created: cadsrForm.dateCreated
+        , imported: new Date()
+        , createdBy: {
+            username: "batchloader"
+        }
+        , formElements: []
+        , classification: [{stewardOrg: {name: "NCI"}, elements: []}]
+        , source: "caDSR"
+    };
+
+    if (cadsrForm.classification && cadsrForm.classification.length > 0) {
+        var cdeClassifTree = cdeForm.classification[0];
+        cadsrForm.classification.forEach(function (co) {
+            classificationShared.addCategory(cdeClassifTree, [cadsrForm.contextName, co.scheme, co.item]);
+            classificationShared.addCategory(fakeTree, [cadsrForm.contextName, co.scheme, co.item]);
+        });
+    } else {
+        console.log("form has no classifications!");
+    }
+
+    if (!cadsrForm.sections) return;
+
+    cadsrForm.sections = cadsrForm.sections.sort(function (a, b) {
+        return a.displayOrder - b.displayOrder
+    });
+
+    async.eachSeries(cadsrForm.sections, function (s, cbs) {
+        if (!s.questions) return cbs();
+
+        var newSection = {
+            elementType: 'section'
+            , label: s.longName
+            , formElements: []
+        };
+
+        if (s.maximumQuestionRepeat) newSection.cardinality = s.maximumQuestionRepeat;
+
+        cdeForm.formElements.push(newSection);
+
+        s.questions = s.questions.sort(function (a, b) {
+            return a.displayOrder - b.displayOrder
+        });
+
+        async.eachSeries(s.questions, function (q, cbq) {
+            if (!q.cde) {
+                console.log("No CDE as a part of the form: ");
+                console.log("Question Public ID " + q.publicID);
+                console.log("Form Public ID " + cadsrForm.publicID);
+                return cbq();
+            }
+            mongo_cde.byOtherId("caDSR", q.cde.publicID, function (err, cde) {
+                if (!cde) {
+                    console.log("CDE not found. caDSR ID: " + q.cde.publicID);
+                    return cbq();
+                }
+                newSection.formElements.push({
+                    elementType: 'question'
+                    , label: q.questionText
+                    , required: q.isMandatory
+                    , editable: q.isEditable
+                    , instructions: q.cde.longName
+                    , question: {
+                        cde: {tinyId: cde.tinyId, version: cde.version}
+                        , datatype: cde.valueDomain.datatype
+                        //, uoms: [cde.valueDomain.uom]
+                        , answers: cde.valueDomain.permissibleValues
+                    }
+                });
+                cbq();
+            });
+        }, function (err) {
+            cbs();
+        });
+    }, function () {
+        mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function () {
+            console.log("Form created " + cadsrForm.longName);
+        });
+    });
+};
+
 var getForms = function(page){
     var url = getFormPageUrl(page);
     getResource(url, function(forms){
         forms.forEach(function(f){
             if (f.workflowStatusName === "RETIRED ARCHIVED") return;
-            getResource(f.context, function(context){
-                f.contextName = context[0].name;
-            });
-            getResource(f.moduleCollection, function(sections){
-                if (!sections) return;
-                f.sections = sections;
-                f.sections.forEach(function(s){
-                    getResource(s.questionCollection, function(questions){
-                        if (!questions) return;
-                        s.questions = questions;
-                        s.questions.forEach(function(q){
-                            getResource(q.dataElement, function(de){
-                                if (!de) return;
-                                q.cde = de[0];
-                            })
-                        });
-                    });
-                });
-            });
-            f.classification = [];
-            getResource(f.administeredComponentClassSchemeItemCollection, function(acCsis){
-                if (!acCsis)return;
-                acCsis.forEach(function(acCsi){
-                    getResource(acCsi.classSchemeClassSchemeItem, function(csCsi){
-                        getResource(csCsi[0].classificationScheme, function(cs){
-                            getResource(csCsi[0].classificationSchemeItem, function(csi){
-                                f.classification.push({
-                                    scheme: cs[0].longName
-                                    , item: csi[0].preferredDefinition
-                                });
-                                console.log("csi");
-                                console.log(csi[0].preferredDefinition);
-                            });
-                        });
-                    });
-                });
-            });
+            getContext(f);
+            getSectionsQuestions(f);
+            getClassifications(f);
+            setTimeout(function(){
+                saveForm(f);
+            }, 30000);
         });
-        setTimeout(function(){
-            forms.forEach(function(cadsrForm){
-                var cdeForm = {
-                    naming: [{
-                        designation: cadsrForm.longName
-                        , definition: cadsrForm.preferredDefinition
-                        , languageCode: "EN-US"
-                        , context: {
-                            contextName: "Health"
-                            , acceptability: "preferred"
-                        }
-                    }]
-                    , stewardOrg: {
-                        name: "NCI"
-                    }
-                    , version: cadsrForm.version
-                    , registrationState: {
-                        registrationStatus: "Qualified"
-                        , administrativeNote: cadsrForm.workflowStatusDescription
-                        , administrativeStatus: cadsrForm.workflowStatusName
-                    }
-                    , properties: [
-                        {key: "caDSR_createdBy", value: cadsrForm.createdBy}
-                        , {key: "caDSR_dateModified", value: cadsrForm.dateModified}
-                        , {key: "caDSR_modifiedBy", value: cadsrForm.modifiedBy}
-                    ]
-                    , ids: [
-                        {source: "caDSR", id: cadsrForm.publicID, version: cadsrForm.version}
-                    ]
-                    //, attachments: [sharedSchemas.attachmentSchema]
-                    , created: cadsrForm.dateCreated
-                    , imported: new Date()
-                    , createdBy: {
-                        username: "batchloader"
-                    }
-                    , formElements: []
-                    , classification: [{stewardOrg: {name: "NCI"}, elements: []}]
-                    , source: "caDSR"
-                };
 
-                if (cadsrForm.classification && cadsrForm.classification.length>0){
-                    var cdeClassifTree = cdeForm.classification[0];
-                    cadsrForm.classification.forEach(function(co){
-                        classificationShared.addCategory(cdeClassifTree, [cadsrForm.contextName, co.scheme, co.item]);
-                        classificationShared.addCategory(fakeTree, [cadsrForm.contextName, co.scheme, co.item]);
-                    });
-                } else {
-                    console.log("form has no classifications!");
-                }
-
-                if (!cadsrForm.sections) return;
-
-                cadsrForm.sections = cadsrForm.sections.sort(function(a,b){return a.displayOrder - b.displayOrder});
-
-                async.eachSeries(cadsrForm.sections, function(s, cbs){
-                    if (!s.questions) return cbs();
-
-                    var newSection = {
-                        elementType: 'section'
-                        , label: s.longName
-                        , formElements: []
-                    };
-
-                    if (s.maximumQuestionRepeat) newSection.cardinality = s.maximumQuestionRepeat;
-
-                    cdeForm.formElements.push(newSection);
-
-                    s.questions = s.questions.sort(function(a,b){return a.displayOrder - b.displayOrder});
-
-                    async.eachSeries(s.questions, function(q, cbq) {
-                        if (!q.cde) {
-                            console.log("No CDE as a part of the form: ");
-                            console.log("Question Public ID " + q.publicID);
-                            console.log("Form Public ID " + cadsrForm.publicID);
-                            return cbq();
-                        }
-                        mongo_cde.byOtherId("caDSR", q.cde.publicID, function(err, cde){
-                            if (!cde) {
-                                console.log("CDE not found. caDSR ID: " + q.cde.publicID);
-                                return cbq();
-                            }
-                            newSection.formElements.push({
-                                elementType: 'question'
-                                , label: q.questionText
-                                , required: q.isMandatory
-                                , editable: q.isEditable
-                                , instructions: q.cde.longName
-                                , question:{
-                                    cde: {tinyId: cde.tinyId, version: cde.version}
-                                    , datatype: cde.valueDomain.datatype
-                                    //, uoms: [cde.valueDomain.uom]
-                                    , answers: cde.valueDomain.permissibleValues
-                                }
-                            });
-                            cbq();
-                        });
-                    }, function(err){
-                        cbs();
-                    });
-                }, function(){
-                    mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function(){
-                        console.log("Form created " + cadsrForm.longName);
-                    });
-                });
-
-            });
-
-        }, 1000 * waitForContent);
     });
 };
 
