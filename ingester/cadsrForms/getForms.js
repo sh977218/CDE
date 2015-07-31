@@ -96,18 +96,24 @@ var getSectionsQuestions = function(f, cb){
     getResource(f.moduleCollection, function(sections){
         if (!sections) return;
         f.sections = sections;
-        f.sections.forEach(function(s){
+        //f.sections.forEach(function(s){
+        async.each(f.sections, function(s, cbs) {
             getResource(s.questionCollection, function(questions){
                 if (!questions) return;
                 s.questions = questions;
-                s.questions.forEach(function(q){
+                async.each(s.questions, function(q, cbq){
+                //s.questions.forEach(function(q){
                     getResource(q.dataElement, function(de){
                         if (!de) return;
                         q.cde = de[0];
-                        cb();
+                        cbq();
                     })
+                }, function(){
+                    cbs();
                 });
             });
+        }, function(){
+            cb();
         });
     });
 };
@@ -117,7 +123,8 @@ var getClassifications = function(f, cb){
     f.classification = [];
     getResource(f.administeredComponentClassSchemeItemCollection, function(acCsis){
         if (!acCsis)return;
-        acCsis.forEach(function(acCsi){
+        //acCsis.forEach(function(acCsi){
+        async.each(acCsis, function(acCsi, cbc){
             getResource(acCsi.classSchemeClassSchemeItem, function(csCsi){
                 getResource(csCsi[0].classificationScheme, function(cs){
                     getResource(csCsi[0].classificationSchemeItem, function(csi){
@@ -127,10 +134,12 @@ var getClassifications = function(f, cb){
                         });
                         console.log("csi");
                         console.log(csi[0].preferredDefinition);
-                        cb();
+                        cbc();
                     });
                 });
             });
+        }, function(){
+            cb();
         });
     });
 };
