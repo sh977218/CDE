@@ -174,7 +174,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         
         Assert.assertEquals("cabigAdmin", findElement(By.id("user_username")).getText());
         Assert.assertEquals("[\"caBIG\"]", findElement(By.id("user_orgadmin")).getText());
-        Assert.assertEquals("", findElement(By.id("user_siteadmin")).getText());
+        Assert.assertEquals(findElement(By.id("user_siteadmin")).getText(), "No");
 
         findElement(By.name("searchUsers")).clear();            
         findElement(By.name("searchUsers")).sendKeys("nlm");
