@@ -19,7 +19,6 @@ var cdesvc = require('./cdesvc')
     , async = require("async")
     , multer = require('multer')
     , elastic_system = require('../../system/node-js/elastic')
-    , sharedElastic = require('../../system/node-js/elastic.js')
     , exportShared = require('../../system/shared/exportShared')
     ;
 
@@ -124,7 +123,6 @@ exports.init = function (app, daoManager) {
             if (req.isAuthenticated()) {
                 mongo_data.addToViewHistory(cde, req.user);
             }
-            ;
             mongo_data.incDeView(cde);
         };
         if (!req.params.version) {
@@ -477,11 +475,11 @@ exports.init = function (app, daoManager) {
 
     app.post('/pinEntireSearchToBoard', function (req, res) {
         if (req.isAuthenticated()) {
-            var query = sharedElastic.buildElasticSearchQuery(req.body.query);
+            var query = elastic_system.buildElasticSearchQuery(req.body.query);
             if (query.size > config.maxPin) {
                 res.status(403).send("Maximum number excesses.");
             } else {
-                sharedElastic.elasticsearch(query, 'cde', function (err, cdes) {
+                elastic_system.elasticsearch(query, 'cde', function (err, cdes) {
                     usersvc.pinAllToBoard(req, cdes.cdes, res);
                 });
             }
@@ -524,8 +522,21 @@ exports.init = function (app, daoManager) {
 
     app.post('/elasticSearchExport/cde', function (req, res) {
         var cdeHeader = "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
-        var query = sharedElastic.buildElasticSearchQuery(req.body);
+        var query = elastic_system.buildElasticSearchQuery(req.body);
         return elastic_system.elasticSearchExport(res, query, 'cde', exportShared.convertToCsv, cdeHeader);
     });
 
+    app.get('/cdeCompletion/:term', function (req, res) {
+        var result = [];
+        var term = req.params.term;
+        elastic_system.completionSuggest(term, function (resp) {
+            resp.search_suggest[0].options.map(function (item) {
+                result.push(item.text);
+            });
+            res.send(result);
+        })
+    })
+    app.get('/formCompletion/:term', function (req, res) {
+        return [];
+    })
 };

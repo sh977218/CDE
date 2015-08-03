@@ -24,6 +24,7 @@ public class BoardManagement3Test extends BoardTest {
         
         findElement(By.id("desc_edit_0")).click();
         findElement(By.id("desc_input_0")).sendKeys(" -- Desc Edited");
+        hangon(.5);
         findElement(By.id("desc_confirm_0")).click();
         
         goToCdeSearch();
