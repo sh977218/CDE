@@ -10,8 +10,18 @@ angular.module('formModule').controller('CreateFormCtrl', ['$scope', 'Form', '$w
         }
         return null;
     };
-    
+
+    $scope.$on('$locationChangeStart', function( event ) {
+        if (!$scope.saving) {
+            var answer = confirm("You have unsaved changes, are you sure you want to leave this page?");
+            if (!answer) {
+                event.preventDefault();
+            }
+        }
+    });
+
     $scope.save = function() {
+        $scope.saving = true;
         $scope.newForm.naming.push({
            designation: $scope.newForm.designation
            , definition: $scope.newForm.definition
