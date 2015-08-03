@@ -247,6 +247,7 @@ var saveForm = function(cadsrForm) {
     }, function () {
         mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function () {
             console.log("Form created " + cadsrForm.longName);
+            console.log("form pid: " + cdeForm.publicID);
         });
     });
 };
