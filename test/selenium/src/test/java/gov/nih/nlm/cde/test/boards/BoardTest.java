@@ -82,9 +82,7 @@ public class BoardTest extends NlmCdeBaseTest {
     protected void goToBoard(String boardName) {
         gotoMyBoards();
         textPresent(boardName);
-
         findElement(By.id("viewBoard_" + boardName)).click();
-
         // wait for board to show name in title
         findElement(By.xpath("//h3[text() = '" + boardName + "']"));
     }
