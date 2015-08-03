@@ -89,20 +89,23 @@ exports.modifyOrgClassification = function(request, action, callback) {
                         for (var i = 0; i < result.length; i++) {
                             var elt = result[i];
                             var steward = classificationShared.findSteward(elt, request.orgName);
-                            classificationShared.modifyCategory(steward.object, request.categories, {type: action, newname: request.newname}, function() {
+                            classificationShared.modifyCategory(steward.object, request.categories,
+                                {type: action, newname: request.newname}, function() {
                                 classification.saveCdeClassif("", elt);
                             });
                         }
-                        mongo_data_system.addToClassifAudit({
-                            date: new Date()
-                            , user: {
-                                username: "unknown"
-                            }
-                            , elements: result.map(function(e){return {tinyId: e.tinyId, eltType: e.formElements?"form":"cde"};})
-                            , action: action
-                            , path: [request.orgName].concat(request.categories)
-                            , newname: request.newname
-                        });
+                        if (result.length > 0) {
+                            mongo_data_system.addToClassifAudit({
+                                date: new Date()
+                                , user: {
+                                    username: "unknown"
+                                }
+                                , elements: result.map(function(e){return {tinyId: e.tinyId, eltType: e.formElements?"form":"cde"};})
+                                , action: action
+                                , path: [request.orgName].concat(request.categories)
+                                , newname: request.newname
+                            });
+                        }
                     });
                 });
                 if(callback) callback(err, stewardOrg);
