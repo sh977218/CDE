@@ -13,6 +13,15 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
                 $scope.elt.stewardOrg.name = userResource.userOrgs[0];
             }
 
+            $scope.$on('$locationChangeStart', function( event ) {
+                if (!$scope.saving) {
+                    var answer = confirm("You have unsaved changes, are you sure you want to leave this page?");
+                    if (!answer) {
+                        event.preventDefault();
+                    }
+                }
+            });
+
             $scope.validationErrors = function() {
                 if (!$scope.elt.naming[0].designation) {
                     return "Please enter a name for the new CDE";
@@ -81,10 +90,6 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
                             return {
                                 addClassification: function(newClassification) {
                                     exports.classifyItem($scope.elt, newClassification.orgName, newClassification.categories);
-                                    var deepCopy = {
-                                        orgName: newClassification.orgName
-                                        , categories: []
-                                    };
                                 }
                             };
                         }
@@ -113,6 +118,7 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
             };
 
             $scope.save = function() {
+                $scope.saving = true;
                 DataElement.save($scope.elt, function(cde) {
                     $window.location.href = "/#/deview?tinyId=" + cde.tinyId;
                 });

@@ -17,6 +17,8 @@ var passport = require('passport')
     , request = require('request')
     , fs = require('fs')
     , multer  = require('multer')
+    , elastic_system = require('../../system/node-js/elastic')
+    , sharedElastic = require('../../system/node-js/elastic.js')
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {

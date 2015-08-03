@@ -49,7 +49,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
     protected void gotoFormCreate() {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("Form")).click();
-        textPresent("Create New Form");
+        textPresent("Create Form");
     }
 
     public void createForm(String name, String definition, String version, String org) {
