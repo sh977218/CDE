@@ -133,5 +133,14 @@ angular.module('resourcesSystem', ['ngResource'])
             }            
         };
     })
+    .factory("AutoCompleteResource", function ($http) {
+        return {
+            getAutoComplete: function (searchTerm) {
+                return $http.get('/cdeCompletion/' + searchTerm, {}).then(function (response) {
+                    return response.data;
+                });
+            }
+        }
+    })
 
 ;    

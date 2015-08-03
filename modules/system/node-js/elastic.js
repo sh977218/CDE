@@ -10,6 +10,27 @@ var request = require('request')
 exports.elasticCdeUri = config.elasticUri;
 exports.elasticFormUri = config.elasticFormUri;
 
+exports.completionSuggest = function (term, cb) {
+    var url = config.elasticStoredQueryUri;
+    var suggestQuery = {
+        "search_suggest": {
+            "text": term,
+            "completion": {
+                "field": "search_suggest"
+            }
+        }
+    };
+    request.post(url + "_suggest", {body: JSON.stringify(suggestQuery)}, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            var resp = JSON.parse(body);
+            cb(resp);
+        } else {
+            cb(error);
+        }
+    })
+};
+
+
 exports.buildElasticSearchQuery = function (settings) {
     this.escapeRegExp = function (str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -80,6 +101,9 @@ exports.buildElasticSearchQuery = function (settings) {
     if (settings.selectedOrg !== undefined) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
     }
+    if (settings.selectedOrgAlt !== undefined) {
+        queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrgAlt}});
+    }
 
     var buildFilter = function (allowedStatuses, selectedStatuses) {
         var regStatuses = selectedStatuses;
@@ -127,7 +151,7 @@ exports.buildElasticSearchQuery = function (settings) {
         queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
     }
 
-    var flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(";") : "";
+    var flatSelectionAlt = settings.selectedElementsAlt.join(";");
     if (flatSelectionAlt !== "") {
         queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
     }
