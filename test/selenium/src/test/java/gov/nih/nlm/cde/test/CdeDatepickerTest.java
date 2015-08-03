@@ -55,5 +55,6 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         effectiveDate_string = js.executeScript(js_code).toString();
         Assert.assertTrue(effectiveDate_string.equals(""));
         findElement(By.id("cancelRegStatus")).click();
+        modalGone();
     }
 }

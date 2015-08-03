@@ -97,6 +97,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         hangon(1);
         findElement(By.id("li-blank-Qualified")).click();
         hangon(1);
+        scrollToTop();
         textPresent("results for All Terms | CTEP > CATEGORY | Standard, Qualified");
         findElement(By.id("li-checked-Qualified")).click();
         scrollToTop();
