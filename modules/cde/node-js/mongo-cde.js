@@ -152,7 +152,7 @@ exports.cdesByTinyIdListInOrder = function (idList, callback) {
         var reorderedCdes = idList.map(function (id) {
             for (var i=0; i < cdes.length; i++) {
                 if (id === cdes[i].tinyId) return cdes[i];
-            };
+            }
         });
         callback(err, reorderedCdes);
     });

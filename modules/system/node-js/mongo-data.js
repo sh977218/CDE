@@ -178,7 +178,11 @@ exports.managedOrgs = function(callback) {
 
 exports.addOrg = function(newOrgArg, res) {
   Org.findOne({"name": newOrgArg.name}).exec(function(err, found) {
-      if (found) {
+      if (err) {
+          res.send(500);
+          logging.errorLogger.error("Cannot add org.",
+              {origin: "system.mongo.addOrg", stack: new Error().stack, details: "orgName: " + newOrgArg + "Error: " + err});
+      } else if (found) {
           res.send("Org Already Exists");
       } else {
           var newOrg = new Org(newOrgArg);
