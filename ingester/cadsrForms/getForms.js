@@ -44,7 +44,7 @@ var getResource = function(url, cb){
     if (!url) throw url + " not a proper url!";
     var processResource = function(res, cb){
         if (!res) throw "Cannot parse nothing";
-        var forms = [];
+        var results = [];
         parseString(res, function (err, result) {
             if (err) {
                 var fs = require('fs');
@@ -52,16 +52,18 @@ var getResource = function(url, cb){
                 console.log(res);
                 throw err;
             }
-            if (!result["xlink:httpQuery"].queryResponse) return cb(null);
+            if (!result["xlink:httpQuery"].queryResponse) {
+                return cb(null);
+            }
             result["xlink:httpQuery"].queryResponse[0].class.forEach(function(cadsrForm){
-                var form = {};
+                var item = {};
                 cadsrForm.field.forEach(function(f){
-                    form[f.$.name] = f._;
-                    if (f.$['xlink:href']) form[f.$.name] = f.$['xlink:href'];
+                    item[f.$.name] = f._;
+                    if (f.$['xlink:href']) item[f.$.name] = f.$['xlink:href'];
                 });
-                forms.push(form);
+                results.push(item);
             });
-            cb(forms);
+            cb(results);
         });
 
     };
@@ -102,7 +104,7 @@ var getSectionsQuestions = function(f, cb){
                 s.questions = questions;
                 async.each(s.questions, function(q, cbq){
                     getResource(q.dataElement, function(de){
-                        if (!de) return;
+                        if (!de) return cbq();
                         q.cde = de[0];
                         cbq();
                     })
@@ -261,19 +263,16 @@ var getForms = function(page){
             async.parallel([
                 function(callback){
                     getContext(f, function(){
-                        console.log("getContext");
                         callback();
                     });
                 },
                 function(callback){
                     getSectionsQuestions(f, function(){
-                        console.log("getSectionsQuestions");
                         callback();
                     });
                 },
                 function(callback){
                     getClassifications(f, function(){
-                        console.log("getClassifications");
                         callback();
                     });
                 }
