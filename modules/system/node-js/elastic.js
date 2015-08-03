@@ -151,7 +151,7 @@ exports.buildElasticSearchQuery = function (settings) {
         queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
     }
 
-    var flatSelectionAlt = settings.selectedElementsAlt.join(";");
+    var flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(";") : "";
     if (flatSelectionAlt !== "") {
         queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
     }
