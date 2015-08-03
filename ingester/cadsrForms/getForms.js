@@ -104,7 +104,7 @@ var getSectionsQuestions = function(f, cb){
                 s.questions = questions;
                 async.each(s.questions, function(q, cbq){
                     getResource(q.validValueCollection, function(vd){
-                        if (vd) q.validValueCollectionContent = vd[0];
+                        if (vd) q.validValueCollectionContent = vd;
                         getResource(q.dataElement, function(de){
                             if (!de) return cbq();
                             q.cde = de[0];
@@ -229,19 +229,51 @@ var saveForm = function(cadsrForm) {
                     console.log("CDE not found. caDSR ID: " + q.cde.publicID);
                     return cbq();
                 }
-                newSection.formElements.push({
+                var newQuestion = {
                     elementType: 'question'
                     , label: q.questionText
                     , required: q.isMandatory
                     , editable: q.isEditable
                     , instructions: q.cde.longName
                     , question: {
-                        cde: {tinyId: cde.tinyId, version: cde.version}
+                        cde: {tinyId: cde.tinyId, version: cde.version, permissibleValues: cde.valueDomain.permissibleValues}
                         , datatype: cde.valueDomain.datatype
                         //, uoms: [cde.valueDomain.uom]
-                        , answers: q.valueDomainContent
+                        , answers: []
                     }
-                });
+                };
+                if(q.validValueCollectionContent){
+                    q.validValueCollectionContent = q.validValueCollectionContent.sort(function (a, b) {
+                        return a.displayOrder - b.displayOrder
+                    });
+                    q.validValueCollectionContent.forEach(function(vv){
+                        var value = vv.longName;
+                        var vmn = vv.meaningText;
+                        if (!vmn) {
+                            console.log("no vmn");
+                        }
+                        var cdePvRecord = cde.valueDomain.permissibleValues.filter(function(pv){
+                            return pv.permissibleValue.toLowerCase().trim() === value.toLowerCase().trim()
+                            && pv.valueMeaningName.toLowerCase().trim() === vmn.toLowerCase().trim();
+                        })[0];
+                        if (!cdePvRecord) {
+                            newQuestion.question.answers.push({
+                                permissibleValue: value
+                                , valueMeaningName: vmn
+                            });
+                        } else {
+                            newQuestion.question.answers.push({
+                                permissibleValue: cdePvRecord.permissibleValue
+                                , valueMeaningName: cdePvRecord.valueMeaningName
+                                , valueMeaningCode: cdePvRecord.valueMeaningCode
+                                , valueMeaningDefinition: cdePvRecord.valueMeaningDefinition
+                                , codeSystemName: cdePvRecord.codeSystemName
+                                , codeSystemVersion: cdePvRecord.codeSystemVersion
+                            });
+                        }
+                    });
+                }
+                newSection.formElements.push(newQuestion);
                 cbq();
             });
         }, function (err) {
