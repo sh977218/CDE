@@ -103,11 +103,14 @@ var getSectionsQuestions = function(f, cb){
                 if (!questions) return cbs();
                 s.questions = questions;
                 async.each(s.questions, function(q, cbq){
-                    getResource(q.dataElement, function(de){
-                        if (!de) return cbq();
-                        q.cde = de[0];
-                        cbq();
-                    })
+                    getResource(q.validValueCollection, function(vd){
+                        if (vd) q.validValueCollectionContent = vd[0];
+                        getResource(q.dataElement, function(de){
+                            if (!de) return cbq();
+                            q.cde = de[0];
+                            cbq();
+                        });
+                    });
                 }, function(){
                     cbs();
                 });
@@ -236,7 +239,7 @@ var saveForm = function(cadsrForm) {
                         cde: {tinyId: cde.tinyId, version: cde.version}
                         , datatype: cde.valueDomain.datatype
                         //, uoms: [cde.valueDomain.uom]
-                        , answers: cde.valueDomain.permissibleValues
+                        , answers: q.valueDomainContent
                     }
                 });
                 cbq();
@@ -289,17 +292,6 @@ setTimeout(function(){
     });
 }, 1000);
 
-//setTimeout(function(){
-//    console.log("Ingestion started...");
-//    for (var i = 0; i < maxPages; i++) {
-//        var j = i;
-//        setTimeout(function(){
-//            console.log("Ingesting from API page: " + j);
-//            getForms(j);
-//        }, j * 1000 * 5);
-//    }
-//}, 2000);
-
 var callNextBulk = function (page){
     console.log("Ingesting from API page: " + page);
     getForms(page);
@@ -313,7 +305,6 @@ var callNextBulk = function (page){
         setTimeout(function(){
             nciOrg.save(function(){
                 console.log("Ingestion done ...");
-                //process.exit(0);
             });
         }, 40000);
     }
@@ -322,11 +313,3 @@ var callNextBulk = function (page){
 setTimeout(function(){
     callNextBulk(0);
 }, 3000);
-
-
-//setTimeout(function(){
-//    nciOrg.save(function(){
-//        console.log("Ingestion done ...");
-//        process.exit(0);
-//    });
-//}, (1000 * maxPages * bulkDelay) + (waitForContent * 2) + 60000);
