@@ -46,6 +46,19 @@ public class AnswerListTest extends BaseFormTest {
 
         saveForm();
 
+        goToFormByName(formName);
+        findElement(By.linkText("Form Description")).click();
+        findElement(By.id("question_accordion_0_0")).click();
+        textNotPresent("FEMALE");
+        findElement(By.xpath("//input[@ng-click='$select.activate()']")).click();
+        findElement(By.xpath("//span[contains(text(), 'FEMALE')]")).click();
+        saveForm();
+
+        goToFormByName(formName);
+        findElement(By.linkText("Form Description")).click();
+        findElement(By.id("question_accordion_0_0")).click();
+        textPresent("FEMALE");
+
         new FormRegStatus().changeRegistrationStatus(formName, ctepCurator_username, "Incomplete", "Qualified");
     }
 
