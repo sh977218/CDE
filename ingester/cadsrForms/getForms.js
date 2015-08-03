@@ -131,8 +131,6 @@ var getClassifications = function(f, cb){
                             scheme: cs[0].longName
                             , item: csi[0].preferredDefinition
                         });
-                        console.log("csi");
-                        console.log(csi[0].preferredDefinition);
                         cbc();
                     });
                 });
@@ -249,7 +247,6 @@ var saveForm = function(cadsrForm) {
     }, function () {
         mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function () {
             console.log("Form created " + cadsrForm.longName);
-            console.log("form pid: " + cdeForm.publicID);
         });
     });
 };
