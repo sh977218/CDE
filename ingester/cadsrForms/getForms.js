@@ -27,7 +27,7 @@ var CachedPage = db.model('CachedPage', cachedPageSchema);
 
 
 var formIncrement = 100; //200
-var maxPages = 1; //200
+var maxPages = 2; //200
 var bulkDelay = 60;
 
 var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
@@ -69,7 +69,7 @@ var getResource = function(url, cb){
 
 
     CachedPage.findOne({url: url}, function (err, page) {
-        if (err || !page.content) throw err;
+        if (err) throw err;
         if (page) processResource(page.content, cb);
         else {
             request(url, function (error, response, body) {
@@ -144,7 +144,7 @@ var getClassifications = function(f, cb){
 };
 
 ///// Save Form
-var saveForm = function(cadsrForm) {
+var saveForm = function(cadsrForm, cbfc) {
     var cdeForm = {
         naming: [{
             designation: cadsrForm.longName
@@ -285,41 +285,47 @@ var saveForm = function(cadsrForm) {
     }, function () {
         mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function () {
             console.log("Form created " + cadsrForm.longName);
+            cbfc();
         });
     });
 };
 
-var getForms = function(page){
+var getForms = function(page, cb){
     var url = getFormPageUrl(page);
     getResource(url, function(forms){
         console.log("Page " + page + ", loading " + forms.length + " forms.");
-        forms.forEach(function(f){
+        //forms.forEach(function(f){
+        async.each(forms, function(f, cbf) {
             if (f.workflowStatusName === "RETIRED ARCHIVED") return;
             async.parallel([
-                function(callback){
-                    getContext(f, function(){
-                        console.log("Context Retrieval Complete, Form: " + f.longName);
-                        callback();
+                    function (callback) {
+                        getContext(f, function () {
+                            console.log("Context Retrieval Complete, Form: " + f.longName);
+                            callback();
+                        });
+                    },
+                    function (callback) {
+                        getSectionsQuestions(f, function () {
+                            console.log("Content Retrieval Complete, Form: " + f.longName);
+                            callback();
+                        });
+                    },
+                    function (callback) {
+                        getClassifications(f, function () {
+                            console.log("Classification Retrieval Complete, Form: " + f.longName);
+                            callback();
+                        });
+                    }
+                ],
+                function (err, results) {
+                    saveForm(f, function () {
+                        cbf();
                     });
-                },
-                function(callback){
-                    getSectionsQuestions(f, function(){
-                        console.log("Content Retrieval Complete, Form: " + f.longName);
-                        callback();
-                    });
-                },
-                function(callback){
-                    getClassifications(f, function(){
-                        console.log("Classification Retrieval Complete, Form: " + f.longName);
-                        callback();
-                    });
-                }
-            ],
-            function(err, results){
-                saveForm(f, function(){});
-            });
-        });
+                });
 
+        }, function(){
+            cb();
+        });
     });
 };
 
@@ -330,22 +336,36 @@ setTimeout(function(){
     });
 }, 1000);
 
+//var callNextBulk = function (page){
+//    console.log("Ingesting from API page: " + page);
+//    getForms(page);
+//    page++;
+//
+//    if (page + 1 <= maxPages) {
+//        setTimeout(function(){
+//            callNextBulk(page);
+//        }, bulkDelay * 1000);
+//    } else {
+//        setTimeout(function(){
+//            nciOrg.save(function(){
+//                console.log("Ingestion done ...");
+//            });
+//        }, 40000);
+//    }
+//};
+
 var callNextBulk = function (page){
     console.log("Ingesting from API page: " + page);
-    getForms(page);
-    page++;
-
-    if (page + 1 <= maxPages) {
-        setTimeout(function(){
+    getForms(page, function(){
+        page++;
+        if (page + 1 <= maxPages) {
             callNextBulk(page);
-        }, bulkDelay * 1000);
-    } else {
-        setTimeout(function(){
+        } else {
             nciOrg.save(function(){
                 console.log("Ingestion done ...");
             });
-        }, 40000);
-    }
+        }
+    });
 };
 
 setTimeout(function(){
