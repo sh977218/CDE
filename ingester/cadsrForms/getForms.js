@@ -26,10 +26,9 @@ var cachedPageSchema = mongoose.Schema({
 var CachedPage = db.model('CachedPage', cachedPageSchema);
 
 
-var formIncrement = 200; //200
+var formIncrement = 100; //200
 var maxPages = 1; //200
-var bulkDelay = 30;
-var waitForContent = 20;
+var bulkDelay = 60;
 
 var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
 
@@ -70,7 +69,7 @@ var getResource = function(url, cb){
 
 
     CachedPage.findOne({url: url}, function (err, page) {
-        if (err) throw console.error(err);
+        if (err || !page.content) throw err;
         if (page) processResource(page.content, cb);
         else {
             request(url, function (error, response, body) {
@@ -299,16 +298,19 @@ var getForms = function(page){
             async.parallel([
                 function(callback){
                     getContext(f, function(){
+                        console.log("Context Retrieval Complete, Form: " + f.longName);
                         callback();
                     });
                 },
                 function(callback){
                     getSectionsQuestions(f, function(){
+                        console.log("Content Retrieval Complete, Form: " + f.longName);
                         callback();
                     });
                 },
                 function(callback){
                     getClassifications(f, function(){
+                        console.log("Classification Retrieval Complete, Form: " + f.longName);
                         callback();
                     });
                 }
@@ -333,7 +335,7 @@ var callNextBulk = function (page){
     getForms(page);
     page++;
 
-    if (page + 1 < maxPages) {
+    if (page + 1 <= maxPages) {
         setTimeout(function(){
             callNextBulk(page);
         }, bulkDelay * 1000);
