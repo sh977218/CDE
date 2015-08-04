@@ -1,7 +1,7 @@
 angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute'])
 .config(function($routeProvider) {
     $routeProvider.
-        when('/cde/search', {controller: 'DEListCtrl', templateUrl: 'template/system/list'}).
+        when('/cde/search', {controller: 'DEListCtrl', templateUrl: '/list'}).
         when('/quickBoard', {controller: 'QuickBoardCtrl', templateUrl: '/quickBoard'}).
         when('/sdcview', {controller: 'SDCViewCtrl', templateUrl: '/sdcView'}).
         when('/boardExport/:boardId', {controller: 'ExportCtrl', templateUrl: '/cde/public/html/boardExport.html'}).

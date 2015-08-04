@@ -3,7 +3,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
     'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
     , 'angular-send-feedback']).
-    config(function ($routeProvider) {
+    config(function ($routeProvider, $locationProvider) {
+        $locationProvider.html5Mode({enabled: true, requireBase: false});
         $routeProvider.
             when('/', {
                 redirectTo: function () {

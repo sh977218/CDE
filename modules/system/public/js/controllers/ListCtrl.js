@@ -1,13 +1,37 @@
 angular.module('systemModule').controller('ListCtrl',
-    ['$scope', '$routeParams', '$window', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource', 'SearchSettings', 'QuickBoard', 'AutoCompleteResource',
-        function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource, SearchSettings, QuickBoard, AutoCompleteResource) {
+    ['$scope', '$routeParams', '$window', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
+        'SearchSettings', 'QuickBoard', 'AutoCompleteResource',
+        function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
+                  SearchSettings, QuickBoard, AutoCompleteResource) {
 
     $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
+    $scope.searchForm = {};
+
+    $scope.searchForm.ftsearch = $routeParams.q;
+    $scope.searchForm.currentPage = $routeParams.currentPage;
+
+    $scope.currentSearchTerm = $scope.searchForm.ftsearch;
+
+    $scope.altClassificationFilterMode = 0;
+
+    // @TODO $routeParams
+    //$scope.altClassificationFilterMode = $scope.cache.get($scope.getCacheName("altClassificationFilterMode"));
+
+    $scope.selectedElements = [];
+    $scope.selectedElementsAlt = [];
+            // @TODO replace with routeParams
+    //$scope.selectedOrg = $scope.cache.get($scope.getCacheName("selectedOrg"));
+    //$scope.selectedElements = $scope.cache.get($scope.getCacheName("selectedElements"));
+
+    //$scope.selectedOrgAlt = $scope.cache.get($scope.getCacheName("selectedOrgAlt"));
+    //$scope.selectedElementsAlt = $scope.cache.get($scope.getCacheName("selectedElementsAlt"));
+
+//$scope.registrationStatuses = $routeParams.selectedStatuses;
 
     $scope.getAutoComplete = function (searchTerm) {
         return AutoCompleteResource.getAutoComplete(searchTerm);
-    }
+    };
 
     $scope.focusClassification = function(){
         //any good angular way to do this?
@@ -20,8 +44,6 @@ angular.module('systemModule').controller('ListCtrl',
         }
     },0);
 
-    if (!$scope.searchForm) $scope.searchForm = {};
-
     var mainAreaModes = {
         "searchResult": {
             "url": "/system/public/html/searchResult.html"
@@ -32,6 +54,11 @@ angular.module('systemModule').controller('ListCtrl',
             , "ngClass": "container"
         }
     };
+    if (!$scope.searchForm.ftsearch) {
+        $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
+    } else {
+        $scope.selectedMainAreaMode = mainAreaModes.searchResult;
+    }
 
     $scope.hideShowFilter = function() {
         $scope.filterMode = !$scope.filterMode;
@@ -43,34 +70,10 @@ angular.module('systemModule').controller('ListCtrl',
         }
     });
 
-    $scope.getCacheName = function(name) {
-        return "search." + $scope.module + "." + name;
-    };
-
-    if ($scope.cache.get($scope.getCacheName("registrationStatuses"))) {
-        $scope.registrationStatuses = $scope.cache.get($scope.getCacheName("registrationStatuses"));
-    }
     if (!$scope.registrationStatuses) {
         SearchSettings.getPromise().then(function(){
             $scope.registrationStatuses = SearchSettings.getUserDefaultStatuses().map(function(a){return {name: a}});
         });
-    }
-
-    if ($scope.cache.get($scope.getCacheName("ftsearch"))) {
-        $scope.searchForm.ftsearch = $scope.cache.get($scope.getCacheName("ftsearch"));
-        $scope.currentSearchTerm = $scope.searchForm.ftsearch;
-    }
-
-    if (!$scope.currentSearchTerm) {
-        $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
-    } else {
-        $scope.selectedMainAreaMode = mainAreaModes.searchResult;
-    }
-
-
-            $scope.altClassificationFilterMode = $scope.cache.get($scope.getCacheName("altClassificationFilterMode"));
-    if (!$scope.altClassificationFilterMode) {
-        $scope.altClassificationFilterMode = 0;
     }
 
     $scope.toggleAltClassificationFilterMode = function() {
@@ -81,23 +84,10 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.classificationFilters[1].org = undefined;
             $scope.classificationFilters[1].elements = [];
         }
-        $scope.cache.put($scope.getCacheName("altClassificationFilterMode"), $scope.altClassificationFilterMode);
-        $scope.reload();
+        // @TODO replace with redirect
+        //$scope.reload();
         $scope.focusClassification();
     };
-
-    $scope.selectedOrg = $scope.cache.get($scope.getCacheName("selectedOrg"));
-    $scope.selectedElements = $scope.cache.get($scope.getCacheName("selectedElements"));
-    if (!$scope.selectedElements) {
-        $scope.selectedElements = [];
-    }
-
-    $scope.selectedOrgAlt = $scope.cache.get($scope.getCacheName("selectedOrgAlt"));
-    $scope.selectedElementsAlt = $scope.cache.get($scope.getCacheName("selectedElementsAlt"));
-
-    if (!$scope.selectedElementsAlt) {
-        $scope.selectedElementsAlt = [];
-    }
 
     $scope.classificationFilters = [{
         org: $scope.selectedOrg
@@ -107,90 +97,84 @@ angular.module('systemModule').controller('ListCtrl',
         , elements: $scope.selectedElementsAlt
     }];
 
-    $scope.totalItems = $scope.cache.get($scope.getCacheName("totalItems"));
-
-    $scope.searchForm.currentPage = $scope.cache.get($scope.getCacheName("currentPage"));
+    // @TODO What's this for?
+    //$scope.totalItems = $scope.cache.get($scope.getCacheName("totalItems"));
 
     $scope.$watch('searchForm.currentPage', function() {
         if (!$scope.searchForm.currentPage) return;
-        $scope.cache.put($scope.getCacheName("currentPage"), $scope.searchForm.currentPage);
-        $scope.reload();
+        // @TODO replace with redirect
+        //$scope.reload();
     });
 
     userResource.getPromise().then(function(){
-        $scope.reload()
+        // @TODO Why are we doing this? probably old because of how we built ES query. Remore.
+        //$scope.reload()
     });
 
     $scope.addStatusFilter = function(t) {
         t.selected = !t.selected;
-        $scope.cache.put($scope.getCacheName("registrationStatuses"), $scope.registrationStatuses);
+        // @TODO replace with redirect
         $scope.reload();
     };
 
-    var resetFromSearch = function() {
-        delete $scope.classificationFilters[1].org;
-        $scope.classificationFilters[0].elements = [];
-        $scope.classificationFilters[1].elements = [];
+    //var resetFromSearch = function() {
+        //delete $scope.classificationFilters[1].org;
+        //$scope.classificationFilters[0].elements = [];
+        //$scope.classificationFilters[1].elements = [];
+        //
+        //$scope.altClassificationFilterMode = 0;
+        //for (var i in $scope.registrationStatuses) {
+        //    $scope.registrationStatuses[i].selected  = false;
+        //}
+        //$scope.cache.remove($scope.getCacheName("selectedOrgAlt"));
+        //$scope.cache.remove($scope.getCacheName("selectedElements"));
+        //$scope.cache.remove($scope.getCacheName("selectedElementsAlt"));
+        //$scope.cache.remove($scope.getCacheName("registrationStatuses"));
+        //$scope.cache.remove($scope.getCacheName("altClassificationFilterMode"));
 
-        $scope.altClassificationFilterMode = 0;
-        for (var i in $scope.registrationStatuses) {
-            $scope.registrationStatuses[i].selected  = false;
-        }
-        $scope.cache.remove($scope.getCacheName("selectedOrgAlt"));
-        $scope.cache.remove($scope.getCacheName("selectedElements"));
-        $scope.cache.remove($scope.getCacheName("selectedElementsAlt"));
-        $scope.cache.remove($scope.getCacheName("registrationStatuses"));
-        $scope.cache.remove($scope.getCacheName("altClassificationFilterMode"));
-
-    };
+    //};
 
     $scope.resetSearch = function() {
-        delete $scope.aggregations;
-        delete $scope.filter;
-        delete $scope.searchForm.ftsearch;
+        // @TODO replace the whole thing with redirect
 
-        delete $scope.classificationFilters[0].org;
-        resetFromSearch();
-
-        delete $scope.classificationFilters[1].org;
-        $scope.cache.remove($scope.getCacheName("selectedOrg"));
-        $scope.cache.remove($scope.getCacheName("ftsearch"));
-
-        $scope.currentSearchTerm = null;
-        $scope.reload();
+        //delete $scope.aggregations;
+        //delete $scope.filter;
+        //delete $scope.searchForm.ftsearch;
+        //
+        //delete $scope.classificationFilters[0].org;
+        //resetFromSearch();
+        //
+        //delete $scope.classificationFilters[1].org;
+        //$scope.cache.remove($scope.getCacheName("selectedOrg"));
+        //$scope.cache.remove($scope.getCacheName("ftsearch"));
+        //
+        //$scope.currentSearchTerm = null;
+        //$scope.reload();
     };
 
     var search = function() {
-        $scope.currentSearchTerm = $scope.searchForm.ftsearch;
-        $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
+        // @TODO what's currentSearchTerm for?
+        //$scope.currentSearchTerm = $scope.searchForm.ftsearch;
 
-        $timeout(function () {
-            $scope.$digest();
-            $scope.currentSearchTerm = $scope.searchForm.ftsearch;
-            $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
-            $scope.reload();
-        }, 0);
+        //$scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
+
+        // @TODO, this whole thing can be replaced with a redirect but make sure ngModel is updated
+
+        //$timeout(function () {
+        //    $scope.$digest();
+        //    $scope.currentSearchTerm = $scope.searchForm.ftsearch;
+        //    $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
+        //    $scope.reload();
+        //}, 0);
     };
 
     $scope.searchAction = function() {
-        resetFromSearch();
-        search();
+        //resetFromSearch();
+        //search();
     };
 
     $scope.isAllowed = function (cde) {
         return false;
-    };
-
-    $scope.openAddToForm = function (cde) {
-        $modal.open({
-          templateUrl: 'addToFormModalContent.html',
-          controller: 'AddToFormModalCtrl',
-          resolve: {
-              cde: function() {
-                  return cde;
-              }
-          }
-        });
     };
 
     $scope.alterOrgFilter = function(orgName){
@@ -234,23 +218,23 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.focusClassification();
     };
 
-    $scope.cacheOrgFilter = function(t) {
-        $scope.cache.put($scope.getCacheName("selectedOrg"), t);
-    };
-
-    $scope.cacheOrgFilterAlt = function(t) {
-        $scope.cache.put($scope.getCacheName("selectedOrgAlt"), t);
-    };
-
-    $scope.removeCacheOrgFilter = function() {
-        $scope.cache.remove($scope.getCacheName("selectedOrg"));
-        $scope.cache.remove($scope.getCacheName("selectedElements"));
-    };
-
-    $scope.removeCacheOrgFilterAlt = function() {
-        $scope.cache.remove($scope.getCacheName("selectedOrgAlt"));
-        $scope.cache.remove($scope.getCacheName("selectedElementsAlt"));
-    };
+    //$scope.cacheOrgFilter = function(t) {
+    //    $scope.cache.put($scope.getCacheName("selectedOrg"), t);
+    //};
+    //
+    //$scope.cacheOrgFilterAlt = function(t) {
+    //    $scope.cache.put($scope.getCacheName("selectedOrgAlt"), t);
+    //};
+    //
+    //$scope.removeCacheOrgFilter = function() {
+    //    $scope.cache.remove($scope.getCacheName("selectedOrg"));
+    //    $scope.cache.remove($scope.getCacheName("selectedElements"));
+    //};
+    //
+    //$scope.removeCacheOrgFilterAlt = function() {
+    //    $scope.cache.remove($scope.getCacheName("selectedOrgAlt"));
+    //    $scope.cache.remove($scope.getCacheName("selectedElementsAlt"));
+    //};
 
     // Create string representation of what status filters are selected
     $scope.getSelectedStatuses = function() {
@@ -303,7 +287,8 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.accordionListStyle = "";
             $scope.openCloseAll($scope.cdes, "list");
             $scope.totalItems = result.totalNumber;
-            $scope.cache.put($scope.getCacheName("totalItems"), $scope.totalItems);
+            // @TODO what's this for ?
+            //$scope.cache.put($scope.getCacheName("totalItems"), $scope.totalItems);
             $scope.aggregations = result.aggregations;
 
             for (var j = 0; j < $scope.registrationStatuses.length; j++) {
@@ -394,5 +379,7 @@ angular.module('systemModule').controller('ListCtrl',
     if ($routeParams.welcome === "true") {
         $scope.resetSearch();
     }
+
+    $scope.reload();
 
 }]);

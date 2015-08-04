@@ -30,6 +30,10 @@ exports.init = function (app, daoManager) {
 
     daoManager.registerDao(mongo_data);
 
+    app.get('/cde/search', function(req, res) {
+        res.render('index', 'system', {config: viewConfig, loggedIn: req.user?true:false});
+    });
+
     app.get('/quickBoard', function (req, res) {
         res.render('quickBoard');
     });
