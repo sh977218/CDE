@@ -250,9 +250,13 @@ var saveForm = function(cadsrForm) {
                         var value = vv.longName;
                         var vmn = vv.meaningText;
                         if (!vmn) {
-                            console.log("no vmn");
+                            console.log("no value meaning name");
+                            //newQuestion.question.answers.push({
+                            //    permissibleValue: value
+                            //});
                         }
                         var cdePvRecord = cde.valueDomain.permissibleValues.filter(function(pv){
+                            if (!vmn) return false;
                             return pv.permissibleValue.toLowerCase().trim() === value.toLowerCase().trim()
                             && pv.valueMeaningName.toLowerCase().trim() === vmn.toLowerCase().trim();
                         })[0];
