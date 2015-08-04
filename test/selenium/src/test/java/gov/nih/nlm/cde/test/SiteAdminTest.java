@@ -183,7 +183,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         textPresent("nlm", By.id("user_username"));
         Assert.assertEquals("nlm", findElement(By.id("user_username")).getText());
         Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\"]", findElement(By.id("user_orgadmin")).getText());
-        Assert.assertEquals("true", findElement(By.id("user_siteadmin")).getText());
+        Assert.assertEquals(findElement(By.id("user_siteadmin")).getText(), "Yes");
     }
     
 }
