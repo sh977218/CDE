@@ -168,6 +168,16 @@ var getInstructions = function(f, cb){
     });
 };
 
+//// Protocol Name
+var getProtocolLongname = function(f, cb){
+    getResource(f.protocolCollection, function(ptc){
+        if (!ptc) return cb();
+        f.protocolName = ptc[0].longName;
+        f.protocolDefinition = ptc[0].preferredDefinition;
+        cb();
+    });
+};
+
 ///// Save Form
 var saveForm = function(cadsrForm, cbfc) {
     var cdeForm = {
@@ -209,6 +219,11 @@ var saveForm = function(cadsrForm, cbfc) {
         , classification: [{stewardOrg: {name: "NCI"}, elements: []}]
         , source: "caDSR"
     };
+
+    if (cadsrForm.protocolName) {
+        cdeForm.properties.push({key: "caDSR_protocol_name", value: cadsrForm.protocolName});
+        cdeForm.properties.push({key: "caDSR_protocol_definition", value: cadsrForm.protocolDefinition});
+    }
 
     if (cadsrForm.instructionContent) cdeForm.properties.push({key: "caDSR_instruction", value: cadsrForm.instructionContent});
 
@@ -355,6 +370,11 @@ var getForms = function(page, cb){
                     function (callback) {
                         getInstructions(f, function(){
                             console.log("");
+                            callback();
+                        });
+                    },
+                    function(callback){
+                        getProtocolLongname(f, function(){
                             callback();
                         });
                     }
