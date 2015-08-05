@@ -4,31 +4,27 @@
 var request = require('request');
 request = request.defaults({jar: true});
 var cheerio = require('cheerio');
+var async = require('async');
 var util = {};
 require('./util.js').makeUtil(util);
 
-var enterUrl = "http://www.commondataelements.ninds.nih.gov/CRF.aspx";
 var url = "http://www.commondataelements.ninds.nih.gov/CRF.aspx";
 var formval;
 var forms = [];
-
-
-util.parseThs = function (keys, tr0) {
-    var ths = tr0.children;
-    for (var i = 1; i < ths.length - 1; i++) {
-        var th = ths[i];
-        keys.push(util.replaceChars($(th).text()));
-    }
+var tasks = [];
+for (var k = 1; k < 27; k++) {
+    tasks.push(k.toString());
 }
 
-util.parseTds = function (form, keys, tds) {
-    for (var i = 0; i < tds.length; i++) {
-        var td = tds[i];
-        form[keys[i]] = util.replaceChars($(td).text());
+var parseForm = function (index, callbackDone) {
+    if (index == 1) {
+        formval['ctl00$ScriptManager1'] = "ctl00$ContentPlaceHolder1$updatePanel2|ctl00$ContentPlaceHolder1$lbtnFirst";
+        formval['__EVENTTARGET'] = "ctl00$ContentPlaceHolder1$lbtnFirst";
     }
-}
-
-util.parseWebsite = function (form) {
+    else {
+        formval['ctl00$ScriptManager1'] = "ctl00$ContentPlaceHolder1$updatePanel2|ctl00$ContentPlaceHolder1$lbtnNext";
+        formval['__EVENTTARGET'] = "ctl00$ContentPlaceHolder1$lbtnNext";
+    }
     request.post(url, {
             followAllRedirects: true, headers: {
                 'User-Agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
@@ -36,22 +32,52 @@ util.parseWebsite = function (form) {
         },
         function (error, response, body) {
             $ = cheerio.load(body);
+            var viewStateStr = '|__VIEWSTATE|';
+            var viewStateStart = body.indexOf(viewStateStr);
+            var viewStateEnd = body.substring(viewStateStart + viewStateStr.length, body.length).indexOf('|');
+            formval['__VIEWSTATE'] = body.substring(viewStateStart + viewStateStr.length, viewStateStart + viewStateEnd);
+            var eventValidationStr = '|__EVENTVALIDATION|';
+            var eventValidationStart = body.indexOf(eventValidationStr);
+            var eventValidationEnd = body.substring(eventValidationStart + eventValidationStr.length, body.length).indexOf('|');
+            formval['__EVENTVALIDATION'] = body.substring(eventValidationStart + eventValidationStr.length, eventValidationStart + eventValidationEnd);
+
             var trs = $('#ContentPlaceHolder1_dgCRF tr');
-            var tr0 = trs[0];
-            var keys = [];
-            util.parseThs(keys, tr0);
+
+            // looping through each row in the table, each row represent one form
             for (var i = 1; i < trs.length; i++) {
                 var form = {};
                 var tr = trs[i];
                 var tds = $(tr).find('td');
-                util.parseTds(form, keys, tds);
+
+                // looping through each cell in the row and parse into form
+                for (var j = 0; j < tds.length; j++) {
+                    var td = tds[j];
+                    if (j == 0)
+                        form['CRF Module/Guideline'] = util.replaceChars($(td).text());
+                    if (j == 1)
+                        form['Description'] = util.replaceChars($(td).text());
+                    if (j == 2)
+                        form['© or TM'] = util.replaceChars($(td).text());
+                    if (j == 3)
+                        form['Download'] = util.replaceChars($(td).text());
+                    if (j == 4)
+                        form['CDEs'] = util.replaceChars($(td).text());
+                    if (j == 5)
+                        form['Version'] = util.replaceChars($(td).text());
+                    if (j == 6)
+                        form['Version Date'] = util.replaceChars($(td).text());
+                    if (j == 7)
+                        form['Disease Name'] = util.replaceChars($(td).text());
+                    if (j == 8)
+                        form['SubDisease Name'] = util.replaceChars($(td).text());
+                }
                 forms.push(form);
             }
-            console.log(forms.length);
+            callbackDone();
         })
 }
-util.enterWebsite = function () {
-    request.get(enterUrl,
+var enterWebsite = function () {
+    request.get(url,
         {
             followAllRedirects: true, headers: {
             'User-Agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
@@ -80,34 +106,20 @@ util.enterWebsite = function () {
                 __VIEWSTATEGENERATOR: __VIEWSTATEGENERATOR,
                 __ASYNCPOST: true
             }
-
-            formval['ctl00$ScriptManager1'] = "ctl00$ContentPlaceHolder1$updatePanel2|ctl00$ContentPlaceHolder1$lbtnFirst";
-            formval['__EVENTTARGET'] = "ctl00$ContentPlaceHolder1$lbtnFirst";
-            util.parseWebsite();
-
-
-            formval['ctl00$ScriptManager1'] = "ctl00$ContentPlaceHolder1$updatePanel2|ctl00$ContentPlaceHolder1$lbtnNext";
-            formval['__EVENTTARGET'] = "ctl00$ContentPlaceHolder1$lbtnNext";
-            util.parseWebsite();
+            async.eachSeries(tasks, parseForm, function (err) {
+                // global callback for async.eachSeries
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log('All Needle requests successful and saved');
+                    console.log(forms.length);
+                }
+            });
 
         })
 }
 
-
-util.enterWebsite();
-var looper = [];
-for (var k = 0; k < 25; k++) {
-    looper.push(k.toString());
-}
-
-async.eachSeries(looper, util.parseWebsite, function (err) {
-    // global callback for async.eachSeries
-    if (err) {
-        console.log(err)
-    } else {
-        console.log('All Needle requests successful and saved');
-    }
-});
+enterWebsite();
 
 
 
