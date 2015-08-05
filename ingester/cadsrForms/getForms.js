@@ -1,6 +1,5 @@
 // add attachment!
 // add instructions for sections
-// load protocols
 
 var request = require('request')
     , parseString = require('xml2js').parseString
@@ -27,8 +26,7 @@ var CachedPage = db.model('CachedPage', cachedPageSchema);
 
 
 var formIncrement = 100; //200
-var maxPages = 2; //200
-var bulkDelay = 60;
+var maxPages = 10; //200
 
 var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
 
@@ -73,10 +71,19 @@ var getResource = function(url, cb){
         if (page) processResource(page.content, cb);
         else {
             request(url, function (error, response, body) {
-                if (error) throw error;
-                processResource(body, cb);
-                var page = new CachedPage({url: url, content: body});
-                page.save();
+                var pageLoadSuccess = function(url, body, cb){
+                    processResource(body, cb);
+                    var page = new CachedPage({url: url, content: body});
+                    page.save();
+                };
+                if (error) {
+                    request(url, function (error, response, body) {
+                        if (error) throw error;
+                        else pageLoadSuccess(url, body, cb);
+                    });
+                } else {
+                    pageLoadSuccess(url, body, cb);
+                }
             });
         }
     });
