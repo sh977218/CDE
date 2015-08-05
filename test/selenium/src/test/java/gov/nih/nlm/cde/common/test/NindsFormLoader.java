@@ -1,15 +1,15 @@
 package gov.nih.nlm.cde.common.test;
 
-
+import com.google.gson.Gson;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.browserlaunchers.locators.GoogleChromeLocator;
 import org.testng.annotations.Test;
 
-import java.util.List;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class NindsFormLoader extends NlmCdeBaseTest {
 
@@ -43,7 +43,27 @@ public class NindsFormLoader extends NlmCdeBaseTest {
             String textToBePresent = "Page: " + String.valueOf(i) + " of 26";
             nextPage(textToBePresent, forms);
         }
+        saveToJson(forms);
         printInfo(forms);
+    }
+
+    private void saveToJson(ArrayList<Form> forms) {
+        Gson gson = new Gson();
+
+        // convert java object to JSON format,
+        // and returned as JSON formatted string
+        String json = gson.toJson(forms);
+
+        try {
+            //write converted json data to a file named "file.json"
+            FileWriter writer = new FileWriter("C:\\NLMCDE\\nindsForms.json");
+            writer.write(json);
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void printInfo(ArrayList<Form> forms) {
@@ -59,10 +79,10 @@ public class NindsFormLoader extends NlmCdeBaseTest {
     private void findAndSaveToList(ArrayList<Form> forms) {
         List<WebElement> trs = driver.findElements(By.cssSelector("#ContentPlaceHolder1_dgCRF > tbody > tr"));
 
-        for (WebElement tr : trs) {
-            List<WebElement> tds = tr.findElements(By.cssSelector("td"));
-            int index = 1;
+        for (int i = 1; i < trs.size(); i++) {
+            List<WebElement> tds = trs.get(i).findElements(By.cssSelector("td"));
             Form form = new Form();
+            int index = 1;
             for (WebElement td : tds) {
                 if (index == 1)
                     form.setName(td.getText());

@@ -20,20 +20,21 @@ dependencies {
     testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
 
     testCompile "com.jayway.restassured:rest-assured:2.3.2"
+    testCompile "com.google.code.gson:gson:2.2.4"
 }
 
-tasks.withType(Test) { 
+tasks.withType(Test) {
     systemProperty 'testUrl', System.getProperty('testUrl', testUrl)
     systemProperty 'hubUrl', System.getProperty('hubUrl', hubUrl)
     systemProperty 'timeout', timeout
     systemProperty 'browser', browser
 }
 
-test {    
+test {
     useTestNG()
     beforeTest { descriptor ->
         logger.lifecycle("Running test: " + descriptor)
-    }    
+    }
     maxParallelForks = Integer.parseInt(forkNb)
 
     testLogging {
