@@ -113,11 +113,16 @@ var getSectionsQuestions = function(f, cb){
                     async.each(s.questions, function(q, cbq){
                         getResource(q.validValueCollection, function(vd){
                             if (vd) q.validValueCollectionContent = vd;
-                            getResource(q.dataElement, function(de){
-                                if (!de) return cbq();
-                                q.cde = de[0];
-                                cbq();
+
+                            getResource(q.instruction, function(instruction){
+                                if (instruction) q.instructionContent = instruction[0].preferredDefinition;
+                                getResource(q.dataElement, function(de){
+                                    if (!de) return cbq();
+                                    q.cde = de[0];
+                                    cbq();
+                                });
                             });
+
                         });
                     }, function(){
                         cbs();
@@ -260,7 +265,7 @@ var saveForm = function(cadsrForm, cbfc) {
                     , label: q.questionText
                     , required: q.isMandatory
                     , editable: q.isEditable
-                    , instructions: q.cde.longName
+                    //, instructions: q.cde.longName
                     , question: {
                         cde: {tinyId: cde.tinyId, version: cde.version, permissibleValues: cde.valueDomain.permissibleValues}
                         , datatype: cde.valueDomain.datatype
@@ -268,6 +273,9 @@ var saveForm = function(cadsrForm, cbfc) {
                         , answers: []
                     }
                 };
+                if (q.instructionContent) {
+                    newQuestion.instructions = q.instructionContent;
+                }
                 if(q.validValueCollectionContent){
                     q.validValueCollectionContent = q.validValueCollectionContent.sort(function (a, b) {
                         return a.displayOrder - b.displayOrder
