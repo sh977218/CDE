@@ -20,14 +20,21 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.selectedElements = [];
     $scope.selectedElementsAlt = [];
-            // @TODO replace with routeParams
+
+    // @TODO replace with routeParams
     //$scope.selectedOrg = $scope.cache.get($scope.getCacheName("selectedOrg"));
     //$scope.selectedElements = $scope.cache.get($scope.getCacheName("selectedElements"));
 
     //$scope.selectedOrgAlt = $scope.cache.get($scope.getCacheName("selectedOrgAlt"));
     //$scope.selectedElementsAlt = $scope.cache.get($scope.getCacheName("selectedElementsAlt"));
 
-//$scope.registrationStatuses = $routeParams.selectedStatuses;
+    //$scope.registrationStatuses = $routeParams.selectedStatuses;
+
+    $scope.generateSearchForTerm = function () {
+        var searchLink = "/#/" + $scope.module + "/search?"
+        if ($scope.searchForm.ftsearch) searchLink += "q=" + $scope.searchForm.ftsearch;
+        return searchLink;
+    };
 
     $scope.getAutoComplete = function (searchTerm) {
         return AutoCompleteResource.getAutoComplete(searchTerm);
@@ -376,9 +383,9 @@ angular.module('systemModule').controller('ListCtrl',
         });
     };
 
-    if ($routeParams.welcome === "true") {
-        $scope.resetSearch();
-    }
+    //if ($routeParams.welcome === "true") {
+    //    $scope.resetSearch();
+    //}
 
     $scope.reload();
 
