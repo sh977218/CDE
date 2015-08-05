@@ -142,5 +142,10 @@ angular.module('resourcesSystem', ['ngResource'])
             }
         }
     })
+    .factory("SearchResultResource", function() {
+       return {
+           elts: []
+       }
+    });
 
 ;    

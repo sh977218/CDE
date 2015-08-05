@@ -1,31 +1,10 @@
 <span ng-controller="SwitchListViewCtrl">
 
-<!--<div class="container-fluid pt40 pb30" id='searchDiv'>-->
-    <!--<form name="advSearchForm" id="advSearchForm" novalidate action="">-->
-        <!--&lt;!&ndash; Search dropdown and text field &ndash;&gt;-->
-        <!--<div class="input-group input-group-lg">-->
-            <!--<label class="sr-only" id="l1" for="ftsearch-input">Search Terms</label>-->
-            <!--<input name="q" id="ftsearch-input" class="form-control search-query" type="text"-->
-                   <!--ng-model="searchForm.ftsearch" ng-maxlength="500" aria-labelledby="l1"-->
-                   <!--typeahead-wait-ms="500" typeahead-min-length="3"-->
-                   <!--typeahead="searchQuery for searchQuery in getAutoComplete($viewValue) | filter:$viewValue | limitTo:8"-->
-                   <!--typeahead-focus-first="false" typeahead-on-select="searchAction()">-->
 
-            <!--<div class="input-group-btn">-->
-                <!--<button id="search.submit" class="btn btn-danger btn-lg" type="submit" ng-click="searchAction()">-->
-                    <!--<i class="fa fa-search"></i> Search</button>-->
-                <!--<button ng-if="embedded" name="resetSearch" id="resetSearch" class="btn btn-default btn-lg" type="button" ng-click="reset()">-->
-                    <!--<i class="fa fa-trash-o"></i> Reset</button>-->
-            <!--</div>-->
-        <!--</div>-->
-
-        <!--&lt;!&ndash; Error display area &ndash;&gt;-->
-        <!--<center ng-show="advSearchForm.ftsearch.$invalid && !advSearchForm.ftsearch.$pristine"><p class="error-block"><small>Query terms must be 500 characters or less.</small></p></center>-->
-    <!--</form>-->
-<!--</div>-->
+    <a href ng-click="go('/form/search')">Test</a>
 
 <div class="container-fluid pt40 pb30" id='searchDiv'>
-    <form name="advSearchForm" id="advSearchForm" novalidate action="">
+    <form name="advSearchForm" id="advSearchForm" novalidate>
         <!-- Search dropdown and text field -->
         <div class="input-group input-group-lg">
             <label class="sr-only" id="l1" for="ftsearch-input">Search Terms</label>
@@ -36,10 +15,9 @@
                    typeahead-focus-first="false" typeahead-on-select="searchAction()">
 
             <div class="input-group-btn">
-                <!--<a id="search.submit" class="btn btn-danger btn-lg" ng-href="/#/cde/search?q={{searchForm.ftsearch}}">-->
-                    <!--<i class="fa fa-search"></i> Search</a>-->
-                <a id="search.submit" class="btn btn-danger btn-lg" ng-href="{{generateSearchForTerm()}}">
-                <i class="fa fa-search"></i> Search</a>
+                <button id="search.submit" ng-click="doSearch()" type="submit" class="btn btn-danger btn-lg" >
+                    <i class="fa fa-search"></i> Search</button>
+
                 <button ng-if="embedded" name="resetSearch" id="resetSearch" class="btn btn-default btn-lg" type="button" ng-click="reset()">
                     <i class="fa fa-trash-o"></i> Reset</button>
             </div>

@@ -1,25 +1,25 @@
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
-        'SearchSettings', 'QuickBoard', 'AutoCompleteResource',
+        'SearchSettings', 'QuickBoard', 'AutoCompleteResource', '$location',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
-                  SearchSettings, QuickBoard, AutoCompleteResource) {
+                  SearchSettings, QuickBoard, AutoCompleteResource, $location) {
 
     $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
     $scope.searchForm = {};
 
-    $scope.searchForm.ftsearch = $routeParams.q;
-    $scope.searchForm.currentPage = $routeParams.currentPage;
-
     $scope.currentSearchTerm = $scope.searchForm.ftsearch;
 
     $scope.altClassificationFilterMode = 0;
+
+
 
     // @TODO $routeParams
     //$scope.altClassificationFilterMode = $scope.cache.get($scope.getCacheName("altClassificationFilterMode"));
 
     $scope.selectedElements = [];
     $scope.selectedElementsAlt = [];
+
 
     // @TODO replace with routeParams
     //$scope.selectedOrg = $scope.cache.get($scope.getCacheName("selectedOrg"));
@@ -31,8 +31,9 @@ angular.module('systemModule').controller('ListCtrl',
     //$scope.registrationStatuses = $routeParams.selectedStatuses;
 
     $scope.generateSearchForTerm = function () {
-        var searchLink = "/#/" + $scope.module + "/search?"
+        var searchLink = "/" + $scope.module + "/search?"
         if ($scope.searchForm.ftsearch) searchLink += "q=" + $scope.searchForm.ftsearch;
+        if ($scope.selectedOrg) searchLink += "&selectedOrg=" + $scope.selectedOrg;
         return searchLink;
     };
 
@@ -96,14 +97,6 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.focusClassification();
     };
 
-    $scope.classificationFilters = [{
-        org: $scope.selectedOrg
-        , elements: $scope.selectedElements
-    }, {
-        org: $scope.selectedOrgAlt
-        , elements: $scope.selectedElementsAlt
-    }];
-
     // @TODO What's this for?
     //$scope.totalItems = $scope.cache.get($scope.getCacheName("totalItems"));
 
@@ -159,21 +152,21 @@ angular.module('systemModule').controller('ListCtrl',
         //$scope.reload();
     };
 
-    var search = function() {
-        // @TODO what's currentSearchTerm for?
-        //$scope.currentSearchTerm = $scope.searchForm.ftsearch;
-
-        //$scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
-
-        // @TODO, this whole thing can be replaced with a redirect but make sure ngModel is updated
-
-        //$timeout(function () {
-        //    $scope.$digest();
-        //    $scope.currentSearchTerm = $scope.searchForm.ftsearch;
-        //    $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
-        //    $scope.reload();
-        //}, 0);
-    };
+    //var search = function() {
+    //     //@TODO what's currentSearchTerm for?
+    //    $scope.currentSearchTerm = $scope.searchForm.ftsearch;
+    //
+    //    $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
+    //
+    //     //@TODO, this whole thing can be replaced with a redirect but make sure ngModel is updated
+    //
+    //    $timeout(function () {
+    //        $scope.$digest();
+    //        $scope.currentSearchTerm = $scope.searchForm.ftsearch;
+    //        $scope.cache.put($scope.getCacheName("ftsearch"), $scope.searchForm.ftsearch);
+    //        $scope.reload();
+    //    }, 0);
+    //};
 
     $scope.searchAction = function() {
         //resetFromSearch();
@@ -340,6 +333,32 @@ angular.module('systemModule').controller('ListCtrl',
 
     };
 
+    var search = function() {
+        $scope.searchForm.ftsearch = $routeParams.q;
+        $scope.searchForm.currentPage = $routeParams.currentPage;
+        $scope.selectedOrg = $routeParams.selectedOrg;
+        $scope.classificationFilters = [{
+            org: $scope.selectedOrg
+            , elements: $scope.selectedElements
+        }, {
+            org: $scope.selectedOrgAlt
+            , elements: $scope.selectedElementsAlt
+        }];
+        $scope.reload();
+    };
+
+    search();
+
+    $scope.$on('$locationChangeSuccess', function() {
+        search();
+    });
+
+    $scope.doSearch = function(url) {
+        var lov = $scope.generateSearchForTerm();
+        console.log(lov)
+        $location.path(lov);
+    };
+
     $scope.filterOutWorkingGroups = function(aggregations) {
         this.setAggregations = function() {
             aggregations.orgs.buckets = aggregations.orgs.orgs.buckets.filter(function(bucket) {
@@ -387,6 +406,6 @@ angular.module('systemModule').controller('ListCtrl',
     //    $scope.resetSearch();
     //}
 
-    $scope.reload();
+    //$scope.reload();
 
 }]);
