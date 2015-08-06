@@ -185,6 +185,7 @@ try {
 
 app.use(function(err, req, res, next){
     console.log("ERROR3: " + err);
+    console.log(err.stack);
     if (req && req.body && req.body.password) req.body.password = "";
     var meta = {
         stack: err.stack

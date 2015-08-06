@@ -1,21 +1,18 @@
 <span ng-controller="SwitchListViewCtrl">
 
-
-    <a href ng-click="go('/form/search')">Test</a>
-
 <div class="container-fluid pt40 pb30" id='searchDiv'>
     <form name="advSearchForm" id="advSearchForm" novalidate>
         <!-- Search dropdown and text field -->
         <div class="input-group input-group-lg">
             <label class="sr-only" id="l1" for="ftsearch-input">Search Terms</label>
             <input name="q" id="ftsearch-input" class="form-control search-query" type="text"
-                   ng-model="searchForm.ftsearch" ng-maxlength="500" aria-labelledby="l1"
+                   ng-model="searchSettings.q" ng-maxlength="500" aria-labelledby="l1"
                    typeahead-wait-ms="500" typeahead-min-length="3"
                    typeahead="searchQuery for searchQuery in getAutoComplete($viewValue) | filter:$viewValue | limitTo:8"
                    typeahead-focus-first="false" typeahead-on-select="searchAction()">
 
             <div class="input-group-btn">
-                <button id="search.submit" ng-click="doSearch()" type="submit" class="btn btn-danger btn-lg" >
+                <button id="search.submit" ng-click="termSearch()" type="submit" class="btn btn-danger btn-lg" >
                     <i class="fa fa-search"></i> Search</button>
 
                 <button ng-if="embedded" name="resetSearch" id="resetSearch" class="btn btn-default btn-lg" type="button" ng-click="reset()">
@@ -24,7 +21,8 @@
         </div>
 
         <!-- Error display area -->
-        <center ng-show="advSearchForm.ftsearch.$invalid && !advSearchForm.ftsearch.$pristine"><p class="error-block"><small>Query terms must be 500 characters or less.</small></p></center>
+        <center ng-show="advSearchForm.q.$invalid && !advSearchForm.q.$pristine"><p class="error-block">
+            <small>Query terms must be 500 characters or less.</small></p></center>
     </form>
 </div>
 
@@ -87,7 +85,8 @@
                 <a tabindex="0" href class="nonLinkAnchor displayBlock"
                    ng-repeat="t in aggregations.orgs.buckets | orderBy:'key'"
                    ng-switch="t.key === classificationFilters[altClassificationFilterMode].org"
-                   ng-click="alterOrgFilter(t.key)" ng-show="t.key === classificationFilters[altClassificationFilterMode].org || !classificationFilters[altClassificationFilterMode].org">
+                   ng-click="alterOrgFilter(t.key)"
+                   ng-show="t.key === classificationFilters[altClassificationFilterMode].org || !classificationFilters[altClassificationFilterMode].org">
                         <span class="hand-cursor" tooltip="{{t.longName}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                             <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>
                             <i ng-switch-default class="fa fa-chevron-right" id="li-blank-{{t.key}}" ></i>

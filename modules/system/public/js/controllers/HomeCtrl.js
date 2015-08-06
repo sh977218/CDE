@@ -2,21 +2,18 @@ angular.module('systemModule').controller('HomeCtrl', ['$scope', '$http', '$loca
     // Declare variables that will be used. Not needed but makes the code clear to understand.
 
     $scope.search = function () {
-        $scope.currentSearchTerm = $scope.ftsearch;
-        $scope.cache.put($scope.getCacheName("ftsearch"), $scope.ftsearch);
+        $scope.currentSearchTerm = $scope.searchSettings.q;
 
         $scope.reload();
     };
 
-    $scope.ftsearch = '';
+    $scope.searchSettings =  {"q": ''};
 
     $scope.getAutoComplete = function (searchTerm) {
         return AutoCompleteResource.getAutoComplete(searchTerm);
     }
 
     $scope.gotoSearch = function() {
-        $scope.initCache();
-        $scope.cache.put( 'search.cde.ftsearch', $scope.ftsearch );
         $location.url( '/cde/search' );
     };
 

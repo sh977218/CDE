@@ -146,7 +146,7 @@ exports.buildElasticSearchQuery = function (settings) {
 
     var queryBuilder = this;
 
-    var flatSelection = settings.selectedElements.join(";");
+    var flatSelection = settings.selectedElements?settings.selectedElements.join(";"):[];
     if (flatSelection !== "") {
         queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
     }

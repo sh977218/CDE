@@ -10,7 +10,7 @@
             <form name="quickSearchForm" id="quickSearchForm" novalidate>
                 <div class="input-group input-group-lg">
                     <label class="sr-only" for="searchTerms">Search Terms</label>
-                    <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="ftsearch"
+                    <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="searchSettings.q"
                            ng-maxlength="500" placeholder="Search Common Data Elements"
                            typeahead-wait-ms="500" typeahead-min-length="3"
                            typeahead="searchQuery for searchQuery in getAutoComplete($viewValue) | filter:$viewValue | limitTo:8"

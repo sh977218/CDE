@@ -2,20 +2,18 @@ angular.module('ElasticSearchResource', ['ngResource'])
 .factory('Elastic', function($http, userResource, SearchSettings) {
     return {
         searchToken: "id" + Math.random().toString(16).slice(2)
-        , buildElasticQuerySettings: function(scope){
+        , buildElasticQuerySettings: function(queryParams){
             return {
-                resultPerPage: scope.resultPerPage
-                , searchTerm: scope.searchForm.ftsearch
-                , isSiteAdmin: scope.isSiteAdmin()
-                , userOrgs: userResource.userOrgs
-                , selectedOrg: scope.classificationFilters[0].org
-                , selectedOrgAlt: scope.classificationFilters[1].org
-                , selectedElements: this.getSelectedElements(scope)
-                , selectedElementsAlt: this.getSelectedElementsAlt(scope)
-                , currentPage: scope.searchForm.currentPage
+                resultPerPage: queryParams.resultPerPage
+                , searchTerm: queryParams.q
+                , selectedOrg: queryParams.selectedOrg
+                , selectedOrgAlt: queryParams.selectedOrgAlt
+                , selectedElements: queryParams.classification
+                , selectedElementsAlt: queryParams.classificationAlt
+                , currentPage: queryParams.currentPage
                 , includeAggregations: true
                 , visibleRegStatuses: SearchSettings.getUserDefaultStatuses()
-                , selectedStatuses: scope.registrationStatuses
+                , selectedStatuses: queryParams.selectedStatuses
                 , searchToken: this.searchToken
             };
         }
