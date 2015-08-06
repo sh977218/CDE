@@ -25,9 +25,9 @@ var cachedPageSchema = mongoose.Schema({
 var CachedPage = db.model('CachedPage', cachedPageSchema);
 
 
-var formIncrement = 100; //200
-var endPage = 2; //200
-var startPage = 0;
+var formIncrement = 100;
+var endPage = 4;
+var startPage = 10;
 
 var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
 
@@ -71,7 +71,8 @@ var getResource = function(url, cb){
         if (err) throw err;
         if (page) processResource(page.content, cb);
         else {
-            request(url, function (error, response, body) {
+            var ro = {url: url, timeout: 120000};
+            request(ro, function (error, response, body) {
                 var pageLoadSuccess = function(url, body, cb){
                     processResource(body, cb);
                     var page = new CachedPage({url: url, content: body});
@@ -404,7 +405,7 @@ var callNextBulk = function (page){
     console.log("Ingesting from API page: " + page);
     getForms(page, function(){
         page++;
-        if (page + 1 <= endPage) {
+        if (page <= endPage) {
             callNextBulk(page);
         } else {
             nciOrg.save(function(){
