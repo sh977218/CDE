@@ -17,6 +17,16 @@ schemas.classificationSchema = new mongoose.Schema({
     , elements: [csEltSchema]
 }, {_id: false});
 
+schemas.referenceDocumentSchema = new mongoose.Schema({
+    docType: String,
+    document: String,
+    referenceDocumentId: String,
+    text: String,
+    uri: String,
+    providerOrg: String,
+    title: String,
+    languageCode: String
+}, {_id: false})
 
 schemas.permissibleValueSchema = new mongoose.Schema({
     permissibleValue: String
