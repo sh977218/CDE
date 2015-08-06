@@ -26,7 +26,7 @@ var CachedPage = db.model('CachedPage', cachedPageSchema);
 
 
 var formIncrement = 100; //200
-var maxPages = 10; //200
+var maxPages = 2; //200
 
 var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
 
