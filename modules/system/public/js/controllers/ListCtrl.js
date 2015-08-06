@@ -108,8 +108,20 @@ angular.module('systemModule').controller('ListCtrl',
         return false;
     };
 
+
     $scope.alterOrgFilter = function(orgName){
         var thingToAlter = $scope.altClassificationFilterMode?$scope.searchSettings.selectedOrgAlt:$scope.searchSettings.selectedOrg;
+        if (thingToAlter === undefined) {
+            addOrgFilter(orgName);
+        } else {
+            removeOrgFilter(orgName);
+        }
+        delete $scope.aggregations.groups;
+        $scope.reload();
+        $scope.focusClassification();
+    };
+
+    $scope.alterOrgFilter = function(orgName){
         if (thingToAlter === undefined) {
             $scope.searchSettings.selectedOrgAlt = orgName;
         } else {
