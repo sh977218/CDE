@@ -1,5 +1,7 @@
 package gov.nih.nlm.cde.common.test;
 
+import java.util.ArrayList;
+
 /**
  * Created by huangs8 on 8/4/2015.
  */
@@ -7,11 +9,12 @@ public class Form {
     private String name;
     private String description;
     private String download;
-    private String cdes;
+    private ArrayList<String> cdes;
     private String versionNum;
     private String versionDate;
     private String diseaseName;
     private String subDiseaseName;
+    private Boolean isCopyrighted;
 
     public String getName() {
         return name;
@@ -37,11 +40,11 @@ public class Form {
         this.download = download;
     }
 
-    public String getCdes() {
+    public ArrayList<String> getCdes() {
         return cdes;
     }
 
-    public void setCdes(String cdes) {
+    public void setCdes(ArrayList<String> cdes) {
         this.cdes = cdes;
     }
 
@@ -75,5 +78,28 @@ public class Form {
 
     public void setSubDiseaseName(String subDiseaseName) {
         this.subDiseaseName = subDiseaseName;
+    }
+
+    public Boolean isCopyrighted() {
+        return isCopyrighted;
+    }
+
+    public void setIsCopyrighted(Boolean isCopyrighted) {
+        this.isCopyrighted = isCopyrighted;
+    }
+
+    @Override
+    public String toString() {
+        return "Form{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", download='" + download + '\'' +
+                ", cdes=" + cdes +
+                ", versionNum='" + versionNum + '\'' +
+                ", versionDate='" + versionDate + '\'' +
+                ", diseaseName='" + diseaseName + '\'' +
+                ", subDiseaseName='" + subDiseaseName + '\'' +
+                ", isCopyrighted=" + isCopyrighted +
+                '}';
     }
 }
