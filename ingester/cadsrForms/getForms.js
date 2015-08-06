@@ -369,7 +369,7 @@ var getForms = function(page, cb){
                     },
                     function (callback) {
                         getInstructions(f, function(){
-                            console.log("");
+                            console.log("Classification Retrieval Complete, Form: " + f.longName);
                             callback();
                         });
                     },
@@ -398,23 +398,6 @@ setTimeout(function(){
     });
 }, 1000);
 
-//var callNextBulk = function (page){
-//    console.log("Ingesting from API page: " + page);
-//    getForms(page);
-//    page++;
-//
-//    if (page + 1 <= maxPages) {
-//        setTimeout(function(){
-//            callNextBulk(page);
-//        }, bulkDelay * 1000);
-//    } else {
-//        setTimeout(function(){
-//            nciOrg.save(function(){
-//                console.log("Ingestion done ...");
-//            });
-//        }, 40000);
-//    }
-//};
 
 var callNextBulk = function (page){
     console.log("Ingesting from API page: " + page);
