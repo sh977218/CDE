@@ -26,7 +26,8 @@ var CachedPage = db.model('CachedPage', cachedPageSchema);
 
 
 var formIncrement = 100; //200
-var maxPages = 3; //200
+var endPage = 2; //200
+var startPage = 0;
 
 var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
 
@@ -403,7 +404,7 @@ var callNextBulk = function (page){
     console.log("Ingesting from API page: " + page);
     getForms(page, function(){
         page++;
-        if (page + 1 <= maxPages) {
+        if (page + 1 <= endPage) {
             callNextBulk(page);
         } else {
             nciOrg.save(function(){
@@ -414,5 +415,5 @@ var callNextBulk = function (page){
 };
 
 setTimeout(function(){
-    callNextBulk(0);
+    callNextBulk(startPage);
 }, 3000);
