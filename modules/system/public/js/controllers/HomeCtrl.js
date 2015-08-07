@@ -1,11 +1,5 @@
-angular.module('systemModule').controller('HomeCtrl', ['$scope', '$http', '$location','AutoCompleteResource', function($scope, $http, $location,AutoCompleteResource) {
-    // Declare variables that will be used. Not needed but makes the code clear to understand.
-
-    $scope.search = function () {
-        $scope.currentSearchTerm = $scope.searchSettings.q;
-
-        $scope.reload();
-    };
+angular.module('systemModule').controller('HomeCtrl', ['$scope', '$http', '$location','AutoCompleteResource',
+    function($scope, $http, $location,AutoCompleteResource) {
 
     $scope.searchSettings =  {"q": ''};
 
@@ -13,13 +7,9 @@ angular.module('systemModule').controller('HomeCtrl', ['$scope', '$http', '$loca
         return AutoCompleteResource.getAutoComplete(searchTerm);
     }
 
-    $scope.gotoSearch = function() {
-        $location.url( '/cde/search' );
-    };
-
     $scope.submitForm = function( isValid ) {
         if( isValid ) {
-            $scope.gotoSearch();
+            $location.assign('/#/cde/search?q=' + $scope.searchSettings.q);
         } else {
             alert( 'Please correct form error(s) and resubmit.' );
         }

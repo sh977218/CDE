@@ -50,6 +50,13 @@ exports.init = function(app) {
         res.render(req.params.template, req.params.module, {config: viewConfig, module: req.params.module});
     });
 
+    app.get('/cde/search', function(req, res) {
+        res.render('index', 'system', {config: viewConfig, loggedIn: req.user?true:false});
+    });
+    app.get('/home', function(req, res) {
+        res.render('index', 'system', {config: viewConfig, loggedIn: req.user?true:false});
+    });
+
     var token = mongo_data_system.generateTinyId();
     setInterval(function() {
         token = mongo_data_system.generateTinyId();
