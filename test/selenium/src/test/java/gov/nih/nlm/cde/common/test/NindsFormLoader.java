@@ -9,14 +9,21 @@ import org.testng.annotations.Test;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 public class NindsFormLoader extends NlmCdeBaseTest {
+    DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+
     @Test
     public void NindsFormLoaderRun() {
         driver.manage().window().setSize(new Dimension(2000, 10000));
-        ArrayList<Form> forms = new ArrayList<Form>();
+        Set<Form> forms = new HashSet<Form>();
         String url = "http://www.commondataelements.ninds.nih.gov/CRF.aspx";
         driver.get(url);
         textPresent("or the external links, please contact the NINDS CDE Project Officer, Joanne Odenkirchen, MPH.");
@@ -41,7 +48,7 @@ public class NindsFormLoader extends NlmCdeBaseTest {
         printForms(forms);
     }
 
-    private void saveToJson(ArrayList<Form> forms) {
+    private void saveToJson(Set<Form> forms) {
         Gson gson = new Gson();
         String json = gson.toJson(forms);
         try {
@@ -53,12 +60,12 @@ public class NindsFormLoader extends NlmCdeBaseTest {
         }
     }
 
-    private void printForms(ArrayList<Form> forms) {
-        //System.out.println("forms size: " + forms.size());
+    private void printForms(Set<Form> forms) {
+        System.out.println("forms size: " + forms.size());
     }
 
     private void printForm(Form form) {
-        //System.out.println("form: " + form.toString());
+        System.out.println("form: " + form.toString());
     }
 
     private void goToMainPage() {
@@ -73,7 +80,7 @@ public class NindsFormLoader extends NlmCdeBaseTest {
         driver.switchTo().window(originalHandle);
     }
 
-    private void nextPage(String textToBePresent, ArrayList<Form> forms) {
+    private void nextPage(String textToBePresent, Set<Form> forms) {
         findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
         textPresent(textToBePresent);
         hangon(10);
@@ -81,8 +88,6 @@ public class NindsFormLoader extends NlmCdeBaseTest {
     }
 
     void getCdes(Form form, WebElement td) {
-
-
         WebElement a = null;
         try {
             a = td.findElement(By.cssSelector("a"));
@@ -91,25 +96,24 @@ public class NindsFormLoader extends NlmCdeBaseTest {
         }
         if (a != null) {
             a.click();
-            hangon(60);
+            hangon(30);
             switchTab(1);
             textPresent("Item count:");
             String selector = "//tbody[tr/td/div[text() = 'CDE ID']]//tr";
             List<WebElement> trs = driver.findElements(By.xpath(selector));
-            ArrayList<String> cdes = new ArrayList<String>();
             for (int i = 2; i < trs.size(); i++) {
                 WebElement tr = trs.get(i);
                 List<WebElement> tds = tr.findElements(By.cssSelector("td"));
                 String cdeId = tds.get(0).getText().trim();
-                cdes.add(cdeId);
+                form.cdes.add(cdeId);
             }
-            form.setCdes(cdes);
             switchTabAndClose(0);
         }
     }
 
-    private void findAndSaveToForms(ArrayList<Form> forms) {
+    private void findAndSaveToForms(Set<Form> forms) {
         List<WebElement> trs = driver.findElements(By.cssSelector("#ContentPlaceHolder1_dgCRF > tbody > tr"));
+        Form.Classification classification = new Form.Classification();
         for (int i = 1; i < trs.size(); i++) {
             List<WebElement> tds = trs.get(i).findElements(By.cssSelector("td"));
             Form form = new Form();
@@ -118,9 +122,9 @@ public class NindsFormLoader extends NlmCdeBaseTest {
                 WebElement td = tds.get(j);
                 String text = td.getText();
                 if (index == 1)
-                    form.setName(text);
+                    form.naming.designation = text;
                 if (index == 2)
-                    form.setDescription(text);
+                    form.naming.definition = text;
                 if (index == 3) {
                     WebElement img = null;
                     try {
@@ -128,27 +132,35 @@ public class NindsFormLoader extends NlmCdeBaseTest {
                     } catch (Exception e) {
                     }
                     if (img != null) {
-                        form.setIsCopyrighted(true);
+                        form.isCopyrighted = true;
                     }
                 }
                 if (index == 4) {
                     WebElement a = td.findElement(By.cssSelector("a"));
                     if (a != null) {
                         String href = a.getAttribute("href");
-                        form.setDownload(href);
+                        Form.ReferenceDocument referenceDocument = new Form.ReferenceDocument();
+                        referenceDocument.uri = href;
+                        form.referenceDocuments.add(referenceDocument);
                     }
                 }
                 if (index == 5) {
                     getCdes(form, td);
                 }
                 if (index == 6)
-                    form.setVersionNum(text);
+                    form.version = text;
                 if (index == 7)
-                    form.setVersionDate(text);
-                if (index == 8)
-                    form.setDiseaseName(text);
-                if (index == 9)
-                    form.setSubDiseaseName(text);
+                    try {
+                        form.updated = format.parse(text);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                if (index == 8) {
+                    form.disease.name = text;
+                }
+                if (index == 9) {
+                    form.subDisease.name = text;
+                }
                 index++;
             }
             printForm(form);
