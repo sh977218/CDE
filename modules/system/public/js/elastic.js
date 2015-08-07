@@ -18,7 +18,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , selectedOrgAlt: queryParams.selectedOrgAlt
                 , selectedElements: queryParams.classification
                 , selectedElementsAlt: queryParams.classificationAlt
-                , currentPage: queryParams.currentPage
+                , page: queryParams.page
                 , includeAggregations: true
                 , selectedStatuses: regStatuses
                 , searchToken: this.searchToken

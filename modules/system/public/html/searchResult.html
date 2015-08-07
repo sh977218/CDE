@@ -31,13 +31,13 @@
 <div class="container-fluid searchInfo">
     <span tabindex="0" class="pt8 pb8 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for
         <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> |
-        <span class="label label-success" id="classif_filter">{{classificationFilters[0].org?getSelectedClassifications():'All Classifications'}}</span>
-        <span ng-show="altClassificationFilterMode === 1">and
-            <span class="label label-success">{{classificationFilters[1].org?getSelectedClassificationsAlt():'All Classifications'}}
+        <span class="label label-success" id="classif_filter" ng-bind="getSelectedClassifications()"></span>
+        <span ng-show="altClassificationFilterMode">and
+            <span class="label label-success">{{getSelectedClassificationsAlt()}}
                 <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl5"
                    ng-click="toggleAltClassificationFilterMode()" tooltip="Remove this classifications filter"
                    tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true"></i></span>
-        </span> | {{getSelectedStatuses()?getSelectedStatuses():'All Statuses'}}</span>
+        </span> | {{getSelectedStatuses()}}</span>
 
         <span ng-controller="ExportCtrl">
             <a ng-click="exportSearchResults()" ng-show="totalItems>0 && cPage !== 'forms'">
@@ -68,7 +68,7 @@
 
 <div class="container-fluid pt30">
     <script type="text/ng-template"  id="facet_elements_tree.html">
-        <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="classificationFilters[0].elements.indexOf(e.name) > -1">
+        <span ng-click="selectElement(e)" class="hand-cursor" ng-switch="searchSettings.classification.indexOf(e.name) > -1">
                 <i ng-switch-when="true" class="fa fa-angle-down" id="li-checked-{{e.name}}" ></i>
                 <i ng-switch-when="false" class="fa fa-angle-right" id="li-blank-{{e.name}}" ></i>
                 <span>
@@ -77,7 +77,7 @@
             </span>
         <div ng-show="selectedElements.indexOf(e.name) > -1" style="margin-left: 5px">
             <div ng-repeat="e in e.elements | orderBy:'name'"
-                 ng-show="classificationFilters[0].elements.indexOf(e.name) > -1 || e.level > classificationFilters[0].elements.length"
+                 ng-show="searchSettings.classification.indexOf(e.name) > -1 || e.level > searchSettings.classification.length"
                  ng-include="'facet_elements_tree.html'"
                     >
             </div>
@@ -87,14 +87,14 @@
         <div ng-class="{'col-xs-3 col-lg-2' : filterMode===true}" ng-show="filterMode" ng-if="cdes.length > 0">
             <p tabindex="0" ng-show="aggregations.orgs.buckets" class="gray">Filter by:</p>
             <strong tabindex="0" ng-show="aggregations.orgs.buckets" id="classif_filter_title">Classification
-                <a href tabindex="0" class="nonLinkAnchor" id="altClassificationFilterModeToggle" ng-hide="altClassificationFilterMode===1"
+                <a href tabindex="0" class="nonLinkAnchor" id="altClassificationFilterModeToggle" ng-hide="altClassificationFilterMode"
                    ng-click="toggleAltClassificationFilterMode()" tooltip="Add a second classifications filter as an AND condition"
                    tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                     <i class="fa fa-plus-square hand-cursor" ></i></a></strong>
             <div class="pl5" id="classificationListHolder">
                 <a tabindex="0" href class="nonLinkAnchor displayBlock"
                    ng-repeat="t in aggregations.orgs.buckets | orderBy:'key'"
-                   ng-switch="t.key === classificationFilters[altClassificationFilterMode].org"
+                   ng-switch="t.key === getCurrentSelectedOrg()"
                    ng-click="alterOrgFilter(t.key)"
                    ng-show="t.key === getCurrentSelectedOrg() || !getCurrentSelectedOrg()">
                         <span class="hand-cursor" tooltip="{{t.longName}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
@@ -118,7 +118,7 @@
                     <a tabindex="0" href class="nonLinkAnchor displayBlock" ng-click="selectElement(b.name)"
                        ng-repeat="b in (altClassificationFilterMode?aggregations.flatClassificationAlt:aggregations.flatClassification) | orderBy:'name'"
                        style="margin-left:{{(classificationFilters[altClassificationFilterMode].elements.length + 1) * 10}}px;">
-                            <span class="hand-cursor" ng-switch="getSelectedClassification().length.indexOf(b.name) > -1">
+                            <span class="hand-cursor" ng-switch="getCurrentSelectedClassification().length.indexOf(b.name) > -1">
                                 <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{b.name}}" ></i>
                                 <i ng-switch-when="false" class="fa fa-chevron-right" id="li-blank-{{b.name}}" ></i>
                                 <span>
@@ -149,7 +149,7 @@
                 </span>
             <span ng-include="'/template/system/switchListViewContent.ejs'"></span>
             <pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems" items-per-page="20"
-                        ng-model="searchForm.currentPage" next-text="Next"></pagination>
+                        ng-model="searchSettings.page" next-text="Next" ng-change="termSearch()"></pagination>
         </div>
     </div>
 </div>

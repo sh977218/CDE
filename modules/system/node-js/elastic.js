@@ -50,11 +50,11 @@ exports.buildElasticSearchQuery = function (settings) {
         }
     };
 
-    regStatusShared.statusList.forEach(function (status) {
-        if (settings.selectedStatuses.indexOf(status) === -1) queryStuff.query.bool.must_not.push({
-            term: {"registrationState.registrationStatus": status}
-        });
-    });
+    //regStatusShared.statusList.forEach(function (status) {
+    //    if (settings.selectedStatuses.indexOf(status) === -1) queryStuff.query.bool.must_not.push({
+    //        term: {"registrationState.registrationStatus": status}
+    //    });
+    //});
 
 
     queryStuff.query.bool.must = [];
@@ -201,7 +201,7 @@ exports.buildElasticSearchQuery = function (settings) {
         delete queryStuff.query.bool.must;
     }
 
-    queryStuff.from = (settings.currentPage - 1) * settings.resultPerPage;
+    queryStuff.from = (settings.page - 1) * settings.resultPerPage;
 
     queryStuff.highlight = {
         "order": "score"

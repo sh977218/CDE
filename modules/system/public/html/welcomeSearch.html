@@ -9,17 +9,15 @@
             <form name="quickSearchForm" id="quickSearchForm" novalidate method="GET">
                 <div class="input-group input-group-lg">
                     <label class="sr-only" for="ftsearch-input">Search Terms</label>
-                    <input name="q" id="ftsearch-input" type="text" class="form-control"
-                           ng-model="searchForm.q"
-                           ng-maxlength="500" placeholder="Search Elements"
+                    <input name="q" id="ftsearch-input" class="form-control search-query" type="text"
+                           ng-model="searchSettings.q" ng-maxlength="500" aria-labelledby="l1"
                            typeahead-wait-ms="500" typeahead-min-length="3"
                            typeahead="searchQuery for searchQuery in getAutoComplete($viewValue) | filter:$viewValue | limitTo:8"
                            typeahead-focus-first="false" typeahead-on-select="searchAction()">
 
                     <div class="input-group-btn">
-                        <a id="search.submit" class="btn btn-danger btn-lg"
-                                ng-disabled="quickSearchForm.$invalid" ng-href="{{generateSearchForTerm()}}">
-                            <i class="fa fa-search"></i><span class="hidden-xs"> Search</span></a>
+                        <button id="search.submit" ng-click="termSearch()" type="submit" class="btn btn-danger btn-lg" >
+                            <i class="fa fa-search"></i> Search</button>
                     </div>
                 </div>
 
