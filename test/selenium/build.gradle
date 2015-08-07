@@ -24,10 +24,10 @@ dependencies {
 }
 
 tasks.withType(Test) {
-    systemProperty 'testUrl', System.getProperty('testUrl', testUrl)
-    systemProperty 'hubUrl', System.getProperty('hubUrl', hubUrl)
-    systemProperty 'timeout', timeout
-    systemProperty 'browser', browser
+//    systemProperty 'testUrl', System.getProperty('testUrl', testUrl)
+//    systemProperty 'hubUrl', System.getProperty('hubUrl', hubUrl)
+//    systemProperty 'timeout', timeout
+//    systemProperty 'browser', browser
 }
 
 test {
@@ -35,7 +35,7 @@ test {
     beforeTest { descriptor ->
         logger.lifecycle("Running test: " + descriptor)
     }
-    maxParallelForks = Integer.parseInt(forkNb)
+//    maxParallelForks = Integer.parseInt(forkNb)
 
     testLogging {
         // Uncomment to display system.out and system.err messages
