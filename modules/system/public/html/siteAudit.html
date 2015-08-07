@@ -1,19 +1,17 @@
 <div ng-controller="SiteAuditCtrl">
     <div tabset class="pt40 pb40 container" >
         <div tab heading="{{tabs[0].title}}" active="tabs[0].active">
-            <%- include logAudit.ejs %>
+            <div ng-include="'/system/public/html/logAudit.html'"></div>
         </div>
         <div tab heading="{{tabs[1].title}}" active="tabs[1].active">
-            <%- include dailyUsage.ejs %>
+            <div ng-include="'/system/public/html/dailyUsage.html'"></div>
         </div>
 
-        <% for (module in config.modules) { if (!config.modules[module].audit) continue; %>
-            <div tab heading="{{tabs[4].title}}">
-                <div class="table" ng-controller="AuditLogCtrl">
-                    <div ng-include="'/system/public/html/auditLog.html'" ng-init="module='<%= module %>'"></div>
-                </div>
+        <div tab heading="{{tabs[4].title}}">
+            <div class="table" ng-controller="AuditLogCtrl">
+                <div ng-include="'/system/public/html/auditLog.html'" ng-init="module='cde'"></div>
             </div>
-        <% } %>
+        </div>
 
         <div tab heading="{{tabs[5].title}}">
             <div class="table" ng-controller="ClassificationAuditLogCtrl" id="ClassificationAudit">

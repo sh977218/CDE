@@ -1,9 +1,13 @@
 angular.module('systemModule').controller('MainCtrl',
-    ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory', '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard',
-        function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers, QuickBoard) {
+    ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory'
+        , '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard',
+        function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory
+            , $interval, $window, screenSize, OrgHelpers, QuickBoard)
+{
 
     $scope.quickBoard = QuickBoard;
     QuickBoard.restoreFromLocalStorage();
+    $scope.formEnabled = window.formEnabled;
 
     // Global variables
     var GLOBALS = {

@@ -13,18 +13,19 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 }
             }).
             when('/home', {controller: 'HomeCtrl', templateUrl: '/system/public/html/home.html'}).
-            when('/login', {controller: 'AuthCtrl', templateUrl: '/login'}).
-            when('/signup', {controller: 'AuthCtrl', templateUrl: '/signup'}).
-            when('/siteAudit', {templateUrl: '/siteaudit'}).
+            when('/login', {controller: 'AuthCtrl', templateUrl: '/system/public/html/login.html'}).
+            when('/siteAudit', {templateUrl: '/system/public/html/siteAudit.html'}).
             when('/inbox', {controller: 'InboxCtrl', templateUrl: '/system/public/html/inbox.html'}).
             when('/siteaccountmanagement', {
                 controller: 'AccountManagementCtrl',
-                templateUrl: '/siteaccountmanagement'
+                templateUrl: '/system/public/html/siteAccountManagement.html'
             }).
-            when('/orgaccountmanagement', {controller: 'AccountManagementCtrl', templateUrl: '/orgaccountmanagement'}).
+            when('/orgaccountmanagement', {
+                controller: 'AccountManagementCtrl',
+                templateUrl: '/system/public/html/orgAccountManagement.html'}).
             when('/classificationmanagement', {
                 controller: 'ClassificationManagementCtrl',
-                templateUrl: '/template/system/classificationManagement'
+                templateUrl: '/system/public/html/classificationManagement.html'
             }).
             when('/profile', {controller: 'ProfileCtrl', templateUrl: '/profile'}).
             when('/triggerClientException', {

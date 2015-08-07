@@ -4,6 +4,7 @@ angular.module('systemModule').controller('ListCtrl',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
                   SearchSettings, QuickBoard, AutoCompleteResource, $location) {
 
+    $scope.autocomplete = AutoCompleteResource;
     $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
     $scope.searchSettings = {
@@ -23,10 +24,6 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.selectedElements = [];
     $scope.selectedElementsAlt = [];
-
-    $scope.getAutoComplete = function (searchTerm) {
-        return AutoCompleteResource.getAutoComplete(searchTerm);
-    };
 
      var focusClassification = function(){
         //any good angular way to do this?
