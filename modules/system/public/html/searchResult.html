@@ -29,7 +29,15 @@
 
 <hr class="searchInfoHr"/>
 <div class="container-fluid searchInfo">
-    <span tabindex="0" class="pt8 pb8 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> | <span class="label label-success" id="classif_filter">{{classificationFilters[0].org?getSelectedClassifications():'All Classifications'}}</span> <span ng-show="altClassificationFilterMode === 1">and <span class="label label-success">{{classificationFilters[1].org?getSelectedClassificationsAlt():'All Classifications'}} <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl5" ng-click="toggleAltClassificationFilterMode()" tooltip="Remove this classifications filter" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true"></i></span></span> | {{getSelectedStatuses()?getSelectedStatuses():'All Statuses'}}</span>
+    <span tabindex="0" class="pt8 pb8 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for
+        <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> |
+        <span class="label label-success" id="classif_filter">{{classificationFilters[0].org?getSelectedClassifications():'All Classifications'}}</span>
+        <span ng-show="altClassificationFilterMode === 1">and
+            <span class="label label-success">{{classificationFilters[1].org?getSelectedClassificationsAlt():'All Classifications'}}
+                <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl5"
+                   ng-click="toggleAltClassificationFilterMode()" tooltip="Remove this classifications filter"
+                   tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true"></i></span>
+        </span> | {{getSelectedStatuses()?getSelectedStatuses():'All Statuses'}}</span>
 
         <span ng-controller="ExportCtrl">
             <a ng-click="exportSearchResults()" ng-show="totalItems>0 && cPage !== 'forms'">
@@ -79,14 +87,16 @@
         <div ng-class="{'col-xs-3 col-lg-2' : filterMode===true}" ng-show="filterMode" ng-if="cdes.length > 0">
             <p tabindex="0" ng-show="aggregations.orgs.buckets" class="gray">Filter by:</p>
             <strong tabindex="0" ng-show="aggregations.orgs.buckets" id="classif_filter_title">Classification
-                <a href tabindex="0" class="nonLinkAnchor" id="altClassificationFilterModeToggle" ng-hide="altClassificationFilterMode===1" ng-click="toggleAltClassificationFilterMode()" tooltip="Add a second classifications filter as an AND condition" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
+                <a href tabindex="0" class="nonLinkAnchor" id="altClassificationFilterModeToggle" ng-hide="altClassificationFilterMode===1"
+                   ng-click="toggleAltClassificationFilterMode()" tooltip="Add a second classifications filter as an AND condition"
+                   tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                     <i class="fa fa-plus-square hand-cursor" ></i></a></strong>
             <div class="pl5" id="classificationListHolder">
                 <a tabindex="0" href class="nonLinkAnchor displayBlock"
                    ng-repeat="t in aggregations.orgs.buckets | orderBy:'key'"
                    ng-switch="t.key === classificationFilters[altClassificationFilterMode].org"
                    ng-click="alterOrgFilter(t.key)"
-                   ng-show="t.key === classificationFilters[altClassificationFilterMode].org || !classificationFilters[altClassificationFilterMode].org">
+                   ng-show="t.key === getCurrentSelectedOrg() || !getCurrentSelectedOrg()">
                         <span class="hand-cursor" tooltip="{{t.longName}}" tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                             <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>
                             <i ng-switch-default class="fa fa-chevron-right" id="li-blank-{{t.key}}" ></i>
@@ -94,8 +104,10 @@
                         </span>
                 </a>
                 <div id="classification-facets">
-                    <a tabindex="0" href class="nonLinkAnchor displayBlock" ng-click="selectElement(e)" ng-repeat="e in classificationFilters[altClassificationFilterMode].elements" style="margin-left:{{($index + 1) * 10}}px;">
-                            <span class="hand-cursor" ng-switch="classificationFilters[altClassificationFilterMode].elements.indexOf(e) > -1">
+                    <a tabindex="0" href class="nonLinkAnchor displayBlock"
+                       ng-repeat="e in getCurrentSelectedClassification()"
+                       ng-click="selectElement(e)" style="margin-left:{{($index + 1) * 10}}px;">
+                            <span class="hand-cursor" ng-switch="getCurrentSelectedClassification().indexOf(e) > -1">
                                 <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{e}}" ></i>
                                 <i ng-switch-when="false" class="fa fa-chevron-right" id="li-blank-{{e}}" ></i>
                                 <span>
@@ -103,8 +115,10 @@
                                 </span>
                             </span>
                     </a>
-                    <a tabindex="0" href class="nonLinkAnchor displayBlock" ng-click="selectElement(b.name)" ng-repeat="b in (altClassificationFilterMode===1 ? aggregations.flatClassificationAlt : aggregations.flatClassification) | orderBy:'name'" style="margin-left:{{(classificationFilters[altClassificationFilterMode].elements.length + 1) * 10}}px;">
-                            <span class="hand-cursor" ng-switch="classificationFilters[altClassificationFilterMode].elements.length.indexOf(b.name) > -1">
+                    <a tabindex="0" href class="nonLinkAnchor displayBlock" ng-click="selectElement(b.name)"
+                       ng-repeat="b in (altClassificationFilterMode?aggregations.flatClassificationAlt:aggregations.flatClassification) | orderBy:'name'"
+                       style="margin-left:{{(classificationFilters[altClassificationFilterMode].elements.length + 1) * 10}}px;">
+                            <span class="hand-cursor" ng-switch="getSelectedClassification().length.indexOf(b.name) > -1">
                                 <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{b.name}}" ></i>
                                 <i ng-switch-when="false" class="fa fa-chevron-right" id="li-blank-{{b.name}}" ></i>
                                 <span>
@@ -117,13 +131,13 @@
             <br/>
             <strong tabindex="0" ng-show="aggregations.statuses.buckets" id="status_filter">Registration Status</strong>
             <div class="pl5" id="registrationStatusListHolder">
-                    <span class="hand-cursor" ng-repeat="t in registrationStatuses" tooltip-html-unsafe="{{t.help}}"
+                    <span class="hand-cursor" ng-repeat="t in aggregations.statuses.buckets" tooltip-html-unsafe="{{getRegStatusHelp(t.key)}}"
                           tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
-                        <a href class="nonLinkAnchor displayBlock" tabindex="0" ng-if="t.count > 0"
-                           style="margin-right: 0px" ng-switch="t.selected" ng-click="addStatusFilter(t)">
-                            <i ng-switch-default class="fa fa-square-o" id="li-blank-{{t.name}}"></i>
-                            <i ng-switch-when="true" class="fa fa-check-square-o" id="li-checked-{{t.name}}"></i>
-                            <small id="status-text-{{t.name}}"> {{t.name}} ({{t.count}})</small>
+                        <a href class="nonLinkAnchor displayBlock" tabindex="0" ng-if="t.doc_count > 0"
+                           style="margin-right: 0px" ng-switch="searchSettings.regStatuses.indexOf(t.key) > -1" ng-click="addStatusFilter(t.key)">
+                            <i ng-switch-default class="fa fa-square-o" id="li-blank-{{t.key}}"></i>
+                            <i ng-switch-when="true" class="fa fa-check-square-o" id="li-checked-{{t.key}}"></i>
+                            <small id="status-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
                         </a>
                     </span>
             </div>

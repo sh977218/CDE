@@ -50,12 +50,12 @@ exports.buildElasticSearchQuery = function (settings) {
         }
     };
 
-    var visibleRegStatuses = settings.visibleRegStatuses;
     regStatusShared.statusList.forEach(function (status) {
-        if (visibleRegStatuses.indexOf(status) === -1) queryStuff.query.bool.must_not.push({
+        if (settings.selectedStatuses.indexOf(status) === -1) queryStuff.query.bool.must_not.push({
             term: {"registrationState.registrationStatus": status}
         });
     });
+
 
     queryStuff.query.bool.must = [];
 
@@ -105,21 +105,11 @@ exports.buildElasticSearchQuery = function (settings) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrgAlt}});
     }
 
-    var buildFilter = function (allowedStatuses, selectedStatuses) {
-        var regStatuses = selectedStatuses;
-        if (!regStatuses) regStatuses = [];
+    var buildFilter = function (selectedStatuses) {
         var regStatusOr = [];
-        for (var i = 0; i < regStatuses.length; i++) {
-            var t = regStatuses[i];
-            if (t.selected === true) {
-                regStatusOr.push({term: {"registrationState.registrationStatus": t.name}});
-            }
-        }
-        if (regStatusOr.length === 0) {
-            allowedStatuses.forEach(function (regStatus) {
-                regStatusOr.push({term: {"registrationState.registrationStatus": regStatus}});
-            });
-        }
+        selectedStatuses.forEach(function(regStatus) {
+            regStatusOr.push({term: {"registrationState.registrationStatus": regStatus}});
+        });
         var filter = {and: []};
         if (regStatusOr.length > 0) {
             filter.and.push({or: regStatusOr});
@@ -127,7 +117,7 @@ exports.buildElasticSearchQuery = function (settings) {
         return filter;
     };
 
-    settings.filter = buildFilter(settings.visibleRegStatuses, settings.selectedStatuses);
+    settings.filter = buildFilter(settings.selectedStatuses);
 
     if (settings.filter !== undefined) {
         if (settings.filter.and !== undefined) {

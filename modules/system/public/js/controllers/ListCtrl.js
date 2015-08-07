@@ -13,6 +13,7 @@ angular.module('systemModule').controller('ListCtrl',
         , page: 1
         , classification: []
         , classificationAlt: []
+        , regStatuses: []
     };
 
     $scope.currentSearchTerm = $scope.searchSettings.q;
@@ -27,13 +28,6 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.selectedElements = [];
     $scope.selectedElementsAlt = [];
-
-    // @TODO replace with routeParams
-    //$scope.selectedOrg = $scope.cache.get($scope.getCacheName("selectedOrg"));
-    //$scope.selectedElements = $scope.cache.get($scope.getCacheName("selectedElements"));
-
-    //$scope.selectedOrgAlt = $scope.cache.get($scope.getCacheName("selectedOrgAlt"));
-    //$scope.selectedElementsAlt = $scope.cache.get($scope.getCacheName("selectedElementsAlt"));
 
     $scope.getAutoComplete = function (searchTerm) {
         return AutoCompleteResource.getAutoComplete(searchTerm);
@@ -78,13 +72,6 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.toggleAltClassificationFilterMode = function() {
         $scope.altClassificationFilterMode = !$scope.altClassificationFilterMode;
-        //if ($scope.altClassificationFilterMode === 0) {
-        //    $scope.altClassificationFilterMode = 1;
-        //} else {
-        //    $scope.altClassificationFilterMode = 0;
-        //    $scope.classificationFilters[1].org = undefined;
-        //    $scope.classificationFilters[1].elements = [];
-        //}
         // @TODO replace with redirect
         //$scope.reload();
         $scope.focusClassification();
@@ -99,59 +86,51 @@ angular.module('systemModule').controller('ListCtrl',
         //$scope.reload();
     });
 
-    userResource.getPromise().then(function(){
-        // @TODO Why are we doing this? probably old because of how we built ES query. Remove.
-        //$scope.reload()
-    });
-
     $scope.isAllowed = function (cde) {
         return false;
     };
 
-
-    $scope.alterOrgFilter = function(orgName){
-        var thingToAlter = $scope.altClassificationFilterMode?$scope.searchSettings.selectedOrgAlt:$scope.searchSettings.selectedOrg;
-        if (thingToAlter === undefined) {
-            addOrgFilter(orgName);
-        } else {
-            removeOrgFilter(orgName);
-        }
-        delete $scope.aggregations.groups;
-        $scope.reload();
-        $scope.focusClassification();
+    $scope.getCurrentSelectedOrg = function() {
+        return $scope.altClassificationFilterMode?$scope.searchSettings.selectedOrgAlt:$scope.searchSettings.selectedOrg;
     };
 
+    $scope.getCurrentSelectedClassification = function() {
+        return $scope.altClassificationFilterMode?$scope.searchSettings.classificationAlt:$scope.searchSettings.classification;
+    };
+
+
     $scope.alterOrgFilter = function(orgName){
-        if (thingToAlter === undefined) {
-            $scope.searchSettings.selectedOrgAlt = orgName;
+        var orgToAlter = $scope.altClassificationFilterMode?$scope.searchSettings.selectedOrgAlt:$scope.searchSettings.selectedOrg;
+        var classifToAlter = $scope.getCurrentSelectedClassification();
+
+        if (orgToAlter === undefined) {
+            $scope.altClassificationFilterMode
+                ?$scope.searchSettings.selectedOrgAlt = orgName:
+                $scope.searchSettings.selectedOrg = orgName;
         } else {
-            $scope.classificationFilters[$scope.altClassificationFilterMode].org = undefined;
-            $scope.classificationFilters[$scope.altClassificationFilterMode].elements = [];
+            classifToAlter.length = 0;
         }
-        //if ($scope.classificationFilters[$scope.altClassificationFilterMode].org === undefined) {
-        //    addOrgFilter(orgName);
-        //} else {
-        //    removeOrgFilter(orgName);
-        //}
         delete $scope.aggregations.groups;
-        $scope.reload();
+
+        // @TODO
+        $scope.termSearch();
         $scope.focusClassification();
     };
 
     $scope.selectElement = function(e) {
-        if ($scope.classificationFilters[$scope.altClassificationFilterMode].elements.length === 0) {
-            $scope.classificationFilters[$scope.altClassificationFilterMode].elements = [];
-            $scope.classificationFilters[$scope.altClassificationFilterMode].elements.push(e);
+        var classifToSelect = $scope.altClassificationFilterMode?$scope.searchSettings.classificationAlt:$scope.searchSettings.classification;
+        if (classifToSelect.length === 0) {
+            classifToSelect.length = 0;
+            classifToSelect.push(e);
         } else {
-            var i = $scope.classificationFilters[$scope.altClassificationFilterMode].elements.indexOf(e);
+            var i = classifToSelect.indexOf(e);
             if (i > -1) {
-                $scope.classificationFilters[$scope.altClassificationFilterMode].elements.length = i;
+                classifToSelect.length = i;
             } else {
-                $scope.classificationFilters[$scope.altClassificationFilterMode].elements.push(e);
+                classifToSelect.push(e);
             }
         }
-        $scope.cache.put($scope.getCacheName($scope.altClassificationFilterMode===0?"selectedElements":"selectedElementsAlt"), $scope.classificationFilters[$scope.altClassificationFilterMode].elements);
-        $scope.reload();
+        $scope.termSearch();
         $scope.focusClassification();
     };
 
@@ -255,12 +234,12 @@ angular.module('systemModule').controller('ListCtrl',
     $scope.generateSearchForTerm = function () {
         var searchLink = "/" + $scope.module + "/search?"
         if ($scope.searchSettings.q) searchLink += "q=" + $scope.searchSettings.q;
-        if ($scope.selectedOrg) searchLink += "&selectedOrg=" + $scope.selectedOrg;
-        var _selectRegStatuses = $scope.registrationStatuses.filter(function(regStatus) {
-            return regStatus.selected;
-        });
-        if (_selectRegStatuses.length > 0) {
-            searchLink += "&regStatuses=" + _selectRegStatuses.map(function(r) {return r.name;}).join(',');
+        if ($scope.searchSettings.selectedOrg) searchLink += "&selectedOrg=" + $scope.searchSettings.selectedOrg;
+        if ($scope.searchSettings.regStatuses.length > 0) {
+            searchLink += "&regStatuses=" + $scope.searchSettings.regStatuses.join(';');
+        }
+        if ($scope.searchSettings.classification && $scope.searchSettings.classification.length > 0) {
+            searchLink += "&classification=" + $scope.searchSettings.classification.join(';');
         }
         return searchLink;
     };
@@ -270,14 +249,11 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.searchSettings.currentPage = $routeParams.currentPage;
         $scope.searchSettings.selectedOrg = $routeParams.selectedOrg;
         $scope.searchSettings.selectedOrgAlt = $routeParams.selectedOrgAlt;
-        $scope.searchSettings.selectedClassification = $routeParams.classification
-        $scope.searchSettings.selectedClassificationAlt = $routeParams.classificationAlt
+        $scope.searchSettings.classification = $routeParams.classification?$routeParams.classification.split(';'):[];
+        $scope.searchSettings.classificationAlt = $routeParams.classificationAlt?$routeParams.classificationAlt.split(';'):[];
         $scope.currentSearchTerm = $scope.searchSettings.q;
-        $scope.searchSettings.selectedStatuses = $routeParams.regStatuses?$routeParams.regStatuses.split(','):[];
+        $scope.searchSettings.regStatuses = $routeParams.regStatuses?$routeParams.regStatuses.split(';'):[];
 
-        //$scope.registrationStatuses.forEach(function (r) {
-        //    r.selected = _selectedStatuses.indexOf(r.name) > -1;
-        //});
         $scope.classificationFilters = [{
             org: $scope.selectedOrg
             , elements: $scope.selectedElements
@@ -299,8 +275,10 @@ angular.module('systemModule').controller('ListCtrl',
         $location.url(loc);
     };
 
-    $scope.addStatusFilter = function(t) {
-        t.selected = !t.selected;
+    $scope.addStatusFilter = function(status) {
+        var index = $scope.searchSettings.regStatuses.indexOf(status);
+        if (index > -1) $scope.searchSettings.regStatuses.splice(index, 1);
+        else $scope.searchSettings.regStatuses.push(status);
         $scope.termSearch();
     };
 
@@ -347,5 +325,12 @@ angular.module('systemModule').controller('ListCtrl',
         });
     };
 
+    $scope.getRegStatusHelp = function(key) {
+        var result = "";
+        regStatusShared.statusList.forEach(function(s) {
+            if (s.name === key) result = s.help;
+        });
+        return result;
+    };
 
 }]);

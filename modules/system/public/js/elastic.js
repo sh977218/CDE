@@ -3,6 +3,14 @@ angular.module('ElasticSearchResource', ['ngResource'])
     return {
         searchToken: "id" + Math.random().toString(16).slice(2)
         , buildElasticQuerySettings: function(queryParams){
+            var regStatuses = queryParams.regStatuses;
+            if (!regStatuses) regStatuses = [];
+
+            if (regStatuses.length === 0) {
+                // @TODO need promise here ?
+                regStatuses = SearchSettings.getUserDefaultStatuses();
+            }
+
             return {
                 resultPerPage: queryParams.resultPerPage
                 , searchTerm: queryParams.q
@@ -12,8 +20,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , selectedElementsAlt: queryParams.classificationAlt
                 , currentPage: queryParams.currentPage
                 , includeAggregations: true
-                , visibleRegStatuses: SearchSettings.getUserDefaultStatuses()
-                , selectedStatuses: queryParams.selectedStatuses
+                , selectedStatuses: regStatuses
                 , searchToken: this.searchToken
             };
         }
