@@ -1,6 +1,8 @@
 <div class="form-group">
     <label>Name</label>
-    <input id="cdeName" type="text" class="form-control" required ng-model="elt.naming[0].designation" name="elt.designation" ng-change="showSuggestions()">
+    <input id="cdeName" type="text" class="form-control" required
+           ng-model-options='{ debounce: 1000 }' ng-model="elt.naming[0].designation"
+           name="elt.designation" ng-change="showSuggestions()">
     <span ng-show="createCde.elt.naming[0].designation.$error.required">Required</span>
 </div>
 
@@ -20,7 +22,7 @@
 
 <div class="form-group" ng-show="elt.stewardOrg.name">
     <label for="selectDefault">Classifications</label>
-    <div ng-include="'/template/system/classificationBody'">
+    <div ng-include="'/system/public/html/classificationBody.html'">
     </div>
     <button class="btn btn-default btn-small" ng-click="openSelectDefaultClassificationModal()" id="addClassification-createCde">Classify this {{module | uppercase}}</button>
 </div>

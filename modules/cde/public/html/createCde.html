@@ -4,9 +4,9 @@
         <form name="createCde" role="form">
             <fieldset>
                 <legend>Create Data Element</legend>
-                <div ng-include="'/template/cde/createCdeForm'"></div>
+                <div ng-include="'/cde/public/html/createCdeForm.html'"></div>
                 <hr/>
-                <a href="#/" class="btn btn-warning">Cancel</a>
+                <a href="/#/" class="btn btn-warning">Cancel</a>
                 <input id="submit" type="submit" ng-click="save()" class="btn btn-success"
                        value="Save" ng-disabled="isClean() || createCde.$invalid || validationErrors() !== null">
                 </input>
@@ -16,7 +16,7 @@
         <div class="col-md-7" ng-show="cdes">
             <h4>Possible Matches</h4>
             <div class="panel-group" id="accordion">                
-                <div ng-include="'/template/cde/cdeAccordionList'" ng-init="ejsPage = 'createcde';"></div>                
+                <div ng-include="'/cde/public/html/cdeAccordionList.html'" ng-init="ejsPage = 'createcde';"></div>
             </div>
         </div>
     </div>

@@ -1,7 +1,7 @@
 <div ng-cloak class="container-fluid mt20" ng-controller="SwitchListViewCtrl">
     <div ng-if="cdes.length > 0">
         <div class="btn-group">
-            <span ng-include="'/template/system/switchListViewControls'"></span>
+            <span ng-include="'/system/public/html/switchListViewControls.html'"></span>
             <button id="qb.compare" ng-disabled="listViewType === 'sideBySide'" value="Side by Side View"
                     ng-click="showSideBySideView()" class="btn btn-default">
                 <i class="fa fa-search"></i> Side by Side View
@@ -42,11 +42,11 @@
     </div>
 
     <div ng-if="quickBoard.elts.length > 0">
-        <span ng-if="listViewType !== 'sideBySide'" ng-include="'/template/system/switchListViewContent.ejs'"
+        <span ng-if="listViewType !== 'sideBySide'" ng-include="'/system/public/html/switchListViewContent.html'"
               ng-init="module='cde'; ejsPage='quickboard'"></span>
 
         <div ng-if="listViewType==='sideBySide'">
-            <div ng-include="'/template/cde/deCompare'"></div>
+            <div ng-include="'/cde/public/html/deCompare.html'"></div>
         </div>
     </div>
 </div>

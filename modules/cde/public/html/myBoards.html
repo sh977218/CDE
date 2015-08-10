@@ -54,7 +54,7 @@
                     <dt>Number of CDEs: </dt><dd id="dd_numb_{{$index}}">{{board.pins.length}}</dd>
                     <dt>Modified: </dt><dd id="dd_mod">{{board.updatedDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
                 </dl>
-                <a class="btn btn-default" href="#/board/{{board._id}}" id="viewBoard_{{board.name}}">View Board</a>
+                <a class="btn btn-default" href="/#/board/{{board._id}}" id="viewBoard_{{board.name}}">View Board</a>
             </div>
         </div>
         <hr/>
@@ -63,6 +63,6 @@
     <button class="btn btn-small btn-default" value="add" ng-click="openNewBoard()" id="addBoard"><i class="fa fa-plus"> </i> Add Board</button>
 
     <script type="text/ng-template" id="newBoardModalContent.html">
-        <%- include newBoardModal.ejs %>
+        <div ng-include="'/cde/public/html/newBoardModal.html'"></div>
     </script>
 </div>

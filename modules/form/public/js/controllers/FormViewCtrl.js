@@ -1,13 +1,16 @@
 angular.module('formModule').controller('FormViewCtrl',
     ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource',
-        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource) {
+        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource)
+{
 
     $scope.module = "form";
     $scope.baseLink = '#/formView?tinyId=';
     $scope.addCdeMode = false;
     $scope.openCdeInNewTab = true;
     $scope.dragEnabled = true;
-    $scope.classifSubEltPage = '/template/system/classif-sub-elements';
+    $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
+    $scope.formLocalRender = window.formLocalRender;
+    $scope.formLoincRender = window.formLoincRender;
 
     $scope.tabs = {
         general: {heading: "General Details"},
@@ -82,7 +85,7 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.openAddClassificationModal = function () {
         $modal.open({
-            templateUrl: '/template/system/classifyForm',
+            templateUrl: '/system/public/html/classifyForm.html',
             controller: 'ClassifyFormCdesModalCtrl',
             resolve: {
                 userOrgs: function () {

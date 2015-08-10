@@ -1,4 +1,5 @@
-angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$modal', '$http', function($scope, $modal, $http) {
+angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$modal', '$http', function($scope, $modal, $http)
+{
     $scope.openNewConcept = function () {
         $modal.open({
           templateUrl: 'newConceptModalContent.html',
@@ -10,22 +11,34 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$modal', '$ht
           }
         });
     };
-    
-    $scope.removeDecConcept = function (index) {
+
+
+
+    $scope.decRemoveConcept = function (index) {
         $scope.elt.dataElementConcept.concepts.splice(index, 1);
         $scope.elt.unsaved = true;
     };
     
-    $scope.removeOcConcept = function (index) {
+    $scope.objectClassRemoveConcept = function (index) {
         $scope.elt.objectClass.concepts.splice(index, 1);
         $scope.elt.unsaved = true;
     };
-    
-    $scope.removePropConcept = function (index) {
+
+    $scope.propertyRemoveConcept = function (index) {
         $scope.elt.property.concepts.splice(index, 1);
         $scope.elt.unsaved = true;
     };
-    
+
+    $scope.removeConcept = function(type) {
+        $scope[type + 'RemoveConcept']();
+    };
+
+    $scope. conceptConfigurations = [
+        {type: "dec", display: "Data Element"},
+        {type: "objectClass", display: "Object Class"},
+        {type: "property", display: "Property"}
+    ];
+
     $scope.relatedCdes = function (concept) {
         $http({method: "POST", url: "/desByConcept", data: concept})
             .success(function (data, status) {

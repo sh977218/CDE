@@ -5,11 +5,11 @@
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.registrationStatus=='Retired'">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is retired.
         <span ng-show="elt.registrationState.replacedBy">
-            <a href="#/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
+            <a href="/#/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.administrativeStatus=='Retire Candidate'">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is about to be retired.
         <span ng-show="elt.registrationState.replacedBy">
-            <a href="#/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a></span></div>
+            <a href="/#/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a></span></div>
     <div class="alert alert-info mt20" role="alert" ng-show="displayStatusWarning"><i class="fa fa-exclamation-triangle"></i>
         <strong>Note:</strong> You may not edit this CDE because it is standard.</div>
     <div class="alert alert-info mt20" role="alert" ng-show="elt.forkOf"><i class="fa fa-exclamation-triangle"></i>
@@ -30,16 +30,16 @@
                <div ng-include="'/cde/public/html/cdespecificdetails.html'"></div>
            </div>
            <div tab heading="{{tabs['pvs'].heading}}">
-               <div ng-include="'/cde/public/html/valueDomainView.ejs'"></div>
+               <div ng-include="'/cde/public/html/valueDomainView.html'"></div>
             </div>
             <div tab heading="{{tabs['naming'].heading}}">
-                <div ng-include="'/cde/public/html/deNaming.ejs'"></div>
+                <div ng-include="'/cde/public/html/deNaming.html'"></div>
             </div>
             <div tab heading="{{tabs['classification'].heading}}" id="classificationTab">
-                <div ng-include="'/system/public/html/lementClassification.ejs'"></div>
+                <div ng-include="'/system/public/html/elementClassification.html'"></div>
             </div>
             <div tab heading="{{tabs['concepts'].heading}}">
-                <div ng-include="'/cde/public/html/concepts.ejs'"></div>
+                <div ng-include="'/cde/public/html/concepts.html'"></div>
             </div>
             <div tab heading="{{tabs['status'].heading}}">
                 <div ng-include="'/system/public/html/status.html'"></div>
@@ -64,16 +64,16 @@
             </div>
             <div tab heading="{{tabs['boards'].heading}}" id="boards_tab">
                 <h4 tabindex="0">Boards this Data Element is in</h4>
-                <div ng-include="'/cde/public/html/listOfBoards.ejs'"></div>
+                <div ng-include="'/cde/public/html/listOfBoards.html'"></div>
             </div>
             <div tab heading="{{tabs['attachments'].heading}}">
                 <div ng-include="'/system/public/html/attachments.html'"></div>
             </div>
             <div tab heading="{{tabs['mlt'].heading}}">
-                <div ng-include="'/cde/public/html/deMlt.ejs'"></div>
+                <div ng-include="'/cde/public/html/deMlt.html'"></div>
             </div>
             <div tab heading="{{tabs['history'].heading}}">
-                <div ng-include="'/cde/public/html/cdeHistory.ejs'"></div>
+                <div ng-include="'/cde/public/html/cdeHistory.html'"></div>
             </div>
             <div ng-show="!elt.forkOf" tab heading="{{tabs['forks'].heading}}">
                 <div ng-include="'/cde/public/html/forks.html'" ng-controller="ForkCtrl"></div>

@@ -2,7 +2,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement',
         'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q', 'QuickBoard',
         function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes,
-                 isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff, $q, QuickBoard) {
+                 isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff, $q, QuickBoard)
+{
 
     $scope.module = 'cde';
     $scope.baseLink = '#/deview?tinyId=';
@@ -14,7 +15,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.pVTypeheadVsacNameList = [];
     $scope.pVTypeaheadCodeSystemNameList = [];
     $scope.pvLimit = 30;
-    $scope.classifSubEltPage = '/template/system/classif-sub-elements';
+    $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
     $scope.quickBoard = QuickBoard;
 
     $scope.canCurate = false;

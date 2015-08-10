@@ -2,7 +2,7 @@
 <div ng-controller="ConceptsCtrl">
     <div class="row">
         <div class="col-md-5">
-            <%- include deConcepts.ejs %>
+            <div ng-include="'/cde/public/html/deConcepts.html'"></div>
             <hr/>
 
             <button class="btn btn-small btn-default" value="add" ng-click="openNewConcept()" id="addConcept"
@@ -14,10 +14,10 @@
             <accordion>
                 <accordion-group ng-repeat="elt in cdes" heading="{{elt.naming[0].designation}}">
                     <div class="row">
-                        <%- include cdegeneraldetails.ejs %>
+                        <div ng-include="'/cde/public/html/cdegeneraldetails.html'"></div>
                     </div>
                     <div class="row">
-                        <a class='btn btn-default' ng-href="#/deview?tinyId={{elt.tinyId}}">
+                        <a class='btn btn-default' ng-href="/#/deview?tinyId={{elt.tinyId}}">
                             <i class="fa fa-eye"></i>View Full Detail</a>
                     </div>
                 </accordion-group>
@@ -26,6 +26,6 @@
     </div>
 
     <script type="text/ng-template" id="newConceptModalContent.html">
-        <%- include newConceptModal.ejs %>
+        <div ng-include="'/cde/public/html/newConceptModal.html'"></div>
     </script>
 </div>

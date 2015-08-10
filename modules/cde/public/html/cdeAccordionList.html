@@ -3,6 +3,7 @@
         <div accordion-group ng-repeat="cde in cdes track by cde._id" is-open="cde.isOpen">
             <div accordion-heading ng-controller="AccordionCtrl">
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode">
+                <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode">
                     <i class="fa fa-arrows question-move-handle"></i></a>
                 <a href tabindex="0" class="nonLinkAnchor">
                     <span role="link" ng-bind-html="cde.primaryNameCopy"
@@ -32,10 +33,10 @@
             </div>
             <div class="row">
                 <div class="col-md-4 col-sm-12 col-xs-12">
-                    <%- include cdeList/generalDetails.ejs %>
+                    <div ng-include="'/cde/public/html/cdeList/generalDetails.html'"></div>
                 </div>
                 <div class="col-md-4 col-sm-6 col-xs-12" ng-if="cde.valueDomain.datatype === 'Value List'">
-                    <%- include cdeList/valueDomain.ejs %>
+                    <div ng-include="'/cde/public/html/cdeList/valueDomain.html'"></div>
                 </div>
                 <div class="col-md-4 col-sm-6 col-xs-12">
                     <div ng-include="'/cde/public/html/cdeList/idTable.html'"/>
@@ -46,10 +47,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <a tabindex="0" ng-if="!openCdeInNewTab" class='btn btn-small btn-default'
-                       ng-href="#/deview/?tinyId={{cde.tinyId}}" id="openEltInCurrentTab_{{$index}}">
+                       ng-href="/#/deview/?tinyId={{cde.tinyId}}" id="openEltInCurrentTab_{{$index}}">
                         <i class="fa fa-eye"></i> View Full Detail</a>
                     <a tabindex="0" ng-if="openCdeInNewTab" target="_blank" class='btn btn-small btn-default'
-                       ng-href="#/deview/?tinyId={{cde.tinyId}}" id="openCdeInNewTab_{{$index}}">
+                       ng-href="/#/deview/?tinyId={{cde.tinyId}}" id="openCdeInNewTab_{{$index}}">
                         <i class="fa fa-eye"></i> View Full Detail</a>
                     <a tabindex="0" ng-if="user._id && ejsPage!='board'" class="btn btn-small btn-default"
                        ng-click="openPinModal(cde)" id="pin_{{$index}}">
@@ -60,7 +61,7 @@
                     <a tabindex="0" ng-if="quickBoard.canAddElt(cde)" class="btn btn-small btn-default"
                        ng-click="quickBoard.add(cde)" id="compare_{{$index}}">
                         <i class="fa fa-plus"></i> Add to Quick Board</a>
-                    <a class="pull-right" ng-href="#/sdcview/?cdeId={{cde._id}}" aria-label="SDC View"
+                    <a class="pull-right" ng-href="/#/sdcview/?cdeId={{cde._id}}" aria-label="SDC View"
                        id="sdcView_{{$index}}">
                         <i class="fa fa-share-square-o"></i> SDC View</a>
                 </div>

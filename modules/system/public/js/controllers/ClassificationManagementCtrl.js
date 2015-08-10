@@ -40,7 +40,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
 
     $scope.openAddClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
-            templateUrl: '/template/system/addClassification',
+            templateUrl: '/system/public/html/addClassification.html',
             controller: 'AddClassificationToOrgModalCtrl',
             resolve: {
                 org: function() {
@@ -90,7 +90,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
 
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
-            templateUrl: '/template/system/removeClassificationMgtModal',
+            templateUrl: '/system/public/html/removeClassificationMgtModal.html',
             controller: 'RemoveClassificationModalCtrl',
             resolve: {
                 classifName: function() {
@@ -107,7 +107,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
 
     $scope.showClassifyEntireSearchModal = function (orgName, pathArray) {
         var modalInstance = $modal.open({
-            templateUrl: '/template/system/classifyCde',
+            templateUrl: '/system/public/html/classifyCde.html',
             controller: 'AddClassificationModalCtrl',
             resolve: {
                 module: function() {

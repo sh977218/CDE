@@ -7,17 +7,14 @@
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.registrationStatus=='Retired'">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is retired.
         <span ng-show="elt.registrationState.replacedBy">
-            <a href="#/formView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
+            <a href="/#/formView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
     <div class="alert alert-info mt20" role="alert" ng-show="elt.outdated"><i class="fa fa-exclamation-triangle"></i> <strong>Note: </strong>Some CDEs in this form have newer version. </div>
 
     <h3>{{elt.naming[0].designation}}
-        <% if (config.modules.forms.localRender) { %>
-            <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview" href="/form/public/html/formRender.html?id={{elt._id}}"><i class="fa fa-cogs"></i> Preview</a>
-        <% } %>
-        <% if (config.modules.forms.loincRenderUrl) { %>
-           <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview"
-              href="<%= config.modules.forms.loincRenderUrl %>/{{elt._id}}"><i class="fa fa-cogs"></i> Loinc Preview</a>
-        <% } %>
+        <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview" ng-if="formLocalRender"
+           href="/form/public/html/formRender.html?id={{elt._id}}"><i class="fa fa-cogs"></i> Preview</a>
+       <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview" ng-if="formLoincRender"
+          href="<%= config.modules.forms.loincRenderUrl %>/{{elt._id}}"><i class="fa fa-cogs"></i> Loinc Preview</a>
         <a class="btn btn-small btn-default" target="_blank" title="Preview" id="sdcExport" href="sdcExport/{{elt._id}}"><i class="fa fa-download"></i> SDC Export</a>
     </h3>
 
@@ -29,7 +26,7 @@
         <div ng-include="'/form/public/html/formDescription.html'"></div>
     </div>
     <div tab heading="{{tabs['classification'].heading}}">
-        <div ng-include="'/template/system/elementClassification'"></div>
+        <div ng-include="'/system/public/html/elementClassification.html'"></div>
     </div>
     <div tab heading="{{tabs['status'].heading}}">
         <div ng-include="'/system/public/html/status.html'"></div>
@@ -40,16 +37,12 @@
     <div tab heading="{{tabs['ids'].heading}}" active="tabs['ids'].active">
         <div ng-include="'/system/public/html/identifiers.html'"></div>
     </div>
-    <% if (config.modules.forms.comments) { %>    
-        <div tab heading="{{tabs['discussions'].heading}}">
-            <div ng-include="'/system/public/html/comments.html'"></div>
-        </div>
-    <% } %>
-    <% if (config.modules.forms.attachments) { %>
-        <div tab heading="{{tabs['attachments'].heading}}">
-            <div ng-include="'/system/public/html/attachments.html'"></div>
-        </div>
-    <% } %>
+    <div tab heading="{{tabs['discussions'].heading}}">
+        <div ng-include="'/system/public/html/comments.html'"></div>
+    </div>
+    <div tab heading="{{tabs['attachments'].heading}}">
+        <div ng-include="'/system/public/html/attachments.html'"></div>
+    </div>
 </div>
 
 <div class="row" ng-controller="VersionCtrl">

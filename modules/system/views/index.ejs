@@ -63,6 +63,8 @@
                 window.loggedIn = <%= loggedIn %>;
                 window.maxPin = <%= config.maxPin %>;
                 window.formEditable = <%= config.modules.forms.editable %>;
+                window.formLocalRender = <%= config.modules.forms.editable %>;
+                window.formLoincRender = <%= config.modules.forms.editable %>;
                 window.formEnabled = <%= config.modules.form %>;
             })();
         </script>
@@ -105,8 +107,8 @@
                             <li dropdown ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}" ng-show='user._id' >
                                 <a dropdown-toggle class="dropdown-toggle" href="#" id="boardsMenu" title="Boards" aria-label="Boards">Boards<span class="caret"></span></a>
                                 <ul role="menu" class="dropdown-menu" aria-labelledby="boardsMenu"  aria-expanded="true">
-                                    <li><a href="#/boardList">Public Boards</a></li>
-                                    <li><a href="#/myboards">My Boards</a></li>
+                                    <li><a href="/#/boardList">Public Boards</a></li>
+                                    <li><a href="/#/myboards">My Boards</a></li>
                                 </ul>
                             </li>
 

@@ -48,7 +48,7 @@
             </a>
         </span>
 
-    <span ng-include="'/template/system/switchListViewControls'"></span>
+    <span ng-include="'/system/public/html/switchListViewControls.html'"></span>
 
     <button ng-if="listViewType === 'accordion'" ng-show="totalItems>0" ng-click="openCloseAllSwitch(cdes, 'list');" class="btn btn-default btn-checkbox pull-right" id="openAllCb">
         <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
@@ -147,7 +147,7 @@
                 <span ng-show="cdes.length === 0">
                     <h4><i class="fa fa-frown-o"></i> No results were found. Try other criterias or selecting more statuses</h4>
                 </span>
-            <span ng-include="'/template/system/switchListViewContent.ejs'"></span>
+            <span ng-include="'/system/public/html/switchListViewContent.html'"></span>
             <pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems" items-per-page="20"
                         ng-model="searchSettings.page" next-text="Next" ng-change="termSearch()"></pagination>
         </div>
