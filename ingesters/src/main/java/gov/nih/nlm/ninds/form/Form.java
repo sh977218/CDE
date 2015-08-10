@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by huangs8 on 8/4/2015.
  */
-public class Form {
+public class Form implements Comparable {
     Naming naming = new Naming();
     String stewardOrg = "NINDS";
     String version;
@@ -39,6 +39,7 @@ public class Form {
         c.stewardOrg = "NINDS";
         classification.add(c);
     }
+/*
 
     @Override
     public boolean equals(Object o) {
@@ -50,18 +51,17 @@ public class Form {
                 && equalCdes(this.cdes, form.cdes)
                 && equalReferenceDocuments(this.referenceDocuments, form.referenceDocuments)) {
             this.classification.get(0).elements.add(form.disease);
-            if (!form.subDisease.equals(form.disease)) {
-                ArrayList<CsElt> diseases = this.classification.get(0).elements;
-                for (int i = 0; i < diseases.size(); i++) {
-                    if (diseases.get(i).name.equals(form.disease)) {
-                        diseases.get(i).elements.add(form.subDisease);
-                    }
+            ArrayList<CsElt> diseases = this.classification.get(0).elements;
+            for (int i = 0; i < diseases.size(); i++) {
+                if (diseases.get(i).name.equals(form.subDisease)) {
+                    diseases.get(i).elements.add(form.subDisease);
                 }
             }
             return true;
         }
         return false;
     }
+*/
 
     private Boolean equalReferenceDocuments(List rd1, List rd2) {
         if (rd1.size() != rd2.size())
@@ -119,5 +119,11 @@ public class Form {
                 ", disease=" + disease +
                 ", subDisease=" + subDisease +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Form form = (Form) o;
+        return this.naming.designation.compareTo(form.naming.designation);
     }
 }

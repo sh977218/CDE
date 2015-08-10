@@ -4,8 +4,9 @@ import com.google.gson.Gson;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by huangs8 on 8/7/2015.
@@ -13,11 +14,12 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class NindsFormRunner {
 
     public static void main(String[] args) {
-        Set<Form> forms = new CopyOnWriteArraySet<Form>();
-        Thread[] t = new Thread[8];
+        List<Form> forms = new ArrayList<Form>();
+        Thread[] t = new Thread[1];
 
         NindsFormLoader runner1 = new NindsFormLoader(forms, 1, 4);
         t[0] = new Thread(runner1);
+/*
         NindsFormLoader runner2 = new NindsFormLoader(forms, 5, 8);
         t[1] = new Thread(runner2);
         NindsFormLoader runner3 = new NindsFormLoader(forms, 9, 12);
@@ -32,7 +34,7 @@ public class NindsFormRunner {
         t[6] = new Thread(runner7);
         NindsFormLoader runner8 = new NindsFormLoader(forms, 25, 26);
         t[7] = new Thread(runner8);
-
+*/
         for (int i = 0; i < t.length; i++) {
             t[i].start();
         }
@@ -43,12 +45,19 @@ public class NindsFormRunner {
                 e.printStackTrace();
             }
         }
-
+        Collections.sort(forms);
+        mergeForms(forms);
         saveToJson(forms);
+    }
+
+    public static void mergeForms(List<Form> forms) {
+        for (Form form : forms) {
+            System.out.println(form);
+        }
 
     }
 
-    public static void saveToJson(Set<Form> forms) {
+    public static void saveToJson(List<Form> forms) {
         Gson gson = new Gson();
         String json = gson.toJson(forms);
         try {
@@ -56,7 +65,10 @@ public class NindsFormRunner {
             writer.write(json);
             writer.close();
         } catch (IOException e) {
+            System.out.println("exception of writing to file.");
             e.printStackTrace();
+        } finally {
+            System.out.println("All done. forms size: " + forms.size());
         }
     }
 }
