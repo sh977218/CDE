@@ -35,8 +35,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             when('/searchSettings', {
                 controller: 'SearchSettingsCtrl',
                 templateUrl: '/system/public/html/searchSettings.html'
-            }).
-            otherwise({redirectTo: '/'});
+            })
     })
     .directive('inlineEdit', function () {
         return {

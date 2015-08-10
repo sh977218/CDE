@@ -149,7 +149,8 @@
                         <ul class="nav navbar-nav navbar-right" data-userloaded="loaded-{{user.userLoaded}}">
                             <a ng-cloak ng-if="userHasMail" title="New messages" href="/#/inbox">
                                 <i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
-                            <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id"><a href="/#/login" id="login_link" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a> </li>
+                            <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id">
+                                <a href="/#/login" id="login_link" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a> </li>
                             <li dropdown class="login" ng-show="user._id" >
                                 <a dropdown-toggle class="dropdown-toggle" href="#" id="username_link"
                                    title="{{user.username}}" aria-label="{{user.username}}">
@@ -161,7 +162,7 @@
                                     <li ng-show="isOrgAdmin() && !user.siteAdmin"><a href="/#/orgaccountmanagement">Account Management</a></li>
                                     <li ng-show='user._id && user.siteAdmin'><a href="/#/siteaccountmanagement">Site Management</a></li>
                                     <li ng-show='user._id && user.siteAdmin'><a href="/#/siteAudit">Audit</a></li>
-                                    <li ng-show='user._id'><a href="/logout">Log Out</a></li>
+                                    <li ng-show='user._id'><a href="/logout" target="_self">Log Out</a></li>
                                 </ul>
                             </li>
                             <li><a href="/#/searchSettings">
