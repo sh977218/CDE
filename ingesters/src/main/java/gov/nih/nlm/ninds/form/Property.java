@@ -1,0 +1,11 @@
+package gov.nih.nlm.ninds.form;
+
+/**
+ * Created by huangs8 on 8/7/2015.
+ */
+
+public class Property {
+    String key;
+    String value;
+    String valueFormat;
+}

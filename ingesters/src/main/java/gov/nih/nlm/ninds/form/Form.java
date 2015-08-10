@@ -1,0 +1,123 @@
+package gov.nih.nlm.ninds.form;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by huangs8 on 8/4/2015.
+ */
+public class Form {
+    Naming naming = new Naming();
+    String stewardOrg = "NINDS";
+    String version;
+    ArrayList<Property> properties = new ArrayList<Property>();
+    ArrayList<Id> ids = new ArrayList<Id>();
+    Boolean isCopyrighted = false;
+    Copyright copyright = new Copyright();
+    String origin;
+    ArrayList<Attachment> attachments = new ArrayList<Attachment>();
+    ArrayList<Comment> comments = new ArrayList<Comment>();
+    ArrayList<String> history = new ArrayList<String>();
+    Date created;
+    CreatedBy createdBy = new CreatedBy();
+    Date updated;
+    UpdatedBy updatedBy = new UpdatedBy();
+    Date imported;
+    ArrayList<FormElement> formElements = new ArrayList<FormElement>();
+    Boolean archived;
+    ArrayList<Classification> classification = new ArrayList<Classification>();
+    ArrayList<ReferenceDocument> referenceDocuments = new ArrayList<ReferenceDocument>();
+
+    ArrayList<String> cdes = new ArrayList<String>();
+    CsElt disease = new CsElt();
+    CsElt subDisease = new CsElt();
+
+    public Form() {
+        Classification c = new Classification();
+        c.stewardOrg = "NINDS";
+        classification.add(c);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Form form = (Form) o;
+        if (this.naming.designation.equalsIgnoreCase(form.naming.designation)
+                && equalCdes(this.cdes, form.cdes)
+                && equalReferenceDocuments(this.referenceDocuments, form.referenceDocuments)) {
+            this.classification.get(0).elements.add(form.disease);
+            if (!form.subDisease.equals(form.disease)) {
+                ArrayList<CsElt> diseases = this.classification.get(0).elements;
+                for (int i = 0; i < diseases.size(); i++) {
+                    if (diseases.get(i).name.equals(form.disease)) {
+                        diseases.get(i).elements.add(form.subDisease);
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean equalReferenceDocuments(List rd1, List rd2) {
+        if (rd1.size() != rd2.size())
+            return false;
+        else {
+            Collections.sort(rd1);
+            Collections.sort(rd2);
+            for (int i = 0; i < rd1.size(); i++) {
+                if (!rd1.get(i).equals(rd1.get(i)))
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    private Boolean equalCdes(ArrayList<String> cdes1, ArrayList<String> cdes2) {
+        if (cdes1.size() != cdes2.size())
+            return false;
+        else {
+            Collections.sort(cdes1);
+            Collections.sort(cdes2);
+            for (int i = 0; i < cdes1.size(); i++) {
+                if (!cdes1.get(i).equalsIgnoreCase(cdes2.get(i)))
+                    return false;
+            }
+            return true;
+        }
+    }
+
+
+    @Override
+    public String toString() {
+        return "Form{" +
+                "naming=" + naming +
+                ", stewardOrg='" + stewardOrg + '\'' +
+                ", version='" + version + '\'' +
+                ", properties=" + properties +
+                ", ids=" + ids +
+                ", isCopyrighted=" + isCopyrighted +
+                ", copyright=" + copyright +
+                ", origin='" + origin + '\'' +
+                ", attachments=" + attachments +
+                ", comments=" + comments +
+                ", history=" + history +
+                ", created=" + created +
+                ", createdBy=" + createdBy +
+                ", updated=" + updated +
+                ", updatedBy=" + updatedBy +
+                ", imported=" + imported +
+                ", formElements=" + formElements +
+                ", archived=" + archived +
+                ", classification=" + classification +
+                ", referenceDocuments=" + referenceDocuments +
+                ", cdes=" + cdes +
+                ", disease=" + disease +
+                ", subDisease=" + subDisease +
+                '}';
+    }
+}

@@ -88,19 +88,15 @@ public class NindsFormLoader implements Runnable {
                 if (index == 2)
                     form.naming.definition = text;
                 if (index == 3) {
-                    WebElement img = null;
-                    try {
-                        img = td.findElement(By.cssSelector("img"));
-                    } catch (Exception e) {
-                    }
-                    if (img != null) {
+                    List<WebElement> img = td.findElements(By.cssSelector("img"));
+                    if (img.size() > 0) {
                         form.isCopyrighted = true;
                     }
                 }
                 if (index == 4) {
-                    WebElement a = td.findElement(By.cssSelector("a"));
-                    if (a != null) {
-                        String href = a.getAttribute("href");
+                    List<WebElement> a = td.findElements(By.cssSelector("a"));
+                    if (a.size() > 0) {
+                        String href = a.get(0).getAttribute("href");
                         ReferenceDocument referenceDocument = new ReferenceDocument();
                         referenceDocument.uri = href;
                         form.referenceDocuments.add(referenceDocument);
