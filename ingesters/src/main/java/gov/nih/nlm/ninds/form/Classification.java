@@ -1,6 +1,6 @@
 package gov.nih.nlm.ninds.form;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Created by huangs8 on 8/7/2015.
@@ -9,5 +9,5 @@ import java.util.ArrayList;
 public class Classification {
     String stewardOrg = "NINDS";
     Boolean workingGroup;
-    ArrayList<CsElt> elements = new ArrayList<CsElt>();
+    HashSet<CsElt> elements = new HashSet<CsElt>();
 }

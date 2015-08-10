@@ -1,11 +1,11 @@
 package gov.nih.nlm.ninds.form;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Created by huangs8 on 8/7/2015.
  */
 public class CsElt {
-    ArrayList<CsElt> elements = new ArrayList<CsElt>();
+    HashSet<CsElt> elements = new HashSet<CsElt>();
     String name;
 }

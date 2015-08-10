@@ -4,9 +4,8 @@ import com.google.gson.Gson;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by huangs8 on 8/7/2015.
@@ -14,27 +13,22 @@ import java.util.List;
 public class NindsFormRunner {
 
     public static void main(String[] args) {
-        List<Form> forms = new ArrayList<Form>();
-        Thread[] t = new Thread[1];
+        List<Form> forms = new CopyOnWriteArrayList<Form>();
+        Thread[] t = new Thread[6];
 
-        NindsFormLoader runner1 = new NindsFormLoader(forms, 1, 4);
+        NindsFormLoader runner1 = new NindsFormLoader(forms, 1, 5);
         t[0] = new Thread(runner1);
-/*
-        NindsFormLoader runner2 = new NindsFormLoader(forms, 5, 8);
+        NindsFormLoader runner2 = new NindsFormLoader(forms, 6, 10);
         t[1] = new Thread(runner2);
-        NindsFormLoader runner3 = new NindsFormLoader(forms, 9, 12);
+        NindsFormLoader runner3 = new NindsFormLoader(forms, 11, 15);
         t[2] = new Thread(runner3);
-        NindsFormLoader runner4 = new NindsFormLoader(forms, 13, 16);
+        NindsFormLoader runner4 = new NindsFormLoader(forms, 16, 20);
         t[3] = new Thread(runner4);
-        NindsFormLoader runner5 = new NindsFormLoader(forms, 17, 20);
+        NindsFormLoader runner5 = new NindsFormLoader(forms, 21, 25);
         t[4] = new Thread(runner5);
-        NindsFormLoader runner6 = new NindsFormLoader(forms, 21, 24);
+        NindsFormLoader runner6 = new NindsFormLoader(forms, 26, 26);
         t[5] = new Thread(runner6);
-        NindsFormLoader runner7 = new NindsFormLoader(forms, 21, 24);
-        t[6] = new Thread(runner7);
-        NindsFormLoader runner8 = new NindsFormLoader(forms, 25, 26);
-        t[7] = new Thread(runner8);
-*/
+
         for (int i = 0; i < t.length; i++) {
             t[i].start();
         }
@@ -45,16 +39,10 @@ public class NindsFormRunner {
                 e.printStackTrace();
             }
         }
-        Collections.sort(forms);
-        mergeForms(forms);
+        Form form = new Form();
+        form.naming.designation = "forms size: " + forms.size();
+        forms.add(form);
         saveToJson(forms);
-    }
-
-    public static void mergeForms(List<Form> forms) {
-        for (Form form : forms) {
-            System.out.println(form);
-        }
-
     }
 
     public static void saveToJson(List<Form> forms) {

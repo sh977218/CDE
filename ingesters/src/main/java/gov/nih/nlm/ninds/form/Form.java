@@ -1,9 +1,6 @@
 package gov.nih.nlm.ninds.form;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by huangs8 on 8/4/2015.
@@ -39,7 +36,7 @@ public class Form implements Comparable {
         c.stewardOrg = "NINDS";
         classification.add(c);
     }
-/*
+
 
     @Override
     public boolean equals(Object o) {
@@ -47,21 +44,25 @@ public class Form implements Comparable {
         if (o == null || getClass() != o.getClass()) return false;
 
         Form form = (Form) o;
-        if (this.naming.designation.equalsIgnoreCase(form.naming.designation)
+        if (equalNaming(this.naming, form.naming)
                 && equalCdes(this.cdes, form.cdes)
                 && equalReferenceDocuments(this.referenceDocuments, form.referenceDocuments)) {
             this.classification.get(0).elements.add(form.disease);
-            ArrayList<CsElt> diseases = this.classification.get(0).elements;
-            for (int i = 0; i < diseases.size(); i++) {
-                if (diseases.get(i).name.equals(form.subDisease)) {
-                    diseases.get(i).elements.add(form.subDisease);
+            HashSet<CsElt> diseases = this.classification.get(0).elements;
+            for (CsElt ce : diseases) {
+                if (ce.name.equals(form.disease)) {
+                    ce.elements.add(form.subDisease);
                 }
             }
             return true;
         }
         return false;
     }
-*/
+
+
+    private Boolean equalNaming(Naming n1, Naming n2) {
+        return n1.designation.equalsIgnoreCase(n2.designation) ? true : false;
+    }
 
     private Boolean equalReferenceDocuments(List rd1, List rd2) {
         if (rd1.size() != rd2.size())

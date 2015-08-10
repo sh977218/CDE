@@ -37,19 +37,20 @@ public class NindsFormLoader implements Runnable {
     public void run() {
         goToNindsSiteAndGoToPageOf(pageStart);
         findAndSaveToForms(forms, pageStart, pageEnd);
+        driver.close();
     }
 
     void goToNindsSiteAndGoToPageOf(int pageStart) {
         driver.get(url);
         textPresent("or the external links, please contact the NINDS CDE Project Officer, Joanne Odenkirchen, MPH.");
-        hangon(5);
+        hangon(10);
         findElement(By.id("ContentPlaceHolder1_btnClear")).click();
         textPresent("Page: 1 of 1");
-        hangon(5);
+        hangon(10);
         findElement(By.id("ddlPageSize")).click();
         findElement(By.cssSelector("#ddlPageSize > option:nth-child(4)")).click();
         textPresent("Page: 1 of 1");
-        hangon(5);
+        hangon(10);
         findElement(By.id("ContentPlaceHolder1_btnSearch")).click();
         textPresent("2517 items found.");
         textPresent("Page: 1 of 26");
@@ -66,13 +67,23 @@ public class NindsFormLoader implements Runnable {
             sortImg = findElement(By.cssSelector(imgHeadSelector)).getAttribute("src");
         }
         tableIsLoad();
-        for (int i = 1; i < pageStart; i++) {
-            findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
-            textPresent("Page: " + i + " of 26");
+        if (pageStart == 26) {
+            hangon(10);
+            findElement(By.id("ContentPlaceHolder1_lbtnLast")).click();
+            textPresent("Page: 26 of 26");
+
+        } else {
+            for (int i = 1; i < pageStart; i++) {
+                hangon(10);
+                findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
+                textPresent("Page: " + i + " of 26");
+            }
         }
     }
 
     void findAndSaveToForms(List<Form> forms, int pageStart, int pageEnd) {
+        String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 26";
+        textPresent(textToBePresent);
         List<WebElement> trs = driver.findElements(By.cssSelector("#ContentPlaceHolder1_dgCRF > tbody > tr"));
         Classification classification = new Classification();
         for (int i = 1; i < trs.size(); i++) {
@@ -127,11 +138,9 @@ public class NindsFormLoader implements Runnable {
             }
             forms.add(form);
         }
-        for (int k = pageStart; k <= pageEnd; ++k) {
+        if (pageStart < pageEnd) {
             findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
-            String textToBePresent = "Page: " + String.valueOf(k) + " of 26";
-            textPresent(textToBePresent);
-            findAndSaveToForms(forms, k, pageEnd);
+            findAndSaveToForms(forms, pageStart + 1, pageEnd);
         }
     }
 
