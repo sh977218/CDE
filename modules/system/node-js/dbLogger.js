@@ -49,6 +49,7 @@ var clientErrorSchema= new mongoose.Schema(
     , origin: String
     , name: String
     , stack: String
+    , userAgent: String
 }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
 var storedQuerySchema= new mongoose.Schema(
@@ -152,7 +153,9 @@ exports.logError = function(message, callback) {
     });
 };
 
-exports.logClientError = function(exc, callback) {   
+exports.logClientError = function(req, callback) {
+    var exc = req.body;
+    exc.userAgent = req.headers['user-agent'];
     exc.date = new Date();
     var logEvent = new ClientErrorModel(exc);
     logEvent.save(function(err) {
