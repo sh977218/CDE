@@ -22,12 +22,6 @@ public class BaseFormTest extends NlmCdeBaseTest {
         findElement(By.id("startAddingQuestions")).click();
     }
 
-    protected void gotoPublicForms() {
-        //findElement(By.linkText("Forms")).click();
-        goToSearch("form");
-        showSearchFilters();
-    }
-
     protected void saveForm() {
         scrollToViewById("openSaveBottom");
         findElement(By.id("openSaveBottom")).click();
@@ -40,7 +34,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     protected void searchForm(String query) {
-        findElement(By.name("ftsearch")).sendKeys("\"" + query + "\"");
+        findElement(By.name("q")).sendKeys("\"" + query + "\"");
         hangon(1);
         findElement(By.id("search.submit")).click();
         showSearchFilters();

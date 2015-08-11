@@ -31,6 +31,7 @@
     <div>
         <h3 class="">Browse by organization</h3>
         <div class="row">
+            <span ng-if="orgs.length === 0"><h1 class="pl130"><i class="fa fa-spinner fa-pulse"></i> Searching...</h1></span>
             <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-repeat="org in orgs | orderBy:'name'">
                 <div class="welcomeSearchOrganizationBox" >
                     <h3><a href ng-bind="org.name" id="browseOrg-{{org.name}}"

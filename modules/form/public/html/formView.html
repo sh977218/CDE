@@ -1,6 +1,6 @@
 \<div class="container-fluid" ng-cloak>
     <div ng-controller="VersionCtrl" class="alert alert-info mt20" ng-show="elt.unsaved" id="openSaveTop">
-        <i class="fa fa-exclamation-triangle"></i> This element is not saved. <button class="btn btn-primary" ng-click="openSave(elt, '#/formView?tinyId=')" id="openSave">Save</button></div>
+        <i class="fa fa-exclamation-triangle"></i> This element is not saved. <button class="btn btn-primary" ng-click="openSave(elt, '/#/formView?tinyId=')" id="openSave">Save</button></div>
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.archived">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is archived.</div>
 
@@ -49,6 +49,6 @@
     <div class="col-md-12" ng-show="elt.unsaved">
         <hr/>
         <button class="btn cancel" ng-click="revert()" id="discardChanges">Discard Changes</button>
-        <button class="btn btn-primary" ng-click="openSave(elt, '#/formView?tinyId=')" id="openSaveBottom">Save</button>
+        <button class="btn btn-primary" ng-click="openSave(elt, '/#/formView?tinyId=')" id="openSaveBottom">Save</button>
     </div>
 </div>

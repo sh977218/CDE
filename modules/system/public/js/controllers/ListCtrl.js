@@ -211,7 +211,7 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     $scope.generateSearchForTerm = function () {
-        var searchLink = "/" + $scope.module + "/search?"
+        var searchLink = "/" + $scope.module + "/search?";
         if ($scope.searchSettings.q) searchLink += "q=" + $scope.searchSettings.q;
         if ($scope.searchSettings.regStatuses.length > 0) {
             searchLink += "&regStatuses=" + $scope.searchSettings.regStatuses.join(';');
@@ -240,18 +240,12 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.searchSettings.classification = $routeParams.classification?$routeParams.classification.split(';'):[];
         $scope.searchSettings.classificationAlt = $routeParams.classificationAlt?$routeParams.classificationAlt.split(';'):[];
         $scope.searchSettings.regStatuses = $routeParams.regStatuses?$routeParams.regStatuses.split(';'):[];
-
-        $scope.classificationFilters = [{
-            org: $scope.selectedOrg
-            , elements: $scope.selectedElements
-        }, {
-            org: $scope.selectedOrgAlt
-            , elements: $scope.selectedElementsAlt
-        }];
         $scope.reload();
     };
 
-    search();
+    userResource.getPromise().then(function(){
+        search();
+    });
 
     $scope.$on('$locationChangeSuccess', function() {
         search();
