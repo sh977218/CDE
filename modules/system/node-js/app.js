@@ -48,13 +48,13 @@ exports.init = function(app) {
         res.render(req.params.template, req.params.module, {config: viewConfig, module: req.params.module});
     });
 
-    ["/cde/search", "/form/search", "/home", "/stats", "/help/?title", "/createForm", "/createCde", "/boardList", "/deview",
+    ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/article/key/:title", "/createForm", "/createCde", "/boardList", "/deview",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login"].forEach(function(path) {
         app.get(path, function(req, res) {
             res.render('index', 'system', {config: viewConfig, loggedIn: req.user?true:false});
         });
-    })
+    });
 
     var token = mongo_data_system.generateTinyId();
     setInterval(function() {
