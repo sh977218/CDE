@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test.search;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -93,21 +92,24 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("browseOrg-CTEP")).click();
         findElement(By.id("li-blank-CATEGORY")).click();
+        hangon(1);
         findElement(By.id("li-blank-Standard")).click();
-        hangon(2);
+        hangon(1);
         findElement(By.id("li-blank-Qualified")).click();
         hangon(1);
+        scrollToTop();
         textPresent("results for All Terms | CTEP > CATEGORY | Standard, Qualified");
-        findElement(By.xpath("//i[@id=\"li-checked-Qualified\"]")).click();
+        findElement(By.id("li-checked-Qualified")).click();
         scrollToTop();
         textPresent("results for All Terms | CTEP > CATEGORY | Standard");
         findElement(By.name("ftsearch")).sendKeys("name");
         findElement(By.id("search.submit")).click();     
-        textPresent("0 results for name | CTEP > CATEGORY | Standard");
-        findElement(By.linkText("Forms")).click();     
+        textPresent("results for name | CTEP | All Statuses");
+        findElement(By.linkText("Forms")).click();
+        hangon(1);
         textNotPresent("CATEGORY");
         driver.navigate().back();
-        textPresent("0 results for name | CTEP > CATEGORY | Standard");
+        textPresent("results for name | CTEP | All Statuses");
     }
 
     @Test

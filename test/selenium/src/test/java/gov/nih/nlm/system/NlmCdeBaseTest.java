@@ -71,6 +71,8 @@ public class NlmCdeBaseTest {
     protected static String ctep_fileCurator_username = "ctep_fileCurator";
     protected static String tableViewUser_username = "tableViewUser";
     protected static String pinAllBoardUser_username = "pinAllBoardUser";
+    protected static String exportBoardUser_username = "exportBoardUser";
+
 
     protected static String password = "pass";
 
@@ -264,6 +266,7 @@ public class NlmCdeBaseTest {
         goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
+        hangon(0.5); // Wait for ng-model of ftsearch to update. Otherwise angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
         findElement(By.id("search.submit")).click();
         hangon(2);
         if (status != null) {
@@ -342,7 +345,7 @@ public class NlmCdeBaseTest {
     public void modalGone() {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By
                 .cssSelector(".modal")));
-        hangon(1);
+        hangon(1.5);
     }
 
     public void closeAlert() {
@@ -360,6 +363,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void newCdeVersion(String changeNote) {
+        scrollToEltByCss("#openSave");
         findElement(By.id("openSave")).click();
         if (changeNote != null) {
             findElement(By.name("changeNote")).clear();
@@ -384,26 +388,21 @@ public class NlmCdeBaseTest {
         Sleeper.sleepTight((long) (i * 1000));
     }
 
-    public void textPresent(String text, By by, int timeout) {
-        driver.manage().timeouts().implicitlyWait(timeout, TimeUnit.SECONDS);
-        textPresent(text, by);
-        driver.manage().timeouts()
-                .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
-    }
-
-    ;
-
     public boolean textPresent(String text, By by) {
-        if (by != null)
-            wait.until(ExpectedConditions.textToBePresentInElementLocated(by,
-                    text));
-        else
-            textPresent(text);
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
         return true;
     }
 
     public boolean textPresent(String text) {
         return textPresent(text, By.cssSelector("BODY"));
+    }
+
+    public void textOrTextPresent(String text1, String text2) {
+        try {
+            textPresent(text1, By.cssSelector("BODY"));
+        } catch(Exception e){
+            textPresent(text2, By.cssSelector("BODY"));
+        }
     }
 
     public boolean textPresentTrueFalse(String text) {
@@ -427,6 +426,7 @@ public class NlmCdeBaseTest {
 
         driver.get(baseUrl + "/#/home");
         textPresent("has been designed to provide access");
+        hangon(.5);
     }
 
     protected void goToCdeSearch() {
@@ -443,6 +443,11 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/#/" + type + "/search");
         findElement(By.id("ftsearch-input"));
         textPresent("Browse by organization");
+        textPresent("Cancer Therapy Evaluation Program");
+    }
+
+    protected void goToQuickBoard() {
+        driver.get(baseUrl + "/#/quickBoard");
     }
 
     protected void goToSearchByMenu() {
@@ -539,7 +544,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).sendKeys(password);
         waitAndClick(By.id("login_button"));
         try {
-            textPresent(checkText, null, 12);
+            textPresent(checkText);
             // Assumption is that UMLS sometimes throws an error on login. With
             // a socket hangup. login fails, we retry.
         } catch (TimeoutException e) {
@@ -553,12 +558,14 @@ public class NlmCdeBaseTest {
     }
 
     protected void switchTabAndClose(int i) {
+        hangon(1);
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
     }
 
     protected void switchTab(int i) {
+        hangon(1);
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }

@@ -1,20 +1,24 @@
-<div class="container">
+<div class="" ng-controller="OrgOverviewCtrl">
     <div class="welcomeSearchSearch">
         <h1>
             <img id="homeNihCdeLogo" class="img-center-responsive" alt="NIH CDE logo"
                  src="/cde/public/assets/img/NIH-CDE.png" />
         </h1>
 
-        <div class="pt20 text-center">
+        <div class="pt20 text-center" id="searchDiv">
             <form name="quickSearchForm" id="quickSearchForm" novalidate>
                 <div class="input-group input-group-lg">
                     <label class="sr-only" for="ftsearch-input">Search Terms</label>
-                    <input name="ftsearch" id="ftsearch-input" type="text" class="form-control" ng-model="searchForm.ftsearch"
-                           ng-maxlength="500" placeholder="Search Elements">
+                    <input name="ftsearch" id="ftsearch-input" type="text" class="form-control"
+                           ng-model="searchForm.ftsearch"
+                           ng-maxlength="500" placeholder="Search Elements"
+                           typeahead-wait-ms="500" typeahead-min-length="3"
+                           typeahead="searchQuery for searchQuery in getAutoComplete($viewValue) | filter:$viewValue | limitTo:8"
+                           typeahead-focus-first="false" typeahead-on-select="searchAction()">
 
                     <div class="input-group-btn">
                         <button name="quickSearchButton" id="search.submit" class="btn btn-danger btn-lg" type="submit"
-                                ng-click="search()" ng-disabled="quickSearchForm.$invalid">
+                                ng-click="searchNoOrg()" ng-disabled="quickSearchForm.$invalid">
                             <i class="fa fa-search"></i><span class="hidden-xs"> Search</span></button>
                     </div>
                 </div>
@@ -25,7 +29,7 @@
         </div>
     </div>
 
-    <div ng-controller="OrgOverviewCtrl">
+    <div>
         <h3 class="">Browse by organization</h3>
         <div class="row">
             <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-repeat="org in orgs | orderBy:'name'">

@@ -1,0 +1,101 @@
+<div ng-controller="ReferenceDocumentCtrl">
+    <h4 tabindex="0">Reference Document</h4>
+
+    <div tabindex="0" ng-if="elt.referenceDocuments.length === 0">There are no reference documents.</div>
+    <div ng-repeat="rd in elt.referenceDocuments">
+        <div class="row" ng-if="canCurate && elt.referenceDocuments.length > 0">
+            <div class="col-md-1 text-right">
+                <div class="row">
+                <span ng-show="showDelete">Confirm Delete
+                    <a class="fa fa-check" ng-click="showDelete = false; removeReferenceDocument($index)"
+                       id="confirmRemoveReferenceDocument-{{$index}}" title="OK" href=""></a>
+                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
+                </span>
+                    <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
+                       id="removeReferenceDocument-{{$index}}" title="Remove" href=""></a>
+                </div>
+            </div>
+            <div class="col-md-11">
+                <div class="row">
+                    <div tabindex="0" class="col-md-2 text-right">ID:</div>
+                    <div tabindex="0" class="col-md-10" id="rd_id">{{rd.referenceDocumentId}}</div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-md-2 text-right">Title:</div>
+                    <div tabindex="0" class="col-md-10" id="rd_title">{{rd.title}}</div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-md-2 text-right">URI:</div>
+                    <div tabindex="0" class="col-md-10" id="rd_uri">
+                        <a href="{{rd.uri}}">{{rd.uri}}</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-md-2 text-right">Provider Org:</div>
+                    <div tabindex="0" class="col-md-10" id="rd_providerOrg">{{rd.providerOrg}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-md-2 text-right">Language Code:</div>
+                    <div tabindex="0" class="col-md-10" id="rd_languageCode">{{rd.languageCode}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-md-2 text-right">Document:</div>
+                    <div tabindex="0" class="col-md-10" id="rd_document">{{rd.document}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+    </div>
+
+    <button ng-if="canCurate" class="btn btn-small btn-default" value="add" ng-click="openNewReferenceDocument()"
+            id="addReferenceDocument"><i class="fa fa-plus"> </i> Add Reference Document
+    </button>
+    <script type="text/ng-template" id="newReferenceDocumentModalContent.html">
+        <div class="modal-header" id="newReferenceDocumentModalHeader">
+            <h4 tabindex="0">Add New Reference Document</h4>
+        </div>
+        <form name="form" role="form">
+            <div class="modal-body" id="newReferenceDocumentModalBody">
+                <div class="form-group">
+                    <label tabindex="0" for="nrd_id">ID</label>
+                    <input tabindex="0" id="nrd_id" class="form-control"
+                           ng-model="newReferenceDocument.referenceDocumentId" Placeholder="Reference Document ID"/>
+                </div>
+                <div class="form-group">
+                    <label tabindex="0" for="nrd_title">Title</label>
+                    <input tabindex="0" id="nrd_title" class="form-control" ng-model="newReferenceDocument.title"
+                           Placeholder="Reference Document Title"/>
+                </div>
+                <div class="form-group">
+                    <label tabindex="0" for="nrd_uri">URI</label>
+                    <input tabindex="0" id="nrd_uri" class="form-control" ng-model="newReferenceDocument.uri"
+                           Placeholder="Reference Document URI"/>
+                </div>
+                <div class="form-group">
+                    <label tabindex="0" for="nrd_providerOrg">Provider Org</label>
+                    <input tabindex="0" id="nrd_providerOrg" class="form-control"
+                           ng-model="newReferenceDocument.providerOrg" Placeholder="Reference Document Provider Org"/>
+                </div>
+                <div class="form-group">
+                    <label tabindex="0" for="nrd_languageCode">Language Code</label>
+                    <input tabindex="0" id="nrd_languageCode" class="form-control"
+                           ng-model="newReferenceDocument.languageCode" Placeholder="Reference Document Language Code"/>
+                </div>
+                <div class="form-group">
+                    <label tabindex="0" for="nrd_document">Document</label>
+                    <textarea tabindex="0" id="nrd_document" class="form-control"
+                              ng-model="newReferenceDocument.document" Placeholder="Reference Document"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer" id="newReferenceDocumentModalFooter">
+                <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>
+                <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid"
+                        id="createReferenceDocument" type="submit">Save
+                </button>
+            </div>
+        </form>
+    </script>
+</div>

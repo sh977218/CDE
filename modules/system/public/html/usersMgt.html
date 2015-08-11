@@ -28,7 +28,7 @@
     
         <div class="row">
         <div class="col-md-2"><strong>Site Admin: </strong> </div>
-        <div id="user_siteadmin" class="col-md-10">{{u.siteAdmin}}</div>
+        <div id="user_siteadmin" class="col-md-10" ng-bind="u.siteAdmin?'Yes':'No'"></div>
         </div>
         
         <div class="row">
@@ -45,7 +45,7 @@
         
         <div class="row">
         <div class="col-md-2"><strong>Known IPs</strong> </div>
-        <div class="col-md-10">{{u.knownIps}}</div>
+        <div class="col-md-10" ng-bind="u.knownIPs"></div>
         </div>
         
     <hr/>

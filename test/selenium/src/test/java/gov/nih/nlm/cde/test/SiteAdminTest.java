@@ -58,38 +58,43 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         String testOrgUriNotRenamed = "Website Not Renamed";
         addOrg(testOrg, null, null);
         closeAlert();
-        
+
+        scrollToTop();
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//input")).sendKeys(testOrgRenamed);
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//button[text()=' Confirm']")).click();
         closeAlert();
-        
+
+        scrollToTop();
         findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//input")).sendKeys(testOrgMailingAddress);
         findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//button[text()=' Confirm']")).click();
         closeAlert();
-        
+
+        scrollToTop();
         findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//input")).sendKeys(testOrgEmailingAddress);
         findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//button[text()=' Confirm']")).click();
         closeAlert();
-        
+
+        scrollToTop();
         findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//input")).sendKeys(testOrgPhoneNumber);
         findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//button[text()=' Confirm']")).click();
         closeAlert();
 
+        scrollToTop();
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//input")).sendKeys(testOrgUri);
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//button[text()=' Confirm']")).click();
         closeAlert();
         
         refreshOrganizationsTabScreen();
-        Assert.assertTrue(textPresent(testOrgRenamed));
-        Assert.assertTrue(textPresent(testOrgMailingAddress));
-        Assert.assertTrue(textPresent(testOrgEmailingAddress));
-        Assert.assertTrue(textPresent(testOrgPhoneNumber));
-        Assert.assertTrue(textPresent(testOrgUri));
+        textPresent(testOrgRenamed);
+        textPresent(testOrgMailingAddress);
+        textPresent(testOrgEmailingAddress);
+        textPresent(testOrgPhoneNumber);
+        textPresent(testOrgUri);
         
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//input")).sendKeys(testOrgNotRenamed);
@@ -111,19 +116,19 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//input")).sendKeys(testOrgUriNotRenamed);
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//button[text() = ' Discard']")).click();
         
-        Assert.assertTrue(textNotPresent(testOrgNotRenamed));
-        Assert.assertTrue(textNotPresent(testOrgMailingAddressNotRenamed));
-        Assert.assertTrue(textNotPresent(testOrgEmailingAddressNotRenamed));
-        Assert.assertTrue(textNotPresent(testOrgPhoneNumberNotRenamed));
-        Assert.assertTrue(textNotPresent(testOrgUriNotRenamed));
+        textNotPresent(testOrgNotRenamed);
+        textNotPresent(testOrgMailingAddressNotRenamed);
+        textNotPresent(testOrgEmailingAddressNotRenamed);
+        textNotPresent(testOrgPhoneNumberNotRenamed);
+        textNotPresent(testOrgUriNotRenamed);
         
         refreshOrganizationsTabScreen();
         
-        Assert.assertTrue(textNotPresent(testOrgNotRenamed));
-        Assert.assertTrue(textNotPresent(testOrgMailingAddressNotRenamed));
-        Assert.assertTrue(textNotPresent(testOrgEmailingAddressNotRenamed));
-        Assert.assertTrue(textNotPresent(testOrgPhoneNumberNotRenamed));
-        Assert.assertTrue(textNotPresent(testOrgUriNotRenamed));        
+        textNotPresent(testOrgNotRenamed);
+        textNotPresent(testOrgMailingAddressNotRenamed);
+        textNotPresent(testOrgEmailingAddressNotRenamed);
+        textNotPresent(testOrgPhoneNumberNotRenamed);
+        textNotPresent(testOrgUriNotRenamed);
     }
     
     @Test
@@ -169,7 +174,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         
         Assert.assertEquals("cabigAdmin", findElement(By.id("user_username")).getText());
         Assert.assertEquals("[\"caBIG\"]", findElement(By.id("user_orgadmin")).getText());
-        Assert.assertEquals("", findElement(By.id("user_siteadmin")).getText());
+        Assert.assertEquals(findElement(By.id("user_siteadmin")).getText(), "No");
 
         findElement(By.name("searchUsers")).clear();            
         findElement(By.name("searchUsers")).sendKeys("nlm");
@@ -178,7 +183,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         textPresent("nlm", By.id("user_username"));
         Assert.assertEquals("nlm", findElement(By.id("user_username")).getText());
         Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\"]", findElement(By.id("user_orgadmin")).getText());
-        Assert.assertEquals("true", findElement(By.id("user_siteadmin")).getText());
+        Assert.assertEquals(findElement(By.id("user_siteadmin")).getText(), "Yes");
     }
     
 }

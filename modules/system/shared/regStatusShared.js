@@ -14,22 +14,22 @@ regStatusShared.statusList = [
     , {
         name: 'Qualified'
         , help: "Qualified elements are managed by their Stewards and may be eligible to become Standard."
-        , curHelp: "Qualified elements should be well defined and will be visible to the public"
+        , curHelp: "Qualified elements should be well defined and are visible to the public by default."
     }
     , {
         name: 'Recorded'
         , help: "Recorded elements are managed by their Stewards and indicate elements that have not yet been Qualified to become Standard."
-        , curHelp: "Recorded elements are visible to the public"
+        , curHelp: "Recorded elements are not visible by default."
     }
     , {
         name: 'Candidate'
-        , help: "Candidate elements are only visible to their Stewards."
-        , curHelp: "Candidate elements are not visible to the public"
+        , help: "Candidate elements are managed by their Stewards and indicate elements that are still under work to become Recorded."
+        , curHelp: "Candidate elements are not visible by default."
     }
     , {
         name: 'Incomplete'
-        , help: "Incomplete elements are only visible to their Stewards and indicate elements that are still in the process of being defined."
-        , curHelp: "Incomplete indicates an element that is not fully defined. Incomplete elements are not visible to the public"
+        , help: "Incomplete elements are managed by their Stewards and indicate elements that are not competely defined. "
+        , curHelp: "Incomplete indicates an element that is not fully defined. Incomplete elements are not visible by default."
     }
     , {
         name: "Retired"

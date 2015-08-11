@@ -10,8 +10,6 @@ public class FormEditTest extends BaseFormTest {
     //@Test
     public void formGetOutdated() {
         mustBeLoggedInAs(ctepCurator_username, password);
-        
-        resizeWindow(1024, 1150);
 
         String formName = "Form that gets outdated";
         String formDef = "Fill out carefully!";

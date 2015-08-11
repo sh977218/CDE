@@ -17,6 +17,8 @@ var passport = require('passport')
     , request = require('request')
     , fs = require('fs')
     , multer  = require('multer')
+    , elastic_system = require('../../system/node-js/elastic')
+    , sharedElastic = require('../../system/node-js/elastic.js')
 ;
 
 exports.nocacheMiddleware = function(req, res, next) {
@@ -53,7 +55,7 @@ exports.init = function(app) {
         token = mongo_data_system.generateTinyId();
     }, (config.pm.tokenInterval || 5) * 60 * 1000);
 
-    app.post('/deploy', multer(config.multer), function(req, res) {
+    app.post('/deploy', multer(), function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             if (!token) {
                 return res.status(500).send("No valid token");
@@ -162,6 +164,7 @@ exports.init = function(app) {
     });
 
     app.get('/csrf', csrf(), function(req, res) {
+        exports.nocacheMiddleware(req, res);
         res.send(req.csrfToken());
     });
 
@@ -270,7 +273,7 @@ exports.init = function(app) {
         }
     });
     
-    app.get('/user/me', function(req, res) {
+    app.get('/user/me', exports.nocacheMiddleware, function(req, res) {
         if (!req.user) {
             res.send("Not logged in.");
         } else {

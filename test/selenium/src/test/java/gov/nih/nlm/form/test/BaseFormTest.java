@@ -9,7 +9,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
     protected void startAddingQuestions() {
         scrollToTop();
         try {
-            textPresent("Show Question Search", By.id("startAddingQuestions"), 2);
+            textPresent("Show Question Search", By.id("startAddingQuestions"));
             findElement(By.id("startAddingQuestions")).click();
         } catch (Exception e) {
             // if button does not say show, then don't click it.
@@ -18,7 +18,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     public void stopAddingQuestions() {
         scrollToTop();
-        textPresent("Hide Question Search", By.id("startAddingQuestions"), 2);
+        textPresent("Hide Question Search", By.id("startAddingQuestions"));
         findElement(By.id("startAddingQuestions")).click();
     }
 
@@ -43,12 +43,13 @@ public class BaseFormTest extends NlmCdeBaseTest {
         findElement(By.name("ftsearch")).sendKeys("\"" + query + "\"");
         hangon(1);
         findElement(By.id("search.submit")).click();
+        showSearchFilters();
     }
 
     protected void gotoFormCreate() {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("Form")).click();
-        textPresent("Create New Form");
+        textPresent("Create Form");
     }
 
     public void createForm(String name, String definition, String version, String org) {

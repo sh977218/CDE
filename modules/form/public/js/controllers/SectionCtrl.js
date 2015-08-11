@@ -96,7 +96,10 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
 
     $scope.checkUom = function (question, index) {
         $timeout(function () {
-            if (question.question.uoms[index] === "") question.question.uoms.splice(index, 1);
+            if (question.question.uoms[index] === "") {
+                question.question.uoms.splice(index, 1);
+                $scope.stageElt();
+            }
         }, 0);
     };
 
@@ -107,6 +110,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
     $scope.addUom = function (question) {
         if (!question.question.uoms) question.question.uoms = [];
         question.question.uoms.push("Please specify");
+        $scope.stageElt();
     };
 
     $scope.removeElt = function (form, index) {

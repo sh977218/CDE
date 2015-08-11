@@ -46,13 +46,14 @@ public abstract class RegStatusTest extends CommonTest {
         textPresent("Qualified");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
-        textPresent("Recorded elements are visible to the public");
+        textPresent("Recorded elements are not visible by default");
         findElement(By.name("effectiveDate")).sendKeys("9/15/2013");
         findElement(By.name("untilDate")).sendKeys("10/31/2014");
         findElement(By.name("administrativeNote")).sendKeys("Admin Note 1");
         findElement(By.name("unresolvedIssue")).sendKeys("Unresolved Issue 1");
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
+        waitForESUpdate();
         goToEltByName(eltName, "Recorded");
         textPresent("Recorded");
         findElement(By.linkText("Status")).click();
@@ -72,7 +73,7 @@ public abstract class RegStatusTest extends CommonTest {
         textPresent("Retired elements are not returned in searches");
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
-        hangon(2);
+        waitForESUpdate();
         goToEltSearch();
         findElement(By.name("ftsearch")).sendKeys("Alkaline");
         findElement(By.id("search.submit")).click();

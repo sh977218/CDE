@@ -42,26 +42,26 @@ public class VsacTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Patient Ethnic Group Category");
         findElement(By.linkText("Permissible Values")).click();
-        Assert.assertTrue(textPresent("No Value Set specified."));
+        textPresent("No Value Set specified.");
         findElement(By.linkText("Update O.I.D")).click();
         findElement(By.name("vsacId")).sendKeys("invalidId");
         findElement(By.id("vsacIdCheck")).click();
-        Assert.assertTrue(textPresent("Invalid VSAC OID"));
+        textPresent("Invalid VSAC OID");
         closeAlert();
         findElement(By.linkText("Update O.I.D")).click();
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
         findElement(By.id("vsacIdCheck")).click();
         // check that version got fetched.
-        Assert.assertTrue(textPresent("20121025"));
+        textPresent("20121025");
         newCdeVersion("Adding vsac Id");
 
-        Assert.assertTrue(textPresent("20121025"));
-        Assert.assertTrue(textPresent("2135-2"));
-        Assert.assertTrue(textPresent("CDCREC"));
+        textPresent("20121025");
+        textPresent("2135-2");
+        textPresent("CDCREC");
         WebElement tbody = driver.findElement(By.id("vsacTableBody"));
         List<WebElement> vsacLines = tbody.findElements(By.tagName("tr"));
         Assert.assertEquals(vsacLines.size(), 2);
-        Assert.assertTrue(textPresent("Match"));
+        textPresent("Match");
     }
 
 }

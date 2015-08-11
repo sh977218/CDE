@@ -11,9 +11,6 @@ public class OtherPleaseSpecifyTest extends BaseFormTest {
 
     @Test
     public void otherPleaseSpecify() {
-        Dimension currentWindowSize = getWindowSize();
-        resizeWindow(1024, 1150);
-
         mustBeLoggedInAs(ctepCurator_username, password);
         String formName = "Other Please Specify Test";
         String formDef = "Form to test other please specify";
@@ -46,9 +43,6 @@ public class OtherPleaseSpecifyTest extends BaseFormTest {
         findElement(By.xpath("//input[@placeholder='Please Specify']")).sendKeys("Transgender");
 
         switchTabAndClose(0);
-
-        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
-
     }
 
 }

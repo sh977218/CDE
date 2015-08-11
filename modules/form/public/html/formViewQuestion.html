@@ -1,4 +1,4 @@
-<div accordion close-others="false" id="" ng-class="accordionListStyle" class="formQuestion_{{question.label}}">
+<div accordion close-others="false" ng-class="accordionListStyle" id="formQuestion_{{question.label}}">
     <div accordion-group is-open="">
         <div accordion-heading>
             <i ng-if="canCurate" class="fa fa-arrows question-move-handle"></i>
@@ -91,7 +91,7 @@
                 <div tabindex="0"><strong>Answer List:</strong></div>
                 <div class="panel-body">
                     <ui-select multiple ng-model="question.question.answers" theme="select2" ng-disabled="!canCurate"
-                               style="min-width: 125px">
+                               style="min-width: 125px" on-remove="stageElt()" on-select="stageElt()">
                         <ui-select-match placeholder="Select answers...">{{$item.permissibleValue}}</ui-select-match>
                         <ui-select-choices
                                 repeat="pv in question.question.cde.permissibleValues | filter:$select.search track by pv.permissibleValue">

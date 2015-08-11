@@ -84,6 +84,7 @@
   },
   "modules": {
     "forms": {
+      "editable": true,
       "attachments": true,
       "comments": true,
       "sectionLevels": 10,
@@ -114,7 +115,7 @@
   },
   "account": "CDE Account <cdeuser@nlm.nih.gov>",
   "maxLogsPerMinute": 1000,
-  "maxPin":500,
+  "maxPin": 500,
   "expressToStdout": false,
   "logBufferSize": 1000,
   "viewsIncrementThreshold": 3,
@@ -148,11 +149,11 @@
         "priority": 5
       },
       {
-        "_id": 2,
+        "_id": 4,
         "host": "165.112.35.20:27017"
       },
       {
-        "_id": 3,
+        "_id": 5,
         "host": "165.112.35.21:27017"
       }
     ]
@@ -175,11 +176,11 @@
         "host": "165.112.35.20:27017"
       },
       {
-        "_id": 3,
+        "_id": 4,
         "host": "165.112.35.21:27017"
       },
       {
-        "_id": 4,
+        "_id": 5,
         "host": "130.14.164.22:27017",
         "priority": 5
       }
