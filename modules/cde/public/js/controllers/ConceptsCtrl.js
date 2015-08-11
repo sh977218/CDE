@@ -14,7 +14,7 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$modal', '$ht
 
 
 
-    $scope.decRemoveConcept = function (index) {
+    $scope.dataElementConceptRemoveConcept = function (index) {
         $scope.elt.dataElementConcept.concepts.splice(index, 1);
         $scope.elt.unsaved = true;
     };
@@ -34,7 +34,7 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$modal', '$ht
     };
 
     $scope. conceptConfigurations = [
-        {type: "dec", display: "Data Element"},
+        {type: "dataElementConcept", display: "Data Element"},
         {type: "objectClass", display: "Object Class"},
         {type: "property", display: "Property"}
     ];
