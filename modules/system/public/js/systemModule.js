@@ -27,7 +27,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 controller: 'ClassificationManagementCtrl',
                 templateUrl: '/system/public/html/classificationManagement.html'
             }).
-            when('/profile', {controller: 'ProfileCtrl', templateUrl: '/profile'}).
+            when('/profile', {controller: 'ProfileCtrl', templateUrl: '/system/public/html/profile.html'}).
             when('/triggerClientException', {
                 controller: 'TriggerClientExceptionCtrl',
                 templateUrl: '/template/system/triggerClientException'
