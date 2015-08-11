@@ -5,7 +5,7 @@ var mongoose = require('mongoose')
     ;
 
 var questionSchema =  {
-    cde: {tinyId: String, version: String}
+    cde: {tinyId: String, version: String, answers: [sharedSchemas.permissibleValueSchema]}
     , datatype: String
     , uoms: [String]
     , required: {type: Boolean, default: false}

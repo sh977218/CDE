@@ -1,6 +1,13 @@
 // add attachment!
 // add instructions for sections
 
+var formIncrement = 100;
+var startPage = process.argv[2];
+var endPage = process.argv[3];
+console.log("Loading pages " + startPage + " to " + endPage);
+startPage--;
+endPage--;
+
 var request = require('request')
     , parseString = require('xml2js').parseString
     , mongoose = require('mongoose')
@@ -10,6 +17,8 @@ var request = require('request')
     , classificationShared = require('../../modules/system/shared/classificationShared')
     , mongo_data_system = require('../../modules/system/node-js/mongo-data')
     ;
+
+var startTime = new Date().getTime();
 
 var db = mongoose.createConnection("mongodb://siteRootAdmin:password@localhost:27017/cadsrCache", {auth:{authdb:"admin"}});
 
@@ -24,15 +33,10 @@ var cachedPageSchema = mongoose.Schema({
 
 var CachedPage = db.model('CachedPage', cachedPageSchema);
 
-
-var formIncrement = 100;
-var endPage = 4;
-var startPage = 10;
-
 var formListUrl = "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@workflowStatusName=RELEASED]&resultCounter=" + formIncrement + "&startIndex=";
 
 var getFormPageUrl = function(page){
-    //return "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@publicID=2432444]";
+    //return "http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=Form&Form[@publicID=2696402]&resultCounter=200&startIndex=0";
     return formListUrl + (page * formIncrement);
 };
 
@@ -79,7 +83,7 @@ var getResource = function(url, cb){
                     page.save();
                 };
                 if (error) {
-                    request(url, function (error, response, body) {
+                    request(ro, function (error, response, body) {
                         if (error) throw error;
                         else pageLoadSuccess(url, body, cb);
                     });
@@ -174,8 +178,10 @@ var getInstructions = function(f, cb){
 var getProtocolLongname = function(f, cb){
     getResource(f.protocolCollection, function(ptc){
         if (!ptc) return cb();
-        f.protocolName = ptc[0].longName;
-        f.protocolDefinition = ptc[0].preferredDefinition;
+        f.protocols = [];
+        ptc.forEach(function(pt){
+            f.protocols.push(pt.longName);
+        });
         cb();
     });
 };
@@ -206,12 +212,10 @@ var saveForm = function(cadsrForm, cbfc) {
             , {key: "caDSR_dateModified", value: cadsrForm.dateModified}
             , {key: "caDSR_modifiedBy", value: cadsrForm.modifiedBy}
             , {key: "caDSR_context", value: cadsrForm.contextName}
-            //, {key: "caDSR_instruction", value: cadsrForm.instructionContent}
         ]
         , ids: [
             {source: "caDSR", id: cadsrForm.publicID, version: cadsrForm.version}
         ]
-        //, attachments: [sharedSchemas.attachmentSchema]
         , created: cadsrForm.dateCreated
         , imported: new Date()
         , createdBy: {
@@ -222,9 +226,9 @@ var saveForm = function(cadsrForm, cbfc) {
         , source: "caDSR"
     };
 
-    if (cadsrForm.protocolName) {
-        cdeForm.properties.push({key: "caDSR_protocol_name", value: cadsrForm.protocolName});
-        cdeForm.properties.push({key: "caDSR_protocol_definition", value: cadsrForm.protocolDefinition});
+    if (cadsrForm.protocols) {
+        var protocols = cadsrForm.protocols.join(", ");
+        cdeForm.properties.push({key: "caDSR_protocols", value: protocols});
     }
 
     if (cadsrForm.instructionContent) cdeForm.properties.push({key: "caDSR_instruction", value: cadsrForm.instructionContent});
@@ -239,7 +243,7 @@ var saveForm = function(cadsrForm, cbfc) {
         console.log("form has no classifications!");
     }
 
-    if (!cadsrForm.sections) return;
+    if (!cadsrForm.sections) return cbfc();
 
     cadsrForm.sections = cadsrForm.sections.sort(function (a, b) {
         return a.displayOrder - b.displayOrder
@@ -283,11 +287,9 @@ var saveForm = function(cadsrForm, cbfc) {
                     , label: q.questionText
                     , required: q.isMandatory
                     , editable: q.isEditable
-                    //, instructions: q.cde.longName
                     , question: {
                         cde: {tinyId: cde.tinyId, version: cde.version, permissibleValues: cde.valueDomain.permissibleValues}
                         , datatype: cde.valueDomain.datatype
-                        //, uoms: [cde.valueDomain.uom]
                         , answers: []
                     }
                 };
@@ -303,9 +305,6 @@ var saveForm = function(cadsrForm, cbfc) {
                         var vmn = vv.meaningText;
                         if (!vmn) {
                             console.log("no value meaning name");
-                            //newQuestion.question.answers.push({
-                            //    permissibleValue: value
-                            //});
                         }
                         var cdePvRecord = cde.valueDomain.permissibleValues.filter(function(pv){
                             if (!vmn) return false;
@@ -336,18 +335,21 @@ var saveForm = function(cadsrForm, cbfc) {
             cbs();
         });
     }, function () {
-        mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function () {
+        mongo_form.create(cdeForm, {_id: null, username: "batchloader"}, function (err) {
+            if (err) throw err;
             console.log("Form created " + cadsrForm.longName);
             cbfc();
         });
     });
 };
 
+var unsavedForms;
+
 var getForms = function(page, cb){
     var url = getFormPageUrl(page);
     getResource(url, function(forms){
         console.log("Page " + page + ", loading " + forms.length + " forms.");
-        //forms.forEach(function(f){
+        unsavedForms = forms.map(function(f){return f.longName;});
         async.each(forms, function(f, cbf) {
             if (f.workflowStatusName === "RETIRED ARCHIVED") return;
             async.parallel([
@@ -371,18 +373,22 @@ var getForms = function(page, cb){
                     },
                     function (callback) {
                         getInstructions(f, function(){
-                            console.log("Classification Retrieval Complete, Form: " + f.longName);
+                            console.log("Instruction Retrieval Complete, Form: " + f.longName);
                             callback();
                         });
                     },
                     function(callback){
                         getProtocolLongname(f, function(){
+                            console.log("Protocol Retrieval Complete, Form: " + f.longName);
                             callback();
                         });
                     }
                 ],
                 function (err, results) {
                     saveForm(f, function () {
+                        var i = unsavedForms.indexOf(f.longName);
+                        unsavedForms.splice(i,1);
+                        console.log(unsavedForms);
                         cbf();
                     });
                 });
@@ -400,18 +406,26 @@ setTimeout(function(){
     });
 }, 1000);
 
-
+var previousBulkTime = startTime;
 var callNextBulk = function (page){
     console.log("Ingesting from API page: " + page);
     getForms(page, function(){
+        var bulkTime = new Date().getTime() - previousBulkTime;
+        var totalTime = new Date().getTime() - startTime;
+        console.log("Page " + page  + " completed. Time " + (bulkTime/1000) + " seconds.");
+        console.log("Total time: " + (totalTime/1000));
         page++;
         if (page <= endPage) {
-            callNextBulk(page);
-        } else {
-            nciOrg.save(function(){
+            nciOrg.save(function () {
                 console.log("Ingestion done ...");
+                mongo_data_system.orgByName("NCI", function (stewardOrg) {
+                    nciOrg = stewardOrg;
+                    fakeTree = {elements: stewardOrg.classifications};
+                    callNextBulk(page);
+                });
             });
         }
+
     });
 };
 

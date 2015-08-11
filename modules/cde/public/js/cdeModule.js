@@ -1,8 +1,8 @@
 angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute'])
 .config(function($routeProvider) {
     $routeProvider.
-        when('/cde/search', {controller: 'DEListCtrl', templateUrl: 'template/system/list'}).
-        when('/quickBoard', {controller: 'QuickBoardCtrl', templateUrl: '/quickBoard'}).
+        when('/cde/search', {controller: 'DEListCtrl', templateUrl: 'template/system/list', title: "NIH CDE Repository | Find Common Data Elements"}).
+        when('/quickBoard', {controller: 'QuickBoardCtrl', templateUrl: '/quickBoard', title: "NIH CDE Repository | Quickboard"}).
         when('/sdcview', {controller: 'SDCViewCtrl', templateUrl: '/sdcView'}).
         when('/boardExport/:boardId', {controller: 'ExportCtrl', templateUrl: '/cde/public/html/boardExport.html'}).
         when('/cdeSearchExport', {controller: 'DEListCtrl', templateUrl: '/exportCdeSearch'}).
