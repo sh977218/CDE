@@ -1,7 +1,7 @@
 angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute'])
 .config(function($routeProvider) {
     $routeProvider.
-        when('/cde/search', {controller: 'DEListCtrl', templateUrl: 'template/system/list', title: "Find Common Data Elements", abcd: "xxx"}).
+        when('/cde/search', {controller: 'DEListCtrl', templateUrl: 'template/system/list', title: "Find Common Data Elements", keywords: 'cde, common data element, question, repository', description: 'Repository of Common Data Elements (CDE). Search CDEs recommended by NIH. See their use in Protocol Forms.'}).
         when('/quickBoard', {controller: 'QuickBoardCtrl', templateUrl: '/quickBoard', title: "Quickboard"}).
         when('/sdcview', {controller: 'SDCViewCtrl', templateUrl: '/sdcView'}).
         when('/boardExport/:boardId', {controller: 'ExportCtrl', templateUrl: '/cde/public/html/boardExport.html'}).

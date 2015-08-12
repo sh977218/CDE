@@ -183,6 +183,10 @@ try {
     process.exit();
 }
 
+app.get('/robots.txt', function(){
+    res.sendFile('robots.txt');
+});
+
 app.use(function(err, req, res, next){
     console.log("ERROR3: " + err);
     if (req && req.body && req.body.password) req.body.password = "";

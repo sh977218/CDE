@@ -4,8 +4,13 @@ angular.module('systemModule').controller('MainCtrl',
 
 
     $rootScope.$on("$routeChangeSuccess", function(currentRoute, previousRoute){
-        $rootScope.title = 'NIH CDE Repository';
+        $rootScope.title = 'NIH Common Data Elements (CDE) Repository';
+        $rootScope.description = 'NIH Common Data Elements (CDE) Repository';
+        $rootScope.keywords = 'cde, common data element, form, protocol, protocol form, question, repository, nih, nlm, national institutes of health, national library of medicine';
+        $rootScope.description = 'Repository of Common Data Elements (CDE) and Protocol Forms. Search CDEs. Search Protocol Forms.';
         if ($route.current.title) $rootScope.title +=  " | " + $route.current.title;
+        if ($route.current.keywords) $rootScope.keywords = $route.current.keywords;
+        if ($route.current.description) $rootScope.description = $route.current.description;
     });
 
     $scope.quickBoard = QuickBoard;
