@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('AccountManagementCtrl',
-    ['$scope', '$http', '$timeout', '$window', 'AccountManagement', 'userResource',
-        function($scope, $http, $timeout, $window, AccountManagement, userResource)
+    ['$scope', '$http', '$timeout', '$location', 'AccountManagement', 'userResource',
+        function($scope, $http, $timeout, $location, AccountManagement, userResource)
 {
     $scope.admin = {};
     $scope.newOrg = {};
@@ -122,7 +122,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                 $scope.myOrgAdmins = $scope.getMyOrgAdmins();
                 
                 if (userResource.user._id === userId) {
-                    $window.location.href = "/";
+                    $location.url = "/";
                 }
             }        
         );

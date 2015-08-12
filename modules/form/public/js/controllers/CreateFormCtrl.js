@@ -1,4 +1,6 @@
-angular.module('formModule').controller('CreateFormCtrl', ['$scope', 'Form', '$window', function($scope, Form, $window) {
+angular.module('formModule').controller('CreateFormCtrl', ['$scope', 'Form', '$location',
+    function($scope, Form, $location)
+{
     $scope.newForm = {stewardOrg:{}, naming: []};
     $scope.validationErrors = function() {
         if (!$scope.newForm.designation) {
@@ -31,7 +33,7 @@ angular.module('formModule').controller('CreateFormCtrl', ['$scope', 'Form', '$w
            }
         });
         Form.save($scope.newForm, function(form) {
-            $window.location.href = "/#/formView?tinyId=" + form.tinyId;
+            $location.url("formView?tinyId=" + form.tinyId);
             $scope.addAlert("success", "Form created.");
         });
     };

@@ -30,7 +30,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             when('/profile', {controller: 'ProfileCtrl', templateUrl: '/system/public/html/profile.html'}).
             when('/triggerClientException', {
                 controller: 'TriggerClientExceptionCtrl',
-                templateUrl: '/template/system/triggerClientException'
+                templateUrl: '/system/public/html/triggerClientException.html'
             }).
             when('/searchSettings', {
                 controller: 'SearchSettingsCtrl',

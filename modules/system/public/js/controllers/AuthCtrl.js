@@ -1,4 +1,6 @@
-angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$window', '$http', function($scope, Auth, $window, $http) {
+angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$location', '$http',
+    function($scope, Auth, $location, $http)
+{
     
     $scope.getCsrf = function() {
         delete $scope.csrf;
@@ -19,7 +21,7 @@ angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$windo
             },
             function(res) {
                 if (res === "OK") {
-                    $window.location.href = "/";
+                    $location.url = "/";
                 } else {
                     $scope.addAlert("danger", res.data);
                     $scope.getCsrf();

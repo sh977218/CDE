@@ -1,6 +1,6 @@
 angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
-    ['$scope', '$window', '$timeout', '$modal', 'DataElement', 'Elastic', 'userResource',
-        function($scope, $window, $timeout, $modal, DataElement, Elastic, userResource) {
+    ['$scope', '$location', '$timeout', '$modal', 'DataElement', 'Elastic', 'userResource',
+        function($scope, $location, $timeout, $modal, DataElement, Elastic, userResource) {
             $scope.openCdeInNewTab = true;
             $scope.currentPage = 1;
             $scope.totalItems = 0;
@@ -120,7 +120,7 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
             $scope.save = function() {
                 $scope.saving = true;
                 DataElement.save($scope.elt, function(cde) {
-                    $window.location.href = "/#/deview?tinyId=" + cde.tinyId;
+                    $location.url("deview?tinyId=" + cde.tinyId);
                 });
             };
 

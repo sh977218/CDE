@@ -12,8 +12,8 @@ angular.module('articleModule', ['ngRoute']).config(
         controllerAs: 'article'
       });
 })
-.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$window', '$modal', 
-        function ($routeParams, $http, $scope, $window, $modal) {
+.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$location', '$modal',
+        function ($routeParams, $http, $scope, $location, $modal) {
 
 
     $scope.canCurate = function() {
@@ -61,7 +61,7 @@ angular.module('articleModule', ['ngRoute']).config(
             }
         });
         modalInstance.result.then(function (newelt) {
-            $window.location.href = "/#/help/" + newelt.key;
+            $location.url("help/" + newelt.key);
             $scope.addAlert("success", "Saved.");
         }, function(reason) {
             if (reason !== undefined) {
