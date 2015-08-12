@@ -122,7 +122,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                 $scope.myOrgAdmins = $scope.getMyOrgAdmins();
                 
                 if (userResource.user._id === userId) {
-                    $location.url = "/";
+                    $location.url("/");
                 }
             }        
         );
