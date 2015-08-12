@@ -183,8 +183,8 @@ try {
     process.exit();
 }
 
-app.get('/robots.txt', function(){
-    res.sendFile('robots.txt');
+app.get('/robots.txt', function(req, res){
+    res.sendFile('robots.txt', {root: __dirname});
 });
 
 app.use(function(err, req, res, next){
