@@ -1,9 +1,10 @@
 <!doctype html>
 <html xmlns:ng="http://angularjs.org" ng-app="systemModule" id="ng-app" lang="en">
     <head>
-        <title>NIH CDE Repository</title>
+        <title ng-bind="$root.title">NIH CDE Repository</title>
         <meta name="site-version" content="<%- include version.ejs %>">
         <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="description=" content="Database of Common Data Elements run by the National Library of Medicine, National Institutes of Health.">
 
         <!--[if lt IE 9]>
             <script type="text/javascript">

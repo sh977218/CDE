@@ -1,6 +1,12 @@
 angular.module('systemModule').controller('MainCtrl',
-    ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory', '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard',
-        function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers, QuickBoard) {
+    ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory', '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', '$rootScope', '$route',
+        function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers, QuickBoard, $rootScope, $route) {
+
+
+    $rootScope.$on("$routeChangeSuccess", function(currentRoute, previousRoute){
+        $rootScope.title = 'NIH CDE Repository';
+        if ($route.current.title) $rootScope.title +=  " | " + $route.current.title;
+    });
 
     $scope.quickBoard = QuickBoard;
     QuickBoard.restoreFromLocalStorage();

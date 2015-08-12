@@ -1,5 +1,26 @@
-// add attachment!
-// add instructions for sections
+// node ingester/cadsrForms/getForms.js 15 40
+// The loader has a few issues: "Exit code 3, Exit code 8, Process out of memory" - Any of these can randomly occur.
+// The best strategy is just to run load of all, wait when it crashes and run the rest.
+
+// Correct caDSR ids before running the script!
+//var cdes = db.dataelements.find({
+//    "stewardOrg.name": "NCI"
+//    , "ids": {$elemMatch:
+//    {
+//        source: "caDSR"
+//        , version: /[^\.]/
+//    }
+//    }
+//});
+//cdes.forEach(function(cde){
+//    cde.ids.forEach(function(id){
+//        if (id.source === "caDSR"){
+//            id.version += ".0";
+//        }
+//    });
+//    print(cde);
+//    db.dataelements.update({tinyId: cde.tinyId}, cde);
+//});
 
 var formIncrement = 100;
 var startPage = process.argv[2];
@@ -277,7 +298,7 @@ var saveForm = function(cadsrForm, cbfc) {
                 console.log("Form Public ID " + cadsrForm.publicID);
                 return cbq();
             }
-            mongo_cde.byOtherId("caDSR", q.cde.publicID, function (err, cde) {
+            mongo_cde.byOtherIdAndVersion("caDSR", q.cde.publicID, q.cde.version, function (err, cde) {
                 if (!cde) {
                     console.log("CDE not found. caDSR ID: " + q.cde.publicID);
                     return cbq();
