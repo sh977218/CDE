@@ -7,7 +7,7 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute'])
         when('/boardExport/:boardId', {controller: 'ExportCtrl', templateUrl: '/cde/public/html/boardExport.html'}).
         when('/cdeSearchExport', {controller: 'DEListCtrl', templateUrl: '/cde/public/html/exportCdeSearch.html'}).
         when('/myboards', {controller: 'MyBoardsCtrl', templateUrl: '/cde/public/html/myBoards.html'}).
-        when('/board/:boardId', {controller: 'BoardViewCtrl', templateUrl: '/cde/public/html/board.html'}).
+        when('/board/:boardId', {controller: 'BoardViewCtrl', templateUrl: '/cde/public/html/boardView.html'}).
         when('/boardList', {controller: 'BoardListCtrl', templateUrl: '/cde/public/html/boardList.html'}).
         when('/createCde', {controller: 'CreateCdeCtrl', templateUrl:'/cde/public/html/createCde.html'}).
         when('/deview', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html'}).
