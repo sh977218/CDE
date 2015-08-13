@@ -29,19 +29,11 @@ public class ReferenceDocument implements Comparable {
         if (providerOrg != null ? !providerOrg.equals(that.providerOrg) : that.providerOrg != null) return false;
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
         return !(languageCode != null ? !languageCode.equals(that.languageCode) : that.languageCode != null);
-
     }
 
     @Override
     public int hashCode() {
-        int result = docType != null ? docType.hashCode() : 0;
-        result = 31 * result + (document != null ? document.hashCode() : 0);
-        result = 31 * result + (referenceDocumentId != null ? referenceDocumentId.hashCode() : 0);
-        result = 31 * result + (text != null ? text.hashCode() : 0);
-        result = 31 * result + (uri != null ? uri.hashCode() : 0);
-        result = 31 * result + (providerOrg != null ? providerOrg.hashCode() : 0);
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (languageCode != null ? languageCode.hashCode() : 0);
+        int result = (uri != null ? uri.hashCode() : 0);
         return result;
     }
 

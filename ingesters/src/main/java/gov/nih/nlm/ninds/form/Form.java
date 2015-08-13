@@ -13,55 +13,72 @@ public class Form implements Comparable {
     ArrayList<Id> ids = new ArrayList<Id>();
     Boolean isCopyrighted = false;
     Copyright copyright = new Copyright();
-    String origin;
+    String origin = "";
     ArrayList<Attachment> attachments = new ArrayList<Attachment>();
     ArrayList<Comment> comments = new ArrayList<Comment>();
     ArrayList<String> history = new ArrayList<String>();
-    Date created;
+    String created = "";
     CreatedBy createdBy = new CreatedBy();
-    Date updated;
+    String updated = "";
     UpdatedBy updatedBy = new UpdatedBy();
-    Date imported;
+    String imported = "";
     ArrayList<FormElement> formElements = new ArrayList<FormElement>();
-    Boolean archived;
+    Boolean archived = false;
     ArrayList<Classification> classification = new ArrayList<Classification>();
     ArrayList<ReferenceDocument> referenceDocuments = new ArrayList<ReferenceDocument>();
 
     ArrayList<String> cdes = new ArrayList<String>();
-    CsElt disease = new CsElt();
-    CsElt subDisease = new CsElt();
 
     public Form() {
         Classification c = new Classification();
         c.stewardOrg = "NINDS";
         classification.add(c);
+        ReferenceDocument rd = new ReferenceDocument();
+        referenceDocuments.add(rd);
     }
 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Form form = (Form) o;
-        if (equalNaming(this.naming, form.naming)
-                && equalCdes(this.cdes, form.cdes)
-                && equalReferenceDocuments(this.referenceDocuments, form.referenceDocuments)) {
-            this.classification.get(0).elements.add(form.disease);
-            HashSet<CsElt> diseases = this.classification.get(0).elements;
-            for (CsElt ce : diseases) {
-                if (ce.name.equals(form.disease)) {
-                    ce.elements.add(form.subDisease);
-                }
-            }
+        Form element = (Form) o;
+        if (equalNaming(element.naming, this.naming)
+                && equalCdes(element.cdes, this.cdes)
+                && equalReferenceDocuments(element.referenceDocuments, this.referenceDocuments)) {
+            mergeDiseaseAndDomain(element.classification.get(0).elements, this.classification.get(0).elements);
             return true;
         }
         return false;
     }
 
+    private void mergeDiseaseAndDomain(Set s1, Set s2) {
+        CsElt disease = null;
+        CsElt domain = null;
+        CsElt newDisease = null;
+        CsElt newDomain = null;
+        Iterator it = s1.iterator();
+        while (it.hasNext()) {
+            CsElt next = (CsElt) it.next();
+            if (next.name.equals("Disease"))
+                disease = next;
+            if (next.name.equals("Domain"))
+                domain = next;
+        }
+        Iterator newIt = s2.iterator();
+        while (newIt.hasNext()) {
+            CsElt next = (CsElt) newIt.next();
+            if (next.name.equals("Disease"))
+                newDisease = next;
+            if (next.name.equals("Domain"))
+                newDomain = next;
+        }
+        if (disease != null && newDisease != null)
+            disease.elements.add(newDisease.elements.iterator().next());
+        if (domain != null && newDomain != null)
+            domain.elements.add(newDomain.elements.iterator().next());
+    }
 
     private Boolean equalNaming(Naming n1, Naming n2) {
-        return n1.designation.equalsIgnoreCase(n2.designation) ? true : false;
+        return n1.equals(n2) ? true : false;
     }
 
     private Boolean equalReferenceDocuments(List rd1, List rd2) {
@@ -117,14 +134,38 @@ public class Form implements Comparable {
                 ", classification=" + classification +
                 ", referenceDocuments=" + referenceDocuments +
                 ", cdes=" + cdes +
-                ", disease=" + disease +
-                ", subDisease=" + subDisease +
                 '}';
     }
 
     @Override
     public int compareTo(Object o) {
         Form form = (Form) o;
-        return this.naming.designation.compareTo(form.naming.designation);
+        return form.naming.designation.compareTo(this.naming.designation);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = naming != null ? naming.hashCode() : 0;
+        result = 31 * result + (stewardOrg != null ? stewardOrg.hashCode() : 0);
+        result = 31 * result + (version != null ? version.hashCode() : 0);
+        result = 31 * result + (properties != null ? properties.hashCode() : 0);
+        result = 31 * result + (ids != null ? ids.hashCode() : 0);
+        result = 31 * result + (isCopyrighted != null ? isCopyrighted.hashCode() : 0);
+        result = 31 * result + (copyright != null ? copyright.hashCode() : 0);
+        result = 31 * result + (origin != null ? origin.hashCode() : 0);
+        result = 31 * result + (attachments != null ? attachments.hashCode() : 0);
+        result = 31 * result + (comments != null ? comments.hashCode() : 0);
+        result = 31 * result + (history != null ? history.hashCode() : 0);
+        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
+        result = 31 * result + (updated != null ? updated.hashCode() : 0);
+        result = 31 * result + (updatedBy != null ? updatedBy.hashCode() : 0);
+        result = 31 * result + (imported != null ? imported.hashCode() : 0);
+        result = 31 * result + (formElements != null ? formElements.hashCode() : 0);
+        result = 31 * result + (archived != null ? archived.hashCode() : 0);
+        result = 31 * result + (classification != null ? classification.hashCode() : 0);
+        result = 31 * result + (referenceDocuments != null ? referenceDocuments.hashCode() : 0);
+        result = 31 * result + (cdes != null ? cdes.hashCode() : 0);
+        return result;
     }
 }

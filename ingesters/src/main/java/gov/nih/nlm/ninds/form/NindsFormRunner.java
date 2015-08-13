@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Created by huangs8 on 8/7/2015.
@@ -13,9 +13,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class NindsFormRunner {
 
     public static void main(String[] args) {
-        List<Form> forms = new CopyOnWriteArrayList<Form>();
+        Collection<Form> forms = new CopyOnWriteArraySet<Form>();
         Thread[] t = new Thread[6];
-
         NindsFormLoader runner1 = new NindsFormLoader(forms, 1, 5);
         t[0] = new Thread(runner1);
         NindsFormLoader runner2 = new NindsFormLoader(forms, 6, 10);
@@ -45,7 +44,7 @@ public class NindsFormRunner {
         saveToJson(forms);
     }
 
-    public static void saveToJson(List<Form> forms) {
+    public static void saveToJson(Collection<Form> forms) {
         Gson gson = new Gson();
         String json = gson.toJson(forms);
         try {

@@ -9,9 +9,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,11 +20,11 @@ public class NindsFormLoader implements Runnable {
     DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
     WebDriver driver;
     WebDriverWait wait;
-    List forms;
+    Collection forms;
     int pageStart;
     int pageEnd;
 
-    public NindsFormLoader(List f, int ps, int pe) {
+    public NindsFormLoader(Collection f, int ps, int pe) {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, 60);
@@ -81,18 +81,21 @@ public class NindsFormLoader implements Runnable {
         }
     }
 
-    void findAndSaveToForms(List<Form> forms, int pageStart, int pageEnd) {
+    void findAndSaveToForms(Collection<Form> forms, int pageStart, int pageEnd) {
         String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 26";
         textPresent(textToBePresent);
         List<WebElement> trs = driver.findElements(By.cssSelector("#ContentPlaceHolder1_dgCRF > tbody > tr"));
         Classification classification = new Classification();
+        CsElt subDisease = null;
+        CsElt disease = null;
         for (int i = 1; i < trs.size(); i++) {
             List<WebElement> tds = trs.get(i).findElements(By.cssSelector("td"));
             Form form = new Form();
             int index = 1;
+            CsElt diseaseRoot = new CsElt("Disease", null);
             for (int j = 0; j < tds.size(); j++) {
                 WebElement td = tds.get(j);
-                String text = td.getText();
+                String text = td.getText().replace("\"", "").trim();
                 if (index == 1)
                     form.naming.designation = text;
                 if (index == 2)
@@ -108,9 +111,7 @@ public class NindsFormLoader implements Runnable {
                     List<WebElement> a = td.findElements(By.cssSelector("a"));
                     if (a.size() > 0) {
                         String href = a.get(0).getAttribute("href");
-                        ReferenceDocument referenceDocument = new ReferenceDocument();
-                        referenceDocument.uri = href;
-                        form.referenceDocuments.add(referenceDocument);
+                        form.referenceDocuments.get(0).uri = href;
                     }
                 }
                 if (index == 5) {
@@ -123,19 +124,19 @@ public class NindsFormLoader implements Runnable {
                 if (index == 6)
                     form.version = text;
                 if (index == 7)
-                    try {
-                        form.updated = format.parse(text);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                    form.updated = text;
                 if (index == 8) {
-                    form.disease.name = text;
+                    disease = new CsElt(text, null);
                 }
                 if (index == 9) {
-                    form.subDisease.name = text;
+                    subDisease = new CsElt(text, null);
                 }
                 index++;
             }
+
+            disease.elements.add(subDisease);
+            diseaseRoot.elements.add(disease);
+            form.classification.get(0).elements.add(diseaseRoot);
             forms.add(form);
         }
         if (pageStart < pageEnd) {
@@ -173,13 +174,25 @@ public class NindsFormLoader implements Runnable {
     }
 
     void getCdesList(Form form) {
+        CsElt domainRoot = new CsElt("Domain", null);
+        String domainSelector = "//tbody[tr/td/div[text() = 'Domain']]//tr[3]//td[19]";
+        String domainName = findElement(By.xpath(domainSelector)).getText().trim();
+        CsElt domain = new CsElt(domainName, null);
+        String subDomainSelector = "//tbody[tr/td/div[text() = 'Domain']]//tr[3]//td[18]";
+        String subDomainName = findElement(By.xpath(subDomainSelector)).getText().trim();
+        CsElt subDomain = new CsElt(subDomainName, null);
+        domain.elements.add(subDomain);
+        domainRoot.elements.add(domain);
+        form.classification.get(0).elements.add(domainRoot);
         String selector = "//tbody[tr/td/div[text() = 'CDE ID']]//tr";
         List<WebElement> trs = driver.findElements(By.xpath(selector));
         for (int i = 2; i < trs.size(); i++) {
             WebElement tr = trs.get(i);
             List<WebElement> tds = tr.findElements(By.cssSelector("td"));
             String cdeId = tds.get(0).getText().trim();
-            form.cdes.add(cdeId);
+            if (cdeId.length() > 5) {
+                form.cdes.add(cdeId);
+            }
         }
     }
 

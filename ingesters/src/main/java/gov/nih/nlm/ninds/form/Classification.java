@@ -9,5 +9,8 @@ import java.util.HashSet;
 public class Classification {
     String stewardOrg = "NINDS";
     Boolean workingGroup;
-    HashSet<CsElt> elements = new HashSet<CsElt>();
+    HashSet<CsElt> elements = new HashSet<>();
+
+    public Classification() {
+    }
 }
