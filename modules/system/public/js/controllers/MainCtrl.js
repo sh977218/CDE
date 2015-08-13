@@ -119,16 +119,16 @@ angular.module('systemModule').controller('MainCtrl',
         //reset to old to keep any additional routing logic from kicking in
         $location.hash(old);
     };
-    
+
     $scope.initCache = function() {
         if ($cacheFactory.get("deListCache") === undefined) {
             $scope.cache = $cacheFactory("deListCache");
         } else {
             $scope.cache = $cacheFactory.get("deListCache");
-        }        
+        }
     };
 
-    $scope.initCache(); 
+    $scope.initCache();
     $scope.openCloseAllModel = {};
     $scope.openCloseAllModel["list"] = $scope.cache.get("openCloseAlllist");
     $scope.openCloseAllModel["quickboard"] = $scope.cache.get("openCloseAllquickboard");
@@ -147,10 +147,10 @@ angular.module('systemModule').controller('MainCtrl',
     };
 
     $scope.searchByClassification = function(orgName, elts, type) {
-        $scope.cache.removeAll();        
+        $scope.cache.removeAll();
         $scope.cache.remove("search." + type + "." + "selectedOrg");
-        $scope.cache.remove("search." + type + "." + "selectedElements"); 
-        $scope.cache.put("search." + type + "." + "selectedOrg", orgName);   
+        $scope.cache.remove("search." + type + "." + "selectedElements");
+        $scope.cache.put("search." + type + "." + "selectedOrg", orgName);
         $scope.cache.put("search." + type + "." + "selectedElements", elts);
         $location.url('/'+type+'/search');
 

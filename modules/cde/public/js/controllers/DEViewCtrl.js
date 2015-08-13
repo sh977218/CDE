@@ -6,7 +6,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
 {
 
     $scope.module = 'cde';
-    $scope.baseLink = '/#/deview?tinyId=';
+    $scope.baseLink = 'deview?tinyId=';
     $scope.eltLoaded = false;
     $scope.detailedView = true;
     $scope.canLinkPv = false;

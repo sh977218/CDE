@@ -1,6 +1,7 @@
 angular.module('systemModule').controller('OrgOverviewCtrl',
-['$scope', 'OrgHelpers', '$location', 'AutoCompleteResource',
-function($scope, OrgHelpers, $location, AutoCompleteResource) {
+    ['$scope', 'OrgHelpers', '$location', 'AutoCompleteResource',
+    function($scope, OrgHelpers, $location, AutoCompleteResource)
+{
 
     $scope.orgs = [];
     $scope.autocomplete = AutoCompleteResource;
@@ -26,14 +27,13 @@ function($scope, OrgHelpers, $location, AutoCompleteResource) {
         }
     });
 
-    $scope.searchNoOrg = function() {
-        $scope.searchAction();
-        if (!$scope.embedded) $location.url($scope.module + "/search");
-    };
-
     $scope.browseOrg = function(orgName) {
-        $scope.alterOrgFilter(orgName);
-        if (!$scope.embedded) $location.url($scope.module + "/search");
+        if ($scope.embedded) {
+            $scope.searchSettings.selectedOrg = orgName;
+            $scope.reload();
+        } else {
+            $location.url($scope.module + "/search?selectedOrg=" + encodeURIComponent(orgName));
+        }
     };
 
 }]);

@@ -2,21 +2,24 @@ angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
         'SearchSettings', 'QuickBoard', 'AutoCompleteResource', '$location',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
-                  SearchSettings, QuickBoard, AutoCompleteResource, $location) {
+                  SearchSettings, QuickBoard, AutoCompleteResource, $location)
+{
 
     $scope.autocomplete = AutoCompleteResource;
     $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
-    $scope.searchSettings = {
-        q: ""
-        , selectedOrg: ""
-        , selectedOrgAlt: ""
-        , page: 1
-        , classification: []
-        , classificationAlt: []
-        , regStatuses: []
-        , resultPerPage: $scope.resultPerPage
+
+    $scope.initSearch = function() {
+        $scope.searchSettings = {
+            q: ""
+            , page: 1
+            , classification: []
+            , classificationAlt: []
+            , regStatuses: []
+            , resultPerPage: $scope.resultPerPage
+        };
     };
+    $scope.initSearch();
 
     $scope.currentSearchTerm = $scope.searchSettings.q;
 
@@ -84,7 +87,7 @@ angular.module('systemModule').controller('ListCtrl',
         return $scope.altClassificationFilterMode?$scope.searchSettings.classificationAlt:$scope.searchSettings.classification;
     };
 
-    $scope.alterOrgFilter = function(orgName){
+    $scope._alterOrgFiler = function(orgName) {
         var orgToAlter = $scope.altClassificationFilterMode?$scope.searchSettings.selectedOrgAlt:$scope.searchSettings.selectedOrg;
         var classifToAlter = $scope.getCurrentSelectedClassification();
 
@@ -99,13 +102,16 @@ angular.module('systemModule').controller('ListCtrl',
             classifToAlter.length = 0;
         }
         delete $scope.aggregations.groups;
+    };
 
+    $scope.alterOrgFilter = function(orgName) {
+        $scope._alterOrgFiler(orgName);
         $scope.termSearch();
         focusClassification();
     };
 
-    $scope.selectElement = function(e) {
-        var classifToSelect = $scope.altClassificationFilterMode?$scope.searchSettings.classificationAlt:$scope.searchSettings.classification;
+    $scope._selectElement = function(e) {
+        var classifToSelect = $scope.altClassificationFilterMode ? $scope.searchSettings.classificationAlt : $scope.searchSettings.classification;
         if (classifToSelect.length === 0) {
             classifToSelect.length = 0;
             classifToSelect.push(e);
@@ -117,6 +123,10 @@ angular.module('systemModule').controller('ListCtrl',
                 classifToSelect.push(e);
             }
         }
+    };
+
+    $scope.selectElement = function(e) {
+        $scope._selectElement(e);
         $scope.termSearch();
         focusClassification();
     };
@@ -212,18 +222,18 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.generateSearchForTerm = function () {
         var searchLink = "/" + $scope.module + "/search?";
-        if ($scope.searchSettings.q) searchLink += "q=" + $scope.searchSettings.q;
+        if ($scope.searchSettings.q) searchLink += "q=" + encodeURIComponent($scope.searchSettings.q);
         if ($scope.searchSettings.regStatuses.length > 0) {
             searchLink += "&regStatuses=" + $scope.searchSettings.regStatuses.join(';');
         }
-        if ($scope.searchSettings.selectedOrg) searchLink += "&selectedOrg=" + $scope.searchSettings.selectedOrg;
+        if ($scope.searchSettings.selectedOrg) searchLink += "&selectedOrg=" + encodeURIComponent($scope.searchSettings.selectedOrg);
         if ($scope.searchSettings.classification && $scope.searchSettings.classification.length > 0) {
-            searchLink += "&classification=" + $scope.searchSettings.classification.join(';');
+            searchLink += "&classification=" + encodeURIComponent($scope.searchSettings.classification.join(';'));
         }
-        if ($scope.searchSettings.selectedOrgAlt) searchLink += "&selectedOrgAlt=" + $scope.searchSettings.selectedOrgAlt;
+        if ($scope.searchSettings.selectedOrgAlt) searchLink += "&selectedOrgAlt=" + encodeURIComponent($scope.searchSettings.selectedOrgAlt);
         if ($scope.altClassificationFilterMode) {
             if ($scope.searchSettings.classificationAlt && $scope.searchSettings.classificationAlt.length > 0) {
-                searchLink += "&classificationAlt=" + $scope.searchSettings.classificationAlt.join(';');
+                searchLink += "&classificationAlt=" + encodeURIComponent($scope.searchSettings.classificationAlt.join(';'));
             }
         }
         if ($scope.searchSettings.page)

@@ -4,7 +4,7 @@ angular.module('formModule').controller('FormViewCtrl',
 {
 
     $scope.module = "form";
-    $scope.baseLink = '/#/formView?tinyId=';
+    $scope.baseLink = 'formView?tinyId=';
     $scope.addCdeMode = false;
     $scope.openCdeInNewTab = true;
     $scope.dragEnabled = true;

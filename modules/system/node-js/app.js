@@ -44,11 +44,7 @@ exports.init = function(app) {
     
     var viewConfig = {modules: config.modules, webtrends: config.webtrends, maxPin: config.maxPin};
 
-    //app.get('/template/:module/:template', function(req, res) {
-    //    res.render(req.params.template, req.params.module, {config: viewConfig, module: req.params.module});
-    //});
-
-    ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/article/key/:title", "/createForm", "/createCde", "/boardList", "/deview",
+    ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList", "/deview",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login"].forEach(function(path) {
         app.get(path, function(req, res) {

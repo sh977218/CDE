@@ -1,6 +1,9 @@
-angular.module('systemModule').controller('ClassificationCtrl', ['$scope', '$modal', '$routeParams', 'CdeClassification', 'OrgHelpers', 'userResource', function($scope, $modal, $routeParams, CdeClassification, OrgHelpers, userResource) {
-    $scope.initCache(); 
-    
+angular.module('systemModule').controller('ClassificationCtrl',
+    ['$scope', '$modal', '$routeParams', 'CdeClassification', 'OrgHelpers', 'userResource',
+        function($scope, $modal, $routeParams, CdeClassification, OrgHelpers, userResource)
+{
+    $scope.initCache();
+
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
           templateUrl: '/system/public/html/classifyCde.html',
