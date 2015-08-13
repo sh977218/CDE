@@ -1,10 +1,11 @@
 <!doctype html>
 <html xmlns:ng="http://angularjs.org" ng-app="systemModule" id="ng-app" lang="en">
     <head>
-        <title ng-bind="$root.title">NIH CDE Repository</title>
+        <title ng-bind="$root.pageMeta.title">NIH CDE Repository</title>
         <meta name="site-version" content="<%- include version.ejs %>">
         <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-        <meta name="description" content="{{$root.description}}"/>
+        <meta name="description" content="{{$root.pageMeta.description}}"/>
+        <meta name="keywords" content="{{$root.pageMeta.keywords}}"/>
 
         <!--[if lt IE 9]>
             <script type="text/javascript">

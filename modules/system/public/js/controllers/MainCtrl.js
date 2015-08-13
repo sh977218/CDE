@@ -4,13 +4,13 @@ angular.module('systemModule').controller('MainCtrl',
 
 
     $rootScope.$on("$routeChangeSuccess", function(currentRoute, previousRoute){
-        $rootScope.title = 'NIH Common Data Elements (CDE) Repository';
-        $rootScope.description = 'NIH Common Data Elements (CDE) Repository';
-        $rootScope.keywords = 'cde, common data element, form, protocol, protocol form, question, repository, nih, nlm, national institutes of health, national library of medicine';
-        $rootScope.description = 'Repository of Common Data Elements (CDE) and Protocol Forms. Search CDEs. Search Protocol Forms.';
-        if ($route.current.title) $rootScope.title +=  " | " + $route.current.title;
-        if ($route.current.keywords) $rootScope.keywords = $route.current.keywords;
-        if ($route.current.description) $rootScope.description = $route.current.description;
+        $rootScope.pageMeta = {};
+        $rootScope.pageMeta.title = 'NIH Common Data Elements (CDE) Repository';
+        $rootScope.pageMeta.keywords = 'cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine';
+        $rootScope.pageMeta.description = 'Repository of Common Data Elements (CDE) and Protocol Forms. Search CDEs. Search Protocol Forms.';
+        if ($route.current.title) $rootScope.pageMeta.title +=  " | " + $route.current.title;
+        if ($route.current.keywords) $rootScope.pageMeta.keywords = $route.current.keywords;
+        if ($route.current.description) $rootScope.pageMeta.description = $route.current.description;
     });
 
     $scope.quickBoard = QuickBoard;
