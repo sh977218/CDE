@@ -50,13 +50,6 @@ exports.buildElasticSearchQuery = function (settings) {
         }
     };
 
-    //regStatusShared.statusList.forEach(function (status) {
-    //    if (settings.selectedStatuses.indexOf(status) === -1) queryStuff.query.bool.must_not.push({
-    //        term: {"registrationState.registrationStatus": status}
-    //    });
-    //});
-
-
     queryStuff.query.bool.must = [];
 
     var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";

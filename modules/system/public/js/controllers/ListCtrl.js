@@ -5,6 +5,8 @@ angular.module('systemModule').controller('ListCtrl',
                   SearchSettings, QuickBoard, AutoCompleteResource, $location)
 {
 
+    console.log("hello")
+
     $scope.autocomplete = AutoCompleteResource;
     $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
@@ -253,11 +255,15 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.reload();
     };
 
-    userResource.getPromise().then(function(){
+    $scope.search = function() {
+        search();
+    };
+
+    $scope.$on('$locationChangeSuccess', function() {
         search();
     });
 
-    $scope.$on('$locationChangeSuccess', function() {
+    userResource.getPromise().then(function(){
         search();
     });
 
@@ -306,9 +312,8 @@ angular.module('systemModule').controller('ListCtrl',
         });
 
         modalInstance.result.then(function (selectedBoard) {
-            var settings = Elastic.buildElasticQuerySettings($scope);
             var data = {
-                query: settings
+                query: Elastic.buildElasticQuerySettings($scope.searchSettings)
                 , board: selectedBoard
                 , itemType: $scope.module
             };

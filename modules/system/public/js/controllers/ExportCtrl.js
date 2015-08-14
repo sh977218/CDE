@@ -1,8 +1,9 @@
-angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', function ($scope, Elastic) {
-    var maxExportSize = 500;
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', function ($scope, Elastic)
+{
 
     $scope.feedbackClass = ["fa-download"];
     $scope.csvDownloadState = "none";
+
     $scope.exportSearchResults = function () {
         try {
             var isFileSaverSupported = !!new Blob;
@@ -11,7 +12,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
         }
         $scope.feedbackClass = ['fa-spinner', 'fa-pulse'];
         $scope.addAlert("warning", "Your export is being generated, please wait.");
-        Elastic.getExport(Elastic.buildElasticQuerySettings($scope), $scope.module, function (result) {
+        Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, function (result) {
             if (result) {
                 var blob = new Blob([result], {
                     type: "text/csv"

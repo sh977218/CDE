@@ -147,13 +147,13 @@ angular.module('systemModule').controller('MainCtrl',
     };
 
     $scope.searchByClassification = function(orgName, elts, type) {
-        $scope.cache.removeAll();
-        $scope.cache.remove("search." + type + "." + "selectedOrg");
-        $scope.cache.remove("search." + type + "." + "selectedElements");
-        $scope.cache.put("search." + type + "." + "selectedOrg", orgName);
-        $scope.cache.put("search." + type + "." + "selectedElements", elts);
-        $location.url('/'+type+'/search');
-
+        //$scope.cache.removeAll();
+        //$scope.cache.remove("search." + type + "." + "selectedOrg");
+        //$scope.cache.remove("search." + type + "." + "selectedElements");
+        //$scope.cache.put("search." + type + "." + "selectedOrg", orgName);
+        //$scope.cache.put("search." + type + "." + "selectedElements", elts);
+        $location.url('/'+type+'/search?selectedOrg=' + encodeURIComponent(orgName)
+            + "&classification=" + encodeURIComponent(elts.join(";")));
     };
     
     // Gets screen size and also updates it in the callboack on screen resize

@@ -1,7 +1,8 @@
 <h4 tabindex="0">Linked Forms</h4>
 
 <p tabindex="0">All forms (all statuses) that use this CDE.</p>
-
-<div ng-controller="LinkedFormsCtrl">
-    <div id="accordionList" ng-include="module+'/public/html/'+module+'AccordionList'"></div>
+<div ng-controller="ListCtrl">
+    <div ng-controller="LinkedFormsCtrl">
+        <div id="accordionList" ng-include="module+'/public/html/'+module+'AccordionList.html'"></div>
+    </div>
 </div>

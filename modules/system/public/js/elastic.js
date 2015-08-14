@@ -2,12 +2,11 @@ angular.module('ElasticSearchResource', ['ngResource'])
 .factory('Elastic', function($http, userResource, SearchSettings) {
     return {
         searchToken: "id" + Math.random().toString(16).slice(2)
-        , buildElasticQuerySettings: function(queryParams){
+        , buildElasticQuerySettings: function(queryParams) {
             var regStatuses = queryParams.regStatuses;
             if (!regStatuses) regStatuses = [];
 
             if (regStatuses.length === 0) {
-                // @TODO need promise here ?
                 regStatuses = SearchSettings.getUserDefaultStatuses();
             }
 

@@ -65,7 +65,7 @@
                 window.formEditable = <%= config.modules.forms.editable %>;
                 window.formLocalRender = <%= config.modules.forms.editable %>;
                 window.formLoincRender = <%= config.modules.forms.editable %>;
-                window.formEnabled = <%= config.modules.form %>;
+                window.formEnabled = <%= config.modules.forms !== undefined %>;
             })();
         </script>
 

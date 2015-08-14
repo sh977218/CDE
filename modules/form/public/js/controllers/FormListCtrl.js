@@ -1,9 +1,13 @@
-angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller', '$location', '$window'
-        , function($scope, $controller, $location, $window) {
+angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller', 'userResource'
+        , function($scope, $controller, userResource) {
 
     $scope.module = "form";    
-    $controller('ListCtrl', {$scope: $scope});
-    
+    //$controller('ListCtrl', {$scope: $scope});
+
+    //userResource.getPromise().then(function(){
+    //    $scope.search();
+    //});
+
 }]);
 
 angular.module('formModule').controller('FormDEListCtrl', ['$scope'
