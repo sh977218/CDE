@@ -337,15 +337,6 @@ exports.init = function(app) {
         return ip.indexOf("127.0") !== -1 || ip === "::1" ||  ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIP) > -1;
     };
 
-    //app.get('/siteaudit', function(req, res) {
-    //    if (app.isLocalIp(getRealIp(req))
-    //            && req.user && req.user.siteAdmin) {
-    //        res.render('siteAudit', 'system', {config: viewConfig});
-    //    } else {
-    //        res.status(401).send();
-    //    }
-    //});
-
     app.get('/searchUsers/:username?', function(req, res) {
         if (app.isLocalIp(getRealIp(req))
                 && req.user && req.user.siteAdmin) {
@@ -390,17 +381,7 @@ exports.init = function(app) {
         } else {
             res.status(401).send();
         }
-    });    
-
-    //
-    //app.get('/siteaccountmanagement', exports.nocacheMiddleware, function(req, res) {
-    //    if (app.isLocalIp(getRealIp(req))
-    //        && req.user && req.user.siteAdmin) {
-    //        res.render('siteaccountmanagement', "system");
-    //    } else {
-    //        res.status(401).send();
-    //    }
-    //});
+    });
         
     app.get('/data/:imgtag', function(req, res) {
         mongo_data_system.getFile(req.user, req.params.imgtag, res);
