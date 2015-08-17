@@ -1,8 +1,14 @@
 angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute'])
 .config(function($routeProvider) {
     $routeProvider.
-        when('/cde/search', {controller: 'DEListCtrl', templateUrl: 'template/system/list'}).
-        when('/quickBoard', {controller: 'QuickBoardCtrl', templateUrl: '/quickBoard'}).
+        when('/cde/search', {
+            controller: 'DEListCtrl',
+            templateUrl: 'template/system/list',
+            title: "Find Common Data Elements",
+            keywords: 'cde, common data element, promis, neuro-qol, phenx, ahrq, ninds, repository',
+            description: 'Repository of Common Data Elements (CDE). Search CDEs recommended by NIH. See their use in Protocol Forms.'
+        }).
+        when('/quickBoard', {controller: 'QuickBoardCtrl', templateUrl: '/quickBoard', title: "Quickboard"}).
         when('/sdcview', {controller: 'SDCViewCtrl', templateUrl: '/sdcView'}).
         when('/boardExport/:boardId', {controller: 'ExportCtrl', templateUrl: '/cde/public/html/boardExport.html'}).
         when('/cdeSearchExport', {controller: 'DEListCtrl', templateUrl: '/exportCdeSearch'}).
@@ -10,6 +16,12 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute'])
         when('/board/:boardId', {controller: 'BoardViewCtrl', templateUrl: '/board'}).
         when('/boardList', {controller: 'BoardListCtrl', templateUrl: '/boardList'}).
         when('/createCde', {controller: 'CreateCdeCtrl', templateUrl:'/createcde'}).
-        when('/deview', {controller: 'DEViewCtrl', templateUrl: '/deview'}).
+        when('/deview', {
+            controller: 'DEViewCtrl',
+            templateUrl: '/deview',
+            title: "CDE Detail",
+            keywords: 'cde, common data element, question, detail, value set, description',
+            description: "Detailed view of selected Common Data Element (CDE)."
+        }).
         when('/stats', {controller: 'MainCtrl', templateUrl: '/system/public/html/stats.html'});
     });

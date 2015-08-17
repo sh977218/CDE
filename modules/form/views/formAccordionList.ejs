@@ -33,7 +33,7 @@
                 </dl>
             </div>
             <div class="col-md-2">
-                <img ng-repeat="attachment in form.attachments | filter:{isDefault:true}"
+                <img ng-repeat="attachment in form.attachments | filter:{isDefault:true}" alt="Image attached to the form"
                      ng-src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
             </div>
         </div>
