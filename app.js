@@ -189,9 +189,9 @@ app.use(function(err, req, res, next){
     var meta = {
         stack: err.stack
         , origin: "app.express.error"
-        , request: {username: req.user?req.user.username:null, method: req.method, url: req.url, params: req.params, body: req.body, userAgent: req["user-agent"]}
+        , request: {username: req.user?req.user.username:null, method: req.method, url: req.url, params: req.params, body: req.body, userAgent: req.headers['user-agent'], ip: req.ip}
     }; 
-    logging.errorLogger.error("Error: Express Default Error Handler", meta);
+    logging.errorLogger.error('error', "Error: Express Default Error Handler", meta);
     if (err.status === 403) {
         res.status(403).send("Unauthorized");
     } else {

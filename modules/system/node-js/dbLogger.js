@@ -39,6 +39,8 @@ var logErrorSchema = new mongoose.Schema(
         , params: String
         , body: String
         , username: String
+        , userAgent: String
+        , ip: String
     }
 }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
