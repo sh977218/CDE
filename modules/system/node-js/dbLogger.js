@@ -144,7 +144,7 @@ exports.log = function(message, callback) {
     }
 };
 
-exports.logError = function(message, callback) {   
+exports.logError = function(message, callback) {
     message.date = new Date();
     var logEvent = new LogErrorModel(message);
     logEvent.save(function(err) {
