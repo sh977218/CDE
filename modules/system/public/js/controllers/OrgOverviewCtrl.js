@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('OrgOverviewCtrl',
-    ['$scope', 'OrgHelpers', '$location', 'AutoCompleteResource', 'userResource', '$routeParams',
-    function($scope, OrgHelpers, $location, AutoCompleteResource, userResource, $routeParams)
+    ['$scope', 'OrgHelpers', '$location', 'AutoCompleteResource', 'userResource', '$routeParams', '$anchorScroll',
+    function($scope, OrgHelpers, $location, AutoCompleteResource, userResource, $routeParams, $anchorScroll)
 {
     $scope.orgs = [];
     $scope.autocomplete = AutoCompleteResource;
@@ -32,6 +32,7 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
             $scope.reload();
         } else {
             $location.url($scope.module + "/search?selectedOrg=" + encodeURIComponent(orgName));
+            $anchorScroll('top');
         }
     };
 
