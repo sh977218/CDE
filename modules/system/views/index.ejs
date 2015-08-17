@@ -1,9 +1,11 @@
 <!doctype html>
 <html xmlns:ng="http://angularjs.org" ng-app="systemModule" id="ng-app" lang="en">
     <head>
-        <title>NIH CDE Repository</title>
+        <title ng-bind="$root.pageMeta.title">NIH CDE Repository</title>
         <meta name="site-version" content="<%- include version.ejs %>">
         <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="description" content="{{$root.pageMeta.description}}"/>
+        <meta name="keywords" content="{{$root.pageMeta.keywords}}"/>
 
         <!--[if lt IE 9]>
             <script type="text/javascript">
@@ -202,7 +204,7 @@
 
                       <div class="col-md-4 text-center">
                           <a href="http://www.usa.gov"><img alt="USA.gov logo" src="/cde/public/assets/img/usagov_logo.gif" /></a>
-                          <a href="http://www.nlm.nih.gov/"><img width="150px" alt="NLM logo" src="/cde/public/assets/img/NLM-logo.png" /></a>
+                          <a href="http://www.nlm.nih.gov/"><img width="150px" alt="National Library of Medicine logo" src="/cde/public/assets/img/NLM-logo.png" /></a>
 
                       </div>
                       <div class="col-md-4">
@@ -235,5 +237,22 @@
         <span ng-controller="FeedbackBtnCtrl">
             <angular-feedback options="feedbackOptions"></angular-feedback>
         </span>
+        <script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "Organization",
+          "url": "https://cde.nlm.nih.gov/#/cde/search",
+          "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
+        }
+        </script>
+        <script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "WebSite",
+          "name" : "NIH CDE Repository",
+          "alternateName" : "NIH Common Data Elements Repository",
+          "url" : "https://cde.nlm.nih.gov/#/cde/search"
+        }
+    </script>
     </body>
 </html>

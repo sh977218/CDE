@@ -48,7 +48,7 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.id("addBoard")).click();
         hangon(0.5);
         findElement(By.name("name")).sendKeys(name);
-        findElement(By.name("description")).sendKeys(description);
+        findElement(By.cssSelector("textarea[name='description']")).sendKeys(description);
         findElement(By.id("createBoard")).click();
         textPresent(response);
         closeAlert();

@@ -40,7 +40,7 @@
                 </div>
                 <div class="col-md-4 col-sm-6 col-xs-12">
                     <div ng-include="'/cde/public/html/cdeList/idTable.html'"/>
-                    <img ng-repeat="attachment in cde.attachments | filter:{isDefault:true}"
+                    <img ng-repeat="attachment in cde.attachments | filter:{isDefault:true}" alt="Image attached to the CDE"
                          ng-src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
                 </div>
             </div>

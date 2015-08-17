@@ -183,6 +183,10 @@ try {
     process.exit();
 }
 
+app.get('/robots.txt', function(req, res){
+    res.sendFile('robots.txt', {root: __dirname});
+});
+
 app.use(function(err, req, res, next){
     console.log("ERROR3: " + err);
     console.log(err.stack);

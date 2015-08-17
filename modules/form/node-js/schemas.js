@@ -12,7 +12,8 @@ var questionSchema =  {
     }
     , datatype: String
     , uoms: [String]
-    , required: Boolean
+    , required: {type: Boolean, default: false}
+    , editable: {type: Boolean, default: true}
     , multiselect: Boolean
     , otherPleaseSpecify: {
         value: {type: Boolean, default: false}
@@ -67,7 +68,7 @@ var formElementSchema = new Schema(formElementTreeRoot, {_id: false});
 
 exports.formSchema = new Schema({
     tinyId: String
-    , naming: [sharedSchemas.namingSchema]     
+    , naming: [sharedSchemas.namingSchema]
     , stewardOrg: {
         name: String
     }    
@@ -89,6 +90,8 @@ exports.formSchema = new Schema({
     , comments: [sharedSchemas.commentSchema]
     , history: [mongoose.Schema.Types.ObjectId]
     , created: Date
+    , updated: Date
+    , imported: Date
     , createdBy: {
         userId: mongoose.Schema.Types.ObjectId
         , username: String
