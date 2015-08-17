@@ -117,7 +117,7 @@
                     </a>
                     <a tabindex="0" href class="nonLinkAnchor displayBlock" ng-click="selectElement(b.name)"
                        ng-repeat="b in (altClassificationFilterMode?aggregations.flatClassificationAlt:aggregations.flatClassification) | orderBy:'name'"
-                       style="margin-left:{{(classificationFilters[altClassificationFilterMode].elements.length + 1) * 10}}px;">
+                       style="margin-left:{{(getCurrentSelectedClassification().length + 1) * 10}}px;">
                             <span class="hand-cursor" ng-switch="getCurrentSelectedClassification().length.indexOf(b.name) > -1">
                                 <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{b.name}}" ></i>
                                 <i ng-switch-when="false" class="fa fa-chevron-right" id="li-blank-{{b.name}}" ></i>
