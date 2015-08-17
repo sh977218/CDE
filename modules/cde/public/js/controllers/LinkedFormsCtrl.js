@@ -5,7 +5,7 @@ angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "userResour
     $scope.searchSettings.q = '"' + $scope.elt.tinyId + '"';
 
     userResource.getPromise().then(function(){
-        $scope.reload();
+        $scope.reload("form");
     });
 
 }]);

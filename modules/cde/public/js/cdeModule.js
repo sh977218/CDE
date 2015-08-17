@@ -2,7 +2,8 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute']).config(func
 {
     $routeProvider.
         when('/cde/search', {
-            controller: 'DEListCtrl',
+            controller: 'ListCtrl',
+            subCtrl: 'DEListCtrl',
             templateUrl: '/system/public/html/list.html',
             reloadOnSearch: false,
             title: "Find Common Data Elements",

@@ -1,13 +1,17 @@
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
-        'SearchSettings', 'QuickBoard', 'AutoCompleteResource', '$location',
+        'SearchSettings', 'QuickBoard', 'AutoCompleteResource', '$location', '$route', '$controller',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
-                  SearchSettings, QuickBoard, AutoCompleteResource, $location)
+                  SearchSettings, QuickBoard, AutoCompleteResource, $location, $route, $controller)
 {
 
     $scope.autocomplete = AutoCompleteResource;
     $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
+
+    if ($route.current.subCtrl) {
+        $controller($route.current.subCtrl, {$scope: $scope});
+    }
 
     $scope.initSearch = function() {
         $scope.searchSettings = {
@@ -170,7 +174,7 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     $scope.reload = function(type) {
-        if (!type) type = $scope.module;
+        if (!type) type = "cde";
 
         var timestamp = new Date().getTime();
         if (!userResource.user) return;
@@ -265,12 +269,10 @@ angular.module('systemModule').controller('ListCtrl',
         search();
     });
 
-    //userResource.getPromise().then(function(){
-    //    search($scope.searchType);
-    //});
-
     $scope.termSearch = function() {
         $scope.searchSettings.regStatuses = [];
+        $scope.searchSettings.classification = [];
+        $scope.altClassificationFilterMode = false;
         doSearch();
     };
 

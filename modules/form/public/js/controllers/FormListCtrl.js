@@ -22,7 +22,7 @@ angular.module('formModule').controller('FormDEListCtrl', ['$scope'
     };
 
     $scope.termSearch = function() {
-        $scope.reload("cde");
+        $scope.reload();
     };
 
     $scope.selectElement = function(e) {

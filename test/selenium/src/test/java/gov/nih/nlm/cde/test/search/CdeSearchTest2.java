@@ -109,7 +109,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         hangon(1);
         textNotPresent("CATEGORY");
         driver.navigate().back();
-        textPresent("results for name | CTEP | Standard");
+        textPresent("results for name | CTEP | All Statuses");
     }
 
     @Test

@@ -3,9 +3,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
         $scope.module = "cde";
 
         userResource.getPromise().then(function(){
-            $timeout(function() {
-                $scope.search("cde")
-            }, 1000);
+            $scope.search("cde");
         });
 
         $scope.dragSortableOptions = {
