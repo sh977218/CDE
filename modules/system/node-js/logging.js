@@ -115,7 +115,7 @@ exports.generateErrorLogRequest = function (req) {
         , params: params
         , body: body
         , username: username
-        , userAgent: req.userAgent
+        , userAgent: req.headers['user-agent']
         , ip: req.ip
     };
 };

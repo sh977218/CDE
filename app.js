@@ -193,7 +193,7 @@ app.use(function(err, req, res, next){
     var meta = {
         stack: err.stack
         , origin: "app.express.error"
-        , request: {username: req.user?req.user.username:null, method: req.method, url: req.url, params: req.params, body: req.body, userAgent: req.headers['user-agent'], ip: req.ip}
+        , request: {username: req.user?req.user.username:null, method: req.method, url: req.url, params: req.params, body: req.body, ip: req.ip, headers: {'user-agent': req.headers['user-agent']}}
     }; 
     logging.errorLogger.error('error', "Error: Express Default Error Handler", meta);
     if (err.status === 403) {
