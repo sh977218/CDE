@@ -67,17 +67,26 @@ public class NindsFormLoader implements Runnable {
             sortImg = findElement(By.cssSelector(imgHeadSelector)).getAttribute("src");
         }
         tableIsLoad();
-        if (pageStart == 26) {
+        if (pageStart > 15) {
             hangon(10);
             findElement(By.id("ContentPlaceHolder1_lbtnLast")).click();
             textPresent("Page: 26 of 26");
-
+            goToPageFromLast(pageStart);
         } else {
             for (int i = 1; i < pageStart; i++) {
                 hangon(10);
                 findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
                 textPresent("Page: " + i + " of 26");
             }
+        }
+    }
+
+    void goToPageFromLast(int pageStart) {
+        for (int n = 26; n > pageStart; n--) {
+            findElement(By.id("ContentPlaceHolder1_lbtnPrev")).click();
+            int num = n - 1;
+            String s = "Page: " + num + " of 26";
+            textPresent(s);
         }
     }
 
@@ -165,12 +174,22 @@ public class NindsFormLoader implements Runnable {
         int cdesTotalPage = Integer.valueOf(cdesTotalPageStr);
         if (cdesTotalPage > 1) {
             for (int j = 1; j < cdesTotalPage; j++) {
+                if (j == 5) {
+                    refreshSession();
+                }
                 findElement(By.xpath("//*[@id=\"viewer_ctl01_ctl01_ctl05_ctl00\"]/tbody/tr/td/input")).click();
                 hangon(5);
                 getCdesList(form);
             }
         }
         switchTabAndClose(0);
+    }
+
+    void refreshSession() {
+        switchTab(0);
+        findElement(By.id("ContentPlaceHolder1_lbDownload")).click();
+        hangon(10);
+        switchTab(1);
     }
 
     void getCdesList(Form form) {

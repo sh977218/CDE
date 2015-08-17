@@ -13,20 +13,25 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class NindsFormRunner {
 
     public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
         Collection<Form> forms = new CopyOnWriteArraySet<Form>();
-        Thread[] t = new Thread[6];
-        NindsFormLoader runner1 = new NindsFormLoader(forms, 1, 5);
+        Thread[] t = new Thread[7];
+
+        NindsFormLoader runner1 = new NindsFormLoader(forms, 1, 4);
         t[0] = new Thread(runner1);
-        NindsFormLoader runner2 = new NindsFormLoader(forms, 6, 10);
+        NindsFormLoader runner2 = new NindsFormLoader(forms, 5, 8);
         t[1] = new Thread(runner2);
-        NindsFormLoader runner3 = new NindsFormLoader(forms, 11, 15);
+        NindsFormLoader runner3 = new NindsFormLoader(forms, 9, 12);
         t[2] = new Thread(runner3);
-        NindsFormLoader runner4 = new NindsFormLoader(forms, 16, 20);
+        NindsFormLoader runner4 = new NindsFormLoader(forms, 13, 16);
         t[3] = new Thread(runner4);
-        NindsFormLoader runner5 = new NindsFormLoader(forms, 21, 25);
+        NindsFormLoader runner5 = new NindsFormLoader(forms, 17, 20);
         t[4] = new Thread(runner5);
-        NindsFormLoader runner6 = new NindsFormLoader(forms, 26, 26);
+        NindsFormLoader runner6 = new NindsFormLoader(forms, 21, 24);
         t[5] = new Thread(runner6);
+        NindsFormLoader runner7 = new NindsFormLoader(forms, 25, 26);
+        t[6] = new Thread(runner7);
+
 
         for (int i = 0; i < t.length; i++) {
             t[i].start();
@@ -38,8 +43,11 @@ public class NindsFormRunner {
                 e.printStackTrace();
             }
         }
+        long endTime = System.currentTimeMillis();
+        long totalTime = (endTime - startTime) / 6000;
+        String info = "forms size: " + forms.size() + ". time takes: " + totalTime + " minutes";
         Form form = new Form();
-        form.naming.designation = "forms size: " + forms.size();
+        form.naming.designation = info;
         forms.add(form);
         saveToJson(forms);
     }
