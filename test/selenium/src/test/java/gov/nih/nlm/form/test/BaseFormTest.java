@@ -41,6 +41,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     protected void gotoFormCreate() {
+        goHome();
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("Form")).click();
         textPresent("Create Form");

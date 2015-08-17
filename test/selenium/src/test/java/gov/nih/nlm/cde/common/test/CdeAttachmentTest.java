@@ -17,7 +17,7 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
 
-        addAttachment();
+        addAttachment("glass.jpg");
         checkAttachmentNotReviewed();
         reviewAttachment("glass.jpg");
 
@@ -36,7 +36,7 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        removeAttachment();
+        removeAttachment("glass.jpg");
     }
 
 }

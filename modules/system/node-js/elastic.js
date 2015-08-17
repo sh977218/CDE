@@ -30,7 +30,6 @@ exports.completionSuggest = function (term, cb) {
     })
 };
 
-
 exports.buildElasticSearchQuery = function (settings) {
     this.escapeRegExp = function (str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -39,6 +38,7 @@ exports.buildElasticSearchQuery = function (settings) {
     var queryStuff = {size: settings.resultPerPage ? settings.resultPerPage : 20};
     var searchQ = settings.searchTerm;
 
+    // Do not retrieve items marked as forks.
     queryStuff.query =
     {
         bool: {
@@ -52,6 +52,7 @@ exports.buildElasticSearchQuery = function (settings) {
 
     queryStuff.query.bool.must = [];
 
+    // Increase ranking score for high registration status
     var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
 
     queryStuff.query.bool.must.push({
@@ -63,6 +64,7 @@ exports.buildElasticSearchQuery = function (settings) {
     });
 
     if (searchQ !== undefined && searchQ !== "") {
+        // Search for the query term given by user
         queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
         {
             query_string: {
@@ -70,6 +72,7 @@ exports.buildElasticSearchQuery = function (settings) {
             }
         };
         queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
+        // Boost rank if matches are on designation or definition
         queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
         {
             query_string: {
@@ -77,6 +80,7 @@ exports.buildElasticSearchQuery = function (settings) {
                 , query: searchQ
             }
         };
+        // Boost rank if we find exact string match, or if terms are in a less than 4 terms apart.
         queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2.5";
         if (searchQ.indexOf("\"") < 0) {
             queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
@@ -91,6 +95,7 @@ exports.buildElasticSearchQuery = function (settings) {
         }
     }
 
+    // Filter by selected org
     if (settings.selectedOrg !== undefined) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
     }
@@ -98,6 +103,7 @@ exports.buildElasticSearchQuery = function (settings) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrgAlt}});
     }
 
+    // Filter by selected Statuses
     var buildFilter = function (selectedStatuses) {
         var regStatusOr = [];
         selectedStatuses.forEach(function(regStatus) {
@@ -139,6 +145,7 @@ exports.buildElasticSearchQuery = function (settings) {
         queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
     }
 
+    // Get aggregations on classifications and statuses
     if (settings.includeAggregations) {
         queryStuff.aggregations = {
             orgs: {
@@ -196,6 +203,7 @@ exports.buildElasticSearchQuery = function (settings) {
 
     queryStuff.from = (settings.page - 1) * settings.resultPerPage;
 
+    // highlight search results if part of the following fields.
     queryStuff.highlight = {
         "order": "score"
         , "pre_tags": ["<strong>"]

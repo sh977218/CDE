@@ -1,12 +1,12 @@
 angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller', 'userResource'
-        , function($scope, $controller, userResource) {
+        , function($scope, $controller, userResource)
+{
 
-    $scope.module = "form";    
-    //$controller('ListCtrl', {$scope: $scope});
+    $scope.module = "form";
 
-    //userResource.getPromise().then(function(){
-    //    $scope.search();
-    //});
+    userResource.getPromise().then(function(){
+        $scope.search("form");
+    });
 
 }]);
 
@@ -22,7 +22,7 @@ angular.module('formModule').controller('FormDEListCtrl', ['$scope'
     };
 
     $scope.termSearch = function() {
-        $scope.reload();
+        $scope.reload("cde");
     };
 
     $scope.selectElement = function(e) {

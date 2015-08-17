@@ -34,9 +34,5 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
             $location.url($scope.module + "/search?selectedOrg=" + encodeURIComponent(orgName));
         }
     };
-    //
-    //userResource.getPromise().then(function() {
-    //    if (!$routeParams.q && !$routeParams.selectedOrg) $scope.reload();
-    //});
 
 }]);

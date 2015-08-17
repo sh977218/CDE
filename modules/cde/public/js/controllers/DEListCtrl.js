@@ -1,6 +1,12 @@
-angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', 'TourContent', 'userResource',
-    function ($scope, $controller, TourContent, userResource) {
+angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', 'TourContent', 'userResource', '$timeout',
+    function ($scope, $controller, TourContent, userResource, $timeout) {
         $scope.module = "cde";
+
+        userResource.getPromise().then(function(){
+            $timeout(function() {
+                $scope.search("cde")
+            }, 1000);
+        });
 
         $scope.dragSortableOptions = {
             connectWith: ".dragQuestions"
@@ -8,11 +14,6 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             , helper: "clone"
             , appendTo: "body"
         };
-        //$controller('ListCtrl', {$scope: $scope});
-
-        //userResource.getPromise().then(function(){
-        //    $scope.search();
-        //});
 
         TourContent.template = "<div class='popover tour'>" +
         "<div class='arrow'></div>" +

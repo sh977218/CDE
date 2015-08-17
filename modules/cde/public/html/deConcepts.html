@@ -16,7 +16,7 @@
                 <td tabindex="0">{{concept.origin}}</td>
                 <td tabindex="0">{{concept.originId}}</td>
                 <td headers="actions" ng-show="canCurate">
-                     <a tabindex="0" href id="remove{{elt[conceptConf.type]}}-{{$index}}" class="fa fa-trash-o"
+                     <a tabindex="0" href id="remove{{conceptConf.type}}-{{$index}}" class="fa fa-trash-o"
                         ng-click="removeConcept(conceptConf.type)" title="Remove" href></a>
                 </td>
             </tr>

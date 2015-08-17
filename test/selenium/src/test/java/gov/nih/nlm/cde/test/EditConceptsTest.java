@@ -49,9 +49,9 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         findElement(By.linkText("Concepts")).click();
 
-        findElement(By.id("decConceptRemove-0")).click();
-        findElement(By.id("ocConceptRemove-1")).click();
-        findElement(By.id("propConceptRemove-3")).click();
+        findElement(By.id("removedataElementConcept-0")).click();
+        findElement(By.id("removeobjectClassConcept-1")).click();
+        findElement(By.id("removepropertyConcept-3")).click();
 
         newCdeVersion();
 

@@ -5,8 +5,6 @@ angular.module('systemModule').controller('ListCtrl',
                   SearchSettings, QuickBoard, AutoCompleteResource, $location)
 {
 
-    console.log("hello")
-
     $scope.autocomplete = AutoCompleteResource;
     $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
@@ -73,7 +71,7 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.searchSettings.selectedOrgAlt = "";
             $scope.searchSettings.classificationAlt = [];
         }
-        $scope.termSearch();
+        doSearch();
         focusClassification();
     };
 
@@ -108,7 +106,7 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.alterOrgFilter = function(orgName) {
         $scope._alterOrgFiler(orgName);
-        $scope.termSearch();
+        doSearch();
         focusClassification();
     };
 
@@ -129,7 +127,7 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.selectElement = function(e) {
         $scope._selectElement(e);
-        $scope.termSearch();
+        doSearch();
         focusClassification();
     };
 
@@ -171,14 +169,16 @@ angular.module('systemModule').controller('ListCtrl',
         }
     };
 
-    $scope.reload = function() {
+    $scope.reload = function(type) {
+        if (!type) type = $scope.module;
+
         var timestamp = new Date().getTime();
         if (!userResource.user) return;
         $scope.lastQueryTimeStamp = timestamp;
         $scope.accordionListStyle = "semi-transparent";
         var settings = Elastic.buildElasticQuerySettings($scope.searchSettings);
 
-        Elastic.generalSearchQuery(settings, $scope.module,  function(err, result) {
+        Elastic.generalSearchQuery(settings, type,  function(err, result) {
             if (err) {
                 $scope.accordionListStyle = "";
                 $scope.addAlert("danger", "There was a problem with your query");
@@ -222,8 +222,10 @@ angular.module('systemModule').controller('ListCtrl',
 
     };
 
-    $scope.generateSearchForTerm = function () {
-        var searchLink = "/" + $scope.module + "/search?";
+    $scope.generateSearchForTerm = function (type) {
+        if (!type) type = $scope.module;
+
+        var searchLink = "/" + type + "/search?";
         if ($scope.searchSettings.q) searchLink += "q=" + encodeURIComponent($scope.searchSettings.q);
         if ($scope.searchSettings.regStatuses.length > 0) {
             searchLink += "&regStatuses=" + $scope.searchSettings.regStatuses.join(';');
@@ -243,7 +245,7 @@ angular.module('systemModule').controller('ListCtrl',
         return searchLink;
     };
 
-    var search = function() {
+    var search = function(type) {
         $scope.searchSettings.q = $scope.currentSearchTerm = $routeParams.q;
         $scope.searchSettings.page = $routeParams.page;
         $scope.searchSettings.selectedOrg = $routeParams.selectedOrg;
@@ -252,22 +254,27 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.searchSettings.classification = $routeParams.classification?$routeParams.classification.split(';'):[];
         $scope.searchSettings.classificationAlt = $routeParams.classificationAlt?$routeParams.classificationAlt.split(';'):[];
         $scope.searchSettings.regStatuses = $routeParams.regStatuses?$routeParams.regStatuses.split(';'):[];
-        $scope.reload();
+        $scope.reload(type);
     };
 
-    $scope.search = function() {
-        search();
+    $scope.search = function(type) {
+        search(type);
     };
 
     $scope.$on('$locationChangeSuccess', function() {
         search();
     });
 
-    userResource.getPromise().then(function(){
-        search();
-    });
+    //userResource.getPromise().then(function(){
+    //    search($scope.searchType);
+    //});
 
     $scope.termSearch = function() {
+        $scope.searchSettings.regStatuses = [];
+        doSearch();
+    };
+
+    var doSearch = function() {
         var loc = $scope.generateSearchForTerm();
         $location.url(loc);
     };
@@ -276,7 +283,7 @@ angular.module('systemModule').controller('ListCtrl',
         var index = $scope.searchSettings.regStatuses.indexOf(status);
         if (index > -1) $scope.searchSettings.regStatuses.splice(index, 1);
         else $scope.searchSettings.regStatuses.push(status);
-        $scope.termSearch();
+        doSearch();
     };
 
     var filterOutWorkingGroups = function(aggregations) {
