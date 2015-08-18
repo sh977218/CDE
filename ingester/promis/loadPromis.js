@@ -1,3 +1,6 @@
+// 3) Loads PROMIS to DB
+// node ingester/promis/loadPromis.js ../promis 2014-01
+
 var promisDir = process.argv[2];
 
 var fs = require('fs'),
@@ -348,6 +351,7 @@ mongo_data_system.orgByName("Assessment Center", function(stewardOrg) {
                cb();
             });                        
         }, function(err) {
+            // Get this from MongoDB!!
             cdeArray.cdearray = newCdeArray;
             // Now load the forms
             async.each(files, function(file, cb){

@@ -1,3 +1,6 @@
+// 1) Downloads PROMIS from AC
+// node ingester/promis/getPromis.js ../promis/ 2014-01
+
 var fs = require('fs');
 var request = require('request');
 
