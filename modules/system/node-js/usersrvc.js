@@ -1,6 +1,5 @@
 var mongo_data = require('./mongo-data')
-    , daoManager = require('./moduleDaoManager')
-    , authorizationShared = require('../../system/shared/authorizationShared')  
+    , authorizationShared = require('../../system/shared/authorizationShared')
     ;
     
 exports.isCuratorOf = function(user, orgName){
@@ -11,7 +10,12 @@ exports.isCuratorOf = function(user, orgName){
 exports.isAdminOf = function(user, orgName){
     if (!user) return false;
     return user.orgAdmin.indexOf(orgName)>-1 || user.siteAdmin;
-};   
+};
+
+exports.myOrgs = function(user) {
+    if (!user) return [];
+    return user.orgAdmin.concat(user.orgCurator);
+};
 
 exports.updateUserRoles = function(user, cb) {
     mongo_data.userByName(user.username, function(err, found) {

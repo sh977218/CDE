@@ -8,8 +8,8 @@ var config = require('../../system/node-js/parseConfig')
 
 var elasticCdeUri = sharedElastic.elasticCdeUri;
 
-exports.elasticsearch = function (settings, type, cb) {
-    var query = sharedElastic.buildElasticSearchQuery(settings);
+exports.elasticsearch = function (user, settings, cb) {
+    var query = sharedElastic.buildElasticSearchQuery(user, settings);
     if (!config.modules.cde.highlight) {
         Object.keys(query.highlight.fields).forEach(function(field){
             if (field == "primaryNameCopy" || field == "primaryDefinitionCopy") return;
@@ -17,7 +17,7 @@ exports.elasticsearch = function (settings, type, cb) {
         });
     }
     dbLogger.storeQuery(settings);
-    sharedElastic.elasticsearch(query, type, cb);
+    sharedElastic.elasticsearch(query, 'cde', cb);
 };
 
 var mltConf = {

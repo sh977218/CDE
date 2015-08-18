@@ -72,7 +72,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearch/form', function (req, res) {
-        var query = sharedElastic.buildElasticSearchQuery(req.body);
+        var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         sharedElastic.elasticsearch(query, 'form', function (err, result) {
             if (err) return res.status(400).send("invalid query");
             res.send(result);
@@ -109,7 +109,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/elasticSearchExport/form', function (req, res) {
         var formHeader = "Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
-        var query = sharedElastic.buildElasticSearchQuery(req.body);
+        var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         return elastic_system.elasticSearchExport(res, query, 'form', exportShared.projectFormForExport, formHeader);
     });
 

@@ -5,6 +5,7 @@ var request = require('request')
     , trim = require("trim")
     , regStatusShared = require('../../system/shared/regStatusShared')
     , exportShared = require('../../system/shared/exportShared')
+    , usersvc = require("./usersrvc")
     ;
 
 exports.elasticCdeUri = config.elasticUri;
@@ -30,7 +31,7 @@ exports.completionSuggest = function (term, cb) {
     })
 };
 
-exports.buildElasticSearchQuery = function (settings) {
+exports.buildElasticSearchQuery = function (user, settings) {
     this.escapeRegExp = function (str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     };
@@ -41,9 +42,9 @@ exports.buildElasticSearchQuery = function (settings) {
     // Do not retrieve items marked as forks.
     queryStuff.query =
     {
-        bool: {
-            must_not: [{
-                term: {
+        "bool": {
+            "must_not": [{
+                "term": {
                     "isFork": "true"
                 }
             }]
@@ -107,11 +108,17 @@ exports.buildElasticSearchQuery = function (settings) {
     var buildFilter = function (selectedStatuses) {
         var regStatusOr = [];
         selectedStatuses.forEach(function(regStatus) {
-            regStatusOr.push({term: {"registrationState.registrationStatus": regStatus}});
+            regStatusOr.push({"term": {"registrationState.registrationStatus": regStatus}});
         });
+        // see all statuses for items that user is steward for
+        if (user) {
+            usersvc.myOrgs(user).forEach(function(myOrg) {
+                regStatusOr.push({"term": {"stewardOrg.name": myOrg}});
+            });
+        }
         var filter = {and: []};
         if (regStatusOr.length > 0) {
-            filter.and.push({or: regStatusOr});
+            filter.and.push({"or": regStatusOr});
         }
         return filter;
     };

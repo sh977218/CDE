@@ -282,7 +282,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearch/cde', function (req, res) {
-        return elastic.elasticsearch(req.body, 'cde', function (err, result) {
+        return elastic.elasticsearch(req.user, req.body, function (err, result) {
             if (err) return res.status(400).send("invalid query");
             result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
             res.send(result);
@@ -432,7 +432,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/pinEntireSearchToBoard', function (req, res) {
         if (req.isAuthenticated()) {
-            var query = elastic_system.buildElasticSearchQuery(req.body.query);
+            var query = elastic_system.buildElasticSearchQuery(req.user, req.body.query);
             if (query.size > config.maxPin) {
                 res.status(403).send("Maximum number excesses.");
             } else {
@@ -479,7 +479,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/elasticSearchExport/cde', function (req, res) {
         var cdeHeader = "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
-        var query = elastic_system.buildElasticSearchQuery(req.body);
+        var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
         return elastic_system.elasticSearchExport(res, query, 'cde', exportShared.convertToCsv, cdeHeader);
     });
 
