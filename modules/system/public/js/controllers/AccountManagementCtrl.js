@@ -1,4 +1,7 @@
-angular.module('systemModule').controller('AccountManagementCtrl', ['$scope', '$http', '$timeout', '$window', 'AccountManagement', 'userResource', function($scope, $http, $timeout, $window, AccountManagement, userResource) {
+angular.module('systemModule').controller('AccountManagementCtrl',
+    ['$scope', '$http', '$timeout', '$location', 'AccountManagement', 'userResource',
+        function($scope, $http, $timeout, $location, AccountManagement, userResource)
+{
     $scope.admin = {};
     $scope.newOrg = {};
     $scope.orgAdmin = {};
@@ -119,7 +122,7 @@ angular.module('systemModule').controller('AccountManagementCtrl', ['$scope', '$
                 $scope.myOrgAdmins = $scope.getMyOrgAdmins();
                 
                 if (userResource.user._id === userId) {
-                    $window.location.href = "/";
+                    $location.url("/");
                 }
             }        
         );
@@ -153,13 +156,13 @@ angular.module('systemModule').controller('AccountManagementCtrl', ['$scope', '$
 
     $scope.addOrg = function() {
         AccountManagement.addOrg(
-            {name:$scope.newOrg.name, longName:$scope.newOrg.longName, workingGroupOf:$scope.newOrg.workingGroupOf}
+            {name: $scope.newOrg.name, longName: $scope.newOrg.longName, workingGroupOf: $scope.newOrg.workingGroupOf}
             , function(res) {
                 $scope.addAlert("success", res);
                 $scope.orgs = $scope.getOrgs();
+                $scope.newOrg = {};
             }
         );
-        $scope.newOrg = {};
     };
 
     $scope.removeOrg = function(byId) {

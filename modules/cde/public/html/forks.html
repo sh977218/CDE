@@ -17,7 +17,7 @@
                 <td tabindex="0">{{fork.updatedBy.username}}</td>
                 <td tabindex="0">{{fork.changeNote}}</td>
                 <td tabindex="0">
-                    <a href="#/deview?tinyId={{fork.tinyId}}" target="_blank" id="fork-{{$index}}" class="fa fa-eye">
+                    <a href="/#/deview?tinyId={{fork.tinyId}}" target="_blank" id="fork-{{$index}}" class="fa fa-eye">
                         View</a></td>
                 <td tabindex="0" ng-show="canCurate">
                     <button class="fa fa-check" ng-click="accept(fork._id)" id="accept_fork_{{$index}}"> Accept</button>

@@ -72,9 +72,9 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearch/form', function (req, res) {
-        var query = elastic_system.buildElasticSearchQuery(req.body);
+        var query = sharedElastic.buildElasticSearchQuery(req.body);
         sharedElastic.elasticsearch(query, 'form', function (err, result) {
-            if (err) return res.status(400).end();
+            if (err) return res.status(400).send("invalid query");
             res.send(result);
         });
     });

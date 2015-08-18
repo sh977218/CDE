@@ -1,4 +1,6 @@
- angular.module('systemModule').controller('RegistrationCtrl', ['$scope', '$modal', '$window', function($scope, $modal, $window) {   
+ angular.module('systemModule').controller('RegistrationCtrl', ['$scope', '$modal', '$location',
+     function($scope, $modal, $location)
+ {
      
     $scope.openRegStatusUpdate = function () {
         var modalInstance = $modal.open({
@@ -15,7 +17,7 @@
         });
 
         modalInstance.result.then(function (newElt) {
-            $window.location.href = $scope.baseLink + newElt.tinyId;
+            $location.url($scope.baseLink + newElt.tinyId);
             $scope.addAlert("success", "Saved");
          }, function () {
              $scope.revert($scope.elt);

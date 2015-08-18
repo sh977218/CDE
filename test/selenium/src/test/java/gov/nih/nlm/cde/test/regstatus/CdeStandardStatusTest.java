@@ -60,8 +60,8 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         
         // Can't edit Concepts
         findElement(By.linkText("Concepts")).click();
-        Assert.assertFalse(driver.findElements(By.id("ocConceptRemove-0")).get(0).isDisplayed());
-        Assert.assertFalse(driver.findElements(By.id("propConceptRemove-0")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.id("removeobjectClass-0")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.id("removeproperty-0")).get(0).isDisplayed());
 
         // Can't add Attachments
         findElement(By.linkText("Attachments")).click();

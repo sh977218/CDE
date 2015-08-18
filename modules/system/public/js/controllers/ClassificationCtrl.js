@@ -1,9 +1,12 @@
-angular.module('systemModule').controller('ClassificationCtrl', ['$scope', '$modal', '$routeParams', 'CdeClassification', 'OrgHelpers', 'userResource', function($scope, $modal, $routeParams, CdeClassification, OrgHelpers, userResource) {
-    $scope.initCache(); 
-    
+angular.module('systemModule').controller('ClassificationCtrl',
+    ['$scope', '$modal', '$routeParams', 'CdeClassification', 'OrgHelpers', 'userResource',
+        function($scope, $modal, $routeParams, CdeClassification, OrgHelpers, userResource)
+{
+    $scope.initCache();
+
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
-          templateUrl: '/template/system/classifyCde',
+          templateUrl: '/system/public/html/classifyCde.html',
           controller: 'AddClassificationModalCtrl',
           resolve: {
                 module: function() {
@@ -55,7 +58,7 @@ angular.module('systemModule').controller('ClassificationCtrl', ['$scope', '$mod
     
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
-            templateUrl: '/template/system/removeClassificationModal',
+            templateUrl: '/system/public/html/removeClassificationModal.html',
             controller: 'RemoveClassificationModalCtrl',
             resolve: {
                 classifName: function() {

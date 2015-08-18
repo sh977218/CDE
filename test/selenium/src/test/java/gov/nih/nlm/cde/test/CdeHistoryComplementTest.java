@@ -30,7 +30,6 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         newCdeVersion();
 
-
         checkInHistory("Concepts", "", "Code Name 1");
         checkInHistory("Concepts", "", "Code ID 1");
         checkInHistory("Naming", "", "Alternative Name 1");

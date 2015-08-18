@@ -1,0 +1,70 @@
+<span ng-class="accordionListStyle" ng-controller="TableViewCtrl">
+    <table class="gridListView table table-condensed table-striped table-bordered" ng-class="accordionListStyle">
+        <thead>
+        <tr>
+            <th ng-if="searchSettings.tableViewFields.cde.name" class="name">Name</th>
+            <th ng-if="searchSettings.tableViewFields.cde.naming" class="naming">Other Names</th>
+            <th ng-if="searchSettings.tableViewFields.cde.permissibleValues" class="permissibleValues">Permissible Values</th>
+            <th ng-if="searchSettings.tableViewFields.cde.uom" class="uom">Unit of Measure</th>
+            <th ng-if="searchSettings.tableViewFields.cde.stewardOrg" class="stewardOrg">Steward</th>
+            <th ng-if="searchSettings.tableViewFields.cde.usedBy" class="usedBy">Used by Organizations</th>
+            <th ng-if="searchSettings.tableViewFields.cde.registrationStatus" class="registrationStatus">Registration Status</th>
+            <th ng-if="searchSettings.tableViewFields.cde.administrativeStatus" class="administrativeStatus">Admin Status</th>
+            <th ng-if="searchSettings.tableViewFields.cde.ids" class="ids">Identifiers</th>
+            <th ng-if="searchSettings.tableViewFields.cde.source" class="source">Source</th>
+            <th ng-if="searchSettings.tableViewFields.cde.updated" class="updated">Updated</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="c in cdes">
+                <td ng-if="searchSettings.tableViewFields.cde.name" class="name">
+                    <a href="/#/deview/?tinyId={{c.tinyId}}">
+                        {{c.naming[0].designation}}
+                    </a>
+                </td>
+                <td ng-if="searchSettings.tableViewFields.cde.naming" class="naming">
+                    <ul>
+                        <li ng-repeat="name in c.naming | limitTo: maxLines" ng-show="name.designation">{{name.designation | limitTo: lineLength}} <span ng-show="name.designation.length>lineLength">...</span></li>
+                        <li class="lastItem" ng-show="c.naming.length > maxLines">...</li>
+                    </ul>
+                </td>
+                <td ng-if="searchSettings.tableViewFields.cde.permissibleValues" class="permissibleValues multiline-ellipsis">
+                    <div>
+                        {{c.valueDomain.datatype}}<span ng-show="c.valueDomain.datatype==='Value List'">:</span>
+                    </div>
+                    <span ng-if="c.valueDomain.permissibleValues">
+                        <ul>
+                            <li ng-repeat="pv in c.valueDomain.permissibleValues  | limitTo: maxLines">
+                                {{pv.permissibleValue | limitTo: lineLength}} <span ng-show="pv.permissibleValue.length>lineLength">...</span>
+                            </li>
+                            <li class="lastItem" ng-show="c.valueDomain.permissibleValues.length > maxLines">...</li>
+                        </ul>
+                     </span>
+                </td>
+                <td ng-if="searchSettings.tableViewFields.cde.uom" class="uom">
+                    {{c.valueDomain.uom}}
+                </td>
+                <td ng-if="searchSettings.tableViewFields.cde.stewardOrg" class="stewardOrg">{{c.stewardOrg.name}}</td>
+                <td ng-if="searchSettings.tableViewFields.cde.usedBy" class="usedBy multiline-ellipsis">
+                    <span ng-repeat="org in c.usedBy | limitTo: maxLines ">{{$index>0?", ":""}}{{org}}</span><span ng-show="c.usedBy.length > maxLines">, ...</span>
+                </td>
+                <td ng-if="searchSettings.tableViewFields.cde.registrationStatus" class="registrationStatus">{{c.registrationState.registrationStatus}}</td>
+                <td ng-if="searchSettings.tableViewFields.cde.administrativeStatus" class="administrativeStatus">{{c.registrationState.administrativeStatus}}</td>
+                <td ng-if="searchSettings.tableViewFields.cde.ids" class="ids">
+                    <ul>
+                        <li ng-repeat="id in c.ids | limitTo: maxLines">
+                            {{id.source}}: <strong>{{id.id}}</strong> <span ng-show="id.version">v{{id.version}}</span>
+                        </li>
+                        <li class="lastItem" ng-show="c.ids.length > maxLines">...</li>
+                    </ul>
+                </td>
+                <td ng-if="searchSettings.tableViewFields.cde.source" class="source">
+                    {{c.source}}
+                </td>
+                <td ng-if="searchSettings.tableViewFields.cde.updated" class="updated">
+                    {{c.updated | date: 'MM/dd/yyyy @ h:mma'}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</span>

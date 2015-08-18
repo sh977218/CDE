@@ -13,7 +13,7 @@ public class ClassificationFilter extends NlmCdeBaseTest {
     @Test
     public void classificationFilters() {
         goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("Image");
+        findElement(By.name("q")).sendKeys("Image");
         findElement(By.id("search.submit")).click();
         textPresent("caBIG (8)");
         findElement(By.id("li-blank-caBIG")).click();
