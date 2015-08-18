@@ -1,4 +1,5 @@
-angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$window', 'userResource', function($scope, $modal, $window, userResource) { 
+angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$location', 'userResource',
+    function($scope, $modal, $location, userResource) {
 
     $scope.stageElt = function(elt) {
         elt.unsaved = true;
@@ -21,7 +22,7 @@ angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$
           }
         });
         modalInstance.result.then(function (newelt) {
-            $window.location.href = redirectBaseLink + newelt.tinyId;
+            $location.url(redirectBaseLink + newelt.tinyId);
             $scope.elt = newelt;
             if ($scope.elt.history && $scope.elt.history.length>0) $scope.loadPriorCdes();
             $scope.addAlert("success", "Saved.");

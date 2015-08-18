@@ -30,20 +30,20 @@ public abstract class PropertyTest extends CommonTest {
         findElement(By.name("key")).sendKeys("MyKey1");
         findElement(By.name("value")).sendKeys("MyValue1");
         findElement(By.id("createProperty")).click();
-        Assert.assertTrue(textPresent("Property Added"));
+        textPresent("Property Added");
         modalGone();
         findElement(By.id("addProperty")).click();
         findElement(By.name("key")).sendKeys("MyKey2");
         findElement(By.name("value")).sendKeys("MyValue2");
         findElement(By.id("createProperty")).click();
-        Assert.assertTrue(textPresent("Property Added"));
+        textPresent("Property Added");
         modalGone();
         hangon(1);
         findElement(By.id("addProperty")).click();
         findElement(By.name("key")).sendKeys("MyKey3");
         findElement(By.name("value")).sendKeys("MyValue3");
         findElement(By.id("createProperty")).click();
-        Assert.assertTrue(textPresent("Property Added"));
+        textPresent("Property Added");
         modalGone();
         hangon(1);
 
@@ -53,12 +53,12 @@ public abstract class PropertyTest extends CommonTest {
 
         goToEltByName(eltName, status);
         findElement(By.linkText("Properties")).click();
-        Assert.assertTrue(textPresent("MyKey1"));
-        Assert.assertTrue(textPresent("MyKey3"));
-        Assert.assertTrue(textPresent("MyValue1"));
-        Assert.assertTrue(textPresent("MyValue3"));
-        Assert.assertTrue(textNotPresent("MyValue2"));
-        Assert.assertTrue(textNotPresent("MyValue2"));
+        textPresent("MyKey1");
+        textPresent("MyKey3");
+        textPresent("MyValue1");
+        textPresent("MyValue3");
+        textNotPresent("MyValue2");
+        textNotPresent("MyValue2");
     }
 
     public void richText(String eltName, String status) {

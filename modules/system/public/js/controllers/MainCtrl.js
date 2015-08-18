@@ -1,9 +1,23 @@
 angular.module('systemModule').controller('MainCtrl',
-    ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory', '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard',
-        function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory, $interval, $window, screenSize, OrgHelpers, QuickBoard) {
+    ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
+        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', '$rootScope', '$route',
+        function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
+                 $interval, $window, screenSize, OrgHelpers, QuickBoard, $rootScope, $route) {
+
+
+    $rootScope.$on("$routeChangeSuccess", function(currentRoute, previousRoute){
+        $rootScope.pageMeta = {};
+        $rootScope.pageMeta.title = 'NIH Common Data Elements (CDE) Repository';
+        $rootScope.pageMeta.keywords = 'cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine';
+        $rootScope.pageMeta.description = 'Repository of Common Data Elements (CDE) and Protocol Forms. Search CDEs. Search Protocol Forms.';
+        if ($route.current.title) $rootScope.pageMeta.title +=  " | " + $route.current.title;
+        if ($route.current.keywords) $rootScope.pageMeta.keywords = $route.current.keywords;
+        if ($route.current.description) $rootScope.pageMeta.description = $route.current.description;
+    });
 
     $scope.quickBoard = QuickBoard;
     QuickBoard.restoreFromLocalStorage();
+    $scope.formEnabled = window.formEnabled;
 
     // Global variables
     var GLOBALS = {
@@ -115,16 +129,16 @@ angular.module('systemModule').controller('MainCtrl',
         //reset to old to keep any additional routing logic from kicking in
         $location.hash(old);
     };
-    
+
     $scope.initCache = function() {
         if ($cacheFactory.get("deListCache") === undefined) {
             $scope.cache = $cacheFactory("deListCache");
         } else {
             $scope.cache = $cacheFactory.get("deListCache");
-        }        
+        }
     };
 
-    $scope.initCache(); 
+    $scope.initCache();
     $scope.openCloseAllModel = {};
     $scope.openCloseAllModel["list"] = $scope.cache.get("openCloseAlllist");
     $scope.openCloseAllModel["quickboard"] = $scope.cache.get("openCloseAllquickboard");
@@ -143,13 +157,8 @@ angular.module('systemModule').controller('MainCtrl',
     };
 
     $scope.searchByClassification = function(orgName, elts, type) {
-        $scope.cache.removeAll();        
-        $scope.cache.remove("search." + type + "." + "selectedOrg");
-        $scope.cache.remove("search." + type + "." + "selectedElements"); 
-        $scope.cache.put("search." + type + "." + "selectedOrg", orgName);   
-        $scope.cache.put("search." + type + "." + "selectedElements", elts);
-        $location.url('/'+type+'/search');
-
+        $location.url('/'+type+'/search?selectedOrg=' + encodeURIComponent(orgName)
+            + "&classification=" + encodeURIComponent(elts.join(";")));
     };
     
     // Gets screen size and also updates it in the callboack on screen resize

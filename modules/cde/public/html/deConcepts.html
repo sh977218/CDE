@@ -1,0 +1,26 @@
+<div ng-repeat="conceptConf in conceptConfigurations">
+    <div ng-show="elt[conceptConf.type].concepts.length > 0">
+    <h5 tabindex="0" ng-bind="conceptConf.display"></h5>
+    <table class="table-bordered table-condensed table-striped">
+        <thead>
+            <tr>
+                <th tabindex="0">Code Name</th>
+                <th tabindex="0">Code System</th>
+                <th tabindex="0">Code ID</th>
+                <th tabindex="0" id="conceptActions" ng-show="canCurate"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="concept in elt[conceptConf.type].concepts">
+                <td><a tabindex="0" href ng-click="relatedCdes(concept)">{{concept.name}}</a></td>
+                <td tabindex="0">{{concept.origin}}</td>
+                <td tabindex="0">{{concept.originId}}</td>
+                <td headers="actions" ng-show="canCurate">
+                     <a tabindex="0" href id="remove{{conceptConf.type}}-{{$index}}" class="fa fa-trash-o"
+                        ng-click="removeConcept(conceptConf.type)" title="Remove" href></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</div>

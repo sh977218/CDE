@@ -1,6 +1,6 @@
 angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
-    ['$scope', '$window', '$timeout', '$modal', 'DataElement', 'Elastic', 'userResource',
-        function($scope, $window, $timeout, $modal, DataElement, Elastic, userResource) {
+    ['$scope', '$location', '$timeout', '$modal', 'DataElement', 'Elastic', 'userResource',
+        function($scope, $location, $timeout, $modal, DataElement, Elastic, userResource) {
             $scope.openCdeInNewTab = true;
             $scope.currentPage = 1;
             $scope.totalItems = 0;
@@ -65,7 +65,7 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
 
             $scope.openSelectDefaultClassificationModal = function () {
                 var modalInstance = $modal.open({
-                    templateUrl: '/template/system/classifyCde',
+                    templateUrl: '/system/public/html/classifyCde.html',
                     controller: 'AddClassificationModalCtrl',
                     resolve: {
                         module: function() {
@@ -102,7 +102,7 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
 
             $scope.showRemoveClassificationModal = function(orgName, pathArray) {
                 var modalInstance = $modal.open({
-                    templateUrl: '/template/system/removeClassificationModal',
+                    templateUrl: '/system/public/html/removeClassificationModal.html',
                     controller: 'RemoveClassificationModalCtrl',
                     resolve: {
                         classifName: function() {
@@ -120,7 +120,7 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
             $scope.save = function() {
                 $scope.saving = true;
                 DataElement.save($scope.elt, function(cde) {
-                    $window.location.href = "/#/deview?tinyId=" + cde.tinyId;
+                    $location.url("deview?tinyId=" + cde.tinyId);
                 });
             };
 

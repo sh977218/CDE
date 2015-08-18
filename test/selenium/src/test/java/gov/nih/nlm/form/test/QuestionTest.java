@@ -7,14 +7,13 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import java.util.List;
 
 public class QuestionTest extends BaseFormTest {
 
     public void addQuestionToSection(String cdeName, int sectionNumber) {
-        findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
+        findElement(By.name("q")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results");
         textPresent(cdeName, By.id("acc_link_0"));
@@ -36,8 +35,8 @@ public class QuestionTest extends BaseFormTest {
 
     }
 
-    public void addQuestionToSectionSafe(String cdeName, int sectionNumber) {
-        findElement(By.name("ftsearch")).sendKeys("\"" + cdeName + "\"");
+    public void addQuestionToSectionSafe(String cdeName) {
+        findElement(By.name("q")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results");
         textPresent(cdeName, By.id("accordionList"));
@@ -132,8 +131,6 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_1']//input")).clear();
         findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_1']//input")).sendKeys("PBD UOM 2");
         findElement(By.xpath(uomXPath + "//div[@id='q_uom_list_1']//button[text() = ' Confirm']")).click();
-
-        String oldFormUrl = driver.getCurrentUrl();
 
         textPresent("This element is not saved.");
         saveForm();

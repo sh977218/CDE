@@ -30,7 +30,6 @@ exports.completionSuggest = function (term, cb) {
     })
 };
 
-
 exports.buildElasticSearchQuery = function (settings) {
     this.escapeRegExp = function (str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -39,6 +38,7 @@ exports.buildElasticSearchQuery = function (settings) {
     var queryStuff = {size: settings.resultPerPage ? settings.resultPerPage : 20};
     var searchQ = settings.searchTerm;
 
+    // Do not retrieve items marked as forks.
     queryStuff.query =
     {
         bool: {
@@ -50,15 +50,9 @@ exports.buildElasticSearchQuery = function (settings) {
         }
     };
 
-    var visibleRegStatuses = settings.visibleRegStatuses;
-    regStatusShared.statusList.forEach(function (status) {
-        if (visibleRegStatuses.indexOf(status) === -1) queryStuff.query.bool.must_not.push({
-            term: {"registrationState.registrationStatus": status}
-        });
-    });
-
     queryStuff.query.bool.must = [];
 
+    // Increase ranking score for high registration status
     var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
 
     queryStuff.query.bool.must.push({
@@ -70,6 +64,7 @@ exports.buildElasticSearchQuery = function (settings) {
     });
 
     if (searchQ !== undefined && searchQ !== "") {
+        // Search for the query term given by user
         queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
         {
             query_string: {
@@ -77,6 +72,7 @@ exports.buildElasticSearchQuery = function (settings) {
             }
         };
         queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
+        // Boost rank if matches are on designation or definition
         queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
         {
             query_string: {
@@ -84,6 +80,7 @@ exports.buildElasticSearchQuery = function (settings) {
                 , query: searchQ
             }
         };
+        // Boost rank if we find exact string match, or if terms are in a less than 4 terms apart.
         queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2.5";
         if (searchQ.indexOf("\"") < 0) {
             queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
@@ -98,6 +95,7 @@ exports.buildElasticSearchQuery = function (settings) {
         }
     }
 
+    // Filter by selected org
     if (settings.selectedOrg !== undefined) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
     }
@@ -105,21 +103,12 @@ exports.buildElasticSearchQuery = function (settings) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrgAlt}});
     }
 
-    var buildFilter = function (allowedStatuses, selectedStatuses) {
-        var regStatuses = selectedStatuses;
-        if (!regStatuses) regStatuses = [];
+    // Filter by selected Statuses
+    var buildFilter = function (selectedStatuses) {
         var regStatusOr = [];
-        for (var i = 0; i < regStatuses.length; i++) {
-            var t = regStatuses[i];
-            if (t.selected === true) {
-                regStatusOr.push({term: {"registrationState.registrationStatus": t.name}});
-            }
-        }
-        if (regStatusOr.length === 0) {
-            allowedStatuses.forEach(function (regStatus) {
-                regStatusOr.push({term: {"registrationState.registrationStatus": regStatus}});
-            });
-        }
+        selectedStatuses.forEach(function(regStatus) {
+            regStatusOr.push({term: {"registrationState.registrationStatus": regStatus}});
+        });
         var filter = {and: []};
         if (regStatusOr.length > 0) {
             filter.and.push({or: regStatusOr});
@@ -127,7 +116,7 @@ exports.buildElasticSearchQuery = function (settings) {
         return filter;
     };
 
-    settings.filter = buildFilter(settings.visibleRegStatuses, settings.selectedStatuses);
+    settings.filter = buildFilter(settings.selectedStatuses);
 
     if (settings.filter !== undefined) {
         if (settings.filter.and !== undefined) {
@@ -146,7 +135,7 @@ exports.buildElasticSearchQuery = function (settings) {
 
     var queryBuilder = this;
 
-    var flatSelection = settings.selectedElements.join(";");
+    var flatSelection = settings.selectedElements?settings.selectedElements.join(";"):[];
     if (flatSelection !== "") {
         queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
     }
@@ -156,6 +145,7 @@ exports.buildElasticSearchQuery = function (settings) {
         queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
     }
 
+    // Get aggregations on classifications and statuses
     if (settings.includeAggregations) {
         queryStuff.aggregations = {
             orgs: {
@@ -211,8 +201,9 @@ exports.buildElasticSearchQuery = function (settings) {
         delete queryStuff.query.bool.must;
     }
 
-    queryStuff.from = (settings.currentPage - 1) * settings.resultPerPage;
+    queryStuff.from = (settings.page - 1) * settings.resultPerPage;
 
+    // highlight search results if part of the following fields.
     queryStuff.highlight = {
         "order": "score"
         , "pre_tags": ["<strong>"]

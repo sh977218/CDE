@@ -1,0 +1,32 @@
+<div ng-controller="SaveCdeCtrl">
+<h3 tabindex="0">Values Allowed</h3>
+<dl class="dl-horizontal">
+    <span ng-show="elt.valueDomain.definition">
+        <dt tabindex="0" >Instructions: </dt>
+        <dd tabindex="0" id="dd_vd_def">{{elt.valueDomain.definition}}</dd>
+    </span>
+    <dt tabindex="0" >Value Type: </dt>
+    <dd  tabindex="0" id="dd_valueType">
+        <span ng-show="editDtMode">
+            <select id="valueTypeSelect" ng-model="elt.valueDomain.datatype">
+                <option value="" >None Selected</option>
+                <option value="Value List">Value List</option>
+                <option value="Text">Text</option>
+                <option value="Date">Date</option>
+                <option value="Number">Number</option>
+                <option value="Externally Defined">Externally Defined</option>
+            </select>
+            or
+            <input ng-model="elt.valueDomain.datatype" name="datatypeFreeText"/>
+            <i class="fa fa-check-square-o" ng-click="editDtMode = false; stageElt(elt)" id="confirmDatatype"></i>
+            <i class="fa fa-trash-o" ng-click="editDtMode = false; reload({cdeId: elt._id});"></i>
+       </span>
+        <span ng-hide="editDtMode"><i tabindex="0" title="Edit Value" role="link" ng-show="canCurate" class="fa fa-edit" ng-click="editDtMode = true" id="editDatatype"></i> {{elt.valueDomain.datatype | placeholdEmpty}}</span>
+    </dd>
+</dl>
+
+    <div ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
+
+</div>
+
+    

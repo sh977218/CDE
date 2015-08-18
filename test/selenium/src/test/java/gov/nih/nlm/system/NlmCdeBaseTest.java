@@ -19,7 +19,6 @@ import java.lang.System;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -33,7 +32,6 @@ public class NlmCdeBaseTest {
     public static WebDriverWait shortWait;
 
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
-    protected static String macosx_detected_message = "Max OS X Detected\nStarting ./chromedriver";
 
     protected static int defaultTimeout = Integer.parseInt(System
             .getProperty("timeout"));
@@ -47,7 +45,6 @@ public class NlmCdeBaseTest {
     protected static String test_username = "testuser";
     protected static String test_password = "Test123";
     protected static String history_username = "historyuser";
-    protected static String acrin_username = "acrin";
     protected static String ninds_username = "ninds";
     protected static String wguser_username = "wguser";
     protected static String reguser_username = "reguser";
@@ -60,7 +57,6 @@ public class NlmCdeBaseTest {
     protected static String docEditor = "docEditor";
     protected static String classificationMgtUser_username = "classMgtUser";
     protected static String transferStewardUser_username = "transferStewardUser";
-    protected static String createUser_username = "createUser";
     protected static String anonymousCommentUser_username = "CommentUser";
     protected static String anonymousCommentUser2_username = "CommentUser2";
     protected static String anonymousFormCommentUser_username = "FormCommentUser";
@@ -203,11 +199,6 @@ public class NlmCdeBaseTest {
         }
     }
 
-    public void loginAsNlm() {
-        loginAs("nlm", "nlm");
-        logout();
-    }
-
     protected void goToCdeByName(String name) {
         goToCdeByName(name, null);
     }
@@ -222,10 +213,6 @@ public class NlmCdeBaseTest {
 
     protected void goToFormByName(String name, String status) {
         goToElementByName(name, "form", status);
-    }
-
-    protected void goToElementByName(String name, String type) {
-        goToElementByName(name, type, null);
     }
 
     protected void goToElementByName(String name, String type, String status) {
@@ -252,10 +239,6 @@ public class NlmCdeBaseTest {
 
     protected void openCdeInList(String name, String status) {
         openEltInList(name, "cde", status);
-    }
-
-    protected void openEltInList(String name, String type) {
-        openEltInList(name, type, null);
     }
 
     public void searchCde(String cdeName) {
@@ -355,6 +338,7 @@ public class NlmCdeBaseTest {
             driver.manage().timeouts()
                     .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         } catch (Exception e) {
+            System.out.println("Could not close alert");
         }
     }
 
@@ -395,18 +379,6 @@ public class NlmCdeBaseTest {
 
     public boolean textPresent(String text) {
         return textPresent(text, By.cssSelector("BODY"));
-    }
-
-    public void textOrTextPresent(String text1, String text2) {
-        try {
-            textPresent(text1, By.cssSelector("BODY"));
-        } catch(Exception e){
-            textPresent(text2, By.cssSelector("BODY"));
-        }
-    }
-
-    public boolean textPresentTrueFalse(String text) {
-        return driver.findElement(By.tagName("body")).getText().contains(text);
     }
 
     public boolean textNotPresent(String text) {
@@ -450,10 +422,6 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/#/quickBoard");
     }
 
-    protected void goToSearchByMenu() {
-        findElement(By.linkText("CDEs")).click();
-    }
-
     protected void logout() {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Log Out")).click();
@@ -479,7 +447,7 @@ public class NlmCdeBaseTest {
         searchCde(cdeName);
         findElement(By.id("addToCompare_0")).click();
         hangon(.5);
-        findElement(By.name("ftsearch")).clear();
+        findElement(By.name("q")).clear();
     }
 
     public void addToCompare(String cdeName1, String cdeName2) {
@@ -559,14 +527,14 @@ public class NlmCdeBaseTest {
 
     protected void switchTabAndClose(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
     }
 
     protected void switchTab(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }
 
@@ -687,7 +655,4 @@ public class NlmCdeBaseTest {
         goToSearch("cde");
     }
 
-    private int randInt(int min, int max) {
-        return new Random().nextInt((max - min) + 1) + min;
-    }
 }

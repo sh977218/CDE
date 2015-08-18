@@ -1,0 +1,47 @@
+<div accordion close-others="false">
+    <div accordion-group ng-repeat="form in cdes track by $index" is-open="form.isOpen">
+        <div accordion-heading ng-controller="AccordionCtrl">
+            <a href tabindex="0" class="nonLinkAnchor">
+                <span ng-bind-html="form.naming[0].designation" id="acc_link_{{$index}}" class="hand-cursor"></span></a>
+            <a href tabindex="0" class="nonLinkAnchor" ng-click="view(form,$event)">
+                <i class="fa fa-eye hand-cursor" title="View Full Detail"
+                   role="link" id="eyeLink_{{$index}}"></i></a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h4 tabindex="0">General Details</h4>
+                <dl class="dl-horizontal">
+                    <dt tabindex="0">Name:</dt>
+                    <dd tabindex="0" id="dd_general_name" ng-bind-html="form.naming[0].designation">
+                    </dd>
+                    <dt tabindex="0">Steward:</dt>
+                    <dd tabindex="0" ng-bind-html="form.stewardOrg.name"></dd>
+                    <dt tabindex="0">Definition:</dt>
+                    <dd tabindex="0" id="dd_def" ng-bind-html="form.naming[0].definition | placeholdEmpty"></dd>
+                    <dt tabindex="0" ng-show="form.classification.length > 0">Used By:</dt>
+                    <dd tabindex="0" ng-show="form.classification.length > 0" id="dd_usedBy">
+                        <span ng-switch="form.classification.length > 0">
+                            <span ng-switch-when="false">None</span>
+                            <span ng-switch-default>
+                                <span ng-repeat="cl in form.classification">{{cl.stewardOrg.name}} </span>
+                            </span>
+                        </span>
+                    </dd>
+                    <dt tabindex="0" id="dt_status">Status:</dt>
+                    <dd tabindex="0" id="dd_status">{{form.registrationState.registrationStatus}}</dd>
+                </dl>
+            </div>
+            <div class="col-md-2">
+                <img ng-repeat="attachment in form.attachments | filter:{isDefault:true}" alt="Image attached to the form"
+                     ng-src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
+            </div>
+        </div>
+
+        <div class="row">
+            <a class='btn btn-small btn-default' id="openEltInCurrentTab_{{$index}}"
+               ng-href="/#/formView?tinyId={{form.tinyId}}" title="Full Detail for {{form.naming[0].designation}}"><i
+                        class="fa fa-eye"></i> View Full Detail</a>
+        </div>
+    </div>
+</div>
