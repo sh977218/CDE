@@ -3,7 +3,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
     'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
     , 'angular-send-feedback']).
-    config(function ($routeProvider) {
+    config(function ($routeProvider, $locationProvider) {
+        $locationProvider.html5Mode({enabled: true, requireBase: false});
         $routeProvider.
             when('/', {
                 redirectTo: function () {
@@ -12,29 +13,29 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 }
             }).
             when('/home', {controller: 'HomeCtrl', templateUrl: '/system/public/html/home.html'}).
-            when('/login', {controller: 'AuthCtrl', templateUrl: '/login'}).
-            when('/signup', {controller: 'AuthCtrl', templateUrl: '/signup'}).
-            when('/siteAudit', {templateUrl: '/siteaudit'}).
+            when('/login', {controller: 'AuthCtrl', templateUrl: '/system/public/html/login.html'}).
+            when('/siteAudit', {templateUrl: '/system/public/html/siteAudit.html'}).
             when('/inbox', {controller: 'InboxCtrl', templateUrl: '/system/public/html/inbox.html'}).
             when('/siteaccountmanagement', {
                 controller: 'AccountManagementCtrl',
-                templateUrl: '/siteaccountmanagement'
+                templateUrl: '/system/public/html/siteAccountManagement.html'
             }).
-            when('/orgaccountmanagement', {controller: 'AccountManagementCtrl', templateUrl: '/orgaccountmanagement'}).
+            when('/orgaccountmanagement', {
+                controller: 'AccountManagementCtrl',
+                templateUrl: '/system/public/html/orgAccountManagement.html'}).
             when('/classificationmanagement', {
                 controller: 'ClassificationManagementCtrl',
-                templateUrl: '/template/system/classificationManagement'
+                templateUrl: '/system/public/html/classificationManagement.html'
             }).
-            when('/profile', {controller: 'ProfileCtrl', templateUrl: '/profile'}).
+            when('/profile', {controller: 'ProfileCtrl', templateUrl: '/system/public/html/profile.html'}).
             when('/triggerClientException', {
                 controller: 'TriggerClientExceptionCtrl',
-                templateUrl: '/template/system/triggerClientException'
+                templateUrl: '/system/public/html/triggerClientException.html'
             }).
             when('/searchSettings', {
                 controller: 'SearchSettingsCtrl',
                 templateUrl: '/system/public/html/searchSettings.html'
-            }).
-            otherwise({redirectTo: '/'});
+            })
     })
     .directive('inlineEdit', function () {
         return {

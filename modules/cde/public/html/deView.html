@@ -1,0 +1,92 @@
+<div class="container-fluid" ng-controller="VersionCtrl" ng-cloak>
+    <div class="alert alert-warning mt20" role="alert" ng-show="elt.archived"><i class="fa fa-exclamation-triangle"></i>
+        <strong>Warning:</strong> this data element is archived. You can
+        <a href="/#/deview?tinyId={{elt.tinyId}}">view the current version here</a>.</div>
+    <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.registrationStatus=='Retired'">
+        <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is retired.
+        <span ng-show="elt.registrationState.replacedBy">
+            <a href="/#/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
+    <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.administrativeStatus=='Retire Candidate'">
+        <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is about to be retired.
+        <span ng-show="elt.registrationState.replacedBy">
+            <a href="/#/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a></span></div>
+    <div class="alert alert-info mt20" role="alert" ng-show="displayStatusWarning"><i class="fa fa-exclamation-triangle"></i>
+        <strong>Note:</strong> You may not edit this CDE because it is standard.</div>
+    <div class="alert alert-info mt20" role="alert" ng-show="elt.forkOf"><i class="fa fa-exclamation-triangle"></i>
+        You are editing a fork. <a tabindex="0" href="/#/deview?cdeId={{rootFork._id}}"> <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.</div>
+
+    <div ng-if="!elt"><h1 class="pt60 pb40 text-center"><i class="fa fa-spinner fa-pulse"></i> Loading...</h1></div>
+
+    <div ng-if="elt">
+        <h1 class="page-header">
+            {{elt.naming[0].designation}}
+            <a class="btn btn-small btn-default" ng-show="quickBoard.canAddElt(elt)" role="button" tabindex="0"
+               ng-click="quickBoard.add(elt)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add to Quick Board</a>
+        </h1>
+
+        <div tabset>
+           <div tab heading="{{tabs['general'].heading}}">
+               <div ng-include="'/cde/public/html/cdeGeneralDetails.html'"></div>
+               <div ng-include="'/cde/public/html/cdeSpecificDetails.html'"></div>
+           </div>
+           <div tab heading="{{tabs['pvs'].heading}}">
+               <div ng-include="'/cde/public/html/valueDomainView.html'"></div>
+            </div>
+            <div tab heading="{{tabs['naming'].heading}}">
+                <div ng-include="'/cde/public/html/deNaming.html'"></div>
+            </div>
+            <div tab heading="{{tabs['classification'].heading}}" id="classificationTab">
+                <div ng-include="'/system/public/html/elementClassification.html'"></div>
+            </div>
+            <div tab heading="{{tabs['concepts'].heading}}">
+                <div ng-include="'/cde/public/html/concepts.html'"></div>
+            </div>
+            <div tab heading="{{tabs['status'].heading}}">
+                <div ng-include="'/system/public/html/status.html'"></div>
+            </div>
+            <div tab heading="{{tabs['referenceDocument'].heading}}" active="tabs['referenceDocument'].active">
+                <div ng-include="'/system/public/html/referenceDocument.html'"></div>
+            </div>
+            <div tab heading="{{tabs['properties'].heading}}" active="tabs['properties'].active">
+                <div ng-include="'/system/public/html/properties.html'"></div>
+            </div>
+            <div tab heading="{{tabs['ids'].heading}}" active="tabs['ids'].active">
+                <div ng-include="'/system/public/html/identifiers.html'"></div>
+            </div>
+            <div tab ng-if="formEnabled" heading="{{tabs['forms'].heading}}" active="tabs['forms'].active">
+                <div ng-include="'/cde/public/html/forms.html'"></div>
+            </div>
+            <div tab heading="{{tabs['mappingSpecifications'].heading}}" active="tabs['mappingSpecifications'].active">
+                <div ng-include="'/cde/public/html/mappingSpecifications.html'"></div>
+            </div>
+            <div tab heading="{{tabs['discussions'].heading}}">
+                <div ng-include="'/system/public/html/comments.html'"></div>
+            </div>
+            <div tab heading="{{tabs['boards'].heading}}" id="boards_tab">
+                <h4 tabindex="0">Boards this Data Element is in</h4>
+                <div ng-include="'/cde/public/html/listOfBoards.html'"></div>
+            </div>
+            <div tab heading="{{tabs['attachments'].heading}}">
+                <div ng-include="'/system/public/html/attachments.html'"></div>
+            </div>
+            <div tab heading="{{tabs['mlt'].heading}}">
+                <div ng-include="'/cde/public/html/deMlt.html'"></div>
+            </div>
+            <div tab heading="{{tabs['history'].heading}}">
+                <div ng-include="'/cde/public/html/cdeHistory.html'"></div>
+            </div>
+            <div ng-show="!elt.forkOf" tab heading="{{tabs['forks'].heading}}">
+                <div ng-include="'/cde/public/html/forks.html'" ng-controller="ForkCtrl"></div>
+            </div>
+        </div>
+
+        <div ng-show="elt.unsaved && allValid" class="mt20">
+            <button class="btn cancel" ng-click="revert(elt)" id="discardChanges">Discard Changes</button>
+            <button class="btn btn-primary" ng-click="openSave(elt, 'deview?tinyId=')" id="openSave">Save Changes</button>
+        </div>
+        <div ng-if="!allValid"  class="alert alert-warning mt20" role="alert">
+            There are validation errors.
+        </div>
+    </div>
+</div>
+

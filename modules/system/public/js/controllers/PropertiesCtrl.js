@@ -1,4 +1,6 @@
-angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal', '$window', '$timeout', function($scope, $modal, $window, $timeout) {
+angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal', '$location', '$timeout',
+    function($scope, $modal, $location, $timeout)
+{
     $scope.openNewProperty = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newPropertyModalContent.html',
@@ -25,7 +27,7 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal',
                 $scope.addAlert("info", "Property added. Save to confirm.");
             } else {
                 $scope.elt.$save(function (newElt) {
-                    $window.location.href = $scope.baseLink + newElt.tinyId + "&tab=properties";
+                    $location.url($scope.baseLink + newElt.tinyId + "&tab=properties");
                     $scope.addAlert("success", "Property Added"); 
                 });
             }
@@ -38,7 +40,7 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal',
             $scope.addAlert("info", "Property removed. Save to confirm.");
         } else {
             $scope.elt.$save(function (newElt) {
-                $window.location.href = $scope.baseLink + newElt.tinyId + "&tab=properties";
+                $location.url($scope.baseLink + newElt.tinyId + "&tab=properties");
                 $scope.elt = newElt;
                 $scope.addAlert("success", "Property Removed"); 
             });
@@ -52,7 +54,7 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal',
     $scope.saveProperty = function() {
         $timeout(function() {
             $scope.elt.$save(function (newElt) {
-                $window.location.href = $scope.baseLink + newElt.tinyId + "&tab=properties";
+                $location.url($scope.baseLink + newElt.tinyId + "&tab=properties");
                 $scope.elt = newElt;
             });
         }, 0);

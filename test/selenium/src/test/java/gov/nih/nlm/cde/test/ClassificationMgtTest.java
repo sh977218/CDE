@@ -10,13 +10,13 @@ import java.util.concurrent.TimeUnit;
 public class ClassificationMgtTest extends BaseClassificationTest {
     private void searchNestedClassifiedCdes() {
         goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("classification.elements.elements.name:Epilepsy");
+        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Epilepsy");
         findElement(By.id("search.submit")).click();    
     }
     
     private void searchNestedClassifiedForms() {
         goToFormSearch();
-        findElement(By.name("ftsearch")).sendKeys("classification.elements.elements.name:Epilepsy");
+        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Epilepsy");
         findElement(By.id("search.submit")).click();    
     }    
 

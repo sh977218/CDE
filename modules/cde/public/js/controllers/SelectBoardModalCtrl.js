@@ -1,4 +1,6 @@
-angular.module('cdeModule').controller('SelectBoardModalCtrl', ['$scope', '$modalInstance', 'boards', function($scope, $modalInstance, boards) {
+angular.module('cdeModule').controller('SelectBoardModalCtrl', ['$scope', '$modalInstance', 'boards',
+    function($scope, $modalInstance, boards)
+{
     $scope.boards = boards;
 
     $scope.ok = function (board) {

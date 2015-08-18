@@ -1,4 +1,6 @@
-angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$window', '$http', function($scope, Auth, $window, $http) {
+angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$window', '$http',
+    function($scope, Auth, $window, $http)
+{
     
     $scope.getCsrf = function() {
         delete $scope.csrf;

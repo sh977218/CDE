@@ -1,4 +1,6 @@
-angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '$modal', '$window', function($scope, $modal, $window) {
+angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '$modal', '$location',
+    function($scope, $modal, $location)
+{
     $scope.openNewMappingSpecification = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newMappingSpecificationModalContent.html',
@@ -23,7 +25,7 @@ angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '
                 $scope.addAlert("info", "Mapping Specification added. Save to confirm.");
             } else {
                 $scope.elt.$save(function (newElt) {
-                    $window.location.href = $scope.baseLink + newElt.tinyId + "&tab=mappingSpecifications";
+                    $location.url($scope.baseLink + newElt.tinyId + "&tab=mappingSpecifications");
                     $scope.addAlert("success", "Mapping Specification Added"); 
                 });
             }
@@ -36,7 +38,7 @@ angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '
             $scope.addAlert("info", "Mapping Specification removed. Save to confirm.");
         } else {
             $scope.elt.$save(function (newElt) {
-                $window.location.href = $scope.baseLink + newElt.tinyId + "&tab=mappingSpecifications";
+                $location.url($scope.baseLink + newElt.tinyId + "&tab=mappingSpecifications");
                 $scope.addAlert("success", "Mapping Specification Removed"); 
             });
         }
@@ -44,7 +46,9 @@ angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '
 
 }]);
 
-angular.module('systemModule').controller('NewMappingSpecificationModalCtrl', ['$scope', '$modalInstance', '$http', 'elt', function($scope, $modalInstance, $http, elt) {
+angular.module('systemModule').controller('NewMappingSpecificationModalCtrl', ['$scope', '$modalInstance', '$http', 'elt',
+    function($scope, $modalInstance, $http, elt)
+{
     $scope.elt = elt;
     $scope.newMappingSpecification = {};
     $scope.contentAutocompleteList = [];
