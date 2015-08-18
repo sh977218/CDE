@@ -7,8 +7,8 @@ import java.util.HashSet;
  */
 
 public class Classification {
-    String stewardOrg = "NINDS";
-    Boolean workingGroup;
+    StewardOrg stewardOrg = new StewardOrg("NINDS");
+    Boolean workingGroup = false;
     HashSet<CsElt> elements = new HashSet<>();
 
     public Classification() {

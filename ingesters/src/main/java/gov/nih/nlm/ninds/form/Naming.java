@@ -3,7 +3,7 @@ package gov.nih.nlm.ninds.form;
 /**
  * Created by huangs8 on 8/7/2015.
  */
-public class Naming {
+public class Naming implements Comparable {
     String designation;
     String definition;
     String definitionFormat;
@@ -46,4 +46,9 @@ public class Naming {
     }
 
 
+    @Override
+    public int compareTo(Object o) {
+        Naming n = (Naming) o;
+        return this.designation.compareTo(n.designation);
+    }
 }

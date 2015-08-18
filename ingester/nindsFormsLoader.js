@@ -14,21 +14,19 @@ setTimeout(function () {
         forms = JSON.parse(data);
         async.eachSeries(forms, function (form, formCallback) {
             async.eachSeries(form.cdes, function (cde, cdeCallback) {
-
-
                 mongo_cde.byOtherId("NINDS", cde, function (err, data) {
-                    var formElement = {
-                        question: {
-                            cde: {
-                                tinyId: "",
-                                version: "",
-                                permissibleValues: []
-                            }
-                        }
-                    };
                     if (data != null && data != undefined && data.hasOwnProperty("_doc")) {
                         var cdeFound = data['_doc'];
                         if (cdeFound.hasOwnProperty("tinyId") && cdeFound.hasOwnProperty("version")) {
+                            var formElement = {
+                                question: {
+                                    cde: {
+                                        tinyId: "",
+                                        version: "",
+                                        permissibleValues: []
+                                    }
+                                }
+                            };
                             formElement.question.cde.tinyId = cdeFound.tinyId;
                             formElement.question.cde.version = cdeFound.version;
                             formElement.question.cde.permissibleValues = cdeFound.valueDomain.permissibleValues;
@@ -37,8 +35,6 @@ setTimeout(function () {
                     }
                     cdeCallback();
                 });
-
-
             }, function doneAllCdes() {
                 delete form.cdes;
                 saveForm(form, user, formCallback);

@@ -106,9 +106,9 @@ public class NindsFormLoader implements Runnable {
                 WebElement td = tds.get(j);
                 String text = td.getText().replace("\"", "").trim();
                 if (index == 1)
-                    form.naming.designation = text;
+                    form.naming.get(0).designation = text;
                 if (index == 2)
-                    form.naming.definition = text;
+                    form.naming.get(0).definition = text;
                 if (index == 3) {
                     List<WebElement> img = td.findElements(By.cssSelector("img"));
                     if (img.size() > 0) {

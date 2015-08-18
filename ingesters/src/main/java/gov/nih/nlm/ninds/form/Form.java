@@ -6,8 +6,8 @@ import java.util.*;
  * Created by huangs8 on 8/4/2015.
  */
 public class Form implements Comparable {
-    Naming naming = new Naming();
-    String stewardOrg = "NINDS";
+    ArrayList<Naming> naming = new ArrayList<Naming>();
+    StewardOrg stewardOrg = new StewardOrg("NINDS");
     String version;
     ArrayList<Property> properties = new ArrayList<Property>();
     ArrayList<Id> ids = new ArrayList<Id>();
@@ -30,8 +30,8 @@ public class Form implements Comparable {
     ArrayList<String> cdes = new ArrayList<String>();
 
     public Form() {
+        this.naming.add(new Naming());
         Classification c = new Classification();
-        c.stewardOrg = "NINDS";
         classification.add(c);
         ReferenceDocument rd = new ReferenceDocument();
         referenceDocuments.add(rd);
@@ -77,8 +77,18 @@ public class Form implements Comparable {
             domain.elements.add(newDomain.elements.iterator().next());
     }
 
-    private Boolean equalNaming(Naming n1, Naming n2) {
-        return n1.equals(n2) ? true : false;
+    private Boolean equalNaming(List n1, List n2) {
+        if (n1.size() != n2.size())
+            return false;
+        else {
+            Collections.sort(n1);
+            Collections.sort(n2);
+            for (int i = 0; i < n1.size(); i++) {
+                if (!n1.get(i).equals(n2.get(i)))
+                    return false;
+            }
+            return true;
+        }
     }
 
     private Boolean equalReferenceDocuments(List rd1, List rd2) {
@@ -88,7 +98,7 @@ public class Form implements Comparable {
             Collections.sort(rd1);
             Collections.sort(rd2);
             for (int i = 0; i < rd1.size(); i++) {
-                if (!rd1.get(i).equals(rd1.get(i)))
+                if (!rd1.get(i).equals(rd2.get(i)))
                     return false;
             }
             return true;
@@ -140,7 +150,7 @@ public class Form implements Comparable {
     @Override
     public int compareTo(Object o) {
         Form form = (Form) o;
-        return form.naming.designation.compareTo(this.naming.designation);
+        return form.naming.get(0).designation.compareTo(this.naming.get(0).designation);
     }
 
     @Override

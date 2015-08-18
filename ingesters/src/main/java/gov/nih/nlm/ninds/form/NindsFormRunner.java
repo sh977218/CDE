@@ -2,8 +2,10 @@ package gov.nih.nlm.ninds.form;
 
 import com.google.gson.Gson;
 
-import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -47,7 +49,7 @@ public class NindsFormRunner {
         long totalTime = (endTime - startTime) / 6000;
         String info = "forms size: " + forms.size() + ". time takes: " + totalTime + " minutes";
         Form form = new Form();
-        form.naming.designation = info;
+        form.naming.get(0).designation = info;
         forms.add(form);
         saveToJson(forms);
     }
@@ -56,9 +58,18 @@ public class NindsFormRunner {
         Gson gson = new Gson();
         String json = gson.toJson(forms);
         try {
-            FileWriter writer = new FileWriter("C:\\NLMCDE\\nindsForms.json");
-            writer.write(json);
-            writer.close();
+//            FileWriter writer = new FileWriter("C:\\NLMCDE\\nindsForms.json");
+//            writer.write(json);
+//            writer.close();
+
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream("C:\\NLMCDE\\nindsForms.json")
+                    , "UTF-8"
+            ));
+
+            out.write(json);
+            out.close();
+
         } catch (IOException e) {
             System.out.println("exception of writing to file.");
             e.printStackTrace();

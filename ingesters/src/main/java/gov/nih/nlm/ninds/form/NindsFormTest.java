@@ -13,7 +13,7 @@ public class NindsFormTest {
         Collection<Form> forms = new CopyOnWriteArraySet<Form>();
 
         Form form1 = new Form();
-        form1.naming.designation = "abcd";
+        form1.naming.get(0).designation = "abcd";
         form1.referenceDocuments.get(0).uri = "www.";
         form1.cdes = new ArrayList<>();
         form1.cdes.add("cde1");
@@ -34,7 +34,7 @@ public class NindsFormTest {
 
 
         Form form2 = new Form();
-        form2.naming.designation = "abcd";
+        form2.naming.get(0).designation = "abcd";
         form2.referenceDocuments.get(0).uri = "www.";
         form2.cdes = new ArrayList<>();
         form2.cdes.add("cde1");
@@ -54,7 +54,7 @@ public class NindsFormTest {
         form2.classification.get(0).elements.add(domainRoot2);
 
         Form form3 = new Form();
-        form3.naming.designation = "abcd";
+        form3.naming.get(0).designation = "abcd";
         form3.referenceDocuments.get(0).uri = "www.";
         form3.cdes = new ArrayList<>();
         form3.cdes.add("cde1");
