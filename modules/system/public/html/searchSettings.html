@@ -7,25 +7,25 @@
         <span>I want my search results to include these statuses</span>
         <div class="radio indent" >
             <label>
-                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="defaultView-accordion" value="Qualified">
+                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="minStatus-Qualified" value="Qualified">
                 Preferred Standard, Standard, Qualified
             </label>
         </div>
         <div class="radio indent" >
             <label>
-                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="defaultView-accordion" value="Recorded">
+                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="minStatus-Recorded" value="Recorded">
                 Preferred Standard, Standard, Qualified, Recorded
             </label>
         </div>
         <div class="radio indent" >
             <label>
-                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="defaultView-accordion" value="Candidate">
+                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="minStatus-Candidate" value="Candidate">
                 Preferred Standard, Standard, Qualified, Recorded, Candidate
             </label>
         </div>
         <div class="radio indent" >
             <label>
-                <input id="minStatus-Incomplete" type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="defaultView-accordion" value="Incomplete">
+                <input id="minStatus-Incomplete" type="radio" ng-model="searchSettings.lowestRegistrationStatus" value="Incomplete">
                 Preferred Standard, Standard, Qualified, Recorded, Candidate, Incomplete
             </label>
         </div>
@@ -54,7 +54,7 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="checkbox indent">
-                <label><input ng-disabled="true" id="name" type="checkbox" ng-model="searchSettings.tableViewFields.cde.name"> Name</label>
+                <label><input disabled id="name" type="checkbox" ng-model="searchSettings.tableViewFields.cde.name"> Name</label>
                 </div>
                 <div class="checkbox indent">
                 <label><input id="naming" type="checkbox" ng-model="searchSettings.tableViewFields.cde.naming"> Other Names</label>
