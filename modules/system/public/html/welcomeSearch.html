@@ -6,25 +6,24 @@
         </h1>
 
         <div class="pt20 text-center" id="searchDiv">
-            <form name="quickSearchForm" id="quickSearchForm" novalidate>
+            <form name="quickSearchForm" id="quickSearchForm" novalidate method="GET">
                 <div class="input-group input-group-lg">
                     <label class="sr-only" for="ftsearch-input">Search Terms</label>
-                    <input name="ftsearch" id="ftsearch-input" type="text" class="form-control"
-                           ng-model="searchForm.ftsearch"
-                           ng-maxlength="500" placeholder="Search Elements"
-                           typeahead-wait-ms="500" typeahead-min-length="3"
-                           typeahead="searchQuery for searchQuery in getAutoComplete($viewValue) | filter:$viewValue | limitTo:8"
+                    <input name="q" id="ftsearch-input" class="form-control search-query" type="text"
+                           ng-model="searchSettings.q" ng-maxlength="500" aria-labelledby="l1"
+                           typeahead-wait-ms="500" typeahead-min-length="3" autocomplete="off"
+                           typeahead="searchQuery for searchQuery in autocomplete.suggest($viewValue) | limitTo:8"
                            typeahead-focus-first="false" typeahead-on-select="searchAction()">
 
                     <div class="input-group-btn">
-                        <button name="quickSearchButton" id="search.submit" class="btn btn-danger btn-lg" type="submit"
-                                ng-click="searchNoOrg()" ng-disabled="quickSearchForm.$invalid">
-                            <i class="fa fa-search"></i><span class="hidden-xs"> Search</span></button>
+                        <button id="search.submit" ng-click="termSearch()" type="submit" class="btn btn-danger btn-lg" >
+                            <i class="fa fa-search"></i> Search</button>
                     </div>
                 </div>
 
                 <!-- Error display area -->
-                <span ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><p class="error-block"><small>Query terms must be 500 characters or less.</small></p></span>
+                <span ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine">
+                    <p class="error-block"><small>Query terms must be 500 characters or less.</small></p></span>
             </form>
         </div>
     </div>
@@ -32,9 +31,11 @@
     <div>
         <h3 class="">Browse by organization</h3>
         <div class="row">
+            <span ng-if="orgs.length === 0"><h1 class="pl130"><i class="fa fa-spinner fa-pulse"></i> Searching...</h1></span>
             <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-repeat="org in orgs | orderBy:'name'">
                 <div class="welcomeSearchOrganizationBox" >
-                    <h3><a href ng-bind="org.name" ng-click="browseOrg(org.name)" id="browseOrg-{{org.name}}"></a></h3>
+                    <h3><a href ng-bind="org.name" id="browseOrg-{{org.name}}"
+                           ng-click="browseOrg(org.name)"></a></h3>
                     <div ng-if="org.longName" ng-bind="org.longName"></div>
                     <div><span id="nbOfElts-{{org.name}}">{{org.count}}</span> elements</div>
                     <div ng-if="org.extraInfo" ng-bind="org.extraInfo"></div>

@@ -31,40 +31,8 @@ exports.init = function (app, daoManager) {
 
     daoManager.registerDao(mongo_data);
 
-    app.get('/quickBoard', function (req, res) {
-        res.render('quickBoard');
-    });
-
-    app.get('/exportCdeSearch', function (req, res) {
-        res.render('cdeExport');
-    });
-
-    app.get('/list', function (req, res) {
-        res.render('list', 'system', {module: "cde"});
-    });
-
-    app.get('/boardList', appSystem.nocacheMiddleware, function (req, res) {
-        res.render('boardList');
-    });
-
-    app.get('/deCompare', appSystem.nocacheMiddleware, function (req, res) {
-        res.render('deCompare');
-    });
-
     app.get('/listboards', function (req, res) {
         boardsvc.boardList(req, res);
-    });
-
-    app.get('/createcde', appSystem.nocacheMiddleware, function (req, res) {
-        res.render('createcde');
-    });
-
-    app.get('/deview', function (req, res) {
-        res.render("deview", 'cde', {config: viewConfig});
-    });
-
-    app.get('/myboards', function (req, res) {
-        res.render("myBoards");
     });
 
     app.post('/cdesByTinyIdList', function (req, res) {
@@ -169,9 +137,6 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/board', exportShared.nocacheMiddleware, function (req, res) {
-        res.render("boardView");
-    });
 
     app.get('/board/:boardId/:start/:size?', exportShared.nocacheMiddleware, function (req, res) {
         var size = 20;
@@ -462,14 +427,6 @@ exports.init = function (app, daoManager) {
 
     app.get('/sdc/:id', exportShared.nocacheMiddleware, function (req, res) {
         sdc.byId(req, res);
-    });
-
-    app.get('/sdcView', function (req, res) {
-        res.render('sdcView');
-    });
-
-    app.get('/profile', function (req, res) {
-        res.render("profile", "cde");
     });
 
     app.get('/status/cde', status.status);

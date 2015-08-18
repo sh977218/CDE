@@ -14,14 +14,14 @@ public class CdeSearchTest3 extends NlmCdeBaseTest {
     @Test
     public void phraseSearch() {
         goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("Biomarker Gene");
+        findElement(By.name("q")).sendKeys("Biomarker Gene");
         findElement(By.id("search.submit")).click();
         textPresent("Biomarker Gene");
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(linkList.size() > 10);
 
-        findElement(By.name("ftsearch")).clear();
-        findElement(By.name("ftsearch")).sendKeys("\"Biomarker Gene\"");
+        findElement(By.name("q")).clear();
+        findElement(By.name("q")).sendKeys("\"Biomarker Gene\"");
         findElement(By.id("search.submit")).click();
         showSearchFilters();
         textPresent("caBIG (1)");
@@ -35,12 +35,12 @@ public class CdeSearchTest3 extends NlmCdeBaseTest {
     @Test
     public void starSearch() {
         goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("ISO2109");
+        findElement(By.name("q")).sendKeys("ISO2109");
         findElement(By.id("search.submit")).click();
         textPresent("No results were found.");
 
         goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("ISO2109*");
+        findElement(By.name("q")).sendKeys("ISO2109*");
         findElement(By.id("search.submit")).click();
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertTrue(linkList.size() > 10);

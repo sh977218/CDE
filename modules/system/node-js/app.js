@@ -36,8 +36,13 @@ exports.init = function(app) {
     
     var viewConfig = {modules: config.modules, webtrends: config.webtrends, maxPin: config.maxPin};
 
-    app.get('/template/:module/:template', function(req, res) {        
-        res.render(req.params.template, req.params.module, {config: viewConfig, module: req.params.module});
+    ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
+        "/board/:id", "/deview",
+        "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
+        "/classificationmanagement", "/inbox", "/profile", "/login"].forEach(function(path) {
+        app.get(path, function(req, res) {
+            res.render('index', 'system', {config: viewConfig, loggedIn: req.user?true:false});
+        });
     });
 
     var token = mongo_data_system.generateTinyId();
@@ -119,10 +124,6 @@ exports.init = function(app) {
         res.render('index', 'system', {config: viewConfig, loggedIn: req.user?true:false});
     });
 
-    app.get('/home', function(req, res) {
-        res.render('home', 'system');
-    });
-
     app.get('/gonowhere', function(req, res) {
         res.send("<html><body>Nothing here</body></html>");
     });
@@ -175,10 +176,6 @@ exports.init = function(app) {
         });
     });
     
-    app.get('/login', function(req, res) {
-        res.render('login', "system");
-    });
-
     app.get('/logout', function(req, res) {
         if (!req.session) {
             return res.status(403).end();
@@ -332,15 +329,6 @@ exports.init = function(app) {
         return ip.indexOf("127.0") !== -1 || ip === "::1" ||  ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIP) > -1;
     };
 
-    app.get('/siteaudit', function(req, res) {
-        if (app.isLocalIp(getRealIp(req))
-                && req.user && req.user.siteAdmin) {
-            res.render('siteAudit', 'system', {config: viewConfig}); 
-        } else {
-            res.status(401).send();
-        }
-    });
-
     app.get('/searchUsers/:username?', function(req, res) {
         if (app.isLocalIp(getRealIp(req))
                 && req.user && req.user.siteAdmin) {
@@ -385,7 +373,7 @@ exports.init = function(app) {
         } else {
             res.status(401).send();
         }
-    });    
+    });
 
 
     app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function(req, res) {
@@ -400,7 +388,7 @@ exports.init = function(app) {
     app.get('/orgaccountmanagement', exportShared.nocacheMiddleware, function(req, res) {
         res.render('orgAccountManagement', "system");
     });    
-        
+
     app.get('/data/:imgtag', function(req, res) {
         mongo_data_system.getFile(req.user, req.params.imgtag, res);
     });    

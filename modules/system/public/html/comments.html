@@ -1,7 +1,7 @@
 <div ng-controller="CommentsCtrl">
     <br/>
 
-    <div tabindex="0" ng-if="!user._id">Please <a tabindex="0" href="#/login">log in</a> to comment.</div>
+    <div tabindex="0" ng-if="!user._id">Please <a tabindex="0" href="/#/login">log in</a> to comment.</div>
     <div ng-if="user._id">
         <form role="form" name="commentForm" id="commentForm" novalidate>
             <label tabindex="0" class="sr-only" for="commentTextArea">Comments</label>

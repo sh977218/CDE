@@ -39,9 +39,9 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         findElement(By.linkText("Concepts")).click();
-        Assert.assertTrue(textPresent("DEC_CODE_111"));
-        Assert.assertTrue(textPresent("OC_CODE_111"));
-        Assert.assertTrue(textPresent("Prop_CODE_111"));
+        textPresent("DEC_CODE_111");
+        textPresent("OC_CODE_111");
+        textPresent("Prop_CODE_111");
 
         checkInHistory("Concepts", "", "DEC_CODE_111");
         checkInHistory("Concepts", "", "OC_CODE_111");
@@ -49,9 +49,9 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         findElement(By.linkText("Concepts")).click();
 
-        findElement(By.id("decConceptRemove-0")).click();
-        findElement(By.id("ocConceptRemove-1")).click();
-        findElement(By.id("propConceptRemove-3")).click();
+        findElement(By.id("removedataElementConcept-0")).click();
+        findElement(By.id("removeobjectClass-1")).click();
+        findElement(By.id("removeproperty-3")).click();
 
         newCdeVersion();
 

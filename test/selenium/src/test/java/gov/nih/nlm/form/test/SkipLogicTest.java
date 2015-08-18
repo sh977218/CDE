@@ -5,7 +5,6 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.annotations.Test;
 
 public class SkipLogicTest extends BaseFormTest {
     
@@ -29,7 +28,7 @@ public class SkipLogicTest extends BaseFormTest {
 
         // Add 2nd Section
         questionTest.addQuestionToSection("Patient Gender Category", 0);
-        questionTest.addQuestionToSectionSafe("Person Birth Date", 0);
+        questionTest.addQuestionToSectionSafe("Person Birth Date");
         questionTest.addQuestionToSection("Breast Carcinoma Estrogen Receptor Status", 1);             
         WebElement sourceElt = findElement(By.cssSelector("#section_view_1 .section-move-handle"));
         WebElement targetElt = findElement(By.id("section_drop_area_0"));

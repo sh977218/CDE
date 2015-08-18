@@ -1,0 +1,65 @@
+<dl class="dl-horizontal">
+  <dt tabindex="0" >Datatype: </dt>
+  <dd>
+    <div inline-edit id="listDatatype" model="elt.valueDomain.datatypeValueList.datatype" is-allowed="canCurate" on-ok="stageElt(elt)" />
+  </dd>
+</dl>
+<hr/>
+<h4 tabindex="0" >Permissible Values</h4>
+<div ng-if="!allValid"  class="alert alert-danger mt20" role="alert">There are validation errors. {{ pvNotValidMsg }}</div>
+<div><button ng-show="showValidateButton" ng-click="runManualValidation()">Validate</button></div>
+<div ng-show="elt.valueDomain.permissibleValues.length === 0">No Permissible Values</div>
+<table ng-show="elt.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped" summary="List of permissible values">
+     <thead>
+         <tr>
+             <th  tabindex="0" id="value">Value</th>
+             <th  tabindex="0" id="codeName">Code Name</th>
+             <th  tabindex="0" id="code">Code</th>
+             <th  tabindex="0" id="codeSystem">Code System</th>
+             <th  tabindex="0" id="validation" ng-show="vsacMappingExists() || compareView">Match</th>
+             <th  tabindex="0" id="actions" ng-show="canCurate">Actions</th>
+         </tr>
+     </thead>
+     <tbody>
+         <tr id="pvtr-{{$index}}" ng-repeat="pv in elt.valueDomain.permissibleValues | limitTo:pvLimit">
+            <td tabindex="0" headers="value" id="pv-{{$index}}">
+                <div inline-edit model="pv.permissibleValue" is-allowed="canCurate" on-ok="stageElt(elt);checkPvUnicity();"> </div>
+             </td>
+             <td  tabindex="0" headers="codeName" id="pvName-{{$index}}">
+                <div inline-edit model="pv.valueMeaningName" is-allowed="canCurate" typeahead-source="pVTypeheadVsacNameList" on-ok="stageElt(elt); runDelayedManualValidation();"></div>
+             </td>
+             <td  tabindex="0" headers="code" id="pvCode-{{$index}}">
+                <div inline-edit model="pv.valueMeaningCode" is-allowed="canCurate" on-ok="stageElt(elt); runDelayedManualValidation();"></div>
+             </td>
+             <td  tabindex="0" headers="codeSystem" id="pvCodeSystem-{{$index}}">
+                <div inline-edit model="pv.codeSystemName" is-allowed="canCurate" typeahead-source="pVTypeaheadCodeSystemNameList" on-ok="stageElt(elt); runDelayedManualValidation();"></div>
+             </td>
+             <td tabindex="0"  headers="validation" ng-show="vsacMappingExists() || compareView">
+                 <span ng-switch="pv.isValid">
+                     <i ng-switch-when="true" class="fa fa-check text-success" id="pv-{{$index}}-valid"></i>
+                     <i ng-switch-default class="fa fa-exclamation text-warning" id="pv-{{$index}}-warning"></i>
+                 </span>
+             </td>
+             <td  tabindex="0" headers="actions" ng-show="canCurate">
+                 <span ng-if="pv.notValid"><i class="fa fa-warning text-danger" id="pv-{{$index}}-notValid"> </i></span>
+                 <a id="pvUp-{{$index}}" class="btn-mini fa fa-arrow-up" ng-click="movePvUp($index)" ng-hide="$first" title="Up" href=""></a>
+                 <a id="pvDown-{{$index}}" class="btn-mini fa fa-arrow-down" ng-click="movePvDown($index)" ng-hide="$last" title="Down" href=""></a>
+                 <a id="pvRemove-{{$index}}" class="btn-mini fa fa-trash-o" ng-click="removePv($index)" title="Remove" href=""></a>
+             </td>
+         </tr>
+         <tr tabindex="0"  ng-show="elt.valueDomain.permissibleValues.length > pvLimit">
+             <td colspan="6">Showing {{pvLimit}} values.
+                 <a class="btn btn-small btn-default fa fa-plus" ng-click="pvLimit = pvLimit + 50" id="showMorePvs"> Show more</a>
+             </td>
+         </tr>
+     </tbody>
+ </table>
+<div class="mt20">
+    <a class="btn btn-small btn-default" ng-show="canCurate" ng-click="addPv()" ng-disabled="!canAddPv()">
+        <i id="addPv" class="fa fa-plus"></i> Add Permissible Value</a>
+    <a class="btn btn-small btn-default" ng-show="canCurate" ng-click="removeAllPvs()">
+        <i id="removeAllPvs" class="fa fa-trash-o"></i> Remove All Values</a>
+</div>
+<hr/>
+
+<div ng-include="'/cde/public/html/valueDomainVsac.html'"></div>

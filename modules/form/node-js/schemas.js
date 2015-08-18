@@ -46,7 +46,10 @@ for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
         elementType: {type: String, enum: ['section', 'question']}
         , label: String
         , instructions: String
-        , cardinality: String
+        , cardinality: {
+            min: String,
+            max: String
+        }
         , repeatsFor: String
         , showIfExpression: String
         , section: sectionSchema

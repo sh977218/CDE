@@ -1,0 +1,18 @@
+
+<div ng-switch="elt.valueDomain.datatype">
+    <div ng-switch-when="Value List">
+        <div ng-include="'/cde/public/html/deDatatypeValueList.html'"></div>
+    </div>
+    <div ng-switch-when="Text">
+        <div ng-include="'/cde/public/html/deDatatypeText.html'"></div>
+    </div>
+    <div ng-switch-when="Number">
+        <div ng-include="'/cde/public/html/deDatatypeNumber.html'"></div>
+    </div>
+    <div ng-switch-when="Date">
+        <div ng-include="'/cde/public/html/deDatatypeDate.html'"></div>
+    </div>    
+    <div ng-switch-when="Externally Defined">
+        <div ng-include="'/cde/public/html/deDatatypeExternal.html'"></div>
+    </div>     
+</div>
