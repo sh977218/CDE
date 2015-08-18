@@ -85,7 +85,6 @@ exports.init = function (app, daoManager) {
     app.get('/debytinyid/:tinyId/:version?', function (req, res) {
         var serveCde = function (err, cde) {
             if (!cde) return res.status(404).send();
-
             adminItemSvc.hideUnapprovedComments(cde);
             res.send(cdesvc.hideProprietaryPvs(cde, req.user));
             if (req.isAuthenticated()) {
