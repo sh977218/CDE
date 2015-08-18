@@ -52,8 +52,8 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         findElement(By.linkText("General Details")).click();
         findElement(By.linkText("SDC View")).click();
         switchTab(1);
-        textPresent("GeneBank Nucleotide Sequence Identifier");
-        textPresent("enumerated");
+        textPresent("Genotype Directed Therapy Based on Mutation Testing?");
+        textPresent("non-enumerated");
         switchTabAndClose(0);
 
     } 
