@@ -1,4 +1,6 @@
-angular.module('cdeModule').controller('MergeRequestCtrl', ['$scope', '$modal', '$window', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel', 'userResource', function($scope, $modal, $window, MergeRequest, DataElement, MergeCdes, isAllowedModel, userResource) {
+angular.module('cdeModule').controller('MergeRequestCtrl',
+    ['$scope', '$modal', '$location', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel', 'userResource',
+        function($scope, $modal, $location, MergeRequest, DataElement, MergeCdes, isAllowedModel, userResource) {
     $scope.openMergeModal = function(retiredIndex) {
         $scope.retiredIndex = retiredIndex;
         var modalInstance = $modal.open({
@@ -18,14 +20,14 @@ angular.module('cdeModule').controller('MergeRequestCtrl', ['$scope', '$modal', 
                     dat.mergeRequest.source.object.registrationState.administrativeStatus = "Retire Candidate";
                     dat.mergeRequest.source.object.registrationState.replacedBy = {tinyId: $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId};
                     DataElement.save(dat.mergeRequest.source.object, function(cde) {   
-                        $window.location.href = "/#/deCompare";
+                        $location.url("deCompare");
                         $scope.addAlert("success", "Merge request sent");
                     });                
                 });            
             } else {
                 var gotoNewElement = function(mr) {
                     MergeCdes.approveMerge(mr.source.object, mr.destination.object, mr.mergeFields, function(cde) {                                        
-                        $window.location.href = "/#/deview?tinyId=" + cde.tinyId;
+                        $location.url("deview?tinyId=" + cde.tinyId);
                         $scope.addAlert("success", "CDEs successfully merged");
                     }); 
                 };

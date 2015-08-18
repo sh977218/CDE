@@ -45,7 +45,7 @@ public class AttachmentsTest extends BaseAttachmentTest {
         goToCdeByName(cdeName);
         addAttachment("nonDefault.jpg");
 
-        openEltInList(cdeName, null, null);
+        openEltInList(cdeName, "cde", null);
 
         List<WebElement> l = driver.findElements(By.cssSelector("cdeAttachmentThumbnail"));
         for (WebElement we : l){

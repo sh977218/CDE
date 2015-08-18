@@ -10,7 +10,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
      @Test 
     public void searchHighlightDefinition() {
         goToCdeSearch();
-        findElement(By.name("ftsearch")).sendKeys("\"graded scale\"");
+        findElement(By.name("q")).sendKeys("\"graded scale\"");
         findElement(By.id("search.submit")).click();    
         Assert.assertTrue(textPresent("for \"graded scale\" |"));
         Assert.assertTrue(driver.findElements(By.xpath("//span[text()=\"Definition\"]")).size() > 5); 
@@ -102,7 +102,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         findElement(By.id("li-checked-Qualified")).click();
         scrollToTop();
         textPresent("results for All Terms | CTEP > CATEGORY | Standard");
-        findElement(By.name("ftsearch")).sendKeys("name");
+        findElement(By.name("q")).sendKeys("name");
         findElement(By.id("search.submit")).click();     
         textPresent("results for name | CTEP | All Statuses");
         findElement(By.linkText("Forms")).click();

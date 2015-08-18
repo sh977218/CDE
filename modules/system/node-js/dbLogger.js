@@ -97,19 +97,10 @@ iConnectionEstablisherLog.connect(function(conn) {
 });
 
 exports.storeQuery = function(settings, callback) {
-    var regStatuses =  [];
-    if (settings.selectedStatuses) {
-        settings.selectedStatuses.forEach(function (rs) {
-            if (rs.selected) {
-                regStatuses.push(rs.name);
-            }
-        });
-    }
-    if (regStatuses.length === 0) regStatuses = settings.visibleRegStatuses;
     var storedQuery = {
         searchTerm: settings.searchTerm?settings.searchTerm:""
         , date: new Date()
-        , regStatuses: regStatuses
+        , regStatuses: settings.selectedStatuses
         , selectedElements1: settings.selectedElements.slice(0)
         , selectedElements2: settings.selectedElementsAlt.slice(0)
     };
@@ -120,7 +111,7 @@ exports.storeQuery = function(settings, callback) {
     if (settings.selectedOrgAlt) storedQuery.selectedOrg2 = settings.selectedOrgAlt;
     if (settings.searchToken) storedQuery.searchToken = settings.searchToken;
 
-    if (!storedQuery.selectedOrg1 && storedQuery.searchTerm == "" && !settings.selectedStatuses) {
+    if (!storedQuery.selectedOrg1 && storedQuery.searchTerm == "") {
         return;
     } else {
         StoredQueryModel.findOneAndUpdate(

@@ -50,16 +50,16 @@ public class AWorkingGroupTest extends BaseClassificationTest {
         textPresent(classification);
         textPresent(subClassification);
         findElement(By.id("submit")).click();
-        waitForESUpdate();
 
-        new CdeRegStatusTest().changeRegistrationStatus("Test CDE for Test Working Group", ctepCurator_username, "Incomplete", "Recorded");
-        waitForESUpdate();
+        findElement(By.id("editStatus")).click();
+        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Qualified");
+        findElement(By.id("saveRegStatus")).click();
+        closeAlert();
 
-        goToCdeByName("Test CDE for Test Working Group", "Recorded");
         findElement(By.linkText("Classification")).click();
         new ClassificationTest().addClassificationMethod(new String[]{"Test Working Group", classification, subClassification});
-        hangon(3);
-                
+        waitForESUpdate();
+
         // Make sure ctepCurator user can see it
         goToCdeSearch();
         findElement(By.id("browseOrg-Test Working Group"));

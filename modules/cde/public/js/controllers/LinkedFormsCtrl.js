@@ -1,10 +1,11 @@
-angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', '$controller', function($scope, $controller) {
-    $scope.module = "form";   
+angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "userResource", function($scope, userResource)
+{
+    $scope.module = "form";
 
-    $scope.searchForm = {ftsearch: '"' + $scope.elt.tinyId + '"'};
-    $scope.registrationStatuses = [];
+    $scope.searchSettings.q = '"' + $scope.elt.tinyId + '"';
 
-    $controller('ListCtrl', {$scope: $scope});
-    
-}
-]);
+    userResource.getPromise().then(function(){
+        $scope.reload("form");
+    });
+
+}]);

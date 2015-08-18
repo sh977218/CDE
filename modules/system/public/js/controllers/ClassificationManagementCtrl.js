@@ -40,7 +40,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
 
     $scope.openAddClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
-            templateUrl: '/template/system/addClassification',
+            templateUrl: '/system/public/html/addClassification.html',
             controller: 'AddClassificationToOrgModalCtrl',
             resolve: {
                 org: function() {
@@ -90,7 +90,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
 
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
-            templateUrl: '/template/system/removeClassificationMgtModal',
+            templateUrl: '/system/public/html/removeClassificationMgtModal.html',
             controller: 'RemoveClassificationModalCtrl',
             resolve: {
                 classifName: function() {
@@ -106,8 +106,8 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
     };
 
     $scope.showClassifyEntireSearchModal = function (orgName, pathArray) {
-        var modalInstance = $modal.open({
-            templateUrl: '/template/system/classifyCde',
+        $modal.open({
+            templateUrl: '/system/public/html/classifyCde.html',
             controller: 'AddClassificationModalCtrl',
             resolve: {
                 module: function() {
@@ -138,20 +138,16 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
                 }
             }
         });
-
     };
 
     $scope.classifyEntireSearch = function(oldClassification, newClassification) {
         var settings = {
             resultPerPage: 1000000
             , searchTerm: ""
-            , isSiteAdmin: null
-            , myOrgs: []
             , selectedOrg: oldClassification.orgName
             , selectedElements: oldClassification.classifications
-            , filter: {and: []}
-            , currentPage: 1
-            , visibleRegStatuses: SearchSettings.getUserDefaultStatuses()
+            , page: 1
+            , selectedStatuses: SearchSettings.getUserDefaultStatuses()
         };
 
         var data = {
@@ -162,7 +158,8 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
         var timeout = $timeout(function() {
             $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
         }, 3000);
-        $http({method: 'post', url: '/classifyEntireSearch', data: data}).success(function(data, status, headers, config) {
+        $http({method: 'post', url: '/classifyEntireSearch', data: data})
+        .success(function(data, status, headers, config) {
             $timeout.cancel(timeout);
             if (status===200) $scope.addAlert("success", "Elements classified.");
             else $scope.addAlert("danger", data.error.message);

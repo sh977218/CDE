@@ -6,10 +6,6 @@ import org.openqa.selenium.JavascriptExecutor;
 
 public class BaseAttachmentTest extends NlmCdeBaseTest {
 
-    protected void removeAttachment() {
-        removeAttachment("glass.jpg");
-    }
-
     protected void removeAttachment(String name) {        
         findElement(By.linkText("Attachments")).click();
         findElement(By.id("removeAttachment-0")).click();
@@ -17,10 +13,6 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         textNotPresent(name);
     }
 
-    protected void addAttachment() {
-        addAttachment("glass.jpg");
-    }
-    
     protected void addAttachment(String name) {
         findElement(By.linkText("Attachments")).click();
         textPresent("Upload more files");
