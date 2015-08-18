@@ -17,16 +17,8 @@ var passport = require('passport')
     , request = require('request')
     , fs = require('fs')
     , multer  = require('multer')
+    , exportShared = require('../../system/shared/exportShared')
 ;
-
-exports.nocacheMiddleware = function(req, res, next) {
-    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-    res.header('Expires', '-1');
-    res.header('Pragma', 'no-cache');
-    if (next) {
-        next();
-    }
-};
 
 exports.init = function(app) {
 
@@ -35,11 +27,6 @@ exports.init = function(app) {
         if (req.ip) return req.ip;
     };
 
-    app.use(function(req, res, next) {   
-        if (req && req.headers['user-agent'] && req.headers['user-agent'].indexOf("MSIE")>=0) exports.nocacheMiddleware(req, res, next);
-        else next();
-    });
-    
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
     
     var viewConfig = {modules: config.modules, webtrends: config.webtrends, maxPin: config.maxPin};
@@ -136,7 +123,7 @@ exports.init = function(app) {
         res.send("<html><body>Nothing here</body></html>");
     });
 
-    app.get('/listOrgs', function(req, res) {
+    app.get('/listOrgs', exportShared.nocacheMiddleware, function(req, res) {
         mongo_data_system.listOrgs(function(err, orgs) {
             if (err) {
                 res.send("ERROR");
@@ -146,7 +133,7 @@ exports.init = function(app) {
         });        
     });
 
-    app.get('/listOrgsDetailedInfo', function(req, res) {
+    app.get('/listOrgsDetailedInfo', exportShared.nocacheMiddleware, function(req, res) {
         mongo_data_system.listOrgsDetailedInfo(function(err, orgs) {
             if (err) {
                 logging.errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}));
@@ -163,7 +150,7 @@ exports.init = function(app) {
     });
 
     app.get('/csrf', csrf(), function(req, res) {
-        exports.nocacheMiddleware(req, res);
+        exportShared.nocacheMiddleware(req, res);
         res.send(req.csrfToken());
     });
 
@@ -221,7 +208,7 @@ exports.init = function(app) {
     });
 
 
-    app.get('/org/:name', function(req, res) {
+    app.get('/org/:name', exportShared.nocacheMiddleware, function(req, res) {
        return mongo_data_system.orgByName(req.params.name, function (result) {
            res.send(result);
        });
@@ -268,7 +255,7 @@ exports.init = function(app) {
         }
     });
     
-    app.get('/user/me', exports.nocacheMiddleware, function(req, res) {
+    app.get('/user/me', exportShared.nocacheMiddleware, function(req, res) {
         if (!req.user) {
             res.send("Not logged in.");
         } else {
@@ -312,16 +299,16 @@ exports.init = function(app) {
         }
     });
 
-    app.get('/myOrgsAdmins', function(req, res) {
+    app.get('/myOrgsAdmins', exportShared.nocacheMiddleware, function(req, res) {
         usersrvc.myOrgsAdmins(req, res);
     });
 
 
-    app.get('/orgAdmins', function(req, res) {
+    app.get('/orgAdmins', exportShared.nocacheMiddleware, function(req, res) {
         usersrvc.orgAdmins(req, res);
     });
 
-    app.get('/orgCurators', function(req, res) {
+    app.get('/orgCurators', exportShared.nocacheMiddleware, function(req, res) {
         usersrvc.orgCurators(req, res);
     });
 
@@ -382,7 +369,21 @@ exports.init = function(app) {
             res.status(401).send();
         }
     });
-        
+
+
+    app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function(req, res) {
+        if (app.isLocalIp(getRealIp(req))
+            && req.user && req.user.siteAdmin) {
+            res.render('siteaccountmanagement', "system");
+        } else {
+            res.status(401).send();
+        }
+    });
+
+    app.get('/orgaccountmanagement', exportShared.nocacheMiddleware, function(req, res) {
+        res.render('orgAccountManagement', "system");
+    });    
+
     app.get('/data/:imgtag', function(req, res) {
         mongo_data_system.getFile(req.user, req.params.imgtag, res);
     });    
@@ -606,7 +607,7 @@ exports.init = function(app) {
     });
     
     app.post('/logClientException', function(req, res) {
-        dbLogger.logClientError(req.body, function(err, result) {
+        dbLogger.logClientError(req, function(err, result) {
             res.send(result);                
         });
     });  
@@ -669,13 +670,14 @@ exports.init = function(app) {
         }
     });       
     
-    app.get('/mailStatus', function(req, res){
+    app.get('/mailStatus', exportShared.nocacheMiddleware, function(req, res){
         if (!req.user) return res.status(401).send();
         mongo_data_system.mailStatus(req.user, function(err, result){
             res.send({count: result});
         });
     });
 
+    // @TODO this should be POST
     app.get('/attachment/approve/:id', function(req, res){
         if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) return res.status(401).send();
         mongo_data_system.alterAttachmentStatus(req.params.id, "approved", function(err, result){
