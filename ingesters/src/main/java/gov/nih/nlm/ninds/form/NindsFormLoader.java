@@ -90,7 +90,7 @@ public class NindsFormLoader implements Runnable {
         }
     }
 
-    void findAndSaveToForms(Collection<Form> forms, int pageStart, int pageEnd) {
+    void findAndSaveToForms(Collection<MyForm> forms, int pageStart, int pageEnd) {
         String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 26";
         textPresent(textToBePresent);
         List<WebElement> trs = driver.findElements(By.cssSelector("#ContentPlaceHolder1_dgCRF > tbody > tr"));
@@ -99,20 +99,19 @@ public class NindsFormLoader implements Runnable {
         CsElt disease = null;
         for (int i = 1; i < trs.size(); i++) {
             List<WebElement> tds = trs.get(i).findElements(By.cssSelector("td"));
-            Form form = new Form();
+            MyForm form = new MyForm();
             int index = 1;
-            CsElt diseaseRoot = new CsElt("Disease", null);
             for (int j = 0; j < tds.size(); j++) {
                 WebElement td = tds.get(j);
                 String text = td.getText().replace("\"", "").trim();
                 if (index == 1)
-                    form.naming.get(0).designation = text;
+                    form.crfModuleGuideline = text;
                 if (index == 2)
-                    form.naming.get(0).definition = text;
+                    form.description = text;
                 if (index == 3) {
                     List<WebElement> img = td.findElements(By.cssSelector("img"));
                     if (img.size() > 0) {
-                        form.isCopyrighted = true;
+                        form.copyRight = "true";
                     }
                 }
                 if (index == 4) {
@@ -120,7 +119,7 @@ public class NindsFormLoader implements Runnable {
                     List<WebElement> a = td.findElements(By.cssSelector("a"));
                     if (a.size() > 0) {
                         String href = a.get(0).getAttribute("href");
-                        form.referenceDocuments.get(0).uri = href;
+                        form.downloads = href;
                     }
                 }
                 if (index == 5) {
@@ -131,21 +130,17 @@ public class NindsFormLoader implements Runnable {
                     }
                 }
                 if (index == 6)
-                    form.version = text;
+                    form.versionNum = text;
                 if (index == 7)
-                    form.updated = text;
+                    form.versionDate = text;
                 if (index == 8) {
-                    disease = new CsElt(text, null);
+                    form.diseaseName = text;
                 }
                 if (index == 9) {
-                    subDisease = new CsElt(text, null);
+                    form.subDiseaseName = text;
                 }
                 index++;
             }
-
-            disease.elements.add(subDisease);
-            diseaseRoot.elements.add(disease);
-            form.classification.get(0).elements.add(diseaseRoot);
             forms.add(form);
         }
         if (pageStart < pageEnd) {
@@ -165,7 +160,7 @@ public class NindsFormLoader implements Runnable {
         return false;
     }
 
-    void getCdes(Form form, WebElement a) {
+    void getCdes(MyForm form, WebElement a) {
         a.click();
         hangon(5);
         switchTab(1);
@@ -192,26 +187,110 @@ public class NindsFormLoader implements Runnable {
         switchTab(1);
     }
 
-    void getCdesList(Form form) {
-        CsElt domainRoot = new CsElt("Domain", null);
-        String domainSelector = "//tbody[tr/td/div[text() = 'Domain']]//tr[3]//td[19]";
-        String domainName = findElement(By.xpath(domainSelector)).getText().trim();
-        CsElt domain = new CsElt(domainName, null);
-        String subDomainSelector = "//tbody[tr/td/div[text() = 'Domain']]//tr[3]//td[18]";
-        String subDomainName = findElement(By.xpath(subDomainSelector)).getText().trim();
-        CsElt subDomain = new CsElt(subDomainName, null);
-        domain.elements.add(subDomain);
-        domainRoot.elements.add(domain);
-        form.classification.get(0).elements.add(domainRoot);
+    void getCdesList(MyForm form) {
         String selector = "//tbody[tr/td/div[text() = 'CDE ID']]//tr";
         List<WebElement> trs = driver.findElements(By.xpath(selector));
         for (int i = 2; i < trs.size(); i++) {
             WebElement tr = trs.get(i);
             List<WebElement> tds = tr.findElements(By.cssSelector("td"));
-            String cdeId = tds.get(0).getText().trim();
-            if (cdeId.length() > 5) {
-                form.cdes.add(cdeId);
+            int index = 1;
+            Cde cde = new Cde();
+            for (int j = 0; j < tds.size(); j++) {
+                WebElement td = tds.get(j);
+                String text = td.getText();
+                if (index == 1) {
+                    cde.cdeId = text;
+                }
+                if (index == 2) {
+                    cde.cdeName = text;
+                }
+                if (index == 3) {
+                    cde.varibleName = text;
+                }
+                if (index == 4) {
+                    cde.definitionDescription = text;
+                }
+                if (index == 5) {
+                    cde.questionText = text;
+                }
+                if (index == 6) {
+                    cde.permissibleValue = text;
+                }
+                if (index == 7) {
+                    cde.permissibleDescription = text;
+                }
+                if (index == 8) {
+                    cde.dataType = text;
+                }
+                if (index == 9) {
+                    cde.instructions = text;
+                }
+                if (index == 10) {
+                    cde.referrences = text;
+                }
+                if (index == 11) {
+                    cde.population = text;
+                }
+                if (index == 12) {
+                    cde.classification = text;
+                }
+                if (index == 13) {
+                    cde.versionNum = text;
+                }
+                if (index == 14) {
+                    cde.versionDate = text;
+                }
+                if (index == 15) {
+                    cde.aliasesForVariableName = text;
+                }
+                if (index == 16) {
+                    cde.crfModuleGuideline = text;
+                }
+                if (index == 17) {
+                    List<WebElement> img = td.findElements(By.cssSelector("img"));
+                    if (img.size() > 0) {
+                        cde.copyRight = "true";
+                    }
+                }
+                if (index == 18) {
+                    cde.subDomain = text;
+                }
+                if (index == 19) {
+                    cde.domain = text;
+                }
+                if (index == 20) {
+                    cde.previousTitle = text;
+                }
+                if (index == 21) {
+                    cde.size = text;
+                }
+                if (index == 22) {
+                    cde.inputRestrictions = text;
+                }
+                if (index == 23) {
+                    cde.minValue = text;
+                }
+                if (index == 24) {
+                    cde.maxValue = text;
+                }
+                if (index == 25) {
+                    cde.measurementType = text;
+                }
+                if (index == 26) {
+                    cde.loincID = text;
+                }
+                if (index == 27) {
+                    cde.snomed = text;
+                }
+                if (index == 28) {
+                    cde.cadsrID = text;
+                }
+                if (index == 29) {
+                    cde.cdiscID = text;
+                }
+                index++;
             }
+            form.cdes.add(cde);
         }
     }
 

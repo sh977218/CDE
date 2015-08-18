@@ -6,8 +6,8 @@ import java.util.ArrayList;
  * Created by huangs8 on 8/7/2015.
  */
 public class FormElement {
-    String elementType;
-    String label;
+    String elementType ="section";
+    String label = "Main section";
     String instructions;
     String cardinality;
     String repeatsFor;
