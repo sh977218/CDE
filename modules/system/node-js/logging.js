@@ -38,7 +38,7 @@ exports.MongoLogger = MongoLogger;
 MongoErrorLogger.prototype.log = function (level, msg, meta, cb) {
     processDetails = function(details){
         if (typeof details === "string") return details;
-        if (typeof details !== "object") return "Error in logger: Cannot process details. Not an Object.";
+        if (typeof details !== "object") return "No details provided.";
         Object.keys(details).map(function(name){
             var value = details[name];
             if (typeof value === "string") return name + "=" + value;
@@ -115,5 +115,7 @@ exports.generateErrorLogRequest = function (req) {
         , params: params
         , body: body
         , username: username
+        , userAgent: req.headers['user-agent']
+        , ip: req.ip
     };
 };
