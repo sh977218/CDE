@@ -351,20 +351,36 @@ mongo_data_system.orgByName("Assessment Center", function(stewardOrg) {
                cb();
             });                        
         }, function(err) {
-            // Get this from MongoDB!!
-            cdeArray.cdearray = newCdeArray;
-            // Now load the forms
-            async.each(files, function(file, cb){
-                loadForm(file, function(){
-                    cb();
-                });
-            }, function(err) {
-                loadLoincPv.loadPvs(cdeArray, function() {
-                    console.log("lost forms\n\n\n");
-                    lostForms.forEach(function(f){console.log(f)});
-                    process.exit(0);
+            //// Get this from MongoDB!!
+            //cdeArray.cdearray = newCdeArray;
+            //// Now load the forms
+            //async.each(files, function(file, cb){
+            //    loadForm(file, function(){
+            //        cb();
+            //    });
+            //}, function(err) {
+            //    loadLoincPv.loadPvs(cdeArray, function() {
+            //        console.log("lost forms\n\n\n");
+            //        lostForms.forEach(function(f){console.log(f)});
+            //        process.exit(0);
+            //    });
+            //});
+
+            mongo_cde.query({source: "Assessment Center"}, function(err, cdes){
+                cdeArray.cdearray = cdes;
+                async.each(files, function(file, cb){
+                    loadForm(file, function(){
+                        cb();
+                    });
+                }, function(err) {
+                    loadLoincPv.loadPvs(cdeArray, function() {
+                        console.log("lost forms\n\n\n");
+                        lostForms.forEach(function(f){console.log(f)});
+                        process.exit(0);
+                    });
                 });
             });
+
         });
     });    
 });
