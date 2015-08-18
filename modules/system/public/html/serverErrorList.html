@@ -2,10 +2,12 @@
 <td>{{err.origin}}</td>
 <td ng-text-truncate="err.stack" ng-tt-threshold="500"></td>
 <td>
-    <span ng-if="err.request.username">User: {{err.request.username}}<br></span>
-    <span ng-if="err.request.url">URL:&nbsp;{{err.request.url}}<br></span>
-    <span ng-if="err.request.method">Method: {{err.request.method}}<br></span>
-    <span ng-if="err.request.params">Params: {{err.request.params}}<br></span>
+    <span ng-if="err.request.username"><b>User:</b> {{err.request.username}}<br></span>
+    <span ng-if="err.request.url"><b>URL:</b>&nbsp;{{err.request.url}}<br></span>
+    <span ng-if="err.request.method"><b>Method:</b> {{err.request.method}}<br></span>
+    <span ng-if="err.request.params"><b>Params:</b> {{err.request.params}}<br></span>
     <span ng-if="err.request.body"><b>Body: </b><span ng-text-truncate="err.request.body" ng-tt-threshold="500"></span><br></span>
+    <span ng-if="err.request.userAgent"><b>Browser:</b> {{err.request.userAgent}}<br></span>
+    <span ng-if="err.request.ip"><b>IP:</b> {{err.request.ip}}<br></span>
     <span ng-if="err.details"><b>Details: </b><span ng-text-truncate="err.details" ng-tt-threshold="500"></span><br></span>
 </td>

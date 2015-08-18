@@ -22,6 +22,7 @@ var cdesvc = require('./cdesvc')
     , exportShared = require('../../system/shared/exportShared')
     ;
 
+
 exports.init = function (app, daoManager) {
 
     var viewConfig = {modules: config.modules};
@@ -41,17 +42,17 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/listOrgsFromDEClassification', function (req, res) {
+    app.get('/listOrgsFromDEClassification', exportShared.nocacheMiddleware, function (req, res) {
         elastic.DataElementDistinct("classification.stewardOrg.name", function (result) {
             res.send(result);
         });
     });
 
-    app.get('/priorcdes/:id', function (req, res) {
+    app.get('/priorcdes/:id', exportShared.nocacheMiddleware, function (req, res) {
         cdesvc.priorCdes(req, res);
     });
 
-    app.get('/forks/:id', function (req, res) {
+    app.get('/forks/:id', exportShared.nocacheMiddleware, function (req, res) {
         cdesvc.forks(req, res);
     });
 
@@ -63,11 +64,11 @@ exports.init = function (app, daoManager) {
         adminItemSvc.acceptFork(req, res, mongo_data);
     });
 
-    app.get('/forkroot/:tinyId', function (req, res) {
+    app.get('/forkroot/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
         adminItemSvc.forkRoot(req, res, mongo_data);
     });
 
-    app.get('/dataelement/:id', function (req, res) {
+    app.get('/dataelement/:id', exportShared.nocacheMiddleware, function (req, res) {
         cdesvc.show(req, function (result) {
             if (!result) res.status(404).send();
             var cde = cdesvc.hideProprietaryPvs(result, req.user);
@@ -76,16 +77,15 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/deExists/:tinyId/:version', function (req, res) {
+    app.get('/deExists/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.exists({tinyId: req.params.tinyId, version: req.params.version}, function (err, result) {
             res.send(result);
         });
     });
 
-    app.get('/debytinyid/:tinyId/:version?', function (req, res) {
+    app.get('/debytinyid/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
         var serveCde = function (err, cde) {
             if (!cde) return res.status(404).send();
-
             adminItemSvc.hideUnapprovedComments(cde);
             res.send(cdesvc.hideProprietaryPvs(cde, req.user));
             if (req.isAuthenticated()) {
@@ -109,7 +109,7 @@ exports.init = function (app, daoManager) {
     });
 
 
-    app.get('/viewingHistory/:start', function (req, res) {
+    app.get('/viewingHistory/:start', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             res.send("You must be logged in to do that");
         } else {
@@ -124,19 +124,20 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.get('/boards/:userId', function (req, res) {
+    app.get('/boards/:userId', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.boardsByUserId(req.params.userId, function (result) {
             res.send(result);
         });
     });
 
-    app.get('/deBoards/:tinyId', function (req, res) {
+    app.get('/deBoards/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
             res.send(result);
         });
     });
 
-    app.get('/board/:boardId/:start/:size?', function (req, res) {
+
+    app.get('/board/:boardId/:start/:size?', exportShared.nocacheMiddleware, function (req, res) {
         var size = 20;
         if (req.params.size) {
             size = req.params.size;
@@ -262,13 +263,13 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.get('/autocomplete/org/:name', function (req, res) {
+    app.get('/autocomplete/org/:name', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.org_autocomplete(req.params.name, function (result) {
             res.send(result);
         });
     });
 
-    app.get('/cdediff/:deId', function (req, res) {
+    app.get('/cdediff/:deId', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.params.deId) res.status(404).send("Please specify CDE id.");
         mongo_data.byId(req.params.deId, function (err, dataElement) {
             if (err) return res.status(404).send("Cannot retrieve DataElement.");
@@ -338,7 +339,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/moreLikeCde/:cdeId', function (req, res) {
+    app.get('/moreLikeCde/:cdeId', exportShared.nocacheMiddleware, function (req, res) {
         elastic.morelike(req.params.cdeId, function (result) {
             result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
             res.send(result);
@@ -371,7 +372,7 @@ exports.init = function (app, daoManager) {
     setInterval(fetchRemoteData, 1000 * 60 * 60);
 
     var parser = new xml2js.Parser();
-    app.get('/vsacBridge/:vsacId', function (req, res) {
+    app.get('/vsacBridge/:vsacId', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             res.status(202).send({error: {message: "Please login to see VSAC mapping."}});
         }
@@ -387,7 +388,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/permissibleValueCodeSystemList', function (req, res) {
+    app.get('/permissibleValueCodeSystemList', exportShared.nocacheMiddleware, function (req, res) {
         res.send(elastic.pVCodeSystemList);
     });
 
@@ -405,7 +406,7 @@ exports.init = function (app, daoManager) {
     });
 
     var systemAlert = "";
-    app.get("/systemAlert", function (req, res) {
+    app.get("/systemAlert", exportShared.nocacheMiddleware, function (req, res) {
         res.send(systemAlert);
     });
 
@@ -419,11 +420,11 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.get('/sdc/:tinyId/:version', function (req, res) {
+    app.get('/sdc/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         sdc.byTinyIdVersion(req, res);
     });
 
-    app.get('/sdc/:id', function (req, res) {
+    app.get('/sdc/:id', exportShared.nocacheMiddleware, function (req, res) {
         sdc.byId(req, res);
     });
 
@@ -444,11 +445,11 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.get('/cde/properties/keys', function (req, res) {
+    app.get('/cde/properties/keys', exportShared.nocacheMiddleware, function (req, res) {
         adminItemSvc.allPropertiesKeys(req, res, mongo_data);
     });
 
-    app.get('/cde/mappingSpecifications/types', function (req, res) {
+    app.get('/cde/mappingSpecifications/types', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.getDistinct("mappingSpecifications.spec_type", function (err, types) {
             if (err) res.status(500).send("Unexpected Error");
             else {
@@ -457,7 +458,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/cde/mappingSpecifications/contents', function (req, res) {
+    app.get('/cde/mappingSpecifications/contents', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.getDistinct("mappingSpecifications.content", function (err, contents) {
             if (err) res.status(500).send("Unexpected Error");
             else {
@@ -482,7 +483,7 @@ exports.init = function (app, daoManager) {
         return elastic_system.elasticSearchExport(res, query, 'cde', exportShared.convertToCsv, cdeHeader);
     });
 
-    app.get('/cdeCompletion/:term', function (req, res) {
+    app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
         var result = [];
         var term = req.params.term;
         elastic_system.completionSuggest(term, function (resp) {
@@ -491,8 +492,6 @@ exports.init = function (app, daoManager) {
             });
             res.send(result);
         })
-    })
-    app.get('/formCompletion/:term', function (req, res) {
-        return [];
-    })
+    });
+
 };
