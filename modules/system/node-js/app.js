@@ -27,11 +27,6 @@ exports.init = function(app) {
         if (req.ip) return req.ip;
     };
 
-    app.use(function(req, res, next) {   
-        if (req && req.headers['user-agent'] && req.headers['user-agent'].indexOf("MSIE")>=0) exportShared.nocacheMiddleware(req, res, next);
-        else next();
-    });
-    
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
     
     var viewConfig = {modules: config.modules, webtrends: config.webtrends, maxPin: config.maxPin};

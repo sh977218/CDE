@@ -66,9 +66,13 @@ exports.convertToCsv = function (ele) {
 };
 
 exports.nocacheMiddleware = function(req, res, next) {
-    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-    res.header('Expires', '-1');
-    res.header('Pragma', 'no-cache');
+    if (req && req.headers['user-agent']) {
+        if (req.headers['user-agent'].indexOf("Chrome") < 0  || req.headers['user-agent'].indexOf("Firefox") < 0 ) {
+            res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+            res.header('Expires', '-1');
+            res.header('Pragma', 'no-cache');
+        }
+    }
     if (next) {
         next();
     }
