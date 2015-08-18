@@ -12,6 +12,7 @@ public class ReclassifyTest extends BaseClassificationTest {
         gotoClassifMgt();
         findElement(By.cssSelector(".fa-retweet")).click();
         new Select(driver.findElement(By.id("selectClassificationOrg"))).selectByVisibleText("caBIG");
+        findElement(By.id("closeModal")).click();
     }
 
 }
