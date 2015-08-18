@@ -606,7 +606,7 @@ exports.init = function(app) {
     });
     
     app.post('/logClientException', function(req, res) {
-        dbLogger.logClientError(req.body, function(err, result) {
+        dbLogger.logClientError(req, function(err, result) {
             res.send(result);                
         });
     });  

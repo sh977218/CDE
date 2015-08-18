@@ -39,6 +39,8 @@ var logErrorSchema = new mongoose.Schema(
         , params: String
         , body: String
         , username: String
+        , userAgent: String
+        , ip: String
     }
 }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
@@ -49,6 +51,7 @@ var clientErrorSchema= new mongoose.Schema(
     , origin: String
     , name: String
     , stack: String
+    , userAgent: String
 }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
 var storedQuerySchema= new mongoose.Schema(
@@ -134,7 +137,7 @@ exports.log = function(message, callback) {
     }
 };
 
-exports.logError = function(message, callback) {   
+exports.logError = function(message, callback) {
     message.date = new Date();
     var logEvent = new LogErrorModel(message);
     logEvent.save(function(err) {
@@ -143,7 +146,9 @@ exports.logError = function(message, callback) {
     });
 };
 
-exports.logClientError = function(exc, callback) {   
+exports.logClientError = function(req, callback) {
+    var exc = req.body;
+    exc.userAgent = req.headers['user-agent'];
     exc.date = new Date();
     var logEvent = new ClientErrorModel(exc);
     logEvent.save(function(err) {
