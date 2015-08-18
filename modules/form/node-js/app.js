@@ -19,7 +19,7 @@ exports.init = function (app, daoManager) {
     app.post('/findForms', formCtrl.findForms);
 
     app.post('/form', formCtrl.save);
-    app.get('/form/:id', formCtrl.formById);
+    app.get('/form/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
     if (config.modules.forms.attachments) {
         app.post('/attachments/form/setDefault', function (req, res) {
@@ -35,13 +35,13 @@ exports.init = function (app, daoManager) {
         });
     }
 
-    app.get('/formById/:id/:type', formCtrl.formById);
+    app.get('/formById/:id/:type', exportShared.nocacheMiddleware, formCtrl.formById);
 
-    app.get('/formbytinyid/:id/:version', function (req, res) {
+    app.get('/formbytinyid/:id/:version', exportShared.nocacheMiddleware, function (req, res) {
         res.send("");
     });
 
-    app.get("/sdcExport/:id", function (req, res) {
+    app.get("/sdcExport/:id", exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.byId(req.params.id, function (err, form) {
             if (err) {
                 logging.errorLogger.error("Error: Cannot find element by tiny id.", {
@@ -56,7 +56,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/sdcExportByTinyId/:tinyId/:version', function (req, res) {
+    app.get('/sdcExportByTinyId/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function (err, form) {
             if (err) {
                 logging.errorLogger.error("Error: Cannot find element by tiny id.", {
@@ -103,7 +103,7 @@ exports.init = function (app, daoManager) {
 
     }
 
-    app.get('/form/properties/keys', function (req, res) {
+    app.get('/form/properties/keys', exportShared.nocacheMiddleware, function (req, res) {
         adminItemSvc.allPropertiesKeys(req, res, mongo_data);
     });
 
@@ -112,5 +112,10 @@ exports.init = function (app, daoManager) {
         var query = sharedElastic.buildElasticSearchQuery(req.body);
         return elastic_system.elasticSearchExport(res, query, 'form', exportShared.projectFormForExport, formHeader);
     });
+
+    app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
+        return [];
+    });
+
 
 };
