@@ -29,7 +29,16 @@ public class FormSearch extends BaseFormTest {
         findElement(By.linkText("Linked Forms")).click();
         
         textPresent(formName);
-        
+    }
+
+    @Test
+    public void noPinAllNoExport() {
+        // this test will be removed when the features are implemented.
+        goToFormSearch();
+        findElement(By.id("browseOrg-NINDS")).click();
+        textPresent("Expand All");
+        textNotPresent("Pin All");
+        textNotPresent("Export Search");
     }
     
 }
