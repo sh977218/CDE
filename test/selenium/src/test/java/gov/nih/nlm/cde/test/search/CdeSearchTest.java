@@ -47,8 +47,15 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         
         findElement(By.linkText("Identifiers")).click();
         textPresent("3157849");
-        Assert.assertEquals("1", findElement(By.id("dd_version_nlm")).getText());                
-        
+        Assert.assertEquals("1", findElement(By.id("dd_version_nlm")).getText());
+
+        findElement(By.linkText("General Details")).click();
+        findElement(By.linkText("SDC View")).click();
+        switchTab(1);
+        textPresent("Genotype Directed Therapy Based on Mutation Testing?");
+        textPresent("non-enumerated");
+        switchTabAndClose(0);
+
     } 
     
     @Test
