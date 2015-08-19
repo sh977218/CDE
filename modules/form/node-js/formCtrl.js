@@ -21,7 +21,7 @@ exports.findAllCdesInForm = function (node, map, array) {
                 map[node.formElements[i].question.cde.tinyId] = node.formElements[i].question.cde;
                 array.push(node.formElements[i].question.cde.tinyId);
             }
-            findAllCdesInFormElement(node.formElements[i], map, array);
+            exports.findAllCdesInForm(node.formElements[i], map, array);
         }
     }
 };
