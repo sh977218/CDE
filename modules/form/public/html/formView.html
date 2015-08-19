@@ -15,7 +15,7 @@
         <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview" ng-if="formLocalRender"
            href="/form/public/html/formRender.html?id={{elt._id}}"><i class="fa fa-cogs"></i> Preview</a>
        <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview" ng-if="formLoincRender"
-          href="<%= config.modules.forms.loincRenderUrl %>/{{elt._id}}"><i class="fa fa-cogs"></i> Loinc Preview</a>
+          ng-href="{{formLoincRenderUrl + elt._id}}"><i class="fa fa-cogs"></i> Loinc Preview</a>
         <a class="btn btn-small btn-default" target="_blank" title="Preview" id="sdcExport" href="sdcExport/{{elt._id}}"><i class="fa fa-download"></i> SDC Export</a>
     </h3>
 
