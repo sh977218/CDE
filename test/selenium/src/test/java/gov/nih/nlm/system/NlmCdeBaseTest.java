@@ -644,15 +644,19 @@ public class NlmCdeBaseTest {
                         + "')]")).click();
     }
 
-    protected void setLowStatusesVisible() {
+    protected void setVisibleStatus(String id) {
         goHome();
         findElement(By.id("searchSettings")).click();
-        findElement(By.id("minStatus-Incomplete")).click();
+        findElement(By.id(id)).click();
         scrollTo(1000);
         findElement(By.id("saveSettings")).click();
         textPresent("Settings saved");
         closeAlert();
         goToSearch("cde");
+    }
+
+    protected void setLowStatusesVisible() {
+        setVisibleStatus("minStatus-Incomplete");
     }
 
 }

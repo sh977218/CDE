@@ -302,7 +302,7 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     var filterOutNonVisibleStatuses = function(aggregations) {
-        var visibleStatuses = SearchSettings.getUserDefaultStatuses();
+        var visibleStatuses = SearchSettings.getUserDefaultStatuses().concat($scope.searchSettings.regStatuses);
         aggregations.statuses.buckets = aggregations.statuses.buckets.filter(function(s) {
             return visibleStatuses.indexOf(s.key) > -1;
         });
