@@ -1,7 +1,6 @@
 var express = require('express')
     , path = require('path')
     , formCtrl = require('./formCtrl')
-    , sharedElastic = require('../../system/node-js/elastic.js')
     , mongo_data = require('./mongo-form')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , config = require('../../system/node-js/parseConfig')
@@ -117,5 +116,24 @@ exports.init = function (app, daoManager) {
         return [];
     });
 
+    app.post('/pinFormCdes', function(req, res) {
+        if (req.isAuthenticated()) {
+            mongo_data.eltByTinyId(req.body.formTinyId, function (err, form) {
+                if (form) {
+                    var allCdes = {};
+                    var allTinyIds = [];
+                    formCtrl.findAllCdesInForm(form, allCdes, allTinyIds);
+                    var fakeCdes = allTinyIds.map(function(_tinyId) {
+                        return {tinyId: _tinyId};
+                    });
+                    usersvc.pinAllToBoard(req, fakeCdes, res)
+                } else {
+                    res.status(404).end();
+                }
+            });
+        } else {
+            res.send("Please login first.");
+        }
+    });
 
 };
