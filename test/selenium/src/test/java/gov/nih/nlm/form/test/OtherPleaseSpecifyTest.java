@@ -23,6 +23,7 @@ public class OtherPleaseSpecifyTest extends BaseFormTest {
         startAddingQuestions();
         questionTest.addQuestionToSection("Patient Gender Category", 0);
 
+        scrollToTop();
         findElement(By.id("question_accordion_0_0")).click();
         hangon(1);
 
