@@ -103,7 +103,7 @@ public class NindsFormLoader implements Runnable {
             int index = 1;
             for (int j = 0; j < tds.size(); j++) {
                 WebElement td = tds.get(j);
-                String text = td.getText().replace("\"", "").trim();
+                String text = td.getText().replace("\"", " ").trim();
                 if (index == 1)
                     form.crfModuleGuideline = text;
                 if (index == 2)
@@ -197,7 +197,8 @@ public class NindsFormLoader implements Runnable {
             Cde cde = new Cde();
             for (int j = 0; j < tds.size(); j++) {
                 WebElement td = tds.get(j);
-                String text = td.getText();
+                String text = td.getText().replace("\"", " ").trim();
+                ;
                 if (index == 1) {
                     cde.cdeId = text;
                 }
