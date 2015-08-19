@@ -28,7 +28,7 @@ public class BoardTest extends NlmCdeBaseTest {
         Assert.assertTrue(false);
     }
 
-    protected void gotoMyBoards() {
+    public void gotoMyBoards() {
         findElement(By.linkText("Boards")).click();
         findElement(By.linkText("My Boards")).click();
     }
@@ -38,11 +38,11 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.linkText("Public Boards")).click();
     }
 
-    protected void createBoard(String name, String description) {
+    public void createBoard(String name, String description) {
         createBoard(name, description, "Board created.");
     }
 
-    protected void createBoard(String name, String description, String response) {
+    public void createBoard(String name, String description, String response) {
         gotoMyBoards();
         hangon(1);
         findElement(By.id("addBoard")).click();
@@ -55,7 +55,7 @@ public class BoardTest extends NlmCdeBaseTest {
         hangon(1);
     }
 
-    protected void removeBoard(String boardName) {
+    public void removeBoard(String boardName) {
         gotoMyBoards();
         int length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
