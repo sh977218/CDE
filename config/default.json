@@ -89,6 +89,7 @@
       "comments": true,
       "sectionLevels": 10,
       "localRender": true,
+      "loincRender": true,
       "loincRenderUrl": "https://lforms.nlm.nih.gov/#/preview/nlmcde/"
     },
     "article": true,
