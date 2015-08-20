@@ -35,7 +35,7 @@ public class OtherPleaseSpecifyTest extends BaseFormTest {
         saveForm();
         scrollToTop();
 
-        findElement(By.id("formPreview")).click();
+        findElement(By.id("formLocalPreview")).click();
         switchTab(1);
         textPresent("Patient Gender Category");
 
