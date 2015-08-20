@@ -11,6 +11,7 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
     $scope.formLocalRender = window.formLocalRender;
     $scope.formLoincRender = window.formLoincRender;
+    $scope.formLoincRenderUrl = window.formLoincRenderUrl;
 
     $scope.tabs = {
         general: {heading: "General Details"},
