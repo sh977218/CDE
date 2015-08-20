@@ -322,7 +322,8 @@ var loadForm = function(file, cb) {
 
                 if (cde.valueDomain.permissibleValues.length > 0) {
                     question.datatype = 'Value List';
-                    question.answers = cde.valueDomain.permissibleValues.slice(0);
+                    question.answers = cde.valueDomain.permissibleValues.map(function(a){return a.toObject();});
+                    question.cde.permissibleValues = question.answers;
                 }
 
                 var qLabel = nameParts.length > 1 ? nameParts[1] : nameParts [0];
