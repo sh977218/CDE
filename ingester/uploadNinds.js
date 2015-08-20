@@ -6,7 +6,7 @@ var fs = require('fs'),
     mongo_data_system = require('../modules/system/node-js/mongo-data'),
     async = require('async')
     , xml2js = require('xml2js')
-    , ninds = require('./ninds')
+    , ninds = require('./convertcsv')
     , Readable = require('stream').Readable;
 
 
@@ -140,8 +140,10 @@ parseCde = function (obj, cb) {
     var inputType = obj["Input Restrictions"];
     var listDataType = {};
     if (inputType.toLowerCase().trim() === "single pre-defined value selected") {
-        listDataType.datatype = "Value List";
+        listDataType.datatype = dataType;
+        datatype = "Value List";
     } else if (inputType.toLowerCase().trim() === "multiple pre-defined values selected") {
+        listDataType.datatype = dataType;
         listDataType.datatype = "Value List";
         listDataType.multi = true;
     }

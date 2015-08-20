@@ -123,7 +123,12 @@ setTimeout(function () {
                     var cdeId = cde.cdeId;
                     mongo_cde.byOtherId("NINDS", cdeId, function (err, data) {
                         question.cde = data;
-                        question.answers = data.permissibleValues;
+                        if (!data) {
+                            console.log(cdeId);
+                            throw "up";
+                        }
+                        if (data.valueDomain.datatype === 'Value List')
+                            question.answers = data.valueDomain.permissibleValues;
                         questions.push(question);
                         cdeCallback();
                     });

@@ -23,12 +23,14 @@
         "port": 27017
       }
     ],
+    //    "dbname": "migration",
     "dbname": "test",
     "dbUser": "siteRootAdmin",
     "dbPassword": "password",
     "log": {
       "dbname": "cde-logs-test",
-      "cappedCollectionSizeMB": 262144000
+      "cappedCollectionSizeMB": 262144000,
+      "uri": ""
     },
     "local": {
       "dbname": "local"
