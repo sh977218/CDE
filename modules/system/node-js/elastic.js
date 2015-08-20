@@ -51,15 +51,15 @@ exports.buildElasticSearchQuery = function (user, settings) {
         }
     };
 
-    queryStuff.query.bool.must = [];
-
     // Increase ranking score for high registration status
     var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
 
+    queryStuff.query.bool.must = [];
+
     queryStuff.query.bool.must.push({
-        dis_max: {
-            queries: [
-                {function_score: {script_score: {script: script}}}
+        "dis_max": {
+            "queries": [
+                {"function_score": {"script_score": {"script": script}}}
             ]
         }
     });
@@ -68,17 +68,17 @@ exports.buildElasticSearchQuery = function (user, settings) {
         // Search for the query term given by user
         queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
         {
-            query_string: {
-                query: searchQ
+            "query_string": {
+                "query": searchQ
             }
         };
         queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
         // Boost rank if matches are on designation or definition
         queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
         {
-            query_string: {
-                fields: ["naming.designation^5", "naming.definition^2"]
-                , query: searchQ
+            "query_string": {
+                "fields": ["naming.designation^5", "naming.definition^2"]
+                , "query": searchQ
             }
         };
         // Boost rank if we find exact string match, or if terms are in a less than 4 terms apart.
@@ -87,9 +87,9 @@ exports.buildElasticSearchQuery = function (user, settings) {
             queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
             queryStuff.query.bool.must[0].dis_max.queries[2].function_score.query =
             {
-                query_string: {
-                    fields: ["naming.designation^5", "naming.definition^2"]
-                    , query: "\"" + searchQ + "\"~4"
+                "query_string": {
+                    "fields": ["naming.designation^5", "naming.definition^2"]
+                    , "query": "\"" + searchQ + "\"~4"
                 }
             };
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
@@ -110,12 +110,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
         selectedStatuses.forEach(function(regStatus) {
             regStatusOr.push({"term": {"registrationState.registrationStatus": regStatus}});
         });
-        // see all statuses for items that user is steward for
-        if (user) {
-            usersvc.myOrgs(user).forEach(function(myOrg) {
-                regStatusOr.push({"term": {"stewardOrg.name": myOrg}});
-            });
-        }
         var filter = {and: []};
         if (regStatusOr.length > 0) {
             filter.and.push({"or": regStatusOr});
@@ -152,37 +146,52 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
     }
 
+    var regStatusAggFilter = {"or": []};
+    settings.visibleStatuses.forEach(function(regStatus) {
+        regStatusAggFilter.or.push({"term": {"registrationState.registrationStatus": regStatus}});
+    });
+    if (user) {
+        usersvc.myOrgs(user).forEach(function(myOrg) {
+            regStatusAggFilter.or.push({"term": {"stewardOrg.name": myOrg}});
+        });
+    }
+
     // Get aggregations on classifications and statuses
     if (settings.includeAggregations) {
         queryStuff.aggregations = {
-            orgs: {
-                filter: settings.filter,
-                aggregations: {
-                    orgs: {
-                        terms: {
+            "orgs": {
+                "filter": settings.filter,
+                "aggregations": {
+                    "orgs": {
+                        "terms": {
                             "field": "classification.stewardOrg.name",
                             "size": 40,
-                            order: {
+                            "order": {
                                 "_term": "desc"
                             }
                         }
                     }
                 }
             },
-            statuses: {
-                terms: {
-                    field: "registrationState.registrationStatus"
+            "statuses": {
+                "filter": regStatusAggFilter,
+                "aggregations": {
+                    "statuses": {
+                        "terms": {
+                            "field": "registrationState.registrationStatus"
+                        }
+                    }
                 }
             }
         };
 
-        queryStuff.aggregations.statuses.aggregations = {};
+        //queryStuff.aggregations.statuses.aggregations = {};
 
         var flattenClassificationAggregations = function (variableName, orgVariableName, selectionString) {
             var flatClassification = {
-                terms: {
-                    size: 500,
-                    field: "flatClassification"
+                "terms": {
+                    "size": 500,
+                    "field": "flatClassification"
                 }
             };
             if (selectionString === "") {
@@ -191,8 +200,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
                 flatClassification.terms.include = settings[orgVariableName] + ';' + queryBuilder.escapeRegExp(selectionString) + ";[^;]+";
             }
             queryStuff.aggregations[variableName] = {
-                filter: settings.filter,
-                aggs: {}
+                "filter": settings.filter,
+                "aggs": {}
             };
             queryStuff.aggregations[variableName].aggs[variableName] = flatClassification;
         };
