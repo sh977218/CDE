@@ -277,7 +277,7 @@ var loadForm = function(file, cb) {
         });
 
         pForm.content.Items = pForm.content.Items.sort(function(a,b){
-            return parseInt(a.Order) > parseInt(b.Order);
+            return parseInt(a.Order) - parseInt(b.Order);
         });
 
         pForm.content.Items.forEach(function(item, index) {
