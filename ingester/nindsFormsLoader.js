@@ -1,3 +1,5 @@
+var start = new Date().getTime();
+
 var fs = require('fs'),
     mongoose = require('mongoose'),
     config = require('config'),
@@ -26,8 +28,57 @@ var oldForms;
 var user = {
     "username": "batchloader"
 };
+sameCdes = function (cdes1, cdes2) {
+    if (cdes1 === [] && cdes2 === []) {
+        return true;
+    }
+    else if (cdes1.length != cdes2.length) {
+        return true;
+    }
+    else {
+        for (var i = 0; i < cdes1.length; i++) {
+            if (cdes1[i].cdeId !== cdes2[i].cdeId)
+                return false;
+        }
+    }
+}
+sameForm = function (newForm, formInList) {
+    if (newForm.naming[0].designation.trim() !== formInList.naming[0].designation) {
+        return false;
+    }
+    else if (!sameCdes(newForm.cdes.formInList.cdes)) {
+        return false;
+    }
+    else if (newForm.isCopyrighted !== formInList.isCopyrighted) {
+        return false;
+    }
+    else if (newForm.isCopyrighted === formInList.isCopyrighted) {
+        formInList.referenceDocuments.push(newForm.referenceDocuments[0]);
+    }
+    else return true;
+}
+
+addClassification = function (newForm, formInList) {
+    var diseasesInList = formInList.classification.elements[0].elements;
+    var newDisease = newForm.classification.elements[0].elements[0];
+    var newSubDisease = newForm.classification.elements[0].elements[0].elements[0];
+    diseasesInList.forEach(function (diseaseInList) {
+        if (diseaseInList.name === newDisease.name) {
+            var subDiseaseInList = diseaseInList.elements;
+            subDiseaseInList.forEach(function (subDiseaseInList) {
+                if (subDiseaseInList.name !== newSubDisease) {
+                    subDiseaseInList.push(newSubDisease);
+                }
+            })
+        }
+        else {
+            diseasesInList.push(newDisease);
+        }
+    })
+}
 
 setTimeout(function () {
+        var start = new Date().getTime();
         fs.readFile(__dirname + '/nindsForms.json', 'utf8', function (err, data) {
             if (err) throw err;
             var newForms = [];
@@ -41,6 +92,10 @@ setTimeout(function () {
                         designation: oldForm.crfModuleGuideline,
                         definition: oldForm.description
                     }],
+                    isCopyrighted: oldForm.copyRight == "true" ? true : false,
+                    referenceDocuments: [{
+                        uri: oldForm.downloads
+                    }],
                     formElements: [{
                         elementType: "section",
                         label: "Main Section",
@@ -51,19 +106,48 @@ setTimeout(function () {
                         stewardOrg: {name: "NINDS"},
                         elements: [{
                             name: "Disease",
-                            elements: []
+                            elements: [{
+                                name: oldForm.diseaseName,
+                                elements: [{
+                                    name: oldForm.subDiseaseName,
+                                    elements: []
+                                }]
+                            }]
                         }]
                     }]
                 });
-                newForms.push(newForm);
-                var i = oldForms.indexOf(oldForm) + 1;
-                console.log("oldForm " + i + " saved.");
-                formCallback();
+                var questions = newForm.formElements[0].formElements;
+                async.eachSeries(oldForm.cdes, function (cde, cdeCallback) {
+                    var question = {elementType: "question"};
+                    question.label = cde.questionText;
+                    var cdeId = cde.cdeId;
+                    mongo_cde.byOtherId("NINDS", cdeId, function (err, data) {
+                        question.cde = data;
+                        question.answers = data.permissibleValues;
+                        questions.push(question);
+                        cdeCallback();
+                    });
+                }, function doneAllCdes() {
+                    //saveForm(form, user, formCallback);
+                    newForms.push(newForm);
+                    var i = oldForms.indexOf(oldForm) + 1;
+                    console.log("oldForm " + i + " pushed.");
+                    formCallback();
+                });
             }, function doneAllForm() {
+                var end = new Date().getTime();
+                var time = end - start;
+                var f = {
+                    size: newForms.length,
+                    time: 'Execution time: ' + time
+                };
+                newForms.push(f);
                 console.log("finished all forms.");
-                fs.write("../ingester/newForms.json", JSON.stringify(newForms, null, 4), function (err) {
+                fs.writeFile(__dirname + "/newForms.json", JSON.stringify(newForms), "utf8", function (err) {
                     if (err) console.log(err);
-                    else console.log("finish saving new forms");
+                    else {
+                        console.log("finish saving new forms");
+                    }
                 })
             })
         })
@@ -85,35 +169,6 @@ setTimeout(function () {
  }
  })
  }
-
-
- async.eachSeries(form.cdes, function (cde, cdeCallback) {
- }, function doneAllCdes() {
- delete form.cdes;
- saveForm(form, user, formCallback);
- console.log("done this form's all cdes.");
- });
-
- mongo_cde.byOtherId("NINDS", cde, function (err, data) {
- if (data != null && data != undefined && data.hasOwnProperty("_doc")) {
- var cdeFound = data['_doc'];
- if (cdeFound.hasOwnProperty("tinyId") && cdeFound.hasOwnProperty("version")) {
- var formElement = {
- question: {
- cde: {
- tinyId: "",
- version: "",
- permissibleValues: []
- }
- }
- };
- formElement.question.cde.tinyId = cdeFound.tinyId;
- formElement.question.cde.version = cdeFound.version;
- formElement.question.cde.permissibleValues = cdeFound.valueDomain.permissibleValues;
- form.formElements.push(formElement);
- }
- }
- cdeCallback();
- });
-
  */
+
+

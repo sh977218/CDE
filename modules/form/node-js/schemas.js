@@ -4,7 +4,7 @@ var mongoose = require('mongoose')
     , config = require("config")
     ;
 
-var questionSchema =  {
+var questionSchema = {
     cde: {
         tinyId: String
         , version: String
@@ -21,9 +21,7 @@ var questionSchema =  {
     , answers: [sharedSchemas.permissibleValueSchema]
 };
 
-var sectionSchema = {    
-
-};
+var sectionSchema = {};
 
 var formElementTreeRoot = {
     elementType: {type: String, enum: ['section', 'question']}
@@ -67,11 +65,10 @@ currentLevel.push(new mongoose.Schema({}, {strict: false}));
 var formElementSchema = new Schema(formElementTreeRoot, {_id: false});
 
 exports.formSchema = new Schema({
-    tinyId: String
-    , naming: [sharedSchemas.namingSchema]
+    naming: [sharedSchemas.namingSchema]
     , stewardOrg: {
         name: String
-    }    
+    }
     , version: String
     , registrationState: sharedSchemas.registrationStateSchema
     , properties: [
@@ -79,7 +76,7 @@ exports.formSchema = new Schema({
     ]
     , ids: [
         {source: String, id: String, version: String, _id: false}
-    ] 
+    ]
     , isCopyrighted: {type: Boolean, default: false}
     , copyright: {
         authority: String
