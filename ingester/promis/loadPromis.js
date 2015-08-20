@@ -37,6 +37,90 @@ var cdeArray = new function() {
     };
 };
 
+var classifyEltNoDuplicate = function(form, cde, storeLastLevel){
+    cde.classification = [];
+    if (formClassifMap[form.name]) {
+        classificationShared.addCategory(fakeTree, formClassifMap[form.name].concat([form.name]));
+        if (formClassifMap[form.name].length === 2) {
+            cde.classification.push({
+                stewardOrg: {
+                    name: "Assessment Center"
+                },
+                elements: [
+                    {
+                        name: formClassifMap[form.name][0],
+                        elements: [
+                            {
+                                name: formClassifMap[form.name][1]
+                                , elements: []
+                            }
+                        ]
+                    }
+                ]
+            });
+            if (storeLastLevel) cde.classification[0].elements[0].elements[0].elements.push({
+                name: form.name
+                , elements: []
+            });
+        }
+        else if (formClassifMap[form.name].length>2) {
+            cde.classification.push({
+                stewardOrg: {
+                    name: "Assessment Center"
+                },
+                elements: [
+                    {
+                        name: formClassifMap[form.name][0],
+                        elements: [
+                            {
+                                name: formClassifMap[form.name][1]
+                                , elements: [{
+                                name: formClassifMap[form.name][2]
+                                , elements: []
+                            }]
+                            }
+                        ]
+                    }
+                ]
+            });
+            if (storeLastLevel) {
+                cde.classification[0].elements[0].elements[0].elements[0].elements.push({
+                    name: form.name
+                    , elements: []
+                });
+            }
+        }
+    }
+    else {
+        var c1;
+        if (form.name.indexOf("Neuro-QOL")>-1) {
+            c1 = "Neuro-QOL Measures";
+        } else if (form.name.indexOf("PROMIS")>-1) {
+            c1 = "PROMIS Instruments";
+        } else {
+            c1 = "Other";
+        }
+        classificationShared.addCategory(fakeTree, [c1, "Other", form.name]);
+        cde.classification.push({
+            stewardOrg: {
+                name: "Assessment Center"
+            },
+            elements: [
+                {
+                    name: c1,
+                    elements: [{
+                        name: "Other"
+                        , elements: [{
+                            name: form.name
+                            , elements: []
+                        }]
+                    }]
+                }
+            ]
+        });
+    }
+};
+
 var doFile = function(file, cb) {
     fs.readFile(promisDir + "/forms" + date + "/" + file, function(err, formData) {
         if (err) console.log("err " + err);
@@ -106,84 +190,7 @@ var doFile = function(file, cb) {
 
                 }
             } else {
-                cde.classification = [];
-                if (formClassifMap[form.name]) {
-                    classificationShared.addCategory(fakeTree, formClassifMap[form.name].concat([form.name]));
-                    if (formClassifMap[form.name].length === 2) {
-                        cde.classification.push({
-                            stewardOrg: {
-                                name: "Assessment Center"
-                            },
-                            elements: [
-                                {
-                                    name: formClassifMap[form.name][0],
-                                    elements: [
-                                        {
-                                            name: formClassifMap[form.name][1]
-                                            , elements: [{
-                                                name: form.name
-                                                , elements: []
-                                            }]
-                                        }
-                                    ]
-                                }
-                            ]
-                        });
-                    }
-                    else if (formClassifMap[form.name].length>2) {
-                        cde.classification.push({
-                            stewardOrg: {
-                                name: "Assessment Center"
-                            },
-                            elements: [
-                                {
-                                    name: formClassifMap[form.name][0],
-                                    elements: [
-                                        {
-                                            name: formClassifMap[form.name][1]
-                                            , elements: [{
-                                                name:  formClassifMap[form.name][2]
-                                                , elements: [{
-                                                    name: form.name
-                                                    , elements: []
-                                                }]
-                                            }]
-                                        }
-                                    ]
-                                }
-                            ]
-                        });
-                    }
-                }
-                else {
-                    var c1;
-                    if (form.name.indexOf("Neuro-QOL")>-1) {
-                        c1 = "Neuro-QOL Measures";
-                    } else if (form.name.indexOf("PROMIS")>-1) {
-                        c1 = "PROMIS Instruments";
-                    } else {
-                        c1 = "Other";
-                    }
-                    classificationShared.addCategory(fakeTree, [c1, "Other", form.name]);
-                    cde.classification.push({
-                        stewardOrg: {
-                            name: "Assessment Center"
-                        },
-                        elements: [
-                            {
-                                name: c1,
-                                elements: [{
-                                    name: "Other"
-                                    , elements: [{
-                                        name: form.name
-                                        , elements: []
-                                    }]
-                                }]
-                            }
-                        ]
-                    });
-                }
-
+                classifyEltNoDuplicate(form, cde, true);
                 cdeArray.cdearray.push(cde);
             }
             var found = false;
@@ -224,31 +231,53 @@ var loadForm = function(file, cb) {
             naming: [
                 {designation: pForm.name, definition: "N/A"}
             ],
-            ids: [{source: 'Assessment Center', id: pForm.OID}],
+            ids: [{source: 'Assessment Center', id: file.substr(0,36)}],
             registrationState: {registrationStatus: "Qualified"},
             formElements: [],
-            classification: [
-                {
-                    stewardOrg : {
-                        name : "Assessment Center"
-                    },
-                    elements : []
-                }]
+            classification: []
+            , isCopyrighted: true
+            , copyright: {
+                authority: "PROMIS Health Organization"
+            }
         };
         if (formClassifMap[pForm.name]) {
-            form.classification[0].elements.push({
-                name : formClassifMap[pForm.name][0],
-                elements : [{
-                    name : formClassifMap[pForm.name][1]
-                    , elements: []
-                }]
+            classifyEltNoDuplicate(pForm, form);
+        } else if (pForm.name.indexOf("PROMIS") > -1) {
+            form.classification.push({
+                stewardOrg: {
+                    name: "Assessment Center"
+                },
+                elements: [
+                    {
+                        name: "PROMIS Instruments",
+                        elements: [{
+                            name: "Other"
+                            , elements: []
+                        }]
+                    }
+                ]
             });
-            if (formClassifMap[pForm.name].length>2) {
-                form.classification[0].elements[0].elements[0].elements.push({
-                    name: formClassifMap[pForm.name][2]
-                    , elements: []
-                });
-            }
+        } else {
+            var l2;
+            if (pForm.name.indexOf("Ped Bank")>-1) l2 = "Pediatric Banks";
+            else if (pForm.name.indexOf("Ped SF")>-1) l2 = "Pediatric Short Forms";
+            else if (pForm.name.indexOf("Bank")>-1) l2 = "Adult Banks";
+            else if (pForm.name.indexOf("SF")>-1) l2 = "Adult Short Forms";
+            else l2 = "Other";
+            form.classification.push({
+                stewardOrg: {
+                    name: "Assessment Center"
+                },
+                elements: [
+                    {
+                        name: "Neuro-QOL Measures",
+                        elements: [{
+                            name: l2
+                            , elements: []
+                        }]
+                    }
+                ]
+            });
         }
 
         var currentSection = {
@@ -257,15 +286,29 @@ var loadForm = function(file, cb) {
             label: "___",
             formElements: []
         };
-        pForm.content.Items.forEach(function(item) {
+
+        pForm.content.Items.forEach(function(item){
+            console.log(item.Order);
+        });
+        pForm.content.Items.sort(function(a,b){
+            return parseInt(a.Order) > parseInt(b.Order);
+        }).forEach(function(item){
+            console.log(item.Order);
+        });
+
+        pForm.content.Items.sort(function(a,b){
+            return parseInt(a.Order) > parseInt(b.Order);
+        }).forEach(function(item, index) {
             var nameParts = [];
-            item.Elements.forEach(function(element) {
+            item.Elements.sort(function(a,b){
+                return parseInt(a.ElementOrder) > parseInt(b.ElementOrder);
+            }).forEach(function(element) {
                 if (!element.Map) {
                     nameParts.push(element.Description.trim());
                 }
             });
 
-            var newSectionName = nameParts.length > 1? nameParts[0] : "Main Section";
+            var newSectionName = nameParts.length > 1? nameParts[0] : "Section";
 
             if (newSectionName !== currentSection.label) {
                 currentSection = {
@@ -335,7 +378,7 @@ mongo_data_system.orgByName("Assessment Center", function(stewardOrg) {
     async.each(files, function(file, cb){
         doFile(file, function(){
             cb();
-        });        
+        });
     }, function(err){
         stewardOrg.classifications = fakeTree.elements;
         stewardOrg.markModified("classifications");
