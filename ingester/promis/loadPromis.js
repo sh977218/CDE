@@ -365,9 +365,9 @@ fs.readdir(promisDir + "/forms"+date, function(err, files) {
 mongo_data_system.orgByName("Assessment Center", function(stewardOrg) {
     fakeTree = {elements: stewardOrg.classifications};
     async.each(files, function(file, cb){
-        doFile(file, function(){
+        //doFile(file, function(){
             cb();
-        });
+        //});
     }, function(err){
         stewardOrg.classifications = fakeTree.elements;
         stewardOrg.markModified("classifications");
