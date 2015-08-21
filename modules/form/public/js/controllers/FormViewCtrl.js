@@ -205,4 +205,32 @@ angular.module('formModule').controller('FormViewCtrl',
         if (languageMode == 'conjuction') return ["AND", "OR"];
         return [];
     };
+
+
+    $scope.pinAllCdesModal = function() {
+        var modalInstance = $modal.open({
+            templateUrl: '/cde/public/html/selectBoardModal.html',
+            controller: 'SelectBoardModalCtrl',
+            resolve: {
+                boards: function () {
+                    return $scope.boards;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedBoard) {
+            var data = {
+                board: selectedBoard,
+                formTinyId: $scope.elt.tinyId
+            };
+            $http({method: 'post', url: '/pinFormCdes', data: data}).success(function () {
+                $scope.addAlert("success", "All elements pinned.");
+                $scope.loadMyBoards();
+            }).error(function () {
+                $scope.addAlert("danger", "Not all elements were not pinned!");
+            });
+        }, function () {
+        });
+    };
+
 }]);
