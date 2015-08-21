@@ -125,7 +125,7 @@ setTimeout(function () {
                         question.cde = data;
                         if (!data) {
                             console.log(cdeId);
-                            throw "up";
+                            throw cdeId + " not found.";
                         }
                         if (data.valueDomain.datatype === 'Value List')
                             question.answers = data.valueDomain.permissibleValues;

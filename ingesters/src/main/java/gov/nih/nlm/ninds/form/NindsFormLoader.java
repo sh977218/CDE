@@ -188,7 +188,7 @@ public class NindsFormLoader implements Runnable {
     }
 
     void getCdesList(MyForm form) {
-        String selector = "//tbody[tr/td/div[text() = 'CDE ID']]//tr";
+        String selector = "//tbody[tr/td/div[text() = 'CDE ID']]/tr";
         List<WebElement> trs = driver.findElements(By.xpath(selector));
         for (int i = 2; i < trs.size(); i++) {
             WebElement tr = trs.get(i);
@@ -198,7 +198,6 @@ public class NindsFormLoader implements Runnable {
             for (int j = 0; j < tds.size(); j++) {
                 WebElement td = tds.get(j);
                 String text = td.getText().replace("\"", " ").trim();
-                ;
                 if (index == 1) {
                     cde.cdeId = text;
                 }

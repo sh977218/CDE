@@ -10,12 +10,6 @@ var fs = require('fs'),
     , Readable = require('stream').Readable;
 
 
-var nindsInput = process.argv[2];
-if (!nindsInput) {
-    console.log("missing nindsInput arg");
-    process.exit(1);
-}
-
 var nindsOrg = null;
 
 setTimeout(function () {
@@ -151,17 +145,28 @@ parseCde = function (obj, cb) {
 
     var permValues = [];
     if (dataType === "Value List") {
+        if (obj["External ID.NINDS"] === "C17177") {
+            console.log("found you");
+        }
         var answers = obj["Permissible Values"].split(";");
         var descs = obj["Permissible Value Descriptions"].split(";");
+        var checkPermissible = {};
         for (var i = 0; i < answers.length; i++) {
-            var permValue = {};
-            permValue.permissibleValue = answers[i];
-            if (i < descs.length) {
-                permValue.valueMeaningName = descs[i];
+            var permi = answers[i];
+            if (checkPermissible[permi] == null) {
+                var permValue = {};
+                permValue.permissibleValue = answers[i];
+                if (i < descs.length) {
+                    permValue.valueMeaningName = descs[i];
+                } else {
+                    permValue.valueMeaningName = answers[i];
+                }
+                permValues.push(permValue);
+                checkPermissible[permi] = permi;
             } else {
-                permValue.valueMeaningName = answers[i];
+                console.log("duplicated permissible value found in\n " + cde);
+                console.log("duplicated permissible value " + permi);
             }
-            permValues.push(permValue);
         }
     }
     vd.permissibleValues = permValues;
