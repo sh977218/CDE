@@ -121,17 +121,22 @@ setTimeout(function () {
                     var question = {elementType: "question"};
                     question.label = cde.questionText;
                     var cdeId = cde.cdeId;
-                    mongo_cde.byOtherId("NINDS", cdeId, function (err, data) {
-                        question.cde = data;
-                        if (!data) {
-                            console.log(cdeId);
-                            throw cdeId + " not found.";
-                        }
-                        if (data.valueDomain.datatype === 'Value List')
-                            question.answers = data.valueDomain.permissibleValues;
-                        questions.push(question);
-                        cdeCallback();
-                    });
+                    if (cdeId.length < 5) {
+                        console.log("too short");
+                    }
+                    else {
+                        mongo_cde.byOtherId("NINDS", cdeId, function (err, data) {
+                            question.cde = data;
+                            if (!data) {
+                                console.log(cdeId);
+                            } else {
+                                if (data.valueDomain.datatype === 'Value List')
+                                    question.answers = data.valueDomain.permissibleValues;
+                                questions.push(question);
+                            }
+                        });
+                    }
+                    cdeCallback();
                 }, function doneAllCdes() {
                     //saveForm(form, user, formCallback);
                     newForms.push(newForm);
