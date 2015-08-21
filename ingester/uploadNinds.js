@@ -141,10 +141,10 @@ parseCde = function (obj, cb) {
     var listDataType = {};
     if (inputType.toLowerCase().trim() === "single pre-defined value selected") {
         listDataType.datatype = dataType;
-        datatype = "Value List";
+        dataType = "Value List";
     } else if (inputType.toLowerCase().trim() === "multiple pre-defined values selected") {
         listDataType.datatype = dataType;
-        listDataType.datatype = "Value List";
+        dataType = "Value List";
         listDataType.multi = true;
     }
     vd.datatypeValueList = listDataType;
