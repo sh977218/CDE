@@ -37,10 +37,10 @@ public class MergeTest extends NlmCdeBaseTest {
         textPresent("3279225");
         findElement(By.cssSelector("[ng-click='showMergeApproveDialog(message)']")).click();
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
-        hangon(2);
+        textNotPresent("number has already been used");
         findElement(By.cssSelector("#confirmNewVersion")).click();         
-        hangon(6); 
-    }    
+        waitForESUpdate();
+    }
     
     private void checkResult() {     
         findElement(By.cssSelector(".accordion-toggle")).click(); 
@@ -49,12 +49,12 @@ public class MergeTest extends NlmCdeBaseTest {
             switchTabAndClose(1);
         } else goToCdeByName("Smoking History Ind");
         findElement(By.linkText("Classification")).click();
-        Assert.assertTrue(textPresent("Health Survey"));          
-        Assert.assertTrue(textPresent("Cancer Related Risks"));
+        textPresent("Health Survey");
+        textPresent("Cancer Related Risks");
         findElement(By.linkText("Naming")).click();
-        Assert.assertTrue(textPresent("Free-text field to capture another method used to help stop smoking that is not already specified or mentioned."));   
+        textPresent("Free-text field to capture another method used to help stop smoking that is not already specified or mentioned.");
         findElement(By.linkText("Identifiers")).click();
-        Assert.assertTrue(textPresent("3279225"));
+        textPresent("3279225");
     }
     
     @Test
