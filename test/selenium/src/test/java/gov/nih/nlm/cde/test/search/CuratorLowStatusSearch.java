@@ -13,6 +13,7 @@ public class CuratorLowStatusSearch extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("java");
+        findElement(By.cssSelector("i.fa-search")).click();
         textNotPresent("Candidate (");
         setVisibleStatus("minStatus-Candidate");
         findElement(By.id("li-blank-Candidate"));
@@ -23,6 +24,7 @@ public class CuratorLowStatusSearch extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("java");
+        findElement(By.cssSelector("i.fa-search")).click();
         textPresent("caCORE (");
         findElement(By.id("li-blank-Candidate")).click();
         textNotPresent("caCORE (");
