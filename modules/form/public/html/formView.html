@@ -1,55 +1,67 @@
 <div class="container-fluid" ng-cloak>
     <div ng-controller="VersionCtrl" class="alert alert-info mt20" ng-show="elt.unsaved" id="openSaveTop">
         <i class="fa fa-exclamation-triangle"></i> This element is not saved.
-        <button class="btn btn-primary" ng-click="openSave(elt, 'formView?tinyId=')" id="openSave">Save</button></div>
+        <button class="btn btn-primary" ng-click="openSave(elt, 'formView?tinyId=')" id="openSave">Save</button>
+    </div>
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.archived">
-        <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is archived.</div>
+        <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is archived.
+    </div>
 
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.registrationStatus=='Retired'">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is retired.
         <span ng-show="elt.registrationState.replacedBy">
             <a href="/#/formView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
-    <div class="alert alert-info mt20" role="alert" ng-show="elt.outdated"><i class="fa fa-exclamation-triangle"></i> <strong>Note: </strong>Some CDEs in this form have newer version. </div>
+    <div class="alert alert-info mt20" role="alert" ng-show="elt.outdated"><i class="fa fa-exclamation-triangle"></i>
+        <strong>Note: </strong>Some CDEs in this form have newer version.
+    </div>
 
     <h3>{{elt.naming[0].designation}}
-        <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview" ng-if="formLocalRender"
+        <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formLocalPreview"
+           ng-if="formLocalRender"
            href="/form/public/html/formRender.html?id={{elt._id}}"><i class="fa fa-cogs"></i> Preview</a>
-       <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview" ng-if="formLoincRender"
-          ng-href="{{formLoincRenderUrl + elt._id}}"><i class="fa fa-cogs"></i> Loinc Preview</a>
-        <a class="btn btn-small btn-default" target="_blank" title="Preview" id="sdcExport" href="sdcExport/{{elt._id}}"><i class="fa fa-download"></i> SDC Export</a>
+        <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview" ng-if="formLoincRender"
+           href="<%= config.modules.forms.loincRenderUrl %>/{{elt._id}}"><i class="fa fa-cogs"></i> Loinc Preview</a>
+        <a class="btn btn-small btn-default" target="_blank" title="Preview" id="sdcExport"
+           href="sdcExport/{{elt._id}}">
+            <i class="fa fa-download"></i> SDC Export</a>
+        <button class="btn btn-small btn-default" target="_blank" title="Pin CDEs" id="pinAllCdes"
+                ng-if="user._id" ng-click="pinAllCdesModal()"><i class="fa fa-cogs"></i> Pin CDEs
+        </button>
     </h3>
 
-<div tabset>
-    <div tab heading="{{tabs['general'].heading}}">
-        <div ng-include="'/form/public/html/formGeneralDetails.html'"></div>
+    <div tabset>
+        <div tab heading="{{tabs['general'].heading}}">
+            <div ng-include="'/form/public/html/formGeneralDetails.html'"></div>
+        </div>
+        <div tab heading="{{tabs['description'].heading}}">
+            <div ng-include="'/form/public/html/formDescription.html'"></div>
+        </div>
+        <div tab heading="{{tabs['classification'].heading}}">
+            <div ng-include="'/system/public/html/elementClassification.html'"></div>
+        </div>
+        <div tab heading="{{tabs['status'].heading}}">
+            <div ng-include="'/system/public/html/status.html'"></div>
+        </div>
+        <div tab heading="{{tabs['properties'].heading}}" active="tabs['properties'].active">
+            <div ng-include="'/system/public/html/properties.html'"></div>
+        </div>
+        <div tab heading="{{tabs['ids'].heading}}" active="tabs['ids'].active">
+            <div ng-include="'/system/public/html/identifiers.html'"></div>
+        </div>
+        <div tab heading="{{tabs['discussions'].heading}}">
+            <div ng-include="'/system/public/html/comments.html'"></div>
+        </div>
+        <div tab heading="{{tabs['attachments'].heading}}">
+            <div ng-include="'/system/public/html/attachments.html'"></div>
+        </div>
     </div>
-    <div tab heading="{{tabs['description'].heading}}">
-        <div ng-include="'/form/public/html/formDescription.html'"></div>
-    </div>
-    <div tab heading="{{tabs['classification'].heading}}">
-        <div ng-include="'/system/public/html/elementClassification.html'"></div>
-    </div>
-    <div tab heading="{{tabs['status'].heading}}">
-        <div ng-include="'/system/public/html/status.html'"></div>
-    </div>
-    <div tab heading="{{tabs['properties'].heading}}" active="tabs['properties'].active">
-        <div ng-include="'/system/public/html/properties.html'"></div>
-    </div>
-    <div tab heading="{{tabs['ids'].heading}}" active="tabs['ids'].active">
-        <div ng-include="'/system/public/html/identifiers.html'"></div>
-    </div>
-    <div tab heading="{{tabs['discussions'].heading}}">
-        <div ng-include="'/system/public/html/comments.html'"></div>
-    </div>
-    <div tab heading="{{tabs['attachments'].heading}}">
-        <div ng-include="'/system/public/html/attachments.html'"></div>
-    </div>
-</div>
 
-<div class="row" ng-controller="VersionCtrl">
-    <div class="col-md-12" ng-show="elt.unsaved">
-        <hr/>
-        <button class="btn cancel" ng-click="revert()" id="discardChanges">Discard Changes</button>
-        <button class="btn btn-primary" ng-click="openSave(elt, 'formView?tinyId=')" id="openSaveBottom">Save</button>
+    <div class="row" ng-controller="VersionCtrl">
+        <div class="col-md-12" ng-show="elt.unsaved">
+            <hr/>
+            <button class="btn cancel" ng-click="revert()" id="discardChanges">Discard Changes</button>
+            <button class="btn btn-primary" ng-click="openSave(elt, 'formView?tinyId=')" id="openSaveBottom">Save
+            </button>
+        </div>
     </div>
 </div>

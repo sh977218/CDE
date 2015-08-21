@@ -32,7 +32,7 @@ exports.init = function(app) {
     var viewConfig = {modules: config.modules, webtrends: config.webtrends, maxPin: config.maxPin};
 
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
-        "/board/:id", "/deview",
+        "/board/:id", "/deview", "/myboards",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login"].forEach(function(path) {
         app.get(path, function(req, res) {
