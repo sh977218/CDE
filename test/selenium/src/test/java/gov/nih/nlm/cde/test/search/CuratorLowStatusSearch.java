@@ -16,6 +16,9 @@ public class CuratorLowStatusSearch extends NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-search")).click();
         textNotPresent("Candidate (");
         setVisibleStatus("minStatus-Candidate");
+        findElement(By.id("ftsearch-input")).clear();
+        findElement(By.id("ftsearch-input")).sendKeys("java");
+        findElement(By.cssSelector("i.fa-search")).click();
         findElement(By.id("li-blank-Candidate"));
         textPresent("caCORE (");
 
