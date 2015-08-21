@@ -1,7 +1,6 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
@@ -24,6 +23,7 @@ public class OtherPleaseSpecifyTest extends BaseFormTest {
         startAddingQuestions();
         questionTest.addQuestionToSection("Patient Gender Category", 0);
 
+        scrollToTop();
         findElement(By.id("question_accordion_0_0")).click();
         hangon(1);
 
@@ -35,7 +35,7 @@ public class OtherPleaseSpecifyTest extends BaseFormTest {
         saveForm();
         scrollToTop();
 
-        findElement(By.id("formPreview")).click();
+        findElement(By.id("formLocalPreview")).click();
         switchTab(1);
         textPresent("Patient Gender Category");
 

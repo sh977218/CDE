@@ -265,8 +265,15 @@ angular.module('systemModule').controller('ListCtrl',
         search(type);
     };
 
-    $scope.$on('$locationChangeSuccess', function() {
-        search();
+    var getPathFromUrl = function(url) {
+        var ind = url.indexOf("?");
+        if (ind > 1) {
+            return url.substr(0, ind);
+        } else return url;
+    };
+
+    $scope.$on('$locationChangeSuccess', function(evt, newUrl, oldUrl) {
+        if (getPathFromUrl(newUrl) === getPathFromUrl(oldUrl)) search();
     });
 
     $scope.termSearch = function() {
@@ -302,7 +309,7 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     var filterOutNonVisibleStatuses = function(aggregations) {
-        var visibleStatuses = SearchSettings.getUserDefaultStatuses();
+        var visibleStatuses = SearchSettings.getUserDefaultStatuses().concat($scope.searchSettings.regStatuses);
         aggregations.statuses.buckets = aggregations.statuses.buckets.filter(function(s) {
             return visibleStatuses.indexOf(s.key) > -1;
         });

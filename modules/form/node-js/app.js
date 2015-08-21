@@ -1,7 +1,6 @@
 var express = require('express')
     , path = require('path')
     , formCtrl = require('./formCtrl')
-    , sharedElastic = require('../../system/node-js/elastic.js')
     , mongo_data = require('./mongo-form')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , config = require('../../system/node-js/parseConfig')
@@ -11,6 +10,7 @@ var express = require('express')
     , elastic_system = require('../../system/node-js/elastic')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , exportShared = require('../../system/shared/exportShared')
+    , usersvc = require('../../cde/node-js/usersvc')
     ;
 
 exports.init = function (app, daoManager) {
@@ -19,7 +19,7 @@ exports.init = function (app, daoManager) {
     app.post('/findForms', formCtrl.findForms);
 
     app.post('/form', formCtrl.save);
-    app.get('/form/:id', formCtrl.formById);
+    app.get('/form/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
     if (config.modules.forms.attachments) {
         app.post('/attachments/form/setDefault', function (req, res) {
@@ -35,13 +35,13 @@ exports.init = function (app, daoManager) {
         });
     }
 
-    app.get('/formById/:id/:type', formCtrl.formById);
+    app.get('/formById/:id/:type', exportShared.nocacheMiddleware, formCtrl.formById);
 
-    app.get('/formbytinyid/:id/:version', function (req, res) {
+    app.get('/formbytinyid/:id/:version', exportShared.nocacheMiddleware, function (req, res) {
         res.send("");
     });
 
-    app.get("/sdcExport/:id", function (req, res) {
+    app.get("/sdcExport/:id", exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.byId(req.params.id, function (err, form) {
             if (err) {
                 logging.errorLogger.error("Error: Cannot find element by tiny id.", {
@@ -56,7 +56,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/sdcExportByTinyId/:tinyId/:version', function (req, res) {
+    app.get('/sdcExportByTinyId/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function (err, form) {
             if (err) {
                 logging.errorLogger.error("Error: Cannot find element by tiny id.", {
@@ -103,7 +103,7 @@ exports.init = function (app, daoManager) {
 
     }
 
-    app.get('/form/properties/keys', function (req, res) {
+    app.get('/form/properties/keys', exportShared.nocacheMiddleware, function (req, res) {
         adminItemSvc.allPropertiesKeys(req, res, mongo_data);
     });
 
@@ -111,6 +111,30 @@ exports.init = function (app, daoManager) {
         var formHeader = "Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
         var query = sharedElastic.buildElasticSearchQuery(req.body);
         return elastic_system.elasticSearchExport(res, query, 'form', exportShared.projectFormForExport, formHeader);
+    });
+
+    app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
+        return [];
+    });
+
+    app.post('/pinFormCdes', function(req, res) {
+        if (req.isAuthenticated()) {
+            mongo_data.eltByTinyId(req.body.formTinyId, function (err, form) {
+                if (form) {
+                    var allCdes = {};
+                    var allTinyIds = [];
+                    formCtrl.findAllCdesInForm(form, allCdes, allTinyIds);
+                    var fakeCdes = allTinyIds.map(function(_tinyId) {
+                        return {tinyId: _tinyId};
+                    });
+                    usersvc.pinAllToBoard(req, fakeCdes, res)
+                } else {
+                    res.status(404).end();
+                }
+            });
+        } else {
+            res.send("Please login first.");
+        }
     });
 
 };
