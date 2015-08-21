@@ -37,7 +37,7 @@ public class MergeTest extends NlmCdeBaseTest {
         textPresent("3279225");
         findElement(By.cssSelector("[ng-click='showMergeApproveDialog(message)']")).click();
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
-        textNotPresent("number has already been used")
+        textNotPresent("number has already been used");
         findElement(By.cssSelector("#confirmNewVersion")).click();         
         waitForESUpdate();
     }
