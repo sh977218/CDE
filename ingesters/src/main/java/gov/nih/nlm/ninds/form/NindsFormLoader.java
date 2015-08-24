@@ -94,9 +94,6 @@ public class NindsFormLoader implements Runnable {
         String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 26";
         textPresent(textToBePresent);
         List<WebElement> trs = driver.findElements(By.cssSelector("#ContentPlaceHolder1_dgCRF > tbody > tr"));
-        Classification classification = new Classification();
-        CsElt subDisease = null;
-        CsElt disease = null;
         for (int i = 1; i < trs.size(); i++) {
             List<WebElement> tds = trs.get(i).findElements(By.cssSelector("td"));
             MyForm form = new MyForm();
