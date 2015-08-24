@@ -1,10 +1,27 @@
 var start = new Date().getTime();
 
 var fs = require('fs'),
+    form_schemas = require('../modules/form/node-js/schemas'),
+    mongo_form = require('../modules/form/node-js/mongo-form'),
+    mongoose = require('mongoose'),
+    config = require('config'),
+    mongo_data_system = require('../modules/system/node-js/mongo-data'),
     crypto = require('crypto'),
     async = require('async');
 
+
+var MongoClient = require('mongodb').MongoClient;
+var conn = mongoose.createConnection("mongodb://siteRootAdmin:password@localhost:27017/test", {auth: {authdb: "admin"}});
+conn.on('error', console.error.bind(console, 'connection error:'));
+conn.once('open', function callback() {
+    console.log('connected to db');
+});
+var Form = conn.model('Form', form_schemas.formSchema);
+
 var unmergedForms;
+var user = {
+    "username": "batchloader"
+};
 
 addClassification = function (existingForm, unmergedForm) {
     var existingDiseases = existingForm.classification[0].elements[0].elements;
@@ -28,13 +45,7 @@ getHash = function (f) {
     var md5sum = crypto.createHash('md5');
     var cdesStr = "";
     f.formElements[0].formElements.forEach(function (q) {
-        if (q == undefined)
-            console.log("bug");
-        if (!q.hasOwnProperty("cde"))
-            console.log("bug");
-        if (!q.cde.hasOwnProperty("cdeId"))
-            console.log("bug");
-        cdesStr = cdesStr + q.cde.cdeId;
+        cdesStr = cdesStr + q.question.cde.cdeId;
     })
     var copy = f.isCopyrighted === "true" ? "true" : f.referenceDocuments[0].uri;
     var s = f.naming[0].designation + copy + cdesStr;
@@ -42,8 +53,10 @@ getHash = function (f) {
 };
 
 fs.readFile(__dirname + '/newForms.json', 'utf8', function (err, data) {
-    if (err) throw err;
+    if (err)
+        throw err;
     else {
+        var newForms = [];
         var allForms = {};
         unmergedForms = JSON.parse(data);
         unmergedForms.forEach(function (unmergedForm) {
@@ -56,6 +69,22 @@ fs.readFile(__dirname + '/newForms.json', 'utf8', function (err, data) {
                 addClassification(existingForm, unmergedForm);
             }
         })
-        console.log("done");
+
+        async.eachSeries(Object.keys(allForms), function (key, cb) {
+            var f = allForms[key];
+            mongo_form.create(f, user, function (err, newForm) {
+                if (err) {
+                    console.log(err);
+                    throw err;
+                }
+                else {
+                    cb();
+                }
+            })
+
+        }, function doneAll() {
+        });
     }
 })
+
+

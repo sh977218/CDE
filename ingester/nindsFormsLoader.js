@@ -4,7 +4,6 @@ var fs = require('fs'),
     mongoose = require('mongoose'),
     config = require('config'),
     mongo_cde = require('../modules/cde/node-js/mongo-cde'),
-    mongo_form = require('../modules/form/node-js/mongo-form'),
     form_schemas = require('../modules/form/node-js/schemas'),
     mongo_data_system = require('../modules/system/node-js/mongo-data'),
     async = require('async');
@@ -23,12 +22,8 @@ var globals = {
 };
 
 var Form = conn.model('Form', form_schemas.formSchema);
-
 var oldForms;
-var user = {
-    "username": "batchloader"
-};
-
+var numForms = 0;
 var cdeNotFound = [];
 
 setTimeout(function () {
@@ -37,6 +32,7 @@ setTimeout(function () {
             var newForms = [];
             oldForms = JSON.parse(data);
             async.eachSeries(oldForms, function (oldForm, formCallback) {
+                numForms++;
                 var newForm = new Form({
                     stewardOrg: {
                         name: globals.orgName
@@ -110,8 +106,10 @@ setTimeout(function () {
                             } else {
                                 question.question.cde.tinyId = data.tinyId;
                                 question.question.cde.version = data.version;
-                                if (data.valueDomain.datatype === 'Value List')
+                                if (data.valueDomain.datatype === 'Value List') {
+                                    question.question.cde.permissibleValues = data.valueDomain.permissibleValues;
                                     question.question.answers = data.valueDomain.permissibleValues;
+                                }
                                 questions.push(question);
                             }
                             cdeCallback();
@@ -121,21 +119,31 @@ setTimeout(function () {
                     newForms.push(newForm);
                     var i = oldForms.indexOf(oldForm) + 1;
                     console.log("form " + i + " pushed.");
-                    formCallback();
+                    if (numForms === 700 || numForms === 1400 || numForms === 2100) {
+                        console.log("start saving 700 forms...");
+                        fs.appendFile(__dirname + "/newForms.json", JSON.stringify(newForms), "utf8", function (err) {
+                            if (err) console.log(err);
+                            else {
+                                newForms = [];
+                                console.log("finish saving 700 forms...");
+                            }
+                            formCallback();
+                        })
+                    }
+                    else {
+                        formCallback();
+                    }
                 });
             }, function doneAllForm() {
                 var end = new Date().getTime();
                 var time = end - start;
-                var f = {
-                    size: newForms.length,
-                    time: 'Execution time: ' + time
-                };
-                newForms.push(f);
                 console.log("finished all forms.");
-                fs.writeFile(__dirname + "/newForms.json", JSON.stringify(newForms), "utf8", function (err) {
+                fs.appendFile(__dirname + "/newForms.json", JSON.stringify(newForms), "utf8", function (err) {
                     if (err) console.log(err);
                     else {
-                        console.log("finish saving new forms");
+                        console.log("finish saving all forms");
+                        console.log("size " + numForms);
+                        console.log("Execution time: " + time);
                         console.log("cannot found cde in db:" + cdeNotFound);
                     }
                 })
@@ -143,22 +151,8 @@ setTimeout(function () {
         })
     },
     3000
-)
-;
+);
 
-/*
- var saveForm = function (form, user, formCallback) {
- mongo_form.create(form, user, function (err, newForm) {
- if (err) {
- console.log(err);
- throw err;
- }
- else {
- var i = forms.indexOf(form) + 1;
- console.log("form " + i + " saved.");
- }
- })
- }
- */
+
 
 
