@@ -28,57 +28,10 @@ var oldForms;
 var user = {
     "username": "batchloader"
 };
-sameCdes = function (cdes1, cdes2) {
-    if (cdes1 === [] && cdes2 === []) {
-        return true;
-    }
-    else if (cdes1.length != cdes2.length) {
-        return true;
-    }
-    else {
-        for (var i = 0; i < cdes1.length; i++) {
-            if (cdes1[i].cdeId !== cdes2[i].cdeId)
-                return false;
-        }
-    }
-}
-sameForm = function (newForm, formInList) {
-    if (newForm.naming[0].designation.trim() !== formInList.naming[0].designation) {
-        return false;
-    }
-    else if (!sameCdes(newForm.cdes.formInList.cdes)) {
-        return false;
-    }
-    else if (newForm.isCopyrighted !== formInList.isCopyrighted) {
-        return false;
-    }
-    else if (newForm.isCopyrighted === formInList.isCopyrighted) {
-        formInList.referenceDocuments.push(newForm.referenceDocuments[0]);
-    }
-    else return true;
-}
 
-addClassification = function (newForm, formInList) {
-    var diseasesInList = formInList.classification.elements[0].elements;
-    var newDisease = newForm.classification.elements[0].elements[0];
-    var newSubDisease = newForm.classification.elements[0].elements[0].elements[0];
-    diseasesInList.forEach(function (diseaseInList) {
-        if (diseaseInList.name === newDisease.name) {
-            var subDiseaseInList = diseaseInList.elements;
-            subDiseaseInList.forEach(function (subDiseaseInList) {
-                if (subDiseaseInList.name !== newSubDisease) {
-                    subDiseaseInList.push(newSubDisease);
-                }
-            })
-        }
-        else {
-            diseasesInList.push(newDisease);
-        }
-    })
-}
+var cdeNotFound = [];
 
 setTimeout(function () {
-        var start = new Date().getTime();
         fs.readFile(__dirname + '/nindsForms.json', 'utf8', function (err, data) {
             if (err) throw err;
             var newForms = [];
@@ -98,7 +51,7 @@ setTimeout(function () {
                     }],
                     formElements: [{
                         elementType: "section",
-                        label: "Main Section",
+                        label: "",
                         cardinality: "0.1",
                         formElements: []
                     }],
@@ -118,30 +71,56 @@ setTimeout(function () {
                 });
                 var questions = newForm.formElements[0].formElements;
                 async.eachSeries(oldForm.cdes, function (cde, cdeCallback) {
-                    var question = {elementType: "question"};
-                    question.label = cde.questionText;
+                    var question =
+                    {
+                        "elementType": "question",
+                        "label": cde.questionText,
+                        "formElements": [],
+                        "question": {
+                            cde: {
+                                tinyId: "",
+                                version: ""
+                                , permissibleValues: []
+                            },
+                            datatype: "",
+                            uoms: [],
+                            required: {
+                                type: false
+                            },
+                            editable: {
+                                type: true
+                            },
+                            multiselect: false,
+                            otherPleaseSpecify: {
+                                value: {
+                                    type: false
+                                }
+                            },
+                            answers: []
+                        }
+                    }
                     var cdeId = cde.cdeId;
                     if (cdeId.length < 5) {
-                        console.log("too short");
+                        console.log("cdeId is too short. cdeid:" + cdeId);
                     }
                     else {
                         mongo_cde.byOtherId("NINDS", cdeId, function (err, data) {
-                            question.cde = data;
                             if (!data) {
-                                console.log(cdeId);
+                                cdeNotFound.push(cdeId);
                             } else {
+                                question.question.cde.tinyId = data.tinyId;
+                                question.question.cde.version = data.version;
                                 if (data.valueDomain.datatype === 'Value List')
-                                    question.answers = data.valueDomain.permissibleValues;
+                                    question.question.answers = data.valueDomain.permissibleValues;
                                 questions.push(question);
                             }
+                            cdeCallback();
                         });
                     }
-                    cdeCallback();
                 }, function doneAllCdes() {
-                    //saveForm(form, user, formCallback);
                     newForms.push(newForm);
                     var i = oldForms.indexOf(oldForm) + 1;
-                    console.log("oldForm " + i + " pushed.");
+                    console.log("form " + i + " pushed.");
                     formCallback();
                 });
             }, function doneAllForm() {
@@ -157,6 +136,7 @@ setTimeout(function () {
                     if (err) console.log(err);
                     else {
                         console.log("finish saving new forms");
+                        console.log("cannot found cde in db:" + cdeNotFound);
                     }
                 })
             })
