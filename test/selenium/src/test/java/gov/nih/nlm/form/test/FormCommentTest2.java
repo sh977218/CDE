@@ -12,7 +12,7 @@ public class FormCommentTest2 extends FormCommentTest {
 
     @Test
     public void orgAdminCanRemoveFormComment() {
-        orgAdminCanRemoveComment("Form Comment Test", "Recorded");
+        orgAdminCanRemoveComment("Form Comment Test", "Qualified");
     }
 
 }

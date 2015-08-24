@@ -215,7 +215,7 @@ angular.module('systemModule').controller('ListCtrl',
             }
 
             filterOutWorkingGroups($scope.aggregations);
-            filterOutNonVisibleStatuses($scope.aggregations);
+            //filterOutNonVisibleStatuses($scope.aggregations);
             OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
 
             if ((settings.searchTerm && settings.searchTerm.length > 0) || settings.selectedOrg)
