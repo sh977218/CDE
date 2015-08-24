@@ -146,6 +146,10 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
     }
 
+    if (!settings.visibleStatuses || settings.visibleStatuses.length === 0) {
+        settings.visibleStatuses = regStatusShared.statusList.map(function(s) { return s.name; });
+    }
+
     var regStatusAggFilter = {"or": []};
     settings.visibleStatuses.forEach(function(regStatus) {
         regStatusAggFilter.or.push({"term": {"registrationState.registrationStatus": regStatus}});
