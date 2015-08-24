@@ -20,6 +20,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , page: queryParams.page
                 , includeAggregations: true
                 , selectedStatuses: regStatuses
+                , visibleStatuses: SearchSettings.getUserDefaultStatuses()
                 , searchToken: this.searchToken
             };
         }
