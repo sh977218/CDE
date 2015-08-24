@@ -1,3 +1,6 @@
+// 2) Reads the PDF folder and creates classifications mapping
+//node ingester/promis/getClassifs.js ../promis/pdfForms/
+
 var fs = require('fs');
 var formPath = process.argv[2];
 var formNameMap = {};
