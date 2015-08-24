@@ -915,7 +915,7 @@ db.forms.insert({
     "ids" : [],
     "properties" : [],
     "registrationState" : {
-        "registrationStatus" : "Recorded"
+        "registrationStatus" : "Qualified"
     },
     "stewardOrg" : {
         "name" : "caBIG"

@@ -14,7 +14,7 @@ public class ExportTest extends NlmCdeBaseTest {
 
     @Test
     public void searchExport() {
-        String query = "{\"resultPerPage\":20,\"selectedOrg\":\"CTEP\",\"selectedElements\":[],\"selectedElementsAlt\":[],\"includeAggregations\":true,\"selectedStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"],\"searchToken\":\"id8567429b\"}";
+        String query = "{\"resultPerPage\":20,\"selectedOrg\":\"CTEP\",\"selectedElements\":[],\"selectedElementsAlt\":[],\"includeAggregations\":true,\"selectedStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"],\"visibleStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"], \"searchToken\":\"id8567429b\"}";
 
         String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde").asString();//.then().assertThat().contentType(ContentType.JSON);
 

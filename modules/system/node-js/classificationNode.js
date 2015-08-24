@@ -138,7 +138,7 @@ exports.classifyEntireSearch = function(req, cb) {
         };
         classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
     };
-    var query = elastic.buildElasticSearchQuery(req.query);
+    var query = elastic.buildElasticSearchQuery(req.user, req.query);
     elastic.elasticsearch(query, req.itemType, function(err, result) {
         var ids = result.cdes.map(function(cde) {return cde._id;});
         adminItemSvc.bulkAction(ids, action, cb);
