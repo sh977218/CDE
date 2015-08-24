@@ -39,11 +39,13 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textPresent("NINDS");
         textPresent("Population");
         textPresent("Adult");
+        textPresent("Child Classification");
         goToCdeByName("Gastrointestinal therapy feed tube other text");
         findElement(By.linkText("Classification")).click();
         textPresent("NINDS");
         textPresent("Population");
         textPresent("Adult");
+        textPresent("Child Classification");
 
         openClassificationAudit("NINDS > Classification Transfer > Child Classification");
         textPresent("Reclassify NINDS > Classification Transfer > Child Classification");
