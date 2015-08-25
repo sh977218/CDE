@@ -40,11 +40,13 @@
             <div inline-edit id="uomEdit" model="elt.valueDomain.uom" is-allowed="canCurate"
                  on-ok="stageElt(elt)"></div>
         </dd>
-        <dt tabindex="0" ng-show="elt.origin">Origin:</dt>
-        <dd tabindex="0">
-            <div inline-edit id="origin" model="elt.origin" is-allowed="canCurate"
-                 on-ok="stageElt(elt)"></div>
-        </dd>
+        <span ng-show="elt.origin">
+            <dt tabindex="0">Origin:</dt>
+            <dd tabindex="0">
+                <div inline-edit id="origin" model="elt.origin" is-allowed="canCurate"
+                     on-ok="stageElt(elt)"></div>
+            </dd>
+        </span>
         <dt tabindex="0" ng-show="elt.source">Source:</dt>
         <dd tabindex="0">{{elt.source}}</dd>
         <dt tabindex="0" id="dt_status">Status:</dt>
@@ -56,7 +58,7 @@
         </dd>
         <dt tabindex="0" ng-show="elt.views">Views:</dt>
         <dd tabindex="0" id="dd_views">{{elt.views}}</dd>
-        <dt tabindex="0">SDC View: </dt>
+        <dt tabindex="0">SDC View:</dt>
         <dd tabindex="0">
             <a ng-href="/#/sdcview/?cdeId={{elt._id}}" aria-label="SDC View" target="_blank">
                 <i class="fa fa-share-square-o"></i> SDC View</a>
