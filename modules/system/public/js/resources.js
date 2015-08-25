@@ -66,7 +66,7 @@ angular.module('resourcesSystem', ['ngResource'])
     .factory("Organization", function($http) {
         return {
             getByName: function(orgName, cb) {
-                $http.get("/org/" + orgName).then(function(response) {
+                $http.get("/org/" + encodeURIComponent(orgName)).then(function(response) {
                    if (cb) cb(response);
                 });
             }

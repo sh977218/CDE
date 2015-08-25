@@ -16,7 +16,14 @@ var defaultBoard = {
 };
 
 var users = [
-    {username: 'nlm', password: 'nlm', siteAdmin: true, orgAdmin: ["caBIG","CTEP","NINDS","ACRIN","PS&CC"], viewHistory: [], email: "admin@email.com"}
+    {
+        username: 'nlm',
+        password: 'nlm',
+        siteAdmin: true,
+        orgAdmin: ["caBIG", "CTEP", "NINDS", "ACRIN", "PS&CC", "org / or Org"],
+        viewHistory: [],
+        email: "admin@email.com"
+    }
     , {username: 'cabigAdmin', password: 'pass', orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []}
     , {username: 'userToPromote', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'reguser', password: 'pass', quota: 1073741824, viewHistory: []}
