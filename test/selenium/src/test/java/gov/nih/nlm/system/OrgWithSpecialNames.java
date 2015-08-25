@@ -14,7 +14,6 @@ public class OrgWithSpecialNames extends BaseClassificationTest {
 
         new Select(findElement(By.cssSelector("select"))).selectByValue("org / or Org");
 
-//        createClassificationName("org / or Org", new String[]{"Basic Classif", "Sub / Classif"});
         createClassificationName("org / or Org", new String[]{"Sub / Classif"});
 
         goToCdeByName("SCI Classification light touch single side score");
