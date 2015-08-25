@@ -24,10 +24,10 @@ var globals = {
 var Form = conn.model('Form', form_schemas.formSchema);
 var oldForms;
 var numForms = 0;
-var cdeNotFound = [];
+var cdeNotFound = {};
 
 setTimeout(function () {
-        fs.readFile(__dirname + '/nindsForms.json', 'utf8', function (err, data) {
+        fs.readFile(__dirname + '/UnformattedNindsForms.json', 'utf8', function (err, data) {
             if (err) throw err;
             var newForms = [];
             oldForms = JSON.parse(data);
@@ -102,7 +102,7 @@ setTimeout(function () {
                     else {
                         mongo_cde.byOtherId("NINDS", cdeId, function (err, data) {
                             if (!data) {
-                                cdeNotFound.push(cdeId);
+                                cdeNotFound[cdeId] = cdeId;
                             } else {
                                 question.question.cde.tinyId = data.tinyId;
                                 question.question.cde.version = data.version;
@@ -119,13 +119,24 @@ setTimeout(function () {
                     newForms.push(newForm);
                     var i = oldForms.indexOf(oldForm) + 1;
                     console.log("form " + i + " pushed.");
-                    if (numForms === 700 || numForms === 1400 || numForms === 2100) {
-                        console.log("start saving 700 forms...");
+                    if (numForms === 700) {
+                        console.log("start saving first 700 forms...");
+                        fs.writeFile(__dirname + "/newForms.json", JSON.stringify(newForms), "utf8", function (err) {
+                            if (err) console.log(err);
+                            else {
+                                newForms = [];
+                                console.log("finish saving first 700 forms...");
+                            }
+                            formCallback();
+                        })
+                    }
+                    else if (numForms === 1400 || numForms === 2100) {
+                        console.log("start saving another 700 forms...");
                         fs.appendFile(__dirname + "/newForms.json", JSON.stringify(newForms), "utf8", function (err) {
                             if (err) console.log(err);
                             else {
                                 newForms = [];
-                                console.log("finish saving 700 forms...");
+                                console.log("finish saving another 700 forms...");
                             }
                             formCallback();
                         })
@@ -138,13 +149,14 @@ setTimeout(function () {
                 var end = new Date().getTime();
                 var time = end - start;
                 console.log("finished all forms.");
-                fs.appendFile(__dirname + "/newForms.json", JSON.stringify(newForms), "utf8", function (err) {
+                fs.appendFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
                     if (err) console.log(err);
                     else {
                         console.log("finish saving all forms");
                         console.log("size " + numForms);
                         console.log("Execution time: " + time);
-                        console.log("cannot found cde in db:" + cdeNotFound);
+                        console.log("!!!!!remember to replace ][ with space after this run!!!!")
+                        console.log("cannot found cde in db:\n" + Object.keys(cdeNotFound));
                     }
                 })
             })

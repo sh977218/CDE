@@ -58,7 +58,7 @@ var doNextForm = function (result) {
         formElements: [
             {
                 elementType: "section"
-                , label: "Main Section"
+                , label: ""
                 , cardinality: "0.1"
                 , formElements: []
             }
@@ -134,8 +134,14 @@ var doNextForm = function (result) {
 
 console.log("Parsing " + process.argv[2]);
 
-fs.readFile(process.argv[2], function (err, data) {
-    parser.parseString(data, function (err, result) {
-        doNextForm(result);
-    });
+fs.readFile(process.argv[2], 'utf8', function (err, data) {
+    if (err) throw err;
+    else {
+        parser.parseString(data, function (err, result) {
+            if (err) throw err;
+            else {
+                doNextForm(result);
+            }
+        });
+    }
 });

@@ -7,10 +7,9 @@ var fs = require('fs'),
     config = require('config'),
     mongo_data_system = require('../modules/system/node-js/mongo-data'),
     crypto = require('crypto'),
+    MongoClient = require('mongodb').MongoClient,
     async = require('async');
 
-
-var MongoClient = require('mongodb').MongoClient;
 var conn = mongoose.createConnection("mongodb://siteRootAdmin:password@localhost:27017/test", {auth: {authdb: "admin"}});
 conn.on('error', console.error.bind(console, 'connection error:'));
 conn.once('open', function callback() {
@@ -51,40 +50,44 @@ getHash = function (f) {
     var s = f.naming[0].designation + copy + cdesStr;
     return md5sum.update(s).digest('hex');
 };
-
-fs.readFile(__dirname + '/newForms.json', 'utf8', function (err, data) {
-    if (err)
-        throw err;
-    else {
-        var newForms = [];
-        var allForms = {};
-        unmergedForms = JSON.parse(data);
-        unmergedForms.forEach(function (unmergedForm) {
-            var hash = getHash(unmergedForm);
-            if (allForms[hash] === null || allForms[hash] === undefined) {
-                allForms[hash] = unmergedForm;
-            }
+setTimeout(function () {
+        fs.readFile(__dirname + '/FormattedNindsForms.json', 'utf8', function (err, data) {
+            if (err)
+                throw err;
             else {
-                var existingForm = allForms[hash];
-                addClassification(existingForm, unmergedForm);
+                var newForms = [];
+                var allForms = {};
+                unmergedForms = JSON.parse(data);
+                unmergedForms.forEach(function (unmergedForm) {
+                    var hash = getHash(unmergedForm);
+                    if (allForms[hash] === null || allForms[hash] === undefined) {
+                        allForms[hash] = unmergedForm;
+                    }
+                    else {
+                        var existingForm = allForms[hash];
+                        addClassification(existingForm, unmergedForm);
+                    }
+                })
+
+                async.eachSeries(Object.keys(allForms), function (key, cb) {
+                    var f = allForms[key];
+                    mongo_form.create(f, user, function (err, newForm) {
+                        if (err) {
+                            console.log(err);
+                            throw err;
+                        }
+                        else {
+                            cb();
+                        }
+                    })
+
+                }, function doneAll() {
+                    console.log("loaded all forms into db. cheers!");
+                });
             }
         })
-
-        async.eachSeries(Object.keys(allForms), function (key, cb) {
-            var f = allForms[key];
-            mongo_form.create(f, user, function (err, newForm) {
-                if (err) {
-                    console.log(err);
-                    throw err;
-                }
-                else {
-                    cb();
-                }
-            })
-
-        }, function doneAll() {
-        });
-    }
-})
+    },
+    3000
+);
 
 
