@@ -2,7 +2,8 @@ angular.module('FormRenderer', ['ui.bootstrap'])
 .config(['$compileProvider', function($compileProvider) {
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }])
-.controller('FormRenderCtrl', ['$scope', '$http', '$location', '$window', function ($scope, $http, $location, $window) {
+.controller('FormRenderCtrl', ['$scope', '$http', '$routeParams', '$window', function ($scope, $http, $routeParams, $window)
+{
    
     $scope.reload = function(id) {
         $http.get('/form/' + id).then(function(result) {
@@ -18,7 +19,9 @@ angular.module('FormRenderer', ['ui.bootstrap'])
            delete $scope.myForm.stewardOrg;
         });
     };
-                
+
+    if ()
+
     $scope.reload(location.search.substring(4));
 
     $scope.addSection = function(section, formElements, index) {
