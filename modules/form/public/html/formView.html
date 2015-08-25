@@ -31,7 +31,14 @@
 
     <div tabset>
         <div tab heading="{{tabs['general'].heading}}">
-            <div ng-include="'/form/public/html/formGeneralDetails.html'"></div>
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <div ng-include="'/form/public/html/formGeneralDetails.html'"></div>
+                </div>
+                <div class="col-xs-12 col-md-6">
+                    <div ng-include="'/form/public/html/formRender.html'"></div>
+                </div>
+            </div>
         </div>
         <div tab heading="{{tabs['description'].heading}}">
             <div ng-include="'/form/public/html/formDescription.html'"></div>
