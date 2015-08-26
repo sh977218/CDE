@@ -166,8 +166,8 @@ var processCde = function (migrationCde, existingCde, orgName) {
                 });
             });
         } catch (e) {
-            console.log(newDe);
-            console.log(existingCde);
+            console.log("newDe:\n" + newDe);
+            console.log("existingCde:\n" + existingCde);
             throw e;
         }
 

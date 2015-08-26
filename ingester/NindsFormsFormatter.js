@@ -67,6 +67,18 @@ setTimeout(function () {
                 });
                 var questions = newForm.formElements[0].formElements;
                 async.eachSeries(oldForm.cdes, function (cde, cdeCallback) {
+                    var pvs = cde.permissibleValue.trim().split(';');
+                    var pdv = cde.permissibleDescription.trim().split(';');
+                    var answers = [];
+                    for (var m = 0; m < pvs.length; m++) {
+                        if (pvs[m] !== "" && pdv[m] !== "") {
+                            var answer = {
+                                permissibleValue: pvs[m],
+                                valueMeaningName: pdv[m]
+                            }
+                            answers.push(answer);
+                        }
+                    }
                     var question =
                     {
                         "elementType": "question",
@@ -92,7 +104,7 @@ setTimeout(function () {
                                     type: false
                                 }
                             },
-                            answers: []
+                            answers: answers
                         }
                     }
                     var cdeId = cde.cdeId;
@@ -108,7 +120,6 @@ setTimeout(function () {
                                 question.question.cde.version = data.version;
                                 if (data.valueDomain.datatype === 'Value List') {
                                     question.question.cde.permissibleValues = data.valueDomain.permissibleValues;
-                                    question.question.answers = data.valueDomain.permissibleValues;
                                 }
                                 questions.push(question);
                             }

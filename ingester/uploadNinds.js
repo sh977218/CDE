@@ -145,28 +145,17 @@ parseCde = function (obj, cb) {
 
     var permValues = [];
     if (dataType === "Value List") {
-        if (obj["External ID.NINDS"] === "C17177") {
-            console.log("found you");
-        }
         var answers = obj["Permissible Values"].split(";");
         var descs = obj["Permissible Value Descriptions"].split(";");
-        var checkPermissible = {};
         for (var i = 0; i < answers.length; i++) {
-            var permi = answers[i];
-            if (checkPermissible[permi] == null) {
-                var permValue = {};
-                permValue.permissibleValue = answers[i];
-                if (i < descs.length) {
-                    permValue.valueMeaningName = descs[i];
-                } else {
-                    permValue.valueMeaningName = answers[i];
-                }
-                permValues.push(permValue);
-                checkPermissible[permi] = permi;
+            var permValue = {};
+            permValue.permissibleValue = answers[i];
+            if (i < descs.length) {
+                permValue.valueMeaningName = descs[i];
             } else {
-                console.log("duplicated permissible value found in\n " + cde);
-                console.log("duplicated permissible value " + permi);
+                permValue.valueMeaningName = answers[i];
             }
+            permValues.push(permValue);
         }
     }
     vd.permissibleValues = permValues;
