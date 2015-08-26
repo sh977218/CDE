@@ -2,7 +2,7 @@
     <div class="panel-heading">
         <h4>
             <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeElt(parent, $index)"
-               title="Remove Section" ng-show="canCurate" id="removeElt-{{$index}}"></i>
+               title="Remove Section" ng-if="canCurate" id="removeElt-{{$index}}"></i>
             <strong><i ng-if="canCurate" class="fa fa-arrows section-move-handle"></i>
 
                 <div id="section_title_{{$index}}" inline-edit model="section.label" is-allowed="canCurate"
