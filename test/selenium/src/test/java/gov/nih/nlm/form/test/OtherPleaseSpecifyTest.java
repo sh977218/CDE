@@ -35,14 +35,12 @@ public class OtherPleaseSpecifyTest extends BaseFormTest {
         saveForm();
         scrollToTop();
 
-        findElement(By.id("formLocalPreview")).click();
-        switchTab(1);
+        findElement(By.linkText("General Details")).click();
         textPresent("Patient Gender Category");
 
         new Select(findElement(By.cssSelector("select"))).selectByValue("otherPleaseSpecify");
         findElement(By.xpath("//input[@placeholder='Please Specify']")).sendKeys("Transgender");
 
-        switchTabAndClose(0);
     }
 
 }

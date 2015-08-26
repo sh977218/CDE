@@ -132,4 +132,25 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
         $scope.stageElt();
     };
 
+    $scope.canBeDisplayedAsMatrix = function(section) {
+        var result = true;
+        var answerHash;
+        section.formElements.forEach(function(fe) {
+            if (fe.elementType !== 'question') {
+                return result = false;
+            } else {
+                if (fe.question.datatype !== "Value List") {
+                    return result = false;
+                }
+                if (!answerHash) {
+                    answerHash = angular.toJson(fe.question.answers);
+                }
+                if (answerHash !== angular.toJson(fe.question.answers)) {
+                    return result = false;
+                }
+            }
+        });
+        return result;
+    };
+
 }]);
