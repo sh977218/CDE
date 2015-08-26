@@ -1,8 +1,11 @@
-angular.module('systemModule').controller('RegistrationModalCtrl', ['$scope', '$modalInstance', '$http', 'elt', 'siteAdmin', function($scope, $modalInstance, $http, elt, siteAdmin) {
+angular.module('systemModule').controller('RegistrationModalCtrl',
+    ['$scope', '$modalInstance', '$http', 'elt', 'siteAdmin',
+        function ($scope, $modalInstance, $http, elt, siteAdmin)
+{
     $scope.elt = elt;
     $scope.validRegStatuses = ['Incomplete', 'Candidate', 'Retired'];
     
-    $http.get('/org/' + $scope.elt.stewardOrg.name).then(function(res) {
+    $http.get('/org/' + encodeURIComponent($scope.elt.stewardOrg.name)).then(function(res) {
        if (!res.data.workingGroupOf || res.data.workingGroupOf.length < 1) {
            $scope.validRegStatuses = $scope.validRegStatuses.concat(['Recorded', 'Qualified']);
            if (siteAdmin) {
@@ -10,7 +13,6 @@ angular.module('systemModule').controller('RegistrationModalCtrl', ['$scope', '$
            }
        }
     });
-     
     
     $scope.setHelpMessage = function() {
         regStatusShared.statusList.forEach(function(status) {
