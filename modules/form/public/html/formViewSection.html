@@ -46,6 +46,15 @@
                                id="edit_section_card_{{$index}}"></i> {{cardinalityOptions[section.cardinality]}}
                         </span>
                     </dd>
+                    <dt tabindex="0" ng-hide="$first && $last">Move:</dt>
+                    <dd tabindex="0">
+                        <div ng-show="canCurate">
+                            <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}"
+                               ng-hide="$first"></i>
+                            <i ng-click="moveElt($index, 1)" class="fa fa-arrow-down" id="moveEltDown-{{$index}}"
+                               ng-hide="$last"></i>
+                        </div>
+                    </dd>
                     <span ng-show="canCurate">
                         <dt tabindex="0">Delete:</dt>
                         <dd tabindex="0">
