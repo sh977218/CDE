@@ -17,6 +17,8 @@ var setPage = function (p) {
     };
 };
 
+var outputFileName = "./nida-forms.json";
+
 setPage(page);
 
 var saveFile = function(content){
@@ -25,15 +27,11 @@ var saveFile = function(content){
 
 var loadDone = function(){
     fs.write(outputFileName, "]", 'a');
-    //phantom.exit();
-    forms = formsEHR;
-    outputFileName = "./nida-formsEHR.json";
-    try {
-        fs.remove(outputFileName);
-    }catch(e){}
-    fs.write(outputFileName, "[", 'a');
-    getForm(0);
+    phantom.exit();
 };
+
+fs.remove(outputFileName);
+fs.write(outputFileName, "[", 'a');
 
 page.open('http://cde.drugabuse.gov/instruments', function(status) {
 
@@ -54,9 +52,12 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
         return document.querySelector(selector).innerHTML;
     };
 
-    var formsCR = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
-    var formsEHR = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(2) a");
-    console.log("Total nr. of forms: " + (formsCR.length + formsEHR.length));
+    //var forms = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
+    var forms = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(2) a");
+    //var classif = "Clinical Research";
+    var classif = "Electronic Health Records";
+    console.log("Total nr. of forms: " + forms.length);
+
 
     var getForm = function (index) {
         console.log("Loading form " + index);
@@ -73,7 +74,7 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
             if(pdfForm[0]) v = pdfForm[0].name.split(/(-|_)/).filter(function(s, i){return s.length>1 && i!==0;}).join(" ");
             if (v) v = v.replace(".pdf","");
             var desc = subPage.evaluate(getTextContent, ".field-name-field-description .field-item");
-            var cdeForm = {name: nidaForm.name, sections: [], classification: ["Clinical Research"], description: desc};
+            var cdeForm = {name: nidaForm.name, sections: [], classification: [classif], description: desc};
             if (v) cdeForm.version = v;
             var getSection = function(i){
                 var s = sections[i];
@@ -104,13 +105,6 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
         });
     };
 
-    var outputFileName = "./nida-formsCR.json";
-    try {
-        fs.remove(outputFileName);
-    }catch(e){}
-    fs.write(outputFileName, "[", 'a');
-    var forms = formsCR;
     getForm(0);
-
 
 });
