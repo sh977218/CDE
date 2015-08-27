@@ -77,12 +77,12 @@ schemas.orgSchema.set('collection', 'orgs');
 schemas.userSchema.set('collection', 'users');
 
 schemas.namingSchema = new mongoose.Schema({
-    designation: String
-    , definition: String
+    designation: {type: String, required: true}
+    , definition: {type: String, required: true}
     , definitionFormat: String
     , languageCode: String
     , context: {
-        contextName: String
+        contextName: {type: String, required: true}
         , acceptability: String
     }
 }, {_id: false});

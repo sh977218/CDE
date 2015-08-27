@@ -20,16 +20,20 @@ var setPage = function (p) {
 setPage(page);
 
 var saveFile = function(content){
-    fs.write("./nida-forms.csv", content, 'a');
+    fs.write(outputFileName, content, 'a');
 };
 
 var loadDone = function(){
-    fs.write("./nida-forms.csv", "]", 'a');
-    phantom.exit();
+    fs.write(outputFileName, "]", 'a');
+    //phantom.exit();
+    forms = formsEHR;
+    outputFileName = "./nida-formsEHR.json";
+    try {
+        fs.remove(outputFileName);
+    }catch(e){}
+    fs.write(outputFileName, "[", 'a');
+    getForm(0);
 };
-
-fs.remove("./nida-forms.csv");
-fs.write("./nida-forms.csv", "[", 'a');
 
 page.open('http://cde.drugabuse.gov/instruments', function(status) {
 
@@ -46,37 +50,67 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
         return results;
     };
 
-    var formsCR = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
+    var getTextContent = function(selector){
+        return document.querySelector(selector).innerHTML;
+    };
 
-    var forms = formsCR;
+    var formsCR = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
+    var formsEHR = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(2) a");
+    console.log("Total nr. of forms: " + (formsCR.length + formsEHR.length));
 
     var getForm = function (index) {
         console.log("Loading form " + index);
         var nidaForm = forms[index];
         var subPage = webpage.create();
         setPage(subPage);
-        console.log("Opening 1st level: " + nidaForm.name);
         subPage.open(nidaForm.url, function(status) {
-            console.log("Opened 1st level: " + nidaForm.name);
             if (status !== "success") {
                 console.log("\n\nERROR Loading "+nidaForm.name+"\n\n");
             }
             var sections = subPage.evaluate(findChildrenLinks, "div.content > table.tableheader-processed td a");
+            var pdfForm = subPage.evaluate(findChildrenLinks, ".file a");
+            var v;
+            if(pdfForm[0]) v = pdfForm[0].name.split(/(-|_)/).filter(function(s, i){return s.length>1 && i!==0;}).join(" ");
+            if (v) v = v.replace(".pdf","");
+            var desc = subPage.evaluate(getTextContent, ".field-name-field-description .field-item");
+            var cdeForm = {name: nidaForm.name, sections: [], classification: ["Clinical Research"], description: desc};
+            if (v) cdeForm.version = v;
+            var getSection = function(i){
+                var s = sections[i];
+                var sectionPage = webpage.create();
+                sectionPage.open(s.url, function(status) {
+                    if (status !== "success") throw "cannot load url" + s.url;
+                    var ids = sectionPage.evaluate(findChildrenLinks, "td:nth-child(2) a");
+                    var labels = sectionPage.evaluate(findChildrenLinks, "td:nth-child(1) a");
+                    var newSection = {name: s.name, questions: []};
+                    ids.forEach(function(id, ind){
+                        newSection.questions.push({id: id.name, label: labels[ind].name});
+                    });
+                    cdeForm.sections.push(newSection);
+                    sectionPage.close();
+                    if (sections[i+1]) {
+                        getSection(i+1);
+                    } else {
+                        saveFile(JSON.stringify(cdeForm) + (forms[index+1]?",":"") +"\n");
+                        console.log("Saving form: " + cdeForm.name);
+                        subPage.close();
+                        if (forms[index+1] && forms[index+1].name.indexOf('PROMIS')==-1) getForm(index+1);
+                        else loadDone();
+                    }
 
-            var cdeForm = {name: nidaForm.name, sections: []};
-
-            sections.forEach(function(s){
-                cdeForm.sections.push({
-                    name: s.name
                 });
-            });
-            saveFile(JSON.stringify(cdeForm) + (forms[index+1]?",":"") +"\n");
-            subPage.close();
-            if (forms[index+1]) getForm(index+1);
-            else loadDone();
+            };
+            getSection(0);
         });
     };
 
+    var outputFileName = "./nida-formsCR.json";
+    try {
+        fs.remove(outputFileName);
+    }catch(e){}
+    fs.write(outputFileName, "[", 'a');
+    var forms = formsCR;
     getForm(0);
+
 
 });
