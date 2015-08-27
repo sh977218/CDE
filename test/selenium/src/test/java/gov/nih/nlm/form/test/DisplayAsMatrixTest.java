@@ -14,22 +14,22 @@ public class DisplayAsMatrixTest extends BaseFormTest {
         findElement(By.id("li-blank-Neuro-QOL Measures")).click();
         findElement(By.id("li-blank-Adult Short Forms")).click();
         findElement(By.partialLinkText("Neuro-QOL SF v1.0 - Fatigue")).click();
-        findElement(By.xpath("//a[@title='Full Detail for Neuro-QOL SF v1.0 - Fatigue]")).click();
+        findElement(By.xpath("//a[@title='Full Detail for Neuro-QOL SF v1.0 - Fatigue']")).click();
         textPresent("I felt exhausted");
         Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 0);
-        Assert.assertEquals(driver.findElements(By.xpath("//select")).size(), 8);
+        Assert.assertEquals(driver.findElements(By.xpath("//select[@ng-model='question.question.answer']")).size(), 8);
         findElement(By.linkText("Form Description")).click();
 
         // because question "I felt tired has different list, no display as matrix is shown
         textNotPresent("Display as Matrix");
-        findElement(By.id("remove_q_6")).click();
+        clickElement(By.id("remove_q_6"));
         textPresent("Display as Matrix");
         findElement(By.id("displayAsMatrix_0")).click();
         saveForm();
         goToFormByName("Neuro-QOL SF v1.0 - Fatigue");
         textPresent("I felt exhausted");
         Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 35);
-        Assert.assertEquals(driver.findElements(By.xpath("//select")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//select[@ng-model='question.question.answer']")).size(), 0);
     }
 
 }
