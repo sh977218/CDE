@@ -17,7 +17,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
     $scope.updateOrg = function() {
         $timeout(function () {
             if ($scope.orgToManage !== undefined) {
-                $http.get("/org/" + $scope.orgToManage).then(function(response) {
+                $http.get("/org/" + encodeURIComponent($scope.orgToManage)).then(function(response) {
                     $scope.org = response.data;
                 });
             }

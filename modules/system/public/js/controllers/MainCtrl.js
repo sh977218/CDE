@@ -2,7 +2,8 @@ angular.module('systemModule').controller('MainCtrl',
     ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
         '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', '$rootScope', '$route',
         function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
-                 $interval, $window, screenSize, OrgHelpers, QuickBoard, $rootScope, $route) {
+                 $interval, $window, screenSize, OrgHelpers, QuickBoard, $rootScope, $route)
+{
 
 
     $rootScope.$on("$routeChangeSuccess", function(currentRoute, previousRoute){
@@ -37,7 +38,11 @@ angular.module('systemModule').controller('MainCtrl',
             $scope.boards = response.data;
         });         
     };    
-    
+
+    $scope.canCreateForms = function() {
+        return $scope.isOrgCurator() && window.formEnabled && (window.formEditable || $scope.isSiteAdmin());
+    };
+
     $scope.checkSystemAlert = function() {
         $http.get('/systemAlert').then(function (response) {
            if (response.data.length > 0) {

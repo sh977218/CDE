@@ -16,6 +16,7 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.tabs = {
         general: {heading: "General Details"},
         description: {heading: "Form Description"},
+        naming: {heading: "Naming"},
         classification: {heading: "Classification"},
         concepts: {heading: "Concepts"},
         status: {heading: "Status"},
@@ -47,8 +48,9 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.reload = function () {
         Form.get(query, function (form) {
             $scope.elt = form;
-            if (window.formEditable)
+            if ($scope.isSiteAdmin() || window.formEditable) {
                 isAllowedModel.setCanCurate($scope);
+            }
             isAllowedModel.setDisplayStatusWarning($scope);
         }, function() {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
