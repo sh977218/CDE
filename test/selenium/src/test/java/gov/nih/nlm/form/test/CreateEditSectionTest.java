@@ -31,9 +31,6 @@ public class CreateEditSectionTest extends BaseFormTest {
         scrollToTop();
         findElement(By.linkText("Form Description")).click();
 
-        findElement(By.id("moveEltUp-1")).click();
-        findElement(By.id("moveEltDown-1")).click();
-        
         saveForm();
         findElement(By.linkText("Form Description")).click();
 
@@ -69,7 +66,6 @@ public class CreateEditSectionTest extends BaseFormTest {
         findElement(By.linkText("Form Description")).click();
         
         Assert.assertEquals("Section 1", findElement(By.id("section_title_1")).getText());
-
         
     }
 
