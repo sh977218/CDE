@@ -31,9 +31,6 @@ public class CreateEditSectionTest extends BaseFormTest {
         scrollToTop();
         findElement(By.linkText("Form Description")).click();
 
-        saveForm();
-        findElement(By.linkText("Form Description")).click();
-
         Assert.assertEquals("Section 2", findElement(By.id("section_title_0")).getText());
         Assert.assertEquals("Section 3", findElement(By.id("section_title_1")).getText());
         Assert.assertEquals("Section 1", findElement(By.id("section_title_2")).getText());
