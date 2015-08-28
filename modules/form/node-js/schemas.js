@@ -4,21 +4,20 @@ var mongoose = require('mongoose')
     , config = require("config")
     ;
 
-var questionSchema = {
-    cde: {
-        tinyId: String
-        , version: String
-        , permissibleValues: [sharedSchemas.permissibleValueSchema]
-    }
+var questionSchema =  {
+    cde: {tinyId: String, version: String}
     , datatype: String
     , uoms: [String]
-    , required: {type: Boolean, default: false}
-    , editable: {type: Boolean, default: true}
+    , required: Boolean
     , multiselect: Boolean
     , otherPleaseSpecify: {
         value: {type: Boolean, default: false}
     }
     , answers: [sharedSchemas.permissibleValueSchema]
+};
+
+var sectionSchema = {    
+
 };
 
 var formElementTreeRoot = {
@@ -42,10 +41,7 @@ for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
         elementType: {type: String, enum: ['section', 'question']}
         , label: String
         , instructions: String
-        , cardinality: {
-            min: String,
-            max: String
-        }
+        , cardinality: String
         , repeatsFor: String
         , showIfExpression: String
         , section: sectionSchema
@@ -64,10 +60,10 @@ var formElementSchema = new Schema(formElementTreeRoot, {_id: false});
 
 exports.formSchema = new Schema({
     tinyId: String
-    , naming: [sharedSchemas.namingSchema]
+    , naming: [sharedSchemas.namingSchema]     
     , stewardOrg: {
         name: String
-    }
+    }    
     , version: String
     , registrationState: sharedSchemas.registrationStateSchema
     , properties: [
@@ -75,7 +71,7 @@ exports.formSchema = new Schema({
     ]
     , ids: [
         {source: String, id: String, version: String, _id: false}
-    ]
+    ] 
     , isCopyrighted: {type: Boolean, default: false}
     , copyright: {
         authority: String
@@ -86,22 +82,13 @@ exports.formSchema = new Schema({
     , comments: [sharedSchemas.commentSchema]
     , history: [mongoose.Schema.Types.ObjectId]
     , created: Date
-    , updated: Date
-    , imported: Date
     , createdBy: {
         userId: mongoose.Schema.Types.ObjectId
         , username: String
     }
-    , updated: Date
-    , updatedBy: {
-        userId: mongoose.Schema.Types.ObjectId
-        , username: String
-    }
-    , imported: Date
     , formElements: [formElementSchema]
     , archived: Boolean
     , classification: [sharedSchemas.classificationSchema]
-    , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 });
 
 exports.formSchema.set('collection', 'forms');
