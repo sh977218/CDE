@@ -22,7 +22,7 @@ var questionSchema =  {
 };
 
 var sectionSchema = {    
-
+    displayAsMatrix: {type: Boolean, default: false}
 };
 
 var formElementTreeRoot = {

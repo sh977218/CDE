@@ -37,11 +37,9 @@ public class SkipLogicTest extends BaseFormTest {
         scrollToTop();
         findElement(By.linkText("Form Description")).click();        
         findElement(By.cssSelector(".section_view .section_view .skipLogicCondition")).sendKeys("\"Patient Gender Category\" = \"Female Gender\"");
-        saveForm(); 
-        findElement(By.linkText("Form Description")).click();
-        findElement(By.id("formPreview")).click();
-        switchTab(1);
-        
+        saveForm();
+
+        findElement(By.linkText("General Details")).click();
         textNotPresent("Female Patient Screening");
         new Select(findElement(By.xpath("//div[label[text()=\"Patient Gender Category\"]]/following-sibling::div//select"))).selectByValue("Female Gender");
         textPresent("Female Patient Screening");
@@ -50,14 +48,14 @@ public class SkipLogicTest extends BaseFormTest {
         
         findElement(By.xpath("//span[text()=\"Person Birth Date\" and contains(@id, 'question_accordion')]")).click();
         findElement(By.xpath("//*[@class=\"formQuestion_Person Birth Date\"]//*[contains(@class,'skipLogicCondition ')]")).sendKeys("\"Patient Gender Category\" = \"Female Gender\"");
-        saveForm(); 
-        findElement(By.id("formPreview")).click();
-        switchTab(1);
+        saveForm();
+
+        findElement(By.linkText("General Details")).click();
+
         textNotPresent("Person Birth Date");
         new Select(findElement(By.xpath("//div[label[text()=\"Patient Gender Category\"]]/following-sibling::div//select"))).selectByValue("Female Gender");
         textPresent("Person Birth Date");        
-        switchTabAndClose(0); 
-        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());        
+        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
     }
     
 }
