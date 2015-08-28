@@ -32,4 +32,5 @@
 { "_id" : { "$oid" : "5488b8bb7dd428a18b626e94" }, "name" : "WG-TEST", "workingGroupOf" : "caCORE", "classifications" : [ { "name" : "WG Classif", "elements" : [ { "name" : "WG Sub Classif" } ] } ] }
 { "_id" : { "$oid" : "54984b9552088382b2c5b5eb" }, "name" : "NINDS-WG-1", "workingGroupOf" : "NINDS", "classifications" : [ { "name" : "WG1 Classif", "elements" : [ { "name" : "WG1 Sub Classif" } ] } ] }
 { "_id" : { "$oid" : "54984b9552088382b2c5b5ec" }, "name" : "NINDS-WG-2", "workingGroupOf" : "NINDS", "classifications" : [ { "name" : "WG2 Classif", "elements" : [ { "name" : "WG2 Sub Classif" } ] } ] }
-{ "name" : "PROMIS", "_id" : { "$oid" : "54cfebe825f9dd8825e38203" }, "classifications" : [], "__v" : 0 }
+{ "_id" : { "$oid" : "54cfebe825f9dd8825e38203" }, "name" : "PROMIS", "classifications" : [], "__v" : 0 }
+{ "_id" : { "$oid" : "55de246fa3664d142bb6594e" }, "name" : "PROMIS / Neuro-QOL", "classifications" : [], "__v" : 0 }
