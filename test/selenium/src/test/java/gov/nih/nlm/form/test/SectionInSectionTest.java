@@ -43,16 +43,16 @@ public class SectionInSectionTest extends BaseFormTest {
         saveForm();        
         goToFormByName(formName, "Incomplete");
         findElement(By.linkText("Form Description")).click();        
-        findElement(By.xpath("//div[@id=\"section_drop_area_0\"]//div[@id=\"section_drop_area_child\"]//span[text()=\"First-Line Therapy Chemotherapy Regimen Name\"]")); 
-        
-        findElement(By.id("formPreview")).click();
-        switchTab(1);
-        findElement(By.xpath("//div[@id=\"formRenderSection_Medical History\"]//div[@id=\"formRenderSection_Treatment Details\"]//label[text()='First-Line Therapy Chemotherapy Regimen Name']"));        
+        findElement(By.xpath("//div[@id=\"section_drop_area_0\"]//div[@id=\"section_drop_area_child\"]//span[text()=\"First-Line Therapy Chemotherapy Regimen Name\"]"));
+
+        findElement(By.linkText("General Details")).click();
+
+        findElement(By.xpath("//div[@id=\"formRenderSection_Medical History\"]//div[@id=\"formRenderSection_Treatment Details\"]//label[text()='First-Line Therapy Chemotherapy Regimen Name']"));
         Assert.assertTrue(driver.findElements(By.xpath("//*[text()=\"Treatment Details\"]")).size() == 1); 
         findElement(By.xpath("//*[text()=\" Add One\"]")).click();
         Assert.assertTrue(driver.findElements(By.xpath("//*[text()=\"Treatment Details\"]")).size() == 2);              
-        switchTabAndClose(0);
-        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());        
+
+        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
     }
     
     

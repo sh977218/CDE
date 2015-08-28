@@ -21,8 +21,6 @@ var questionSchema = {
     , answers: [sharedSchemas.permissibleValueSchema]
 };
 
-var sectionSchema = {};
-
 var formElementTreeRoot = {
     elementType: {type: String, enum: ['section', 'question']}
     , label: String
