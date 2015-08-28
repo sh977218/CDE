@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 public class FormRefDocumentTest extends ReferenceDocumentTest {
 
     protected void goToElt(String eltName) {
-        goToCdeByName(eltName);
+        goToFormByName(eltName);
     }
 
     @Test
