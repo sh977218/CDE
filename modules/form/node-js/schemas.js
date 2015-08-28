@@ -99,6 +99,7 @@ exports.formSchema = new Schema({
     , formElements: [formElementSchema]
     , archived: Boolean
     , classification: [sharedSchemas.classificationSchema]
+    , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 });
 
 exports.formSchema.set('collection', 'forms');
