@@ -10,7 +10,7 @@ public class FormRefDocumentTest extends ReferenceDocumentTest {
     }
 
     @Test
-    public void cdeReferenceDocumentTest() {
+    public void formReferenceDocumentTest() {
         referenceDocumentTest("PROMIS SF v1.0-Anxiety 8a");
     }
 
