@@ -135,17 +135,19 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
     $scope.canBeDisplayedAsMatrix = function(section) {
         var result = true;
         var answerHash;
-        section.formElements.forEach(function(fe) {
-            if (fe.elementType !== 'question') {
+        section.formElements.forEach(function(formElem) {
+            if (formElem.elementType !== 'question') {
                 return result = false;
             } else {
-                if (fe.question.datatype !== "Value List") {
+                if (formElem.question.datatype !== "Value List") {
                     return result = false;
                 }
+                if (formElem.question.answers.length === 0 || !formElem.question.answers[0].valueMeaningName)
+                    return result = false;
                 if (!answerHash) {
-                    answerHash = angular.toJson(fe.question.answers);
+                    answerHash = angular.toJson(formElem.question.answers.map(function(a) {return a.valueMeaningName}));
                 }
-                if (answerHash !== angular.toJson(fe.question.answers)) {
+                if (answerHash !== angular.toJson(formElem.question.answers.map(function(a) {return a.valueMeaningName}))) {
                     return result = false;
                 }
             }
