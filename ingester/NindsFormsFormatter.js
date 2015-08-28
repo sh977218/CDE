@@ -1,4 +1,4 @@
-var start = new Date().getTime();
+var timeStart = new Date().getTime();
 
 var fs = require('fs'),
     mongoose = require('mongoose'),
@@ -45,6 +45,9 @@ setTimeout(function () {
                     referenceDocuments: [{
                         uri: oldForm.downloads
                     }],
+                    registrationState: {
+                        registrationStatus: "Qualified"
+                    },
                     formElements: [{
                         elementType: "section",
                         label: "",
@@ -90,7 +93,7 @@ setTimeout(function () {
                                 version: ""
                                 , permissibleValues: []
                             },
-                            datatype: "",
+                            datatype: cde.dataType,
                             uoms: [],
                             required: {
                                 type: false
@@ -120,6 +123,7 @@ setTimeout(function () {
                                 question.question.cde.version = data.version;
                                 if (data.valueDomain.datatype === 'Value List') {
                                     question.question.cde.permissibleValues = data.valueDomain.permissibleValues;
+                                    question.question.datatype = data.valueDomain.datatype;
                                 }
                                 questions.push(question);
                             }
@@ -130,9 +134,10 @@ setTimeout(function () {
                     newForms.push(newForm);
                     var i = oldForms.indexOf(oldForm) + 1;
                     console.log("form " + i + " pushed.");
+
                     if (numForms === 700) {
                         console.log("start saving first 700 forms...");
-                        fs.writeFile(__dirname + "/newForms.json", JSON.stringify(newForms), "utf8", function (err) {
+                        fs.writeFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
                             if (err) console.log(err);
                             else {
                                 newForms = [];
@@ -143,7 +148,7 @@ setTimeout(function () {
                     }
                     else if (numForms === 1400 || numForms === 2100) {
                         console.log("start saving another 700 forms...");
-                        fs.appendFile(__dirname + "/newForms.json", JSON.stringify(newForms), "utf8", function (err) {
+                        fs.appendFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
                             if (err) console.log(err);
                             else {
                                 newForms = [];
@@ -155,18 +160,19 @@ setTimeout(function () {
                     else {
                         formCallback();
                     }
+
                 });
             }, function doneAllForm() {
-                var end = new Date().getTime();
-                var time = end - start;
+                var timeEnd = new Date().getTime();
+                var timeTake = timeEnd - timeStart;
                 console.log("finished all forms.");
                 fs.appendFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
                     if (err) console.log(err);
                     else {
                         console.log("finish saving all forms");
                         console.log("size " + numForms);
-                        console.log("Execution time: " + time);
-                        console.log("!!!!!remember to replace ][ with space after this run!!!!")
+                        console.log("Execution time: " + timeTake);
+                        console.log("!!!!!remember to replace '][' with ',' manually after this run!!!!")
                         console.log("cannot found cde in db:\n" + Object.keys(cdeNotFound));
                     }
                 })

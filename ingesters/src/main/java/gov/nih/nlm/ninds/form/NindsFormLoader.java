@@ -1,5 +1,8 @@
 package gov.nih.nlm.ninds.form;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -7,15 +10,18 @@ import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class NindsFormLoader implements Runnable {
+    private class Error {
+        String error;
+    }
+
     String url = "http://www.commondataelements.ninds.nih.gov/CRF.aspx";
     DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
     WebDriver driver;
@@ -23,8 +29,21 @@ public class NindsFormLoader implements Runnable {
     Collection forms;
     int pageStart;
     int pageEnd;
+    String userName = "siteRootAdmin";
+    String database = "admin";
+    String password = "password";
+    MongoCredential credential = null;
+    MongoClient mongoClient = null;
+    MongoOperations mongoOps = null;
+    MongoOperations mongoErr = null;
 
     public NindsFormLoader(Collection f, int ps, int pe) {
+
+        credential = MongoCredential.createCredential(userName, database, password.toCharArray());
+        mongoClient = new MongoClient(new ServerAddress("localhost:27017"), Arrays.asList(credential));
+        mongoOps = new MongoTemplate(mongoClient, "nindsforms");
+        mongoErr = new MongoTemplate(mongoClient, "error");
+
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, 60);
@@ -96,49 +115,56 @@ public class NindsFormLoader implements Runnable {
         List<WebElement> trs = driver.findElements(By.cssSelector("#ContentPlaceHolder1_dgCRF > tbody > tr"));
         for (int i = 1; i < trs.size(); i++) {
             List<WebElement> tds = trs.get(i).findElements(By.cssSelector("td"));
-            MyForm form = new MyForm();
-            int index = 1;
-            for (int j = 0; j < tds.size(); j++) {
-                WebElement td = tds.get(j);
-                String text = td.getText().replace("\"", " ").trim();
-                if (index == 1)
-                    form.crfModuleGuideline = text;
-                if (index == 2)
-                    form.description = text;
-                if (index == 3) {
-                    List<WebElement> img = td.findElements(By.cssSelector("img"));
-                    if (img.size() > 0) {
-                        form.copyRight = "true";
+            try {
+                MyForm form = new MyForm();
+                int index = 1;
+                for (int j = 0; j < tds.size(); j++) {
+                    WebElement td = tds.get(j);
+                    String text = td.getText().replace("\"", " ").trim();
+                    if (index == 1)
+                        form.crfModuleGuideline = text;
+                    if (index == 2)
+                        form.description = text;
+                    if (index == 3) {
+                        List<WebElement> img = td.findElements(By.cssSelector("img"));
+                        if (img.size() > 0) {
+                            form.copyRight = "true";
+                        }
                     }
-                }
-                if (index == 4) {
-                    hangon(5);
-                    List<WebElement> a = td.findElements(By.cssSelector("a"));
-                    if (a.size() > 0) {
-                        String href = a.get(0).getAttribute("href");
-                        form.downloads = href;
+                    if (index == 4) {
+                        hangon(5);
+                        List<WebElement> a = td.findElements(By.cssSelector("a"));
+                        if (a.size() > 0) {
+                            String href = a.get(0).getAttribute("href");
+                            form.downloads = href;
+                        }
                     }
-                }
-                if (index == 5) {
-                    List<WebElement> as = td.findElements(By.cssSelector("a"));
-                    if (as.size() > 0) {
-                        WebElement a = as.get(0);
-                        getCdes(form, a);
+                    if (index == 5) {
+                        List<WebElement> as = td.findElements(By.cssSelector("a"));
+                        if (as.size() > 0) {
+                            WebElement a = as.get(0);
+                            getCdes(form, a);
+                        }
                     }
+                    if (index == 6)
+                        form.versionNum = text;
+                    if (index == 7)
+                        form.versionDate = text;
+                    if (index == 8) {
+                        form.diseaseName = text;
+                    }
+                    if (index == 9) {
+                        form.subDiseaseName = text;
+                    }
+                    index++;
                 }
-                if (index == 6)
-                    form.versionNum = text;
-                if (index == 7)
-                    form.versionDate = text;
-                if (index == 8) {
-                    form.diseaseName = text;
-                }
-                if (index == 9) {
-                    form.subDiseaseName = text;
-                }
-                index++;
+                mongoOps.save(form);
+            } catch (Exception e) {
+                Error err = new Error();
+                err.error = e.toString();
+                mongoErr.save(err);
+                e.printStackTrace();
             }
-            forms.add(form);
         }
         if (pageStart < pageEnd) {
             findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();

@@ -1,11 +1,5 @@
 package gov.nih.nlm.ninds.form;
 
-import com.google.gson.Gson;
-
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -15,13 +9,13 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class NindsFormRunner {
 
     public static void main(String[] args) {
-        long startTime = System.currentTimeMillis();
+        long timeStart = System.currentTimeMillis();
         Collection<MyForm> myForms = new CopyOnWriteArraySet<MyForm>();
-        Thread[] t = new Thread[9];
+        Thread[] t = new Thread[1];
 
-        NindsFormLoader runner1 = new NindsFormLoader(myForms, 1, 3);
+        NindsFormLoader runner1 = new NindsFormLoader(myForms, 1, 1);
         t[0] = new Thread(runner1);
-        NindsFormLoader runner2 = new NindsFormLoader(myForms, 4, 6);
+/*        NindsFormLoader runner2 = new NindsFormLoader(myForms, 4, 6);
         t[1] = new Thread(runner2);
         NindsFormLoader runner3 = new NindsFormLoader(myForms, 7, 9);
         t[2] = new Thread(runner3);
@@ -37,7 +31,7 @@ public class NindsFormRunner {
         t[7] = new Thread(runner8);
         NindsFormLoader runner9 = new NindsFormLoader(myForms, 25, 26);
         t[8] = new Thread(runner9);
-
+*/
 
         for (int i = 0; i < t.length; i++) {
             t[i].start();
@@ -49,32 +43,8 @@ public class NindsFormRunner {
                 e.printStackTrace();
             }
         }
-        long endTime = System.currentTimeMillis();
-        long totalTime = (endTime - startTime) / 6000;
-        String info = "forms size: " + myForms.size() + ". time takes: " + totalTime + " minutes";
-        MyForm myForm = new MyForm();
-        myForm.crfModuleGuideline = info;
-        myForms.add(myForm);
-        saveToJson(myForms);
+        long timeEnd = System.currentTimeMillis();
+        long timeTake = (timeEnd - timeStart) / 6000;
     }
 
-    public static void saveToJson(Collection<MyForm> forms) {
-        Gson gson = new Gson();
-        String json = gson.toJson(forms);
-        try {
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("C:\\NLMCDE\\nindsFormsChrist.json")
-                    , "UTF-8"
-            ));
-
-            out.write(json);
-            out.close();
-
-        } catch (IOException e) {
-            System.out.println("exception of writing to file.");
-            e.printStackTrace();
-        } finally {
-            System.out.println("All done. forms size: " + forms.size());
-        }
-    }
 }

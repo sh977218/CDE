@@ -22,13 +22,15 @@ var user = {
     "username": "batchloader"
 };
 
-addClassification = function (existingForm, unmergedForm) {
+mergeClassification = function (existingForm, unmergedForm) {
     var existingDiseases = existingForm.classification[0].elements[0].elements;
     var unmergedDisease = unmergedForm.classification[0].elements[0].elements[0];
     var unmergedSubDisease = unmergedForm.classification[0].elements[0].elements[0].elements[0];
     var mergeDisease = true;
     for (var i = 0; i < existingDiseases.length; i++) {
         var existingDisease = existingDiseases[i];
+        if (unmergedDisease.name === "AmyotrophicLateralSclerosis" || unmergedDisease.name === "Amyotrophic Lateral Sclerosis")
+            console.log("aaaa");
         if (existingDisease.name === unmergedDisease.name) {
             mergeDisease = false;
             if (existingDisease.elements.indexOf(unmergedSubDisease) != -1)
@@ -65,7 +67,7 @@ setTimeout(function () {
                     }
                     else {
                         var existingForm = allForms[hash];
-                        addClassification(existingForm, unmergedForm);
+                        mergeClassification(existingForm, unmergedForm);
                     }
                 })
 
