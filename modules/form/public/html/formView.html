@@ -49,6 +49,9 @@
         <div tab heading="{{tabs['status'].heading}}">
             <div ng-include="'/system/public/html/status.html'"></div>
         </div>
+        <div tab heading="{{tabs['referenceDocument'].heading}}" active="tabs['referenceDocument'].active">
+            <div ng-include="'/system/public/html/referenceDocument.html'"></div>
+        </div>
         <div tab heading="{{tabs['properties'].heading}}" active="tabs['properties'].active">
             <div ng-include="'/system/public/html/properties.html'"></div>
         </div>

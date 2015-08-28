@@ -1,14 +1,14 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.common.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class ReferenceDocumentTest extends NlmCdeBaseTest {
+public abstract class ReferenceDocumentTest extends NlmCdeBaseTest {
 
-    @Test
-    void referenceDocumentTest() {
-        String cde_name = "Person Gender Text Type";
+    protected abstract void goToElt(String name);
+
+    protected void referenceDocumentTest(String eltName) {
         String id = "test id";
         String title = "test title";
         String uri = "www.nih.gov";
@@ -17,8 +17,8 @@ public class ReferenceDocumentTest extends NlmCdeBaseTest {
         String document = "very very very long test document";
 
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName(cde_name);
-        findElement(By.linkText("Reference Document")).click();
+        goToElt(eltName);
+        findElement(By.linkText("Reference Documents")).click();
         findElement(By.id("addReferenceDocument")).click();
         textPresent("Add New Reference Document");
 
