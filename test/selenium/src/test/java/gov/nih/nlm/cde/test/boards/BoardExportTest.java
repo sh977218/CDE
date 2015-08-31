@@ -22,7 +22,7 @@ public class BoardExportTest extends BoardTest {
         goToSearch("cde");
         findElement(By.id("browseOrg-caBIG")).click();
         hangon(1);
-        findElement(By.id("pinAll")).click();
+        clickElement(By.id("pinAll"));
         textPresent("Select Board");
         findElement(By.linkText(board_name)).click();
         textPresent("All elements pinned.");
