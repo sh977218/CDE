@@ -16,10 +16,12 @@ angular.module('systemModule').controller('ReferenceDocumentCtrl', ['$scope', '$
         });
 
         modalInstance.result.then(function (newReferenceDocument) {
-            for (var i = 0; i < $scope.elt.referenceDocuments.length; i++) {
-                if ($scope.elt.referenceDocuments[i].referenceDocumentId === newReferenceDocument.referenceDocumentId) {
-                    $scope.addAlert("danger", "This reference document already exists.");
-                    return;
+            if (newReferenceDocument.referenceDocumentId) {
+                for (var i = 0; i < $scope.elt.referenceDocuments.length; i++) {
+                    if ($scope.elt.referenceDocuments[i].referenceDocumentId === newReferenceDocument.referenceDocumentId) {
+                        $scope.addAlert("danger", "This reference document already exists.");
+                        return;
+                    }
                 }
             }
             $scope.elt.referenceDocuments.push(newReferenceDocument);
