@@ -46,7 +46,6 @@ app.use('/kibana/', function(req, res, next) {
     req.pipe(request('http://localhost:5601' + req.url)).on('error', function(err) {res.sendStatus(500)}).pipe(res);
 });
 
-
 process.on('uncaughtException', function (err) {
     console.log("ERROR1: " + err);
     logging.errorLogger.error("Error: Uncaught Exception", {stack: err.stack, origin: "app.process.uncaughtException"});
@@ -183,9 +182,7 @@ try {
     process.exit();
 }
 
-app.get('/robots.txt', function(req, res){
-    res.sendFile('robots.txt', {root: __dirname});
-});
+app.use('/robots.txt', express.static(path.join(__dirname, '/modules/system/public/robots.txt')));
 
 app.use(function(err, req, res, next){
     console.log("ERROR3: " + err);
