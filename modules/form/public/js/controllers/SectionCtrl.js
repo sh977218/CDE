@@ -75,6 +75,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
             }
             $scope.stageElt();
         }
+        , update: function(e, ui) {$scope.stageElt();}
     };
 
     $scope.openNameSelect = function (question) {
