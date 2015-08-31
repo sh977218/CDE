@@ -20,10 +20,8 @@ setTimeout(function() {
             }
             , registrationState: {registrationStatus: "Incomplete"}
             , properties: [
-                //{key: String, value: String, valueFormat: String, _id: false}
             ]
             , ids: [
-                //{source: String, id: String, version: String, _id: false}
             ]
             , isCopyrighted: true
             , copyright: {
@@ -37,7 +35,20 @@ setTimeout(function() {
                 stewardOrg: {name: "NIDA"}
                 , elements: [{name: nidaForm.classification[0], elements: []}]
             }]
+            , referenceDocuments: []
         };
+
+        if (nidaForm.referenceDocument) newCdeForm.referenceDocuments.push({
+            docType: String,
+            document: String,
+            referenceDocumentId: String,
+            text: String,
+            uri: String,
+            providerOrg: String,
+            title: String,
+            languageCode: String,
+            _id: false
+        });
 
         if (nidaForm.version) newCdeForm.version = nidaForm.version;
 
@@ -54,7 +65,6 @@ setTimeout(function() {
                     newSection.formElements.push({
                         elementType: 'question'
                         , label: q.label
-                        , instructions: cde.naming[0].definition
                         , cardinality: "1"
                         , question: {
                             cde: {

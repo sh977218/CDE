@@ -52,10 +52,10 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
         return document.querySelector(selector).innerHTML;
     };
 
-    //var forms = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
-    var forms = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(2) a");
-    //var classif = "Clinical Research";
-    var classif = "Electronic Health Records";
+    var forms = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
+    //var forms = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(2) a");
+    var classif = "Clinical Research";
+    //var classif = "Electronic Health Records";
     console.log("Total nr. of forms: " + forms.length);
 
 
