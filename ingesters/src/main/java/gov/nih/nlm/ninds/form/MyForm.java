@@ -12,4 +12,6 @@ public class MyForm {
     String versionDate;
     String diseaseName;
     String subDiseaseName;
+    String domainName;
+    String subDomainName;
 }

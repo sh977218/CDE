@@ -1,11 +1,11 @@
 var start = new Date().getTime();
 
 var fs = require('fs'),
-    form_schemas = require('../modules/form/node-js/schemas'),
-    mongo_form = require('../modules/form/node-js/mongo-form'),
+    form_schemas = require('../../modules/form/node-js/schemas'),
+    mongo_form = require('../../modules/form/node-js/mongo-form'),
     mongoose = require('mongoose'),
     config = require('config'),
-    mongo_data_system = require('../modules/system/node-js/mongo-data'),
+    mongo_data_system = require('../../modules/system/node-js/mongo-data'),
     crypto = require('crypto'),
     MongoClient = require('mongodb').MongoClient,
     async = require('async');
@@ -22,15 +22,13 @@ var user = {
     "username": "batchloader"
 };
 
-mergeClassification = function (existingForm, unmergedForm) {
+mergeClassificationAndDomain = function (existingForm, unmergedForm) {
     var existingDiseases = existingForm.classification[0].elements[0].elements;
     var unmergedDisease = unmergedForm.classification[0].elements[0].elements[0];
     var unmergedSubDisease = unmergedForm.classification[0].elements[0].elements[0].elements[0];
     var mergeDisease = true;
     for (var i = 0; i < existingDiseases.length; i++) {
         var existingDisease = existingDiseases[i];
-        if (unmergedDisease.name === "AmyotrophicLateralSclerosis" || unmergedDisease.name === "Amyotrophic Lateral Sclerosis")
-            console.log("aaaa");
         if (existingDisease.name === unmergedDisease.name) {
             mergeDisease = false;
             if (existingDisease.elements.indexOf(unmergedSubDisease) != -1)
@@ -40,6 +38,24 @@ mergeClassification = function (existingForm, unmergedForm) {
     if (mergeDisease) {
         existingDiseases.push(unmergedDisease);
     }
+
+
+    var existingDomain = existingForm.classification[0].elements[1].elements;
+    var unmergedDomain = unmergedForm.classification[0].elements[1].elements[0];
+    var unmergedSubDomain = unmergedForm.classification[0].elements[1].elements[0].elements[0];
+    var mergeDomain = true;
+    for (var i = 0; i < existingDomain.length; i++) {
+        var existingDomain = existingDomain[i];
+        if (existingDomain.name === unmergedDomain.name) {
+            mergeDomain = false;
+            if (existingDomain.elements.indexOf(unmergedSubDomain) != -1)
+                existingDomain.elements.push(unmergedSubDomain);
+        }
+    }
+    if (mergeDomain) {
+        existingDomain.push(unmergedDomain);
+    }
+
 }
 
 getHash = function (f) {
@@ -67,7 +83,7 @@ setTimeout(function () {
                     }
                     else {
                         var existingForm = allForms[hash];
-                        mergeClassification(existingForm, unmergedForm);
+                        mergeClassificationAndDomain(existingForm, unmergedForm);
                     }
                 })
 

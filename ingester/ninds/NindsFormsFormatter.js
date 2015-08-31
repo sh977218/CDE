@@ -3,9 +3,9 @@ var timeStart = new Date().getTime();
 var fs = require('fs'),
     mongoose = require('mongoose'),
     config = require('config'),
-    mongo_cde = require('../modules/cde/node-js/mongo-cde'),
-    form_schemas = require('../modules/form/node-js/schemas'),
-    mongo_data_system = require('../modules/system/node-js/mongo-data'),
+    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
+    form_schemas = require('../../modules/form/node-js/schemas'),
+    mongo_data_system = require('../../modules/system/node-js/mongo-data'),
     async = require('async');
 
 
@@ -27,7 +27,7 @@ var numForms = 0;
 var cdeNotFound = {};
 
 setTimeout(function () {
-        fs.readFile(__dirname + '/UnformattedNindsForms.json', 'utf8', function (err, data) {
+        fs.readFile(__dirname + '/input/UnformattedNindsForms.json', 'utf8', function (err, data) {
             if (err) throw err;
             var newForms = [];
             oldForms = JSON.parse(data);
@@ -62,6 +62,15 @@ setTimeout(function () {
                                 name: oldForm.diseaseName,
                                 elements: [{
                                     name: oldForm.subDiseaseName,
+                                    elements: []
+                                }]
+                            }]
+                        }, {
+                            name: "Domain",
+                            elements: [{
+                                name: oldForm.domainName,
+                                elements: [{
+                                    name: oldForm.subDomainName,
                                     elements: []
                                 }]
                             }]
@@ -172,7 +181,7 @@ setTimeout(function () {
                         console.log("finish saving all forms");
                         console.log("size " + numForms);
                         console.log("Execution time: " + timeTake);
-                        console.log("!!!!!remember to replace '][' with ',' manually after this run!!!!")
+                        console.log("!!!!!remember to replace '][' with ',' manually after this run!!!!");
                         console.log("cannot found cde in db:\n" + Object.keys(cdeNotFound));
                     }
                 })

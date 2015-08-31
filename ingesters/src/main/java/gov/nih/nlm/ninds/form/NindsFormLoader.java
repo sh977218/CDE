@@ -1,8 +1,6 @@
 package gov.nih.nlm.ninds.form;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
+import com.google.gson.Gson;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,44 +8,50 @@ import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.*;
+import java.util.List;
 
 public class NindsFormLoader implements Runnable {
-    private class Error {
-        String error;
-    }
-
+    Map<String, String> diseaseMap = new HashMap<String, String>();
     String url = "http://www.commondataelements.ninds.nih.gov/CRF.aspx";
-    DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
     WebDriver driver;
     WebDriverWait wait;
-    Collection forms;
+    Collection forms = new ArrayList();
     int pageStart;
     int pageEnd;
-    String userName = "siteRootAdmin";
-    String database = "admin";
-    String password = "password";
-    MongoCredential credential = null;
-    MongoClient mongoClient = null;
-    MongoOperations mongoOps = null;
-    MongoOperations mongoErr = null;
 
-    public NindsFormLoader(Collection f, int ps, int pe) {
+    public NindsFormLoader(int ps, int pe) {
+        diseaseMap.put("General (For all diseases)", "General.aspx");
+        diseaseMap.put("Amyotrophic Lateral Sclerosis", "ALS.aspx");
+        diseaseMap.put("Epilepsy", "Epilepsy.aspx");
+        diseaseMap.put("Friedreich's Ataxia", "FA.aspx");
+        diseaseMap.put("Headache", "Headache.aspx");
+        diseaseMap.put("Huntington's Disease", "HD.aspx");
+        diseaseMap.put("Mitochondrial Disease", "MITO.aspx");
+        diseaseMap.put("Multiple Sclerosis", "MS.aspx");
+        diseaseMap.put("Neuromuscular Diseases", "NMD.aspx");
+        diseaseMap.put("Congenital Muscular Dystrophy", "CMD.aspx");
+        diseaseMap.put("Duchenne Muscular Dystrophy/Becker Muscular Dystrophy", "DMD.aspx");
+        diseaseMap.put("Facioscapulohumeral Muscular Dystrophy", "FSHD.aspx");
+        diseaseMap.put("Myasthenia Gravis", "MG.aspx");
+        diseaseMap.put("Myotonic Muscular Dystrophy", "MMD.aspx");
+        diseaseMap.put("Spinal Muscular Atrophy", "SMA.aspx");
+        diseaseMap.put("Parkinson's Disease", "PD.aspx");
+        diseaseMap.put("Spinal Cord Injury", "SCI.aspx");
+        diseaseMap.put("Stroke", "Stroke.aspx");
+        diseaseMap.put("Traumatic Brain Injury", "TBI.aspx");
 
-        credential = MongoCredential.createCredential(userName, database, password.toCharArray());
-        mongoClient = new MongoClient(new ServerAddress("localhost:27017"), Arrays.asList(credential));
-        mongoOps = new MongoTemplate(mongoClient, "nindsforms");
-        mongoErr = new MongoTemplate(mongoClient, "error");
 
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 60);
-        this.forms = f;
+        wait = new WebDriverWait(driver, 120);
         this.pageStart = ps;
         this.pageEnd = pe;
     }
@@ -56,6 +60,7 @@ public class NindsFormLoader implements Runnable {
     public void run() {
         goToNindsSiteAndGoToPageOf(pageStart);
         findAndSaveToForms(forms, pageStart, pageEnd);
+        saveToJson(forms);
         driver.close();
     }
 
@@ -71,7 +76,7 @@ public class NindsFormLoader implements Runnable {
         textPresent("Page: 1 of 1");
         hangon(10);
         findElement(By.id("ContentPlaceHolder1_btnSearch")).click();
-        textPresent("2517 items found.");
+        textPresent("2549 items found.");
         textPresent("Page: 1 of 26");
 
         String sortHeadSelector = "#ContentPlaceHolder1_dgCRF > tbody > tr:nth-child(1) > th:nth-child(1) > a";
@@ -115,56 +120,73 @@ public class NindsFormLoader implements Runnable {
         List<WebElement> trs = driver.findElements(By.cssSelector("#ContentPlaceHolder1_dgCRF > tbody > tr"));
         for (int i = 1; i < trs.size(); i++) {
             List<WebElement> tds = trs.get(i).findElements(By.cssSelector("td"));
-            try {
-                MyForm form = new MyForm();
-                int index = 1;
-                for (int j = 0; j < tds.size(); j++) {
-                    WebElement td = tds.get(j);
-                    String text = td.getText().replace("\"", " ").trim();
-                    if (index == 1)
-                        form.crfModuleGuideline = text;
-                    if (index == 2)
-                        form.description = text;
-                    if (index == 3) {
-                        List<WebElement> img = td.findElements(By.cssSelector("img"));
-                        if (img.size() > 0) {
-                            form.copyRight = "true";
-                        }
+            MyForm form = new MyForm();
+            int index = 1;
+            boolean grabDomain = true;
+            for (int j = 0; j < tds.size(); j++) {
+                WebElement td = tds.get(j);
+                String text = td.getText().replace("\"", " ").trim();
+                if (index == 1)
+                    form.crfModuleGuideline = text;
+                if (index == 2)
+                    form.description = text;
+                if (index == 3) {
+                    List<WebElement> img = td.findElements(By.cssSelector("img"));
+                    if (img.size() > 0) {
+                        form.copyRight = "true";
                     }
-                    if (index == 4) {
-                        hangon(5);
-                        List<WebElement> a = td.findElements(By.cssSelector("a"));
-                        if (a.size() > 0) {
-                            String href = a.get(0).getAttribute("href");
-                            form.downloads = href;
-                        }
-                    }
-                    if (index == 5) {
-                        List<WebElement> as = td.findElements(By.cssSelector("a"));
-                        if (as.size() > 0) {
-                            WebElement a = as.get(0);
-                            getCdes(form, a);
-                        }
-                    }
-                    if (index == 6)
-                        form.versionNum = text;
-                    if (index == 7)
-                        form.versionDate = text;
-                    if (index == 8) {
-                        form.diseaseName = text;
-                    }
-                    if (index == 9) {
-                        form.subDiseaseName = text;
-                    }
-                    index++;
                 }
-                mongoOps.save(form);
-            } catch (Exception e) {
-                Error err = new Error();
-                err.error = e.toString();
-                mongoErr.save(err);
-                e.printStackTrace();
+                if (index == 4) {
+                    hangon(5);
+                    List<WebElement> a = td.findElements(By.cssSelector("a"));
+                    if (a.size() > 0) {
+                        String href = a.get(0).getAttribute("href");
+                        form.downloads = href;
+                    }
+                }
+                if (index == 5) {
+                    List<WebElement> as = td.findElements(By.cssSelector("a"));
+                    if (as.size() > 0) {
+                        WebElement a = as.get(0);
+                        getCdes(form, a);
+                        grabDomain = false;
+                    }
+                }
+                if (index == 6)
+                    form.versionNum = text;
+                if (index == 7)
+                    form.versionDate = text;
+                if (index == 8) {
+                    form.diseaseName = text;
+                }
+                if (index == 9) {
+                    form.subDiseaseName = text;
+                }
+                index++;
             }
+            if (grabDomain) {
+                Robot robot = null;
+                try {
+                    robot = new Robot();
+                    robot.keyPress(KeyEvent.VK_CONTROL);
+                    robot.keyPress(KeyEvent.VK_T);
+                    robot.keyRelease(KeyEvent.VK_T);
+                    robot.keyRelease(KeyEvent.VK_CONTROL);
+                    switchTab(1);
+                    driver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.diseaseName));
+                    String subDomianSelector = "//tr[th/a/span[text() = '" + form.crfModuleGuideline + "']]/preceding-sibling::tr[th[@class='subrow']]";
+                    String domianSelector = "//table[.//tr[th/a/span[text() = '" + form.crfModuleGuideline + "']]]/preceding-sibling::a[1]";
+                    String subDomain = findElement(By.xpath(subDomianSelector)).getText().trim();
+                    String domain = findElement(By.xpath(domianSelector)).getText().trim();
+                    form.domainName = domain;
+                    form.subDomainName = subDomain;
+                    switchTabAndClose(0);
+                } catch (AWTException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            forms.add(form);
         }
         if (pageStart < pageEnd) {
             findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
@@ -277,9 +299,11 @@ public class NindsFormLoader implements Runnable {
                 }
                 if (index == 18) {
                     cde.subDomain = text;
+                    form.subDomainName = text;
                 }
                 if (index == 19) {
                     cde.domain = text;
+                    form.domainName = text;
                 }
                 if (index == 20) {
                     cde.previousTitle = text;
@@ -340,6 +364,29 @@ public class NindsFormLoader implements Runnable {
     WebElement findElement(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
+    }
+
+    public void saveToJson(Collection<MyForm> forms) {
+        String info = "forms size without info: " + forms.size();
+        MyForm myForm = new MyForm();
+        myForm.crfModuleGuideline = info;
+        forms.add(myForm);
+        Gson gson = new Gson();
+        String json = gson.toJson(forms);
+        try {
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream("C:\\NLMCDE\\nindsFormsChrist" + pageStart + "-" + pageEnd + ".json")
+                    , "UTF-8"
+            ));
+            out.write(json);
+            out.close();
+        } catch (IOException e) {
+            System.out.println("exception of writing to file.");
+            e.printStackTrace();
+        } finally {
+            System.out.println("nindsFormsChrist" + pageStart + "-" + pageEnd + ".json done.");
+            System.out.println("forms size after info: " + forms.size());
+        }
     }
 
 }
