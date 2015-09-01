@@ -17,7 +17,7 @@ public class NindsFormRunner {
         for (int i = 0; i < t.length; i++) {
             try {
                 t[i].join();
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
