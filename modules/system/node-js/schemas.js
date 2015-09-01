@@ -82,7 +82,7 @@ schemas.namingSchema = new mongoose.Schema({
     , definitionFormat: String
     , languageCode: String
     , context: {
-        contextName: {type: String, required: true}
+        contextName: String
         , acceptability: String
     }
 }, {_id: false});
