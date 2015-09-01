@@ -61,10 +61,10 @@ setTimeout(function () {
                             name: "Disease",
                             elements: [{
                                 name: oldForm.diseaseName,
-                                elements: [{
-                                    name: oldForm.diseaseName === "Traumatic Brain Injury" ? oldForm.subDiseaseName : null,
+                                elements: oldForm.diseaseName === "Traumatic Brain Injury" ? [{
+                                    name: oldForm.subDiseaseName,
                                     elements: []
-                                }]
+                                }] : []
                             }]
                         }, {
                             name: "Domain",
