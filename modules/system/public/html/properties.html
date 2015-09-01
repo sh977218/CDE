@@ -1,7 +1,6 @@
 <div ng-controller="PropertiesCtrl">
     <h4 tabindex="0">Properties</h4>
-{{canCurate}}
-    {{elt.properties.length}}
+
     <div tabindex="0" ng-if="elt.properties.length === 0">There are no properties.</div>
     <div ng-repeat="prop in elt.properties">
         <div class="row">
