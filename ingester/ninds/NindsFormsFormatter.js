@@ -68,9 +68,9 @@ setTimeout(function () {
                         }, {
                             name: "Domain",
                             elements: [{
-                                name: oldForm.domainName,
+                                name: oldForm.domainName === undefined ? "" : oldForm.domainName,
                                 elements: [{
-                                    name: oldForm.subDomainName,
+                                    name: oldForm.subDomainName === undefined ? "" : oldForm.subDomainName,
                                     elements: []
                                 }]
                             }]

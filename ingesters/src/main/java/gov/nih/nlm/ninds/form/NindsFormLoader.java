@@ -23,7 +23,7 @@ public class NindsFormLoader implements Runnable {
     String url = "http://www.commondataelements.ninds.nih.gov/CRF.aspx";
     WebDriver driver;
     WebDriverWait wait;
-    Collection forms = new ArrayList();
+    Collection<MyForm> forms = new ArrayList<MyForm>();
     int pageStart;
     int pageEnd;
 
@@ -48,7 +48,6 @@ public class NindsFormLoader implements Runnable {
         diseaseMap.put("Stroke", "Stroke.aspx");
         diseaseMap.put("Traumatic Brain Injury", "TBI.aspx");
 
-
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, 120);
@@ -58,13 +57,30 @@ public class NindsFormLoader implements Runnable {
 
     @Override
     public void run() {
+        openTab();
         goToNindsSiteAndGoToPageOf(pageStart);
         findAndSaveToForms(forms, pageStart, pageEnd);
         saveToJson(forms);
         driver.close();
     }
 
+    void openTab() {
+        try {
+            Robot r = new Robot();
+            r.keyPress(KeyEvent.VK_CONTROL);
+            r.keyPress(KeyEvent.VK_T);
+            r.keyRelease(KeyEvent.VK_T);
+            r.keyRelease(KeyEvent.VK_CONTROL);
+            Thread.sleep(5000);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
     void goToNindsSiteAndGoToPageOf(int pageStart) {
+        switchTab(1);
         driver.get(url);
         textPresent("or the external links, please contact the NINDS CDE Project Officer, Joanne Odenkirchen, MPH.");
         hangon(10);
@@ -147,9 +163,9 @@ public class NindsFormLoader implements Runnable {
                 if (index == 5) {
                     List<WebElement> as = td.findElements(By.cssSelector("a"));
                     if (as.size() > 0) {
+                        grabDomain = true;
                         WebElement a = as.get(0);
                         getCdes(form, a);
-                        grabDomain = false;
                     }
                 }
                 if (index == 6)
@@ -164,34 +180,28 @@ public class NindsFormLoader implements Runnable {
                 }
                 index++;
             }
-            if (grabDomain) {
-                Robot robot = null;
-                try {
-                    robot = new Robot();
-                    robot.keyPress(KeyEvent.VK_CONTROL);
-                    robot.keyPress(KeyEvent.VK_T);
-                    robot.keyRelease(KeyEvent.VK_T);
-                    robot.keyRelease(KeyEvent.VK_CONTROL);
-                    switchTab(1);
-                    driver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.diseaseName));
-                    String subDomianSelector = "//tr[th/a/span[text() = '" + form.crfModuleGuideline + "']]/preceding-sibling::tr[th[@class='subrow']]";
-                    String domianSelector = "//table[.//tr[th/a/span[text() = '" + form.crfModuleGuideline + "']]]/preceding-sibling::a[1]";
-                    String subDomain = findElement(By.xpath(subDomianSelector)).getText().trim();
-                    String domain = findElement(By.xpath(domianSelector)).getText().trim();
-                    form.domainName = domain;
-                    form.subDomainName = subDomain;
-                    switchTabAndClose(0);
-                } catch (AWTException e) {
-                    e.printStackTrace();
-                }
-
-            }
+            if (grabDomain)
+                getDomainAndSubDomain(form);
             forms.add(form);
         }
         if (pageStart < pageEnd) {
             findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
             findAndSaveToForms(forms, pageStart + 1, pageEnd);
         }
+    }
+
+    void getDomainAndSubDomain(MyForm form) {
+        switchTab(0);
+        driver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.diseaseName));
+        String subDomianSelector = "//*[contains(text(),\"" + form.crfModuleGuideline
+                + "\")]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]]";
+        String domianSelector = "//*[contains(text(),\"" + form.crfModuleGuideline
+                + "\")]/ancestor::table/preceding-sibling::a[1]";
+        String subDomain = findElement(By.xpath(subDomianSelector)).getText().trim();
+        String domain = findElement(By.xpath(domianSelector)).getText().trim();
+        form.domainName = domain;
+        form.subDomainName = subDomain;
+        switchTab(1);
     }
 
     boolean tableIsLoad() {
@@ -208,7 +218,7 @@ public class NindsFormLoader implements Runnable {
     void getCdes(MyForm form, WebElement a) {
         a.click();
         hangon(5);
-        switchTab(1);
+        switchTab(2);
         getCdesList(form);
         String cdesTotalPageStr = findElement(By.id("viewer_ctl01_ctl01_ctl04")).getText();
         int cdesTotalPage = Integer.valueOf(cdesTotalPageStr);
@@ -222,14 +232,14 @@ public class NindsFormLoader implements Runnable {
                 getCdesList(form);
             }
         }
-        switchTabAndClose(0);
+        switchTabAndClose(1);
     }
 
     void refreshSession() {
-        switchTab(0);
+        switchTab(1);
         findElement(By.id("ContentPlaceHolder1_lbDownload")).click();
         hangon(10);
-        switchTab(1);
+        switchTab(2);
     }
 
     void getCdesList(MyForm form) {
@@ -240,6 +250,7 @@ public class NindsFormLoader implements Runnable {
             List<WebElement> tds = tr.findElements(By.cssSelector("td"));
             int index = 1;
             Cde cde = new Cde();
+            int noise = 0;
             for (int j = 0; j < tds.size(); j++) {
                 WebElement td = tds.get(j);
                 String text = td.getText().replace("\"", " ").trim();
@@ -292,47 +303,48 @@ public class NindsFormLoader implements Runnable {
                     cde.crfModuleGuideline = text;
                 }
                 if (index == 17) {
-                    List<WebElement> img = td.findElements(By.cssSelector("img"));
-                    if (img.size() > 0) {
+                    List<WebElement> table = td.findElements(By.cssSelector("table"));
+                    if (table.size() > 0) {
                         cde.copyRight = "true";
+                        noise = 1;
                     }
                 }
-                if (index == 18) {
+                if (index == 18 + noise) {
                     cde.subDomain = text;
                     form.subDomainName = text;
                 }
-                if (index == 19) {
+                if (index == 19 + noise) {
                     cde.domain = text;
                     form.domainName = text;
                 }
-                if (index == 20) {
+                if (index == 20 + noise) {
                     cde.previousTitle = text;
                 }
-                if (index == 21) {
+                if (index == 21 + noise) {
                     cde.size = text;
                 }
-                if (index == 22) {
+                if (index == 22 + noise) {
                     cde.inputRestrictions = text;
                 }
-                if (index == 23) {
+                if (index == 23 + noise) {
                     cde.minValue = text;
                 }
-                if (index == 24) {
+                if (index == 24 + noise) {
                     cde.maxValue = text;
                 }
-                if (index == 25) {
+                if (index == 25 + noise) {
                     cde.measurementType = text;
                 }
-                if (index == 26) {
+                if (index == 26 + noise) {
                     cde.loincID = text;
                 }
-                if (index == 27) {
+                if (index == 27 + noise) {
                     cde.snomed = text;
                 }
-                if (index == 28) {
+                if (index == 28 + noise) {
                     cde.cadsrID = text;
                 }
-                if (index == 29) {
+                if (index == 29 + noise) {
                     cde.cdiscID = text;
                 }
                 index++;
@@ -375,9 +387,7 @@ public class NindsFormLoader implements Runnable {
         String json = gson.toJson(forms);
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("C:\\NLMCDE\\nindsFormsChrist" + pageStart + "-" + pageEnd + ".json")
-                    , "UTF-8"
-            ));
+                    new FileOutputStream("C:\\NLMCDE\\nindsFormsChrist" + pageStart + ".json"), "UTF-8"));
             out.write(json);
             out.close();
         } catch (IOException e) {

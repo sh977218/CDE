@@ -61,13 +61,14 @@ public class NindsFormRunner {
         t[2] = new Thread(runner3);
         NindsFormLoader runner4 = new NindsFormLoader(24, 24);
         t[3] = new Thread(runner4);
+*/
 
         NindsFormLoader runner1 = new NindsFormLoader(25, 25);
         t[0] = new Thread(runner1);
+/*
         NindsFormLoader runner2 = new NindsFormLoader(26, 26);
-        t[1] = new Thread(runner2);
+        t[0] = new Thread(runner2);
 */
-
         for (int i = 0; i < t.length; i++) {
             t[i].start();
         }
