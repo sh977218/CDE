@@ -7,6 +7,7 @@ public class MyForm {
     String description;
     String copyRight;
     String downloads;
+    String downloadsTitle;
     ArrayList<Cde> cdes = new ArrayList<Cde>();
     String versionNum;
     String versionDate;

@@ -158,6 +158,7 @@ public class NindsFormLoader implements Runnable {
                     if (a.size() > 0) {
                         String href = a.get(0).getAttribute("href");
                         form.downloads = href;
+                        form.downloadsTitle = text;
                     }
                 }
                 if (index == 5) {
@@ -195,12 +196,15 @@ public class NindsFormLoader implements Runnable {
         driver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.diseaseName));
         String subDomianSelector = "//*[normalize-space(text())=\"" + form.crfModuleGuideline
                 + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]]";
-        String domianSelector = "//*[normalize-space(text()),\"" + form.crfModuleGuideline
+        String domianSelector = "//*[normalize-space(text())=\"" + form.crfModuleGuideline
                 + "\"]/ancestor::table/preceding-sibling::a[1]";
-        String subDomain = findElement(By.xpath(subDomianSelector)).getText().trim();
-        String domain = findElement(By.xpath(domianSelector)).getText().trim();
-        form.domainName = domain;
-        form.subDomainName = subDomain;
+
+        List<WebElement> subDomains = driver.findElements(By.xpath(subDomianSelector));
+        if (subDomains.size() > 0)
+            form.subDomainName = subDomains.get(0).getText().trim();
+        List<WebElement> domains = driver.findElements(By.xpath(domianSelector));
+        if (subDomains.size() > 0)
+            form.domainName = domains.get(0).getText().trim();
         switchTab(1);
     }
 

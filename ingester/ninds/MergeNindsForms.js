@@ -31,7 +31,7 @@ mergeClassificationAndDomain = function (existingForm, unmergedForm) {
         var existingDisease = existingDiseases[i];
         if (existingDisease.name === unmergedDisease.name) {
             mergeDisease = false;
-            if (existingDisease.elements.indexOf(unmergedSubDisease) != -1)
+            if (existingDisease.name === "Traumatic Brain Injury")
                 existingDisease.elements.push(unmergedSubDisease);
         }
     }

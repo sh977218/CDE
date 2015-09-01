@@ -43,6 +43,7 @@ setTimeout(function () {
                     }],
                     isCopyrighted: oldForm.copyRight == "true" ? true : false,
                     referenceDocuments: [{
+                        title: oldForm.downloadsTitle,
                         uri: oldForm.downloads
                     }],
                     registrationState: {
@@ -61,7 +62,7 @@ setTimeout(function () {
                             elements: [{
                                 name: oldForm.diseaseName,
                                 elements: [{
-                                    name: oldForm.subDiseaseName,
+                                    name: oldForm.diseaseName === "Traumatic Brain Injury" ? oldForm.subDiseaseName : null,
                                     elements: []
                                 }]
                             }]
