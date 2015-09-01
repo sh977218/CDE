@@ -277,10 +277,15 @@ angular.module('systemModule').controller('ListCtrl',
     });
 
     $scope.termSearch = function() {
+        $scope.searchSettings.page = 1;
         $scope.searchSettings.regStatuses = [];
         $scope.searchSettings.classification = [];
         $scope.altClassificationFilterMode = false;
         doSearch();
+    };
+
+    $scope.pageChange = function() {
+      doSearch();
     };
 
     var doSearch = function() {
