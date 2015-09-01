@@ -47,25 +47,26 @@ public class NindsFormRunner {
         NindsFormLoader runner1 = new NindsFormLoader(17, 17);
         t[0] = new Thread(runner1);
         NindsFormLoader runner2 = new NindsFormLoader(18, 18);
-        t[1] = new Thread(runner2);
+        t[0] = new Thread(runner2);
         NindsFormLoader runner3 = new NindsFormLoader(19, 19);
-        t[2] = new Thread(runner3);
+        t[0] = new Thread(runner3);
         NindsFormLoader runner4 = new NindsFormLoader(20, 20);
-        t[3] = new Thread(runner4);
-
+        t[0] = new Thread(runner4);
+*/
         NindsFormLoader runner1 = new NindsFormLoader(21, 21);
         t[0] = new Thread(runner1);
-        NindsFormLoader runner2 = new NindsFormLoader(22, 22);
-        t[1] = new Thread(runner2);
+/*
+		NindsFormLoader runner2 = new NindsFormLoader(22, 22);
+        t[0] = new Thread(runner2);
         NindsFormLoader runner3 = new NindsFormLoader(23, 23);
-        t[2] = new Thread(runner3);
+        t[0] = new Thread(runner3);
         NindsFormLoader runner4 = new NindsFormLoader(24, 24);
-        t[3] = new Thread(runner4);
-*/
+        t[0] = new Thread(runner4);
 
+/*
         NindsFormLoader runner1 = new NindsFormLoader(25, 25);
         t[0] = new Thread(runner1);
-/*
+
         NindsFormLoader runner2 = new NindsFormLoader(26, 26);
         t[0] = new Thread(runner2);
 */
