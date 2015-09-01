@@ -193,10 +193,10 @@ public class NindsFormLoader implements Runnable {
     void getDomainAndSubDomain(MyForm form) {
         switchTab(0);
         driver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.diseaseName));
-        String subDomianSelector = "//*[contains(text(),\"" + form.crfModuleGuideline
-                + "\")]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]]";
-        String domianSelector = "//*[contains(text(),\"" + form.crfModuleGuideline
-                + "\")]/ancestor::table/preceding-sibling::a[1]";
+        String subDomianSelector = "//*[normalize-space(text())=\"" + form.crfModuleGuideline
+                + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]]";
+        String domianSelector = "//*[normalize-space(text()),\"" + form.crfModuleGuideline
+                + "\"]/ancestor::table/preceding-sibling::a[1]";
         String subDomain = findElement(By.xpath(subDomianSelector)).getText().trim();
         String domain = findElement(By.xpath(domianSelector)).getText().trim();
         form.domainName = domain;
