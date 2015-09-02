@@ -3,8 +3,8 @@
 
     <div tabindex="0" ng-if="elt.referenceDocuments.length === 0">There are no reference documents.</div>
     <div ng-repeat="rd in elt.referenceDocuments">
-        <div class="row" ng-if="canCurate && elt.referenceDocuments.length > 0">
-            <div class="col-md-1 text-right">
+        <div class="row">
+            <div class="col-md-1 text-right" ng-if="canCurate">
                 <div class="row">
                 <span ng-show="showDelete">Confirm Delete
                     <a class="fa fa-check" ng-click="showDelete = false; removeReferenceDocument($index)"

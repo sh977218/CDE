@@ -14,7 +14,7 @@
     <hr/>
     <div ng-repeat="id in elt.ids">
         <div class="row">
-            <div class="col-md-1 text-right" ng-show="canCurate && elt.ids.length > 0">
+            <div class="col-md-1 text-right" ng-show="canCurate">
                 <div class="row">
                 <span ng-show="showDelete">Confirm Delete
                     <a class="fa fa-check" ng-click="showDelete = false; removeId($index)"
