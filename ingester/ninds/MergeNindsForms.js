@@ -40,20 +40,19 @@ mergeClassificationAndDomain = function (existingForm, unmergedForm) {
     }
 
 
-    var existingDomain = existingForm.classification[0].elements[1].elements;
+    var existingDomains = existingForm.classification[0].elements[1].elements;
     var unmergedDomain = unmergedForm.classification[0].elements[1].elements[0];
     var unmergedSubDomain = unmergedForm.classification[0].elements[1].elements[0].elements[0];
     var mergeDomain = true;
-    for (var i = 0; i < existingDomain.length; i++) {
-        var existingDomain = existingDomain[i];
+    for (var i = 0; i < existingDomains.length; i++) {
+        var existingDomain = existingDomains[i];
         if (existingDomain.name === unmergedDomain.name) {
             mergeDomain = false;
-            if (existingDomain.elements.indexOf(unmergedSubDomain) != -1)
-                existingDomain.elements.push(unmergedSubDomain);
+            existingDomain.elements.push(unmergedSubDomain);
         }
     }
     if (mergeDomain) {
-        existingDomain.push(unmergedDomain);
+        existingDomains.push(unmergedDomain);
     }
 
 }
