@@ -103,7 +103,7 @@ setTimeout(function () {
                                 version: ""
                                 , permissibleValues: []
                             },
-                            datatype: cde.dataType,
+                            datatype: "",
                             uoms: [],
                             required: {
                                 type: false
@@ -131,10 +131,8 @@ setTimeout(function () {
                             } else {
                                 question.question.cde.tinyId = data.tinyId;
                                 question.question.cde.version = data.version;
-                                if (data.valueDomain.datatype === 'Value List') {
-                                    question.question.cde.permissibleValues = data.valueDomain.permissibleValues;
-                                    question.question.datatype = data.valueDomain.datatype;
-                                }
+                                question.question.cde.permissibleValues = data.valueDomain.permissibleValues;
+                                question.question.datatype = data.valueDomain.datatype;
                                 questions.push(question);
                             }
                             cdeCallback();

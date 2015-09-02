@@ -203,7 +203,7 @@ public class NindsFormLoader implements Runnable {
         if (subDomains.size() > 0)
             form.subDomainName = subDomains.get(0).getText().trim();
         List<WebElement> domains = driver.findElements(By.xpath(domianSelector));
-        if (subDomains.size() > 0)
+        if (domains.size() > 0)
             form.domainName = domains.get(0).getText().trim();
         switchTab(1);
     }

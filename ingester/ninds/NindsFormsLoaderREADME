@@ -1,2 +1,13 @@
-folder web scraping result contains the original input scource getting from the site using selenium
-run
+# This file describes how NINDS form loader works.
+# folder input contains the original source grabbed from the NINDS site using selenium
+
+1. run MergeFiles.js to merge all 26 files into 1 file with sorted by crfModuleGuideline
+2. run NindsFormsFormatter.js to format all forms into form schema using by CDE
+
+// the file FormattedNindsForms.json will be transferred to Dev, QA and Prod.
+3. since NindsFormsFormatter.js format 700 records at one time and then concatenate them. we need to manually replace "][" with "," in FormattedNindsForms.json created by step 2.
+
+// this step will be needed on the Dev, QA and Prod server.
+4. run MergeNindsForms.js to load all forms into mongo db
+
+5. run grunt elastic and start node app.
