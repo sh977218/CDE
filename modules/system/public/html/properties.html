@@ -4,7 +4,7 @@
     <div tabindex="0" ng-if="elt.properties.length === 0">There are no properties.</div>
     <div ng-repeat="prop in elt.properties">
         <div class="row">
-            <div class="col-md-1 text-right" ng-show="canCurate && elt.properties.length > 0">
+            <div class="col-md-1 text-right" ng-show="canCurate">
                 <div class="row">
                 <span ng-show="showDelete">Confirm Delete
                     <a class="fa fa-check" ng-click="showDelete = false; removeProperty($index)"
