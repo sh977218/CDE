@@ -48,7 +48,15 @@ mergeClassificationAndDomain = function (existingForm, unmergedForm) {
         var existingDomain = existingDomains[i];
         if (existingDomain.name === unmergedDomain.name) {
             mergeDomain = false;
-            existingDomain.elements.push(unmergedSubDomain);
+            var existingSubDomains = existingDomain.elements;
+            var mergeSubDomain = true;
+            for (var j = 0; j < existingSubDomains.length; j++) {
+                var existingSubDomain = existingSubDomains[j];
+                if (existingSubDomain.name === unmergedSubDomain.name)
+                    mergeSubDomain = false
+            }
+            if (mergeSubDomain)
+                existingDomain.elements.push(unmergedSubDomain);
         }
     }
     if (mergeDomain) {

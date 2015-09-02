@@ -49,7 +49,7 @@ setTimeout(function () {
                     registrationState: {
                         registrationStatus: "Qualified"
                     },
-                    formElements: [{
+                    formElements: oldForm.cdes.length === 0 ? [] : [{
                         elementType: "section",
                         label: "",
                         cardinality: "0.1",
