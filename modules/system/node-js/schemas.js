@@ -77,8 +77,8 @@ schemas.orgSchema.set('collection', 'orgs');
 schemas.userSchema.set('collection', 'users');
 
 schemas.namingSchema = new mongoose.Schema({
-    designation: {type: String, required: true}
-    , definition: {type: String, required: true}
+    designation: {type: String}
+    , definition: {type: String}
     , definitionFormat: String
     , languageCode: String
     , context: {
