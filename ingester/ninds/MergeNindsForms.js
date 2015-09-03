@@ -74,15 +74,14 @@ var user = {
 
 merge = function (e1, e2) {
     if (e1.name === e2.name) {
-
+        e1.elements.concat(e2.elements);
     }
     else {
-
+        alert('t');
     }
 }
 
 mergeClassificationAndDomain = function (c1, c2) {
-    console.log(c1 + c2);
     merge(c1.elements[0], c2.elements[0]);
     merge(c1.elements[1], c2.elements[1]);
 }

@@ -195,7 +195,7 @@ public class NindsFormLoader implements Runnable {
         switchTab(0);
         driver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.diseaseName));
         String subDomianSelector = "//*[normalize-space(text())=\"" + form.crfModuleGuideline
-                + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]]";
+                + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
         String domianSelector = "//*[normalize-space(text())=\"" + form.crfModuleGuideline
                 + "\"]/ancestor::table/preceding-sibling::a[1]";
 
