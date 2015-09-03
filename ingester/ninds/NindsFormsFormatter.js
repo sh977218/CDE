@@ -64,7 +64,15 @@ setTimeout(function () {
                                 elements: oldForm.diseaseName === "Traumatic Brain Injury" ? [{
                                     name: oldForm.subDiseaseName,
                                     elements: []
-                                }] : []
+                                }] : [{
+                                    name: "Domain", elements: [{
+                                        name: oldForm.domainName === undefined ? "" : oldForm.domainName,
+                                        elements: [{
+                                            name: oldForm.subDomainName === undefined ? "" : oldForm.subDomainName,
+                                            elements: []
+                                        }]
+                                    }]
+                                }]
                             }]
                         }, {
                             name: "Domain",
@@ -78,53 +86,50 @@ setTimeout(function () {
                         }]
                     }]
                 });
-                var questions = newForm.formElements[0].formElements;
-                async.eachSeries(oldForm.cdes, function (cde, cdeCallback) {
-                    var pvs = cde.permissibleValue.trim().split(';');
-                    var pdv = cde.permissibleDescription.trim().split(';');
-                    var answers = [];
-                    for (var m = 0; m < pvs.length; m++) {
-                        if (pvs[m] !== "" && pdv[m] !== "") {
-                            var answer = {
-                                permissibleValue: pvs[m],
-                                valueMeaningName: pdv[m]
-                            }
-                            answers.push(answer);
-                        }
-                    }
-                    var question =
-                    {
-                        "elementType": "question",
-                        "label": cde.questionText,
-                        "formElements": [],
-                        "question": {
-                            cde: {
-                                tinyId: "",
-                                version: ""
-                                , permissibleValues: []
-                            },
-                            datatype: "",
-                            uoms: [],
-                            required: {
-                                type: false
-                            },
-                            editable: {
-                                type: true
-                            },
-                            multiselect: false,
-                            otherPleaseSpecify: {
-                                value: {
-                                    type: false
+                if (oldForm.cdes.length > 0) {
+                    var questions = newForm.formElements[0].formElements;
+                    async.eachSeries(oldForm.cdes, function (cde, cdeCallback) {
+                        var pvs = cde.permissibleValue.trim().split(';');
+                        var pdv = cde.permissibleDescription.trim().split(';');
+                        var answers = [];
+                        for (var m = 0; m < pvs.length; m++) {
+                            if (pvs[m] !== "" && pdv[m] !== "") {
+                                var answer = {
+                                    permissibleValue: pvs[m],
+                                    valueMeaningName: pdv[m]
                                 }
-                            },
-                            answers: answers
+                                answers.push(answer);
+                            }
                         }
-                    }
-                    var cdeId = cde.cdeId;
-                    if (cdeId.length < 5) {
-                        console.log("cdeId is too short. cdeid:" + cdeId);
-                    }
-                    else {
+                        var question =
+                        {
+                            "elementType": "question",
+                            "label": cde.questionText,
+                            "formElements": [],
+                            "question": {
+                                cde: {
+                                    tinyId: "",
+                                    version: ""
+                                    , permissibleValues: []
+                                },
+                                datatype: "",
+                                uoms: [],
+                                required: {
+                                    type: false
+                                },
+                                editable: {
+                                    type: true
+                                },
+                                multiselect: false,
+                                otherPleaseSpecify: {
+                                    value: {
+                                        type: false
+                                    }
+                                },
+                                answers: answers
+                            }
+                        }
+                        var cdeId = cde.cdeId;
                         mongo_cde.byOtherId("NINDS", cdeId, function (err, data) {
                             if (!data) {
                                 cdeNotFound[cdeId] = cdeId;
@@ -137,39 +142,42 @@ setTimeout(function () {
                             }
                             cdeCallback();
                         });
-                    }
-                }, function doneAllCdes() {
-                    newForms.push(newForm);
-                    var i = oldForms.indexOf(oldForm) + 1;
-                    console.log("form " + i + " pushed.");
+                    }, function doneAllCdes() {
+                        newForms.push(newForm);
+                        var i = oldForms.indexOf(oldForm) + 1;
+                        console.log("form " + i + " pushed.");
 
-                    if (numForms === 700) {
-                        console.log("start saving first 700 forms...");
-                        fs.writeFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
-                            if (err) console.log(err);
-                            else {
-                                newForms = [];
-                                console.log("finish saving first 700 forms...");
-                            }
+                        if (numForms === 700) {
+                            console.log("start saving first 700 forms...");
+                            fs.writeFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
+                                if (err) console.log(err);
+                                else {
+                                    newForms = [];
+                                    console.log("finish saving first 700 forms...");
+                                }
+                                formCallback();
+                            })
+                        }
+                        else if (numForms === 1400 || numForms === 2100) {
+                            console.log("start saving another 700 forms...");
+                            fs.appendFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
+                                if (err) console.log(err);
+                                else {
+                                    newForms = [];
+                                    console.log("finish saving another 700 forms...");
+                                }
+                                formCallback();
+                            })
+                        }
+                        else {
                             formCallback();
-                        })
-                    }
-                    else if (numForms === 1400 || numForms === 2100) {
-                        console.log("start saving another 700 forms...");
-                        fs.appendFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
-                            if (err) console.log(err);
-                            else {
-                                newForms = [];
-                                console.log("finish saving another 700 forms...");
-                            }
-                            formCallback();
-                        })
-                    }
-                    else {
-                        formCallback();
-                    }
+                        }
 
-                });
+                    });
+                }
+                else {
+                    formCallback();
+                }
             }, function doneAllForm() {
                 var timeEnd = new Date().getTime();
                 var timeTake = timeEnd - timeStart;

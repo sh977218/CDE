@@ -19,7 +19,13 @@ async.eachSeries(tasks, function (file, fileCallback) {
             if (err) throw err;
             else {
                 var forms = JSON.parse(data);
-                allForms = allForms.concat(forms);
+                for (var i = 0; i < forms.length; i++) {
+                    var form = forms[i];
+                    if (form.subDomainName && form.subDomainName.indexOf('See "CRF Search" to find all Activities of Daily Living/Performance forms under Subdomain option') != -1)
+                        form.subDomainName = 'Activities of Daily Living/Performance';
+                    if (form.domainName !== 'NIH Resources')
+                        allForms.push(form);
+                }
                 fileCallback();
             }
         })

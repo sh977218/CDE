@@ -26,23 +26,29 @@ mergeClassificationAndDomain = function (existingForm, unmergedForm) {
     var existingDiseases = existingForm.classification[0].elements[0].elements;
     var unmergedDisease = unmergedForm.classification[0].elements[0].elements[0];
     var unmergedSubDisease = unmergedForm.classification[0].elements[0].elements[0].elements[0];
+
+    var existingDomains = existingForm.classification[0].elements[1].elements;
+    var unmergedDomain = unmergedForm.classification[0].elements[1].elements[0];
+    var unmergedSubDomain = unmergedForm.classification[0].elements[1].elements[0].elements[0];
+
     var mergeDisease = true;
     for (var i = 0; i < existingDiseases.length; i++) {
         var existingDisease = existingDiseases[i];
+        if (existingDisease.name === 'Amyotrophic Lateral Sclerosis' && unmergedDisease.name === 'Amyotrophic Lateral Sclerosis')
+            console.log('yo');
         if (existingDisease.name === unmergedDisease.name) {
             mergeDisease = false;
             if (existingDisease.name === "Traumatic Brain Injury")
                 existingDisease.elements.push(unmergedSubDisease);
+            else {
+                existingDisease.elements[0].elements.push(unmergedDomain);
+            }
         }
     }
     if (mergeDisease) {
         existingDiseases.push(unmergedDisease);
     }
 
-
-    var existingDomains = existingForm.classification[0].elements[1].elements;
-    var unmergedDomain = unmergedForm.classification[0].elements[1].elements[0];
-    var unmergedSubDomain = unmergedForm.classification[0].elements[1].elements[0].elements[0];
     var mergeDomain = true;
     for (var i = 0; i < existingDomains.length; i++) {
         var existingDomain = existingDomains[i];
@@ -93,7 +99,7 @@ setTimeout(function () {
                         mergeClassificationAndDomain(existingForm, unmergedForm);
                     }
                 })
-
+                var counter = 1;
                 async.eachSeries(Object.keys(allForms), function (key, cb) {
                     var f = allForms[key];
                     mongo_form.create(f, user, function (err, newForm) {
@@ -102,10 +108,11 @@ setTimeout(function () {
                             throw err;
                         }
                         else {
+                            console.log("form " + counter + " saved in mongo.");
+                            counter++;
                             cb();
                         }
                     })
-
                 }, function doneAll() {
                     console.log("loaded all forms into db. cheers!");
                 });
