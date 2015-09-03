@@ -87,8 +87,8 @@ schemas.orgSchema.set('collection', 'orgs');
 schemas.userSchema.set('collection', 'users');
 
 schemas.namingSchema = new mongoose.Schema({
-    designation: String
-    , definition: String
+    designation: {type: String}
+    , definition: {type: String}
     , definitionFormat: String
     , languageCode: String
     , context: {
@@ -209,7 +209,17 @@ schemas.fs_files = new mongoose.Schema({
     , "md5" : String
 });
 
-
+schemas.referenceDocumentSchema = {
+    docType: String,
+    document: String,
+    referenceDocumentId: String,
+    text: String,
+    uri: String,
+    providerOrg: String,
+    title: String,
+    languageCode: String,
+    _id: false
+};
 
 schemas.classificationAudit = new mongoose.Schema({
     date: { type: Date, default: Date.now, index: true }
