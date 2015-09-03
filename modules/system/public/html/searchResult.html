@@ -154,7 +154,7 @@
                 </span>
             <span ng-include="'/system/public/html/switchListViewContent.html'"></span>
             <pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems" items-per-page="20"
-                        ng-model="searchSettings.page" next-text="Next" ng-change="termSearch()"></pagination>
+                        ng-model="searchSettings.page" next-text="Next" ng-change="pageChange()"></pagination>
         </div>
     </div>
 </div>
