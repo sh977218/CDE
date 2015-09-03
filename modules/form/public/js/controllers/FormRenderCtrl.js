@@ -4,6 +4,13 @@ angular.module('formModule')
     function ($scope, $http, $routeParams, $window)
 {
 
+    $scope.selection = {};
+    var setSelectedProfile = function() {
+        if ($scope.elt && $scope.elt.displayProfiles && $scope.elt.displayProfiles.length > 0) {
+            $scope.selection.selectedProfile = $scope.elt.displayProfiles[0];
+        }
+    };
+
     var reload = function(id) {
         $http.get('/form/' + id).then(function(result) {
             $scope.elt = result.data;
@@ -16,14 +23,15 @@ angular.module('formModule')
             delete $scope.elt.properties;
             delete $scope.elt.registrationState;
             delete $scope.elt.stewardOrg;
+            setSelectedProfile();
         });
     };
 
-
     if ($routeParams.id) {
         reload($routeParams);
-    } 
-    
+    }
+    setSelectedProfile();
+
     $scope.addSection = function(section, formElements, index) {
         var newElt =  JSON.parse(JSON.stringify(section));
         newElt.isCopy = true;
@@ -111,6 +119,29 @@ angular.module('formModule')
         if (operator === '=') return realAnswer === expectedAnswer;
         if (operator === '<') return parseInt(realAnswer) < parseInt(expectedAnswer);
         if (operator === '>') return parseInt(realAnswer) > parseInt(expectedAnswer);
+    };
+
+    $scope.canBeDisplayedAsMatrix = function(section) {
+        var result = true;
+        var answerHash;
+        section.formElements.forEach(function(formElem) {
+            if (formElem.elementType !== 'question') {
+                return result = false;
+            } else {
+                if (formElem.question.datatype !== "Value List") {
+                    return result = false;
+                }
+                if (formElem.question.answers.length === 0 || !formElem.question.answers[0].valueMeaningName)
+                    return result = false;
+                if (!answerHash) {
+                    answerHash = angular.toJson(formElem.question.answers.map(function(a) {return a.valueMeaningName}));
+                }
+                if (answerHash !== angular.toJson(formElem.question.answers.map(function(a) {return a.valueMeaningName}))) {
+                    return result = false;
+                }
+            }
+        });
+        return result;
     };
 
 }]);

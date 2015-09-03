@@ -22,7 +22,6 @@ var questionSchema =  {
 };
 
 var sectionSchema = {    
-    displayAsMatrix: {type: Boolean, default: false}
 };
 
 var formElementTreeRoot = {
@@ -99,6 +98,12 @@ exports.formSchema = new Schema({
     , formElements: [formElementSchema]
     , archived: Boolean
     , classification: [sharedSchemas.classificationSchema]
+    , displayProfiles: [{
+        name: String
+        , sectionsAsMatrix: {type: Boolean, default: true}
+        , displayValues: {type: Boolean, default: true}
+        , context: {contextName: String}
+    }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 });
 

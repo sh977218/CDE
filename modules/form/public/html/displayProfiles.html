@@ -1,0 +1,46 @@
+<div ng-controller="DisplayProfileCtrl">
+    <h4>Display Profiles</h4>
+    <div ng-repeat="profile in elt.displayProfiles">
+        <div class="row">
+            <div class="col-md-1 text-right" ng-if="canCurate">
+                <div class="row">
+                <span ng-show="showDelete">Confirm Delete
+                    <a class="fa fa-check" ng-click="showDelete = false; removeDisplayProfile($index)"
+                       id="confirmRemoveDisplayProfile-{{$index}}" title="OK" href=""></a>
+                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
+                </span>
+                    <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
+                       id="removeDisplayProfile-{{$index}}" title="Remove" href=""></a>
+                </div>
+            </div>
+            <div class="col-md-11">
+                <dl class="dl-horizontal">
+                    <dt tabindex="0">Name:</dt>
+                    <dd tabindex="0" id="dd_profile_name">
+                        <div inline-edit id="profileNameEdit" model="profile.name" is-allowed="canCurate"
+                             on-ok="stageElt()"></div>
+                    </dd>
+                    <dt tabindex="0">Context:</dt>
+                    <dd tabindex="0" id="dd_profile_ctx">
+                        <div inline-edit id="profileCtxEdit" model="profile.context.contextName" is-allowed="canCurate"
+                             on-ok="stageElt()"></div>
+                    </dd>
+                    <dt tabindex="0">Sections as matrices:</dt>
+                    <dd tabindex="0">
+                        <input type="checkbox" ng-model="profile.sectionsAsMatrix" ng-disabled="!canCurate"
+                               id="displayAsMatrix_{{$index}}" ng-click="stageElt()"/>
+                    </dd>
+                    <dt tabindex="0">Display answer values:</dt>
+                    <dd tabindex="0">
+                        <input type="checkbox" ng-model="profile.displayValues" ng-disabled="!canCurate"
+                               id="displayValues_{{$index}}" ng-click="stageElt()"/>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        <hr/>
+    </div>
+    <button ng-show="canCurate" class="btn btn-small btn-default" value="add" ng-click="addProfile()"
+            id="addDisplayProfile"><i class="fa fa-plus"> </i> Add Profile
+    </button>
+</div>

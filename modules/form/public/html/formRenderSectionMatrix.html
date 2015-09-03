@@ -6,7 +6,8 @@
     <tbody>
         <tr ng-repeat="q in section.formElements">
             <td ng-bind-html="q.label"></td>
-            <td ng-repeat="qa in q.question.answers"> {{qa.permissibleValue}}
+            <td ng-repeat="qa in q.question.answers">
+                <span ng-if="selection.selectedProfile.displayValues" ng-bind="qa.permissibleValue"></span>
                 <input type="radio" ng-value="qa.permissibleValue" ng-model="q.question.answer">
             </td>
         </tr>
