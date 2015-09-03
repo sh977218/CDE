@@ -80,7 +80,7 @@ exports.formSchema = new Schema({
     , ids: [
         {source: String, id: String, version: String, _id: false}
     ] 
-    , isCopyrighted: {type: Boolean, default: false}
+    , isCopyrighted: {type: Boolean}
     , copyright: {
         authority: String
         , text: String
