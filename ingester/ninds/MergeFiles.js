@@ -23,6 +23,9 @@ async.eachSeries(tasks, function (file, fileCallback) {
                     var form = forms[i];
                     if (form.subDomainName && form.subDomainName.indexOf('See "CRF Search" to find all Activities of Daily Living/Performance forms under Subdomain option') != -1)
                         form.subDomainName = 'Activities of Daily Living/Performance';
+                    if (form.crfModuleGuideline === 'Alcohol and Tobacco Use') {
+                        form.subDomainName = 'Epidemiology/Environmental History';
+                    }
                     if (form.domainName !== 'NIH Resources')
                         allForms.push(form);
                 }

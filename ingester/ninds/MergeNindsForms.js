@@ -21,54 +21,70 @@ var unmergedForms;
 var user = {
     "username": "batchloader"
 };
+/*
+ mergeClassificationAndDomain = function (existingForm, unmergedForm) {
+ var existingDiseases = existingForm.classification[0].elements[0].elements;
+ var unmergedDisease = unmergedForm.classification[0].elements[0].elements[0];
+ var unmergedSubDisease = unmergedForm.classification[0].elements[0].elements[0].elements[0];
 
-mergeClassificationAndDomain = function (existingForm, unmergedForm) {
-    var existingDiseases = existingForm.classification[0].elements[0].elements;
-    var unmergedDisease = unmergedForm.classification[0].elements[0].elements[0];
-    var unmergedSubDisease = unmergedForm.classification[0].elements[0].elements[0].elements[0];
+ var existingDomains = existingForm.classification[0].elements[1].elements;
+ var unmergedDomain = unmergedForm.classification[0].elements[1].elements[0];
+ var unmergedSubDomain = unmergedForm.classification[0].elements[1].elements[0].elements[0];
 
-    var existingDomains = existingForm.classification[0].elements[1].elements;
-    var unmergedDomain = unmergedForm.classification[0].elements[1].elements[0];
-    var unmergedSubDomain = unmergedForm.classification[0].elements[1].elements[0].elements[0];
+ var mergeDisease = true;
+ for (var i = 0; i < existingDiseases.length; i++) {
+ var existingDisease = existingDiseases[i];
+ if (existingDisease.name === 'Amyotrophic Lateral Sclerosis' && unmergedDisease.name === 'Amyotrophic Lateral Sclerosis')
+ console.log('yo');
+ if (existingDisease.name === unmergedDisease.name) {
+ mergeDisease = false;
+ if (existingDisease.name === "Traumatic Brain Injury")
+ existingDisease.elements.push(unmergedSubDisease);
+ else {
+ existingDisease.elements[0].elements.push(unmergedDomain);
+ }
+ }
+ }
+ if (mergeDisease) {
+ existingDiseases.push(unmergedDisease);
+ }
 
-    var mergeDisease = true;
-    for (var i = 0; i < existingDiseases.length; i++) {
-        var existingDisease = existingDiseases[i];
-        if (existingDisease.name === 'Amyotrophic Lateral Sclerosis' && unmergedDisease.name === 'Amyotrophic Lateral Sclerosis')
-            console.log('yo');
-        if (existingDisease.name === unmergedDisease.name) {
-            mergeDisease = false;
-            if (existingDisease.name === "Traumatic Brain Injury")
-                existingDisease.elements.push(unmergedSubDisease);
-            else {
-                existingDisease.elements[0].elements.push(unmergedDomain);
-            }
-        }
+ var mergeDomain = true;
+ for (var i = 0; i < existingDomains.length; i++) {
+ var existingDomain = existingDomains[i];
+ if (existingDomain.name === unmergedDomain.name) {
+ mergeDomain = false;
+ var existingSubDomains = existingDomain.elements;
+ var mergeSubDomain = true;
+ for (var j = 0; j < existingSubDomains.length; j++) {
+ var existingSubDomain = existingSubDomains[j];
+ if (existingSubDomain.name === unmergedSubDomain.name)
+ mergeSubDomain = false
+ }
+ if (mergeSubDomain)
+ existingDomain.elements.push(unmergedSubDomain);
+ }
+ }
+ if (mergeDomain) {
+ existingDomains.push(unmergedDomain);
+ }
+
+ }
+ */
+
+merge = function (e1, e2) {
+    if (e1.name === e2.name) {
+
     }
-    if (mergeDisease) {
-        existingDiseases.push(unmergedDisease);
-    }
+    else {
 
-    var mergeDomain = true;
-    for (var i = 0; i < existingDomains.length; i++) {
-        var existingDomain = existingDomains[i];
-        if (existingDomain.name === unmergedDomain.name) {
-            mergeDomain = false;
-            var existingSubDomains = existingDomain.elements;
-            var mergeSubDomain = true;
-            for (var j = 0; j < existingSubDomains.length; j++) {
-                var existingSubDomain = existingSubDomains[j];
-                if (existingSubDomain.name === unmergedSubDomain.name)
-                    mergeSubDomain = false
-            }
-            if (mergeSubDomain)
-                existingDomain.elements.push(unmergedSubDomain);
-        }
     }
-    if (mergeDomain) {
-        existingDomains.push(unmergedDomain);
-    }
+}
 
+mergeClassificationAndDomain = function (c1, c2) {
+    console.log(c1 + c2);
+    merge(c1.elements[0], c2.elements[0]);
+    merge(c1.elements[1], c2.elements[1]);
 }
 
 getHash = function (f) {
@@ -96,7 +112,7 @@ setTimeout(function () {
                     }
                     else {
                         var existingForm = allForms[hash];
-                        mergeClassificationAndDomain(existingForm, unmergedForm);
+                        mergeClassificationAndDomain(existingForm.classification[0], unmergedForm.classification[0]);
                     }
                 })
                 var counter = 1;

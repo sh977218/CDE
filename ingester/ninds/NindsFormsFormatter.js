@@ -63,12 +63,18 @@ setTimeout(function () {
                                 name: oldForm.diseaseName,
                                 elements: oldForm.diseaseName === "Traumatic Brain Injury" ? [{
                                     name: oldForm.subDiseaseName,
-                                    elements: []
+                                    elements: [{
+                                        name: "Domain",
+                                        elements: [{
+                                            name: oldForm.domainName,
+                                            elements: [{name: oldForm.subDomainName, elements: []}]
+                                        }]
+                                    }]
                                 }] : [{
                                     name: "Domain", elements: [{
-                                        name: oldForm.domainName === undefined ? "" : oldForm.domainName,
+                                        name: oldForm.domainName,
                                         elements: [{
-                                            name: oldForm.subDomainName === undefined ? "" : oldForm.subDomainName,
+                                            name: oldForm.subDomainName,
                                             elements: []
                                         }]
                                     }]
@@ -77,9 +83,9 @@ setTimeout(function () {
                         }, {
                             name: "Domain",
                             elements: [{
-                                name: oldForm.domainName === undefined ? "" : oldForm.domainName,
+                                name: oldForm.domainName,
                                 elements: [{
-                                    name: oldForm.subDomainName === undefined ? "" : oldForm.subDomainName,
+                                    name: oldForm.subDomainName,
                                     elements: []
                                 }]
                             }]
