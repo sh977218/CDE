@@ -100,8 +100,8 @@ exports.formSchema = new Schema({
     , classification: [sharedSchemas.classificationSchema]
     , displayProfiles: [{
         name: String
-        , sectionsAsMatrix: {type: Boolean, default: true}
-        , displayValues: {type: Boolean, default: true}
+        , sectionsAsMatrix: {type: Boolean}
+        , displayValues: {type: Boolean}
         , context: {contextName: String}
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
