@@ -87,7 +87,7 @@ angular.module('formModule').controller('FormViewCtrl',
         }
     };
 
-    $scope.openAddClassificationModal = function () {
+    $scope.openAddCdeClassificationModal = function () {
         $modal.open({
             templateUrl: '/system/public/html/classifyForm.html',
             controller: 'ClassifyFormCdesModalCtrl',
@@ -103,14 +103,17 @@ angular.module('formModule').controller('FormViewCtrl',
                         addClassification: function (newClassification) {
                             var ids = [];
                             var getChildren = function (element) {
-                                if (element.question && element.question.cde) {
+                                if (element.elementType === 'section') {
+                                    element.formElements.forEach(function (e) {
+                                        getChildren(e);
+                                    });
+                                } else if (element.elementType === 'question') {
                                     ids.push({id: element.question.cde.tinyId, version: element.question.cde.version});
                                 }
-                                else element.formElements.forEach(function (e) {
-                                    getChildren(e);
-                                });
                             };
-                            getChildren($scope.elt);
+                            $scope.elt.formElements.forEach(function (e) {
+                                getChildren(e);
+                            });
                             BulkClassification.classifyTinyidList(ids, newClassification, function (res) {
                                 $scope.addAlert("success", "CDEs classified!");
                             });

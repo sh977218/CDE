@@ -24,67 +24,26 @@ public class FormClassificationTest extends BaseFormTest {
         new ClassificationTest().addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
     }  
     
-    //@Test
+    @Test
     public void classifyFormCdes() {
-        mustBeLoggedInAs(ninds_username, password);
-        
-        //Create a new form
-        String formName = "Central Nervous System Malign Neoplasm";
-        String formDef = "Symptoms, onset, treatment.";
-        String formV = "0.1alpha";        
-        createForm(formName, formDef, formV, "NINDS");
-        new CreateEditSectionTest().addSection("Patient Information", null);
-        new CreateEditSectionTest().addSection("Diagnostic Methods", null);
-        startAddingQuestions();
-        String cde1 = "Informed consent type",
-                cde2 = "Person Birth Date",
-                cde3 = "Imaging contrast agent name";
-        
-        
-        new QuestionTest().addQuestionToSection(cde1, 0);
-        new QuestionTest().addQuestionToSection(cde2, 0);
-        new QuestionTest().addQuestionToSection(cde3, 1); 
-        hangon(2);
-        startAddingQuestions();
-        textPresent(cde3);       
-        saveForm();
-        
-        //Modify one of them                        
-        goToCdeByName(cde3);
-        findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']")).click();
-        findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
-        findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
-        newCdeVersion();
-        textPresent("[def change number 1]");        
-        
-        //Classify All
-        goToFormByName(formName, "Incomplete");
-        textPresent("Some CDEs in this form");
-        findElement(By.linkText("Form Description")).click();
+        mustBeLoggedInAs(ctepCurator_username, password);
+
+        goToFormByName("Intraoperative Management");
+        findElement(By.linkText("Classification")).click();
         findElement(By.id("classifyAllCdes")).click();
-        clickElement(By.cssSelector("[id='addClassification-Disease'] span.fake-link"));        
-        clickElement(By.cssSelector("[id='addClassification-Headache'] span.fake-link"));
-        clickElement(By.cssSelector("[id='addClassification-Classification'] span.fake-link"));        
-        clickElement(By.cssSelector("[id='addClassification-Supplemental'] button"));        
+        clickElement(By.cssSelector("[id='addClassification-ABTC'] span.fake-link"));
+        clickElement(By.cssSelector("[id='addClassification-ABTC 0904'] button"));
         
         // Verify
-        goToCdeByName(cde1);
+        goToCdeByName("Inadvertent hypocapnia indicator");
         findElement(By.linkText("Classification")).click();
-        textPresent("Headache");
-        textPresent("Supplemental");
-        goToCdeByName(cde2);
+        textPresent("ABTC");
+        textPresent("ABTC 0904");
+
+        goToCdeByName("Foley catheter indicator");
         findElement(By.linkText("Classification")).click();
-        textPresent("Headache");
-        textPresent("Supplemental");
-        
-        goToCdeByName(cde3);
-        findElement(By.linkText("Classification")).click();
-        textPresent("Headache");
-        textPresent("Supplemental");
-        findElement(By.linkText("History")).click();
-        findElement(By.id("prior-0")).click();
-        findElement(By.linkText("Classification")).click();
-        textPresent("Headache");
-        textPresent("Supplemental");
-    }     
+        textPresent("ABTC");
+        textPresent("ABTC 0904");
+
+    }
 }
