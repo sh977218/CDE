@@ -2,9 +2,6 @@
     <h2>{{elt.naming[0].designation}}</h2>
     <div ng-if="elt.displayProfiles.length > 0">
         Display Profile:
-        <!--<select ng-model="selectedProfile"-->
-                <!--ng-options="key as value for (key, value) in selectableProfiles"-->
-                <!--id="select_section_card_{{$index}}" ng-change="profileChanged()"></select>-->
         <select ng-model="selection.selectedProfile"
             ng-options="p.name for p in elt.displayProfiles"
             id="select_display_profile"></select>
