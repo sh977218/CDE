@@ -7,7 +7,7 @@
                 <!--id="select_section_card_{{$index}}" ng-change="profileChanged()"></select>-->
         <select ng-model="selection.selectedProfile"
             ng-options="p.name for p in elt.displayProfiles"
-            id="select_section_card_{{$index}}"></select>
+            id="select_display_profile"></select>
     </div>
     <form name="sectionLabel" role="form" class="form-inline">
         <div ng-repeat="formElement in elt.formElements track by $index" class="row">
