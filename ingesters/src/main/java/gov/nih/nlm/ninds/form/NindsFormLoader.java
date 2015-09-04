@@ -57,6 +57,7 @@ public class NindsFormLoader implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("running page: " + pageStart);
         openTab();
         goToNindsSiteAndGoToPageOf(pageStart);
         findAndSaveToForms(forms, pageStart, pageEnd);

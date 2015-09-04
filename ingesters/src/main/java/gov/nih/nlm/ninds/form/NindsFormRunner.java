@@ -8,7 +8,7 @@ public class NindsFormRunner {
     public static void main(String[] args) {
         Thread[] t = new Thread[1];
 
-        NindsFormLoader runner2 = new NindsFormLoader(16, 16);
+        NindsFormLoader runner2 = new NindsFormLoader(15, 15);
         t[0] = new Thread(runner2);
 
         for (int i = 0; i < t.length; i++) {

@@ -9,7 +9,8 @@ var excluString = ['See "CRF Search" to find all Imaging forms under Subdomain o
     'Note: The General CDE Standards contain additional useful CRF Modules and CDEs for this category of data.'];
 for (var i = 1; i < 27; i++) {
     var task = "nindsFormsChrist" + i + ".json";
-    tasks.push(task);
+    if (i != 15)
+        tasks.push(task);
 }
 
 function compare(a, b) {
