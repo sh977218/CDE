@@ -2,6 +2,11 @@ var fs = require('fs'),
     async = require('async');
 var tasks = [];
 var allForms = [];
+var excluString = ['See "CRF Search" to find all Imaging forms under Subdomain option.',
+    'See "CRF Search" to find all Non-Imaging forms under Subdomain option.',
+    'See "CRF Search" to find Surgeries and Other Procedures forms under Subdomain option.',
+    'Note: The General CDE Standards contain additional useful CRF Modules and CDEs for this sub-domain.',
+    'Note: The General CDE Standards contain additional useful CRF Modules and CDEs for this category of data.'];
 for (var i = 1; i < 27; i++) {
     var task = "nindsFormsChrist" + i + ".json";
     tasks.push(task);
@@ -21,10 +26,11 @@ async.eachSeries(tasks, function (file, fileCallback) {
                 var forms = JSON.parse(data);
                 for (var i = 0; i < forms.length; i++) {
                     var form = forms[i];
-                    if (form.subDomainName && form.subDomainName.indexOf('See "CRF Search" to find all Activities of Daily Living/Performance forms under Subdomain option') != -1)
-                        form.subDomainName = 'Activities of Daily Living/Performance';
-                    if (form.crfModuleGuideline === 'Alcohol and Tobacco Use') {
-                        form.subDomainName = 'Epidemiology/Environmental History';
+                    for (var j = 0; j < excluString.length; j++) {
+                        var k = form.subDomainName.indexOf(excluString[j]);
+                        if (k != -1) {
+                            form.subDomainName = form.subDomainName.substr(0, k);
+                        }
                     }
                     if (form.domainName !== 'NIH Resources')
                         allForms.push(form);
