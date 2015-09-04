@@ -152,33 +152,34 @@ setTimeout(function () {
                         newForms.push(newForm);
                         var i = oldForms.indexOf(oldForm) + 1;
                         console.log("form " + i + " pushed.");
-
-                        if (numForms === 700) {
-                            console.log("start saving first 700 forms...");
-                            fs.writeFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
-                                if (err) console.log(err);
-                                else {
-                                    newForms = [];
-                                    console.log("finish saving first 700 forms...");
-                                }
-                                formCallback();
-                            })
-                        }
-                        else if (numForms === 1400 || numForms === 2100) {
-                            console.log("start saving another 700 forms...");
-                            fs.appendFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
-                                if (err) console.log(err);
-                                else {
-                                    newForms = [];
-                                    console.log("finish saving another 700 forms...");
-                                }
-                                formCallback();
-                            })
-                        }
-                        else {
-                            formCallback();
-                        }
-
+                        /*
+                         if (numForms === 700) {
+                         console.log("start saving first 700 forms...");
+                         fs.writeFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
+                         if (err) console.log(err);
+                         else {
+                         newForms = [];
+                         console.log("finish saving first 700 forms...");
+                         }
+                         formCallback();
+                         })
+                         }
+                         else if (numForms === 1400 || numForms === 2100) {
+                         console.log("start saving another 700 forms...");
+                         fs.appendFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
+                         if (err) console.log(err);
+                         else {
+                         newForms = [];
+                         console.log("finish saving another 700 forms...");
+                         }
+                         formCallback();
+                         })
+                         }
+                         else {
+                         formCallback();
+                         }
+                         */
+                        formCallback();
                     });
                 }
                 else {
@@ -188,7 +189,8 @@ setTimeout(function () {
                 var timeEnd = new Date().getTime();
                 var timeTake = timeEnd - timeStart;
                 console.log("finished all forms.");
-                fs.appendFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
+                fs.writeFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
+//                fs.appendFile(__dirname + "/FormattedNindsForms.json", JSON.stringify(newForms), "utf8", function (err) {
                     if (err) console.log(err);
                     else {
                         console.log("finish saving all forms");
