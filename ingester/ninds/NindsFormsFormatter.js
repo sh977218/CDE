@@ -22,16 +22,20 @@ var storedForms = {};
 var getHash = function (f) {
     var md5sum = crypto.createHash('md5');
     var cdesStr = "";
-    f.formElements[0].formElements.forEach(function (q) {
-        cdesStr = cdesStr + q.question.cde.cdeId;
-    });
+    if (f.formElements.length > 0) {
+        f.formElements[0].formElements.forEach(function (q) {
+            cdesStr = cdesStr + q.question.cde.cdeId;
+        });
+    }
     var copy = f.isCopyrighted === "true" ? "true" : f.referenceDocuments[0].uri;
     var s = f.naming[0].designation + copy + cdesStr;
     return md5sum.update(s).digest('hex');
 };
 
+console.log(process.argv[2]);
+
 var processFile = function() {
-    fs.readFile(__dirname + '/input/UnformattedNindsForms.json', 'utf8', function (err, data) {
+    fs.readFile(process.argv[2], 'utf8', function (err, data) {
         var oldForms = JSON.parse(data);
         if (err) throw err;
         // @TODO fix with params
@@ -108,7 +112,7 @@ var processFile = function() {
                 } else {
                     mongo_form.byId(storedForms[oldHash], function(err, existingForm) {
                         if (err) throw err;
-                        classificationShared.transferClassifications(existingForm.classification, form.classification);
+                        classificationShared.transferClassifications(form, existingForm);
                         existingForm.save(function(err) {
                             if (err) throw err;
                             cb();
