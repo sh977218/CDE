@@ -29,32 +29,7 @@ var getHash = function (f) {
     var s = f.naming[0].designation + copy + cdesStr;
     return md5sum.update(s).digest('hex');
 };
-var mergeDomain = function (sourceDomain, destDomain) {
-    var sn = sourceDomain.elements[0].name;
-    for (var i = 0; i < destDomain.elements.length; i++) {
-        var dn = destDomain.elements[i].name;
-        if (sn === dn) {
-            var merge = true;
-            for (var j = 0; j < destDomain.elements[i].elements.length; j++) {
-                if (destDomain.elements[i].elements[j].name === sourceDomain.elements[0].elements[0].name)
-                    merge = false;
-            }
-            if (merge) {
-                destDomain.elements[i].elements.push(sourceDomain.elements[0].elements[0]);
-            }
-        }
-        else {
-            destDomain.elements.push(sourceDomain.elements[0]);
-        }
-    }
-};
-var mergeDiseaseAndDomain = function (sourceClassification, destClassification) {
-    var sourceDisease = sourceClassification.elements[0];
-    var sourceDomain = sourceClassification.elements[1];
-    var destDisease = destClassification.elements[0];
-    var destDomain = destClassification.elements[1];
-    mergeDomain(sourceDomain, destDomain);
-}
+
 var processFile = function () {
     fs.readFile(process.argv[2], 'utf8', function (err, data) {
         if (err) throw err;
@@ -134,7 +109,6 @@ var processFile = function () {
                     mongo_form.byId(storedForms[oldHash], function (err, existingForm) {
                         if (err) throw err;
                         classificationShared.transferClassifications(form, existingForm);
-                        mergeDiseaseAndDomain(form.classification[0], existingForm.classification[0]);
                         existingForm.save(function (err) {
                             if (err) throw err;
                             cb();
