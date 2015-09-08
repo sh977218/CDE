@@ -28,15 +28,16 @@ getHash = function (f) {
     var cdesStr = "";
     f.formElements[0].formElements.forEach(function (q) {
         cdesStr = cdesStr + q.question.cde.cdeId;
-    })
+    });
     var copy = f.isCopyrighted === "true" ? "true" : f.referenceDocuments[0].uri;
     var s = f.naming[0].designation + copy + cdesStr;
     return md5sum.update(s).digest('hex');
 };
+
 var form = Form.find({},function(err,result){
     console.log('he');
 });
-/*
+
 setTimeout(function () {
         fs.readFile(__dirname + '/FormattedNindsForms.json', 'utf8', function (err, data) {
             if (err)
@@ -77,5 +78,5 @@ setTimeout(function () {
     },
     3000
 );
-*/
+
 

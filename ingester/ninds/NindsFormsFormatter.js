@@ -4,11 +4,11 @@ var fs = require('fs'),
     mongoose = require('mongoose'),
     config = require('config'),
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
-    mongo_form = require('../../modules/form/node-js/mongo-form')
-    async = require('async')
+    mongo_form = require('../../modules/form/node-js/mongo-form'),
+    classificationShared = require('../../modules/system/shared/classificationShared.js'),
+    async = require('async'),
+    crypto = require('crypto')
     ;
-
-config.mongoUri = config.mongoMigrationUri;
 
 // Global variables
 var globals = {
@@ -17,6 +17,18 @@ var globals = {
 
 var numForms = 0;
 var cdeNotFound = {};
+var storedForms = {};
+
+var getHash = function (f) {
+    var md5sum = crypto.createHash('md5');
+    var cdesStr = "";
+    f.formElements[0].formElements.forEach(function (q) {
+        cdesStr = cdesStr + q.question.cde.cdeId;
+    });
+    var copy = f.isCopyrighted === "true" ? "true" : f.referenceDocuments[0].uri;
+    var s = f.naming[0].designation + copy + cdesStr;
+    return md5sum.update(s).digest('hex');
+};
 
 var processFile = function() {
     fs.readFile(__dirname + '/input/UnformattedNindsForms.json', 'utf8', function (err, data) {
@@ -84,6 +96,26 @@ var processFile = function() {
                     }]
                 }]
             };
+            var saveForm = function(form, cb) {
+                var oldHash = getHash(form);
+                if (!storedForms[oldHash]) {
+                    mongo_form.create(form, {username: "batchloader"}, function(err, createdForm) {
+                        if (err) throw err;
+                        console.log("form " + numForms + " pushed.");
+                        storedForms[getHash(createdForm)] = createdForm._id;
+                        cb();
+                    });
+                } else {
+                    mongo_form.byId(storedForms[oldHash], function(err, existingForm) {
+                        if (err) throw err;
+                        classificationShared.transferClassifications(existingForm.classification, form.classification);
+                        existingForm.save(function(err) {
+                            if (err) throw err;
+                            cb();
+                        })
+                    });
+                }
+            };
             if (oldForm.cdes.length > 0) {
                 var questions = newForm.formElements[0].formElements;
                 async.eachSeries(oldForm.cdes, function (cde, cdeCallback) {
@@ -141,22 +173,12 @@ var processFile = function() {
                         cdeCallback();
                     });
                 }, function doneAllCdes() {
-                    mongo_form.create(newForm, {username: "batchloader"}, function(err) {
-                        if (err) throw err;
-                        console.log("form " + numForms + " pushed.");
-                        formCallback();
-                    });
+                    saveForm(newForm, formCallback);
                 });
             } else {
-                mongo_form.create(newForm, {username: "batchloader"}, function(err) {
-                    if (err) throw err;
-                    console.log("form " + numForms + " pushed.");
-                    formCallback();
-                });
+                saveForm(newForm, formCallback);
             }
         }, function doneAllForm() {
-            var timeEnd = new Date().getTime();
-            var timeTake = timeEnd - timeStart;
             console.log("finished all forms.");
             process.exit(0);
         });
