@@ -4,7 +4,7 @@ var fs = require('fs'),
     form_schemas = require('../../modules/form/node-js/schemas'),
     mongo_form = require('../../modules/form/node-js/mongo-form'),
     mongoose = require('mongoose'),
-    classificationShared = require('../../modules/shared/classificationShared.js'),
+    classificationShared = require('../../modules/system/shared/classificationShared.js'),
     config = require('config'),
     mongo_data_system = require('../../modules/system/node-js/mongo-data'),
     crypto = require('crypto'),
@@ -33,6 +33,10 @@ getHash = function (f) {
     var s = f.naming[0].designation + copy + cdesStr;
     return md5sum.update(s).digest('hex');
 };
+var form = Form.find({},function(err,result){
+    console.log('he');
+});
+/*
 setTimeout(function () {
         fs.readFile(__dirname + '/FormattedNindsForms.json', 'utf8', function (err, data) {
             if (err)
@@ -73,5 +77,5 @@ setTimeout(function () {
     },
     3000
 );
-
+*/
 
