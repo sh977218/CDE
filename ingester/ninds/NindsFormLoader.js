@@ -11,10 +11,8 @@ var fs = require('fs'),
     ;
 
 // Global variables
-var globals = {
-    orgName: "NINDS"
-};
-
+var globals = {orgName: "NINDS"};
+var user = {username: "batchloader"};
 var numForms = 0;
 var cdeNotFound = {};
 var storedForms = {};
@@ -31,16 +29,38 @@ var getHash = function (f) {
     var s = f.naming[0].designation + copy + cdesStr;
     return md5sum.update(s).digest('hex');
 };
-
-console.log(process.argv[2]);
-
-var processFile = function() {
+var mergeDomain = function (sourceDomain, destDomain) {
+    var sn = sourceDomain.elements[0].name;
+    for (var i = 0; i < destDomain.elements.length; i++) {
+        var dn = destDomain.elements[i].name;
+        if (sn === dn) {
+            var merge = true;
+            for (var j = 0; j < destDomain.elements[i].elements.length; j++) {
+                if (destDomain.elements[i].elements[j].name === sourceDomain.elements[0].elements[0].name)
+                    merge = false;
+            }
+            if (merge) {
+                destDomain.elements[i].elements.push(sourceDomain.elements[0].elements[0]);
+            }
+        }
+        else {
+            destDomain.elements.push(sourceDomain.elements[0]);
+        }
+    }
+};
+var mergeDiseaseAndDomain = function (sourceClassification, destClassification) {
+    var sourceDisease = sourceClassification.elements[0];
+    var sourceDomain = sourceClassification.elements[1];
+    var destDisease = destClassification.elements[0];
+    var destDomain = destClassification.elements[1];
+    mergeDomain(sourceDomain, destDomain);
+}
+var processFile = function () {
     fs.readFile(process.argv[2], 'utf8', function (err, data) {
-        var oldForms = JSON.parse(data);
         if (err) throw err;
+        var oldForms = JSON.parse(data);
         // @TODO fix with params
         async.eachSeries(oldForms, function (oldForm, formCallback) {
-            numForms++;
             var newForm = {
                 stewardOrg: {
                     name: globals.orgName
@@ -100,20 +120,22 @@ var processFile = function() {
                     }]
                 }]
             };
-            var saveForm = function(form, cb) {
+            var saveForm = function (form, cb) {
                 var oldHash = getHash(form);
                 if (!storedForms[oldHash]) {
-                    mongo_form.create(form, {username: "batchloader"}, function(err, createdForm) {
+                    mongo_form.create(form, user, function (err, createdForm) {
                         if (err) throw err;
+                        numForms++;
                         console.log("form " + numForms + " pushed.");
                         storedForms[getHash(createdForm)] = createdForm._id;
                         cb();
                     });
                 } else {
-                    mongo_form.byId(storedForms[oldHash], function(err, existingForm) {
+                    mongo_form.byId(storedForms[oldHash], function (err, existingForm) {
                         if (err) throw err;
                         classificationShared.transferClassifications(form, existingForm);
-                        existingForm.save(function(err) {
+                        mergeDiseaseAndDomain(form.classification[0], existingForm.classification[0]);
+                        existingForm.save(function (err) {
                             if (err) throw err;
                             cb();
                         })
@@ -184,6 +206,7 @@ var processFile = function() {
             }
         }, function doneAllForm() {
             console.log("finished all forms.");
+            console.log("cde not found: " + Object.keys(cdeNotFound));
             process.exit(0);
         });
     });
@@ -191,7 +214,7 @@ var processFile = function() {
 
 // @TODO replace with params.
 var conn = mongoose.createConnection("mongodb://siteRootAdmin:password@localhost:27017/test", {auth: {authdb: "admin"}});
-conn.on('error', function(err) {
+conn.on('error', function (err) {
     throw err;
 });
 conn.once('open', function callback() {
