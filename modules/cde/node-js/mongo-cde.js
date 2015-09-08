@@ -457,9 +457,33 @@ exports.findCurrCdesInFormElement = function (allCdes, cb) {
     });
 };
 
+var correctBoardPinsForCde = function(doc, cb){
+    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName":doc.naming[0].designation}).exec(function(err, de){
+        if (err) throw err;
+        if (cb) cb();
+    });
+};
+
+
 schemas.dataElementSchema.post('save', function(doc) {
     if (doc.archived) return;
-    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName":doc.naming[0].designation}).exec(function(err, de){
-       if (err) throw err;
-    });
+    //correctBoardPinsForCde(doc);
 });
+
+setInterval(function(){
+    console.log("Repairing Board <-> CDE references.");
+    var dayBeforeYesterday = new Date();
+    dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
+    PinningBoard.find({updatedDate: {$gte: dayBeforeYesterday}}).distinct('pins.deTinyId', function(err, ids){
+        if (err) throw "Cannot repair CDE references.";
+        async.eachSeries(ids, function (id, cb) {
+            DataElement.findOne({tinyId:id, archived: null}).exec(function(err, de){
+                correctBoardPinsForCde(de, function(){
+                    cb();
+                });
+            });
+        }, function () {
+            console.log("Board <-> CDE reference repair done!");
+        });
+    });
+}, 30000);
