@@ -1,10 +1,22 @@
-<div class="container-fluid">
-    <br/><br/>
+<!--<div class="container-fluid">-->
+    <!--<br/><br/>-->
 
-    <form class="form-search"  align="center" >
-        <input name="search" type="text" ng-model="search.name" class="search-query" placeholder="Search" ng-change="onchangeSearch()">  
-        <input id="search.submit" type="submit" value="Search" ng-click="reload()" class="btn"></input>
+    <!--<form class="form-search"  align="center" >-->
+        <!--<input name="search" type="text" ng-model="search.name" class="search-query" placeholder="Search" ng-change="onchangeSearch()">  -->
+        <!--<input id="search.submit" type="submit" value="Search" ng-click="reload()" class="btn"></input>-->
+    <!--</form>-->
+
+    <!--<div ng-include="'/cde/public/html/listOfBoards.html'"></div>-->
+<!--</div>-->
+<br><br>
+<div class="container">
+    <form id="searchBoardsForm">
+        <div class="input-group input-group-lg">
+            <input ng-model="search.name" ng-change="onchangeSearch()" class="form-control search-query" id="searchDescriptorsFormInput" placeholder="Search Boards...">
+            <div class="input-group-btn">
+                <button ng-click="reload()" type="submit" class="btn btn-default" id="search.submit">Search</button>
+            </div>
+        </div>
     </form>
-
     <div ng-include="'/cde/public/html/listOfBoards.html'"></div>
-</div> 
+</div>

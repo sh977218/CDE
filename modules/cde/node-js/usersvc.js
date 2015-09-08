@@ -5,26 +5,30 @@ var mongo_data = require('./mongo-cde')
 exports.pinToBoard = function(req, res) {
     var tinyId = req.params.tinyId;
     var boardId = req.params.boardId;
-    mongo_data.boardById(boardId, function(err, board) {
-        if (err) return res.send("Board cannot be found.");
-        if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
-            return res.send("You must own a board to edit it.");
-        } else {
-            var pin = {
-                pinnedDate: Date.now()
-                , deTinyId: tinyId
-            };
-            for (var i = 0 ; i < board.pins.length; i++) {
-                if (JSON.stringify(board.pins[i].deTinyId) === JSON.stringify(tinyId)) {
-                    res.statusCode = 202;
-                    return res.send("Already added to the board.");
+
+    mongo_data.eltByTinyId(tinyId, function(err, de){
+        mongo_data.boardById(boardId, function(err, board) {
+            if (err) return res.send("Board cannot be found.");
+            if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
+                return res.send("You must own a board to edit it.");
+            } else {
+                var pin = {
+                    pinnedDate: Date.now()
+                    , deTinyId: tinyId
+                    , deName: de.naming[0].designation
+                };
+                for (var i = 0 ; i < board.pins.length; i++) {
+                    if (JSON.stringify(board.pins[i].deTinyId) === JSON.stringify(tinyId)) {
+                        res.statusCode = 202;
+                        return res.send("Already added to the board.");
+                    }
                 }
+                board.pins.push(pin);
+                mongo_data.save(board, function(err, b) {
+                    return res.send("Added to Board");
+                });
             }
-            board.pins.push(pin);
-            mongo_data.save(board, function(err, b) {
-                return res.send("Added to Board");
-            });
-        }
+        });
     });
 };
 

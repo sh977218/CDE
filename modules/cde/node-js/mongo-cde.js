@@ -456,3 +456,10 @@ exports.findCurrCdesInFormElement = function (allCdes, cb) {
         cb(err, cdes);
     });
 };
+
+schemas.dataElementSchema.post('save', function(doc) {
+    if (doc.archived) return;
+    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName":doc.naming[0].designation}).exec(function(err, de){
+       if (err) throw err;
+    });
+});

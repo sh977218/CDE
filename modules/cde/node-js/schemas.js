@@ -99,6 +99,7 @@ var pinSchema = new mongoose.Schema({
     name: String
     , pinnedDate: Date
     , deTinyId: String
+    , deName: String
 });
 
 schemas.pinningBoardSchema = new mongoose.Schema({
