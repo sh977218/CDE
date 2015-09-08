@@ -8,6 +8,8 @@ var mongoose = require('mongoose')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , cdesvc = require("./cdesvc")
     , deValidator = require("../shared/deValidator.js").deValidator
+    , async = require('async')
+    , CronJob = require('cron').CronJob
     ;
 
 exports.type = "cde";
@@ -467,23 +469,29 @@ var correctBoardPinsForCde = function(doc, cb){
 
 schemas.dataElementSchema.post('save', function(doc) {
     if (doc.archived) return;
-    //correctBoardPinsForCde(doc);
+    correctBoardPinsForCde(doc);
 });
 
-setInterval(function(){
-    console.log("Repairing Board <-> CDE references.");
-    var dayBeforeYesterday = new Date();
-    dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
-    PinningBoard.find({updatedDate: {$gte: dayBeforeYesterday}}).distinct('pins.deTinyId', function(err, ids){
-        if (err) throw "Cannot repair CDE references.";
-        async.eachSeries(ids, function (id, cb) {
-            DataElement.findOne({tinyId:id, archived: null}).exec(function(err, de){
-                correctBoardPinsForCde(de, function(){
-                    cb();
+var cj = new CronJob({
+    cronTime: '00 00 4 * * *',
+    onTick: function() {
+        console.log("Repairing Board <-> CDE references.");
+        var dayBeforeYesterday = new Date();
+        dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
+        PinningBoard.find().distinct('pins.deTinyId', function(err, ids){
+            if (err) throw "Cannot repair CDE references.";
+            async.eachSeries(ids, function (id, cb) {
+                DataElement.findOne({tinyId:id, archived: null}).exec(function(err, de){
+                    correctBoardPinsForCde(de, function(){
+                        cb();
+                    });
                 });
+            }, function () {
+                console.log("Board <-> CDE reference repair done!");
             });
-        }, function () {
-            console.log("Board <-> CDE reference repair done!");
         });
-    });
-}, 30000);
+    },
+    start: false,
+    timeZone: "America/New_York"
+});
+cj.start();
