@@ -152,10 +152,33 @@ exports.createFormRiverJson = {
         ]
         , "db": config.database.dbname
         , "collection": "forms"
-        , "script": riverFunction
     }
     , "index": {
         "name": config.elastic.formIndex.name
+        , "type": "form"
+    }
+};
+
+exports.createBoardIndexJson = {
+    "mappings": {
+        "board": {
+
+        }
+    }
+};
+
+exports.createBoardRiverJson = {
+    "type": "mongodb"
+    , "mongodb": {
+        "servers": config.database.servers
+        , "credentials": [
+            {"db": "admin", "user": config.database.dbUser, "password": config.database.dbPassword}
+        ]
+        , "db": config.database.dbname
+        , "collection": "pinningBoards"
+    }
+    , "index": {
+        "name": config.elastic.boardIndex.name
         , "type": "form"
     }
 };

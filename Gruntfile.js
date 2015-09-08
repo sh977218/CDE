@@ -80,6 +80,34 @@ module.exports = function(grunt) {
                     , json: elastic.createFormRiverJson                   
                 }
             }
+            , elasticDeleteBoardIndex: {
+                options: {
+                    uri: config.elasticBoardIndexUri
+                    , method: 'DELETE'
+                    , ignoreErrors: true
+                }
+            }
+            , elasticCreateBoardIndex: {
+                options: {
+                    uri: config.elasticBoardIndexUri
+                    , method: 'POST'
+                    , json: elastic.createBoardIndexJson
+                }
+            }
+            , elasticDeleteBoardRiver: {
+                options: {
+                    uri: config.elasticBoardRiverUri
+                    , method: 'DELETE'
+                    , ignoreErrors: true
+                }
+            }
+            , elasticCreateBoardRiver: {
+                options: {
+                    uri: config.elasticBoardRiverUri + "/_meta"
+                    , method: 'POST'
+                    , json: elastic.createBoardRiverJson
+                }
+            }
             , elasticDeleteStoredQueryIndex: {
                 options: {
                     uri: config.elasticStoredQueryUri
@@ -190,64 +218,9 @@ module.exports = function(grunt) {
                 options: {
                     questions: [
                         {
-                            config: 'elastic.index.delete'
+                            config: 'elastic.index.recreate'
                             , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'index for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.index.create'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'index for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.river.delete'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'river for ' + config.name + ' configuration?'
-                        } 
-                        , {
-                            config: 'elastic.river.create'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'river for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.form.index.delete'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'form index for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.form.index.create'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'form index for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.form.river.delete'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'form river for ' + config.name + ' configuration?'
-                        } 
-                        , {
-                            config: 'elastic.form.river.create'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'form river for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.storedquery.index.delete'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'stored query index for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.storedquery.index.create'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'stored query index for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.storedquery.river.delete'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'stored query river for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.storedquery.river.create'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'stored query river for ' + config.name + ' configuration?'
+                            , message: 'Do you want to re-create ElasticSearch indexes for ' + config.name + ' configuration?'
                         }
                     ]
                 }
@@ -513,53 +486,9 @@ module.exports = function(grunt) {
     });     
     
     grunt.registerTask('do-elastic', function() {
-        if (grunt.config('elastic.river.delete')) {
-            grunt.log.writeln('\n\nDeleting Elastic Search River!');
-            grunt.task.run('http:elasticDeleteRiver');
-        }        
-        if (grunt.config('elastic.index.delete')) {
-            grunt.log.writeln('\n\nDeleting Elastic Search Index!');
-            grunt.task.run('http:elasticDeleteIndex');
-        }
-        if (grunt.config('elastic.index.create')) {
-            grunt.log.writeln('\n\nCreating Elastic Search Index!');
-            grunt.task.run('http:elasticCreateIndex');
-        }
-        if (grunt.config('elastic.river.create')) {
-            grunt.log.writeln('\n\nCreating Elastic Search River!');
-            grunt.task.run('http:elasticCreateRiver');
-        }
-        if (grunt.config('elastic.form.river.delete')) {
-            grunt.log.writeln('\n\nDeleting Elastic Search Form River!');
-            grunt.task.run('http:elasticDeleteFormRiver');
-        }        
-        if (grunt.config('elastic.form.index.delete')) {
-            grunt.log.writeln('\n\nDeleting Elastic Search Form Index!');
-            grunt.task.run('http:elasticDeleteFormIndex');
-        }
-        if (grunt.config('elastic.form.index.create')) {
-            grunt.log.writeln('\n\nCreating Elastic Search Form Index!');
-            grunt.task.run('http:elasticCreateFormIndex');
-        }
-        if (grunt.config('elastic.form.river.create')) {
-            grunt.log.writeln('\n\nCreating Elastic Search Form River!');
-            grunt.task.run('http:elasticCreateFormRiver');
-        }
-        if (grunt.config('elastic.storedquery.river.delete')) {
-            grunt.log.writeln('\n\nDeleting Elastic Search Stored Query River!');
-            grunt.task.run('http:elasticDeleteStoredQueryRiver');
-        }
-        if (grunt.config('elastic.storedquery.index.delete')) {
-            grunt.log.writeln('\n\nDeleting Elastic Search Stored Query Index!');
-            grunt.task.run('http:elasticDeleteStoredQueryIndex');
-        }
-        if (grunt.config('elastic.storedquery.index.create')) {
-            grunt.log.writeln('\n\nCreating Elastic Search Stored Query Index!');
-            grunt.task.run('http:elasticCreateStoredQueryIndex');
-        }
-        if (grunt.config('elastic.storedquery.river.create')) {
-            grunt.log.writeln('\n\nCreating Elastic Search Stored Query River!');
-            grunt.task.run('http:elasticCreateStoredQueryRiver');
+        if (grunt.config('elastic.index.recreate')) {
+            grunt.log.writeln('\n\nRe-creating ElasticSearch Indexes!');
+            grunt.task.run('http');
         }
     });
     
