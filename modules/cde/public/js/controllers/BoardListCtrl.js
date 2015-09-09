@@ -11,17 +11,6 @@ angular.module('cdeModule').controller('BoardListCtrl', ['$scope', 'BoardSearch'
            $scope.numPages = result.pages; 
            $scope.boards = result.boards;
            $scope.totalItems = result.totalNumber;
-
-            //var tinyIds = [];
-            //result.boards.forEach(function(b){
-            //    b.pins.forEach(function(p){
-            //        tinyIds.push(p.deTinyId);
-            //    });
-            //});
-            //
-            //$http.post('/cdesByTinyIdList', tinyIds).then(function(response){
-            //    console.log(response.data);
-            //});
         });
     } ;  
     
