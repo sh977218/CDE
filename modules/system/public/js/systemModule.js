@@ -91,6 +91,30 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , inlineAreaVisibility: '='
             }
         };
+    })
+    .directive('sortableArray', function () {
+        return {
+            template: '<a class="btn-mini fa fa-arrow-up" ' +
+                        'ng-click="moveUp()" ng-hide="$first" title="Up" href=""></a>' +
+                        '<a class="btn-mini fa fa-arrow-down" ng-click="moveDown($index)" ' +
+                        'ng-hide="$last" title="Down" href=""></a>',
+            controller: function ($scope, $element, $attrs) {
+                $scope.moveUp = function() {
+                    $scope.array.splice($scope.index - 1, 0, $scope.array.splice($scope.index, 1)[0]);
+                    $scope.cb();
+                };
+                $scope.moveDown = function() {
+                    $scope.array.splice($scope.index + 1, 0, $scope.array.splice($scope.index, 1)[0]);
+                    $scope.cb();
+                }
+            },
+            restrict: 'AE',
+            scope: {
+                array: "=sortableArray"
+                , index: '=index'
+                , cb: '&'
+            }
+        };
     });
 
 angular.module('systemModule').filter('placeholdEmpty', function () {

@@ -13,6 +13,7 @@
                 </span>
                     <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
                        id="removeReferenceDocument-{{$index}}" title="Remove" href=""></a>
+                    <div sortable-array="elt.referenceDocuments" index="$index" cb="stageElt(elt)"></div>
                 </div>
             </div>
             <div class="col-md-11">
