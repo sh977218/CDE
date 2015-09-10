@@ -7,21 +7,13 @@ var client = new elasticsearch.Client({
 });
 
 exports.boardSearch = function(req, res) {
-    //client.search({
-    //    q: req.body.q
-    //    , size: 100
-    //}).then(function (body) {
-    //    res.send(body);
-    //}, function (error) {
-    //    throw error;
-    //});
     client.search({
        body: {
            query: {
                bool: {
                    must: [{
                        match: {shareStatus: 'Private'}
-                       , match: {name: req.body.q}
+                       , match: {_all: req.body.q}
                    }]
                }
            }
