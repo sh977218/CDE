@@ -7,9 +7,25 @@ var client = new elasticsearch.Client({
 });
 
 exports.boardSearch = function(req, res) {
+    //client.search({
+    //    q: req.body.q
+    //    , size: 100
+    //}).then(function (body) {
+    //    res.send(body);
+    //}, function (error) {
+    //    throw error;
+    //});
     client.search({
-        q: req.body.q
-        , size: 100
+       body: {
+           query: {
+               bool: {
+                   must: [{
+                       match: {shareStatus: 'Private'}
+                       , match: {name: req.body.q}
+                   }]
+               }
+           }
+       }
     }).then(function (body) {
         res.send(body);
     }, function (error) {
