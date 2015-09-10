@@ -26,7 +26,7 @@ public class FormClassificationTest extends BaseFormTest {
     
     @Test
     public void classifyFormCdes() {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs("ctepOnlyCurator", password);
 
         goToFormByName("Intraoperative Management");
         findElement(By.linkText("Classification")).click();
