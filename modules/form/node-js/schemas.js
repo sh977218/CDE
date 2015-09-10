@@ -81,6 +81,7 @@ exports.formSchema = new Schema({
         {source: String, id: String, version: String, _id: false}
     ] 
     , isCopyrighted: {type: Boolean}
+    , noRenderAllowed: {type: Boolean}
     , copyright: {
         authority: String
         , text: String
