@@ -95,10 +95,10 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     })
     .directive('sortableArray', function () {
         return {
-            template: '<a id="moveUp-{{index}}" class="btn-mini fa fa-long-arrow-up" ng-click="moveTop()" ng-if="hideUpArrow()" title="Up" tooltip="move top" href=""></a>'
+            template: '<a id="moveTop-{{index}}" class="btn-mini fa fa-long-arrow-up" ng-click="moveTop()" ng-if="hideUpArrow()" title="Up" tooltip="move top" href=""></a>'
             + '<a id="moveUp-{{index}}" class="btn-mini fa fa-arrow-up" ng-click="moveUp()" ng-if="hideUpArrow()" title="Up" tooltip="move up" href=""></a>'
             + '<a id="moveDown-{{index}}" class="btn-mini fa fa-arrow-down" ng-click="moveDown()" ng-if="hideDownArrow()" title="Down" tooltip="move down" href=""></a>'
-            + '<a id="moveDown-{{index}}" class="btn-mini fa fa-long-arrow-down" ng-click="moveBottom()" ng-if="hideDownArrow()" title="Down" tooltip="move botom" href=""></a>',
+            + '<a id="moveBottom-{{index}}" class="btn-mini fa fa-long-arrow-down" ng-click="moveBottom()" ng-if="hideDownArrow()" title="Down" tooltip="move botom" href=""></a>',
             controller: function ($scope, $element, $attrs) {
                 $scope.hideUpArrow = function () {
                     return $scope.index !== 0;

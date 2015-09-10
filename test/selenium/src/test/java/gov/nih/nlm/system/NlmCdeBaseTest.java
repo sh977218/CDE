@@ -659,23 +659,4 @@ public class NlmCdeBaseTest {
         setVisibleStatus("minStatus-Incomplete");
     }
 
-    protected void createCde(String cdeName) {
-        goHome();
-        findElement(By.id("dropdownMenu2")).click();
-        textPresent("CDE");
-        findElement(By.xpath("//li[a[@id='dropdownMenu2']]/ul/li[1]")).click();
-        textPresent("Create Data Element");
-        findElement(By.id("cdeName")).sendKeys(cdeName);
-        findElement(By.id("cdeDefinition")).sendKeys(cdeName + " Definition");
-        findElement(By.id("addClassification-createCde")).click();
-        textPresent("by recently added");
-        findElement(By.xpath("//div[@id='addClassification-Disease']/button")).click();
-        findElement(By.id("closeModal")).click();
-        textNotPresent("Please enter a name for the new CDE");
-        textNotPresent("Please enter a definition for the new CDE");
-        textNotPresent("Please select at least one classification");
-        findElement(By.id("submit")).click();
-
-
-    }
 }
