@@ -22,7 +22,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             }).
             when('/orgaccountmanagement', {
                 controller: 'AccountManagementCtrl',
-                templateUrl: '/system/public/html/orgAccountManagement.html'}).
+                templateUrl: '/system/public/html/orgAccountManagement.html'
+            }).
             when('/classificationmanagement', {
                 controller: 'ClassificationManagementCtrl',
                 templateUrl: '/system/public/html/classificationManagement.html'
@@ -94,20 +95,36 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     })
     .directive('sortableArray', function () {
         return {
-            template: '<a class="btn-mini fa fa-arrow-up" ' +
-                        'ng-click="moveUp()" ng-hide="$first" title="Up" href=""></a>' +
-                        '<a class="btn-mini fa fa-arrow-down" ng-click="moveDown($index)" ' +
-                        'ng-hide="$last" title="Down" href=""></a>',
+            template: '<a id="moveUp-{{index}}" class="btn-mini fa fa-long-arrow-up" ng-click="moveTop()" ng-if="hideUpArrow()" title="Up" tooltip="move top" href=""></a>'
+            + '<a id="moveUp-{{index}}" class="btn-mini fa fa-arrow-up" ng-click="moveUp()" ng-if="hideUpArrow()" title="Up" tooltip="move up" href=""></a>'
+            + '<a id="moveDown-{{index}}" class="btn-mini fa fa-arrow-down" ng-click="moveDown()" ng-if="hideDownArrow()" title="Down" tooltip="move down" href=""></a>'
+            + '<a id="moveDown-{{index}}" class="btn-mini fa fa-long-arrow-down" ng-click="moveBottom()" ng-if="hideDownArrow()" title="Down" tooltip="move botom" href=""></a>',
             controller: function ($scope, $element, $attrs) {
-                $scope.moveUp = function() {
+                $scope.hideUpArrow = function () {
+                    return $scope.index !== 0;
+                }
+                $scope.hideDownArrow = function () {
+                    return $scope.index !== $scope.array.length - 1;
+                }
+                $scope.moveUp = function () {
                     $scope.array.splice($scope.index - 1, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
                 };
-                $scope.moveDown = function() {
+                $scope.moveDown = function () {
                     $scope.array.splice($scope.index + 1, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
                 }
-            },
+                $scope.moveTop = function () {
+                    $scope.array.unshift($scope.array.pop());
+                    $scope.cb();
+                }
+                $scope.moveBottom = function () {
+                    $scope.array.push($scope.array.shift());
+                    $scope.cb();
+                }
+            }
+
+            ,
             restrict: 'AE',
             scope: {
                 array: "=sortableArray"
@@ -115,7 +132,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , cb: '&'
             }
         };
-    });
+    })
+;
 
 angular.module('systemModule').filter('placeholdEmpty', function () {
     return function (input) {

@@ -6,6 +6,8 @@
             <div class="col-md-1 text-right">
                 <i ng-if="canCurate && elt.naming.length > 1" tabindex="0" title="Remove Naming" role="link"
                    ng-click="removeNamePair($index)" class="fa fa-trash-o" id="removeNaming-{{$index}}"></i>
+
+                <div sortable-array="elt.naming" index="$index" cb="stageElt(elt)"></div>
             </div>
             <div class="col-md-11">
                 <div class="row">

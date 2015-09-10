@@ -1,8 +1,6 @@
 package gov.nih.nlm.system;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.logging.LogType;
@@ -10,12 +8,14 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.annotations.*;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Listeners;
 
-import java.lang.System;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -659,4 +659,23 @@ public class NlmCdeBaseTest {
         setVisibleStatus("minStatus-Incomplete");
     }
 
+    protected void createCde(String cdeName) {
+        goHome();
+        findElement(By.id("dropdownMenu2")).click();
+        textPresent("CDE");
+        findElement(By.xpath("//li[a[@id='dropdownMenu2']]/ul/li[1]")).click();
+        textPresent("Create Data Element");
+        findElement(By.id("cdeName")).sendKeys(cdeName);
+        findElement(By.id("cdeDefinition")).sendKeys(cdeName + " Definition");
+        findElement(By.id("addClassification-createCde")).click();
+        textPresent("by recently added");
+        findElement(By.xpath("//div[@id='addClassification-Disease']/button")).click();
+        findElement(By.id("closeModal")).click();
+        textNotPresent("Please enter a name for the new CDE");
+        textNotPresent("Please enter a definition for the new CDE");
+        textNotPresent("Please select at least one classification");
+        findElement(By.id("submit")).click();
+
+
+    }
 }

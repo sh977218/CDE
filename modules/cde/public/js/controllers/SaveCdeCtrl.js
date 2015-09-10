@@ -27,19 +27,7 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$modal', funct
     $scope.addPv = function() {
         $scope.elt.valueDomain.permissibleValues.push({permissibleValue: ""});
     };
-    
-    $scope.movePvUp = function(index) {
-        var pvArray = $scope.elt.valueDomain.permissibleValues;
-        pvArray.splice(index - 1, 0, pvArray.splice(index, 1)[0]);    
-        $scope.stageElt($scope.elt);
-    };
-    
-    $scope.movePvDown = function(index) {
-        var pvArray = $scope.elt.valueDomain.permissibleValues;
-        pvArray.splice(index + 1, 0, pvArray.splice(index, 1)[0]);    
-        $scope.stageElt($scope.elt);
-    };
-    
+
 
     $scope.canAddPv = function() {
         var result = true;
