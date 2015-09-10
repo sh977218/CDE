@@ -113,6 +113,7 @@ public class NlmCdeBaseTest {
                     null, ex);
         }
 
+        System.out.println("baseUrl: " + baseUrl);
         driver.get(baseUrl);
         driver.manage().timeouts()
                 .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
