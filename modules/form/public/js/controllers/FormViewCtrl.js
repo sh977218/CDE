@@ -89,14 +89,26 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.openAddCdeClassificationModal = function () {
         $modal.open({
-            templateUrl: '/system/public/html/classifyForm.html',
-            controller: 'ClassifyFormCdesModalCtrl',
+            templateUrl: '/system/public/html/classifyElt.html',
+            controller: 'AddClassificationModalCtrl',
             resolve: {
+                module: function() {
+                    return $scope.module;
+                },
+                myOrgs: function() {
+                    return $scope.myOrgs;
+                },
+                orgName: function() {
+                    return undefined;
+                },
                 userOrgs: function () {
                     return userResource.userOrgs;
                 }
                 , cde: function () {
                     return $scope.elt;
+                },
+                pathArray: function() {
+                    return undefined;
                 }
                 , addClassification: function () {
                     return {
