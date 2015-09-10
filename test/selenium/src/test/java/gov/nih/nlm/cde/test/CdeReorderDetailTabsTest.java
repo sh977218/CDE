@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CdeReorderDetailTabsTest extends NlmCdeBaseTest {
@@ -33,7 +34,15 @@ public class CdeReorderDetailTabsTest extends NlmCdeBaseTest {
         textPresent("Change Note");
         findElement(By.id("confirmNewVersion")).click();
         closeAlert();
-        findElement(By.id("")).click();
+        Assert.assertEquals(driver.findElements(By.id("moveUp-0")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.id("moveTop-0")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.id("moveUp-1")).size(), 1);
+        Assert.assertEquals(driver.findElements(By.id("moveTop-1")).size(), 1);
+        Assert.assertEquals(driver.findElements(By.id("moveUp-2")).size(), 1);
+        Assert.assertEquals(driver.findElements(By.id("moveTop-2")).size(), 1);
+        Assert.assertEquals(driver.findElements(By.id("moveDown-3")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.id("moveBottom-3")).size(), 0);
+        findElement(By.id("moveDown-0")).click();
         textPresent("");
     }
 
