@@ -12,7 +12,7 @@
 <div class="container">
     <form id="searchBoardsForm">
         <div class="input-group input-group-lg">
-            <input ng-model="search.name" ng-change="onchangeSearch()" class="form-control search-query" id="searchDescriptorsFormInput" placeholder="Search Boards...">
+            <input ng-model="search.name" name="search" ng-change="onchangeSearch()" class="form-control search-query" id="searchDescriptorsFormInput" placeholder="Search Boards...">
             <div class="input-group-btn">
                 <button ng-click="reload()" type="submit" class="btn btn-default" id="search.submit">Search</button>
             </div>
