@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.common.test;
+package gov.nih.nlm.common.test;
 
 import gov.nih.nlm.common.test.CommonTest;
 import org.junit.Assert;

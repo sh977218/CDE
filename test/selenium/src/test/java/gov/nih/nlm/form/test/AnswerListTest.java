@@ -2,7 +2,6 @@ package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.cde.test.regstatus.FormRegStatus;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;

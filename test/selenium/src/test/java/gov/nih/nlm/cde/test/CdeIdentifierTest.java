@@ -1,6 +1,6 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.cde.common.test.IdentifiersTest;
+import gov.nih.nlm.common.test.IdentifiersTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 

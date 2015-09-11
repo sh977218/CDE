@@ -16,6 +16,6 @@ public class CdePermissibleValueTest extends PermissibleValueTest {
 
     @Test
     public void cdeReorderPermissibleValue() {
-        reorderPermissibleValue("cde for test cde reorder detail tabs");
+        reorderPermissibleValueTest("cde for test cde reorder detail tabs");
     }
 }

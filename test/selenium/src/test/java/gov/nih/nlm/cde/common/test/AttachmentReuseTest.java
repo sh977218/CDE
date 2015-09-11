@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.common.test;
 
+import gov.nih.nlm.common.test.BaseAttachmentTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.testng.annotations.Test;

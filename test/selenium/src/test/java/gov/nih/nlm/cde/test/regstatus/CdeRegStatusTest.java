@@ -1,6 +1,6 @@
 package gov.nih.nlm.cde.test.regstatus;
 
-import gov.nih.nlm.cde.common.test.RegStatusTest;
+import gov.nih.nlm.common.test.RegStatusTest;
 
 
 public class CdeRegStatusTest extends RegStatusTest {

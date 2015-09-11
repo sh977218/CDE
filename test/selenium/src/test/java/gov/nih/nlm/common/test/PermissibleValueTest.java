@@ -5,7 +5,7 @@ import org.testng.Assert;
 
 public abstract class PermissibleValueTest extends CommonTest {
 
-    public void reorderPermissibleValue(String eltName) {
+    public void reorderPermissibleValueTest(String eltName) {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, null);
         String tabName = "permissibleValueDiv";

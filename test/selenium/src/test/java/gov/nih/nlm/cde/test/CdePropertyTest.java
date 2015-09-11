@@ -37,7 +37,7 @@ public class CdePropertyTest extends PropertyTest {
 
     @Test
     public void reorderProperties() {
-        reorderProperties("cde for test cde reorder detail tabs");
+        reorderPropertyTest("cde for test cde reorder detail tabs");
     }
 
 }
