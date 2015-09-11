@@ -7,6 +7,16 @@ import org.testng.annotations.Test;
 
 public class FormNamingTest extends BaseFormTest {
 
+    @Override
+    public void goToEltByName(String name, String status) {
+        goToFormByName(name, status);
+    }
+
+    @Override
+    public void goToEltSearch() {
+        goToFormSearch();
+    }
+
     @Test
     public void formNaming() {
         mustBeLoggedInAs(ninds_username, password);
@@ -40,8 +50,28 @@ public class FormNamingTest extends BaseFormTest {
         for (WebElement elt : driver.findElements(By.cssSelector(".fa-trash-o"))) {
             Assert.assertFalse(elt.isDisplayed());
         }
+    }
 
+    @Test
+    public void formReorderNamingTest() {
+        mustBeLoggedInAs(ninds_username, password);
+        goToEltByName("form for test cde reorder detail tabs", null);
+        String tabName = "namingDiv";
+        String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
+        String postfix = "']";
+        findElement(By.linkText("Naming")).click();
+        textPresent("Definition:");
+        reorderIconTest(tabName);
+        findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
+        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("form for test cde reorder detail tabs"));
+        findElement(By.xpath(prefix + "moveBottom-0" + postfix)).click();
+        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_2" + postfix)).getText().contains("form for test cde reorder detail tabs 1"));
+        findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
+        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("form for test cde reorder detail tabs 1"));
+        findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
+        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_0" + postfix)).getText().contains("form for test cde reorder detail tabs 2"));
 
     }
+
 
 }

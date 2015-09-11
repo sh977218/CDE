@@ -1,10 +1,10 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.common.test.CommonTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 
-public class BaseFormTest extends NlmCdeBaseTest {
+public abstract class BaseFormTest extends CommonTest {
 
     protected void startAddingQuestions() {
         scrollToTop();
@@ -80,5 +80,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
             findElement(By.xpath("//dd[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']")).click();
         }
     }
+
+
 
 }
