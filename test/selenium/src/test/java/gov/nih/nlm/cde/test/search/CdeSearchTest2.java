@@ -99,7 +99,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         hangon(1);
         scrollToTop();
         textPresent("results for All Terms | CTEP > CATEGORY | Standard, Qualified");
-        findElement(By.id("li-checked-Qualified")).click();
+        clickElement(By.id("li-checked-Qualified"));
         scrollToTop();
         textPresent("results for All Terms | CTEP > CATEGORY | Standard");
         findElement(By.name("q")).sendKeys("name");
