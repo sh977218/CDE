@@ -31,7 +31,7 @@ public class BoardTest extends NlmCdeBaseTest {
     public void gotoMyBoards() {
         findElement(By.id("boardsMenu")).click();
         textPresent("My Boards");
-        findElement(By.cssSelector("#boardsMenu > option:nth-child(2)")).click();
+        findElement(By.id("myBoardsLink")).click();
         textPresent("Add Board");
     }
 
