@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.common.test;
 
+import gov.nih.nlm.common.test.CommonTest;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -7,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 
 public abstract class IdentifiersTest extends CommonTest {
-    
+
     protected void addId(String source, String id, String version) {
         findElement(By.linkText("Identifiers")).click();
         findElement(By.id("addId")).click();
@@ -20,20 +21,14 @@ public abstract class IdentifiersTest extends CommonTest {
         closeAlert();
         hangon(1);
     }
-    
 
     public void addRemoveId(String eltName, String status) {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToEltByName(eltName, status);
-        
         addId("MyOrigin1", "MyId1", "MyVersion1");
-        
         scrollToTop();
- 
         addId("MyOrigin2", "MyId2", null);
-        
         scrollToTop();
-
         addId("MyOrigin3", "MyId3", "MyVersion3");
 
         //remove MyOrigin2
@@ -47,7 +42,7 @@ public abstract class IdentifiersTest extends CommonTest {
                 i = ddElts.size();
             }
         }
-        
+
         goToEltByName(eltName, status);
         findElement(By.linkText("Identifiers")).click();
         textPresent("MyOrigin1");
@@ -58,8 +53,7 @@ public abstract class IdentifiersTest extends CommonTest {
         textPresent("MyVersion3");
         textNotPresent("MyOrigin2");
         textNotPresent("MyId2");
-        
     }
-        
-    
+
+
 }

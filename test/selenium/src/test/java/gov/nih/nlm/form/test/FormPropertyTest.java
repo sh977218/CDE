@@ -1,6 +1,6 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.cde.common.test.PropertyTest;
+import gov.nih.nlm.common.test.PropertyTest;
 import org.testng.annotations.Test;
 
 public class FormPropertyTest extends PropertyTest {

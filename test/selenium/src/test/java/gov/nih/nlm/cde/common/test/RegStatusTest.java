@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.common.test;
 
+import gov.nih.nlm.common.test.CommonTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;

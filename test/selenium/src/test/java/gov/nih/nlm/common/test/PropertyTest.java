@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.common.test;
+package gov.nih.nlm.common.test;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
@@ -99,5 +99,24 @@ public abstract class PropertyTest extends CommonTest {
         textPresent("516-543, DOI:10.1002/jmri.22259");
         hangon(1);
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
+    }
+
+    public void reorderProperties(String eltName){
+        mustBeLoggedInAs(ninds_username, password);
+        goToEltByName(eltName, null);
+        String tabName = "propertiesDiv";
+        String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
+        String postfix = "']";
+        findElement(By.linkText("Properties")).click();
+        textPresent("Add Property");
+        reorderIconTest(tabName);
+        findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
+        org.testng.Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("pk1"));
+        findElement(By.xpath(prefix + "moveBottom-0" + postfix)).click();
+        org.testng.Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_2" + postfix)).getText().contains("pk2"));
+        findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
+        org.testng.Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("pk2"));
+        findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
+        org.testng.Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_0" + postfix)).getText().contains("pk3"));
     }
 }

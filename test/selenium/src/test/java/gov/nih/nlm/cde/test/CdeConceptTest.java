@@ -1,10 +1,9 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.common.test.PropertyTest;
+import gov.nih.nlm.common.test.ConceptTest;
 import org.testng.annotations.Test;
 
-public class AddRemoveCdePropertyTest extends PropertyTest {
-
+public class CdeConceptTest extends ConceptTest {
     @Override
     public void goToEltByName(String name, String status) {
         goToCdeByName(name, status);
@@ -16,8 +15,7 @@ public class AddRemoveCdePropertyTest extends PropertyTest {
     }
 
     @Test
-    public void addRemoveCdeProperty() {
-        addRemoveProperty("Aromatase Inhibitor Most Recent Received Text", null);
+    public void reorderConcept(String eltName) {
+        reorderConceptTest("cde for test cde reorder detail tabs");
     }
-
 }
