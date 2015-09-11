@@ -29,8 +29,10 @@ public class BoardTest extends NlmCdeBaseTest {
     }
 
     public void gotoMyBoards() {
-        findElement(By.linkText("Boards")).click();
-        findElement(By.linkText("My Boards")).click();
+        findElement(By.id("boardsMenu")).click();
+        textPresent("My Boards");
+        findElement(By.cssSelector("#boardsMenu > option:nth-child(2)")).click();
+        textPresent("Add Board");
     }
 
     protected void gotoPublicBoards() {
@@ -44,11 +46,11 @@ public class BoardTest extends NlmCdeBaseTest {
 
     public void createBoard(String name, String description, String response) {
         gotoMyBoards();
-        hangon(1);
+        textPresent("Add Board");
         findElement(By.id("addBoard")).click();
-        hangon(0.5);
-        findElement(By.name("name")).sendKeys(name);
-        findElement(By.cssSelector("textarea[name='description']")).sendKeys(description);
+        textPresent("Create New Board");
+        findElement(By.id("new-board-name")).sendKeys(name);
+        findElement(By.id("new-board-description")).sendKeys(description);
         findElement(By.id("createBoard")).click();
         textPresent(response);
         closeAlert();
@@ -75,7 +77,7 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.id("pinToBoard_0")).click();
         findElement(By.linkText(boardName)).click();
         textPresent("Added to Board");
-        modalGone();         
+        modalGone();
         closeAlert();
     }
 
