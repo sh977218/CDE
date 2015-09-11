@@ -15,7 +15,7 @@ public class CdeConceptTest extends ConceptTest {
     }
 
     @Test
-    public void reorderConcept(String eltName) {
+    public void reorderConcept() {
         reorderConceptTest("cde for test cde reorder detail tabs");
     }
 }
