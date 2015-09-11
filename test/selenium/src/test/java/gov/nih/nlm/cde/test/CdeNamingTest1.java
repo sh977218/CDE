@@ -3,7 +3,7 @@ package gov.nih.nlm.cde.test;
 import gov.nih.nlm.common.test.NamingTest;
 import org.testng.annotations.Test;
 
-public class CdeNamingTest extends NamingTest {
+public class CdeNamingTest1 extends NamingTest {
     @Override
     public void goToEltByName(String name, String status) {
         goToCdeByName(name, status);
