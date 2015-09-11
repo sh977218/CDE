@@ -7,12 +7,10 @@ import org.testng.annotations.Test;
 
 public class FormNamingTest extends BaseFormTest {
 
-    @Override
     public void goToEltByName(String name, String status) {
         goToFormByName(name, status);
     }
 
-    @Override
     public void goToEltSearch() {
         goToFormSearch();
     }

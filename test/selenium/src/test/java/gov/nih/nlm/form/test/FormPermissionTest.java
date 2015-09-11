@@ -2,21 +2,10 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 
 public class FormPermissionTest extends BaseFormTest {
-
-    @Override
-    public void goToEltByName(String name, String status) {
-        goToFormByName(name, status);
-    }
-
-    @Override
-    public void goToEltSearch() {
-        goToFormSearch();
-    }
 
     private CreateEditSectionTest sectionTest = new CreateEditSectionTest();
 
