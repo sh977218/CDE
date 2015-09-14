@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
@@ -89,7 +90,8 @@ public class MergeTest extends NlmCdeBaseTest {
         findElement(By.linkText("Classification")).click();
         Assert.assertTrue(textPresent("caBIG"));
         Assert.assertTrue(textPresent("caLIMS2"));      
-        Assert.assertTrue(textPresent("gov.nih.nci.calims2.domain.inventory"));    
+        Assert.assertTrue(textPresent("gov.nih.nci.calims2.domain.inventory"));
+        textPresent('gov.nih.nci.cadsr.domain');
     }    
   
     @Test
