@@ -7,7 +7,8 @@
                 <i class="fa fa-eye hand-cursor" title="View Full Detail"
                    role="link" id="eyeLink_{{$index}}"></i></a>
 
-            <div tabindex="0" style="padding-left:20px;display:inline-block"># questions:{{form.numQuestions}}</div>
+            <div tabindex="0" style="padding-left:20px;display:inline-block">number of questions:
+                <span id="nQuestion-{{$index}}">{{form.numQuestions}}</span></div>
         </div>
 
         <div class="row">
