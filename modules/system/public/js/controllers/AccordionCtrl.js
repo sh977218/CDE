@@ -40,26 +40,6 @@ angular.module('systemModule').controller('AccordionCtrl', ['$scope', '$location
         }
     };
 
-
-    $scope.findQuestions = function (fe) {
-        var n = 0;
-        if (fe.formElements != undefined) {
-            for (var i = 0; i < fe.formElements.length; i++) {
-                var thisfe = fe.formElements[i];
-                if (thisfe.elementType) {
-                    if (thisfe.elementType === 'question') {
-                        n++;
-                    }
-                    else {
-                        n = $scope.findQuestions(thisfe);
-                    }
-                }
-            }
-        }
-        return n;
-    }
-    $scope.form.numQuestions = $scope.findQuestions($scope.form);
-
 }
 ])
 ;

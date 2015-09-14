@@ -193,7 +193,10 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage);
             $scope.totalItems = result.totalNumber;
             $scope.cdes = result.cdes;
-            $scope.cdes.forEach(function(elt) {elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);});
+            $scope.cdes.forEach(function (elt) {
+                elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
+                elt.numQuestions = $scope.findFormQuestions(elt);
+            });
             $scope.accordionListStyle = "";
             $scope.openCloseAll($scope.cdes, "list");
             $scope.aggregations = result.aggregations;
@@ -356,5 +359,16 @@ angular.module('systemModule').controller('ListCtrl',
         });
         return result;
     };
+
+    $scope.findFormQuestions = function (fe) {
+        var n = 0;
+        if (fe.formElements != undefined) {
+            fe.formElements.forEach(function (e) {
+                if (e.elementType && e.elementType === 'question') n++;
+                else n = $scope.findFormQuestions(e);
+            })
+        }
+        return n;
+    }
 
 }]);
