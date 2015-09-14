@@ -40,7 +40,7 @@ async.eachSeries(tasks, function (file, fileCallback) {
         })
     }, function doneAllFiles() {
         allForms.sort(compare);
-        fs.appendFile(__dirname + "/input/UnformattedNindsForms.json", JSON.stringify(allForms), "utf8", function (err) {
+        fs.writeFile(__dirname + "/input/UnformattedNindsForms.json", JSON.stringify(allForms), "utf8", function (err) {
             if (err) console.log(err);
             else {
                 console.log("finish all forms and save to input/UnformattedNindsForms.json");
