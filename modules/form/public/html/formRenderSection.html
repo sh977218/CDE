@@ -18,7 +18,7 @@
         </div>
     </div>
     <div class="panel-body">
-        <div ng-switch="section.section.displayAsMatrix">
+        <div ng-switch="selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(section)">
             <div ng-switch-when="true">
                 <div ng-include="'/form/public/html/formRenderSectionMatrix.html'"/>
             </div>
