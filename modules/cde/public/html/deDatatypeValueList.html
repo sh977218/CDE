@@ -50,7 +50,7 @@
                      <i ng-switch-default class="fa fa-exclamation text-warning" id="pv-{{$index}}-warning"></i>
                  </span>
         </td>
-        <td tabindex="0" headers="actions" ng-show="canCurate">
+        <td tabindex="0" headers="actions" ng-if="canCurate">
             <span ng-if="pv.notValid"><i class="fa fa-warning text-danger" id="pv-{{$index}}-notValid"> </i></span>
             <a id="pvRemove-{{$index}}" class="btn-mini fa fa-trash-o" ng-click="removePv($index)" title="Remove"
                href=""></a>

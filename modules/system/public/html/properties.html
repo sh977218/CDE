@@ -4,15 +4,15 @@
     <div tabindex="0" ng-if="elt.properties.length === 0">There are no properties.</div>
     <div ng-repeat="prop in elt.properties">
         <div class="row">
-            <div class="col-md-1 text-right" ng-show="canCurate">
-                <div class="row">
-                <span ng-show="showDelete">Confirm Delete
-                    <a class="fa fa-check" ng-click="showDelete = false; removeProperty($index)"
-                       id="confirmRemoveProperty-{{$index}}" title="OK" href=""></a>
-                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
-                </span>
-                    <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
-                       id="removeProperty-{{$index}}" title="Remove" href=""></a>
+            <div class="col-md-1 text-right" ng-if="canCurate">
+                <div class="row" >
+                    <span ng-show="showDelete">Confirm Delete
+                        <span class="fa fa-check" ng-click="showDelete = false; removeProperty($index)"
+                           id="confirmRemoveProperty-{{$index}}" title="OK" href=""></span>
+                        <span class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></span>
+                    </span>
+                    <span ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
+                           id="removeProperty-{{$index}}" title="Remove" href=""></span>
 
                     <div sortable-array="elt.properties" index="$index" cb="stageElt(elt)"></div>
                 </div>
