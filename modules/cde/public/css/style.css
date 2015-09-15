@@ -725,6 +725,10 @@ button#selectDefault {
     float: left;
 }
 
-#questionSearchArea{
+#questionSearchArea {
     padding: 20px;
+}
+
+.red {
+    color: red;
 }

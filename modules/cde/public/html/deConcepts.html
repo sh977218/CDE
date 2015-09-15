@@ -12,12 +12,13 @@
             </thead>
             <tbody>
             <tr ng-repeat="concept in elt[conceptConf.type].concepts">
-                <td><a tabindex="0" href ng-click="relatedCdes(concept)" id="concept_cde_name_{{$index}}">{{concept.name}}</a></td>
+                <td><a tabindex="0" href ng-click="relatedCdes(concept)" id="concept_cde_name_{{$index}}">{{concept.name}}</a>
+                </td>
                 <td tabindex="0">{{concept.origin}}</td>
                 <td tabindex="0">{{concept.originId}}</td>
                 <td headers="actions" ng-if="canCurate">
-                    <a tabindex="0" href id="remove{{conceptConf.type}}-{{$index}}" class="fa fa-trash-o"
-                       ng-click="removeConcept(conceptConf.type)" title="Remove" href></a>
+                    <span tabindex="0" href id="remove{{conceptConf.type}}-{{$index}}" class="btn-default fa fa-trash-o"
+                          ng-click="removeConcept(conceptConf.type)" title="Remove" tooltip="Remove" href></span>
 
                     <div sortable-array="elt[conceptConf.type].concepts" index="$index" cb="stageElt(elt)"></div>
                 </td>
