@@ -36,6 +36,7 @@ module.exports = function(grunt) {
                     uri: config.elasticUri
                     , method: 'POST'
                     , json: elastic.createIndexJson
+                    , ignoreErrors: true
                 }
             }
             , elasticDeleteRiver: {
@@ -80,34 +81,34 @@ module.exports = function(grunt) {
                     , json: elastic.createFormRiverJson
                 }
             }
-            //, elasticDeleteBoardIndex: {
-            //    options: {
-            //        uri: config.elasticBoardIndexUri
-            //        , method: 'DELETE'
-            //        , ignoreErrors: true
-            //    }
-            //}
-            //, elasticCreateBoardIndex: {
-            //    options: {
-            //        uri: config.elasticBoardIndexUri
-            //        , method: 'POST'
-            //        , json: elastic.createBoardIndexJson
-            //    }
-            //}
-            //, elasticDeleteBoardRiver: {
-            //    options: {
-            //        uri: config.elasticBoardRiverUri
-            //        , method: 'DELETE'
-            //        , ignoreErrors: true
-            //    }
-            //}
-            //, elasticCreateBoardRiver: {
-            //    options: {
-            //        uri: config.elasticBoardRiverUri + "/_meta"
-            //        , method: 'POST'
-            //        , json: elastic.createBoardRiverJson
-            //    }
-            //}
+            , elasticDeleteBoardIndex: {
+                options: {
+                    uri: config.elasticBoardIndexUri
+                    , method: 'DELETE'
+                    , ignoreErrors: true
+                }
+            }
+            , elasticCreateBoardIndex: {
+                options: {
+                    uri: config.elasticBoardIndexUri
+                    , method: 'POST'
+                    , json: elastic.createBoardIndexJson
+                }
+            }
+            , elasticDeleteBoardRiver: {
+                options: {
+                    uri: config.elasticBoardRiverUri
+                    , method: 'DELETE'
+                    , ignoreErrors: true
+                }
+            }
+            , elasticCreateBoardRiver: {
+                options: {
+                    uri: config.elasticBoardRiverUri + "/_meta"
+                    , method: 'POST'
+                    , json: elastic.createBoardRiverJson
+                }
+            }
             , elasticDeleteStoredQueryIndex: {
                 options: {
                     uri: config.elasticStoredQueryUri
@@ -488,16 +489,24 @@ module.exports = function(grunt) {
     grunt.registerTask('do-elastic', function() {
         if (grunt.config('elastic.index.recreate')) {
             grunt.log.writeln('\n\nRe-creating ElasticSearch Indexes!');
-            grunt.task.run('http');
-            //var createElastic = function(){
-            //    try {
-            //        grunt.task.run('http');
-            //    }catch(e){
-            //        console.log(e);
-            //        createElastic();
-            //    }
-            //};
-            //createElastic();
+            grunt.task.run('http:elasticDeleteRiver');
+            grunt.task.run('http:elasticDeleteIndex');
+            grunt.task.run('http:elasticCreateIndex');
+            grunt.task.run('http:elasticCreateRiver');
+            grunt.task.run('http:elasticDeleteFormRiver');
+            grunt.task.run('http:elasticDeleteFormIndex');
+            grunt.task.run('http:elasticCreateFormIndex');
+            grunt.task.run('http:elasticCreateFormRiver');
+
+            grunt.task.run('http:elasticDeleteBoardRiver');
+            grunt.task.run('http:elasticDeleteBoardIndex');
+            grunt.task.run('http:elasticCreateBoardIndex');
+            grunt.task.run('http:elasticCreateBoardRiver');
+
+            grunt.task.run('http:elasticDeleteStoredQueryRiver');
+            grunt.task.run('http:elasticDeleteStoredQueryIndex');
+            grunt.task.run('http:elasticCreateStoredQueryIndex');
+            grunt.task.run('http:elasticCreateStoredQueryRiver');
 
         }
     });
