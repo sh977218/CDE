@@ -19,7 +19,7 @@
         <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview"
            ng-if="formLoincRender && !elt.noRenderAllowed"
            ng-href="{{formLoincRenderUrl}}/{{elt._id}}"><i class="fa fa-cogs"></i> Loinc Preview</a>
-        <a class="btn btn-small btn-default" target="_blank" title="Preview" id="sdcExport"
+        <a class="btn btn-small btn-default" target="_blank" title="SDC Export" id="sdcExport"
            href="sdcExport/{{elt._id}}">
             <i class="fa fa-download"></i> SDC Export</a>
         <button class="btn btn-small btn-default" target="_blank" title="Pin CDEs" id="pinAllCdes"
@@ -44,8 +44,11 @@
         <div tab heading="{{tabs['naming'].heading}}">
             <div ng-include="'/system/public/html/naming.html'"></div>
         </div>
+        <div tab heading="{{tabs['displayProfiles'].heading}}">
+            <div ng-include="'/form/public/html/displayProfiles.html'"></div>
+        </div>
         <div tab heading="{{tabs['classification'].heading}}">
-            <div ng-include="'/system/public/html/elementClassification.html'"></div>
+            <div ng-include="'/form/public/html/formClassification.html'"></div>
         </div>
         <div tab heading="{{tabs['status'].heading}}">
             <div ng-include="'/system/public/html/status.html'"></div>
