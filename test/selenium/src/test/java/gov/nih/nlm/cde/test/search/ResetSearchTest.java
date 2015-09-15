@@ -21,7 +21,7 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);
         findElement(By.id("menu_cdes_link")).click();
-        textPresent("Browse by organization");
+        textPresent("Browse by classification");
         findElement(By.id("browseOrg-NINDS")).click();
         textPresent("Population (");
         linkList = driver.findElements(By.cssSelector("div.panel-default"));
@@ -36,7 +36,7 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         textPresent("results for some search");
         findElement(By.id("menu_cdes_link")).click();
-        textPresent("Browse by organization");
+        textPresent("Browse by classification");
     }
 
 }
