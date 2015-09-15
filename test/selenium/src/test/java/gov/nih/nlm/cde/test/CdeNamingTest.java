@@ -21,6 +21,6 @@ public class CdeNamingTest extends NamingTest {
 
     @Test
     public void cdeReorderNaming() {
-        reorderNamingTest("cde for test cde reorder detail tabs");
+        reorderNamingTest("cde for test cde reorder detail tabs", "cde");
     }
 }

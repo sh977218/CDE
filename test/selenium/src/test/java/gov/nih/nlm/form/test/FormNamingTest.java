@@ -52,6 +52,7 @@ public class FormNamingTest extends BaseFormTest {
 
     @Test
     public void formReorderNamingTest() {
+        setLowStatusesVisible();
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName("form for test cde reorder detail tabs", null);
         String tabName = "namingDiv";
@@ -62,12 +63,10 @@ public class FormNamingTest extends BaseFormTest {
         reorderIconTest(tabName);
         findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
         Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("form for test cde reorder detail tabs"));
-        findElement(By.xpath(prefix + "moveBottom-0" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_2" + postfix)).getText().contains("form for test cde reorder detail tabs 1"));
         findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("form for test cde reorder detail tabs 1"));
+        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("form for test cde reorder detail tabs 2"));
         findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_0" + postfix)).getText().contains("form for test cde reorder detail tabs 2"));
+        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_0" + postfix)).getText().contains("form for test cde reorder detail tabs 1"));
 
     }
 

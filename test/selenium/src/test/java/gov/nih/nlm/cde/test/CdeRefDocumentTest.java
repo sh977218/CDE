@@ -26,7 +26,7 @@ public class CdeRefDocumentTest extends ReferenceDocumentTest {
 
     @Test
     public void cdeReorderReferenceDocument() {
-        reorderReferenceDocumentTest("cde for test cde reorder detail tabs");
+        reorderReferenceDocumentTest("cde for test cde reorder detail tabs", "cde");
     }
 
 

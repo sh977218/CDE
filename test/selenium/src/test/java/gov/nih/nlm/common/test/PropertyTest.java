@@ -101,7 +101,8 @@ public abstract class PropertyTest extends CommonTest {
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
     }
 
-    public void reorderPropertyTest(String eltName,String type){
+    public void reorderPropertyTest(String eltName, String type) {
+        setLowStatusesVisible();
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, type);
         String tabName = "propertiesDiv";
@@ -111,12 +112,10 @@ public abstract class PropertyTest extends CommonTest {
         textPresent("Add Property");
         reorderIconTest(tabName);
         findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
-        org.testng.Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("pk1"));
-        findElement(By.xpath(prefix + "moveBottom-0" + postfix)).click();
-        org.testng.Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_2" + postfix)).getText().contains("pk2"));
+        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("pk1"));
         findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
-        org.testng.Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("pk2"));
+        org.testng.Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("pk3"));
         findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
-        org.testng.Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_0" + postfix)).getText().contains("pk3"));
+        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_0" + postfix)).getText().contains("pk1"));
     }
 }

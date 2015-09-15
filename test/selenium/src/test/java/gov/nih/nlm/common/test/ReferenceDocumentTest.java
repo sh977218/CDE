@@ -43,9 +43,10 @@ public abstract class ReferenceDocumentTest extends CommonTest {
         textPresent("Reference document Removed");
     }
 
-    public void reorderReferenceDocumentTest(String eltName) {
+    public void reorderReferenceDocumentTest(String eltName, String type) {
+        setLowStatusesVisible();
         mustBeLoggedInAs(ninds_username, password);
-        goToEltByName(eltName, null);
+        goToEltByName(eltName, type);
         String tabName = "referrenceDocumentsDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
@@ -54,12 +55,10 @@ public abstract class ReferenceDocumentTest extends CommonTest {
         reorderIconTest(tabName);
         findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
         Assert.assertTrue(findElement(By.xpath(prefix + "rd_id_1" + postfix)).getText().contains("rd1"));
-        findElement(By.xpath(prefix + "moveBottom-0" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "rd_id_2" + postfix)).getText().contains("rd2"));
         findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "rd_id_1" + postfix)).getText().contains("rd2"));
+        Assert.assertTrue(findElement(By.xpath(prefix + "rd_id_1" + postfix)).getText().contains("rd3"));
         findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "rd_id_0" + postfix)).getText().contains("rd3"));
+        Assert.assertTrue(findElement(By.xpath(prefix + "rd_id_0" + postfix)).getText().contains("rd1"));
 
     }
 }
