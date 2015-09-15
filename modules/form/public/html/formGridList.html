@@ -9,6 +9,7 @@
             <th tabindex="0" class="registrationStatus">Registration Status</th>
             <th tabindex="0" class="administrativeStatus">Admin Status</th>
             <th tabindex="0" class="ids">Identifiers</th>
+            <th tabindex="0" class="numQuestions">Questions</th>
         </tr>
         </thead>
         <tbody>
@@ -40,6 +41,7 @@
                     <li class="lastItem" ng-show="c.ids.length > maxLines">...</li>
                 </ul>
             </td>
+            <td tabindex="0" class="numQuestions">{{c.numQuestions}}</td>
         </tr>
         </tbody>
     </table>

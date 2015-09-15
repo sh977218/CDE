@@ -79,7 +79,7 @@ angular.module('systemModule').controller('ListCtrl',
         focusClassification();
     };
 
-    $scope.isAllowed = function (cde) {
+    $scope.isAllowed = function () {
         return false;
     };
 
@@ -173,7 +173,7 @@ angular.module('systemModule').controller('ListCtrl',
         }
     };
 
-    $scope.reload = function(type) {
+    $scope.reload = function (type) {
         if (!type) type = "cde";
 
         var timestamp = new Date().getTime();
@@ -182,20 +182,22 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.accordionListStyle = "semi-transparent";
         var settings = Elastic.buildElasticQuerySettings($scope.searchSettings);
 
-        Elastic.generalSearchQuery(settings, type,  function(err, result) {
+        Elastic.generalSearchQuery(settings, type, function (err, result) {
             if (err) {
                 $scope.accordionListStyle = "";
                 $scope.addAlert("danger", "There was a problem with your query");
                 $scope.cdes = [];
                 return;
             }
-            if(timestamp < $scope.lastQueryTimeStamp) return;
+            if (timestamp < $scope.lastQueryTimeStamp) return;
             $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage);
             $scope.totalItems = result.totalNumber;
             $scope.cdes = result.cdes;
             $scope.cdes.forEach(function (elt) {
                 elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
-                elt.numQuestions = $scope.findFormQuestions(elt);
+                if ($scope.localEltTransform) {
+                    $scope.localEltTransform(elt);
+                }
             });
             $scope.accordionListStyle = "";
             $scope.openCloseAll($scope.cdes, "list");
@@ -218,7 +220,6 @@ angular.module('systemModule').controller('ListCtrl',
             }
 
             filterOutWorkingGroups($scope.aggregations);
-            //filterOutNonVisibleStatuses($scope.aggregations);
             OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
 
             if ((settings.searchTerm && settings.searchTerm.length > 0) || settings.selectedOrg)
@@ -316,14 +317,6 @@ angular.module('systemModule').controller('ListCtrl',
         });
     };
 
-    var filterOutNonVisibleStatuses = function(aggregations) {
-        var visibleStatuses = SearchSettings.getUserDefaultStatuses().concat($scope.searchSettings.regStatuses);
-        aggregations.statuses.buckets = aggregations.statuses.buckets.filter(function(s) {
-            return visibleStatuses.indexOf(s.key) > -1;
-        });
-    };
-
-
     $scope.showPinAllModal = function() {
         var modalInstance = $modal.open({
           templateUrl: '/cde/public/html/selectBoardModal.html',
@@ -359,16 +352,5 @@ angular.module('systemModule').controller('ListCtrl',
         });
         return result;
     };
-
-    $scope.findFormQuestions = function (fe) {
-        var n = 0;
-        if (fe.formElements != undefined) {
-            fe.formElements.forEach(function (e) {
-                if (e.elementType && e.elementType === 'question') n++;
-                else n = $scope.findFormQuestions(e);
-            })
-        }
-        return n;
-    }
 
 }]);

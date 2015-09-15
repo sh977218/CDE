@@ -557,6 +557,10 @@ button#selectDefault {
     width: 55px;
 }
 
+.gridListView .numQuestions {
+    width: 25px;
+}
+
 .gridListView .administrativeStatus {
     width: 55px;
 }
