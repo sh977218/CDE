@@ -7,8 +7,7 @@ var fs = require('fs'),
     mongo_form = require('../../modules/form/node-js/mongo-form'),
     classificationShared = require('../../modules/system/shared/classificationShared.js'),
     async = require('async'),
-    crypto = require('crypto')
-    ;
+    crypto = require('crypto');
 
 // Global variables
 var globals = {orgName: "NINDS"};
@@ -162,7 +161,7 @@ var processFile = function () {
                     var cdeId = cde.cdeId;
                     mongo_cde.byOtherId("NINDS", cdeId, function (err, data) {
                         if (!data) {
-                            cdeNotFound[cdeId] = cdeId;
+                            cdeNotFound[cdeId] = oldForm.crfModuleGuideline + ' ' + cdeId;
                         } else {
                             question.question.cde.tinyId = data.tinyId;
                             question.question.cde.version = data.version;
@@ -180,7 +179,9 @@ var processFile = function () {
             }
         }, function doneAllForm() {
             console.log("finished all forms.");
-            console.log("cde not found: " + Object.keys(cdeNotFound));
+            console.log("cde not found: ");
+            for (var property in cdeNotFound)
+                console.log(cdeNotFound[property]);
             process.exit(0);
         });
     });

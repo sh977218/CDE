@@ -2,11 +2,13 @@ var fs = require('fs'),
     async = require('async');
 var tasks = [];
 var allForms = [];
-var excluString = ['See "CRF Search" to find all Imaging forms under Subdomain option.',
-    'See "CRF Search" to find all Non-Imaging forms under Subdomain option.',
-    'See "CRF Search" to find Surgeries and Other Procedures forms under Subdomain option.',
-    'Note: The General CDE Standards contain additional useful CRF Modules and CDEs for this sub-domain.',
-    'Note: The General CDE Standards contain additional useful CRF Modules and CDEs for this category of data.'];
+var excluString = ['\nSee "CRF Search" to find all Imaging forms under Subdomain option.',
+    '\nSee "CRF Search" to find all Non-Imaging forms under Subdomain option.',
+    '\nSee "CRF Search" to find Surgeries and Other Procedures forms under Subdomain option.',
+    '\nNote: The General CDE Standards contain additional useful CRF Modules and CDEs for this sub-domain.',
+    '\nNote: The General CDE Standards contain additional useful CRF Modules and CDEs for this category of data.',
+    '\nNote: Also refer to Outcomes and End Points for additional measures recommended for assessing neurological impairment and functional status.',
+    '\nThe NINDS strongly encourages researchers to use these NIH-developed materials for NINDS-sponsored research, when appropriate. Utilization of these resources will enable greater consistency for NINDS-sponsored research studies. These tools are free of charge.'];
 for (var i = 1; i < 27; i++) {
     var task = "nindsFormsChrist" + i + ".json";
     tasks.push(task);
@@ -32,7 +34,8 @@ async.eachSeries(tasks, function (file, fileCallback) {
                             form.subDomainName = form.subDomainName.substr(0, k);
                         }
                     }
-                    if (form.domainName !== 'NIH Resources')
+                    if (form.domainName !== 'NIH Resources' && form.subDomainName !== 'NIH Resources'
+                        && form.domainName != 'Overview of Working Group Recommendations' && form.subDomainName != 'Summary Documents')
                         allForms.push(form);
                 }
                 fileCallback();

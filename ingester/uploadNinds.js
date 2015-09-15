@@ -6,8 +6,7 @@ var fs = require('fs'),
     mongo_data_system = require('../modules/system/node-js/mongo-data'),
     async = require('async')
     , xml2js = require('xml2js')
-    , ninds = require('./convertcsv')
-    , Readable = require('stream').Readable;
+    , ninds = require('./convertcsv');
 
 
 var nindsOrg = null;
@@ -186,6 +185,18 @@ parseCde = function (obj, cb) {
 
     var suggestedQuestion = obj["Suggested Question Text"].trim();
     if (suggestedQuestion.length > 0) {
+
+
+        namings.push({
+            designation: obj["Title"].trim()
+            , definition: obj["Short Description"].trim()
+            , languageCode: "EN-US"
+            , context: {
+                contextName: "Short Description"
+                , acceptability: "preferred"
+            }
+        })
+
         properties.push({
             key: "NINDS Suggested Question"
             , value: stripBreakline(suggestedQuestion)
