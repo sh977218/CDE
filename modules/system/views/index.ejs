@@ -65,8 +65,8 @@
             window.loggedIn = <%= loggedIn %>;
             window.maxPin = <%= config.maxPin %>;
             window.formEditable = <%= config.modules.forms.editable %>;
-            window.formLocalRender = <%= config.modules.forms.editable %>;
-            window.formLoincRender = <%= config.modules.forms.editable %>;
+            window.formLocalRender = <%= config.modules.forms.localRender %>;
+            window.formLoincRender = <%= config.modules.forms.loincRender %>;
             window.formLoincRenderUrl = '<%= config.modules.forms.loincRenderUrl %>';
             window.formEnabled = <%= config.modules.forms !== undefined %>;
         })();
