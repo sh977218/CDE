@@ -63,13 +63,6 @@
                             </div>
                         </dd>
                     </span>
-                    <span ng-show="canCurate && canBeDisplayedAsMatrix(section)">
-                        <dt tabindex="0">Display as Matrix:</dt>
-                        <dd tabindex="0">
-                            <input type="checkbox" ng-model="section.section.displayAsMatrix" ng-disabled="!canCurate"
-                                   id="displayAsMatrix_{{$index}}" ng-click="stageElt()"/>
-                        </dd>
-                    </span>
                 </dl>
             </div>
         </div>
