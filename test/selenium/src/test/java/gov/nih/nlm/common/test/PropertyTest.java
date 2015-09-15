@@ -101,9 +101,9 @@ public abstract class PropertyTest extends CommonTest {
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
     }
 
-    public void reorderPropertyTest(String eltName){
+    public void reorderPropertyTest(String eltName,String type){
         mustBeLoggedInAs(ninds_username, password);
-        goToEltByName(eltName, null);
+        goToEltByName(eltName, type);
         String tabName = "propertiesDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
