@@ -38,21 +38,25 @@ exports.findForms = function (request, callback) {
 };
 
 exports.update = function (form, user, callback) {
-    var origId = form._id;
-    delete form._id;
+    Form.findOne({_id: form._id}).exec(function(err, oldForm){
+        var origId = form._id;
+        delete form._id;
 
-    var newForm = new Form(form);
-    newForm.updated = Date.now();
-    newForm.updatedBy = {
-        userId: user._id
-        , username: user.username
-    };
-    newForm.save(function (err) {
-        Form.update({_id: origId}, {archived: true}, function (nbUpdated) {
-            callback(err, newForm);
+        form.comments = oldForm.comments;
+
+        var newForm = new Form(form);
+        newForm.updated = Date.now();
+        newForm.updatedBy = {
+            userId: user._id
+            , username: user.username
+        };
+        newForm.save(function (err) {
+            Form.update({_id: origId}, {archived: true}, function (nbUpdated) {
+                callback(err, newForm);
+            });
         });
-    });
 
+    });
 };
 
 exports.create = function (form, user, callback) {

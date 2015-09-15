@@ -35,9 +35,9 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticUri
                     , method: 'POST'
-                    , json: elastic.createIndexJson             
+                    , json: elastic.createIndexJson
                 }
-            } 
+            }
             , elasticDeleteRiver: {
                 options: {
                     uri: config.elasticRiverUri
@@ -49,7 +49,7 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticRiverUri + "/_meta"
                     , method: 'POST'
-                    , json: elastic.createRiverJson                   
+                    , json: elastic.createRiverJson
                 }
             }
             , elasticDeleteFormIndex: {
@@ -58,14 +58,14 @@ module.exports = function(grunt) {
                     , method: 'DELETE'
                     , ignoreErrors: true
                 }
-            }               
+            }
             , elasticCreateFormIndex: {
                 options: {
                     uri: config.elasticFormUri
                     , method: 'POST'
-                    , json: elastic.createFormIndexJson             
+                    , json: elastic.createFormIndexJson
                 }
-            } 
+            }
             , elasticDeleteFormRiver: {
                 options: {
                     uri: config.elasticFormRiverUri
@@ -77,7 +77,7 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticFormRiverUri + "/_meta"
                     , method: 'POST'
-                    , json: elastic.createFormRiverJson                   
+                    , json: elastic.createFormRiverJson
                 }
             }
             , elasticDeleteBoardIndex: {
@@ -489,6 +489,16 @@ module.exports = function(grunt) {
         if (grunt.config('elastic.index.recreate')) {
             grunt.log.writeln('\n\nRe-creating ElasticSearch Indexes!');
             grunt.task.run('http');
+            //var createElastic = function(){
+            //    try {
+            //        grunt.task.run('http');
+            //    }catch(e){
+            //        console.log(e);
+            //        createElastic();
+            //    }
+            //};
+            //createElastic();
+
         }
     });
     
