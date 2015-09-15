@@ -16,7 +16,8 @@
     </div>
 
     <h3>{{elt.naming[0].designation}}
-        <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview" ng-if="formLoincRender"
+        <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview"
+           ng-if="formLoincRender && !elt.noRenderAllowed"
            ng-href="{{formLoincRenderUrl}}/{{elt._id}}"><i class="fa fa-cogs"></i> Loinc Preview</a>
         <a class="btn btn-small btn-default" target="_blank" title="SDC Export" id="sdcExport"
            href="sdcExport/{{elt._id}}">
@@ -32,7 +33,7 @@
                 <div class="col-xs-12 col-md-5">
                     <div ng-include="'/form/public/html/formGeneralDetails.html'"></div>
                 </div>
-                <div class="col-xs-12 col-md-7">
+                <div class="col-xs-12 col-md-7" ng-if="!elt.noRenderAllowed">
                     <div ng-include="'/form/public/html/formRender.html'"></div>
                 </div>
             </div>
@@ -47,7 +48,7 @@
             <div ng-include="'/form/public/html/displayProfiles.html'"></div>
         </div>
         <div tab heading="{{tabs['classification'].heading}}">
-            <div ng-include="'/system/public/html/elementClassification.html'"></div>
+            <div ng-include="'/form/public/html/formClassification.html'"></div>
         </div>
         <div tab heading="{{tabs['status'].heading}}">
             <div ng-include="'/system/public/html/status.html'"></div>

@@ -65,7 +65,7 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
 
             $scope.openSelectDefaultClassificationModal = function () {
                 var modalInstance = $modal.open({
-                    templateUrl: '/system/public/html/classifyCde.html',
+                    templateUrl: '/system/public/html/classifyElt.html',
                     controller: 'AddClassificationModalCtrl',
                     resolve: {
                         module: function() {

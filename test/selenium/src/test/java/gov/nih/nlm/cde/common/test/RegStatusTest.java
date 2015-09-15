@@ -53,6 +53,7 @@ public abstract class RegStatusTest extends CommonTest {
         findElement(By.name("unresolvedIssue")).sendKeys("Unresolved Issue 1");
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
+        setLowStatusesVisible();
         waitForESUpdate();
         goToEltByName(eltName, "Recorded");
         textPresent("Recorded");
