@@ -33,7 +33,7 @@ public class FormPropertyTest extends PropertyTest {
 
     @Test
     public void reorderProperties() {
-        reorderPropertyTest("form for test cde reorder detail tabs", "form");
+        reorderPropertyTest("form for test cde reorder detail tabs");
     }
 
 }

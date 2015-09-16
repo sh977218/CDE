@@ -43,10 +43,10 @@ public abstract class ReferenceDocumentTest extends CommonTest {
         textPresent("Reference document Removed");
     }
 
-    public void reorderReferenceDocumentTest(String eltName, String type) {
+    public void reorderReferenceDocumentTest(String eltName) {
         setLowStatusesVisible();
         mustBeLoggedInAs(ninds_username, password);
-        goToEltByName(eltName, type);
+        goToEltByName(eltName, null);
         String tabName = "referrenceDocumentsDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";

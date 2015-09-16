@@ -16,11 +16,9 @@ public abstract class PermissibleValueTest extends CommonTest {
         reorderIconTest(tabName);
         findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
         Assert.assertTrue(findElement(By.xpath(prefix + "pv-1" + postfix)).getText().contains("pv1"));
-        findElement(By.xpath(prefix + "moveBottom-0" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "pv-2" + postfix)).getText().contains("pv2"));
         findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "pv-1" + postfix)).getText().contains("pv2"));
+        Assert.assertTrue(findElement(By.xpath(prefix + "pv-1" + postfix)).getText().contains("pv3"));
         findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "pv-0" + postfix)).getText().contains("pv3"));
+        Assert.assertTrue(findElement(By.xpath(prefix + "pv-0" + postfix)).getText().contains("pv1"));
     }
 }

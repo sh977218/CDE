@@ -59,10 +59,10 @@ public abstract class NamingTest extends CommonTest {
 
     }
 
-    public void reorderNamingTest(String eltName, String type) {
+    public void reorderNamingTest(String eltName) {
         setLowStatusesVisible();
         mustBeLoggedInAs(ninds_username, password);
-        goToEltByName(eltName, type);
+        goToEltByName(eltName, null);
         String tabName = "namingDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
@@ -74,7 +74,7 @@ public abstract class NamingTest extends CommonTest {
         findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
         Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("cde for test cde reorder detail tabs 2"));
         findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_0" + postfix)).getText().contains("cde for test cde reorder detail tabs 1"));
+        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_0" + postfix)).getText().contains("cde for test cde reorder detail tabs"));
     }
 
 

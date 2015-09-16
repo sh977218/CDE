@@ -27,7 +27,7 @@ public class FormRefDocumentTest extends ReferenceDocumentTest {
 
     @Test
     public void formReorderReferenceDocumentTest() {
-        reorderReferenceDocumentTest("form for test cde reorder detail tabs", "form");
+        reorderReferenceDocumentTest("form for test cde reorder detail tabs");
     }
 
 }
