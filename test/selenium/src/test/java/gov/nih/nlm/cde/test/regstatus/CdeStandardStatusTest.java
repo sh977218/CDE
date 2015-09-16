@@ -43,9 +43,9 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         String postfix = "']";
         findElement(By.linkText("Permissible Values")).click();
         Assert.assertFalse(driver.findElements(By.xpath("//i[@id='editDatatype']")).get(0).isDisplayed());
-        Assert.assertFalse(driver.findElements(By.xpath(prefix + "moveDown-1" + postfix)).get(0).isDisplayed());
-        Assert.assertFalse(driver.findElements(By.xpath(prefix + "moveDown-1" + postfix)).get(0).isDisplayed());
-        Assert.assertFalse(driver.findElements(By.xpath(prefix + "moveDown-1" + postfix)).get(0).isDisplayed());
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-0" + postfix)).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-1" + postfix)).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-2" + postfix)).size(), 0);
         Assert.assertFalse(driver.findElements(By.xpath("//td[@id='pv-1']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
         Assert.assertFalse(driver.findElements(By.id("addPv")).get(0).isDisplayed());
         Assert.assertFalse(driver.findElements(By.id("updateOID")).get(0).isDisplayed());
@@ -62,8 +62,8 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
         // Can't edit Concepts
         findElement(By.linkText("Concepts")).click();
-        Assert.assertFalse(driver.findElements(By.id("removeobjectClass-0")).get(0).isDisplayed());
-        Assert.assertFalse(driver.findElements(By.id("removeproperty-0")).get(0).isDisplayed());
+        Assert.assertEquals(driver.findElements(By.id("removeobjectClass-0")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.id("removeproperty-0")).size(), 0);
 
         // Can't add Attachments
         findElement(By.linkText("Attachments")).click();
