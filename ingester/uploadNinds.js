@@ -186,18 +186,22 @@ parseCde = function (obj, cb) {
     var suggestedQuestion = obj["Suggested Question Text"].trim();
     if (suggestedQuestion.length > 0) {
         var namesString = suggestedQuestion.split('\n-----\n');
+        var exitingName = {};
         namesString.forEach(function (n) {
             var nameString = n.split(':\n');
-            var name = {
-                designation: nameString[1].trim()
-                , definition: ""
-                , languageCode: "EN-US"
-                , context: {
-                    contextName: "Suggested Question Text"
-                    , acceptability: "preferred"
+            if (!exitingName[nameString[1].trim()]) {
+                var name = {
+                    designation: nameString[1].trim()
+                    , definition: ""
+                    , languageCode: "EN-US"
+                    , context: {
+                        contextName: "Question Text"
+                        , acceptability: "preferred"
+                    }
                 }
+                namings.push(name);
+                exitingName[nameString[1].trim()] = nameString[1].trim();
             }
-            namings.push(name);
         })
     }
 

@@ -139,7 +139,16 @@ var processCde = function (migrationCde, existingCde, orgName) {
             });
         });
     } else if (deepDiff.length > 0) {
-        newDe.naming[0] = migrationCde.naming[0];
+        var exitingName = {};
+        var allNames = newDe.naming.concat(migrationCde.naming);
+        var names = [];
+        allNames.forEach(function (name) {
+            if (!exitingName[name.designation]) {
+                names.push(name);
+                exitingName[name.designation] = name.designation;
+            }
+        })
+        newDe.naming = names;
         newDe.version = migrationCde.version;
         newDe.changeNote = "Bulk update from source";
         newDe.imported = importDate;
