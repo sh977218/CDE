@@ -43,8 +43,9 @@ exports.update = function (form, user, callback) {
         delete form._id;
 
         form.comments = oldForm.comments;
-
         var newForm = new Form(form);
+        if (!newForm.history) newForm.history = [];
+        newWorm.history.push(dataElement._id);
         newForm.updated = Date.now();
         newForm.updatedBy = {
             userId: user._id
