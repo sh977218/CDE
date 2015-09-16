@@ -204,29 +204,7 @@ module.exports = function(grunt) {
             }
         }        
         , prompt: {
-            git: {
-                options: {
-                    questions: [
-                        {
-                            config: 'git.pull'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'pull'.green  + ' the latest source-code from the ' + 'master'.green + ' branch?'
-                        }                        
-                    ]
-                }
-            }              
-            , elastic: {
-                options: {
-                    questions: [
-                        {
-                            config: 'elastic.index.recreate'
-                            , type: 'confirm'
-                            , message: 'Do you want to re-create ElasticSearch indexes for ' + config.name + ' configuration?'
-                        }
-                    ]
-                }
-            }  
-            , node: {
+            node: {
                 options: {
                     questions: [
                         {
@@ -487,28 +465,25 @@ module.exports = function(grunt) {
     });     
     
     grunt.registerTask('do-elastic', function() {
-        if (grunt.config('elastic.index.recreate')) {
-            grunt.log.writeln('\n\nRe-creating ElasticSearch Indexes!');
-            grunt.task.run('http:elasticDeleteRiver');
-            grunt.task.run('http:elasticDeleteIndex');
-            grunt.task.run('http:elasticCreateIndex');
-            grunt.task.run('http:elasticCreateRiver');
-            grunt.task.run('http:elasticDeleteFormRiver');
-            grunt.task.run('http:elasticDeleteFormIndex');
-            grunt.task.run('http:elasticCreateFormIndex');
-            grunt.task.run('http:elasticCreateFormRiver');
+        grunt.log.writeln('\n\nRe-creating ElasticSearch Indexes!');
+        grunt.task.run('http:elasticDeleteRiver');
+        grunt.task.run('http:elasticDeleteIndex');
+        grunt.task.run('http:elasticCreateIndex');
+        grunt.task.run('http:elasticCreateRiver');
+        grunt.task.run('http:elasticDeleteFormRiver');
+        grunt.task.run('http:elasticDeleteFormIndex');
+        grunt.task.run('http:elasticCreateFormIndex');
+        grunt.task.run('http:elasticCreateFormRiver');
 
-            grunt.task.run('http:elasticDeleteBoardRiver');
-            grunt.task.run('http:elasticDeleteBoardIndex');
-            grunt.task.run('http:elasticCreateBoardIndex');
-            grunt.task.run('http:elasticCreateBoardRiver');
+        grunt.task.run('http:elasticDeleteBoardRiver');
+        grunt.task.run('http:elasticDeleteBoardIndex');
+        grunt.task.run('http:elasticCreateBoardIndex');
+        grunt.task.run('http:elasticCreateBoardRiver');
 
-            grunt.task.run('http:elasticDeleteStoredQueryRiver');
-            grunt.task.run('http:elasticDeleteStoredQueryIndex');
-            grunt.task.run('http:elasticCreateStoredQueryIndex');
-            grunt.task.run('http:elasticCreateStoredQueryRiver');
-
-        }
+        grunt.task.run('http:elasticDeleteStoredQueryRiver');
+        grunt.task.run('http:elasticDeleteStoredQueryIndex');
+        grunt.task.run('http:elasticCreateStoredQueryIndex');
+        grunt.task.run('http:elasticCreateStoredQueryRiver');
     });
     
     grunt.registerTask('do-node', function() {
@@ -587,8 +562,7 @@ module.exports = function(grunt) {
         //tar.pack(config.node.buildDir).pipe(gzip).pipe(writeS);
     });
 
-    grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
-    grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['prompt:elastic', 'do-elastic']);
+    grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['do-elastic']);
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
     grunt.registerTask('buildVersion',['shell:version','persistVersion']);
     grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
