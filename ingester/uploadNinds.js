@@ -185,23 +185,20 @@ parseCde = function (obj, cb) {
 
     var suggestedQuestion = obj["Suggested Question Text"].trim();
     if (suggestedQuestion.length > 0) {
-
-
-        namings.push({
-            designation: obj["Title"].trim()
-            , definition: obj["Short Description"].trim()
-            , languageCode: "EN-US"
-            , context: {
-                contextName: "Short Description"
-                , acceptability: "preferred"
+        var namesString = suggestedQuestion.split('\n-----\n');
+        namesString.forEach(function (n) {
+            var nameString = n.split(':\n');
+            var name = {
+                designation: nameString[1].trim()
+                , definition: ""
+                , languageCode: "EN-US"
+                , context: {
+                    contextName: "Suggested Question Text"
+                    , acceptability: "preferred"
+                }
             }
+            namings.push(name);
         })
-
-        properties.push({
-            key: "NINDS Suggested Question"
-            , value: stripBreakline(suggestedQuestion)
-            , valueFormat: "html"
-        });
     }
 
     var previousTitle = obj["Previous Title"].trim();
