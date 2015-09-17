@@ -2,7 +2,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
     function ($scope, $controller, TourContent, userResource, $timeout) {
         $scope.module = "cde";
 
-        userResource.getPromise().then(function(){
+        userResource.getPromise().then(function () {
             $scope.search("cde");
         });
 
@@ -11,6 +11,19 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             , handle: ".fa.fa-arrows"
             , helper: "clone"
             , appendTo: "body"
+            , start: function (event, ui) {
+                $('.dragQuestions').css('border', '2px dashed grey');
+//                ui.item.sortable.model.isOpen = false;
+//                $(".dragQuestions").sortable("refresh");
+                console.log('start');
+            }
+            , update: function (event, ui) {
+                console.log('update');
+            }
+            , stop: function (event, ui) {
+                $('.dragQuestions').css('border', '');
+                console.log('stop');
+            }
         };
 
         TourContent.template = "<div class='popover tour'>" +
