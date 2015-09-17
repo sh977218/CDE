@@ -34,7 +34,7 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$modal', '$ht
     };
 
     $scope. conceptConfigurations = [
-        {type: "dataElementConcept", display: "Data Element"},
+        {type: "dataElementConcept", display: "Data Element Concept"},
         {type: "objectClass", display: "Object Class"},
         {type: "property", display: "Property"}
     ];
