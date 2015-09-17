@@ -93,6 +93,15 @@ var deJsonSchema = {
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
+    , derivationRules: [
+        {
+            name: String,
+            inputs: [String],
+            outputs: [String],
+            ruleType: {type: String, enum: ['score']},
+            formula: {type: String, enum: ['sumAll']}
+        }
+    ]
 };
 
 var pinSchema = new mongoose.Schema({
