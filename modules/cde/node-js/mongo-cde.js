@@ -467,10 +467,10 @@ var correctBoardPinsForCde = function(doc, cb){
 };
 
 
-//schemas.dataElementSchema.post('save', function(doc) {
-//    if (doc.archived) return;
-//    correctBoardPinsForCde(doc);
-//});
+schemas.dataElementSchema.post('save', function(doc) {
+    if (doc.archived) return;
+    correctBoardPinsForCde(doc);
+});
 
 //var cj = new CronJob({
 //    cronTime: '00 00 4 * * *',
