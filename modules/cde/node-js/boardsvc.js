@@ -12,8 +12,9 @@ exports.boardSearch = function(req, res) {
            query: {
                bool: {
                    must: [{
-                       match: {shareStatus: 'Private'}
-                       , match: {_all: req.body.q}
+                       match: {shareStatus: 'Public'}
+                   }, {
+                       match: {_all: req.body.q}
                    }]
                }
            }
