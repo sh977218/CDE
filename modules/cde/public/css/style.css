@@ -732,3 +732,10 @@ button#selectDefault {
 #questionSearchArea {
     padding: 20px;
 }
+
+.ui-sortable-placeholder {
+    border: 3px dashed #aaa;
+    height: 45px;
+    width: 344px;
+    background: #ccc;
+}

@@ -6,15 +6,31 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             $scope.search("cde");
         });
 
+        var oldMouseStart = $.ui.draggable.prototype._mouseStart;
+        $.ui.draggable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
+            this._trigger("beforeStart", event, this._uiHash());
+            oldMouseStart.apply(this, [event, overrideHandle, noActivation]);
+        };
+
         $scope.dragSortableOptions = {
             connectWith: ".dragQuestions"
             , handle: ".fa.fa-arrows"
             , helper: "clone"
             , appendTo: "body"
+            , placeholder: "ui-sortable-placeholder"
+            /*
+             , activate: function (event, ui) {
+             console.log('activate');
+             }
+             */
+            , beforeStart: function (event, ui) {
+                ui.item.sortable.model.isOpen = false;
+                console.log('beforeStart');
+            }
             , start: function (event, ui) {
                 $('.dragQuestions').css('border', '2px dashed grey');
-//                ui.item.sortable.model.isOpen = false;
-//                $(".dragQuestions").sortable("refresh");
+
+//                $(".ui-sortable").sortable("refresh");
                 console.log('start');
             }
             , update: function (event, ui) {
