@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+$loadday = "2015-09-16"
 # This file describes how NINDS cde migration works.
 
 1. cd /usr/nlm/apps/code/cde
@@ -26,7 +27,7 @@ db.dataelements.count({
 	archived : null,
 	"registrationState.registrationStatus" : "Qualified",
 	imported : {
-		$lt : new ISODate($loadDay)
+		$lt : new ISODate("2015-09-18")
 	}
 });
 
@@ -37,7 +38,7 @@ db.dataelements.update({
 	archived : null,
 	"registrationState.registrationStatus" : "Qualified",
 	imported : {
-		$lt : new ISODate($loadDay)
+		$lt : new ISODate("2015-09-18")
 	}
 }, {
 	$set : {
