@@ -1,13 +1,19 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class FormNamingTest extends BaseFormTest {
+
+    public void goToEltByName(String name, String status) {
+        goToFormByName(name, status);
+    }
+
+    public void goToEltSearch() {
+        goToFormSearch();
+    }
 
     @Test
     public void formNaming() {
@@ -42,8 +48,27 @@ public class FormNamingTest extends BaseFormTest {
         for (WebElement elt : driver.findElements(By.cssSelector(".fa-trash-o"))) {
             Assert.assertFalse(elt.isDisplayed());
         }
+    }
 
+    @Test
+    public void formReorderNamingTest() {
+        setLowStatusesVisible();
+        mustBeLoggedInAs(ninds_username, password);
+        goToEltByName("form for test cde reorder detail tabs", null);
+        String tabName = "namingDiv";
+        String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
+        String postfix = "']";
+        findElement(By.linkText("Naming")).click();
+        textPresent("Definition:");
+        reorderIconTest(tabName);
+        findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
+        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("form for test cde reorder detail tabs"));
+        findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
+        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("form for test cde reorder detail tabs 2"));
+        findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
+        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_0" + postfix)).getText().contains("form for test cde reorder detail tabs"));
 
     }
+
 
 }

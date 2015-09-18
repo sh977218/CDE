@@ -92,7 +92,42 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , inlineAreaVisibility: '='
             }
         };
-    });
+    })
+    .directive('sortableArray', function () {
+        return {
+            template:
+            '<span id="moveUp-{{index}}" class="btn-default fa fa-arrow-up" ng-click="moveUp()" ng-if="index !== 0" title="Up" tooltip="Up" href=""></span>'
+            + '<span id="moveDown-{{index}}" class="btn-default fa fa-arrow-down" ng-click="moveDown()" ng-if="index < array.length - 1" title="Down" tooltip="Down" href=""></span>'
+            + '<span id="moveTop-{{index}}" class="btn-default fa fa-lg fa-angle-double-up" ng-click="moveTop()" ng-if="index !== 0" title="Move to top" tooltip="Move to top" href=""></span>',
+            controller: function ($scope, $element, $attrs) {
+                $scope.moveUp = function () {
+                    $scope.array.splice($scope.index - 1, 0, $scope.array.splice($scope.index, 1)[0]);
+                    $scope.cb();
+                };
+                $scope.moveDown = function () {
+                    $scope.array.splice($scope.index + 1, 0, $scope.array.splice($scope.index, 1)[0]);
+                    $scope.cb();
+                };
+                $scope.moveTop = function () {
+                    $scope.array.unshift($scope.array.pop());
+                    $scope.cb();
+                };
+                $scope.moveBottom = function () {
+                    $scope.array.push($scope.array.shift());
+                    $scope.cb();
+                }
+            }
+
+            ,
+            restrict: 'AE',
+            scope: {
+                array: "=sortableArray"
+                , index: '=index'
+                , cb: '&'
+            }
+        };
+    })
+;
 
 angular.module('systemModule').filter('placeholdEmpty', function () {
     return function (input) {

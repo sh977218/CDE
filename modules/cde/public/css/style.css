@@ -739,3 +739,7 @@ button#selectDefault {
     width: 344px;
     background: #ccc;
 }
+
+.red {
+    color: red;
+}
