@@ -8,7 +8,9 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
     
     $scope.$watch('elt', function() {
         if ($scope.elt !== undefined ) {
-            getForks();
+            if ($scope.elt.forks && $scope.elt.forks.length > 0) {
+                getForks();
+            }
         }
     });
     

@@ -150,7 +150,7 @@ exports.cdesByTinyIdList = function (idList, callback) {
 exports.cdesByTinyIdListInOrder = function (idList, callback) {
     exports.cdesByTinyIdList(idList, function (err, cdes) {
         var reorderedCdes = idList.map(function (id) {
-            for (var i=0; i < cdes.length; i++) {
+            for (var i = 0; i < cdes.length; i++) {
                 if (id === cdes[i].tinyId) return cdes[i];
             }
         });
@@ -441,7 +441,11 @@ exports.byOtherId = function (source, id, cb) {
 };
 
 exports.byOtherIdAndVersion = function (source, id, version, cb) {
-    DataElement.find({"archived": null}).elemMatch("ids", {source: source, id: id, version: version}).exec(function (err, cdes) {
+    DataElement.find({"archived": null}).elemMatch("ids", {
+        source: source,
+        id: id,
+        version: version
+    }).exec(function (err, cdes) {
         if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
         else cb(err, cdes[0]);
     });
@@ -457,33 +461,3 @@ exports.findCurrCdesInFormElement = function (allCdes, cb) {
     });
 };
 
-var addDerivationAsInput = function(outputCde) {
-    if (!outputCde.derivationRules) return;
-    outputCde.derivationRules.forEach(function(derRule) {
-        derRule.inputs.forEach(function(input_tinyId) {
-            DataElement.eltByTinyId(input_tinyId, function(inputCde) {
-                if (!inputCde.derivationInputs) inputCde.derivationInputs = [];
-                if (inputCde.derivationInputs.indexOf(outputCde.tinyId) > -1) {
-                    inputCde.derivationInputs.push(outputCde);
-                    inputCde.save(function(err) {
-                        if (err) {
-                            logging.errorLogger.error("Error: Cannot save CDE while updating derivationInputs", {
-                                origin: "cde.mongo-cde.update.3",
-                                stack: new Error().stack,
-                                details: "err " + err
-
-                            });
-                        }
-                    });
-                }
-            });
-        });
-    });
-};
-
-schemas.dataElementSchema.post('save', function(doc) {
-    if (doc.archived) return;
-    addDerivationAsInput(doc);
-});
-
-// @TODO add Cron (probably same as Jakub)

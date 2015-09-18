@@ -17,6 +17,15 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal
 
     $scope.cdeLoadedPromise.then(function() {updateRules();});
 
+    $scope.findDerivationRules = function() {
+        console.log(1);
+        if (!$scope.elt.derivationInputs) {
+            $http.get("/cde/derivationInputs").then(function(result){
+                console.log(result);
+            });
+        }
+    };
+
     $scope.$on('dataElementReloaded', function() {
         updateRules();
     });

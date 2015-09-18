@@ -345,6 +345,10 @@ exports.init = function (app, daoManager) {
         });
     });
 
+    app.get("/cde/derivationInputs", function(req, res) {
+        res.send("Here are your cdes");
+    });
+
     app.post('/desByConcept', function (req, res) {
         mongo_data.desByConcept(req.body, function (result) {
             result.forEach(adminItemSvc.hideUnapprovedComments);

@@ -54,10 +54,14 @@ angular.module('cdeModule').controller('DEViewCtrl',
         }
     });
 
+
+
     $scope.loadPriorCdes = function() {
-        PriorCdes.getCdes({cdeId: $scope.elt._id}, function(dataElements) {
-            $scope.priorCdes = dataElements;
-        });
+        if ($scope.elt.history && $scope.elt.history.length > 0) {
+            PriorCdes.getCdes({cdeId: $scope.elt._id}, function(dataElements) {
+                $scope.priorCdes = dataElements;
+            });
+        }
     };
 
     $scope.reload = function(route, cb) {

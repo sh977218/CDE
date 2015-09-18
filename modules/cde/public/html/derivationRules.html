@@ -30,8 +30,9 @@
     <div ng-if="elt.derivationInputs.length > 0">
         <hr/>
         <h5>This Data Element is used to derive to the following Data Elements:</h5>
-        <!--<div ng-repeat=""></div>-->
-        
+        <div ng-repeat="derIn in derivationInputs">
+            <a ng-href="/#/deview/?tinyId={{derIn}}"></a>
+        </div>
     </div>
 
     <button ng-if="canCurate" class="btn btn-small btn-default" value="add" ng-click="openDerivationRule()"

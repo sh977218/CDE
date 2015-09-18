@@ -17,7 +17,7 @@ var derivationRuleSchema = new mongoose.Schema(
         outputs: [String],
         ruleType: {type: String, enum: ['score', 'panel']},
         formula: {type: String, enum: ['sumAll']}
-    }, {_id: false}
+    }, {_id: true}
 );
 
 var deJsonSchema = {
@@ -104,7 +104,6 @@ var deJsonSchema = {
     , views: Number
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
     , derivationRules: [derivationRuleSchema]
-    , derivationInputs: [String]
 };
 
 var pinSchema = new mongoose.Schema({
