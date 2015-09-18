@@ -177,8 +177,7 @@ angular.module('systemModule').controller('ListCtrl',
         if (!type) type = "cde";
 
         var timestamp = new Date().getTime();
-        // @TODO
-        if (!userResource.user) throw "User not loaded";
+        if (!userResource.user) return;
         $scope.lastQueryTimeStamp = timestamp;
         $scope.accordionListStyle = "semi-transparent";
         var settings = Elastic.buildElasticQuerySettings($scope.searchSettings);
@@ -190,8 +189,7 @@ angular.module('systemModule').controller('ListCtrl',
                 $scope.cdes = [];
                 return;
             }
-            // @TODO
-            if (timestamp < $scope.lastQueryTimeStamp) throw "timestamp error";
+            if (timestamp < $scope.lastQueryTimeStamp) return;
             $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage);
             $scope.totalItems = result.totalNumber;
             $scope.cdes = result.cdes;
@@ -224,11 +222,9 @@ angular.module('systemModule').controller('ListCtrl',
             filterOutWorkingGroups($scope.aggregations);
             OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
 
-            // @TODO undo this change !!
             if ((settings.searchTerm && settings.searchTerm.length > 0) || settings.selectedOrg) {
                 $scope.selectedMainAreaMode = mainAreaModes.searchResult;
             } else {
-                console.log("showing welcome");
                 $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
             }
         });
