@@ -34,6 +34,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
     $scope.sortableOptions = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
+        , tolerance: "pointer"
         , receive: function (e, ui) {
             var cde = ui.item.sortable.moved;
             if (cde.valueDomain !== undefined) {

@@ -17,6 +17,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             , handle: ".fa.fa-arrows"
             , helper: "clone"
             , appendTo: "body"
+            , tolerance: "pointer"
             , placeholder: "ui-sortable-placeholder"
             /*
              , activate: function (event, ui) {
