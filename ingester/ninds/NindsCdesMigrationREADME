@@ -20,7 +20,7 @@ report:
 1241 elements Created
 0 elements unchanged
 
-4. remote log into mongodb by history   !988
+4. remote log into mongodb by history   !998
 use nlmcde;
 db.dataelements.count({
 	"source" : "NINDS",
@@ -31,7 +31,7 @@ db.dataelements.count({
 	}
 });
 
-5. remote log into mongodb by history   !988
+5. remote log into mongodb by history   !998
 use nlmcde
 db.dataelements.update({
 	"source" : "NINDS",
@@ -47,3 +47,15 @@ db.dataelements.update({
 }, {
 	multi : true
 });
+
+6. remove suggested question text from properties
+use nlmcde
+db.dataelements.update(
+{source: "NINDS", archived: null}
+, {$pull: {properties:
+{key: "NINDS Suggested Question"}
+}},
+{multi: true}
+)
+
+resule: WriteResult({ "nMatched" : 11215, "nUpserted" : 0, "nModified" : 9722 })
