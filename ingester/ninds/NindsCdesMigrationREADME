@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# This file describes how NINDS cde migration works.
+
+1. transfer migraionCde.bson to QA mongo server
+
+2. mongo restore mingrationCde into migration database
+mongorestore -d migration -c dataelements migrationCde.bson -u siteRootAdmin -p $db_password -authenticationDatabase admin
+
+3. run updateCde.js, the report should be:
+report:
+9888 elements changed
+1241 elements Created
+0 elements unchanged
+
+4. log in mongo db and check if the number correct, it should return 34.
+db.dataelements.count({
+	"source" : "NINDS",
+	archived : null,
+	"registrationState.registrationStatus" : "Qualified",
+	imported : {
+		$lt : new ISODate($loadDay)
+	}
+});
+
+5. log in mongo db and do update
+db.dataelements.update({
+	"source" : "NINDS",
+	archived : null,
+	"registrationState.registrationStatus" : "Qualified",
+	imported : {
+		$lt : new ISODate($loadDay)
+	}
+}, {
+	$set : {
+		"registrationState.registrationStatus" : "Retired"
+	}
+}, {
+	multi : true
+});
