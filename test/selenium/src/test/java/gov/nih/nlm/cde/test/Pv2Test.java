@@ -2,8 +2,6 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -32,22 +30,5 @@ public class Pv2Test extends NlmCdeBaseTest {
         checkInHistory("Permissible Values", "", "Right Middle Abdomen");
     }
 
-    @Test
-    public void reOrderPv() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName("Involved Organ Laterality Type");
-        findElement(By.linkText("Permissible Values")).click();
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("pvCode-2"), "C25229"));
-        Assert.assertEquals(findElement(By.id("pvCode-6")).getText(), "C25594,C48046,C13717");
-        findElement(By.id("pvUp-2")).click();
-        findElement(By.id("pvDown-6")).click();
-        newCdeVersion("Reordered PV");
-
-        Assert.assertEquals(findElement(By.id("pvCode-1")).getText(), "C25229");
-        Assert.assertEquals(findElement(By.id("pvCode-7")).getText(), "C25594,C48046,C13717");
-
-        checkInHistory("Permissible Values", "C25229", "C25594,C48046,C13717");
-        checkInHistory("Permissible Values", "C25594,C48046,C13717", "C25229");
-    }
 }
 
