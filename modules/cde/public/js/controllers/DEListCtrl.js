@@ -6,12 +6,6 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             $scope.search("cde");
         });
 
-        var oldMouseStart = $.ui.draggable.prototype._mouseStart;
-        $.ui.draggable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
-            this._trigger("beforeStart", event, this._uiHash());
-            oldMouseStart.apply(this, [event, overrideHandle, noActivation]);
-        };
-
         $scope.dragSortableOptions = {
             connectWith: ".dragQuestions"
             , handle: ".fa.fa-arrows"
@@ -19,24 +13,13 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             , appendTo: "body"
             , tolerance: "pointer"
             , placeholder: "ui-sortable-placeholder"
-            /*
-             , activate: function (event, ui) {
-             console.log('activate');
-             }
-             */
-            , beforeStart: function (event, ui) {
-                ui.item.sortable.model.isOpen = false;
-                console.log('beforeStart');
-            }
             , start: function (event, ui) {
                 $('.dragQuestions').css('border', '2px dashed grey');
                 ui.placeholder.height(ui.item.height());
-
-//                $(".ui-sortable").sortable("refresh");
+                ui.item.css('color', 'red');
+                ui.item.sortable.model = {};
+                    //.isOpen = false;
                 console.log('start');
-            }
-            , update: function (event, ui) {
-                console.log('update');
             }
             , stop: function (event, ui) {
                 $('.dragQuestions').css('border', '');
