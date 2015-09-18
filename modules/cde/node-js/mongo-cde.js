@@ -456,3 +456,34 @@ exports.findCurrCdesInFormElement = function (allCdes, cb) {
         cb(err, cdes);
     });
 };
+
+var addDerivationAsInput = function(outputCde) {
+    if (!outputCde.derivationRules) return;
+    outputCde.derivationRules.forEach(function(derRule) {
+        derRule.inputs.forEach(function(input_tinyId) {
+            DataElement.eltByTinyId(input_tinyId, function(inputCde) {
+                if (!inputCde.derivationInputs) inputCde.derivationInputs = [];
+                if (inputCde.derivationInputs.indexOf(outputCde.tinyId) > -1) {
+                    inputCde.derivationInputs.push(outputCde);
+                    inputCde.save(function(err) {
+                        if (err) {
+                            logging.errorLogger.error("Error: Cannot save CDE while updating derivationInputs", {
+                                origin: "cde.mongo-cde.update.3",
+                                stack: new Error().stack,
+                                details: "err " + err
+
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    });
+};
+
+schemas.dataElementSchema.post('save', function(doc) {
+    if (doc.archived) return;
+    addDerivationAsInput(doc);
+});
+
+// @TODO add Cron (probably same as Jakub)

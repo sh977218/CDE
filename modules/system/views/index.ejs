@@ -139,16 +139,9 @@
                             <li ng-if="canCreateForms()"><a href="/#/createForm">Form</a></li>
                         </ul>
                     </li>
-
                     <li id="menu_qb_link" ng-class="{ active: isPageActive('/quickBoard')}">
                         <a class="navbar-link" href="/#/quickBoard">
-                            Quick Board (
-                                        <span ng-switch="quickBoard.elts.length">
-                                            <span ng-switch-when="0" ng-bind="'empty'"></span>
-                                            <span ng-switch-when="10" ng-bind="'full'"></span>
-                                            <span ng-switch-default ng-bind="quickBoard.elts.length"></span>
-                                        </span>
-                            )
+                            Quick Board ({{quickBoard.numberDisplay()}})
                         </a>
                     </li>
                     <li id="menu_help_link" dropdown ng-class="{ active: isPageActive('/help')}">

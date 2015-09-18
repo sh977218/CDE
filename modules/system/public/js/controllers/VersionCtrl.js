@@ -24,6 +24,7 @@ angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$
         modalInstance.result.then(function (newelt) {
             $location.url(redirectBaseLink + newelt.tinyId);
             $scope.elt = newelt;
+            $scope.$broadcast("dataElementReloaded");
             if ($scope.elt.history && $scope.elt.history.length>0) $scope.loadPriorCdes();
             $scope.addAlert("success", "Saved.");
         }, function(reason) {

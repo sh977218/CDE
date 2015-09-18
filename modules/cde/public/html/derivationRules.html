@@ -6,13 +6,8 @@
     <div ng-repeat="derRule in elt.derivationRules">
         <div class="row">
             <div class="col-md-1 text-right" ng-show="canCurate">
-                <span ng-show="showDelete">Confirm Delete
-                    <a class="fa fa-check" ng-click="showDelete = false; removeMappingSpecification($index)"
-                       id="confirmRemoveMappingSpecification-{{$index}}" title="OK" href=""></a>
-                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
-                </span>
-                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
-                   id="removeMappingSpecification-{{$index}}" title="Remove" href=""></a>
+                <a ng-click="removeDerivationRule($index)" ng-hide="showDelete" class="fa fa-trash-o"
+                   id="removeDerivationRule-{{$index}}" title="Remove" href=""></a>
             </div>
             <div class="col-md-11">
                 <dl class="dl-horizontal">
@@ -21,10 +16,22 @@
                     <dt tabindex="0">Rule Type:</dt>
                     <dd tabindex="0" id="dd_derRule_type_{{$index}}">{{derRule.ruleType}}</dd>
                     <dt tabindex="0">Input CDEs:</dt>
-                    <dd tabindex="0" id="dd_derRule_input_{{$index}}">{{derRule.cdeNamesAsString}}</dd>
+                    <dd tabindex="0" id="dd_derRule_input_{{$index}}">
+                        <a ng-repeat="input in derRule.fullCdes | limitTo:8"
+                           ng-href="/#/deview/?tinyId={{input.tinyId}}"
+                           target="_blank">{{input.naming[0].designation}} {{!$last?'- ':''}}</a>
+                        <span ng-if="derRule.fullCdes.length > 8"> and {{derRule.fullCdes.length - 8}} more</span>
+                    </dd>
                 </dl>
             </div>
         </div>
+    </div>
+
+    <div ng-if="elt.derivationInputs.length > 0">
+        <hr/>
+        <h5>This Data Element is used to derive to the following Data Elements:</h5>
+        <!--<div ng-repeat=""></div>-->
+        
     </div>
 
     <button ng-if="canCurate" class="btn btn-small btn-default" value="add" ng-click="openDerivationRule()"
@@ -36,9 +43,9 @@
     <div class="modal-header" id="newDerivationRuleModalHeader">
         <h4 tabindex="0">Add Derivation Rule</h4>
     </div>
-    <div>All Data Elements in your quickboard will be added to the derivation rule.</div>
     <form name="form" role="form">
         <div class="modal-body" id="newDerivationRuleModalBody">
+            <div class="form-group">All Data Elements in your quickboard will be added to the derivation rule.</div>
             <div class="form-group">
                 <label tabindex="0" for="newDerivationRule.name">Name: </label>
                 <input tabindex="0" class="form-control" ng-model="newDerivationRule.name"
@@ -53,6 +60,15 @@
                 <select tabindex="0" class="form-control" ng-model="newDerivationRule.ruleType"
                        id="newDerivationRule.ruleType" required>
                     <option value="score">Score</option>
+                    <option value="panel">Panel / Measure</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label tabindex="0" for="newDerivationRule.formula">Formula: </label>
+                <select tabindex="0" class="form-control" ng-model="newDerivationRule.formula"
+                        id="newDerivationRule.formula" required>
+                    <option value="sumAll">Sum of all</option>
+                    <option value="">None</option>
                 </select>
             </div>
         </div>

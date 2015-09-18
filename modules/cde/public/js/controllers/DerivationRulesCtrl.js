@@ -2,16 +2,23 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal
     function($scope, $modal, quickboard, CdeList)
 {
 
-    $scope.$watch('elt.derivationRules', function() {
-         if ($scope.elt.derivationRules) {
-             $scope.elt.derivationRules.forEach(function(dr) {
+    var updateRules = function() {
+        if ($scope.elt.derivationRules) {
+            $scope.elt.derivationRules.forEach(function(dr) {
                 if (dr.inputs[0] !== null) {
                     CdeList.byTinyIdList(dr.inputs, function(result) {
-                        dr.cdeNamesAsString = result.map(function(r) {return r.naming[0].designation}).join(' , ');
+                        dr.fullCdes = result;
+                        //dr.cdeNamesAsString = result.map(function(r) {return r.naming[0].designation}).join(' , ');
                     });
                 }
-             });
-         }
+            });
+        }
+    };
+
+    $scope.cdeLoadedPromise.then(function() {updateRules();});
+
+    $scope.$on('dataElementReloaded', function() {
+        updateRules();
     });
 
     $scope.openDerivationRule = function () {
@@ -29,7 +36,13 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal
             });
             $scope.elt.derivationRules.push(newDerivationRule);
             $scope.stageElt($scope.elt);
+            updateRules();
         });
+    };
+
+    $scope.removeDerivationRule = function (index) {
+        $scope.elt.derivationRules.splice(index, 1);
+        $scope.stageElt($scope.elt);
     };
 
 }
@@ -40,6 +53,7 @@ angular.module('systemModule').controller('NewDerivationRulesModalCtrl', ['$scop
 {
     $scope.newDerivationRule = {
         ruleType: "score",
+        formula: "sumAll",
         inputs: []
     };
 
