@@ -1,18 +1,26 @@
 #!/usr/bin/env bash
 # This file describes how NINDS cde migration works.
 
-1. transfer migraionCde.bson to QA mongo server
+1. cd /usr/nlm/apps/code/cde
 
-2. mongo restore mingrationCde into migration database
-mongorestore -d migration -c dataelements dataelements.bson -u siteRootAdmin -p $db_password -authenticationDatabase admin
+2. git checkout origin-peter/CDE-636-load-ninds-forms
 
-3. run updateCde.js, the report should be:
+3. mongo restore mingrationCde into migration database
+mongorestore  --host=qvlbmongodb02 -d migration -c dataelements dataelements.bson -u siteRootAdmin -p $db_password -authenticationDatabase admin
+
+3. export NODE_ENV=qa-live
+
+4. run updateCde.js as
+node ingester/updateCdes.js
+
+5 varify the report:
 report:
 9888 elements changed
 1241 elements Created
 0 elements unchanged
 
-4. log in mongo db and check if the number correct, it should return 34.
+4. remote log into mongodb by history   !988
+use nlmcde;
 db.dataelements.count({
 	"source" : "NINDS",
 	archived : null,
@@ -22,7 +30,8 @@ db.dataelements.count({
 	}
 });
 
-5. log in mongo db and do update
+5. remote log into mongodb by history   !988
+use nlmcde
 db.dataelements.update({
 	"source" : "NINDS",
 	archived : null,

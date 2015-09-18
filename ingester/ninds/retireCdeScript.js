@@ -30,3 +30,7 @@ report:
 9888 elements changed
 1241 elements Created
 0 elements unchanged
+
+
+
+mongorestore  --host=qvlbmongodb02 -d migration -c dataelements ingester/ninds/dataelements.bson -u siteRootAdmin -p  te6EmUna -authenticationDataba admin
