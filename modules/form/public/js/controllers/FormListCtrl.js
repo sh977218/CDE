@@ -1,4 +1,4 @@
-angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller', 'userResource', 'ui.sortable',
+angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller', 'userResource',
     function ($scope, $controller, userResource) {
         $scope.module = "form";
         userResource.getPromise().then(function () {

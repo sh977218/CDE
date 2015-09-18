@@ -735,9 +735,8 @@ button#selectDefault {
 
 .ui-sortable-placeholder {
     border: 3px dashed #aaa;
-    height: 45px;
-    width: 344px;
-    background: #ccc;
+    width: auto;
+    background: #aaa;
 }
 
 .red {

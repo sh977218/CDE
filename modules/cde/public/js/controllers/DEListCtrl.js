@@ -29,6 +29,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             }
             , start: function (event, ui) {
                 $('.dragQuestions').css('border', '2px dashed grey');
+                ui.placeholder.height(ui.item.height());
 
 //                $(".ui-sortable").sortable("refresh");
                 console.log('start');
