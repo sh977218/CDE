@@ -4,7 +4,7 @@
 1. transfer migraionCde.bson to QA mongo server
 
 2. mongo restore mingrationCde into migration database
-mongorestore -d migration -c dataelements migrationCde.bson -u siteRootAdmin -p $db_password -authenticationDatabase admin
+mongorestore -d migration -c dataelements dataelements.bson -u siteRootAdmin -p $db_password -authenticationDatabase admin
 
 3. run updateCde.js, the report should be:
 report:
