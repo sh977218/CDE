@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.cde.common.test.CommentTest;
+
+import gov.nih.nlm.common.test.CommentTest;
 
 public class CdeCommentTest extends CommentTest {
     

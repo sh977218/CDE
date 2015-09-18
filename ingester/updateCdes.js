@@ -2,14 +2,12 @@ var fs = require('fs')
     , util = require('util')
     , xml2js = require('xml2js')
     , mongoose = require('mongoose')
-    , shortid = require('shortid')
     , config = require('config')
     , cde_schemas = require('../modules/cde/node-js/schemas')
     , sys_schemas = require('../modules/system/node-js/schemas')
     , mongo_cde = require('../modules/cde/node-js/mongo-cde')
     , cdesvc = require('../modules/cde/node-js/cdesvc')
-    , classificationShared = require('../modules/system/shared/classificationShared')
-    ;
+    , classificationShared = require('../modules/system/shared/classificationShared');
 
 var cdeSource = process.argv[3];
 

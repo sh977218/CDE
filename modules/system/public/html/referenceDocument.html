@@ -1,4 +1,4 @@
-<div ng-controller="ReferenceDocumentCtrl">
+<div ng-controller="ReferenceDocumentCtrl" id="referrenceDocumentsDiv">
     <h4 tabindex="0">Reference Document</h4>
 
     <div tabindex="0" ng-if="elt.referenceDocuments.length === 0">There are no reference documents.</div>
@@ -6,43 +6,47 @@
         <div class="row">
             <div class="col-md-1 text-right" ng-if="canCurate">
                 <div class="row">
-                <span ng-show="showDelete">Confirm Delete
-                    <a class="fa fa-check" ng-click="showDelete = false; removeReferenceDocument($index)"
-                       id="confirmRemoveReferenceDocument-{{$index}}" title="OK" href=""></a>
-                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
-                </span>
-                    <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
-                       id="removeReferenceDocument-{{$index}}" title="Remove" href=""></a>
+                    <span ng-show="showDelete">Confirm Delete
+                        <span class="btn-default fa fa-check"
+                              ng-click="showDelete = false; removeReferenceDocument($index)"
+                              id="confirmRemoveReferenceDocument-{{$index}}" title="OK" href=""></span>
+                        <span class="btn-default fa fa-times" ng-click="showDelete = false" title="Cancel"
+                              href=""></span>
+                    </span>
+                    <span ng-click="showDelete = true" ng-hide="showDelete" class="btn-default fa fa-trash-o"
+                          id="removeReferenceDocument-{{$index}}" title="Remove" tooltip="Remove" href=""></span>
+
+                    <div sortable-array="elt.referenceDocuments" index="$index" cb="stageElt(elt)"></div>
                 </div>
             </div>
             <div class="col-md-11">
                 <div class="row">
                     <div tabindex="0" class="col-md-2 text-right">ID:</div>
-                    <div tabindex="0" class="col-md-10" id="rd_id">{{rd.referenceDocumentId}}</div>
+                    <div tabindex="0" class="col-md-10" id="rd_id_{{$index}}">{{rd.referenceDocumentId}}</div>
                 </div>
                 <div class="row">
                     <div tabindex="0" class="col-md-2 text-right">Title:</div>
-                    <div tabindex="0" class="col-md-10" id="rd_title">{{rd.title}}</div>
+                    <div tabindex="0" class="col-md-10" id="rd_title_{{$index}}">{{rd.title}}</div>
                 </div>
                 <div class="row">
                     <div tabindex="0" class="col-md-2 text-right">URI:</div>
-                    <div tabindex="0" class="col-md-10" id="rd_uri">
+                    <div tabindex="0" class="col-md-10" id="rd_uri_{{$index}}">
                         <a href="{{rd.uri}}">{{rd.uri}}</a>
                     </div>
                 </div>
                 <div class="row">
                     <div tabindex="0" class="col-md-2 text-right">Provider Org:</div>
-                    <div tabindex="0" class="col-md-10" id="rd_providerOrg">{{rd.providerOrg}}
+                    <div tabindex="0" class="col-md-10" id="rd_providerOrg_{{$index}}">{{rd.providerOrg}}
                     </div>
                 </div>
                 <div class="row">
                     <div tabindex="0" class="col-md-2 text-right">Language Code:</div>
-                    <div tabindex="0" class="col-md-10" id="rd_languageCode">{{rd.languageCode}}
+                    <div tabindex="0" class="col-md-10" id="rd_languageCode_{{$index}}">{{rd.languageCode}}
                     </div>
                 </div>
                 <div class="row">
                     <div tabindex="0" class="col-md-2 text-right">Document:</div>
-                    <div tabindex="0" class="col-md-10" id="rd_document">{{rd.document}}
+                    <div tabindex="0" class="col-md-10" id="rd_document_{{$index}}">{{rd.document}}
                     </div>
                 </div>
             </div>
