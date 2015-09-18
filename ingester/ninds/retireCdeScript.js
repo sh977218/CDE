@@ -1,0 +1,32 @@
+# format: 2015-09-16
+$loadDay
+
+db.dataelements.update({
+	"source" : "NINDS",
+	archived : null,
+	"registrationState.registrationStatus" : "Qualified",
+	imported : {
+		$lt : new ISODate($loadDay)
+	}
+}, {
+	$set : {
+		"registrationState.registrationStatus" : "Retired"
+	}
+}, {
+	multi : true
+});
+
+db.dataelements.count({
+	"source" : "NINDS",
+	archived : null,
+	"registrationState.registrationStatus" : "Qualified",
+	imported : {
+		$lt : new ISODate($loadDay)
+	}
+});
+
+
+report:
+9888 elements changed
+1241 elements Created
+0 elements unchanged
