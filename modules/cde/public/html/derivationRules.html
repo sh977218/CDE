@@ -37,13 +37,13 @@
         <h5>This Data Element is used to derive to the following Data Elements:</h5>
         <table class="table cdeTable">
             <thead>
-                <th>Rule Name</th>
-                <th>CDE Name</th>
+                <th class="col-xs-3">Rule Name</th>
+                <th class="col-xs-9">CDE Name</th>
             </thead>
             <tbody>
                 <tr ng-repeat="derOut in elt.derivationOutputs">
-                    <td>{{derOut.ruleName}}</td>
-                    <td>
+                    <td class="col-xs-3">{{derOut.ruleName}}</td>
+                    <td class="col-xs-9">
                         <a ng-href="/#/deview/?tinyId={{derIn.tinyId}}">{{derOut.cde.naming[0].designation}}</a>
                     </td>
                 </tr>
