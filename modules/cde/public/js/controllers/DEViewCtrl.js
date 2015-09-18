@@ -54,8 +54,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
         }
     });
 
-
-
     $scope.loadPriorCdes = function() {
         if ($scope.elt.history && $scope.elt.history.length > 0) {
             PriorCdes.getCdes({cdeId: $scope.elt._id}, function(dataElements) {

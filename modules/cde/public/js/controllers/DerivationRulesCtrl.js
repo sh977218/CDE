@@ -1,5 +1,5 @@
-angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal', 'QuickBoard', 'CdeList',
-    function($scope, $modal, quickboard, CdeList)
+angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal', 'QuickBoard', 'CdeList', '$http',
+    function($scope, $modal, quickboard, CdeList, $http)
 {
 
     var updateRules = function() {
@@ -17,17 +17,27 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal
 
     $scope.cdeLoadedPromise.then(function() {updateRules();});
 
-    $scope.findDerivationRules = function() {
-        console.log(1);
-        if (!$scope.elt.derivationInputs) {
-            $http.get("/cde/derivationInputs").then(function(result){
-                console.log(result);
+    var findDerivationOutputs = function() {
+        if (!$scope.elt.derivationOutputs) {
+            $scope.elt.derivationOutputs = [];
+            $http.get("/cde/derivationOutputs/" + $scope.elt.tinyId).then(function(result){
+                result.data.forEach(function(outputCde) {
+                    outputCde.derivationRules.forEach(function(derRule) {
+                        if (derRule.inputs.indexOf($scope.elt.tinyId) > -1) {
+                            $scope.elt.derivationOutputs.push({ruleName: derRule.name, cde: outputCde});
+                        }
+                    });
+                });
             });
         }
     };
 
     $scope.$on('dataElementReloaded', function() {
         updateRules();
+    });
+
+    $scope.$on('loadDerivationRules', function() {
+        findDerivationOutputs();
     });
 
     $scope.openDerivationRule = function () {

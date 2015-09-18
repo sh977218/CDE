@@ -27,17 +27,29 @@
         </div>
     </div>
 
-    <div ng-if="elt.derivationInputs.length > 0">
-        <hr/>
-        <h5>This Data Element is used to derive to the following Data Elements:</h5>
-        <div ng-repeat="derIn in derivationInputs">
-            <a ng-href="/#/deview/?tinyId={{derIn}}"></a>
-        </div>
-    </div>
 
     <button ng-if="canCurate" class="btn btn-small btn-default" value="add" ng-click="openDerivationRule()"
             id="addDerivationRule"><i class="fa fa-plus"> </i> Add Derivation Rule
     </button>
+
+    <div ng-if="elt.derivationOutputs.length > 0">
+        <hr/>
+        <h5>This Data Element is used to derive to the following Data Elements:</h5>
+        <table class="table cdeTable">
+            <thead>
+                <th>Rule Name</th>
+                <th>CDE Name</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="derOut in elt.derivationOutputs">
+                    <td>{{derOut.ruleName}}</td>
+                    <td>
+                        <a ng-href="/#/deview/?tinyId={{derIn.tinyId}}">{{derOut.cde.naming[0].designation}}</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script type="text/ng-template" id="newDerivationRuleModalContent.html">
