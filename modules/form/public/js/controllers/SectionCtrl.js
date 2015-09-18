@@ -25,6 +25,15 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
     $scope.sortableOptionsSections = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
+        , tolerance: "pointer"
+        , placeholder: "ui-sortable-placeholder"
+        , start: function (event, ui) {
+            $('.dragQuestions').css('border', '2px dashed grey');
+            ui.placeholder.height(ui.item.height());
+        }
+        , stop: function (event, ui) {
+            $('.dragQuestions').css('border', '');
+        }
         , receive: function (e, ui) {
             if (!ui.item.sortable.moved) return ui.item.sortable.cancel();
             if (ui.item.sortable.moved.tinyId || ui.item.sortable.moved.elementType === "question") ui.item.sortable.cancel();
@@ -35,6 +44,14 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
         , tolerance: "pointer"
+        , placeholder: "ui-sortable-placeholder"
+        , start: function (event, ui) {
+            $('.dragQuestions').css('border', '2px dashed grey');
+            ui.placeholder.height(ui.item.height());
+        }
+        , stop: function (event, ui) {
+            $('.dragQuestions').css('border', '');
+        }
         , receive: function (e, ui) {
             var cde = ui.item.sortable.moved;
             if (cde.valueDomain !== undefined) {
